@@ -13,7 +13,8 @@ export default function Navbar() {
               alt="Galactic Polymath"
               src={Logo}
               height={35}
-              width={300} />
+              width={300}
+            />
           </a>
         </Link>
         <button
@@ -24,7 +25,7 @@ export default function Navbar() {
           aria-controls='navbarSupportedContent'
           aria-expanded='false'
           aria-label='Toggle navigation'
-          >
+        >
           <span className='navbar-toggler-icon'></span>
         </button>
         <div>
