@@ -1,5 +1,9 @@
 {
-  "extends": "next/core-web-vitals",
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
   "rules": {
     "array-bracket-newline": ["error", "consistent"],
     "arrow-body-style": "off",
@@ -60,6 +64,8 @@
     "react/destructuring-assignment": ["error", "always"],
     "react-hooks/rules-of-hooks": "error",
     "react/forbid-prop-types": "off",
+    "react/jsx-closing-tag-location": "error",
+    "react/jsx-closing-bracket-location": "error",
     "react/jsx-curly-brace-presence": ["error", "never"],
     "react/jsx-first-prop-new-line": ["error", "multiline"],
     "react/jsx-filename-extension": "off",
@@ -84,6 +90,7 @@
     "react/jsx-uses-vars": "error",
     "react/no-array-index-key": "warn",
     "react/no-unescaped-entities": "warn",
+    "react/react-in-jsx-scope": "off",
     "react/require-default-props": "off",
     "react/require-extension": "off",
     "react/self-closing-comp": "off",
