@@ -1,10 +1,7 @@
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import Navbar from './Navbar';
 
 export default function Layout({ title, keywords, description, children }) {
-  const router = useRouter();
-
   return (
     <div>
       <Head>
