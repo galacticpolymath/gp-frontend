@@ -19,7 +19,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params: { id } }) => {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   const lessons = await res.json();
-  const lesson = lessons.find((lesson) => lesson.id === id);
+  const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}`);
   
   return { props: { lesson } };
 };
