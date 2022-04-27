@@ -88,6 +88,11 @@
       "beforeClosing": "never"
     }],
     "react/jsx-uses-vars": "error",
+    "react/jsx-wrap-multilines": ["error", {
+      "assignment": "parens-new-line",
+      "declaration": "parens-new-line",
+      "return": "parens-new-line"
+    }],
     "react/no-array-index-key": "warn",
     "react/no-unescaped-entities": "warn",
     "react/react-in-jsx-scope": "off",
