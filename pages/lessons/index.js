@@ -1,5 +1,9 @@
+import Layout from '../components/Layout';
+
 const LessonsPage = () => {
-  return <h1>Lessons</h1>;
+  return <Layout>
+    <h1>Lessons</h1>
+  </Layout>;
 };
 
 export default LessonsPage;

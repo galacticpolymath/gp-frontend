@@ -1,5 +1,9 @@
+import Layout from '../components/Layout';
+
 const LessonDetails = ({ lesson }) => {
-  return <h1>{lesson.Title}</h1>;
+  return <Layout>
+    <h1>{lesson.Title}</h1>
+  </Layout>;
 };
 
 export const getStaticPaths = async () => {
