@@ -1,9 +1,23 @@
-import { useRouter } from 'next/router'
+const LessonDetails = ({ lesson }) => {
+  return <h1>{lesson.Title}</h1>;
+};
 
-const LessonDetails = () => {
-  const { query: { id } }= useRouter()
+export const getStaticPaths = async () => {
+  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  const lessons = await res.json();
+  const paths = lessons.map(lesson => ({
+    params: { id: `${lesson.id}` },
+  }));
 
-  return <h1>Lesson {id}</h1>
-}
+  return { paths, fallback: false };
+};
 
-export default LessonDetails
+export const getStaticProps = async ({ params: { id } }) => {
+  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  const lessons = await res.json();
+  const lesson = lessons.find((lesson) => lesson.id === id);
+  
+  return { props: { lesson } };
+};
+
+export default LessonDetails;
