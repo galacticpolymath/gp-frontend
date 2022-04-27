@@ -1,12 +1,23 @@
-import img from '../../img/GP_logo_wordmark_horiz_grad_transBG_300.png';
 import Image from 'next/image';
 import Link from 'next/link';
+
+import Logo from '../../img/GP_logo_wordmark_horiz_grad_transBG_300.png';
+
 export default function Navbar() {
   return (
     <nav className='navbar navbar-expand-lg navbar-light bg-light'>
       <div className='container-fluid d-flex'>
         <div>
-          <Image src={img} height={35} width={300} />
+          <Link href="/" passHref>
+            <a>
+              <Image
+                className=''
+                alt="Galactic Polymath"
+                src={Logo}
+                height={35}
+                width={300} />
+            </a>
+          </Link>
           <button
             className='navbar-toggler'
             type='button'
@@ -23,7 +34,7 @@ export default function Navbar() {
           <div className='collapse navbar-collapse' id='navbarSupportedContent'>
             <ul className='navbar-nav me-auto mb-2 mb-lg-0'>
               <li className='nav-item'>
-                <Link href='/'>
+                <Link href='/lessons'>
                   <a className='nav-link'>Lessons</a>
                 </Link>
               </li>
