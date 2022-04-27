@@ -2,6 +2,12 @@
   padding: 0 2rem;
 }
 
+.hero {
+  color: white;
+  background-size: cover;
+  background-position: center;
+}
+
 .main {
   min-height: 100vh;
   padding: 4rem 0;
