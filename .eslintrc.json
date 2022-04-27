@@ -1,3 +1,109 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "array-bracket-newline": ["error", "consistent"],
+    "arrow-body-style": "off",
+    "brace-style": ["error", "1tbs"],
+    "class-methods-use-this": "off",
+    "comma-dangle": ["error", {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "always-multiline",
+      "exports": "always-multiline",
+      "functions": "only-multiline"
+    }],
+    "curly": ["error", "all"],
+    "import/imports-first": "off",
+    "import/newline-after-import": "off",
+    "import/no-dynamic-require": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/no-named-as-default": "off",
+    "import/no-unresolved": "error",
+    "import/no-webpack-loader-syntax": "off",
+    "import/prefer-default-export": "off",
+    "indent": [
+      "error",
+      2,
+      {
+        "ignoredNodes": [
+          "JSXElement",
+          "JSXElement > *",
+          "JSXAttribute",
+          "JSXIdentifier",
+          "JSXNamespacedName",
+          "JSXMemberExpression",
+          "JSXSpreadAttribute",
+          "JSXExpressionContainer",
+          "JSXOpeningElement",
+          "JSXClosingElement",
+          "JSXText",
+          "JSXEmptyExpression",
+          "JSXSpreadChild"
+        ],
+        "SwitchCase": 1
+      }
+    ],
+    "jsx-a11y/aria-props": "error",
+    "jsx-a11y/heading-has-content": "off",
+    "jsx-a11y/label-has-associated-control": [
+      2,
+      {
+        // NOTE: If this error triggers, either disable it or add
+        // your custom components, labels and attributes via these options
+        // See https://github.com/evcohen/eslint-plugin-jsx-a11y/blob/master/docs/rules/label-has-associated-control.md
+        "controlComponents": ["Input"]
+      }
+    ],
+    "jsx-a11y/label-has-for": "error",
+    "jsx-a11y/mouse-events-have-key-events": "error",
+    "jsx-a11y/role-has-required-aria-props": "error",
+    "jsx-a11y/role-supports-aria-props": "error",
+    "max-len": "off",
+    "newline-per-chained-call": "off",
+    "no-confusing-arrow": "off",
+    "no-console": "warn",
+    "no-multi-spaces": "error",
+    "no-plusplus": "off",
+    "no-underscore-dangle": "off",
+    "no-unused-vars": "error",
+    "no-use-before-define": ["error", "nofunc"],
+    "object-curly-spacing": ["error", "always"],
+    "prefer-template": "error",
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "react/button-has-type": "off",
+    "react/destructuring-assignment": ["error", "always"],
+    "react-hooks/rules-of-hooks": "error",
+    "react/forbid-prop-types": "off",
+    "react/jsx-curly-brace-presence": ["error", "never"],
+    "react/jsx-first-prop-new-line": ["error", "multiline"],
+    "react/jsx-filename-extension": "off",
+    "react/jsx-indent": ["error", 2, {
+      "checkAttributes": true,
+      "indentLogicalExpressions": true
+    }],
+    "react/jsx-indent-props": ["error", 2],
+    "react/jsx-max-props-per-line": ["error", {
+      "maximum": { "multi": 1, "single": 2 }
+    }],
+    "react/jsx-no-target-blank": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-props-no-multi-spaces": "error",
+    "react/jsx-props-no-spreading": "off",
+    "react/jsx-tag-spacing": ["error", {
+      "closingSlash": "never",
+      "beforeSelfClosing": "always",
+      "afterOpening": "never",
+      "beforeClosing": "never"
+    }],
+    "react/jsx-uses-vars": "error",
+    "react/no-array-index-key": "warn",
+    "react/no-unescaped-entities": "warn",
+    "react/require-default-props": "off",
+    "react/require-extension": "off",
+    "react/self-closing-comp": "off",
+    "react/sort-comp": "off",
+    "react/prop-types": "off",
+    "semi": ["error", "always"],
+    "space-infix-ops": "error"
+  }
 }
