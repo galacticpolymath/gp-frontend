@@ -2,6 +2,16 @@
   padding: 0 2rem;
 }
 
+.hero {
+  color: white;
+  background-size: cover;
+  background-position: 70% center;
+  padding: 20vh 0;
+}
+.shadow {
+  text-shadow: 0px 0px 4px #470d29;
+}
+
 .main {
   min-height: 100vh;
   padding: 4rem 0;

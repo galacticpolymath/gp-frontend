@@ -1,9 +1,11 @@
 import Layout from '../components/Layout';
 
 const LessonDetails = ({ lesson }) => {
-  return <Layout>
-    <h1>{lesson.Title}</h1>
-  </Layout>;
+  return (
+    <Layout>
+      <h1>{lesson.Title}</h1>
+    </Layout>
+  );
 };
 
 export const getStaticPaths = async () => {
