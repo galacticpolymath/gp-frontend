@@ -1,5 +1,36 @@
 $enable-cssgrid: true;
 
+$sparkle-white: #f0f4ff;
+$galactic-black: #363636;
+
+$atomic-blue-light: #9f4bff;
+$atomic-blue: #6812d1;
+$atomic-blue-dark: #291C9E;
+
+$lightning-purple-light: #9c5ab2;
+$lightning-purple: #6c2d82;
+$lightning-purple-dark: #3E0D55;
+
+$burst-purple: #cb1f8e;
+$burst-purple-dark: #96195F;
+
+$flare-fuchsia-light: #ff5dbe;
+$flare-fuchsia: #ff3dac;
+
+$hydrogen-blue-light: #69b2f7;
+$hydrogen-blue: #2c83c3;
+$hydrogen-blue-dark: #005792;
+
+$math: #DB4125;
+$ela: #ECA14D;
+$extra: #F4F0D9;
+$science: #B798E8;
+$social-studies: #633A9A;
+
+$primary: $burst-purple;
+$secondary: $atomic-blue;
+$info: lighten($hydrogen-blue-light, 15%);
+
 @import '../node_modules/bootstrap/scss/bootstrap';
 
 html,
@@ -23,5 +54,5 @@ a > span {
 }
 
 .bg-light-gray {
-  background-color: #ddd;
+  background-color: #eee;
 }
