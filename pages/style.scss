@@ -1,0 +1,49 @@
+$enable-cssgrid: true;
+
+@import 'colors';
+
+$primary: $burst-purple;
+$secondary: $atomic-blue;
+$info: lighten($hydrogen-blue-light, 15%);
+
+@import '../node_modules/bootstrap/scss/bootstrap';
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a > span {
+  vertical-align: middle;
+}
+
+img {
+  max-width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.no-hover-color-change:hover {
+  color: inherit;
+}
+
+// background color utilities
+.bg-light-gray {
+  background-color: #eee;
+}
+.bg-science {
+  background-color: $science;
+}
+.bg-math {
+  background-color: $math;
+}
+// TODO: what are the other possible TargetSubject values? (see lessons page badges)
