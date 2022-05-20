@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
   reactStrictMode: true,
+  images: {
+    domains: ['catalog.galacticpolymath.com'],
+  },
 };
-
-module.exports = nextConfig;

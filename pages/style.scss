@@ -24,8 +24,16 @@ a > span {
   vertical-align: middle;
 }
 
+img {
+  max-width: 100%;
+}
+
 * {
   box-sizing: border-box;
+}
+
+.no-hover-color-change:hover {
+  color: inherit;
 }
 
 // background color utilities
