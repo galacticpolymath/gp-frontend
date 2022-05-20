@@ -1,3 +1,7 @@
+$enable-cssgrid: true;
+
+@import '../node_modules/bootstrap/scss/bootstrap';
+
 html,
 body {
   padding: 0;
@@ -16,4 +20,8 @@ a > span {
 
 * {
   box-sizing: border-box;
+}
+
+.bg-light-gray {
+  background-color: #ddd;
 }

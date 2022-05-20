@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import Layout from './components/Layout';
 import Hero from './components/Hero';
-import styles from '../styles/Home.module.css';
+import styles from './index.module.css';
 import HeroImage from '../img/city_network.jpg';
 
 export default function Home() {
@@ -40,7 +40,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-light">
+      <div className="bg-light-gray">
         <div className="container mx-auto row align-items-center">
           <h2 className="fw-light fs-1 text-center p-5">
             Think <strong>bigger</strong>.<br />{' '}
@@ -135,7 +135,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-light">
+      <div className="bg-light-gray">
         <div className="container mx-auto p-5">
           <div className='col-10 offset-1'>
             <div className='text-center'>[video]</div>
@@ -161,7 +161,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className='bg-light'>
+        <div className='bg-light-gray'>
           <div className='container p-5 mx-auto row'>
             <h3 className='text-center fw-light fs-2 mb-3'>Benefits of connecting classrooms to the world of Academia</h3>
             <div className='col-12 col-md-6 p-4'>
