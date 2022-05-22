@@ -42,7 +42,7 @@ export default function Navbar() {
                 </Link>
               </li>
               <li className='nav-item'>
-                <Link href='/'>
+                <Link href='/hire-us'>
                   <a className='nav-link'>Hire us</a>
                 </Link>
               </li>
