@@ -7,7 +7,7 @@ import Layout from '../components/Layout';
 // import HeaderLinks from "components/Header/HeaderLinks.js";
 
 // import Section from "./Section/index";
-// import Header from "./Header";
+import Header from './Header';
 import { NUMBERED_SECTIONS } from './constants';
 
 import './[id].module.scss';
@@ -15,7 +15,7 @@ import './[id].module.scss';
 // import NavigationDots from "./NavigationDots";
 // import useScrollHandler from './NavigationDots/useScrollHandler'
 
-export default function LessonPlan({ lesson }) {
+const LessonPlan = ({ lesson }) => {
   // useScrollHandler()
 
   // useEffect(() => {
@@ -61,7 +61,7 @@ export default function LessonPlan({ lesson }) {
         color="dark"
       /> */}
 
-      {/* <Header location={null} {...lesson} /> */}
+      <Header {...lesson} />
 
       {sections &&
           Object.keys(sections).map((sectionkey, i) => renderSection(sections[sectionkey], i)
@@ -70,5 +70,25 @@ export default function LessonPlan({ lesson }) {
       {/* <NavigationDots sections={lesson.Section} /> */}
     </Layout>
   );
-}
+};
 
+
+export const getStaticPaths = async () => {
+  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  const lessons = await res.json();
+  const paths = lessons.map(lesson => ({
+    params: { id: `${lesson.id}` },
+  }));
+
+  return { paths, fallback: false };
+};
+
+export const getStaticProps = async ({ params: { id } }) => {
+  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  const lessons = await res.json();
+  const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}`);
+  
+  return { props: { lesson } };
+};
+
+export default LessonPlan;
