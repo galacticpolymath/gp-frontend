@@ -1,0 +1,31 @@
+@import '../../../variables';
+
+.VariableResourceDownload {
+  p {
+    margin: 1.2rem 0 !important;
+  }
+  margin: 1rem 0 2rem 0;
+  h4 {
+    margin: 2rem 0 -0.5rem 0;
+  }
+  h5 {
+    font-size: 0.85rem; 
+    margin-bottom: -0.5rem;
+    color: rgba($charcoal, .8);
+    text-transform: uppercase;
+    font-weight: 400 !important;
+  }
+  .variations {
+    padding-left: 2rem;
+  }
+}
+.SimpleResourceDownload {
+  margin: 1rem 0;
+  .DownloadGroup {
+    color: rgba($charcoal, .8);
+    margin: 1rem 0;
+    > div {
+      padding-left: 2rem;
+    }
+  }
+}

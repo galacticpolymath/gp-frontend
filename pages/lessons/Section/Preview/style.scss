@@ -1,0 +1,112 @@
+@import '../../variables';
+@import '../../../../assets/scss/core/variables';
+
+.Carousel {
+  margin: 0 auto;
+  max-width: 50rem;
+  > .carousel-slider {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-bottom: 3rem;
+
+    .slider-wrapper {
+      order: -1;
+    }
+    > button {
+      background: $galactic-black;
+      color: $white;
+      align-self: center;
+      margin: .75rem;
+      padding: .5rem;
+      svg {
+        width: 2rem;
+        height: 2rem;
+      }
+      font-size: 1.6rem;
+      &:disabled {
+        background: rgba($galactic-black, .25);
+      }
+      &:hover {
+        background: rgba($galactic-black, .8);
+      }
+    }
+    ul.control-dots {
+      li.dot {
+        opacity: 1;
+        box-shadow: none;
+        border: 2px solid #bebebe;
+        background: #eee;
+        padding: 4px;
+        &.selected {
+          background: rgba($hydrogen-blue, .6);
+          border-color: $hydrogen-blue;
+        }
+      }
+    }
+
+    @media (min-width: map-get($grid-breakpoints, "md")) {
+      flex-wrap: nowrap;
+      justify-content: center;
+      
+      > button {
+        margin: .5rem 0;
+      }
+      .slider-wrapper {
+        order: 0;
+      }
+      ul.control-dots {
+        margin-top: 0;
+      }
+    }
+  }
+  
+  li.slide {
+    padding: .75rem;
+    .Slide {
+      text-align: left;
+      height: 100%;
+      padding: .75rem;
+      margin-bottom: 0;
+      iframe {
+        margin: 0 !important;
+        width: 100% !important;
+        height: 12rem;
+      }
+      @media (min-width: 430px) {
+        iframe {
+          height: 16rem;
+        }
+      }
+      @media (min-width: map-get($grid-breakpoints, "sm")) {
+        padding: 1rem;
+        iframe {
+          height: 18rem;
+        }
+      }
+      @media (min-width: map-get($grid-breakpoints, "md")) {
+        padding: 1.5rem;
+        iframe {
+          height: 20rem;
+        }
+      }
+      @media (min-width: map-get($grid-breakpoints, "lg")) {
+        iframe {
+          height: 25rem;
+        }
+      }
+      .caption {
+        p {
+          font-size: .9rem;
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+  ul.thumbs {
+    padding: 0;
+  }
+}

@@ -1,0 +1,204 @@
+@import "../../variables";
+@import "../../../../assets/scss/core/variables";
+
+.LessonPlan {
+  .SectionHeading#teaching_materials {
+    background-color: $burst-purple-hl;
+    border: 3px solid $burst-purple;
+    border-width: 3px 0;
+  }
+  .TeachingMethod.ExpansionPanel {
+    button {
+      padding: 0;
+    }
+    @media (max-width: map-get($grid-breakpoints, "md")) {
+      padding-right: 2rem;
+    }
+    h3 {
+      svg {
+        display: inline-block;
+        height: 2.5rem;
+        width: 2.5rem;
+        text-align: center;
+        margin-right: 0.75rem;
+        vertical-align: bottom;
+      }
+    }
+    .footnote p,
+    p.footnote {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+    p.footnote {
+      margin-bottom: 1rem;
+    }
+    &.Mui-expanded {
+      margin-bottom: 3rem;
+    }
+    .ExpansionPanelDetails {
+      display: block;
+    }
+    .ResourceSummary {
+      background: $gray;
+      padding: 0.5rem 2rem;
+
+      > div {
+        > div {
+          padding: 0.75rem 0;
+          line-height: 1.7;
+          font-size: 1.1em;
+        }
+
+        &:not(:last-child) {
+          > div {
+            border-bottom: 1px solid rgba($galactic-black, 0.5);
+          }
+
+          > div.title {
+            color: $galactic-black;
+            font-weight: bold;
+            border-bottom: none;
+            padding-bottom: 0;
+          }
+        }
+      }
+
+      > p {
+        margin: 0;
+      }
+    }
+
+    .resourceSummaryItem {
+      span[role="img"] {
+        width: 2rem;
+        height: 2rem;
+        margin-right: 0.5rem;
+        display: inline-block;
+        text-align: center;
+      }
+    }
+    .VariantSummary,
+    .GradeVariant,
+    .VariantPart {
+      > .ExpansionPanelSummary .MuiExpansionPanelSummary-expandIcon {
+        padding: 0;
+        .MuiSvgIcon-root {
+          font-size: 2rem;
+        }
+      }
+    }
+    .VariantSummary {
+      margin: 1rem 0 2rem 0;
+      &:before {
+        display: none;
+      }
+      > .ExpansionPanelSummary {
+        border-top: none;
+        h4 {
+          margin: 0;
+        }
+      }
+      .ExpansionPanelDetails {
+        p {
+          margin: 0.75rem 0;
+        }
+      }
+    }
+    .GradeVariant {
+      &:before {
+        display: none;
+      }
+      > .ExpansionPanelSummary {
+        border-top: none;
+        h5 {
+          color: $hydrogen-blue;
+          margin: 0;
+        }
+      }
+      .ExpansionPanelDetails {
+        .downloadAll {
+          margin-bottom: 1rem;
+          display: flex;
+          a.download {
+            display: block;
+            font-weight: bold;
+
+            svg {
+              width: 2rem;
+              height: 2rem;
+              margin-right: 0.5rem;
+              display: inline-block;
+              text-align: center;
+              vertical-align: middle;
+            }
+          }
+        }
+      }
+    }
+    .VariantParts {
+      .VariantPart.ExpansionPanel {
+        margin: 0;
+        &:before {
+          display: none;
+        }
+        ol {
+          margin: 0;
+          padding: 0.5rem 1.5rem;
+          > li {
+            margin: 1rem 0;
+            > p {
+              margin-bottom: 0.25rem;
+            }
+            span[role="img"] {
+              margin-right: 0.5rem;
+            }
+            ul {
+              padding-left: 1rem;
+              list-style-type: none;
+            }
+          }
+        }
+        > .ExpansionPanelSummary {
+          border: 2px solid rgba($galactic-black, 0.5);
+          padding: 0 0.5rem;
+          background: $gray;
+          .MuiExpansionPanelSummary-content {
+            align-items: center;
+            > span {
+              color: $hydrogen-blue;
+              font-weight: 500;
+              display: block;
+              padding-right: 0.5rem;
+              border-right: 2px solid rgba($galactic-black, 0.5);
+            }
+            strong {
+              padding-left: 0.5rem;
+            }
+          }
+        }
+        .VariantPreface {
+          border-bottom: 1px solid rgba($galactic-black, 0.25);
+          p:last-child {
+            margin-bottom: 0.5rem;
+          }
+        }
+        .MuiCollapse-wrapper {
+          border: 2px solid rgba($galactic-black, 0.5);
+          border-bottom: none;
+          padding: 0.8rem 0.5rem;
+        }
+        &:last-child {
+          .MuiCollapse-wrapper {
+            border-top: 0;
+            border-bottom: 2px solid rgba($galactic-black, 0.5);
+          }
+        }
+        &:not(:last-child) {
+          > .ExpansionPanelSummary {
+            border-bottom: none;
+          }
+        }
+      }
+    }
+  }
+}

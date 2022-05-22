@@ -1,0 +1,268 @@
+@import "../../variables";
+
+.Overview {
+  #targetSubj {
+    margin-bottom: 2rem;
+
+    > * {
+      display: inline-block;
+    }
+
+    p {
+      margin-top: 0;
+      padding-left: 1rem;
+    }
+  }
+
+  h4 {
+    margin-bottom: 0;
+  }
+
+  .stats {
+    margin: 0.5rem 0 1rem;
+    padding: 1rem 0 0 ;
+    text-align: center;
+    border: rgba(245,245,245,1) 1px solid;
+    box-shadow:   inset 3px 2px 36px 20px rgba(153, 157, 168,0.1),
+                  inset 0px 0px 15px 8px rgba(240, 244, 255, 1),
+                  0 3px 5px rgba(245, 245, 245, 0.2),
+                  0 3px 4px rgba(0, 0, 0, 0.2);
+    background: rgba(245, 245, 245,0.8);
+
+
+    .statIcon {
+      margin-bottom: -10px;
+      color: $gp-galactic-black;
+    }
+
+    h5 {
+      color: $gp-galactic-black;
+      margin-bottom: 2px;
+    }
+
+    .statContainer {
+      display: inline-block;
+
+      h3 {
+        margin: 0;
+        font-weight: 400;
+        font-size: 1.5em;
+      }
+
+    }
+
+    .border-right {
+      @media (min-width: map-get($grid-breakpoints, "sm")) {
+        border-right: 1px solid $charcoal;
+      }
+    }
+
+    .tiles{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      column-gap: 0.5rem;
+      padding: 0 0.5rem;
+      margin: 0 0.5rem;
+    }
+
+    .focus {
+      box-shadow: inset 0px 0px 12px 12px rgba(240, 244, 255, 0.45), 0 1px 5px rgba(0, 0, 0, 0.03), 0 1px 4px rgba(0,0,0, 0.5);
+      padding: 1rem;
+      margin: 2px;
+      border-radius: 25px;
+      background: #FFFFFF;
+
+    }
+
+
+    h5 {
+      margin-top: 0;
+
+    }
+
+    p {
+      margin: 0 0 0.5rem 0;
+    }
+
+    .epaulette-container{
+    h5{
+      margin: 1rem 0 0.25rem;
+    }
+    }
+
+    .epaulette {
+      padding: 0 1rem 0.5rem;
+      width: 100%;
+    }
+
+    @media (max-width: map-get($grid-breakpoints, "sm")) {
+    .tiles {
+      grid-template-columns: 1fr;
+    }
+
+    }
+    @media (max-width: map-get($grid-breakpoints, "md")) {
+      .statContainer {
+        h3 {
+          font-size: 1.3rem;
+        }
+      }
+    }
+  }/*End .stats*/
+
+  #lessonhook {
+    //padding-top: 1.5rem;
+  }
+
+  .keywords {
+    padding: 0.85rem 0;
+  }
+} /*End .overview*/
+
+.Procedure {
+  h3 {
+    color: $hydrogen-blue;
+    text-transform: uppercase;
+  }
+
+  .RichText {
+    img {
+      display: block;
+      width: 90%;
+      max-width: 45rem;
+      margin: 2rem auto 1rem auto;
+    }
+  }
+}
+
+.ExpansionPanelSummary {
+  &:active {
+    background: inherit;
+  }
+}
+
+.Standards {
+  .MuiExpansionPanelDetails-root {
+    display: block;
+  }
+
+  .MuiExpansionPanelSummary-content {
+    display: block;
+  }
+}
+
+.SteamBadge {
+  @media (max-width: map-get($grid-breakpoints, "md")) {
+    padding-right: 2rem !important;
+  }
+
+  > .Image {
+    display: block;
+    max-height: 60vh;
+    margin: auto;
+  }
+
+  .MuiExpansionPanelDetails-root {
+    display: block;
+  }
+
+  .footnote {
+    background: $gray;
+    padding: 1rem;
+  }
+}
+
+.CollapsibleSection.ExpansionPanel {
+  margin: 1rem 0 0 !important;
+  border: none !important;
+  @media (max-width: map-get($grid-breakpoints, "md")) {
+    > * {
+      padding-right: 2rem !important;
+    }
+  }
+
+  &.MuiExpansionPanel-root {
+    &::before {
+      display: none;
+    }
+
+    .SectionHeading {
+      margin: 0;
+
+      .MuiExpansionPanelSummary-root {
+        padding: 0;
+
+        .MuiExpansionPanelSummary-content {
+          margin: 0 !important;
+
+          h2 {
+            margin: 0;
+          }
+        }
+
+        > .MuiExpansionPanelSummary-expandIcon .MuiSvgIcon-root {
+          font-size: 2.25rem;
+          color: $charcoal;
+        }
+      }
+    }
+
+    .MuiCollapse-wrapper {
+      padding-top: 1rem;
+    }
+
+    .ExpansionPanelDetails {
+      padding: 0 !important;
+    }
+  }
+}
+
+.Acknowledgments {
+  .role {
+    margin-bottom: 2rem;
+
+    p {
+      margin: 0.5rem 0;
+    }
+
+    .record {
+      margin: 1.25rem 0;
+
+      h5 {
+        margin-bottom: 0.25rem;
+
+        a {
+          color: $burst-purple;
+
+          &:hover {
+            color: $flare-fuschia;
+          }
+        }
+      }
+    }
+  }
+}
+
+.Versions {
+  p {
+    margin: 0 0 0.3rem 0 !important;
+  }
+
+  .date {
+    font-style: italic;
+    color: rgba($charcoal, 0.8);
+    margin: 0;
+  }
+
+  .major {
+    margin-bottom: 2rem;
+
+    .minor {
+      h5 {
+        margin-bottom: 0;
+      }
+
+      margin-bottom: 1rem;
+    }
+  }
+}
