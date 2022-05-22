@@ -48,26 +48,28 @@ const LessonPlan = ({ lesson }) => {
 
   return (
     <Layout>
-      {/* {renderMetaTags({
+      <div className='LessonPlan'>
+        {/* {renderMetaTags({
         title: lesson.Title,
         description: lesson.Subtitle,
         image: lesson.CoverImage.url,
         url: `https://galacticpolymath.com/lessons/${lessonId}`
       })} */}
 
-      {/* <SiteHeader
+        {/* <SiteHeader
         links={<HeaderLinks dropdownHoverColor="info" />}
         fixed
         color="dark"
       /> */}
 
-      <Header {...lesson} />
+        <Header {...lesson} />
 
-      {sections &&
+        {sections &&
           Object.keys(sections).map((sectionkey, i) => renderSection(sections[sectionkey], i)
           )}
 
-      {/* <NavigationDots sections={lesson.Section} /> */}
+        {/* <NavigationDots sections={lesson.Section} /> */}
+      </div>
     </Layout>
   );
 };

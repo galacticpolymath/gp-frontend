@@ -22,7 +22,7 @@ const LessonsPage = ({ lessons }) => {
               passHref
             >
               <a className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
-                <div>
+                <div className="next-image-container">
                   <Image
                     src={lesson.CoverImage.url}
                     alt={lesson.Subtitle}
@@ -30,6 +30,7 @@ const LessonsPage = ({ lessons }) => {
                     // TODO: will these always be the same size?
                     width={1500}
                     height={450}
+                    className="next-image"
                   />
                 </div>
                 <div className='p-3'>

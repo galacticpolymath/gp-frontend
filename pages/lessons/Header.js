@@ -7,13 +7,12 @@ import { format } from 'date-fns';
 // import GridContainer from "components/Grid/GridContainer";
 // import GridItem from "components/Grid/GridItem";
 // import Image from "../../components/StrapiImage";
-// import RichText from "../../components/RichText";
+import RichText from '../components/RichText';
 //import { SECTIONS } from "./constants";
 import ShareTools from './ShareTools';
 import Link from 'next/link';
+import Image from 'next/image';
 
-// import lessonPlanStyle from "assets/jss/material-kit-pro-react/views/lessonPlanStyle.js";
-// const useStyles = makeStyles(lessonPlanStyle);
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
@@ -32,7 +31,6 @@ const Header = ({
   SponsorImage,
   Section,
 }) => {
-  const classes = {};// useStyles();
   const lastSubRelease = getLatestSubRelease(Section);
 
   // temporary code until we decide how multiple sponsor images should be displayed
@@ -42,7 +40,7 @@ const Header = ({
 
   return (
     <div className="Header">
-      <div className={classes.container}>
+      <div className="container row mx-auto">
         {/* SectionHeading Div used for nav dots */}
         <div
           className="SectionHeading"
@@ -67,30 +65,35 @@ const Header = ({
 
         <ShareTools location={location} lessonTitle={Title} />
 
-        {/* <GridContainer className="text-center">
+        <div className='container mx-auto row text-center'>
           <div className="col">
-            <Image {...CoverImage} className="self-center" />
+            <Image 
+              alt="Subtitle"
+              layout="responsive"
+              // TODO: will these always be the same size?
+              width={1500}
+              height={450}
+              src={CoverImage.url}
+            />
           </div>
-        </GridContainer>
-        <GridContainer className="sponsor">
-          <GridItem
-            xs={12}
-            sm={9}
-            md={9}
-            className="sponsorDescr"
-          >
+        </div>
+
+        <div className='container mx-auto row sponsor'>
+          <div className='col-12 col-sm-9 sponsorDescr'>
             <h5>Sponsored by:</h5>
             <RichText content={SponsoredBy} />
-          </GridItem>
-          <GridItem
-            xs={4}
-            sm={3}
-            md={2}
-            className="sponsorLogo"
-          >
-            <Image {...SponsorImage} />
-          </GridItem>
-        </GridContainer> */}
+          </div>
+          <div className='col-12 col-sm-3 sponsorLogo'>
+            <Image
+              width={1}
+              height={1}
+              layout="responsive"
+              alt={SponsoredBy}
+              src={SponsorImage.url}
+            />
+
+          </div>
+        </div>
       </div>
     </div>
   );
