@@ -135,61 +135,59 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-light-gray">
-        <div className="container mx-auto p-5">
-          <div className='col-10 offset-1'>
-            <div className='text-center'>[video]</div>
-            <h2 className="mt-5 mb-3">JobViz</h2>
-            <h5>Connect lessons to careers with this free tool!</h5>
-            <ul>
-              <li>Search and browse ~1,000 jobs</li>
-              <li>Explore US Bureau of Labor Statistics data most relevant to students</li>
-              <li>Clean, responsive user interface</li>
-              <li>Share links to jobs (useful for assignments)</li>
-              <li>Create a springboard for independent career research</li>
-            </ul>
-            <Link href="/jobviz">
-              <a className='btn btn-secondary mt-3'>Explore jobs</a>
-            </Link>
-          </div>
+      <div className="container mx-auto p-5">
+        <div className='col-10 offset-1'>
+          <div className='text-center'>[video]</div>
+          <h2 className="mt-5 mb-3">JobViz</h2>
+          <h5>Connect lessons to careers with this free tool!</h5>
+          <ul>
+            <li>Search and browse ~1,000 jobs</li>
+            <li>Explore US Bureau of Labor Statistics data most relevant to students</li>
+            <li>Clean, responsive user interface</li>
+            <li>Share links to jobs (useful for assignments)</li>
+            <li>Create a springboard for independent career research</li>
+          </ul>
+          <Link href="/jobviz">
+            <a className='btn btn-secondary mt-3'>Explore jobs</a>
+          </Link>
         </div>
+      </div>
 
-        <div className='bg-info'>
-          <div className='container p-5 mx-auto text-center'>
-            <p className='fs-4'>Real Research + Real Stories + Real Data + Real Careers =</p>
-            <p className='fs-3'>Real Learning</p>
-          </div>
+      <div className='bg-info'>
+        <div className='container p-5 mx-auto text-center'>
+          <p className='fs-4'>Real Research + Real Stories + Real Data + Real Careers =</p>
+          <p className='fs-3'>Real Learning</p>
         </div>
+      </div>
 
-        <div className='bg-light-gray'>
-          <div className='container p-5 mx-auto row'>
-            <h3 className='text-center fw-light fs-2 mb-3'>Benefits of connecting classrooms to the world of Academia</h3>
-            <div className='col-12 col-md-6 p-4'>
-              <div className='bg-white rounded-3 p-4'>
-                <h4>For Teachers</h4>
-                <ul>
-                  <li>Free (open-access), high-quality lessons</li>
-                  <li>Regularly updated based on your feedback</li>
-                  <li>Differentiated for grades 5-6, 7-8 & 9-12</li>
-                  <li>Adaptable for different time lengths, extension activities, etc.</li>
-                </ul>
-                <Link href="/lessons">
-                  <a className='btn btn-primary'>Get lessons</a>
-                </Link>
-              </div>
+      <div className='bg-light-gray'>
+        <div className='container p-5 mx-auto row'>
+          <h3 className='text-center fw-light fs-2 mb-3'>Benefits of connecting classrooms to the world of Academia</h3>
+          <div className='col-12 col-md-6 p-4'>
+            <div className='bg-white rounded-3 p-4'>
+              <h4>For Teachers</h4>
+              <ul>
+                <li>Free (open-access), high-quality lessons</li>
+                <li>Regularly updated based on your feedback</li>
+                <li>Differentiated for grades 5-6, 7-8 & 9-12</li>
+                <li>Adaptable for different time lengths, extension activities, etc.</li>
+              </ul>
+              <Link href="/lessons">
+                <a className='btn btn-primary'>Get lessons</a>
+              </Link>
             </div>
-            <div className='col-12 col-md-6 p-4'>
-              <div className='bg-white rounded-3 p-4'>
-                <h4>For Clients</h4>
-                <ul>
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
-                </ul>
-                <Link href="/hire-us">
-                  <a className='btn btn-primary'>Get lessons</a>
-                </Link>
-              </div>
+          </div>
+          <div className='col-12 col-md-6 p-4'>
+            <div className='bg-white rounded-3 p-4'>
+              <h4>For Clients</h4>
+              <ul>
+                <li>Magnify the impact of your research and outreach efforts</li>
+                <li>Get detailed impact metrics to report to funders</li>
+                <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
+              </ul>
+              <Link href="/hire-us">
+                <a className='btn btn-primary'>Get lessons</a>
+              </Link>
             </div>
           </div>
         </div>
