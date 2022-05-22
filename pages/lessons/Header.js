@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { format } from 'date-fns';
 // import { makeStyles } from "@material-ui/core/styles";
-// import moment from "moment";
 // import AnchorLink from "react-anchor-link-smooth-scroll";
 
 // import GridContainer from "components/Grid/GridContainer";
@@ -57,9 +57,7 @@ const Header = ({
             <a>
               <p>
                 Version {lastSubRelease.version} (Updated{' '}
-                {/* {moment(new Date(lastSubRelease.date))
-                .format("MMM D, yyyy")}
-              ) */}
+                {format(new Date(lastSubRelease.date),'MMM d, yyyy')})
               </p>
             </a>
           </Link>
