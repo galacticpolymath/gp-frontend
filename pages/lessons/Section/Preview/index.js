@@ -1,15 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import RichText from "../../../../components/RichText";
+import RichText from '../../../components/RichText';
 
-import './style.scss'
 
-import lessonPlanStyle from "assets/jss/material-kit-pro-react/views/lessonPlanStyle.js";
-import CollapsibleSection from "../CollapsibleSection";
-import Carousel from "./Carousel";
-const useStyles = makeStyles(lessonPlanStyle);
+import CollapsibleSection from '../CollapsibleSection';
+import Carousel from './Carousel';
 
 
 const Preview = ({
@@ -19,7 +15,6 @@ const Preview = ({
   Multimedia,
   QuickPrep,
 }) => {
-  const classes = useStyles();
   return (
     <CollapsibleSection
       className="Preview CollapsibleTextSection"
@@ -27,11 +22,11 @@ const Preview = ({
       SectionTitle={SectionTitle}
       initiallyExpanded={InitiallyExpanded !== false}
     >
-      <div className={classes.container}>
+      <div className="container">
         <Carousel items={Multimedia} />
-        <div className={classes.quickPrep}>
-        <h5>&quot;Teach it in 15&quot; Quick Prep</h5>
-        <RichText content={QuickPrep} />
+        <div className="quickPrep">
+          <h5>&quot;Teach it in 15&quot; Quick Prep</h5>
+          <RichText content={QuickPrep} />
         </div>
       </div>
     </CollapsibleSection>

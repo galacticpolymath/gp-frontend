@@ -1,19 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-
-import lessonPlanStyle from "assets/jss/material-kit-pro-react/views/lessonPlanStyle.js";
-const useStyles = makeStyles(lessonPlanStyle);
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const Heading = ({ index, SectionTitle }) => {
-  const classes = useStyles();
-
   return (
     <h2
       className="SectionHeading"
-      id={SectionTitle.replace(/\s+/g, "_").toLowerCase()}
+      id={SectionTitle.replace(/\s+/g, '_').toLowerCase()}
     >
-      <div className={classes.container}>
+      <div className="container">
         {index}. {SectionTitle}
       </div>
     </h2>

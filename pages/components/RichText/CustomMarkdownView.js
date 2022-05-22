@@ -1,11 +1,10 @@
 import React from 'react';
 import MarkdownView from 'react-showdown';
-import AnchorLink from 'react-anchor-link-smooth-scroll';
 import Link from 'next/link';
 
 const components = {
   AnchorLink (props) {
-    return <AnchorLink offset="125px" {...props} />;
+    return <Link offset="125px" {...props} />;
   },
   a (props) {
     let LinkComponent = Link;

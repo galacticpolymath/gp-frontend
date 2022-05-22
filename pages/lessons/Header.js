@@ -1,12 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-// import { makeStyles } from "@material-ui/core/styles";
-// import AnchorLink from "react-anchor-link-smooth-scroll";
-
-// import GridContainer from "components/Grid/GridContainer";
-// import GridItem from "components/Grid/GridItem";
-// import Image from "../../components/StrapiImage";
 import RichText from '../components/RichText';
 //import { SECTIONS } from "./constants";
 import ShareTools from './ShareTools';

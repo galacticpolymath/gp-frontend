@@ -2,13 +2,9 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 // import { makeStyles } from '@material-ui/core/styles';
 
-// import GridContainer from 'components/Grid/GridContainer';
-// import Card from 'components/Card/Card.js';
-// import GridItem from 'components/Grid/GridItem';
 // import Image from '../../../components/StrapiImage';
 // import TagCloud from '../../../components/TagCloud';
-// import RichText from '../../../components/RichText';
-// import AnchorLink from 'react-anchor-link-smooth-scroll';
+import RichText from '../../components/RichText';
 
 // Material UI Icons
 // import FaceIcon from '@material-ui/icons/Face';

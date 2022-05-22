@@ -1,18 +1,11 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import TimerIcon from "@material-ui/icons/Timer";
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 
-import lessonPlanStyle from "assets/jss/material-kit-pro-react/views/lessonPlanStyle.js";
-import RichText from "components/RichText";
-import CollapsibleSection from "../CollapsibleSection";
-import LessonPart from "./LessonPart";
-
-import "./style.scss";
-const useStyles = makeStyles(lessonPlanStyle);
+import RichText from '../../../components/RichText';
+import CollapsibleSection from '../CollapsibleSection';
+import LessonPart from './LessonPart';
 
 const Procedure = ({ index, SectionTitle, Data }) => {
-  const classes = useStyles();
   return (
     <CollapsibleSection
       className="Procedure"
@@ -20,12 +13,12 @@ const Procedure = ({ index, SectionTitle, Data }) => {
       SectionTitle={SectionTitle}
       initiallyExpanded
     >
-      <div className={classes.container}>
+      <div className="container">
         <Fragment>
-          <div className={classes.procLessonPreface}>
+          <div className="procLessonPreface">
             <h4>
-              <TimerIcon className={classes.inlineIcon} />
-              {"  "}
+              {/* <TimerIcon className={classes.inlineIcon} /> */}
+              {'  '}
               {Data.lessonDur}
             </h4>
             <RichText content={Data.lessonPreface} />

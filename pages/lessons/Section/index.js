@@ -1,21 +1,19 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import { SECTIONS } from "../constants";
+import { SECTIONS } from '../constants';
 
-import "./style.scss";
-
-import Overview from "./Overview";
-import TextBlock from "./TextBlock";
-import Heading from "./Heading";
-import Procedure from "./Procedure/index";
-import TeachingResources from "./TeachingResources/index";
-import LearningChart from "./LearningChart";
-import Standards from "./Standards/index";
-import Acknowledgments from "./Acknowledgments";
-import Versions from "./Versions";
-import CollapsibleTextSection from "./CollapsibleTextSection";
-import Preview from "./Preview";
+import Overview from './Overview';
+import TextBlock from './TextBlock';
+import Heading from './Heading';
+import Procedure from './Procedure/index';
+import TeachingResources from './TeachingResources/index';
+import LearningChart from './LearningChart';
+import Standards from './Standards/index';
+import Acknowledgments from './Acknowledgments';
+import Versions from './Versions';
+import CollapsibleTextSection from './CollapsibleTextSection';
+import Preview from './Preview';
 
 export const sectionTypeMap = {
   [SECTIONS.OVERVIEW]: Overview,
@@ -28,15 +26,19 @@ export const sectionTypeMap = {
   [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
   [SECTIONS.VERSIONS]: Versions,
   [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleTextSection,
-  [SECTIONS.PREVIEW]: Preview
+  [SECTIONS.PREVIEW]: Preview,
 };
 
 const Section = ({ index, section }) => {
   const Component = sectionTypeMap[section.__component];
-  console.log(section.__component)
 
   return Component ? (
-    <Component className="Section" key={index} index={index} {...section} />
+    <Component
+      className="Section"
+      key={index}
+      index={index}
+      {...section}
+    />
   ) : (
     <div>Invalid section {section.__component}</div>
   );

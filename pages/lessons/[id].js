@@ -6,7 +6,7 @@ import Layout from '../components/Layout';
 // import SiteHeader from "components/Header/Header.js";
 // import HeaderLinks from "components/Header/HeaderLinks.js";
 
-// import Section from "./Section/index";
+import Section from './Section/index';
 import Header from './Header';
 import { NUMBERED_SECTIONS } from './constants';
 
@@ -32,18 +32,24 @@ const LessonPlan = ({ lesson }) => {
   }
   const sections = lesson.Section;
 
-  let numberedElements = 0;
+  let sectionNumber = 0;
 
   // count the sections listed in numbered_sections. to send as index. 
   // function takes a section object with flat properties
   // returns a section component to render
   const renderSection = (section, i) => {
     if (NUMBERED_SECTIONS.indexOf(section.__component) !== -1) {
-      numberedElements++;
+      sectionNumber++;
     }
-    // console.log(numberedElements, section);
+    // console.log(sectionNumber, section);
 
-    // return <Section key={i} index={numberedElements} section={section} />;
+    return (
+      <Section
+        key={i}
+        index={sectionNumber}
+        section={section}
+      />
+    );
   };
 
   return (
@@ -55,12 +61,6 @@ const LessonPlan = ({ lesson }) => {
         image: lesson.CoverImage.url,
         url: `https://galacticpolymath.com/lessons/${lessonId}`
       })} */}
-
-        {/* <SiteHeader
-        links={<HeaderLinks dropdownHoverColor="info" />}
-        fixed
-        color="dark"
-      /> */}
 
         <Header {...lesson} />
 

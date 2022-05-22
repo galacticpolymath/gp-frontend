@@ -1,12 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import RichText from "../../../components/RichText";
+import RichText from '../../components/RichText';
 
-import lessonPlanStyle from "assets/jss/material-kit-pro-react/views/lessonPlanStyle.js";
-import CollapsibleSection from "./CollapsibleSection";
-const useStyles = makeStyles(lessonPlanStyle);
+import CollapsibleSection from './CollapsibleSection';
 
 const CollapsibleTextSection = ({
   index,
@@ -14,19 +11,18 @@ const CollapsibleTextSection = ({
   Content,
   InitiallyExpanded,
 }) => {
-  const classes = useStyles();
-  return (
-    <CollapsibleSection
-      className="CollapsibleTextSection"
-      index={index}
-      SectionTitle={SectionTitle}
-      initiallyExpanded={InitiallyExpanded !== false}
-    >
-      <div className={classes.container}>
-        <RichText content={Content} />
-      </div>
-    </CollapsibleSection>
-  );
+  return null;//(
+  //   <CollapsibleSection
+  //     className="CollapsibleTextSection"
+  //     index={index}
+  //     SectionTitle={SectionTitle}
+  //     initiallyExpanded={InitiallyExpanded !== false}
+  //   >
+  //     <div className={classes.container}>
+  //       <RichText content={Content} />
+  //     </div>
+  //   </CollapsibleSection>
+  // );
 };
 
 CollapsibleTextSection.propTypes = {

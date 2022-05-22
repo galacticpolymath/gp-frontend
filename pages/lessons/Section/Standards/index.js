@@ -1,26 +1,14 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
-import Subject from "./Subject";
-
-import lessonPlanStyle from "assets/jss/material-kit-pro-react/views/lessonPlanStyle.js";
-
-import "./style.scss";
-
-const useStyles = makeStyles(lessonPlanStyle);
+// import Subject from './Subject';
 
 const Standards = ({ Data }) => {
-  const classes = useStyles();
   const [expanded, expand] = useState(false);
 
   return (
-    <div className={"Standards " + classes.container}>
-      <ExpansionPanel
+    <div className="Standards container">
+      {/* <ExpansionPanel
         className="ExpansionPanel"
         expanded={!expanded}
         onChange={() => expand(!expanded)}
@@ -49,13 +37,13 @@ const Standards = ({ Data }) => {
       <Subject key={"connected-" + i} {...subject} />
     ))}
   </ExpansionPanelDetails>
-</ExpansionPanel>
-</div>
-);
+</ExpansionPanel> */}
+    </div>
+  );
 };
 
 Standards.propTypes = {
-Data: PropTypes.array,
+  Data: PropTypes.array,
 };
 
 export default Standards;

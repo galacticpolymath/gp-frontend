@@ -1,22 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import CollapsibleSection from "./CollapsibleSection";
+import CollapsibleSection from './CollapsibleSection';
 
-import { makeStyles } from "@material-ui/core/styles";
-import lessonPlanStyle from "assets/jss/material-kit-pro-react/views/lessonPlanStyle.js";
-import RichText from "../../../components/RichText";
-const useStyles = makeStyles(lessonPlanStyle);
+import RichText from '../../components/RichText';
 
 const Versions = ({ index, SectionTitle, Data = [] }) => {
-  const classes = useStyles();
   return (
     <CollapsibleSection
       className="Versions"
       index={index}
       SectionTitle={SectionTitle}
     >
-      <div className={classes.container}>
+      <div className="container">
         {Data &&
           Data.map(({ major_release, sub_releases = [] }, i) => (
             <div className="major" key={i}>
@@ -32,8 +28,8 @@ const Versions = ({ index, SectionTitle, Data = [] }) => {
                       <RichText content={notes} />
                     }
                     {acknowledgments &&
-                    <div className={classes.acknowledgment}>Acknowledgments:
-                      <RichText content={acknowledgments} />
+                      <div className="acknowledgment">Acknowledgments:
+                        <RichText content={acknowledgments} />
                       </div>
                     }
                   </div>

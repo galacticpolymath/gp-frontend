@@ -1,16 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import RichText from "../../../components/RichText";
-
-import lessonPlanStyle from "assets/jss/material-kit-pro-react/views/lessonPlanStyle.js";
-const useStyles = makeStyles(lessonPlanStyle);
+import RichText from '../../components/RichText';
 
 const TextBlock = ({ Content }) => {
-  const classes = useStyles();
   return (
-    <div className={classes.container}>
+    <div className="container">
       <RichText content={Content} />
     </div>
   );
