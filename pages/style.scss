@@ -65,11 +65,14 @@ img {
   }
 
   #ShareTools {
+    display: flex;
+    align-items: center;
+    width: auto;
     label {
       color: $galactic-black;
       margin-right: 1rem;
     }
-    img {
+    a {
       width: 1.75rem;
       height: auto;
       margin-bottom: 0;
@@ -93,11 +96,11 @@ img {
       label {
         display: none;
       }
-      a:not(:last-child) img {
-        margin-bottom: .5rem;
-      }
-      img {
+      a {
         margin-right: 0;
+        &:not(:last-child) {
+          margin-bottom: .5rem;
+        }
       }
     }
   }
@@ -158,9 +161,6 @@ img {
       align-items: center;
       margin: 0 0 2rem;
 
-      > * {
-        padding: 0;
-      }
       .sponsorDescr {
         h5 {
           margin-bottom: 0;

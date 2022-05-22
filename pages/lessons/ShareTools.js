@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 import Facebook from '../../img/share-logos/fb.svg';
 import Pinterest from '../../img/share-logos/pinterest.svg';
@@ -8,12 +8,12 @@ import Email from '../../img/share-logos/email.svg';
 
 
 const ShareTools = ({ lessonTitle }) => {
-  const location = useRouter();
   const [pageUrl, setPageUrl] = useState('');
-  useEffect(() => {
-    setPageUrl(encodeURI(window.location.origin + location.pathname));
-  }, []);
 
+  useEffect(() => {
+    setPageUrl(encodeURI(window.location.href));
+  }, []);
+  
   const networks = [
     {
       name: 'Facebook',
@@ -41,14 +41,22 @@ const ShareTools = ({ lessonTitle }) => {
     <div id='ShareTools'>
       <label>Share:</label>
       {networks.map(({ name, link, image }) =>
-        (<a
-          key={name}
-          rel='noopener noreferrer'
-          target='_blank'
-          href={encodeURI(link)}
-        >
-          {/* <img src={image} alt={name} /> */}
-         </a>)
+        (
+          <a
+            className="d-block"
+            key={name}
+            rel='noopener noreferrer'
+            target='_blank'
+            href={link}
+          >
+            <Image
+              width={30}
+              height={30}
+              src={image}
+              alt={name}
+            />
+          </a>
+        )
       )}
     </div>
   );

@@ -23,7 +23,6 @@ const getLatestSubRelease = (sections) => {
 };
 
 const Header = ({
-  location,
   Title,
   Subtitle,
   SponsoredBy,
@@ -63,7 +62,7 @@ const Header = ({
         <h2>{Title}</h2>
         <h4>{Subtitle}</h4>
 
-        <ShareTools location={location} lessonTitle={Title} />
+        <ShareTools lessonTitle={Title} />
 
         <div className='container mx-auto row text-center'>
           <div className="col">

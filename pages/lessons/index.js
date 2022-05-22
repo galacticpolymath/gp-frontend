@@ -30,6 +30,7 @@ const LessonsPage = ({ lessons }) => {
                     // TODO: will these always be the same size?
                     width={1500}
                     height={450}
+                    quality={10}
                     className="next-image"
                   />
                 </div>
