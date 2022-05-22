@@ -2,7 +2,12 @@ import Head from 'next/head';
 import Footer from './Footer';
 import Navbar from './Navbar';
 
-export default function Layout({ title, keywords, description, children }) {
+const Layout = ({
+  title,
+  keywords,
+  description,
+  children, 
+})=> {
   return (
     <div>
       <Head>
@@ -21,4 +26,6 @@ export default function Layout({ title, keywords, description, children }) {
       <Footer />
     </div>
   );
-}
+};
+
+export default Layout;
