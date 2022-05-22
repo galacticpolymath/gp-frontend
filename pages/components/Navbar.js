@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import Logo from '../../img/GP_logo_wordmark_horiz_grad_transBG_300.png';
+import Logo from '../../img/logo_white.png';
 
 export default function Navbar() {
   return (
-    <nav className='navbar navbar-expand-lg navbar-light bg-light'>
+    <nav className='navbar fixed-top navbar-expand-lg navbar-dark bg-dark'>
       <div className='container'>
         <Link href="/" passHref>
           <a className='flex-grow-1'>
@@ -28,31 +28,29 @@ export default function Navbar() {
         >
           <span className='navbar-toggler-icon'></span>
         </button>
-        <div>
-          <div className='collapse navbar-collapse' id='navbarSupportedContent'>
-            <ul className='navbar-nav me-auto mb-2 mb-lg-0'>
-              <li className='nav-item'>
-                <Link href='/lessons'>
-                  <a className='nav-link'>Lessons</a>
-                </Link>
-              </li>
-              <li className='nav-item'>
-                <Link href='/'>
-                  <a className='nav-link'>Jobviz</a>
-                </Link>
-              </li>
-              <li className='nav-item'>
-                <Link href='/'>
-                  <a className='nav-link'>Hire us</a>
-                </Link>
-              </li>
-              <li className='nav-item'>
-                <Link href='/'>
-                  <a className='nav-link'>About</a>
-                </Link>
-              </li>
-            </ul>
-          </div>
+        <div className='collapse navbar-collapse text-end' id='navbarSupportedContent'>
+          <ul className='flex-grow-1 justify-content-end navbar-nav me-auto mb-2 mb-lg-0'>
+            <li className='nav-item'>
+              <Link href='/lessons'>
+                <a className='nav-link'>Lessons</a>
+              </Link>
+            </li>
+            <li className='nav-item'>
+              <Link href='/'>
+                <a className='nav-link'>Jobviz</a>
+              </Link>
+            </li>
+            <li className='nav-item'>
+              <Link href='/'>
+                <a className='nav-link'>Hire us</a>
+              </Link>
+            </li>
+            <li className='nav-item'>
+              <Link href='/'>
+                <a className='nav-link'>About</a>
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>
