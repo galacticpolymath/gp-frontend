@@ -1,13 +1,21 @@
 import Image from 'next/image';
+import { format } from 'date-fns';
 
 import Layout from '../_components/Layout';
 import RichText from '../_components/RichText';
 
+import { getLatestSubRelease } from './_section/utils';
+
 const LessonDetails = ({ lesson }) => {
+  const lastSubRelease = getLatestSubRelease(lesson.Section);
   return (
     <Layout>
-      <div className="bg-light-gray p-5">
+      <div className="bg-light-gray p-4">
         <div className="container">
+          <p>
+            Version {lastSubRelease.version}{' '}
+            (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
+          </p>
           <h1>{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
           <Image
