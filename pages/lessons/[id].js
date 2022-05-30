@@ -1,10 +1,9 @@
 import Image from 'next/image';
 import { format } from 'date-fns';
 
-import Layout from '../components/Layout';
-import RichText from '../components/RichText';
-
-import LessonSection, { NUMBERED_SECTIONS } from './LessonSection';
+import Layout from '../../components/Layout';
+import RichText from '../../components/RichText';
+import LessonSection, { NUMBERED_SECTIONS } from '../../components/LessonSection';
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;

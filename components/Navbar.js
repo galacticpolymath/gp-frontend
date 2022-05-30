@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import Logo from '../../img/GP_logo_wordmark_horiz_grad_transBG_300.png';
+import Logo from '../img/GP_logo_wordmark_horiz_grad_transBG_300.png';
 
 export default function Navbar() {
   return (
