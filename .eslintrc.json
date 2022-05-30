@@ -52,7 +52,11 @@
     "no-confusing-arrow": "off",
     "no-console": "warn",
     "no-multi-spaces": "error",
-    "no-multiple-empty-lines": "error",
+    "no-multiple-empty-lines": ["error", {
+      "max": 1,
+      "maxEOF": 0,
+      "maxBOF": 0
+    }],
     "no-plusplus": "off",
     "no-underscore-dangle": "off",
     "no-unused-vars": "error",
@@ -67,6 +71,10 @@
     "react/jsx-closing-tag-location": "error",
     "react/jsx-closing-bracket-location": "error",
     "react/jsx-curly-brace-presence": ["error", "never"],
+    "react/jsx-curly-spacing": ["error", {
+      "when": "never",
+      "children": { "when": "never" }
+    }],
     "react/jsx-first-prop-new-line": ["error", "multiline"],
     "react/jsx-filename-extension": "off",
     "react/jsx-indent": ["error", 2, {
@@ -89,8 +97,12 @@
     }],
     "react/jsx-uses-vars": "error",
     "react/jsx-wrap-multilines": ["error", {
+      "arrow": "parens-new-line",
       "assignment": "parens-new-line",
+      "condition": "parens-new-line",
       "declaration": "parens-new-line",
+      "prop": "parens-new-line",
+      "logical": "parens-new-line",
       "return": "parens-new-line"
     }],
     "react/no-array-index-key": "warn",
@@ -102,6 +114,7 @@
     "react/sort-comp": "off",
     "react/prop-types": "off",
     "semi": ["error", "always"],
-    "space-infix-ops": "error"
+    "space-infix-ops": "error",
+    "template-curly-spacing": ["error", "never"]
   }
 }

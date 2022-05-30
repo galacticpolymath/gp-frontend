@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-import Hero from '../components/Hero';
-import Layout from '../components/Layout';
+import Hero from '../../components/Hero';
+import Layout from '../../components/Layout';
 
 const LessonsPage = ({ lessons }) => {
   return (
@@ -18,7 +18,7 @@ const LessonsPage = ({ lessons }) => {
           {lessons.map(lesson => (
             <Link
               key={lesson.id}
-              href={`/lessons/${ lesson.id}`}
+              href={`/lessons/${lesson.id}`}
               passHref
             >
               <a className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
