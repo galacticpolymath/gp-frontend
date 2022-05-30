@@ -67,6 +67,10 @@
     "react/jsx-closing-tag-location": "error",
     "react/jsx-closing-bracket-location": "error",
     "react/jsx-curly-brace-presence": ["error", "never"],
+    "react/jsx-curly-spacing": ["error", {
+      "when": "never",
+      "children": { "when": "never" }
+    }],
     "react/jsx-first-prop-new-line": ["error", "multiline"],
     "react/jsx-filename-extension": "off",
     "react/jsx-indent": ["error", 2, {
@@ -89,8 +93,12 @@
     }],
     "react/jsx-uses-vars": "error",
     "react/jsx-wrap-multilines": ["error", {
+      "arrow": "parens-new-line",
       "assignment": "parens-new-line",
+      "condition": "parens-new-line",
       "declaration": "parens-new-line",
+      "prop": "parens-new-line",
+      "logical": "parens-new-line",
       "return": "parens-new-line"
     }],
     "react/no-array-index-key": "warn",
