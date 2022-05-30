@@ -4,10 +4,27 @@ import { format } from 'date-fns';
 import Layout from '../_components/Layout';
 import RichText from '../_components/RichText';
 
-import { getLatestSubRelease } from './_section/utils';
+import Section from './_section';
+import { getLatestSubRelease, NUMBERED_SECTIONS } from './_section/utils';
 
 const LessonDetails = ({ lesson }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
+
+  // Number the sections included in NUMBERED_SECTIONS.
+  let numberedElements = 0;
+  const renderSection = (section, i) => {
+    if (NUMBERED_SECTIONS.includes(section.__component)) {
+      numberedElements++;
+    }
+    return (
+      <Section
+        key={i}
+        index={numberedElements}
+        section={section}
+      />
+    );
+  };
+
   return (
     <Layout>
       <div className="bg-light-gray p-4">
@@ -43,6 +60,8 @@ const LessonDetails = ({ lesson }) => {
           </div>
         </div>
       </div>
+
+      {Object.values(lesson.Section).map(renderSection)}
     </Layout>
   );
 };
