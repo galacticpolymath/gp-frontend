@@ -17,8 +17,11 @@ body {
 }
 
 a {
-  color: inherit;
+  color: $atomic-blue;
   text-decoration: none;
+  &:hover {
+    color: $atomic-blue-dark;
+  }
 }
 a > span {
   vertical-align: middle;
