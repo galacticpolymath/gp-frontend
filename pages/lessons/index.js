@@ -18,7 +18,7 @@ const LessonsPage = ({ lessons }) => {
           {lessons.map(lesson => (
             <Link
               key={lesson.id}
-              href={`/lessons/${ lesson.id}`}
+              href={`/lessons/${lesson.id}`}
               passHref
             >
               <a className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>

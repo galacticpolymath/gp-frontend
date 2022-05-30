@@ -4,32 +4,7 @@ import { format } from 'date-fns';
 import Layout from '../components/Layout';
 import RichText from '../components/RichText';
 
-import LessonSection from './LessonSection';
-
-export const SECTIONS = {
-  OVERVIEW: 'lesson-plan.overview',
-  HEADING: 'lesson-plan.section-heading',
-  TEXT_BLOCK: 'lesson-plan.text-block',
-  PROCEDURE: 'lesson-plan.procedure',
-  TEACHING_RESOURCES: 'teaching-resources.teaching-resources',
-  LEARNING_CHART: 'lesson-plan.learning-chart',
-  STANDARDS: 'lesson-plan.standards',
-  ACKNOWLEDGMENTS: 'lesson-plan.acknowledgments',
-  VERSIONS: 'lesson-plan.versions',
-  COLLAPSIBLE_TEXT: 'lesson-plan.collapsible-text-section',
-  PREVIEW: 'lesson-plan.lesson-preview',
-};
-
-const NUMBERED_SECTIONS = [
-  SECTIONS.OVERVIEW,
-  SECTIONS.HEADING,
-  SECTIONS.TEACHING_RESOURCES,
-  SECTIONS.PROCEDURE,
-  SECTIONS.ACKNOWLEDGMENTS,
-  SECTIONS.VERSIONS,
-  SECTIONS.COLLAPSIBLE_TEXT,
-  SECTIONS.PREVIEW,
-];
+import LessonSection, { NUMBERED_SECTIONS } from './LessonSection';
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
@@ -75,7 +50,7 @@ const LessonDetails = ({ lesson }) => {
             src={lesson.CoverImage.url}
             alt={lesson.Subtitle}
             layout="responsive"
-            // TODO: will these always be the same size?
+               // TODO: will these always be the same size?
             width={1500}
             height={450}
           />
@@ -85,8 +60,9 @@ const LessonDetails = ({ lesson }) => {
               <RichText content={lesson.SponsoredBy} />
             </div>
             <div className="col col-md-6 col-lg-3">
+              {/* TODO: fix aspect ratio */}
               <Image
-                src={lesson.SponsorImage.url}
+                src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                 alt={lesson.Subtitle}
                 layout="responsive"
                 width={1}

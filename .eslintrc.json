@@ -114,6 +114,7 @@
     "react/sort-comp": "off",
     "react/prop-types": "off",
     "semi": ["error", "always"],
-    "space-infix-ops": "error"
+    "space-infix-ops": "error",
+    "template-curly-spacing": ["error", "never"]
   }
 }

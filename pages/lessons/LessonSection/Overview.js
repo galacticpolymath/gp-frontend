@@ -61,7 +61,10 @@ const Overview = ({
 
         <h5 className='mt-4'>Keywords:</h5>
         {Tags && Tags.map(tag => (
-          <span key={tag} className='fs-6 fw-light badge rounded-pill bg-white text-secondary border border-2 border-secondary me-2 mb-2 px-2'>
+          <span 
+            key={tag.Value}
+            className='fs-6 fw-light badge rounded-pill bg-white text-secondary border border-2 border-secondary me-2 mb-2 px-2'
+          >
             {tag.Value}
           </span>
         ))}
