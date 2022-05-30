@@ -2,8 +2,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
 
-import CollapsibleLessonSection from '../../_components/CollapsibleLessonSection';
-import RichText from '../../_components/RichText';
+import CollapsibleLessonSection from '../../components/CollapsibleLessonSection';
+import RichText from '../../components/RichText';
 
 const Overview = ({
   index,

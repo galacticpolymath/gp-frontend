@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { SECTIONS } from './utils';
+import { SECTIONS } from './_utils';
 
 import Overview from './Overview';
 // import TextBlock from "./TextBlock";
@@ -28,7 +28,7 @@ export const sectionTypeMap = {
   // [SECTIONS.PREVIEW]: Preview
 };
 
-const Section = ({ index, section }) => {
+const LessonSection = ({ index, section }) => {
   const Component = sectionTypeMap[section.__component];
 
   return Component ? (
@@ -38,9 +38,9 @@ const Section = ({ index, section }) => {
   );
 };
 
-Section.propTypes = {
+LessonSection.propTypes = {
   index: PropTypes.number,
   section: PropTypes.object,
 };
 
-export default Section;
+export default LessonSection;

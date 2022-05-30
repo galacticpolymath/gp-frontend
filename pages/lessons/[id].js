@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import { format } from 'date-fns';
 
-import Layout from '../_components/Layout';
-import RichText from '../_components/RichText';
+import Layout from '../components/Layout';
+import RichText from '../components/RichText';
 
-import Section from './_section';
-import { getLatestSubRelease, NUMBERED_SECTIONS } from './_section/utils';
+import LessonSection from './LessonSection';
+import { getLatestSubRelease, NUMBERED_SECTIONS } from './LessonSection/_utils';
 
 const LessonDetails = ({ lesson }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
@@ -17,7 +17,7 @@ const LessonDetails = ({ lesson }) => {
       numberedElements++;
     }
     return (
-      <Section
+      <LessonSection
         key={i}
         index={numberedElements}
         section={section}
