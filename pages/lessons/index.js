@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-import Hero from '../components/Hero';
-import Layout from '../components/Layout';
+import Hero from '../_components/Hero';
+import Layout from '../_components/Layout';
 
 const LessonsPage = ({ lessons }) => {
   return (

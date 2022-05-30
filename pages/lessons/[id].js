@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
-import Layout from '../components/Layout';
-import RichText from '../components/RichText';
+import Layout from '../_components/Layout';
+import RichText from '../_components/RichText';
 
 const LessonDetails = ({ lesson }) => {
   return (
