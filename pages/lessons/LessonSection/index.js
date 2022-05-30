@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { SECTIONS } from './_utils';
+import { SECTIONS } from '../[id]';
 
 import Overview from './Overview';
 // import TextBlock from "./TextBlock";

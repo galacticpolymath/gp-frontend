@@ -52,7 +52,11 @@
     "no-confusing-arrow": "off",
     "no-console": "warn",
     "no-multi-spaces": "error",
-    "no-multiple-empty-lines": "error",
+    "no-multiple-empty-lines": ["error", {
+      "max": 1,
+      "maxEOF": 0,
+      "maxBOF": 0
+    }],
     "no-plusplus": "off",
     "no-underscore-dangle": "off",
     "no-unused-vars": "error",
