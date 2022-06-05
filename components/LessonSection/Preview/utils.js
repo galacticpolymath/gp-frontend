@@ -72,6 +72,7 @@ const renderArrowPrev = (clickHandler, hasPrev, label) => (
     disabled={!hasPrev}
   >Prev
   </button>
+  // TODO: pretty arrow button
   // <IconButton
   //   key="previous"
   //   aria-label={label}
@@ -91,6 +92,7 @@ const renderArrowNext = (clickHandler, hasNext, label) => (
     Next
   </button>
 );
+// TODO: pretty arrow button
 // <IconButton
 //   key="next"
 //   aria-label={label}
