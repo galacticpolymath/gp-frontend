@@ -44,19 +44,21 @@ const renderThumbs = items => {
     if (type === 'video') {
       return (
         <Image
-          height={2}
-          width={3}
+          height={3}
+          width={5}
           key={i}
           src={getVideoThumb(mainLink)}
+          layout="responsive"
           alt={title}
         />
       );
     } else if (type === 'pdf') {
       return (
         <Image
-          height={2}
-          width={3}
+          height={3}
+          width={5}
           src={PdfIcon}
+          layout="responsive"
           alt="PDF"
         />
       );
