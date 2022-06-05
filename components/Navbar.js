@@ -1,11 +1,14 @@
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import Logo from '../img/GP_logo_wordmark_horiz_grad_transBG_300.png';
+import Logo from '../img/galactic_polymath_white.png';
 
 export default function Navbar() {
+  const router = useRouter();
+
   return (
-    <nav className='navbar navbar-expand-lg navbar-light bg-light'>
+    <nav className='navbar navbar-expand-lg navbar-dark bg-dark'>
       <div className='container'>
         <Link href="/" passHref>
           <a className='flex-grow-1'>
@@ -30,10 +33,10 @@ export default function Navbar() {
         </button>
         <div>
           <div className='collapse navbar-collapse' id='navbarSupportedContent'>
-            <ul className='navbar-nav me-auto mb-2 mb-lg-0'>
+            <ul className='navbar-nav me-auto mb-2 mb-lg-0 fs-5 text-uppercase'>
               <li className='nav-item'>
                 <Link href='/lessons'>
-                  <a className='nav-link'>Lessons</a>
+                  <a className={`nav-link ${router.pathname === '/lessons' ? 'fw-bold active' : 'fw-light'}`}>Lessons</a>
                 </Link>
               </li>
               <li className='nav-item'>
