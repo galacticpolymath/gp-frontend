@@ -19,11 +19,13 @@ const Preview = ({
       SectionTitle={SectionTitle}
       initiallyExpanded={InitiallyExpanded !== false}
     >
-      <div className='container'>
+      <div className='container row mx-auto'>
         <Carousel items={Multimedia} />
-        <div>
-          <h5>&quot;Teach it in 15&quot; Quick Prep</h5>
-          <RichText content={QuickPrep} />
+        <div className="col col-md-8 offset-md-2">
+          <div className='bg-info p-4 pb-2 fs-5 fw-light'>
+            <h4>&quot;Teach it in 15&quot; Quick Prep</h4>
+            <RichText content={QuickPrep} />
+          </div>
         </div>
       </div>
     </CollapsibleLessonSection>

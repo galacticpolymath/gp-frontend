@@ -11,7 +11,7 @@ const Carousel = ({
   return (
     <RRCarousel
       showStatus={false}
-      className={styles.Carousel}
+      className={`${styles.Carousel} bg-light-gray rounded p-3 my-4`}
       {...customControls}
     >
       {items.sort((a, b) => a.order - b.order).map((item, i) => <Slide key={i} {...item} />)}

@@ -1,5 +1,7 @@
 import { getMediaComponent } from './utils';
 
+import styles from './index.module.scss';
+
 const Slide = ({
   type,
   title,
@@ -9,12 +11,12 @@ const Slide = ({
   mainLink,
 }) => {
   return (
-    <div>
+    <div className='bg-white rounded p-3'>
       {getMediaComponent({ type, mainLink })}
-      <div>
+      <div className={styles.SlideBody}>
         <h5>{title}</h5>
         <p>{lessonRelevance}</p>
-        <p>by
+        <span className="text-left">by{' '}
           <a
             href={byLink}
             target="_blank"
@@ -22,7 +24,7 @@ const Slide = ({
           >
             {by}
           </a>
-        </p>
+        </span>
       </div>
     </div>
   );
