@@ -7,6 +7,7 @@ $secondary: $atomic-blue;
 $info: lighten($hydrogen-blue-light, 15%);
 
 @import '../node_modules/bootstrap/scss/bootstrap';
+@import '../node_modules/react-responsive-carousel/lib/styles/carousel.min.css';
 
 html,
 body {

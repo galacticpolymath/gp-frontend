@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import Logo from '../img/galactic_polymath_white.png';
+import Logo from '../assets/img/galactic_polymath_white.png';
 
 export default function Navbar() {
   const router = useRouter();
