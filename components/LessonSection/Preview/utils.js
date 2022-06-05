@@ -10,7 +10,6 @@ export const getMediaComponent = ({ type, mainLink }) => {
         height="315"
         src={mainLink}
         title="YouTube video player"
-        frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
       />
@@ -66,7 +65,7 @@ const renderThumbs = items => {
   });
 };
 
-const renderArrowPrev = (clickHandler, hasPrev, label) => (
+const renderArrowPrev = (clickHandler, hasPrev) => (
   <button
     onClick={clickHandler}
     disabled={!hasPrev}
@@ -84,7 +83,7 @@ const renderArrowPrev = (clickHandler, hasPrev, label) => (
   // </IconButton>
 );
 
-const renderArrowNext = (clickHandler, hasNext, label) => (
+const renderArrowNext = (clickHandler, hasNext) => (
   <button
     disabled={!hasNext}
     onClick={clickHandler}
