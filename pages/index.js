@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Layout from '../components/Layout';
 import Hero from '../components/Hero';
 import styles from './index.module.css';
-import HeroImage from '../img/city_network.jpg';
+import HeroImage from '../assets/img/city_network.jpg';
 
 export default function Home() {
   return (

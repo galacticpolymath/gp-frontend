@@ -10,7 +10,7 @@ import Overview from './Overview';
 // import Acknowledgments from "./Acknowledgments";
 // import Versions from "./Versions";
 // import CollapsibleTextSection from "./CollapsibleTextSection";
-// import Preview from "./Preview";
+import Preview from './Preview';
 
 export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
@@ -48,7 +48,7 @@ export const sectionTypeMap = {
   // [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
   // [SECTIONS.VERSIONS]: Versions,
   // [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleTextSection,
-  // [SECTIONS.PREVIEW]: Preview
+  [SECTIONS.PREVIEW]: Preview,
 };
 
 const LessonSection = ({ index, section }) => {

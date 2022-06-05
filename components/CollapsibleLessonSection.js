@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 import styles from './CollapsibleLessonSection.module.scss';
 
-const CollapsibleSection = ({
+const CollapsibleLessonSection = ({
   index,
   SectionTitle = '',
   className = '',
@@ -41,7 +41,7 @@ const CollapsibleSection = ({
   );
 };
 
-CollapsibleSection.propTypes = {
+CollapsibleLessonSection.propTypes = {
   index: PropTypes.number,
   SectionTitle: PropTypes.string,
   className: PropTypes.string,
@@ -49,4 +49,4 @@ CollapsibleSection.propTypes = {
   initiallyExpanded: PropTypes.bool,
 };
 
-export default CollapsibleSection;
+export default CollapsibleLessonSection;

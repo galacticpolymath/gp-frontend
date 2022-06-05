@@ -2,6 +2,9 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ['catalog.galacticpolymath.com'],
+    domains: [
+      'catalog.galacticpolymath.com',
+      'i3.ytimg.com',
+    ],
   },
 };
