@@ -4,7 +4,7 @@ import Overview from './Overview';
 // import TextBlock from "./TextBlock";
 // import Heading from "./Heading";
 // import Procedure from "./Procedure/index";
-// import TeachingResources from "./TeachingResources/index";
+import TeachIt from './TeachIt';
 // import LearningChart from "./LearningChart";
 // import Standards from "./Standards/index";
 // import Acknowledgments from "./Acknowledgments";
@@ -29,7 +29,7 @@ export const SECTIONS = {
 export const NUMBERED_SECTIONS = [
   SECTIONS.OVERVIEW,
   SECTIONS.HEADING,
-  SECTIONS.TEACHING_RESOURCES,
+  SECTIONS.TEACH_IT,
   SECTIONS.PROCEDURE,
   SECTIONS.ACKNOWLEDGMENTS,
   SECTIONS.VERSIONS,
@@ -42,7 +42,7 @@ export const sectionTypeMap = {
   // [SECTIONS.HEADING]: Heading,
   // [SECTIONS.TEXT_BLOCK]: TextBlock,
   // [SECTIONS.PROCEDURE]: Procedure,
-  // [SECTIONS.TEACHING_RESOURCES]: TeachingResources,
+  [SECTIONS.TEACH_IT]: TeachIt,
   // [SECTIONS.LEARNING_CHART]: LearningChart,
   // [SECTIONS.STANDARDS]: Standards,
   // [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
