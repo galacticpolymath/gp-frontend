@@ -9,7 +9,7 @@ const CollapsibleLessonSection = ({
   children,
   initiallyExpanded = false,
 }) => {
-  const accordionId = SectionTitle.replace(/\s/gi, '_').toLowerCase();
+  const accordionId = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
   return (
     <div className={`accordion ${className} ${styles.CollapsibleLessonSection}`}>
       <div className="accordion-item">
