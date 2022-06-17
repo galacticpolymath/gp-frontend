@@ -25,6 +25,7 @@ const TeachIt = ({
             <p className='mb-0'>TODO</p>
           </div>
         </div>
+        
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
             <h5>Available Grade Bands</h5>
@@ -66,6 +67,18 @@ const TeachIt = ({
               </label>
             ))}
           </div>
+        </div>
+
+        <div className='container mx-auto'>
+          {Data[selectedEnvironment].resources
+            .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix).parts
+            .map(part => (
+              <div key={part.part}>
+                <h6>{part.title}</h6>
+                <p>{part.preface}</p>
+              </div>
+            ))
+          }
         </div>
       </>
     </CollapsibleLessonSection>
