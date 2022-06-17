@@ -8,23 +8,30 @@ const TeachIt = ({
     remote,
   },
 }) => {
-  <CollapsibleLessonSection
-    index={index}
-    SectionTitle={SectionTitle}
-    initiallyExpanded
-  >
-    {/* TODO: blurb already in lesson data? */}
-    <div className="container row mx-auto">
-      <div className="w-1/2">
-        <h3>Available Grade Bands</h3>
-        TODO: inputs
+  return (
+    <CollapsibleLessonSection
+      index={index}
+      SectionTitle={SectionTitle}
+      initiallyExpanded
+    >
+      <div className='container mx-auto mt-4'>
+        <div className='bg-light-gray p-3'>
+          <h6>TODO: time estimate</h6>
+          <p className='mb-0'>TODO: lesson desc</p>
+        </div>
       </div>
-      <div className="w-1/2">
-        <h3>Available Teaching Environments</h3>
-        TODO: inputs
+      <div className="container row mx-auto py-4">
+        <div className="col w-1/2">
+          <h4>Available Grade Bands</h4>
+          TODO: inputs
+        </div>
+        <div className="col w-1/2">
+          <h4>Available Teaching Environments</h4>
+          TODO: inputs
+        </div>
       </div>
-    </div>
-  </CollapsibleLessonSection>;
+    </CollapsibleLessonSection>
+  );
 };
 
 export default TeachIt;

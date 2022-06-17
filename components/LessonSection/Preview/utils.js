@@ -56,6 +56,7 @@ const renderThumbs = items => {
         <Image
           height={3}
           width={5}
+          key={i}
           src={PdfIcon}
           layout="responsive"
           alt="PDF"
