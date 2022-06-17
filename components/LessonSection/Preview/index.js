@@ -19,7 +19,7 @@ const Preview = ({
       SectionTitle={SectionTitle}
       initiallyExpanded={InitiallyExpanded !== false}
     >
-      <div className='container row mx-auto'>
+      <div className='container row mx-auto pb-4'>
         <Carousel items={Multimedia} />
         <div className="col col-md-8 offset-md-2">
           <div className='bg-info p-4 pb-2 fs-5 fw-light'>
