@@ -17,6 +17,7 @@ const CollapsibleLessonSection = ({
       id={accordionId}
       className={className}
       highlighted={highlighted}
+      buttonClassName="btn btn-light w-100 text-left"
       button={(
         <div className='container mx-auto text-black'>
           <h3 className='m-0'>{index && `${index}. `}{SectionTitle}</h3>
