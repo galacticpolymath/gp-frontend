@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Accordion from '../../Accordion';
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 
 const TeachIt = ({
@@ -74,10 +75,18 @@ const TeachIt = ({
           {Data[selectedEnvironment].resources
             .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix).parts
             .map(part => (
-              <div key={part.part}>
-                <h6>{part.title}</h6>
-                <p>{part.preface}</p>
-              </div>
+              <Accordion
+                key={part.part}
+                id={`teachit_env_${part.part}`}
+                button={(
+                  <div>
+                    <h6>{part.title}</h6>
+                    <p>{part.preface}</p>
+                  </div>
+                )}
+              >
+                <>TODO: content</>
+              </Accordion>
             ))
           }
         </div>

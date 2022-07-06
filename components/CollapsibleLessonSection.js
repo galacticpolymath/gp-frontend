@@ -15,9 +15,14 @@ const CollapsibleLessonSection = ({
     <Accordion
       initiallyExpanded={initiallyExpanded}
       id={accordionId}
-      title={`${index && `${index}. `}${SectionTitle}`}
       className={className}
       highlighted={highlighted}
+      button={(
+        <div className='container mx-auto text-black'>
+          <h3 className='m-0'>{index && `${index}. `}{SectionTitle}</h3>
+          TODO: arrow
+        </div>
+      )}
     >
       {children}
     </Accordion>

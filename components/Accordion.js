@@ -4,11 +4,11 @@ import styles from './Accordion.module.scss';
 
 const Accordion = ({
   id,
-  title = '',
   className = '',
   children,
   highlighted = false,
   initiallyExpanded = false,
+  button,
 }) => {
   return (
     <div className={`accordion ${className} ${styles.Accordion}`}>
@@ -22,10 +22,7 @@ const Accordion = ({
             aria-expanded="true"
             aria-controls="collapseOne"
           >
-            <div className='container mx-auto text-black'>
-              <h3 className='m-0'>{title}</h3>
-              TODO: arrow
-            </div>
+            {button}
           </button>
         </h2>
         <div
@@ -43,7 +40,7 @@ const Accordion = ({
 
 Accordion.propTypes = {
   id: PropTypes.string.isRequired,
-  SectionTitle: PropTypes.string,
+  button: PropTypes.element.isRequired,
   className: PropTypes.string,
   children: PropTypes.object,
   highlighted: PropTypes.bool,
