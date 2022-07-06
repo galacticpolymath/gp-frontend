@@ -3,6 +3,7 @@ import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 
 const TeachIt = ({
   index,
+  SectionTitle,
   Data,
 }) => {
   const environments = Object.keys(Data);
@@ -14,7 +15,8 @@ const TeachIt = ({
   return (
     <CollapsibleLessonSection
       index={index}
-      SectionTitle="Teach it!"
+      SectionTitle={SectionTitle}
+      highlighted
       initiallyExpanded
     >
       <>

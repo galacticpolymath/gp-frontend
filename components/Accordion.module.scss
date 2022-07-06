@@ -1,12 +1,20 @@
 @import '../pages/colors';
 
-.CollapsibleLessonSection {
+.Accordion {
   :global(.accordion-item) {
     border-radius: 0;
     :global(.accordion-button) {
       border-radius: 0;
       display: block;
-      background-color: $sparkle-white;
+      .highlighted {
+        background: $burst-purple-light;
+      }
+      &:not(.highlighted) {
+        background-color: $sparkle-white;
+        :global(&:not(.collapsed)) {
+          background-color: inherit;
+        }
+      }
       :global(&:focus, &:not(.collapsed), &.collapsed, &:focus) {
         border-radius: 0;
         background-color: inherit;

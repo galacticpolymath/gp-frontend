@@ -7,6 +7,7 @@ const Accordion = ({
   title = '',
   className = '',
   children,
+  highlighted = false,
   initiallyExpanded = false,
 }) => {
   return (
@@ -14,7 +15,7 @@ const Accordion = ({
       <div className="accordion-item">
         <h2 className="accordion-header" id={`heading_${id}`}>
           <button
-            className={`accordion-button ${initiallyExpanded ? '' : 'collapsed'}`}
+            className={`accordion-button ${initiallyExpanded ? '' : 'collapsed'} ${highlighted ? styles.highlighted : ''}`}
             type="button"
             data-bs-toggle="collapse"
             data-bs-target={`#content_${id}`}
@@ -45,6 +46,7 @@ Accordion.propTypes = {
   SectionTitle: PropTypes.string,
   className: PropTypes.string,
   children: PropTypes.object,
+  highlighted: PropTypes.bool,
   initiallyExpanded: PropTypes.bool,
 };
 

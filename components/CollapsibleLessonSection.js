@@ -7,6 +7,7 @@ const CollapsibleLessonSection = ({
   SectionTitle = '',
   className = '',
   children,
+  highlighted = false,
   initiallyExpanded = false,
 }) => {
   const accordionId = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
@@ -16,7 +17,7 @@ const CollapsibleLessonSection = ({
       id={accordionId}
       title={`${index && `${index}. `}${SectionTitle}`}
       className={className}
-      buttonClassName='accordion-button'
+      highlighted={highlighted}
     >
       {children}
     </Accordion>
@@ -28,6 +29,7 @@ CollapsibleLessonSection.propTypes = {
   SectionTitle: PropTypes.string,
   className: PropTypes.string,
   children: PropTypes.object,
+  highlighted: PropTypes.bool,
   initiallyExpanded: PropTypes.bool,
 };
 
