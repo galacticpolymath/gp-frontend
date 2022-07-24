@@ -23,14 +23,16 @@ const LessonsPage = ({ lessons }) => {
             >
               <a className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
                 <div>
-                  <Image
-                    src={lesson.CoverImage.url}
-                    alt={lesson.Subtitle}
-                    layout="responsive"
-                    // TODO: will these always be the same size?
-                    width={1500}
-                    height={450}
-                  />
+                  {lesson.CoverImage && lesson.CoverImage.url && (
+                    <Image
+                      src={lesson.CoverImage.url}
+                      alt={lesson.Subtitle}
+                      layout="responsive"
+                      // TODO: will these always be the same size?
+                      width={1500}
+                      height={450}
+                    />
+                  )}
                 </div>
                 <div className='p-3'>
                   <h3 className='fw-light'>{lesson.Title}</h3>

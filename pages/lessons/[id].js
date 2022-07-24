@@ -39,20 +39,24 @@ const LessonDetails = ({ lesson }) => {
     <Layout>
       <div className="bg-light-gray p-4">
         <div className="container">
-          <p>
-            Version {lastSubRelease.version}{' '}
-            (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-          </p>
+          {lastSubRelease && (
+            <p>
+              Version {lastSubRelease.version}{' '}
+              (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
+            </p>
+          )}
           <h1>{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
-          <Image
-            src={lesson.CoverImage.url}
-            alt={lesson.Subtitle}
-            layout="responsive"
-               // TODO: will these always be the same size?
-            width={1500}
-            height={450}
-          />
+          {lesson.CoverImage && lesson.CoverImage.url && (
+            <Image
+              src={lesson.CoverImage.url}
+              alt={lesson.Subtitle}
+              layout="responsive"
+              // TODO: will these always be the same size?
+              width={1500}
+              height={450}
+            />
+          )}
           <div className='row mt-4'>
             <div className="col col-md-6 col-lg-9">
               <h5>Sponsored by:</h5>
@@ -60,13 +64,15 @@ const LessonDetails = ({ lesson }) => {
             </div>
             <div className="col col-md-6 col-lg-3">
               {/* TODO: fix aspect ratio */}
-              <Image
-                src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
-                alt={lesson.Subtitle}
-                layout="responsive"
-                width={1}
-                height={1}
-              />
+              {lesson.SponsorImage && lesson.SponsorImage.url && (
+                <Image
+                  src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
+                  alt={lesson.Subtitle}
+                  layout="responsive"
+                  width={1}
+                  height={1}
+                />
+              )}
             </div>
           </div>
         </div>

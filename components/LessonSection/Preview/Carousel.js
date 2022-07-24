@@ -8,7 +8,7 @@ import styles from './index.module.scss';
 const Carousel = ({
   items,
 }) => {
-  return (
+  return items && (
     <RRCarousel
       showStatus={false}
       className={`${styles.Carousel} bg-light-gray rounded p-3 my-4`}

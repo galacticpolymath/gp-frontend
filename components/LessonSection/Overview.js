@@ -45,14 +45,16 @@ const Overview = ({
           <Link passHref href="#learning_standards">
             <a>
               <h5>Subject breakdown by standard alignments: </h5>
-              <Image
-                layout="responsive"
-                // TODO: actual alt text
-                alt="Subject breakdown by standard alignments"
-                width={2200}
-                height={144}
-                src={SteamEpaulette.url}
-              />
+              {SteamEpaulette && SteamEpaulette.url && (
+                <Image
+                  layout="responsive"
+                  // TODO: actual alt text
+                  alt="Subject breakdown by standard alignments"
+                  width={2200}
+                  height={144}
+                  src={SteamEpaulette.url}
+                />
+              )}
             </a>
           </Link>
         </div>
