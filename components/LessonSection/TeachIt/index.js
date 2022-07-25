@@ -13,6 +13,9 @@ const TeachIt = ({
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations[0]);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
 
+  const selectedResources = Data[selectedEnvironment].resources
+    .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
+
   return (
     <CollapsibleLessonSection
       index={index}
@@ -71,21 +74,39 @@ const TeachIt = ({
           </div>
         </div>
 
+        <a href={selectedResources.links.url}>
+          {selectedResources.links.linkTitle}
+        </a>
+
         <div className='container mx-auto'>
-          {Data[selectedEnvironment].resources
-            .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix).parts
+          {selectedResources.parts
             .map(part => (
               <Accordion
                 key={part.part}
                 id={`teachit_env_${part.part}`}
                 button={(
                   <div>
-                    <h6>{part.title}</h6>
+                    <h6>Part {part.part}: {part.title}</h6>
                     <p>{part.preface}</p>
                   </div>
                 )}
               >
-                <>TODO: content</>
+                <ol>
+                  {part.itemList.map(item => (
+                    <li key={item.itemTitle}>
+                      <strong>{item.itemTitle}</strong>
+                      <ul>
+                        {item.links.map(link => (
+                          <li key={link.url}>
+                            <a href={link.url}>
+                              {link.linkText}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ol>
               </Accordion>
             ))
           }
