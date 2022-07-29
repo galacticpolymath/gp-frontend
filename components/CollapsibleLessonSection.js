@@ -2,6 +2,9 @@ import PropTypes from 'prop-types';
 
 import Accordion from './Accordion';
 
+/**
+ * A styled collapsible section of the Lesson Plan.
+ */
 const CollapsibleLessonSection = ({
   index,
   SectionTitle = '',

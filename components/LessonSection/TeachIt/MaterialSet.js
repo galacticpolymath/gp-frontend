@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 
 import Accordion from '../../Accordion';
 
@@ -51,6 +51,19 @@ const MaterialSet = ({
       }
     </div>
   );
+};
+
+MaterialSet.propTypes = {
+  materialSet: PropTypes.shape({
+    links: PropTypes.shape({
+      url: PropTypes.string,
+      linkText: PropTypes.string,
+    }),
+    parts: PropTypes.arrayOf(PropTypes.shape({
+      part: PropTypes.number,
+      itemList: PropTypes.arrayOf(PropTypes.object),
+    })),
+  }),
 };
 
 export default MaterialSet;

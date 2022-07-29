@@ -1,4 +1,5 @@
 import { Carousel as RRCarousel } from 'react-responsive-carousel';
+import PropTypes from 'prop-types';
 
 import Slide from './Slide';
 import { customControls } from './utils';
@@ -17,6 +18,12 @@ const Carousel = ({
       {items.sort((a, b) => a.order - b.order).map((item, i) => <Slide key={i} {...item} />)}
     </RRCarousel>
   );
+};
+
+Carousel.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.shape({
+    order: PropTypes.number,
+  })),
 };
 
 export default Carousel;

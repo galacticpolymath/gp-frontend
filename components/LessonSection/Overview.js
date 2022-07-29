@@ -84,6 +84,7 @@ const Overview = ({
 
 Overview.propTypes = {
   index: PropTypes.number,
+  Description: PropTypes.string,
   EstLessonTime: PropTypes.string,
   ForGrades: PropTypes.string,
   TargetSubject: PropTypes.string,

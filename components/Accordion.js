@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
 
+/**
+ * An unstyled collapsible panel with internal open/close state.
+ */
 const Accordion = ({
   id,
   className = '',

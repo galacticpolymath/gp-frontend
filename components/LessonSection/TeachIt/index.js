@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
+
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import MaterialSet from './MaterialSet';
 
@@ -12,9 +14,6 @@ const TeachIt = ({
 
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations[0]);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
-
-  const selectedResources = Data[selectedEnvironment].resources
-    .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
 
   return (
     <CollapsibleLessonSection
@@ -73,10 +72,19 @@ const TeachIt = ({
             ))}
           </div>
         </div>
-        <MaterialSet materialSet={selectedResources} />
+        <MaterialSet
+          materialSet={Data[selectedEnvironment].resources
+            .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix)}
+        />
       </>
     </CollapsibleLessonSection>
   );
+};
+
+TeachIt.propTypes = {
+  index: PropTypes.number,
+  SectionTitle: PropTypes.string,
+  Data: PropTypes.object,
 };
 
 export default TeachIt;

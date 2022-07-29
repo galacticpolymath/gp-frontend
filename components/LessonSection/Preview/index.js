@@ -33,7 +33,11 @@ const Preview = ({
 };
 
 Preview.propTypes = {
-  Content: PropTypes.string,
+  index: PropTypes.number,
+  SectionTitle: PropTypes.string,
+  InitiallyExpanded: PropTypes.bool,
+  Multimedia: PropTypes.arrayOf(PropTypes.object),
+  QuickPrep: PropTypes.string,
 };
 
 export default Preview;
