@@ -9,7 +9,7 @@ import TeachIt from './TeachIt';
 // import Standards from "./Standards/index";
 // import Acknowledgments from "./Acknowledgments";
 // import Versions from "./Versions";
-// import CollapsibleTextSection from "./CollapsibleTextSection";
+import CollapsibleRichTextSection from './CollapsibleRichTextSection';
 import Preview from './Preview';
 
 export const SECTIONS = {
@@ -47,7 +47,7 @@ export const sectionTypeMap = {
   // [SECTIONS.STANDARDS]: Standards,
   // [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
   // [SECTIONS.VERSIONS]: Versions,
-  // [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleTextSection,
+  [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleRichTextSection,
   [SECTIONS.PREVIEW]: Preview,
 };
 

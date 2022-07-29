@@ -14,7 +14,6 @@ const Preview = ({
 }) => {
   return (
     <CollapsibleLessonSection
-      className="Preview CollapsibleTextSection"
       index={index}
       SectionTitle={SectionTitle}
       initiallyExpanded={InitiallyExpanded !== false}
