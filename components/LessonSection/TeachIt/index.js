@@ -74,26 +74,29 @@ const TeachIt = ({
           </div>
         </div>
 
-        <a href={selectedResources.links.url}>
-          {selectedResources.links.linkTitle}
-        </a>
-
         <div className='container mx-auto'>
+          {selectedResources.links && (
+            <a href={selectedResources.links.url} className='d-block mb-3'>
+              [TODO: dl icon] {selectedResources.links.linkText}
+            </a>
+          )}
+
           {selectedResources.parts
             .map(part => (
               <Accordion
+                buttonClassName='w-100 text-start'
                 key={part.part}
                 id={`teachit_env_${part.part}`}
                 button={(
                   <div>
                     <h6>Part {part.part}: {part.title}</h6>
-                    <p>{part.preface}</p>
+                    <div>{part.preface}</div>
                   </div>
                 )}
               >
-                <ol>
+                <ol className='mt-3'>
                   {part.itemList.map(item => (
-                    <li key={item.itemTitle}>
+                    <li key={item.itemTitle} className='mb-2'>
                       <strong>{item.itemTitle}</strong>
                       <ul>
                         {item.links.map(link => (

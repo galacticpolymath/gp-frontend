@@ -14,36 +14,37 @@ const LessonsPage = ({ lessons }) => {
 
       <div className='bg-light-gray'>
         <div className='container mx-auto grid py-5 px-3 gap-3'>
-          {/* TODO: hide unpublished lessons? */}
-          {lessons.map(lesson => (
-            <Link
-              key={lesson.id}
-              href={`/lessons/${lesson.id}`}
-              passHref
-            >
-              <a className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
-                <div>
-                  {lesson.CoverImage && lesson.CoverImage.url && (
-                    <Image
-                      src={lesson.CoverImage.url}
-                      alt={lesson.Subtitle}
-                      layout="responsive"
+          {lessons
+            .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
+            .map(lesson => (
+              <Link
+                key={lesson.id}
+                href={`/lessons/${lesson.id}`}
+                passHref
+              >
+                <a className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
+                  <div>
+                    {lesson.CoverImage && lesson.CoverImage.url && (
+                      <Image
+                        src={lesson.CoverImage.url}
+                        alt={lesson.Subtitle}
+                        layout="responsive"
                       // TODO: will these always be the same size?
-                      width={1500}
-                      height={450}
-                    />
-                  )}
-                </div>
-                <div className='p-3'>
-                  <h3 className='fw-light'>{lesson.Title}</h3>
-                  <p>{lesson.Subtitle}</p>
-                  <span className={`badge bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
-                    {lesson.Section.overview.TargetSubject}
-                  </span>
-                </div>
-              </a>
-            </Link>
-          ))}
+                        width={1500}
+                        height={450}
+                      />
+                    )}
+                  </div>
+                  <div className='p-3'>
+                    <h3 className='fw-light text-black'>{lesson.Title}</h3>
+                    <p className='text-black'>{lesson.Subtitle}</p>
+                    <span className={`badge bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
+                      {lesson.Section.overview.TargetSubject}
+                    </span>
+                  </div>
+                </a>
+              </Link>
+            ))}
         </div>
       </div>
     </Layout>
