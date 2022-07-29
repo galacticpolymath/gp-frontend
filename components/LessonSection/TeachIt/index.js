@@ -1,8 +1,12 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
+
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
+import MaterialSet from './MaterialSet';
 
 const TeachIt = ({
   index,
+  SectionTitle,
   Data,
 }) => {
   const environments = Object.keys(Data);
@@ -14,7 +18,8 @@ const TeachIt = ({
   return (
     <CollapsibleLessonSection
       index={index}
-      SectionTitle="Teach it!"
+      SectionTitle={SectionTitle}
+      highlighted
       initiallyExpanded
     >
       <>
@@ -67,21 +72,19 @@ const TeachIt = ({
             ))}
           </div>
         </div>
-
-        <div className='container mx-auto'>
-          {Data[selectedEnvironment].resources
-            .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix).parts
-            .map(part => (
-              <div key={part.part}>
-                <h6>{part.title}</h6>
-                <p>{part.preface}</p>
-              </div>
-            ))
-          }
-        </div>
+        <MaterialSet
+          materialSet={Data[selectedEnvironment].resources
+            .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix)}
+        />
       </>
     </CollapsibleLessonSection>
   );
+};
+
+TeachIt.propTypes = {
+  index: PropTypes.number,
+  SectionTitle: PropTypes.string,
+  Data: PropTypes.object,
 };
 
 export default TeachIt;

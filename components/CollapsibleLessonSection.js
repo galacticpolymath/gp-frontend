@@ -1,43 +1,35 @@
 import PropTypes from 'prop-types';
 
-import styles from './CollapsibleLessonSection.module.scss';
+import Accordion from './Accordion';
 
+/**
+ * A styled collapsible section of the Lesson Plan.
+ */
 const CollapsibleLessonSection = ({
   index,
   SectionTitle = '',
   className = '',
   children,
+  highlighted = false,
   initiallyExpanded = false,
 }) => {
   const accordionId = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
   return (
-    <div className={`accordion ${className} ${styles.CollapsibleLessonSection}`}>
-      <div className="accordion-item">
-        <h2 className="accordion-header" id={`heading_${accordionId}`}>
-          <button
-            className={`accordion-button ${initiallyExpanded ? '' : 'collapsed'}`}
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target={`#content_${accordionId}`}
-            aria-expanded="true"
-            aria-controls="collapseOne"
-          >
-            <div className='container mx-auto text-black'>
-              <h3 className='m-0'>{index && `${index}. `}{SectionTitle}</h3>
-              {/* TODO: arrow */}
-            </div>
-          </button>
-        </h2>
-        <div
-          id={`content_${accordionId}`}
-          className={`accordion-collapse collapse ${initiallyExpanded ? 'show' : ''}`}
-          aria-labelledby={`${accordionId}_content`}
-          data-bs-parent="#accordionExample"
-        >
-          {children}
+    <Accordion
+      initiallyExpanded={initiallyExpanded}
+      id={accordionId}
+      className={className}
+      highlighted={highlighted}
+      buttonClassName="btn btn-light w-100 text-left"
+      button={(
+        <div className='container mx-auto text-black'>
+          <h3 className='m-0'>{index && `${index}. `}{SectionTitle}</h3>
+          TODO: arrow
         </div>
-      </div>
-    </div>
+      )}
+    >
+      {children}
+    </Accordion>
   );
 };
 
@@ -46,6 +38,7 @@ CollapsibleLessonSection.propTypes = {
   SectionTitle: PropTypes.string,
   className: PropTypes.string,
   children: PropTypes.object,
+  highlighted: PropTypes.bool,
   initiallyExpanded: PropTypes.bool,
 };
 

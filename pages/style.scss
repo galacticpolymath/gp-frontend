@@ -50,4 +50,16 @@ img {
 .bg-math {
   background-color: $math;
 }
+
+// bootstrap overrides
+.btn-light {
+  background-color: $sparkle-white;
+  &:active, &:focus {
+    background-color: $sparkle-white;
+  }
+}
+.btn.text-left {
+  text-align: left;
+}
+
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)

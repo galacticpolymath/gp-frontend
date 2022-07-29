@@ -66,7 +66,6 @@
     "quotes": ["error", "single", { "avoidEscape": true }],
     "react/button-has-type": "off",
     "react/destructuring-assignment": ["error", "always"],
-    "react-hooks/rules-of-hooks": "error",
     "react/forbid-prop-types": "off",
     "react/jsx-closing-tag-location": "error",
     "react/jsx-closing-bracket-location": "error",
@@ -113,6 +112,8 @@
     "react/self-closing-comp": "off",
     "react/sort-comp": "off",
     "react/prop-types": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react-hooks/rules-of-hooks": "error",
     "semi": ["error", "always"],
     "space-infix-ops": "error",
     "template-curly-spacing": ["error", "never"]

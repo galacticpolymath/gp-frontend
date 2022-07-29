@@ -22,7 +22,7 @@ const Overview = ({
       SectionTitle="Overview"
       initiallyExpanded
     >
-      <div className='container'>
+      <div className='container mb-4'>
         <div className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center">
           <div className="grid mx-auto gap-3 py-3">
             <div className='g-col g-col-md-4 bg-white p-3 rounded-3'>
@@ -45,14 +45,16 @@ const Overview = ({
           <Link passHref href="#learning_standards">
             <a>
               <h5>Subject breakdown by standard alignments: </h5>
-              <Image
-                layout="responsive"
-                // TODO: actual alt text
-                alt="Subject breakdown by standard alignments"
-                width={2200}
-                height={144}
-                src={SteamEpaulette.url}
-              />
+              {SteamEpaulette && SteamEpaulette.url && (
+                <Image
+                  layout="responsive"
+                  // TODO: actual alt text
+                  alt="Subject breakdown by standard alignments"
+                  width={2200}
+                  height={144}
+                  src={SteamEpaulette.url}
+                />
+              )}
             </a>
           </Link>
         </div>
@@ -71,7 +73,7 @@ const Overview = ({
 
         {Description && (
           <>
-            <h3 className='mt-4'>Lesson Description</h3>
+            <h3 className='mt-3'>Lesson Description</h3>
             <RichText content={Description} />
           </>
         )}
@@ -82,6 +84,7 @@ const Overview = ({
 
 Overview.propTypes = {
   index: PropTypes.number,
+  Description: PropTypes.string,
   EstLessonTime: PropTypes.string,
   ForGrades: PropTypes.string,
   TargetSubject: PropTypes.string,
