@@ -13,7 +13,7 @@ const MaterialSet = ({
         </a>
       )}
 
-      {materialSet.parts
+      {materialSet.parts && materialSet.parts
         .map(part => (
           <Accordion
             buttonClassName='w-100 text-start'
@@ -28,12 +28,12 @@ const MaterialSet = ({
           >
             <>
               <ol className='mt-3'>
-                {part.itemList.map(item => (
+                {part.itemList && part.itemList.map(item => (
                   <li key={item.itemTitle} className='mb-2'>
                     <strong>{item.itemTitle}</strong>
                     <ul>
                       {/* TODO: DATA: always want an array */}
-                      {(Array.isArray(item.links) ? item.links : [item.links]).map(link => (
+                      {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map(link => (
                         <li key={link.url}>
                           <a href={link.url}>
                             {link.linkText}
