@@ -39,6 +39,43 @@ const AboutPage = () => (
         </div>
       </div>
     </div>
+
+    <div className='bg-info'>
+      <div className='container mx-auto p-5 gap-3 row align-items-center'>
+        <h3 className='col-auto fs-1 fw-light'>Our Mission</h3>
+        <p className='m-0 col fs-3 fw-light border-start ps-4 border-white'>To create a direct pipeline between the sources of knowledge and grade 5-12 classrooms by translating complex topics from researchers, non-profits, and sustainable corporations, into high-quality, open-access educational materials.</p>
+      </div>
+    </div>
+
+    <div className='container mx-auto p-5 row'>
+      <div className='col-6'>
+        [TODO: image]
+      </div>
+      <div className='col-6'>
+        <h3 className='fw-light'>Our Vision</h3>
+        <p>We are a{' '}
+          <a
+            target='_blank'
+            rel='noopener noreferrer'
+            href="https://en.wikipedia.org/wiki/Triple_bottom_line"
+          >
+            triple bottom line
+          </a> social enterprise, motivated by People, Planet, and Profit—in that order. We want to improve the lives of teachers, students, and researchers because we have been in all of those roles. We are also keenly interested in amplifying marginalized voices (particularly those of indigenous peoples around the world), not only because representation matters, but because diverse perspectives lead to better solutions. We are working toward a future where education is bolder, more creative, more equitable, and where organizational outreach truly has Broader Impacts.
+        </p>
+        <a
+          target='_blank'
+          rel='noopener noreferrer'
+          href="https://vimeo.com/manage/videos/448000812"
+          className="btn btn-secondary"
+        >See this talk by our founder to learn more.
+        </a>
+      </div>
+    </div>
+
+    <div className='bg-primary p-5 text-white fs-1 fw-light text-center'>
+      <div>Think <span className='fw-bold'>bigger</span>.</div>
+      <div>Learn everything.</div>
+    </div>
   </Layout>
 );
 
