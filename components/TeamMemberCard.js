@@ -1,9 +1,7 @@
 const TeamMemberCard = ({
-  imgSrc,
   name,
   position,
   children,
-  links = [] ,
   className,
 }) => {
   return (
