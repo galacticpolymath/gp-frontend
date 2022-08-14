@@ -15,11 +15,11 @@ const LessonsPage = ({ lessons }) => {
       <div className='bg-light-gray'>
         <div className='container mx-auto grid py-5 px-3 gap-3'>
           {lessons
-            .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
+            //.filter(({ PublicationStatus }) => PublicationStatus === 'Live')
             .map(lesson => (
               <Link
-                key={lesson.id}
-                href={`/lessons/${lesson.id}`}
+                key={lesson.locale + lesson.id}
+                href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
                 passHref
               >
                 <a className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
