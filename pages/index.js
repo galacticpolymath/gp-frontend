@@ -28,7 +28,7 @@ export default function Home() {
         <div className='col-12 col-lg-6 col-xl-5 order-2 order-lg-1 p-3'>
           <h3>Open-Access</h3>
           <p>
-            <span className='highlight-blue'>We do not sell to schools.</span>{' '}
+            <em>We do not sell to schools.</em>{' '}
             We believe every student deserves access to free, high-quality learning content.
           </p>
 
@@ -43,7 +43,7 @@ export default function Home() {
       <div className="bg-light-gray py-5">
         <div className="container mx-auto row align-items-center">
           <h2 className="fw-light fs-1 text-center p-3 p-lg-4">
-            Think <em>bigger.</em><br />{' '}
+            Think <strong>bigger</strong>.<br />{' '}
             Learn everything.
           </h2>
 
@@ -53,12 +53,12 @@ export default function Home() {
           </div>
 
           <div className="col-12 col-lg-10 offset-lg-1 px-0 py-3 mt-4">
-            <h4>We want to empower students with <span className='highlight-pink'>agency</span> and <span className='highlight-pink'>critical thinking</span>.</h4>
+            <h4>We want to empower students with <em>agency</em> and <em>critical thinking</em>.</h4>
             <p>
-              Our lessons can be <span className='highlight'>taught in any subject classroom!</span> We align to learning standards in ELA, math, social studies and science to provide deeper understanding and longer retention.
+              Our lessons can be <em><strong>taught in any subject classroom!</strong></em> We align to learning standards in ELA, math, social studies and science to provide deeper understanding and longer retention.
             </p>
             <p>
-              We build lessons around <span className='highlight-blue'>real research, data, and stories</span> from diverse STEM experts.
+              We build lessons around <em><strong>real research, data, and stories</strong></em> from diverse STEM experts.
             </p>
             <Link href="/lessons/2">
               <a className='btn btn-primary'>See this lesson</a>
@@ -75,13 +75,18 @@ export default function Home() {
         <div className="row pt-5">
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
             <h5 className='mb-3 text-height-1'>
-              1. Clients hire us <span className="fw-light">&mdash; researchers, nonprofits, &amp; companies pay</span>
+              1. Clients hire us<br />
+              <span className="fw-light fs-5">
+                <span className="visually-hidden">&mdash;</span>
+                researchers, nonprofits, &amp; companies pay
+              </span>
             </h5>
             <p>Government-funded researchers and organizations that want to support research impacts on society hire us to make a body of knowledge available to the public.</p>
           </div>
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
             <h5 className='mb-3 text-height-1'>
-              2. We translate <span className="fw-light">research into lessons</span>
+              2. We translate<br />
+              <span className="fw-light fs-5">research into lessons</span>
             </h5>
             <p>
               Our team of science communicators, educators, and artists work directly with subject experts to translate our clients&apos; area of focus into free lessons for grades 5-12.{' '}
@@ -90,13 +95,15 @@ export default function Home() {
           </div>
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
             <h5 className='mb-3 text-height-1'>
-              3. We publish <span className="fw-light">free lessons for everyone</span>
+              3. We publish<br />
+              <span className="fw-light fs-5">free lessons for everyone</span>
             </h5>
             <p>Working closely with educators and districts in our growing network, lessons are tested and taught in classrooms. Equal access to lessons means more of the public can connect with the body of knowledge our clients care about.</p>
           </div>
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
             <h5 className='mb-3 text-height-1'>
-              4. We improve, <span className="fw-light">evaluate, revise, repeat</span>
+              4. We improve<span className="visually-hidden">,</span><br />
+              <span className="fw-light fs-5">evaluate, revise, repeat</span>
             </h5>
             <p>All of our lessons are continuously evaluated, updated, and revised—meaning they are always up-to-date and working to make the jobs of teaching and outreach easier!</p>
           </div>
@@ -179,7 +186,7 @@ export default function Home() {
                 <ul>
                   <li>Magnify the impact of your research and outreach efforts</li>
                   <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <span className='highlight-pink'>there are also many avenues for collaboration!</span></li>
+                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
                 </ul>
                 <Link href="/hire-us">
                   <a className='btn btn-primary'>Get lessons</a>

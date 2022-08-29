@@ -41,9 +41,6 @@ img {
 }
 
 // text utilities
-.font-normal {
-  font-style: normal;
-}
 .text-height-0 {
   line-height: 1;
 }
@@ -60,19 +57,6 @@ img {
 }
 .bg-math {
   background-color: $math;
-}
-
-.highlight {
-  background-color: $highlight;
-}
-.highlight-pink {
-  background-color: $burst-purple-highlight;
-}
-.highlight-purple {
-  background-color: $atomic-blue-highlight;
-}
-.highlight-blue {
-  background-color: $hydrogen-blue-highlight;
 }
 
 // bootstrap overrides
