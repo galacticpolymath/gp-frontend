@@ -28,11 +28,6 @@ a > span {
   vertical-align: middle;
 }
 
-#Home em {
-  font-style: normal;
-  background-color: $highlight;
-}
-
 img {
   max-width: 100%;
 }
@@ -55,18 +50,6 @@ img {
 .text-height-1 {
   line-height: 1.5;
 }
-.text-height-2 {
-  line-height: 2;
-}
-.text-height-3 {
-  line-height: 2.5;
-}
-.text-height-4 {
-  line-height: 3;
-}
-.text-height-5 {
-  line-height: 3.5;
-}
 
 // background color utilities
 .bg-light-gray {
@@ -80,7 +63,7 @@ img {
 }
 
 .highlight {
-  background-color: $extra;
+  background-color: $highlight;
 }
 .highlight-pink {
   background-color: $burst-purple-highlight;

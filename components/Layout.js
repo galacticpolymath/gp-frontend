@@ -2,9 +2,9 @@ import Head from 'next/head';
 import Footer from './Footer';
 import Navbar from './Navbar';
 
-export default function Layout({ title, keywords, description, id, children }) {
+export default function Layout({ title, keywords, description, children }) {
   return (
-    <div id={id}>
+    <div>
       <Head>
         <title>{title}</title>
         <meta name='description' content={description} />
