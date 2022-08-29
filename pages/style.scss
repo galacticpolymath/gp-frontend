@@ -28,6 +28,11 @@ a > span {
   vertical-align: middle;
 }
 
+#Home em {
+  font-style: normal;
+  background-color: $highlight;
+}
+
 img {
   max-width: 100%;
 }
@@ -40,6 +45,29 @@ img {
   color: inherit;
 }
 
+// text utilities
+.font-normal {
+  font-style: normal;
+}
+.text-height-0 {
+  line-height: 1;
+}
+.text-height-1 {
+  line-height: 1.5;
+}
+.text-height-2 {
+  line-height: 2;
+}
+.text-height-3 {
+  line-height: 2.5;
+}
+.text-height-4 {
+  line-height: 3;
+}
+.text-height-5 {
+  line-height: 3.5;
+}
+
 // background color utilities
 .bg-light-gray {
   background-color: #eee;
@@ -49,6 +77,19 @@ img {
 }
 .bg-math {
   background-color: $math;
+}
+
+.highlight {
+  background-color: $extra;
+}
+.highlight-pink {
+  background-color: $burst-purple-highlight;
+}
+.highlight-purple {
+  background-color: $atomic-blue-highlight;
+}
+.highlight-blue {
+  background-color: $hydrogen-blue-highlight;
 }
 
 // bootstrap overrides

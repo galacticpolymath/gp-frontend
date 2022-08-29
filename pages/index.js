@@ -7,10 +7,10 @@ import HeroImage from '../assets/img/city_network.jpg';
 
 export default function Home() {
   return (
-    <Layout>
+    <Layout id="Home">
       <Hero imgSrc={HeroImage.src}>
         <h1 className={styles.shadow}>We are an education studio.</h1>
-        <p className={styles.shadow}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
+        <p className={styles.shadow}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em className='highlight-blue'>everyone</em>.</p>
         <div>
           <Link passHref href="/lessons">
             <a className="btn btn-primary">Get Lessons</a>
@@ -21,11 +21,11 @@ export default function Home() {
         </div>
       </Hero>
 
-      <div className="container mx-auto row align-items-center p-5">
-        <div className='col-12 col-md-6 col-lg-7 order-1 order-md-2 p-3 text-center'>
+      <div className="container mx-auto row align-items-center px-3 py-4 py-lg-5">
+        <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 text-center'>
           [img]
         </div>
-        <div className='col-12 col-md-6 col-lg-5 order-2 order-md-1 p-3'>
+        <div className='col-12 col-lg-6 col-xl-5 order-2 order-lg-1 p-3'>
           <h3>Open-Access</h3>
           <p>
             <em>We do not sell to schools.</em>{' '}
@@ -40,25 +40,25 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-light-gray">
+      <div className="bg-light-gray py-5">
         <div className="container mx-auto row align-items-center">
-          <h2 className="fw-light fs-1 text-center p-5">
-            Think <strong>bigger</strong>.<br />{' '}
+          <h2 className="fw-light fs-1 text-center p-3 p-lg-4">
+            Think <em className='highlight-blue'>bigger.</em><br />{' '}
             Learn everything.
           </h2>
 
-          <div className="bg-white p-5 text-center">
+          <div className="bg-white p-3 p-lg-5 my-lg-3 text-center">
             <h3>New release!</h3>
             [img]
           </div>
 
-          <div className="col-10 offset-1 p-5">
-            <h4>We want to empower students with <em>agency</em> and <em>critical thinking</em>.</h4>
+          <div className="col-12 col-lg-10 offset-lg-1 px-0 py-3 mt-4">
+            <h4>We want to empower students with <em className='highlight-pink'>agency</em> and <em className='highlight-purple'>critical thinking</em>.</h4>
             <p>
-              Our lessons can be <em><strong>taught in any subject classroom!</strong></em> We align to learning standards in ELA, math, social studies and science to provide deeper understanding and longer retention.
+              Our lessons can be <em>taught in any subject classroom!</em> We align to learning standards in ELA, math, social studies and science to provide deeper understanding and longer retention.
             </p>
             <p>
-              We build lessons around <em><strong>real research, data, and stories</strong></em> from diverse STEM experts.
+              We build lessons around <em className='highlight-blue'>real research, data, and stories</em> from diverse STEM experts.
             </p>
             <Link href="/lessons/2">
               <a className='btn btn-primary'>See this lesson</a>
@@ -73,37 +73,31 @@ export default function Home() {
           <span className='fs-4 fw-light'>(And how we make it free for teachers)</span>
         </h2>
         <div className="row pt-5">
-          <div className='col-12 col-md-6 col-lg-3'>
-            <h5 className="text-uppercase">
-              1. Clients hire us<br />
-              <span className="fw-light fs-5">
-                <span className="visually-hidden">&mdash;</span>
-                researchers, nonprofits, &amp; companies pay
-              </span>
+          <div className='col-12 col-lg-6 col-xl-3 py-3'>
+            <h5 className='mb-3 text-height-1'>
+              1. <span className='highlight-purple'>Clients hire us</span>{' '}
+              <span className="fw-light">&mdash; researchers, nonprofits, &amp; companies pay</span>
             </h5>
             <p>Government-funded researchers and organizations that want to support research impacts on society hire us to make a body of knowledge available to the public.</p>
           </div>
-          <div className='col-12 col-md-6 col-lg-3'>
-            <h5 className="text-uppercase">
-              2. We translate<br />
-              <span className="fw-light fs-5">research into lessons</span>
+          <div className='col-12 col-lg-6 col-xl-3 py-3'>
+            <h5 className='mb-3 text-height-1'>
+              2. <span className='highlight-blue'>We translate</span> <span className="fw-light">research into lessons</span>
             </h5>
             <p>
               Our team of science communicators, educators, and artists work directly with subject experts to translate our clients&apos; area of focus into free lessons for grades 5-12.{' '}
               <em>Our goal is for every lesson to be ready to teach in any subject classroom by a non-expert with 15 min. of prep time.</em>
             </p>
           </div>
-          <div className='col-12 col-md-6 col-lg-3'>
-            <h5 className="text-uppercase">
-              3. We publish<br />
-              <span className="fw-light fs-5">free lessons for everyone</span>
+          <div className='col-12 col-lg-6 col-xl-3 py-3'>
+            <h5 className='mb-3 text-height-1'>
+              3. <span className='highlight'>We publish</span> <span className="fw-light">free lessons for everyone</span>
             </h5>
             <p>Working closely with educators and districts in our growing network, lessons are tested and taught in classrooms. Equal access to lessons means more of the public can connect with the body of knowledge our clients care about.</p>
           </div>
-          <div className='col-12 col-md-6 col-lg-3'>
-            <h5 className="text-uppercase">
-              4. We improve<span className="visually-hidden">,</span><br />
-              <span className="fw-light fs-5">evaluate, revise, repeat</span>
+          <div className='col-12 col-lg-6 col-xl-3 py-3'>
+            <h5 className='mb-3 text-height-1'>
+              4. <span className='highlight-pink'>We improve,</span> <span className="fw-light">evaluate, revise, repeat</span>
             </h5>
             <p>All of our lessons are continuously evaluated, updated, and revised—meaning they are always up-to-date and working to make the jobs of teaching and outreach easier!</p>
           </div>
@@ -136,8 +130,8 @@ export default function Home() {
       </div>
 
       <div className="bg-light-gray">
-        <div className="container mx-auto p-5">
-          <div className='col-10 offset-1'>
+        <div className="container mx-auto p-3 p-lg-5">
+          <div className='col-12 col-lg-10 offset-lg-1'>
             <div className='text-center'>[video]</div>
             <h2 className="mt-5 mb-3">JobViz</h2>
             <h5>Connect lessons to careers with this free tool!</h5>
@@ -155,14 +149,14 @@ export default function Home() {
         </div>
 
         <div className='bg-info'>
-          <div className='container p-5 mx-auto text-center'>
+          <div className='container p-3 p-lg-5 mx-auto text-center'>
             <p className='fs-4'>Real Research + Real Stories + Real Data + Real Careers =</p>
             <p className='fs-3'>Real Learning</p>
           </div>
         </div>
 
         <div className='bg-light-gray'>
-          <div className='container p-5 mx-auto row'>
+          <div className='container p-3 p-lg-5 mx-auto row'>
             <h3 className='text-center fw-light fs-2 mb-3'>Benefits of connecting classrooms to the world of Academia</h3>
             <div className='col-12 col-md-6 p-4'>
               <div className='bg-white rounded-3 p-4'>
