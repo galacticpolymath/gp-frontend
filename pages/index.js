@@ -179,7 +179,7 @@ export default function Home() {
                 <ul>
                   <li>Magnify the impact of your research and outreach efforts</li>
                   <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
+                  <li>If you love GP, but don&apos;t have the funds to hire us, <span className='highlight-pink'>there are also many avenues for collaboration!</span></li>
                 </ul>
                 <Link href="/hire-us">
                   <a className='btn btn-primary'>Get lessons</a>
