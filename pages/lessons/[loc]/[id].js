@@ -40,7 +40,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
     <Layout>
       <div className="bg-light-gray p-4">
         <div className="container">
-          <div style={{display: "flex", justifyContent: "space-between"}}>
+          <div className="d-flex justify-content-between">
             {lastSubRelease && (
               <p>
                 Version {lastSubRelease.version}{' '}
