@@ -47,6 +47,9 @@ img {
 .text-height-1 {
   line-height: 1.5;
 }
+.fs-7 {
+  font-size: 0.75rem;
+}
 
 // background color utilities
 .bg-light-gray {
@@ -68,6 +71,16 @@ img {
 }
 .btn.text-left {
   text-align: left;
+}
+
+.white-divider-lg > :not(:first-child) {
+  border-top: 1px solid $white;
+}
+@media (min-width: 992px) {
+  .white-divider-lg > :not(:first-child) {
+    border-left: 1px solid $white;
+    border-top: 0;
+  }
 }
 
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
