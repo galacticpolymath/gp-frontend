@@ -83,7 +83,7 @@ const AboutPage = () => (
         <div className='row'>
           <div className='col-12 text-center p-3 py-lg-4 px-lg-5'>
             <h3 className='fs-4 mb-3 text-uppercase fw-light'>Leadership</h3>
-            <p className='fs-5'>After doing biological research for over a decade and teaching in Nashville public middle schools for 3+ years, Matt left his position as a postdoc at Vanderbilt's Collaborative for STEM Education and Outreach in February 2021 to focus on GP full time.</p>
+            <p className='fs-5'>After doing biological research for over a decade and teaching in Nashville public middle schools for 3+ years, Matt left his position as a postdoc at Vanderbilt&apos;s Collaborative for STEM Education and Outreach in February 2021 to focus on GP full time.</p>
           </div>
         </div>
 
@@ -190,7 +190,7 @@ const AboutPage = () => (
         <div className='row'>
           <div className='col-12 text-center p-3 py-lg-4 px-lg-5'>
             <h3 className='fs-4 mb-3 text-uppercase fw-light'>Alumni</h3>
-            <p className='fs-5'>We wouldn't be here without the hard work of these amazing folks!</p>
+            <p className='fs-5'>We wouldn&apos;t be here without the hard work of these amazing folks!</p>
           </div>
         </div>
 
