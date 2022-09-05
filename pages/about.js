@@ -11,40 +11,38 @@ const AboutPage = () => (
       <p className={styles.shadow}>Galactic Polymath (GP) is an education studio. We help scientists, nonprofits, and sustainable companies achieve outreach at scale by translating complex, cutting-edge research into mind-blowing lessons for grades 5+.</p>
     </Hero>
 
-    <div className="bg-light-gray p-4">
-      <div className='bg-white rounded container mx-auto align-items-center p-5'>
-        <div className='row text-center mb-5'>
-          <div className='col-8 offset-2'>
-            <h2>Easier Outreach, Better Results</h2>
-            <p className='mt-4 fs-4 fw-light'>We do the heavy lifting, creating and disseminating mind-expanding lessons that engage young learners in the knowledge areas our clients care about.</p>
-          </div>
+    <div className="bg-light-gray p-3 p-md-4 p-lg-5">
+      <div className='bg-white rounded container mx-auto align-items-center gap-3'>
+        <div className='text-center p-5 pb-3'>
+          <h2>Easier Outreach, Better Results</h2>
+          <p className='mt-4 fs-4 fw-light'>We do the heavy lifting, creating and disseminating mind-expanding lessons that engage young learners in the knowledge areas our clients care about.</p>
         </div>
 
-        <div className='row'>
-          <div className='col-4'>
+        <div className='row p-3 p-md-4 p-lg-5'>
+          <div className='col-12 col-lg-4'>
             <h5>1. Design</h5>
             <p>In just a few short meetings, we define clients&apos; outreach goals and map out the lessons and supporting media that will achieve lasting understanding in target areas.</p>
           </div>
-          <div className='col-4'>
+          <div className='col-12 col-lg-4'>
             <h5>2. Publish</h5>
             <p>We create and publish lessons on our site and do the hard work of getting them out to teachers through a growing network of educators, districts, and professional organizations.</p>
           </div>
-          <div className='col-4'>
+          <div className='col-12 col-lg-4'>
             <h5>3. Revise &amp; Report</h5>
             <p>We measure and maximize outreach performance—as we hear back from teachers, we improve the lessons, and collect impact data, which we report back to clients upon request.</p>
           </div>
         </div>
 
-        <div className='row mt-5 text-center'>
+        <div className='pb-4 px-5 text-center'>
           <p className='fs-4 fw-bold'>Learn how we can level up your outreach in [TODO: link hireus]</p>
         </div>
       </div>
     </div>
 
     <div className='bg-info'>
-      <div className='container mx-auto p-5 gap-3 row align-items-center'>
-        <h3 className='col-auto fs-1 fw-light'>Our Mission</h3>
-        <p className='m-0 col fs-3 fw-light border-start ps-4 border-white'>To create a direct pipeline between the sources of knowledge and grade 5-12 classrooms by translating complex topics from researchers, non-profits, and sustainable corporations, into high-quality, open-access educational materials.</p>
+      <div className='container mx-auto py-5 row align-items-center flex-wrap flex-lg-nowrap white-divider-lg'>
+        <h3 className='col fs-1 fw-light text-nowrap flex-grow-0 pb-3 pb-lg-0 pe-lg-4'>Our Mission</h3>
+        <p className='m-0 col-auto flex-shrink-1 fs-3 fw-light ps-lg-4 pt-3 pt-lg-0'>To create a direct pipeline between the sources of knowledge and grade 5-12 classrooms by translating complex topics from researchers, non-profits, and sustainable corporations, into high-quality, open-access educational materials.</p>
       </div>
     </div>
 
