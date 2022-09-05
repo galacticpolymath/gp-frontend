@@ -46,11 +46,11 @@ const AboutPage = () => (
       </div>
     </div>
 
-    <div className='container mx-auto p-5 row'>
-      <div className='col-6'>
+    <div className='container mx-auto py-5 row'>
+      <div className='col-12 col-lg-6 mb-4 mb-lg-0'>
         [TODO: image]
       </div>
-      <div className='col-6'>
+      <div className='col-12 col-lg-6'>
         <h3 className='fw-light'>Our Vision</h3>
         <p>We are a{' '}
           <a
@@ -77,11 +77,11 @@ const AboutPage = () => (
     </div>
 
     <div className='bg-light-gray'>
-      <div className='container mx-auto p-5 gap-5 row'>
+      <div className='container mx-auto p-3 py-lg-5 gap-3 d-flex flex-column'>
         <h2 className='text-center mt-4 fs-1'>Meet Our Team</h2>
         
         <div className='row'>
-          <div className='col-8 offset-2 text-center'>
+          <div className='col-12 text-center p-3 py-lg-4 px-lg-5'>
             <h3 className='fs-4 mb-3 text-uppercase fw-light'>Leadership</h3>
             <p className='fs-5'>After doing biological research for over a decade and teaching in Nashville public middle schools for 3+ years, Matt left his position as a postdoc at Vanderbilt's Collaborative for STEM Education and Outreach in February 2021 to focus on GP full time.</p>
           </div>
@@ -89,7 +89,7 @@ const AboutPage = () => (
 
         <div className='row'>
           <TeamMemberCard
-            className='col-6 offset-3'
+            className='col-12 col-lg-6 offset-lg-3 text-center'
             name="Matt Wilkins, PhD"
             position="Founder, CEO"
           >
@@ -98,7 +98,7 @@ const AboutPage = () => (
         </div>
 
         <div className='row'>
-          <div className='col-8 offset-2 text-center'>
+          <div className='col-12 text-center p-3 py-lg-4 px-lg-5'>
             <h3 className='fs-4 mb-3 text-uppercase fw-light'>Product Team</h3>
             <p className='fs-5'>Our multitalented group of contractors and volunteers includes scientists, artists, communicators, and education experts who are responsible for bringing each Galactic Polymath lesson to life.</p>
           </div>
@@ -106,49 +106,49 @@ const AboutPage = () => (
 
         <div className='row justify-content-center align-items-stretch'>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name="Stephanie Castillo"
             position="Digital Multimedia Specialist"
           >
             A PhD candidate in science communication, award winning video producer,and previous Jackson Wild Media Lab Fellow. Stephanie is also founder of Phuture Doctors—a media company showcasing diverse voices in STEM.
           </TeamMemberCard>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name="Elaine Perignat, PhD"
             position="Education Specialist"
           >
             A spirited over-thinker with genuine enthusiasm for teaching and learning. Elaine loves to paint, create, build, and play if it means getting her hands dirty. Literally.
           </TeamMemberCard>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name="Carver Lee, MSc"
             position="Graphic Design + Marketing Lead"
           >
             A geologist, sailor, teacher, and designer all rolled into one, Carver believes that learning and creating are always the way forward.
           </TeamMemberCard>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name="Aarati Asundi, PhD"
             position="Video Creator"
           >
             A scientist, entrepreneur, and storyteller. From biology to climate change, she loves learning about the latest scientific research and sharing it with the world.
           </TeamMemberCard>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name='Jayme Dyer, PhD'
             position="Video Creator"
           >
             A biology educator and science communicator, Jayme says Wow a lot <em>(especially about science!)</em> and works to help others do the same.
           </TeamMemberCard>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name='Caitlin Friesen'
             position="Learning Multimedia Artist"
           >
             A biologist, scientist, educator, artist, and cyclist in constant pursuit of making things a little bit better. She loves learning, creating, and being outdoors!
           </TeamMemberCard>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name='Audrey Serene'
             position="Animator"
           >
@@ -157,7 +157,7 @@ const AboutPage = () => (
         </div>
 
         <div className='row'>
-          <div className='col-8 offset-2 text-center'>
+          <div className='col-12 text-center p-3 py-lg-4 px-lg-5'>
             <h3 className='fs-4 mb-3 text-uppercase fw-light'>Dev Team</h3>
             <p className='fs-5'>The talented (mostly volunteer) group building and maintaining our site, as well as a growing variety of publishing and teaching tools. Fluent in React.js, SASS, CSS, HTML, R and other languages.</p>
           </div>
@@ -165,21 +165,21 @@ const AboutPage = () => (
 
         <div className='row justify-content-center align-items-stretch'>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name="Kenzie Bottoms"
             position="Lead Developer, GP Publishing Workflow"
           >
             A problem solver who codes, makes art, and roller skates, Kenzie is trying to pay it forward and delighted to work with such kind, talented people in the process.
           </TeamMemberCard>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name="Leigha Robinson"
             position="Lead Developer, JobViz"
           >
             A Software Developer with a love of music, gardening, and using technology to make the world a better place. Leigha deeply believes in TEAM: Together Everyone Achieves More!
           </TeamMemberCard>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name="Patrick Cheng"
             position="Lesson Plan UI/UX Lead"
           >
@@ -188,7 +188,7 @@ const AboutPage = () => (
         </div>
 
         <div className='row'>
-          <div className='col-8 offset-2 text-center'>
+          <div className='col-12 text-center p-3 py-lg-4 px-lg-5'>
             <h3 className='fs-4 mb-3 text-uppercase fw-light'>Alumni</h3>
             <p className='fs-5'>We wouldn't be here without the hard work of these amazing folks!</p>
           </div>
@@ -196,28 +196,28 @@ const AboutPage = () => (
 
         <div className='row justify-content-center align-items-stretch'>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name="Maria Brock"
             position="Front End Web Developer, GP Publishing Workflow"
           >
             A Software Developer who loves problem solving, puzzles, and art. Fan of gaming, learning, and crocheting adorable, nerdy things. Powered by coffee.
           </TeamMemberCard>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name="Castle Crawford"
             position="Front End Web Developer"
           >
             A food fanatic, day hiker, video game vanquisher, Corgi lover, and Software Developer. Loves being part of a team focused on making a difference.
           </TeamMemberCard>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name="Tyler Lemburg, MSc"
             position="Previous Lead Developer, JobViz"
           >
             A Senior Software Engineer working remotely for Cognito. Tyler built the first iteration of JobViz. He has worked for several nonprofits as a web developer and recently earned a Masters in Climatology.
           </TeamMemberCard>
           <TeamMemberCard
-            className='col-4'
+            className='col-12 col-lg-6 col-xl-4'
             name="Arda Turkmen"
             position="Back End Developer"
           >
