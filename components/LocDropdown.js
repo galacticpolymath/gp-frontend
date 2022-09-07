@@ -1,21 +1,20 @@
 import React from "react";
 import ReactFlagsSelect from "react-flags-select";
 
-const locToCountry= {"en-US": "US", "en-GB": "GB", "en-NZ": "NZ", "fr": "FR", "de": "DE", "it": "IT", "fr-AW": "AW"}
+const getLanguage = new Intl.DisplayNames(['en'], {type: 'language'})
 const countryToLoc= {"US": "en-US", "GB": "en-GB", "NZ": "en-NZ", "FR": "fr", "DE": "de", "IT": "it", "AW": "fr-AW"}
-const locToLang = {"en-US": "English-US", "GB": "English-Great Britain", "en-NZ": "English-New Zealand", "fr": "French-France", "de": "Danish-Denmark", "it": "Italian-Italy"}
 
 const LocDropdown = ({ id, availLocs, loc }) => {
 
   let countries = []
   let labels = {}
   availLocs.forEach((availLoc) => {
-    const country = locToCountry[availLoc];
+    const country = new Intl.Locale(availLoc).region;
     countries.push(country);
-    labels[country] = { primary: availLoc, secondary: locToLang[loc] };
+    labels[country] = { primary: availLoc, secondary: getLanguage.of(availLoc) };
   })  
 
-  let country = locToCountry[loc]
+  let country = new Intl.Locale(loc).region;
 
   const changeLoc = (country, id) => {
     const locDest = countryToLoc[country];

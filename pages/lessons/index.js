@@ -19,7 +19,7 @@ const LessonsPage = ({ lessons }) => {
             .map(lesson => (
               <Link
                 key={lesson.locale + lesson.id}
-                href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
+                href={`/lessons/${lesson.id}/${lesson.DefaultLocale}`}
                 passHref
               >
                 <a className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
