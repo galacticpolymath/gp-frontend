@@ -31,7 +31,8 @@ const LocDropdown = ({ id, availLocs, loc }) => {
       countries={countries} 
       customLabels={labels} 
       onSelect={
-        countryCode => {changeLoc(countryCode, id)}} 
+        countryCode => changeLoc(countryCode, id)
+      } 
       placeholder={selectedLabel} 
       alignOptionsToRight={true} 
       fullWidth={false} 
