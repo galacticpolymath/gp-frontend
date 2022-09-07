@@ -15,7 +15,7 @@ const LocDropdown = ({ id, availLocs, loc }) => {
   });
 
   const country = new Intl.Locale(loc).region;
-  const selectedLabel = 'Current locale: ' + loc;
+  const selectedLabel = `Current locale: ${loc}`;
 
   const changeLoc = (country, id) => {
     const locDest = countryToLoc[country];
@@ -29,7 +29,8 @@ const LocDropdown = ({ id, availLocs, loc }) => {
     <ReactFlagsSelect 
       selected={country} 
       countries={countries} 
-      customLabels={labels} onSelect={
+      customLabels={labels} 
+      onSelect={
         countryCode => {changeLoc(countryCode, id)}} 
       placeholder={selectedLabel} 
       alignOptionsToRight={true} 
@@ -39,6 +40,7 @@ const LocDropdown = ({ id, availLocs, loc }) => {
       showOptionLabel={false} 
       showSecondaryOptionLabel={true} 
     />  
-)};
+  );
+};
 
 export default LocDropdown;
