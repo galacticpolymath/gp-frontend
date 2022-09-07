@@ -47,9 +47,11 @@ const LessonDetails = ({ lesson, availLocs }) => {
                 (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
               </p>
             )}
-            <LocDropdown availLocs={availLocs} 
-            loc={lesson.locale} 
-            id={lesson.id} />
+            <LocDropdown 
+              availLocs={availLocs} 
+              loc={lesson.locale} 
+              id={lesson.id} 
+            />
           </div>
           <h1>{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
