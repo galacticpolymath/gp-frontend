@@ -2,7 +2,7 @@ import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 
 const Standards = ({
-  Data,
+  // Data,
   LearningObj,
 }) => {
   return (
