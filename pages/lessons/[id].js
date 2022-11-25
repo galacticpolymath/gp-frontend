@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { format } from 'date-fns';
 
 import Layout from '../../components/Layout';
@@ -37,43 +36,33 @@ const LessonDetails = ({ lesson }) => {
 
   return (
     <Layout>
-      <div className="bg-light-gray p-4">
-        <div className="container">
-          {lastSubRelease && (
-            <p>
-              Version {lastSubRelease.version}{' '}
-              (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-            </p>
-          )}
-          <h1>{lesson.Title}</h1>
-          <h4 className='fw-light'>{lesson.Subtitle}</h4>
-          {lesson.CoverImage && lesson.CoverImage.url && (
-            <Image
-              src={lesson.CoverImage.url}
-              alt={lesson.Subtitle}
-              layout="responsive"
-              // TODO: will these always be the same size?
-              width={1500}
-              height={450}
-            />
-          )}
-          <div className='row mt-4'>
-            <div className="col col-md-6 col-lg-9">
-              <h5>Sponsored by:</h5>
-              <RichText content={lesson.SponsoredBy} />
-            </div>
-            <div className="col col-md-6 col-lg-3">
-              {/* TODO: fix aspect ratio */}
-              {lesson.SponsorImage && lesson.SponsorImage.url && (
-                <Image
-                  src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
-                  alt={lesson.Subtitle}
-                  layout="responsive"
-                  width={1}
-                  height={1}
-                />
-              )}
-            </div>
+      <div className="container p-4">
+        {lastSubRelease && (
+          <p>
+            Version {lastSubRelease.version}{' '}
+            (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
+          </p>
+        )}
+        <h1>{lesson.Title}</h1>
+        <h4 className='fw-light'>{lesson.Subtitle}</h4>
+        {lesson.CoverImage && lesson.CoverImage.url && (
+          <img
+            src={lesson.CoverImage.url}
+            alt={lesson.Subtitle}
+          />
+        )}
+        <div className='row mt-4'>
+          <div className="col col-md-6 col-lg-9">
+            <h5>Sponsored by:</h5>
+            <RichText content={lesson.SponsoredBy} />
+          </div>
+          <div className="col col-md-6 col-lg-3 position-relative">
+            {lesson.SponsorImage && lesson.SponsorImage.url && (
+              <img
+                src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
+                alt={lesson.Subtitle}
+              />
+            )}
           </div>
         </div>
       </div>

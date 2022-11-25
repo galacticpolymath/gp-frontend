@@ -4,10 +4,11 @@ $enable-cssgrid: true;
 
 $primary: $burst-purple;
 $secondary: $atomic-blue;
-$info: lighten($hydrogen-blue-light, 15%);
+$info: lighten($hydrogen-blue-light, 25%);
 
 @import '../node_modules/bootstrap/scss/bootstrap';
 @import '../node_modules/react-responsive-carousel/lib/styles/carousel.min.css';
+@import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
 
 html,
 body {
@@ -61,6 +62,7 @@ img {
 .bg-math {
   background-color: $math;
 }
+// TODO: what are the other possible TargetSubject values? (see lessons page badges)
 
 // bootstrap overrides
 .btn-light {
@@ -83,4 +85,11 @@ img {
   }
 }
 
-// TODO: what are the other possible TargetSubject values? (see lessons page badges)
+.accordion-header button {
+  &.collapsed .bi-chevron-up {
+    display: none;
+  }
+  &:not(.collapsed) .bi-chevron-down {
+    display: none;
+  }
+}
