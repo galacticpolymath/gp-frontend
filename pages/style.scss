@@ -4,7 +4,7 @@ $enable-cssgrid: true;
 
 $primary: $burst-purple;
 $secondary: $atomic-blue;
-$info: lighten($hydrogen-blue-light, 15%);
+$info: lighten($hydrogen-blue-light, 25%);
 
 @import '../node_modules/bootstrap/scss/bootstrap';
 @import '../node_modules/react-responsive-carousel/lib/styles/carousel.min.css';
@@ -82,5 +82,14 @@ img {
   .white-divider-lg > :not(:first-child) {
     border-left: 1px solid $white;
     border-top: 0;
+  }
+}
+
+.accordion-header button {
+  &.collapsed .bi-chevron-up {
+    display: none;
+  }
+  &:not(.collapsed) .bi-chevron-down {
+    display: none;
   }
 }
