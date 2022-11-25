@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 import Overview from './Overview';
 // import TextBlock from "./TextBlock";
-// import Heading from "./Heading";
+import Heading from './Heading.js';
 import TeachIt from './TeachIt';
 // import LearningChart from "./LearningChart";
 // import Standards from "./Standards/index";
@@ -40,7 +40,7 @@ export const NUMBERED_SECTIONS = [
 
 export const sectionTypeMap = {
   [SECTIONS.OVERVIEW]: Overview,
-  // [SECTIONS.HEADING]: Heading,
+  [SECTIONS.HEADING]: Heading,
   // [SECTIONS.TEXT_BLOCK]: TextBlock,
   [SECTIONS.PROCEDURE]: () => <></>,
   [SECTIONS.TEACH_IT]: TeachIt,
