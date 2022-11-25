@@ -4,7 +4,7 @@ import Overview from './Overview';
 // import TextBlock from "./TextBlock";
 import Heading from './Heading.js';
 import TeachIt from './TeachIt';
-// import LearningChart from "./LearningChart";
+import LearningChart from './LearningChart';
 // import Standards from "./Standards/index";
 // import Acknowledgments from "./Acknowledgments";
 // import Versions from "./Versions";
@@ -44,7 +44,7 @@ export const sectionTypeMap = {
   // [SECTIONS.TEXT_BLOCK]: TextBlock,
   [SECTIONS.PROCEDURE]: () => <></>,
   [SECTIONS.TEACH_IT]: TeachIt,
-  // [SECTIONS.LEARNING_CHART]: LearningChart,
+  [SECTIONS.LEARNING_CHART]: LearningChart,
   // [SECTIONS.STANDARDS]: Standards,
   // [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
   // [SECTIONS.VERSIONS]: Versions,
