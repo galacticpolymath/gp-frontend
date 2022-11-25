@@ -29,7 +29,6 @@ const LessonsPage = ({ lessons }) => {
                         src={lesson.CoverImage.url}
                         alt={lesson.Subtitle}
                         layout="responsive"
-                      // TODO: will these always be the same size?
                         width={1500}
                         height={450}
                       />
