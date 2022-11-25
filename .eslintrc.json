@@ -5,6 +5,7 @@
     "plugin:react/recommended"
   ],
   "rules": {
+    "@next/next/no-img-element": "off",
     "array-bracket-newline": ["error", "consistent"],
     "arrow-body-style": "off",
     "brace-style": ["error", "1tbs"],

@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { format } from 'date-fns';
 
 import Layout from '../../components/Layout';
@@ -48,13 +47,9 @@ const LessonDetails = ({ lesson }) => {
           <h1>{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
           {lesson.CoverImage && lesson.CoverImage.url && (
-            <Image
+            <img
               src={lesson.CoverImage.url}
               alt={lesson.Subtitle}
-              layout="responsive"
-              // TODO: will these always be the same size?
-              width={1500}
-              height={450}
             />
           )}
           <div className='row mt-4'>
@@ -62,15 +57,11 @@ const LessonDetails = ({ lesson }) => {
               <h5>Sponsored by:</h5>
               <RichText content={lesson.SponsoredBy} />
             </div>
-            <div className="col col-md-6 col-lg-3">
-              {/* TODO: fix aspect ratio */}
+            <div className="col col-md-6 col-lg-3 position-relative">
               {lesson.SponsorImage && lesson.SponsorImage.url && (
-                <Image
+                <img
                   src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                   alt={lesson.Subtitle}
-                  layout="responsive"
-                  width={1}
-                  height={1}
                 />
               )}
             </div>
