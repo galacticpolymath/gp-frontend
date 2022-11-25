@@ -6,7 +6,7 @@ const MaterialSet = ({
   materialSet,
 }) => {
   return (
-    <div className='container mx-auto'>
+    <div className='container mx-auto mb-4'>
       {materialSet.links && (
         <button href={materialSet.links.url} className='btn btn-primary px-3 py-2 d-block mb-3 d-flex align-items-center gap-2 mx-auto'>
           <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}

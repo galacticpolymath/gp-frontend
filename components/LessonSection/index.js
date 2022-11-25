@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Overview from './Overview';
 // import TextBlock from "./TextBlock";
 // import Heading from "./Heading";
-// import Procedure from "./Procedure/index";
 import TeachIt from './TeachIt';
 // import LearningChart from "./LearningChart";
 // import Standards from "./Standards/index";
@@ -16,6 +15,7 @@ export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
   HEADING: 'lesson-plan.section-heading',
   TEXT_BLOCK: 'lesson-plan.text-block',
+  // deprecated
   PROCEDURE: 'lesson-plan.procedure',
   TEACH_IT: 'teaching-resources.teaching-resources',
   LEARNING_CHART: 'lesson-plan.learning-chart',
@@ -30,6 +30,7 @@ export const NUMBERED_SECTIONS = [
   SECTIONS.OVERVIEW,
   SECTIONS.HEADING,
   SECTIONS.TEACH_IT,
+  // deprecated
   SECTIONS.PROCEDURE,
   SECTIONS.ACKNOWLEDGMENTS,
   SECTIONS.VERSIONS,
@@ -41,7 +42,7 @@ export const sectionTypeMap = {
   [SECTIONS.OVERVIEW]: Overview,
   // [SECTIONS.HEADING]: Heading,
   // [SECTIONS.TEXT_BLOCK]: TextBlock,
-  // [SECTIONS.PROCEDURE]: Procedure,
+  [SECTIONS.PROCEDURE]: () => <></>,
   [SECTIONS.TEACH_IT]: TeachIt,
   // [SECTIONS.LEARNING_CHART]: LearningChart,
   // [SECTIONS.STANDARDS]: Standards,
