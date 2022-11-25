@@ -5,7 +5,7 @@ import Overview from './Overview';
 import Heading from './Heading.js';
 import TeachIt from './TeachIt';
 import LearningChart from './LearningChart';
-// import Standards from "./Standards/index";
+import Standards from './Standards';
 // import Acknowledgments from "./Acknowledgments";
 // import Versions from "./Versions";
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
@@ -45,7 +45,7 @@ export const sectionTypeMap = {
   [SECTIONS.PROCEDURE]: () => <></>,
   [SECTIONS.TEACH_IT]: TeachIt,
   [SECTIONS.LEARNING_CHART]: LearningChart,
-  // [SECTIONS.STANDARDS]: Standards,
+  [SECTIONS.STANDARDS]: Standards,
   // [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
   // [SECTIONS.VERSIONS]: Versions,
   [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleRichTextSection,
