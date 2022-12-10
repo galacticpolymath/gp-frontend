@@ -45,8 +45,8 @@ export default function Navbar() {
                 </Link>
               </li>
               <li className='nav-item'>
-                <Link href='/'>
-                  <a className='nav-link'>Hire us</a>
+                <Link href='/hire-us'>
+                  <a className={`nav-link ${router.pathname === '/hire-us' ? 'fw-bold active' : 'fw-light'}`}>Hire us</a>
                 </Link>
               </li>
               <li className='nav-item'>
