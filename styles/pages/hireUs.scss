@@ -1,0 +1,35 @@
+$btnColor: #84469E;
+
+.hireUsPg {
+  max-width: 100% !important;
+  color: white;
+  background-size: cover;
+  background-position: 70% center;
+  padding: 20vh 0;
+}
+
+.headingHireUs {
+  font-size: 75px;
+  font-weight: 450 !important;
+}
+
+.letsTalkBtnContainer {
+  background-color: $btnColor !important;
+  width: 350px !important;
+  height: 200px !important;
+  border: solid .5px #FFFFFF;
+  border-radius: 1.3em;
+}
+
+.introSecAndLetTalksSec{
+    height: 700px;
+    padding-bottom: 150px;
+}
+
+.letsTalkBtnContainer{
+  div:last-of-type{
+      span{
+        font-size: 38px;
+      }
+  }
+}
