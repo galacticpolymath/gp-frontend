@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import './style.scss';
+import '../styles/hireUs.scss';
 
 // what this component doing? 
 // installing bootstrap for the component

@@ -62,6 +62,7 @@ img {
   background-color: $math;
 }
 
+
 // bootstrap overrides
 .btn-light {
   background-color: $sparkle-white;
@@ -81,6 +82,22 @@ img {
     border-left: 1px solid $white;
     border-top: 0;
   }
+}
+
+.noPadding{
+  padding: 0!important;
+}
+
+.noMargin{
+  margin: 0!important;
+}
+
+.noBackground{
+  background-color: transparent!important;
+}
+
+.noBorder{
+  border: none !important;
 }
 
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
