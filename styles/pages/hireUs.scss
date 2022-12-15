@@ -1,6 +1,8 @@
 $btnColor: #84469e;
+$mobileTxtColor: #96195F;
 $btnColorMobile: #633a9a;
 $borderRadiusModal: 1.3em;
+$whatWeDoCardColor: #FFF8F8;
 
 .hireUsPg {
   overflow-x: hidden;
@@ -101,16 +103,29 @@ $borderRadiusModal: 1.3em;
   min-height: 700px;
   border-radius: $borderRadiusModal;
 
-  @media (min-width: 767px){
-    transform: translateY(-60px);
+
+  @media (min-width: 768px){
+    * {
+      color: black !important;
+    }
+  }
+
+  @media(max-width: 767px){
+    transform: translateY(-60px) !important;
+    background-color: $whatWeDoCardColor;
   }
 }
 
-.hireUsPgInfoCard {
-  * {
-    color: black !important;
+.hireUsPgInfoCardBody{
+  @media(max-width: 767px){
+    h3{
+      color: $mobileTxtColor !important;
+      font-size: 60px !important;
+      font-weight: 650;
+    }
   }
 }
+
 
 .fwtHireUsCard {
   font-weight: 249 !important;
@@ -120,6 +135,11 @@ $borderRadiusModal: 1.3em;
   color: #363636 !important;
   width: 75%;
   font-size: 55px;
+
+  @media (max-width: 767px){
+    font-size: 40px;
+    width: 100%;
+  }
 }
 
 .hireUsInfoStyledContainer {

@@ -91,29 +91,50 @@ const HireUsPage = () => {
                 </section>
                 <section className="ps-4 pe-4 row">
                     <Card className='hireUsPgInfoCard w-100 border shadow ps-3 pe-3 pt-4 pb-4'>
-                        <CardBody>
-                            <section className="pb-4">
-                                <span className="hireUsCardIntroTxt d-inline-block">
-                                    <span className='bolder'>
-                                        We mobilize knowledge
+                        <CardBody className="hireUsPgInfoCardBody">
+                            <section className="d-none d-md-flex flex-column">
+                                <section className="pb-4">
+                                    <span className="hireUsCardIntroTxt d-inline-block">
+                                        <span className='bolder'>
+                                            We mobilize knowledge
+                                        </span>
+                                        <span className='ms-2 fwtHireUsCard'>
+                                            by turning our clients outreach goals into rich, open-access learning experiences.
+                                        </span>
                                     </span>
-                                    <span className='ms-2 fwtHireUsCard'>
-                                        by turning our clients outreach goals into rich, open-access learning experiences.
-                                    </span>
-                                </span>
+                                </section>
+                                {hireUsCardsSectionTexts.map(({ text, content }, index) => {
+                                    return (
+                                        <>
+                                            <HireUsCardSection key={index} text={text} content={content} />
+                                            {(index === 0) && (
+                                                <section className='d-flex justify-content-center align-items-center mt-3'>
+                                                    <TbArrowBigDown className="arrowDown" />
+                                                </section>
+                                            )}
+                                        </>
+                                    );
+                                })}
                             </section>
-                            {hireUsCardsSectionTexts.map(({ text, content }, index) => {
-                                return (
-                                    <>
-                                        <HireUsCardSection key={index} text={text} content={content} />
-                                        {(index === 0) && (
-                                            <section className='d-flex justify-content-center align-items-center mt-3'>
-                                                <TbArrowBigDown className="arrowDown" />
-                                            </section>
-                                        )}
-                                    </>
-                                );
-                            })}
+                            <section className="d-flex d-md-none flex-column">
+                                <section className="">
+                                    <section>
+                                        <h3 className="text-nowrap">
+                                            What do we do?
+                                        </h3>
+                                    </section>
+                                </section>
+                                <section className="mt-3">
+                                    <span className="hireUsCardIntroTxt d-inline-block">
+                                        <span className='bolder'>
+                                            We mobilize knowledge
+                                        </span>
+                                        <span className='ms-2 fwtHireUsCard'>
+                                            by turning our clients outreach goals into rich, open-access learning experiences.
+                                        </span>
+                                    </span>
+                                </section>
+                            </section>
                         </CardBody>
                     </Card>
                 </section>
