@@ -1,4 +1,5 @@
 $btnColor: #84469E;
+$borderRadiusModal: 1.3em;
 
 .hireUsPg {
   max-width: 100% !important;
@@ -18,12 +19,24 @@ $btnColor: #84469E;
   width: 350px !important;
   height: 200px !important;
   border: solid .5px #FFFFFF;
-  border-radius: 1.3em;
+  border-radius: $borderRadiusModal;
 }
 
 .introSecAndLetTalksSec{
     height: 700px;
     padding-bottom: 150px;
+}
+
+.hireUsPgInfoCard{
+  transform: translateY(-100px);
+  min-height: 700px;
+  border-radius: $borderRadiusModal;
+}
+
+.hireUsPgInfoCard{
+    *{
+      color: black !important;
+    }
 }
 
 .letsTalkBtnContainer{
@@ -32,4 +45,35 @@ $btnColor: #84469E;
         font-size: 38px;
       }
   }
+}
+
+.fwtHireUsCard{
+  font-weight: 249 !important;
+}
+
+
+.hireUsCardIntroTxt{
+  color: #363636 !important;
+  width: 75%;
+  font-size: 55px;
+}
+
+.hireUsInfoStyledContainer{
+  border: solid .5px #707070;
+  border-radius: $borderRadiusModal;
+  height: 350px;
+}
+
+.hireUsCardTxt{
+  font-size: 40px !important;
+}
+
+.arrowDown{
+  font-size: 50px !important;
+}
+
+.video-styles{
+  width: 100% !important;
+  height: 300px !important;
+  border-radius: $borderRadiusModal;
 }

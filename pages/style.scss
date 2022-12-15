@@ -1,13 +1,13 @@
 $enable-cssgrid: true;
 
-@import 'colors';
+@import "colors";
 
 $primary: $burst-purple;
 $secondary: $atomic-blue;
 $info: lighten($hydrogen-blue-light, 15%);
 
-@import '../node_modules/bootstrap/scss/bootstrap';
-@import '../node_modules/react-responsive-carousel/lib/styles/carousel.min.css';
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/react-responsive-carousel/lib/styles/carousel.min.css";
 
 html,
 body {
@@ -62,11 +62,11 @@ img {
   background-color: $math;
 }
 
-
 // bootstrap overrides
 .btn-light {
   background-color: $sparkle-white;
-  &:active, &:focus {
+  &:active,
+  &:focus {
     background-color: $sparkle-white;
   }
 }
@@ -84,20 +84,47 @@ img {
   }
 }
 
-.noPadding{
-  padding: 0!important;
+.noPadding {
+  padding: 0 !important;
 }
 
-.noMargin{
-  margin: 0!important;
+.noMargin {
+  margin: 0 !important;
 }
 
-.noBackground{
-  background-color: transparent!important;
+.noBackground {
+  background-color: transparent !important;
 }
 
-.noBorder{
+.noBorder {
   border: none !important;
+}
+
+.bolder {
+  font-weight: 700 !important;
+}
+
+.fw300 {
+  font-weight: 300 !important;
+}
+
+.fw250 {
+  font-weight: 250 !important;
+}
+
+.fw245 {
+  font-weight: 245 !important;
+}
+
+.fw200 {
+  font-weight: 200 !important;
+}
+
+.parallax {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
