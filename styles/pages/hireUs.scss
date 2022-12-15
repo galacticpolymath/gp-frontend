@@ -1,4 +1,5 @@
-$btnColor: #84469E;
+$btnColor: #84469e;
+$btnColorMobile: #633a9a;
 $borderRadiusModal: 1.3em;
 
 .hireUsPg {
@@ -13,125 +14,149 @@ $borderRadiusModal: 1.3em;
   font-size: 75px;
   font-weight: 450 !important;
 
-  @media(min-width: 768px) and (max-width: 879px){
-    font-size: 65px !important;
-  }
-
-  @media(min-width: 880px) and (max-width: 991px){
+  @media (min-width: 767px) {
     font-size: 70px !important;
   }
 
-  @media(min-width: 992px){
-    font-size: 75px !important;
+  @media (min-width: 768px) and (max-width: 879px) {
+    font-size: 65px !important;
   }
 
+  @media (min-width: 880px) and (max-width: 991px) {
+    font-size: 70px !important;
+  }
+
+  @media (min-width: 992px) {
+    font-size: 75px !important;
+  }
 }
 
 .letsTalkBtnContainer {
   background-color: $btnColor !important;
   width: 350px !important;
   height: 200px !important;
-  border: solid .5px #FFFFFF;
+  border: solid 0.5px #ffffff;
   border-radius: $borderRadiusModal;
 
-  @media(min-width: 768px) and (max-width: 991px){
+  > div{
+    @media (min-width: 992px) {
+      width: 100% !important;
+      height: 50% !important;
+    }
+
+    @media (max-width: 991px) {
+      width: 100% !important;
+    }
+  }
+
+  div:last-of-type {
+    span {
+      font-size: 38px;
+      font-weight: 250;
+
+      @media (min-width: 768px) and (max-width: 879px) {
+        font-size: 30px;
+      }
+
+      @media (min-width: 880px) and (max-width: 991px) {
+        font-size: 35px;
+      }
+
+      @media (max-width: 767px) {
+        padding: 0px 0px 8px 10px;
+        font-weight: 200;
+        text-decoration: underline;
+        text-decoration-thickness: 1.5px;
+      }
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
     width: 240px !important;
     height: 150px !important;
   }
 
-  @media(min-width: 992px){
+  @media (min-width: 992px) {
+  }
 
+  @media (max-width: 767px) {
+    height: 95px !important;
+    border-radius: 2.8em;
+    background-color: $btnColorMobile !important;
   }
 }
 
-.introSecAndLetTalksSec{
-    height: 700px;
-    padding-bottom: 150px;
-    @media(min-width: 768px) and (max-width: 991px){
-      > section:first-child{
-        margin-left: 30px;
-      }
+.introSecAndLetTalksSec {
+  height: 700px;
+  padding-bottom: 150px;
+  @media (min-width: 768px) and (max-width: 991px) {
+    > section:first-child {
+      margin-left: 30px;
     }
+  }
 }
 
-.hireUsPgInfoCard{
+.hireUsPgInfoCard {
   transform: translateY(-100px);
   min-height: 700px;
   border-radius: $borderRadiusModal;
+
+  @media (min-width: 767px){
+    transform: translateY(-60px);
+  }
 }
 
-.hireUsPgInfoCard{
-    *{
-      color: black !important;
-    }
+.hireUsPgInfoCard {
+  * {
+    color: black !important;
+  }
 }
 
-.letsTalkBtnContainer{
-  div:last-of-type{
-      span{
-        font-size: 38px;
-        font-weight: 250;
-
-        @media (min-width: 768px) and (max-width: 879px) {
-          font-size: 30px;
-        }
-      
-        @media (min-width: 880px) and (max-width: 991px) {
-          font-size: 35px;
-        }
-      }
-  }  
-}
-
-.fwtHireUsCard{
+.fwtHireUsCard {
   font-weight: 249 !important;
 }
 
-
-.hireUsCardIntroTxt{
+.hireUsCardIntroTxt {
   color: #363636 !important;
   width: 75%;
   font-size: 55px;
 }
 
-.hireUsInfoStyledContainer{
-  border: solid .5px #707070;
+.hireUsInfoStyledContainer {
+  border: solid 0.5px #707070;
   border-radius: $borderRadiusModal;
   height: 350px;
 }
 
-.hireUsCardTxt{
+.hireUsCardTxt {
   font-size: 40px !important;
 }
 
-.arrowDown{
+.arrowDown {
   font-size: 50px !important;
 }
 
-.video-styles{
+.video-styles {
   width: 100% !important;
   height: 300px !important;
   border-radius: $borderRadiusModal;
 }
 
-
-.introSubTextHireUs{
-  @media(min-width: 768px) and (max-width: 879px){
+.introSubTextHireUs {
+  @media (min-width: 768px) and (max-width: 879px) {
     font-size: 35px !important;
   }
 
-  @media(min-width: 880px) and (max-width: 991px){
+  @media (min-width: 880px) and (max-width: 991px) {
     font-size: 38px !important;
   }
 
-  @media(min-width: 992px){
+  @media (min-width: 992px) {
     font-size: 40px !important;
   }
+
+  @media (max-width: 767px) {
+    width: 79% !important;
+    font-size: 45px !important;
+  }
 }
-
-
-
-
-
-
-

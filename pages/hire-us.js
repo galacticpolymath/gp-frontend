@@ -32,6 +32,7 @@ import LayoutBackGroundImg from '../assets/img/1_northeast_merlot_darker.png';
 import MessageBoxIcon from '../components/svgs/MessageBoxIcon';
 import HireUsCardSection from '../components/HireUsComps/HireUsCardSection';
 import ReactPlayer from 'react-player'
+import LetsTalkBtnContainer from '../components/HireUsComps/buttons/LetsTalkBtnContainer';
 
 
 const HireUsPage = () => {
@@ -67,19 +68,25 @@ const HireUsPage = () => {
                             </section>
                         </section>
                         <section className="w-50 d-flex align-items-center justify-content-center">
-                            <div className="letsTalkBtnContainer border-white d-flex flex-column position-relative">
-                                <div className="d-flex align-items-center justify-content-center h-50 w-100">
-                                    <MessageBoxIcon />
-                                </div>
-                                <div className="d-flex align-items-center justify-content-center h-50 w-100">
-                                    <span>Let's talk!</span>
-                                </div>
-                                <Button className="w-100 h-100 noBackground noBorder position-absolute" />
-                            </div>
+                            <LetsTalkBtnContainer />
                         </section>
                     </section>
                     <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
-
+                        <section className="w-100 d-flex flex-column align-items-center pt-4">
+                            <section className="w-75">
+                                <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Easier,</h1>
+                                <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Classroom-ready</h1>
+                                <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Outreach</h1>
+                            </section>
+                            <section className="w-75 ps-1 mt-4">
+                                <span className={`${styles.shadow} display-6 noMargin noPadding`}>
+                                    We translate your work so that non-experts can teach mind-opening lessons.
+                                </span>
+                            </section>
+                            <section className="w-75 ps-1 pt-5">
+                                <LetsTalkBtnContainer />
+                            </section>
+                        </section>
                     </section>
                 </section>
                 <section className="ps-4 pe-4 row">
