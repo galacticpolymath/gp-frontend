@@ -2,7 +2,7 @@ $btnColor: #84469E;
 $borderRadiusModal: 1.3em;
 
 .hireUsPg {
-  max-width: 100% !important;
+  overflow-x: hidden;
   color: white;
   background-size: cover;
   background-position: 70% center;
@@ -12,6 +12,19 @@ $borderRadiusModal: 1.3em;
 .headingHireUs {
   font-size: 75px;
   font-weight: 450 !important;
+
+  @media(min-width: 768px) and (max-width: 879px){
+    font-size: 65px !important;
+  }
+
+  @media(min-width: 880px) and (max-width: 991px){
+    font-size: 70px !important;
+  }
+
+  @media(min-width: 992px){
+    font-size: 75px !important;
+  }
+
 }
 
 .letsTalkBtnContainer {
@@ -20,11 +33,25 @@ $borderRadiusModal: 1.3em;
   height: 200px !important;
   border: solid .5px #FFFFFF;
   border-radius: $borderRadiusModal;
+
+  @media(min-width: 768px) and (max-width: 991px){
+    width: 240px !important;
+    height: 150px !important;
+  }
+
+  @media(min-width: 992px){
+
+  }
 }
 
 .introSecAndLetTalksSec{
     height: 700px;
     padding-bottom: 150px;
+    @media(min-width: 768px) and (max-width: 991px){
+      > section:first-child{
+        margin-left: 30px;
+      }
+    }
 }
 
 .hireUsPgInfoCard{
@@ -43,8 +70,17 @@ $borderRadiusModal: 1.3em;
   div:last-of-type{
       span{
         font-size: 38px;
+        font-weight: 250;
+
+        @media (min-width: 768px) and (max-width: 879px) {
+          font-size: 30px;
+        }
+      
+        @media (min-width: 880px) and (max-width: 991px) {
+          font-size: 35px;
+        }
       }
-  }
+  }  
 }
 
 .fwtHireUsCard{
@@ -77,3 +113,25 @@ $borderRadiusModal: 1.3em;
   height: 300px !important;
   border-radius: $borderRadiusModal;
 }
+
+
+.introSubTextHireUs{
+  @media(min-width: 768px) and (max-width: 879px){
+    font-size: 35px !important;
+  }
+
+  @media(min-width: 880px) and (max-width: 991px){
+    font-size: 38px !important;
+  }
+
+  @media(min-width: 992px){
+    font-size: 40px !important;
+  }
+}
+
+
+
+
+
+
+

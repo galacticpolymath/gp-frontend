@@ -52,18 +52,18 @@ const HireUsPage = () => {
     const hireUsCardsSectionTexts = [{ text: "Clients provide complex texts, data, and outreach aims", content: cardVideoSec1 }, { text: "We create open access (free) lessons that a non-specialist can teach:", content: cardVideoSec2 }];
 
     return (
-        <Layout>
-            <div className="min-vh-100 container noPadding noMargin w-100 hireUsPg">
+        <Layout description="Galactic PolyMath Hire Us Page.">
+            <div className="min-vh-100 container-fluid noPadding noMargin w-100 hireUsPg">
                 <section className='d-flex flex-row parallax row' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
-                    <section className="d-flex w-100 noMargin col-12 introSecAndLetTalksSec">
+                    <section className="d-none d-md-flex w-100 noMargin col-12 introSecAndLetTalksSec">
                         <section className="w-50 d-flex flex-column align-items-center justify-content-center">
                             <section>
                                 <h1 className={`${styles.shadow} display-1 headingHireUs`}>Better, Easier</h1>
                                 <h1 className={`${styles.shadow} display-1 headingHireUs`}>Outreach</h1>
                             </section>
                             <section>
-                                <p className={`${styles.shadow} display-6 noMargin noPadding`}>We help you make a real</p>
-                                <p className={`${styles.shadow} display-6 noMargin noPadding`}>impact!</p>
+                                <p className={`${styles.shadow} display-6 noMargin noPadding introSubTextHireUs`}>We help you make a real</p>
+                                <p className={`${styles.shadow} display-6 noMargin noPadding introSubTextHireUs`}>impact!</p>
                             </section>
                         </section>
                         <section className="w-50 d-flex align-items-center justify-content-center">
@@ -77,6 +77,9 @@ const HireUsPage = () => {
                                 <Button className="w-100 h-100 noBackground noBorder position-absolute" />
                             </div>
                         </section>
+                    </section>
+                    <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
+
                     </section>
                 </section>
                 <section className="ps-4 pe-4 row">
