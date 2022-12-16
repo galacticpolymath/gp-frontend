@@ -53,7 +53,7 @@ const HireUsPage = () => {
     </div>
 
 
-    
+
 
     const hireUsCardsSectionTexts = [{ text: "Clients provide complex texts, data, and outreach aims", mobileTxt: "You give us your outreach goals, along with complex texts, data, and any media you might have related to your work: ", content: cardVideoSec1 }, { text: "We create open access (free) lessons that a non-specialist can teach:", mobileTxt: "We create lessons and supporting multimedia that achieve your outreach aims by making your work accessible to teachers around the world.", content: cardVideoSec2 }];
     const infoTxtsFirstSec = [{ boldedTxt: "We help researchers", unBoldedText: "win grants and do outreach more easily.", imgPath: "/imgs/pretty-ribbon.png" }, { boldedTxt: "We help nonprofits", unBoldedText: "grow student understanding and enthusiasm around their mission.", imgPath: "/imgs/pretty-sustainability.png" }, { boldedTxt: "We help companies", unBoldedText: "build tomorrow’s workforce by connecting classwork to career paths.", imgPath: "/imgs/pretty-rocket-career.png" }]
@@ -123,12 +123,10 @@ const HireUsPage = () => {
                                 })}
                             </section>
                             <section className="d-flex d-md-none flex-column ps-4 pe-4">
-                                <section className="">
-                                    <section>
-                                        <h3 className="text-nowrap">
-                                            What do we do?
-                                        </h3>
-                                    </section>
+                                <section>
+                                    <h3 className="text-nowrap">
+                                        What do we do?
+                                    </h3>
                                 </section>
                                 <section className="mt-3">
                                     <span className="hireUsCardIntroTxt d-inline-block">
