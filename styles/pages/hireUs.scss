@@ -1,8 +1,8 @@
 $btnColor: #84469e;
-$mobileTxtColor: #96195F;
+$mobileTxtColor: #96195f;
 $btnColorMobile: #633a9a;
 $borderRadiusModal: 1.3em;
-$whatWeDoCardColor: #FFF8F8;
+$whatWeDoCardColor: #fff8f8;
 
 .hireUsPg {
   overflow-x: hidden;
@@ -40,7 +40,7 @@ $whatWeDoCardColor: #FFF8F8;
   border: solid 0.5px #ffffff;
   border-radius: $borderRadiusModal;
 
-  > div{
+  > div {
     @media (min-width: 992px) {
       width: 100% !important;
       height: 50% !important;
@@ -51,18 +51,22 @@ $whatWeDoCardColor: #FFF8F8;
     }
   }
 
+  div:first-of-type {
+    padding-bottom: 10px !important;
+  }
+
   div:last-of-type {
     span {
       font-size: 38px;
       font-weight: 250;
 
-      @media (min-width: 768px) and (max-width: 879px) {
-        font-size: 30px;
-      }
+      // @media (min-width: 768px) and (max-width: 879px) {
+      //   font-size: 30px;
+      // }
 
-      @media (min-width: 880px) and (max-width: 991px) {
-        font-size: 35px;
-      }
+      // @media (min-width: 880px) and (max-width: 991px) {
+      //   font-size: 35px;
+      // }
 
       @media (max-width: 767px) {
         padding: 0px 0px 8px 10px;
@@ -98,34 +102,43 @@ $whatWeDoCardColor: #FFF8F8;
   }
 }
 
+.CardSec {
+  @media (min-width: 768px) {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
+
 .hireUsPgInfoCard {
   transform: translateY(-100px);
   min-height: 700px;
   border-radius: $borderRadiusModal;
 
-
-  @media (min-width: 768px){
+  @media (min-width: 768px) {
     * {
       color: black !important;
     }
   }
 
-  @media(max-width: 767px){
+  @media (max-width: 767px) {
     transform: translateY(-60px) !important;
     background-color: $whatWeDoCardColor;
   }
 }
 
-.hireUsPgInfoCardBody{
-  @media(max-width: 767px){
-    h3{
+.hireUsPgInfoCardBody {
+  @media (max-width: 767px) {
+    h3 {
       color: $mobileTxtColor !important;
       font-size: 60px !important;
       font-weight: 650;
     }
   }
-}
 
+  @media (max-width: 767px) {
+    padding: 0 !important;
+  }
+}
 
 .fwtHireUsCard {
   font-weight: 249 !important;
@@ -136,7 +149,7 @@ $whatWeDoCardColor: #FFF8F8;
   width: 75%;
   font-size: 55px;
 
-  @media (max-width: 767px){
+  @media (max-width: 767px) {
     font-size: 40px;
     width: 100%;
   }
@@ -150,16 +163,40 @@ $whatWeDoCardColor: #FFF8F8;
 
 .hireUsCardTxt {
   font-size: 40px !important;
+
+  @media (max-width: 767px) {
+    font-size: 45px !important;
+    font-weight: 280;
+  }
 }
 
 .arrowDown {
   font-size: 50px !important;
 }
 
+
 .video-styles {
   width: 100% !important;
   height: 300px !important;
   border-radius: $borderRadiusModal;
+
+  @media (max-width: 767px){
+    width: 90% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 450px !important;
+
+    > * > *{
+      width: 100% !important;
+      border: 1px solid #dee2e6 !important;
+      border-radius: 0.375rem !important;
+    }
+  }
+}
+
+.hireUsCardFirstSecTxt {
+  font-size: 30px !important;
 }
 
 .introSubTextHireUs {

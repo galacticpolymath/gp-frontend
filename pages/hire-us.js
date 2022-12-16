@@ -15,7 +15,7 @@
 /* eslint-disable react/jsx-indent */
 
 // TbArrowBigDown
-import { Parallax } from 'react-scroll-parallax';
+import Image from 'next/image';
 import { TbArrowBigDown } from 'react-icons/tb';
 import {
     Card,
@@ -33,6 +33,7 @@ import MessageBoxIcon from '../components/svgs/MessageBoxIcon';
 import HireUsCardSection from '../components/HireUsComps/HireUsCardSection';
 import ReactPlayer from 'react-player'
 import LetsTalkBtnContainer from '../components/HireUsComps/buttons/LetsTalkBtnContainer';
+import HireUsCardFirstSecMobile from '../components/HireUsComps/HireUsCardFirstSecMobile';
 
 
 const HireUsPage = () => {
@@ -41,16 +42,21 @@ const HireUsPage = () => {
             <source src="./videos/client-asset-to-lesson-animation.mp4" type="video/mp4" />
         </video>
     );
-    const cardVideoSec2 = <div className="video-styles border rounded overflow-hidden">
+    const cardVideoSec2 = <div className="video-styles rounded overflow-hidden">
         <ReactPlayer
             url='https://www.youtube.com/watch?v=V0EtA5pbVSY&feature=youtu.be'
-            width="100%"
+            width='100%'
             height="100%"
             light={true}
             playing
             controls />
     </div>
-    const hireUsCardsSectionTexts = [{ text: "Clients provide complex texts, data, and outreach aims", content: cardVideoSec1 }, { text: "We create open access (free) lessons that a non-specialist can teach:", content: cardVideoSec2 }];
+
+
+    
+
+    const hireUsCardsSectionTexts = [{ text: "Clients provide complex texts, data, and outreach aims", mobileTxt: "You give us your outreach goals, along with complex texts, data, and any media you might have related to your work: ", content: cardVideoSec1 }, { text: "We create open access (free) lessons that a non-specialist can teach:", mobileTxt: "We create lessons and supporting multimedia that achieve your outreach aims by making your work accessible to teachers around the world.", content: cardVideoSec2 }];
+    const infoTxtsFirstSec = [{ boldedTxt: "We help researchers", unBoldedText: "win grants and do outreach more easily.", imgPath: "/imgs/pretty-ribbon.png" }, { boldedTxt: "We help nonprofits", unBoldedText: "grow student understanding and enthusiasm around their mission.", imgPath: "/imgs/pretty-sustainability.png" }, { boldedTxt: "We help companies", unBoldedText: "build tomorrow’s workforce by connecting classwork to career paths.", imgPath: "/imgs/pretty-rocket-career.png" }]
 
     return (
         <Layout description="Galactic PolyMath Hire Us Page.">
@@ -89,10 +95,10 @@ const HireUsPage = () => {
                         </section>
                     </section>
                 </section>
-                <section className="ps-4 pe-4 row">
-                    <Card className='hireUsPgInfoCard w-100 border shadow ps-3 pe-3 pt-4 pb-4'>
+                <section className="CardSec ps-4 pe-4">
+                    <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-4'>
                         <CardBody className="hireUsPgInfoCardBody">
-                            <section className="d-none d-md-flex flex-column">
+                            <section className="d-none d-md-flex flex-column ps-3 pe-3">
                                 <section className="pb-4">
                                     <span className="hireUsCardIntroTxt d-inline-block">
                                         <span className='bolder'>
@@ -116,7 +122,7 @@ const HireUsPage = () => {
                                     );
                                 })}
                             </section>
-                            <section className="d-flex d-md-none flex-column">
+                            <section className="d-flex d-md-none flex-column ps-4 pe-4">
                                 <section className="">
                                     <section>
                                         <h3 className="text-nowrap">
@@ -134,6 +140,30 @@ const HireUsPage = () => {
                                         </span>
                                     </span>
                                 </section>
+                                <section className="mt-2">
+                                    {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} />)}
+                                </section>
+                            </section>
+                            <section className="d-flex d-md-none flex-column mt-15">
+                                <section className="ps-4 pe-4">
+                                    <section>
+                                        <h3 className="text-nowrap">
+                                            How does it work?
+                                        </h3>
+                                    </section>
+                                </section>
+                                {hireUsCardsSectionTexts.map(({ content, mobileTxt }, index) => {
+                                    return (
+                                        <>
+                                            <HireUsCardSection key={index} mobileTxt={mobileTxt} content={content} />
+                                            {(index === 0) && (
+                                                <section className='d-flex justify-content-center align-items-center mt-3'>
+                                                    <Image src="/imgs/pretty-down-arrow.png" width={75} height={75} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
+                                                </section>
+                                            )}
+                                        </>
+                                    );
+                                })}
                             </section>
                         </CardBody>
                     </Card>
