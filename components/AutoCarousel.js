@@ -1,3 +1,12 @@
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/jsx-indent-props */
+/* eslint-disable react/jsx-curly-brace-presence */
+/* eslint-disable react/jsx-tag-spacing */
+/* eslint-disable react/jsx-closing-bracket-location */
+/* eslint-disable react/jsx-first-prop-new-line */
+/* eslint-disable brace-style */
+/* eslint-disable comma-dangle */
+/* eslint-disable no-multiple-empty-lines */
 /* eslint-disable quotes */
 /* eslint-disable semi */
 /* eslint-disable no-unused-vars */
@@ -7,39 +16,79 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
-const AutoCarousel = (userInputs) => {
+import { BsCircle, BsCircleFill } from 'react-icons/bs';
+import { Card } from "react-bootstrap";
+import { bull } from 'react-icons/tb';
+import { useEffect, useRef, useState } from 'react';
+import UserFeedBack from './HireUsComps/UserFeedBack';
+
+const { Body } = Card;
+
+const AutoCarousel = ({ userInputs }) => {
+    const firstRenderRef = useRef(false);
+    const _userInputsDisplayed = !firstRenderRef.current ? userInputs.map((userInput, index) => ({ ...userInput, willScrollIntoView: (index === 0) })) : userInputs;
+    const [userInputsDisplayed, setUserInputsDisplayed] = useState(_userInputsDisplayed);
+    const [intervalTimer, setIntervalTimer] = useState(null);
+    firstRenderRef.current = true;
+
+    function displayFeedbackByIndex(clickedCircleIndex) {
+        setUserInputsDisplayed(userInputsDisplayed => {
+            const _userInputsDisplayed = userInputsDisplayed.map((userInputDisplayed, index) => {
+                return {
+                    ...userInputDisplayed,
+                    willScrollIntoView: (clickedCircleIndex === index)
+                }
+            })
+
+            return _userInputsDisplayed;
+        })
+    }
+
+    useEffect(() => {
+        if(firstRenderRef.current){
+            let _intervalTimer = setInterval(() => {
+                const currentFeedbackDisplayedIndex = userInputsDisplayed.findIndex(({ willScrollIntoView }) => willScrollIntoView)
+                const indexOfFeedbackToDisplay = ((currentFeedbackDisplayedIndex + 1) > (userInputs.length - 1)) ? 0 : (currentFeedbackDisplayedIndex + 1)
+                displayFeedbackByIndex(indexOfFeedbackToDisplay)
+            }, 3000);
+            setIntervalTimer(intervalTimer)
+
+            return () => { 
+                clearInterval(_intervalTimer); 
+                clearInterval(intervalTimer); 
+            }
+        }
+    }, [userInputsDisplayed]);
 
     return (
-        <section className='row ps-5 pe-5 mt-5 pb-5'>
-            <div className="slider">
-                <a href="#slide-1" className='text-decoration-none'></a>
-                <a href="#slide-2" className='text-decoration-none'>2</a>
-                <a href="#slide-3" className='text-decoration-none'>3</a>
-                <a href="#slide-4" className='text-decoration-none'>4</a>
-                <a href="#slide-5" className='text-decoration-none'>5</a>
-                <section className="d-flex justify-content-center align-items-center">
-                    <div className="slides d-flex">
-                        <div id="slide-1">
-                            1
-                        </div>
-                        <div id="slide-2">
-                            2
-                        </div>
-                        <div id="slide-3">
-                            3
-                        </div>
-                        <div id="slide-4">
-                            4
-                        </div>
-                        <div id="slide-5">
-                            5
-                        </div>
+        <Card className="w-75">
+            <Body>
+                <section className='row ps-5 pe-5 mt-5 pb-5'>
+                    <div className="slider w-100">
+                        <section className="d-flex justify-content-center align-items-center">
+                            <div className="slides d-flex">
+                                {userInputsDisplayed.map((userInput, index) => (
+                                    <UserFeedBack feedBack={userInput} index={index} key={index} />
+                                ))}
+                            </div>
+                        </section>
+                        {userInputsDisplayed.map(({ willScrollIntoView }, index) => (
+                            willScrollIntoView ? 
+                            <BsCircleFill
+                                key={index} className="text-primary"/>
+                            :
+                            <BsCircle
+                                key={index}
+                                onClick={() => { displayFeedbackByIndex(index) }}
+                            />
+                            
+                        ))}
                     </div>
                 </section>
-            </div>
-        </section>
+            </Body>
+        </Card>
     )
-        
+
 }
 
 export default AutoCarousel;

@@ -34,8 +34,9 @@ import HireUsCardSection from '../components/HireUsComps/HireUsCardSection';
 import ReactPlayer from 'react-player'
 import LetsTalkBtnContainer from '../components/HireUsComps/buttons/LetsTalkBtnContainer';
 import HireUsCardFirstSecMobile from '../components/HireUsComps/HireUsCardFirstSecMobile';
-import HireUsTestimoniesSec from '../components/HireUsComps/HireUsTestimoniesSec';
+import CarouselContainer from '../components/HireUsComps/CarouselContainer';
 import SectionWithBackgroundImg from '../components/SectionWithBackgroundImg';
+import teacherTestimonies from '../data/HireUsPg/teacherTestimonies.json'
 
 
 const HireUsPage = () => {
@@ -155,8 +156,8 @@ const HireUsPage = () => {
                                     );
                                 })}
                             </section>
-                            <section className="d-flex d-md-none">
-                                <HireUsTestimoniesSec />
+                            <section className="d-flex">
+                                <CarouselContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} />
                             </section>
                         </CardBody>
                     </Card>

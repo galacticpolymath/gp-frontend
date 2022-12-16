@@ -8,21 +8,20 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import Image from 'next/image';
-import { Card } from 'react-bootstrap';
+import AutoCarousel from '../AutoCarousel';
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 
-const HireUsTestimoniesSec = () => {
+const CarouselContainer = ({ headingTxt, userInputs }) => {
     return (
         <SectionWithBackgroundImg>
             <section className="d-flex justify-content-center align-items-center h-25">
-                <h2 className="headingCarousel bolder">What teachers say:</h2>
+                <h2 className="headingCarousel bolder">{headingTxt}</h2>
             </section>
-            <section>
-                {/* put carousel here */}
-            </section>   
+            <section className="d-flex justify-content-center align-items-center">
+                <AutoCarousel userInputs={userInputs} />
+            </section>
         </SectionWithBackgroundImg>
     )
 }
 
-export default HireUsTestimoniesSec;
+export default CarouselContainer;
