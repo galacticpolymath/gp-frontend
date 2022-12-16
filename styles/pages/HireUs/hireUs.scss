@@ -1,3 +1,5 @@
+@import './compStyles/TestimoniesAndReviewsSec';
+
 $btnColor: #84469e;
 $mobileTxtColor: #96195f;
 $btnColorMobile: #633a9a;
@@ -59,14 +61,6 @@ $whatWeDoCardColor: #fff8f8;
     span {
       font-size: 38px;
       font-weight: 250;
-
-      // @media (min-width: 768px) and (max-width: 879px) {
-      //   font-size: 30px;
-      // }
-
-      // @media (min-width: 880px) and (max-width: 991px) {
-      //   font-size: 35px;
-      // }
 
       @media (max-width: 767px) {
         padding: 0px 0px 8px 10px;
@@ -217,3 +211,5 @@ $whatWeDoCardColor: #fff8f8;
     font-size: 45px !important;
   }
 }
+
+

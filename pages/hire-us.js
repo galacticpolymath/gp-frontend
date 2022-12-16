@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-first-prop-new-line */
 /* eslint-disable react/jsx-closing-bracket-location */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-wrap-multilines */
@@ -14,7 +15,6 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
-// TbArrowBigDown
 import Image from 'next/image';
 import { TbArrowBigDown } from 'react-icons/tb';
 import {
@@ -34,6 +34,8 @@ import HireUsCardSection from '../components/HireUsComps/HireUsCardSection';
 import ReactPlayer from 'react-player'
 import LetsTalkBtnContainer from '../components/HireUsComps/buttons/LetsTalkBtnContainer';
 import HireUsCardFirstSecMobile from '../components/HireUsComps/HireUsCardFirstSecMobile';
+import HireUsTestimoniesSec from '../components/HireUsComps/HireUsTestimoniesSec';
+import SectionWithBackgroundImg from '../components/SectionWithBackgroundImg';
 
 
 const HireUsPage = () => {
@@ -98,37 +100,13 @@ const HireUsPage = () => {
                 <section className="CardSec ps-4 pe-4">
                     <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-4'>
                         <CardBody className="hireUsPgInfoCardBody">
-                            <section className="d-none d-md-flex flex-column ps-3 pe-3">
-                                <section className="pb-4">
-                                    <span className="hireUsCardIntroTxt d-inline-block">
-                                        <span className='bolder'>
-                                            We mobilize knowledge
-                                        </span>
-                                        <span className='ms-2 fwtHireUsCard'>
-                                            by turning our clients outreach goals into rich, open-access learning experiences.
-                                        </span>
-                                    </span>
-                                </section>
-                                {hireUsCardsSectionTexts.map(({ text, content }, index) => {
-                                    return (
-                                        <>
-                                            <HireUsCardSection key={index} text={text} content={content} />
-                                            {(index === 0) && (
-                                                <section className='d-flex justify-content-center align-items-center mt-3'>
-                                                    <TbArrowBigDown className="arrowDown" />
-                                                </section>
-                                            )}
-                                        </>
-                                    );
-                                })}
-                            </section>
-                            <section className="d-flex d-md-none flex-column ps-4 pe-4">
-                                <section>
+                            <section className="d-flex flex-column ps-3 pe-3">
+                                <section className="d-flex d-md-none">
                                     <h3 className="text-nowrap">
                                         What do we do?
                                     </h3>
                                 </section>
-                                <section className="mt-3">
+                                <section className="pb-4 mt-3">
                                     <span className="hireUsCardIntroTxt d-inline-block">
                                         <span className='bolder'>
                                             We mobilize knowledge
@@ -138,7 +116,21 @@ const HireUsPage = () => {
                                         </span>
                                     </span>
                                 </section>
-                                <section className="mt-2">
+                                <section className="d-none d-md-flex flex-column">
+                                    {hireUsCardsSectionTexts.map(({ text, content }, index) => {
+                                        return (
+                                            <>
+                                                <HireUsCardSection key={index} text={text} content={content} />
+                                                {(index === 0) && (
+                                                    <section className='d-flex justify-content-center align-items-center mt-3'>
+                                                        <TbArrowBigDown className="arrowDown" />
+                                                    </section>
+                                                )}
+                                            </>
+                                        );
+                                    })}
+                                </section>
+                                <section className="d-flex d-md-none flex-column">
                                     {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} />)}
                                 </section>
                             </section>
@@ -162,6 +154,9 @@ const HireUsPage = () => {
                                         </>
                                     );
                                 })}
+                            </section>
+                            <section className="d-flex d-md-none">
+                                <HireUsTestimoniesSec />
                             </section>
                         </CardBody>
                     </Card>
