@@ -24,19 +24,18 @@ import {
     CardTitle,
     CardText,
 } from 'reactstrap';
-import Head from 'next/head'
 import Layout from '../components/Layout';
 import styles from './index.module.css';
-import Button from 'react-bootstrap/Button';
 import LayoutBackGroundImg from '../assets/img/1_northeast_merlot_darker.png';
-import MessageBoxIcon from '../components/svgs/MessageBoxIcon';
 import HireUsCardSection from '../components/HireUsComps/HireUsCardSection';
 import ReactPlayer from 'react-player'
 import LetsTalkBtnContainer from '../components/HireUsComps/buttons/LetsTalkBtnContainer';
 import HireUsCardFirstSecMobile from '../components/HireUsComps/HireUsCardFirstSecMobile';
 import CarouselContainer from '../components/HireUsComps/CarouselContainer';
-import SectionWithBackgroundImg from '../components/SectionWithBackgroundImg';
 import teacherTestimonies from '../data/HireUsPg/teacherTestimonies.json'
+import PicAndImageSec from '../components/HireUsComps/sections/PicAndImageSec';
+import WhatTeachersSaysBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
+import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 
 
 const HireUsPage = () => {
@@ -157,7 +156,36 @@ const HireUsPage = () => {
                                 })}
                             </section>
                             <section className="d-flex mt-5">
-                                <CarouselContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} />
+                                <CarouselContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} />
+                            </section>
+                            <section className="mt-5 ps-4">
+                                <section>
+                                    <h3 className="display-1">Share your knowledge</h3>
+                                    <h3 className="display-1">with anyone, anywhere!</h3>
+                                </section>
+                            </section>
+                            <section className="mt-7 ps-4 pe-4">
+                                <PicAndImageSec
+                                    text="We promote lessons through our growing GP Constellation dissemination network."
+                                    imgPath="/imgs/GP_Constellation_dark.png"
+                                    customTxtSpanClassNames="promoteLessonsTxtClass move10pxRight ps-2"
+                                    imgMainSectionCustomCss="logoConstellationImgSec w-75"
+                                />
+                            </section>
+                            <section className="mt-5 ps-4 pe-4 eachLessonMainSec">
+                                <section>
+                                    <h5 className="fst-italic text-dark move10pxRight ps-2">Each lesson is: </h5>
+                                </section>
+                                <ul className="eachLessonInfoList ps-5 pt-2">
+                                    {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
+                                        <li className="text-dark fw249" key={index}>
+                                            {normalTxt}
+                                            <span className="text-decoration-underline underline-less-thick">
+                                                {underLineTxt}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
                             </section>
                         </CardBody>
                     </Card>

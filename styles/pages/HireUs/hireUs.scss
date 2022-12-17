@@ -7,6 +7,19 @@ $btnColorMobile: #633a9a;
 $borderRadiusModal: 1.3em;
 $whatWeDoCardColor: #fff8f8;
 
+.picAndImgSec{
+  // border: solid pink;
+  height: 225px;
+}
+
+.promoteLessonsTxtClass{
+  font-size: 28px !important;
+}
+
+.move10pxRight{
+  transform: translateX(10px);
+}
+
 .hireUsPg {
   overflow-x: hidden;
   color: white;
@@ -125,7 +138,7 @@ $whatWeDoCardColor: #fff8f8;
   @media (max-width: 767px) {
     h3 {
       color: $mobileTxtColor !important;
-      font-size: 60px !important;
+      font-size: 58px !important;
       font-weight: 650;
     }
   }
@@ -213,4 +226,24 @@ $whatWeDoCardColor: #fff8f8;
   }
 }
 
+
+// each lesson info section starts here
+.eachLessonInfoList{
+  li{
+    font-size: 25px !important;
+    max-width: 580px !important;
+  }
+  li:not(:first-child){
+    margin-top: 13px;
+  }
+}
+
+.eachLessonMainSec{
+  > section{
+    h5{
+      font-size: 30px !important;
+      font-weight: 380;
+    }
+  }
+}
 

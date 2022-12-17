@@ -9,13 +9,14 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
+
 import { useEffect, useRef, useState } from 'react';
 import { Card } from 'react-bootstrap';
 
 import AutoCarousel from '../AutoCarousel';
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 
-const CarouselContainer = ({ headingTxt, userInputs }) => {
+const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc }) => {
     const [index, setIndex] = useState(0);
     const [isCarouselPaused, setIsCarouselPaused] = useState(false)
     const timeoutRef = useRef(null);
@@ -52,7 +53,7 @@ const CarouselContainer = ({ headingTxt, userInputs }) => {
     }, [index, isCarouselPaused]);
 
     return (
-        <SectionWithBackgroundImg>
+        <SectionWithBackgroundImg backgroundImgSrc={backgroundImgSrc}>
             <section className="d-flex justify-content-center align-items-center autoCarouselContainerHeading">
                 <h2 className="headingCarousel bolder">{headingTxt}</h2>
             </section>

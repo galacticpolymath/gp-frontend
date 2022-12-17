@@ -47,6 +47,9 @@ img {
 .text-height-1 {
   line-height: 1.5;
 }
+
+
+
 .fs-7 {
   font-size: 0.75rem;
 }
@@ -104,12 +107,28 @@ img {
   font-weight: 700 !important;
 }
 
+.fw350{
+  font-weight: 350 !important;
+}
+
+.underline-less-thick{
+  text-decoration-thickness: 1.5px !important;
+}
+
+.fw325{
+  font-weight: 325 !important;
+}
+
 .fw300 {
   font-weight: 300 !important;
 }
 
 .fw250 {
   font-weight: 250 !important;
+}
+
+.fw249{
+  font-weight: 249 !important;
 }
 
 .fw245 {
@@ -143,8 +162,14 @@ img {
   margin-bottom: 150px !important;
 }
 
+.w-80{
+  width: 80%;
+}
+
 .negative-z-index{
   z-index: -1;
 }
+
+
 
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
