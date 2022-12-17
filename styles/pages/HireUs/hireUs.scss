@@ -163,6 +163,10 @@ $whatWeDoCardColor: #fff8f8;
   }
 }
 
+.teacherReviewsSecHeading{
+  height: 150px;
+}
+
 .hireUsInfoStyledContainer {
   border: solid 0.5px #707070;
   border-radius: $borderRadiusModal;
@@ -246,4 +250,11 @@ $whatWeDoCardColor: #fff8f8;
     }
   }
 }
+// each lesson info section ends here
+
+// Our Clients' Funding Sources section starts here
+.ourClientsFundingSourcesHeadingTxt{
+  font-size: 30px !important;
+} 
+
 

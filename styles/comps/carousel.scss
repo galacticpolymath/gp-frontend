@@ -1,5 +1,11 @@
+$carouselBackgroundColor: #FFEDED;
+
 * {
     box-sizing: border-box;
+  }
+
+  .bg-carousel-color{
+    background-color: $carouselBackgroundColor;
   }
   
 
@@ -11,6 +17,7 @@
 
   .autoCarouselContainerCard{
     width: 85% !important;
+    border-radius: 1.3em;
   }
 
   .autoCarouselContainerHeading{
@@ -111,9 +118,6 @@
     font-size: 100px;
   }
 
-  .slides > div:target {
-  /*   transform: scale(0.8); */
-  }
 
   .author-info {
     background: rgba(0, 0, 0, 0.75);
@@ -133,7 +137,16 @@
 
   .headingCarousel{
     color: #ffffff !important;
-    font-size: 40px;
+    font-size: 44px;
+  }
+
+  .carouselImgContainer{
+    width: 125px;
+    height: 98px;
+  }
+
+  .carouselImgContainer:not(:first-child){
+    transform: translateX(10px);
   }
 
 //   img {

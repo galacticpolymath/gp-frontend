@@ -17,13 +17,7 @@
 
 import Image from 'next/image';
 import { TbArrowBigDown } from 'react-icons/tb';
-import {
-    Card,
-    CardBody,
-    CardImg,
-    CardTitle,
-    CardText,
-} from 'reactstrap';
+import { Card, CardBody } from 'reactstrap';
 import Layout from '../components/Layout';
 import styles from './index.module.css';
 import LayoutBackGroundImg from '../assets/img/1_northeast_merlot_darker.png';
@@ -36,6 +30,7 @@ import teacherTestimonies from '../data/HireUsPg/teacherTestimonies.json'
 import PicAndImageSec from '../components/HireUsComps/sections/PicAndImageSec';
 import WhatTeachersSaysBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
+import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
 
 
 const HireUsPage = () => {
@@ -100,7 +95,7 @@ const HireUsPage = () => {
                 <section className="CardSec ps-4 pe-4">
                     <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-4'>
                         <CardBody className="hireUsPgInfoCardBody">
-                            <section className="d-flex flex-column ps-3 pe-3">
+                            <section className="d-flex flex-column ps-4 pe-4">
                                 <section className="d-flex d-md-none">
                                     <h3 className="text-nowrap">
                                         What do we do?
@@ -155,16 +150,16 @@ const HireUsPage = () => {
                                     );
                                 })}
                             </section>
-                            <section className="d-flex mt-5">
-                                <CarouselContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} />
+                            <section className="d-flex d-md-none mt-5">
+                                <CarouselContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="teacherReviewsSecHeading" />
                             </section>
-                            <section className="mt-5 ps-4">
+                            <section className="mt-5 ps-4 d-flex d-md-none">
                                 <section>
                                     <h3 className="display-1">Share your knowledge</h3>
                                     <h3 className="display-1">with anyone, anywhere!</h3>
                                 </section>
                             </section>
-                            <section className="mt-7 ps-4 pe-4">
+                            <section className="mt-7 ps-4 pe-4 d-flex d-md-none">
                                 <PicAndImageSec
                                     text="We promote lessons through our growing GP Constellation dissemination network."
                                     imgPath="/imgs/GP_Constellation_dark.png"
@@ -172,7 +167,7 @@ const HireUsPage = () => {
                                     imgMainSectionCustomCss="logoConstellationImgSec w-75"
                                 />
                             </section>
-                            <section className="mt-5 ps-4 pe-4 eachLessonMainSec">
+                            <section className="mt-5 ps-4 pe-4 eachLessonMainSec d-flex d-md-none">
                                 <section>
                                     <h5 className="fst-italic text-dark move10pxRight ps-2">Each lesson is: </h5>
                                 </section>
@@ -186,6 +181,9 @@ const HireUsPage = () => {
                                         </li>
                                     ))}
                                 </ul>
+                            </section>
+                            <section className="mt-5 d-md-none">
+                                <CarouselContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" />
                             </section>
                         </CardBody>
                     </Card>

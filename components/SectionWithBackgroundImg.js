@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable semi */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unknown-property */
@@ -8,8 +9,11 @@
 import Image from 'next/image';
 
 const SectionWithBackgroundImg = ({ children, backgroundImgSrc }) => {
+    const _classNames = `img-background-container ${!backgroundImgSrc ? 'bg-carousel-color pt-4 pb-4' : 'pt-5 pb-5 parallax '}`;
+    const _style = backgroundImgSrc ? { backgroundImage: `url(${backgroundImgSrc})` } : null;
+
     return (
-        <div className="img-background-container pt-5 pb-5 parallax" style={{ backgroundImage: `url(${backgroundImgSrc})` }}>
+        <div className={_classNames} style={_style}>
             {children}
         </div>
     )

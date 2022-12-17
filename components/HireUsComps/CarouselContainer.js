@@ -1,3 +1,7 @@
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable react/jsx-closing-tag-location */
+/* eslint-disable quotes */
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-first-prop-new-line */
 /* eslint-disable react/jsx-closing-bracket-location */
@@ -12,11 +16,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Card } from 'react-bootstrap';
-
-import AutoCarousel from '../AutoCarousel';
+import Image from 'next/image'
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 
-const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc }) => {
+const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic }) => {
+    const autoCarouselHeadingTxt = `bolder ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
+    const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
+    const cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3' : ''}`;
     const [index, setIndex] = useState(0);
     const [isCarouselPaused, setIsCarouselPaused] = useState(false)
     const timeoutRef = useRef(null);
@@ -36,12 +42,13 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc }) => {
     }
 
     useEffect(() => {
-        if (!isCarouselPaused) {
+        if (!isCarouselPaused && !pics) {
             resetTimeout();
+            const targetArr = userInputs ? userInputs : pics;
             timeoutRef.current = setTimeout(
                 () =>
                     setIndex(prevIndex =>
-                        (prevIndex === (userInputs.length - 1)) ? 0 : prevIndex + 1
+                        (prevIndex === (targetArr.length - 1)) ? 0 : prevIndex + 1
                     ),
                 4000
             );
@@ -54,35 +61,51 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc }) => {
 
     return (
         <SectionWithBackgroundImg backgroundImgSrc={backgroundImgSrc}>
-            <section className="d-flex justify-content-center align-items-center autoCarouselContainerHeading">
-                <h2 className="headingCarousel bolder">{headingTxt}</h2>
+            <section className={headerContainerClassNames}>
+                <h2 className={autoCarouselHeadingTxt}>{headingTxt}</h2>
             </section>
             <section className="d-flex justify-content-center align-items-center">
-                <Card className='autoCarouselContainerCard'>
+                <Card className={cardStyles}>
                     <Card.Body className="position-relative" onMouseOver={handleOnMouseOver} onMouseLeave={handleOnMouseLeave}>
-                        <div className="autoCarouselContainer">
-                            <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
-                                {userInputs.map((userInput, index) => {
-                                    const { feedback, name, occupation, city } = userInput;
-                                    return (
-                                        <div className="autoCarouselItem position-relative" key={index}>
-                                            <section className="w-100 h-100 d-flex justify-content-center align-items-center">
-                                                <section className="pb-5 mb-5 me-3">
-                                                    <span className="text-dark fst-italic feedbackTxt">"{feedback}"</span>
-                                                </section>
-                                                <section className="d-flex justify-content-end position-absolute feedbackInfoSec">
-                                                    <section className='flex-column d-flex'>
-                                                        <span className="text-wrap text-dark feedBackTxtName fst-italic">- {name}</span>
-                                                        <span className="text-wrap text-dark fst-italic">{occupation}</span>
-                                                        <span className="text-wrap text-dark fst-italic">{city}</span>
+                        {userInputs &&
+                            <div className="autoCarouselContainer">
+                                <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
+                                    {userInputs.map((userInput, index) => {
+                                        const { feedback, name, occupation, city } = userInput;
+                                        return (
+                                            <div className="autoCarouselItem position-relative" key={index}>
+                                                <section className="w-100 h-100 d-flex justify-content-center align-items-center">
+                                                    <section className="pb-5 mb-5 me-3">
+                                                        <span className="text-dark fst-italic feedbackTxt">"{feedback}"</span>
+                                                    </section>
+                                                    <section className="d-flex justify-content-end position-absolute feedbackInfoSec">
+                                                        <section className='flex-column d-flex'>
+                                                            <span className="text-wrap text-dark feedBackTxtName fst-italic">- {name}</span>
+                                                            <span className="text-wrap text-dark fst-italic">{occupation}</span>
+                                                            <span className="text-wrap text-dark fst-italic">{city}</span>
+                                                        </section>
                                                     </section>
                                                 </section>
-                                            </section>
-                                        </div>
-                                    )
-                                })}
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>}
+                        {pics &&
+                            <div className="w-100">
+                                <section className="w-100 d-flex justify-content-center align-items-center">
+                                    {
+                                        pics.map(({ path, alt }, index) => {
+                                            return (
+                                                <div key={index} className="carouselImgContainer position-relative">
+                                                    <Image layout="fill" objectFit="contain" src={path} alt={alt} />
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </section>
                             </div>
-                        </div>
+                        }
                     </Card.Body>
                 </Card>
             </section>
