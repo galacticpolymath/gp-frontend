@@ -135,7 +135,7 @@ const HireUsPage = () => {
                                     {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} />)}
                                 </section>
                             </section>
-                            <section className="d-flex d-md-none flex-column mt-15">
+                            <section className="d-flex d-md-none flex-column mt-15 mb-15">
                                 <section className="ps-4 pe-4">
                                     <section>
                                         <h3 className="text-nowrap">
@@ -156,7 +156,7 @@ const HireUsPage = () => {
                                     );
                                 })}
                             </section>
-                            <section className="d-flex">
+                            <section className="d-flex mt-5">
                                 <CarouselContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} />
                             </section>
                         </CardBody>

@@ -1,25 +1,25 @@
 [
     {
-        "testimony": "This is a fantastic lesson! I love how it combines actual research and allows the students the opportunity for analysis.",
-        "attestant": "Sarah Huneycutt",
+        "feedback": "This is a fantastic lesson! I love how it combines actual research and allows the students the opportunity for analysis.",
+        "name": "Sarah Huneycutt",
         "occupation": "Homeschool Teacher",
         "city": "Nashville, TN"
     },
     {
-        "testimony": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere odit ab ducimus sed laudantium cupiditate nesciunt aliquid vel ut vero?",
-        "attestant": "Lorem Ipsum",
+        "feedback": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere odit ab ducimus sed laudantium cupiditate nesciunt aliquid vel ut vero?",
+        "name": "Lorem Ipsum",
         "occupation": "Homeschool Teacher",
         "city": "Nashville, TN"
     },
     {
-        "testimony": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere odit ab ducimus sed laudantium cupiditate nesciunt aliquid vel ut vero?",
-        "attestant": "Lorem Ipsum",
+        "feedback": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere odit ab ducimus sed laudantium cupiditate nesciunt aliquid vel ut vero?",
+        "name": "Lorem Ipsum",
         "occupation": "Homeschool Teacher",
         "city": "Nashville, TN"
     },
     {
-        "testimony": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere odit ab ducimus sed laudantium cupiditate nesciunt aliquid vel ut vero?",
-        "attestant": "Lorem Ipsum",
+        "feedback": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere odit ab ducimus sed laudantium cupiditate nesciunt aliquid vel ut vero?",
+        "name": "Lorem Ipsum",
         "occupation": "Homeschool Teacher",
         "city": "Nashville, TN"
     }

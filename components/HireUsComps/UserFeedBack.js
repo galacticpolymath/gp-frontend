@@ -20,7 +20,10 @@ const UserFeedBack = ({ feedBack, index }) => {
     useEffect(() => {
         if(feedBack.willScrollIntoView) {
             // divRef.current.focus()
-            // divRef.current.scrollIntoView()
+            divRef.current.scrollIntoView({"behavior": "auto", 
+            block: "nearest",
+            inline: "center"}
+            )
             // divRef.current()
         }
     }, [feedBack.willScrollIntoView])

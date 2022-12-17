@@ -8,6 +8,46 @@
     text-align: center;
     overflow: hidden;
   }
+
+  .autoCarouselContainerCard{
+    width: 85% !important;
+  }
+
+  .autoCarouselContainerHeading{
+    height: 150px;
+  }
+
+  .feedbackTxt{
+    width: 400px !important;
+    white-space: normal;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .autoCarouselSlider{
+    white-space: nowrap;
+    transition: ease 1000ms;
+  }
+
+  .carouselTxt{
+    position: absolute;
+    top: 50%;  
+    left: 50%; 
+    transform: translate(-50%, -50%);
+  }
+
+  .autoCarouselContainer {
+    margin: 0 auto;
+    overflow: hidden;
+    max-width: 500px;
+  }
+  
+  .autoCarouselItem {
+    display: inline-block;
+    height: 400px;
+    width: 100%;
+    border-radius: 40px;
+  }
   
   .slides {
     display: flex;

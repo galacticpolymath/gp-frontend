@@ -67,8 +67,10 @@ const AutoCarousel = ({ userInputs }) => {
                     <div className="slider w-100">
                         <section className="d-flex justify-content-center align-items-center">
                             <div className="slides d-flex">
-                                {userInputsDisplayed.map((userInput, index) => (
-                                    <UserFeedBack feedBack={userInput} index={index} key={index} />
+                                {userInputs.map((userInput, index) => (
+                                    <div key={index}>
+                                        {index + 1}
+                                    </div>
                                 ))}
                             </div>
                         </section>
