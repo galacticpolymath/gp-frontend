@@ -2,6 +2,7 @@
 @import '../../comps/carousel.scss';
 
 $btnColor: #84469e;
+$btnColorDark: #3E0D55;
 $mobileTxtColor: #96195f;
 $btnColorMobile: #633a9a;
 $borderRadiusModal: 1.3em;
@@ -50,7 +51,7 @@ $whatWeDoCardColor: #fff8f8;
 }
 
 .letsTalkBtnContainer {
-  background-color: $btnColor !important;
+  background-color: $btnColor;
   width: 350px !important;
   height: 200px !important;
   border: solid 0.5px #ffffff;
@@ -98,6 +99,10 @@ $whatWeDoCardColor: #fff8f8;
     border-radius: 2.8em;
     background-color: $btnColorMobile !important;
   }
+}
+
+.darker-btn-color{
+  background-color: $btnColorDark !important;
 }
 
 .introSecAndLetTalksSec {

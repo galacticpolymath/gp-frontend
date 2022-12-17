@@ -17,6 +17,10 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
+*{
+  text-underline-offset: 4px !important;
+}
+
 a {
   color: $atomic-blue;
   text-decoration: none;
@@ -52,6 +56,10 @@ img {
 
 .fs-7 {
   font-size: 0.75rem;
+}
+
+.fs-large{
+  font-size: 28px;
 }
 
 // background color utilities
@@ -107,6 +115,7 @@ img {
   font-weight: 700 !important;
 }
 
+
 .fw350{
   font-weight: 350 !important;
 }
@@ -129,6 +138,10 @@ img {
 
 .fw249{
   font-weight: 249 !important;
+}
+
+.fw225{
+  font-weight: 225 !important;
 }
 
 .fw245 {
@@ -160,6 +173,14 @@ img {
 
 .mb-15{
   margin-bottom: 150px !important;
+}
+
+.w-90{
+  width: 90%;
+}
+
+.w-85{
+  width: 85%;
 }
 
 .w-80{

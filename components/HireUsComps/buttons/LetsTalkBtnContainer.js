@@ -18,9 +18,11 @@ import MessageBoxIcon from '../../svgs/MessageBoxIcon';
 import Button from 'react-bootstrap/Button';
 
 
-const LetsTalkBtnContainer = () => {
+const LetsTalkBtnContainer = ({ isBtnColorDarker }) => {
+    const _className = `letsTalkBtnContainer border-white d-flex flex-row-reverse flex-md-column position-relative ${isBtnColorDarker ? 'darker-btn-color' : ''}`
+
     return (
-        <div className="letsTalkBtnContainer border-white d-flex flex-row-reverse flex-md-column position-relative">
+        <div className={_className}>
             <div className="d-flex align-items-center justify-content-center">
                 <MessageBoxIcon />
             </div>

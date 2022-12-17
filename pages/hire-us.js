@@ -95,7 +95,7 @@ const HireUsPage = () => {
                 <section className="CardSec ps-4 pe-4">
                     <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-4'>
                         <CardBody className="hireUsPgInfoCardBody">
-                            <section className="d-flex flex-column ps-4 pe-4">
+                            <section className="d-flex flex-column ps-5 pe-5">
                                 <section className="d-flex d-md-none">
                                     <h3 className="text-nowrap">
                                         What do we do?
@@ -130,7 +130,7 @@ const HireUsPage = () => {
                                 </section>
                             </section>
                             <section className="d-flex d-md-none flex-column mt-15 mb-15">
-                                <section className="ps-4 pe-4">
+                                <section className="ps-5 pe-5">
                                     <section>
                                         <h3 className="text-nowrap">
                                             How does it work?
@@ -153,23 +153,23 @@ const HireUsPage = () => {
                             <section className="d-flex d-md-none mt-5">
                                 <CarouselContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="teacherReviewsSecHeading" />
                             </section>
-                            <section className="mt-5 ps-4 d-flex d-md-none">
+                            <section className="mt-5 ps-5 d-flex d-md-none">
                                 <section>
                                     <h3 className="display-1">Share your knowledge</h3>
                                     <h3 className="display-1">with anyone, anywhere!</h3>
                                 </section>
                             </section>
-                            <section className="mt-7 ps-4 pe-4 d-flex d-md-none">
+                            <section className="mt-7 ps-5 pe-3 d-flex d-md-none">
                                 <PicAndImageSec
                                     text="We promote lessons through our growing GP Constellation dissemination network."
                                     imgPath="/imgs/GP_Constellation_dark.png"
-                                    customTxtSpanClassNames="promoteLessonsTxtClass move10pxRight ps-2"
+                                    customTxtSpanClassNames="promoteLessonsTxtClass move10pxRight"
                                     imgMainSectionCustomCss="logoConstellationImgSec w-75"
                                 />
                             </section>
-                            <section className="mt-5 ps-4 pe-4 eachLessonMainSec d-flex d-md-none">
+                            <section className="mt-5 ps-5 pe-5 eachLessonMainSec d-flex flex-column d-md-none">
                                 <section>
-                                    <h5 className="fst-italic text-dark move10pxRight ps-2">Each lesson is: </h5>
+                                    <h5 className="fst-italic text-dark move10pxRight">Each lesson is: </h5>
                                 </section>
                                 <ul className="eachLessonInfoList ps-5 pt-2">
                                     {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
@@ -184,6 +184,20 @@ const HireUsPage = () => {
                             </section>
                             <section className="mt-5 d-md-none">
                                 <CarouselContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" />
+                            </section>
+                            <section className="mt-5 d-md-none ps-5 pe-5 d-flex flex-column">
+                                <section>
+                                    <h3 className="display-1 noMargin">When should I reach</h3>
+                                    <h3 className="display-1 noMargin">out?</h3>
+                                </section>
+                                <section className="w-100 pt-5 pb-5">
+                                    <span className="text-dark fs-large w-85 d-block fw249">
+                                        Any time! Whether you have funds now, want to write us into a proposal, or just have a question, we are here to help!
+                                    </span>
+                                </section>
+                                <section>
+                                    <LetsTalkBtnContainer isBtnColorDarker />
+                                </section>
                             </section>
                         </CardBody>
                     </Card>

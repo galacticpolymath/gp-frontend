@@ -18,7 +18,7 @@ const HireUsCardSection = ({ text, content, mobileTxt }) => {
                 </section>
             </div>
             <section className="border-danger d-flex flex-column d-md-none">
-                <section className="d-flex justify-content-center pt-5 ps-4 pe-4">
+                <section className="d-flex justify-content-center pt-5 ps-5 pe-5">
                     <span className="text-dark hireUsCardTxt">
                         {mobileTxt}
                     </span>
