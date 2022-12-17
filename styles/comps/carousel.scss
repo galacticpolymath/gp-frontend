@@ -22,7 +22,21 @@
     white-space: normal;
     margin: 0 auto;
     display: block;
+    font-size: 29px;
   }
+
+  .feedbackInfoSec{
+    bottom: 70px;
+    right: 5px;
+
+    > section{
+      > span:first-child{
+        font-size: 25px; 
+      }
+    }
+  }
+
+  
 
   .autoCarouselSlider{
     white-space: nowrap;

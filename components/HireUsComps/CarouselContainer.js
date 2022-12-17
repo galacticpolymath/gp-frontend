@@ -64,16 +64,16 @@ const CarouselContainer = ({ headingTxt, userInputs }) => {
                                 {userInputs.map((userInput, index) => {
                                     const { feedback, name, occupation, city } = userInput;
                                     return (
-                                        <div className="autoCarouselItem border" key={index}>
-                                            <section>
-                                                <section>
-                                                    <span className="text-dark feedbackTxt">{feedback}</span>
+                                        <div className="autoCarouselItem position-relative" key={index}>
+                                            <section className="w-100 h-100 d-flex justify-content-center align-items-center">
+                                                <section className="pb-5 mb-5 me-3">
+                                                    <span className="text-dark fst-italic feedbackTxt">"{feedback}"</span>
                                                 </section>
-                                                <section className="d-flex border justify-content-end">
+                                                <section className="d-flex justify-content-end position-absolute feedbackInfoSec">
                                                     <section className='flex-column d-flex'>
-                                                        <span className="text-wrap text-dark">-{name}</span>
-                                                        <span className="text-wrap text-dark">{occupation}</span>
-                                                        <span className="text-wrap text-dark">{city}</span>
+                                                        <span className="text-wrap text-dark feedBackTxtName fst-italic">- {name}</span>
+                                                        <span className="text-wrap text-dark fst-italic">{occupation}</span>
+                                                        <span className="text-wrap text-dark fst-italic">{city}</span>
                                                     </section>
                                                 </section>
                                             </section>
