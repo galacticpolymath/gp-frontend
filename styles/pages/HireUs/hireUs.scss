@@ -6,7 +6,16 @@ $btnColorDark: #3E0D55;
 $mobileTxtColor: #96195f;
 $btnColorMobile: #633a9a;
 $borderRadiusModal: 1.3em;
+$humanImgBorderColor: #707070;
 $whatWeDoCardColor: #fff8f8;
+
+.humanImg{
+  border: solid 1px $humanImgBorderColor !important;
+}
+
+.humanDescriptionTxt{
+  line-height: 33px;
+}
 
 .picAndImgSec{
   // border: solid pink;
@@ -144,7 +153,7 @@ $whatWeDoCardColor: #fff8f8;
     h3 {
       color: $mobileTxtColor !important;
       font-size: 58px !important;
-      font-weight: 650;
+      font-weight: 660;
     }
   }
 
@@ -261,5 +270,18 @@ $whatWeDoCardColor: #fff8f8;
 .ourClientsFundingSourcesHeadingTxt{
   font-size: 30px !important;
 } 
+
+// Our Clients' Funding Sources section ending
+
+// owner section starts here
+.ownerInfoSec{
+  > section:last-child{
+    span{
+      
+    }
+  }
+}
+
+
 
 

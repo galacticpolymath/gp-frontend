@@ -71,7 +71,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                             <div className="autoCarouselContainer">
                                 <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
                                     {userInputs.map((userInput, index) => {
-                                        const { feedback, name, occupation, city } = userInput;
+                                        const { feedback, person, occupation, city } = userInput;
                                         return (
                                             <div className="autoCarouselItem position-relative" key={index}>
                                                 <section className="w-100 h-100 d-flex justify-content-center align-items-center">
@@ -80,7 +80,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                     </section>
                                                     <section className="d-flex justify-content-end position-absolute feedbackInfoSec">
                                                         <section className='flex-column d-flex'>
-                                                            <span className="text-wrap text-dark feedBackTxtName fst-italic">- {name}</span>
+                                                            <span className="text-wrap text-dark feedBackTxtName fst-italic">- {person}</span>
                                                             <span className="text-wrap text-dark fst-italic">{occupation}</span>
                                                             <span className="text-wrap text-dark fst-italic">{city}</span>
                                                         </section>

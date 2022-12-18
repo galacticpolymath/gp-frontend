@@ -17,7 +17,7 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-*{
+* {
   text-underline-offset: 4px !important;
 }
 
@@ -52,13 +52,11 @@ img {
   line-height: 1.5;
 }
 
-
-
 .fs-7 {
   font-size: 0.75rem;
 }
 
-.fs-large{
+.fs-large {
   font-size: 28px;
 }
 
@@ -115,16 +113,15 @@ img {
   font-weight: 700 !important;
 }
 
-
-.fw350{
+.fw350 {
   font-weight: 350 !important;
 }
 
-.underline-less-thick{
+.underline-less-thick {
   text-decoration-thickness: 1.5px !important;
 }
 
-.fw325{
+.fw325 {
   font-weight: 325 !important;
 }
 
@@ -136,11 +133,11 @@ img {
   font-weight: 250 !important;
 }
 
-.fw249{
+.fw249 {
   font-weight: 249 !important;
 }
 
-.fw225{
+.fw225 {
   font-weight: 225 !important;
 }
 
@@ -159,38 +156,45 @@ img {
   background-size: cover;
 }
 
-.mt-6{
+.mt-6 {
   margin-top: 60px;
 }
 
-.mt-7{
+.mt-7 {
   margin-top: 70px;
 }
 
-.mt-15{
+.mt-8 {
+  margin-top: 80px;
+}
+
+.mt-15 {
   margin-top: 150px;
 }
 
-.mb-15{
+.mb-15 {
   margin-bottom: 150px !important;
 }
 
-.w-90{
+.w-90 {
   width: 90%;
 }
 
-.w-85{
+.w-85 {
   width: 85%;
 }
 
-.w-80{
+.w-80 {
   width: 80%;
 }
 
-.negative-z-index{
+.negative-z-index {
   z-index: -1;
 }
 
-
+.square {
+  width: 50vw;
+  height: 50vw;
+}
 
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)

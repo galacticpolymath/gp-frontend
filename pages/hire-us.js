@@ -27,8 +27,10 @@ import LetsTalkBtnContainer from '../components/HireUsComps/buttons/LetsTalkBtnC
 import HireUsCardFirstSecMobile from '../components/HireUsComps/HireUsCardFirstSecMobile';
 import CarouselContainer from '../components/HireUsComps/CarouselContainer';
 import teacherTestimonies from '../data/HireUsPg/teacherTestimonies.json'
+import feedbackOfClients from '../data/HireUsPg/feedbackOfClients.json'
 import PicAndImageSec from '../components/HireUsComps/sections/PicAndImageSec';
-import WhatTeachersSaysBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
+import WhatTeachersSaysBackground from '../public/imgs/background/2_southeast_purplish_1.png';
+import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
 
@@ -164,7 +166,7 @@ const HireUsPage = () => {
                                     text="We promote lessons through our growing GP Constellation dissemination network."
                                     imgPath="/imgs/GP_Constellation_dark.png"
                                     customTxtSpanClassNames="promoteLessonsTxtClass move10pxRight"
-                                    imgMainSectionCustomCss="logoConstellationImgSec w-75"
+                                    imgMainSectionCustomCss="w-75 justify-content-center"
                                 />
                             </section>
                             <section className="mt-5 ps-5 pe-5 eachLessonMainSec d-flex flex-column d-md-none">
@@ -185,7 +187,7 @@ const HireUsPage = () => {
                             <section className="mt-5 d-md-none">
                                 <CarouselContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" />
                             </section>
-                            <section className="mt-5 d-md-none ps-5 pe-5 d-flex flex-column">
+                            <section className="mt-5 d-md-none ps-5 pe-5 d-flex pb-5 flex-column">
                                 <section>
                                     <h3 className="display-1 noMargin">When should I reach</h3>
                                     <h3 className="display-1 noMargin">out?</h3>
@@ -197,6 +199,30 @@ const HireUsPage = () => {
                                 </section>
                                 <section>
                                     <LetsTalkBtnContainer isBtnColorDarker />
+                                </section>
+                            </section>
+                            <section className="d-flex d-md-none mt-8">
+                                <CarouselContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="teacherReviewsSecHeading" />
+                            </section>
+                            <section className="mt-5 d-md-none ps-5 pe-5 d-flex pb-5 flex-column ownerInfoSec">
+                                <section>
+                                    <h3 className="display-1 noMargin">Who makes the</h3>
+                                    <h3 className="display-1 noMargin">lessons?</h3>
+                                </section>
+                                <section className="mt-3 d-flex flex-column">
+                                    <span className="text-dark fs-large fst-italic fw249">The GP Team is led by our founder,</span>
+                                    <span className="text-dark fs-large fst-italic fw249">Matt Wilkins, PhD.</span>
+                                </section>
+                                <section>
+                                    <PicAndImageSec 
+                                    isFlexReversed 
+                                    isImgCircle 
+                                    text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
+                                    imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
+                                    customTxtSpanClassNames="fs-large pt-4 humanDescriptionTxt"
+                                    imgMainSectionCustomCss="w-50 justify-content-start"
+
+                                    />
                                 </section>
                             </section>
                         </CardBody>
