@@ -176,6 +176,10 @@ img {
   margin-bottom: 150px !important;
 }
 
+.w-95{
+  width: 95%;
+}
+
 .w-90 {
   width: 90%;
 }
@@ -195,6 +199,14 @@ img {
 .square {
   width: 50vw;
   height: 50vw;
+}
+
+.borderThicker{
+  border: solid 1.3px #707070 !important;
+}
+
+.underline-1{
+  text-decoration-thickness: 0.03em !important;
 }
 
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)

@@ -10,7 +10,7 @@ $humanImgBorderColor: #707070;
 $whatWeDoCardColor: #fff8f8;
 
 .humanImg{
-  border: solid 1px $humanImgBorderColor !important;
+  // border: solid 1px $humanImgBorderColor !important;
 }
 
 .humanDescriptionTxt{
@@ -282,6 +282,10 @@ $whatWeDoCardColor: #fff8f8;
   }
 }
 
+.imgSquareContainer{
+  width: 120px;
+  height: 120px;
+}
 
 
 

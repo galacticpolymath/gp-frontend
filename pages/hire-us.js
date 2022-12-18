@@ -33,6 +33,7 @@ import WhatTeachersSaysBackground from '../public/imgs/background/2_southeast_pu
 import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
+import mattsAwards from '../data/HireUsPg/mattsAwards.json'
 
 
 const HireUsPage = () => {
@@ -165,6 +166,7 @@ const HireUsPage = () => {
                                 <PicAndImageSec
                                     text="We promote lessons through our growing GP Constellation dissemination network."
                                     imgPath="/imgs/GP_Constellation_dark.png"
+                                    txtSectionCssClasses="w-50"
                                     customTxtSpanClassNames="promoteLessonsTxtClass move10pxRight"
                                     imgMainSectionCustomCss="w-75 justify-content-center"
                                 />
@@ -213,16 +215,35 @@ const HireUsPage = () => {
                                     <span className="text-dark fs-large fst-italic fw249">The GP Team is led by our founder,</span>
                                     <span className="text-dark fs-large fst-italic fw249">Matt Wilkins, PhD.</span>
                                 </section>
-                                <section>
-                                    <PicAndImageSec 
-                                    isFlexReversed 
-                                    isImgCircle 
-                                    text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
-                                    imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
-                                    customTxtSpanClassNames="fs-large pt-4 humanDescriptionTxt"
-                                    imgMainSectionCustomCss="w-50 justify-content-start"
-
+                                <section className="mt-5">
+                                    <PicAndImageSec
+                                        isFlexReversed
+                                        isImgCircle
+                                        text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
+                                        txtSectionCssClasses="w-95"
+                                        imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
+                                        customTxtSpanClassNames="fs-large pt-4 humanDescriptionTxt"
+                                        imgMainSectionCustomCss="w-50 justify-content-start"
                                     />
+                                </section>
+                                <section>
+                                    {mattsAwards.map((award, index) => {
+                                        const { alt, src, txt, link } = award;
+
+                                        return (
+                                            <PicAndImageSec
+                                                key={index}
+                                                isFlexReversed
+                                                link={link}
+                                                alt={alt}
+                                                text={txt}
+                                                imgPath={src}
+                                                txtSectionCssClasses="align-items-center w-50"
+                                                customTxtSpanClassNames="fs-large pt-4 humanDescriptionTxt text-decoration-underline underline-1"
+                                                imgMainSectionCustomCss="w-50 justify-content-center"
+                                            />
+                                        )
+                                    })}
                                 </section>
                             </section>
                         </CardBody>
