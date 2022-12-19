@@ -137,12 +137,16 @@ $carouselBackgroundColor: #FFEDED;
 
   .headingCarousel{
     color: #ffffff !important;
-    font-size: 44px;
+    font-size: 40px;
   }
 
   .carouselImgContainer{
     width: 125px;
     height: 98px;
+  }
+
+  .cardOnlyStyles{
+    // border: solid pink 1px !important; 
   }
 
   .carouselImgContainer:not(:first-child){

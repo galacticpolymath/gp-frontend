@@ -25,15 +25,19 @@ import HireUsCardSection from '../components/HireUsComps/HireUsCardSection';
 import ReactPlayer from 'react-player'
 import LetsTalkBtnContainer from '../components/HireUsComps/buttons/LetsTalkBtnContainer';
 import HireUsCardFirstSecMobile from '../components/HireUsComps/HireUsCardFirstSecMobile';
-import CarouselContainer from '../components/HireUsComps/CarouselContainer';
+import CardContainer from '../components/HireUsComps/CardContainer';
 import teacherTestimonies from '../data/HireUsPg/teacherTestimonies.json'
+import grantReviewersFeedback from '../data/HireUsPg/grantReviewersFeedback.json'
 import feedbackOfClients from '../data/HireUsPg/feedbackOfClients.json'
 import PicAndImageSec from '../components/HireUsComps/sections/PicAndImageSec';
 import WhatTeachersSaysBackground from '../public/imgs/background/2_southeast_purplish_1.png';
 import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
+import DynamicTeamsTranslateBackground from '../public/imgs/background/3_southern-eddy_lilac_1.png';
+import GrantReviewerFeedbackBackground from '../public/imgs/background/5_chaotic_bluish_1.png';
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
 import mattsAwards from '../data/HireUsPg/mattsAwards.json'
+import scientists from '../data/HireUsPg/scientists.json'
 
 
 const HireUsPage = () => {
@@ -154,7 +158,7 @@ const HireUsPage = () => {
                                 })}
                             </section>
                             <section className="d-flex d-md-none mt-5">
-                                <CarouselContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="teacherReviewsSecHeading" />
+                                <CardContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
                             </section>
                             <section className="mt-5 ps-5 d-flex d-md-none">
                                 <section>
@@ -187,7 +191,7 @@ const HireUsPage = () => {
                                 </ul>
                             </section>
                             <section className="mt-5 d-md-none">
-                                <CarouselContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" />
+                                <CardContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" />
                             </section>
                             <section className="mt-5 d-md-none ps-5 pe-5 d-flex pb-5 flex-column">
                                 <section>
@@ -204,7 +208,7 @@ const HireUsPage = () => {
                                 </section>
                             </section>
                             <section className="d-flex d-md-none mt-8">
-                                <CarouselContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="teacherReviewsSecHeading" />
+                                <CardContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
                             </section>
                             <section className="mt-5 d-md-none ps-5 pe-5 d-flex pb-5 flex-column ownerInfoSec">
                                 <section>
@@ -246,10 +250,63 @@ const HireUsPage = () => {
                                     })}
                                 </section>
                             </section>
+                            <section className="d-flex d-md-none mt-8">
+                                <CardContainer
+                                    headingTxt="Dynamic teams translate any body of knowledge"
+                                    backgroundImgSrc={DynamicTeamsTranslateBackground.src}
+                                    headerContainerClassNamesDynamic="ps-5"
+                                    isCardOnly
+                                />
+                            </section>
+                            <section className="d-md-none">
+                                <section className="w-100 d-flex justify-content-center align-items-center mt-5 mb-5">
+                                    <h5 className="fs-large fw200 fst-italic text-dark text-start w-75">
+                                        Some of the many talented scientists, communicators, educators, and artists we work with:
+                                    </h5>
+                                </section>
+                            </section>
+                            <section className="d-md-none">
+                                {scientists.map((scientist, index) => {
+                                    const { alt, src, name, description } = scientist;
+
+                                    return (
+                                        <PicAndImageSec
+                                            key={index}
+                                            isFlexReversed
+                                            isImgCircle
+                                            txtSectionCssClasses="w-85 flex-column pe-5"
+                                            imgPath={src}
+                                            text={description}
+                                            name={name}
+                                            alt={alt}
+                                            customTxtSpanClassNames="fs-large pt-1 humanDescriptionTxt"
+                                            imgMainSectionCustomCss="w-50 justify-content-center"
+                                        />
+                                    )
+                                })}
+                            </section>
+                            <section className="d-flex d-md-none mt-5">
+                                <CardContainer
+                                    userInputs={grantReviewersFeedback}
+                                    headingTxt="Grant Reviewer Feedback"
+                                    backgroundImgSrc={GrantReviewerFeedbackBackground.src}
+                                    headerContainerClassNamesDynamic="cardHeadingSec"
+                                />
+                            </section>
+                            <section className="howMuchDoesItCostSec ps-5 pe-5 mt-5 d-md-none">
+                                <section>
+                                    <h3 className="display-1 noMargin">How much does it</h3>
+                                    <h3 className="display-1 noMargin">cost?</h3>
+                                </section>
+                                <section className="w-100 d-flex justify-content-start align-items-center mt-4 mb-5">
+                                    <span className="fs-large fw200 fst-italic text-dark text-start w-75">
+                                    We offer three standard packages, which we’re happy to customize to meet your specific needs.
+                                    </span>
+                                </section>
+                            </section>
                         </CardBody>
                     </Card>
                 </section>
-
             </div>
         </Layout>
     );

@@ -176,10 +176,10 @@ $whatWeDoCardColor: #fff8f8;
     width: 100%;
   }
 }
-
-.teacherReviewsSecHeading{
+.cardHeadingSec{
   height: 150px;
 }
+
 
 .hireUsInfoStyledContainer {
   border: solid 0.5px #707070;
@@ -274,18 +274,19 @@ $whatWeDoCardColor: #fff8f8;
 // Our Clients' Funding Sources section ending
 
 // owner section starts here
-.ownerInfoSec{
-  > section:last-child{
-    span{
-      
-    }
-  }
-}
-
 .imgSquareContainer{
   width: 120px;
   height: 120px;
 }
+// end of owner section
 
+// start of "How much does it cost" section
+.howMuchDoesItCostSec{
+  > section:nth-child(2){
+    span{
+      line-height: 35px;
+    }
+  }
+}
 
 

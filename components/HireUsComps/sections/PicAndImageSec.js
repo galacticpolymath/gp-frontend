@@ -14,11 +14,11 @@
 
 import Image from 'next/image';
 
-const PicAndImageSec = ({ isFlexReversed, isImgCircle, text, imgPath, customTxtSpanClassNames, imgMainSectionCustomCss, link, txtSectionCssClasses }) => {
+const PicAndImageSec = ({ isFlexReversed, isImgCircle, text, imgPath, customTxtSpanClassNames, imgMainSectionCustomCss, link, txtSectionCssClasses, name }) => {
     const classNamesMainSec = `d-flex picAndImgSec ${isFlexReversed ? 'flex-row-reverse' : 'flex-row'}`
     const txtSpanClassNames = `text-dark fw245 ${customTxtSpanClassNames ?? ''}`;
     const imgMainSectionClassNames = `d-flex align-items-center ${imgMainSectionCustomCss ?? ''}`
-    const imageClassNames = isImgCircle ? 'rounded-circle humanImg borderThicker' : 'square';
+    const imageClassNames = isImgCircle ? 'rounded-circle humanImg borderThicker text-dark d-flex justify-content-center align-items-center' : 'square d-flex justify-content-center align-items-center';
     const txtSection = `d-flex justify-content-center ${txtSectionCssClasses ?? ''}`
 
     return (
@@ -29,7 +29,10 @@ const PicAndImageSec = ({ isFlexReversed, isImgCircle, text, imgPath, customTxtS
                         <span className={txtSpanClassNames}>{text}</span>
                     </a>
                     :
-                    <span className={txtSpanClassNames}>{text}</span>
+                    <>
+                        <h4 className="fw-bold text-dark">{name}</h4>
+                        <span className={txtSpanClassNames}>{text}</span>
+                    </>
                 }
             </section>
             {!link &&

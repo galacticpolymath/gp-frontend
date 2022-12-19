@@ -1,3 +1,4 @@
+/* eslint-disable prefer-template */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/jsx-closing-tag-location */
@@ -19,10 +20,11 @@ import { Card } from 'react-bootstrap';
 import Image from 'next/image'
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 
-const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic }) => {
+const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly }) => {
     const autoCarouselHeadingTxt = `bolder ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
-    const cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3' : ''}`;
+    let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3' : ''}`;
+    cardStyles = isCardOnly ? (cardStyles + ' cardOnlyStyles mt-3 pt-1 pb-4 pe-2 fw245') : cardStyles
     const [index, setIndex] = useState(0);
     const [isCarouselPaused, setIsCarouselPaused] = useState(false)
     const timeoutRef = useRef(null);
@@ -42,7 +44,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
     }
 
     useEffect(() => {
-        if (!isCarouselPaused && !pics) {
+        if (!isCarouselPaused && !isCardOnly) {
             resetTimeout();
             const targetArr = userInputs ? userInputs : pics;
             timeoutRef.current = setTimeout(
@@ -67,7 +69,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
             <section className="d-flex justify-content-center align-items-center">
                 <Card className={cardStyles}>
                     <Card.Body className="position-relative" onMouseOver={handleOnMouseOver} onMouseLeave={handleOnMouseLeave}>
-                        {userInputs &&
+                        {(userInputs && !isCardOnly) &&
                             <div className="autoCarouselContainer">
                                 <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
                                     {userInputs.map((userInput, index) => {
@@ -82,7 +84,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                         <section className='flex-column d-flex'>
                                                             <span className="text-wrap text-dark feedBackTxtName fst-italic">- {person}</span>
                                                             <span className="text-wrap text-dark fst-italic">{occupation}</span>
-                                                            <span className="text-wrap text-dark fst-italic">{city}</span>
+                                                            {!!city && <span className="text-wrap text-dark fst-italic">{city}</span>}
                                                         </section>
                                                     </section>
                                                 </section>
@@ -91,7 +93,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                     })}
                                 </div>
                             </div>}
-                        {pics &&
+                        {(pics && !isCardOnly) &&
                             <div className="w-100">
                                 <section className="w-100 d-flex justify-content-center align-items-center">
                                     {
@@ -104,6 +106,13 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                         })
                                     }
                                 </section>
+                            </div>
+                        }
+                        {isCardOnly &&
+                            <div className="w-100">
+                                <span className="text-dark fst-italic fw200 fs-large">
+                                For your project, we will assemble a team of contractors with skills and subject expertise to connect your work to students through accessible lessons and engaging videos.
+                                </span>
                             </div>
                         }
                     </Card.Body>
