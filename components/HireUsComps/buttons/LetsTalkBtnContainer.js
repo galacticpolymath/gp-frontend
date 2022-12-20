@@ -27,7 +27,7 @@ const LetsTalkBtnContainer = ({ isBtnColorDarker }) => {
                 <MessageBoxIcon />
             </div>
             <div className="d-flex align-items-center justify-content-center">
-                <span>Let's talk!</span>
+                <span className="text-nowrap">Let's talk!</span>
             </div>
             <Button className="w-100 h-100 noBackground noBorder position-absolute" />
         </div>

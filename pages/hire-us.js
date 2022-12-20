@@ -67,7 +67,7 @@ const HireUsPage = () => {
     return (
         <Layout description="Galactic PolyMath Hire Us Page.">
             <div className="min-vh-100 container-fluid noPadding noMargin w-100 hireUsPg">
-                <section className='d-flex flex-row parallax row' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
+                <section className='d-flex flex-row parallax row introSecHireUsPg' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
                     <section className="d-none d-md-flex w-100 noMargin col-12 introSecAndLetTalksSec">
                         <section className="w-50 d-flex flex-column align-items-center justify-content-center">
                             <section>
@@ -95,7 +95,7 @@ const HireUsPage = () => {
                                     We translate your work so that non-experts can teach mind-opening lessons.
                                 </span>
                             </section>
-                            <section className="w-75 ps-1 pt-5">
+                            <section className="ps-3 ps-sm-1 pt-5">
                                 <LetsTalkBtnContainer />
                             </section>
                         </section>
