@@ -85,12 +85,12 @@ const HireUsPage = () => {
                     </section>
                     <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
                         <section className="w-100 d-flex flex-column align-items-center pt-4">
-                            <section className="w-75">
+                            <section className="headerSection">
                                 <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Easier,</h1>
                                 <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Classroom-ready</h1>
                                 <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Outreach</h1>
                             </section>
-                            <section className="w-75 ps-1 mt-4">
+                            <section className="subTxtHeadingContainerHireUsPg w-75 ps-1 mt-4">
                                 <span className={`${styles.shadow} display-6 noMargin noPadding`}>
                                     We translate your work so that non-experts can teach mind-opening lessons.
                                 </span>

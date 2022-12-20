@@ -10,16 +10,11 @@ $borderRadiusModal: 1.3em;
 $borderColorImgAndCard: #707070;
 $whatWeDoCardColor: #fff8f8;
 
-.humanImg {
-  // border: solid 1px $humanImgBorderColor !important;
-}
-
 .humanDescriptionTxt {
   line-height: 33px;
 }
 
 .picAndImgSec {
-  // border: solid pink;
   height: 225px;
 }
 
@@ -39,11 +34,33 @@ $whatWeDoCardColor: #fff8f8;
   padding: 20vh 0;
 }
 
+.headerSection {
+  @media (min-width: 577px) and (max-width: 767px) {
+    width: 75% !important;
+  }
+
+  @media(max-width: 576px){
+    width: 100% !important;
+  }
+
+  @media(min-width: 375px) and (max-width: 576px){
+    padding-left: 50px !important;
+  }
+
+  @media(max-width: 374px){
+    padding-left: 15px !important;
+  }
+}
+
 .headingHireUs {
   font-size: 75px;
   font-weight: 450 !important;
 
-  @media (min-width: 767px) {
+  @media (min-width: 992px) {
+    font-size: 75px !important;
+  }
+
+  @media (min-width: 880px) and (max-width: 991px) {
     font-size: 70px !important;
   }
 
@@ -51,12 +68,35 @@ $whatWeDoCardColor: #fff8f8;
     font-size: 65px !important;
   }
 
-  @media (min-width: 880px) and (max-width: 991px) {
+  @media (min-width: 768px) {
     font-size: 70px !important;
   }
 
-  @media (min-width: 992px) {
-    font-size: 75px !important;
+  @media (min-width: 577px) and (max-width: 767px) {
+    font-size: calc(31.2px + 4.5vw);
+  }
+
+  @media (max-width: 576px) {
+    font-size: clamp(33px, 9.3vw, 57px) !important;
+  }
+}
+
+.subTxtHeadingContainerHireUsPg{
+  width: 75% !important;
+
+  @media(max-width: 576px){
+    width: 100% !important;
+    > span {
+      font-size: 22px !important; 
+    }
+  }
+
+  @media(min-width: 375px) and (max-width: 576px){
+    padding-left: 50px !important;
+  }
+
+  @media(max-width: 374px){
+    padding-left: 15px !important;
   }
 }
 
@@ -104,10 +144,25 @@ $whatWeDoCardColor: #fff8f8;
   @media (min-width: 992px) {
   }
 
+  @media (min-width: 577px) and (max-width: 767px) {
+    width: 300px !important;
+
+    div:last-of-type {
+      span {
+        font-size: 28px;
+        font-weight: 250;
+      }
+    }
+  }
+
   @media (max-width: 767px) {
     height: 95px !important;
     border-radius: 2.8em;
     background-color: $btnColorMobile !important;
+  }
+
+  @media (min-width: 577px) and (max-width: 767px){
+    
   }
 }
 
@@ -121,6 +176,12 @@ $whatWeDoCardColor: #fff8f8;
   @media (min-width: 768px) and (max-width: 991px) {
     > section:first-child {
       margin-left: 30px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    > section:first-child {
+      height: 550px !important;
     }
   }
 }
@@ -308,7 +369,7 @@ $whatWeDoCardColor: #fff8f8;
   }
 }
 
-.tierInfoStatus{
+.tierInfoStatus {
   text-align: right;
 }
 
