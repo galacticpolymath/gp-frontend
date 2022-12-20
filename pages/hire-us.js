@@ -38,6 +38,8 @@ import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
 import mattsAwards from '../data/HireUsPg/mattsAwards.json'
 import scientists from '../data/HireUsPg/scientists.json'
+import tiers from '../data/HireUsPg/tiers.json'
+import Tier from '../components/HireUsComps/sections/Tier';
 
 
 const HireUsPage = () => {
@@ -293,15 +295,26 @@ const HireUsPage = () => {
                                     headerContainerClassNamesDynamic="cardHeadingSec"
                                 />
                             </section>
-                            <section className="howMuchDoesItCostSec ps-5 pe-5 mt-5 d-md-none">
+                            <section className="howMuchDoesItCostSec ps-5 pe-5 mt-4 d-md-none">
                                 <section>
                                     <h3 className="display-1 noMargin">How much does it</h3>
                                     <h3 className="display-1 noMargin">cost?</h3>
                                 </section>
                                 <section className="w-100 d-flex justify-content-start align-items-center mt-4 mb-5">
                                     <span className="fs-large fw200 fst-italic text-dark text-start w-75">
-                                    We offer three standard packages, which we’re happy to customize to meet your specific needs.
+                                        We offer three standard packages, which we’re happy to customize to meet your specific needs.
                                     </span>
+                                </section>
+                                <section className="d-md-none">
+                                    {tiers.map((tier, index) => {
+                                        return (
+                                            <Tier 
+                                                isNoBackground={index !== 1}
+                                                key={index}
+                                                tier={tier}
+                                            />
+                                        )
+                                    })}
                                 </section>
                             </section>
                         </CardBody>

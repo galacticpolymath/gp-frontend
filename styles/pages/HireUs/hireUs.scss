@@ -1,32 +1,33 @@
-@import './compStyles/TestimoniesAndReviewsSec';
-@import '../../comps/carousel.scss';
+@import "./compStyles/TestimoniesAndReviewsSec";
+@import "../../comps/carousel.scss";
 
 $btnColor: #84469e;
-$btnColorDark: #3E0D55;
+$btnColorDark: #3e0d55;
 $mobileTxtColor: #96195f;
 $btnColorMobile: #633a9a;
+$backgroundColorTierCard: #ffeded;
 $borderRadiusModal: 1.3em;
-$humanImgBorderColor: #707070;
+$borderColorImgAndCard: #707070;
 $whatWeDoCardColor: #fff8f8;
 
-.humanImg{
+.humanImg {
   // border: solid 1px $humanImgBorderColor !important;
 }
 
-.humanDescriptionTxt{
+.humanDescriptionTxt {
   line-height: 33px;
 }
 
-.picAndImgSec{
+.picAndImgSec {
   // border: solid pink;
   height: 225px;
 }
 
-.promoteLessonsTxtClass{
+.promoteLessonsTxtClass {
   font-size: 28px !important;
 }
 
-.move10pxRight{
+.move10pxRight {
   transform: translateX(10px);
 }
 
@@ -110,7 +111,7 @@ $whatWeDoCardColor: #fff8f8;
   }
 }
 
-.darker-btn-color{
+.darker-btn-color {
   background-color: $btnColorDark !important;
 }
 
@@ -176,10 +177,9 @@ $whatWeDoCardColor: #fff8f8;
     width: 100%;
   }
 }
-.cardHeadingSec{
+.cardHeadingSec {
   height: 150px;
 }
-
 
 .hireUsInfoStyledContainer {
   border: solid 0.5px #707070;
@@ -200,20 +200,19 @@ $whatWeDoCardColor: #fff8f8;
   font-size: 50px !important;
 }
 
-
 .video-styles {
   width: 100% !important;
   height: 300px !important;
   border-radius: $borderRadiusModal;
 
-  @media (max-width: 767px){
+  @media (max-width: 767px) {
     width: 90% !important;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 450px !important;
 
-    > * > *{
+    > * > * {
       width: 100% !important;
       border: 1px solid #dee2e6 !important;
       border-radius: 0.375rem !important;
@@ -244,21 +243,20 @@ $whatWeDoCardColor: #fff8f8;
   }
 }
 
-
 // each lesson info section starts here
-.eachLessonInfoList{
-  li{
+.eachLessonInfoList {
+  li {
     font-size: 25px !important;
     max-width: 580px !important;
   }
-  li:not(:first-child){
+  li:not(:first-child) {
     margin-top: 13px;
   }
 }
 
-.eachLessonMainSec{
-  > section{
-    h5{
+.eachLessonMainSec {
+  > section {
+    h5 {
       font-size: 30px !important;
       font-weight: 380;
     }
@@ -267,26 +265,52 @@ $whatWeDoCardColor: #fff8f8;
 // each lesson info section ends here
 
 // Our Clients' Funding Sources section starts here
-.ourClientsFundingSourcesHeadingTxt{
+.ourClientsFundingSourcesHeadingTxt {
   font-size: 30px !important;
-} 
+}
 
 // Our Clients' Funding Sources section ending
 
 // owner section starts here
-.imgSquareContainer{
+.imgSquareContainer {
   width: 120px;
   height: 120px;
 }
+
 // end of owner section
 
-// start of "How much does it cost" section
-.howMuchDoesItCostSec{
-  > section:nth-child(2){
-    span{
+.howMuchDoesItCostSec {
+  > section:nth-child(2) {
+    span {
       line-height: 35px;
     }
   }
 }
 
+.tierCard {
+  overflow: hidden;
+}
 
+.tierCard,
+.tierCardBodyAndHeader {
+  background-color: $backgroundColorTierCard;
+  border-radius: $borderRadiusModal;
+}
+
+.tierProductBorder {
+  border-top: solid 1px lightgray;
+  border-bottom: solid 1px lightgray;
+}
+
+.productInfoTable {
+  * {
+    color: #000000;
+  }
+}
+
+.tierInfoStatus{
+  text-align: right;
+}
+
+.tierHeaderTag {
+}

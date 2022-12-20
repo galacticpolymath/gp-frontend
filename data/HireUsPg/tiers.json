@@ -1,0 +1,75 @@
+[
+    {
+        "tierName": "Tier 3: Breaking Ground",
+        "description": {
+            "paragraph1": "Our most affordable package for clients who already have (or don’t need) videos to help non-specialists teach the lesson",
+            "paragraph2": "We will carefully craft a lesson that not only achieves your outreach learning goals, but leaves students wanting to know more about topics that are key to your mission!"
+        },
+        "productInfo": {
+            "learningExperience": "1-2 Part",
+            "projectSupport": 1,
+            "example": {
+                "productImg": "/imgs/products/guardian_frogs_banner.png",
+                "txt": "The Guardian Frogs of Borneo: Why exceptions matter in biology and everyday life",
+                "link": "https://www.galacticpolymath.com/lessons/2/"
+            }
+        },
+        "estimatedPrice": {
+            "low": "6,000",
+            "high": "15,000"
+        },
+        "img": "/imgs/tierIcons/pretty-breaking-ground.png"
+    },
+    {
+        "tierName": "Tier 2: Lasting Impact",
+        "description": {
+            "paragraph1": "Scale up your outreach with a significant multimedia budget. We will produce ~10 min. of highly engaging explainer videos that replace the “expert in the room.”",
+            "paragraph2": "High quality videos make it easy for any teacher anywhere to adopt your lesson. Also includes 3 years of support, updates, and promotion."
+        },
+        "productInfo": {
+            "learningExperience": "3-4 Part",
+            "projectSupport": 3,
+            "vid": {
+                "basic": 8,
+                "complex": 90
+            },
+            "isMajorExtension": false,
+            "example": {
+                "productImg": "/imgs/products/ILikeThat_banner-100.jpg",
+                "txt": "I Like That! How perception, emotion, and cognition shape our preferences",
+                "link": "https://www.galacticpolymath.com/lessons/5/"
+            }
+        },
+        "estimatedPrice": {
+            "low": "20,000",
+            "high": "40,000"
+        },
+        "img": "/imgs/tierIcons/pretty-lasting-impact.png"
+    },
+    {
+        "tierName": "Tier 1: World Changer",
+        "description": {
+            "paragraph1": "Achieve maximum impact through sustained effort! A slightly larger scope for the initial lesson release, combined with more project support, and a major lesson extension in year 3. ",
+            "paragraph2": "This means greater student understanding and deeper curiosity around topics core to your mission!"
+        },
+        "productInfo": {
+            "learningExperience": "5-7 Part",
+            "projectSupport": 3,
+            "vid": {
+                "basic": 10,
+                "complex": 120
+            },
+            "isMajorExtension": true,
+            "example": {
+                "productImg": "/imgs/products/genetic_rescue_banner.png",
+                "txt": "Genetic Rescue to the Rescue: Preventing extinction through gene flow",
+                "link": "https://www.galacticpolymath.com/lessons/3/"
+            }
+        },
+        "estimatedPrice": {
+            "low": "50,000",
+            "high": "70,000"
+        },
+        "img": "/imgs/tierIcons/pretty-world-changer.png"
+    }
+]

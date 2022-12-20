@@ -56,6 +56,10 @@ img {
   font-size: 0.75rem;
 }
 
+.fs-larger{
+  font-size: 33px;
+}
+
 .fs-large {
   font-size: 28px;
 }
@@ -113,12 +117,27 @@ img {
   font-weight: 700 !important;
 }
 
-.fw350 {
-  font-weight: 350 !important;
-}
 
 .underline-less-thick {
   text-decoration-thickness: 1.5px !important;
+}
+
+
+.fw450{
+  font-weight: 450 !important;
+}
+
+
+.fw425{
+  font-weight: 425 !important;
+}
+
+.fw400{
+  font-weight: 400 !important;
+}
+
+.fw350 {
+  font-weight: 350 !important;
 }
 
 .fw325 {
@@ -207,6 +226,14 @@ img {
 
 .underline-1{
   text-decoration-thickness: 0.03em !important;
+}
+
+.noBackground{
+  background: none !important;
+}
+
+.noBorder{
+  border-style: none !important;
 }
 
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
