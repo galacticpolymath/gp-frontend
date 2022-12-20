@@ -56,7 +56,7 @@ img {
   font-size: 0.75rem;
 }
 
-.fs-larger{
+.fs-larger {
   font-size: 33px;
 }
 
@@ -117,22 +117,19 @@ img {
   font-weight: 700 !important;
 }
 
-
 .underline-less-thick {
   text-decoration-thickness: 1.5px !important;
 }
 
-
-.fw450{
+.fw450 {
   font-weight: 450 !important;
 }
 
-
-.fw425{
+.fw425 {
   font-weight: 425 !important;
 }
 
-.fw400{
+.fw400 {
   font-weight: 400 !important;
 }
 
@@ -195,7 +192,7 @@ img {
   margin-bottom: 150px !important;
 }
 
-.w-95{
+.w-95 {
   width: 95%;
 }
 
@@ -220,20 +217,41 @@ img {
   height: 50vw;
 }
 
-.borderThicker{
+.borderThicker {
   border: solid 1.3px #707070 !important;
 }
 
-.underline-1{
+.underline-1 {
   text-decoration-thickness: 0.03em !important;
 }
 
-.noBackground{
+.noBackground {
   background: none !important;
 }
 
-.noBorder{
+.noBorder {
   border-style: none !important;
+}
+
+.noBtnStyles {
+  background-repeat: no-repeat;
+  border: none;
+  // background-color: transparent;
+  background: none;
+  overflow: hidden;
+  outline: none;
+}
+
+.op-5{
+  opacity: .5 !important;
+}
+
+.moveLeft{
+  transform: translateX(-15px) !important;
+}
+
+.moveRight{
+  transform: translateX(15px) !important;
 }
 
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)

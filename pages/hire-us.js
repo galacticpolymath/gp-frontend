@@ -308,7 +308,7 @@ const HireUsPage = () => {
                                 <section className="d-md-none">
                                     {tiers.map((tier, index) => {
                                         return (
-                                            <Tier 
+                                            <Tier
                                                 isNoBackground={index !== 1}
                                                 key={index}
                                                 tier={tier}
