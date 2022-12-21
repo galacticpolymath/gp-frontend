@@ -1,3 +1,6 @@
+/* eslint-disable curly */
+/* eslint-disable react/jsx-curly-spacing */
+/* eslint-disable brace-style */
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable prefer-template */
 /* eslint-disable react/jsx-wrap-multilines */
@@ -19,7 +22,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from 'react-bootstrap';
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { BsCircle, BsCircleFill } from "react-icons/bs";
+import { BsCircle, BsCircleFill, BsFillPauseCircleFill, BsFillPlayCircleFill } from "react-icons/bs";
 import Image from 'next/image'
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 import Button from 'react-bootstrap/Button';
@@ -32,7 +35,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
     const timeoutRef = useRef(null);
     const [index, setIndex] = useState(0);
     const [isCarouselPaused, setIsCarouselPaused] = useState(false);
-    const BULL_POINT_INDEX_NUMS = [0, 1, 2, 3];
+    const BULL_POINT_INDEX_NUMS = userInputs && userInputs.map((_, index) => index);
 
 
     const resetTimeout = () => {
@@ -41,12 +44,34 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
         }
     }
 
+    const handlePausePlayBtnClick = () => {
+        setIsCarouselPaused(isCarouselPaused => !isCarouselPaused)
+    }
+
     const handleOnMouseOver = () => {
         setIsCarouselPaused(true)
     }
 
     const handleOnMouseLeave = () => {
         setIsCarouselPaused(false)
+    }
+
+    const handleBulletPtClick = (newIndex) => {
+        setIsCarouselPaused(true)
+        setIndex(newIndex)
+    }
+
+    const handleNavBtnClick = (num) => {
+        setIsCarouselPaused(true)
+        setIndex(prevIndex => {
+            const wasBackBtnPressed = -1 === Math.sign(num);
+
+            if ((prevIndex === 0) && wasBackBtnPressed) return userInputs.length - 1;
+
+            if ((prevIndex === (userInputs.length - 1)) && wasBackBtnPressed) return (prevIndex + num);
+
+            return (prevIndex === (userInputs.length - 1)) ? 0 : (prevIndex + num);
+        })
     }
 
     useEffect(() => {
@@ -74,18 +99,18 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
             </section>
             <section className="d-flex justify-content-center align-items-center">
                 <Card className={cardStyles}>
-                    <Card.Body className="position-relative" onMouseOver={handleOnMouseOver} onMouseLeave={handleOnMouseLeave}>
+                    <Card.Body className="position-relative">
                         {(userInputs && !isCardOnly) &&
                             <>
                                 <section className="position-absolute h-100 start-0 d-flex justify-content-center align-items-center pe-3">
-                                    <Button className="noBtnStyles pb-3 moveLeft">
+                                    <button className="noBtnStyles pb-3 moveLeft noColorChangeOnClick btnColorChangeOnHover" onClick={() => { handleNavBtnClick(-1) }}>
                                         <IoIosArrowBack className="text-muted navigationFeedbackIcon op-5" />
-                                    </Button>
+                                    </button>
                                 </section>
                                 <section className="position-absolute h-100 end-0 d-flex justify-content-center align-items-center">
-                                    <Button className="noBtnStyles pb-3 moveRight">
+                                    <button className="noBtnStyles pb-3 moveRight noColorChangeOnClick btnColorChangeOnHover" onClick={() => { handleNavBtnClick(1) }}>
                                         <IoIosArrowForward className="text-muted navigationFeedbackIcon op-5" />
-                                    </Button>
+                                    </button>
                                 </section>
                                 <div className="autoCarouselContainer">
                                     <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
@@ -109,10 +134,17 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                             )
                                         })}
                                     </div>
-                                    <section className='d-flex justify-content-center align-items-center pb-1'>
-                                        {BULL_POINT_INDEX_NUMS.map(num => (
-                                            (num === index) ? <BsCircleFill className="text-dark ms-1" /> : <BsCircle className="text-dark ms-1" />
-                                        ))}
+                                    <section className='d-flex flex-column justify-content-center align-items-center pb-1'>
+                                        <section className="w-100 d-flex justify-content-center align-items-center">
+                                            {BULL_POINT_INDEX_NUMS.map(num => (
+                                                (num === index) ? <BsCircleFill className="text-dark ms-1" /> : <BsCircle className="text-dark ms-1" onClick={() => { handleBulletPtClick(num) } } />
+                                            ))}
+                                        </section>
+                                        <section className="d-flex justify-content-center align-items-center mt-3">
+                                            <button className="noBtnStyles" onClick={handlePausePlayBtnClick}>
+                                                {isCarouselPaused ? <BsFillPlayCircleFill className="fs-larger" /> : <BsFillPauseCircleFill className="fs-larger" />}
+                                            </button>
+                                        </section>
                                     </section>
                                 </div>
                             </>

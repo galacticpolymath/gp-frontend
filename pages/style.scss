@@ -250,6 +250,10 @@ img {
   transform: translateX(-15px) !important;
 }
 
+.btnColorChangeOnHover:hover{
+  opacity: .8 !important;
+}
+
 .moveRight{
   transform: translateX(15px) !important;
 }
