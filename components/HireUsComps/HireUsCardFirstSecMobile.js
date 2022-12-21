@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable semi */
 /* eslint-disable no-unused-vars */
@@ -8,21 +9,22 @@
 /* eslint-disable react/jsx-indent */
 import Image from 'next/image';
 
-const HireUsCardFirstSecMobile = ({ textsAndImg }) => {
+const HireUsCardFirstSecMobile = ({ textsAndImg, index }) => {
     const { boldedTxt, unBoldedText, imgPath } = textsAndImg;
+    const _className = `pt-2 mt-2 mt-sm-0 d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ${(index === 2) ? "pe-4 pe-sm-0" : ""}`
 
 
     return (
-        <section className="mt-4 d-flex">
-            <section className="pt-2">
+        <section className="d-flex flex-sm-row flex-column HireUsCardFirstSecMobile">
+            <section className={_className}>
                 <Image src={imgPath} width={75} height={75} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
             </section>
-            <section className="w-75 ms-4">
-                <span className="d-inline-block hireUsCardFirstSecTxt">
-                    <span className='bolder text-dark'>
+            <section className="w-75 ms-sm-4 mt-3 mt-sm-0 ps-3 pe-3 ps-sm-0 pe-sm-0">
+                <span className="d-flex flex-column flex-sm-row d-sm-inline-block hireUsCardFirstSecTxt responsiveInfoTxt text-center text-sm-start">
+                    <span className='bolder text-dark text-sm-nowrap fst-italic fw400 pe-2'>
                         {boldedTxt}
                     </span>
-                    <span className='ms-2 text-dark fwtHireUsCard'>
+                    <span className='text-dark fwtHireUsCard'>
                         {unBoldedText}
                     </span>
                 </span>

@@ -38,13 +38,14 @@ import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
 import mattsAwards from '../data/HireUsPg/mattsAwards.json'
 import scientists from '../data/HireUsPg/scientists.json'
+import infoTxtsFirstSec from '../data/HireUsPg/infoTxtsFirstSec.json'
 import tiers from '../data/HireUsPg/tiers.json'
 import Tier from '../components/HireUsComps/sections/Tier';
 
 
 const HireUsPage = () => {
     const cardVideoSec1 = (
-        <video className="video-styles border rounded" controls>
+        <video className="border rounded looped-vid-hire-us" autoPlay muted loop>
             <source src="./videos/client-asset-to-lesson-animation.mp4" type="video/mp4" />
         </video>
     );
@@ -62,7 +63,6 @@ const HireUsPage = () => {
 
 
     const hireUsCardsSectionTexts = [{ text: "Clients provide complex texts, data, and outreach aims", mobileTxt: "You give us your outreach goals, along with complex texts, data, and any media you might have related to your work: ", content: cardVideoSec1 }, { text: "We create open access (free) lessons that a non-specialist can teach:", mobileTxt: "We create lessons and supporting multimedia that achieve your outreach aims by making your work accessible to teachers around the world.", content: cardVideoSec2 }];
-    const infoTxtsFirstSec = [{ boldedTxt: "We help researchers", unBoldedText: "win grants and do outreach more easily.", imgPath: "/imgs/pretty-ribbon.png" }, { boldedTxt: "We help nonprofits", unBoldedText: "grow student understanding and enthusiasm around their mission.", imgPath: "/imgs/pretty-sustainability.png" }, { boldedTxt: "We help companies", unBoldedText: "build tomorrow’s workforce by connecting classwork to career paths.", imgPath: "/imgs/pretty-rocket-career.png" }]
 
     return (
         <Layout description="Galactic PolyMath Hire Us Page.">
@@ -101,18 +101,18 @@ const HireUsPage = () => {
                         </section>
                     </section>
                 </section>
-                <section className="CardSec ps-4 pe-4">
+                <section className="CardSec d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
                     <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-4'>
                         <CardBody className="hireUsPgInfoCardBody">
-                            <section className="d-flex flex-column ps-5 pe-5">
-                                <section className="d-flex d-md-none">
-                                    <h3 className="text-nowrap">
+                            <section className="d-flex flex-column">
+                                <section className="d-flex d-md-none ps-sm-5 pe-sm-5">
+                                    <h3 className="text-center text-sm-start w-100 text-sm-nowrap">
                                         What do we do?
                                     </h3>
                                 </section>
-                                <section className="pb-4 mt-3">
-                                    <span className="hireUsCardIntroTxt d-inline-block">
-                                        <span className='bolder'>
+                                <section className="pb-4 mt-3 ps-sm-5 pe-sm-5">
+                                    <span className="hireUsCardIntroTxt d-inline-block responsiveInfoTxt text-center text-sm-start ps-3 pe-3 ps-sm-0 pe-sm-0">
+                                        <span className='bolder text-sm-nowrap'>
                                             We mobilize knowledge
                                         </span>
                                         <span className='ms-2 fwtHireUsCard'>
@@ -120,7 +120,7 @@ const HireUsPage = () => {
                                         </span>
                                     </span>
                                 </section>
-                                <section className="d-none d-md-flex flex-column">
+                                <section className="d-none d-md-flex flex-column ps-sm-5 pe-sm-5">
                                     {hireUsCardsSectionTexts.map(({ text, content }, index) => {
                                         return (
                                             <>
@@ -134,17 +134,15 @@ const HireUsPage = () => {
                                         );
                                     })}
                                 </section>
-                                <section className="d-flex d-md-none flex-column">
-                                    {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} />)}
+                                <section className="d-flex d-md-none flex-column ps-sm-5 pe-sm-5">
+                                    {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} index={index} />)}
                                 </section>
                             </section>
-                            <section className="d-flex d-md-none flex-column mt-15 mb-15">
-                                <section className="ps-5 pe-5">
-                                    <section>
-                                        <h3 className="text-nowrap">
-                                            How does it work?
-                                        </h3>
-                                    </section>
+                            <section className="d-flex d-md-none flex-column mt-15 mb-15 howDoesItWorkSec">
+                                <section className="d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ps-sm-5 pe-sm-5">
+                                    <h3 className="text-center text-sm-start">
+                                        How does it work?
+                                    </h3>
                                 </section>
                                 {hireUsCardsSectionTexts.map(({ content, mobileTxt }, index) => {
                                     return (

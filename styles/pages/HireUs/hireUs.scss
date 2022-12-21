@@ -14,6 +14,14 @@ $whatWeDoCardColor: #fff8f8;
   line-height: 33px;
 }
 
+.responsiveInfoTxt{
+  font-size: 28px !important;
+  
+  @media(max-width: 575px){
+
+  }
+}
+
 .picAndImgSec {
   height: 225px;
 }
@@ -34,16 +42,17 @@ $whatWeDoCardColor: #fff8f8;
   padding: 20vh 0;
 }
 
+
 .headerSection {
-  @media (min-width: 577px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 767px) {
     width: 75% !important;
   }
 
-  @media(max-width: 576px){
+  @media(max-width: 575px){
     width: 100% !important;
   }
 
-  @media(min-width: 375px) and (max-width: 576px){
+  @media(min-width: 375px) and (max-width: 575px){
     padding-left: 40px !important;
   }
 
@@ -72,11 +81,11 @@ $whatWeDoCardColor: #fff8f8;
     font-size: 70px !important;
   }
 
-  @media (min-width: 577px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 767px) {
     font-size: calc(31.2px + 4.5vw);
   }
 
-  @media (max-width: 576px) {
+  @media (max-width: 575px) {
     font-size: clamp(33px, 9.3vw, 57px) !important;
   }
 }
@@ -84,11 +93,11 @@ $whatWeDoCardColor: #fff8f8;
 .subTxtHeadingContainerHireUsPg{
   width: 75% !important;
 
-  @media(max-width: 576px){
+  @media(max-width: 575px){
     width: 100% !important;
   }
 
-  @media(min-width: 375px) and (max-width: 576px){
+  @media(min-width: 375px) and (max-width: 575px){
     padding-left: 40px !important;
     padding-right: 40px !important;
 
@@ -141,7 +150,7 @@ $whatWeDoCardColor: #fff8f8;
         text-decoration-thickness: 1.5px;
       }
 
-      @media (max-width: 576px){
+      @media (max-width: 575px){
         
         
       }
@@ -156,7 +165,7 @@ $whatWeDoCardColor: #fff8f8;
   @media (min-width: 992px) {
   }
 
-  @media (min-width: 577px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 767px) {
     width: 300px !important;
 
     div:last-of-type {
@@ -173,7 +182,7 @@ $whatWeDoCardColor: #fff8f8;
     background-color: $btnColorMobile !important;
   }
 
-  @media (max-width: 576px){
+  @media (max-width: 575px){
     height: 75px !important;
     width: 250px !important;
 
@@ -212,10 +221,10 @@ $whatWeDoCardColor: #fff8f8;
         width: 75% !important;
       }
 
-      @media(max-width: 576px){
+      @media(max-width: 575px){
         width: 100% !important;
       } 
-      @media(min-width: 375px) and (max-width: 576px){
+      @media(min-width: 375px) and (max-width: 575px){
         padding-left: 40px !important;
       }
     }
@@ -244,6 +253,8 @@ $whatWeDoCardColor: #fff8f8;
 }
 
 .hireUsPgInfoCard {
+  // min-width: 
+  min-width: 250px !important;
   transform: translateY(-100px);
   min-height: 700px;
   border-radius: $borderRadiusModal;
@@ -261,11 +272,22 @@ $whatWeDoCardColor: #fff8f8;
 }
 
 .hireUsPgInfoCardBody {
+
+   > section:first-child{
+    // border: solid pink;
+   }
+
   @media (max-width: 767px) {
     h3 {
       color: $mobileTxtColor !important;
       font-size: 58px !important;
       font-weight: 660;
+    }
+  }
+
+  @media (max-width: 575px) {
+    h3 {
+      font-size: 38px !important;
     }
   }
 
@@ -278,14 +300,22 @@ $whatWeDoCardColor: #fff8f8;
   font-weight: 249 !important;
 }
 
+.looped-vid-hire-us{
+  border: solid pink;
+  height: 300px !important;
+}
+
 .hireUsCardIntroTxt {
   color: #363636 !important;
   width: 75%;
   font-size: 55px;
 
   @media (max-width: 767px) {
-    font-size: 40px;
     width: 100%;
+  }
+
+  @media (max-width: 575px){
+    
   }
 }
 .cardHeadingSec {
@@ -299,11 +329,11 @@ $whatWeDoCardColor: #fff8f8;
 }
 
 .hireUsCardTxt {
-  font-size: 40px !important;
+  // font-size: 40px !important;
 
   @media (max-width: 767px) {
-    font-size: 45px !important;
-    font-weight: 280;
+    // font-size: 45px !important;
+    font-weight: 249;
   }
 }
 
@@ -321,7 +351,7 @@ $whatWeDoCardColor: #fff8f8;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 450px !important;
+    height: 348px !important;
 
     > * > * {
       width: 100% !important;
@@ -331,8 +361,49 @@ $whatWeDoCardColor: #fff8f8;
   }
 }
 
-.hireUsCardFirstSecTxt {
-  font-size: 30px !important;
+.looped-vid-hire-us{
+  width: 100% !important;
+  // height: 300px !important;
+  border-radius: $borderRadiusModal;
+
+  @media (max-width: 767px) {
+    width: 90% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // height: 400px !important;
+
+    > * > * {
+      width: 100% !important;
+      border: 1px solid #dee2e6 !important;
+      border-radius: 0.375rem !important;
+    }
+  }
+}
+
+.HireUsCardFirstSecMobile:first-child{
+  margin-top: 20px !important;
+}
+
+.HireUsCardFirstSecMobile:not(:first-child){
+  margin-top: 55px !important;
+}
+
+.HireUsCardFirstSecMobile{
+  > section{
+    @media(max-width: 575px){
+      width: 100% !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  > section:last-child{
+    > span{
+      text-align: center;
+    }
+  }
 }
 
 .introSubTextHireUs {
@@ -354,7 +425,17 @@ $whatWeDoCardColor: #fff8f8;
   }
 }
 
-// each lesson info section starts here
+.howDoesItWorkSec{
+  > section:first-child{
+      // border: solid pink !important;
+      // font-size: clamp(50px, 4vw, 58px) !important;
+      
+      @media(max-width: 575px){
+        width: 100%; 
+      }
+  }
+}
+
 .eachLessonInfoList {
   li {
     font-size: 25px !important;
@@ -373,22 +454,18 @@ $whatWeDoCardColor: #fff8f8;
     }
   }
 }
-// each lesson info section ends here
 
-// Our Clients' Funding Sources section starts here
+
 .ourClientsFundingSourcesHeadingTxt {
   font-size: 30px !important;
 }
 
-// Our Clients' Funding Sources section ending
 
-// owner section starts here
 .imgSquareContainer {
   width: 120px;
   height: 120px;
 }
 
-// end of owner section
 
 .howMuchDoesItCostSec {
   > section:nth-child(2) {
