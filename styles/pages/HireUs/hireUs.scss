@@ -24,6 +24,19 @@ $whatWeDoCardColor: #fff8f8;
 
 .picAndImgSec {
   height: 225px;
+
+  @media(max-width: 575px){
+    // height: 400px;
+    height: fit-content;
+  }
+}
+
+.promoteLessonsTxtContainer{
+  width: 50% !important;
+
+  @media(max-width: 575px){
+    width: 100% !important;
+  }
 }
 
 .promoteLessonsTxtClass {
@@ -32,6 +45,12 @@ $whatWeDoCardColor: #fff8f8;
 
 .move10pxRight {
   transform: translateX(10px);
+}
+
+.move10pxRightResponsive{
+  @media(min-width: 576px){
+    transform: translateX(10px);
+  }
 }
 
 .hireUsPg {
@@ -436,6 +455,10 @@ $whatWeDoCardColor: #fff8f8;
   }
 }
 
+.eachLessonInfoList{
+  // border: solid pink;
+}
+
 .eachLessonInfoList {
   li {
     font-size: 25px !important;
@@ -464,6 +487,25 @@ $whatWeDoCardColor: #fff8f8;
 .imgSquareContainer {
   width: 120px;
   height: 120px;
+}
+
+.imgContainerHireUsDefaultStyles{
+  @media (max-width: 575px) {
+    height: 100% !important;
+    width: 100% !important;;
+  }
+}
+
+.imgContainerHireUsPg{
+  // border: solid pink !important;
+  width: 80% !important;
+  // height: 300px;
+  
+  @media(max-width: 575px){
+    margin-top: 15px !important;
+    width: 75% !important;
+    height: 215px !important;
+  }
 }
 
 

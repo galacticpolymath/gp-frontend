@@ -15,11 +15,11 @@
 import Image from 'next/image';
 
 const PicAndImageSec = ({ isFlexReversed, isImgCircle, text, imgPath, customTxtSpanClassNames, imgMainSectionCustomCss, link, txtSectionCssClasses, name }) => {
-    const classNamesMainSec = `d-flex picAndImgSec ${isFlexReversed ? 'flex-row-reverse' : 'flex-row'}`
+    const classNamesMainSec = `d-flex picAndImgSec ${isFlexReversed ? 'flex-row-reverse' : 'flex-column flex-sm-row'}`
     const txtSpanClassNames = `text-dark fw245 ${customTxtSpanClassNames ?? ''}`;
-    const imgMainSectionClassNames = `d-flex align-items-center ${imgMainSectionCustomCss ?? ''}`
+    const imgMainSectionClassNames = `d-flex align-items-center imgContainerHireUsDefaultStyles ${imgMainSectionCustomCss ?? ''}`
     const imageClassNames = isImgCircle ? 'rounded-circle humanImg borderThicker text-dark d-flex justify-content-center align-items-center' : 'square d-flex justify-content-center align-items-center';
-    const txtSection = `d-flex justify-content-center ${txtSectionCssClasses ?? ''}`
+    const txtSection = `d-flex justify-content-center text-center text-sm-start pb-sm-0 ${txtSectionCssClasses ?? ''}`
 
     return (
         <section className={classNamesMainSec}>
@@ -30,7 +30,7 @@ const PicAndImageSec = ({ isFlexReversed, isImgCircle, text, imgPath, customTxtS
                     </a>
                     :
                     <>
-                        <h4 className="fw-bold text-dark">{name}</h4>
+                        {!!name && <h4 className="fw-bold text-dark">{name}</h4>}
                         <span className={txtSpanClassNames}>{text}</span>
                     </>
                 }
@@ -40,7 +40,7 @@ const PicAndImageSec = ({ isFlexReversed, isImgCircle, text, imgPath, customTxtS
                     {isImgCircle ?
                         <Image src={imgPath} width={163} height={163} alt="Galactic_PolyMath_HireUs_Img" className={imageClassNames} />
                         :
-                        <div className="imgContainerHireUsPg position-relative w-80 h-100">
+                        <div className="imgContainerHireUsPg position-relative h-100">
                             <Image src={imgPath} layout='fill' alt="Galactic_PolyMath_HireUs_Img" />
                         </div>
                     }

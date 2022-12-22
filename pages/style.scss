@@ -181,7 +181,13 @@ img {
 }
 
 .mt-7 {
-  margin-top: 70px;
+  margin-top: 70px !important;
+}
+
+.mt-sm-7{
+  @media(min-width: 576px){
+    margin-top: 70px !important;
+  }
 }
 
 .mt-8 {

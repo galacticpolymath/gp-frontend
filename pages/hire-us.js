@@ -160,26 +160,27 @@ const HireUsPage = () => {
                             <section className="d-flex d-md-none mt-5">
                                 <CardContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
                             </section>
-                            <section className="mt-5 ps-sm-5 d-flex d-md-none">
+                            <section className="mt-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none">
                                 <section>
                                     <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge</h3>
                                     <h3 className="display-1 text-center text-sm-start noMargin">with anyone, anywhere!</h3>
                                 </section>
                             </section>
-                            <section className="mt-7 ps-5 pe-3 d-flex d-md-none">
+                            <section className="mt-4 mt-sm-7 ps-sm-5 pe-sm-3 d-flex d-md-none">
                                 <PicAndImageSec
                                     text="We promote lessons through our growing GP Constellation dissemination network."
                                     imgPath="/imgs/GP_Constellation_dark.png"
-                                    txtSectionCssClasses="w-50"
-                                    customTxtSpanClassNames="promoteLessonsTxtClass move10pxRight"
+                                    txtSectionCssClasses="promoteLessonsTxtContainer ps-1 pe-1 ps-sm-0 pe-sm-0"
+                                    customTxtSpanClassNames="promoteLessonsTxtClass move10pxRightResponsive ps-1 pe-1 ps-sm-0 pe-sm-0"
                                     imgMainSectionCustomCss="w-75 justify-content-center"
                                 />
                             </section>
-                            <section className="mt-5 ps-5 pe-5 eachLessonMainSec d-flex flex-column d-md-none">
-                                <section>
-                                    <h5 className="fst-italic text-dark move10pxRight">Each lesson is: </h5>
+                            <section className="mt-5 ps-sm-5 pe-sm-5 eachLessonMainSec d-flex flex-column d-md-none">
+                                <section className="w-100">
+                                    <h5 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h5>
                                 </section>
-                                <ul className="eachLessonInfoList ps-5 pt-2">
+                                {/* ps-sm-5 pt-sm-2 */}
+                                <ul className="eachLessonInfoList ps-0 pt-2 ps-5 pt-sm-2 pe-3">
                                     {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
                                         <li className="text-dark fw249" key={index}>
                                             {normalTxt}
