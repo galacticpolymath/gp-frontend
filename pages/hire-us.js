@@ -165,8 +165,8 @@ const HireUsPage = () => {
                             </section>
                             <section className="mt-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none">
                                 <section>
-                                    <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge</h3>
-                                    <h3 className="display-1 text-center text-sm-start noMargin">with anyone, anywhere!</h3>
+                                    <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
+                                    {/* <h3 className="display-1 text-center text-sm-start noMargin">with anyone, anywhere!</h3> */}
                                 </section>
                             </section>
                             <section className="mt-4 mt-sm-7 ps-sm-5 pe-sm-3 d-flex d-md-none">
@@ -296,13 +296,13 @@ const HireUsPage = () => {
                                     headerContainerClassNamesDynamic="cardHeadingSec"
                                 />
                             </section>
-                            <section className="howMuchDoesItCostSec ps-5 pe-5 mt-4 d-md-none">
+                            <section className="howMuchDoesItCostSec ps-sm-5 pe-sm-5 mt-4 d-md-none">
                                 <section>
-                                    <h3 className="display-1 noMargin">How much does it</h3>
-                                    <h3 className="display-1 noMargin">cost?</h3>
+                                    <h3 className="display-1 noMargin">How much does it cost?</h3>
+                                    {/* <h3 className="display-1 noMargin">cost?</h3> */}
                                 </section>
-                                <section className="w-100 d-flex justify-content-start align-items-center mt-4 mb-5">
-                                    <span className="fs-large fw200 fst-italic text-dark text-start w-75">
+                                <section className="w-100 d-flex justify-content-start align-items-center mt-4 mb-5 ps-1 pe-1 ps-sm-0 pe-sm-0">
+                                    <span className="fs-large fw200 fst-italic text-dark text-center text-sm-start ps-1 ps-sm-0 pe-1 pe-sm-0">
                                         We offer three standard packages, which we’re happy to customize to meet your specific needs.
                                     </span>
                                 </section>

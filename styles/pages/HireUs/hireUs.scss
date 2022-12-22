@@ -511,12 +511,28 @@ $whatWeDoCardColor: #fff8f8;
   > section:nth-child(2) {
     span {
       line-height: 35px;
+      width: 100%;
     }
   }
 }
 
 .tierCard {
   overflow: hidden;
+}
+
+.imgSectionTier{
+}
+
+.tierImg{
+  @media(max-width: 575px){
+    min-width: 80px !important; 
+  }
+}
+
+.tierTableRow:not(:first-child){
+  td{
+    padding-top: 20px;
+  }
 }
 
 .tierCard,

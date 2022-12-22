@@ -210,6 +210,12 @@ img {
   width: 90%;
 }
 
+.w-sm-90{
+  @media(min-width: 576px){
+    width: 90% !important;
+  }
+}
+
 .w-85 {
   width: 85%;
 }
