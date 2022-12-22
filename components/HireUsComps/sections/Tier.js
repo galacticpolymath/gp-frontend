@@ -35,7 +35,7 @@ const Tier = ({ tier, isNoBackground }) => {
     return (
         <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5'} mt-5 pb-5 ps-sm-3 pe-sm-3`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
-                <section className="imgSectionTier d-flex justify-content-center align-items-center align-items-sm-stretch">
+                <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
                     <Img src={img} alt={`${tierName}_img`} className="w-25 tierImg" height={120} />
                 </section>
                 <section className="mt-4">
@@ -80,7 +80,7 @@ const Tier = ({ tier, isNoBackground }) => {
                         <h4 className="text-dark fst-italic fs-large fw200 text-center text-sm-start">Example Product: </h4>
                     </section>
                     <section>
-                        <div className="w-100">
+                        <div className="imgProductContainer">
                             <Img src={productImg} alt={`${tierName}_ProductImg`} className="w-100 w-sm-90" height={170} />
                         </div>
                         <section className="mt-4 text-sm-start text-center">

@@ -84,8 +84,12 @@ $carouselBackgroundColor: #FFEDED;
 
 
   .defaultHeadingCarouselStyles{
+    // border: solid pink !important;    
+
     @media(max-width: 575px){
-      font-size: 38px !important;      
+      font-size: 38px !important;    
+      padding-left: 3px;
+      padding-right: 3px;  
     }
   }
 

@@ -227,7 +227,8 @@ const HireUsPage = () => {
                                         isFlexReversed
                                         isImgCircle
                                         text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
-                                        txtSectionCssClasses="w-95"
+                                        txtSectionCssClasses="w-95 mattSection"
+                                        customCssMainSec="ownerSection"
                                         imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
                                         customTxtSpanClassNames="fs-large pt-4 humanDescriptionTxt"
                                         imgMainSectionCustomCss="w-50 justify-content-start"

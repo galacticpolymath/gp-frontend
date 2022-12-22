@@ -14,8 +14,8 @@
 
 import Image from 'next/image';
 
-const PicAndImageSec = ({ isFlexReversed, isImgCircle, text, imgPath, customTxtSpanClassNames, imgMainSectionCustomCss, link, txtSectionCssClasses, name }) => {
-    const classNamesMainSec = `d-flex picAndImgSec ${isFlexReversed ? 'flex-row-reverse' : 'flex-column flex-sm-row'}`
+const PicAndImageSec = ({ isFlexReversed, isImgCircle, text, imgPath, customTxtSpanClassNames, imgMainSectionCustomCss, link, txtSectionCssClasses, name, customCssMainSec }) => {
+    const classNamesMainSec = `d-flex picAndImgSec ${isFlexReversed ? 'flex-row-reverse' : 'flex-column flex-sm-row'} ${customCssMainSec ?? ''}`
     const txtSpanClassNames = `text-dark fw245 ${customTxtSpanClassNames ?? ''}`;
     const imgMainSectionClassNames = `d-flex align-items-center imgContainerHireUsDefaultStyles ${imgMainSectionCustomCss ?? ''}`
     const imageClassNames = isImgCircle ? 'rounded-circle humanImg borderThicker text-dark d-flex justify-content-center align-items-center' : 'square d-flex justify-content-center align-items-center';
@@ -38,7 +38,7 @@ const PicAndImageSec = ({ isFlexReversed, isImgCircle, text, imgPath, customTxtS
             {!link &&
                 <section className={imgMainSectionClassNames}>
                     {isImgCircle ?
-                        <Image src={imgPath} width={163} height={163} alt="Galactic_PolyMath_HireUs_Img" className={imageClassNames} />
+                        <Image src={imgPath} width={170} height={170} alt="Galactic_PolyMath_HireUs_Img" className={imageClassNames} />
                         :
                         <div className="imgContainerHireUsPg position-relative h-100">
                             <Image src={imgPath} layout='fill' alt="Galactic_PolyMath_HireUs_Img" />
