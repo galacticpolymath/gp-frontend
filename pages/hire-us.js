@@ -160,10 +160,10 @@ const HireUsPage = () => {
                             <section className="d-flex d-md-none mt-5">
                                 <CardContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
                             </section>
-                            <section className="mt-5 ps-5 d-flex d-md-none">
+                            <section className="mt-5 ps-sm-5 d-flex d-md-none">
                                 <section>
-                                    <h3 className="display-1">Share your knowledge</h3>
-                                    <h3 className="display-1">with anyone, anywhere!</h3>
+                                    <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge</h3>
+                                    <h3 className="display-1 text-center text-sm-start noMargin">with anyone, anywhere!</h3>
                                 </section>
                             </section>
                             <section className="mt-7 ps-5 pe-3 d-flex d-md-none">

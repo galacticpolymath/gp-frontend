@@ -24,7 +24,23 @@
   }
 }
 
+.forwardBtnCarousel{
+  @media(max-width: 575px){
+    padding-left: 25px;
+  }
+}
 
-.navigationFeedbackIcon{
-  font-size: 75px
+.backBtnCarousel{
+  @media(max-width: 575px){
+    padding-right: 25px;
+  }
+}
+
+.arrowNavigationCarousel{
+  font-size: 75px;
+
+  @media(max-width: 575px){
+    font-size: 65px !important;
+    padding-bottom: 20px !important;
+  }
 }

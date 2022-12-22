@@ -18,7 +18,16 @@ $carouselBackgroundColor: #FFEDED;
   .autoCarouselContainerCard{
     width: 85% !important;
     border-radius: 1.3em;
+
+    @media(max-width: 575px){
+      width: 95% !important;
+    }
   }
+
+  .cardBodyStyles{
+
+  }
+
 
   .autoCarouselContainerHeading{
     height: 150px;
@@ -30,20 +39,36 @@ $carouselBackgroundColor: #FFEDED;
     margin: 0 auto;
     display: block;
     font-size: 29px;
+
+    @media(max-width: 575px){
+      width: fit-content !important;
+    }
   }
 
   .feedbackInfoSec{
     bottom: 70px;
     right: 5px;
+    position: absolute;
 
     > section{
       > span:first-child{
         font-size: 25px; 
       }
     }
+
+
+
+
+    @media(max-width: 575px){
+      position: static !important;
+    }
   }
 
-  
+  .feedBackSec{
+    // height: fit-content;
+    // border: solid pink !important;;
+    // overflow: hidden !important;;
+  }
 
   .autoCarouselSlider{
     white-space: nowrap;
@@ -57,10 +82,19 @@ $carouselBackgroundColor: #FFEDED;
     transform: translate(-50%, -50%);
   }
 
+
+
+  .defaultHeadingCarouselStyles{
+    @media(max-width: 575px){
+      font-size: 38px !important;      
+    }
+  }
+
   .autoCarouselContainer {
     margin: 0 auto;
     overflow: hidden;
     max-width: 500px;
+
   }
   
   .autoCarouselItem {
@@ -68,6 +102,11 @@ $carouselBackgroundColor: #FFEDED;
     height: 400px;
     width: 100%;
     border-radius: 40px;
+    // border: solid pink;
+
+    @media(max-width: 575px){
+      height: fit-content;
+    }
   }
   
   .slides {

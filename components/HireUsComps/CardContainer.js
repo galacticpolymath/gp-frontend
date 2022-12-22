@@ -28,7 +28,7 @@ import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 import Button from 'react-bootstrap/Button';
 
 const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly }) => {
-    const autoCarouselHeadingTxt = `bolder ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
+    const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center text-sm-start ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3' : ''}`;
     cardStyles = isCardOnly ? (cardStyles + ' cardOnlyStyles mt-3 pt-1 pb-4 pe-2 fw245') : cardStyles
@@ -99,17 +99,17 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
             </section>
             <section className="d-flex justify-content-center align-items-center">
                 <Card className={cardStyles}>
-                    <Card.Body className="position-relative">
+                    <Card.Body className="position-relative cardBodyStyles">
                         {(userInputs && !isCardOnly) &&
                             <>
                                 <section className="position-absolute h-100 start-0 d-flex justify-content-center align-items-center pe-3">
                                     <button className="noBtnStyles pb-3 moveLeft noColorChangeOnClick btnColorChangeOnHover" onClick={() => { handleNavBtnClick(-1) }}>
-                                        <IoIosArrowBack className="text-muted navigationFeedbackIcon op-5" />
+                                        <IoIosArrowBack className="text-muted arrowNavigationCarousel backBtnCarousel op-5" />
                                     </button>
                                 </section>
                                 <section className="position-absolute h-100 end-0 d-flex justify-content-center align-items-center">
                                     <button className="noBtnStyles pb-3 moveRight noColorChangeOnClick btnColorChangeOnHover" onClick={() => { handleNavBtnClick(1) }}>
-                                        <IoIosArrowForward className="text-muted navigationFeedbackIcon op-5" />
+                                        <IoIosArrowForward className="text-muted arrowNavigationCarousel forwardBtnCarousel op-5" />
                                     </button>
                                 </section>
                                 <div className="autoCarouselContainer">
@@ -118,13 +118,13 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                             const { feedback, person, occupation, city } = userInput;
                                             return (
                                                 <div className="autoCarouselItem position-relative" key={index}>
-                                                    <section className="w-100 h-100 d-flex justify-content-center align-items-center">
-                                                        <section className="pb-5 mb-5 me-3">
-                                                            <span className="text-dark fst-italic feedbackTxt">"{feedback}"</span>
+                                                    <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-center align-items-center feedBackSec">
+                                                        <section className="pb-sm-5 mb-sm-5 me-sm-3">
+                                                            <span className="text-dark fst-italic text-center text-sm-start feedbackTxt">"{feedback}"</span>
                                                         </section>
-                                                        <section className="d-flex justify-content-end position-absolute feedbackInfoSec">
-                                                            <section className='flex-column d-flex'>
-                                                                <span className="text-wrap text-dark feedBackTxtName fst-italic">- {person}</span>
+                                                        <section className="d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec">
+                                                            <section className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
+                                                                <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic">- {person}</span>
                                                                 <span className="text-wrap text-dark fst-italic">{occupation}</span>
                                                                 {!!city && <span className="text-wrap text-dark fst-italic">{city}</span>}
                                                             </section>
@@ -134,10 +134,10 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                             )
                                         })}
                                     </div>
-                                    <section className='d-flex flex-column justify-content-center align-items-center pb-1'>
+                                    <section className='d-flex flex-column justify-content-center align-items-center pb-1 mt-4 mt-sm-0'>
                                         <section className="w-100 d-flex justify-content-center align-items-center">
                                             {BULL_POINT_INDEX_NUMS.map(num => (
-                                                (num === index) ? <BsCircleFill className="text-dark ms-1" /> : <BsCircle className="text-dark ms-1" onClick={() => { handleBulletPtClick(num) } } />
+                                                (num === index) ? <BsCircleFill className="text-dark ms-1" /> : <BsCircle className="text-dark ms-1" onClick={() => { handleBulletPtClick(num) }} />
                                             ))}
                                         </section>
                                         <section className="d-flex justify-content-center align-items-center mt-3">
