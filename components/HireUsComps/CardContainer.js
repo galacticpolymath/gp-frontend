@@ -30,8 +30,8 @@ import Button from 'react-bootstrap/Button';
 const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly }) => {
     const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center text-sm-start ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
-    let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3' : ''}`;
-    cardStyles = isCardOnly ? (cardStyles + ' cardOnlyStyles mt-3 pt-1 pb-4 pe-2 fw245') : cardStyles
+    let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
+    cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 pt-1 pb-4 pe-2 fw245') : cardStyles
     const timeoutRef = useRef(null);
     const [index, setIndex] = useState(0);
     const [isCarouselPaused, setIsCarouselPaused] = useState(false);
@@ -151,7 +151,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                         }
                         {(pics && !isCardOnly) &&
                             <div className="w-100">
-                                <section className="w-100 d-flex justify-content-center align-items-center">
+                                <section className="w-100 d-flex flex-column flex-sm-row justify-content-center align-items-center">
                                     {
                                         pics.map(({ path, alt }, index) => {
                                             return (

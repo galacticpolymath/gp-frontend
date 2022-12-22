@@ -18,15 +18,14 @@ $carouselBackgroundColor: #FFEDED;
   .autoCarouselContainerCard{
     width: 85% !important;
     border-radius: 1.3em;
+    
 
     @media(max-width: 575px){
       width: 95% !important;
     }
   }
 
-  .cardBodyStyles{
 
-  }
 
 
   .autoCarouselContainerHeading{
@@ -181,14 +180,30 @@ $carouselBackgroundColor: #FFEDED;
   .carouselImgContainer{
     width: 125px;
     height: 98px;
+
+    @media(max-width: 575px){
+      width: 185px;
+      height: 185px;
+    }
   }
 
-  .cardOnlyStyles{
-    // border: solid pink 1px !important; 
+  .picsCardContainer{
+    @media(max-width: 575px){
+      width: 50% !important;
+      min-width: 255.5px !important;
+      // width: fit-content;
+    }
   }
 
   .carouselImgContainer:not(:first-child){
-    transform: translateX(10px);
+    @media(min-width: 576px){
+      transform: translateX(10px) !important;
+    }
+
+    @media(max-width: 575px){
+      // transform: translateY(10px);
+      margin-top: 30px !important;
+    }
   }
 
 //   img {
