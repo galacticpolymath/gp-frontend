@@ -95,7 +95,7 @@ const HireUsPage = () => {
                                     We translate your work so that non-experts can teach mind-opening lessons.
                                 </span>
                             </section>
-                            <section className="ps-3 ps-sm-1 pt-5">
+                            <section className="ps-3 ps-sm-1 pt-4 pt-sm-5">
                                 <LetsTalkBtnContainer />
                             </section>
                         </section>
@@ -111,8 +111,11 @@ const HireUsPage = () => {
                                     </h3>
                                 </section>
                                 <section className="pb-4 mt-3 ps-sm-5 pe-sm-5">
-                                    <span className="hireUsCardIntroTxt d-inline-block responsiveInfoTxt text-center text-sm-start ps-3 pe-3 ps-sm-0 pe-sm-0">
-                                        <span className='bolder text-sm-nowrap'>
+                                    <span className='d-sm-none bolder text-wrap text-dark text-center w-100 d-block responsiveInfoTxt'>
+                                        We mobilize knowledge
+                                    </span>
+                                    <span className="hireUsCardIntroTxt d-inline-block responsiveInfoTxt text-center text-sm-start ps-3 pe-3 ps-sm-0 pe-sm-1">
+                                        <span className='bolder text-sm-nowrap d-none d-sm-inline-block'>
                                             We mobilize knowledge
                                         </span>
                                         <span className='ms-2 fwtHireUsCard'>
@@ -194,24 +197,23 @@ const HireUsPage = () => {
                             <section className="mt-5 d-md-none">
                                 <CardContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" />
                             </section>
-                            <section className="mt-5 d-md-none ps-5 pe-5 d-flex pb-5 flex-column">
-                                <section>
-                                    <h3 className="display-1 noMargin">When should I reach</h3>
-                                    <h3 className="display-1 noMargin">out?</h3>
+                            <section className="mt-5 d-md-none ps-sm-5 pe-sm-5 d-flex pb-5 flex-column">
+                                <section className="ps-2 pe-2 ps-sm-0 pe-sm-0">
+                                    <h3 className="display-1 noMargin">When should I reach out?</h3>
                                 </section>
-                                <section className="w-100 pt-5 pb-5">
-                                    <span className="text-dark fs-large w-85 d-block fw249">
+                                <section className="w-100 mt-3">
+                                    <span className="text-dark d-block fs-large w-100 w-sm-85 fw249 text-center text-sm-start ps-2 pe-2 ps-sm-0 pe-sm-0">
                                         Any time! Whether you have funds now, want to write us into a proposal, or just have a question, we are here to help!
                                     </span>
                                 </section>
-                                <section>
+                                <section className="d-flex mt-4 d-sm-block justify-content-center justify-content-sm-start align-items-sm-stretch align-items-sm-center">
                                     <LetsTalkBtnContainer isBtnColorDarker />
                                 </section>
                             </section>
                             <section className="d-flex d-md-none mt-8">
                                 <CardContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
                             </section>
-                            <section className="mt-5 d-md-none ps-5 pe-5 d-flex pb-5 flex-column ownerInfoSec">
+                            <section className="mt-5 d-md-none ps-sm-5 pe-sm-5 d-flex pb-5 flex-column ownerInfoSec">
                                 <section>
                                     <h3 className="display-1 noMargin">Who makes the</h3>
                                     <h3 className="display-1 noMargin">lessons?</h3>
@@ -255,7 +257,7 @@ const HireUsPage = () => {
                                 <CardContainer
                                     headingTxt="Dynamic teams translate any body of knowledge"
                                     backgroundImgSrc={DynamicTeamsTranslateBackground.src}
-                                    headerContainerClassNamesDynamic="ps-5"
+                                    headerContainerClassNamesDynamic="ps-sm-5 ps-1 pe-1 pe-sm-0"
                                     isCardOnly
                                 />
                             </section>

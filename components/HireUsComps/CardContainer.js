@@ -165,8 +165,8 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                             </div>
                         }
                         {isCardOnly &&
-                            <div className="w-100">
-                                <span className="text-dark fst-italic fw200 fs-large">
+                            <div className="w-100 d-flex justify-content-center align-items-center">
+                                <span className="text-dark fst-italic fw200 fs-large text-center text-sm-start">
                                     For your project, we will assemble a team of contractors with skills and subject expertise to connect your work to students through accessible lessons and engaging videos.
                                 </span>
                             </div>

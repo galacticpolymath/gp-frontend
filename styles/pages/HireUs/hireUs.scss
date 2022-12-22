@@ -105,7 +105,7 @@ $whatWeDoCardColor: #fff8f8;
   }
 
   @media (max-width: 575px) {
-    font-size: clamp(33px, 9.3vw, 57px) !important;
+    font-size: clamp(40px, 9.3vw, 57px) !important
   }
 }
 
@@ -139,6 +139,7 @@ $whatWeDoCardColor: #fff8f8;
   background-color: $btnColor;
   width: 350px !important;
   height: 200px !important;
+  // height: 175px !important;
   border: solid 0.5px #ffffff;
   border-radius: $borderRadiusModal;
 
@@ -181,9 +182,6 @@ $whatWeDoCardColor: #fff8f8;
     height: 150px !important;
   }
 
-  @media (min-width: 992px) {
-  }
-
   @media (min-width: 576px) and (max-width: 767px) {
     width: 300px !important;
 
@@ -202,8 +200,8 @@ $whatWeDoCardColor: #fff8f8;
   }
 
   @media (max-width: 575px){
-    height: 75px !important;
-    width: 250px !important;
+    height: 62px !important;
+    width: 225px !important;
 
     div:last-of-type {
       span {
@@ -221,7 +219,7 @@ $whatWeDoCardColor: #fff8f8;
 .introSecHireUsPg{
 
   @media (min-width: 375px) and (max-width: 575px){
-    height: 625px !important;
+    height: 500px !important;
   }
 
   @media(max-width: 374px){
@@ -307,8 +305,10 @@ $whatWeDoCardColor: #fff8f8;
   @media (max-width: 575px) {
     h3 {
       font-size: 38px !important;
+      text-align: center !important;;
     }
   }
+
 
   @media (max-width: 767px) {
     padding: 0 !important;
@@ -497,9 +497,7 @@ $whatWeDoCardColor: #fff8f8;
 }
 
 .imgContainerHireUsPg{
-  // border: solid pink !important;
   width: 80% !important;
-  // height: 300px;
   
   @media(max-width: 575px){
     margin-top: 15px !important;
