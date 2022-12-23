@@ -17,7 +17,7 @@ import Image from 'next/image';
 const PicAndImageSec = ({ text, imgPath, link, name, parentSecStyles }) => {
 
     return (
-        <section className={`${parentSecStyles} picAndDescriptionSec`}>
+        <section className={`${parentSecStyles ?? ""} picAndDescriptionSec`}>
             <section>
                 {link ?
                     <a href={link} target="_blank" className='text-dark'>

@@ -29,7 +29,7 @@ import CardContainer from '../components/HireUsComps/CardContainer';
 import teacherTestimonies from '../data/HireUsPg/teacherTestimonies.json'
 import grantReviewersFeedback from '../data/HireUsPg/grantReviewersFeedback.json'
 import feedbackOfClients from '../data/HireUsPg/feedbackOfClients.json'
-import PicAndImageSec from '../components/HireUsComps/sections/PicAndDescriptionSec';
+import PicAndDescriptionSec from '../components/HireUsComps/sections/PicAndDescriptionSec';
 import WhatTeachersSaysBackground from '../public/imgs/background/2_southeast_purplish_1.png';
 import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
 import DynamicTeamsTranslateBackground from '../public/imgs/background/3_southern-eddy_lilac_1.png';
@@ -170,12 +170,10 @@ const HireUsPage = () => {
                                 </section>
                             </section>
                             <section className="mt-4 mt-sm-7 ps-sm-5 pe-sm-3 d-flex d-md-none">
-                                <PicAndImageSec
+                                <PicAndDescriptionSec
                                     text="We promote lessons through our growing GP Constellation dissemination network."
                                     imgPath="/imgs/GP_Constellation_dark.png"
-                                    txtSectionCssClasses="promoteLessonsTxtContainer ps-1 pe-1 ps-sm-0 pe-sm-0"
-                                    customTxtSpanClassNames="promoteLessonsTxtClass move10pxRightResponsive ps-1 pe-1 ps-sm-0 pe-sm-0"
-                                    imgMainSectionCustomCss="w-75 justify-content-center"
+                                    parentSecStyles="GPConstellationSec"
                                 />
                             </section>
                             <section className="mt-5 ps-sm-5 pe-sm-5 eachLessonMainSec d-flex flex-column d-md-none">
@@ -224,7 +222,7 @@ const HireUsPage = () => {
                                     <span className="text-dark fs-large text-center ps-1 pe-1 fst-italic fw249 d-inline d-sm-none">The GP Team is led by our founder, Matt Wilkins, PhD.</span>
                                 </section>
                                 <section className="mt-5">
-                                    <PicAndImageSec
+                                    <PicAndDescriptionSec
                                         text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
                                         imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
                                         parentSecStyles="ownerSection secWithHumanPic"
@@ -235,7 +233,7 @@ const HireUsPage = () => {
                                         const { alt, src, txt, link } = award;
 
                                         return (
-                                            <PicAndImageSec
+                                            <PicAndDescriptionSec
                                                 parentSecStyles="picAndImageSecInList mattsAward"
                                                 key={index}
                                                 link={link}
@@ -268,7 +266,7 @@ const HireUsPage = () => {
                                     const { alt, src, name, description } = scientist;
 
                                     return (
-                                        <PicAndImageSec
+                                        <PicAndDescriptionSec
                                             key={index}
                                             imgPath={src}
                                             text={description}
