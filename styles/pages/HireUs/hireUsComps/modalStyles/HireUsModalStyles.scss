@@ -1,0 +1,71 @@
+$modalHeaderFontSize: 45px !important;
+$borderRadiusModal: 1.3em;
+
+
+.tierInfoModal{
+    border: solid 5px #707070 !important;
+}
+
+.closeButtonTxtColor{
+  color: #6c757d !important;
+}
+
+.closeButtonBackgroundColor{
+  background-color: #6c757d !important;
+  border: solid 1px #6c757d !important;
+}
+
+.tierInfoVideo {
+  //   object-fit: fill !important;
+  //   height: 300px !important;
+  //   border-radius: $borderRadiusModal;
+
+  @media (max-width: 767px) {
+    width: 100% !important;
+    height: 348px !important;
+
+    > div {
+      display: flex !important;
+      background-color: #ffffff;
+      justify-content: center !important;
+      align-items: center !important;
+      border-radius: 0.375rem !important;
+    }
+
+    border: solid 1px #e3e3e3;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    iframe {
+      border-radius: 0.375rem !important;
+    }
+  }
+
+  @media (min-width: 376px) and (max-width: 767px) {
+    > div {
+      display: flex !important;
+      background-color: #ffffff;
+      justify-content: center !important;
+      align-items: center !important;
+      border-radius: 0.375rem !important;
+    }
+
+    > div > div {
+      width: 75% !important;
+      border-radius: 0.375rem !important;
+    }
+  }
+
+  @media (max-width: 375px) {
+    > div > div {
+      width: 95% !important;
+      border-radius: 0.375rem !important;
+    }
+  }
+}
+
+.tierInfoModalHeader {
+  > div {
+    font-size: $modalHeaderFontSize;
+  }
+}

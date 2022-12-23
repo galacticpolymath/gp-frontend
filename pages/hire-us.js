@@ -305,6 +305,7 @@ const HireUsPage = () => {
                                                     isNoBackground={index !== 1}
                                                     key={index}
                                                     tier={tier}
+                                                    setTiersInfoForModalArr={setTiersInfoForModalArr}
                                                 />
                                             )
                                         })}
@@ -317,9 +318,10 @@ const HireUsPage = () => {
             </Layout>
             {tiersInfoForModalArr.map((tierInfo, index) =>(
                 <TierInfoModal
-                    key={index} 
+                    key={index}
+                    index={index} 
                     tierModalInfo={tierInfo}
-                    setTiersInfoForModal={setTiersInfoForModalArr}
+                    setTiersInfoForModalArr={setTiersInfoForModalArr}
                 />
             ))
 

@@ -1,6 +1,7 @@
 @import "./hireUsComps/TestimoniesAndReviewsSec";
 @import "./hireUsComps/PicAndDescriptionSec.scss";
 @import "../../comps/carousel.scss";
+@import "../HireUs/hireUsComps/modalStyles/HireUsModalStyles.scss";
 
 $btnColor: #84469e;
 $btnColorDark: #3e0d55;
@@ -283,7 +284,7 @@ $whatWeDoCardColor: #fff8f8;
 
 .hireUsPgInfoCard {
   // min-width: 
-  min-width: 250px !important;
+  min-width: 265px !important;
   transform: translateY(-100px);
   min-height: 700px;
   border-radius: $borderRadiusModal;
@@ -333,10 +334,7 @@ $whatWeDoCardColor: #fff8f8;
   font-weight: 249 !important;
 }
 
-.looped-vid-hire-us{
-  object-fit: fill !important;
-  height: 300px !important;
-}
+
 
 .hireUsCardIntroTxt {
   color: #363636 !important;
@@ -397,6 +395,8 @@ $whatWeDoCardColor: #fff8f8;
 .looped-vid-hire-us{
   width: 100% !important;
   // height: 300px !important;
+  object-fit: fill !important;
+  height: 300px !important;
   border-radius: $borderRadiusModal;
 
   @media (max-width: 767px) {

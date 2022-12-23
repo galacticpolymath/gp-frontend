@@ -44,3 +44,10 @@
     padding-bottom: 20px !important;
   }
 }
+
+.questionMarkIcon{
+  font-size: 22px !important;
+  @media(max-width: 575px){
+    font-size: 17px !important;
+  }
+}

@@ -1,3 +1,5 @@
+/* eslint-disable brace-style */
+/* eslint-disable no-console */
 /* eslint-disable @next/next/no-document-import-in-page */
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable react/jsx-first-prop-new-line */
@@ -21,16 +23,32 @@
 import { Card } from "react-bootstrap"
 import { HiOutlineX } from "react-icons/hi"
 import { GoCheck } from "react-icons/go"
+import { AiOutlineQuestionCircle } from "react-icons/ai"
 
 const { Img, Body, Header } = Card;
 
-const Tier = ({ tier, isNoBackground }) => {
+const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
     const { img, tierName, description, productInfo, estimatedPrice } = tier;
     const { low, high } = estimatedPrice;
     const { paragraph1, paragraph2 } = description
     const { learningExperience, projectSupport, vid, isMajorExtension, example } = productInfo;
     const { basic, complex } = vid ?? {};
     const { productImg, txt, link } = example;
+
+    const handleTierFeatureTxtClick = event => {
+        setTiersInfoForModalArr(tiersInfoForModalArr => tiersInfoForModalArr.map((tierInfo, index) => {
+            if(index === parseInt(event.target.id)){
+                console.log("opening modal")
+                return {
+                    ...tierInfo,
+                    isModalOn: true
+                }
+            }
+
+            return tierInfo;
+        }))
+    }
+
 
     return (
         <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5'} mt-5 pb-5 ps-sm-3 pe-sm-3`}>
@@ -52,24 +70,24 @@ const Tier = ({ tier, isNoBackground }) => {
                         <table className="productInfoTable w-100 noBorder">
                             <tbody>
                                 <tr className="tierTableRow">
-                                    <td className="tierInfoStatus text-center text-sm-start fs-large">{learningExperience}</td>
-                                    <td className="fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start">GP Learning Experience</td>
+                                    <td className="tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large">{learningExperience}</td>
+                                    <td id="0" onClick={handleTierFeatureTxtClick} className="fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative">GP Learning Experience <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /> </td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className="w-25 tierInfoStatus text-center text-sm-start fs-large">{projectSupport}</td>
-                                    <td className="w-75 fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start">Years of Project Support</td>
+                                    <td className="w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large">{projectSupport}</td>
+                                    <td id="1" onClick={handleTierFeatureTxtClick} className="fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative">Years of Project Support <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className="w-25 tierInfoStatus text-center text-sm-start fs-large">{basic ? `${basic} secs` : <HiOutlineX />}</td>
-                                    <td className="w-75 fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start">Basic Video</td>
+                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${basic ? '' : 'op-5'}`}>{basic ? `${basic} secs` : <HiOutlineX />}</td>
+                                    <td id="2" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative ${basic ? '' : 'op-5'}`}>Basic Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className="w-25 tierInfoStatus text-center text-sm-start fs-large">{complex ? `${complex} secs` : <HiOutlineX />}</td>
-                                    <td className="w-75 fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start">Complex Video</td>
+                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${complex ? '' : 'op-5'}`}>{complex ? `${complex} secs` : <HiOutlineX />}</td>
+                                    <td id="3" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative ${complex ? '' : 'op-5'}`}>Complex Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className="w-25 tierInfoStatus text-center text-sm-start fs-large">{isMajorExtension ? <GoCheck /> : <HiOutlineX />}</td>
-                                    <td className="w-75 fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start">Major extension in Year 3</td>
+                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${isMajorExtension ? '' : 'op-5'}`}>{isMajorExtension ? <GoCheck /> : <HiOutlineX />}</td>
+                                    <td id="4" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative ${isMajorExtension ? '' : 'op-5'}`}>Major extension in Year 3 <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -100,11 +118,11 @@ const Tier = ({ tier, isNoBackground }) => {
                         </span>
                         <span className="d-flex flex-column d-sm-none w-100 text-center mt-2 pt-1">
                             <span>
-                            ${low}    
+                                ${low}
                             </span>
                             -
                             <span>
-                            ${high}
+                                ${high}
                             </span>
                         </span>
                     </h4>
