@@ -29,7 +29,7 @@ import CardContainer from '../components/HireUsComps/CardContainer';
 import teacherTestimonies from '../data/HireUsPg/teacherTestimonies.json'
 import grantReviewersFeedback from '../data/HireUsPg/grantReviewersFeedback.json'
 import feedbackOfClients from '../data/HireUsPg/feedbackOfClients.json'
-import PicAndImageSec from '../components/HireUsComps/sections/PicAndImageSec';
+import PicAndImageSec from '../components/HireUsComps/sections/PicAndDescriptionSec';
 import WhatTeachersSaysBackground from '../public/imgs/background/2_southeast_purplish_1.png';
 import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
 import DynamicTeamsTranslateBackground from '../public/imgs/background/3_southern-eddy_lilac_1.png';
@@ -219,19 +219,15 @@ const HireUsPage = () => {
                                     <h3 className="display-1 noMargin">lessons?</h3>
                                 </section>
                                 <section className="mt-3 d-flex flex-column">
-                                    <span className="text-dark fs-large fst-italic fw249">The GP Team is led by our founder,</span>
-                                    <span className="text-dark fs-large fst-italic fw249">Matt Wilkins, PhD.</span>
+                                    <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline">The GP Team is led by our founder,</span>
+                                    <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline">Matt Wilkins, PhD.</span>
+                                    <span className="text-dark fs-large text-center ps-1 pe-1 fst-italic fw249 d-inline d-sm-none">The GP Team is led by our founder, Matt Wilkins, PhD.</span>
                                 </section>
                                 <section className="mt-5">
                                     <PicAndImageSec
-                                        isFlexReversed
-                                        isImgCircle
                                         text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
-                                        txtSectionCssClasses="w-95 mattSection"
-                                        customCssMainSec="ownerSection"
                                         imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
-                                        customTxtSpanClassNames="fs-large pt-4 humanDescriptionTxt"
-                                        imgMainSectionCustomCss="w-50 justify-content-start"
+                                        parentSecStyles="ownerSection secWithHumanPic"
                                     />
                                 </section>
                                 <section>
@@ -240,15 +236,12 @@ const HireUsPage = () => {
 
                                         return (
                                             <PicAndImageSec
+                                                parentSecStyles="picAndImageSecInList mattsAward"
                                                 key={index}
-                                                isFlexReversed
                                                 link={link}
                                                 alt={alt}
                                                 text={txt}
                                                 imgPath={src}
-                                                txtSectionCssClasses="align-items-center w-50"
-                                                customTxtSpanClassNames="fs-large pt-4 humanDescriptionTxt text-decoration-underline underline-1"
-                                                imgMainSectionCustomCss="w-50 justify-content-center"
                                             />
                                         )
                                     })}
@@ -264,30 +257,28 @@ const HireUsPage = () => {
                             </section>
                             <section className="d-md-none">
                                 <section className="w-100 d-flex justify-content-center align-items-center mt-5 mb-5">
-                                    <h5 className="fs-large fw200 fst-italic text-dark text-start w-75">
+                                    <h5 className="fs-large fw200 fst-italic text-dark text-center text-sm-start w-75">
                                         Some of the many talented scientists, communicators, educators, and artists we work with:
                                     </h5>
                                 </section>
                             </section>
-                            <section className="d-md-none">
+                            <section className="d-md-none d-flex justify-content-center align-items-center">
+                                <section className="d-flex flex-column justify-content-center w-75">
                                 {scientists.map((scientist, index) => {
                                     const { alt, src, name, description } = scientist;
 
                                     return (
                                         <PicAndImageSec
                                             key={index}
-                                            isFlexReversed
-                                            isImgCircle
-                                            txtSectionCssClasses="w-85 flex-column pe-5"
                                             imgPath={src}
                                             text={description}
                                             name={name}
                                             alt={alt}
-                                            customTxtSpanClassNames="fs-large pt-1 humanDescriptionTxt"
-                                            imgMainSectionCustomCss="w-50 justify-content-center"
+                                            parentSecStyles="secWithHumanPic scientist"
                                         />
                                     )
                                 })}
+                                </section>
                             </section>
                             <section className="d-flex d-md-none mt-5">
                                 <CardContainer
