@@ -45,6 +45,7 @@ import tiersInfoForModal from '../data/HireUsPg/tiersInfoForModal.json'
 import Tier from '../components/HireUsComps/sections/Tier';
 import TierInfoModal from '../components/HireUsComps/modals/TierInfoModal'
 import { useState } from 'react';
+import { Parallax } from 'react-parallax';
 
 
 const HireUsPage = () => {

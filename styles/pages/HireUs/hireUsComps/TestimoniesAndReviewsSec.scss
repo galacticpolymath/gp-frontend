@@ -1,5 +1,7 @@
 .img-background-container {
-  height: fit-content;
+  // height: fit-content;
+  // min-height: 400px;
+  height:100% !important;
   width: 100vw;
   margin-left: calc(-1 * ((100vw - 100%) / 2));
   margin-right: calc(-1 * ((100vw - 100%) / 2))
