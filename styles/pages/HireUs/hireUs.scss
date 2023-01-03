@@ -246,6 +246,7 @@ $whatWeDoCardColor: #fff8f8;
   height: 700px;
   padding-bottom: 150px;
   > section{
+    max-width: 720px !important;
     > section:last-child{
 
       @media(max-width: 767px){
@@ -289,6 +290,7 @@ $whatWeDoCardColor: #fff8f8;
   transform: translateY(-100px);
   min-height: 700px;
   border-radius: $borderRadiusModal;
+  max-width: 1440px !important;
 
   @media (min-width: 768px) {
     * {

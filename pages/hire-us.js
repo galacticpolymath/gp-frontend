@@ -70,261 +70,263 @@ const HireUsPage = () => {
     return (
         <>
             <Layout description="Galactic PolyMath Hire Us Page.">
-                <div className="min-vh-100 container-fluid noPadding noMargin w-100 hireUsPg">
-                    <section className='d-flex flex-row parallax row introSecHireUsPg' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
-                        <section className="d-none d-md-flex w-100 noMargin col-12 introSecAndLetTalksSec">
-                            <section className="w-50 d-flex flex-column align-items-center justify-content-center">
-                                <section>
-                                    <h1 className={`${styles.shadow} display-1 headingHireUs`}>Better, Easier</h1>
-                                    <h1 className={`${styles.shadow} display-1 headingHireUs`}>Outreach</h1>
+                <div className="w-100 hireUsPg d-flex justify-content-center align-items-center">
+                    <div className="container-fluid noPadding noMargin w-100 hireUsPgWrapper">
+                        <section className='d-flex flex-row parallax row introSecHireUsPg' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
+                            <section className="d-none d-md-flex justify-content-center align-items-center w-100 noMargin col-12 introSecAndLetTalksSec">
+                                <section className="w-50 d-flex flex-column align-items-center justify-content-center">
+                                    <section>
+                                        <h1 className={`${styles.shadow} display-1 headingHireUs`}>Better, Easier</h1>
+                                        <h1 className={`${styles.shadow} display-1 headingHireUs`}>Outreach</h1>
+                                    </section>
+                                    <section>
+                                        <p className={`${styles.shadow} display-6 noMargin noPadding introSubTextHireUs`}>We help you make a real</p>
+                                        <p className={`${styles.shadow} display-6 noMargin noPadding introSubTextHireUs`}>impact!</p>
+                                    </section>
                                 </section>
-                                <section>
-                                    <p className={`${styles.shadow} display-6 noMargin noPadding introSubTextHireUs`}>We help you make a real</p>
-                                    <p className={`${styles.shadow} display-6 noMargin noPadding introSubTextHireUs`}>impact!</p>
-                                </section>
-                            </section>
-                            <section className="w-50 d-flex align-items-center justify-content-center">
-                                <LetsTalkBtnContainer />
-                            </section>
-                        </section>
-                        <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
-                            <section className="w-100 d-flex flex-column align-items-center pt-4">
-                                <section className="headerSection">
-                                    <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Easier,</h1>
-                                    <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Classroom-ready</h1>
-                                    <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Outreach</h1>
-                                </section>
-                                <section className="subTxtHeadingContainerHireUsPg w-75 ps-1 mt-4">
-                                    <span className={`${styles.shadow} display-6 noMargin noPadding`}>
-                                        We translate your work so that non-experts can teach mind-opening lessons.
-                                    </span>
-                                </section>
-                                <section className="ps-3 ps-sm-1 pt-4 pt-sm-5">
+                                <section className="w-50 d-flex align-items-center justify-content-center">
                                     <LetsTalkBtnContainer />
                                 </section>
                             </section>
-                        </section>
-                    </section>
-                    <section className="CardSec d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
-                        <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-4'>
-                            <CardBody className="hireUsPgInfoCardBody">
-                                <section className="d-flex flex-column">
-                                    <section className="d-flex d-md-none ps-sm-5 pe-sm-5">
-                                        <h3 className="text-center text-sm-start w-100 text-sm-nowrap">
-                                            What do we do?
-                                        </h3>
+                            <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
+                                <section className="w-100 d-flex flex-column align-items-center pt-4">
+                                    <section className="headerSection">
+                                        <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Easier,</h1>
+                                        <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Classroom-ready</h1>
+                                        <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Outreach</h1>
                                     </section>
-                                    <section className="pb-4 mt-3 ps-sm-5 pe-sm-5">
-                                        <span className='d-sm-none bolder text-wrap text-dark text-center w-100 d-block responsiveInfoTxt'>
-                                            We mobilize knowledge
+                                    <section className="subTxtHeadingContainerHireUsPg w-75 ps-1 mt-4">
+                                        <span className={`${styles.shadow} display-6 noMargin noPadding`}>
+                                            We translate your work so that non-experts can teach mind-opening lessons.
                                         </span>
-                                        <span className="hireUsCardIntroTxt d-inline-block responsiveInfoTxt text-center text-sm-start ps-3 pe-3 ps-sm-0 pe-sm-1">
-                                            <span className='bolder text-sm-nowrap d-none d-sm-inline-block'>
+                                    </section>
+                                    <section className="ps-3 ps-sm-1 pt-4 pt-sm-5">
+                                        <LetsTalkBtnContainer />
+                                    </section>
+                                </section>
+                            </section>
+                        </section>
+                        <section className="CardSec d-flex justify-content-center align-items-center align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
+                            <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-4'>
+                                <CardBody className="hireUsPgInfoCardBody">
+                                    <section className="d-flex flex-column">
+                                        <section className="d-flex d-md-none ps-sm-5 pe-sm-5">
+                                            <h3 className="text-center text-sm-start w-100 text-sm-nowrap">
+                                                What do we do?
+                                            </h3>
+                                        </section>
+                                        <section className="pb-4 mt-3 ps-sm-5 pe-sm-5">
+                                            <span className='d-sm-none bolder text-wrap text-dark text-center w-100 d-block responsiveInfoTxt'>
                                                 We mobilize knowledge
                                             </span>
-                                            <span className='ms-2 fwtHireUsCard'>
-                                                by turning our clients outreach goals into rich, open-access learning experiences.
+                                            <span className="hireUsCardIntroTxt d-inline-block responsiveInfoTxt text-center text-sm-start ps-3 pe-3 ps-sm-0 pe-sm-1">
+                                                <span className='bolder text-sm-nowrap d-none d-sm-inline-block'>
+                                                    We mobilize knowledge
+                                                </span>
+                                                <span className='ms-2 fwtHireUsCard'>
+                                                    by turning our clients outreach goals into rich, open-access learning experiences.
+                                                </span>
                                             </span>
-                                        </span>
+                                        </section>
+                                        <section className="d-none d-md-flex flex-column ps-sm-5 pe-sm-5">
+                                            {hireUsCardsSectionTexts.map(({ text, content }, index) => {
+                                                return (
+                                                    <>
+                                                        <HireUsCardSection key={index} text={text} content={content} />
+                                                        {(index === 0) && (
+                                                            <section className='d-flex justify-content-center align-items-center mt-3'>
+                                                                <TbArrowBigDown className="arrowDown" />
+                                                            </section>
+                                                        )}
+                                                    </>
+                                                );
+                                            })}
+                                        </section>
+                                        <section className="d-flex d-md-none flex-column ps-sm-5 pe-sm-5">
+                                            {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} index={index} />)}
+                                        </section>
                                     </section>
-                                    <section className="d-none d-md-flex flex-column ps-sm-5 pe-sm-5">
-                                        {hireUsCardsSectionTexts.map(({ text, content }, index) => {
+                                    <section className="d-flex d-md-none flex-column mt-15 mb-15 howDoesItWorkSec">
+                                        <section className="d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ps-sm-5 pe-sm-5">
+                                            <h3 className="text-center text-sm-start">
+                                                How does it work?
+                                            </h3>
+                                        </section>
+                                        {hireUsCardsSectionTexts.map(({ content, mobileTxt }, index) => {
                                             return (
                                                 <>
-                                                    <HireUsCardSection key={index} text={text} content={content} />
+                                                    <HireUsCardSection key={index} mobileTxt={mobileTxt} content={content} />
                                                     {(index === 0) && (
                                                         <section className='d-flex justify-content-center align-items-center mt-3'>
-                                                            <TbArrowBigDown className="arrowDown" />
+                                                            <Image src="/imgs/pretty-down-arrow.png" width={75} height={75} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
                                                         </section>
                                                     )}
                                                 </>
                                             );
                                         })}
                                     </section>
-                                    <section className="d-flex d-md-none flex-column ps-sm-5 pe-sm-5">
-                                        {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} index={index} />)}
+                                    <section className="d-flex d-md-none mt-5">
+                                        <CardContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
                                     </section>
-                                </section>
-                                <section className="d-flex d-md-none flex-column mt-15 mb-15 howDoesItWorkSec">
-                                    <section className="d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ps-sm-5 pe-sm-5">
-                                        <h3 className="text-center text-sm-start">
-                                            How does it work?
-                                        </h3>
+                                    <section className="mt-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none">
+                                        <section>
+                                            <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
+                                        </section>
                                     </section>
-                                    {hireUsCardsSectionTexts.map(({ content, mobileTxt }, index) => {
-                                        return (
-                                            <>
-                                                <HireUsCardSection key={index} mobileTxt={mobileTxt} content={content} />
-                                                {(index === 0) && (
-                                                    <section className='d-flex justify-content-center align-items-center mt-3'>
-                                                        <Image src="/imgs/pretty-down-arrow.png" width={75} height={75} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
-                                                    </section>
-                                                )}
-                                            </>
-                                        );
-                                    })}
-                                </section>
-                                <section className="d-flex d-md-none mt-5">
-                                    <CardContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
-                                </section>
-                                <section className="mt-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none">
-                                    <section>
-                                        <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
-                                    </section>
-                                </section>
-                                <section className="mt-4 mt-sm-7 ps-sm-5 pe-sm-3 d-flex d-md-none">
-                                    <PicAndDescriptionSec
-                                        text="We promote lessons through our growing GP Constellation dissemination network."
-                                        imgPath="/imgs/GP_Constellation_dark.png"
-                                        parentSecStyles="GPConstellationSec"
-                                    />
-                                </section>
-                                <section className="mt-5 ps-sm-5 pe-sm-5 eachLessonMainSec d-flex flex-column d-md-none">
-                                    <section className="w-100">
-                                        <h5 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h5>
-                                    </section>
-                                    <ul className="eachLessonInfoList ps-0 pt-2 ps-5 pt-sm-2 pe-3">
-                                        {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
-                                            <li className="text-dark fw249" key={index}>
-                                                {normalTxt}
-                                                <span className="text-decoration-underline underline-less-thick">
-                                                    {underLineTxt}
-                                                </span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </section>
-                                <section className="mt-5 d-md-none">
-                                    <CardContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" />
-                                </section>
-                                <section className="mt-5 d-md-none ps-sm-5 pe-sm-5 d-flex pb-5 flex-column">
-                                    <section className="ps-2 pe-2 ps-sm-0 pe-sm-0">
-                                        <h3 className="display-1 noMargin">When should I reach out?</h3>
-                                    </section>
-                                    <section className="w-100 mt-3">
-                                        <span className="text-dark d-block fs-large w-100 w-sm-85 fw249 text-center text-sm-start ps-2 pe-2 ps-sm-0 pe-sm-0">
-                                            Any time! Whether you have funds now, want to write us into a proposal, or just have a question, we are here to help!
-                                        </span>
-                                    </section>
-                                    <section className="d-flex mt-4 d-sm-block justify-content-center justify-content-sm-start align-items-sm-stretch align-items-sm-center">
-                                        <LetsTalkBtnContainer isBtnColorDarker />
-                                    </section>
-                                </section>
-                                <section className="d-flex d-md-none mt-8">
-                                    <CardContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
-                                </section>
-                                <section className="mt-5 d-md-none ps-sm-5 pe-sm-5 d-flex pb-5 flex-column ownerInfoSec">
-                                    <section>
-                                        <h3 className="display-1 noMargin">Who makes the</h3>
-                                        <h3 className="display-1 noMargin">lessons?</h3>
-                                    </section>
-                                    <section className="mt-3 d-flex flex-column">
-                                        <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline">The GP Team is led by our founder,</span>
-                                        <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline">Matt Wilkins, PhD.</span>
-                                        <span className="text-dark fs-large text-center ps-1 pe-1 fst-italic fw249 d-inline d-sm-none">The GP Team is led by our founder, Matt Wilkins, PhD.</span>
-                                    </section>
-                                    <section className="mt-5">
+                                    <section className="mt-4 mt-sm-7 ps-sm-5 pe-sm-3 d-flex d-md-none">
                                         <PicAndDescriptionSec
-                                            text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
-                                            imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
-                                            parentSecStyles="ownerSection secWithHumanPic"
+                                            text="We promote lessons through our growing GP Constellation dissemination network."
+                                            imgPath="/imgs/GP_Constellation_dark.png"
+                                            parentSecStyles="GPConstellationSec"
                                         />
                                     </section>
-                                    <section>
-                                        {mattsAwards.map((award, index) => {
-                                            const { alt, src, txt, link } = award;
+                                    <section className="mt-5 ps-sm-5 pe-sm-5 eachLessonMainSec d-flex flex-column d-md-none">
+                                        <section className="w-100">
+                                            <h5 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h5>
+                                        </section>
+                                        <ul className="eachLessonInfoList ps-0 pt-2 ps-5 pt-sm-2 pe-3">
+                                            {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
+                                                <li className="text-dark fw249" key={index}>
+                                                    {normalTxt}
+                                                    <span className="text-decoration-underline underline-less-thick">
+                                                        {underLineTxt}
+                                                    </span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </section>
+                                    <section className="mt-5 d-md-none">
+                                        <CardContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" />
+                                    </section>
+                                    <section className="mt-5 d-md-none ps-sm-5 pe-sm-5 d-flex pb-5 flex-column">
+                                        <section className="ps-2 pe-2 ps-sm-0 pe-sm-0">
+                                            <h3 className="display-1 noMargin">When should I reach out?</h3>
+                                        </section>
+                                        <section className="w-100 mt-3">
+                                            <span className="text-dark d-block fs-large w-100 w-sm-85 fw249 text-center text-sm-start ps-2 pe-2 ps-sm-0 pe-sm-0">
+                                                Any time! Whether you have funds now, want to write us into a proposal, or just have a question, we are here to help!
+                                            </span>
+                                        </section>
+                                        <section className="d-flex mt-4 d-sm-block justify-content-center justify-content-sm-start align-items-sm-stretch align-items-sm-center">
+                                            <LetsTalkBtnContainer isBtnColorDarker />
+                                        </section>
+                                    </section>
+                                    <section className="d-flex d-md-none mt-8">
+                                        <CardContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
+                                    </section>
+                                    <section className="mt-5 d-md-none ps-sm-5 pe-sm-5 d-flex pb-5 flex-column ownerInfoSec">
+                                        <section>
+                                            <h3 className="display-1 noMargin">Who makes the</h3>
+                                            <h3 className="display-1 noMargin">lessons?</h3>
+                                        </section>
+                                        <section className="mt-3 d-flex flex-column">
+                                            <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline">The GP Team is led by our founder,</span>
+                                            <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline">Matt Wilkins, PhD.</span>
+                                            <span className="text-dark fs-large text-center ps-1 pe-1 fst-italic fw249 d-inline d-sm-none">The GP Team is led by our founder, Matt Wilkins, PhD.</span>
+                                        </section>
+                                        <section className="mt-5">
+                                            <PicAndDescriptionSec
+                                                text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
+                                                imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
+                                                parentSecStyles="ownerSection secWithHumanPic"
+                                            />
+                                        </section>
+                                        <section>
+                                            {mattsAwards.map((award, index) => {
+                                                const { alt, src, txt, link } = award;
 
-                                            return (
-                                                <PicAndDescriptionSec
-                                                    parentSecStyles="picAndImageSecInList mattsAward"
-                                                    key={index}
-                                                    link={link}
-                                                    alt={alt}
-                                                    text={txt}
-                                                    imgPath={src}
-                                                />
-                                            )
-                                        })}
+                                                return (
+                                                    <PicAndDescriptionSec
+                                                        parentSecStyles="picAndImageSecInList mattsAward"
+                                                        key={index}
+                                                        link={link}
+                                                        alt={alt}
+                                                        text={txt}
+                                                        imgPath={src}
+                                                    />
+                                                )
+                                            })}
+                                        </section>
                                     </section>
-                                </section>
-                                <section className="d-flex d-md-none mt-8">
-                                    <CardContainer
-                                        headingTxt="Dynamic teams translate any body of knowledge"
-                                        backgroundImgSrc={DynamicTeamsTranslateBackground.src}
-                                        headerContainerClassNamesDynamic="ps-sm-5 ps-1 pe-1 pe-sm-0"
-                                        isCardOnly
-                                    />
-                                </section>
-                                <section className="d-md-none">
-                                    <section className="w-100 d-flex justify-content-center align-items-center mt-5 mb-5">
-                                        <h5 className="fs-large fw200 fst-italic text-dark text-center text-sm-start w-75">
-                                            Some of the many talented scientists, communicators, educators, and artists we work with:
-                                        </h5>
-                                    </section>
-                                </section>
-                                <section className="d-md-none d-flex justify-content-center align-items-center">
-                                    <section className="d-flex flex-column justify-content-center w-75">
-                                        {scientists.map((scientist, index) => {
-                                            const { alt, src, name, description } = scientist;
-
-                                            return (
-                                                <PicAndDescriptionSec
-                                                    key={index}
-                                                    imgPath={src}
-                                                    text={description}
-                                                    name={name}
-                                                    alt={alt}
-                                                    parentSecStyles="secWithHumanPic scientist"
-                                                />
-                                            )
-                                        })}
-                                    </section>
-                                </section>
-                                <section className="d-flex d-md-none mt-5">
-                                    <CardContainer
-                                        userInputs={grantReviewersFeedback}
-                                        headingTxt="Grant Reviewer Feedback"
-                                        backgroundImgSrc={GrantReviewerFeedbackBackground.src}
-                                        headerContainerClassNamesDynamic="cardHeadingSec"
-                                    />
-                                </section>
-                                <section className="howMuchDoesItCostSec ps-sm-5 pe-sm-5 mt-4 d-md-none">
-                                    <section>
-                                        <h3 className="display-1 noMargin">How much does it cost?</h3>
-                                        {/* <h3 className="display-1 noMargin">cost?</h3> */}
-                                    </section>
-                                    <section className="w-100 d-flex justify-content-start align-items-center mt-4 mb-5 ps-1 pe-1 ps-sm-0 pe-sm-0">
-                                        <span className="fs-large fw200 fst-italic text-dark text-center text-sm-start ps-1 ps-sm-0 pe-1 pe-sm-0">
-                                            We offer three standard packages, which we’re happy to customize to meet your specific needs.
-                                        </span>
+                                    <section className="d-flex d-md-none mt-8">
+                                        <CardContainer
+                                            headingTxt="Dynamic teams translate any body of knowledge"
+                                            backgroundImgSrc={DynamicTeamsTranslateBackground.src}
+                                            headerContainerClassNamesDynamic="ps-sm-5 ps-1 pe-1 pe-sm-0"
+                                            isCardOnly
+                                        />
                                     </section>
                                     <section className="d-md-none">
-                                        {tiers.map((tier, index) => {
-                                            return (
-                                                <Tier
-                                                    isNoBackground={index !== 1}
-                                                    key={index}
-                                                    tier={tier}
-                                                    setTiersInfoForModalArr={setTiersInfoForModalArr}
-                                                />
-                                            )
-                                        })}
-                                    </section>
-                                </section>
-                                <section className="mt-2 d-flex d-md-none">
-                                    <Parallax bgImage={ClassRoom2.src} className="img-background-container" contentClassName='classRoom2ContentStyles position-relative'>
-                                        <section className="position-absolute bottom-0 ps-4">
-                                            <span className="fs-24 d-block fw650">Ready to inspire students</span>
-                                            <span className="fs-24 d-block fw650">with your work?</span>
+                                        <section className="w-100 d-flex justify-content-center align-items-center mt-5 mb-5">
+                                            <h5 className="fs-large fw200 fst-italic text-dark text-center text-sm-start w-75">
+                                                Some of the many talented scientists, communicators, educators, and artists we work with:
+                                            </h5>
                                         </section>
-                                    </Parallax>
-                                </section>
-                                <section className="mt-4 mb-4 ps-3 d-flex d-md-none">
-                                    <LetsTalkBtnContainer />
-                                </section>
-                            </CardBody>
-                        </Card>
-                    </section>
+                                    </section>
+                                    <section className="d-md-none d-flex justify-content-center align-items-center">
+                                        <section className="d-flex flex-column justify-content-center w-75">
+                                            {scientists.map((scientist, index) => {
+                                                const { alt, src, name, description } = scientist;
+
+                                                return (
+                                                    <PicAndDescriptionSec
+                                                        key={index}
+                                                        imgPath={src}
+                                                        text={description}
+                                                        name={name}
+                                                        alt={alt}
+                                                        parentSecStyles="secWithHumanPic scientist"
+                                                    />
+                                                )
+                                            })}
+                                        </section>
+                                    </section>
+                                    <section className="d-flex d-md-none mt-5">
+                                        <CardContainer
+                                            userInputs={grantReviewersFeedback}
+                                            headingTxt="Grant Reviewer Feedback"
+                                            backgroundImgSrc={GrantReviewerFeedbackBackground.src}
+                                            headerContainerClassNamesDynamic="cardHeadingSec"
+                                        />
+                                    </section>
+                                    <section className="howMuchDoesItCostSec ps-sm-5 pe-sm-5 mt-4 d-md-none">
+                                        <section>
+                                            <h3 className="display-1 noMargin">How much does it cost?</h3>
+                                            {/* <h3 className="display-1 noMargin">cost?</h3> */}
+                                        </section>
+                                        <section className="w-100 d-flex justify-content-start align-items-center mt-4 mb-5 ps-1 pe-1 ps-sm-0 pe-sm-0">
+                                            <span className="fs-large fw200 fst-italic text-dark text-center text-sm-start ps-1 ps-sm-0 pe-1 pe-sm-0">
+                                                We offer three standard packages, which we’re happy to customize to meet your specific needs.
+                                            </span>
+                                        </section>
+                                        <section className="d-md-none">
+                                            {tiers.map((tier, index) => {
+                                                return (
+                                                    <Tier
+                                                        isNoBackground={index !== 1}
+                                                        key={index}
+                                                        tier={tier}
+                                                        setTiersInfoForModalArr={setTiersInfoForModalArr}
+                                                    />
+                                                )
+                                            })}
+                                        </section>
+                                    </section>
+                                    <section className="mt-2 d-flex d-md-none">
+                                        <Parallax bgImage={ClassRoom2.src} className="img-background-container" contentClassName='classRoom2ContentStyles position-relative'>
+                                            <section className="position-absolute bottom-0 ps-4">
+                                                <span className="fs-24 d-block fw650">Ready to inspire students</span>
+                                                <span className="fs-24 d-block fw650">with your work?</span>
+                                            </section>
+                                        </Parallax>
+                                    </section>
+                                    <section className="mt-4 mb-4 ps-3 d-flex d-md-none">
+                                        <LetsTalkBtnContainer />
+                                    </section>
+                                </CardBody>
+                            </Card>
+                        </section>
+                    </div>
                 </div>
             </Layout>
             {tiersInfoForModalArr.map((tierInfo, index) => (
