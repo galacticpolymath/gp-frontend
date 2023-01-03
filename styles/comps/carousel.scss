@@ -97,7 +97,6 @@ $carouselBackgroundColor: #FFEDED;
     margin: 0 auto;
     overflow: hidden;
     max-width: 500px;
-
   }
   
   .autoCarouselItem {
@@ -105,7 +104,6 @@ $carouselBackgroundColor: #FFEDED;
     height: 400px;
     width: 100%;
     border-radius: 40px;
-    // border: solid pink;
 
     @media(max-width: 575px){
       height: fit-content;

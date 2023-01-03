@@ -35,6 +35,7 @@ import WhatTeachersSaysBackground from '../public/imgs/background/2_southeast_pu
 import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
 import DynamicTeamsTranslateBackground from '../public/imgs/background/3_southern-eddy_lilac_1.png';
 import GrantReviewerFeedbackBackground from '../public/imgs/background/5_chaotic_bluish_1.png';
+import ClassRoom2 from '../public/imgs/classroom2.jpg';
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
 import mattsAwards from '../data/HireUsPg/mattsAwards.json'
@@ -64,7 +65,7 @@ const HireUsPage = () => {
             controls />
     </div>
     const hireUsCardsSectionTexts = [{ text: "Clients provide complex texts, data, and outreach aims", mobileTxt: "You give us your outreach goals, along with complex texts, data, and any media you might have related to your work: ", content: cardVideoSec1 }, { text: "We create open access (free) lessons that a non-specialist can teach:", mobileTxt: "We create lessons and supporting multimedia that achieve your outreach aims by making your work accessible to teachers around the world.", content: cardVideoSec2 }]
-    const [tiersInfoForModalArr, setTiersInfoForModalArr] = useState(tiersInfoForModal.map(tier => ({ ...tier, isModalOn: false})))
+    const [tiersInfoForModalArr, setTiersInfoForModalArr] = useState(tiersInfoForModal.map(tier => ({ ...tier, isModalOn: false })))
 
     return (
         <>
@@ -312,15 +313,26 @@ const HireUsPage = () => {
                                         })}
                                     </section>
                                 </section>
+                                <section className="mt-2 d-flex d-md-none">
+                                    <Parallax bgImage={ClassRoom2.src} className="img-background-container" contentClassName='classRoom2ContentStyles position-relative'>
+                                        <section className="position-absolute bottom-0 ps-4">
+                                            <span className="fs-med d-block fw650">Ready to inspire students</span>
+                                            <span className="fs-med d-block fw650">with your work?</span>
+                                        </section>
+                                    </Parallax>
+                                </section>
+                                <section className="mt-4 mb-4 ps-3 d-flex d-md-none">
+                                    <LetsTalkBtnContainer />
+                                </section>
                             </CardBody>
                         </Card>
                     </section>
                 </div>
             </Layout>
-            {tiersInfoForModalArr.map((tierInfo, index) =>(
+            {tiersInfoForModalArr.map((tierInfo, index) => (
                 <TierInfoModal
                     key={index}
-                    index={index} 
+                    index={index}
                     tierModalInfo={tierInfo}
                     setTiersInfoForModalArr={setTiersInfoForModalArr}
                 />
