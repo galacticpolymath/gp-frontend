@@ -51,7 +51,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
 
 
     return (
-        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5'} mt-5 pb-5 ps-sm-3 pe-sm-3`}>
+        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2'} mt-5 pb-5 ps-sm-3 pe-sm-3`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
                     <Img src={img} alt={`${tierName}_img`} className="w-25 tierImg" height={120} />

@@ -50,7 +50,7 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                     <section className="d-flex flex-column">
                         {isOnGPLearningExpModal ?
                             <>
-                                <span className="fs-med fw300">{texts[0].normalTxt}</span>
+                                <span className="fs-med fw300 text-center text-sm-start">{texts[0].normalTxt}</span>
                                 <section className="d-flex flex-column ps-4 mt-3">
                                     {texts.slice(1, 5).map((text, index) => {
                                         const { normalTxt, boldTxt } = text;
@@ -67,7 +67,7 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                             texts.map((text, index) => {
                                 const { normalTxt, boldTxt } = text;
                                 return (
-                                    <span className={`${index !== 0 ? 'mt-3' : ''} fs-med fw300`} key={index}>
+                                    <span className={`${index !== 0 ? 'mt-3' : ''} fs-med fw300 text-center text-sm-start`} key={index}>
                                         {boldTxt ? <span className="fw-bolder">{boldTxt}</span> : null}
                                         {normalTxt}
                                     </span>

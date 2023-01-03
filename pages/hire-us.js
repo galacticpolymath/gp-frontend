@@ -170,7 +170,6 @@ const HireUsPage = () => {
                                 <section className="mt-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none">
                                     <section>
                                         <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
-                                        {/* <h3 className="display-1 text-center text-sm-start noMargin">with anyone, anywhere!</h3> */}
                                     </section>
                                 </section>
                                 <section className="mt-4 mt-sm-7 ps-sm-5 pe-sm-3 d-flex d-md-none">
@@ -184,7 +183,6 @@ const HireUsPage = () => {
                                     <section className="w-100">
                                         <h5 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h5>
                                     </section>
-                                    {/* ps-sm-5 pt-sm-2 */}
                                     <ul className="eachLessonInfoList ps-0 pt-2 ps-5 pt-sm-2 pe-3">
                                         {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
                                             <li className="text-dark fw249" key={index}>
@@ -316,8 +314,8 @@ const HireUsPage = () => {
                                 <section className="mt-2 d-flex d-md-none">
                                     <Parallax bgImage={ClassRoom2.src} className="img-background-container" contentClassName='classRoom2ContentStyles position-relative'>
                                         <section className="position-absolute bottom-0 ps-4">
-                                            <span className="fs-med d-block fw650">Ready to inspire students</span>
-                                            <span className="fs-med d-block fw650">with your work?</span>
+                                            <span className="fs-24 d-block fw650">Ready to inspire students</span>
+                                            <span className="fs-24 d-block fw650">with your work?</span>
                                         </section>
                                     </Parallax>
                                 </section>

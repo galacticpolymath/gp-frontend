@@ -34,12 +34,8 @@ $whatWeDoCardColor: #fff8f8;
 }
 
 .picAndImgSec {
-  // height: 225px;
-  // padding-bottom: 50px !important;
-  // border: solid pink;
 
   @media(max-width: 575px){
-    // height: 400px;
     height: fit-content;
   }
 }
@@ -70,7 +66,7 @@ $whatWeDoCardColor: #fff8f8;
   overflow-x: hidden;
   color: white;
   background-size: cover;
-  background-position: 70% center;
+  background-position: 70% center; 
 }
 
 

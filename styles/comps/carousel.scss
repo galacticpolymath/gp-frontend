@@ -63,12 +63,6 @@ $carouselBackgroundColor: #FFEDED;
     }
   }
 
-  .feedBackSec{
-    // height: fit-content;
-    // border: solid pink !important;;
-    // overflow: hidden !important;;
-  }
-
   .autoCarouselSlider{
     white-space: nowrap;
     transition: ease 1000ms;
@@ -83,8 +77,8 @@ $carouselBackgroundColor: #FFEDED;
 
 
 
-  .defaultHeadingCarouselStyles{
-    // border: solid pink !important;    
+  .defaultHeadingCarouselStyles{ 
+       
 
     @media(max-width: 575px){
       font-size: 38px !important;    
