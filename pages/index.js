@@ -4,6 +4,9 @@ import Layout from '../components/Layout';
 import Hero from '../components/Hero';
 import styles from './index.module.css';
 import HeroImage from '../assets/img/city_network.jpg';
+import EngineeringImage from '../assets/img/engineering_together.jpeg';
+import NewReleaseImage from '../assets/img/new_release.jpg';
+import NSFImage from '../assets/img/nsf.png';
 
 export default function Home() {
   return (
@@ -23,7 +26,7 @@ export default function Home() {
 
       <div className="container mx-auto row align-items-center px-3 py-4 py-lg-5">
         <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 text-center'>
-          [img]
+          <img src={EngineeringImage.src} alt="Two people working on a diagram together" />
         </div>
         <div className='col-12 col-lg-6 col-xl-5 order-2 order-lg-1 p-3'>
           <h3>Open-Access</h3>
@@ -47,9 +50,17 @@ export default function Home() {
             Learn everything.
           </h2>
 
-          <div className="bg-white p-3 p-lg-5 my-lg-3 text-center">
-            <h3>New release!</h3>
-            [img]
+          <div className='bg-white p-4 row align-items-center'>
+            <div className='col-9 text-center'>
+              <div className='badge bg-primary fs-5 text-center mb-2'>New release!</div>
+              <img src={NewReleaseImage.src} alt="" />
+            </div>
+            <div className='col-3 text-center'>
+              <h5 className='fw-light'>Sponsor:</h5>
+              <a href="https://www.nsf.gov/">
+                <img src={NSFImage.src} alt="National Science Foundation" />
+              </a>
+            </div>
           </div>
 
           <div className="col-12 col-lg-10 offset-lg-1 px-0 py-3 mt-4">
@@ -60,7 +71,7 @@ export default function Home() {
             <p>
               We build lessons around <em><strong>real research, data, and stories</strong></em> from diverse STEM experts.
             </p>
-            <Link href="/lessons/2">
+            <Link href="/lessons/5">
               <a className='btn btn-primary'>See this lesson</a>
             </Link>
           </div>
