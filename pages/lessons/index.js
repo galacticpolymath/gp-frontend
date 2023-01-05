@@ -16,9 +16,9 @@ const LessonsPage = ({ lessons }) => {
         <div className='container mx-auto grid py-5 px-3 gap-3'>
           {lessons
             .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
-            .map(lesson => (
+            .map((lesson, i) => (
               <Link
-                key={lesson.id}
+                key={i}
                 href={`/lessons/${lesson.id}`}
                 passHref
               >
