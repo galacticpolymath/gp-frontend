@@ -10,7 +10,11 @@ const LearningChart = ({
   return (
     <div className='container pt-4'>
       {/* TODO: alt text */}
-      <img alt="Learning Standards Chart" src={Badge.url} />
+      <img
+        alt="Learning Standards Chart"
+        src={Badge.url}
+        className="border"
+      />
 
       <Accordion
         id="learningChart"
