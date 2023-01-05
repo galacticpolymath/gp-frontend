@@ -29,7 +29,11 @@ const LessonPart = ({
               {/* TODO: DATA: always want an array */}
               {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => (
                 <li key={i}>
-                  <a href={link.url}>
+                  <a
+                    href={link.url}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
                     {link.linkText}
                   </a>
                 </li>
