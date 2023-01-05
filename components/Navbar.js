@@ -39,11 +39,11 @@ export default function Navbar() {
                   <a className={`nav-link ${router.pathname === '/lessons' ? 'fw-bold active' : 'fw-light'}`}>Lessons</a>
                 </Link>
               </li>
-              <li className='nav-item'>
+              {/* <li className='nav-item'>
                 <Link href='/'>
                   <a className='nav-link'>Jobviz</a>
                 </Link>
-              </li>
+              </li> */}
               <li className='nav-item'>
                 <Link href='/'>
                   <a className='nav-link'>Hire us</a>
