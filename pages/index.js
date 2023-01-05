@@ -7,6 +7,7 @@ import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
 import NewReleaseImage from '../assets/img/new_release.jpg';
 import NSFImage from '../assets/img/nsf.png';
+import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 
 export default function Home() {
   return (
@@ -26,7 +27,11 @@ export default function Home() {
 
       <div className="container mx-auto row align-items-center px-3 py-4 py-lg-5">
         <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 text-center'>
-          <img src={EngineeringImage.src} alt="Two people working on a diagram together" />
+          <img
+            className='border'
+            src={EngineeringImage.src}
+            alt="Two people working on a diagram together"
+          />
         </div>
         <div className='col-12 col-lg-6 col-xl-5 order-2 order-lg-1 p-3'>
           <h3>Open-Access</h3>
@@ -53,7 +58,11 @@ export default function Home() {
           <div className='bg-white p-4 row align-items-center'>
             <div className='col-9 text-center'>
               <div className='badge bg-primary fs-5 text-center mb-2'>New release!</div>
-              <img src={NewReleaseImage.src} alt="" />
+              <img
+                className='border'
+                src={NewReleaseImage.src}
+                alt="I Like That! How perception, emotion, and cognition shape our preferences"
+              />
             </div>
             <div className='col-3 text-center'>
               <h5 className='fw-light'>Sponsor:</h5>
@@ -141,7 +150,11 @@ export default function Home() {
             </Link>
           </div>
           <div className="col-12 col-md-6 order-2 order-md-1">
-            [img]
+            <img
+              className='border'
+              src={ScientificAmericanImage.src}
+              alt="Why We Didn't Know that Female Birds Sing, Scientific American."
+            />
           </div>
         </div>
       </div>
