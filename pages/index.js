@@ -160,7 +160,7 @@ export default function Home() {
       </div>
 
       <div className="bg-light-gray">
-        <div className="container mx-auto p-3 py-5 p-lg-5">
+        {/* <div className="container mx-auto p-3 py-5 p-lg-5">
           <div className='col-12 col-lg-10 offset-lg-1'>
             <div className='text-center'>[video]</div>
             <h2 className="mt-5 mb-3">JobViz</h2>
@@ -176,9 +176,9 @@ export default function Home() {
               <a className='btn btn-secondary mt-3'>Explore jobs</a>
             </Link>
           </div>
-        </div>
+        </div> */}
 
-        <div className='bg-info'>
+        <div className='bg-primary-light'>
           <div className='container p-3 p-lg-5 mx-auto text-center'>
             <p className='fs-4'>Real Research + Real Stories + Real Data + Real Careers =</p>
             <p className='fs-3'>Real Learning</p>

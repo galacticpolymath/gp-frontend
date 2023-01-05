@@ -56,6 +56,9 @@ img {
 .bg-light-gray {
   background-color: #eee;
 }
+.bg-primary-light {
+  background-color: lighten($primary, 45%);
+}
 .bg-science {
   background-color: $science;
 }
