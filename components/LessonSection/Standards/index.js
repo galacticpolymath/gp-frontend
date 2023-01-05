@@ -43,6 +43,7 @@ const Standards = ({
           <div className="StandardsExpl">
             Skills and concepts directly taught or reinforced by this lesson
           </div>
+          {/* TODO */}
           {/* {Data.filter(({ target }) => target).map((subject, i) => (
           <Subject
             initiallyExpanded
@@ -54,6 +55,7 @@ const Standards = ({
           <div className="StandardsExpl">
             Skills and concepts reviewed or hinted at in this lesson (for building upon)
           </div>
+          {/* TODO */}
           {/* {Data.filter(({ target }) => !target).map((subject, i) => (
           <Subject key={`connected-${i}`} {...subject} />
         ))} */}
