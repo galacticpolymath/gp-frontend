@@ -6,8 +6,8 @@ import Heading from './Heading.js';
 import TeachIt from './TeachIt';
 import LearningChart from './LearningChart';
 import Standards from './Standards';
-// import Acknowledgments from "./Acknowledgments";
-// import Versions from "./Versions";
+import Acknowledgments from './Acknowledgments';
+import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
 import Preview from './Preview';
 
@@ -15,8 +15,10 @@ export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
   HEADING: 'lesson-plan.section-heading',
   TEXT_BLOCK: 'lesson-plan.text-block',
+  
   // deprecated
   PROCEDURE: 'lesson-plan.procedure',
+  
   TEACH_IT: 'teaching-resources.teaching-resources',
   LEARNING_CHART: 'lesson-plan.learning-chart',
   STANDARDS: 'lesson-plan.standards',
@@ -30,8 +32,10 @@ export const NUMBERED_SECTIONS = [
   SECTIONS.OVERVIEW,
   SECTIONS.HEADING,
   SECTIONS.TEACH_IT,
+  
   // deprecated
   SECTIONS.PROCEDURE,
+  
   SECTIONS.ACKNOWLEDGMENTS,
   SECTIONS.VERSIONS,
   SECTIONS.COLLAPSIBLE_TEXT,
@@ -42,12 +46,15 @@ export const sectionTypeMap = {
   [SECTIONS.OVERVIEW]: Overview,
   [SECTIONS.HEADING]: Heading,
   // [SECTIONS.TEXT_BLOCK]: TextBlock,
+
+  // deprecated
   [SECTIONS.PROCEDURE]: () => <></>,
+  
   [SECTIONS.TEACH_IT]: TeachIt,
   [SECTIONS.LEARNING_CHART]: LearningChart,
   [SECTIONS.STANDARDS]: Standards,
-  // [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
-  // [SECTIONS.VERSIONS]: Versions,
+  [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
+  [SECTIONS.VERSIONS]: Versions,
   [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleRichTextSection,
   [SECTIONS.PREVIEW]: Preview,
 };
