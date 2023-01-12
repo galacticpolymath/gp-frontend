@@ -85,7 +85,7 @@ const HireUsPage = () => {
                                     </section>
                                 </section>
                                 <section className="w-50 d-flex align-items-center justify-content-center">
-                                    <LetsTalkBtnContainer isMainBtn  />
+                                    <LetsTalkBtnContainer isMainBtn />
                                 </section>
                             </section>
                             <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
