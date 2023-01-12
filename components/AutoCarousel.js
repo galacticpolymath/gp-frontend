@@ -23,7 +23,6 @@ import { useEffect, useRef, useState } from 'react';
 import UserFeedBack from './HireUsComps/UserFeedBack';
 
 const { Body } = Card;
-// comment
 
 const AutoCarousel = ({ userInputs }) => {
     const firstRenderRef = useRef(false);
