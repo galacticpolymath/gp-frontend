@@ -38,9 +38,8 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
     const [isCarouselPaused, setIsCarouselPaused] = useState(false);
     const BULL_POINT_INDEX_NUMS = userInputs && userInputs.map((_, index) => index);
 
-// comment
+
     const resetTimeout = () => {
-        console.log("hey there")
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
         }
@@ -115,13 +114,13 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                     <div className="autoCarouselItem position-relative" key={index}>
                                                         <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-center align-items-center feedBackSec">
                                                             <section className="pb-sm-5 mb-sm-5 me-sm-3">
-                                                                <span className="text-dark fst-italic text-center text-sm-start feedbackTxt">"{feedback}"</span>
+                                                                <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275">"{feedback}"</span>
                                                             </section>
                                                             <section className="d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec">
                                                                 <section className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
-                                                                    <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic">- {person}</span>
-                                                                    <span className="text-wrap text-dark fst-italic">{occupation}</span>
-                                                                    {!!city && <span className="text-wrap text-dark fst-italic">{city}</span>}
+                                                                    <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
+                                                                    <span className="text-wrap text-dark fst-italic fw275">{occupation}</span>
+                                                                    {!!city && <span className="text-wrap text-dark fst-italic fw275">{city}</span>}
                                                                 </section>
                                                             </section>
                                                         </section>
@@ -198,13 +197,13 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                     <div className="autoCarouselItem position-relative" key={index}>
                                                         <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-center align-items-center feedBackSec">
                                                             <section className="pb-sm-5 mb-sm-5 me-sm-3">
-                                                                <span className="text-dark fst-italic text-center text-sm-start feedbackTxt">"{feedback}"</span>
+                                                                <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275">"{feedback}"</span>
                                                             </section>
                                                             <section className="d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec">
                                                                 <section className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
-                                                                    <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic">- {person}</span>
-                                                                    <span className="text-wrap text-dark fst-italic">{occupation}</span>
-                                                                    {!!city && <span className="text-wrap text-dark fst-italic">{city}</span>}
+                                                                    <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
+                                                                    <span className="text-wrap text-dark fst-italic fw275">{occupation}</span>
+                                                                    {!!city && <span className="text-wrap text-dark fst-italic fw275">{city}</span>}
                                                                 </section>
                                                             </section>
                                                         </section>
