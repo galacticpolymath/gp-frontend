@@ -49,14 +49,6 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
         setIsCarouselPaused(isCarouselPaused => !isCarouselPaused)
     }
 
-    const handleOnMouseOver = () => {
-        setIsCarouselPaused(true)
-    }
-
-    const handleOnMouseLeave = () => {
-        setIsCarouselPaused(false)
-    }
-
     const handleBulletPtClick = (newIndex) => {
         setIsCarouselPaused(true)
         setIndex(newIndex)
@@ -151,7 +143,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                     </div>
                                 </>
                             }
-                            {(pics && !isCardOnly) &&
+                            {(pics && isCardOnly) &&
                                 <div className="w-100">
                                     <section className="w-100 d-flex flex-column flex-sm-row justify-content-center align-items-center">
                                         {
@@ -166,7 +158,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                     </section>
                                 </div>
                             }
-                            {isCardOnly &&
+                            {(isCardOnly && !pics) &&
                                 <div className="w-100 d-flex justify-content-center align-items-center">
                                     <span className="text-dark fst-italic fw200 fs-large text-center text-sm-start">
                                         For your project, we will assemble a team of contractors with skills and subject expertise to connect your work to students through accessible lessons and engaging videos.

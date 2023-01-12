@@ -69,7 +69,7 @@ const HireUsPage = () => {
 
     return (
         <>
-            <Layout description="Galactic PolyMath Hire Us Page.">
+            <Layout description="Galactic PolyMath Hire Us Page." keywords="Hire us, Galactic PolyMath">
                 <div className="w-100 hireUsPg d-flex justify-content-center align-items-center">
                     <div className="container-fluid noPadding noMargin w-100 hireUsPgWrapper">
                         <section className='d-flex flex-row parallax row introSecHireUsPg' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
@@ -85,7 +85,7 @@ const HireUsPage = () => {
                                     </section>
                                 </section>
                                 <section className="w-50 d-flex align-items-center justify-content-center">
-                                    <LetsTalkBtnContainer />
+                                    <LetsTalkBtnContainer isMainBtn  />
                                 </section>
                             </section>
                             <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
@@ -101,13 +101,13 @@ const HireUsPage = () => {
                                         </span>
                                     </section>
                                     <section className="ps-3 ps-sm-1 pt-4 pt-sm-5">
-                                        <LetsTalkBtnContainer />
+                                        <LetsTalkBtnContainer isMainBtn />
                                     </section>
                                 </section>
                             </section>
                         </section>
                         <section className="CardSec d-flex justify-content-center align-items-center align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
-                            <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-4'>
+                            <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-5'>
                                 <CardBody className="hireUsPgInfoCardBody">
                                     <section className="d-flex flex-column">
                                         <section className="d-flex d-md-none ps-sm-5 pe-sm-5">
@@ -196,7 +196,7 @@ const HireUsPage = () => {
                                         </ul>
                                     </section>
                                     <section className="mt-5 d-md-none">
-                                        <CardContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" />
+                                        <CardContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" isCardOnly />
                                     </section>
                                     <section className="mt-5 d-md-none ps-sm-5 pe-sm-5 d-flex pb-5 flex-column">
                                         <section className="ps-2 pe-2 ps-sm-0 pe-sm-0">
@@ -208,7 +208,7 @@ const HireUsPage = () => {
                                             </span>
                                         </section>
                                         <section className="d-flex mt-4 d-sm-block justify-content-center justify-content-sm-start align-items-sm-stretch align-items-sm-center">
-                                            <LetsTalkBtnContainer isBtnColorDarker />
+                                            <LetsTalkBtnContainer />
                                         </section>
                                     </section>
                                     <section className="d-flex d-md-none mt-8">
@@ -289,12 +289,13 @@ const HireUsPage = () => {
                                             headerContainerClassNamesDynamic="cardHeadingSec"
                                         />
                                     </section>
-                                    <section className="howMuchDoesItCostSec ps-sm-5 pe-sm-5 mt-4 d-md-none">
-                                        <section>
+                                    {/* ps-sm-5 pe-sm-5 */}
+                                    <section className="howMuchDoesItCostSec mt-4 d-md-none">
+                                        <section className="ps-sm-5 pe-sm-5">
                                             <h3 className="display-1 noMargin">How much does it cost?</h3>
                                             {/* <h3 className="display-1 noMargin">cost?</h3> */}
                                         </section>
-                                        <section className="w-100 d-flex justify-content-start align-items-center mt-4 mb-5 ps-1 pe-1 ps-sm-0 pe-sm-0">
+                                        <section className="w-100 d-flex justify-content-start align-items-center mt-4 mb-5 ps-1 pe-1 ps-sm-0 pe-sm-0 ps-sm-5 pe-sm-5">
                                             <span className="fs-large fw200 fst-italic text-dark text-center text-sm-start ps-1 ps-sm-0 pe-1 pe-sm-0">
                                                 We offer three standard packages, which we’re happy to customize to meet your specific needs.
                                             </span>
@@ -314,13 +315,13 @@ const HireUsPage = () => {
                                     </section>
                                     <section className="mt-2 d-flex d-md-none">
                                         <Parallax bgImage={ClassRoom2.src} className="img-background-container" contentClassName='classRoom2ContentStyles position-relative'>
-                                            <section className="position-absolute bottom-0 ps-4">
+                                            <section className="position-absolute ps-4">
                                                 <span className="fs-24 d-block fw650">Ready to inspire students</span>
                                                 <span className="fs-24 d-block fw650">with your work?</span>
                                             </section>
                                         </Parallax>
                                     </section>
-                                    <section className="mt-4 mb-4 ps-3 d-flex d-md-none">
+                                    <section className="mt-4 mb-4 ps-2 ps-sm-3 d-flex d-md-none">
                                         <LetsTalkBtnContainer />
                                     </section>
                                 </CardBody>

@@ -18,8 +18,12 @@ import MessageBoxIcon from '../../svgs/MessageBoxIcon';
 import Button from 'react-bootstrap/Button';
 
 
-const LetsTalkBtnContainer = ({ isBtnColorDarker }) => {
-    const _className = `letsTalkBtnContainer border-white d-flex flex-row-reverse flex-md-column position-relative ${isBtnColorDarker ? 'darker-btn-color' : ''}`
+const LetsTalkBtnContainer = ({ isBtnColorDarker, isMainBtn }) => {
+    const _className = `${isMainBtn ? "mainBtnLetsTalk" : "letsTalkBtnContainer"} border-white d-flex flex-row-reverse flex-md-column position-relative ${isBtnColorDarker ? 'darker-btn-color' : ''}`
+
+    const handleOnClick = () => {
+        window.open('https://portal.galacticpolymath.com/public/form/view/604d904c80fecb0cd51e2529', '_blank')
+    }
 
     return (
         <div className={_className}>
@@ -29,7 +33,7 @@ const LetsTalkBtnContainer = ({ isBtnColorDarker }) => {
             <div className="d-flex align-items-center justify-content-center">
                 <span className="text-nowrap">Let's talk!</span>
             </div>
-            <Button className="w-100 h-100 noBackground noBorder position-absolute" />
+            <Button onClick={handleOnClick} className="w-100 h-100 noBackground noBorder position-absolute" />
         </div>
     )
 }

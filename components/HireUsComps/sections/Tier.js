@@ -37,7 +37,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
 
     const handleTierFeatureTxtClick = event => {
         setTiersInfoForModalArr(tiersInfoForModalArr => tiersInfoForModalArr.map((tierInfo, index) => {
-            if(index === parseInt(event.target.id)){
+            if (index === parseInt(event.target.id)) {
                 console.log("opening modal")
                 return {
                     ...tierInfo,
@@ -51,7 +51,8 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
 
 
     return (
-        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2'} mt-5 pb-5 ps-sm-3 pe-sm-3`}>
+        // ps-sm-3 pe-sm-3
+        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2'} mt-5 pb-5 ps-sm-5 pe-sm-5`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
                     <Img src={img} alt={`${tierName}_img`} className="w-25 tierImg" height={120} />
@@ -110,9 +111,10 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                 </section>
                 <section className="mt-5 w-100 d-flex justify-content-center align-items-center  justify-content-sm-start align-items-sm-stretch">
                     <h4 className="text-dark fst-italic fs-large text-center text-sm-start">
-                        <span className="d-none d-sm-inline">
-                            Estimated Price: ${low} - ${high}
-                        </span>
+                        <section className="d-none d-sm-flex flex-column">
+                            <span>Estimated Price: </span>
+                            <span className="mt-3">${low} - ${high}</span>
+                        </section>
                         <span className="d-block d-sm-none w-100 text-center">
                             Estimated Price:
                         </span>
