@@ -361,15 +361,18 @@ $whatWeDoCardColor: #fff8f8;
 }
 
 .hireUsPgInfoCardBody {
-  > section:first-child {
-    // border: solid pink;
-  }
-
   @media (max-width: 767px) {
     h3 {
       color: $mobileTxtColor !important;
       font-size: 58px !important;
       font-weight: 660;
+    }
+  }
+
+  @media (max-width: 767px) and (min-width: 576px) {
+    h3{
+      padding-right: 2px !important;
+
     }
   }
 
