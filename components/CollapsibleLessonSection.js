@@ -21,7 +21,7 @@ const CollapsibleLessonSection = ({
       buttonClassName="btn btn-info w-100 text-left"
       button={(
         <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-1'>
-          <h3 className='m-0'>{index && `${index}. `}{SectionTitle}</h3>
+          <h2 className='m-0'>{index && `${index}. `}{SectionTitle}</h2>
           <i className="fs-3 bi-chevron-down "></i>
           <i className="fs-3 bi-chevron-up"></i>
         </div>
