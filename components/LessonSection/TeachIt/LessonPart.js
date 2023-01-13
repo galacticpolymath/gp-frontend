@@ -1,10 +1,10 @@
 import React from 'react';
 import Accordion from '../../Accordion';
+import LessonChunk from './LessonChunk';
 
 const LessonPart = ({
   partNum,
   partTitle,
-  partDur,
   partPreface,
   chunks = [],
   resources,
@@ -16,7 +16,7 @@ const LessonPart = ({
       id={`part_${partNum}`}
       button={(
         <div>
-          <h5>Part {partNum}: {partTitle}</h5>
+          <h3>Part {partNum}: {partTitle}</h3>
           <div>{partPreface}</div>
         </div>
       )}
@@ -38,7 +38,17 @@ const LessonPart = ({
           </li>
         ))}
       </ol>
-      <h6>Steps &amp; Flow</h6>
+      
+      <h4>Steps &amp; Flow</h4>
+      {chunks.map((chunk, i) => (
+        <LessonChunk
+          key={i}
+          chunkNum={i}
+          durList={chunks.map(({ chunkDur }) => chunkDur)}
+          partInfo={resources.parts[partNum - 1]}
+          {...chunk}
+        />
+      ))}
     </Accordion>
   );
 };

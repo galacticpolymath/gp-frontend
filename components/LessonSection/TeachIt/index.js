@@ -39,7 +39,7 @@ const TeachIt = ({
         
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
-            <h4>Available Grade Bands</h4>
+            <h3>Available Grade Bands</h3>
             {gradeVariations.map((variation, i) => (
               <label 
                 key={i}
@@ -59,7 +59,7 @@ const TeachIt = ({
             ))}
           </div>
           <div className="col w-1/2">
-            <h4>Available Teaching Environments</h4>
+            <h3>Available Teaching Environments</h3>
             {environments.map(env => (
               <label
                 className='text-capitalize d-block mb-1'
