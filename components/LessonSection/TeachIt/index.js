@@ -2,8 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
-import MaterialSet from './MaterialSet';
-import LessonPart from './Parts';
+import LessonPart from './LessonPart';
 
 const TeachIt = ({
   index,
@@ -16,6 +15,9 @@ const TeachIt = ({
 
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations[0]);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
+
+  const resources = Data[selectedEnvironment].resources
+    .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
 
   return (
     <CollapsibleLessonSection
@@ -37,7 +39,7 @@ const TeachIt = ({
         
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
-            <h5>Available Grade Bands</h5>
+            <h4>Available Grade Bands</h4>
             {gradeVariations.map((variation, i) => (
               <label 
                 key={i}
@@ -57,7 +59,7 @@ const TeachIt = ({
             ))}
           </div>
           <div className="col w-1/2">
-            <h5>Available Teaching Environments</h5>
+            <h4>Available Teaching Environments</h4>
             {environments.map(env => (
               <label
                 className='text-capitalize d-block mb-1'
@@ -78,13 +80,30 @@ const TeachIt = ({
           </div>
         </div>
 
-        <MaterialSet
-          materialSet={Data[selectedEnvironment].resources
-            .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix)}
-        />
+        {resources.links && (
+          <div className='text-center'>
+            <a
+              target='_blank'
+              rel='noopener noreferrer'
+              href={resources.links.url}
+              className='btn btn-primary px-3 py-2 d-inline-block mb-3'
+            >
+              <div className='d-flex align-items-center gap-2'>
+                <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
+                {resources.links.linkText}
+              </div>
+            </a>
+          </div>
+        )}
 
         <div className='container pb-4'>
-          {Data.parts.map(part => <LessonPart key={part.partNum} {...part} />)}
+          {Data.parts.map(part => (
+            <LessonPart
+              key={part.partNum}
+              resources={resources}
+              {...part}
+            />
+          ))}
         </div>
       </>
     </CollapsibleLessonSection>
