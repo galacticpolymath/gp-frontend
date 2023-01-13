@@ -25,9 +25,12 @@ const TeachIt = ({
     >
       <>
         <div className='container mx-auto mt-4'>
-          <div className='bg-light-gray p-3'>
-            <h6>TODO: time estimate</h6>
-            <p className='mb-0'>TODO</p>
+          <div className='bg-light-gray p-3 mx-5 d-flex flex-column gap-3 flex-md-row align-items-center w-75 mx-auto'>
+            <div className='d-flex flex-column text-nowrap text-center fs-5'>
+              <i className="bi-alarm fs-2"></i>{' '}
+              {Data.lessonDur}
+            </div>
+            <p className='mb-0'>{Data.lessonPreface}</p>
           </div>
         </div>
         
