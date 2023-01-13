@@ -86,6 +86,12 @@ export const getStaticProps = async ({ params: { id } }) => {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   const lessons = await res.json();
   const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}`);
+
+  // TODO: revisit when/if Matt combines these sections in the JSON
+  lesson.Section['teaching-materials'].Data = {
+    ...lesson.Section.procedure.Data,
+    ...lesson.Section['teaching-materials'].Data,
+  };
   
   return { props: { lesson } };
 };

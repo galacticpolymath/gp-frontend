@@ -9,8 +9,9 @@ const TeachIt = ({
   SectionTitle,
   Data,
 }) => {
-  const environments = Object.keys(Data);
-  const gradeVariations = Object.values(Data)[0].resources;
+  const environments = [ 'classroom', 'remote']
+    .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
+  const gradeVariations = Data[environments[0]].resources;
 
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations[0]);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
