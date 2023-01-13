@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import MaterialSet from './MaterialSet';
+import LessonPart from './Parts';
 
 const TeachIt = ({
   index,
@@ -76,10 +77,15 @@ const TeachIt = ({
             ))}
           </div>
         </div>
+
         <MaterialSet
           materialSet={Data[selectedEnvironment].resources
             .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix)}
         />
+
+        <div className='container pb-4'>
+          {Data.parts.map(part => <LessonPart key={part.partNum} {...part} />)}
+        </div>
       </>
     </CollapsibleLessonSection>
   );
