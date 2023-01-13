@@ -23,9 +23,10 @@ const LearningChart = ({
           </div>
         )}
       >
-        <RichText content={Description} />
-
-        {Footnote && <RichText content={Footnote} />}
+        <>
+          <RichText content={Description} />
+          {Footnote && <RichText content={Footnote} />}
+        </>
       </Accordion>
     </div>
   );

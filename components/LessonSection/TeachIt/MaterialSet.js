@@ -34,8 +34,8 @@ const MaterialSet = ({
                     <strong>{item.itemTitle}</strong>
                     <ul>
                       {/* TODO: DATA: always want an array */}
-                      {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map(link => (
-                        <li key={link.url}>
+                      {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => (
+                        <li key={i}>
                           <a href={link.url}>
                             {link.linkText}
                           </a>

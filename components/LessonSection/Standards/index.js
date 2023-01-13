@@ -34,28 +34,30 @@ const Standards = ({
           </div>
         )}
       >
-        <div className='bg-info p-3 mt-1 mb-3 mx-5 text-center'>
-          <i className="bi-cursor" /> Click on any standard for details on how the lesson aligns to it.
-        </div>
+        <>
+          <div className='bg-info p-3 mt-1 mb-3 mx-5 text-center'>
+            <i className="bi-cursor" /> Click on any standard for details on how the lesson aligns to it.
+          </div>
 
-        <div className='fs-5 fw-bold mt-2'>Target Standard(s)</div>
-        <div className="StandardsExpl">
-          Skills and concepts directly taught or reinforced by this lesson
-        </div>
-        {/* {Data.filter(({ target }) => target).map((subject, i) => (
+          <div className='fs-5 fw-bold mt-2'>Target Standard(s)</div>
+          <div className="StandardsExpl">
+            Skills and concepts directly taught or reinforced by this lesson
+          </div>
+          {/* {Data.filter(({ target }) => target).map((subject, i) => (
           <Subject
             initiallyExpanded
             key={`target-${i}`}
             {...subject}
           />
         ))} */}
-        <div className='fs-5 fw-bold mt-2'>Connected Standard(s)</div>
-        <div className="StandardsExpl">
-          Skills and concepts reviewed or hinted at in this lesson (for building upon)
-        </div>
-        {/* {Data.filter(({ target }) => !target).map((subject, i) => (
+          <div className='fs-5 fw-bold mt-2'>Connected Standard(s)</div>
+          <div className="StandardsExpl">
+            Skills and concepts reviewed or hinted at in this lesson (for building upon)
+          </div>
+          {/* {Data.filter(({ target }) => !target).map((subject, i) => (
           <Subject key={`connected-${i}`} {...subject} />
         ))} */}
+        </>
       </Accordion>
     </div>
   );
