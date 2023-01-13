@@ -138,6 +138,7 @@ export default function ChunkGraph({ durList, chunkNum }) {
       .append('text')
       .attr('x', anchorPoint[0] + 2 + gap / 2)
       .attr('y', plotDisplace + 17)
+      .attr('style', 'fill:rgb(50,132,193);font-weight:bold;')
       .text(`${currentDuration} min.`)
       .attr('text-anchor', 'middle')
       .attr('font-family', '"Montserrat", "Helvetica", "Arial", sans-serif')
