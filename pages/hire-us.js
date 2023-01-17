@@ -88,6 +88,7 @@ const HireUsPage = () => {
                                     <LetsTalkBtnContainer isMainBtn />
                                 </section>
                             </section>
+                            {/* make this into a different component */}
                             <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
                                 <section className="w-100 d-flex flex-column align-items-center pt-4">
                                     <section className="headerSection">
