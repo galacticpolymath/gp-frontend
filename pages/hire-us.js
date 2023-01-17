@@ -180,12 +180,17 @@ const HireUsPage = () => {
                                     <section className="d-flex d-md-none mt-5">
                                         <CardContainer headingTxt="What teachers & students says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0" />
                                     </section>
-                                    <section className="mt-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none">
+                                    <section className="d-flex d-md-none ps-2 pe-2 ps-sm-5 pe-sm-5 mt-5">
+                                        <div className='shareYourKnowledgeImgContainer position-relative'>
+                                            <Image src="/imgs/classroom.jpg" layout='fill' alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="h-100 w-100 position-absolute" />
+                                        </div>
+                                    </section>
+                                    <section className="mt-sm-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none pe-sm-3">
                                         <section>
                                             <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
                                         </section>
                                     </section>
-                                    <section className="mt-4 mt-sm-7 ps-sm-5 pe-sm-3 d-flex d-md-none">
+                                    <section className="mt-4 mt-sm-7 ps-sm-5 pe-sm-5 d-flex d-md-none">
                                         <PicAndDescriptionSec
                                             text="We promote lessons through our growing GP Constellation dissemination network."
                                             imgPath="/imgs/GP_Constellation_dark.png"

@@ -16,7 +16,7 @@
 
   @media (min-width: 576px) {
     > section:first-child {
-      margin-left: 15px !important;
+      margin-left: 25px !important;
     }
   }
 
@@ -35,12 +35,27 @@
 }
 
 .GPConstellationSec {
+  @media (min-width: 576px) {
+    flex-direction: row !important;
+    > section:first-child{
+      margin-left: 0px !important;
+      padding-right: 5px !important;
+    }
+    > section:last-child{
+      div{
+        margin-left: 5px;
+        width: 35vw !important;
+        height: 200px !important;
+      }
+    }
+  }
   @media (max-width: 575px) {
     > section:last-child {
       width: 100% !important;
       display: flex !important;
       justify-content: center;
       align-items: center;
+      
 
       div {
         width: 45% !important;
