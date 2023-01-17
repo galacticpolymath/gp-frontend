@@ -29,7 +29,7 @@ import Button from 'react-bootstrap/Button';
 import { Parallax } from 'react-parallax';
 
 const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly }) => {
-    const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center text-sm-start ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
+    const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
     cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 pt-1 pb-4 pe-2 fw245') : cardStyles

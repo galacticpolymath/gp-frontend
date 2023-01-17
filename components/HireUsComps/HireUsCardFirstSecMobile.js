@@ -9,7 +9,7 @@
 /* eslint-disable react/jsx-indent */
 import Image from 'next/image';
 
-const HireUsCardFirstSecMobile = ({ textsAndImg, index }) => {
+const HireUsCardFirstSecMobile = ({ textsAndImg, index, isWhatWillYouGetSec }) => {
     const { boldedTxt, unBoldedText, imgPath } = textsAndImg;
     const _className = `pt-2 mt-2 mt-sm-0 d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ${(index === 2) ? "pe-4 pe-sm-0" : ""}`
 
@@ -24,9 +24,7 @@ const HireUsCardFirstSecMobile = ({ textsAndImg, index }) => {
                     <span className='bolder text-dark text-sm-nowrap fst-italic fw400 pe-2'>
                         {boldedTxt}
                     </span>
-                    <span className='text-dark fwtHireUsCard'>
-                        {unBoldedText}
-                    </span>
+                    {isWhatWillYouGetSec ? <span className='text-dark fwtHireUsCard d-flex d-sm-inline flex-column flex-row'><span className="hyphen">&#x2015;&#x2015;</span> <span className="whatWillYouGetTxtUnBolded">{unBoldedText}</span></span> : <span className='text-dark fwtHireUsCard'>{unBoldedText}</span>}
                 </span>
             </section>
         </section>

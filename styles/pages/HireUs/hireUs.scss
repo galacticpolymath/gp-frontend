@@ -371,7 +371,8 @@ $whatWeDoCardColor: #fff8f8;
     h3 {
       color: $mobileTxtColor !important;
       font-size: 58px !important;
-      font-weight: 660;
+      // font-weight: 660;
+      font-weight: 800;
     }
   }
 
@@ -384,7 +385,7 @@ $whatWeDoCardColor: #fff8f8;
 
   @media (max-width: 575px) {
     h3 {
-      font-size: 38px !important;
+      font-size: 42px !important;
       text-align: center !important;
       padding-left: 3px;
       padding-right: 3px;
@@ -394,6 +395,20 @@ $whatWeDoCardColor: #fff8f8;
   @media (max-width: 767px) {
     padding: 0 !important;
   }
+}
+
+.whatWillYouGetTxtUnBolded{
+  @media(max-width: 575px){
+    &::first-letter{
+      text-transform: capitalize;
+    }
+  }
+}
+
+.hyphen{
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: -2px;
+  font-weight: 100;
 }
 
 .fwtHireUsCard {
@@ -460,7 +475,6 @@ $whatWeDoCardColor: #fff8f8;
 
     > * > * {
       width: 100% !important;
-      // border: 1px solid #dee2e6 !important;
       border-radius: 0.375rem !important;
     }
   }

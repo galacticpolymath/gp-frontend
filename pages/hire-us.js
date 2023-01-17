@@ -41,6 +41,7 @@ import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.
 import mattsAwards from '../data/HireUsPg/mattsAwards.json'
 import scientists from '../data/HireUsPg/scientists.json'
 import infoTxtsFirstSec from '../data/HireUsPg/infoTxtsFirstSec.json'
+import whatYouWillGetTxts from '../data/HireUsPg/whatYouWillGetTxts.json'
 import tiers from '../data/HireUsPg/tiers.json'
 import tiersInfoForModal from '../data/HireUsPg/tiersInfoForModal.json'
 import Tier from '../components/HireUsComps/sections/Tier';
@@ -166,8 +167,18 @@ const HireUsPage = () => {
                                             );
                                         })}
                                     </section>
+                                    <section>
+                                        <section className="d-flex d-md-none ps-sm-5 pe-sm-5">
+                                            <h3 className="text-center text-sm-start w-100 text-sm-nowrap">
+                                                What will you get?
+                                            </h3>
+                                        </section>
+                                        <section className="d-flex d-md-none flex-column ps-sm-5 pe-sm-5 ms-4 me-4 ms-sm-5 me-sm-5 pb-5 mt-4">
+                                            {whatYouWillGetTxts.map((textsAndImg, index) => <HireUsCardFirstSecMobile isWhatWillYouGetSec={true} key={index} textsAndImg={textsAndImg} index={index} />)}
+                                        </section>
+                                    </section>
                                     <section className="d-flex d-md-none mt-5">
-                                        <CardContainer headingTxt="What teachers says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
+                                        <CardContainer headingTxt="What teachers & students says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0" />
                                     </section>
                                     <section className="mt-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none">
                                         <section>

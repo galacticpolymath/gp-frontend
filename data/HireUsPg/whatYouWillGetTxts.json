@@ -1,0 +1,22 @@
+[
+    {
+        "boldedTxt": "A GP Learning Experience",
+        "unBoldedText": "a lesson that packages your knowledge to engage students and empower non-specialist teachers.",
+        "imgPath": "/imgs/pretty-noun-lesson.png"
+    },
+    {
+        "boldedTxt": "Explainer Videos",
+        "unBoldedText": "engaging multimedia that support the lesson and enrich your presentations.",
+        "imgPath": "/imgs/pretty-video.png"
+    },
+    {
+        "boldedTxt": "Static Visuals",
+        "unBoldedText": "high quality illustrations that convey your complex work to any audience.",
+        "imgPath": "/imgs/pretty-visuals.png"
+    },
+    {
+        "boldedTxt": "Logistics Support",
+        "unBoldedText": "we do the heavy lifting so you don’t have to! Direct us in the co-creation of lessons; we publish, disseminate, and measure impact.",
+        "imgPath": "/imgs/pretty-logistics.png"
+    }
+]
