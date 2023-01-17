@@ -28,7 +28,7 @@ import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 import Button from 'react-bootstrap/Button';
 import { Parallax } from 'react-parallax';
 
-const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly }) => {
+const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly, dynamicCssClasses }) => {
     const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
@@ -87,7 +87,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
 
     return (
         isCardOnly ?
-            <SectionWithBackgroundImg backgroundImgSrc={backgroundImgSrc}>
+            <SectionWithBackgroundImg backgroundImgSrc={backgroundImgSrc} dynamicCssClasses={dynamicCssClasses}>
                 <section className={headerContainerClassNames}>
                     <h2 className={autoCarouselHeadingTxt}>{headingTxt}</h2>
                 </section>
@@ -161,7 +161,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                             {(isCardOnly && !pics) &&
                                 <div className="w-100 d-flex justify-content-center align-items-center">
                                     <span className="text-dark fst-italic fw200 fs-large text-center text-sm-start">
-                                        For your project, we will assemble a team of contractors with skills and subject expertise to connect your work to students through accessible lessons and engaging videos.
+                                        We will assemble a team with skills and subject expertise to connect your work to students through accessible lessons and engaging videos.
                                     </span>
                                 </div>
                             }
@@ -239,13 +239,6 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                             })
                                         }
                                     </section>
-                                </div>
-                            }
-                            {isCardOnly &&
-                                <div className="w-100 d-flex justify-content-center align-items-center">
-                                    <span className="text-dark fst-italic fw200 fs-large text-center text-sm-start">
-                                        For your project, we will assemble a team of contractors with skills and subject expertise to connect your work to students through accessible lessons and engaging videos.
-                                    </span>
                                 </div>
                             }
                         </Card.Body>

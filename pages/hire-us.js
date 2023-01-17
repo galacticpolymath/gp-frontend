@@ -268,7 +268,7 @@ const HireUsPage = () => {
                                     <section className="d-flex d-md-none mt-8">
                                         <CardContainer
                                             headingTxt="Dynamic teams translate any body of knowledge"
-                                            backgroundImgSrc={DynamicTeamsTranslateBackground.src}
+                                            dynamicCssClasses=' dynamicTeamsSec'
                                             headerContainerClassNamesDynamic="ps-sm-5 ps-1 pe-1 pe-sm-0"
                                             isCardOnly
                                         />
