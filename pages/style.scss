@@ -287,10 +287,13 @@ img {
 .noBtnStyles {
   background-repeat: no-repeat;
   border: none;
-  // background-color: transparent;
   background: none;
   overflow: hidden;
   outline: none;
+}
+
+.roundedBorder{
+  border-radius: 1.3em;;
 }
 
 .op-5{

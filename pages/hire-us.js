@@ -57,7 +57,7 @@ const HireUsPage = () => {
     );
     const cardVideoSec2 = <div className="video-styles rounded overflow-hidden">
         <ReactPlayer
-            url='https://www.youtube.com/watch?v=V0EtA5pbVSY&feature=youtu.be'
+            url='https://www.youtube.com/watch?v=V0EtA5pbVSY'
             width='100%'
             height="100%"
             light={true}
@@ -143,9 +143,9 @@ const HireUsPage = () => {
                                                 );
                                             })}
                                         </section>
-                                        <section className="d-flex d-md-none flex-column ps-sm-5 pe-sm-5">
+                                        <div className="d-flex d-md-none flex-column ps-sm-5 pe-sm-5 ms-4 me-4 ms-sm-5 me-sm-5 whatDoWeDoSec pb-5">
                                             {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} index={index} />)}
-                                        </section>
+                                        </div>
                                     </section>
                                     <section className="d-flex d-md-none flex-column mt-15 mb-15 howDoesItWorkSec">
                                         <section className="d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ps-sm-5 pe-sm-5">

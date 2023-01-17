@@ -12,6 +12,12 @@ $borderRadiusModal: 1.3em;
 $borderColorImgAndCard: #707070;
 $whatWeDoCardColor: #fff8f8;
 
+.whatDoWeDoSec{
+  border-radius: $borderRadiusModal;
+  border: solid .8px #582B3F;
+}
+
+
 .humanDescriptionTxt {
   line-height: 33px;
 }
@@ -454,7 +460,7 @@ $whatWeDoCardColor: #fff8f8;
 
     > * > * {
       width: 100% !important;
-      border: 1px solid #dee2e6 !important;
+      // border: 1px solid #dee2e6 !important;
       border-radius: 0.375rem !important;
     }
   }
