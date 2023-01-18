@@ -17,7 +17,6 @@
 /* eslint-disable react/jsx-indent */
 
 import Image from 'next/image';
-import { TbArrowBigDown } from 'react-icons/tb';
 import { Card, CardBody } from 'reactstrap';
 import Layout from '../components/Layout';
 import styles from './index.module.css';
@@ -36,6 +35,7 @@ import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south
 import DynamicTeamsTranslateBackground from '../public/imgs/background/3_southern-eddy_lilac_1.png';
 import GrantReviewerFeedbackBackground from '../public/imgs/background/5_chaotic_bluish_1.png';
 import ClassRoom2 from '../public/imgs/classroom2.jpg';
+import ArrowPic from '../public/imgs/pretty-down-arrow.png';
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
 import mattsAwards from '../data/HireUsPg/mattsAwards.json'
@@ -66,7 +66,7 @@ const HireUsPage = () => {
             playing
             controls />
     </div>
-    const hireUsCardsSectionTexts = [{ text: "Clients provide complex texts, data, and outreach aims", mobileTxt: "You give us your outreach goals, along with complex texts, data, and any media you might have related to your work: ", content: cardVideoSec1 }, { text: "We create open access (free) lessons that a non-specialist can teach:", mobileTxt: "We create lessons and supporting multimedia that achieve your outreach aims by making your work accessible to teachers around the world.", content: cardVideoSec2 }]
+    const hireUsCardsSectionTexts = [{ text: "1. You give us your outreach goals, along with complex texts, data, and media related to your work: ", mobileTxt: "You give us your outreach goals, along with complex texts, data, and any media you might have related to your work: ", content: cardVideoSec1 }, { text: "2. We create lessons and supporting media that achieve your outreach aims by making your work accessible to teachers around the world. ", mobileTxt: "We create lessons and supporting multimedia that achieve your outreach aims by making your work accessible to teachers around the world.", content: cardVideoSec2 }]
     const [tiersInfoForModalArr, setTiersInfoForModalArr] = useState(tiersInfoForModal.map(tier => ({ ...tier, isModalOn: false })))
 
     return (
@@ -135,20 +135,6 @@ const HireUsPage = () => {
                                             <div className="d-none d-md-flex flex-row whatDoWeDoSec">
                                                 {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} />)}
                                             </div>
-                                        </section>
-                                        <section className="d-none d-md-flex flex-column ps-sm-5 pe-sm-5">
-                                            {hireUsCardsSectionTexts.map(({ text, content }, index) => {
-                                                return (
-                                                    <>
-                                                        <HireUsCardSection key={index} text={text} content={content} />
-                                                        {(index === 0) && (
-                                                            <section className='d-flex justify-content-center align-items-center mt-3'>
-                                                                <TbArrowBigDown className="arrowDown" />
-                                                            </section>
-                                                        )}
-                                                    </>
-                                                );
-                                            })}
                                         </section>
                                         <div className="d-flex d-md-none flex-column ps-sm-5 pe-sm-5 ms-4 me-4 ms-sm-5 me-sm-5 whatDoWeDoSec pb-5">
                                             {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} index={index} />)}
