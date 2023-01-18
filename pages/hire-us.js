@@ -132,7 +132,7 @@ const HireUsPage = () => {
                                             </span>
                                         </section>
                                         <section className="ps-sm-5 pe-sm-5">
-                                            <div className="d-none d-md-flex flex-row whatDoWeDoSec d-flex justify-content-center align-items-center">
+                                            <div className="d-none d-md-flex flex-row whatDoWeDoSec">
                                                 {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} />)}
                                             </div>
                                         </section>

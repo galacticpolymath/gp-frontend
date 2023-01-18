@@ -11,7 +11,7 @@ import Image from 'next/image';
 
 const HireUsCardFirstSecMobile = ({ textsAndImg, index, isWhatWillYouGetSec }) => {
     const { boldedTxt, unBoldedText, imgPath } = textsAndImg;
-    const _className = `pt-2 mt-2 mt-sm-0 d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ${(index === 2) ? "pe-4 pe-sm-0" : ""}`
+    const _className = `pt-2 pt-md-0 mt-2 mt-sm-0 d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ${(index === 2) ? "pe-4 pe-sm-0" : ""}`
 
 
     return (
@@ -19,9 +19,9 @@ const HireUsCardFirstSecMobile = ({ textsAndImg, index, isWhatWillYouGetSec }) =
             <section className={_className}>
                 <Image src={imgPath} width={75} height={75} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
             </section>
-            <section className="w-75 ms-sm-4 mt-3 mt-sm-0 ps-3 pe-3 ps-sm-0 pe-sm-0">
+            <section className="w-75 ms-sm-4 ms-md-1 mt-3 mt-sm-0 ps-3 pe-3 ps-sm-0 pe-sm-0">
                 <span className="d-flex flex-column flex-sm-row d-sm-inline-block hireUsCardFirstSecTxt responsiveInfoTxt text-center text-sm-start">
-                    <span className='bolder text-dark text-sm-nowrap fst-italic fw400 pe-2'>
+                    <span className='bolder text-dark fst-italic fw400 pe-sm-1'>
                         {boldedTxt}
                     </span>
                     {isWhatWillYouGetSec ? <span className='text-dark fwtHireUsCard d-flex d-sm-inline flex-column flex-row'><span className="hyphen">&#x2015;&#x2015;</span> <span className="whatWillYouGetTxtUnBolded">{unBoldedText}</span></span> : <span className='text-dark fwtHireUsCard'>{unBoldedText}</span>}
