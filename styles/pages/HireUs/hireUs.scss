@@ -2,6 +2,7 @@
 @import "./hireUsComps/PicAndDescriptionSec.scss";
 @import "../../comps/carousel.scss";
 @import "../HireUs/hireUsComps/modalStyles/HireUsModalStyles.scss";
+@import "../HireUs/hireUsComps/readyToInspireSec.scss";
 
 $btnColor: #84469e;
 $btnColorDark: #3e0d55;
@@ -11,10 +12,11 @@ $backgroundColorTierCard: #ffeded;
 $borderRadiusModal: 1.3em;
 $borderColorImgAndCard: #707070;
 $whatWeDoCardColor: #fff8f8;
+$sectionDarkBg: #2E0B1B;
 
 .whatDoWeDoSec{
   border-radius: $borderRadiusModal;
-  border: solid .8px #582B3F;
+  border: solid .8px $sectionDarkBg;
 }
 
 
@@ -72,11 +74,15 @@ $whatWeDoCardColor: #fff8f8;
   }
 }
 
+.hireUsPgWrapper{
+  overflow-x: hidden !important;
+}
+
 .hireUsPg {
-  overflow-x: hidden;
-  color: white;
+  color: #ffffff;
   background-size: cover;
   background-position: 70% center;
+  height: fit-content !important;
 }
 
 .headerSection {
@@ -154,7 +160,7 @@ $whatWeDoCardColor: #fff8f8;
 
 .mainBtnLetsTalk {
   background-color: $btnColor;
-  border: solid 0.5px #ffffff;
+  // border: solid 0.5px #ffffff;
   border-radius: $borderRadiusModal;
   width: 260px !important;
   height: 100px !important; 
@@ -204,7 +210,6 @@ $whatWeDoCardColor: #fff8f8;
   background-color: $btnColor;
   width: 350px !important;
   height: 200px !important;
-  // height: 175px !important;
   border: solid 0.5px #ffffff;
   border-radius: $borderRadiusModal;
 
@@ -234,9 +239,6 @@ $whatWeDoCardColor: #fff8f8;
         text-decoration: underline;
         text-decoration-thickness: 1.5px;
       }
-
-      @media (max-width: 575px) {
-      }
     }
   }
 
@@ -263,21 +265,13 @@ $whatWeDoCardColor: #fff8f8;
   }
 
   @media (max-width: 575px) {
-    height: 80px !important;
-    // width: clamp(240px, 80vw, 300px) !important;
-    width: 250px !important;
-    // width: 250px !important;
-    // width: 250px !important;
-    // width: 90vw !important;
+    height: 70px !important;
+    width: 225px !important;
 
-    svg{
-      width: 55px !important;
-      height: 55px !important;
-    }
 
     div:last-of-type {
       span {
-        font-size: 25px;
+        font-size: 22px;
         font-weight: 210;
       }
     }
@@ -310,18 +304,26 @@ $whatWeDoCardColor: #fff8f8;
 .introSecAndLetTalksSec {
   height: 700px;
   padding-bottom: 150px;
+
+  // border: solid pink !important;
   > section {
     max-width: 720px !important;
     > section:last-child {
       @media (max-width: 767px) {
         width: 75% !important;
       }
-
+      
       @media (max-width: 575px) {
         width: 100% !important;
+        // width: 100% !important;
       }
       @media (min-width: 375px) and (max-width: 575px) {
         padding-left: 40px !important;
+      }
+
+      @media(max-width: 374px){
+        padding-left: 18px !important;
+        padding-right: 18px !important;
       }
     }
   }

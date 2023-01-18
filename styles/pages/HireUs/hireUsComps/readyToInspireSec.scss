@@ -1,0 +1,21 @@
+
+.readyToInspireParentSec{
+    background-color: #2e0b1b;
+    height: fit-content !important;
+    position: relative;
+    height: 800px !important;
+    width: 100vw;
+    border: none;
+}
+
+.readyToInspireSec {
+  background-color: #2e0b1b;
+  width: 100vw;
+  height: 800px;
+  bottom: 0;
+  margin-left: calc(-1 * ((100vw - 100%) / 2));
+  margin-right: calc(-1 * ((100vw - 100%) / 2));
+  transform: translateY(-110px);
+  position: absolute;
+  // padding-bottom: 800px !important;
+}

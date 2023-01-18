@@ -48,6 +48,7 @@ import Tier from '../components/HireUsComps/sections/Tier';
 import TierInfoModal from '../components/HireUsComps/modals/TierInfoModal'
 import { useState } from 'react';
 import { Parallax } from 'react-parallax';
+import ReadyToInspireSec from '../components/HireUsComps/ReadyToInspireSec';
 
 
 const HireUsPage = () => {
@@ -71,7 +72,7 @@ const HireUsPage = () => {
     return (
         <>
             <Layout description="Galactic PolyMath Hire Us Page." keywords="Hire us, Galactic PolyMath">
-                <div className="w-100 hireUsPg d-flex justify-content-center align-items-center">
+                <div className="w-100 hireUsPg d-flex flex-column justify-content-center align-items-center">
                     <div className="container-fluid noPadding noMargin w-100 hireUsPgWrapper">
                         <section className='d-flex flex-row parallax row introSecHireUsPg' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
                             <section className="d-none d-md-flex justify-content-center align-items-center w-100 noMargin col-12 introSecAndLetTalksSec">
@@ -102,13 +103,13 @@ const HireUsPage = () => {
                                             We translate your work so that non-experts can teach mind-opening lessons.
                                         </span>
                                     </section>
-                                    <section className="ps-3 ps-sm-1 pt-4 pt-sm-5">
+                                    <section className="ps-0 ps-sm-1 pt-4 pt-sm-5">
                                         <LetsTalkBtnContainer isMainBtn />
                                     </section>
                                 </section>
                             </section>
                         </section>
-                        <section className="CardSec d-flex justify-content-center align-items-center align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
+                        <section className="CardSec d-flex justify-content-center align-items-center flex-column align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
                             <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-5'>
                                 <CardBody className="hireUsPgInfoCardBody">
                                     <section className="d-flex flex-column">
@@ -330,7 +331,7 @@ const HireUsPage = () => {
                                             })}
                                         </section>
                                     </section>
-                                    <section className="mt-2 d-flex d-md-none">
+                                    {/* <section className="mt-2 d-flex d-md-none">
                                         <Parallax bgImage={ClassRoom2.src} className="img-background-container" contentClassName='classRoom2ContentStyles position-relative'>
                                             <section className="position-absolute ps-4">
                                                 <span className="fs-24 d-block fw650">Ready to inspire students</span>
@@ -340,11 +341,12 @@ const HireUsPage = () => {
                                     </section>
                                     <section className="mt-4 mb-4 ps-2 ps-sm-3 d-flex d-md-none">
                                         <LetsTalkBtnContainer />
-                                    </section>
+                                    </section> */}
                                 </CardBody>
                             </Card>
                         </section>
                     </div>
+                    <ReadyToInspireSec />
                 </div>
             </Layout>
             {tiersInfoForModalArr.map((tierInfo, index) => (
