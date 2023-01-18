@@ -100,16 +100,19 @@ $sectionDarkBg: #2E0B1B;
 
   @media (max-width: 374px) {
     padding-left: 15px !important;
+    padding-right: 5px !important;
   }
 }
 
-.headingHireUs {
-  font-size: 75px;
-  font-weight: 450 !important;
+.subTxtHeadingDesktop{
+  display: block !important;
+  max-width: 770px !important;
+}
 
-  @media (min-width: 992px) {
-    font-size: 75px !important;
-  }
+
+.headingHireUs {
+  font-size: 70px !important;
+  font-weight: 450 !important;
 
   @media (min-width: 880px) and (max-width: 991px) {
     font-size: 70px !important;
@@ -158,12 +161,26 @@ $sectionDarkBg: #2E0B1B;
   }
 }
 
+.letTalksMainBtnSec{
+  margin-bottom: 65px !important;
+  // padding-right: 6rem !important;
+  @media(min-width: 768px){
+    transform: translate(-48px, 40px) !important;
+  }
+
+  @media(min-width: 992px){
+    transform: translate(-105px, 40px) !important;
+  }
+}
+
+
 .mainBtnLetsTalk {
-  background-color: $btnColor;
-  // border: solid 0.5px #ffffff;
+  // background-color: $btnColor;
+  background-color: $btnColorMobile !important;
   border-radius: $borderRadiusModal;
   width: 260px !important;
   height: 100px !important; 
+  border: solid 1px white;
 
 
 
@@ -210,7 +227,7 @@ $sectionDarkBg: #2E0B1B;
   background-color: $btnColor;
   width: 350px !important;
   height: 200px !important;
-  border: solid 0.5px #ffffff;
+  border: solid 0.5px #ffffff !important;
   border-radius: $borderRadiusModal;
 
   > div {
@@ -292,6 +309,10 @@ $sectionDarkBg: #2E0B1B;
 }
 
 .introSecHireUsPg {
+  @media(min-width: 768px){
+    height: 700px !important;
+  }
+
   @media (min-width: 375px) and (max-width: 575px) {
     height: 500px !important;
   }
@@ -305,9 +326,15 @@ $sectionDarkBg: #2E0B1B;
   height: 700px;
   padding-bottom: 150px;
 
+
+
   // border: solid pink !important;
   > section {
-    max-width: 720px !important;
+    // max-width: 720px !important;
+    @media(min-width: 767px){
+      //  border: solid pink !important; 
+    }
+
     > section:last-child {
       @media (max-width: 767px) {
         width: 75% !important;
