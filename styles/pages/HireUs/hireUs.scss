@@ -11,7 +11,7 @@ $btnColorMobile: #633a9a;
 $backgroundColorTierCard: #ffeded;
 $borderRadiusModal: 1.3em;
 $borderColorImgAndCard: #707070;
-$whatWeDoCardColor: #fff8f8;
+$hireUsPgMainCardColor: #fff8f8;
 $sectionDarkBg: #2E0B1B;
 
 .whatDoWeDoSec{
@@ -381,6 +381,7 @@ $sectionDarkBg: #2E0B1B;
   transform: translateY(-100px);
   min-height: 700px;
   border-radius: $borderRadiusModal;
+  background-color: $hireUsPgMainCardColor;
   max-width: 1440px !important;
 
   @media (min-width: 768px) {
@@ -388,21 +389,16 @@ $sectionDarkBg: #2E0B1B;
       color: black !important;
     }
   }
-
   @media (max-width: 767px) {
     transform: translateY(-40px) !important;
-    background-color: $whatWeDoCardColor;
   }
 }
 
 .hireUsPgInfoCardBody {
-  @media (max-width: 767px) {
-    h3 {
-      color: $mobileTxtColor !important;
-      font-size: 58px !important;
-      // font-weight: 660;
-      font-weight: 800;
-    }
+  h3 {
+    color: $mobileTxtColor !important;
+    font-size: 58px !important;
+    font-weight: 800;  
   }
 
   @media (max-width: 767px) and (min-width: 576px) {
@@ -544,11 +540,16 @@ $sectionDarkBg: #2E0B1B;
 }
 
 .HireUsCardFirstSecMobile:first-child {
-  margin-top: 20px !important;
+  @media(max-width: 767px){
+    margin-top: 20px !important;
+  }
 }
 
 .HireUsCardFirstSecMobile:not(:first-child) {
-  margin-top: 55px !important;
+
+  @media(max-width: 767px){
+    margin-top: 55px !important;
+  }
 }
 
 .HireUsCardFirstSecMobile {

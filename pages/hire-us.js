@@ -113,7 +113,7 @@ const HireUsPage = () => {
                             <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-5'>
                                 <CardBody className="hireUsPgInfoCardBody">
                                     <section className="d-flex flex-column">
-                                        <section className="d-flex d-md-none ps-sm-5 pe-sm-5">
+                                        <section className="d-flex ps-sm-5 pe-sm-5">
                                             <h3 className="text-center text-sm-start w-100 text-sm-nowrap">
                                                 What do we do?
                                             </h3>
@@ -130,6 +130,11 @@ const HireUsPage = () => {
                                                     by turning our clients outreach goals into rich, open-access learning experiences.
                                                 </span>
                                             </span>
+                                        </section>
+                                        <section className="ps-sm-5 pe-sm-5">
+                                            <div className="d-none d-md-flex flex-row whatDoWeDoSec d-flex justify-content-center align-items-center">
+                                                {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} />)}
+                                            </div>
                                         </section>
                                         <section className="d-none d-md-flex flex-column ps-sm-5 pe-sm-5">
                                             {hireUsCardsSectionTexts.map(({ text, content }, index) => {
