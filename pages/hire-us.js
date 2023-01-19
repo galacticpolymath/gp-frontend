@@ -49,6 +49,7 @@ import TierInfoModal from '../components/HireUsComps/modals/TierInfoModal'
 import { useState } from 'react';
 import { Parallax } from 'react-parallax';
 import ReadyToInspireSec from '../components/HireUsComps/ReadyToInspireSec';
+import ShareYourKnowledge from '../components/HireUsComps/sections/ShareYourKnowledge';
 
 
 const HireUsPage = () => {
@@ -167,8 +168,6 @@ const HireUsPage = () => {
                                                 What will you get?
                                             </h3>
                                         </section>
-                                        {/* ps-sm-5 pe-sm-5 */}
-                                        {/* ms-4 me-4 ms-sm-5 me-sm-5 */}
                                         <section className="d-flex d-md-block flex-column ps-sm-5 pe-sm-5 flex-md-row pb-5 mt-4 whatYouWillGetSec">
                                             {whatYouWillGetTxts.map((textsAndImg, index) => <HireUsCardFirstSecMobile isWhatWillYouGetSec={true} key={index} textsAndImg={textsAndImg} index={index} customCssClass='whatWillYouGetSec' />)}
                                         </section>
@@ -176,38 +175,7 @@ const HireUsPage = () => {
                                     <section className="d-flex mt-5">
                                         <CardContainer headingTxt="What teachers & students says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0" />
                                     </section>
-                                    <section className="d-flex d-md-none ps-2 pe-2 ps-sm-5 pe-sm-5 mt-5">
-                                        <div className='shareYourKnowledgeImgContainer position-relative'>
-                                            <Image src="/imgs/classroom.jpg" layout='fill' alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="h-100 w-100 position-absolute" />
-                                        </div>
-                                    </section>
-                                    <section className="mt-sm-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none pe-sm-3">
-                                        <section>
-                                            <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
-                                        </section>
-                                    </section>
-                                    <section className="mt-4 mt-sm-7 ps-sm-5 pe-sm-5 d-flex d-md-none">
-                                        <PicAndDescriptionSec
-                                            text="We promote lessons through our growing GP Constellation dissemination network."
-                                            imgPath="/imgs/GP_Constellation_dark.png"
-                                            parentSecStyles="GPConstellationSec"
-                                        />
-                                    </section>
-                                    <section className="mt-5 ps-sm-5 pe-sm-5 eachLessonMainSec d-flex flex-column d-md-none">
-                                        <section className="w-100">
-                                            <h5 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h5>
-                                        </section>
-                                        <ul className="eachLessonInfoList ps-0 pt-2 ps-5 pt-sm-2 pe-3">
-                                            {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
-                                                <li className="text-dark fw249" key={index}>
-                                                    {normalTxt}
-                                                    <span className="text-decoration-underline underline-less-thick">
-                                                        {underLineTxt}
-                                                    </span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </section>
+                                    <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />
                                     <section className="mt-5 d-md-none">
                                         <CardContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" isCardOnly />
                                     </section>
