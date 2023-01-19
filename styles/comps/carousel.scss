@@ -14,9 +14,12 @@ $carouselBackgroundColor: #ffeded;
   overflow: hidden;
 }
 
+
 .autoCarouselContainerCard {
   width: 85% !important;
   border-radius: 1.3em;
+
+
 
   @media(min-width: 576px) and (max-width: 767px){
     min-width: 550px !important;
@@ -26,6 +29,13 @@ $carouselBackgroundColor: #ffeded;
     width: 95% !important;
     // min-height:  500px !important;
   }
+}
+
+.cardBodyStyles,
+.autoCarouselContainerCard{
+ @media(min-width: 768px){
+  height: 300px !important;
+ } 
 }
 
 .autoCarouselContainerHeading {
@@ -42,6 +52,7 @@ $carouselBackgroundColor: #ffeded;
 
   @media (max-width: 575px) {
     width: fit-content !important;
+    padding: 0px 5px 0px 5px !important;
   }
 }
 
@@ -73,6 +84,12 @@ $carouselBackgroundColor: #ffeded;
   transform: translate(-50%, -50%);
 }
 
+.react-parallax-bgimage{
+  @media(min-width: 768px){
+    height: 800px !important;
+  }
+}
+
 
 .defaultHeadingCarouselStyles {
   font-weight: 800 !important;
@@ -88,6 +105,17 @@ $carouselBackgroundColor: #ffeded;
   font-weight: 240 !important;
 }
 
+.cardHeadingSec {
+  height: 100px !important;
+
+
+
+  @media(max-width: 767px){
+    height: 150px !important;
+  }
+}
+
+
 .autoCarouselContainer {
   margin: 0 auto;
   overflow: hidden;
@@ -96,9 +124,13 @@ $carouselBackgroundColor: #ffeded;
 
 .autoCarouselItem {
   display: inline-block;
-  height: 400px;
   width: 100%;
   border-radius: 40px;
+
+
+  @media(max-width: 767px){
+    height: 400px;
+  }
 
   > section{
     > section:first-child{
