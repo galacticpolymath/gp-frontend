@@ -1,11 +1,35 @@
+
+.ownerSection{
+  > section:last-child{
+    > div{
+      @media(min-width: 768px){
+        width: 225px !important;
+        height: 225px !important;
+      }
+    }
+  }
+
+  > section:first-child{
+    > span{
+      @media(min-width: 768px){
+        line-height: 28px;
+      }
+    }
+  }
+}
+
 .picAndDescriptionSec {
   display: flex;
   flex-direction: row-reverse;
 
+
+
   > section {
     > div {
-      width: 150px !important;
-      height: 150px !important;
+      @media(max-width: 767px){
+        width: 150px !important;
+        height: 150px !important;
+      }
     }
   }
 
@@ -71,14 +95,14 @@
 }
 
 .ownerSection {
-  padding-bottom: 30px;
+  padding-bottom: 50px;
 
   @media(min-width: 768px){
-    > section:last-child{
-      // border: solid pink !important;
+    > section:first-child{
+      margin-top: 8px !important;;
     }
   }
-
+  
   @media (min-width: 576px) {
     > section:first-child {
       margin-left: 20px !important;
@@ -93,11 +117,38 @@
   }
 }
 
+
+.imgSquareContainer {
+  @media(min-width: 768px){
+    width: 70px;
+    height: 70px;
+  }
+
+  @media(max-width: 767px){
+    width: 120px;
+    height: 120px;
+  }
+}
+
 .picAndImageSecInList:not(:first-child) {
   margin-top: 25px !important;
 }
 
 .mattsAward {
+  
+  @media(min-width: 768px){
+    height: 95px !important;
+    span{
+      font-size: 29px !important;
+    }
+    > section:last-child{
+      height: 100% !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;;
+    }
+  }
+
   @media (max-width: 575px) {
     display: flex !important;
     flex-direction: column-reverse !important;

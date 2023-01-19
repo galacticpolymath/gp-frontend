@@ -28,6 +28,15 @@ $desktopFontSize: 22px !important;
   }
 }
 
+.mattsAwardParentSec{
+  @media(min-width: 768px){
+    > section:nth-child(2){
+      width: 75% !important;
+    }
+
+  }
+}
+
 .ownerInfoSec {
   > section:nth-child(2) {
     > span:last-child {
@@ -733,10 +742,7 @@ $desktopFontSize: 22px !important;
   font-size: 30px !important;
 }
 
-.imgSquareContainer {
-  width: 120px;
-  height: 120px;
-}
+
 
 .imgContainerHireUsDefaultStyles {
   @media (max-width: 575px) {

@@ -38,7 +38,7 @@ const PicAndImageSec = ({ text, imgPath, link, name, parentSecStyles }) => {
                 </section>
             }
             {link &&
-                <section>
+                <section className="">
                     <div className="imgSquareContainer position-relative borderThicker">
                         <Image src={imgPath} layout='fill' alt="Galactic_PolyMath_HireUs_Img" />
                     </div>
