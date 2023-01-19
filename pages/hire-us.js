@@ -50,6 +50,7 @@ import { useState } from 'react';
 import { Parallax } from 'react-parallax';
 import ReadyToInspireSec from '../components/HireUsComps/ReadyToInspireSec';
 import ShareYourKnowledge from '../components/HireUsComps/sections/ShareYourKnowledge';
+import ClientFundingSec from '../components/HireUsComps/sections/ClientFundingSec';
 
 
 const HireUsPage = () => {
@@ -177,9 +178,8 @@ const HireUsPage = () => {
                                     </section>
                                     <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />
                                     <ShareYourKnowledge lessonsInfo={lessonsInfo} />
-                                    <section className="mt-5 d-md-none">
-                                        <CardContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" isCardOnly />
-                                    </section>
+                                    <ClientFundingSec clientFundingSourcesPics={clientFundingSourcesPics} isMobile />
+                                    <ClientFundingSec clientFundingSourcesPics={clientFundingSourcesPics}  />
                                     <section className="mt-5 d-md-none ps-sm-5 pe-sm-5 d-flex pb-5 flex-column">
                                         <section className="ps-2 pe-2 ps-sm-0 pe-sm-0">
                                             <h3 className="display-1 noMargin">When should I reach out?</h3>

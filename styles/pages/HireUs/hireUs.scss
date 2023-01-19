@@ -19,11 +19,7 @@ $desktopFontSize: 22px !important;
   line-height: 33px;
 }
 
-.picsCardContainercardOnlyStyles {
-  @media (max-width: 575px) {
-    max-width: 450px !important;
-  }
-}
+
 
 .responsiveInfoTxt {
   font-size: 28px !important;
@@ -374,7 +370,7 @@ $desktopFontSize: 22px !important;
 
   @media (min-width: 768px) {
     * {
-      color: black !important;
+      // color: black !important;
     }
   }
   @media (max-width: 767px) {
@@ -413,6 +409,10 @@ $desktopFontSize: 22px !important;
 }
 
 .hireUsPgInfoCardBody {
+  @media(min-width: 768px){
+    padding: 0 !important;
+  }
+
   h3 {
     color: $mobileTxtColor !important;
     // font-size: 58px !important;
@@ -679,6 +679,7 @@ $desktopFontSize: 22px !important;
 
 .arrowSec {
   @media (min-width: 768px) {
+    padding-top: 100px !important;
     > span {
       transform: rotate(-90deg);
     }
