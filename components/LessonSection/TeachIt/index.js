@@ -27,10 +27,10 @@ const TeachIt = ({
       initiallyExpanded
     >
       <>
-        <div className='container mx-auto mt-4'>
-          <div className='bg-light-gray p-3 mx-5 d-flex flex-column gap-3 flex-md-row align-items-center w-75 mx-auto'>
-            <div className='d-flex flex-column text-nowrap text-center fs-5'>
-              <i className="bi-alarm fs-2"></i>{' '}
+        <div className='container row mx-auto mt-4'>
+          <div className='col-12 col-xl-8 offset-xl-2 bg-light-gray p-3 row align-items-center gap-3 gap-lg-0'>
+            <div className='fs-5 mb-2'>
+              <i className="bi-alarm fs-4 me-2"></i>
               {Data.lessonDur}
             </div>
             <p className='mb-0'>{Data.lessonPreface}</p>
