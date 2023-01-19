@@ -382,10 +382,41 @@ $desktopFontSize: 22px !important;
   }
 }
 
+.GPConstellationSec.onDesktop{
+
+  @media(min-width: 768px){
+    > section:last-child{
+      div{
+        width: 607px !important;
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    > section:first-child{
+      display: none !important;
+    }
+    > section:last-child{
+      > div{
+        height: 275px !important;
+      }
+    }
+  }
+}
+
+
+.introTxtShareYourKnowledge{
+  > span{
+    font-size: $desktopFontSize;
+    font-weight: 250 !important;
+  }
+}
+
 .hireUsPgInfoCardBody {
   h3 {
     color: $mobileTxtColor !important;
-    font-size: 58px !important;
+    // font-size: 58px !important;
+    font-size: 48px !important;
     font-weight: 800;
   }
 
@@ -419,7 +450,15 @@ $desktopFontSize: 22px !important;
 
 .shareYourKnowledgeImgContainer {
   height: 400px !important;
-  width: 100% !important;
+
+  @media(min-width: 768px){
+    width: 560px !important;
+  }
+
+
+  @media(max-width: 767px){
+    width: 100% !important;
+  }
 
   > span {
     border-radius: $borderRadiusModal !important;

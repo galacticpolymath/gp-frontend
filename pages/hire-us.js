@@ -176,6 +176,7 @@ const HireUsPage = () => {
                                         <CardContainer headingTxt="What teachers & students says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0" />
                                     </section>
                                     <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />
+                                    <ShareYourKnowledge lessonsInfo={lessonsInfo} />
                                     <section className="mt-5 d-md-none">
                                         <CardContainer headingTxt="Our Clients' Funding Sources" pics={clientFundingSourcesPics} autoCarouselHeadingTxtClassNames="ourClientsFundingSourcesHeadingTxt fw200 text-dark" isCardOnly />
                                     </section>

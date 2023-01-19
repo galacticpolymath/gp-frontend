@@ -20,7 +20,7 @@
 import PicAndDescriptionSec from './PicAndDescriptionSec'
 import Image from 'next/image'
 
-const ShareYourKnowledgeMobileDisplay = ({ lessonsInfo, isMobile }) => {
+const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
     return (
         isMobile ?
             <>
@@ -59,9 +59,52 @@ const ShareYourKnowledgeMobileDisplay = ({ lessonsInfo, isMobile }) => {
             </>
             :
             <>
-            
+                <section className="d-none d-md-flex flex-column ps-5 pe-5 mt-5 shareYourKnowledgeDesktopSec">
+                    <section className="w-100 d-flex">
+                        <section className="w-50 d-flex flex-column">
+                            <section className="w-100">
+                                <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
+                            </section>
+                            <section className="w-100 introTxtShareYourKnowledge">
+                                <span className="d-inline-block mt-3">
+                                    We promote lessons through our growing GP Constellation dissemination network.
+                                </span>
+                            </section>
+                        </section>
+                        <section className="w-50 ms-5">
+                            <div className='shareYourKnowledgeImgContainer position-relative'>
+                                <PicAndDescriptionSec
+                                    imgPath="/imgs/GP_Constellation_dark.png"
+                                    parentSecStyles="GPConstellationSec onDesktop d-md-flex justify-content-md-center align-items-md-center"
+                                />
+                            </div>
+                        </section>
+                    </section>
+                    <section className="w-100 d-flex">
+                        <section className="d-flex justify-content-center">
+                            <div className='shareYourKnowledgeImgContainer position-relative'>
+                                <Image src="/imgs/classroom.jpg" layout='fill' alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="h-100 w-100 position-absolute" />
+                            </div>
+                        </section>
+                        <section className="d-flex flex-column justify-content-center align-items-center ms-5">
+                            <section className="w-100">
+                                <h5 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h5>
+                            </section>
+                            <ul className="eachLessonInfoList">
+                                {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
+                                    <li className="text-dark fw249" key={index}>
+                                        {normalTxt}
+                                        <span className="text-decoration-underline underline-less-thick">
+                                            {underLineTxt}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    </section>
+                </section>
             </>
     )
 }
 
-export default ShareYourKnowledgeMobileDisplay;
+export default ShareYourKnowledge;
