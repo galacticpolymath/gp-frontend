@@ -14,8 +14,16 @@ $carouselBackgroundColor: #ffeded;
   overflow: hidden;
 }
 
+
+.navBtnLeftCarousel{
+  transform: translate(-15px, -10px) !important;
+}
+
+.navBtnRightCarousel{
+  transform: translate(15px, -10px) !important;
+}
+
 .autoCarouselContainerCard {
-  border: solid pink !important;
   width: 85% !important;
   border-radius: 1.3em;
 
@@ -25,14 +33,13 @@ $carouselBackgroundColor: #ffeded;
 
   @media (max-width: 575px) {
     width: 95% !important;
-    // min-height:  500px !important;
   }
 }
 
 .cardBodyStyles,
 .autoCarouselContainerCard {
   @media (min-width: 768px) {
-    height: 300px !important;
+    height: 305px !important;
   }
 }
 
@@ -59,9 +66,14 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .feedbackInfoSec {
-  bottom: 70px;
-  right: 24px;
   position: absolute;
+  bottom: -10px;
+  right: 15px;
+
+  @media(max-width: 767px){
+    bottom: 70px;
+    right: 24px;
+  }
 
   > section {
     > span:first-child {
@@ -115,11 +127,13 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .feedBackSec{
-  border: solid pink !important;
+
   @media(min-width: 768px){
     min-height: 200px !important;
   }
 }
+
+
 
 .autoCarouselContainer {
   margin: 0 auto;
