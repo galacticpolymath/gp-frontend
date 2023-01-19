@@ -17,12 +17,9 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
-import PicAndDescriptionSec from './PicAndDescriptionSec'
-import Image from 'next/image'
 import CardContainer from '../CardContainer'
 
 const ClientFundingSec = ({ clientFundingSourcesPics, isMobile }) => {
-
     return (
         isMobile ?
             <section className="mt-5 d-md-none">

@@ -168,7 +168,7 @@ $desktopFontSize: 22px !important;
   background-color: $btnColorMobile !important;
   border-radius: $borderRadiusModal;
   width: 260px !important;
-  height: 100px !important;
+  height: 85px !important;
   border: solid 1px rgb(255, 255, 255);
 
   @media (max-width: 767px) {
@@ -405,6 +405,10 @@ $desktopFontSize: 22px !important;
   > span{
     font-size: $desktopFontSize;
     font-weight: 250 !important;
+
+    @media(min-width: 768px){
+      color: black !important;
+    }
   }
 }
 
@@ -415,8 +419,7 @@ $desktopFontSize: 22px !important;
 
   h3 {
     color: $mobileTxtColor !important;
-    // font-size: 58px !important;
-    font-size: 48px !important;
+    font-size: 40px !important;
     font-weight: 800;
   }
 
@@ -525,6 +528,18 @@ $desktopFontSize: 22px !important;
   @media (max-width: 767px) {
     // font-size: 45px !important;
     font-weight: 249;
+  }
+}
+
+.anyTimeSec{
+  > section:first-child{
+    @media(min-width: 768px){
+      width: 75% !important;  
+    }
+    
+    @media(max-width: 767px){
+      width: 100% !important;
+    }
   }
 }
 

@@ -18,8 +18,13 @@ import MessageBoxIcon from '../../svgs/MessageBoxIcon';
 import Button from 'react-bootstrap/Button';
 
 
-const LetsTalkBtnContainer = ({ isBtnColorDarker, isMainBtn, isInReadyToInspireSec, isAbsolute }) => {
-    const _className = `${isMainBtn ? "mainBtnLetsTalk" : "letsTalkBtnContainer"} ${isAbsolute ? 'position-absolute' : 'position-relative'} border-white d-flex flex-row-reverse flex-md-column ${isInReadyToInspireSec ? 'inReadyToInspireSec' : ''} ${isBtnColorDarker ? 'darker-btn-color' : ''}`
+const LetsTalkBtnContainer = ({ isBtnColorDarker, isMainBtn, isInReadyToInspireSec, isAbsolute, isNoUnderline }) => {
+    const _className = `${isMainBtn ? "mainBtnLetsTalk" : "letsTalkBtnContainer"} ${isAbsolute ? 'position-absolute' : 'position-relative'} border-white d-flex flex-row-reverse   flex-md-column ${isInReadyToInspireSec ? 'inReadyToInspireSec' : ''} ${isBtnColorDarker ? 'darker-btn-color' : ''}`
+    let btnTxtStyles = 'text-nowrap'
+
+    if(isNoUnderline){
+        btnTxtStyles += ' no-underline'
+    }
 
     const handleOnClick = () => {
         window.open('https://portal.galacticpolymath.com/public/form/view/604d904c80fecb0cd51e2529', '_blank')
@@ -31,7 +36,7 @@ const LetsTalkBtnContainer = ({ isBtnColorDarker, isMainBtn, isInReadyToInspireS
                 <MessageBoxIcon />
             </div>
             <div className="d-flex align-items-center justify-content-center">
-                <span className="text-nowrap">Let's talk!</span>
+                <span className={btnTxtStyles}>Let's talk!</span>
             </div>
             <Button onClick={handleOnClick} className="w-100 h-100 noBackground noBorder position-absolute" />
         </div>

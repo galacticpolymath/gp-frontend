@@ -51,6 +51,7 @@ import { Parallax } from 'react-parallax';
 import ReadyToInspireSec from '../components/HireUsComps/ReadyToInspireSec';
 import ShareYourKnowledge from '../components/HireUsComps/sections/ShareYourKnowledge';
 import ClientFundingSec from '../components/HireUsComps/sections/ClientFundingSec';
+import WhenShouldIReachOutSec from '../components/HireUsComps/sections/WhenShouldIReachOutSec';
 
 
 const HireUsPage = () => {
@@ -180,19 +181,7 @@ const HireUsPage = () => {
                                     <ShareYourKnowledge lessonsInfo={lessonsInfo} />
                                     <ClientFundingSec clientFundingSourcesPics={clientFundingSourcesPics} isMobile />
                                     <ClientFundingSec clientFundingSourcesPics={clientFundingSourcesPics}  />
-                                    <section className="mt-5 d-md-none ps-sm-5 pe-sm-5 d-flex pb-5 flex-column">
-                                        <section className="ps-2 pe-2 ps-sm-0 pe-sm-0">
-                                            <h3 className="display-1 noMargin">When should I reach out?</h3>
-                                        </section>
-                                        <section className="w-100 mt-3">
-                                            <span className="text-dark d-block fs-large w-100 w-sm-85 fw249 text-center text-sm-start ps-2 pe-2 ps-sm-0 pe-sm-0">
-                                                Any time! Whether you have funds now, want to write us into a proposal, or just have a question, we are here to help!
-                                            </span>
-                                        </section>
-                                        <section className="d-flex mt-4 d-sm-block justify-content-center justify-content-sm-start align-items-sm-stretch align-items-sm-center">
-                                            <LetsTalkBtnContainer />
-                                        </section>
-                                    </section>
+                                    <WhenShouldIReachOutSec />
                                     <section className="d-flex d-md-none mt-8">
                                         <CardContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
                                     </section>
