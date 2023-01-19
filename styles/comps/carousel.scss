@@ -127,7 +127,6 @@ $carouselBackgroundColor: #ffeded;
     font-weight: 400 !important;
     font-size: 48px !important;
   }
-
   
   
   @media(max-width: 767px){
@@ -153,6 +152,14 @@ $carouselBackgroundColor: #ffeded;
 
 .cardHeadingSec {
   height: 100px !important;
+
+  @media(min-width: 768px){
+    > h2{
+      font-weight: 800 !important;
+      font-size: 44px !important;
+    }
+    
+  }
 
   @media (max-width: 767px) {
     height: 150px !important;

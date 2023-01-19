@@ -182,7 +182,7 @@ const HireUsPage = () => {
                                     <ClientFundingSec clientFundingSourcesPics={clientFundingSourcesPics} isMobile />
                                     <ClientFundingSec clientFundingSourcesPics={clientFundingSourcesPics}  />
                                     <WhenShouldIReachOutSec />
-                                    <section className="d-flex d-md-none mt-8">
+                                    <section className="d-flex mt-8">
                                         <CardContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
                                     </section>
                                     <section className="mt-5 d-md-none ps-sm-5 pe-sm-5 d-flex pb-5 flex-column ownerInfoSec">
