@@ -50,6 +50,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
     }
 
     const handleBulletPtClick = (newIndex) => {
+        // comment
         setIsCarouselPaused(true)
         setIndex(newIndex)
     }
