@@ -140,24 +140,26 @@ const HireUsPage = () => {
                                             {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} index={index} />)}
                                         </div>
                                     </section>
-                                    <section className="d-flex d-md-none flex-column mt-15 mb-15 howDoesItWorkSec">
+                                    <section className="d-flex flex-column mt-15 mb-15 howDoesItWorkSec">
                                         <section className="d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ps-sm-5 pe-sm-5">
                                             <h3 className="text-center text-sm-start">
                                                 How does it work?
                                             </h3>
                                         </section>
-                                        {hireUsCardsSectionTexts.map(({ content, mobileTxt }, index) => {
+                                        <section className="d-flex flex-column flex-md-row ps-sm-5 pe-sm-5 mt-3">
+                                        {hireUsCardsSectionTexts.map(({ content, text, mobileTxt }, index) => {
                                             return (
                                                 <>
-                                                    <HireUsCardSection key={index} mobileTxt={mobileTxt} content={content} />
+                                                    <HireUsCardSection key={index} text={text} mobileTxt={mobileTxt} content={content} />
                                                     {(index === 0) && (
-                                                        <section className='d-flex justify-content-center align-items-center mt-3'>
+                                                        <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3'>
                                                             <Image src="/imgs/pretty-down-arrow.png" width={75} height={75} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
                                                         </section>
                                                     )}
                                                 </>
                                             );
                                         })}
+                                        </section>
                                     </section>
                                     <section>
                                         <section className="d-flex d-md-none ps-sm-5 pe-sm-5">

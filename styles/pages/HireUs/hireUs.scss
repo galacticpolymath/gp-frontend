@@ -450,10 +450,24 @@ $desktopFontSize: 22px !important;
   height: 150px;
 }
 
+.hireUsCardSectionTxt{
+  height: 100px;
+  @media(min-width: 768px){
+    font-size: $desktopFontSize
+  }
+}
+
 .hireUsInfoStyledContainer {
-  border: solid 0.5px #707070;
-  border-radius: $borderRadiusModal;
   height: 350px;
+
+  @media(min-width: 768px){
+    // width: 500px !important;
+  }
+
+  @media (max-width: 767px) {
+    border: solid 0.5px #707070;
+    border-radius: $borderRadiusModal;
+  }
 }
 
 .hireUsCardTxt {
@@ -528,19 +542,16 @@ $desktopFontSize: 22px !important;
 }
 
 .HireUsCardFirstSecMobile:not(:first-child) {
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     margin-left: 15px !important;
   }
 }
 
-
-
 .HireUsCardFirstSecMobile {
-
   @media (min-width: 768px) {
     > section:first-child {
       width: 20% !important;
-      > span{
+      > span {
         width: 100px !important;
         height: 100px !important;
       }
@@ -613,11 +624,16 @@ $desktopFontSize: 22px !important;
   }
 }
 
+.arrowSec {
+  @media (min-width: 768px) {
+    > span {
+      transform: rotate(-90deg);
+    }
+  }
+}
+
 .howDoesItWorkSec {
   > section:first-child {
-    // border: solid pink !important;
-    // font-size: clamp(50px, 4vw, 58px) !important;
-
     @media (max-width: 575px) {
       width: 100%;
     }
