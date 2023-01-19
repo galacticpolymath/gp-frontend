@@ -32,13 +32,9 @@ import feedbackOfClients from '../data/HireUsPg/feedbackOfClients.json'
 import PicAndDescriptionSec from '../components/HireUsComps/sections/PicAndDescriptionSec';
 import WhatTeachersSaysBackground from '../public/imgs/background/2_southeast_purplish_1.png';
 import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
-import DynamicTeamsTranslateBackground from '../public/imgs/background/3_southern-eddy_lilac_1.png';
 import GrantReviewerFeedbackBackground from '../public/imgs/background/5_chaotic_bluish_1.png';
-import ClassRoom2 from '../public/imgs/classroom2.jpg';
-import ArrowPic from '../public/imgs/pretty-down-arrow.png';
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
-import mattsAwards from '../data/HireUsPg/mattsAwards.json'
 import scientists from '../data/HireUsPg/scientists.json'
 import infoTxtsFirstSec from '../data/HireUsPg/infoTxtsFirstSec.json'
 import whatYouWillGetTxts from '../data/HireUsPg/whatYouWillGetTxts.json'
@@ -47,11 +43,11 @@ import tiersInfoForModal from '../data/HireUsPg/tiersInfoForModal.json'
 import Tier from '../components/HireUsComps/sections/Tier';
 import TierInfoModal from '../components/HireUsComps/modals/TierInfoModal'
 import { useState } from 'react';
-import { Parallax } from 'react-parallax';
 import ReadyToInspireSec from '../components/HireUsComps/ReadyToInspireSec';
 import ShareYourKnowledge from '../components/HireUsComps/sections/ShareYourKnowledge';
 import ClientFundingSec from '../components/HireUsComps/sections/ClientFundingSec';
 import WhenShouldIReachOutSec from '../components/HireUsComps/sections/WhenShouldIReachOutSec';
+import WhoMakesTheLessonsSec from '../components/HireUsComps/sections/WhoMakesTheLessonsSec';
 
 
 const HireUsPage = () => {
@@ -185,40 +181,7 @@ const HireUsPage = () => {
                                     <section className="d-flex mt-8">
                                         <CardContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
                                     </section>
-                                    <section className="mt-5 d-md-none ps-sm-5 pe-sm-5 d-flex pb-5 flex-column ownerInfoSec">
-                                        <section>
-                                            <h3 className="display-1 noMargin">Who makes the</h3>
-                                            <h3 className="display-1 noMargin">lessons?</h3>
-                                        </section>
-                                        <section className="mt-3 d-flex flex-column">
-                                            <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline">The GP Team is led by our founder,</span>
-                                            <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline">Matt Wilkins, PhD.</span>
-                                            <span className="text-dark fs-large text-center ps-1 pe-1 fst-italic fw249 d-inline d-sm-none">The GP Team is led by our founder, Matt Wilkins, PhD.</span>
-                                        </section>
-                                        <section className="mt-5">
-                                            <PicAndDescriptionSec
-                                                text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
-                                                imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
-                                                parentSecStyles="ownerSection secWithHumanPic"
-                                            />
-                                        </section>
-                                        <section>
-                                            {mattsAwards.map((award, index) => {
-                                                const { alt, src, txt, link } = award;
-
-                                                return (
-                                                    <PicAndDescriptionSec
-                                                        parentSecStyles="picAndImageSecInList mattsAward"
-                                                        key={index}
-                                                        link={link}
-                                                        alt={alt}
-                                                        text={txt}
-                                                        imgPath={src}
-                                                    />
-                                                )
-                                            })}
-                                        </section>
-                                    </section>
+                                    <WhoMakesTheLessonsSec />
                                     <section className="d-flex d-md-none mt-8">
                                         <CardContainer
                                             headingTxt="Dynamic teams translate any body of knowledge"

@@ -73,6 +73,12 @@
 .ownerSection {
   padding-bottom: 30px;
 
+  @media(min-width: 768px){
+    > section:last-child{
+      // border: solid pink !important;
+    }
+  }
+
   @media (min-width: 576px) {
     > section:first-child {
       margin-left: 20px !important;
