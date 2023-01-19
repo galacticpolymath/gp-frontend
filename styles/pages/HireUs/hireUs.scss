@@ -426,7 +426,8 @@ $desktopFontSize: 22px !important;
     border: solid 1px #707070 !important;
 
     @media (max-width: 575px) {
-      height: 350px !important;
+      // height: 350px !important;
+      height: 325px !important;
     }
   }
 }
