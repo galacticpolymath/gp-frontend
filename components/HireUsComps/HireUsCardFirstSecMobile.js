@@ -1,3 +1,4 @@
+/* eslint-disable prefer-template */
 /* eslint-disable quotes */
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable semi */
@@ -9,13 +10,19 @@
 /* eslint-disable react/jsx-indent */
 import Image from 'next/image';
 
-const HireUsCardFirstSecMobile = ({ textsAndImg, index, isWhatWillYouGetSec }) => {
+const HireUsCardFirstSecMobile = ({ textsAndImg, index, isWhatWillYouGetSec, customCssClass }) => {
     const { boldedTxt, unBoldedText, imgPath } = textsAndImg;
-    const _className = `pt-2 pt-md-0 mt-2 mt-sm-0 d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ${(index === 2) ? "pe-4 pe-sm-0" : ""}`
+    let _className = `pt-2 pt-md-0 mt-2 mt-sm-0 d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ${(index === 2) ? "pe-4 pe-sm-0" : ""}`
+    let parentClassName = 'd-flex flex-sm-row flex-column HireUsCardFirstSecMobile'
+
+    if(customCssClass){
+        parentClassName += ' ' + customCssClass
+    }
+
 
 
     return (
-        <section className="d-flex flex-sm-row flex-column HireUsCardFirstSecMobile">
+        <section className={parentClassName}>
             <section className={_className}>
                 <Image src={imgPath} width={75} height={75} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
             </section>

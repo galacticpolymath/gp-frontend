@@ -133,14 +133,14 @@ const HireUsPage = () => {
                                         </section>
                                         <section className="ps-sm-5 pe-sm-5">
                                             <div className="d-none d-md-flex flex-row whatDoWeDoSec">
-                                                {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} />)}
+                                                {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} customCssClass='weMobileKnowledgeSec' />)}
                                             </div>
                                         </section>
                                         <div className="d-flex d-md-none flex-column ps-sm-5 pe-sm-5 ms-4 me-4 ms-sm-5 me-sm-5 whatDoWeDoSec pb-5">
                                             {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} index={index} />)}
                                         </div>
                                     </section>
-                                    <section className="d-flex flex-column mt-15 mb-15 howDoesItWorkSec">
+                                    <section className="d-flex flex-column mt-5 mb-5 howDoesItWorkSec">
                                         <section className="d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ps-sm-5 pe-sm-5">
                                             <h3 className="text-center text-sm-start">
                                                 How does it work?
@@ -162,16 +162,18 @@ const HireUsPage = () => {
                                         </section>
                                     </section>
                                     <section>
-                                        <section className="d-flex d-md-none ps-sm-5 pe-sm-5">
+                                        <section className="d-flex ps-sm-5 pe-sm-5">
                                             <h3 className="text-center text-sm-start w-100 text-sm-nowrap">
                                                 What will you get?
                                             </h3>
                                         </section>
-                                        <section className="d-flex d-md-none flex-column ps-sm-5 pe-sm-5 ms-4 me-4 ms-sm-5 me-sm-5 pb-5 mt-4">
-                                            {whatYouWillGetTxts.map((textsAndImg, index) => <HireUsCardFirstSecMobile isWhatWillYouGetSec={true} key={index} textsAndImg={textsAndImg} index={index} />)}
+                                        {/* ps-sm-5 pe-sm-5 */}
+                                        {/* ms-4 me-4 ms-sm-5 me-sm-5 */}
+                                        <section className="d-flex d-md-block flex-column ps-sm-5 pe-sm-5 flex-md-row pb-5 mt-4 whatYouWillGetSec">
+                                            {whatYouWillGetTxts.map((textsAndImg, index) => <HireUsCardFirstSecMobile isWhatWillYouGetSec={true} key={index} textsAndImg={textsAndImg} index={index} customCssClass='whatWillYouGetSec' />)}
                                         </section>
                                     </section>
-                                    <section className="d-flex d-md-none mt-5">
+                                    <section className="d-flex mt-5">
                                         <CardContainer headingTxt="What teachers & students says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0" />
                                     </section>
                                     <section className="d-flex d-md-none ps-2 pe-2 ps-sm-5 pe-sm-5 mt-5">

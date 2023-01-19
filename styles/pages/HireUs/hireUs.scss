@@ -313,7 +313,8 @@ $desktopFontSize: 22px !important;
 
 .introSecAndLetTalksSec {
   height: 700px;
-  padding-bottom: 150px;
+  // padding-bottom: 150px;
+  padding-bottom: 190px !important;
 
   // border: solid pink !important;
   > section {
@@ -457,6 +458,16 @@ $desktopFontSize: 22px !important;
   }
 }
 
+.whatYouWillGetSec{
+  @media(min-width: 768px){
+    column-count: 2 !important;
+
+    > section{
+      width: 100% !important;
+    }
+  }
+}
+
 .hireUsInfoStyledContainer {
   height: 350px;
 
@@ -541,7 +552,11 @@ $desktopFontSize: 22px !important;
   padding: 25px 45px 25px 45px;
 }
 
-.HireUsCardFirstSecMobile:not(:first-child) {
+.whatWillYouGetSec:nth-child(even){
+  margin-top: 18px !important;
+}
+
+.HireUsCardFirstSecMobile.weMobileKnowledgeSec:not(:first-child) {
   @media (min-width: 768px) {
     margin-left: 15px !important;
   }
