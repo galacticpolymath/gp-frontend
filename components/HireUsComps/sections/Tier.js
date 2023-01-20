@@ -52,7 +52,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
 
     return (
         // ps-sm-3 pe-sm-3
-        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2'} mt-5 pb-5 ps-sm-5 pe-sm-5`}>
+        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2 pt-md-1 ps-md-5 pe-md-5'} mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
                     <Img src={img} alt={`${tierName}_img`} className="w-25 tierImg" height={120} />
@@ -62,7 +62,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                 </section>
             </Header>
             <Body className={`${isNoBackground ? 'noBackground' : 'tierCardBodyAndHeader'} noBorder pt-0`}>
-                <section>
+                <section className="tierParagraphSec">
                     <p className="text-dark fst-italic fs-large fw200 text-sm-start text-center">{paragraph1}</p>
                     <p className="text-dark fst-italic fs-large fw200 mt-3 text-sm-start text-center">{paragraph2}</p>
                 </section>

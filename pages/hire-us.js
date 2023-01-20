@@ -207,14 +207,14 @@ const HireUsPage = () => {
                                             <h3 className="display-1 noMargin">How much does it cost?</h3>
                                             {/* <h3 className="display-1 noMargin">cost?</h3> */}
                                         </section>
-                                        <section className="w-100 d-flex justify-content-start align-items-center flex-row flex-md-column mt-4 mb-5 ps-1 pe-1 ps-sm-0 pe-sm-0 ps-sm-5 pe-sm-5">
+                                        <section className="w-100 d-flex justify-content-start align-items-center flex-row flex-md-column mt-4 mb-5 ps-1 pe-1 ps-sm-5 pe-sm-5">
                                             <span className="fs-large fw200 fst-italic text-dark text-center text-sm-start ps-1 ps-sm-0 pe-1 pe-sm-0">
                                                 We offer three standard packages, which we’re happy to customize to meet your specific needs.
                                                 <span className="d-md-none ms-1">Here are three standard options to use as a starting point.</span>
                                             </span>
                                             <span className="d-none d-md-inline fs-large fw200 fst-italic text-dark mt-2">Here are three standard options to use as a starting point.</span>
                                         </section>
-                                        <section className="d-md-flex">
+                                        <section className="d-md-flex ps-md-5 pe-md-5">
                                             {tiers.map((tier, index) => {
                                                 return (
                                                     <Tier
