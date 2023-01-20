@@ -27,10 +27,11 @@ import Image from 'next/image'
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 import { Parallax } from 'react-parallax';
 
-const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly, dynamicCssClasses, customCardStyles }) => {
+const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly, dynamicCssClasses, customCardStyles, itemCarouselStylesCustom }) => {
     const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
+    let autoCarouselItemStyles = "autoCarouselItem position-relative"
     cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 fw245') : cardStyles
 
     if(customCardStyles){
@@ -39,6 +40,10 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
 
     if(!customCardStyles){
         cardStyles += ' ' + "pt-1 pb-4 pe-2"
+    }
+
+    if(itemCarouselStylesCustom){
+        autoCarouselItemStyles += ' ' + itemCarouselStylesCustom
     }
 
     const timeoutRef = useRef(null);
@@ -153,7 +158,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                             {userInputs.map((userInput, index) => {
                                                 const { feedback, person, occupation, city } = userInput;
                                                 return (
-                                                    <div className="autoCarouselItem position-relative" key={index}>
+                                                    <div className={autoCarouselItemStyles} key={index}>
                                                         <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-md-start align-items-md-stretch feedBackSec position-relative">
                                                             <section className="pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center">
                                                                 <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275">"{feedback}"</span>

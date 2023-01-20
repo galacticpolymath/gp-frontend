@@ -198,10 +198,10 @@ const HireUsPage = () => {
                                             headingTxt="Grant Reviewer Feedback"
                                             backgroundImgSrc={GrantReviewerFeedbackBackground.src}
                                             headerContainerClassNamesDynamic="cardHeadingSec"
-                                            customCardStyles='granterReviewsCard'
+                                            customCardStyles='grantReviewsCard'
+                                            itemCarouselStylesCustom='grantReviewItemCarousel'
                                         />
                                     </section>
-                                    {/* ps-sm-5 pe-sm-5 */}
                                     <section className="howMuchDoesItCostSec mt-4 d-md-none">
                                         <section className="ps-sm-5 pe-sm-5">
                                             <h3 className="display-1 noMargin">How much does it cost?</h3>
@@ -225,17 +225,6 @@ const HireUsPage = () => {
                                             })}
                                         </section>
                                     </section>
-                                    {/* <section className="mt-2 d-flex d-md-none">
-                                        <Parallax bgImage={ClassRoom2.src} className="img-background-container" contentClassName='classRoom2ContentStyles position-relative'>
-                                            <section className="position-absolute ps-4">
-                                                <span className="fs-24 d-block fw650">Ready to inspire students</span>
-                                                <span className="fs-24 d-block fw650">with your work?</span>
-                                            </section>
-                                        </Parallax>
-                                    </section>
-                                    <section className="mt-4 mb-4 ps-2 ps-sm-3 d-flex d-md-none">
-                                        <LetsTalkBtnContainer />
-                                    </section> */}
                                 </CardBody>
                             </Card>
                         </section>

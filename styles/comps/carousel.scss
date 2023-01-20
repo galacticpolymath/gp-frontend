@@ -311,29 +311,30 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.granterReviewsCard {
+.grantReviewsCard {
   @media(min-width: 768px){
     height: 330px !important;
   }
+}
 
-  > div {
-    > div {
-      div {
-        @media (min-width: 768px) {
-          > section{
-            > section:first-child {
-              width: 100%;
-              span{
-                text-align: center !important;
-              }
-            }
-          }
-          width: 100% !important;
-          span {
-            width: 100% !important;
-          }
+
+.grantReviewItemCarousel {
+  @media (min-width: 768px) {
+    > section{
+      > section:first-child {
+        width: 100%;
+        span{
+          text-align: center !important;
         }
       }
+
+      > section:last-child{
+        right: 20px !important;
+      }
+    }
+    width: 100% !important;
+    span {
+      width: 100% !important;
     }
   }
 }
