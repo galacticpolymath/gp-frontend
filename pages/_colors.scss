@@ -24,16 +24,16 @@ $hydrogen-blue-dark: #005792;
 $hydrogen-blue-highlight: #54adff4d;
 
 $math: #DB4125;
-$math-hl: #FBEBE8;
+$math-hl: lighten($math, 40%);
 
-$ela: #ECA14D;
-$ela-hl: #FDF5EC;
+$ela: #df8c2d;
+$ela-hl: lighten($ela, 37%);
 
 $extra: #F4F0D9;
 $highlight: #ffe5526a;
 
-$science: #B798E8;
-$science-hl: #f7f4fc;
+$science: #9e71e8;
+$science-hl: lighten($science, 27%);
 
 $social-studies: #633A9A;
-$social-studies-hl: #EFEAF4;
+$social-studies-hl: lighten($social-studies, 48%);
