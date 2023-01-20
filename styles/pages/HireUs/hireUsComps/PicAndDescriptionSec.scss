@@ -259,6 +259,37 @@
   }
 }
 
+
+.scientist{
+  @media(min-width: 768px){
+    > section:first-child{
+      margin-top: 20px !important;
+      > span{
+        line-height: 24px !important;
+        font-size: 20px !important;
+      }
+    }
+    height: 230px !important;
+    > section:last-child {
+      > div{
+        width: 200px !important;
+        border-radius:  0px !important;
+        height: 200px !important;
+        position: relative !important;
+        > span{
+          transform: translate(-50%, -50%) !important;
+          top: 50% !important; 
+          left: 50% !important;
+          width: 175px !important;
+          height: 175px !important;
+        }
+      }
+    }
+  }
+}
+
 .scientist:not(:first-child) {
-  margin-top: 35px !important;
+  @media(max-width: 767px){
+    margin-top: 35px !important;
+  }
 }

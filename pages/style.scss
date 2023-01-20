@@ -60,6 +60,14 @@ img {
   font-size: 33px;
 }
 
+
+
+.fs-md-larger{
+  @media(min-width: 768px){
+    font-size: 33px !important;
+  }
+}
+
 .fs-large {
   font-size: 28px;
 }

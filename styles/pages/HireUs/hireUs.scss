@@ -378,11 +378,6 @@ $carouselTitleFtWeightDesktop: 800 !important;
   background-color: $hireUsPgMainCardColor;
   max-width: 1440px !important;
 
-  @media (min-width: 768px) {
-    * {
-      // color: black !important;
-    }
-  }
   @media (max-width: 767px) {
     transform: translateY(-40px) !important;
   }
@@ -795,5 +790,25 @@ $carouselTitleFtWeightDesktop: 800 !important;
   text-align: right;
 }
 
-.tierHeaderTag {
+.scientistHeadingTxt{
+  font-style: italic !important;
+  @media(min-width:768px){
+    font-size: 38px !important;
+  }
+
+  @media(max-width: 767px){
+    font-size: 28px !important;
+  }
+}
+
+.scientistSec{
+
+  @media(min-width: 768px){
+    column-count: 2 !important;
+    width: 100% !important;
+  }
+
+  @media(max-width: 767px){
+    width: 75% !important;
+  }
 }

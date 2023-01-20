@@ -48,6 +48,7 @@ import ShareYourKnowledge from '../components/HireUsComps/sections/ShareYourKnow
 import ClientFundingSec from '../components/HireUsComps/sections/ClientFundingSec';
 import WhenShouldIReachOutSec from '../components/HireUsComps/sections/WhenShouldIReachOutSec';
 import WhoMakesTheLessonsSec from '../components/HireUsComps/sections/WhoMakesTheLessonsSec';
+import ScientistSection from '../components/HireUsComps/sections/ScientistSection';
 
 
 const HireUsPage = () => {
@@ -190,31 +191,7 @@ const HireUsPage = () => {
                                             isCardOnly
                                         />
                                     </section>
-                                    <section className="d-md-none">
-                                        <section className="w-100 d-flex justify-content-center align-items-center mt-5 mb-5">
-                                            <h5 className="fs-large fw200 fst-italic text-dark text-center text-sm-start w-75">
-                                                Some of the many talented scientists, communicators, educators, and artists we work with:
-                                            </h5>
-                                        </section>
-                                    </section>
-                                    <section className="d-md-none d-flex justify-content-center align-items-center">
-                                        <section className="d-flex flex-column justify-content-center w-75">
-                                            {scientists.map((scientist, index) => {
-                                                const { alt, src, name, description } = scientist;
-
-                                                return (
-                                                    <PicAndDescriptionSec
-                                                        key={index}
-                                                        imgPath={src}
-                                                        text={description}
-                                                        name={name}
-                                                        alt={alt}
-                                                        parentSecStyles="secWithHumanPic scientist"
-                                                    />
-                                                )
-                                            })}
-                                        </section>
-                                    </section>
+                                    <ScientistSection />
                                     <section className="d-flex d-md-none mt-5">
                                         <CardContainer
                                             userInputs={grantReviewersFeedback}

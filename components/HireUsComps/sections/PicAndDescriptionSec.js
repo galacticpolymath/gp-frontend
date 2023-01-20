@@ -14,7 +14,7 @@
 
 import Image from 'next/image';
 
-const PicAndImageSec = ({ text, imgPath, link, name, parentSecStyles }) => {
+const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles }) => {
 
     return (
         <section className={`${parentSecStyles ?? ""} picAndDescriptionSec`}>
@@ -38,7 +38,7 @@ const PicAndImageSec = ({ text, imgPath, link, name, parentSecStyles }) => {
                 </section>
             }
             {link &&
-                <section className="">
+                <section>
                     <div className="imgSquareContainer position-relative borderThicker">
                         <Image src={imgPath} layout='fill' alt="Galactic_PolyMath_HireUs_Img" />
                     </div>
@@ -48,4 +48,4 @@ const PicAndImageSec = ({ text, imgPath, link, name, parentSecStyles }) => {
     )
 }
 
-export default PicAndImageSec;
+export default PicAndDescriptionSec;
