@@ -9,6 +9,7 @@ const Acknowledgments = ({
     <CollapsibleLessonSection
       SectionTitle={`${index}. ${SectionTitle}`}
       initiallyExpanded
+      accordionId={SectionTitle}
     >
       <div className='container mx-auto my-4'>
         {Data.map(({ role, def, records = [] }, i) => (
