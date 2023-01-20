@@ -182,11 +182,11 @@ const HireUsPage = () => {
                                         <CardContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
                                     </section>
                                     <WhoMakesTheLessonsSec />
-                                    <section className="d-flex d-md-none mt-8">
+                                    <section className="d-flex mt-8">
                                         <CardContainer
                                             headingTxt="Dynamic teams translate any body of knowledge"
                                             dynamicCssClasses=' dynamicTeamsSec'
-                                            headerContainerClassNamesDynamic="ps-sm-5 ps-1 pe-1 pe-sm-0"
+                                            headerContainerClassNamesDynamic="ps-sm-5 ps-md-0 ps-1 pe-1 pe-sm-0 mb-md-4"
                                             isCardOnly
                                         />
                                     </section>

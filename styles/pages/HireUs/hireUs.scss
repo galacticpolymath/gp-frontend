@@ -14,6 +14,7 @@ $borderColorImgAndCard: #707070;
 $hireUsPgMainCardColor: #fff8f8;
 $sectionDarkBg: #2e0b1b;
 $desktopFontSize: 22px !important;
+$carouselTitleFtWeightDesktop: 800 !important; 
 
 .humanDescriptionTxt {
   line-height: 33px;
@@ -178,7 +179,7 @@ $desktopFontSize: 22px !important;
   border-radius: $borderRadiusModal;
   width: 260px !important;
   height: 85px !important;
-  border: solid 1px rgb(255, 255, 255);
+  border: solid 1px rgb(255, 255, 255) !important;;
 
   @media (max-width: 767px) {
     width: 250px !important;

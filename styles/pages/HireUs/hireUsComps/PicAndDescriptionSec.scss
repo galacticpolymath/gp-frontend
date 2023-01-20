@@ -58,6 +58,17 @@
   }
 }
 
+.ownerSection{
+  > section {
+    > div {
+      @media(max-width: 767px){
+        width: 190px !important;
+        height: 190px !important;
+      }
+    }
+  }
+}
+
 .GPConstellationSec {
   @media (min-width: 576px) {
     flex-direction: row !important;
@@ -95,7 +106,7 @@
 }
 
 .ownerSection {
-  padding-bottom: 50px;
+  padding-bottom: 75px;
 
   @media(min-width: 768px){
     > section:first-child{
@@ -149,6 +160,22 @@
     }
   }
 
+  @media(max-width: 767px){
+    span{
+      text-decoration: underline !important;
+      text-decoration-thickness: 1.5px !important;
+    }
+  }
+
+  @media(max-width: 767px) and (min-width: 576px){
+    padding-left: 30px !important;
+    > section:last-child{
+      > div{
+        width: 120px !important;
+        height: 120px !important;
+      }
+    }
+  }
   @media (max-width: 575px) {
     display: flex !important;
     flex-direction: column-reverse !important;
@@ -164,9 +191,16 @@
       span {
         display: block !important;
         text-align: center !important;
-        padding-left: 5px !important;
-        padding-right: 5px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
       }
+    }
+
+    span{
+      text-decoration: underline !important;
+      text-decoration-thickness: 1.5px !important;
+      // padding-left: 8px !important;
+      // padding-right: 8px !important;
     }
   }
 }

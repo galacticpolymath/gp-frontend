@@ -25,14 +25,22 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { BsCircle, BsCircleFill, BsFillPauseCircleFill, BsFillPlayCircleFill } from "react-icons/bs";
 import Image from 'next/image'
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
-import Button from 'react-bootstrap/Button';
 import { Parallax } from 'react-parallax';
 
-const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly, dynamicCssClasses }) => {
+const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly, dynamicCssClasses, customCardStyles }) => {
     const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
-    cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 pt-1 pb-4 pe-2 fw245') : cardStyles
+    cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 fw245') : cardStyles
+
+    if(customCardStyles){
+        cardStyles += ' ' + customCardStyles
+    }
+
+    if(!customCardStyles){
+        cardStyles += ' ' + "pt-1 pb-4 pe-2"
+    }
+
     const timeoutRef = useRef(null);
     const [index, setIndex] = useState(0);
     const [isCarouselPaused, setIsCarouselPaused] = useState(false);
