@@ -105,6 +105,29 @@
   }
 }
 
+
+.GPConstellationSec.onDesktop{
+
+  @media(min-width: 768px){
+    > section:last-child{
+      div{
+        width: 550px !important;
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    > section:first-child{
+      display: none !important;
+    }
+    > section:last-child{
+      > div{
+        height: 275px !important;
+      }
+    }
+  }
+}
+
 .ownerSection {
   padding-bottom: 75px;
 

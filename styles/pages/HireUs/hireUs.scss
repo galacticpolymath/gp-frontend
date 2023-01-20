@@ -388,27 +388,6 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 }
 
-.GPConstellationSec.onDesktop{
-
-  @media(min-width: 768px){
-    > section:last-child{
-      div{
-        width: 607px !important;
-      }
-    }
-  }
-
-  @media (min-width: 768px) {
-    > section:first-child{
-      display: none !important;
-    }
-    > section:last-child{
-      > div{
-        height: 275px !important;
-      }
-    }
-  }
-}
 
 
 .introTxtShareYourKnowledge{

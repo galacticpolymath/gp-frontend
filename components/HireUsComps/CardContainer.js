@@ -176,7 +176,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                     (num === index) ? <BsCircleFill className="text-dark ms-1" /> : <BsCircle className="text-dark ms-1" onClick={() => { handleBulletPtClick(num) }} />
                                                 ))}
                                             </section>
-                                            <section className="d-flex justify-content-center align-items-center mt-3">
+                                            <section className="d-flex justify-content-center align-items-center mt-3 mt-md-2">
                                                 <button className="noBtnStyles" onClick={handlePausePlayBtnClick}>
                                                     {isCarouselPaused ? <BsFillPlayCircleFill className="fs-larger" /> : <BsFillPauseCircleFill className="fs-larger" />}
                                                 </button>
