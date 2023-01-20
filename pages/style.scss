@@ -68,8 +68,26 @@ img {
 .bg-science {
   background-color: $science;
 }
+.bg-science-light {
+  background-color: $science-hl;
+}
 .bg-math {
   background-color: $math;
+}
+.bg-math-light {
+  background-color: $math-hl;
+}
+.bg-ela {
+  background-color: $ela;
+}
+.bg-ela-light {
+  background-color: $ela-hl;
+}
+.bg-socialstudies {
+  background-color: $social-studies;
+}
+.bg-socialstudies-light {
+  background-color: $social-studies-hl;
 }
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
 

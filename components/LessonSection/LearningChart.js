@@ -21,7 +21,7 @@ const LearningChart = ({
         buttonClassName='w-100 text-start my-3'
         button={(
           <div className='d-flex justify-content-between align-items-center'>
-            <div className='fs-5'>{Title}</div>
+            <h3 className='fs-5 mb-0'>{Title}</h3>
             <i className="fs-4 bi-chevron-down"></i>
             <i className="fs-4 bi-chevron-up"></i>
           </div>
