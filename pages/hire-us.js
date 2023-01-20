@@ -192,12 +192,13 @@ const HireUsPage = () => {
                                         />
                                     </section>
                                     <ScientistSection />
-                                    <section className="d-flex d-md-none mt-5">
+                                    <section className="d-flex mt-5">
                                         <CardContainer
                                             userInputs={grantReviewersFeedback}
                                             headingTxt="Grant Reviewer Feedback"
                                             backgroundImgSrc={GrantReviewerFeedbackBackground.src}
                                             headerContainerClassNamesDynamic="cardHeadingSec"
+                                            customCardStyles='granterReviewsCard'
                                         />
                                     </section>
                                     {/* ps-sm-5 pe-sm-5 */}

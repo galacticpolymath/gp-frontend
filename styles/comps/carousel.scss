@@ -36,7 +36,7 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .picsCardContainercardOnlyStyles {
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     margin-top: 25px !important;
     width: 95% !important;
   }
@@ -120,16 +120,13 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-
-
 .defaultHeadingCarouselStyles {
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     font-weight: 400 !important;
     font-size: 48px !important;
   }
-  
-  
-  @media(max-width: 767px){
+
+  @media (max-width: 767px) {
     font-weight: 800 !important;
   }
 
@@ -141,11 +138,11 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .ourClientsFundingSourcesHeadingTxt {
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     font-weight: 149 !important;
   }
 
-  @media(max-width: 767px){
+  @media (max-width: 767px) {
     font-weight: 240 !important;
   }
 }
@@ -153,12 +150,11 @@ $carouselBackgroundColor: #ffeded;
 .cardHeadingSec {
   height: 100px !important;
 
-  @media(min-width: 768px){
-    > h2{
+  @media (min-width: 768px) {
+    > h2 {
       font-weight: 800 !important;
       font-size: 44px !important;
     }
-    
   }
 
   @media (max-width: 767px) {
@@ -279,7 +275,7 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .carouselImgContainer {
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     width: 150px;
     height: 150px;
   }
@@ -295,8 +291,8 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.carouselImgContainer:not(:first-child){
-  @media(min-width: 768px){
+.carouselImgContainer:not(:first-child) {
+  @media (min-width: 768px) {
     margin-left: 85px !important;
   }
 }
@@ -312,5 +308,32 @@ $carouselBackgroundColor: #ffeded;
 .carouselImgContainer:not(:first-child) {
   @media (max-width: 575px) {
     margin-top: 30px !important;
+  }
+}
+
+.granterReviewsCard {
+  @media(min-width: 768px){
+    height: 330px !important;
+  }
+
+  > div {
+    > div {
+      div {
+        @media (min-width: 768px) {
+          > section{
+            > section:first-child {
+              width: 100%;
+              span{
+                text-align: center !important;
+              }
+            }
+          }
+          width: 100% !important;
+          span {
+            width: 100% !important;
+          }
+        }
+      }
+    }
   }
 }
