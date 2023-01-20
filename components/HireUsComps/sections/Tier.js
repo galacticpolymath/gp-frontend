@@ -52,7 +52,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
 
     return (
         // ps-sm-3 pe-sm-3
-        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2 pt-md-1 ps-md-5 pe-md-5'} mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0`}>
+        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2 pt-md-1 ps-md-5 pe-md-5'} mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
                     <Img src={img} alt={`${tierName}_img`} className="w-25 tierImg" height={120} />
@@ -61,13 +61,13 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                     <h4 className="text-dark tierHeaderTag mt-2 fw450 fs-larger text-center text-sm-start">{tierName.toUpperCase()}</h4>
                 </section>
             </Header>
-            <Body className={`${isNoBackground ? 'noBackground' : 'tierCardBodyAndHeader'} noBorder pt-0`}>
+            <Body className={`${isNoBackground ? 'noBackground' : 'tierCardBodyAndHeader'} noBorder pt-0 position-relative tierCardBody`}>
                 <section className="tierParagraphSec">
                     <p className="text-dark fst-italic fs-large fw200 text-sm-start text-center">{paragraph1}</p>
                     <p className="text-dark fst-italic fs-large fw200 mt-3 text-sm-start text-center">{paragraph2}</p>
                 </section>
                 <section>
-                    <div className="tierProductBorder pt-2 pb-2">
+                    <div className="tierProductBorder pt-2 pb-2 pt-md-3 pb-md-3">
                         <table className="productInfoTable w-100 noBorder">
                             <tbody>
                                 <tr className="tierTableRow">
@@ -98,7 +98,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                     <section className="mt-2">
                         <h4 className="text-dark fst-italic fs-large fw200 text-center text-sm-start">Example Product: </h4>
                     </section>
-                    <section>
+                    <section className="productSec">
                         <div className="imgProductContainer">
                             <Img src={productImg} alt={`${tierName}_ProductImg`} className="w-100 w-sm-90" height={170} />
                         </div>
@@ -109,7 +109,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                         </section>
                     </section>
                 </section>
-                <section className="mt-5 w-100 d-flex justify-content-center align-items-center  justify-content-sm-start align-items-sm-stretch">
+                <section className="mt-5 w-100 d-flex justify-content-center align-items-center  justify-content-sm-start align-items-sm-stretch priceSection">
                     <h4 className="text-dark fst-italic fs-large text-center text-sm-start">
                         <section className="d-none d-sm-flex flex-column">
                             <span>Estimated Price: </span>

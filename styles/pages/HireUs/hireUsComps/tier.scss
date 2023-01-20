@@ -1,10 +1,18 @@
 $backgroundColorTierCard: #ffeded;
 $desktopFontSizeTierCard: 22px !important;
+$desktopFontSizeTierStatus: 24px !important;
 
 .tierCard {
   overflow: hidden;
+}
 
-  @media(min-width: 768px){
+@media (min-width: 768px) {
+  .tierDefaultStyles {
+    height: 1305px !important; 
+  }
+
+  .tierDefaultStyles:nth-last-child(-n + 2) {
+    margin-left: 20px !important;
   }
 }
 
@@ -14,21 +22,27 @@ $desktopFontSizeTierCard: 22px !important;
   }
 }
 
-.tierTableRow{
-    td:last-child{
-        @media(min-width: 768px){
-            font-size: $desktopFontSizeTierCard;
-            white-space: nowrap;
-            padding-left: 0px !important;;
-        }
+.tierTableRow {
+  @media (min-width: 768px) {
+    height: 10px !important;
+    line-height: 27px !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    td:first-child {
+      font-size: $desktopFontSizeTierStatus;
     }
+    td:last-child {
+      font-size: $desktopFontSizeTierCard;
+      white-space: nowrap;
+      padding-left: 10px !important;
+    }
+  }
 }
-
 
 .tierTableRow:not(:first-child) {
   td {
-    @media(max-width: 767px){
-        padding-top: 20px;
+    @media (max-width: 767px) {
+      padding-top: 20px;
     }
   }
 }
@@ -39,30 +53,50 @@ $desktopFontSizeTierCard: 22px !important;
   border-radius: $borderRadiusModal;
 }
 
+.tierCardBody {
+}
+
 .tierProductBorder {
   border-top: solid 1px lightgray;
   border-bottom: solid 1px lightgray;
 }
 
 .tierInfoStatus {
-@media(min-width:768px){
-    white-space: nowrap;;
-}
+  @media (min-width: 768px) {
+    white-space: nowrap;
+  }
   text-align: right;
 }
 
 .productInfoTable {
-    * {
-      color: #000000;
-    }
+  * {
+    color: #000000;
+  }
 }
 
-.tierParagraphSec{
-    @media(min-width: 768px){
-        p{
-            line-height: 35px !important;
-            font-size: $desktopFontSizeTierCard;
-            font-weight: 249 !important;
-        }
+.tierParagraphSec {
+  @media (min-width: 768px) {
+    p {
+      line-height: 27px !important;
+      font-size: $desktopFontSizeTierCard;
+      font-weight: 249 !important;
     }
+  }
+}
+
+.productSec {
+  @media (min-width: 768px) {
+    section {
+      a {
+        line-height: normal;
+      }
+    }
+  }
+}
+
+.priceSection {
+  @media (min-width: 768px) {
+    position: absolute !important;
+    bottom: 10px !important;
+  }
 }
