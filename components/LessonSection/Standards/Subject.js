@@ -22,9 +22,10 @@ const Subject = ({
       )}
     >
       <>
-        {sets[0].dimensions.map(({ name, standardsGroup },i) => (
+        {sets[0].dimensions.map(({ name }, i) => (
           <div className={`bg-${subjectSlug}-light p-2`} key={i}>
             <p className='mb-1'><strong>Dimension:</strong> {name}</p>
+            {/* TODO */}
             {/* {standardsGroup.map((group, i) => (
             <StandardsGroup key={i} {...group} />
           ))} */}
