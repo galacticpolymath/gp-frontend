@@ -1,8 +1,12 @@
+import PropTypes from 'prop-types';
+
 import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 
+import Subject from './Subject';
+
 const Standards = ({
-  // Data,
+  Data,
   LearningObj,
 }) => {
   return (
@@ -13,7 +17,7 @@ const Standards = ({
         buttonClassName='w-100 text-start mb-2'
         button={(
           <div className='d-flex justify-content-between align-items-center'>
-            <div className='fs-5'>Learning Objectives</div>
+            <h3 className='fs-5 mb-0'>Learning Objectives</h3>
             <i className="fs-4 bi-chevron-down"></i>
             <i className="fs-4 bi-chevron-up"></i>
           </div>
@@ -28,7 +32,7 @@ const Standards = ({
         buttonClassName='w-100 text-start mb-2'
         button={(
           <div className='d-flex justify-content-between align-items-center'>
-            <div className='fs-5'>Alignment Details</div>
+            <h3 className='fs-5 mb-0'>Alignment Details</h3>
             <i className="fs-4 bi-chevron-down"></i>
             <i className="fs-4 bi-chevron-up"></i>
           </div>
@@ -39,28 +43,39 @@ const Standards = ({
             <i className="bi-cursor" /> Click on any standard for details on how the lesson aligns to it.
           </div>
 
-          <div className='fs-5 fw-bold mt-2'>Target Standard(s)</div>
-          <div className="StandardsExpl">
+          <h4 className='fs-5 fw-bold mt-4'>Target Standard(s)</h4>
+          <div className="mb-3">
             Skills and concepts directly taught or reinforced by this lesson
           </div>
-          {/* {Data.filter(({ target }) => target).map((subject, i) => (
-          <Subject
-            initiallyExpanded
-            key={`target-${i}`}
-            {...subject}
-          />
-        ))} */}
-          <div className='fs-5 fw-bold mt-2'>Connected Standard(s)</div>
-          <div className="StandardsExpl">
+          {Data.filter(({ target }) => target).map((subject, i) => (
+            <Subject
+              initiallyExpanded
+              key={`target-${i}`}
+              accordionId={`target-${i}`}
+              {...subject}
+            />
+          ))}
+          
+          <h4 className='fs-5 fw-bold mt-4'>Connected Standard(s)</h4>
+          <div className="my-3">
             Skills and concepts reviewed or hinted at in this lesson (for building upon)
           </div>
-          {/* {Data.filter(({ target }) => !target).map((subject, i) => (
-          <Subject key={`connected-${i}`} {...subject} />
-        ))} */}
+          {Data.filter(({ target }) => !target).map((subject, i) => (
+            <Subject 
+              key={`connected-${i}`}
+              accordionId={`connected-${i}`}
+              {...subject}
+            />
+          ))}
         </>
       </Accordion>
     </div>
   );
+};
+
+Standards.propTypes = {
+  Data: PropTypes.array,
+  LearningObj: PropTypes.string,
 };
 
 export default Standards;

@@ -1,4 +1,5 @@
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
+import RichText from '../RichText';
 
 const Acknowledgments = ({
   index,
@@ -9,15 +10,16 @@ const Acknowledgments = ({
     <CollapsibleLessonSection
       SectionTitle={`${index}. ${SectionTitle}`}
       initiallyExpanded
+      accordionId={SectionTitle}
     >
       <div className='container mx-auto my-4'>
         {Data.map(({ role, def, records = [] }, i) => (
-          <div className="role" key={i}>
+          <div key={i} className='mb-3'>
             <h4>{role}</h4>
-            <p>{def}</p>
+            <RichText content={def} />
             {records.map(({ name, url, title, affiliation, location }) => (
-              <div className="record" key={name}>
-                <h5 className='mt-3'>
+              <div key={name}>
+                <h5 className='mt-3 fw-normal fs-5'>
                   <a
                     href={url}
                     rel="noopener noreferrer"
@@ -26,7 +28,7 @@ const Acknowledgments = ({
                     {name}
                   </a>
                 </h5>
-                <h6>{title}</h6>
+                <h6 className='fs-6'>{title}</h6>
                 {affiliation && <div>{affiliation}</div>}
                 <div>{location}</div>
               </div>

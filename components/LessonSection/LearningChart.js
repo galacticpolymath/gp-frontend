@@ -10,14 +10,18 @@ const LearningChart = ({
   return (
     <div className='container pt-4'>
       {/* TODO: alt text */}
-      <img alt="Learning Standards Chart" src={Badge.url} />
+      <img
+        alt="Learning Standards Chart"
+        src={Badge.url}
+        className="border"
+      />
 
       <Accordion
         id="learningChart"
         buttonClassName='w-100 text-start my-3'
         button={(
           <div className='d-flex justify-content-between align-items-center'>
-            <div className='fs-5'>{Title}</div>
+            <h3 className='fs-5 mb-0'>{Title}</h3>
             <i className="fs-4 bi-chevron-down"></i>
             <i className="fs-4 bi-chevron-up"></i>
           </div>

@@ -7,7 +7,10 @@ const Versions = ({
   Data = [],
 }) => {
   return Data && (
-    <CollapsibleLessonSection SectionTitle={`${index}. ${SectionTitle}`}>
+    <CollapsibleLessonSection
+      accordionId={SectionTitle}
+      SectionTitle={`${index}. ${SectionTitle}`}
+    >
       <div className='container mx-auto my-4'>
         {Data.map(({ major_release, sub_releases = [] }, i) => (
           <div key={i}>
