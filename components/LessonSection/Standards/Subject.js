@@ -21,19 +21,22 @@ const Subject = ({
         </h5>
       )}
     >
-      {sets[0].dimensions.map(({ name, standardsGroup },i) => (
-        <div className={`bg-${subjectSlug}-light p-2`} key={i}>
-          <p className='mb-1'><strong>Dimension:</strong> {name}</p>
-          {/* {standardsGroup.map((group, i) => (
+      <>
+        {sets[0].dimensions.map(({ name, standardsGroup },i) => (
+          <div className={`bg-${subjectSlug}-light p-2`} key={i}>
+            <p className='mb-1'><strong>Dimension:</strong> {name}</p>
+            {/* {standardsGroup.map((group, i) => (
             <StandardsGroup key={i} {...group} />
           ))} */}
-        </div>
-      ))}
+          </div>
+        ))}
+      </>
     </Accordion>
   );
 };
 
 Subject.propTypes = {
+  accordionId: PropTypes.string.isRequired,
   sets: PropTypes.array,
   subject: PropTypes.string,
   initiallyExpanded: PropTypes.bool,

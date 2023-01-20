@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 
@@ -71,6 +73,11 @@ const Standards = ({
       </Accordion>
     </div>
   );
+};
+
+Standards.propTypes = {
+  Data: PropTypes.array,
+  LearningObj: PropTypes.string,
 };
 
 export default Standards;

@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
 
@@ -57,6 +57,16 @@ const LessonPart = ({
       </>
     </Accordion>
   );
+};
+
+LessonPart.propTypes = {
+  partNum: PropTypes.number.isRequired,
+  partTitle: PropTypes.string.isRequired,
+  partPreface: PropTypes.string.isRequired,
+  chunks: PropTypes.array.isRequired,
+  resources: PropTypes.shape({
+    parts: PropTypes.array,
+  }),
 };
 
 export default LessonPart;
