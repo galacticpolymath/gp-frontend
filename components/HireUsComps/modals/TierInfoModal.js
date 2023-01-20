@@ -39,7 +39,7 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
     }
 
     return (
-        <Modal show={isModalOn} onHide={handleCloseModal} className="tierInfoModal">
+        <Modal show={isModalOn} onHide={handleCloseModal} contentClassName="tierInfoModal shadow">
             <Header className="tierInfoModalHeader pe-4 border-bottom d-flex flex-column-reverse flex-sm-row pt-4 position-relative">
                 <Title className="fw625 text-center text-sm-start border border-white">{title}</Title>
                 <Image src="/imgs/gp_logo_gradient_transBG.png" alt="Galatic_Polymath_Tier_Info_Modal" width={150} height={150} />
