@@ -1,0 +1,38 @@
+$backgroundColorTierCard: #ffeded;
+
+.tierCard {
+  overflow: hidden;
+}
+
+.tierImg {
+  @media (max-width: 575px) {
+    min-width: 80px !important;
+  }
+}
+
+.tierTableRow:not(:first-child) {
+  td {
+    padding-top: 20px;
+  }
+}
+
+.tierCard,
+.tierCardBodyAndHeader {
+  background-color: $backgroundColorTierCard;
+  border-radius: $borderRadiusModal;
+}
+
+.tierProductBorder {
+  border-top: solid 1px lightgray;
+  border-bottom: solid 1px lightgray;
+}
+
+.tierInfoStatus {
+  text-align: right;
+}
+
+.productInfoTable {
+    * {
+      color: #000000;
+    }
+  }

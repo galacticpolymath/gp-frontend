@@ -3,12 +3,12 @@
 @import "../../comps/carousel.scss";
 @import "../HireUs/hireUsComps/modalStyles/HireUsModalStyles.scss";
 @import "../HireUs/hireUsComps/readyToInspireSec.scss";
+@import "./hireUsComps/tier.scss";
 
 $btnColor: #84469e;
 $btnColorDark: #3e0d55;
 $mobileTxtColor: #96195f;
 $btnColorMobile: #633a9a;
-$backgroundColorTierCard: #ffeded;
 $borderRadiusModal: 1.3em;
 $borderColorImgAndCard: #707070;
 $hireUsPgMainCardColor: #fff8f8;
@@ -417,8 +417,8 @@ $carouselTitleFtWeightDesktop: 800 !important;
     h3 {
       font-size: 42px !important;
       text-align: center !important;
-      padding-left: 5px !important;
-      padding-right: 5px !important;
+      padding-left: 8px !important;
+      padding-right: 8px !important;
     }
   }
 
@@ -741,13 +741,15 @@ $carouselTitleFtWeightDesktop: 800 !important;
     span {
       line-height: 35px;
       width: 100%;
+
+      @media(max-width: 575px){
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+      }
     }
   }
 }
 
-.tierCard {
-  overflow: hidden;
-}
 
 .imgProductContainer {
   width: 75% !important;
@@ -757,38 +759,10 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 }
 
-.tierImg {
-  @media (max-width: 575px) {
-    min-width: 80px !important;
-  }
-}
 
-.tierTableRow:not(:first-child) {
-  td {
-    padding-top: 20px;
-  }
-}
 
-.tierCard,
-.tierCardBodyAndHeader {
-  background-color: $backgroundColorTierCard;
-  border-radius: $borderRadiusModal;
-}
 
-.tierProductBorder {
-  border-top: solid 1px lightgray;
-  border-bottom: solid 1px lightgray;
-}
 
-.productInfoTable {
-  * {
-    color: #000000;
-  }
-}
-
-.tierInfoStatus {
-  text-align: right;
-}
 
 .scientistHeadingTxt{
   font-style: italic !important;
