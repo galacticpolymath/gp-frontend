@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
+import StandardsGroup from './StandardsGroup';
 
 const Subject = ({
   accordionId,
@@ -22,13 +23,12 @@ const Subject = ({
       )}
     >
       <>
-        {sets[0].dimensions.map(({ name }, i) => (
+        {sets[0].dimensions.map(({ name, standardsGroup }, i) => (
           <div className={`bg-${subjectSlug}-light p-2`} key={i}>
             <p className='mb-1'><strong>Dimension:</strong> {name}</p>
-            {/* TODO */}
-            {/* {standardsGroup.map((group, i) => (
-            <StandardsGroup key={i} {...group} />
-          ))} */}
+            {standardsGroup.map((group, i) => (
+              <StandardsGroup key={i} {...group} />
+            ))}
           </div>
         ))}
       </>
