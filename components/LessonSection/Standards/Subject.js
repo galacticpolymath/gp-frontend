@@ -15,7 +15,7 @@ const Subject = ({
       initiallyExpanded={initiallyExpanded}
       buttonClassName={`w-100 border-0 text-start bg-${subjectSlug} text-white`}
       button={(
-        <h5 className='fs-6 mb-0 p-2 d-flex justify-content-between align-items-center'>
+        <h5 className='mb-0 p-2 d-flex justify-content-between align-items-center'>
           {subject} - {sets[0].name}
           <i className="fs-5 bi-chevron-down "></i>
           <i className="fs-5 bi-chevron-up"></i>
@@ -25,9 +25,13 @@ const Subject = ({
       <>
         {sets[0].dimensions.map(({ name, standardsGroup }, i) => (
           <div className={`bg-${subjectSlug}-light p-2`} key={i}>
-            <p className='mb-1'><strong>Dimension:</strong> {name}</p>
+            <p className='mb-1 p-1'><strong>Dimension:</strong> {name}</p>
             {standardsGroup.map((group, i) => (
-              <StandardsGroup key={i} {...group} />
+              <StandardsGroup
+                id={`${subjectSlug}-${i}`}
+                key={i}
+                {...group}
+              />
             ))}
           </div>
         ))}

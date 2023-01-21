@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 
@@ -19,26 +19,51 @@ export const formatAlignmentNotes = (text) => {
   return text.replace(/•/g, '-').replace(/\^2/g, '²');
 };
 
-const StandardsGroup = ({ codes, grades, alignmentNotes, statements }) => {
+const StandardsGroup = ({ 
+  id,
+  codes,
+  grades,
+  alignmentNotes,
+  statements,
+}) => {
   return (
-    <Accordion
-      button={(
-        <div>
-          <p>{formatGrades(grades)}</p>
-          {[].concat(codes).map((code, i) => (
-            <p key={i}>
-              <strong>{code}:</strong> {[].concat(statements)[i]}
-            </p>
-          ))}
+    <div className='border-bottom border-gray'>
+      <Accordion
+        id={id}
+        buttonClassName='w-100 text-start bg-white border-0 p-3 pb-1'
+        button={(
+          <div>
+            <h6 className='text-muted mb-2 w-100 d-flex justify-content-between'>
+              {formatGrades(grades)}
+              <i className="fs-5 bi-chevron-down"></i>
+              <i className="fs-5 bi-chevron-up"></i>
+            </h6>
+            {[].concat(codes).map((code, i) => (
+              <p className='mb-0' key={i}>
+                <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
+                <div className='text-muted text-center'>
+                  <i className="bi bi-three-dots"></i>
+                </div>
+              </p>
+            ))}
+          </div>
+        )}
+      >
+        <div className='p-3 ps-4 pb-1 bg-light-gray'>
+          <h6>How does the lesson align to this standard?</h6>
+          <RichText content={formatAlignmentNotes(alignmentNotes)} />
         </div>
-      )}
-    >
-      <>
-        <h6>How does the lesson align to this standard?</h6>
-        <RichText content={formatAlignmentNotes(alignmentNotes)} />
-      </>
-    </Accordion>
+      </Accordion>
+    </div>
   );
+};
+
+StandardsGroup.propTypes = {
+  id: PropTypes.string.isRequired,
+  grades: PropTypes.array,
+  codes: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  statements: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  alignmentNotes: PropTypes.string,
 };
 
 export default StandardsGroup;

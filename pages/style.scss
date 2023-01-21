@@ -116,7 +116,13 @@ img {
   &.collapsed .bi-chevron-up {
     display: none;
   }
-  &:not(.collapsed) .bi-chevron-down {
-    display: none;
+  &:not(.collapsed) {
+    .bi-chevron-down {
+      display: none;
+    }
+    .bi-three-dots {
+      opacity: 0;
+      margin-bottom: -1rem;
+    }
   }
 }
