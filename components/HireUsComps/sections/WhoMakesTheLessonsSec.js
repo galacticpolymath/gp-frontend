@@ -37,7 +37,7 @@ const WhoMakesTheLessonsSec = () => {
                 <span className="text-dark fs-large text-center text-md-start ps-1 pe-1 fst-italic fw249 d-inline d-sm-none d-md-inline">The GP Team is led by our founder, Matt Wilkins, PhD.</span>
             </section>
             <section className="d-flex flex-column flex-md-row mattsAwardParentSec">
-                <section className="mt-5 d-block d-md-none">
+                <section className="mt-4 mb-4 mt-sm-5 mt-md-5 d-block d-md-none">
                     <PicAndDescriptionSec
                         text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
                         imgPath="/imgs/matt_wilkins_profile3_xs.jpg"

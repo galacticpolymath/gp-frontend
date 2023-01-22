@@ -10,6 +10,10 @@
   }
 
   > section:first-child{
+    @media(max-width: 575px){
+      margin-top: 17px !important;
+    }
+
     > span{
       @media(min-width: 768px){
         line-height: 28px;
@@ -129,7 +133,6 @@
 }
 
 .ownerSection {
-  padding-bottom: 75px;
 
   @media(min-width: 768px){
     > section:first-child{
@@ -138,12 +141,14 @@
   }
   
   @media (min-width: 576px) {
+    padding-bottom: 75px;
     > section:first-child {
       margin-left: 20px !important;
     }
   }
 
   @media (max-width: 575px) {
+    padding-bottom: 50px;
     > section:first-child {
       padding-left: 8px !important;
       padding-right: 8px !important;

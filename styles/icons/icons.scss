@@ -11,6 +11,7 @@
   @media (max-width: 767px) {
     width: 73px;
     height: 73px;
+    // transform: translateX(-10px);
   }
 
   @media(min-width: 576px) and (max-width: 767px){
@@ -19,8 +20,9 @@
   }
 
   @media(max-width: 575px){
-    width: 48px !important;
-    height: 48px !important;
+    width: 40px !important;
+    height: 40px !important;
+
   }
 }
 

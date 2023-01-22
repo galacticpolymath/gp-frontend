@@ -18,9 +18,17 @@ import MessageBoxIcon from '../../svgs/MessageBoxIcon';
 import Button from 'react-bootstrap/Button';
 
 
-const LetsTalkBtnContainer = ({ isBtnColorDarker, isMainBtn, isInReadyToInspireSec, isAbsolute, isNoUnderline }) => {
-    let _className = `${isMainBtn ? "mainBtnLetsTalk" : "letsTalkBtnContainer"} ${isAbsolute ? 'position-absolute' : 'position-relative'} border-white d-flex flex-row-reverse   flex-md-column ${isInReadyToInspireSec ? 'inReadyToInspireSec' : ''} ${isBtnColorDarker ? 'darker-btn-color' : ''}`
-    let btnTxtStyles = 'text-nowrap'
+const LetsTalkBtnContainer = ({isMainBtn, isInReadyToInspireSec, isAbsolute, isNoUnderline, isDarker }) => {
+    let _className = `${isMainBtn ? "mainBtnLetsTalk" : "letsTalkBtnContainer"} ${isAbsolute ? 'position-absolute' : 'position-relative'} border-white d-flex flex-row-reverse  ${isInReadyToInspireSec ? 'inReadyToInspireSec' : ''} defaultStylingLetsTalkBtn ${isDarker ? 'letsTalkDarker' : ''}`
+
+
+
+
+    let btnTxtStyles = 'text-nowrap letsTalkBtnTxt'
+
+    if(isMainBtn){
+        btnTxtStyles += ' mainBtnTxt'
+    }
 
     if(isNoUnderline){
         btnTxtStyles += ' no-underline'

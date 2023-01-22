@@ -101,7 +101,7 @@ const HireUsPage = () => {
                                         </span>
                                     </section>
                                     <section className="ps-0 ps-sm-1 pt-4 pt-sm-5">
-                                        <LetsTalkBtnContainer isMainBtn />
+                                        <LetsTalkBtnContainer isMainBtn isNoUnderline />
                                     </section>
                                 </section>
                             </section>
