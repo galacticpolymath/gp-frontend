@@ -18,6 +18,7 @@
 
   @media(min-width: 768px){
     transform: translateY(-165px);
+
   }
 
   @media (max-width: 767px) {
@@ -35,6 +36,7 @@
       margin-right: 45px !important;
     }
   }
+
 }
 
 
@@ -61,8 +63,6 @@
 
 
 .classRoom2ContentStyles {
-  // width: 100% !important;
-
   @media (min-width: 768px) {
     height: 500px !important;
   }
@@ -73,5 +73,12 @@
 
   > section {
     bottom: 30px !important;
+  }
+}
+
+.readyToInspireTxtsSec{
+  @media(min-width: 768px) {
+    width: 50% !important;
+    padding-left: 100px !important;
   }
 }

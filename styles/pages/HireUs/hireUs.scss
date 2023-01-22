@@ -342,6 +342,9 @@ $carouselTitleFtWeightDesktop: 800 !important;
         text-decoration-thickness: 1px !important;
       }
     }
+    svg{
+      transform: translate(-20px, -3px);
+    }
     height: 85px !important;
   }
 
@@ -839,3 +842,22 @@ $carouselTitleFtWeightDesktop: 800 !important;
     width: 75% !important;
   }
 }
+
+.orderLaCarteSec,
+.readyInspireSec{
+  @media(min-width: 768px){
+    // width: 50% !important;
+    // padding-left: 100px !important;
+
+    span{
+      text-align: start !important;
+      font-size: 40px !important;
+      max-width: 470px !important;
+    }
+  }
+}
+
+.orderLaCarteSec{
+
+}
+
