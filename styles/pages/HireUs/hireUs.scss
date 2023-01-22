@@ -81,6 +81,8 @@ $carouselTitleFtWeightDesktop: 800 !important;
   background-size: cover;
   background-position: 70% center;
   height: auto !important;
+
+  overflow-x: hidden !important;;
 }
 
 .headerSection {
@@ -843,26 +845,5 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 }
 
-.orderLaCarteSec,
-.readyInspireSec{
-  @media(min-width: 768px){
-    // width: 50% !important;
-    // padding-left: 100px !important;
 
-    span{
-      text-align: start !important;
-      font-size: 40px !important;
-      max-width: 470px !important;
-    }
-
-    > span{
-      line-height: 48px !important;
-      height: 123px !important;
-    }
-  }
-}
-
-.orderLaCarteSec{
-
-}
 

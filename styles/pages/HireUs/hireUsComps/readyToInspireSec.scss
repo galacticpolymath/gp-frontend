@@ -82,3 +82,27 @@
     padding-left: 100px !important;
   }
 }
+
+.orderLaCarteSec,
+.readyInspireSec{
+  @media(min-width: 768px){
+    // width: 50% !important;
+    // padding-left: 100px !important;
+
+    span{
+      text-align: start !important;
+      font-size: 40px !important;
+      max-width: 470px !important;
+    }
+
+    > span{
+      line-height: 48px !important;
+      height: 180px !important;
+    }
+  }
+}
+
+.orderLaCarteSec{
+
+}
+
