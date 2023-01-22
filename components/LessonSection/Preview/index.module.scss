@@ -25,10 +25,10 @@
       }
       font-size: 1.6rem;
       &:disabled {
-        opacity: 0.25;
+        background: rgba($galactic-black, .25);
       }
       &:hover {
-        opacity: 0.8;
+        background: rgba($galactic-black, .8);
       }
     }
     :global(ul.control-dots) {

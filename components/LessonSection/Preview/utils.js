@@ -1,3 +1,7 @@
+import Image from 'next/image';
+
+import PdfIcon from '../../../assets/img/pdf.svg';
+
 export const getMediaComponent = ({ type, mainLink }) => {
   if (type === 'video') {
     return (
@@ -38,14 +42,26 @@ const renderThumbs = items => {
   return items.map(({ props: { mainLink, type, title } }, i) => {
     if (type === 'video') {
       return (
-        <img
+        <Image
+          height={3}
+          width={5}
           key={i}
           src={getVideoThumb(mainLink)}
+          layout="responsive"
           alt={title}
         />
       );
     } else if (type === 'pdf') {
-      return <i className="bi-filetype-pdf fs-2"></i>;
+      return (
+        <Image
+          height={3}
+          width={5}
+          key={i}
+          src={PdfIcon}
+          layout="responsive"
+          alt="PDF"
+        />
+      );
     }
   });
 };
@@ -54,21 +70,38 @@ const renderArrowPrev = (clickHandler, hasPrev) => (
   <button
     onClick={clickHandler}
     disabled={!hasPrev}
-    className='btn bg-transparent m-0 p-1'
-  >
-    <i className="fs-1 text-black bi-arrow-left-circle-fill lh-1 d-block"></i>
+  >Prev
   </button>
+  // TODO: pretty arrow button
+  // <IconButton
+  //   key="previous"
+  //   aria-label={label}
+  //   color="primary"
+  //   onClick={clickHandler}
+  //   disabled={!hasPrev}
+  // >
+  //   <PrevIcon />
+  // </IconButton>
 );
 
 const renderArrowNext = (clickHandler, hasNext) => (
   <button
     disabled={!hasNext}
     onClick={clickHandler}
-    className='btn bg-transparent m-0 p-1'
   >
-    <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block"></i>
+    Next
   </button>
 );
+// TODO: pretty arrow button
+// <IconButton
+//   key="next"
+//   aria-label={label}
+//   color="primary"
+//   onClick={clickHandler}
+//   disabled={!hasNext}
+// >
+//   <NextIcon/>
+// </IconButton>
 
 export const customControls = {
   renderThumbs,

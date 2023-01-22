@@ -4,11 +4,10 @@ $enable-cssgrid: true;
 
 $primary: $burst-purple;
 $secondary: $atomic-blue;
-$info: lighten($hydrogen-blue-light, 25%);
+$info: lighten($hydrogen-blue-light, 15%);
 
 @import '../node_modules/bootstrap/scss/bootstrap';
 @import '../node_modules/react-responsive-carousel/lib/styles/carousel.min.css';
-@import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
 
 html,
 body {
@@ -41,17 +40,6 @@ img {
   color: inherit;
 }
 
-// text utilities
-.text-height-0 {
-  line-height: 1;
-}
-.text-height-1 {
-  line-height: 1.5;
-}
-.fs-7 {
-  font-size: 0.75rem;
-}
-
 // background color utilities
 .bg-light-gray {
   background-color: #eee;
@@ -62,7 +50,6 @@ img {
 .bg-math {
   background-color: $math;
 }
-// TODO: what are the other possible TargetSubject values? (see lessons page badges)
 
 // bootstrap overrides
 .btn-light {
@@ -75,21 +62,4 @@ img {
   text-align: left;
 }
 
-.white-divider-lg > :not(:first-child) {
-  border-top: 1px solid $white;
-}
-@media (min-width: 992px) {
-  .white-divider-lg > :not(:first-child) {
-    border-left: 1px solid $white;
-    border-top: 0;
-  }
-}
-
-.accordion-header button {
-  &.collapsed .bi-chevron-up {
-    display: none;
-  }
-  &:not(.collapsed) .bi-chevron-down {
-    display: none;
-  }
-}
+// TODO: what are the other possible TargetSubject values? (see lessons page badges)
