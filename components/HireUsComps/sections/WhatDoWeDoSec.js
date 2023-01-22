@@ -42,9 +42,11 @@ const WhatDoWeDoSec = () => {
                     {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} customCssClass='weMobileKnowledgeSec' />)}
                 </div>
             </section>
-            <div className="d-flex d-lg-none flex-column ps-sm-5 pe-sm-5 ms-4 me-4 ms-sm-5 me-sm-5 whatDoWeDoSec pb-5">
-                {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} index={index} />)}
-            </div>
+            <section className="d-md-flex justify-content-center align-items-center">
+                <div className="d-flex d-lg-none flex-column ps-sm-5 pe-sm-5 ms-4 me-4 ms-sm-5 me-sm-5 whatDoWeDoSec pb-5">
+                    {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} index={index} />)}
+                </div>
+            </section>
         </section>
     )
 }
