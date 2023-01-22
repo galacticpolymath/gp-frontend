@@ -34,8 +34,6 @@ import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south
 import GrantReviewerFeedbackBackground from '../public/imgs/background/5_chaotic_bluish_1.png';
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
-import infoTxtsFirstSec from '../data/HireUsPg/infoTxtsFirstSec.json'
-import whatYouWillGetTxts from '../data/HireUsPg/whatYouWillGetTxts.json'
 import tiersInfoForModal from '../data/HireUsPg/tiersInfoForModal.json'
 import TierInfoModal from '../components/HireUsComps/modals/TierInfoModal'
 import { useState } from 'react';
@@ -46,24 +44,13 @@ import WhenShouldIReachOutSec from '../components/HireUsComps/sections/WhenShoul
 import WhoMakesTheLessonsSec from '../components/HireUsComps/sections/WhoMakesTheLessonsSec';
 import ScientistSection from '../components/HireUsComps/sections/ScientistSection';
 import HowMuchDoesItCostSec from '../components/HireUsComps/sections/HowMuchDoesItCostSec';
+import IntroSecHireUs from '../components/HireUsComps/sections/IntroSecHireUs';
+import WhatDoWeDoSec from '../components/HireUsComps/sections/WhatDoWeDoSec';
+import HowDoesItWorkSec from '../components/HireUsComps/sections/HowDoesItWorkSec';
+import WhatYouWillGetSec from '../components/HireUsComps/sections/WhatYouWillGetSec';
 
 
 const HireUsPage = () => {
-    const cardVideoSec1 = (
-        <video className="border rounded looped-vid-hire-us" autoPlay muted loop>
-            <source src="./videos/client-asset-to-lesson-animation.mp4" type="video/mp4" />
-        </video>
-    );
-    const cardVideoSec2 = <div className="video-styles rounded overflow-hidden">
-        <ReactPlayer
-            url='https://www.youtube.com/watch?v=V0EtA5pbVSY'
-            width='100%'
-            height="100%"
-            light={true}
-            playing
-            controls />
-    </div>
-    const hireUsCardsSectionTexts = [{ text: "1. You give us your outreach goals, along with complex texts, data, and media related to your work: ", mobileTxt: "You give us your outreach goals, along with complex texts, data, and any media you might have related to your work: ", content: cardVideoSec1 }, { text: "2. We create lessons and supporting media that achieve your outreach aims by making your work accessible to teachers around the world. ", mobileTxt: "We create lessons and supporting multimedia that achieve your outreach aims by making your work accessible to teachers around the world.", content: cardVideoSec2 }]
     const [tiersInfoForModalArr, setTiersInfoForModalArr] = useState(tiersInfoForModal.map(tier => ({ ...tier, isModalOn: false })))
 
     return (
@@ -71,103 +58,13 @@ const HireUsPage = () => {
             <Layout description="Galactic PolyMath Hire Us Page." keywords="Hire us, Galactic PolyMath">
                 <div className="w-100 hireUsPg d-flex flex-column justify-content-center align-items-center">
                     <div className="container-fluid noPadding noMargin w-100 hireUsPgWrapper">
-                        <section className='d-flex flex-row parallax row introSecHireUsPg' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
-                            <section className="d-none d-md-flex w-100 noMargin col-12 introSecAndLetTalksSec">
-                                <section className="d-flex flex-column w-100 justify-content-center align-items-center">
-                                    <section className="w-100 ps-5">
-                                        <h1 className={`${styles.shadow} display-1 headingHireUs`}>Easier, Classroom-Ready Outreach</h1>
-                                    </section>
-                                    <section className="w-100 ps-5">
-                                        <span className={`${styles.shadow} display-6 noMargin noPadding w-75 subTxtHeadingDesktop`}>
-                                            We translate your work so that non-experts can teach mind-opening lessons.
-                                        </span>
-                                    </section>
-                                </section>
-                                <section className="d-flex align-items-end justify-content-end letTalksMainBtnSec">
-                                    <LetsTalkBtnContainer isMainBtn />
-                                </section>
-                            </section>
-                            {/* make this into a different component */}
-                            <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
-                                <section className="w-100 d-flex flex-column align-items-center pt-4">
-                                    <section className="headerSection">
-                                        <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Easier,</h1>
-                                        <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Classroom-ready</h1>
-                                        <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Outreach</h1>
-                                    </section>
-                                    <section className="subTxtHeadingContainerHireUsPg w-75 ps-1 mt-4">
-                                        <span className={`${styles.shadow} display-6 noMargin noPadding`}>
-                                            We translate your work so that non-experts can teach mind-opening lessons.
-                                        </span>
-                                    </section>
-                                    <section className="ps-0 ps-sm-1 pt-4 pt-sm-5">
-                                        <LetsTalkBtnContainer isMainBtn isNoUnderline />
-                                    </section>
-                                </section>
-                            </section>
-                        </section>
+                        <IntroSecHireUs />
                         <section className="CardSec d-flex justify-content-center align-items-center flex-column align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
                             <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-5'>
                                 <CardBody className="hireUsPgInfoCardBody">
-                                    <section className="d-flex flex-column">
-                                        <section className="d-flex ps-sm-5 pe-sm-5">
-                                            <h3 className="text-center text-sm-start w-100 text-sm-nowrap">
-                                                What do we do?
-                                            </h3>
-                                        </section>
-                                        <section className="pb-4 mt-3 ps-sm-5 pe-sm-5">
-                                            <span className='d-sm-none bolder text-wrap text-dark text-center w-100 d-block responsiveInfoTxt'>
-                                                We mobilize knowledge
-                                            </span>
-                                            <span className="hireUsCardIntroTxt d-inline-block responsiveInfoTxt text-center text-sm-start ps-3 pe-3 ps-sm-0 pe-sm-1">
-                                                <span className='bolder text-sm-nowrap d-none d-sm-inline-block'>
-                                                    We mobilize knowledge
-                                                </span>
-                                                <span className='ms-2 fwtHireUsCard'>
-                                                    by turning our clients outreach goals into rich, open-access learning experiences.
-                                                </span>
-                                            </span>
-                                        </section>
-                                        <section className="ps-sm-5 pe-sm-5">
-                                            <div className="d-none d-md-flex flex-row whatDoWeDoSec">
-                                                {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} customCssClass='weMobileKnowledgeSec' />)}
-                                            </div>
-                                        </section>
-                                        <div className="d-flex d-md-none flex-column ps-sm-5 pe-sm-5 ms-4 me-4 ms-sm-5 me-sm-5 whatDoWeDoSec pb-5">
-                                            {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} index={index} />)}
-                                        </div>
-                                    </section>
-                                    <section className="d-flex flex-column mt-5 mb-5 howDoesItWorkSec">
-                                        <section className="d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ps-sm-5 pe-sm-5">
-                                            <h3 className="text-center text-sm-start">
-                                                How does it work?
-                                            </h3>
-                                        </section>
-                                        <section className="d-flex flex-column flex-md-row ps-sm-5 pe-sm-5 mt-3">
-                                            {hireUsCardsSectionTexts.map(({ content, text, mobileTxt }, index) => {
-                                                return (
-                                                    <>
-                                                        <HireUsCardSection key={index} text={text} mobileTxt={mobileTxt} content={content} />
-                                                        {(index === 0) && (
-                                                            <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3'>
-                                                                <Image src="/imgs/pretty-down-arrow.png" width={75} height={75} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
-                                                            </section>
-                                                        )}
-                                                    </>
-                                                );
-                                            })}
-                                        </section>
-                                    </section>
-                                    <section>
-                                        <section className="d-flex ps-sm-5 pe-sm-5">
-                                            <h3 className="text-center text-sm-start w-100 text-sm-nowrap">
-                                                What will you get?
-                                            </h3>
-                                        </section>
-                                        <section className="d-flex d-md-block flex-column ps-sm-5 pe-sm-5 flex-md-row pb-5 mt-4 whatYouWillGetSec">
-                                            {whatYouWillGetTxts.map((textsAndImg, index) => <HireUsCardFirstSecMobile isWhatWillYouGetSec={true} key={index} textsAndImg={textsAndImg} index={index} customCssClass='whatWillYouGetSec' />)}
-                                        </section>
-                                    </section>
+                                    <WhatDoWeDoSec />
+                                    <HowDoesItWorkSec />
+                                    <WhatYouWillGetSec />
                                     <section className="d-flex mt-5">
                                         <CardContainer headingTxt="What teachers & students says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0" />
                                     </section>
