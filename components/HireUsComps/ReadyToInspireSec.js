@@ -22,9 +22,9 @@ import ClassRoom2 from '../../public/imgs/classroom2.jpg';
 const ReadyToInspireSec = () => {
     return (
         <section className='readyToInspireParentSec mt-5'>
-            <div className="readyToInspireSec pt-5">
-                <section className="mt-2 d-flex d-md-none">
-                    <Parallax bgImage={ClassRoom2.src} className="img-background-container" contentClassName='classRoom2ContentStyles position-relative' />
+            <div className="readyToInspireSec pt-5 d-md-flex flex-md-row-reverse">
+                <section className="mt-2 d-flex d-md-block readyToInspireImgSec">
+                    <Parallax bgImage={ClassRoom2.src} className="readyToInspireImg" contentClassName='classRoom2ContentStyles position-relative' />
                 </section>
                 <section className="ps-sm-5 mt-5 mt-sm-4 d-flex flex-column d-md-none">
                     <span className="fs-24 d-block fw700 d-none d-sm-inline">Ready to inspire students with</span>

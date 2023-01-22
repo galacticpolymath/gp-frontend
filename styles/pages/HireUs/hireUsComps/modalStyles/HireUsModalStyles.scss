@@ -9,14 +9,16 @@ $modalBorderColor: #707070;
 .tierInfoModal {
   border: solid 1px $modalBorderColor !important;
   min-height: 650px !important;
-  @media(min-width: 768px){
-    // height: 900px !important;
-  }
 
   span{
-    line-height: 22px !important;
-    font-weight: 250 !important;
+    line-height: 28px !important;
+    // font-weight: 250 !important;
   }
+}
+
+.tierInfoBoldTxt{
+  font-weight: 625 !important;
+
 }
 
 .closeButtonTxtColor {

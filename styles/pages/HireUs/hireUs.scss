@@ -294,15 +294,6 @@ $carouselTitleFtWeightDesktop: 800 !important;
   background-color: $btnColorDark !important;
 }
 
-.classRoom2ContentStyles {
-  width: 100% !important;
-  height: 400px !important;
-
-  > section {
-    bottom: 30px !important;
-  }
-}
-
 .introSecHireUsPg {
   @media (min-width: 768px) {
     height: 700px !important;
@@ -377,6 +368,11 @@ $carouselTitleFtWeightDesktop: 800 !important;
   border-radius: $borderRadiusModal;
   background-color: $hireUsPgMainCardColor;
   max-width: 1440px !important;
+
+  @media(min-width: 768px){
+    min-height: 1100px !important;
+    // border: solid pink !important; 
+  }
 
   @media (max-width: 767px) {
     transform: translateY(-40px) !important;

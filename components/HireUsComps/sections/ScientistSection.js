@@ -16,6 +16,7 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
+
 import scientists from '../../../data/HireUsPg/scientists.json'
 import PicAndDescriptionSec from './PicAndDescriptionSec';
 

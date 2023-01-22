@@ -1,3 +1,5 @@
+/* eslint-disable no-debugger */
+/* eslint-disable no-console */
 /* eslint-disable brace-style */
 /* eslint-disable react/jsx-first-prop-new-line */
 /* eslint-disable react/jsx-closing-bracket-location */
@@ -54,9 +56,10 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                                 <section className="d-flex flex-column ps-4 mt-3">
                                     {texts.slice(1, 5).map((text, index) => {
                                         const { normalTxt, boldTxt } = text;
+                                        console.log("boldTxt: " + boldTxt);
                                         return (
                                             <span className={`${index !== 0 ? 'mt-3' : ''} fs-med fw300`} key={index}>
-                                                {boldTxt ? <span className="fw-bolder fw625">{boldTxt}</span> : null}
+                                                {boldTxt ? <span className="fw-bolder fw625 tierInfoBoldTxt">{boldTxt}</span> : null}
                                                 {normalTxt}
                                             </span>
                                         )

@@ -29,18 +29,14 @@ import CardContainer from '../components/HireUsComps/CardContainer';
 import teacherTestimonies from '../data/HireUsPg/teacherTestimonies.json'
 import grantReviewersFeedback from '../data/HireUsPg/grantReviewersFeedback.json'
 import feedbackOfClients from '../data/HireUsPg/feedbackOfClients.json'
-import PicAndDescriptionSec from '../components/HireUsComps/sections/PicAndDescriptionSec';
 import WhatTeachersSaysBackground from '../public/imgs/background/2_southeast_purplish_1.png';
 import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
 import GrantReviewerFeedbackBackground from '../public/imgs/background/5_chaotic_bluish_1.png';
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
-import scientists from '../data/HireUsPg/scientists.json'
 import infoTxtsFirstSec from '../data/HireUsPg/infoTxtsFirstSec.json'
 import whatYouWillGetTxts from '../data/HireUsPg/whatYouWillGetTxts.json'
-import tiers from '../data/HireUsPg/tiers.json'
 import tiersInfoForModal from '../data/HireUsPg/tiersInfoForModal.json'
-import Tier from '../components/HireUsComps/sections/Tier';
 import TierInfoModal from '../components/HireUsComps/modals/TierInfoModal'
 import { useState } from 'react';
 import ReadyToInspireSec from '../components/HireUsComps/ReadyToInspireSec';
@@ -49,6 +45,7 @@ import ClientFundingSec from '../components/HireUsComps/sections/ClientFundingSe
 import WhenShouldIReachOutSec from '../components/HireUsComps/sections/WhenShouldIReachOutSec';
 import WhoMakesTheLessonsSec from '../components/HireUsComps/sections/WhoMakesTheLessonsSec';
 import ScientistSection from '../components/HireUsComps/sections/ScientistSection';
+import HowMuchDoesItCostSec from '../components/HireUsComps/sections/HowMuchDoesItCostSec';
 
 
 const HireUsPage = () => {
@@ -202,31 +199,7 @@ const HireUsPage = () => {
                                             itemCarouselStylesCustom='grantReviewItemCarousel'
                                         />
                                     </section>
-                                    <section className="howMuchDoesItCostSec mt-4">
-                                        <section className="ps-sm-5 pe-sm-5">
-                                            <h3 className="display-1 noMargin">How much does it cost?</h3>
-                                            {/* <h3 className="display-1 noMargin">cost?</h3> */}
-                                        </section>
-                                        <section className="w-100 d-flex justify-content-start align-items-center flex-row flex-md-column mt-4 mb-5 ps-1 pe-1 ps-sm-5 pe-sm-5">
-                                            <span className="fs-large fw200 fst-italic text-dark text-center text-sm-start ps-1 ps-sm-0 pe-1 pe-sm-0">
-                                                We offer three standard packages, which we’re happy to customize to meet your specific needs.
-                                                <span className="d-md-none ms-1">Here are three standard options to use as a starting point.</span>
-                                            </span>
-                                            <span className="d-none d-md-inline fs-large fw200 fst-italic text-dark mt-2">Here are three standard options to use as a starting point.</span>
-                                        </section>
-                                        <section className="d-md-flex ps-md-5 pe-md-5">
-                                            {tiers.map((tier, index) => {
-                                                return (
-                                                    <Tier
-                                                        isNoBackground={index !== 1}
-                                                        key={index}
-                                                        tier={tier}
-                                                        setTiersInfoForModalArr={setTiersInfoForModalArr}
-                                                    />
-                                                )
-                                            })}
-                                        </section>
-                                    </section>
+                                    <HowMuchDoesItCostSec setTiersInfoForModalArr={setTiersInfoForModalArr} />
                                 </CardBody>
                             </Card>
                         </section>
