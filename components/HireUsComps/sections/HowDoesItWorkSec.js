@@ -42,7 +42,7 @@ const HowDoesItWorkSec = () => {
                     How does it work?
                 </h3>
             </section>
-            <section className="d-flex flex-column flex-md-row ps-sm-5 pe-sm-5 mt-3">
+            <section className="d-flex flex-column justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch flex-lg-row ps-sm-5 pe-sm-5 mt-3">
                 {hireUsCardsSectionTexts.map(({ content, text, mobileTxt }, index) => {
                     return (
                         <>
