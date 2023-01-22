@@ -1,0 +1,16 @@
+.whatDoWeDoSec {
+  border-radius: 1.3em;
+  border: solid 0.8px #2e0b1b;
+  padding: 25px 45px 25px 45px;
+
+}
+
+.HireUsCardFirstSecMobile.weMobileKnowledgeSec{
+}
+
+
+.HireUsCardFirstSecMobile.weMobileKnowledgeSec:not(:first-child){
+  @media (min-width: 1200px) {
+    margin-left: 15px !important;
+  }
+}

@@ -3,6 +3,7 @@
 @import "../../comps/carousel.scss";
 @import "../HireUs/hireUsComps/modalStyles/HireUsModalStyles.scss";
 @import "../HireUs/hireUsComps/readyToInspireSec.scss";
+@import "../HireUs/hireUsComps/whatDoWeDoSec.scss";
 @import "./hireUsComps/tier.scss";
 
 $btnColor: #84469e;
@@ -647,21 +648,12 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 }
 
-.whatDoWeDoSec {
-  border-radius: $borderRadiusModal;
-  border: solid 0.8px $sectionDarkBg;
-  padding: 25px 45px 25px 45px;
-}
 
 .whatWillYouGetSec:nth-child(even) {
   margin-top: 18px !important;
 }
 
-.HireUsCardFirstSecMobile.weMobileKnowledgeSec:not(:first-child) {
-  @media (min-width: 768px) {
-    margin-left: 15px !important;
-  }
-}
+
 
 .HireUsCardFirstSecMobile {
   @media (min-width: 768px) {
