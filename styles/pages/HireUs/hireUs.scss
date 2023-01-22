@@ -83,7 +83,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
   background-position: 70% center;
   height: auto !important;
 
-  overflow-x: hidden !important;;
+  overflow-x: hidden !important;
 }
 
 .headerSection {
@@ -345,7 +345,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
         text-decoration-thickness: 1px !important;
       }
     }
-    svg{
+    svg {
       transform: translate(-20px, -3px);
     }
     height: 85px !important;
@@ -434,6 +434,8 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 }
 
+
+
 .hireUsPgInfoCard {
   min-width: 265px !important;
   transform: translateY(-100px);
@@ -449,6 +451,11 @@ $carouselTitleFtWeightDesktop: 800 !important;
 
   @media (max-width: 767px) {
     transform: translateY(-40px) !important;
+  }
+  
+  @media(min-width: 768px) and (max-width: 991px){
+    // width: 942px !important;
+    min-width: 755px !important;
   }
 }
 
@@ -648,12 +655,30 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 }
 
+.whatWillYouGetSec{
+  @media(min-width: 992px){
+    height: 180px !important;
+  }
 
-.whatWillYouGetSec:nth-child(even) {
-  margin-top: 18px !important;
+  @media(min-width: 768px) and (max-width: 991px){
+    height: 220px !important;
+  }
 }
 
+.whatWillYouGetSec:nth-child(even) {
+  @media(min-width: 992px){
+    // margin-top: 18px !important;
+  }
+}
 
+.whatWillYouGetSec{
+  @media(min-width: 768px){
+    > section:last-child {
+      width: 80% !important;
+      margin-left: 20px !important; 
+    }
+  }
+}
 
 .HireUsCardFirstSecMobile {
   @media (min-width: 768px) {
@@ -664,11 +689,6 @@ $carouselTitleFtWeightDesktop: 800 !important;
         height: 100px !important;
       }
     }
-
-    > section:last-child {
-      width: 80% !important;
-      margin-left: 20px !important;
-    }
   }
 
   > section:last-child {
@@ -678,14 +698,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
       }
     }
   }
-
-  @media (min-width: 768px) and (max-width: 991px) {
-    width: 35% !important;
-    // border: solid pink !important;
-  }
 }
-
-
 
 .HireUsCardFirstSecMobile:first-child {
   @media (max-width: 767px) {
@@ -732,6 +745,28 @@ $carouselTitleFtWeightDesktop: 800 !important;
   @media (max-width: 767px) {
     width: 79% !important;
     font-size: 45px !important;
+  }
+}
+
+.infoCardHireUs {
+  @media (min-width: 992px) {
+    width: 100% !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    width: 635px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .howDoesItWorkSec {
+    > section:last-child {
+      >section:nth-last-child(3) {
+
+        margin: 30px 0px 30px 0px !important;
+        // margin-top: 20px !important;
+      }
+    }
   }
 }
 
@@ -839,6 +874,3 @@ $carouselTitleFtWeightDesktop: 800 !important;
     width: 75% !important;
   }
 }
-
-
-

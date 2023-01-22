@@ -3,40 +3,8 @@
   border: solid 0.8px #2e0b1b;
   padding: 25px 45px 25px 45px;
 
-  @media (min-width: 768px) and (max-width: 991px) {
-    // width: 55% !important;
-    width: 330px !important;
-
-    > section:not(:first-child){
-        margin-top: 20px !important;   
-    }
-
-    > section {
-      width: 100% !important;
-      display: flex !important;
-      flex-direction: column !important;
-      > section:first-child,
-      > section:last-child{
-        margin-left: 0 !important;
-        width: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-      }
-
-      > section:last-child{
-        margin-top: 10px !important;
-        span{
-            text-align: center !important;
-            display: flex !important;
-            flex-direction: column !important;;
-        }
-      }
-    }
-
-    > section:not(:first-child) {
-      margin-top: 35px !important;
-    }
+  @media(min-width: 768px) and (max-width: 991px){
+    // width: 845px !important;
   }
 }
 
@@ -44,4 +12,33 @@
   @media (min-width: 1200px) {
     margin-left: 15px !important;
   }
+}
+
+.weMobileKnowledgeSec.lastSec{
+    width: 60% !important;
+    margin-top: 45px !important;
+}
+
+@media(min-width: 768px) and (max-width: 991px){
+    .whatDoWeDoSec{
+        height: 315px !important;
+        > section:first-child{
+            height: 112px !important;
+            width: 100% !important;
+        }
+
+    }
+    
+    .weMobileKnowledgeSec:nth-child(1),
+    .weMobileKnowledgeSec:nth-child(2){
+        height: 109px !important;
+    }
+}
+
+.weMobileKnowledgeSec{
+    @media(min-width: 768px) and (max-width: 991px){
+        > section:last-of-type{
+            margin-left: 15px !important;
+        }
+    }
 }

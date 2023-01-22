@@ -26,7 +26,7 @@ const HireUsCardFirstSecMobile = ({ textsAndImg, index, isWhatWillYouGetSec, cus
             <section className={_className}>
                 <Image src={imgPath} width={75} height={75} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
             </section>
-            <section className="w-75 ms-sm-4 ms-md-1 mt-3 mt-sm-0 ps-3 pe-3 ps-sm-0 pe-sm-0">
+            <section className="ms-sm-4 ms-md-1 mt-3 mt-sm-0 ps-3 pe-3 ps-sm-0 pe-sm-0">
                 <span className="d-flex flex-column flex-sm-row d-sm-inline-block hireUsCardFirstSecTxt responsiveInfoTxt text-center text-sm-start">
                     <span className='bolder text-dark fst-italic fw400 pe-sm-1'>
                         {boldedTxt}

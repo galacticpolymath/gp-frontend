@@ -9,7 +9,7 @@
 const HireUsCardSection = ({ text, content, mobileTxt }) => {
     return (
         <>
-            <section className="d-none d-md-flex flex-column w-100 justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch">
+            <section className="d-none d-md-flex flex-column infoCardHireUs justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch">
                 <section className="d-flex justify-content-center w-100">
                     <h4 className="hireUsCardTxt pe-1 text-dark hireUsCardSectionTxt fwtHireUsCard">{text}</h4>
                 </section>
