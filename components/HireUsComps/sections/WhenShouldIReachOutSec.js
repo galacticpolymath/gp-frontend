@@ -32,7 +32,12 @@ const WhenShouldIReachOutSec = () => {
                     </span>
                 </section>
                 <section className="d-flex mt-4 d-sm-block justify-content-center justify-content-sm-start align-items-sm-stretch align-items-sm-center">
-                    <LetsTalkBtnContainer isMainBtn isNoUnderline />
+                    <div className="d-block d-md-none">
+                        <LetsTalkBtnContainer isMainBtn />
+                    </div>
+                    <div className="d-none d-md-block">
+                        <LetsTalkBtnContainer isMainBtn isNoUnderline />
+                    </div>
                 </section>
             </section>
         </section>

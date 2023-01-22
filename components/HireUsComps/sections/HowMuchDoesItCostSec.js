@@ -32,7 +32,7 @@ const HowMuchDoesItCostSec = ({setTiersInfoForModalArr}) => (
             </span>
             <span className="d-none d-md-inline fs-large fw200 fst-italic text-dark mt-2">Here are three standard options to use as a starting point.</span>
         </section>
-        <section className="d-md-flex ps-md-5 pe-md-5">
+        <section className="d-md-flex ps-md-5 pe-md-5 pt-md-4">
             {tiers.map((tier, index) => {
                 return (
                     <Tier

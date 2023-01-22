@@ -19,7 +19,7 @@ import Button from 'react-bootstrap/Button';
 
 
 const LetsTalkBtnContainer = ({ isBtnColorDarker, isMainBtn, isInReadyToInspireSec, isAbsolute, isNoUnderline }) => {
-    const _className = `${isMainBtn ? "mainBtnLetsTalk" : "letsTalkBtnContainer"} ${isAbsolute ? 'position-absolute' : 'position-relative'} border-white d-flex flex-row-reverse   flex-md-column ${isInReadyToInspireSec ? 'inReadyToInspireSec' : ''} ${isBtnColorDarker ? 'darker-btn-color' : ''}`
+    let _className = `${isMainBtn ? "mainBtnLetsTalk" : "letsTalkBtnContainer"} ${isAbsolute ? 'position-absolute' : 'position-relative'} border-white d-flex flex-row-reverse   flex-md-column ${isInReadyToInspireSec ? 'inReadyToInspireSec' : ''} ${isBtnColorDarker ? 'darker-btn-color' : ''}`
     let btnTxtStyles = 'text-nowrap'
 
     if(isNoUnderline){

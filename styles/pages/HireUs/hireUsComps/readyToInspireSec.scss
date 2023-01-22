@@ -2,13 +2,24 @@
   background-color: #2e0b1b;
   height: fit-content !important;
   position: relative;
-  height: 800px !important;
   width: 100vw;
   border: none;
+  
+  @media(min-width: 768px){
+    
+  }
+  @media(max-width: 767px){
+    height: 800px !important;
+  }
 }
 
 .readyToInspireSec {
   background-color: #2e0b1b;
+
+  @media(min-width: 768px){
+    transform: translateY(-165px);
+  }
+
   @media (max-width: 767px) {
     width: 100vw;
     height: 800px;

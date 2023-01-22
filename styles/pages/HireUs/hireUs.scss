@@ -83,7 +83,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
   color: #ffffff;
   background-size: cover;
   background-position: 70% center;
-  height: fit-content !important;
+  height: auto !important;
 }
 
 .headerSection {
@@ -272,9 +272,9 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 
   @media (max-width: 767px) {
-    height: 95px !important;
+    height: 75px !important;
     border-radius: 2.8em;
-    background-color: $btnColorMobile !important;
+    // background-color: $btnColorMobile !important;
   }
 
   @media (max-width: 575px) {
@@ -361,7 +361,6 @@ $carouselTitleFtWeightDesktop: 800 !important;
 }
 
 .hireUsPgInfoCard {
-  // min-width:
   min-width: 265px !important;
   transform: translateY(-100px);
   min-height: 700px;
@@ -370,8 +369,9 @@ $carouselTitleFtWeightDesktop: 800 !important;
   max-width: 1440px !important;
 
   @media(min-width: 768px){
-    min-height: 1100px !important;
-    // border: solid pink !important; 
+    // min-height: 1100px !important;
+    padding-bottom: 170px !important;
+    
   }
 
   @media (max-width: 767px) {
@@ -733,6 +733,10 @@ $carouselTitleFtWeightDesktop: 800 !important;
 }
 
 .howMuchDoesItCostSec {
+  @media(min-width: 768px){
+    padding-top: 85px !important;
+  }
+
   > section:nth-child(2) {
     span {
       line-height: 35px;
