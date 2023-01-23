@@ -45,7 +45,7 @@ const renderThumbs = items => {
         />
       );
     } else if (type === 'pdf') {
-      return <i className="bi-filetype-pdf fs-2"></i>;
+      return <i key={i} className="bi-filetype-pdf fs-2"></i>;
     }
   });
 };
