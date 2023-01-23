@@ -13,6 +13,8 @@
   }
 }
 
+
+
 .clientFundingDesktop,
 .dynamicTeamsSec {
   margin-left: 0 !important;
@@ -87,5 +89,28 @@
       }
       min-width: 0 !important;
     }
+  }
+}
+
+
+.dynamicTeamsSec{
+  @media (min-width: 768px) and (max-width: 1199px){
+    > section:first-child{
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      
+      > h2{
+        width: 80% !important;
+      }
+    }
+
+    > section:last-child{
+      > div{
+        height: fit-content !important;
+        padding: 10px !important;
+      }
+    }
+    
   }
 }

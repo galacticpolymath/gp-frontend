@@ -52,7 +52,7 @@ const WhoMakesTheLessonsSec = () => {
                         parentSecStyles="ownerSection secWithHumanPic"
                     />
                 </section>
-                <section className="ms-md-5 pt-md-5 mattsAwardsSec">
+                <section className="ms-md-5 pt-md-2 pt-lg-5 mattsAwardsSec">
                     {mattsAwards.map((award, index) => {
                         const { alt, src, txt, link } = award;
                         return (
