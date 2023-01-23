@@ -41,9 +41,7 @@ const StandardsGroup = ({
             {[].concat(codes).map((code, i) => (
               <p className='mb-0' key={i}>
                 <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
-                <div className='text-muted text-center'>
-                  <i className="bi bi-three-dots"></i>
-                </div>
+                <i className="bi bi-three-dots text-muted text-center"></i>
               </p>
             ))}
           </div>
