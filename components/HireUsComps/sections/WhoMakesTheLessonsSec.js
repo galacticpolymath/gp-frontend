@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable curly */
 /* eslint-disable react/jsx-curly-spacing */
 /* eslint-disable brace-style */
@@ -36,27 +37,27 @@ const WhoMakesTheLessonsSec = () => {
                 <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline d-md-none">Matt Wilkins, PhD.</span>
                 <span className="text-dark fs-large text-center text-md-start ps-1 pe-1 fst-italic fw249 d-inline d-sm-none d-md-inline">The GP Team is led by our founder, Matt Wilkins, PhD.</span>
             </section>
-            <section className="d-flex flex-column flex-md-row mattsAwardParentSec">
-                <section className="mt-4 mb-4 mt-sm-5 mt-md-5 d-block d-md-none">
+            <section className="d-flex flex-column flex-lg-row mattsAwardParentSec">
+                <section className="mt-4 mb-4 mt-sm-5 mt-md-5 d-block d-lg-none">
                     <PicAndDescriptionSec
                         text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
                         imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
                         parentSecStyles="ownerSection secWithHumanPic"
                     />
                 </section>
-                <section className="mt-5 d-none d-md-block">
+                <section className="mt-5 d-none d-lg-block">
                     <PicAndDescriptionSec
                         text="Matt is an award-winning scientist, science communicator, and teacher at the middle school to college level."
                         imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
                         parentSecStyles="ownerSection secWithHumanPic"
                     />
                 </section>
-                <section className="ms-md-5 pt-md-5">
+                <section className="ms-md-5 pt-md-5 mattsAwardsSec">
                     {mattsAwards.map((award, index) => {
                         const { alt, src, txt, link } = award;
                         return (
                             <PicAndDescriptionSec
-                                parentSecStyles="picAndImageSecInList mattsAward"
+                                parentSecStyles="picAndDescriptionSecInList mattsAward"
                                 key={index}
                                 link={link}
                                 alt={alt}
