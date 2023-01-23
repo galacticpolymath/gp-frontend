@@ -143,12 +143,12 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                         <Card.Body className="position-relative cardBodyStyles">
                             {(userInputs && !isCardOnly) &&
                                 <>
-                                    <section className="position-absolute h-100 start-0 d-flex justify-content-center align-items-center pe-3 pe-md-0">
+                                    <section className="position-absolute h-100 start-0 d-flex justify-content-center align-items-center pe-3 pe-md-0 navBtnSec">
                                         <button className="noBtnStyles pb-md-0 pb-5 noColorChangeOnClick btnColorChangeOnHover navBtnLeftCarousel" onClick={() => { handleNavBtnClick(-1) }}>
                                             <IoIosArrowBack className="text-muted arrowNavigationCarousel backBtnCarousel op-5" />
                                         </button>
                                     </section>
-                                    <section className="position-absolute h-100 end-0 d-flex justify-content-center align-items-center">
+                                    <section className="position-absolute h-100 end-0 d-flex justify-content-center align-items-center navBtnSec">
                                         <button className="noBtnStyles pb-md-0 pb-5 noColorChangeOnClick btnColorChangeOnHover navBtnRightCarousel" onClick={() => { handleNavBtnClick(1) }}>
                                             <IoIosArrowForward className="text-muted arrowNavigationCarousel forwardBtnCarousel op-5" />
                                         </button>

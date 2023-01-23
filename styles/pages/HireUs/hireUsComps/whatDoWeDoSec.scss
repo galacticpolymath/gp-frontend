@@ -3,10 +3,16 @@
   border: solid 0.8px #2e0b1b;
   padding: 25px 45px 25px 45px;
 
-  @media(min-width: 768px) and (max-width: 991px){
-    // width: 845px !important;
+  @media(min-width: 1300px){
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    padding: 35px 45px 35px 45px !important;
   }
 }
+
 
 .HireUsCardFirstSecMobile.weMobileKnowledgeSec:not(:first-child) {
   @media (min-width: 1200px) {
@@ -14,31 +20,47 @@
   }
 }
 
-.weMobileKnowledgeSec.lastSec{
-    width: 60% !important;
-    margin-top: 45px !important;
+.weMobileKnowledgeSec.lastSec {
+  width: 60% !important;
+  margin-top: 45px !important;
 }
 
-@media(min-width: 768px) and (max-width: 991px){
-    .whatDoWeDoSec{
-        height: 315px !important;
-        > section:first-child{
-            height: 112px !important;
-            width: 100% !important;
-        }
 
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .whatDoWeDoSec {
+    > section:first-child {
+      height: 112px !important;
+      width: 100% !important;
     }
-    
-    .weMobileKnowledgeSec:nth-child(1),
-    .weMobileKnowledgeSec:nth-child(2){
-        height: 109px !important;
-    }
+  }
+
+
+  .weMobileKnowledgeSec:nth-child(2) {
+    transform: translateX(20px) !important;
+  }
+
+  .weMobileKnowledgeSec:nth-child(1),
+  .weMobileKnowledgeSec:nth-child(2) {
+    height: 109px !important;
+  }
+}
+
+.weMobileKnowledgeSec.lastSec {
+  margin-top: 75px !important;
 }
 
 .weMobileKnowledgeSec{
-    @media(min-width: 768px) and (max-width: 991px){
-        > section:last-of-type{
-            margin-left: 15px !important;
-        }
+  @media(min-width: 992px) and (max-width: 1299px){
+    padding-right: 15px !important;
+    // border: solid .5px pink !important;
+  }
+}
+
+.weMobileKnowledgeSec {
+  @media (min-width: 768px) {
+    > section:last-child {
+      margin-left: 15px !important;
     }
+  }
 }

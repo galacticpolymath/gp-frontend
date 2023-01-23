@@ -33,7 +33,21 @@ $carouselBackgroundColor: #ffeded;
   @media (max-width: 575px) {
     width: 95% !important;
   }
+
+  @media(min-width: 768px) and (max-width: 1299px){
+    width: 95% !important;
+  }
 }
+
+
+
+@media(min-width: 768px) and (max-width: 1299px){
+  .feedbackTxt{
+    width: 75% !important;
+  }
+}
+
+
 
 .picsCardContainercardOnlyStyles {
   @media (min-width: 768px) {
@@ -48,7 +62,7 @@ $carouselBackgroundColor: #ffeded;
 
 .cardBodyStyles,
 .autoCarouselContainerCard {
-  @media (min-width: 768px) {
+  @media (min-width: 1300px) {
     height: 305px !important;
   }
 }
@@ -100,6 +114,14 @@ $carouselBackgroundColor: #ffeded;
   @media (max-width: 575px) {
     position: static !important;
   }
+
+  @media(min-width: 768px) and (max-width: 1299px){
+    right: 40px !important;
+  }
+}
+
+.navBtnSec{
+  z-index: 10000000;
 }
 
 .autoCarouselSlider {
@@ -166,6 +188,15 @@ $carouselBackgroundColor: #ffeded;
   @media (min-width: 768px) {
     min-height: 200px !important;
   }
+
+  @media(min-width: 768px) and (max-width: 1299px){
+    min-height: 250px !important;
+
+    > section:first-of-type{
+      align-items: stretch !important;
+      padding-top: 20px !important;
+    } 
+  }
 }
 
 .autoCarouselContainer {
@@ -184,7 +215,6 @@ $carouselBackgroundColor: #ffeded;
 .autoCarouselItem {
   display: inline-block;
   border-radius: 40px;
-  // width: 800px !important;
 
   @media (max-width: 767px) {
     width: 100%;
@@ -205,6 +235,8 @@ $carouselBackgroundColor: #ffeded;
   @media (max-width: 575px) {
     height: fit-content;
   }
+
+  
 }
 
 .slides {
@@ -217,14 +249,8 @@ $carouselBackgroundColor: #ffeded;
 
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-
-  /*
-    scroll-snap-points-x: repeat(300px);
-    scroll-snap-type: mandatory;
-    */
 }
 .slides::-webkit-scrollbar {
-  /*   width: 10px; */
   height: 1px;
 }
 .slides::-webkit-scrollbar-thumb {
@@ -315,6 +341,10 @@ $carouselBackgroundColor: #ffeded;
   @media(min-width: 768px){
     height: 330px !important;
   }
+
+  @media(min-width: 768px) and (max-width: 1299px){
+    height: fit-content !important;
+  }
 }
 
 
@@ -335,6 +365,18 @@ $carouselBackgroundColor: #ffeded;
     width: 100% !important;
     span {
       width: 100% !important;
+    }
+  }
+
+  @media(min-width: 768px) and (max-width:1299px){
+    > section{
+      min-height: 200px !important;
+    }
+
+    > section:last-of-type{
+      > section:last-of-type{
+        right: 35px !important;
+      }
     }
   }
 }
