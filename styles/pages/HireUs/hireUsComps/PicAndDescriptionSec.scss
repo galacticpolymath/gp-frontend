@@ -109,13 +109,21 @@
   }
 }
 
+.shareYourKnowledgeDesktopSec{
+  > section:first-child{
+    @media (min-width: 768px) and (max-width: 1199px){
+      height: 300px !important; 
+    }
+  }
+}
 
 .GPConstellationSec.onDesktop{
 
   @media(min-width: 768px){
     > section:last-child{
       div{
-        width: 550px !important;
+        // width: 450px !important;
+        width: 40vw !important;
 
         @media(max-width: 1199px){
           width: 40vw !important;
@@ -124,14 +132,22 @@
     }
   }
 
+  
+
   @media (min-width: 768px) {
     > section:first-child{
       display: none !important;
     }
     > section:last-child{
       > div{
-        height: 275px !important;
+        height: 300px !important;
       }
+    }
+  }
+
+  @media(min-width: 768px) and (max-width: 1199px){
+    > section:last-child{
+      height: auto !important;
     }
   }
 }
