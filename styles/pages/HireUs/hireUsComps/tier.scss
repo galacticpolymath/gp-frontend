@@ -6,7 +6,7 @@ $desktopFontSizeTierStatus: 24px !important;
   overflow: hidden;
 }
 
-.singleCardSec{
+.cardsCentralizedSec{
   > div{
     width: 540px !important;
   }
@@ -40,6 +40,10 @@ $desktopFontSizeTierStatus: 24px !important;
 .tierImg {
   @media (max-width: 575px) {
     min-width: 80px !important;
+  }
+
+  @media(min-width: 768px){
+    min-width: 90px !important;
   }
 }
 
@@ -122,9 +126,19 @@ $desktopFontSizeTierStatus: 24px !important;
 }
 
 
+.tierCard{
+  @media(min-width: 992px) and (max-width: 1199px){
+    padding: 0px 2rem 4rem 2rem !important;
+    // height: 1405px !important;
+  }
+}
+
 .tierCardBody{
-  // border: solid red !important;
   position: relative;
+
+  @media(min-width: 992px) and (max-width: 1199px){
+    padding: 0px 
+  }
 }
 
 .estimatedPriceWrapper{

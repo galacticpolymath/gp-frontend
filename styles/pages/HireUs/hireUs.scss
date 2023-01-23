@@ -882,6 +882,10 @@ $carouselTitleFtWeightDesktop: 800 !important;
   @media (max-width: 575px) {
     width: 100% !important;
   }
+
+  @media(min-width: 768px) and (max-width: 1199px){
+    width: 100% !important;
+  }
 }
 
 .scientistHeadingTxt {

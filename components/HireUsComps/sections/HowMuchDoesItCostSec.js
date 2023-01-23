@@ -30,9 +30,10 @@ const HowMuchDoesItCostSec = ({ setTiersInfoForModalArr }) => (
                 We offer three standard packages, which we’re happy to customize to meet your specific needs.
                 <span className="d-md-none ms-1">Here are three standard options to use as a starting point.</span>
             </span>
-            <span className="d-none d-md-inline fs-large fw200 fst-italic text-dark mt-2">Here are three standard options to use as a starting point.</span>
+            <span className="d-none d-md-inline fs-large fw200 fst-italic text-dark mt-2">Here are three standard options to use as a starting point<span className='d-inline d-xl-none'>.</span><span className='d-none d-xl-inline'>:</span></span>
         </section>
-        <section className="d-flex flex-column flex-xl-row d-md-none d-xl-flex ps-md-5 pe-md-5 pt-md-4">
+        {/* d-md-none d-lx-flex */}
+        <section className="d-flex d-md-none d-lg-flex flex-column flex-md-row ps-md-5 pe-md-5 pt-md-4">
             {tiers.map((tier, index) => {
                 return (
                     <Tier
@@ -44,11 +45,13 @@ const HowMuchDoesItCostSec = ({ setTiersInfoForModalArr }) => (
                 )
             })}
         </section>
-        <section className="d-none d-md-flex d-xl-none ps-md-5 pe-md-5 pt-md-4">
-            {tiers.slice(0, 2).map((tier, index) => {
+        {/* ps-md-5 pe-md-5 pt-md-4 */}
+        {/* d-md-flex */}
+        <section className="d-none d-md-flex d-lg-none flex-column justify-content-center align-items-center cardsCentralizedSec">
+            {tiers.map((tier, index) => {
                 return (
                     <Tier
-                        isNoBackground
+                        isNoBackground={index !== 1}
                         key={index}
                         tier={tier}
                         setTiersInfoForModalArr={setTiersInfoForModalArr}
@@ -56,13 +59,13 @@ const HowMuchDoesItCostSec = ({ setTiersInfoForModalArr }) => (
                 )
             })}
         </section>
-        <section className="d-none d-md-flex d-xl-none d-flex justify-content-center align-items-center singleCardSec">
+        {/* <section className="d-none d-md-flex d-xl-none d-flex justify-content-center align-items-center cardsCentralizedSec">
             <Tier
                 isNoBackground={false}
                 tier={tiers[2]}
                 setTiersInfoForModalArr={setTiersInfoForModalArr}
             />
-        </section>
+        </section> */}
     </section>
 )
 

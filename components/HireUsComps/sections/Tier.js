@@ -52,7 +52,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
 
     return (
         // ps-sm-3 pe-sm-3
-        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2 pt-md-1 ps-md-5 pe-md-5'} mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles`}>
+        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2 me-md-0 me-xl-2 pt-md-1 ps-md-5 pe-md-5'} mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
                     <Img src={img} alt={`${tierName}_img`} className="w-25 tierImg" height={120} />
@@ -111,14 +111,14 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                 </section>
                 <section className="mt-5 w-100 d-flex justify-content-center align-items-center  justify-content-sm-start align-items-sm-stretch align-self-end priceSection">
                     <h4 className="text-dark fst-italic fs-large text-center text-sm-start">
-                        <section className="d-none d-sm-flex flex-column">
+                        <section className="d-none d-sm-flex d-lg-none d-xl-flex flex-column">
                             <span>Estimated Price: </span>
                             <span className="mt-3">${low} - ${high}</span>
                         </section>
-                        <span className="d-block d-sm-none w-100 text-center">
+                        <span className="d-block d-sm-none w-100 d-lg-block d-xl-none text-center">
                             Estimated Price:
                         </span>
-                        <span className="d-flex flex-column d-sm-none w-100 text-center mt-2 pt-1">
+                        <span className="d-flex flex-column d-sm-none d-lg-flex d-xl-none w-100 text-center mt-2 pt-1">
                             <span>
                                 ${low}
                             </span>
