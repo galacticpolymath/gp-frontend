@@ -20,28 +20,26 @@ const LessonsPage = ({ lessons }) => {
               <Link
                 key={i}
                 href={`/lessons/${lesson.id}`}
-                passHref
+                className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'
               >
-                <a className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
-                  <div>
-                    {lesson.CoverImage && lesson.CoverImage.url && (
-                      <Image
-                        src={lesson.CoverImage.url}
-                        alt={lesson.Subtitle}
-                        layout="responsive"
-                        width={1500}
-                        height={450}
-                      />
-                    )}
-                  </div>
-                  <div className='p-3'>
-                    <h3 className='fw-light text-black'>{lesson.Title}</h3>
-                    <p className='text-black'>{lesson.Subtitle}</p>
-                    <span className={`badge bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
-                      {lesson.Section.overview.TargetSubject}
-                    </span>
-                  </div>
-                </a>
+                <div>
+                  {lesson.CoverImage && lesson.CoverImage.url && (
+                    <Image
+                      src={lesson.CoverImage.url}
+                      alt={lesson.Subtitle}
+                      layout="responsive"
+                      width={1500}
+                      height={450}
+                    />
+                  )}
+                </div>
+                <div className='p-3'>
+                  <h3 className='fw-light text-black'>{lesson.Title}</h3>
+                  <p className='text-black'>{lesson.Subtitle}</p>
+                  <span className={`badge bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
+                    {lesson.Section.overview.TargetSubject}
+                  </span>
+                </div>
               </Link>
             ))}
         </div>

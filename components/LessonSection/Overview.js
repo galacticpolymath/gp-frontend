@@ -41,16 +41,14 @@ const Overview = ({
             </div>
           </div>
 
-          <Link passHref href="#learning_standards">
-            <a>
-              <h5>Subject breakdown by standard alignments: </h5>
-              {SteamEpaulette && SteamEpaulette.url && (
-                <img
-                  src={SteamEpaulette.url}
-                  alt="Subject breakdown by standard alignments"
-                />
-              )}
-            </a>
+          <Link href="#learning_standards">
+            <h5>Subject breakdown by standard alignments: </h5>
+            {SteamEpaulette && SteamEpaulette.url && (
+              <img
+                src={SteamEpaulette.url}
+                alt="Subject breakdown by standard alignments"
+              />
+            )}
           </Link>
         </div>
 
