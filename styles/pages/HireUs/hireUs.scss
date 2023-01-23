@@ -904,4 +904,9 @@ $carouselTitleFtWeightDesktop: 800 !important;
   @media (max-width: 767px) {
     width: 75% !important;
   }
+
+
+  @media(min-width: 768px) and (max-width: 1199px){
+    column-gap: 50px;
+  }
 }
