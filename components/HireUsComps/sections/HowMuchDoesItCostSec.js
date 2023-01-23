@@ -20,7 +20,7 @@ import tiers from '../../../data/HireUsPg/tiers.json'
 import Tier from './Tier';
 
 
-const HowMuchDoesItCostSec = ({setTiersInfoForModalArr}) => (
+const HowMuchDoesItCostSec = ({ setTiersInfoForModalArr }) => (
     <section className="howMuchDoesItCostSec mt-4">
         <section className="ps-sm-5 pe-sm-5">
             <h3 className="display-1 noMargin">How much does it cost?</h3>
@@ -32,7 +32,7 @@ const HowMuchDoesItCostSec = ({setTiersInfoForModalArr}) => (
             </span>
             <span className="d-none d-md-inline fs-large fw200 fst-italic text-dark mt-2">Here are three standard options to use as a starting point.</span>
         </section>
-        <section className="d-md-flex ps-md-5 pe-md-5 pt-md-4">
+        <section className="d-flex flex-column flex-xl-row d-md-none d-xl-flex ps-md-5 pe-md-5 pt-md-4">
             {tiers.map((tier, index) => {
                 return (
                     <Tier
@@ -43,6 +43,25 @@ const HowMuchDoesItCostSec = ({setTiersInfoForModalArr}) => (
                     />
                 )
             })}
+        </section>
+        <section className="d-none d-md-flex d-xl-none ps-md-5 pe-md-5 pt-md-4">
+            {tiers.slice(0, 2).map((tier, index) => {
+                return (
+                    <Tier
+                        isNoBackground
+                        key={index}
+                        tier={tier}
+                        setTiersInfoForModalArr={setTiersInfoForModalArr}
+                    />
+                )
+            })}
+        </section>
+        <section className="d-none d-md-flex d-xl-none d-flex justify-content-center align-items-center singleCardSec">
+            <Tier
+                isNoBackground={false}
+                tier={tiers[2]}
+                setTiersInfoForModalArr={setTiersInfoForModalArr}
+            />
         </section>
     </section>
 )

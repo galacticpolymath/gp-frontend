@@ -58,10 +58,10 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                     <Img src={img} alt={`${tierName}_img`} className="w-25 tierImg" height={120} />
                 </section>
                 <section className="mt-4">
-                    <h4 className="text-dark tierHeaderTag mt-2 fw450 fs-larger text-center text-sm-start">{tierName.toUpperCase()}</h4>
+                    <h4 className="text-dark tierHeaderTag mt-2 fw450 text-center text-sm-start">{tierName.toUpperCase()}</h4>
                 </section>
             </Header>
-            <Body className={`${isNoBackground ? 'noBackground' : 'tierCardBodyAndHeader'} noBorder pt-0 position-relative tierCardBody`}>
+            <Body className={`${isNoBackground ? 'noBackground' : 'tierCardBodyAndHeader'} noBorder pt-0 position-relative tierCardBody d-flex flex-column`}>
                 <section className="tierParagraphSec">
                     <p className="text-dark fst-italic fs-large fw200 text-sm-start text-center">{paragraph1}</p>
                     <p className="text-dark fst-italic fs-large fw200 mt-3 text-sm-start text-center">{paragraph2}</p>
@@ -71,7 +71,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                         <table className="productInfoTable w-100 noBorder">
                             <tbody>
                                 <tr className="tierTableRow">
-                                    <td className="tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large">{learningExperience}</td>
+                                    <td className="tierInfoStatus fs-large text-center text-sm-end text-sm-nowrap">{learningExperience}</td>
                                     <td id="0" onClick={handleTierFeatureTxtClick} className="fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative">GP Learning Experience <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /> </td>
                                 </tr>
                                 <tr className="tierTableRow">
@@ -109,9 +109,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                         </section>
                     </section>
                 </section>
-
-
-                <section className="mt-5 w-100 d-flex justify-content-center align-items-center  justify-content-sm-start align-items-sm-stretch priceSection">
+                <section className="mt-5 w-100 d-flex justify-content-center align-items-center  justify-content-sm-start align-items-sm-stretch align-self-end priceSection">
                     <h4 className="text-dark fst-italic fs-large text-center text-sm-start">
                         <section className="d-none d-sm-flex flex-column">
                             <span>Estimated Price: </span>

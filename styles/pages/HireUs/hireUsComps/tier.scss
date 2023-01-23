@@ -6,12 +6,28 @@ $desktopFontSizeTierStatus: 24px !important;
   overflow: hidden;
 }
 
+.singleCardSec{
+  > div{
+    width: 540px !important;
+  }
+}
+
+.tierHeaderTag{
+  @media(min-width: 1300px){
+    font-size: 28px !important;
+  }
+
+  @media(min-width: 1400px){
+    white-space: nowrap !important
+  }
+}
+
 @media (min-width: 768px) {
   .tierDefaultStyles {
-    min-height: 1305px !important; 
+    // height: 1305px !important; 
+    // border: solid pink !important;
 
     @media(min-width: 1200px) and (max-width: 1439px){
-      border: solid pink !important;
       // min-width: 430px !important; 
     }
   }
@@ -38,7 +54,7 @@ $desktopFontSizeTierStatus: 24px !important;
       }
     }
 
-    height: 40px !important;
+    height: 60px !important;
     line-height: 27px !important;
     overflow: hidden !important;
     td:first-child {
@@ -105,9 +121,21 @@ $desktopFontSizeTierStatus: 24px !important;
   }
 }
 
+
+.tierCardBody{
+  // border: solid red !important;
+  position: relative;
+}
+
+.estimatedPriceWrapper{
+  @media(min-width: 768px){
+    height: 150px !important;
+  }
+}
+
 .priceSection {
   @media (min-width: 768px) {
-    position: absolute !important;
-    bottom: 10px !important;
+    margin-top: auto !important;
+    transform: translateY(40px); 
   }
 }
