@@ -58,7 +58,7 @@ const StandardsGroup = ({
 
 StandardsGroup.propTypes = {
   id: PropTypes.string.isRequired,
-  grades: PropTypes.array,
+  grades: PropTypes.string,
   codes: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   statements: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   alignmentNotes: PropTypes.string,
