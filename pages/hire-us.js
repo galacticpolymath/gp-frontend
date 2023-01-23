@@ -33,7 +33,6 @@ import WhatTeachersSaysBackground from '../public/imgs/background/2_southeast_pu
 import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
 import GrantReviewerFeedbackBackground from '../public/imgs/background/5_chaotic_bluish_1.png';
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
-import clientFundingSourcesPics from '../data/HireUsPg/clientFundingSourcesPics.json'
 import tiersInfoForModal from '../data/HireUsPg/tiersInfoForModal.json'
 import TierInfoModal from '../components/HireUsComps/modals/TierInfoModal'
 import { useState } from 'react';
@@ -70,8 +69,8 @@ const HireUsPage = () => {
                                     </section>
                                     <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />
                                     <ShareYourKnowledge lessonsInfo={lessonsInfo} />
-                                    <ClientFundingSec clientFundingSourcesPics={clientFundingSourcesPics} isMobile />
-                                    <ClientFundingSec clientFundingSourcesPics={clientFundingSourcesPics}  />
+                                    <ClientFundingSec isMobile />
+                                    <ClientFundingSec />
                                     <WhenShouldIReachOutSec />
                                     <section className="d-flex mt-8">
                                         <CardContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />

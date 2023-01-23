@@ -1,9 +1,9 @@
 .img-background-container {
-  // min-height: 400px !important;
-
   width: 100vw;
   margin-left: calc(-1 * ((100vw - 100%) / 2));
   margin-right: calc(-1 * ((100vw - 100%) / 2));
+
+  padding-bottom: 55px !important;
 }
 
 .clientFundingDesktop {

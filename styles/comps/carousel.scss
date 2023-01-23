@@ -306,6 +306,19 @@ $carouselBackgroundColor: #ffeded;
     height: 150px;
   }
 
+  @media(min-width: 768px) and (max-width: 991px){
+    // width: 250px;
+    // height: 250px;
+    // border: solid pink !important;
+    // display: flex !important;
+    // align-items: center !important;
+    // justify-content: center !important;;
+    > span{
+      // width: 85px !important;
+      // height: 150px !important;
+    }
+  }
+
   @media (max-width: 767px) {
     width: 125px;
     height: 98px;
@@ -318,10 +331,15 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .carouselImgContainer:not(:first-child) {
-  @media (min-width: 768px) {
+  @media (min-width: 1200px) {
     margin-left: 85px !important;
   }
+
+  @media(min-width: 768px) and (max-width: 1199px){
+    transform: translateX(20px)
+  }
 }
+
 
 .picsCardContainer {
   @media (max-width: 575px) {
