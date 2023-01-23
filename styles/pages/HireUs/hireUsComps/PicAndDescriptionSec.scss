@@ -121,6 +121,7 @@
     > section:last-child{
       div{
         width: 40vw !important;
+        max-width: 576px !important;
 
         @media(max-width: 1199px){
           width: 40vw !important;

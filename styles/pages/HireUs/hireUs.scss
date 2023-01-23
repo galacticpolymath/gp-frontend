@@ -384,16 +384,11 @@ $carouselTitleFtWeightDesktop: 800 !important;
 
 .introSecAndLetTalksSec {
   height: 700px;
-  // padding-bottom: 150px;
   padding-bottom: 190px !important;
+  max-width: 1464px !important;
 
-  // border: solid pink !important;
+
   > section {
-    // max-width: 720px !important;
-    @media (min-width: 767px) {
-      //  border: solid pink !important;
-    }
-
     > section:last-child {
       @media (max-width: 767px) {
         width: 75% !important;
