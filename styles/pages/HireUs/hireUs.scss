@@ -435,12 +435,12 @@ $carouselTitleFtWeightDesktop: 800 !important;
 }
 
 .hireUsPgInfoCard {
+  max-width: 1392px !important;
   min-width: 265px !important;
   transform: translateY(-100px);
   min-height: 700px;
   border-radius: $borderRadiusModal;
   background-color: $hireUsPgMainCardColor;
-  max-width: 1440px !important;
 
   @media (min-width: 768px) {
     // min-height: 1100px !important;
@@ -595,10 +595,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
 }
 
 .hireUsCardTxt {
-  // font-size: 40px !important;
-
   @media (max-width: 767px) {
-    // font-size: 45px !important;
     font-weight: 249;
   }
 }
@@ -611,6 +608,16 @@ $carouselTitleFtWeightDesktop: 800 !important;
 
     @media (max-width: 767px) {
       width: 100% !important;
+    }
+  }
+
+  > section:last-child{
+    display: flex !important;
+    flex-direction: column !important;;
+    @media(min-width: 768px) and (max-width: 991px){
+      > div{
+        margin-top: auto !important;   
+      }
     }
   }
 }
@@ -875,6 +882,8 @@ $carouselTitleFtWeightDesktop: 800 !important;
     }
   }
 }
+
+
 
 .imgProductContainer {
   width: 75% !important;

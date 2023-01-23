@@ -22,7 +22,7 @@ import ClassRoom2 from '../../public/imgs/classroom2.jpg';
 const ReadyToInspireSec = () => {
     return (
         <section className='readyToInspireParentSec mt-5'>
-            <div className="readyToInspireSec pt-5 d-md-flex flex-md-row-reverse">
+            <div className="readyToInspireSec pt-5 d-lg-flex flex-lg-row-reverse">
                 <section className="mt-2 d-flex d-md-block readyToInspireImgSec">
                     <Parallax bgImage={ClassRoom2.src} className="readyToInspireImg" contentClassName='classRoom2ContentStyles position-relative' />
                 </section>
@@ -34,16 +34,16 @@ const ReadyToInspireSec = () => {
                         <span className="fs-24 d-block fw700 d-inline d-sm-none text-center ps-2 pe-2">Ready to inspire students with your work?</span>
                     </section>
                     <section className="ps-sm-5 ps-md-0 mt-4 d-flex flex-column orderLaCarteSec">
-                        <span className="fs-med d-block fw249 d-none d-sm-inline d-md-none">Order <span className="fst-italic">à la carte</span> or customize a package.</span>
-                        <span className="fs-med d-block fw249 d-none d-sm-inline d-md-none">Let us know how we can help!</span>
-                        <span className="fs-med d-block fw249 d-none d-md-inline text-center ps-5 ps-sm-0 pe-5 pe-sm-0">Order <span className="fst-italic">à la carte</span> or customize a package. Let us know how we can help!</span>
-                        <span className="fs-med d-block fw249 d-inline d-sm-none text-center ps-5 ps-sm-0 pe-5 pe-sm-0">Let us know how we can help! Order <span className="fst-italic">à la carte</span> or customize a package.</span>
+                        <span className="fs-med d-none fw249 d-sm-inline d-lg-none">Order <span className="fst-italic">à la carte</span> or customize a package.</span>
+                        <span className="fs-med d-none fw249 d-sm-inline d-lg-none">Let us know how we can help!</span>
+                        <span className="fs-med fw249 d-none d-lg-inline text-center ps-5 ps-sm-0 pe-5 pe-sm-0">Order <span className="fst-italic">à la carte</span> or customize a package. Let us know how we can help!</span>
+                        <span className="fs-med d-block fw249 d-sm-none text-center ps-5 ps-sm-0 pe-5 pe-sm-0">Let us know how we can help! Order <span className="fst-italic">à la carte</span> or customize a package.</span>
                     </section>
-                    <section className="d-none d-md-flex mt-5">
+                    <section className="d-none d-lg-flex mt-5">
                         <LetsTalkBtnContainer isInReadyToInspireSec isDarker />
                     </section>
                 </section>
-                <section className="mt-4 mb-4 d-flex d-sm-block justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch ps-sm-5 d-flex d-md-none pb-5">
+                <section className="mt-4 mb-4 d-flex d-sm-block justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch ps-sm-5 d-flex d-lg-none pb-5">
                     <LetsTalkBtnContainer isInReadyToInspireSec isDarker />
                 </section>
             </div>
