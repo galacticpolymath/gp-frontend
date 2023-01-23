@@ -8,7 +8,12 @@ $desktopFontSizeTierStatus: 24px !important;
 
 @media (min-width: 768px) {
   .tierDefaultStyles {
-    height: 1305px !important; 
+    min-height: 1305px !important; 
+
+    @media(min-width: 1200px) and (max-width: 1439px){
+      border: solid pink !important;
+      // min-width: 430px !important; 
+    }
   }
 
   .tierDefaultStyles:nth-last-child(-n + 2) {
@@ -24,16 +29,23 @@ $desktopFontSizeTierStatus: 24px !important;
 
 .tierTableRow {
   @media (min-width: 768px) {
-    height: 10px !important;
+    @media(min-width:1440px){
+      height: 10px !important;
+      white-space: nowrap !important;
+
+      td:last-child{
+        white-space: nowrap;
+      }
+    }
+
+    height: 40px !important;
     line-height: 27px !important;
     overflow: hidden !important;
-    white-space: nowrap !important;
     td:first-child {
       font-size: $desktopFontSizeTierStatus;
     }
     td:last-child {
       font-size: $desktopFontSizeTierCard;
-      white-space: nowrap;
       padding-left: 10px !important;
     }
   }
@@ -53,8 +65,7 @@ $desktopFontSizeTierStatus: 24px !important;
   border-radius: $borderRadiusModal;
 }
 
-.tierCardBody {
-}
+
 
 .tierProductBorder {
   border-top: solid 1px lightgray;

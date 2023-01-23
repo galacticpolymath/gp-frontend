@@ -109,6 +109,8 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                         </section>
                     </section>
                 </section>
+
+
                 <section className="mt-5 w-100 d-flex justify-content-center align-items-center  justify-content-sm-start align-items-sm-stretch priceSection">
                     <h4 className="text-dark fst-italic fs-large text-center text-sm-start">
                         <section className="d-none d-sm-flex flex-column">
