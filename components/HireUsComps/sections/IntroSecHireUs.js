@@ -20,19 +20,21 @@ import LayoutBackGroundImg from '../../../assets/img/1_northeast_merlot_darker.p
 const IntroSecHireUs = () => {
     return (
         <section className='d-flex flex-row parallax row introSecHireUsPg' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
-            <section className="d-none d-md-flex w-100 noMargin col-12 introSecAndLetTalksSec">
-                <section className="d-flex flex-column w-100 justify-content-center align-items-center">
-                    <section className="w-100 ps-5">
-                        <h1 className={`${styles.shadow} display-1 headingHireUs`}>Easier, Classroom-Ready Outreach</h1>
+            <section className="w-100 d-flex justify-content-center align-items-center">
+                <section className="d-none d-md-flex w-100 noMargin col-12 introSecAndLetTalksSec">
+                    <section className="d-flex flex-column w-100 justify-content-center align-items-center">
+                        <section className="w-100 ps-5">
+                            <h1 className={`${styles.shadow} display-1 headingHireUs`}>Easier, Classroom-Ready Outreach</h1>
+                        </section>
+                        <section className="w-100 ps-5">
+                            <span className={`${styles.shadow} display-6 noMargin noPadding w-75 subTxtHeadingDesktop`}>
+                                We translate your work so that non-experts can teach mind-opening lessons.
+                            </span>
+                        </section>
                     </section>
-                    <section className="w-100 ps-5">
-                        <span className={`${styles.shadow} display-6 noMargin noPadding w-75 subTxtHeadingDesktop`}>
-                            We translate your work so that non-experts can teach mind-opening lessons.
-                        </span>
+                    <section className="d-flex align-items-end justify-content-end letTalksMainBtnSec">
+                        <LetsTalkBtnContainer isMainBtn />
                     </section>
-                </section>
-                <section className="d-flex align-items-end justify-content-end letTalksMainBtnSec">
-                    <LetsTalkBtnContainer isMainBtn />
                 </section>
             </section>
             {/* make this into a different component */}

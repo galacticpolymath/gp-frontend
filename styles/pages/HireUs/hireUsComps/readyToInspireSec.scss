@@ -4,10 +4,7 @@
   position: relative;
   width: 100vw;
   border: none;
-  
-  @media(min-width: 768px){
-    
-  }
+
   @media(max-width: 767px){
     height: 800px !important;
   }
@@ -16,7 +13,7 @@
 .readyToInspireSec {
   background-color: #2e0b1b;
 
-  @media(min-width: 992px){
+  @media(min-width: 768px){
     transform: translateY(-165px);
 
     @media (min-width: 768px) {
@@ -95,9 +92,7 @@
 .orderLaCarteSec,
 .readyInspireSec{
   @media(min-width: 768px){
-    // width: 50% !important;
-    // padding-left: 100px !important;
-
+    
     span{
       text-align: start !important;
       font-size: 40px !important;

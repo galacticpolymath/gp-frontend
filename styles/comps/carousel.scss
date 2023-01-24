@@ -26,6 +26,10 @@ $carouselBackgroundColor: #ffeded;
   width: 85% !important;
   border-radius: 1.3em;
 
+  @media(min-width: 1200px){
+    max-width: 1224px !important;
+  }
+
   @media (min-width: 576px) and (max-width: 767px) {
     min-width: 550px !important;
   }
