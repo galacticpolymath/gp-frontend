@@ -10,21 +10,20 @@ const CollapsibleLessonSection = ({
   SectionTitle = '',
   className = '',
   children,
-  highlighted = false,
   initiallyExpanded = false,
+  accordionId,
 }) => {
-  const accordionId = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}
-      id={accordionId}
+      id={(accordionId || SectionTitle).replace(/[\s!]/gi, '_').toLowerCase()}
       className={className}
-      highlighted={highlighted}
-      buttonClassName="btn btn-light w-100 text-left"
+      buttonClassName="btn btn-info w-100 text-left"
       button={(
-        <div className='container mx-auto text-black'>
-          <h3 className='m-0'>{index && `${index}. `}{SectionTitle}</h3>
-          TODO: arrow
+        <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-1'>
+          <h2 className='m-0'>{index && `${index}. `}{SectionTitle}</h2>
+          <i className="fs-3 bi-chevron-down"></i>
+          <i className="fs-3 bi-chevron-up"></i>
         </div>
       )}
     >
@@ -38,8 +37,8 @@ CollapsibleLessonSection.propTypes = {
   SectionTitle: PropTypes.string,
   className: PropTypes.string,
   children: PropTypes.object,
-  highlighted: PropTypes.bool,
   initiallyExpanded: PropTypes.bool,
+  accordionId: PropTypes.string,
 };
 
 export default CollapsibleLessonSection;

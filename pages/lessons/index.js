@@ -16,33 +16,30 @@ const LessonsPage = ({ lessons }) => {
         <div className='container mx-auto grid py-5 px-3 gap-3'>
           {lessons
             .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
-            .map(lesson => (
+            .map((lesson, i) => (
               <Link
-                key={lesson.id}
+                key={i}
                 href={`/lessons/${lesson.id}`}
-                passHref
+                className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'
               >
-                <a className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
-                  <div>
-                    {lesson.CoverImage && lesson.CoverImage.url && (
-                      <Image
-                        src={lesson.CoverImage.url}
-                        alt={lesson.Subtitle}
-                        layout="responsive"
-                      // TODO: will these always be the same size?
-                        width={1500}
-                        height={450}
-                      />
-                    )}
-                  </div>
-                  <div className='p-3'>
-                    <h3 className='fw-light text-black'>{lesson.Title}</h3>
-                    <p className='text-black'>{lesson.Subtitle}</p>
-                    <span className={`badge bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
-                      {lesson.Section.overview.TargetSubject}
-                    </span>
-                  </div>
-                </a>
+                <div>
+                  {lesson.CoverImage && lesson.CoverImage.url && (
+                    <Image
+                      src={lesson.CoverImage.url}
+                      alt={lesson.Subtitle}
+                      layout="responsive"
+                      width={1500}
+                      height={450}
+                    />
+                  )}
+                </div>
+                <div className='p-3'>
+                  <h3 className='fw-light text-black'>{lesson.Title}</h3>
+                  <p className='text-black'>{lesson.Subtitle}</p>
+                  <span className={`badge bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
+                    {lesson.Section.overview.TargetSubject}
+                  </span>
+                </div>
               </Link>
             ))}
         </div>

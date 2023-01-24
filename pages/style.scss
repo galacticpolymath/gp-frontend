@@ -4,10 +4,11 @@ $enable-cssgrid: true;
 
 $primary: $burst-purple;
 $secondary: $atomic-blue;
-$info: lighten($hydrogen-blue-light, 15%);
+$info: lighten($hydrogen-blue-light, 25%);
 
-@import "../node_modules/bootstrap/scss/bootstrap";
-@import "../node_modules/react-responsive-carousel/lib/styles/carousel.min.css";
+@import '../node_modules/bootstrap/scss/bootstrap';
+@import '../node_modules/react-responsive-carousel/lib/styles/carousel.min.css';
+@import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
 
 html,
 body {
@@ -85,12 +86,34 @@ img {
 .bg-light-gray {
   background-color: #eee;
 }
+.bg-primary-light {
+  background-color: lighten($primary, 45%);
+}
 .bg-science {
   background-color: $science;
+}
+.bg-science-light {
+  background-color: $science-hl;
 }
 .bg-math {
   background-color: $math;
 }
+.bg-math-light {
+  background-color: $math-hl;
+}
+.bg-ela {
+  background-color: $ela;
+}
+.bg-ela-light {
+  background-color: $ela-hl;
+}
+.bg-socialstudies {
+  background-color: $social-studies;
+}
+.bg-socialstudies-light {
+  background-color: $social-studies-hl;
+}
+// TODO: what are the other possible TargetSubject values? (see lessons page badges)
 
 // bootstrap overrides
 .btn-light {
@@ -341,3 +364,17 @@ img {
 }
 
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
+.accordion-header button {
+  &.collapsed .bi-chevron-up {
+    display: none;
+  }
+  &:not(.collapsed) {
+    .bi-chevron-down {
+      display: none;
+    }
+    .bi-three-dots {
+      opacity: 0;
+      margin-bottom: -1rem;
+    }
+  }
+}
