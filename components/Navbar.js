@@ -39,8 +39,8 @@ export default function Navbar() {
               </li>
               {[
                 ['/lessons', 'Lessons'],
-                // ['/jobviz', 'Jobviz'],
-                // ['/hireus', 'Hire Us'],
+                //* ['/jobviz', 'Jobviz'], */}
+                ['/hire-us', 'Hire Us'],
                 ['/about', 'About'],
               ].map(([url, title]) => (
                 <li key={url} className='nav-item'>
