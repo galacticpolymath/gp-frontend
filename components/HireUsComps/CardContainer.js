@@ -51,7 +51,6 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
     const [isCarouselPaused, setIsCarouselPaused] = useState(false);
     const BULL_POINT_INDEX_NUMS = userInputs && userInputs.map((_, index) => index);
 
-
     const resetTimeout = () => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
