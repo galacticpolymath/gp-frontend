@@ -72,23 +72,23 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                             <tbody>
                                 <tr className="tierTableRow">
                                     <td className="tierInfoStatus fs-large text-center text-sm-end text-sm-nowrap">{learningExperience}</td>
-                                    <td id="0" onClick={handleTierFeatureTxtClick} className="fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative">GP Learning Experience <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /> </td>
+                                    <td id="0" onClick={handleTierFeatureTxtClick} className="fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">GP Learning Experience <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /> </td>
                                 </tr>
                                 <tr className="tierTableRow">
                                     <td className="w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large">{projectSupport}</td>
-                                    <td id="1" onClick={handleTierFeatureTxtClick} className="fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative">Years of Project Support <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
+                                    <td id="1" onClick={handleTierFeatureTxtClick} className="fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">Years of Project Support <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
                                     <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${basic ? '' : 'op-5'}`}>{basic ? `${basic} secs` : <HiOutlineX />}</td>
-                                    <td id="2" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative ${basic ? '' : 'op-5'}`}>Basic Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
+                                    <td id="2" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${basic ? '' : 'op-5'}`}>Basic Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
                                     <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${complex ? '' : 'op-5'}`}>{complex ? `${complex} secs` : <HiOutlineX />}</td>
-                                    <td id="3" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative ${complex ? '' : 'op-5'}`}>Complex Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
+                                    <td id="3" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${complex ? '' : 'op-5'}`}>Complex Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
                                     <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${isMajorExtension ? '' : 'op-5'}`}>{isMajorExtension ? <GoCheck /> : <HiOutlineX />}</td>
-                                    <td id="4" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative ${isMajorExtension ? '' : 'op-5'}`}>Major extension in Year 3 <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
+                                    <td id="4" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${isMajorExtension ? '' : 'op-5'}`}>Major extension in Year 3 <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                             </tbody>
                         </table>

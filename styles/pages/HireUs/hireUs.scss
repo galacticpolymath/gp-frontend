@@ -709,6 +709,15 @@ $carouselTitleFtWeightDesktop: 800 !important;
     }
   }
 
+  @media(max-width: 767px){
+    > section:first-child {
+      > span {
+        width: 80px !important;
+        height: 80px !important;
+      }
+    }
+  }
+
   > section:last-child {
     span {
       @media (min-width: 768px) {

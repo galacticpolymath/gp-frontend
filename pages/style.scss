@@ -355,6 +355,11 @@ img {
   text-decoration: none !important;
 }
 
+.underline-on-hover:hover{
+  text-decoration: underline !important;
+  cursor: pointer !important;
+}
+
 .btnColorChangeOnHover:hover{
   opacity: .8 !important;
 }
