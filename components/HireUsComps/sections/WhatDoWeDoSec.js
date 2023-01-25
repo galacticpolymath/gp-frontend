@@ -33,7 +33,7 @@ const WhatDoWeDoSec = () => {
                         We mobilize knowledge
                     </span>
                     <span className='ms-2 fwtHireUsCard'>
-                        by turning our clients outreach goals into rich, open-access learning experiences.
+                        by turning our clients' outreach goals into rich, open-access learning experiences.
                     </span>
                 </span>
             </section>
