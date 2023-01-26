@@ -4,7 +4,10 @@ import Navbar from './Navbar';
 
 import { Montserrat } from '@next/font/google';
 
-const montserrat = Montserrat({ subsets: ['latin'] });
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: 'variable',
+});
 
 export default function Layout({ title, keywords, description, children }) {
   return (
