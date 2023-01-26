@@ -17,14 +17,8 @@
 /* eslint-disable react/jsx-indent */
 
 import Image from 'next/image';
-import { Card, CardBody } from 'reactstrap';
+import { Card } from 'react-bootstrap';
 import Layout from '../components/Layout';
-import styles from './index.module.css';
-import LayoutBackGroundImg from '../assets/img/1_northeast_merlot_darker.png';
-import HireUsCardSection from '../components/HireUsComps/HireUsCardSection';
-import ReactPlayer from 'react-player'
-import LetsTalkBtnContainer from '../components/HireUsComps/buttons/LetsTalkBtnContainer';
-import HireUsCardFirstSecMobile from '../components/HireUsComps/HireUsCardFirstSecMobile';
 import CardContainer from '../components/HireUsComps/CardContainer';
 import teacherTestimonies from '../data/HireUsPg/teacherTestimonies.json'
 import grantReviewersFeedback from '../data/HireUsPg/grantReviewersFeedback.json'
@@ -60,7 +54,7 @@ const HireUsPage = () => {
                         <IntroSecHireUs />
                         <section className="CardSec d-flex justify-content-center align-items-center flex-column align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
                             <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-5'>
-                                <CardBody className="hireUsPgInfoCardBody">
+                                <Card.Body className="hireUsPgInfoCardBody">
                                     <WhatDoWeDoSec />
                                     <HowDoesItWorkSec />
                                     <WhatYouWillGetSec />
@@ -96,7 +90,7 @@ const HireUsPage = () => {
                                         />
                                     </section>
                                     <HowMuchDoesItCostSec setTiersInfoForModalArr={setTiersInfoForModalArr} />
-                                </CardBody>
+                                </Card.Body>
                             </Card>
                         </section>
                     </div>
