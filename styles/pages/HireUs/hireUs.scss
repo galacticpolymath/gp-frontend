@@ -771,12 +771,20 @@ $carouselTitleFtWeightDesktop: 800 !important;
 
   @media (min-width: 768px) and (max-width: 991px) {
     height: 220px !important;
+    // border: solid pink !important;
   }
 }
 
 .whatWillYouGetSec:nth-child(even) {
   @media (min-width: 992px) {
     // margin-top: 18px !important;
+  }
+}
+
+.whatWillYouGetSec:nth-child(even) {
+  @media (max-width: 850px) {
+    margin-top: 50px !important;
+    // border: solid pink !important;
   }
 }
 
