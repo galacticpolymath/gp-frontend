@@ -3,7 +3,7 @@
   border: solid 0.8px #2e0b1b;
   padding: 25px 45px 25px 45px;
 
-  @media(min-width: 1300px){
+  @media (min-width: 1300px) {
     padding-left: 40px !important;
     padding-right: 40px !important;
   }
@@ -13,10 +13,39 @@
   }
 }
 
-
 .HireUsCardFirstSecMobile.weMobileKnowledgeSec:not(:first-child) {
   @media (min-width: 1200px) {
     margin-left: 15px !important;
+  }
+}
+
+.HireUsCardFirstSecMobile > section:first-child img {
+  max-width: none !important;
+  @media (max-width: 767px) {
+    width: 85px !important;
+    height: 85px !important;
+  }
+
+  @media (max-width: 575px) {
+    width: 85px !important;
+    height: 85px !important;
+  }
+}
+
+.weMobileKnowledgeSec {
+  > section:first-child {
+    img {
+      @media (min-width: 768px) {
+        width: 85px !important;
+        height: 85px !important;
+      }
+    }
+  }
+
+  > section:last-child{
+    > span{
+
+    }
   }
 }
 
@@ -25,8 +54,6 @@
   margin-top: 45px !important;
 }
 
-
-
 @media (min-width: 768px) and (max-width: 991px) {
   .whatDoWeDoSec {
     > section:first-child {
@@ -34,7 +61,6 @@
       width: 100% !important;
     }
   }
-
 
   .weMobileKnowledgeSec:nth-child(2) {
     transform: translateX(20px) !important;
@@ -50,10 +76,9 @@
   margin-top: 75px !important;
 }
 
-.weMobileKnowledgeSec{
-  @media(min-width: 992px) and (max-width: 1299px){
+.weMobileKnowledgeSec {
+  @media (min-width: 992px) and (max-width: 1299px) {
     padding-right: 15px !important;
-    // border: solid .5px pink !important;
   }
 }
 

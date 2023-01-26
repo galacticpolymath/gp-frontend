@@ -32,7 +32,7 @@ $modalBorderColor: #707070;
 
 .react-player__preview{
   @media(min-width: 768px){
-    border-radius: $borderRadiusModal;
+    // border-radius: $borderRadiusModal;
   }
 }
 
@@ -46,6 +46,10 @@ $modalBorderColor: #707070;
     justify-content: center !important;
     align-items: center !important;
     border-radius: 0.375rem !important;
+
+    > div{
+      border-radius: $borderRadiusModal;
+    }
   }
 
   border: solid 1px #e3e3e3;

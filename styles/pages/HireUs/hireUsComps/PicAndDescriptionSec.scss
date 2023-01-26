@@ -1,50 +1,47 @@
+.ownerSection {
+  @media (min-width: 992px) and (max-width: 1299px) {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    > section:first-child {
+      margin-top: 25px !important;
+    }
 
-.ownerSection{
-  @media (min-width: 992px) and (max-width: 1299px){
-      display: flex !important;
-      flex-direction: column-reverse !important;
-      > section:first-child{
-        margin-top: 25px !important;
-      }
-
-      > section:last-child{
-        width: 100% !important;
-      }
+    > section:last-child {
+      width: 100% !important;
+    }
   }
-  > section:last-child{
-    > div{
-      @media(min-width: 768px){
+  > section:last-child {
+    > div {
+      @media (min-width: 768px) {
         width: 225px !important;
         height: 225px !important;
       }
     }
   }
 
-  > section:first-child{
-    @media(max-width: 575px){
+  > section:first-child {
+    @media (max-width: 575px) {
       margin-top: 17px !important;
     }
 
-    > span{
-      @media(min-width: 768px){
+    > span {
+      @media (min-width: 768px) {
         line-height: 28px;
       }
     }
   }
 }
 
-
-
 .picAndDescriptionSec {
   display: flex !important;
 
-  @media(min-width: 576px){
+  @media (min-width: 576px) {
     flex-direction: row-reverse !important;
   }
 
   > section {
     > div {
-      @media(max-width: 767px){
+      @media (max-width: 767px) {
         width: 150px !important;
         height: 150px !important;
       }
@@ -75,17 +72,15 @@
   }
 }
 
-
 .GPConstellationSec {
   @media (min-width: 576px) {
     flex-direction: row !important;
-    > section:first-child{
+    > section:first-child {
       margin-left: 0px !important;
       padding-right: 5px !important;
     }
-    > section:last-child{
-      div{
-        // margin-left: 5px;
+    > section:last-child {
+      div {
         width: 35vw !important;
         height: 200px !important;
       }
@@ -97,8 +92,7 @@
       display: flex !important;
       justify-content: center;
       align-items: center;
-      
-      
+
       div {
         // border: solid pink;
         // width: 45% !important;
@@ -106,30 +100,29 @@
         width: 70% !important;
         height: 190px !important;
         // min-width: 164px !important;
-        min-width: 240px !important;
+        // min-width: 240px !important;
+        // border: solid pink !important;
       }
     }
   }
 }
 
-.shareYourKnowledgeDesktopSec{
-  > section:first-child{
-    @media (min-width: 768px) and (max-width: 1199px){
-      height: 300px !important; 
+.shareYourKnowledgeDesktopSec {
+  > section:first-child {
+    @media (min-width: 768px) and (max-width: 1199px) {
+      height: 300px !important;
     }
   }
 }
 
-
-.GPConstellationSec.onDesktop{
-
-  @media(min-width: 768px){
-    > section:last-child{
-      div{
+.GPConstellationSec.onDesktop {
+  @media (min-width: 768px) {
+    > section:last-child {
+      div {
         width: 40vw !important;
         max-width: 576px !important;
 
-        @media(max-width: 1199px){
+        @media (max-width: 1199px) {
           width: 40vw !important;
         }
       }
@@ -137,34 +130,34 @@
   }
 
   @media (min-width: 768px) {
-    > section:first-child{
+    > section:first-child {
       display: none !important;
     }
-    > section:last-child{
-      > div{
+    > section:last-child {
+      > div {
         height: 300px !important;
       }
     }
   }
 
-  @media(min-width: 768px) and (max-width: 1199px){
-    > section:last-child{
+  @media (min-width: 768px) and (max-width: 1199px) {
+    > section:last-child {
       height: auto !important;
     }
   }
 }
 
 .shareYourKnowledgeImgContainer > span,
-.GPConstellationSec.onDesktop span{
-  @media(min-width: 1200px){
-      width: 30vw !important;
-      min-width: 475px !important;
-      border-radius: .8rem !important;
+.GPConstellationSec.onDesktop span {
+  @media (min-width: 1200px) {
+    width: 30vw !important;
+    min-width: 475px !important;
+    border-radius: 0.8rem !important;
   }
 }
 
-.lessonInfoSec{
-  @media(min-width: 1200px){
+.lessonInfoSec {
+  @media (min-width: 1200px) {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -174,8 +167,9 @@
   }
 }
 
-.eachLessonWrapper{
-  @media(min-width: 1200px){
+.eachLessonWrapper {
+  @media (min-width: 1200px) {
+    max-height: 385.5px !important;
     // padding-right: 45px !important;
     // width: 75% !important;
   }
@@ -184,14 +178,13 @@
 .ownerSection {
   > section {
     > div {
-      @media(max-width: 767px){
+      @media (max-width: 767px) {
         width: 190px !important;
         height: 190px !important;
       }
     }
   }
 
-  
   @media (min-width: 576px) {
     padding-bottom: 75px;
     > section:first-child {
@@ -199,24 +192,24 @@
     }
   }
 
-  @media (min-width: 768px) and (max-width: 1299px){
-    > section:last-child{
+  @media (min-width: 768px) and (max-width: 1299px) {
+    > section:last-child {
       width: 100% !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
     }
 
-    > section:first-child{
+    > section:first-child {
       margin-left: 0 !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      > span{
-        @media(max-width: 991px){
+      > span {
+        @media (max-width: 991px) {
           margin-left: 20px !important;
         }
-        @media(min-width: 992px){
+        @media (min-width: 992px) {
           text-align: center !important;
         }
       }
@@ -232,26 +225,25 @@
   }
 }
 
-.ownerSection{
-  @media(min-width: 992px) and (max-width: 1299px){
+.ownerSection {
+  @media (min-width: 992px) and (max-width: 1299px) {
     flex-direction: column-reverse !important;
   }
 
-  @media(min-width: 1300px){
-    > section:first-child{
+  @media (min-width: 1300px) {
+    > section:first-child {
       padding-top: 7px !important;
     }
   }
 }
 
-
 .imgSquareContainer {
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     width: 70px;
     height: 70px;
   }
 
-  @media(max-width: 767px){
+  @media (max-width: 767px) {
     width: 120px;
     height: 120px;
   }
@@ -261,48 +253,46 @@
   margin-top: 25px !important;
 }
 
-@media(min-width: 1200px){
-  .mattsAward:not(:first-child){
+@media (min-width: 1200px) {
+  .mattsAward:not(:first-child) {
     margin-top: 50px !important;
   }
 }
 
-.mattsAwardsSec{
-  @media(min-width: 992px){
+.mattsAwardsSec {
+  @media (min-width: 992px) {
     margin-left: 80px !important;
   }
 }
 
 .mattsAward {
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     height: 110px !important;
-    span{
+    span {
       font-size: 29px !important;
     }
-    > section:last-child{
+    > section:last-child {
       height: 100% !important;
       display: flex !important;
       padding-top: 10px !important;
     }
   }
 
-  @media(min-width: 768px) and (max-width: 1199px){
+  @media (min-width: 768px) and (max-width: 1199px) {
     height: 220px !important;
   }
 
-  
-
-  @media(max-width: 767px){
-    span{
+  @media (max-width: 767px) {
+    span {
       text-decoration: underline !important;
       text-decoration-thickness: 1.5px !important;
     }
   }
 
-  @media(max-width: 991px) and (min-width: 576px){
+  @media (max-width: 991px) and (min-width: 576px) {
     padding-left: 30px !important;
-    > section:last-child{
-      > div{
+    > section:last-child {
+      > div {
         width: 120px !important;
         height: 120px !important;
       }
@@ -328,7 +318,7 @@
       }
     }
 
-    span{
+    span {
       text-decoration: underline !important;
       text-decoration-thickness: 1.5px !important;
       // padding-left: 8px !important;
@@ -336,8 +326,6 @@
     }
   }
 }
-
-
 
 .secWithHumanPic {
   img {
@@ -365,26 +353,32 @@
   }
 }
 
+.hireUsCardBoldedTxt{
+  @media(min-width:768px){
+    // white-space: nowrap;
+  }
+}
 
-.scientist{
-  @media(min-width: 768px){
-    > section:first-child{
+
+.scientist {
+  @media (min-width: 768px) {
+    > section:first-child {
       margin-top: 20px !important;
-      > span{
+      > span {
         line-height: 24px !important;
         font-size: 20px !important;
       }
     }
     height: 230px !important;
     > section:last-child {
-      > div{
+      > div {
         width: 200px !important;
-        border-radius:  0px !important;
+        border-radius: 0px !important;
         height: 200px !important;
         position: relative !important;
-        > span{
+        > span {
           transform: translate(-50%, -50%) !important;
-          top: 50% !important; 
+          top: 50% !important;
           left: 50% !important;
           width: 175px !important;
           height: 175px !important;
@@ -393,28 +387,28 @@
     }
   }
 
-  @media(min-width: 768px) and (max-width: 1199px){
+  @media (min-width: 768px) and (max-width: 1199px) {
     // border: solid pink !important;
     // display: flex !important;
     flex-direction: column-reverse !important;
     height: 350px !important;
 
-    > section:last-child{
+    > section:last-child {
       width: 100% !important;
       display: grid;
       place-items: center;
     }
 
-    > section:first-child{
+    > section:first-child {
       height: 115px !important;
       margin-top: 0px !important;
       margin-left: 0px !important;
 
-      > h4{
+      > h4 {
         text-align: center !important;
       }
 
-      > span{
+      > span {
         text-align: center !important;
         display: inline-block !important;
         width: 100% !important;
@@ -422,70 +416,128 @@
     }
   }
 
-  @media(min-width: 1200px){
+  @media (min-width: 1200px) {
     display: inline-flex !important;
   }
 }
 
 .scientist:not(:first-child) {
-  @media(max-width: 767px){
+  @media (max-width: 767px) {
     margin-top: 35px !important;
   }
 }
 
-.regImgSec{
-  @media(min-width: 1200px){
+.regImgSec {
+  @media (min-width: 1200px) {
     height: fit-content !important;
   }
 }
 
+.shareYourKnowledgeImgContainer.classRoom {
+  @media (min-width: 1200px) {
+    padding-top: 24px !important;
+    // border: solid pink !important;
+    // display: flex !important;
+    // align-items: center !important;
+    // justify-content: center !important;;
+  }
+}
 
 .regImgSec,
-.shareYourKnowledgeImgContainer.classRoom{
-  @media(min-width: 768px){
-    > img{
-      height: 340px !important;
+.shareYourKnowledgeImgContainer.classRoom {
+  @media (min-width: 768px) {
+    > img {
+      // height: 340px !important;
     }
   }
 }
 
-.shareYourKnowledgeDesktopSec{
-  > section:first-child{
-    > section:last-child{
-      @media(min-width: 1200px){
+.shareYourKnowledgeDesktopSec {
+  > section:first-child {
+    > section:last-child {
+      @media (min-width: 1200px) {
         // margin-left: 20px !important;
-        transform: translateX(20px) !important;
+        // transform: translateX(20px) !important;
       }
     }
   }
 }
 
-.gpConstellation{
-  @media(min-width: 768px) and (max-width: 991px){
+.gpConstellation {
+  @media (min-width: 768px) {
+    height: 300px !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
     min-width: 320px !important;
     margin-left: 13px !important;
   }
+
+  @media (min-width: 1200px) {
+    height: 281px !important;
+  }
 }
 
+@media (min-width: 768px) {
+  .gpConstellation,
+  .shareYourKnowledgeImgContainer > img {
+    width: 350px !important;
+    height: 350px !important;
 
-.lessonInfoSec{
-  @media(min-width: 1200px){
+    @media (max-width: 1199px) {
+      width: 325px !important;
+      height: 325px !important;
+    }
+  }
+
+  .shareYourKnowledgeImgContainer {
+    @media (min-width: 1200px) {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: stretch !important;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .GPConstellationSec > section:last-child{
+    @media(max-width: 575px){
+      margin-top: 25px !important;
+      // padding-right: 50px !important;
+    }
+  }
+
+  .GPConstellationSec > section:last-child{
+    margin-right: 10px !important;
+    > div{
+      width: 225px !important;
+      height: 225px !important;
+    }
+  }
+  .shareYourKnowledgeImgContainer > img {
+    width: 350px !important;
+    height: 350px !important;
+  }
+}
+
+.lessonInfoSec {
+  @media (min-width: 1200px) {
     transform: translateX(20px) !important;
   }
 }
 
-.shareYourKnowledgeDesktopSec{
-  > section:first-child{
-    > section:first-child{
-      @media(min-width: 1300px){
+.shareYourKnowledgeDesktopSec {
+  > section:first-child {
+    > section:first-child {
+      @media (min-width: 1300px) {
         padding-left: 3rem !important;
       }
     }
   }
 }
 
-.shareYourKnowledgeImgSec{
-  @media(min-width: 768px){
+.shareYourKnowledgeImgSec {
+  @media (min-width: 768px) {
     margin-bottom: 50px !important;
   }
 }

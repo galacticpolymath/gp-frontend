@@ -74,7 +74,7 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
                         <div className='shareYourKnowledgeImgContainer position-relative'>
                             <PicAndDescriptionSec
                                 imgPath="/imgs/GP_Constellation_dark.png"
-                                parentSecStyles="GPConstellationSec onDesktop d-md-flex justify-content-md-center align-items-md-center"
+                                parentSecStyles="GPConstellationSec onDesktop d-md-flex justify-content-md-center align-items-md-center align-items-xl-stretch"
                                 isRegImg
                             />
                         </div>

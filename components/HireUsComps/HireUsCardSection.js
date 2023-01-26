@@ -20,14 +20,14 @@ const HireUsCardSection = ({ text, content, mobileTxt }) => {
                 </div>
             </section>
             <section className="d-flex flex-column d-md-none">
-                <section className="d-flex justify-content-center ps-3 pe-3 pt-5 ps-sm-0 pe-sm-0">
+                <section className="d-flex justify-content-center ps-3 pe-3 pt-2 pt-sm-5 ps-sm-0 pe-sm-0">
                     <span className="text-dark hireUsCardTxt responsiveInfoTxt text-center text-sm-start">
                         {mobileTxt}
                     </span>
                 </section>
-                <div className="d-flex justify-content-center align-items-center w-100 mt-5 pt-4 pb-4">
+                <section className="d-flex justify-content-center align-items-center w-100 mt-4 mt-sm-5 pt-1 pt-sm-4 pb-4">
                     {content}
-                </div>
+                </section>
             </section>
         </>
     )
