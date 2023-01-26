@@ -2,9 +2,13 @@ import Head from 'next/head';
 import Footer from './Footer';
 import Navbar from './Navbar';
 
+import { Montserrat } from '@next/font/google';
+
+const montserrat = Montserrat({ subsets: ['latin'] });
+
 export default function Layout({ title, keywords, description, children }) {
   return (
-    <div>
+    <div className={montserrat.className}>
       <Head>
         <title>{title}</title>
         <meta name='description' content={description} />
