@@ -26,7 +26,7 @@ $carouselBackgroundColor: #ffeded;
   width: 85% !important;
   border-radius: 1.3em;
 
-  @media(min-width: 1200px){
+  @media (min-width: 1200px) {
     max-width: 1224px !important;
   }
 
@@ -38,25 +38,31 @@ $carouselBackgroundColor: #ffeded;
     width: 95% !important;
   }
 
-  @media(min-width: 768px) and (max-width: 1299px){
+  @media (min-width: 768px) and (max-width: 1299px) {
     width: 95% !important;
   }
 }
 
-
-
-@media(min-width: 768px) and (max-width: 1299px){
-  .feedbackTxt{
+@media (min-width: 768px) and (max-width: 1299px) {
+  .feedbackTxt {
     width: 75% !important;
   }
 }
-
-
 
 .picsCardContainercardOnlyStyles {
   @media (min-width: 768px) {
     margin-top: 25px !important;
     width: 95% !important;
+
+    @media (max-width: 991px) {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      > div {
+        height: 100% !important;
+        // padding-top: 35px !important;
+      }
+    }
   }
 
   @media (max-width: 575px) {
@@ -119,12 +125,12 @@ $carouselBackgroundColor: #ffeded;
     position: static !important;
   }
 
-  @media(min-width: 768px) and (max-width: 1299px){
+  @media (min-width: 768px) and (max-width: 1299px) {
     right: 40px !important;
   }
 }
 
-.navBtnSec{
+.navBtnSec {
   z-index: 10000000;
 }
 
@@ -193,13 +199,13 @@ $carouselBackgroundColor: #ffeded;
     min-height: 200px !important;
   }
 
-  @media(min-width: 768px) and (max-width: 1299px){
+  @media (min-width: 768px) and (max-width: 1299px) {
     min-height: 250px !important;
 
-    > section:first-of-type{
+    > section:first-of-type {
       align-items: stretch !important;
       padding-top: 20px !important;
-    } 
+    }
   }
 }
 
@@ -239,8 +245,6 @@ $carouselBackgroundColor: #ffeded;
   @media (max-width: 575px) {
     height: fit-content;
   }
-
-  
 }
 
 .slides {
@@ -304,11 +308,40 @@ $carouselBackgroundColor: #ffeded;
   font-size: 40px;
 }
 
-.carouselImgContainer{
-  img{
+.carouselImgContainer {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  @media (max-width: 575px) {
+  }
+
+  img {
     max-width: none !important;
-    width: 170px !important;
-    height: 170px !important;
+
+    @media (min-width: 576px) {
+      width: 100px !important;
+      height: 100px !important;
+    }
+
+    @media (min-width: 768px) {
+      width: 100px !important;
+      height: 100px !important;
+    }
+
+    @media (min-width: 992px) {
+      width: 140px !important;
+      height: 140px !important;
+    }
+
+    @media (min-width: 1300px) {
+      width: 170px !important;
+      height: 170px !important;
+    }
+
+    @media (max-width: 575px) {
+      width: 140px !important;
+      height: 140px !important;
+    }
   }
 }
 
@@ -318,14 +351,15 @@ $carouselBackgroundColor: #ffeded;
     height: 150px;
   }
 
-  @media(min-width: 768px) and (max-width: 991px){
+  @media (min-width: 768px) and (max-width: 991px) {
     // width: 250px;
     // height: 250px;
     // border: solid pink !important;
     // display: flex !important;
     // align-items: center !important;
     // justify-content: center !important;;
-    > span{
+
+    > span {
       // width: 85px !important;
       // height: 150px !important;
     }
@@ -347,11 +381,10 @@ $carouselBackgroundColor: #ffeded;
     margin-left: 85px !important;
   }
 
-  @media(min-width: 768px) and (max-width: 1199px){
-    transform: translateX(20px)
+  @media (min-width: 768px) and (max-width: 1199px) {
+    // margin-left: 20px !important;
   }
 }
-
 
 .picsCardContainer {
   @media (max-width: 575px) {
@@ -368,27 +401,58 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .grantReviewsCard {
-  @media(min-width: 768px){
-    height: 330px !important;
+  @media (min-width: 768px) {
+    height: 355px !important;
   }
 
-  @media(min-width: 768px) and (max-width: 1299px){
-    height: fit-content !important;
+  @media (min-width: 768px) and (max-width: 1299px) {
+    // height: fit-content !important;
+    @media(max-width: 991px){
+    }
+  }
+
+  @media (min-width: 1200px) {
+    // padding-bottom: 200px !important;
+  }
+
+  @media (max-width: 768px) and (min-width: 576px) {
+    // height: 500px
+  }
+
+  @media (max-width: 575px) {
+    > div {
+      > div {
+        // border: solid pink !important;
+        // height: 500px !important;
+      }
+    }
   }
 }
 
+.grantReviewerBulletPtsSec {
+  @media (min-width: 768px){
+    margin-top: 25px !important;
+  }
+
+  @media(max-width: 767px){
+    margin-top: 11px !important;
+  }
+}
 
 .grantReviewItemCarousel {
   @media (min-width: 768px) {
-    > section{
+    > section {
       > section:first-child {
         width: 100%;
-        span{
+        @media(max-width: 991px){
+          height: 230px !important;
+        }
+        span {
           text-align: center !important;
         }
       }
 
-      > section:last-child{
+      > section:last-child {
         right: 20px !important;
       }
     }
@@ -398,14 +462,15 @@ $carouselBackgroundColor: #ffeded;
     }
   }
 
-  @media(min-width: 768px) and (max-width:1299px){
-    > section{
+  @media (min-width: 768px) and (max-width: 1299px) {
+    > section {
       min-height: 200px !important;
     }
 
-    > section:last-of-type{
-      > section:last-of-type{
+    > section:last-of-type {
+      > section:last-of-type {
         right: 35px !important;
+        bottom: -18px !important;
       }
     }
   }

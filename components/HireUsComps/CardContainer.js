@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-curly-brace-presence */
+/* eslint-disable react/jsx-tag-spacing */
 /* eslint-disable curly */
 /* eslint-disable react/jsx-curly-spacing */
 /* eslint-disable brace-style */
@@ -23,7 +25,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Card } from 'react-bootstrap';
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { BsCircle, BsCircleFill, BsFillPauseCircleFill, BsFillPlayCircleFill } from "react-icons/bs";
-import Image from 'next/image'
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 import { Parallax } from 'react-parallax';
 
@@ -33,10 +34,15 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
     let autoCarouselItemStyles = "autoCarouselItem position-relative"
     cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 fw245') : cardStyles
+    const bulletPtsMargin = ("Grant Reviewer Feedback" === headingTxt) ? 'grantReviewerBulletPtsSec mt-0' : 'mt-3'
+
+
 
     if (customCardStyles) {
         cardStyles += ' ' + customCardStyles
     }
+
+
 
     if (!customCardStyles) {
         cardStyles += ' ' + "pt-1 pb-4 pe-2"
@@ -165,7 +171,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                             <section className="d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec">
                                                                 <section className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
                                                                     <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
-                                                                    <span className="text-wrap text-dark fst-italic fw275">{occupation}</span>
+                                                                    {!!occupation && <span className="text-wrap text-dark fst-italic fw275">{occupation}</span>}
                                                                     {!!city && <span className="text-wrap text-dark fst-italic fw275">{city}</span>}
                                                                 </section>
                                                             </section>
@@ -174,7 +180,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                 )
                                             })}
                                         </div>
-                                        <section className='d-flex flex-column justify-content-center align-items-center pb-1 mt-4 mt-sm-3'>
+                                        <section className={`d-flex flex-column justify-content-center align-items-center pb-1 mt-4 mt-sm-3 ${bulletPtsMargin}`}>
                                             <section className="w-100 d-flex justify-content-center align-items-center">
                                                 {BULL_POINT_INDEX_NUMS.map((num, _index) => (
                                                     (num === index) ?
