@@ -33,9 +33,14 @@
   }
 }
 
+
+
 .picAndDescriptionSec {
-  display: flex;
-  flex-direction: row-reverse;
+  display: flex !important;
+
+  @media(min-width: 576px){
+    flex-direction: row-reverse !important;
+  }
 
   > section {
     > div {
@@ -47,8 +52,8 @@
   }
 
   > section:last-child {
-    height: 200px !important;
-    width: fit-content !important;
+    height: 200px;
+    // width: fit-content !important;
   }
 
   @media (min-width: 576px) {
@@ -80,7 +85,7 @@
     }
     > section:last-child{
       div{
-        margin-left: 5px;
+        // margin-left: 5px;
         width: 35vw !important;
         height: 200px !important;
       }
@@ -115,6 +120,7 @@
   }
 }
 
+
 .GPConstellationSec.onDesktop{
 
   @media(min-width: 768px){
@@ -145,6 +151,33 @@
     > section:last-child{
       height: auto !important;
     }
+  }
+}
+
+.shareYourKnowledgeImgContainer > span,
+.GPConstellationSec.onDesktop span{
+  @media(min-width: 1200px){
+      width: 30vw !important;
+      min-width: 475px !important;
+      border-radius: .8rem !important;
+  }
+}
+
+.lessonInfoSec{
+  @media(min-width: 1200px){
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-left: 0px !important;
+    // width: 50% !important;
+    // border: solid pink !important;
+  }
+}
+
+.eachLessonWrapper{
+  @media(min-width: 1200px){
+    // padding-right: 45px !important;
+    // width: 75% !important;
   }
 }
 
@@ -199,6 +232,18 @@
   }
 }
 
+.ownerSection{
+  @media(min-width: 992px) and (max-width: 1299px){
+    flex-direction: column-reverse !important;
+  }
+
+  @media(min-width: 1300px){
+    > section:first-child{
+      padding-top: 7px !important;
+    }
+  }
+}
+
 
 .imgSquareContainer {
   @media(min-width: 768px){
@@ -230,7 +275,7 @@
 
 .mattsAward {
   @media(min-width: 768px){
-    height: 120px !important;
+    height: 110px !important;
     span{
       font-size: 29px !important;
     }
@@ -241,7 +286,7 @@
     }
   }
 
-  @media(min-width: 768px) and (max-width: 991px){
+  @media(min-width: 768px) and (max-width: 1199px){
     height: 220px !important;
   }
 
@@ -291,6 +336,8 @@
     }
   }
 }
+
+
 
 .secWithHumanPic {
   img {
@@ -374,10 +421,71 @@
       }
     }
   }
+
+  @media(min-width: 1200px){
+    display: inline-flex !important;
+  }
 }
 
 .scientist:not(:first-child) {
   @media(max-width: 767px){
     margin-top: 35px !important;
+  }
+}
+
+.regImgSec{
+  @media(min-width: 1200px){
+    height: fit-content !important;
+  }
+}
+
+
+.regImgSec,
+.shareYourKnowledgeImgContainer.classRoom{
+  @media(min-width: 768px){
+    > img{
+      height: 340px !important;
+    }
+  }
+}
+
+.shareYourKnowledgeDesktopSec{
+  > section:first-child{
+    > section:last-child{
+      @media(min-width: 1200px){
+        // margin-left: 20px !important;
+        transform: translateX(20px) !important;
+      }
+    }
+  }
+}
+
+.gpConstellation{
+  @media(min-width: 768px) and (max-width: 991px){
+    min-width: 320px !important;
+    margin-left: 13px !important;
+  }
+}
+
+
+.lessonInfoSec{
+  @media(min-width: 1200px){
+    transform: translateX(20px) !important;
+  }
+}
+
+.shareYourKnowledgeDesktopSec{
+  > section:first-child{
+    > section:first-child{
+      @media(min-width: 1300px){
+        padding-left: 3rem !important;
+      }
+    }
+  }
+}
+
+.shareYourKnowledgeImgSec{
+  @media(min-width: 768px){
+    margin-bottom: 50px !important;
   }
 }

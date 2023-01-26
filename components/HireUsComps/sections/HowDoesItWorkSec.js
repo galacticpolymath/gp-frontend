@@ -20,7 +20,7 @@ import Image from 'next/image'
 
 const HowDoesItWorkSec = () => {
     const cardVideoSec1 = (
-        <video className="border rounded looped-vid-hire-us" autoPlay muted loop>
+        <video className="rounded looped-vid-hire-us" autoPlay muted loop>
             <source src="./videos/client-asset-to-lesson-animation.mp4" type="video/mp4" />
         </video>
     );
@@ -29,7 +29,7 @@ const HowDoesItWorkSec = () => {
             url='https://www.youtube.com/watch?v=V0EtA5pbVSY'
             width='100%'
             height="100%"
-            light={true}
+            light
             playing
             controls />
     </div>
@@ -49,7 +49,7 @@ const HowDoesItWorkSec = () => {
                             <HireUsCardSection key={index} text={text} mobileTxt={mobileTxt} content={content} />
                             {(index === 0) && (
                                 <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3'>
-                                    <Image src="/imgs/pretty-down-arrow.png" width={75} height={75} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
+                                    <Image src="/imgs/pretty-down-arrow.png" width={50} height={50} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
                                 </section>
                             )}
                         </>

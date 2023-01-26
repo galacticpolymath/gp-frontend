@@ -30,7 +30,6 @@ export default function Home() {
           </Link>
         </div>
       </Hero>
-
       <div className="container mx-auto row align-items-center px-3 py-4 py-lg-5">
         <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 text-center'>
           <img

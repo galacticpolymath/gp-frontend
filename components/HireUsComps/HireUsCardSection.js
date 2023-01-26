@@ -13,7 +13,7 @@ const HireUsCardSection = ({ text, content, mobileTxt }) => {
                 <section className="d-flex justify-content-center w-100">
                     <h4 className="hireUsCardTxt pe-1 text-dark hireUsCardSectionTxt fwtHireUsCard">{text}</h4>
                 </section>
-                <div className="bg-white hireUsInfoStyledContainer w-100 border-dark mt-4 d-none d-md-flex justify-content-center align-items-center">
+                <div className="hireUsInfoStyledContainer w-100 border-dark mt-4 d-none d-md-flex justify-content-center align-items-center">
                     <section className="d-flex justify-content-center align-items-center w-75">
                         {content}
                     </section>
@@ -25,7 +25,7 @@ const HireUsCardSection = ({ text, content, mobileTxt }) => {
                         {mobileTxt}
                     </span>
                 </section>
-                <div className="d-flex justify-content-center align-items-center bg-white w-100 mt-5 pt-4 pb-4">
+                <div className="d-flex justify-content-center align-items-center w-100 mt-5 pt-4 pb-4">
                     {content}
                 </div>
             </section>

@@ -14,7 +14,8 @@
 
 import Image from 'next/image';
 
-const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles }) => {
+const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRegImg }) => {
+    let regImgStyles = isRegImg ? 'position-relative imgSection regImgSec ms-sm-1 ms-md-0' : 'position-relative imgSection ms-sm-1 ms-md-0'
 
     return (
         <section className={`${parentSecStyles ?? ""} picAndDescriptionSec`}>
@@ -31,10 +32,14 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles }) =>
                 }
             </section>
             {!link &&
-                <section className="position-relative imgSection">
-                        <div className="position-relative rounded-circle">
-                            <Image src={imgPath} layout='fill' alt="Galactic_PolyMath_HireUs_Img" />
-                        </div>
+                <section className={regImgStyles}>
+                        {isRegImg ?
+                            <img src={imgPath} alt="Galactic_PolyMath_HireUs_Img" className='w-100 gpConstellation' />
+                            :
+                            <div className="position-relative rounded-circle">
+                                <Image src={imgPath} layout='fill' alt="Galactic_PolyMath_HireUs_Img" />
+                            </div>
+                        }
                 </section>
             }
             {link &&

@@ -70,35 +70,39 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
                             </span>
                         </section>
                     </section>
-                    <section className="w-50 ms-5 d-flex justify-content-center align-items-center">
+                    <section className="w-50 d-flex justify-content-center align-items-center">
                         <div className='shareYourKnowledgeImgContainer position-relative'>
                             <PicAndDescriptionSec
                                 imgPath="/imgs/GP_Constellation_dark.png"
                                 parentSecStyles="GPConstellationSec onDesktop d-md-flex justify-content-md-center align-items-md-center"
+                                isRegImg
                             />
                         </div>
                     </section>
                 </section>
                 <section className="w-100 d-flex flex-md-column-reverse flex-xl-row">
-                    <section className="d-flex justify-content-center">
+                    <section className="d-flex justify-content-center shareYourKnowledgeImgSec">
                         <div className='shareYourKnowledgeImgContainer classRoom position-relative'>
-                            <Image src="/imgs/classroom.jpg" layout='fill' alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="h-100 w-100 position-absolute" />
+                            {/* <Image src="/imgs/classroom.jpg" layout='fill' alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="h-100 w-100 position-absolute" /> */}
+                            <img src="/imgs/classroom.jpg" alt="Galactic_PolyMath_First_Sec_Mobile_Info" className='' />
                         </div>
                     </section>
-                    <section className="d-flex flex-column justify-content-center align-items-center mt-md-5 mt-xl-0 ms-xl-5 mb-md-4 mt-xl-0">
-                        <section className="w-100">
-                            <h5 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h5>
-                        </section>
-                        <ul className="eachLessonInfoList">
-                            {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
-                                <li className="text-dark fw249" key={index}>
-                                    {normalTxt}
-                                    <span className="text-decoration-underline underline-less-thick">
-                                        {underLineTxt}
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
+                    <section className="d-flex flex-column justify-content-center align-items-center mt-md-5 mt-xl-0 ms-xl-5 mb-md-4 mt-xl-0 lessonInfoSec">
+                        <div className="eachLessonWrapper">
+                            <section className="w-100">
+                                <h5 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h5>
+                            </section>
+                            <ul className="eachLessonInfoList">
+                                {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
+                                    <li className="text-dark fw249" key={index}>
+                                        {normalTxt}
+                                        <span className="text-decoration-underline underline-less-thick">
+                                            {underLineTxt}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </section>
                 </section>
             </section>
