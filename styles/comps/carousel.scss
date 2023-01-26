@@ -304,6 +304,14 @@ $carouselBackgroundColor: #ffeded;
   font-size: 40px;
 }
 
+.carouselImgContainer{
+  img{
+    max-width: none !important;
+    width: 170px !important;
+    height: 170px !important;
+  }
+}
+
 .carouselImgContainer {
   @media (min-width: 768px) {
     width: 150px;

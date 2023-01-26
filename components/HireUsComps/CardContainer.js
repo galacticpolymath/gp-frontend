@@ -34,15 +34,15 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
     let autoCarouselItemStyles = "autoCarouselItem position-relative"
     cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 fw245') : cardStyles
 
-    if(customCardStyles){
+    if (customCardStyles) {
         cardStyles += ' ' + customCardStyles
     }
 
-    if(!customCardStyles){
+    if (!customCardStyles) {
         cardStyles += ' ' + "pt-1 pb-4 pe-2"
     }
 
-    if(itemCarouselStylesCustom){
+    if (itemCarouselStylesCustom) {
         autoCarouselItemStyles += ' ' + itemCarouselStylesCustom
     }
 
@@ -113,7 +113,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                             pics.map(({ path, alt }, index) => {
                                                 return (
                                                     <div key={index} className="carouselImgContainer position-relative">
-                                                        <Image layout="fill" objectFit="contain" src={path} alt={alt} />
+                                                        <img src={path} alt={alt} />
                                                     </div>
                                                 )
                                             })
@@ -176,8 +176,18 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                         </div>
                                         <section className='d-flex flex-column justify-content-center align-items-center pb-1 mt-4 mt-sm-3'>
                                             <section className="w-100 d-flex justify-content-center align-items-center">
-                                                {BULL_POINT_INDEX_NUMS.map(num => (
-                                                    (num === index) ? <BsCircleFill className="text-dark ms-1" /> : <BsCircle className="text-dark ms-1" onClick={() => { handleBulletPtClick(num) }} />
+                                                {BULL_POINT_INDEX_NUMS.map((num, _index) => (
+                                                    (num === index) ?
+                                                        <BsCircleFill
+                                                            key={_index}
+                                                            className="text-dark ms-1"
+                                                        />
+                                                        :
+                                                        <BsCircle
+                                                            className="text-dark ms-1"
+                                                            key={_index}
+                                                            onClick={() => { handleBulletPtClick(num) }}
+                                                        />
                                                 ))}
                                             </section>
                                             <section className="d-flex justify-content-center align-items-center mt-3 mt-md-2">
@@ -196,7 +206,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                             pics.map(({ path, alt }, index) => {
                                                 return (
                                                     <div key={index} className="carouselImgContainer position-relative">
-                                                        <Image layout="fill" objectFit="contain" src={path} alt={alt} />
+                                                        <img src={path} alt={alt} />
                                                     </div>
                                                 )
                                             })
