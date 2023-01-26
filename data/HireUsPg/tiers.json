@@ -31,7 +31,7 @@
             "projectSupport": 3,
             "vid": {
                 "basic": 8,
-                "complex": 90
+                "complex": 1.5
             },
             "isMajorExtension": false,
             "example": {
@@ -57,7 +57,7 @@
             "projectSupport": 3,
             "vid": {
                 "basic": 10,
-                "complex": 120
+                "complex": 2
             },
             "isMajorExtension": true,
             "example": {

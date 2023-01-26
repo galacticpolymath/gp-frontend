@@ -38,7 +38,6 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
     const handleTierFeatureTxtClick = event => {
         setTiersInfoForModalArr(tiersInfoForModalArr => tiersInfoForModalArr.map((tierInfo, index) => {
             if (index === parseInt(event.target.id)) {
-                console.log("opening modal")
                 return {
                     ...tierInfo,
                     isModalOn: true
@@ -79,11 +78,11 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                                     <td id="1" onClick={handleTierFeatureTxtClick} className="fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">Years of Project Support <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${basic ? '' : 'op-5'}`}>{basic ? `${basic} secs` : <HiOutlineX />}</td>
+                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${basic ? '' : 'op-5'}`}>{basic ? `${basic} min` : <HiOutlineX />}</td>
                                     <td id="2" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${basic ? '' : 'op-5'}`}>Basic Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${complex ? '' : 'op-5'}`}>{complex ? `${complex} secs` : <HiOutlineX />}</td>
+                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${complex ? '' : 'op-5'}`}>{complex ? `${complex} min` : <HiOutlineX />}</td>
                                     <td id="3" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${complex ? '' : 'op-5'}`}>Complex Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
