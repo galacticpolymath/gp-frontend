@@ -19,36 +19,6 @@
   }
 }
 
-.HireUsCardFirstSecMobile > section:first-child img {
-  max-width: none !important;
-  @media (max-width: 767px) {
-    width: 85px !important;
-    height: 85px !important;
-  }
-
-  @media (max-width: 575px) {
-    width: 85px !important;
-    height: 85px !important;
-  }
-}
-
-.weMobileKnowledgeSec {
-  > section:first-child {
-    img {
-      @media (min-width: 768px) {
-        width: 85px !important;
-        height: 85px !important;
-      }
-    }
-  }
-
-  > section:last-child{
-    > span{
-
-    }
-  }
-}
-
 .weMobileKnowledgeSec.lastSec {
   width: 60% !important;
   margin-top: 45px !important;
@@ -87,5 +57,15 @@
     > section:last-child {
       margin-left: 15px !important;
     }
+  }
+}
+
+.HireUsCardFirstSecMobile > section:first-child img {
+  max-width: none !important;
+  width: 65px !important;
+  height: 65px !important;
+  @media (max-width: 767px) {
+    width: 65px !important;
+    height: 65px !important;
   }
 }

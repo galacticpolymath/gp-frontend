@@ -13,8 +13,10 @@
   > section:last-child {
     > div {
       @media (min-width: 768px) {
-        width: 225px !important;
-        height: 225px !important;
+        // width: 195px !important;
+        // height: 195px !important;
+        width: 260px !important;
+        height: 260px !important;
       }
     }
   }
@@ -179,8 +181,8 @@
   > section {
     > div {
       @media (max-width: 767px) {
-        width: 190px !important;
-        height: 190px !important;
+        width: 165px !important;
+        height: 180px !important;
       }
     }
   }
@@ -205,6 +207,10 @@
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
+
+      @media(min-width: 992px){
+        margin-top: 40px !important;
+      }
       > span {
         @media (max-width: 991px) {
           margin-left: 20px !important;
@@ -232,7 +238,7 @@
 
   @media (min-width: 1300px) {
     > section:first-child {
-      padding-top: 7px !important;
+      padding-top: 15px !important;
     }
   }
 }
