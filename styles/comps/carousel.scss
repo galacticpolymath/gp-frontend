@@ -222,9 +222,14 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
+.studentInfoSec{
+  width: 100% !important;
+}
+
 .autoCarouselItem {
   display: inline-block;
   border-radius: 40px;
+  width: 100%;
 
   @media (max-width: 767px) {
     width: 100%;

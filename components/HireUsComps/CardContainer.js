@@ -161,11 +161,23 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                     <div className="autoCarouselContainer">
                                         <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
                                             {userInputs.map((userInput, index) => {
-                                                const { feedback, person, occupation, city } = userInput;
+                                                const { feedback, person, occupation, city, stars, product } = userInput;
+                                                let _className = 'pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center'
+
+                                                if(occupation?.includes("Grade")){
+                                                    _className += ' studentInfoSec'
+                                                }
+                                                
+
                                                 return (
                                                     <div className={autoCarouselItemStyles} key={index}>
                                                         <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-md-start align-items-md-stretch feedBackSec position-relative">
-                                                            <section className="pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center">
+                                                            {stars &&
+                                                                <section className="position-absolute starsSec d-none">
+                                                                    <span className="text-dark fst-italic fw275">For <i>{product}</i> ⭐ {`${stars}/5`}</span>
+                                                                </section>
+                                                            }
+                                                            <section className={_className}>
                                                                 <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275">"{feedback}"</span>
                                                             </section>
                                                             <section className="d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec">
