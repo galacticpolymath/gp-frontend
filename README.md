@@ -1,10 +1,8 @@
-4 tasks to reviews for this PR:
+Task for review in this PR:
+    -ensure 1:1 aspect ratios for all images
+        -classroom image for in 'share your knowledge'
+        -owner image
+        -images in 'what do we do' section 
+        -image for tier one card
 
-    -Fix 4 errors (Hydration failed)
-    
-    -remove white margin between "Ready to inspire" section and footer
-    
-    -How does it work?
-    
-    -ensure 1:1 aspect ratios for all images 
     
