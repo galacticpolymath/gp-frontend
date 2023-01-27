@@ -12,11 +12,11 @@
         "alt": "Animal_Behavior_Society"
     },
     {
-        "path":"/imgs/clientAssets/UMBC-vertical-logo-RGB-195x300.png",
-        "alt": "University_Maryland_Baltimore_County"
-    },
-    {
         "path":"/imgs/clientAssets/MU_bio_logo.png",
         "alt": "University_of_Missouri"
+    },
+    {
+        "path":"/imgs/clientAssets/UMBC-vertical-logo-RGB-195x300.png",
+        "alt": "University_Maryland_Baltimore_County"
     }
 ]

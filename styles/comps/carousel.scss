@@ -32,6 +32,8 @@ $carouselBackgroundColor: #ffeded;
 
   @media (min-width: 576px) and (max-width: 767px) {
     min-width: 550px !important;
+    width: 98% !important;
+    max-width: 700px !important;
   }
 
   @media (max-width: 575px) {
@@ -54,13 +56,17 @@ $carouselBackgroundColor: #ffeded;
     margin-top: 25px !important;
     width: 95% !important;
 
+    > div{
+      padding-top: 30px !important;
+    }
+
     @media (max-width: 991px) {
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
       > div {
         height: 100% !important;
-        // padding-top: 35px !important;
+        padding-top: 30px !important;
       }
     }
   }
@@ -113,6 +119,10 @@ $carouselBackgroundColor: #ffeded;
   @media (max-width: 767px) {
     bottom: 70px;
     right: 24px;
+
+    @media (min-width: 576px) {
+      bottom: 60px;
+    }
   }
 
   > section {
@@ -196,11 +206,11 @@ $carouselBackgroundColor: #ffeded;
 
 .feedBackSec {
   @media (min-width: 768px) {
-    min-height: 200px !important;
+    min-height: 180px !important;
   }
 
   @media (min-width: 768px) and (max-width: 1299px) {
-    min-height: 250px !important;
+    min-height: 310px !important;
 
     > section:first-of-type {
       align-items: stretch !important;
@@ -222,18 +232,50 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.studentInfoSec{
+.studentInfoSec {
   width: 100% !important;
+
+  @media (min-width: 768px) and (max-width: 1299px) {
+    > span {
+      text-align: center !important;
+    }
+  }
+
+  @media (max-width: 767px) {
+    display: grid !important;
+    align-items: center !important;
+  }
+}
+
+.studentParentStyles {
+  @media (max-width: 575px) {
+    transform: translateY(65px) !important;
+
+    @media (max-width: 425px) {
+      transform: translateY(95px) !important;
+    }
+
+    @media (max-width: 325px) {
+      transform: translateY(115px) !important;
+    }
+
+    @media (max-width: 305px) {
+      transform: translateY(135px) !important;
+    }
+    // justify-content: center !important;
+    // align-items: center !important;
+  }
 }
 
 .autoCarouselItem {
-  display: inline-block;
+  // display: inline-block;
+  display: inline-flex;
   border-radius: 40px;
   width: 100%;
 
   @media (max-width: 767px) {
     width: 100%;
-    height: 400px;
+    // height: 400px;
   }
 
   > section {
@@ -248,7 +290,8 @@ $carouselBackgroundColor: #ffeded;
   }
 
   @media (max-width: 575px) {
-    height: fit-content;
+    // height: 500px;
+    // border: solid pink !important;
   }
 }
 
@@ -317,8 +360,6 @@ $carouselBackgroundColor: #ffeded;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  @media (max-width: 575px) {
-  }
 
   img {
     max-width: none !important;
@@ -352,8 +393,20 @@ $carouselBackgroundColor: #ffeded;
 
 .carouselImgContainer {
   @media (min-width: 768px) {
-    width: 150px;
-    height: 150px;
+    width: 135px;
+    height: 135px;
+
+    @media(min-width: 950px){
+      width: 155px;
+    }
+
+    @media(min-width: 992px){
+      width: 185px;
+    }
+
+    @media (min-width: 1200px) {
+      width: 135px !important;
+    }
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
@@ -412,7 +465,7 @@ $carouselBackgroundColor: #ffeded;
 
   @media (min-width: 768px) and (max-width: 1299px) {
     // height: fit-content !important;
-    @media(max-width: 991px){
+    @media (max-width: 991px) {
     }
   }
 
@@ -435,11 +488,11 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .grantReviewerBulletPtsSec {
-  @media (min-width: 768px){
+  @media (min-width: 768px) {
     margin-top: 25px !important;
   }
 
-  @media(max-width: 767px){
+  @media (max-width: 767px) {
     margin-top: 11px !important;
   }
 }
@@ -449,7 +502,7 @@ $carouselBackgroundColor: #ffeded;
     > section {
       > section:first-child {
         width: 100%;
-        @media(max-width: 991px){
+        @media (max-width: 991px) {
           height: 230px !important;
         }
         span {
@@ -476,6 +529,66 @@ $carouselBackgroundColor: #ffeded;
       > section:last-of-type {
         right: 35px !important;
         bottom: -18px !important;
+      }
+    }
+  }
+}
+
+.carouselImgContainer:first-of-type,
+.carouselImgContainer:nth-last-of-type(2) {
+  @media (max-width: 575px) {
+    img {
+      width: 275px !important;
+    }
+  }
+}
+
+@media (max-width: 767px) and (min-width: 576px) {
+  .carouselImgContainer:first-of-type {
+    img {
+      width: 120px !important;
+    }
+  }
+
+  .carouselImgContainer:nth-last-of-type(2) {
+    img {
+      width: 167px !important;
+    }
+  }
+}
+
+
+.carouselImgContainer:first-of-type {
+  @media(min-width: 768px){
+    img{
+      width: 187px !important;
+    }
+  }
+}
+
+.carouselImgContainer:nth-last-of-type(2) {
+  @media(min-width: 768px){
+    img {
+      width: 209px !important;
+    }
+
+    @media(min-width: 950px){
+      img{
+        width: 220px !important;
+      }
+    }
+
+
+    @media(min-width: 992px){
+      img{
+        width: 240px !important;
+      }
+    }
+      
+
+    @media(min-width: 1200px){
+      img {
+        width: 300px !important;
       }
     }
   }

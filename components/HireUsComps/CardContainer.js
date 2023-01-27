@@ -34,15 +34,13 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
     let autoCarouselItemStyles = "autoCarouselItem position-relative"
     cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 fw245') : cardStyles
-    const bulletPtsMargin = ("Grant Reviewer Feedback" === headingTxt) ? 'grantReviewerBulletPtsSec mt-0' : 'mt-3'
+    const bulletPtsMargin = ("Grant Reviewer Feedback" === headingTxt) ? 'grantReviewerBulletPtsSec mt-md-0' : 'mt-3'
 
 
 
     if (customCardStyles) {
         cardStyles += ' ' + customCardStyles
     }
-
-
 
     if (!customCardStyles) {
         cardStyles += ' ' + "pt-1 pb-4 pe-2"
@@ -164,14 +162,15 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                 const { feedback, person, occupation, city, stars, product } = userInput;
                                                 let _className = 'pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center'
 
-                                                if(occupation?.includes("Grade")){
+                                                if(occupation?.includes("grade")){
                                                     _className += ' studentInfoSec'
+                                                    autoCarouselItemStyles += ' studentParentStyles'
                                                 }
                                                 
 
                                                 return (
                                                     <div className={autoCarouselItemStyles} key={index}>
-                                                        <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-md-start align-items-md-stretch feedBackSec position-relative">
+                                                        <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-sm-start justify-content-sm-center  align-items-center justify-content-md-start align-items-md-stretch feedBackSec position-relative">
                                                             {stars &&
                                                                 <section className="position-absolute starsSec d-none">
                                                                     <span className="text-dark fst-italic fw275">For <i>{product}</i> ⭐ {`${stars}/5`}</span>
