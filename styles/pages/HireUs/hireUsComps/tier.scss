@@ -43,7 +43,16 @@ $desktopFontSizeTierStatus: 24px !important;
   }
 
   @media(min-width: 768px){
-    min-width: 90px !important;
+    // min-width: 90px !important;
+  }
+
+  width: 140px !important;
+  height: 140px !important;
+  @media(min-width: 768px){
+    // width: 130px !important;
+    // height: 130px !important;
+    width: 140px !important;
+    height: 140px !important;
   }
 }
 
@@ -151,5 +160,16 @@ $desktopFontSizeTierStatus: 24px !important;
   @media (min-width: 768px) {
     margin-top: auto !important;
     transform: translateY(40px); 
+  }
+}
+
+.tierProductImg{
+  max-width: none !important;
+  @media(min-width: 1200px){
+    // width: 170px !important;
+    // width: 100% !important;
+    width:270px !important; 
+    height: 170px !important;
+    // height: 280px !important; 
   }
 }

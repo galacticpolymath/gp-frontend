@@ -121,7 +121,7 @@ $carouselBackgroundColor: #ffeded;
     right: 24px;
 
     @media (min-width: 576px) {
-      bottom: 60px;
+      bottom: 20px;
     }
   }
 
@@ -531,6 +531,10 @@ $carouselBackgroundColor: #ffeded;
         bottom: -18px !important;
       }
     }
+  }
+
+  @media(max-width: 767px){
+    min-height: 230px !important;
   }
 }
 

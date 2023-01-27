@@ -54,7 +54,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
         <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2 me-md-0 me-xl-2 pt-md-1 ps-md-5 pe-md-5'} mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
-                    <Img src={img} alt={`${tierName}_img`} className="w-25 tierImg" height={120} />
+                    <Img src={img} alt={`${tierName}_img`} className="tierImg" height={120} />
                 </section>
                 <section className="mt-4">
                     <h4 className="text-dark tierHeaderTag mt-2 fw450 text-center text-sm-start">{tierName.toUpperCase()}</h4>
@@ -99,7 +99,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                     </section>
                     <section className="productSec">
                         <div className="imgProductContainer">
-                            <Img src={productImg} alt={`${tierName}_ProductImg`} className="w-100 w-sm-90" height={170} />
+                            <Img src={productImg} alt={`${tierName}_ProductImg`} className="tierProductImg" height={170} />
                         </div>
                         <section className="mt-4 text-sm-start text-center">
                             <a href={link} target="_blank" className="text-dark text-decoration-underline fs-large fst-italic fw200 underline-less-thick">
