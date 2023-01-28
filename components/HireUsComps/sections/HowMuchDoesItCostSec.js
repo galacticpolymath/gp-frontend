@@ -32,7 +32,6 @@ const HowMuchDoesItCostSec = ({ setTiersInfoForModalArr }) => (
             </span>
             <span className="d-none d-md-inline fs-large fw200 fst-italic text-dark mt-2">Here are three standard options to use as a starting point<span className='d-inline d-xl-none'>.</span><span className='d-none d-xl-inline'>:</span></span>
         </section>
-        {/* d-md-none d-lx-flex */}
         <section className="d-flex d-md-none d-lg-flex flex-column flex-md-row ps-md-5 pe-md-5 pt-md-4">
             {tiers.map((tier, index) => {
                 return (
@@ -45,8 +44,6 @@ const HowMuchDoesItCostSec = ({ setTiersInfoForModalArr }) => (
                 )
             })}
         </section>
-        {/* ps-md-5 pe-md-5 pt-md-4 */}
-        {/* d-md-flex */}
         <section className="d-none d-md-flex d-lg-none flex-column justify-content-center align-items-center cardsCentralizedSec">
             {tiers.map((tier, index) => {
                 return (
@@ -59,13 +56,6 @@ const HowMuchDoesItCostSec = ({ setTiersInfoForModalArr }) => (
                 )
             })}
         </section>
-        {/* <section className="d-none d-md-flex d-xl-none d-flex justify-content-center align-items-center cardsCentralizedSec">
-            <Tier
-                isNoBackground={false}
-                tier={tiers[2]}
-                setTiersInfoForModalArr={setTiersInfoForModalArr}
-            />
-        </section> */}
     </section>
 )
 

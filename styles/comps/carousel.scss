@@ -249,9 +249,11 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .productReviewTxt {
-  @media (min-width: 767px) and (max-width: 991px) {
-  }
   position: absolute !important;
+
+  @media(max-width: 767px){
+    display: none !important;
+  }
 }
 
 .studentInfoSec {
@@ -273,6 +275,10 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .studentParentStyles {
+  @media(max-width: 767px){
+    transform: translateY(75px) !important;
+  }
+
   @media (max-width: 575px) {
     transform: translateY(65px) !important;
 
@@ -287,8 +293,12 @@ $carouselBackgroundColor: #ffeded;
     @media (max-width: 305px) {
       transform: translateY(135px) !important;
     }
-    // justify-content: center !important;
-    // align-items: center !important;
+  }
+}
+
+.nonStudentInfoSec{
+  @media(max-width: 767px){
+    bottom: 0px !important;
   }
 }
 
@@ -612,5 +622,12 @@ $carouselBackgroundColor: #ffeded;
 .bulletPtsSec {
   @media (min-width: 768px) and (max-width: 992px) {
     margin-top: 50px !important;
+  }
+}
+
+
+.teachersAndStudentReview{
+  @media(max-width: 767px){
+    // min-height: 300px !important;
   }
 }

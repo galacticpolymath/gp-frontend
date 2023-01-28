@@ -45,15 +45,15 @@ import WhatYouWillGetSec from '../components/HireUsComps/sections/WhatYouWillGet
 
 const HireUsPage = () => {
     const [tiersInfoForModalArr, setTiersInfoForModalArr] = useState(tiersInfoForModal.map(tier => ({ ...tier, isModalOn: false })))
-    const [isDOMLoaded, setIsDOMLoaded] = useState(false);
+    // const [isDOMLoaded, setIsDOMLoaded] = useState(false);
 
-    useEffect(() => {
-        setIsDOMLoaded(true);
-    }, []);
+    // useEffect(() => {
+    //     setIsDOMLoaded(true);
+    // }, []);
 
     return (
         <>
-            {isDOMLoaded ?
+            {/* {isDOMLoaded ? */}
                 <>
                     <Layout description="Galactic PolyMath Hire Us Page." keywords="Hire us, Galactic PolyMath">
                         <div className="w-100 hireUsPg d-flex flex-column justify-content-center align-items-center">
@@ -66,7 +66,13 @@ const HireUsPage = () => {
                                             <HowDoesItWorkSec />
                                             <WhatYouWillGetSec />
                                             <section className="d-flex mt-5">
-                                                <CardContainer headingTxt="What teachers & students says: " userInputs={teacherTestimonies} backgroundImgSrc={WhatTeachersSaysBackground.src} headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0" />
+                                                <CardContainer 
+                                                    headingTxt="What teachers & students says: " 
+                                                    userInputs={teacherTestimonies} 
+                                                    backgroundImgSrc={WhatTeachersSaysBackground.src} 
+                                                    headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0" 
+                                                    itemCarouselStylesCustom="teachersAndStudentReview"
+                                                />
                                             </section>
                                             <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />
                                             <ShareYourKnowledge lessonsInfo={lessonsInfo} />
@@ -74,7 +80,13 @@ const HireUsPage = () => {
                                             <ClientFundingSec />
                                             <WhenShouldIReachOutSec />
                                             <section className="d-flex mt-8">
-                                                <CardContainer headingTxt="What our clients says: " userInputs={feedbackOfClients} backgroundImgSrc={WhatOurClientsSayBackground.src} headerContainerClassNamesDynamic="cardHeadingSec" />
+                                                <CardContainer 
+                                                    headingTxt="What our clients says: " 
+                                                    userInputs={feedbackOfClients} 
+                                                    backgroundImgSrc={WhatOurClientsSayBackground.src} 
+                                                    headerContainerClassNamesDynamic="cardHeadingSec" 
+                                                    itemCarouselStylesCustom="clientReview" 
+                                                />
                                             </section>
                                             <WhoMakesTheLessonsSec />
                                             <section className="d-flex mt-8">
@@ -82,6 +94,7 @@ const HireUsPage = () => {
                                                     headingTxt="Dynamic teams translate any body of knowledge"
                                                     dynamicCssClasses=' dynamicTeamsSec'
                                                     headerContainerClassNamesDynamic="ps-sm-5 ps-md-0 ps-1 pe-1 pe-sm-0 mb-md-4"
+                                                    itemCarouselStylesCustom=""
                                                     isCardOnly
                                                 />
                                             </section>
@@ -113,9 +126,9 @@ const HireUsPage = () => {
                         />
                     ))}
                 </>
-                :
+                {/* :
                 null
-            }
+            } */}
         </>
     );
 };

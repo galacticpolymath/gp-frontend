@@ -161,10 +161,13 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                             {userInputs.map((userInput, index) => {
                                                 const { feedback, person, occupation, city, stars, product } = userInput;
                                                 let _className = 'pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center'
+                                                let quoteInfo = "d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec"
 
                                                 if (occupation?.includes("grade")) {
                                                     _className += ' studentInfoSec'
                                                     autoCarouselItemStyles += ' studentParentStyles'
+                                                } else {
+                                                    quoteInfo += ' nonStudentInfoSec'
                                                 }
 
 
@@ -178,7 +181,7 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                             <section className={_className}>
                                                                 <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275">"{feedback}"</span>
                                                             </section>
-                                                            <section className="d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec">
+                                                            <section className={quoteInfo}>
                                                                 <section className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
                                                                     <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
                                                                     {!!occupation && <span className="text-wrap text-dark fst-italic fw275">{occupation}</span>}

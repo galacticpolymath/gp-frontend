@@ -37,7 +37,7 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
                             <img src={imgPath} alt="Galactic_PolyMath_HireUs_Img" className='w-100 gpConstellation' />
                             :
                             <div className="position-relative rounded-circle">
-                                <Image src={imgPath} layout='fill' alt="Galactic_PolyMath_HireUs_Img" />
+                                <img src={imgPath} alt="Galactic_PolyMath_HireUs_Img" />
                             </div>
                         }
                 </section>
@@ -45,7 +45,7 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
             {link &&
                 <section>
                     <div className="imgSquareContainer position-relative borderThicker">
-                        <Image src={imgPath} layout='fill' alt="Galactic_PolyMath_HireUs_Img" />
+                        <img src={imgPath} alt="Galactic_PolyMath_HireUs_Img" />
                     </div>
                 </section>
             }
