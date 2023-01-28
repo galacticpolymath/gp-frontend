@@ -171,11 +171,6 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                 return (
                                                     <div className={autoCarouselItemStyles} key={index}>
                                                         <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-sm-start justify-content-sm-center  align-items-center justify-content-md-start align-items-md-stretch feedBackSec position-relative">
-                                                            {stars &&
-                                                                <section className="position-absolute starsSec d-none">
-                                                                    <span className="text-dark fst-italic fw275">For <i>{product}</i> ⭐ {`${stars}/5`}</span>
-                                                                </section>
-                                                            }
                                                             <section className={_className}>
                                                                 <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275">"{feedback}"</span>
                                                             </section>
@@ -186,6 +181,11 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                                     {!!city && <span className="text-wrap text-dark fst-italic fw275">{city}</span>}
                                                                 </section>
                                                             </section>
+                                                            {stars &&
+                                                                <div className="position-fixed starsSec d-flex">
+                                                                    <span className="text-dark fst-italic fw275"> {product ? <i>For {product}</i> : 'Student review'} ⭐ {`${stars}/5`}:</span>
+                                                                </div>
+                                                            }
                                                         </section>
                                                     </div>
                                                 )
