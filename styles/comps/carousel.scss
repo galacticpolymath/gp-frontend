@@ -48,6 +48,10 @@ $carouselBackgroundColor: #ffeded;
 @media (min-width: 768px) and (max-width: 1299px) {
   .feedbackTxt {
     width: 75% !important;
+    transform: translateY(20px);
+
+    @media (max-width: 992px) {
+    }
   }
 }
 
@@ -56,7 +60,7 @@ $carouselBackgroundColor: #ffeded;
     margin-top: 25px !important;
     width: 95% !important;
 
-    > div{
+    > div {
       padding-top: 30px !important;
     }
 
@@ -79,7 +83,7 @@ $carouselBackgroundColor: #ffeded;
 .cardBodyStyles,
 .autoCarouselContainerCard {
   @media (min-width: 1300px) {
-    height: 305px !important;
+    height: 345px !important;
   }
 }
 
@@ -137,6 +141,10 @@ $carouselBackgroundColor: #ffeded;
 
   @media (min-width: 768px) and (max-width: 1299px) {
     right: 40px !important;
+
+    @media (max-width: 991px) {
+      bottom: -35px !important;
+    }
   }
 }
 
@@ -210,12 +218,20 @@ $carouselBackgroundColor: #ffeded;
   }
 
   @media (min-width: 768px) and (max-width: 1299px) {
-    min-height: 310px !important;
+    min-height: 280px !important;
+
+    @media (max-width: 991px) {
+      min-height: 310px !important;
+    }
 
     > section:first-of-type {
       align-items: stretch !important;
       padding-top: 20px !important;
     }
+  }
+
+  @media(min-width: 1300px){
+    min-height: 210px !important;    
   }
 }
 
@@ -232,12 +248,21 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
+.productReviewTxt {
+  @media (min-width: 767px) and (max-width: 991px) {
+  }
+  position: absolute !important;
+}
+
 .studentInfoSec {
   width: 100% !important;
 
   @media (min-width: 768px) and (max-width: 1299px) {
     > span {
       text-align: center !important;
+      @media (max-width: 992px) {
+        transform: translateY(70px);
+      }
     }
   }
 
@@ -396,11 +421,11 @@ $carouselBackgroundColor: #ffeded;
     width: 135px;
     height: 135px;
 
-    @media(min-width: 950px){
+    @media (min-width: 950px) {
       width: 155px;
     }
 
-    @media(min-width: 992px){
+    @media (min-width: 992px) {
       width: 185px;
     }
 
@@ -463,27 +488,9 @@ $carouselBackgroundColor: #ffeded;
     height: 355px !important;
   }
 
-  @media (min-width: 768px) and (max-width: 1299px) {
-    // height: fit-content !important;
-    @media (max-width: 991px) {
-    }
-  }
 
   @media (min-width: 1200px) {
-    // padding-bottom: 200px !important;
-  }
-
-  @media (max-width: 768px) and (min-width: 576px) {
-    // height: 500px
-  }
-
-  @media (max-width: 575px) {
-    > div {
-      > div {
-        // border: solid pink !important;
-        // height: 500px !important;
-      }
-    }
+    height: 360px !important; 
   }
 }
 
@@ -533,7 +540,7 @@ $carouselBackgroundColor: #ffeded;
     }
   }
 
-  @media(max-width: 767px){
+  @media (max-width: 767px) {
     min-height: 230px !important;
   }
 }
@@ -561,36 +568,33 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-
 .carouselImgContainer:first-of-type {
-  @media(min-width: 768px){
-    img{
+  @media (min-width: 768px) {
+    img {
       width: 187px !important;
     }
   }
 }
 
 .carouselImgContainer:nth-last-of-type(2) {
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     img {
       width: 209px !important;
     }
 
-    @media(min-width: 950px){
-      img{
+    @media (min-width: 950px) {
+      img {
         width: 220px !important;
       }
     }
 
-
-    @media(min-width: 992px){
-      img{
+    @media (min-width: 992px) {
+      img {
         width: 240px !important;
       }
     }
-      
 
-    @media(min-width: 1200px){
+    @media (min-width: 1200px) {
       img {
         width: 300px !important;
       }
@@ -598,6 +602,15 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.starsSec{
+.starsContainer {
   height: fit-content !important;
+  @media (min-width: 768px) and (max-width: 1299px) {
+    transform: translateX(25px);
+  }
+}
+
+.bulletPtsSec {
+  @media (min-width: 768px) and (max-width: 992px) {
+    margin-top: 50px !important;
+  }
 }

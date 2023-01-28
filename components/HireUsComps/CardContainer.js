@@ -162,15 +162,19 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                 const { feedback, person, occupation, city, stars, product } = userInput;
                                                 let _className = 'pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center'
 
-                                                if(occupation?.includes("grade")){
+                                                if (occupation?.includes("grade")) {
                                                     _className += ' studentInfoSec'
                                                     autoCarouselItemStyles += ' studentParentStyles'
                                                 }
-                                                
+
 
                                                 return (
                                                     <div className={autoCarouselItemStyles} key={index}>
                                                         <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-sm-start justify-content-sm-center  align-items-center justify-content-md-start align-items-md-stretch feedBackSec position-relative">
+                                                            {stars &&
+                                                                <span className="text-dark fst-italic fw275 productReviewTxt">
+                                                                    {`⭐ ${stars}/5`} stars {<>for '<i>{product}</i>':</>}
+                                                                </span>}
                                                             <section className={_className}>
                                                                 <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275">"{feedback}"</span>
                                                             </section>
@@ -181,17 +185,12 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                                                     {!!city && <span className="text-wrap text-dark fst-italic fw275">{city}</span>}
                                                                 </section>
                                                             </section>
-                                                            {stars &&
-                                                                <div className="position-fixed starsSec d-flex">
-                                                                    <span className="text-dark fst-italic fw275"> {product ? <i>For {product}</i> : 'Student review'} ⭐ {`${stars}/5`}:</span>
-                                                                </div>
-                                                            }
                                                         </section>
                                                     </div>
                                                 )
                                             })}
                                         </div>
-                                        <section className={`d-flex flex-column justify-content-center align-items-center pb-1 mt-4 mt-sm-3 ${bulletPtsMargin}`}>
+                                        <section className={`d-flex flex-column justify-content-center align-items-center pb-1 mt-4 mt-sm-3 bulletPtsSec ${bulletPtsMargin}`}>
                                             <section className="w-100 d-flex justify-content-center align-items-center">
                                                 {BULL_POINT_INDEX_NUMS.map((num, _index) => (
                                                     (num === index) ?
