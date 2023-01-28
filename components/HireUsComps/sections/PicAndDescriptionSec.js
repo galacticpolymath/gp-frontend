@@ -36,7 +36,7 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
                         {isRegImg ?
                             <img src={imgPath} alt="Galactic_PolyMath_HireUs_Img" className='w-100 gpConstellation' />
                             :
-                            <div className="position-relative rounded-circle">
+                            <div className="position-relative">
                                 <img src={imgPath} alt="Galactic_PolyMath_HireUs_Img" />
                             </div>
                         }

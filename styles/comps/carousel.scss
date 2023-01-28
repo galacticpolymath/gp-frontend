@@ -128,8 +128,8 @@ $carouselBackgroundColor: #ffeded;
       bottom: 20px;
     }
 
-    @media(max-width: 575px){
-      span{
+    @media (max-width: 575px) {
+      span {
         text-align: center !important;
       }
     }
@@ -139,7 +139,7 @@ $carouselBackgroundColor: #ffeded;
     > span:first-child {
       font-size: 25px;
 
-      @media(min-width: 576px) and (max-width: 767px){
+      @media (min-width: 576px) and (max-width: 767px) {
         font-size: 22px !important;
       }
     }
@@ -147,6 +147,7 @@ $carouselBackgroundColor: #ffeded;
 
   @media (max-width: 575px) {
     position: static !important;
+    transform: translateY(25px) !important;
   }
 
   @media (min-width: 768px) and (max-width: 1299px) {
@@ -222,7 +223,6 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-
 .feedBackSec {
   @media (min-width: 768px) {
     min-height: 180px !important;
@@ -260,12 +260,21 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .productReviewTxt {
-  position: absolute !important;
-
   @media (max-width: 767px) {
     // display: none !important;
     top: 0 !important;
-    left: 0 !important; 
+    left: 0 !important;
+  }
+
+  @media (min-width: 576px) {
+    position: absolute !important;
+  }
+
+  @media (max-width: 575px) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    width: 100% !important;
+    min-width: 200px !important;
   }
 }
 
@@ -309,11 +318,9 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-
-
 .nonStudentInfoSec {
   @media (max-width: 767px) {
-    bottom: 0px !important;
+    bottom: -10px !important;
   }
 }
 
@@ -503,25 +510,24 @@ $carouselBackgroundColor: #ffeded;
     height: 360px !important;
   }
 
-  @media(max-width: 575px){
+  @media (max-width: 575px) {
     // height: 400px !important;
-    > div{
-      > div{
-        height: fit-content !important;;
+    > div {
+      > div {
+        height: fit-content !important;
       }
     }
   }
 }
 
-
-.grantReviewItemCarousel.longTxtContent{
-  @media(max-width: 575px){
+.grantReviewItemCarousel.longTxtContent {
+  @media (max-width: 575px) {
     transform: translateY(-50px);
   }
 }
 
-.grantReviewerBulletPtsSec{
-  @media(max-width: 575px){
+.grantReviewerBulletPtsSec {
+  @media (max-width: 575px) {
     transform: translateY(-50px) !important;
   }
 }
@@ -648,36 +654,35 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.shortFeedbackTxtSec{
-
-  @media(min-width: 1400px){
+.shortFeedbackTxtSec {
+  @media (min-width: 1400px) {
     transform: translateY(90px);
   }
 
-  @media(min-width: 768px) and (max-width: 1399px){
-    > span{
+  @media (min-width: 768px) and (max-width: 1399px) {
+    > span {
       height: fit-content !important;
       transform: translateY(90px);
     }
   }
 
-  @media(max-width: 767px){
-    > span{
+  @media (max-width: 767px) {
+    > span {
       height: fit-content !important;
       transform: translateY(110px) !important;
     }
   }
 }
 
-.shortQuoteInfoSec{
-  @media(max-width: 767px){
+.shortQuoteInfoSec {
+  @media (max-width: 767px) {
     transform: translateY(110px) !important;
 
-    @media(max-width: 575px){
+    @media (max-width: 575px) {
       transform: translateY(80px) !important;
     }
 
-    @media(max-width: 375px){
+    @media (max-width: 375px) {
       // transform: translateY(100px) !important;
     }
   }
@@ -692,14 +697,18 @@ $carouselBackgroundColor: #ffeded;
         > div {
           > div {
             // quote info box
-            section:nth-child(2){
+            section:nth-child(2) {
               bottom: -120px !important;
             }
           }
 
           // bullet points section
-          > section:last-of-type{
+          > section:last-of-type {
             margin-top: 130px !important;
+
+            @media(max-width: 575px){
+              margin-top: 160px !important;
+            }
           }
         }
       }
@@ -716,29 +725,25 @@ $carouselBackgroundColor: #ffeded;
       }
     }
 
-    @media(min-width: 1300px){
+    @media (min-width: 1300px) {
       height: 480px !important;
 
       > div {
         > div {
           > div {
             // quote info box
-            section:nth-child(2){
+            section:nth-child(2) {
               bottom: -85px !important;
             }
           }
 
           // bullet points section
-          > section:last-of-type{
+          > section:last-of-type {
             margin-top: 120px !important;
           }
         }
       }
     }
-
-
-
-
   }
 
   @media (min-width: 1200px) {
@@ -747,6 +752,24 @@ $carouselBackgroundColor: #ffeded;
       > div {
         > section {
           margin-top: 3.5rem !important;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 575px) {
+    > div {
+      > div {
+        > div {
+          // quote info box
+          section:nth-child(2) {
+            // bottom: -120px !important;
+          }
+        }
+
+        // bullet points section
+        > section:last-of-type {
+          margin-top: 40px !important;
         }
       }
     }
@@ -771,93 +794,138 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.grantReviewerBulletPtsSec{
-  @media(min-width: 768px){
+.grantReviewerBulletPtsSec {
+  @media (min-width: 768px) {
     margin-top: 40px !important;
   }
 }
 
-
-.nonStudentInfoSec.shortQuoteInfoSec{
-  @media(max-width: 575px){
+.nonStudentInfoSec.shortQuoteInfoSec {
+  @media (max-width: 575px) {
     transform: translateY(100px) !important;
   }
 }
 
-.clientReview.shortTxtContent{
-  @media(max-width: 425px){
-    > section{
-      > span{
-        transform: translateY(40px) !important;
+.clientReview.shortTxtContent {
+  @media (max-width: 425px) {
+    > section {
+      // border: solid pink !important;
+      // transform: translateY(40px) !important;
+      > span {
       }
     }
   }
 }
 
-
-.clientReview.shortTxtContent{
+.clientReview.shortTxtContent {
   height: 100% !important;
 }
 
-.feedbackInfoSec.nonStudentInfoSec{
-  @media(min-width: 1300px){
+.feedbackInfoSec.nonStudentInfoSec {
+  @media (min-width: 1300px) {
     transform: translateY(30px) !important;
   }
 }
 
-.teachersAndStudentReview{
-  > section{
-    > section:first-of-type{
-      > span{
+.teachersAndStudentReview {
+  > section {
+    > section:first-of-type {
+      > span {
         transform: translateY(10px);
       }
     }
   }
 }
 
-.cardMainStylesTeachersAndStudents{
-  @media(min-width: 992px){
+.cardMainStylesTeachersAndStudents {
+  @media (min-width: 992px) {
     height: 350px !important;
 
     > div {
       > div {
         > div {
           // quote info box
-          section:nth-child(2){
+          section:nth-child(2) {
             bottom: -120px !important;
           }
         }
 
         // bullet points section
-        > section:last-of-type{
+        > section:last-of-type {
           margin-top: 50px !important;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 575px) {
+    > div {
+      > div {
+        @media (max-width: 379px) {
+          height: 480px !important;
+        }
+
+        @media(max-width: 345px){
+          height: 550px !important;
+        }
+
+        > div {
+          // quote info box
+          section:nth-child(2) {
+            bottom: -120px !important;
+          }
+        }
+
+        // bullet points section
+        > section:last-of-type {
+          margin-top: 70px !important;
+
+          @media (max-width: 379px) {
+            margin-top: 110px !important;
+          }
+
+          @media(max-width: 345px){
+            margin-top: 180px !important;
+          }
         }
       }
     }
   }
 }
 
-
-
-.teachersAndStudentsTestimoniesSec{
-
-  @media(max-width: 767px){
-    min-height: 200px !important;
-    > section:first-of-type{
-      border: solid pink !important;
+.teachersAndStudentsTestimoniesSec {
+  @media (max-width: 767px) {
+    min-height: 220px !important;
+    > section:first-of-type {
+      transform: translateY(20px) !important;
     }
   }
 
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     min-height: 200px !important;
 
-    > section:last-of-type{
+    > section:last-of-type {
       bottom: -35px !important;
     }
 
-    @media(max-width: 991px){
+    @media (max-width: 991px) {
       height: 250px !important;
     }
   }
+
+  @media (max-width: 575px) {
+    height: 250px !important;
+  }
+
+  @media(max-width: 459px){
+    height: 295px !important;
+  }
 }
 
+.grantReviewerBulletPtsSec {
+  @media (max-width: 575px) {
+    margin-top: 55px !important;
+    transform: translateY(0px) !important;
+    // border: solid pink !important;
+  }
+}

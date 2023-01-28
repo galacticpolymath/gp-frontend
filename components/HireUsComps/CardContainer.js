@@ -173,18 +173,18 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                     quoteInfo += ' nonStudentInfoSec'
                                                 }
 
-                                                if(_userInputs?.isTeachersAndStudentsTestimonies){
+                                                if (_userInputs?.isTeachersAndStudentsTestimonies) {
                                                     feedbackSecClassNames += ' teachersAndStudentsTestimoniesSec'
                                                 }
 
-                                                if(isShort){
+                                                if (isShort) {
                                                     autoCarouselItemStyles += ' shortTxtContent'
                                                     feedBackClassName += ' shortFeedbackTxtSec'
                                                     quoteInfo += ' shortQuoteInfoSec'
                                                     autoCarouselContainerStyles += ' autoCarouselContainerShortTxtContent'
                                                 }
 
-                                                if(isLong){
+                                                if (isLong) {
                                                     autoCarouselItemStyles += ' longTxtContent'
                                                 }
 
@@ -193,12 +193,12 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                     <div className={autoCarouselItemStyles} key={index}>
                                                         <section className={feedbackSecClassNames}>
                                                             {stars &&
-                                                                <span className="text-dark fst-italic fw275 productReviewTxt">
+                                                                <span className="text-dark fst-italic fw275 productReviewTxt d-none d-sm-inline">
                                                                     {`⭐ ${stars}/5`} stars {<>for '<i>{product}</i>':</>}
                                                                 </span>}
                                                             <section className={feedBackClassName}>
                                                                 <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275">
-                                                                "{feedback}"
+                                                                    "{feedback}"
                                                                 </span>
                                                             </section>
                                                             <section className={quoteInfo}>
@@ -206,6 +206,9 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                                     <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
                                                                     {(!!occupation || !!institution) && <span className="text-wrap text-dark fst-italic fw275">{occupation ?? institution}</span>}
                                                                     {(!!city || !!location) && <span className="text-wrap text-dark fst-italic fw275">{city ?? location}</span>}
+                                                                    {!!stars && <span className="text-dark productReviewTxt w-100 text-center fst-italic fw275 d-block d-sm-none">
+                                                                        {`⭐ ${stars}/5`} stars {<>for '<i>{product}</i>'</>}
+                                                                    </span>}
                                                                 </section>
                                                             </section>
                                                         </section>
