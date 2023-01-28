@@ -866,7 +866,8 @@ $carouselBackgroundColor: #ffeded;
 
         // bullet points section
         > section:last-of-type {
-          margin-top: 50px !important;
+          margin-top: 68px !important;
+          // border: solid pink !important;
         }
       }
     }
@@ -920,6 +921,10 @@ $carouselBackgroundColor: #ffeded;
 
     > section:last-of-type {
       bottom: -35px !important;
+
+      @media(min-width: 1200px){
+        bottom: -25px !important;
+      }
     }
 
     @media (max-width: 991px) {

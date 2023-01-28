@@ -74,6 +74,12 @@
   }
 }
 
+.mattsAward > section:last-child{
+  @media(min-width: 576px){
+    padding-top: 10px !important;
+  }
+}
+
 .GPConstellationSec {
   @media (min-width: 576px) {
     flex-direction: row !important;
@@ -281,6 +287,10 @@
 
 .picAndDescriptionSecInList:not(:first-child) {
   margin-top: 25px !important;
+
+  @media(max-width: 575px){
+    margin-top: 90px !important;
+  }
 }
 
 @media (min-width: 1200px) {
@@ -383,9 +393,9 @@
   }
 }
 
-.hireUsCardBoldedTxt {
-  @media (min-width: 768px) {
-    // white-space: nowrap;
+.ownerSection > section:first-child span{
+  @media(max-width: 575px){
+    line-height: 35px !important;;
   }
 }
 
@@ -458,6 +468,10 @@
     > section:last-child{
       margin-bottom: 15px !important;
     }
+
+    span{
+      line-height: 33px !important;
+    }
   }
 }
 
@@ -523,8 +537,8 @@
     // height: 330px !important;
 
     @media (max-width: 1199px) {
-      width: 325px !important;
-      height: 325px !important;
+      width: 305px !important;
+      height: 305px !important;
     }
   }
 
@@ -591,5 +605,7 @@
     margin-bottom: 50px !important;
   }
 }
+
+
 
 

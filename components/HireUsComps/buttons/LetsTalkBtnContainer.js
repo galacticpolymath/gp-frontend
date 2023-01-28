@@ -18,8 +18,12 @@ import MessageBoxIcon from '../../svgs/MessageBoxIcon';
 import Button from 'react-bootstrap/Button';
 
 
-const LetsTalkBtnContainer = ({isMainBtn, isInReadyToInspireSec, isAbsolute, isNoUnderline, isDarker }) => {
+const LetsTalkBtnContainer = ({isMainBtn, isInReadyToInspireSec, isAbsolute, isNoUnderline, isDarker, cssClasses }) => {
     let _className = `${isMainBtn ? "mainBtnLetsTalk" : "letsTalkBtnContainer"} ${isAbsolute ? 'position-absolute' : 'position-relative'} border-white d-flex flex-row-reverse  ${isInReadyToInspireSec ? 'inReadyToInspireSec' : ''} defaultStylingLetsTalkBtn ${isDarker ? 'letsTalkDarker' : ''}`
+
+    if(_className){
+        _className += ' ' + cssClasses
+    }
 
 
 
