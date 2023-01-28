@@ -182,6 +182,8 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                     feedBackClassName += ' shortFeedbackTxtSec'
                                                     quoteInfo += ' shortQuoteInfoSec'
                                                     autoCarouselContainerStyles += ' autoCarouselContainerShortTxtContent'
+                                                    cardStyles += ' shortTxtContentCard'
+                                                    console.log("cardStyles: ", cardStyles)
                                                 }
 
                                                 if (isLong) {

@@ -400,6 +400,10 @@
     }
     height: 230px !important;
     > section:last-child {
+
+      @media(max-width: 1199px){
+        margin-bottom: 10px !important;
+      }
       > div {
         width: 200px !important;
         border-radius: 0px !important;
@@ -587,3 +591,5 @@
     margin-bottom: 50px !important;
   }
 }
+
+
