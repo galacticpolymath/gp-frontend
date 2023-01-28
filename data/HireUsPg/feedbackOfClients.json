@@ -3,7 +3,8 @@
         "feedback": "GP was an absolute joy to work with. Each step was so thoughtfully led by Matt and his team of educators and artists. I can’t wait to work with them again!",
         "person": "Dr. Sarah Fitzpatrick",
         "location": "W.K. Kellogg Biological Station",
-        "institution": "Michigan State University"
+        "institution": "Michigan State University",
+        "isShort": true
     },
     {
         "feedback": "Galactic Polymath helped us kick start our outreach program. They made our chemical engineering concepts accessible for high school students, explored connections to community and Mātauranga Māori, and created evaluation tools. The result for us is a robust outreach program and evidence that it will help students see a future career in chemical engineering.",
@@ -21,6 +22,7 @@
         "feedback": "Such productive and satisfying work with Galactic Polymath! Matt is a former teacher that knows how to magnify the broader impacts of an NSF grant!",
         "person": "Dr. Tamra Mendelson",
         "location": "University of Maryland Baltimore County",
-        "institution": "Department of Biological Sciences"
+        "institution": "Department of Biological Sciences",
+        "isShort": true
     }
 ]

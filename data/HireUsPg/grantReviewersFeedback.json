@@ -6,11 +6,13 @@
     },
     {
         "feedback": "The educational plan to develop a learning module for middle school students is very well-developed...overall the broader impacts activities are quite strong.",
-        "person": "Anonymous Reviewer #2"
+        "person": "Anonymous Reviewer #2",
+        "isLong": true
     },
     {
         "feedback": "A major strength of this proposed effort is that the module will be tied to national standards, making the program easy for teachers to incorporate into their curricula.",
-        "person": "Anonymous Reviewer #3"
+        "person": "Anonymous Reviewer #3",
+        "isLong": true
     },
     {
         "feedback": "I liked the broader impacts proposed in this application...well done.",

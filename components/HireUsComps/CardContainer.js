@@ -28,13 +28,15 @@ import { BsCircle, BsCircleFill, BsFillPauseCircleFill, BsFillPlayCircleFill } f
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 import { Parallax } from 'react-parallax';
 
-const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly, dynamicCssClasses, customCardStyles, itemCarouselStylesCustom }) => {
+const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly, dynamicCssClasses, customCardStyles, itemCarouselStylesCustom }) => {
     const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
     let autoCarouselItemStyles = "autoCarouselItem position-relative"
     cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 fw245') : cardStyles
     const bulletPtsMargin = ("Grant Reviewer Feedback" === headingTxt) ? 'grantReviewerBulletPtsSec mt-md-0' : 'mt-3'
+    let autoCarouselContainerStyles = 'autoCarouselContainer'
+    const userInputs = _userInputs?.isTeachersAndStudentsTestimonies ? _userInputs.arr : _userInputs;
 
 
 
@@ -156,36 +158,54 @@ const CarouselContainer = ({ headingTxt, userInputs, backgroundImgSrc, pics, aut
                                             <IoIosArrowForward className="text-muted arrowNavigationCarousel forwardBtnCarousel op-5" />
                                         </button>
                                     </section>
-                                    <div className="autoCarouselContainer">
+                                    <div className={autoCarouselContainerStyles}>
                                         <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
                                             {userInputs.map((userInput, index) => {
-                                                const { feedback, person, occupation, city, stars, product } = userInput;
-                                                let _className = 'pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center'
+                                                const { feedback, person, occupation, city, stars, product, institution, location, isShort, isLong } = userInput;
+                                                let feedBackClassName = 'pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center'
                                                 let quoteInfo = "d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec"
+                                                let feedbackSecClassNames = "w-100 h-100 d-flex flex-column flex-sm-row justify-content-sm-start justify-content-sm-center  align-items-center justify-content-md-start align-items-md-stretch feedBackSec position-relative"
 
                                                 if (occupation?.includes("grade")) {
-                                                    _className += ' studentInfoSec'
+                                                    feedBackClassName += ' studentInfoSec'
                                                     autoCarouselItemStyles += ' studentParentStyles'
                                                 } else {
                                                     quoteInfo += ' nonStudentInfoSec'
                                                 }
 
+                                                if(_userInputs?.isTeachersAndStudentsTestimonies){
+                                                    feedbackSecClassNames += ' teachersAndStudentsTestimoniesSec'
+                                                }
+
+                                                if(isShort){
+                                                    autoCarouselItemStyles += ' shortTxtContent'
+                                                    feedBackClassName += ' shortFeedbackTxtSec'
+                                                    quoteInfo += ' shortQuoteInfoSec'
+                                                    autoCarouselContainerStyles += ' autoCarouselContainerShortTxtContent'
+                                                }
+
+                                                if(isLong){
+                                                    autoCarouselItemStyles += ' longTxtContent'
+                                                }
+
 
                                                 return (
                                                     <div className={autoCarouselItemStyles} key={index}>
-                                                        <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-sm-start justify-content-sm-center  align-items-center justify-content-md-start align-items-md-stretch feedBackSec position-relative">
+                                                        <section className={feedbackSecClassNames}>
                                                             {stars &&
                                                                 <span className="text-dark fst-italic fw275 productReviewTxt">
                                                                     {`⭐ ${stars}/5`} stars {<>for '<i>{product}</i>':</>}
                                                                 </span>}
-                                                            <section className={_className}>
-                                                                <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275">"{feedback}"</span>
+                                                            <section className={feedBackClassName}>
+                                                                <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275">
+                                                                "{feedback}"
+                                                                </span>
                                                             </section>
                                                             <section className={quoteInfo}>
                                                                 <section className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
                                                                     <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
-                                                                    {!!occupation && <span className="text-wrap text-dark fst-italic fw275">{occupation}</span>}
-                                                                    {!!city && <span className="text-wrap text-dark fst-italic fw275">{city}</span>}
+                                                                    {(!!occupation || !!institution) && <span className="text-wrap text-dark fst-italic fw275">{occupation ?? institution}</span>}
+                                                                    {(!!city || !!location) && <span className="text-wrap text-dark fst-italic fw275">{city ?? location}</span>}
                                                                 </section>
                                                             </section>
                                                         </section>

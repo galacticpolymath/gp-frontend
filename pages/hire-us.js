@@ -61,10 +61,11 @@ const HireUsPage = () => {
                                     <section className="d-flex mt-5">
                                         <CardContainer
                                             headingTxt="What teachers & students says: "
-                                            userInputs={teacherTestimonies}
+                                            _userInputs={teacherTestimonies}
                                             backgroundImgSrc={WhatTeachersSaysBackground.src}
                                             headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0"
                                             itemCarouselStylesCustom="teachersAndStudentReview"
+                                            customCardStyles="cardMainStylesTeachersAndStudents"
                                         />
                                     </section>
                                     <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />
@@ -75,7 +76,7 @@ const HireUsPage = () => {
                                     <section className="d-flex mt-8">
                                         <CardContainer
                                             headingTxt="What our clients says: "
-                                            userInputs={feedbackOfClients}
+                                            _userInputs={feedbackOfClients}
                                             backgroundImgSrc={WhatOurClientsSayBackground.src}
                                             headerContainerClassNamesDynamic="cardHeadingSec"
                                             itemCarouselStylesCustom="clientReview"
@@ -94,7 +95,7 @@ const HireUsPage = () => {
                                     <ScientistSection />
                                     <section className="d-flex mt-5">
                                         <CardContainer
-                                            userInputs={grantReviewersFeedback}
+                                            _userInputs={grantReviewersFeedback}
                                             headingTxt="Grant Reviewer Feedback"
                                             backgroundImgSrc={GrantReviewerFeedbackBackground.src}
                                             headerContainerClassNamesDynamic="cardHeadingSec"
