@@ -45,90 +45,79 @@ import WhatYouWillGetSec from '../components/HireUsComps/sections/WhatYouWillGet
 
 const HireUsPage = () => {
     const [tiersInfoForModalArr, setTiersInfoForModalArr] = useState(tiersInfoForModal.map(tier => ({ ...tier, isModalOn: false })))
-    // const [isDOMLoaded, setIsDOMLoaded] = useState(false);
-
-    // useEffect(() => {
-    //     setIsDOMLoaded(true);
-    // }, []);
 
     return (
         <>
-            {/* {isDOMLoaded ? */}
-                <>
-                    <Layout description="Galactic PolyMath Hire Us Page." keywords="Hire us, Galactic PolyMath">
-                        <div className="w-100 hireUsPg d-flex flex-column justify-content-center align-items-center">
-                            <div className="container-fluid noPadding noMargin w-100 hireUsPgWrapper">
-                                <IntroSecHireUs />
-                                <section className="CardSec d-flex justify-content-center align-items-center flex-column align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
-                                    <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-5'>
-                                        <Card.Body className="hireUsPgInfoCardBody">
-                                            <WhatDoWeDoSec />
-                                            <HowDoesItWorkSec />
-                                            <WhatYouWillGetSec />
-                                            <section className="d-flex mt-5">
-                                                <CardContainer 
-                                                    headingTxt="What teachers & students says: " 
-                                                    userInputs={teacherTestimonies} 
-                                                    backgroundImgSrc={WhatTeachersSaysBackground.src} 
-                                                    headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0" 
-                                                    itemCarouselStylesCustom="teachersAndStudentReview"
-                                                />
-                                            </section>
-                                            <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />
-                                            <ShareYourKnowledge lessonsInfo={lessonsInfo} />
-                                            <ClientFundingSec isMobile />
-                                            <ClientFundingSec />
-                                            <WhenShouldIReachOutSec />
-                                            <section className="d-flex mt-8">
-                                                <CardContainer 
-                                                    headingTxt="What our clients says: " 
-                                                    userInputs={feedbackOfClients} 
-                                                    backgroundImgSrc={WhatOurClientsSayBackground.src} 
-                                                    headerContainerClassNamesDynamic="cardHeadingSec" 
-                                                    itemCarouselStylesCustom="clientReview" 
-                                                />
-                                            </section>
-                                            <WhoMakesTheLessonsSec />
-                                            <section className="d-flex mt-8">
-                                                <CardContainer
-                                                    headingTxt="Dynamic teams translate any body of knowledge"
-                                                    dynamicCssClasses=' dynamicTeamsSec'
-                                                    headerContainerClassNamesDynamic="ps-sm-5 ps-md-0 ps-1 pe-1 pe-sm-0 mb-md-4"
-                                                    itemCarouselStylesCustom=""
-                                                    isCardOnly
-                                                />
-                                            </section>
-                                            <ScientistSection />
-                                            <section className="d-flex mt-5">
-                                                <CardContainer
-                                                    userInputs={grantReviewersFeedback}
-                                                    headingTxt="Grant Reviewer Feedback"
-                                                    backgroundImgSrc={GrantReviewerFeedbackBackground.src}
-                                                    headerContainerClassNamesDynamic="cardHeadingSec"
-                                                    customCardStyles='grantReviewsCard'
-                                                    itemCarouselStylesCustom='grantReviewItemCarousel'
-                                                />
-                                            </section>
-                                            <HowMuchDoesItCostSec setTiersInfoForModalArr={setTiersInfoForModalArr} />
-                                        </Card.Body>
-                                    </Card>
-                                </section>
-                            </div>
-                            <ReadyToInspireSec />
-                        </div>
-                    </Layout>
-                    {tiersInfoForModalArr.map((tierInfo, index) => (
-                        <TierInfoModal
-                            key={index}
-                            index={index}
-                            tierModalInfo={tierInfo}
-                            setTiersInfoForModalArr={setTiersInfoForModalArr}
-                        />
-                    ))}
-                </>
-                {/* :
-                null
-            } */}
+            <Layout description="Galactic PolyMath Hire Us Page." keywords="Hire us, Galactic PolyMath">
+                <div className="w-100 hireUsPg d-flex flex-column justify-content-center align-items-center">
+                    <div className="container-fluid noPadding noMargin w-100 hireUsPgWrapper">
+                        <IntroSecHireUs />
+                        <section className="CardSec d-flex justify-content-center align-items-center flex-column align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
+                            <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-5'>
+                                <Card.Body className="hireUsPgInfoCardBody">
+                                    <WhatDoWeDoSec />
+                                    <HowDoesItWorkSec />
+                                    <WhatYouWillGetSec />
+                                    <section className="d-flex mt-5">
+                                        <CardContainer
+                                            headingTxt="What teachers & students says: "
+                                            userInputs={teacherTestimonies}
+                                            backgroundImgSrc={WhatTeachersSaysBackground.src}
+                                            headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0"
+                                            itemCarouselStylesCustom="teachersAndStudentReview"
+                                        />
+                                    </section>
+                                    <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />
+                                    <ShareYourKnowledge lessonsInfo={lessonsInfo} />
+                                    <ClientFundingSec isMobile />
+                                    <ClientFundingSec />
+                                    <WhenShouldIReachOutSec />
+                                    <section className="d-flex mt-8">
+                                        <CardContainer
+                                            headingTxt="What our clients says: "
+                                            userInputs={feedbackOfClients}
+                                            backgroundImgSrc={WhatOurClientsSayBackground.src}
+                                            headerContainerClassNamesDynamic="cardHeadingSec"
+                                            itemCarouselStylesCustom="clientReview"
+                                            customCardStyles="clientsContainer"
+                                        />
+                                    </section>
+                                    <WhoMakesTheLessonsSec />
+                                    <section className="d-flex mt-8">
+                                        <CardContainer
+                                            headingTxt="Dynamic teams translate any body of knowledge"
+                                            dynamicCssClasses=' dynamicTeamsSec'
+                                            headerContainerClassNamesDynamic="ps-sm-5 ps-md-0 ps-1 pe-1 pe-sm-0 mb-md-4"
+                                            isCardOnly
+                                        />
+                                    </section>
+                                    <ScientistSection />
+                                    <section className="d-flex mt-5">
+                                        <CardContainer
+                                            userInputs={grantReviewersFeedback}
+                                            headingTxt="Grant Reviewer Feedback"
+                                            backgroundImgSrc={GrantReviewerFeedbackBackground.src}
+                                            headerContainerClassNamesDynamic="cardHeadingSec"
+                                            customCardStyles='grantReviewsCard'
+                                            itemCarouselStylesCustom='grantReviewItemCarousel'
+                                        />
+                                    </section>
+                                    <HowMuchDoesItCostSec setTiersInfoForModalArr={setTiersInfoForModalArr} />
+                                </Card.Body>
+                            </Card>
+                        </section>
+                    </div>
+                    <ReadyToInspireSec />
+                </div>
+            </Layout>
+            {tiersInfoForModalArr.map((tierInfo, index) => (
+                <TierInfoModal
+                    key={index}
+                    index={index}
+                    tierModalInfo={tierInfo}
+                    setTiersInfoForModalArr={setTiersInfoForModalArr}
+                />
+            ))}
         </>
     );
 };

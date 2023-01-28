@@ -230,8 +230,8 @@ $carouselBackgroundColor: #ffeded;
     }
   }
 
-  @media(min-width: 1300px){
-    min-height: 210px !important;    
+  @media (min-width: 1300px) {
+    min-height: 210px !important;
   }
 }
 
@@ -251,7 +251,7 @@ $carouselBackgroundColor: #ffeded;
 .productReviewTxt {
   position: absolute !important;
 
-  @media(max-width: 767px){
+  @media (max-width: 767px) {
     display: none !important;
   }
 }
@@ -275,7 +275,7 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .studentParentStyles {
-  @media(max-width: 767px){
+  @media (max-width: 767px) {
     transform: translateY(75px) !important;
   }
 
@@ -296,8 +296,8 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.nonStudentInfoSec{
-  @media(max-width: 767px){
+.nonStudentInfoSec {
+  @media (max-width: 767px) {
     bottom: 0px !important;
   }
 }
@@ -498,9 +498,8 @@ $carouselBackgroundColor: #ffeded;
     height: 355px !important;
   }
 
-
   @media (min-width: 1200px) {
-    height: 360px !important; 
+    height: 360px !important;
   }
 }
 
@@ -625,9 +624,56 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-
-.teachersAndStudentReview{
-  @media(max-width: 767px){
+.teachersAndStudentReview {
+  @media (max-width: 767px) {
     // min-height: 300px !important;
+  }
+}
+
+.clientsContainer {
+
+  @media(min-width: 992px){
+    min-height: 470px !important;
+    border: solid pink !important;
+
+    > div {
+      > div{
+        > section{
+          margin-top: 3.5rem !important;
+          // transform: translateY(20px);
+        }
+      }
+    }
+  }
+
+  @media (min-width: 1200px) {
+    min-height: 420px !important;
+    > div {
+      > div{
+        > section{
+          margin-top: 3.5rem !important;
+        }
+      }
+    }
+  }
+}
+
+.clientReview{
+  @media (min-width: 992px) {
+    > section{
+
+      > section:last-of-type{
+        bottom: -43px !important;
+      }
+    }
+  }
+
+
+  @media (min-width: 1200px) {
+    > section{
+      > section:last-of-type{
+        bottom: -43px !important;
+      }
+    }
   }
 }

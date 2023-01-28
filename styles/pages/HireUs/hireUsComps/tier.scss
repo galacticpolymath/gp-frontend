@@ -6,29 +6,29 @@ $desktopFontSizeTierStatus: 24px !important;
   overflow: hidden;
 }
 
-.cardsCentralizedSec{
-  > div{
+.cardsCentralizedSec {
+  > div {
     width: 540px !important;
   }
 }
 
-.tierHeaderTag{
-  @media(min-width: 1300px){
+.tierHeaderTag {
+  @media (min-width: 1300px) {
     font-size: 28px !important;
   }
 
-  @media(min-width: 1400px){
-    white-space: nowrap !important
+  @media (min-width: 1400px) {
+    white-space: nowrap !important;
   }
 }
 
 @media (min-width: 768px) {
   .tierDefaultStyles {
-    // height: 1305px !important; 
+    // height: 1305px !important;
     // border: solid pink !important;
 
-    @media(min-width: 1200px) and (max-width: 1439px){
-      // min-width: 430px !important; 
+    @media (min-width: 1200px) and (max-width: 1439px) {
+      // min-width: 430px !important;
     }
   }
 
@@ -42,13 +42,13 @@ $desktopFontSizeTierStatus: 24px !important;
     min-width: 80px !important;
   }
 
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     // min-width: 90px !important;
   }
 
   width: 140px !important;
   height: 140px !important;
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     // width: 130px !important;
     // height: 130px !important;
     width: 140px !important;
@@ -58,11 +58,11 @@ $desktopFontSizeTierStatus: 24px !important;
 
 .tierTableRow {
   @media (min-width: 768px) {
-    @media(min-width:1440px){
+    @media (min-width: 1440px) {
       height: 10px !important;
       white-space: nowrap !important;
 
-      td:last-child{
+      td:last-child {
         white-space: nowrap;
       }
     }
@@ -93,8 +93,6 @@ $desktopFontSizeTierStatus: 24px !important;
   background-color: $backgroundColorTierCard;
   border-radius: $borderRadiusModal;
 }
-
-
 
 .tierProductBorder {
   border-top: solid 1px lightgray;
@@ -134,24 +132,23 @@ $desktopFontSizeTierStatus: 24px !important;
   }
 }
 
-
-.tierCard{
-  @media(min-width: 992px) and (max-width: 1199px){
+.tierCard {
+  @media (min-width: 992px) and (max-width: 1199px) {
     padding: 0px 2rem 4rem 2rem !important;
     // height: 1405px !important;
   }
 }
 
-.tierCardBody{
+.tierCardBody {
   position: relative;
 
-  @media(min-width: 992px) and (max-width: 1199px){
-    padding: 0px 
+  @media (min-width: 992px) and (max-width: 1199px) {
+    padding: 0px;
   }
 }
 
-.estimatedPriceWrapper{
-  @media(min-width: 768px){
+.estimatedPriceWrapper {
+  @media (min-width: 768px) {
     height: 150px !important;
   }
 }
@@ -159,18 +156,56 @@ $desktopFontSizeTierStatus: 24px !important;
 .priceSection {
   @media (min-width: 768px) {
     margin-top: auto !important;
-    transform: translateY(40px); 
+    transform: translateY(40px);
   }
 }
 
-.tierProductImg{
+.tierProductImg {
   max-width: none !important;
-  @media(min-width: 1200px){
+  @media (min-width: 1200px) {
     // width: 170px !important;
     // width: 100% !important;
-    // width:270px !important; 
-    width: 390px !important;
+    // width:270px !important;
+    // width: 420px !important;
     height: 170px !important;
-    // height: 280px !important; 
+    // height: 280px !important;
   }
 }
+
+.imgProductContainer {
+  position: relative !important;
+  height: 170px !important;
+
+  > img {
+    position: absolute !important;
+    max-width: 389px !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    @media(min-width: 1200px){
+      min-width: 308px !important;
+    }
+  }
+}
+
+.imgProductContainer {
+  // width: 75% !important;
+  // border: solid pink !important;
+  // width: 80vw !important;
+  width: 100% !important;
+
+  @media (max-width: 575px) {
+    width: 100% !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    width: 100% !important;
+  }
+
+
+  @media(min-width: 992px){
+    
+  }
+}
+

@@ -17,22 +17,33 @@
 import ReactPlayer from "react-player";
 import HireUsCardSection from "../HireUsCardSection";
 import Image from 'next/image'
+import { useEffect, useState } from "react";
+
 
 const HowDoesItWorkSec = () => {
+    const [isDOMLoaded, setIsDOMLoaded] = useState(false);
+
+    useEffect(() => {
+        setIsDOMLoaded(true);
+    }, []);
+
     const cardVideoSec1 = (
         <video className="rounded looped-vid-hire-us" autoPlay muted loop>
             <source src="./videos/client-asset-to-lesson-animation.mp4" type="video/mp4" />
         </video>
     );
-    const cardVideoSec2 = <div className="video-styles rounded overflow-hidden">
-        <ReactPlayer
-            url='https://www.youtube.com/watch?v=V0EtA5pbVSY'
-            width='100%'
-            height="100%"
-            light
-            playing
-            controls />
-    </div>
+    const cardVideoSec2 = isDOMLoaded && (
+        <div className="video-styles rounded overflow-hidden">
+            <ReactPlayer
+                url='https://www.youtube.com/watch?v=V0EtA5pbVSY'
+                width='100%'
+                height="100%"
+                light
+                playing
+                controls />
+        </div>
+    )
+
     const hireUsCardsSectionTexts = [{ text: "1. You give us your outreach goals, along with complex texts, data, and media related to your work: ", mobileTxt: "You give us your outreach goals, along with complex texts, data, and any media you might have related to your work: ", content: cardVideoSec1 }, { text: "2. We create lessons and supporting media that achieve your outreach aims by making your work accessible to teachers around the world. ", mobileTxt: "We create lessons and supporting multimedia that achieve your outreach aims by making your work accessible to teachers around the world.", content: cardVideoSec2 }]
 
     return (

@@ -13,10 +13,8 @@
   > section:last-child {
     > div {
       @media (min-width: 768px) {
-        // width: 195px !important;
-        // height: 195px !important;
-        width: 260px !important;
-        height: 260px !important;
+        // width: 260px !important;
+        // height: 260px !important;
       }
     }
   }
@@ -208,7 +206,7 @@
       justify-content: center !important;
       align-items: center !important;
 
-      @media(min-width: 992px){
+      @media (min-width: 992px) {
         margin-top: 40px !important;
       }
       > span {
@@ -239,6 +237,30 @@
   @media (min-width: 1300px) {
     > section:first-child {
       padding-top: 15px !important;
+    }
+  }
+
+  > section {
+    img {
+      max-width: none !important;
+      width: 160px !important;
+      height: 160px !important;
+
+      @media (min-width: 576px) {
+        width: 175px !important;
+        height: 175px !important;
+      }
+
+      @media (min-width: 768px) {
+        width: 250px !important;
+        height: 250px !important;
+      }
+
+      @media (min-width: 1200px) {
+        width: 250px !important;
+        height: 250px !important;
+        position: relative !important;
+      }
     }
   }
 }
@@ -359,12 +381,11 @@
   }
 }
 
-.hireUsCardBoldedTxt{
-  @media(min-width:768px){
+.hireUsCardBoldedTxt {
+  @media (min-width: 768px) {
     // white-space: nowrap;
   }
 }
-
 
 .scientist {
   @media (min-width: 768px) {
@@ -442,10 +463,6 @@
 .shareYourKnowledgeImgContainer.classRoom {
   @media (min-width: 1200px) {
     padding-top: 24px !important;
-    // border: solid pink !important;
-    // display: flex !important;
-    // align-items: center !important;
-    // justify-content: center !important;;
   }
 }
 
@@ -489,6 +506,8 @@
   .shareYourKnowledgeImgContainer > img {
     width: 350px !important;
     height: 350px !important;
+    // width: 330px !important;
+    // height: 330px !important;
 
     @media (max-width: 1199px) {
       width: 325px !important;
@@ -506,16 +525,16 @@
 }
 
 @media (max-width: 767px) {
-  .GPConstellationSec > section:last-child{
-    @media(max-width: 575px){
+  .GPConstellationSec > section:last-child {
+    @media (max-width: 575px) {
       margin-top: 25px !important;
       // padding-right: 50px !important;
     }
   }
 
-  .GPConstellationSec > section:last-child{
+  .GPConstellationSec > section:last-child {
     margin-right: 10px !important;
-    > div{
+    > div {
       width: 225px !important;
       height: 225px !important;
     }
@@ -547,3 +566,4 @@
     margin-bottom: 50px !important;
   }
 }
+

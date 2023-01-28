@@ -535,9 +535,17 @@ $carouselTitleFtWeightDesktop: 800 !important;
     align-items: center !important;
     > img {
       position: relative !important;
-      width: 230px !important;
-      height: 230px !important;
+      width: 200px !important;
+      height: 200px !important;
     }
+  }
+}
+
+@media(max-width: 575px){
+  .GPConstellationSec > section:last-child > div,
+  .shareYourKnowledgeImgContainer > img{
+    width: 210px !important;
+    height: 210px !important;
   }
 }
 
@@ -1007,17 +1015,6 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 }
 
-.imgProductContainer {
-  width: 75% !important;
-
-  @media (max-width: 575px) {
-    width: 100% !important;
-  }
-
-  @media (min-width: 768px) and (max-width: 1199px) {
-    width: 100% !important;
-  }
-}
 
 .scientistHeadingTxt {
   font-style: italic !important;
