@@ -30,7 +30,7 @@ const ScientistSection = () => {
                     </h5>
                 </section>
             </section>
-            <section className="d-flex justify-content-center align-items-center justify-content-md-start align-items-md-stretch ps-md-5 pe-md-5 ms-md-5 me-md-5 pb-md-5 pb-xl-0">
+            <section className="d-flex justify-content-center align-items-center justify-content-md-start align-items-md-stretch ps-md-5 pe-md-5 ms-md-5 me-md-5 pb-md-5 pb-xl-5">
                 <section className="d-flex d-md-block flex-column flex-md-row justify-content-center justify-content-md-start scientistSec">
                     {scientists.map((scientist, index) => {
                         const { alt, src, name, description } = scientist;

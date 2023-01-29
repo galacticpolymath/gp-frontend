@@ -248,27 +248,40 @@
     }
   }
 
+
+  > section {
+    div{
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+  }
   > section {
     img {
       max-width: none !important;
-      width: 160px !important;
-      height: 160px !important;
+      width: 170px !important;
+      height: 170px !important;
 
-      @media (min-width: 576px) {
-        width: 175px !important;
-        height: 175px !important;
+      @media(min-width: 768px){
+        width: 200px !important;
+        height: 200px !important;
       }
 
-      @media (min-width: 768px) {
-        width: 225px !important;
-        height: 225px !important;
-      }
+      // @media (min-width: 576px) {
+      //   width: 175px !important;
+      //   height: 175px !important;
+      // }
 
-      @media (min-width: 1200px) {
-        width: 225px !important;
-        height: 225px !important;
-        position: relative !important;
-      }
+      // @media (min-width: 768px) {
+      //   width: 225px !important;
+      //   height: 200px !important;
+      // }
+
+      // @media (min-width: 1200px) {
+      //   width: 200px !important;
+      //   height: 200px !important;
+      //   position: relative !important;
+      // }
     }
   }
 }
@@ -408,7 +421,8 @@
         font-size: 20px !important;
       }
     }
-    height: 230px !important;
+    // height: 230px !important;
+    display: inline-flex !important;
     > section:last-child {
       @media (max-width: 1199px) {
         margin-bottom: 10px !important;
@@ -504,8 +518,6 @@
   > section:first-child {
     > section:last-child {
       @media (min-width: 1200px) {
-        // margin-left: 20px !important;
-        // transform: translateX(20px) !important;
       }
     }
   }
@@ -626,5 +638,11 @@
         }
       }
     }
+  }
+}
+
+@media(min-width: 1200px){
+  .scientist:nth-child(even){
+    margin-top: 100px !important;
   }
 }

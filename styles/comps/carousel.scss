@@ -295,8 +295,8 @@ $carouselBackgroundColor: #ffeded;
     align-items: center !important;
   }
 
-  @media(min-width: 1300px){
-    transform: translateY(40px) !important;;
+  @media (min-width: 1300px) {
+    transform: translateY(40px) !important;
   }
 }
 
@@ -803,10 +803,32 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
+.shortTxtClientReview {
+  @media (max-width: 325px) {
+    transform: translateY(345px) !important;
+    border: solid pink !important;
+  }
+
+  @media(min-width: 326px){
+    transform: translateY(200px) !important;
+  }
+
+  @media (min-width: 460px) {
+    transform: translateY(120px) !important;
+  }
 
 
-.shortTxtClientReview{
-  border: solid pink !important;
+  @media (min-width: 576px) and (max-width: 767px) {
+    transform: translateY(90px) !important;
+  }
+
+  @media(min-width: 768px){
+    transform: translateY(40px) !important;
+  }
+
+  @media (min-width: 1300px) {
+    transform: translateY(20px) !important;
+  }
 }
 
 .clientReview {
@@ -839,7 +861,6 @@ $carouselBackgroundColor: #ffeded;
     transform: translateY(100px) !important;
   }
 }
-
 
 .clientReview.shortTxtContent {
   height: 100% !important;
@@ -932,7 +953,7 @@ $carouselBackgroundColor: #ffeded;
     > section:last-of-type {
       bottom: -35px !important;
 
-      @media(min-width: 1200px){
+      @media (min-width: 1200px) {
         bottom: -25px !important;
       }
     }

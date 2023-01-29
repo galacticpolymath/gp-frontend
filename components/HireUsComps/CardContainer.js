@@ -186,11 +186,6 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                     cardStyles += ' shortTxtContentCard'
                                                 }
 
-                                                if(userInput.cssClass){
-                                                    autoCarouselItemStyles += ` ${userInput.cssClass}`
-                                                }
-
-                                                console.log(autoCarouselItemStyles)
 
                                                 if (isLong) {
                                                     autoCarouselItemStyles += ' longTxtContent'
@@ -198,7 +193,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
 
 
                                                 return (
-                                                    <div className={autoCarouselItemStyles} key={index}>
+                                                    <div className={`${autoCarouselItemStyles} ${userInput.cssClass}`} key={index}>
                                                         <section className={feedbackSecClassNames}>
                                                             {stars &&
                                                                 <span className="text-dark fst-italic fw275 productReviewTxt d-none d-sm-inline">

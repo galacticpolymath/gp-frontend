@@ -15,7 +15,7 @@ const WhatYouWillGetSec = () => (
                 What will you get?
             </h3>
         </section>
-        <section className="d-flex d-md-block flex-column ps-sm-5 pe-sm-5 flex-md-row pb-5 mt-4 whatYouWillGetSec">
+        <section className="d-flex d-md-block flex-column ps-sm-5 pe-sm-5 flex-md-row pb-5 pb-xl-0 mt-4 whatYouWillGetSec">
             {whatYouWillGetTxts.map((textsAndImg, index) => <HireUsCardFirstSecMobile isWhatWillYouGetSec={true} key={index} textsAndImg={textsAndImg} index={index} customCssClass='whatWillYouGetSec' />)}
         </section>
     </section>
