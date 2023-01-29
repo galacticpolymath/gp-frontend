@@ -541,14 +541,12 @@
 @media (min-width: 768px) {
   .gpConstellation,
   .shareYourKnowledgeImgContainer > img {
-    width: 350px !important;
-    height: 350px !important;
-    // width: 330px !important;
-    // height: 330px !important;
+    width: 480px !important;
+    height: 280px !important;
 
     @media (max-width: 1199px) {
-      width: 305px !important;
-      height: 305px !important;
+      width: 380px !important;
+      height: 280px !important;
     }
   }
 
