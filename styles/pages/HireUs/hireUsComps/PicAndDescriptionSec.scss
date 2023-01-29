@@ -259,25 +259,9 @@
       }
 
       @media(min-width: 1200px){
-        width: 220px !important;
-        height: 220px !important;
+        width: 200px !important;
+        height: 200px !important;
       }
-
-      // @media (min-width: 576px) {
-      //   width: 175px !important;
-      //   height: 175px !important;
-      // }
-
-      // @media (min-width: 768px) {
-      //   width: 225px !important;
-      //   height: 200px !important;
-      // }
-
-      // @media (min-width: 1200px) {
-      //   width: 200px !important;
-      //   height: 200px !important;
-      //   position: relative !important;
-      // }
     }
   }
 }
@@ -563,12 +547,16 @@
 
   .GPConstellationSec > section:last-child {
     > div {
-      // width: 225px !important;
-      // height: 225px !important;
       width: 40vw !important;
       height: 250px !important;
       display: grid !important;
       align-items: center !important;
+
+      img{
+        @media(max-width: 767px) and (min-width: 576px){
+          height: 192px !important;
+        }
+      }
     }
     @media (min-width: 576px) {
       margin-right: 10px !important;
@@ -621,7 +609,7 @@
         align-items: center !important;
         img {
           max-width: 580px !important;
-          width: 336px !important;
+          width: 300px !important;
           height: 180px !important;
 
           @media (max-width: 400px) {
