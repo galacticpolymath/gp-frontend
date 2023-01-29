@@ -65,3 +65,9 @@
   width: 60px !important;
   height: 60px !important;
 }
+
+.hireUsCardBoldedTxt{
+  @media(min-width: 1400px){
+    white-space: nowrap !important;;
+  }
+}

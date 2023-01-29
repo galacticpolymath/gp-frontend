@@ -193,7 +193,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
 
 
                                                 return (
-                                                    <div className={`${autoCarouselItemStyles} ${userInput.cssClass}`} key={index}>
+                                                    <div className={`${autoCarouselItemStyles} ${userInput?.cssClass ?? ""}`} key={index}>
                                                         <section className={feedbackSecClassNames}>
                                                             {stars &&
                                                                 <span className="text-dark fst-italic fw275 productReviewTxt d-none d-sm-inline">

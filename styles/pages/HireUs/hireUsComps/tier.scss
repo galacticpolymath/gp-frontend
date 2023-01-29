@@ -185,19 +185,31 @@ img{
     width: 300px !important;
     height: 130px !important;
     top: 50%;
-    left: 45%;
+    left: 50%;
     transform: translate(-50%, -50%);
 
     @media (min-width: 768px) and (max-width: 1199px) {
-      // width: 510px !important;
       width: 515px !important;
     }
 
     @media (min-width: 1200px) {
       min-width: 308px !important;
     }
+
+    @media(min-width: 576px) and (max-width: 991px){
+      width: 100% !important;
+      left: 48% !important;
+    }
+
+    @media(max-width: 575px){
+      width: 100% !important;
+      min-width: 240px !important;
+      left: 50% !important;
+    }
   }
 }
+
+
 
 .imgProductContainer {
   // width: 75% !important;

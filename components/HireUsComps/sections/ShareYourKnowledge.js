@@ -19,6 +19,7 @@
 
 import PicAndDescriptionSec from './PicAndDescriptionSec'
 import Image from 'next/image'
+import { Parallax } from 'react-parallax';
 
 const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
     return (

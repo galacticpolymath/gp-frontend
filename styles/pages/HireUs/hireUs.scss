@@ -181,9 +181,6 @@ $carouselTitleFtWeightDesktop: 800 !important;
     width: 40vw !important;
     min-width: 500px !important;
     height: 305px !important;
-    > span {
-      // border: solid pink !important;
-    }
   }
 }
 
@@ -443,7 +440,6 @@ $carouselTitleFtWeightDesktop: 800 !important;
 
   @media (min-width: 768px) and (max-width: 991px) {
     height: 220px !important;
-    // border: solid pink !important;
   }
 }
 
@@ -456,7 +452,6 @@ $carouselTitleFtWeightDesktop: 800 !important;
 .whatWillYouGetSec:nth-child(even) {
   @media (max-width: 850px) {
     margin-top: 50px !important;
-    // border: solid pink !important;
   }
 }
 
@@ -712,7 +707,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
   .shareYourKnowledgeImgContainer > img{
     max-width: 580px !important;
     width: auto !important;
-    height: 180px !important;
+    height: 170px !important;
 
     @media(max-width: 400px){
       width: 240px !important;

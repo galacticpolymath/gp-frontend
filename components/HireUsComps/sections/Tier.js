@@ -99,7 +99,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                     </section>
                     <section className="productSec">
                         <div className="imgProductContainer">
-                            <Img src={productImg} alt={`${tierName}_ProductImg`} className="tierProductImg" height={170} />
+                            <Img src={productImg} alt={`${tierName}_ProductImg`} className={`tierProductImg ${tierName}_style`} height={170} />
                         </div>
                         <section className="mt-4 text-sm-start text-center">
                             <a href={link} target="_blank" className="text-dark text-decoration-underline fs-large fst-italic fw200 underline-less-thick">

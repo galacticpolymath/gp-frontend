@@ -806,7 +806,6 @@ $carouselBackgroundColor: #ffeded;
 .shortTxtClientReview {
   @media (max-width: 325px) {
     transform: translateY(345px) !important;
-    border: solid pink !important;
   }
 
   @media(min-width: 326px){
@@ -977,5 +976,11 @@ $carouselBackgroundColor: #ffeded;
     margin-top: 55px !important;
     transform: translateY(0px) !important;
     // border: solid pink !important;
+  }
+}
+
+.grantReviewShortTxtStyles{
+  @media(min-width: 576px) and (max-width: 767px){
+    transform: translateY(50px) !important;
   }
 }

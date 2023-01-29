@@ -2,7 +2,8 @@
     {
         "feedback": "The Broader Impacts are creative and exciting.",
         "person": "Anonymous Reviewer #1",
-        "occupation": "NSF Grant Review Panelist"
+        "occupation": "NSF Grant Review Panelist",
+        "cssClass": "grantReviewShortTxtStyles"
         
     },
     {
