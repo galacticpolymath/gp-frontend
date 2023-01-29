@@ -160,16 +160,19 @@ $desktopFontSizeTierStatus: 24px !important;
   }
 }
 
+
 .tierProductImg {
-  max-width: none !important;
-  @media (min-width: 1200px) {
-    // width: 170px !important;
-    // width: 100% !important;
-    // width:270px !important;
-    // width: 420px !important;
-    height: 170px !important;
-    // height: 280px !important;
+
+  @media(max-width: 1199px){
+    // max-width: none !important;
   }
+  @media (min-width: 1200px) {
+    height: 170px !important;
+  }
+}
+
+img{
+  image-rendering: -webkit-optimize-contrast;
 }
 
 .imgProductContainer {
@@ -177,13 +180,24 @@ $desktopFontSizeTierStatus: 24px !important;
   height: 170px !important;
 
   > img {
+    max-width: 400px !important;
     position: absolute !important;
-    max-width: 389px !important;
+    // width: 510px !important;
+    width: 300px !important;
+    height: 170px !important;
+    // max-width: 509px !important;
+    // width: 600px !important;
+    // max-width: none !important;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 
-    @media(min-width: 1200px){
+    @media (min-width: 768px) and (max-width: 1199px) {
+      // width: 510px !important;
+      width: 515px !important;
+    }
+
+    @media (min-width: 1200px) {
       min-width: 308px !important;
     }
   }
@@ -203,9 +217,6 @@ $desktopFontSizeTierStatus: 24px !important;
     width: 100% !important;
   }
 
-
-  @media(min-width: 992px){
-    
+  @media (min-width: 992px) {
   }
 }
-
