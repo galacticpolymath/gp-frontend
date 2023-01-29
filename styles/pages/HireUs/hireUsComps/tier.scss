@@ -51,8 +51,8 @@ $desktopFontSizeTierStatus: 24px !important;
   @media (min-width: 768px) {
     // width: 130px !important;
     // height: 130px !important;
-    width: 140px !important;
-    height: 140px !important;
+    width: 120px !important;
+    height: 120px !important;
   }
 }
 
@@ -177,19 +177,15 @@ img{
 
 .imgProductContainer {
   position: relative !important;
-  height: 170px !important;
+  height: 150px !important;
 
   > img {
     max-width: 400px !important;
     position: absolute !important;
-    // width: 510px !important;
     width: 300px !important;
-    height: 170px !important;
-    // max-width: 509px !important;
-    // width: 600px !important;
-    // max-width: none !important;
+    height: 130px !important;
     top: 50%;
-    left: 50%;
+    left: 45%;
     transform: translate(-50%, -50%);
 
     @media (min-width: 768px) and (max-width: 1199px) {
@@ -217,6 +213,6 @@ img{
     width: 100% !important;
   }
 
-  @media (min-width: 992px) {
+  @media (min-width: 1200px) {
   }
 }
