@@ -74,8 +74,8 @@
   }
 }
 
-.mattsAward > section:last-child{
-  @media(min-width: 576px){
+.mattsAward > section:last-child {
+  @media (min-width: 576px) {
     padding-top: 10px !important;
   }
 }
@@ -288,7 +288,7 @@
 .picAndDescriptionSecInList:not(:first-child) {
   margin-top: 25px !important;
 
-  @media(max-width: 575px){
+  @media (max-width: 575px) {
     margin-top: 90px !important;
   }
 }
@@ -393,9 +393,9 @@
   }
 }
 
-.ownerSection > section:first-child span{
-  @media(max-width: 575px){
-    line-height: 35px !important;;
+.ownerSection > section:first-child span {
+  @media (max-width: 575px) {
+    line-height: 35px !important;
   }
 }
 
@@ -410,8 +410,7 @@
     }
     height: 230px !important;
     > section:last-child {
-
-      @media(max-width: 1199px){
+      @media (max-width: 1199px) {
         margin-bottom: 10px !important;
       }
       > div {
@@ -428,7 +427,6 @@
         }
       }
     }
-
   }
 
   @media (min-width: 768px) and (max-width: 1199px) {
@@ -464,12 +462,12 @@
     display: inline-flex !important;
   }
 
-  @media(max-width: 575px){
-    > section:last-child{
+  @media (max-width: 575px) {
+    > section:last-child {
       margin-bottom: 15px !important;
     }
 
-    span{
+    span {
       line-height: 33px !important;
     }
   }
@@ -560,10 +558,13 @@
   }
 
   .GPConstellationSec > section:last-child {
-    
     > div {
-      width: 225px !important;
-      height: 225px !important;
+      // width: 225px !important;
+      // height: 225px !important;
+      width: 40vw !important;
+      height: 250px !important;
+      display: grid !important;
+      align-items: center !important;
     }
     @media (min-width: 576px) {
       margin-right: 10px !important;
@@ -580,7 +581,7 @@
   }
   .shareYourKnowledgeImgContainer > img {
     width: 350px !important;
-    height: 350px !important;
+    height: 250px !important;
   }
 }
 
@@ -606,6 +607,24 @@
   }
 }
 
+@media (max-width: 575px) {
+  .GPConstellationSec {
+    > section:last-child {
+      > div {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        img {
+          max-width: 580px !important;
+          width: 336px !important;
+          height: 180px !important;
 
-
-
+          @media (max-width: 400px) {
+            width: 240px !important;
+          }
+        }
+      }
+    }
+  }
+}

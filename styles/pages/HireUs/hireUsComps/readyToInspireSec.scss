@@ -38,6 +38,16 @@
     }
   }
 
+
+  @media (min-width: 1440px) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  > section {
+      width: 700px !important;
+    }
+  }
+
 }
 
 

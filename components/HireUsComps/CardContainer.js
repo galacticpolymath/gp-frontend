@@ -161,7 +161,8 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                     <div className={autoCarouselContainerStyles}>
                                         <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
                                             {userInputs.map((userInput, index) => {
-                                                const { feedback, person, occupation, city, stars, product, institution, location, isShort, isLong } = userInput;
+                                                console.log("userInput: ", userInput)
+                                                const { feedback, person, occupation, city, stars, product, institution, location, isShort, isLong, cssClass } = userInput;
                                                 let feedBackClassName = 'pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center'
                                                 let quoteInfo = "d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec"
                                                 let feedbackSecClassNames = "w-100 h-100 d-flex flex-column flex-sm-row justify-content-sm-start justify-content-sm-center  align-items-center justify-content-md-start align-items-md-stretch feedBackSec position-relative"
@@ -183,8 +184,13 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                     quoteInfo += ' shortQuoteInfoSec'
                                                     autoCarouselContainerStyles += ' autoCarouselContainerShortTxtContent'
                                                     cardStyles += ' shortTxtContentCard'
-                                                    console.log("cardStyles: ", cardStyles)
                                                 }
+
+                                                if(userInput.cssClass){
+                                                    autoCarouselItemStyles += ` ${userInput.cssClass}`
+                                                }
+
+                                                console.log(autoCarouselItemStyles)
 
                                                 if (isLong) {
                                                     autoCarouselItemStyles += ' longTxtContent'

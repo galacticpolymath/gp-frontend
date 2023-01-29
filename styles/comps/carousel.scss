@@ -294,6 +294,10 @@ $carouselBackgroundColor: #ffeded;
     display: grid !important;
     align-items: center !important;
   }
+
+  @media(min-width: 1300px){
+    transform: translateY(40px) !important;;
+  }
 }
 
 .studentParentStyles {
@@ -797,6 +801,12 @@ $carouselBackgroundColor: #ffeded;
       }
     }
   }
+}
+
+
+
+.shortTxtClientReview{
+  border: solid pink !important;
 }
 
 .clientReview {

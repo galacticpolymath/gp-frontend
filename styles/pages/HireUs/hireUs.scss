@@ -120,6 +120,10 @@ $carouselTitleFtWeightDesktop: 800 !important;
     // width: 942px !important;
     min-width: 755px !important;
   }
+
+  @media(min-width: 1440px){
+    transform: translateY(-140px);
+  }
 }
 
 .introTxtShareYourKnowledge {
@@ -212,12 +216,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 }
 
-@media(max-width: 575px){
-  .shareYourKnowledgeImgContainer > img{
-    width: 210px !important;
-    height: 210px !important;
-  }
-}
+
 
 .shareYourKnowledgeImgSec {
   @media (min-width: 768px) {
@@ -229,8 +228,6 @@ $carouselTitleFtWeightDesktop: 800 !important;
 
   @media (min-width: 1200px) {
     width: 50% !important;
-    > div {
-    }
   }
 }
 
@@ -254,7 +251,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
   
   @media (min-width: 576px) and (max-width: 767px) {
-    height: 370px !important;
+    height: fit-content !important;
   }
 
   @media (max-width: 575px) {
@@ -569,11 +566,6 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 }
 
-.hireUsPg{
-  *{
-    // border: solid pink !important;
-  }
-}
 
 .arrowSec {
 
@@ -716,7 +708,14 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 }
 
-.letTalksMainBtnSec{
-  border: solid pink !important;
-}
+@media(max-width: 575px){
+  .shareYourKnowledgeImgContainer > img{
+    max-width: 580px !important;
+    width: auto !important;
+    height: 180px !important;
 
+    @media(max-width: 400px){
+      width: 240px !important;
+    }
+  }
+}
