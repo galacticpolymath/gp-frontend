@@ -1,6 +1,9 @@
+$borderColorForWhatDoWeDoSec: #D0B4BF;
+
+
 .whatDoWeDoSec {
   border-radius: 1.3em;
-  border: solid 0.8px #2e0b1b;
+  border: solid 0.8px $borderColorForWhatDoWeDoSec;
   padding: 25px 45px 25px 45px;
 
   @media (min-width: 1300px) {

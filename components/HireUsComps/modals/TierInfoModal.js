@@ -21,16 +21,9 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Image from 'next/image'
 import ReactPlayer from 'react-player';
-import { TbArrowBigDown } from 'react-icons/tb';
 import { IoIosCloseCircle } from "react-icons/io";
 
-// IoIosCloseCircle
-
 const { Header, Title, Body, Footer } = Modal;
-
-// map the array that contains all of the modals onto the ui. Each object should contain the following field: isModalOn: false
-// when the user clicks on a specific tier info get the specific index of the tier info that was clicked 
-// using that index find the specific modal in the Modal array and change isModalOn to true
 
 const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
     const { isModalOn, title, texts, videoLink } = tierModalInfo;
@@ -56,7 +49,6 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                                 <section className="d-flex flex-column ps-4 mt-3">
                                     {texts.slice(1, 5).map((text, index) => {
                                         const { normalTxt, boldTxt } = text;
-                                        console.log("boldTxt: " + boldTxt);
                                         return (
                                             <span className={`${index !== 0 ? 'mt-3' : ''} fs-med fw300`} key={index}>
                                                 {boldTxt ? <span className="fw-bolder fw625 tierInfoBoldTxt">{boldTxt}</span> : null}

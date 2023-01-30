@@ -161,7 +161,6 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                     <div className={autoCarouselContainerStyles}>
                                         <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
                                             {userInputs.map((userInput, index) => {
-                                                console.log("userInput: ", userInput)
                                                 const { feedback, person, occupation, city, stars, product, institution, location, isShort, isLong, cssClass } = userInput;
                                                 let feedBackClassName = 'pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center'
                                                 let quoteInfo = "d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec"
