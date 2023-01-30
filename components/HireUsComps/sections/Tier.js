@@ -87,7 +87,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr }) => {
                                 </tr>
                                 <tr className="tierTableRow">
                                     <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${isMajorExtension ? '' : 'op-5'}`}>{isMajorExtension ? <GoCheck /> : <HiOutlineX />}</td>
-                                    <td id="4" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${isMajorExtension ? '' : 'op-5'}`}>Major extension in Year 3 <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
+                                    <td id="4" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${isMajorExtension ? '' : 'op-5'}`}>Major lesson extension <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                             </tbody>
                         </table>
