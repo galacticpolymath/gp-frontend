@@ -121,7 +121,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
     min-width: 755px !important;
   }
 
-  @media(min-width: 1440px){
+  @media(min-width: 1200px){
     transform: translateY(-140px);
   }
 }
@@ -399,7 +399,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
 .looped-vid-hire-us {
   width: 100% !important;
   object-fit: fill !important;
-  height: 400px !important;
+  height: 300px !important;
   border-radius: $borderRadiusModal;
 
   @media (max-width: 767px) {

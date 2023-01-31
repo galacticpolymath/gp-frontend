@@ -19,13 +19,13 @@
   
   .introSecAndLetTalksSec{
     h1{
-      @media(min-width: 768px) and (max-width: 1199px){
-        padding-right: 25px !important;
+      // @media(min-width: 768px) and (max-width: 1199px){
+      //   padding-right: 25px !important;
 
-        @media(max-width: 850px){
-          padding-right: 40px !important;
-        }
-      }
+      //   @media(max-width: 850px){
+      //     padding-right: 40px !important;
+      //   }
+      // }
     }
   }
   
@@ -37,31 +37,7 @@
       width: 55% !important;
     }
   }
-  
-  .headingHireUs {
-    font-size: 70px !important;
-    font-weight: 450 !important;
-  
-    @media (min-width: 880px) and (max-width: 991px) {
-      font-size: 70px !important;
-    }
-  
-    @media (min-width: 768px) and (max-width: 879px) {
-      font-size: 65px !important;
-    }
-  
-    @media (min-width: 768px) {
-      font-size: 70px !important;
-    }
-  
-    @media (min-width: 576px) and (max-width: 767px) {
-      font-size: calc(31.2px + 4.5vw);
-    }
-  
-    @media (max-width: 575px) {
-      font-size: clamp(40px, 9.3vw, 57px) !important;
-    }
-  }
+
   
   .subTxtHeadingContainerHireUsPg {
     width: 75% !important;
@@ -98,7 +74,7 @@
     }
 
     @media(min-width: 768px){
-      height: 700px;
+      height: 500px;
     }
   
     @media(min-width: 768px) and (max-width: 991px){
@@ -127,7 +103,7 @@
 
     > section:first-child{
       @media(min-width: 768px){
-        height: 510px !important; 
+        height: 310px !important; 
       }
     }
 

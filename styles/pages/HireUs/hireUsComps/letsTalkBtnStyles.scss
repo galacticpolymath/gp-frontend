@@ -1,4 +1,8 @@
 .letTalksMainBtnSec {
+  @media(min-width: 768px){
+    transform: translateY(28px) !important;
+  }
+
   @media(min-width: 1200px){
     transform: translateY(-50px) !important;
   }
@@ -68,9 +72,8 @@
 }
 
 .mainBtnLetsTalk{
-
   @media(min-width: 992px){
-    transform: translateY(-45px) !important;
+    transform: translateY(15px) !important;
   }
 
   @media(min-width: 768px){
@@ -212,7 +215,8 @@
 
 .introSecHireUsPg {
   @media (min-width: 768px) {
-    height: 690px !important;
+    // height: 690px !important;
+    height: 630px !important;
   }
 
   @media (min-width: 375px) and (max-width: 575px) {

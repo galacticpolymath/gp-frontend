@@ -24,10 +24,10 @@ const IntroSecHireUs = () => {
                 <section className="d-none d-md-flex flex-column w-100 noMargin col-12 introSecAndLetTalksSec">
                     <section className="d-flex flex-column w-100 justify-content-center align-items-center">
                         <section className="w-100 ps-5">
-                            <h1 className={`${styles.shadow} display-1 headingHireUs`}>Easier, Classroom-Ready Outreach</h1>
+                            <h1 className={`${styles.shadow} headingHireUs`}>Easier, Classroom-Ready Outreach</h1>
                         </section>
                         <section className="w-100 ps-5 position-relative d-flex mt-4">
-                            <span className={`${styles.shadow} display-6 noMargin noPadding w-75 subTxtHeadingDesktop`}>
+                            <span className={`${styles.shadow} subTxtHeadingDesktop spanSubheader noMargin noPadding w-75`}>
                                 We translate your work so that non-experts can teach mind-opening lessons.
                             </span>
                             {/* <LetsTalkBtnContainer isMainBtn isAbsolute cssClasses='mainBtnAboveMobile d-none d-md-flex' /> */}

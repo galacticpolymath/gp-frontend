@@ -378,6 +378,13 @@ img {
   transform: translateX(15px) !important;
 }
 
+
+.spanSubheader{
+  font-size: 1.8rem !important;
+  font-weight: 249 !important;
+}
+
+
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
 .accordion-header button {
   &.collapsed .bi-chevron-up {
