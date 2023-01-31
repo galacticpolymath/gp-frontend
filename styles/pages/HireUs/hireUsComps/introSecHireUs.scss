@@ -103,7 +103,6 @@
   
         @media (max-width: 575px) {
           width: 100% !important;
-          // width: 100% !important;
         }
         @media (min-width: 375px) and (max-width: 575px) {
           padding-left: 40px !important;
@@ -115,6 +114,20 @@
         }
       }
     }
+
+    > section:first-child{
+      @media(min-width: 768px){
+        height: 510px !important; 
+
+      }
+    }
+
+    > section:last-child{
+      @media(min-width: 768px){
+      }
+    }
+
+
   
     @media (min-width: 768px) and (max-width: 991px) {
       > section:first-child {

@@ -21,7 +21,7 @@ const IntroSecHireUs = () => {
     return (
         <section className='d-flex flex-row parallax row introSecHireUsPg' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
             <section className="w-100 d-flex justify-content-center align-items-center d-none d-md-flex">
-                <section className="d-none d-md-flex w-100 noMargin col-12 introSecAndLetTalksSec">
+                <section className="d-none d-md-flex flex-column w-100 noMargin col-12 introSecAndLetTalksSec">
                     <section className="d-flex flex-column w-100 justify-content-center align-items-center">
                         <section className="w-100 ps-5">
                             <h1 className={`${styles.shadow} display-1 headingHireUs`}>Easier, Classroom-Ready Outreach</h1>
@@ -30,16 +30,16 @@ const IntroSecHireUs = () => {
                             <span className={`${styles.shadow} display-6 noMargin noPadding w-75 subTxtHeadingDesktop`}>
                                 We translate your work so that non-experts can teach mind-opening lessons.
                             </span>
-                            <LetsTalkBtnContainer isMainBtn isAbsolute cssClasses='mainBtnAboveMobile d-none d-md-flex' />
+                            {/* <LetsTalkBtnContainer isMainBtn isAbsolute cssClasses='mainBtnAboveMobile d-none d-md-flex' /> */}
                         </section>
                     </section>
-                    <section className="d-flex d-md-none align-items-end justify-content-end letTalksMainBtnSec">
+                    <section className="d-flex ps-5 letTalksMainBtnSec">
                         <LetsTalkBtnContainer isMainBtn />
                     </section>
                 </section>
             </section>
             {/* for mobile */}
-            <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
+            <section className="d-flex w-100 noMargin col-12 introSecAndLetTalksSec">
                 <section className="w-100 d-flex flex-column align-items-center pt-4">
                     <section className="headerSection">
                         <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Easier,</h1>
