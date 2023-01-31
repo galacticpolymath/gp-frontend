@@ -67,32 +67,32 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
             </Header>
             <Body className={`${isNoBackground ? 'noBackground' : 'tierCardBodyAndHeader'} noBorder pt-0 position-relative tierCardBody d-flex flex-column`}>
                 <section className="tierParagraphSec">
-                    <p className="text-dark fst-italic fs-large fw200 text-sm-start text-center">{paragraph1}</p>
-                    <p className="text-dark fst-italic fs-large fw200 mt-3 text-sm-start text-center">{paragraph2}</p>
+                    <p className="text-dark fst-italic  fw200 text-sm-start text-center">{paragraph1}</p>
+                    <p className="text-dark fst-italic  fw200 mt-3 text-sm-start text-center">{paragraph2}</p>
                 </section>
                 <section>
                     <div className="tierProductBorder pt-2 pb-2 pt-md-3 pb-md-3">
                         <table className="productInfoTable w-100 noBorder">
                             <tbody>
                                 <tr className="tierTableRow">
-                                    <td className="tierInfoStatus fs-large text-center text-sm-end text-sm-nowrap">{learningExperience}</td>
-                                    <td id="0" onClick={handleTierFeatureTxtClick} className="fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">GP Learning Experience <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
+                                    <td className="tierInfoStatus  text-center text-sm-end text-sm-nowrap">{learningExperience}</td>
+                                    <td id="0" onClick={handleTierFeatureTxtClick} className=" fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">GP Learning Experience <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className="w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large">{projectSupport}</td>
-                                    <td id="1" onClick={handleTierFeatureTxtClick} className="fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">Years of Project Support <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
+                                    <td className="w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap ">{projectSupport}</td>
+                                    <td id="1" onClick={handleTierFeatureTxtClick} className=" fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">Years of Project Support <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${basic ? '' : 'op-5'}`}>{basic ? `${basic} min` : <HiOutlineX />}</td>
-                                    <td id="2" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${basic ? '' : 'op-5'}`}>Basic Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
+                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap   ${basic ? '' : 'op-5'}`}>{basic ? `${basic} min` : <HiOutlineX />}</td>
+                                    <td id="2" onClick={handleTierFeatureTxtClick} className={` fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${basic ? '' : 'op-5'}`}>Basic Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${complex ? '' : 'op-5'}`}>{complex ? `${complex} min` : <HiOutlineX />}</td>
-                                    <td id="3" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${complex ? '' : 'op-5'}`}>Complex Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
+                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap   ${complex ? '' : 'op-5'}`}>{complex ? `${complex} min` : <HiOutlineX />}</td>
+                                    <td id="3" onClick={handleTierFeatureTxtClick} className={` fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${complex ? '' : 'op-5'}`}>Complex Video <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap fs-large  ${isMajorExtension ? '' : 'op-5'}`}>{isMajorExtension ? <GoCheck /> : <HiOutlineX />}</td>
-                                    <td id="4" onClick={handleTierFeatureTxtClick} className={`fs-large fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${isMajorExtension ? '' : 'op-5'}`}>Major extension in Year 3 <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
+                                    <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap   ${isMajorExtension ? '' : 'op-5'}`}>{isMajorExtension ? <GoCheck /> : <HiOutlineX />}</td>
+                                    <td id="4" onClick={handleTierFeatureTxtClick} className={` fst-italic fw200 ps-4 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${isMajorExtension ? '' : 'op-5'}`}>Major extension in Year 3 <AiOutlineQuestionCircle className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -100,21 +100,21 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                 </section>
                 <section className="mt-4">
                     <section className="mt-2">
-                        <h4 className="text-dark fst-italic fs-large fw200 text-center text-sm-start">Example Product: </h4>
+                        <h4 className="text-dark fst-italic  fw200 text-center text-sm-start">Example Product: </h4>
                     </section>
                     <section className="productSec">
                         <div className="imgProductContainer">
                             <Img src={productImg} alt={`${tierName}_ProductImg`} onClick={handleImgClick} className={`tierProductImg pointer ${tierName}_style`} height={170} />
                         </div>
                         <section className="mt-4 text-sm-start text-center">
-                            <a href={link} target="_blank" className="text-dark text-decoration-underline fs-large fst-italic fw200 underline-less-thick">
+                            <a href={link} target="_blank" className="text-dark text-decoration-underline  fst-italic fw200 underline-less-thick">
                                 "{txt}"
                             </a>
                         </section>
                     </section>
                 </section>
                 <section className="mt-5 w-100 d-flex justify-content-center align-items-center  justify-content-sm-start align-items-sm-stretch align-self-end priceSection">
-                    <h4 className="text-dark fst-italic fs-large text-center text-sm-start">
+                    <h4 className="text-dark fst-italic  text-center text-sm-start">
                         <section className="d-none d-sm-flex d-lg-flex flex-column">
                             <span>Estimated Price: </span>
                             <span className="mt-3 priceTxt">${low} - ${high}</span>
