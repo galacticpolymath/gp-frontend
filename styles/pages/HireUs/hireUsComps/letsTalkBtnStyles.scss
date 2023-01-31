@@ -1,12 +1,10 @@
 .letTalksMainBtnSec {
-  @media(min-width: 992px){
+  @media(min-width: 1200px){
     transform: translateY(-50px) !important;
   }
-}
 
-.letTalksMainBtnSec{
   > section{
-    @media(min-width: 768px) and (max-width: 991px){
+    @media(min-width: 768px) and (max-width: 1199px){
       width: 100% !important;
       margin-left: 30px !important;
     }
@@ -214,7 +212,7 @@
 
 .introSecHireUsPg {
   @media (min-width: 768px) {
-    height: 700px !important;
+    height: 690px !important;
   }
 
   @media (min-width: 375px) and (max-width: 575px) {
