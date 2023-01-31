@@ -33,13 +33,15 @@ const IntroSecHireUs = () => {
                             {/* <LetsTalkBtnContainer isMainBtn isAbsolute cssClasses='mainBtnAboveMobile d-none d-md-flex' /> */}
                         </section>
                     </section>
-                    <section className="d-flex ps-5 letTalksMainBtnSec">
-                        <LetsTalkBtnContainer isMainBtn />
+                    <section className="d-flex ps-md-5 letTalksMainBtnSec">
+                        <section>
+                            <LetsTalkBtnContainer isMainBtn />
+                        </section>
                     </section>
                 </section>
             </section>
             {/* for mobile */}
-            <section className="d-flex w-100 noMargin col-12 introSecAndLetTalksSec">
+            <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
                 <section className="w-100 d-flex flex-column align-items-center pt-4">
                     <section className="headerSection">
                         <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Easier,</h1>

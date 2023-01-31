@@ -1,6 +1,16 @@
 .letTalksMainBtnSec {
-  // margin-bottom: 65px !important;
-  
+  @media(min-width: 992px){
+    transform: translateY(-50px) !important;
+  }
+}
+
+.letTalksMainBtnSec{
+  > section{
+    @media(min-width: 768px) and (max-width: 991px){
+      width: 100% !important;
+      margin-left: 30px !important;
+    }
+  }
 }
 
 .defaultStylingLetsTalkBtn {
@@ -56,6 +66,17 @@
         font-size: 27px !important;
       }
     }
+  }
+}
+
+.mainBtnLetsTalk{
+
+  @media(min-width: 992px){
+    transform: translateY(-45px) !important;
+  }
+
+  @media(min-width: 768px){
+    height: 100px !important;
   }
 }
 
