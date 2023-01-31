@@ -32,7 +32,7 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
                 </section>
                 <section className="mt-sm-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none pe-sm-3">
                     <section>
-                        <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
+                        <h3 className="text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
                     </section>
                 </section>
                 <section className="mt-4 mt-sm-7 ps-sm-5 pe-sm-5 d-flex d-md-none">
@@ -60,10 +60,10 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
             </>
             :
             <section className="d-none d-md-flex flex-column ps-5 pe-5 mt-5 shareYourKnowledgeDesktopSec">
-                <section className="w-100 d-flex">
-                    <section className="w-50 d-flex flex-column">
+                <section className="w-100 d-flex mt-3">
+                    <section className="w-50 d-flex flex-column pt-xl-2">
                         <section className="w-100">
-                            <h3 className="display-1 text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
+                            <h3 className="text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
                         </section>
                         <section className="w-100 introTxtShareYourKnowledge">
                             <span className="d-inline-block mt-3">

@@ -28,11 +28,11 @@ const WhatDoWeDoSec = () => {
                 <span className='d-sm-none bolder text-wrap text-dark text-center w-100 d-block responsiveInfoTxt'>
                     We mobilize knowledge
                 </span>
-                <span className="hireUsCardIntroTxt d-inline-block responsiveInfoTxt text-center text-sm-start ps-3 pe-3 ps-sm-0 pe-sm-1">
+                <span className="hireUsCardIntroTxt d-inline-block text-center text-sm-start ps-3 pe-3 ps-sm-0 pe-sm-1">
                     <span className='bolder text-sm-nowrap d-none d-sm-inline-block'>
                         We mobilize knowledge
                     </span>
-                    <span className='ms-2 fwtHireUsCard'>
+                    <span className='ms-2 fwtHireUsCard txtOnHireUsPg'>
                         by turning our clients' outreach goals into rich, open-access learning experiences.
                     </span>
                 </span>

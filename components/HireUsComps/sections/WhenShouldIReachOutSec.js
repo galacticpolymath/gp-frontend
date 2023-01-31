@@ -23,7 +23,7 @@ const WhenShouldIReachOutSec = () => {
     return (
         <section className="mt-5 ps-sm-5 pe-sm-5 d-flex pb-2 pb-sm-5 flex-column">
             <section className="ps-2 pe-2 ps-sm-0 pe-sm-0">
-                <h3 className="display-1 noMargin">When should I reach out?</h3>
+                <h3 className="noMargin">When should I reach out?</h3>
             </section>
             <section className="d-flex flex-column flex-md-row anyTimeSec">
                 <section className="mt-3">

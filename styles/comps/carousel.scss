@@ -1,3 +1,5 @@
+@import '../globalVars.scss';
+
 $carouselBackgroundColor: #ffeded;
 
 * {
@@ -101,7 +103,7 @@ $carouselBackgroundColor: #ffeded;
   white-space: normal;
   margin: 0 auto;
   display: block;
-  font-size: 29px;
+  font-size: $spanFontSize;
   font-weight: 249;
 
   @media (max-width: 767px) {
@@ -137,7 +139,7 @@ $carouselBackgroundColor: #ffeded;
 
   > section {
     > span:first-child {
-      font-size: 25px;
+      font-size: $spanFontSizeSmall;
 
       @media (min-width: 576px) and (max-width: 767px) {
         font-size: 22px !important;

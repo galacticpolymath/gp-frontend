@@ -1,15 +1,4 @@
-$btnColor: #84469e;
-$btnColorDark: #3e0d55;
-$mobileTxtColor: #96195f;
-$btnColorMobile: #633a9a;
-$borderRadiusModal: 1.3em;
-$borderColorImgAndCard: #707070;
-$hireUsPgMainCardColor: #fff8f8;
-$sectionDarkBg: #2e0b1b;
-$desktopFontSize: 22px !important;
-$carouselTitleFtWeightDesktop: 800 !important;
-
-
+@import '../../globalVars.scss';
 @import "./hireUsComps/TestimoniesAndReviewsSec";
 @import "./hireUsComps/PicAndDescriptionSec.scss";
 @import "../../comps/carousel.scss";
@@ -87,9 +76,15 @@ $carouselTitleFtWeightDesktop: 800 !important;
   background-size: cover;
   background-position: 70% center;
   height: auto !important;
-
   overflow-x: hidden !important;
 }
+
+
+.normalTxtOnHireUsPg{
+  font-size: 22px !important;
+}
+
+
 
 
 .CardSec {
@@ -137,6 +132,9 @@ $carouselTitleFtWeightDesktop: 800 !important;
   }
 }
 
+
+
+
 .hireUsPgInfoCardBody {
   @media (min-width: 768px) {
     padding: 0 !important;
@@ -144,7 +142,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
 
   h3 {
     color: $mobileTxtColor !important;
-    font-size: 40px !important;
+    // font-size: 40px !important;
     font-weight: 800;
   }
 
@@ -156,7 +154,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
 
   @media (max-width: 575px) {
     h3 {
-      font-size: 42px !important;
+      // font-size: 42px !important;
       text-align: center !important;
       padding-left: 8px !important;
       padding-right: 8px !important;
@@ -288,7 +286,10 @@ $carouselTitleFtWeightDesktop: 800 !important;
 .hireUsCardIntroTxt {
   color: #363636 !important;
   width: 75%;
-  font-size: 55px;
+  font-size: $spanFontSize;
+
+  > span:first-child{
+  }
 
   @media (max-width: 767px) {
     width: 100%;
@@ -296,6 +297,10 @@ $carouselTitleFtWeightDesktop: 800 !important;
 
   @media (max-width: 575px) {
   }
+}
+
+span{
+  // border: solid red 1px !important;
 }
 
 .hireUsCardSectionTxt {
@@ -319,17 +324,10 @@ $carouselTitleFtWeightDesktop: 800 !important;
 .hireUsInfoStyledContainer {
   height: 350px;
 
-  @media (min-width: 768px) {
-    // width: 500px !important;
-  }
 
   @media (max-width: 767px) {
     border: solid 0.5px #707070;
     border-radius: $borderRadiusModal;
-  }
-
-  @media(min-width: 1200px){
-    
   }
 }
 
@@ -736,3 +734,10 @@ $carouselTitleFtWeightDesktop: 800 !important;
     height: 80px !important;
   }
 }
+
+
+
+.txtOnHireUsPg{
+  font-size: 22px !important;
+}
+

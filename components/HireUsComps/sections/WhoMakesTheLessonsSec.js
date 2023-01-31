@@ -28,9 +28,9 @@ const WhoMakesTheLessonsSec = () => {
     return (
         <section className="mt-5 ps-sm-5 pe-sm-5 d-flex pb-5 flex-column ownerInfoSec">
             <section>
-                <h3 className="display-1 noMargin d-block d-md-none">Who makes the</h3>
-                <h3 className="display-1 noMargin d-block d-md-none">lessons?</h3>
-                <h3 className="display-1 noMargin d-none d-md-block">Who makes the lessons?</h3>
+                <h3 className="noMargin d-block d-md-none">Who makes the</h3>
+                <h3 className="noMargin d-block d-md-none">lessons?</h3>
+                <h3 className="noMargin d-none d-md-block">Who makes the lessons?</h3>
             </section>
             <section className="mt-3 d-flex flex-column">
                 <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline d-md-none">The GP Team is led by our founder,</span>
