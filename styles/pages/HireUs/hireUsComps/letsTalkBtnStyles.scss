@@ -1,6 +1,15 @@
 .letTalksMainBtnSec {
   @media(min-width: 768px){
-    transform: translateY(28px) !important;
+
+    @media(max-width: 1199px){
+      width: 100% !important;
+      // padding-bottom: 50px !important;
+    }
+
+
+    @media(min-width: 1200px){
+      transform: translateY(28px) !important;
+    }
   }
 
   @media(min-width: 1200px){
@@ -10,13 +19,7 @@
   > section{
     @media(min-width: 768px) and (max-width: 1199px){
       width: 100% !important;
-      margin-left: 30px !important;
-    }
-  }
-
-  @media(max-width: 374px){
-    span{
-      // font-size: 
+      // margin-left: 30px !important;
     }
   }
 }
@@ -75,17 +78,16 @@
       }
     }
   }
-}
 
-.mainBtnLetsTalk{
-  @media(min-width: 992px){
-    transform: translateY(15px) !important;
+  @media(min-width: 768px){
+    transform: translateY(35px) !important;
   }
 
   @media(min-width: 768px){
     height: 100px !important;
   }
 }
+
 
 .letsTalkBtnContainer {
   background-color: $btnColor;

@@ -32,11 +32,13 @@
   }
 }
 
+
+
 .picAndDescriptionSec {
   display: flex !important;
 
   @media (min-width: 576px) {
-    flex-direction: row-reverse !important;
+    margin-top: 0px !important;
   }
 
   > section {
@@ -58,6 +60,9 @@
   @media (min-width: 576px) {
     > section:first-child {
       margin-left: 25px !important;
+
+      @media(max-width: 767px){
+      }
     }
   }
 
@@ -69,6 +74,7 @@
         display: block;
         padding-left: 8px !important;
         padding-right: 8px !important;
+        font-size: $spanFontSize;
       }
     }
   }
@@ -80,35 +86,6 @@
   }
 }
 
-.GPConstellationSec {
-  @media (min-width: 576px) {
-    flex-direction: row !important;
-    > section:first-child {
-      margin-left: 0px !important;
-      padding-right: 5px !important;
-    }
-    > section:last-child {
-      div {
-        width: 35vw !important;
-        height: 200px !important;
-      }
-    }
-  }
-  @media (max-width: 575px) {
-    > section:last-child {
-      width: 100% !important;
-      display: flex !important;
-      justify-content: center;
-      align-items: center;
-
-      div {
-        margin-top: 20px !important;
-        width: 70% !important;
-        height: 190px !important;
-      }
-    }
-  }
-}
 
 .shareYourKnowledgeDesktopSec {
   > section:first-child {
@@ -626,3 +603,72 @@
     margin-top: 100px !important;
   }
 }
+
+.GPConstellationSec {
+  > section:first-child{
+    > span{
+      font-size: $spanFontSize;
+      font-weight: 250 !important;
+      padding-left: 40px !important;
+      padding-right: 40px !important;
+
+      @media(max-width: 767px){
+        display: inline-flex !important;
+      }
+    }
+  }
+
+  @media (min-width: 576px) {
+    flex-direction: row !important;
+    > section:first-child {
+      margin-left: 0px !important;
+      padding-right: 5px !important;
+    }
+
+    > section:last-child {
+      div {
+        width: 35vw !important;
+        height: 200px !important;
+      }
+    }
+
+    @media(max-width: 767px){
+    flex-direction: column !important;
+
+      @media(min-width: 576px) and (max-width: 767px){
+        display: flex !important; 
+        flex-direction: row !important;
+
+        > section:first-child{
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            padding-bottom: 80px !important;
+        }
+      }
+
+
+      > section:last-child{
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin-top: 15px !important;
+      }
+    }
+  }
+  @media (max-width: 575px) {
+    > section:last-child {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: center;
+      align-items: center;
+
+      div {
+        margin-top: 20px !important;
+        width: 70% !important;
+        height: 190px !important;
+      }
+    }
+  }
+}
+

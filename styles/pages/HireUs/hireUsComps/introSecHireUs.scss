@@ -72,11 +72,17 @@
   }
 
   @media (min-width: 768px) {
-    height: 500px;
+    // height: 500px;
+
+    @media(max-width: 1199px){
+      flex-direction: column !important;
+      justify-content: end !important;
+      align-items: end !important;
+    }
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    padding-bottom: 150px !important;
+    // padding-bottom: 150px !important;
   }
 
   > section {
@@ -100,7 +106,7 @@
   }
 
   > section:first-child {
-    @media (min-width: 768px) {
+    @media (min-width: 1200px) {
       height: 310px !important;
     }
   }

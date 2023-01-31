@@ -35,7 +35,7 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
                         <h3 className="text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
                     </section>
                 </section>
-                <section className="mt-4 mt-sm-7 ps-sm-5 pe-sm-5 d-flex d-md-none">
+                <section className="mt-4 mt-md-7 ps-sm-5 pe-sm-5 d-flex d-md-none">
                     <PicAndDescriptionSec
                         text="We promote lessons through our growing GP Constellation dissemination network."
                         imgPath="/imgs/GP_Constellation_dark.png"
@@ -44,7 +44,7 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
                 </section>
                 <section className="mt-5 ps-sm-5 pe-sm-5 eachLessonMainSec d-flex flex-column d-md-none">
                     <section className="w-100">
-                        <h5 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h5>
+                        <h3 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h3>
                     </section>
                     <ul className="eachLessonInfoList ps-0 pt-2 ps-5 pt-sm-2 pe-3">
                         {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
@@ -91,7 +91,7 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
                     <section className="d-flex flex-column justify-content-center align-items-center mt-md-5 mt-xl-0 ms-xl-5 mb-md-4 mt-xl-0 lessonInfoSec">
                         <div className="eachLessonWrapper">
                             <section className="w-100">
-                                <h5 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h5>
+                                <h3 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h3>
                             </section>
                             <ul className="eachLessonInfoList">
                                 {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (

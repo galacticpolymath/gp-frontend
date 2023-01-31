@@ -29,7 +29,7 @@ import GrantReviewerFeedbackBackground from '../public/imgs/background/5_chaotic
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import tiersInfoForModal from '../data/HireUsPg/tiersInfoForModal.json'
 import TierInfoModal from '../components/HireUsComps/modals/TierInfoModal'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ReadyToInspireSec from '../components/HireUsComps/ReadyToInspireSec';
 import ShareYourKnowledge from '../components/HireUsComps/sections/ShareYourKnowledge';
 import ClientFundingSec from '../components/HireUsComps/sections/ClientFundingSec';

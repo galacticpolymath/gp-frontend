@@ -15,11 +15,12 @@
   line-height: 33px;
 }
 
-.responsiveInfoTxt {
-  font-size: 28px !important;
+span{
+  // border: solid pink .5px !important;
+}
 
-  @media (max-width: 575px) {
-  }
+.responsiveInfoTxt {
+  font-size: $spanFontSize;
 }
 
 .mattsAwardParentSec {
@@ -112,12 +113,11 @@
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    // width: 942px !important;
     min-width: 755px !important;
   }
 
   @media(min-width: 1200px){
-    transform: translateY(-140px);
+    transform: translateY(-80px);
   }
 }
 
@@ -127,13 +127,10 @@
     font-weight: 250 !important;
 
     @media (min-width: 768px) {
-      color: black !important;
+      color: #000000 !important;
     }
   }
 }
-
-
-
 
 .hireUsPgInfoCardBody {
   @media (min-width: 768px) {
@@ -142,7 +139,6 @@
 
   h3 {
     color: $mobileTxtColor !important;
-    // font-size: 40px !important;
     font-weight: 800;
   }
 
@@ -297,10 +293,6 @@
 
   @media (max-width: 575px) {
   }
-}
-
-span{
-  // border: solid red 1px !important;
 }
 
 .hireUsCardSectionTxt {
@@ -617,8 +609,9 @@ span{
     column-gap: 40px !important;
   }
   li {
-    font-size: 25px !important;
+    font-size: $spanFontSize;
     max-width: 580px !important;
+    font-weight: 200 !important;
   }
 
   @media (max-width: 767px) and (min-width: 1200px) {
@@ -738,6 +731,13 @@ span{
 
 
 .txtOnHireUsPg{
-  font-size: 22px !important;
+  font-size: $spanFontSize !important;
+}
+
+.eachLessonMainSec{
+  h3{
+    color: black !important;
+    font-weight: 380 !important;
+  }
 }
 

@@ -53,7 +53,7 @@ const IntroSecHireUs = () => {
                             We translate your work so that non-experts can teach mind-opening lessons.
                         </span>
                     </section>
-                    <section className="ps-0 ps-sm-1 pt-4 pt-sm-5 letTalksMainBtnSec">
+                    <section className="ps-0 ps-sm-1 pt-4 pt-md-5 letTalksMainBtnSec">
                         <LetsTalkBtnContainer isMainBtn isNoUnderline />
                     </section>
                 </section>

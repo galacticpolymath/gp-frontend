@@ -22,12 +22,12 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
             <section>
                 {link ?
                     <a href={link} target="_blank" className='text-dark'>
-                        <span className="text-dark fs-large fw200">{text}</span>
+                        <span className="text-dark fw200">{text}</span>
                     </a>
                     :
                     <>
                         {!!name && <h4 className="fw-bold text-dark">{name}</h4>}
-                        <span className="text-dark fs-large fw200">{text}</span>
+                        <span className="text-dark fw200">{text}</span>
                     </>
                 }
             </section>
