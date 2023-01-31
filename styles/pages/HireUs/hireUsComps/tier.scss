@@ -1,5 +1,7 @@
+@import "../../../globalVars.scss";
+
 $backgroundColorTierCard: #ffeded;
-$desktopFontSizeTierCard: 22px !important;
+$tierHeadingFontSize: 22px !important;
 $desktopFontSizeTierStatus: 24px !important;
 
 .tierCard {
@@ -13,8 +15,8 @@ $desktopFontSizeTierStatus: 24px !important;
 }
 
 .tierHeaderTag {
+  font-size: $tierHeadingFontSize;
   @media (min-width: 1300px) {
-    font-size: 28px !important;
   }
 
   @media (min-width: 1400px) {
@@ -70,11 +72,11 @@ $desktopFontSizeTierStatus: 24px !important;
     height: 60px !important;
     line-height: 27px !important;
     overflow: hidden !important;
+    td:last-child,
     td:first-child {
-      font-size: $desktopFontSizeTierStatus;
+      font-size: $spanFontSize;
     }
     td:last-child {
-      font-size: $desktopFontSizeTierCard;
       padding-left: 10px !important;
     }
   }
@@ -87,6 +89,8 @@ $desktopFontSizeTierStatus: 24px !important;
     }
   }
 }
+
+
 
 .tierCard,
 .tierCardBodyAndHeader {
@@ -115,8 +119,8 @@ $desktopFontSizeTierStatus: 24px !important;
 .tierParagraphSec {
   @media (min-width: 768px) {
     p {
-      line-height: 27px !important;
-      font-size: $desktopFontSizeTierCard;
+      line-height: 20px !important;
+      font-size: $spanFontSize;
       font-weight: 249 !important;
     }
   }
@@ -135,7 +139,6 @@ $desktopFontSizeTierStatus: 24px !important;
 .tierCard {
   @media (min-width: 992px) and (max-width: 1199px) {
     padding: 0px 2rem 4rem 2rem !important;
-    // height: 1405px !important;
   }
 }
 
@@ -212,9 +215,6 @@ img{
 
 
 .imgProductContainer {
-  // width: 75% !important;
-  // border: solid pink !important;
-  // width: 80vw !important;
   width: 100% !important;
 
   @media (max-width: 575px) {
@@ -232,6 +232,27 @@ img{
 .priceTxt{
   @media(min-width: 1200px){
     white-space: nowrap !important;
+  }
+}
+
+.priceTxtHorizontal{
+  > span{
+    font-size: 19px !important;
+  }
+}
+
+.productSec{
+  a{
+    font-size: 16px !important;
+  }
+}
+
+.tierCardBody{
+  > section:nth-child(3){
+    h4{
+      font-size: 20px !important;
+
+    }
   }
 }
 

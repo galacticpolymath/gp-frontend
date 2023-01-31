@@ -692,12 +692,12 @@ span{
 
 .howMuchDoesItCostSec {
   @media (min-width: 768px) {
-    padding-top: 85px !important;
+    padding-top: 20px !important;
   }
 
   > section:nth-child(2) {
     span {
-      line-height: 35px;
+      line-height: 15px !important;
       width: 100%;
 
       @media (max-width: 575px) {

@@ -98,7 +98,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                         </table>
                     </div>
                 </section>
-                <section className="mt-4">
+                <section className="mt-2">
                     <section className="mt-2">
                         <h4 className="text-dark fst-italic  fw200 text-center text-sm-start">Example Product: </h4>
                     </section>
@@ -115,14 +115,14 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                 </section>
                 <section className="mt-5 w-100 d-flex justify-content-center align-items-center  justify-content-sm-start align-items-sm-stretch align-self-end priceSection">
                     <h4 className="text-dark fst-italic  text-center text-sm-start">
-                        <section className="d-none d-sm-flex d-lg-flex flex-column">
+                        <section className="d-none d-sm-flex d-lg-flex flex-column priceTxtHorizontal">
                             <span>Estimated Price: </span>
                             <span className="mt-3 priceTxt">${low} - ${high}</span>
                         </section>
                         <span className="d-block d-sm-none w-100 d-md-none text-center">
                             Estimated Price:
                         </span>
-                        <span className="d-flex flex-column d-sm-none d-xl-none w-100 text-center mt-2 pt-1">
+                        <span className="d-flex flex-column d-sm-none d-xl-none w-100 text-center mt-2 pt-1 priceTxtColumn">
                             <span>
                                 ${low}
                             </span>

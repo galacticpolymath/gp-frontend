@@ -32,6 +32,8 @@ const HowDoesItWorkSec = () => {
             <source src="./videos/client-asset-to-lesson-animation.mp4" type="video/mp4" />
         </video>
     );
+
+
     const cardVideoSec2 = isDOMLoaded && (
         <div className="video-styles rounded overflow-hidden">
             <ReactPlayer
@@ -53,7 +55,7 @@ const HowDoesItWorkSec = () => {
                     How does it work?
                 </h3>
             </section>
-            <section className="d-flex flex-column justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch flex-lg-row ps-sm-5 pe-sm-5 mt-3">
+            <section className="d-flex flex-column justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch flex-lg-row ps-sm-5 pe-sm-5">
                 <HireUsCardSection
                     text={hireUsCardsSectionTexts[0].text}
                     mobileTxt={hireUsCardsSectionTexts[0].mobileTxt}
