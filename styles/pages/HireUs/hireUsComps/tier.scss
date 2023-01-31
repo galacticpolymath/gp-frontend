@@ -27,8 +27,8 @@ $desktopFontSizeTierStatus: 24px !important;
     // height: 1305px !important;
     // border: solid pink !important;
 
-    @media (min-width: 1200px) and (max-width: 1439px) {
-      // min-width: 430px !important;
+    @media(min-width: 1200px){
+      padding-bottom: 100px !important;
     }
   }
 
@@ -228,3 +228,10 @@ img{
   @media (min-width: 1200px) {
   }
 }
+
+.priceTxt{
+  @media(min-width: 1200px){
+    white-space: nowrap !important;
+  }
+}
+

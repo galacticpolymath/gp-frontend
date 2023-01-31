@@ -38,6 +38,7 @@ const HowMuchDoesItCostSec = ({ setTiersInfoForModalArr }) => (
                     <Tier
                         isNoBackground={index !== 1}
                         key={index}
+                        index={index}
                         tier={tier}
                         setTiersInfoForModalArr={setTiersInfoForModalArr}
                     />
@@ -49,6 +50,7 @@ const HowMuchDoesItCostSec = ({ setTiersInfoForModalArr }) => (
                 return (
                     <Tier
                         isNoBackground={index !== 1}
+                        index={index}
                         key={index}
                         tier={tier}
                         setTiersInfoForModalArr={setTiersInfoForModalArr}

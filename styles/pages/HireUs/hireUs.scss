@@ -237,6 +237,10 @@ $carouselTitleFtWeightDesktop: 800 !important;
 .shareYourKnowledgeImgContainer {
   height: 400px;
 
+  @media(min-width: 1200px){
+    height: 350px;
+  }
+
   @media(max-width: 767px){
     display: flex !important;
     align-items: center !important;
@@ -272,9 +276,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
     border: solid 1px #707070 !important;
 
     @media (max-width: 575px) {
-      // height: 325px !important;
       height: 250px !important;
-      // max-width: 480px !important;
     }
   }
 }
@@ -397,7 +399,7 @@ $carouselTitleFtWeightDesktop: 800 !important;
 .looped-vid-hire-us {
   width: 100% !important;
   object-fit: fill !important;
-  height: 300px !important;
+  height: 400px !important;
   border-radius: $borderRadiusModal;
 
   @media (max-width: 767px) {
