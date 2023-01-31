@@ -13,6 +13,12 @@
       margin-left: 30px !important;
     }
   }
+
+  @media(max-width: 374px){
+    span{
+      // font-size: 
+    }
+  }
 }
 
 .defaultStylingLetsTalkBtn {
@@ -220,12 +226,13 @@
   }
 
   @media (min-width: 375px) and (max-width: 575px) {
-    height: 500px !important;
+    // height: 500px !important;
+    // height: 300px !important;
   }
 
-  @media (max-width: 374px) {
-    height: 500px !important;
-  }
+  // @media (max-width: 374px) {
+  //   height: 500px !important;
+  // }
 }
 
 .mainBtnAboveMobile {

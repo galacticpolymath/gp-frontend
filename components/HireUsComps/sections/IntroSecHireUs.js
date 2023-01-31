@@ -34,7 +34,7 @@ const IntroSecHireUs = () => {
                         </section>
                     </section>
                     <section className="d-flex ps-md-5 letTalksMainBtnSec">
-                        <section>
+                        <section className="introMainBtnInnerSec">
                             <LetsTalkBtnContainer isMainBtn />
                         </section>
                     </section>
@@ -44,16 +44,16 @@ const IntroSecHireUs = () => {
             <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
                 <section className="w-100 d-flex flex-column align-items-center pt-4">
                     <section className="headerSection">
-                        <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Easier,</h1>
-                        <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Classroom-ready</h1>
-                        <h1 className={`${styles.shadow} display-1 headingHireUs noMargin`}>Outreach</h1>
+                        <h1 className={`${styles.shadow} headingHireUs noMargin`}>Easier,</h1>
+                        <h1 className={`${styles.shadow} headingHireUs noMargin`}>Classroom-ready</h1>
+                        <h1 className={`${styles.shadow} headingHireUs noMargin`}>Outreach</h1>
                     </section>
                     <section className="subTxtHeadingContainerHireUsPg w-75 ps-1 mt-4">
-                        <span className={`${styles.shadow} display-6 noMargin noPadding`}>
+                        <span className={`${styles.shadow} noMargin noPadding spanSubheader`}>
                             We translate your work so that non-experts can teach mind-opening lessons.
                         </span>
                     </section>
-                    <section className="ps-0 ps-sm-1 pt-4 pt-sm-5">
+                    <section className="ps-0 ps-sm-1 pt-4 pt-sm-5 letTalksMainBtnSec">
                         <LetsTalkBtnContainer isMainBtn isNoUnderline />
                     </section>
                 </section>
