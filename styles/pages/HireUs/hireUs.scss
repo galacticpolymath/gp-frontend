@@ -325,6 +325,10 @@ $carouselTitleFtWeightDesktop: 800 !important;
     border: solid 0.5px #707070;
     border-radius: $borderRadiusModal;
   }
+
+  @media(min-width: 1200px){
+    
+  }
 }
 
 .hireUsCardTxt {
@@ -541,8 +545,17 @@ $carouselTitleFtWeightDesktop: 800 !important;
 }
 
 .infoCardHireUs {
+  border: solid 1px #D0B4BF; 
+  padding: 25px;
+  border-radius: 1.3rem !important;
+
+
   @media (min-width: 992px) {
     width: 100% !important;
+  }
+
+  @media(min-width: 992px) and (max-width: 1199px){
+    min-width: 347px !important;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {

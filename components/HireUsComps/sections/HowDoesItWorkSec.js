@@ -35,7 +35,7 @@ const HowDoesItWorkSec = () => {
     const cardVideoSec2 = isDOMLoaded && (
         <div className="video-styles rounded overflow-hidden">
             <ReactPlayer
-                url='https://www.youtube.com/watch?v=V0EtA5pbVSY'
+                url='https://youtu.be/QnoVSKx4G1c '
                 width='100%'
                 height="100%"
                 light
@@ -54,18 +54,6 @@ const HowDoesItWorkSec = () => {
                 </h3>
             </section>
             <section className="d-flex flex-column justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch flex-lg-row ps-sm-5 pe-sm-5 mt-3">
-                {/* {hireUsCardsSectionTexts.map(({ content, text, mobileTxt }, index) => {
-                    return (
-                        <>
-                            <HireUsCardSection key={index} text={text} mobileTxt={mobileTxt} content={content} />
-                            {(index === 0) && (
-                                <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3'>
-                                    <Image src="/imgs/pretty-down-arrow.png" width={50} height={50} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
-                                </section>
-                            )}
-                        </>
-                    );
-                })} */}
                 <HireUsCardSection
                     text={hireUsCardsSectionTexts[0].text}
                     mobileTxt={hireUsCardsSectionTexts[0].mobileTxt}
