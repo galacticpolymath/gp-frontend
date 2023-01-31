@@ -525,8 +525,16 @@ span{
       text-align: center;
 
       @media(min-width: 1200px){
-        width: 450px !important;
+        
       }
+    }
+  }
+}
+
+.whatWillYouGetSec{
+  > section:last-child{
+    @media(min-width: 1200px){
+      width: 425px !important;
     }
   }
 }
@@ -704,7 +712,8 @@ span{
 .scientistHeadingTxt {
   font-style: italic !important;
   @media (min-width: 768px) {
-    font-size: 38px !important;
+    color: #000000 !important;
+    font-size: $h3CustomFontSize;
   }
 
   @media (max-width: 767px) {

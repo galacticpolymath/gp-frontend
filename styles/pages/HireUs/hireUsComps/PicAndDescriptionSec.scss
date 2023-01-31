@@ -1,3 +1,6 @@
+
+$scientistFontSize: 1.3rem !important;
+
 .ownerSection {
   @media (min-width: 992px) and (max-width: 1299px) {
     display: flex !important;
@@ -8,14 +11,6 @@
 
     > section:last-child {
       width: 100% !important;
-    }
-  }
-  > section:last-child {
-    > div {
-      @media (min-width: 768px) {
-        // width: 260px !important;
-        // height: 260px !important;
-      }
     }
   }
 
@@ -55,7 +50,6 @@
     @media (min-width: 576px) {
       height: 200px;
     }
-    // width: fit-content !important;
   }
 
   @media (min-width: 576px) {
@@ -397,14 +391,20 @@
 
 .scientist {
   @media (min-width: 768px) {
+    > section{
+      h4{
+        font-size: $scientistFontSize;
+      }
+    }
+
     > section:first-child {
       margin-top: 20px !important;
       > span {
         line-height: 24px !important;
-        font-size: 20px !important;
+        font-size: $spanFontSize;
       }
     }
-    // height: 230px !important;
+
     display: inline-flex !important;
     > section:last-child {
       @media (max-width: 1199px) {
@@ -468,9 +468,26 @@
   }
 }
 
+
+
+.scientist{
+  @media(max-width: 575px){
+    > section:first-child{
+      span{
+        line-height: 20px !important;;
+      }
+    }
+  }
+}
+
+
 .scientist:not(:first-child) {
   @media (max-width: 767px) {
-    margin-top: 35px !important;
+    margin-top: 10px !important;
+  }
+
+  @media(max-width: 575px){
+    margin-top: 55px !important;
   }
 }
 

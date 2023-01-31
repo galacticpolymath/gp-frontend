@@ -27,6 +27,7 @@
 }
 
 .dynamicTeamsSec {
+
   > section:first-child {
     @media(min-width: 768px){
       h2{
@@ -62,12 +63,12 @@
       > div {
         height: fit-content !important;
         padding: 0 !important;
-        border: solid  !important;
 
         span {
           font-size: 24px !important;
           font-weight: 350 !important;
           font-style: italic !important;
+          line-height: 33px !important;
         }
       }
     }
@@ -84,8 +85,10 @@
           line-height: 48px !important;
           font-style: italic !important;
         }
-        width: 90% !important;
+        width: 70% !important;
         height: 180px !important;
+
+
       }
 
       @media (max-width: 767px) {
