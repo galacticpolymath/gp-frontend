@@ -3,7 +3,7 @@
         "title": "GP Learning Experience",
         "texts": [
             {
-                "normalTxt": "We mobilize knowledge by packaging it in lessons that are fun, accessible, and easy to teach. Our lessons are: "
+                "normalTxt": "We mobilize knowledge by packaging it into lessons that are fun, accessible, and easy to teach. Our lessons are: "
             },
             {
                 "boldTxt": "Interdisciplinary: ", 
@@ -34,10 +34,10 @@
                 "normalTxt": "For a set period of time, we will actively maintain lessons to improve usability, correct issues, and help teachers who contact us."
             },
             {
-                "normalTxt": "We will also periodically promote your lesson to ensure that is running smoothly in as many classrooms as possible."
+                "normalTxt": "We will also periodically promote your lesson to ensure it's running smoothly in as many classrooms as possible."
             },
             {
-                "normalTxt": "After project support has run out, your lesson will still be hosted at galacticpolymath.com, without active maintenance."
+                "normalTxt": "After project support has run out, your lesson will continue to be hosted at galacticpolymath.com, without active maintenance."
             }
         ]
     },
@@ -45,7 +45,7 @@
         "title": "Basic Video",
         "texts": [
             {
-                "normalTxt": "Basic videos do most of the work to simplify complexity and engage students. These are relatively simple sequences including zoom interviews, existing video clips, Google Earth visualizations, and simple transitions. "
+                "normalTxt": "Basic videos do most of the work to simplify complexity and engage students. These are relatively simple sequences including virtual conferencing interviews, existing video clips, Google Earth visualizations, and simple transitions. "
             },
             {
                 "normalTxt": "Price includes background research, script drafting, storyboarding, recording, editing, narration, scoring, and limited revisions."
