@@ -47,7 +47,7 @@ const HowDoesItWorkSec = () => {
     const hireUsCardsSectionTexts = [{ text: "1. You give us your outreach goals, along with complex texts, data, and media related to your work: ", mobileTxt: "You give us your outreach goals, along with complex texts, data, and any media you might have related to your work: ", content: cardVideoSec1 }, { text: "2. We create lessons and supporting media that achieve your outreach aims by making your work accessible to teachers around the world. ", mobileTxt: "We create lessons and supporting multimedia that achieve your outreach aims by making your work accessible to teachers around the world.", content: cardVideoSec2 }]
 
     return (
-        <section className="d-flex flex-column mt-5 mb-5 howDoesItWorkSec">
+        <section className="d-flex flex-column mt-2 mb-2 howDoesItWorkSec">
             <section className="d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ps-sm-5 pe-sm-5">
                 <h3 className="text-center text-sm-start">
                     How does it work?

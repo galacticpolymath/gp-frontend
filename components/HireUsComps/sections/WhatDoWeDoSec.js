@@ -37,7 +37,7 @@ const WhatDoWeDoSec = () => {
                     </span>
                 </span>
             </section>
-            <section className="d-none d-lg-block ps-5 pe-5 mt-5">
+            <section className="d-none d-lg-block ps-5 pe-5 mt-2">
                 <div className="d-flex flex-row whatDoWeDoSec ps-3 pe-3">
                     {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} customCssClass='weMobileKnowledgeSec' />)}
                 </div>

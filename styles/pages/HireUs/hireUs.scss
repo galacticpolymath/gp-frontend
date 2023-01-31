@@ -34,8 +34,8 @@ span{
 .ownerInfoSec {
   > section:nth-child(2) {
     > span:last-child {
-      padding-left: 8px !important;
-      padding-right: 8px !important;
+      // padding-left: 8px !important;
+      // padding-right: 8px !important;
     }
   }
 }
@@ -123,8 +123,12 @@ span{
 
 .introTxtShareYourKnowledge {
   > span {
-    font-size: $desktopFontSize;
+    font-size: $spanFontSize;
     font-weight: 250 !important;
+    @media(min-width: 1200px){
+      // padding-right: 70px !important;
+      padding-right: 70px !important;
+    }
 
     @media (min-width: 768px) {
       color: #000000 !important;
@@ -232,7 +236,7 @@ span{
   height: 400px;
 
   @media(min-width: 1200px){
-    height: 350px;
+    height: 280px;
   }
 
   @media(max-width: 767px){
@@ -298,7 +302,7 @@ span{
 .hireUsCardSectionTxt {
   height: 100px;
   @media (min-width: 768px) {
-    font-size: $desktopFontSize;
+    font-size: $spanFontSize;
   }
 }
 
@@ -315,6 +319,14 @@ span{
 
 .hireUsInfoStyledContainer {
   height: 350px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+
+  @media(min-width: 768px) and (max-width: 1199px){
+    height: 250px !important;
+  }
 
 
   @media (max-width: 767px) {
@@ -419,6 +431,7 @@ span{
   }
 }
 
+
 .whatWillYouGetSec:nth-child(4),
 .whatWillYouGetSec:nth-child(3) {
   @media (min-width: 768px) {
@@ -428,14 +441,11 @@ span{
 
 .whatWillYouGetSec {
   @media (min-width: 992px) {
-    height: 180px !important;
-  }
-
-  @media (min-width: 768px) {
+    height: 110px !important;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    height: 220px !important;
+    height: 130px !important;
   }
 }
 
@@ -482,7 +492,7 @@ span{
   > section:last-child {
     span {
       @media (min-width: 768px) {
-        font-size: $desktopFontSize;
+        font-size: $spanFontSize;
       }
     }
   }
@@ -513,6 +523,10 @@ span{
   > section:last-child {
     > span {
       text-align: center;
+
+      @media(min-width: 1200px){
+        width: 450px !important;
+      }
     }
   }
 }
@@ -553,6 +567,10 @@ span{
   @media (min-width: 768px) and (max-width: 991px) {
     width: 635px !important;
   }
+
+  @media(min-width: 768px) and (max-width: 1199px){
+    padding: 25px 25px 50px 25px !important;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
@@ -560,7 +578,6 @@ span{
     > section:last-child {
       > section:nth-last-child(3) {
         margin: 30px 0px 30px 0px !important;
-        // margin-top: 20px !important;
       }
     }
   }
@@ -568,9 +585,7 @@ span{
 
 
 .arrowSec {
-
   @media (min-width: 992px) {
-    padding-top: 100px !important;
     padding-left: 35px !important;
     padding-right: 35px !important;
     img {
@@ -608,6 +623,7 @@ span{
     column-count: 2;
     column-gap: 40px !important;
   }
+
   li {
     font-size: $spanFontSize;
     max-width: 580px !important;
@@ -621,10 +637,16 @@ span{
   }
   @media (min-width: 768px) and (max-width: 1199px) {
     li {
-      height: 150px !important;
-    }
+      height: 80px !important;
 
-    li:nth-child(even) {
+      @media(min-width: 992px){
+        padding-right: 40px !important;
+      }
+    }
+  }
+
+  @media(max-width: 767px){
+    li:not(:first-child) {
       margin-top: 15px !important;
     }
   }
@@ -726,12 +748,16 @@ span{
   > *{
     height: 80px !important;
   }
+
+  span{
+    font-size: 2.5rem !important;
+  }
 }
 
 
 
 .txtOnHireUsPg{
-  font-size: $spanFontSize !important;
+  font-size: $spanFontSize;
 }
 
 .eachLessonMainSec{
@@ -740,4 +766,33 @@ span{
     font-weight: 380 !important;
   }
 }
+
+
+.clientFundingDesktop {
+  > section:first-child {
+    > h2{
+      color: white !important;
+      font-size: 1.75rem !important;
+    }
+  }
+}
+
+
+.btnContainerWhenShouldIReach{
+  > div{
+    > div:last-of-type{
+      span{
+        font-size: $bntFontSize;
+      }
+    }
+
+    > div:first-of-type{
+      svg{
+        width: 40px !important;
+        height: 40px !important;
+      }
+    }
+  }
+}
+
 

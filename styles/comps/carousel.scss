@@ -184,6 +184,8 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .defaultHeadingCarouselStyles {
+  color: black !important;
+
   @media (min-width: 768px) {
     font-weight: 400 !important;
     // font-size: 48px !important;

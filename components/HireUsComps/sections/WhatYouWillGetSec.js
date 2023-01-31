@@ -9,7 +9,7 @@ import whatYouWillGetTxts from '../../../data/HireUsPg/whatYouWillGetTxts.json'
 import HireUsCardFirstSecMobile from '../HireUsCardFirstSecMobile'
 
 const WhatYouWillGetSec = () => (
-    <section>
+    <section className="whatYouWillGetMainSec mt-5">
         <section className="d-flex ps-sm-5 pe-sm-5">
             <h3 className="text-center text-sm-start w-100 text-sm-nowrap">
                 What will you get?

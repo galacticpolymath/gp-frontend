@@ -36,6 +36,7 @@
 
 .picAndDescriptionSec {
   display: flex !important;
+  flex-direction: row-reverse !important;
 
   @media (min-width: 576px) {
     margin-top: 0px !important;
@@ -85,6 +86,7 @@
     padding-top: 10px !important;
   }
 }
+
 
 
 .shareYourKnowledgeDesktopSec {
@@ -149,6 +151,14 @@
   @media (min-width: 1200px) {
     max-height: 385.5px !important;
   }
+
+  > section{
+    > h3{
+      color: black !important;
+      font-weight: 249;
+      font-size: 20px !important;
+    }
+  }
 }
 
 .ownerSection {
@@ -168,6 +178,12 @@
     }
   }
 
+  > section:first-child{
+    > span{
+      line-height: 25px !important;
+    }
+  }
+
   @media (min-width: 768px) and (max-width: 1299px) {
     > section:last-child {
       width: 100% !important;
@@ -183,7 +199,8 @@
       align-items: center !important;
 
       @media (min-width: 992px) {
-        margin-top: 40px !important;
+        margin-top: 20px !important;
+        
       }
       > span {
         @media (max-width: 991px) {
@@ -197,7 +214,7 @@
   }
 
   @media (max-width: 575px) {
-    padding-bottom: 50px;
+    padding-bottom: 25px;
     > section:first-child {
       padding-left: 8px !important;
       padding-right: 8px !important;
@@ -256,18 +273,15 @@
 }
 
 .picAndDescriptionSecInList:not(:first-child) {
-  margin-top: 25px !important;
-
-  @media (max-width: 575px) {
+  @media (max-width: 991px) {
     margin-top: 90px !important;
   }
-}
 
-@media (min-width: 1200px) {
-  .mattsAward:not(:first-child) {
-    margin-top: 50px !important;
+  @media(max-width: 575px){
+    margin-top: 60px !important;
   }
 }
+
 
 .mattsAwardsSec {
   @media (min-width: 992px) {
@@ -279,7 +293,7 @@
   @media (min-width: 768px) {
     height: 110px !important;
     span {
-      font-size: 29px !important;
+      font-size: $spanFontSize !important;
     }
     > section:last-child {
       height: 100% !important;
@@ -289,7 +303,7 @@
   }
 
   @media (min-width: 768px) and (max-width: 1199px) {
-    height: 220px !important;
+    height: 100px !important;
   }
 
   @media (max-width: 767px) {
@@ -308,6 +322,7 @@
       }
     }
   }
+
   @media (max-width: 575px) {
     display: flex !important;
     flex-direction: column-reverse !important;
@@ -320,6 +335,8 @@
     }
 
     > section:first-child {
+      margin-top: 15px !important;
+      padding: 0px 10px 0px 10px !important;
       span {
         display: block !important;
         text-align: center !important;
@@ -331,9 +348,13 @@
     span {
       text-decoration: underline !important;
       text-decoration-thickness: 1.5px !important;
-      // padding-left: 8px !important;
-      // padding-right: 8px !important;
     }
+  }
+
+  @media(min-width: 1200px){
+    > section:first-child{
+      padding-top: 10px !important;
+    } 
   }
 }
 
@@ -364,8 +385,13 @@
 }
 
 .ownerSection > section:first-child span {
+  @media(min-width: 576px) and (max-width: 767px){
+    margin-top: 10px !important;
+    display: inline-block !important;
+  }
+
   @media (max-width: 575px) {
-    line-height: 35px !important;
+    line-height: 25px !important;
   }
 }
 
@@ -532,6 +558,7 @@
       img{
         @media(max-width: 767px) and (min-width: 576px){
           height: 192px !important;
+          min-width: 230px !important;
         }
       }
     }
@@ -578,6 +605,7 @@
 
 @media (max-width: 575px) {
   .GPConstellationSec {
+    flex-direction: column !important;;
     > section:last-child {
       > div {
         width: 100% !important;
@@ -643,7 +671,11 @@
             display: flex !important;
             justify-content: center !important;
             align-items: center !important;
-            padding-bottom: 80px !important;
+
+            > span{
+              @media(min-width: 576px){
+              }
+            }
         }
       }
 
@@ -664,7 +696,6 @@
       align-items: center;
 
       div {
-        margin-top: 20px !important;
         width: 70% !important;
         height: 190px !important;
       }

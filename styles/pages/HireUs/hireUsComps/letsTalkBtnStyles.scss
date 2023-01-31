@@ -243,3 +243,13 @@
   height: 105px !important;
   width: 258px !important;
 }
+
+
+
+.introMainBtnInnerSec{
+  > div:last-of-type {
+    span{
+      font-size: 20px !important;
+    }
+  }
+}
