@@ -393,6 +393,14 @@ img {
 }
 
 
+video{
+  // border-style: none !important;
+  border: none; 
+  border-width: 0; 
+  border: 0;
+  // border: solid grey !important;
+}
+
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
 .accordion-header button {
   &.collapsed .bi-chevron-up {

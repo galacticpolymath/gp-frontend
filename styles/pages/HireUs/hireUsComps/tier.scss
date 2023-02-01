@@ -253,3 +253,14 @@ img{
   }
 }
 
+
+
+.modal-header{
+  padding: 5px 0px 5px 0px !important;
+
+  h3{
+    @media(max-width: 575px) {
+      margin-top: 10px !important;
+    }
+  }
+}

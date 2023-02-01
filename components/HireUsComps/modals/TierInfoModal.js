@@ -36,7 +36,9 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
     return (
         <Modal show={isModalOn} onHide={handleCloseModal} contentClassName="tierInfoModal shadow">
             <Header className="tierInfoModalHeader pe-4 border-bottom d-flex flex-column-reverse flex-sm-row pt-4 position-relative">
-                <Title className="fw625 text-center text-sm-start border border-white">{title}</Title>
+                <Title className="fw625 text-center text-sm-start border border-white modalTitleSec">
+                    <h3>{title}</h3>
+                </Title>
                 <Image src="/imgs/gp_logo_gradient_transBG.png" alt="Galatic_Polymath_Tier_Info_Modal" width={150} height={150} />
                 <button onClick={handleCloseModal} className="fs-med position-absolute top-0 end-0 noBtnStyles"><IoIosCloseCircle className="closeButtonTxtColor" /></button>
             </Header>
@@ -45,7 +47,7 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                     <section className="d-flex flex-column">
                         {isOnGPLearningExpModal ?
                             <>
-                                <span className="fs-med fw300 text-center text-sm-start">{texts[0].normalTxt}</span>
+                                <span className="fw300 text-center text-sm-start">{texts[0].normalTxt}</span>
                                 <section className="d-flex flex-column ps-4 mt-3">
                                     {texts.slice(1, 5).map((text, index) => {
                                         const { normalTxt, boldTxt } = text;
