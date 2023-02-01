@@ -50,7 +50,7 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                                     {texts.slice(1, 5).map((text, index) => {
                                         const { normalTxt, boldTxt } = text;
                                         return (
-                                            <span className={`${index !== 0 ? 'mt-3' : ''} fs-med fw300`} key={index}>
+                                            <span className={`${index !== 0 ? 'mt-3' : ''} modalTxt fw300`} key={index}>
                                                 {boldTxt ? <span className="fw-bolder fw625 tierInfoBoldTxt">{boldTxt}</span> : null}
                                                 {normalTxt}
                                             </span>

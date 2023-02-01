@@ -1,3 +1,5 @@
+@import '../../../../globalVars.scss';
+
 $modalHeaderFontSize: 45px !important;
 $borderRadiusModal: 1.3em !important;
 $modalBorderColor: #707070;
@@ -11,8 +13,7 @@ $modalBorderColor: #707070;
   min-height: 650px !important;
 
   span{
-    line-height: 28px !important;
-    // font-weight: 250 !important;
+    line-height: $spanFontSize;
   }
 }
 
