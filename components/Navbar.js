@@ -10,15 +10,13 @@ export default function Navbar() {
   return (
     <nav className='navbar navbar-expand-lg navbar-dark bg-dark'>
       <div className='container'>
-        <Link href="/" passHref>
-          <a className='flex-grow-1'>
-            <Image
-              alt="Galactic Polymath"
-              src={Logo}
-              height={35}
-              width={300}
-            />
-          </a>
+        <Link href="/" className='flex-grow-1'>
+          <Image
+            alt="Galactic Polymath"
+            src={Logo}
+            height={35}
+            width={300}
+          />
         </Link>
         <button
           className='navbar-toggler'
@@ -35,25 +33,22 @@ export default function Navbar() {
           <div className='collapse navbar-collapse' id='navbarSupportedContent'>
             <ul className='navbar-nav me-auto mb-2 mb-lg-0 fs-5 text-uppercase'>
               <li className='nav-item'>
-                <Link href='/lessons'>
-                  <a className={`nav-link ${router.pathname === '/lessons' ? 'fw-bold active' : 'fw-light'}`}>Lessons</a>
+                <Link href='/' className={`nav-link ${router.pathname === '/' ? 'fw-bold active' : 'fw-light'}`}>
+                  Home
                 </Link>
               </li>
-              <li className='nav-item'>
-                <Link href='/'>
-                  <a className='nav-link'>Jobviz</a>
-                </Link>
-              </li>
-              <li className='nav-item'>
-                <Link href='/'>
-                  <a className='nav-link'>Hire us</a>
-                </Link>
-              </li>
-              <li className='nav-item'>
-                <Link href='/about'>
-                  <a className='nav-link'>About</a>
-                </Link>
-              </li>
+              {[
+                ['/lessons', 'Lessons'],
+                // ['/jobviz', 'Jobviz'],
+                // ['/hireus', 'Hire Us'],
+                ['/about', 'About'],
+              ].map(([url, title]) => (
+                <li key={url} className='nav-item'>
+                  <Link href={url} className={`nav-link ${router.pathname.includes(url) ? 'fw-bold active' : 'fw-light'}`}>
+                    {title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

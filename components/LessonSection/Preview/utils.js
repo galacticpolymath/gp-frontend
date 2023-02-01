@@ -52,6 +52,7 @@ const renderThumbs = items => {
         />
       );
     } else if (type === 'pdf') {
+<<<<<<< HEAD
       return (
         <Image
           height={3}
@@ -62,6 +63,9 @@ const renderThumbs = items => {
           alt="PDF"
         />
       );
+=======
+      return <i key={i} className="bi-filetype-pdf fs-2"></i>;
+>>>>>>> bf807621cd1a77d5445a0afec08cb852c8064a70
     }
   });
 };

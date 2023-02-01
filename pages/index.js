@@ -4,6 +4,10 @@ import Layout from '../components/Layout';
 import Hero from '../components/Hero';
 import styles from './index.module.css';
 import HeroImage from '../assets/img/city_network.jpg';
+import EngineeringImage from '../assets/img/engineering_together.jpeg';
+import NewReleaseImage from '../assets/img/new_release.jpg';
+import NSFImage from '../assets/img/nsf.png';
+import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 
 export default function Home() {
   return (
@@ -12,18 +16,34 @@ export default function Home() {
         <h1 className={styles.shadow}>We are an education studio.</h1>
         <p className={styles.shadow}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
         <div>
-          <Link passHref href="/lessons">
-            <a className="btn btn-primary">Get Lessons</a>
+          <Link
+            href="/lessons"
+            className="btn btn-primary"
+          >
+            Get Lessons
           </Link>
-          <Link passHref href="/hire-us">
-            <a className="btn btn-primary mx-3">Do Outreach</a>
+          <Link
+            href="/hire-us"
+            className="btn btn-primary mx-3"
+          >
+            Do Outreach
           </Link>
         </div>
       </Hero>
 
+<<<<<<< HEAD
       <div className="container mx-auto row align-items-center p-5">
         <div className='col-12 col-md-6 col-lg-7 order-1 order-md-2 p-3 text-center'>
           [img]
+=======
+      <div className="container mx-auto row align-items-center px-3 py-4 py-lg-5">
+        <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 text-center'>
+          <img
+            className='border'
+            src={EngineeringImage.src}
+            alt="Two people working on a diagram together"
+          />
+>>>>>>> bf807621cd1a77d5445a0afec08cb852c8064a70
         </div>
         <div className='col-12 col-md-6 col-lg-5 order-2 order-md-1 p-3'>
           <h3>Open-Access</h3>
@@ -47,9 +67,27 @@ export default function Home() {
             Learn everything.
           </h2>
 
+<<<<<<< HEAD
           <div className="bg-white p-5 text-center">
             <h3>New release!</h3>
             [img]
+=======
+          <div className='bg-white p-4 row align-items-center'>
+            <div className='col-9 text-center'>
+              <div className='badge bg-primary fs-5 text-center mb-2'>New release!</div>
+              <img
+                className='border'
+                src={NewReleaseImage.src}
+                alt="I Like That! How perception, emotion, and cognition shape our preferences"
+              />
+            </div>
+            <div className='col-3 text-center'>
+              <h5 className='fw-light'>Sponsor:</h5>
+              <a href="https://www.nsf.gov/">
+                <img src={NSFImage.src} alt="National Science Foundation" />
+              </a>
+            </div>
+>>>>>>> bf807621cd1a77d5445a0afec08cb852c8064a70
           </div>
 
           <div className="col-10 offset-1 p-5">
@@ -60,8 +98,8 @@ export default function Home() {
             <p>
               We build lessons around <em><strong>real research, data, and stories</strong></em> from diverse STEM experts.
             </p>
-            <Link href="/lessons/2">
-              <a className='btn btn-primary'>See this lesson</a>
+            <Link href="/lessons/5" className='btn btn-primary'>
+              See this lesson
             </Link>
           </div>
         </div>
@@ -123,21 +161,28 @@ export default function Home() {
               Read the article
             </a>
             <br />
-            <Link href="/lessons/1">
-              <a className='btn btn-secondary'>
-                Check out the lesson
-              </a>
+            <Link href="/lessons/1" className='btn btn-secondary'>
+              Check out the lesson
             </Link>
           </div>
           <div className="col-12 col-md-6 order-2 order-md-1">
-            [img]
+            <img
+              className='border'
+              src={ScientificAmericanImage.src}
+              alt="Why We Didn't Know that Female Birds Sing, Scientific American."
+            />
           </div>
         </div>
       </div>
 
       <div className="bg-light-gray">
+<<<<<<< HEAD
         <div className="container mx-auto p-5">
           <div className='col-10 offset-1'>
+=======
+        {/* <div className="container mx-auto p-3 py-5 p-lg-5">
+          <div className='col-12 col-lg-10 offset-lg-1'>
+>>>>>>> bf807621cd1a77d5445a0afec08cb852c8064a70
             <div className='text-center'>[video]</div>
             <h2 className="mt-5 mb-3">JobViz</h2>
             <h5>Connect lessons to careers with this free tool!</h5>
@@ -152,10 +197,15 @@ export default function Home() {
               <a className='btn btn-secondary mt-3'>Explore jobs</a>
             </Link>
           </div>
-        </div>
+        </div> */}
 
+<<<<<<< HEAD
         <div className='bg-info'>
           <div className='container p-5 mx-auto text-center'>
+=======
+        <div className='bg-primary-light'>
+          <div className='container p-3 p-lg-5 mx-auto text-center'>
+>>>>>>> bf807621cd1a77d5445a0afec08cb852c8064a70
             <p className='fs-4'>Real Research + Real Stories + Real Data + Real Careers =</p>
             <p className='fs-3'>Real Learning</p>
           </div>
@@ -173,8 +223,8 @@ export default function Home() {
                   <li>Differentiated for grades 5-6, 7-8 & 9-12</li>
                   <li>Adaptable for different time lengths, extension activities, etc.</li>
                 </ul>
-                <Link href="/lessons">
-                  <a className='btn btn-primary'>Get lessons</a>
+                <Link href="/lessons" className='btn btn-primary'>
+                  Get lessons
                 </Link>
               </div>
             </div>
@@ -186,8 +236,8 @@ export default function Home() {
                   <li>Get detailed impact metrics to report to funders</li>
                   <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
                 </ul>
-                <Link href="/hire-us">
-                  <a className='btn btn-primary'>Get lessons</a>
+                <Link href="/hire-us" className='btn btn-primary'>
+                  Get lessons
                 </Link>
               </div>
             </div>
