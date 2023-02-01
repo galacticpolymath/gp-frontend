@@ -176,9 +176,9 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                                     <span className='d-none d-sm-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 quoteInfoTxts position-absolute'>
                                                                         <span className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
                                                                             <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
-                                                                            {(!!occupation || !!institution) && <span className="text-wrap text-dark fst-italic fw275">{occupation ?? institution}</span>}
-                                                                            {(!!city || !!location) && <span className="text-wrap text-dark fst-italic fw275">{city ?? location}</span>}
-                                                                            {!!stars && <span className="text-dark productReviewTxt w-100 text-center fst-italic fw275 d-block d-sm-none">
+                                                                            {(!!occupation || !!institution) && <span className="text-wrap text-center text-sm-start text-dark fst-italic fw275">{occupation ?? institution}</span>}
+                                                                            {(!!city || !!location) && <span className="text-center text-sm-start text-wrap text-dark fst-italic fw275">{city ?? location}</span>}
+                                                                            {!!stars && <span className="text-dark productReviewTxt w-100 text-center text-sm-start fst-italic fw275 d-block d-sm-none">
                                                                                 {`⭐ ${stars}/5`} stars {<>for '<i>{product}</i>'</>}
                                                                             </span>}
                                                                         </span>
@@ -188,8 +188,8 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                             <section className='d-flex d-sm-none justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 quoteInfoSec'>
                                                                 <section className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
                                                                     <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
-                                                                    {(!!occupation || !!institution) && <span className="text-wrap text-dark fst-italic fw275">{occupation ?? institution}</span>}
-                                                                    {(!!city || !!location) && <span className="text-wrap text-dark fst-italic fw275">{city ?? location}</span>}
+                                                                    {(!!occupation || !!institution) && <span className="text-wrap text-dark fst-italic fw275 text-center text-sm-start">{occupation ?? institution}</span>}
+                                                                    {(!!city || !!location) && <span className="text-wrap text-dark fst-italic fw275 text-center text-sm-start">{city ?? location}</span>}
                                                                     {!!stars && <span className="text-dark w-100 text-center fst-italic fw275 d-block d-sm-none">
                                                                         {`⭐ ${stars}/5`} stars {<>for '<i>{product}</i>'</>}
                                                                     </span>}
@@ -200,7 +200,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                 )
                                             })}
                                         </div>
-                                        <section className={`d-flex flex-column justify-content-center align-items-center pb-1 mt-4 mt-sm-3 bulletPtsSec ${customBulletPtsSecCss}`}>
+                                        <section className={`d-flex flex-column justify-content-center align-items-center pb-1 mt-4 mt-sm-3 ${customBulletPtsSecCss}`}>
                                             <section className="w-100 d-flex justify-content-center align-items-center">
                                                 {BULL_POINT_INDEX_NUMS.map((num, _index) => (
                                                     (num === index) ?

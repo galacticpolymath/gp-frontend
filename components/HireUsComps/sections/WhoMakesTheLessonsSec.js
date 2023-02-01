@@ -33,8 +33,8 @@ const WhoMakesTheLessonsSec = () => {
                 <h3 className="noMargin d-none d-md-block">Who makes the lessons?</h3>
             </section>
             <section className="mt-3 d-flex flex-column">
-                <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline d-md-none">The GP Team is led by our founder,</span>
-                <span className="text-dark fs-large fst-italic fw249 d-none d-sm-inline d-md-none">Matt Wilkins, PhD.</span>
+                <span className="text-dark fst-italic fw249 d-none d-sm-inline d-md-none">The GP Team is led by our founder,</span>
+                <span className="text-dark fst-italic fw249 d-none d-sm-inline d-md-none">Matt Wilkins, PhD.</span>
                 <span className="text-dark text-center text-md-start pe-1 fst-italic fw249 d-inline d-sm-none d-md-inline">The GP Team is led by our founder, Matt Wilkins, PhD.</span>
             </section>
             <section className="d-flex flex-column flex-lg-row mattsAwardParentSec">
@@ -52,7 +52,7 @@ const WhoMakesTheLessonsSec = () => {
                         parentSecStyles="ownerSection secWithHumanPic"
                     />
                 </section>
-                <section className="ms-md-5 pt-md-2 pt-lg-4 mattsAwardsSec">
+                <section className="pt-md-2 pt-lg-4 mattsAwardsSec">
                     {mattsAwards.map((award, index) => {
                         const { alt, src, txt, link } = award;
                         return (

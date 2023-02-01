@@ -16,12 +16,24 @@ $carouselBackgroundColor: #ffeded;
   overflow: hidden;
 }
 
+
+
 .navBtnLeftCarousel {
   transform: translate(-15px, -10px) !important;
 }
 
 .navBtnRightCarousel {
   transform: translate(15px, -10px) !important;
+}
+
+
+.navBtnLeftCarousel,
+.navBtnRightCarousel{
+  @media(min-width: 576px) and (max-width: 767px){
+    svg{
+      font-size: 50px !important;
+    }
+  }
 }
 
 .autoCarouselContainerCard {
@@ -108,6 +120,10 @@ $carouselBackgroundColor: #ffeded;
   font-size: 18px !important;
   font-weight: 249;
   height: fit-content !important;
+  
+  @media(min-width: 768px) and (max-width: 991px){
+    line-height: 23px !important;
+  }
 
   @media (max-width: 767px) {
     width: 400px !important;
@@ -295,7 +311,7 @@ $carouselBackgroundColor: #ffeded;
   > section {
     > section:first-child {
       @media (max-width: 575px) {
-        min-height: 300px;
+        // min-height: 300px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -618,6 +634,15 @@ $carouselBackgroundColor: #ffeded;
   // }
 }
 
+.bulletPtsTeachersAndStudents{
+  @media(min-width: 768px) and (max-width: 991px){
+    > section:last-child{
+      margin-top: 0px !important;;
+    }
+
+    transform: translateY(4px) !important;
+  }
+}
 .bulletPtsSec {
   @media (min-width: 768px) and (max-width: 992px) {
     margin-top: 50px !important;
@@ -654,137 +679,6 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.clientsContainer {
-  @media (min-width: 768px) {
-    min-height: 555px !important;
-
-    @media (max-width: 1399px) {
-      > div {
-        > div {
-          > div {
-            // quote info box
-            section:nth-child(2) {
-              bottom: -120px !important;
-            }
-          }
-
-          // bullet points section
-          > section:last-of-type {
-            margin-top: 130px !important;
-
-            @media (max-width: 575px) {
-              margin-top: 160px !important;
-            }
-          }
-        }
-      }
-    }
-
-    @media (min-width: 992px) and (max-width: 1399px) {
-      min-height: 470px !important;
-      > div {
-        > div {
-          > section {
-            margin-top: 3.5rem !important;
-          }
-        }
-      }
-    }
-
-    @media (min-width: 1300px) {
-      height: 480px !important;
-
-      > div {
-        > div {
-          > div {
-            // quote info box
-            section:nth-child(2) {
-              bottom: -85px !important;
-            }
-          }
-
-          // bullet points section
-          > section:last-of-type {
-            margin-top: 120px !important;
-          }
-        }
-      }
-    }
-  }
-
-  @media (min-width: 1200px) {
-    min-height: 420px !important;
-    > div {
-      > div {
-        > section {
-          margin-top: 3.5rem !important;
-        }
-      }
-    }
-  }
-
-  @media (max-width: 575px) {
-    > div {
-      > div {
-        > div {
-          // quote info box
-          section:nth-child(2) {
-            // bottom: -80px !important;
-          }
-        }
-
-        // bullet points section
-        > section:last-of-type {
-          margin-top: 40px !important;
-        }
-      }
-    }
-  }
-
-  @media (min-width: 576px) and (max-width: 767px) {
-    > div {
-      > div {
-        > div {
-          // quote info box
-          section:nth-child(2) {
-            bottom: 0px !important;
-          }
-        }
-
-        // bullet points section
-        > section:last-of-type {
-          margin-top: 30px !important;
-        }
-      }
-    }
-  }
-}
-
-.shortTxtClientReview {
-  @media (max-width: 325px) {
-    transform: translateY(345px) !important;
-  }
-
-  @media (min-width: 326px) {
-    transform: translateY(200px) !important;
-  }
-
-  @media (min-width: 460px) {
-    transform: translateY(120px) !important;
-  }
-
-  @media (min-width: 576px) and (max-width: 767px) {
-    transform: translateY(90px) !important;
-  }
-
-  @media (min-width: 768px) {
-    transform: translateY(40px) !important;
-  }
-
-  @media (min-width: 1300px) {
-    transform: translateY(20px) !important;
-  }
-}
 
 .clientReview {
   @media (min-width: 992px) {
@@ -838,29 +732,7 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .cardMainStylesTeachersAndStudents {
-  // @media (min-width: 992px) {
-  //   height: 350px !important;
-
-  //   > div {
-  //     > div {
-  //       > div {
-  //         // quote info box
-  //         section:nth-child(2) {
-  //           bottom: -120px !important;
-  //         }
-  //       }
-
-  //       // bullet points section
-  //       > section:last-of-type {
-  //         margin-top: 68px !important;
-  //       }
-  //     }
-  //   }
-  // }
-
   @media (min-width: 576px) and (max-width: 767px) {
-    // min-width: 650px !important;
-    // min-width:
     min-width: 560px !important;
   }
 
@@ -1098,6 +970,10 @@ $carouselBackgroundColor: #ffeded;
           @media (min-width: 576px) {
             top: 80px !important;
             right: -40px !important;
+
+            @media(min-width: 768px) and (max-width: 991px){
+              top: 70px !important;
+            }
           }
 
           @media (min-width: 992px) {
@@ -1155,17 +1031,6 @@ $carouselBackgroundColor: #ffeded;
       }
     }
   }
-
-  @media (max-width: 575px) {
-  }
-
-  // @media (min-width: 768px) and (max-width: 1299px) {
-  //   right: 40px !important;
-
-  //   @media (max-width: 991px) {
-  //     bottom: -35px !important;
-  //   }
-  // }
 }
 
 .bulletPtsTeachersAndStudents {
@@ -1183,7 +1048,5 @@ $carouselBackgroundColor: #ffeded;
 .bulletPtsTeachersAndStudents {
   button svg {
     font-size: 25px !important;
-    // width: 30px !important;
-    // height: 40px !important;
   }
 }

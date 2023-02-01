@@ -80,7 +80,6 @@ const HireUsPage = () => {
                                             _userInputs={feedbackOfClients}
                                             backgroundImgSrc={WhatOurClientsSayBackground.src}
                                             headerContainerClassNamesDynamic="cardHeadingSec"
-                                            itemCarouselStylesCustom="clientReview"
                                             customCardStyles="clientsContainer"
                                         />
                                     </section>

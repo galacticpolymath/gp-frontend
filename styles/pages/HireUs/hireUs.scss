@@ -8,6 +8,7 @@
 @import "./hireUsComps/tier.scss";
 @import "./hireUsComps/letsTalkBtnStyles.scss";
 @import "./hireUsComps/introSecHireUs.scss";
+@import "./hireUsComps/whatOurClientSay.scss";
 
 
 
@@ -28,11 +29,56 @@ span{
     > section:nth-child(2) {
       // width: 75% !important;
       // border: solid pink !important;
-      width: 40% !important;
+      // width: 40% !important;
     }
 
     > section:nth-child(3) {
-      width: 45% !important;
+      @media(min-width: 992px){
+        // width: 45% !important;
+      }
+    }
+  }
+}
+
+.mattsAwardsSec{
+  // display: flex !important;
+  // flex-direction: column !important;
+
+  @media(min-width: 768px) and (max-width: 991px){
+    padding-left: 35px !important;
+  }
+}
+
+.mattsAward:not(:first-child){
+  margin-top: 50px !important;
+}
+
+.mattsAward{
+  @media(min-width: 768px) and (max-width: 991px){
+    display: flex;
+    justify-content: space-between;
+    > section:first-child{
+      width: 100% !important;
+      height: 100px !important;
+      padding-top: 10px !important;
+      span{
+        text-align: start !important;
+        display: inline-block !important;
+        width: 100% !important;
+        max-width: 500px !important;
+        margin-top: 10px !important;
+      }
+    }
+  }
+}
+
+.ownerSection{
+  > section:first-child{
+    @media(min-width: 768px) and (max-width: 991px){
+      > span{
+        margin-left: 0px !important;
+        line-height: 23px !important;;
+      }
     }
   }
 }
