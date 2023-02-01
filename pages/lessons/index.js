@@ -4,7 +4,27 @@ import Image from 'next/image';
 import Hero from '../../components/Hero';
 import Layout from '../../components/Layout';
 
+
+
 const LessonsPage = ({ lessons }) => {
+
+  const uniqueIDs = []
+
+  function filterPublished(ReleaseDate) {
+    const today = new Date().toISOString().slice(0, 10)
+    const released = new Date(ReleaseDate).toISOString().slice(0, 10)
+    return released<=today
+  }
+
+  const publishedLessons = lessons.filter(({ PublicationStatus, ReleaseDate, id }) => {
+    if (!uniqueIDs.includes(id) 
+      && PublicationStatus==="Live" && filterPublished(ReleaseDate)) {
+        uniqueIDs.push(id);
+        return true;
+      }
+    return false;
+  });
+
   return (
     <Layout>
       <Hero className="bg-secondary">
@@ -14,7 +34,7 @@ const LessonsPage = ({ lessons }) => {
 
       <div className='bg-light-gray'>
         <div className='container mx-auto grid py-5 px-3 gap-3'>
-          {lessons
+          {publishedLessons
             //.filter(({ PublicationStatus }) => PublicationStatus === 'Live')
             .map(lesson => (
               <Link
