@@ -26,8 +26,20 @@ span{
 .mattsAwardParentSec {
   @media (min-width: 768px) {
     > section:nth-child(2) {
-      width: 75% !important;
+      // width: 75% !important;
+      // border: solid pink !important;
+      width: 40% !important;
     }
+
+    > section:nth-child(3) {
+      width: 45% !important;
+    }
+  }
+}
+
+.ownerInfoSec{
+  > section:nth-child(2){
+    margin-top: 10px !important;
   }
 }
 
@@ -708,8 +720,8 @@ span{
   }
   > section:nth-child(2) {
     > span {
-      line-height: 20px !important;
       @media (max-width: 575px) {
+        line-height: 20px !important;
         padding-left: 8px !important;
         padding-right: 8px !important;
       }

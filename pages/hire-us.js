@@ -66,6 +66,7 @@ const HireUsPage = () => {
                                             headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0"
                                             itemCarouselStylesCustom="teachersAndStudentReview"
                                             customCardStyles="cardMainStylesTeachersAndStudents"
+                                            _customBulletPtsSecCss="bulletPtsTeachersAndStudents"
                                         />
                                     </section>
                                     <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />

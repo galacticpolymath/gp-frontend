@@ -29,12 +29,12 @@ import { BsCircle, BsCircleFill, BsFillPauseCircleFill, BsFillPlayCircleFill } f
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 import { Parallax } from 'react-parallax';
 
-const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly, dynamicCssClasses, customCardStyles, itemCarouselStylesCustom }) => {
+const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly, dynamicCssClasses, customCardStyles, _customBulletPtsSecCss }) => {
     const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
     cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 fw245') : cardStyles
-    const bulletPtsMargin = ("Grant Reviewer Feedback" === headingTxt) ? 'grantReviewerBulletPtsSec mt-md-0' : 'mt-3'
+    let customBulletPtsSecCss = _customBulletPtsSecCss ? `mt-md-0 position-absolute w-100 ${_customBulletPtsSecCss}` : 'mt-md-0 position-absolute w-100'
     let autoCarouselContainerStyles = 'autoCarouselContainer'
     const userInputs = _userInputs?.isTeachersAndStudentsTestimonies ? _userInputs.arr : _userInputs;
 
@@ -158,58 +158,39 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                         <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
                                             {userInputs.map((userInput, index) => {
                                                 const { feedback, person, occupation, city, stars, product, institution, location, isShort, isLong, cssClass } = userInput;
-                                                let feedBackClassName = 'pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center'
-                                                let quoteInfo = "d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec"
-                                                let feedbackSecClassNames = "w-100 h-100 d-flex flex-column flex-sm-row justify-content-sm-start justify-content-sm-center  align-items-center justify-content-md-start align-items-md-stretch feedBackSec position-relative"
-                                                let autoCarouselItemStyles = "autoCarouselItem position-relative"
-
-                                                if (itemCarouselStylesCustom) {
-                                                    autoCarouselItemStyles += ' ' + itemCarouselStylesCustom
-                                                }
-
-                                                if (occupation?.includes("grade")) {
-                                                    feedBackClassName += ' studentInfoSec'
-                                                    autoCarouselItemStyles += ' studentParentStyles'
-                                                } else {
-                                                    quoteInfo += ' nonStudentInfoSec'
-                                                }
-
-                                                if (_userInputs?.isTeachersAndStudentsTestimonies) {
-                                                    feedbackSecClassNames += ' teachersAndStudentsTestimoniesSec'
-                                                }
-
-                                                if (isShort) {
-                                                    autoCarouselItemStyles += ' shortTxtContent'
-                                                    feedBackClassName += ' shortFeedbackTxtSec'
-                                                    quoteInfo += ' shortQuoteInfoSec'
-                                                    autoCarouselContainerStyles += ' autoCarouselContainerShortTxtContent'
-                                                    cardStyles += ' shortTxtContentCard'
-                                                }
-
-
-                                                if (isLong) {
-                                                    autoCarouselItemStyles += ' longTxtContent'
-                                                }
 
 
                                                 return (
-                                                    <div className={`${autoCarouselItemStyles} ${userInput?.cssClass ?? ""}`} key={index}>
-                                                        <section className={feedbackSecClassNames}>
+                                                    <div className={`${cssClass} autoCarouselItem position-relative`} key={index}>
+                                                        <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-sm-start justify-content-sm-center  align-items-center justify-content-md-start align-items-md-stretch position-relative">
                                                             {stars &&
                                                                 <span className="text-dark fst-italic fw275 productReviewTxt d-none d-sm-inline">
                                                                     {`⭐ ${stars}/5`} stars {<>for '<i>{product}</i>':</>}
-                                                                </span>}
-                                                            <section className={feedBackClassName}>
-                                                                <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275">
+                                                                </span>
+                                                            }
+                                                            {/* pb-sm-5 mb-sm-5 me-sm-3  */}
+                                                            <section className='pb-md-0 mb-md-0 me-md-0 d-flex justify-content-center align-items-center w-100'>
+                                                                <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275 position-relative">
                                                                     "{feedback}"
+                                                                    {/* d-none d-md-flex */}
+                                                                    <span className='d-none d-sm-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 quoteInfoTxts position-absolute'>
+                                                                        <span className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
+                                                                            <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
+                                                                            {(!!occupation || !!institution) && <span className="text-wrap text-dark fst-italic fw275">{occupation ?? institution}</span>}
+                                                                            {(!!city || !!location) && <span className="text-wrap text-dark fst-italic fw275">{city ?? location}</span>}
+                                                                            {!!stars && <span className="text-dark productReviewTxt w-100 text-center fst-italic fw275 d-block d-sm-none">
+                                                                                {`⭐ ${stars}/5`} stars {<>for '<i>{product}</i>'</>}
+                                                                            </span>}
+                                                                        </span>
+                                                                    </span>
                                                                 </span>
                                                             </section>
-                                                            <section className={quoteInfo}>
+                                                            <section className='d-flex d-sm-none justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 quoteInfoSec'>
                                                                 <section className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
                                                                     <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
                                                                     {(!!occupation || !!institution) && <span className="text-wrap text-dark fst-italic fw275">{occupation ?? institution}</span>}
                                                                     {(!!city || !!location) && <span className="text-wrap text-dark fst-italic fw275">{city ?? location}</span>}
-                                                                    {!!stars && <span className="text-dark productReviewTxt w-100 text-center fst-italic fw275 d-block d-sm-none">
+                                                                    {!!stars && <span className="text-dark w-100 text-center fst-italic fw275 d-block d-sm-none">
                                                                         {`⭐ ${stars}/5`} stars {<>for '<i>{product}</i>'</>}
                                                                     </span>}
                                                                 </section>
@@ -219,7 +200,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                 )
                                             })}
                                         </div>
-                                        <section className={`d-flex flex-column justify-content-center align-items-center pb-1 mt-4 mt-sm-3 bulletPtsSec ${bulletPtsMargin}`}>
+                                        <section className={`d-flex flex-column justify-content-center align-items-center pb-1 mt-4 mt-sm-3 bulletPtsSec ${customBulletPtsSecCss}`}>
                                             <section className="w-100 d-flex justify-content-center align-items-center">
                                                 {BULL_POINT_INDEX_NUMS.map((num, _index) => (
                                                     (num === index) ?
@@ -235,7 +216,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                         />
                                                 ))}
                                             </section>
-                                            <section className="d-flex justify-content-center align-items-center mt-3 mt-md-2">
+                                            <section className="d-flex justify-content-center align-items-center mt-1 mt-md-2">
                                                 <button className="noBtnStyles" onClick={handlePausePlayBtnClick}>
                                                     {isCarouselPaused ? <BsFillPlayCircleFill className="fs-larger" /> : <BsFillPauseCircleFill className="fs-larger" />}
                                                 </button>

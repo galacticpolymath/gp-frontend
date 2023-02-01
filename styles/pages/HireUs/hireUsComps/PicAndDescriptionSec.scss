@@ -250,8 +250,10 @@ $scientistFontSize: 1.3rem !important;
       }
 
       @media(min-width: 1200px){
-        width: 200px !important;
-        height: 200px !important;
+        // width: 200px !important;
+        width: 170px !important;
+        height: 170px !important;
+        // height: 200px !important;
       }
     }
   }
@@ -657,7 +659,6 @@ $scientistFontSize: 1.3rem !important;
     > span{
       font-size: $spanFontSize;
       font-weight: 250 !important;
-      padding-left: 40px !important;
       padding-right: 40px !important;
 
       @media(max-width: 767px){
