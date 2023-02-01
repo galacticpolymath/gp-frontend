@@ -21,6 +21,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
+// 
 import { useEffect, useRef, useState } from 'react';
 import { Card } from 'react-bootstrap';
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -32,7 +33,6 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
     const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
-    let autoCarouselItemStyles = "autoCarouselItem position-relative"
     cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 fw245') : cardStyles
     const bulletPtsMargin = ("Grant Reviewer Feedback" === headingTxt) ? 'grantReviewerBulletPtsSec mt-md-0' : 'mt-3'
     let autoCarouselContainerStyles = 'autoCarouselContainer'
@@ -46,10 +46,6 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
 
     if (!customCardStyles) {
         cardStyles += ' ' + "pt-1 pb-4 pe-2"
-    }
-
-    if (itemCarouselStylesCustom) {
-        autoCarouselItemStyles += ' ' + itemCarouselStylesCustom
     }
 
     const timeoutRef = useRef(null);
@@ -165,6 +161,11 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                 let feedBackClassName = 'pb-sm-5 mb-sm-5 me-sm-3 pb-md-0 mb-md-0 me-md-0 d-md-flex justify-content-md-center align-items-md-center'
                                                 let quoteInfo = "d-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 feedbackInfoSec"
                                                 let feedbackSecClassNames = "w-100 h-100 d-flex flex-column flex-sm-row justify-content-sm-start justify-content-sm-center  align-items-center justify-content-md-start align-items-md-stretch feedBackSec position-relative"
+                                                let autoCarouselItemStyles = "autoCarouselItem position-relative"
+
+                                                if (itemCarouselStylesCustom) {
+                                                    autoCarouselItemStyles += ' ' + itemCarouselStylesCustom
+                                                }
 
                                                 if (occupation?.includes("grade")) {
                                                     feedBackClassName += ' studentInfoSec'

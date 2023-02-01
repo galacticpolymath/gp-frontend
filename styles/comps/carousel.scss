@@ -883,23 +883,38 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
+
+
 .cardMainStylesTeachersAndStudents {
+  // @media (min-width: 992px) {
+  //   height: 350px !important;
+
+  //   > div {
+  //     > div {
+  //       > div {
+  //         // quote info box
+  //         section:nth-child(2) {
+  //           bottom: -120px !important;
+  //         }
+  //       }
+
+  //       // bullet points section
+  //       > section:last-of-type {
+  //         margin-top: 68px !important;
+  //       }
+  //     }
+  //   }
+  // }
+
   @media (min-width: 992px) {
     height: 350px !important;
 
     > div {
       > div {
-        > div {
-          // quote info box
-          section:nth-child(2) {
-            bottom: -120px !important;
-          }
-        }
 
         // bullet points section
         > section:last-of-type {
-          margin-top: 68px !important;
-          // border: solid pink !important;
+          // margin-top: 68px !important;
         }
       }
     }
@@ -955,7 +970,7 @@ $carouselBackgroundColor: #ffeded;
       bottom: -35px !important;
 
       @media (min-width: 1200px) {
-        bottom: -25px !important;
+        bottom: 25px !important;
       }
     }
 
