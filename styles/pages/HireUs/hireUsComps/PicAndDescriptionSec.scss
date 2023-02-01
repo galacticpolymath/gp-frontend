@@ -1,4 +1,3 @@
-
 $scientistFontSize: 1.3rem !important;
 
 .ownerSection {
@@ -27,8 +26,6 @@ $scientistFontSize: 1.3rem !important;
   }
 }
 
-
-
 .picAndDescriptionSec {
   display: flex !important;
   flex-direction: row-reverse !important;
@@ -56,7 +53,16 @@ $scientistFontSize: 1.3rem !important;
     > section:first-child {
       margin-left: 25px !important;
 
-      @media(max-width: 767px){
+      @media (max-width: 767px) {
+      }
+    }
+  }
+
+  @media (min-width: 1200px) {
+    > section:first-child {
+      // margin-left: 0px !important;
+
+      @media (max-width: 767px) {
       }
     }
   }
@@ -80,8 +86,6 @@ $scientistFontSize: 1.3rem !important;
     padding-top: 10px !important;
   }
 }
-
-
 
 .shareYourKnowledgeDesktopSec {
   > section:first-child {
@@ -146,8 +150,8 @@ $scientistFontSize: 1.3rem !important;
     max-height: 385.5px !important;
   }
 
-  > section{
-    > h3{
+  > section {
+    > h3 {
       color: black !important;
       font-weight: 249;
       font-size: 20px !important;
@@ -171,16 +175,16 @@ $scientistFontSize: 1.3rem !important;
     }
   }
 
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     padding-bottom: 75px;
 
-    @media(max-width: 991px){
+    @media (max-width: 991px) {
       padding-bottom: 20px !important;
     }
   }
 
-  > section:first-child{
-    > span{
+  > section:first-child {
+    > span {
       line-height: 25px !important;
     }
   }
@@ -201,7 +205,6 @@ $scientistFontSize: 1.3rem !important;
 
       @media (min-width: 992px) {
         margin-top: 20px !important;
-        
       }
       > span {
         @media (max-width: 991px) {
@@ -209,6 +212,10 @@ $scientistFontSize: 1.3rem !important;
         }
         @media (min-width: 992px) {
           text-align: center !important;
+        }
+
+        @media (min-width: 992px) and (max-width: 1199px) {
+          padding: 0px 15px 0px 15px !important;
         }
       }
     }
@@ -234,15 +241,14 @@ $scientistFontSize: 1.3rem !important;
     }
   }
 
-  @media(min-width: 768px) and (max-width: 991px){
+  @media (min-width: 768px) and (max-width: 991px) {
     > section:first-child {
       margin-left: 20px !important;
     }
   }
 
-
   > section {
-    div{
+    div {
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
@@ -254,12 +260,12 @@ $scientistFontSize: 1.3rem !important;
       width: 170px !important;
       height: 170px !important;
 
-      @media(min-width: 768px){
+      @media (min-width: 768px) {
         width: 200px !important;
         height: 200px !important;
       }
 
-      @media(min-width: 1200px){
+      @media (min-width: 1200px) {
         // width: 200px !important;
         width: 170px !important;
         height: 170px !important;
@@ -286,21 +292,19 @@ $scientistFontSize: 1.3rem !important;
     // margin-top: 90px !important;
   }
 
-  @media(max-width: 575px){
+  @media (max-width: 575px) {
     margin-top: 60px !important;
   }
 }
 
-
 .mattsAwardsSec {
-  @media(min-width: 768px) and (max-width: 991px){
+  @media (min-width: 768px) {
     justify-content: center !important;
     align-items: center !important;
-
   }
 
   @media (min-width: 992px) {
-    margin-left: 80px !important;
+    // margin-left: 80px !important;
   }
 }
 
@@ -352,6 +356,9 @@ $scientistFontSize: 1.3rem !important;
     > section:first-child {
       margin-top: 15px !important;
       padding: 0px 10px 0px 10px !important;
+      @media(min-width: 992px){
+        margin-left: 0px !important;
+      }
       span {
         display: block !important;
         text-align: center !important;
@@ -366,10 +373,11 @@ $scientistFontSize: 1.3rem !important;
     }
   }
 
-  @media(min-width: 1200px){
-    > section:first-child{
+  @media (min-width: 1200px) {
+    > section:first-child {
       padding-top: 10px !important;
-    } 
+      margin-left: 0px !important;
+    }
   }
 }
 
@@ -400,7 +408,7 @@ $scientistFontSize: 1.3rem !important;
 }
 
 .ownerSection > section:first-child span {
-  @media(min-width: 576px) and (max-width: 767px){
+  @media (min-width: 576px) and (max-width: 767px) {
     margin-top: 10px !important;
     display: inline-block !important;
   }
@@ -412,8 +420,8 @@ $scientistFontSize: 1.3rem !important;
 
 .scientist {
   @media (min-width: 768px) {
-    > section{
-      h4{
+    > section {
+      h4 {
         font-size: $scientistFontSize;
       }
     }
@@ -489,25 +497,22 @@ $scientistFontSize: 1.3rem !important;
   }
 }
 
-
-
-.scientist{
-  @media(max-width: 575px){
-    > section:first-child{
-      span{
-        line-height: 20px !important;;
+.scientist {
+  @media (max-width: 575px) {
+    > section:first-child {
+      span {
+        line-height: 20px !important;
       }
     }
   }
 }
-
 
 .scientist:not(:first-child) {
   @media (max-width: 767px) {
     margin-top: 10px !important;
   }
 
-  @media(max-width: 575px){
+  @media (max-width: 575px) {
     margin-top: 55px !important;
   }
 }
@@ -593,8 +598,8 @@ $scientistFontSize: 1.3rem !important;
       display: grid !important;
       align-items: center !important;
 
-      img{
-        @media(max-width: 767px) and (min-width: 576px){
+      img {
+        @media (max-width: 767px) and (min-width: 576px) {
           height: 192px !important;
           min-width: 230px !important;
         }
@@ -643,7 +648,7 @@ $scientistFontSize: 1.3rem !important;
 
 @media (max-width: 575px) {
   .GPConstellationSec {
-    flex-direction: column !important;;
+    flex-direction: column !important;
     > section:last-child {
       > div {
         width: 100% !important;
@@ -664,20 +669,20 @@ $scientistFontSize: 1.3rem !important;
   }
 }
 
-@media(min-width: 1200px){
-  .scientist:nth-child(even){
+@media (min-width: 1200px) {
+  .scientist:nth-child(even) {
     margin-top: 100px !important;
   }
 }
 
 .GPConstellationSec {
-  > section:first-child{
-    > span{
+  > section:first-child {
+    > span {
       font-size: $spanFontSize;
       font-weight: 250 !important;
       padding-right: 40px !important;
 
-      @media(max-width: 767px){
+      @media (max-width: 767px) {
         display: inline-flex !important;
       }
     }
@@ -697,27 +702,26 @@ $scientistFontSize: 1.3rem !important;
       }
     }
 
-    @media(max-width: 767px){
-    flex-direction: column !important;
+    @media (max-width: 767px) {
+      flex-direction: column !important;
 
-      @media(min-width: 576px) and (max-width: 767px){
-        display: flex !important; 
+      @media (min-width: 576px) and (max-width: 767px) {
+        display: flex !important;
         flex-direction: row !important;
 
-        > section:first-child{
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
+        > section:first-child {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
 
-            > span{
-              @media(min-width: 576px){
-              }
+          > span {
+            @media (min-width: 576px) {
             }
+          }
         }
       }
 
-
-      > section:last-child{
+      > section:last-child {
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
@@ -740,3 +744,19 @@ $scientistFontSize: 1.3rem !important;
   }
 }
 
+.mattsAwardParentSec {
+  > section:nth-child(2) {
+    @media (min-width: 1200px) {
+      // border: solid pink !important;
+      width: 45% !important;
+      > section:first-child {
+        padding-right: 40px !important;
+      }
+    }
+  }
+}
+
+
+.grantReviewsBulletPtsSec{
+  bottom: 0px !important;
+}

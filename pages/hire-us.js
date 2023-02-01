@@ -101,6 +101,7 @@ const HireUsPage = () => {
                                             headerContainerClassNamesDynamic="cardHeadingSec"
                                             customCardStyles='grantReviewsCard'
                                             itemCarouselStylesCustom='grantReviewItemCarousel'
+                                            _customBulletPtsSecCss="grantReviewsBulletPtsSec"
                                         />
                                     </section>
                                     <HowMuchDoesItCostSec setTiersInfoForModalArr={setTiersInfoForModalArr} />

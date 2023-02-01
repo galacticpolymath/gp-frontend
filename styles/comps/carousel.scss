@@ -474,20 +474,84 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
+
+
+
+.grantReviewTxtStyles{
+  > section {
+    > section{
+      > span{
+        width: 85% !important;
+        text-align: center !important;
+      }
+    }
+  }
+}
+
 .grantReviewsCard {
-  @media (min-width: 768px) {
-    height: 425px !important;
+  height: 250px !important;
+
+
+  @media(min-width: 576px){
+    min-width: 547px !important;
+  }
+
+  @media(min-width: 768px){
+    min-width: 750px !important;
   }
 
   @media (min-width: 1200px) {
-    height: 410px !important;
+    // min-width: 1135.59px;
+    // max-width: 1180px !important;
+    width: 1000px !important;
   }
 
   @media (max-width: 575px) {
-    > div {
-      > div {
-        height: fit-content !important;
+    height: 300px !important;
+
+    @media(max-width: 392px){
+      height: 320px !important;
+    }
+
+    @media(max-width: 392px){
+      height: 340px !important;
+    }
+
+    @media(max-width: 350px){
+      height: 410px !important;
+    }
+  }
+}
+
+
+.grantReviewShortTxtStyles{
+  @media(max-width: 575px){
+    > section:first-child{
+      transform: translateY(20px) !important;
+
+      @media(max-width: 392px){
+        transform: translateY(40px) !important;
       }
+
+      @media(max-width: 350px){
+        transform: translateY(70px) !important;
+      }
+    }
+  }
+}
+
+
+
+
+.grantReviewTxtStyles{
+  @media(max-width: 575px){
+    > section:first-child{
+      transform: translateY(10px) !important;
+
+      @media(max-width: 392px){
+        transform: translateY(30px) !important;
+      }
+
     }
   }
 }
@@ -518,14 +582,32 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.grantReviewItemCarousel {
+.grantReviewShortTxtStyles {
   @media (min-width: 768px) {
-    height: 250px !important;
+    height: 100px !important;
   }
 }
 
-.grantReviewsCard {
-  // height: 500px !important;
+.grantReviewShortTxtStyles{
+  @media(min-width: 576px){
+    > section > section > span > span{
+      inset: auto -100px -60px auto !important;
+
+      @media(max-width: 767px){
+        inset: auto -40px -60px auto !important;
+      }
+    }
+  }
+}
+
+.grantReviewTxtStyles {
+  @media(min-width: 576px){
+    > section > section > span > span{
+      right: 20px !important;
+      bottom: -40px !important;
+
+    }
+  }
 }
 
 .grantReviewItemCarousel {
@@ -736,18 +818,13 @@ $carouselBackgroundColor: #ffeded;
     min-width: 560px !important;
   }
 
-  @media (min-width: 768px) {
-    > div {
-      > div {
-        // bullet points section
-        > section:last-of-type {
-          // margin-top: 68px !important;
-        }
-      }
-    }
-  }
 
   @media (max-width: 575px) {
+    height: 360px !important;
+
+    @media(max-width: 325px){
+      height: 380px !important;
+    }
     > div {
       > div {
         min-height: 300px !important;
@@ -820,13 +897,12 @@ $carouselBackgroundColor: #ffeded;
   @media (max-width: 575px) {
     margin-top: 55px !important;
     transform: translateY(0px) !important;
-    // border: solid pink !important;
   }
 }
 
 .grantReviewShortTxtStyles {
-  @media (min-width: 576px) and (max-width: 767px) {
-    transform: translateY(50px) !important;
+  @media (max-width: 767px) {
+    transform: translateY(30px) !important;
   }
 }
 
@@ -1050,3 +1126,10 @@ $carouselBackgroundColor: #ffeded;
     font-size: 25px !important;
   }
 }
+
+.grantReviewsBulletPtsSec{
+  @media(max-width: 575px){
+    bottom: -5px !important;
+  }
+}
+

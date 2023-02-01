@@ -157,7 +157,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                     <div className={autoCarouselContainerStyles}>
                                         <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
                                             {userInputs.map((userInput, index) => {
-                                                const { feedback, person, occupation, city, stars, product, institution, location, isShort, isLong, cssClass } = userInput;
+                                                const { feedback, person, occupation, city, stars, product, institution, location, cssClass } = userInput;
 
 
                                                 return (
