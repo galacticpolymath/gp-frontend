@@ -85,7 +85,8 @@ $carouselBackgroundColor: #ffeded;
 .cardBodyStyles,
 .autoCarouselContainerCard {
   @media (min-width: 1300px) {
-    height: 345px !important;
+    // height: 345px !important;
+    height: 200px !important;
   }
 }
 
@@ -103,8 +104,9 @@ $carouselBackgroundColor: #ffeded;
   white-space: normal;
   margin: 0 auto;
   display: block;
-  font-size: $spanFontSize;
+  font-size: 18px !important;
   font-weight: 249;
+  height: fit-content !important;
 
   @media (max-width: 767px) {
     width: 400px !important;
@@ -693,10 +695,6 @@ $carouselBackgroundColor: #ffeded;
 
     @media (max-width: 575px) {
       transform: translateY(80px) !important;
-    }
-
-    @media (max-width: 375px) {
-      // transform: translateY(100px) !important;
     }
   }
 }

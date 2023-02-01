@@ -41,7 +41,6 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                 <Title className="fw625 text-center text-sm-start border border-white modalTitleSec">
                     <h3 className="ms-2 ms-sm-0">{title}</h3>
                 </Title>
-                {/* width={85} height={85} */}
                 <button onClick={handleCloseModal} className="position-absolute top-0 end-0 noBtnStyles"><IoIosCloseCircle className="closeButtonTxtColor" /></button>
             </Header>
             <Body>
