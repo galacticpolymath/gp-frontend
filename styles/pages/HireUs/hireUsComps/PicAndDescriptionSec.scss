@@ -166,10 +166,13 @@ $scientistFontSize: 1.3rem !important;
   }
 
   @media (min-width: 576px) {
-    padding-bottom: 75px;
     > section:first-child {
       margin-left: 20px !important;
     }
+  }
+
+  @media(min-width: 768px){
+    padding-bottom: 75px;
   }
 
   > section:first-child{
@@ -268,7 +271,7 @@ $scientistFontSize: 1.3rem !important;
 
 .picAndDescriptionSecInList:not(:first-child) {
   @media (max-width: 991px) {
-    margin-top: 90px !important;
+    // margin-top: 90px !important;
   }
 
   @media(max-width: 575px){

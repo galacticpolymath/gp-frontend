@@ -35,12 +35,14 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
 
     return (
         <Modal show={isModalOn} onHide={handleCloseModal} contentClassName="tierInfoModal shadow">
-            <Header className="tierInfoModalHeader pe-4 border-bottom d-flex flex-column-reverse flex-sm-row pt-4 position-relative">
+        {/* flex-column-reverse flex-sm-row */}
+            <Header className="tierInfoModalHeader pe-4 border-bottom d-flex pt-4 position-relative">
+                <Image src="/imgs/gp_logo_gradient_transBG.png" alt="Galatic_Polymath_Tier_Info_Modal" fill className="me-3 me-sm-0 modalImg position-absolute" />
                 <Title className="fw625 text-center text-sm-start border border-white modalTitleSec">
-                    <h3>{title}</h3>
+                    <h3 className="ms-2 ms-sm-0">{title}</h3>
                 </Title>
-                <Image src="/imgs/gp_logo_gradient_transBG.png" alt="Galatic_Polymath_Tier_Info_Modal" width={150} height={150} />
-                <button onClick={handleCloseModal} className="fs-med position-absolute top-0 end-0 noBtnStyles"><IoIosCloseCircle className="closeButtonTxtColor" /></button>
+                {/* width={85} height={85} */}
+                <button onClick={handleCloseModal} className="position-absolute top-0 end-0 noBtnStyles"><IoIosCloseCircle className="closeButtonTxtColor" /></button>
             </Header>
             <Body>
                 <section className="d-flex flex-column">
@@ -64,7 +66,7 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                             texts.map((text, index) => {
                                 const { normalTxt, boldTxt } = text;
                                 return (
-                                    <span className={`${index !== 0 ? 'mt-3' : ''} fs-med fw300 text-center text-sm-start`} key={index}>
+                                    <span className={`${index !== 0 ? 'mt-3' : ''} tierModalTxt fw300 text-center text-sm-start`} key={index}>
                                         {boldTxt ? <span className="fw-bolder">{boldTxt}</span> : null}
                                         {normalTxt}
                                     </span>
@@ -88,7 +90,7 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                 </section>
             </Body>
             <Footer>
-                <Button variant="secondary" onClick={handleCloseModal} className="fs-med closeButtonBackgroundColor fw300">Close</Button>
+                <Button variant="secondary" onClick={handleCloseModal} className="closeButtonBackgroundColor fw300">Close</Button>
             </Footer>
         </Modal>
     )
