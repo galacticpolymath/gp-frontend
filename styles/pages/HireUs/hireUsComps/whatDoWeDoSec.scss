@@ -12,6 +12,32 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
 
   @media (min-width: 768px) and (max-width: 991px) {
     padding: 35px 45px 35px 45px !important;
+
+    > section:last-of-type{
+      height: 45px !important;
+      padding-bottom: 25px !important;
+    }
+  }
+
+  @media(max-width: 575px){
+    padding: 10px 45px 10px 45px;
+  }
+
+  > section:first-child > section{
+    img{
+      width: 35px !important;
+    }
+  }
+}
+
+
+.howDoesItWorkSec{
+  @media(min-width: 1200px){
+    margin-top: 70px !important;
+
+    > section:last-child{
+      margin-top: 20px !important;
+    }
   }
 }
 
@@ -70,7 +96,7 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
 
 .HireUsCardFirstSecMobile:first-child > section:first-child {
   img {
-    width: 35px !important;
+    // width: 35px !important;
   }
 }
 
@@ -79,3 +105,4 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
     white-space: nowrap !important;
   }
 }
+

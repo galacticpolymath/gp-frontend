@@ -42,7 +42,7 @@ const IntroSecHireUs = () => {
             </section>
             {/* for mobile */}
             <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
-                <section className="w-100 d-flex flex-column align-items-center pt-4">
+                <section className="w-100 d-flex justify-content-start align-items-stretch  flex-column justify-content-md-center align-items-md-center pt-4">
                     <section className="headerSection">
                         <h1 className={`${styles.shadow} headingHireUs noMargin`}>Easier,</h1>
                         <h1 className={`${styles.shadow} headingHireUs noMargin`}>Classroom-ready</h1>

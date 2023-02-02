@@ -25,9 +25,6 @@ const LetsTalkBtnContainer = ({isMainBtn, isInReadyToInspireSec, isAbsolute, isN
         _className += ' ' + cssClasses
     }
 
-
-
-
     let btnTxtStyles = 'text-nowrap letsTalkBtnTxt'
 
     if(isMainBtn){

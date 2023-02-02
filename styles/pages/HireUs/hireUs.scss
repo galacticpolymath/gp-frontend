@@ -1,4 +1,4 @@
-@import '../../globalVars.scss';
+@import "../../globalVars.scss";
 @import "./hireUsComps/TestimoniesAndReviewsSec";
 @import "./hireUsComps/PicAndDescriptionSec.scss";
 @import "../../comps/carousel.scss";
@@ -10,63 +10,34 @@
 @import "./hireUsComps/introSecHireUs.scss";
 @import "./hireUsComps/whatOurClientSay.scss";
 
-
-
 .humanDescriptionTxt {
   line-height: 33px;
-}
-
-span{
-  // border: solid pink .5px !important;
 }
 
 .responsiveInfoTxt {
   font-size: $spanFontSize;
 }
 
-.arrowHowDoesItWork{
-  background-color: $hireUsPgMainCardColor !important;;
-  mix-blend-mode: multiply !important;;
+.arrowHowDoesItWork {
+  background-color: $hireUsPgMainCardColor !important;
+  mix-blend-mode: multiply !important;
 }
 
-.mattsAwardParentSec {
-  @media (min-width: 768px) {
-    > section:nth-child(2) {
-      // width: 75% !important;
-      // border: solid pink !important;
-      // width: 40% !important;
-    }
-
-    > section:nth-child(3) {
-      @media(min-width: 992px){
-        // width: 45% !important;
-      }
-    }
-  }
-}
-
-.mattsAwardsSec{
-  // display: flex !important;
-  // flex-direction: column !important;
-
-  @media(min-width: 768px) and (max-width: 991px){
+.mattsAwardsSec {
+  @media (min-width: 768px) and (max-width: 991px) {
     padding-left: 35px !important;
   }
 }
 
-.mattsAward:not(:first-child){
-  // margin-top: 50px !important;
-}
-
-.mattsAward{
-  @media(min-width: 768px) and (max-width: 991px){
+.mattsAward {
+  @media (min-width: 768px) and (max-width: 991px) {
     display: flex;
     justify-content: space-between;
-    > section:first-child{
+    > section:first-child {
       width: 100% !important;
       height: 100px !important;
       padding-top: 10px !important;
-      span{
+      span {
         text-align: start !important;
         display: inline-block !important;
         width: 100% !important;
@@ -76,7 +47,7 @@ span{
     }
   }
 
-  @media(min-width: 1200px){
+  @media (min-width: 1200px) {
     // width: 500px !important;
     max-width: 600px !important;
     display: flex !important;
@@ -84,29 +55,29 @@ span{
     position: relative !important;
     // border: solid pink !important;
 
-    > section:first-child{
+    > section:first-child {
       max-width: 460px !important;
     }
 
-    > section:last-of-type{
+    > section:last-of-type {
       width: 100px !important;
     }
   }
 }
 
-.ownerSection{
-  > section:first-child{
-    @media(min-width: 768px) and (max-width: 991px){
-      > span{
+.ownerSection {
+  > section:first-child {
+    @media (min-width: 768px) and (max-width: 991px) {
+      > span {
         margin-left: 0px !important;
-        line-height: 23px !important;;
+        line-height: 23px !important;
       }
     }
   }
 }
 
-.ownerInfoSec{
-  > section:nth-child(2){
+.ownerInfoSec {
+  > section:nth-child(2) {
     margin-top: 10px !important;
   }
 }
@@ -160,13 +131,9 @@ span{
   overflow-x: hidden !important;
 }
 
-
-.normalTxtOnHireUsPg{
+.normalTxtOnHireUsPg {
   font-size: 22px !important;
 }
-
-
-
 
 .CardSec {
   @media (min-width: 768px) {
@@ -178,17 +145,21 @@ span{
 .hireUsPgInfoCard {
   max-width: 1392px !important;
   min-width: 265px !important;
-  transform: translateY(-100px);
   min-height: 700px;
   border-radius: $borderRadiusModal;
   background-color: $hireUsPgMainCardColor;
 
   @media (min-width: 768px) {
-    // min-height: 1100px !important;
+    // transform: translateY(-100px);
+    transform: translateY(-50px);
     padding-bottom: 170px !important;
   }
 
-  @media (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 767px) {
+    transform: translateY(-100px);
+  }
+
+  @media (max-width: 575px) {
     transform: translateY(-40px) !important;
   }
 
@@ -196,8 +167,8 @@ span{
     min-width: 755px !important;
   }
 
-  @media(min-width: 1200px){
-    transform: translateY(-80px);
+  @media (min-width: 1200px) {
+    // transform: translateY(-50px);
   }
 }
 
@@ -205,7 +176,7 @@ span{
   > span {
     font-size: $spanFontSize;
     font-weight: 250 !important;
-    @media(min-width: 1200px){
+    @media (min-width: 1200px) {
       // padding-right: 70px !important;
       padding-right: 70px !important;
     }
@@ -251,6 +222,8 @@ span{
     &::first-letter {
       text-transform: capitalize;
     }
+
+    max-width: 430px !important;
   }
 }
 
@@ -275,8 +248,8 @@ span{
     }
   }
 
-  > img{
-    border-radius: .3rem !important;
+  > img {
+    border-radius: 0.3rem !important;
   }
 
   @media (max-width: 575px) {
@@ -291,8 +264,6 @@ span{
   }
 }
 
-
-
 .shareYourKnowledgeImgSec {
   @media (min-width: 768px) {
     width: 100% !important;
@@ -306,8 +277,8 @@ span{
   }
 }
 
-.GPConstellation{
-  @media(max-width: 767px){
+.GPConstellation {
+  @media (max-width: 767px) {
     height: 370px !important;
   }
 }
@@ -315,20 +286,20 @@ span{
 .shareYourKnowledgeImgContainer {
   height: 400px;
 
-  @media(min-width: 1200px){
+  @media (min-width: 1200px) {
     height: 280px;
   }
 
-  @media(max-width: 767px){
+  @media (max-width: 767px) {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
 
-    > img{
+    > img {
       position: static !important;
     }
   }
-  
+
   @media (min-width: 576px) and (max-width: 767px) {
     height: fit-content !important;
   }
@@ -368,7 +339,7 @@ span{
   width: 75%;
   font-size: $spanFontSize;
 
-  > span:first-child{
+  > span:first-child {
   }
 
   @media (max-width: 767px) {
@@ -403,11 +374,9 @@ span{
   align-items: center !important;
   justify-content: center !important;
 
-
-  @media(min-width: 768px) and (max-width: 1199px){
+  @media (min-width: 768px) and (max-width: 1199px) {
     height: 250px !important;
   }
-
 
   @media (max-width: 767px) {
     border: solid 0.5px #707070;
@@ -424,7 +393,8 @@ span{
 .anyTimeSec {
   > section:first-child {
     @media (min-width: 768px) {
-      width: 75% !important;
+      width: 100% !important;
+      max-width: 800px !important;
     }
 
     @media (max-width: 767px) {
@@ -477,7 +447,6 @@ span{
   }
 }
 
-
 .looped-vid-hire-us {
   width: 100% !important;
   object-fit: fill !important;
@@ -499,18 +468,17 @@ span{
 }
 
 .video-styles,
-.looped-vid-hire-us{
-  @media(max-width: 575px){
+.looped-vid-hire-us {
+  @media (max-width: 575px) {
     width: 300px !important;
     height: 300px !important;
   }
 
-  @media(max-width: 375px){
+  @media (max-width: 375px) {
     width: 225px !important;
     height: 225px !important;
   }
 }
-
 
 .whatWillYouGetSec:nth-child(4),
 .whatWillYouGetSec:nth-child(3) {
@@ -531,14 +499,18 @@ span{
 
 .whatWillYouGetSec:nth-child(even) {
   @media (min-width: 992px) {
-    // margin-top: 18px !important;
+    margin-top: 18px !important;
   }
 }
 
 .whatWillYouGetSec:nth-child(even) {
-  @media (max-width: 850px) {
+  @media (max-width: 850px) and (min-width: 768px) {
     margin-top: 50px !important;
   }
+}
+
+.whatWillYouGetSec:not(:first-child) {
+  margin-top: 20px !important;
 }
 
 .whatWillYouGetSec {
@@ -552,8 +524,6 @@ span{
 
 .HireUsCardFirstSecMobile {
   @media (min-width: 768px) {
-    
-
     > section:first-child {
       > span {
         width: 100px !important;
@@ -563,7 +533,7 @@ span{
   }
 
   @media (max-width: 767px) {
-    @media(min-width: 576px){
+    @media (min-width: 576px) {
       // border: solid pink !important;
       max-width: 480px !important;
     }
@@ -586,13 +556,13 @@ span{
 }
 
 .HireUsCardFirstSecMobile:first-child {
-  @media (max-width: 767px) {
+  @media (max-width: 767px) and (min-width: 576px) {
     margin-top: 20px !important;
   }
 }
 
 .HireUsCardFirstSecMobile:not(:first-child) {
-  @media (max-width: 767px) {
+  @media (max-width: 767px) and (min-width: 576px) {
     margin-top: 55px !important;
   }
 }
@@ -611,16 +581,15 @@ span{
     > span {
       text-align: center;
 
-      @media(min-width: 1200px){
-        
+      @media (min-width: 1200px) {
       }
     }
   }
 }
 
-.whatWillYouGetSec{
-  > section:last-child{
-    @media(min-width: 1200px){
+.whatWillYouGetSec {
+  > section:last-child {
+    @media (min-width: 1200px) {
       width: 425px !important;
     }
   }
@@ -646,16 +615,22 @@ span{
 }
 
 .infoCardHireUs {
-  border: solid 1px #D0B4BF; 
+  border: solid 1px #d0b4bf;
   padding: 25px;
   border-radius: 1.3rem !important;
 
-
-  @media (min-width: 992px) {
-    width: 100% !important;
+  @media (min-width: 992px) and (max-width: 1199px) {
+    width: 37vw !important;
   }
 
-  @media(min-width: 992px) and (max-width: 1199px){
+  @media (min-width: 1200px) {
+    width: 34vw !important;
+    min-width: 425px !important;
+    // max-width
+  }
+
+
+  @media (min-width: 992px) and (max-width: 1199px) {
     min-width: 347px !important;
   }
 
@@ -663,7 +638,7 @@ span{
     width: 635px !important;
   }
 
-  @media(min-width: 768px) and (max-width: 1199px){
+  @media (min-width: 768px) and (max-width: 1199px) {
     padding: 25px 25px 50px 25px !important;
   }
 }
@@ -678,27 +653,35 @@ span{
   }
 }
 
-
 .arrowSec {
+  background-color: #fff8f8 !important;
+  z-index: -1;
   @media (min-width: 992px) {
-    padding-left: 35px !important;
-    padding-right: 35px !important;
-    img {
+    > img {
       transform: rotate(-90deg);
     }
   }
+  @media (min-width: 1200px) {
+    padding-left: 35px !important;
+    padding-right: 35px !important;
 
-  img{
+    img {
+      background-color: #fff8f8;
+      mix-blend-mode: multiply !important;
+    }
+  }
+
+  img {
     max-width: none !important;
     width: 55px !important;
     height: 55px !important;
-    
-    @media(min-width: 768px){
+
+    @media (min-width: 768px) {
       width: 60px !important;
       height: 60px !important;
     }
 
-    @media(min-width: 1200px){
+    @media (min-width: 1200px) {
       width: 70px !important;
       height: 70px !important;
     }
@@ -709,6 +692,12 @@ span{
   > section:first-child {
     @media (max-width: 575px) {
       width: 100%;
+    }
+  }
+
+  > section:last-child {
+    @media (min-width: 768px) and (max-width: 1199px) {
+      margin-top: 20px !important;
     }
   }
 }
@@ -734,13 +723,13 @@ span{
     li {
       height: 80px !important;
 
-      @media(min-width: 992px){
+      @media (min-width: 992px) {
         padding-right: 40px !important;
       }
     }
   }
 
-  @media(max-width: 767px){
+  @media (max-width: 767px) {
     li:not(:first-child) {
       margin-top: 15px !important;
     }
@@ -804,7 +793,6 @@ span{
   }
 }
 
-
 .scientistHeadingTxt {
   font-style: italic !important;
   @media (min-width: 768px) {
@@ -816,7 +804,7 @@ span{
     font-size: $h3CustomFontSize;
   }
 
-  @media(max-width: 575px){
+  @media (max-width: 575px) {
     line-height: 32px !important;
   }
 }
@@ -836,86 +824,109 @@ span{
   }
 }
 
-@media(max-width: 575px){
-  .shareYourKnowledgeImgContainer > img{
+@media (max-width: 575px) {
+  .shareYourKnowledgeImgContainer > img {
     max-width: 580px !important;
     width: auto !important;
     height: 170px !important;
 
-    @media(max-width: 400px){
+    @media (max-width: 400px) {
       width: 240px !important;
     }
   }
 }
 
-
-.introMainBtnInnerSec{
-  > *{
+.introMainBtnInnerSec {
+  > * {
     height: 80px !important;
   }
 
-  span{
+  span {
     font-size: 2.5rem !important;
   }
 }
 
-
-
-.txtOnHireUsPg{
+.txtOnHireUsPg {
   font-size: $spanFontSize;
 }
 
-.eachLessonMainSec{
-  h3{
+.eachLessonMainSec {
+  h3 {
     color: black !important;
     font-weight: 380 !important;
   }
 }
 
-
 .clientFundingDesktop {
   > section:first-child {
-    > h2{
+    > h2 {
       color: white !important;
       font-size: 1.75rem !important;
     }
   }
 }
 
-
-.btnContainerWhenShouldIReach{
-  > div{
-    > div:last-of-type{
-      span{
+.btnContainerWhenShouldIReach {
+  > div {
+    > div:last-of-type {
+      span {
         font-size: $bntFontSize;
       }
     }
 
-    > div:first-of-type{
-      svg{
-        width: 40px !important;
-        height: 40px !important;
+    > div:first-of-type {
+      svg {
+        // width: 40px !important;
+        // height: 40px !important;
+        
       }
     }
   }
 }
 
-
-@media(max-width: 991px){
-  .mattsAward:not(:first-child){
+@media (max-width: 991px) {
+  .mattsAward:not(:first-child) {
     margin-top: 50px !important;
 
-    @media(max-width: 767px) and (min-width: 576px){
+    @media (max-width: 767px) and (min-width: 576px) {
       margin-top: 0px !important;
     }
   }
 
-  .mattsAward{
-    > section:first-child{
+  .mattsAward {
+    > section:first-child {
       margin-top: 10px !important;
-      > a span{
-        text-decoration-thickness: .5px !important;;
+      > a span {
+        text-decoration-thickness: 0.5px !important;
       }
+    }
+  }
+}
+
+.looped-video-sec {
+  @media (max-width: 575px) {
+    > div:last-of-type {
+      > section:last-of-type {
+        padding-top: 20px !important;
+      }
+    }
+  }
+}
+
+.youtube-vid-sec {
+  @media (max-width: 575px) {
+    > div:last-of-type {
+      > section:last-of-type {
+        padding-top: 20px !important;
+      }
+    }
+  }
+}
+
+.whatYouWillGetMainSec {
+  > section:last-of-type {
+    @media (max-width: 575px) {
+      margin-top: 10px !important;
     }
   }
 }

@@ -57,14 +57,16 @@ const HowDoesItWorkSec = () => {
             </section>
             <section className="d-flex flex-column justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch flex-lg-row ps-sm-5 pe-sm-5">
                 <HireUsCardSection
+                    dynamicCss='looped-video-sec'
                     text={hireUsCardsSectionTexts[0].text}
                     mobileTxt={hireUsCardsSectionTexts[0].mobileTxt}
                     content={hireUsCardsSectionTexts[0].content}
                 />
-                <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3'>
+                <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3 mb-3 mb-sm-3'>
                     <Image src="/imgs/pretty-down-arrow.jpeg" width={50} height={50} alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="arrowHowDoesItWork" />
                 </section>
                 <HireUsCardSection
+                    dynamicCss='youtube-vid-sec'
                     text={hireUsCardsSectionTexts[1].text}
                     mobileTxt={hireUsCardsSectionTexts[1].mobileTxt}
                     content={hireUsCardsSectionTexts[1].content}

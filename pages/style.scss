@@ -388,20 +388,11 @@ img {
 
 
 .spanSubheader{
-  font-size: 16px !important;
+  font-size: 18px !important;
   font-weight: 249 !important;
 }
 
 
-video{
-  // border-style: none !important;
-  border: none; 
-  border-width: 0; 
-  border: 0;
-  // border: solid grey !important;
-}
-
-// TODO: what are the other possible TargetSubject values? (see lessons page badges)
 .accordion-header button {
   &.collapsed .bi-chevron-up {
     display: none;
