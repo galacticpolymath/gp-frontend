@@ -1,3 +1,5 @@
+@import '../../../../globalVars.scss';
+
 $modalHeaderFontSize: 45px !important;
 $borderRadiusModal: 1.3em !important;
 $modalBorderColor: #707070;
@@ -8,11 +10,9 @@ $modalBorderColor: #707070;
 
 .tierInfoModal {
   border: solid 1px $modalBorderColor !important;
-  min-height: 650px !important;
 
   span{
-    line-height: 28px !important;
-    // font-weight: 250 !important;
+    line-height: 21px !important;
   }
 }
 
@@ -28,12 +28,6 @@ $modalBorderColor: #707070;
 .closeButtonBackgroundColor {
   background-color: #6c757d !important;
   border: solid 1px #6c757d !important;
-}
-
-.react-player__preview{
-  @media(min-width: 768px){
-    // border-radius: $borderRadiusModal;
-  }
 }
 
 .tierInfoVideo {
@@ -69,6 +63,10 @@ $modalBorderColor: #707070;
     padding-bottom: 20px;
   }
 
+  @media(max-width: 575px){
+    height: 200px !important;
+  }
+
   @media (min-width: 376px) and (max-width: 767px) {
     > div {
       display: flex !important;
@@ -97,3 +95,39 @@ $modalBorderColor: #707070;
     font-size: $modalHeaderFontSize;
   }
 }
+
+.modalTitleSec{
+  h3{
+    @media(min-width: 576px){
+      margin-left: 10px !important;
+    }
+  }
+}
+
+.modal-body{
+  @media(max-width: 575px){
+    padding: 10px !important;
+  }
+
+}
+
+.modal-header{
+  height: 125px !important;
+  @media(max-width: 575px){
+    height: 100px !important;
+  }
+}
+
+.modalImg{
+  width: 100px !important;
+  height: 100px !important;
+  inset: auto 10px auto auto !important;
+
+  @media(max-width: 575px){
+    width: 85px !important;
+    height: 85px !important;
+    inset: auto 10px auto auto !important;
+  }
+}
+
+

@@ -29,7 +29,7 @@ import GrantReviewerFeedbackBackground from '../public/imgs/background/5_chaotic
 import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
 import tiersInfoForModal from '../data/HireUsPg/tiersInfoForModal.json'
 import TierInfoModal from '../components/HireUsComps/modals/TierInfoModal'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ReadyToInspireSec from '../components/HireUsComps/ReadyToInspireSec';
 import ShareYourKnowledge from '../components/HireUsComps/sections/ShareYourKnowledge';
 import ClientFundingSec from '../components/HireUsComps/sections/ClientFundingSec';
@@ -66,6 +66,7 @@ const HireUsPage = () => {
                                             headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0"
                                             itemCarouselStylesCustom="teachersAndStudentReview"
                                             customCardStyles="cardMainStylesTeachersAndStudents"
+                                            _customBulletPtsSecCss="bulletPtsTeachersAndStudents"
                                         />
                                     </section>
                                     <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />
@@ -79,7 +80,6 @@ const HireUsPage = () => {
                                             _userInputs={feedbackOfClients}
                                             backgroundImgSrc={WhatOurClientsSayBackground.src}
                                             headerContainerClassNamesDynamic="cardHeadingSec"
-                                            itemCarouselStylesCustom="clientReview"
                                             customCardStyles="clientsContainer"
                                         />
                                     </section>
@@ -101,6 +101,7 @@ const HireUsPage = () => {
                                             headerContainerClassNamesDynamic="cardHeadingSec"
                                             customCardStyles='grantReviewsCard'
                                             itemCarouselStylesCustom='grantReviewItemCarousel'
+                                            _customBulletPtsSecCss="grantReviewsBulletPtsSec"
                                         />
                                     </section>
                                     <HowMuchDoesItCostSec setTiersInfoForModalArr={setTiersInfoForModalArr} />

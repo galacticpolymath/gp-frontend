@@ -2,6 +2,8 @@ $enable-cssgrid: true;
 
 @import "colors";
 
+@import '../styles/globalVars.scss';
+
 $primary: $burst-purple;
 $secondary: $atomic-blue;
 $info: lighten($hydrogen-blue-light, 25%);
@@ -164,7 +166,7 @@ img {
 }
 
 .underline-less-thick {
-  text-decoration-thickness: 1.5px !important;
+  text-decoration-thickness: .5px !important;
 }
 
 .fw650{
@@ -256,6 +258,12 @@ img {
 
 .mt-7 {
   margin-top: 70px !important;
+}
+
+.mt-md-7{
+  @media(min-width: 768px){
+    margin-top: 70px !important;
+  }
 }
 
 .mt-sm-7{
@@ -366,6 +374,10 @@ img {
   cursor: pointer !important;
 }
 
+.pointer{
+ cursor:  pointer !important;
+}
+
 .btnColorChangeOnHover:hover{
   opacity: .8 !important;
 }
@@ -374,7 +386,13 @@ img {
   transform: translateX(15px) !important;
 }
 
-// TODO: what are the other possible TargetSubject values? (see lessons page badges)
+
+.spanSubheader{
+  font-size: 18px !important;
+  font-weight: 249 !important;
+}
+
+
 .accordion-header button {
   &.collapsed .bi-chevron-up {
     display: none;

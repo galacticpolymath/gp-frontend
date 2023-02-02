@@ -7,7 +7,8 @@
             "occupation": "Homeschool Teacher",
             "city": "Nashville, TN",
             "product": "Females Singing to be Heard",
-            "stars": 5
+            "stars": 5,
+            "cssClass": "teacherTestimony"
         },
         {
             "feedback": "The experiment was engaging and self-reflective! Students were able to apply principles and strategies to real world experiences!",
@@ -15,7 +16,8 @@
             "occupation": "STEM Teacher",
             "city": "Nashville, TN",
             "product": "I Like That!",
-            "stars": 4
+            "stars": 4,
+            "cssClass": "teacherTestimony"
         },
         {
             "feedback": "It was very informative and I learned a lot 👍.",
@@ -23,7 +25,8 @@
             "occupation": "Student, grade 7",
             "city": null,
             "product": "The Guardian Frogs of Borneo",
-            "stars": 4
+            "stars": 4,
+            "cssClass": "studentTestimony"
         },
         {
             "feedback": "I really enjoy this lesson! It is so engaging and fun!",
@@ -31,7 +34,8 @@
             "occupation": "Student, grade 11",
             "city": null,
             "product": "Females Singing to be Heard",
-            "stars": 5
+            "stars": 5,
+            "cssClass": "studentTestimony"
         }
     ]
 }

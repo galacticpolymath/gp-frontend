@@ -1,3 +1,5 @@
+@import "../globalVars.scss";
+
 $carouselBackgroundColor: #ffeded;
 
 * {
@@ -14,12 +16,24 @@ $carouselBackgroundColor: #ffeded;
   overflow: hidden;
 }
 
+
+
 .navBtnLeftCarousel {
   transform: translate(-15px, -10px) !important;
 }
 
 .navBtnRightCarousel {
   transform: translate(15px, -10px) !important;
+}
+
+
+.navBtnLeftCarousel,
+.navBtnRightCarousel{
+  @media(min-width: 576px) and (max-width: 767px){
+    svg{
+      font-size: 50px !important;
+    }
+  }
 }
 
 .autoCarouselContainerCard {
@@ -31,29 +45,29 @@ $carouselBackgroundColor: #ffeded;
   }
 
   @media (min-width: 576px) and (max-width: 767px) {
-    min-width: 550px !important;
-    width: 98% !important;
-    max-width: 700px !important;
+    // min-width: 550px !important;
+    // width: 98% !important;
+    // max-width: 700px !important;
   }
 
   @media (max-width: 575px) {
     width: 95% !important;
   }
 
-  @media (min-width: 768px) and (max-width: 1299px) {
-    width: 95% !important;
-  }
+  // @media (min-width: 768px) and (max-width: 1299px) {
+  //   width: 95% !important;
+  // }
 }
 
-@media (min-width: 768px) and (max-width: 1299px) {
-  .feedbackTxt {
-    width: 75% !important;
-    transform: translateY(20px);
+// @media (min-width: 768px) and (max-width: 1299px) {
+//   .feedbackTxt {
+//     width: 75% !important;
+//     transform: translateY(20px);
 
-    @media (max-width: 992px) {
-    }
-  }
-}
+//     @media (max-width: 992px) {
+//     }
+//   }
+// }
 
 .picsCardContainercardOnlyStyles {
   @media (min-width: 768px) {
@@ -83,7 +97,8 @@ $carouselBackgroundColor: #ffeded;
 .cardBodyStyles,
 .autoCarouselContainerCard {
   @media (min-width: 1300px) {
-    height: 345px !important;
+    // height: 345px !important;
+    // height: 200px !important;
   }
 }
 
@@ -101,61 +116,22 @@ $carouselBackgroundColor: #ffeded;
   white-space: normal;
   margin: 0 auto;
   display: block;
-  font-size: 29px;
+  // font-size: $spanFontSize;
+  font-size: 18px !important;
   font-weight: 249;
+  height: fit-content !important;
+  
+  @media(min-width: 768px) and (max-width: 991px){
+    line-height: 23px !important;
+  }
 
   @media (max-width: 767px) {
     width: 400px !important;
-    font-size: 26px !important;
   }
 
   @media (max-width: 575px) {
     width: fit-content !important;
     padding: 0px 5px 0px 5px !important;
-  }
-}
-
-.feedbackInfoSec {
-  position: absolute;
-  bottom: -10px;
-  right: 15px;
-
-  @media (max-width: 767px) {
-    bottom: 70px;
-    right: 24px;
-
-    @media (min-width: 576px) {
-      bottom: 20px;
-    }
-
-    @media (max-width: 575px) {
-      span {
-        text-align: center !important;
-      }
-    }
-  }
-
-  > section {
-    > span:first-child {
-      font-size: 25px;
-
-      @media (min-width: 576px) and (max-width: 767px) {
-        font-size: 22px !important;
-      }
-    }
-  }
-
-  @media (max-width: 575px) {
-    position: static !important;
-    transform: translateY(25px) !important;
-  }
-
-  @media (min-width: 768px) and (max-width: 1299px) {
-    right: 40px !important;
-
-    @media (max-width: 991px) {
-      bottom: -35px !important;
-    }
   }
 }
 
@@ -182,9 +158,11 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .defaultHeadingCarouselStyles {
+  color: black !important;
+
   @media (min-width: 768px) {
     font-weight: 400 !important;
-    font-size: 48px !important;
+    // font-size: 48px !important;
   }
 
   @media (max-width: 767px) {
@@ -192,7 +170,7 @@ $carouselBackgroundColor: #ffeded;
   }
 
   @media (max-width: 575px) {
-    font-size: 33px !important;
+    // font-size: 33px !important;
     padding-left: 8px;
     padding-right: 8px;
   }
@@ -214,7 +192,7 @@ $carouselBackgroundColor: #ffeded;
   @media (min-width: 768px) {
     > h2 {
       font-weight: 800 !important;
-      font-size: 44px !important;
+      font-size: 1.75rem !important;
     }
   }
 
@@ -231,10 +209,6 @@ $carouselBackgroundColor: #ffeded;
   @media (min-width: 768px) {
     min-height: 280px !important;
 
-    @media (max-width: 991px) {
-      min-height: 310px !important;
-    }
-
     > section:first-of-type {
       align-items: stretch !important;
       padding-top: 20px !important;
@@ -242,13 +216,15 @@ $carouselBackgroundColor: #ffeded;
   }
 
   @media (min-width: 1300px) {
-    min-height: 210px !important;
+    // min-height: 210px !important;
   }
 }
 
 .autoCarouselContainer {
   margin: 0 auto;
   overflow: hidden;
+  height: 100% !important;
+  position: relative !important;
 
   @media (min-width: 768px) {
     max-width: 1000px !important;
@@ -266,36 +242,37 @@ $carouselBackgroundColor: #ffeded;
     left: 0 !important;
   }
 
-  @media (min-width: 576px) {
-    position: absolute !important;
+  position: absolute !important;
+  @media (min-width: 768px) {
   }
 
-  @media (max-width: 575px) {
-    white-space: normal !important;
-    word-wrap: break-word !important;
-    width: 100% !important;
-    min-width: 200px !important;
+  @media (max-width: 767px) {
+    // white-space: normal !important;
+    // word-wrap: break-word !important;
+    // width: 200px !important;
+    // text-align: center !important;
+    font-size: $spanFontSizeSmall;
   }
 }
 
 .studentInfoSec {
   width: 100% !important;
 
-  @media (min-width: 768px) and (max-width: 1299px) {
-    > span {
-      transform: translateY(60px) !important;
-      @media (max-width: 992px) {
-        transform: translateY(70px);
-      }
-    }
-  }
+  // @media (min-width: 768px) and (max-width: 1299px) {
+  //   > span {
+  //     transform: translateY(60px) !important;
+  //     @media (max-width: 992px) {
+  //       transform: translateY(70px);
+  //     }
+  //   }
+  // }
 
   @media (max-width: 767px) {
     display: grid !important;
     align-items: center !important;
   }
 
-  @media (min-width: 1300px) {
+  @media (min-width: 768px) {
     transform: translateY(40px) !important;
   }
 }
@@ -334,7 +311,7 @@ $carouselBackgroundColor: #ffeded;
   > section {
     > section:first-child {
       @media (max-width: 575px) {
-        min-height: 300px;
+        // min-height: 300px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -406,7 +383,7 @@ $carouselBackgroundColor: #ffeded;
 
 .headingCarousel {
   color: #ffffff !important;
-  font-size: 40px;
+  // font-size: 40px;
 }
 
 .carouselImgContainer {
@@ -497,20 +474,84 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
+
+
+
+.grantReviewTxtStyles{
+  > section {
+    > section{
+      > span{
+        width: 85% !important;
+        text-align: center !important;
+      }
+    }
+  }
+}
+
 .grantReviewsCard {
-  @media (min-width: 768px) {
-    height: 425px !important;
+  height: 250px !important;
+
+
+  @media(min-width: 576px){
+    min-width: 547px !important;
+  }
+
+  @media(min-width: 768px){
+    min-width: 750px !important;
   }
 
   @media (min-width: 1200px) {
-    height: 410px !important;
+    // min-width: 1135.59px;
+    // max-width: 1180px !important;
+    width: 1000px !important;
   }
 
   @media (max-width: 575px) {
-    > div {
-      > div {
-        height: fit-content !important;
+    height: 300px !important;
+
+    @media(max-width: 392px){
+      height: 320px !important;
+    }
+
+    @media(max-width: 392px){
+      height: 340px !important;
+    }
+
+    @media(max-width: 350px){
+      height: 410px !important;
+    }
+  }
+}
+
+
+.grantReviewShortTxtStyles{
+  @media(max-width: 575px){
+    > section:first-child{
+      transform: translateY(20px) !important;
+
+      @media(max-width: 392px){
+        transform: translateY(40px) !important;
       }
+
+      @media(max-width: 350px){
+        transform: translateY(70px) !important;
+      }
+    }
+  }
+}
+
+
+
+
+.grantReviewTxtStyles{
+  @media(max-width: 575px){
+    > section:first-child{
+      transform: translateY(10px) !important;
+
+      @media(max-width: 392px){
+        transform: translateY(30px) !important;
+      }
+
     }
   }
 }
@@ -541,14 +582,32 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.grantReviewItemCarousel {
+.grantReviewShortTxtStyles {
   @media (min-width: 768px) {
-    height: 250px !important;
+    height: 100px !important;
   }
 }
 
-.grantReviewsCard {
-  // height: 500px !important;
+.grantReviewShortTxtStyles{
+  @media(min-width: 576px){
+    > section > section > span > span{
+      inset: auto -100px -60px auto !important;
+
+      @media(max-width: 767px){
+        inset: auto -40px -60px auto !important;
+      }
+    }
+  }
+}
+
+.grantReviewTxtStyles {
+  @media(min-width: 576px){
+    > section > section > span > span{
+      right: 20px !important;
+      bottom: -40px !important;
+
+    }
+  }
 }
 
 .grantReviewItemCarousel {
@@ -575,18 +634,18 @@ $carouselBackgroundColor: #ffeded;
     }
   }
 
-  @media (min-width: 768px) and (max-width: 1299px) {
-    > section {
-      min-height: 200px !important;
-    }
+  // @media (min-width: 768px) and (max-width: 1299px) {
+  //   > section {
+  //     min-height: 200px !important;
+  //   }
 
-    > section:last-of-type {
-      > section:last-of-type {
-        right: 35px !important;
-        bottom: -38px !important;
-      }
-    }
-  }
+  //   > section:last-of-type {
+  //     > section:last-of-type {
+  //       right: 35px !important;
+  //       bottom: -38px !important;
+  //     }
+  //   }
+  // }
 
   @media (max-width: 767px) {
     min-height: 230px !important;
@@ -652,11 +711,20 @@ $carouselBackgroundColor: #ffeded;
 
 .starsContainer {
   height: fit-content !important;
-  @media (min-width: 768px) and (max-width: 1299px) {
-    transform: translateX(25px);
-  }
+  // @media (min-width: 768px) and (max-width: 1299px) {
+  //   transform: translateX(25px);
+  // }
 }
 
+.bulletPtsTeachersAndStudents{
+  @media(min-width: 768px) and (max-width: 991px){
+    > section:last-child{
+      margin-top: 0px !important;;
+    }
+
+    transform: translateY(4px) !important;
+  }
+}
 .bulletPtsSec {
   @media (min-width: 768px) and (max-width: 992px) {
     margin-top: 50px !important;
@@ -690,145 +758,9 @@ $carouselBackgroundColor: #ffeded;
     @media (max-width: 575px) {
       transform: translateY(80px) !important;
     }
-
-    @media (max-width: 375px) {
-      // transform: translateY(100px) !important;
-    }
   }
 }
 
-.clientsContainer {
-  @media (min-width: 768px) {
-    min-height: 555px !important;
-
-    @media (max-width: 1399px) {
-      > div {
-        > div {
-          > div {
-            // quote info box
-            section:nth-child(2) {
-              bottom: -120px !important;
-            }
-          }
-
-          // bullet points section
-          > section:last-of-type {
-            margin-top: 130px !important;
-
-            @media (max-width: 575px) {
-              margin-top: 160px !important;
-            }
-          }
-        }
-      }
-    }
-
-    @media (min-width: 992px) and (max-width: 1399px) {
-      min-height: 470px !important;
-      > div {
-        > div {
-          > section {
-            margin-top: 3.5rem !important;
-          }
-        }
-      }
-    }
-
-    @media (min-width: 1300px) {
-      height: 480px !important;
-
-      > div {
-        > div {
-          > div {
-            // quote info box
-            section:nth-child(2) {
-              bottom: -85px !important;
-            }
-          }
-
-          // bullet points section
-          > section:last-of-type {
-            margin-top: 120px !important;
-          }
-        }
-      }
-    }
-  }
-
-  @media (min-width: 1200px) {
-    min-height: 420px !important;
-    > div {
-      > div {
-        > section {
-          margin-top: 3.5rem !important;
-        }
-      }
-    }
-  }
-
-  @media (max-width: 575px) {
-    > div {
-      > div {
-        > div {
-          // quote info box
-          section:nth-child(2) {
-            // bottom: -80px !important;
-          }
-        }
-
-        // bullet points section
-        > section:last-of-type {
-          margin-top: 40px !important;
-        }
-      }
-    }
-  }
-
-  @media (min-width: 576px) and (max-width: 767px) {
-    > div {
-      > div {
-        > div {
-          // quote info box
-          section:nth-child(2) {
-            bottom: 0px !important;
-          }
-        }
-
-        // bullet points section
-        > section:last-of-type {
-          margin-top: 30px !important;
-        }
-      }
-    }
-  }
-}
-
-.shortTxtClientReview {
-  @media (max-width: 325px) {
-    transform: translateY(345px) !important;
-  }
-
-  @media(min-width: 326px){
-    transform: translateY(200px) !important;
-  }
-
-  @media (min-width: 460px) {
-    transform: translateY(120px) !important;
-  }
-
-
-  @media (min-width: 576px) and (max-width: 767px) {
-    transform: translateY(90px) !important;
-  }
-
-  @media(min-width: 768px){
-    transform: translateY(40px) !important;
-  }
-
-  @media (min-width: 1300px) {
-    transform: translateY(20px) !important;
-  }
-}
 
 .clientReview {
   @media (min-width: 992px) {
@@ -882,36 +814,26 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .cardMainStylesTeachersAndStudents {
-  @media (min-width: 992px) {
-    height: 350px !important;
-
-    > div {
-      > div {
-        > div {
-          // quote info box
-          section:nth-child(2) {
-            bottom: -120px !important;
-          }
-        }
-
-        // bullet points section
-        > section:last-of-type {
-          margin-top: 68px !important;
-          // border: solid pink !important;
-        }
-      }
-    }
+  @media (min-width: 576px) and (max-width: 767px) {
+    min-width: 560px !important;
   }
 
+
   @media (max-width: 575px) {
+    height: 360px !important;
+
+    @media(max-width: 325px){
+      height: 380px !important;
+    }
     > div {
       > div {
+        min-height: 300px !important;
         @media (max-width: 379px) {
-          height: 480px !important;
+          // height: 480px !important;
         }
 
         @media (max-width: 345px) {
-          height: 550px !important;
+          // height: 550px !important;
         }
 
         > div {
@@ -923,7 +845,7 @@ $carouselBackgroundColor: #ffeded;
 
         // bullet points section
         > section:last-of-type {
-          margin-top: 70px !important;
+          // margin-top: 70px !important;
 
           @media (max-width: 379px) {
             margin-top: 110px !important;
@@ -935,6 +857,11 @@ $carouselBackgroundColor: #ffeded;
         }
       }
     }
+  }
+
+  @media (min-width: 576px) {
+    max-width: 1224px !important;
+    height: 270px !important;
   }
 }
 
@@ -953,12 +880,8 @@ $carouselBackgroundColor: #ffeded;
       bottom: -35px !important;
 
       @media (min-width: 1200px) {
-        bottom: -25px !important;
+        bottom: 25px !important;
       }
-    }
-
-    @media (max-width: 991px) {
-      height: 250px !important;
     }
   }
 
@@ -975,12 +898,239 @@ $carouselBackgroundColor: #ffeded;
   @media (max-width: 575px) {
     margin-top: 55px !important;
     transform: translateY(0px) !important;
-    // border: solid pink !important;
   }
 }
 
-.grantReviewShortTxtStyles{
-  @media(min-width: 576px) and (max-width: 767px){
-    transform: translateY(50px) !important;
+.grantReviewShortTxtStyles {
+  @media (max-width: 767px) {
+    transform: translateY(30px) !important;
   }
 }
+
+.teacherTestimony {
+  height: 100px !important;
+
+  @media (max-width: 1199px) {
+    > section {
+      > span {
+        left: 10px !important;
+        transform: translateY(-20px) !important;
+      }
+      > section {
+        > span {
+          width: 75% !important;
+
+          @media (max-width: 575px) {
+            width: 100% !important;
+            padding: 0px 0px 0px 0px !important;
+          }
+        }
+      }
+
+      > section:last-of-type {
+        top: 70px !important;
+      }
+    }
+  }
+
+  @media (min-width: 1200px) {
+    > section {
+      > section:last-of-type {
+        top: 70px !important;
+      }
+    }
+  }
+
+  @media (max-width: 991px) {
+    // transform: translateY(-10px);
+  }
+}
+
+.studentTestimony {
+  height: 100px !important;
+
+  @media (max-width: 575px) {
+    transform: translateY(60px) !important;
+  }
+
+  @media (min-width: 576px) {
+    transform: translateY(30px) !important;
+  }
+
+  @media (min-width: 768px) {
+    transform: translateY(30px) !important;
+  }
+
+  @media(min-width: 992px){
+    transform: translateY(30px) !important;
+  }
+
+  @media(min-width: 1200px){
+    transform: translateY(30px) !important;
+  }
+
+  > section {
+    // height: fit-content !important;
+    > section:first-of-type {
+      height: 80px !important;
+    }
+  }
+
+  > section {
+    > section {
+      > span {
+        @media (max-width: 767px) {
+          text-align: center !important;
+        }
+        > span {
+          @media (max-width: 1199px) {
+            top: 45px !important;
+            right: -50px !important;
+          }
+
+          @media (min-width: 1200px) {
+            top: 30px !important;
+            right: -60px !important;
+          }
+        }
+      }
+    }
+    // quote section
+    > section:last-of-type {
+      @media (min-width: 768px) {
+        right: 230px !important;
+      }
+
+      @media (min-width: 1200px) {
+        right: 230px !important;
+      }
+    }
+  }
+}
+
+.teacherTestimony {
+  @media (max-width: 575px) {
+    transform: translateY(20px) !important;
+  }
+
+  @media(min-width: 375px) and (max-width: 575px){
+    transform: translateY(40px) !important;
+  }
+
+  > section {
+    // quote section
+    > section:last-of-type {
+      @media (max-width: 1199px) {
+        right: 60px !important;
+      }
+
+      @media (max-width: 991px) {
+        // transform: translateY(7px) !important;
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    transform: translateY(20px) !important;
+  }
+}
+
+.quoteInfoTxts {
+  font-size: $spanFontSizeSmall;
+}
+
+.teacherTestimony {
+  > section {
+    > section {
+      > span {
+        > span {
+          @media (min-width: 576px) {
+            top: 80px !important;
+            right: -40px !important;
+
+            @media(min-width: 768px) and (max-width: 991px){
+              top: 70px !important;
+            }
+          }
+
+          @media (min-width: 992px) {
+            top: 50px !important;
+            right: -40px !important;
+          }
+
+          @media (min-width: 1200px) {
+            top: 40px !important;
+            right: 0px !important;
+          }
+        }
+      }
+    }
+    // quote section
+    > section:last-of-type {
+      @media (min-width: 768px) {
+        right: 230px !important;
+      }
+
+      @media (min-width: 1200px) {
+        right: 230px !important;
+      }
+    }
+  }
+}
+
+.quoteInfoSec {
+  bottom: -10px;
+  right: 15px;
+
+  @media (max-width: 767px) and (min-width: 576px) {
+    bottom: 70px;
+    right: 24px;
+
+    @media (min-width: 576px) {
+      bottom: 20px;
+    }
+
+    @media (max-width: 575px) {
+      span {
+        text-align: center !important;
+      }
+    }
+  }
+
+  > section {
+    > span {
+      font-size: $spanFontSizeSmall;
+    }
+
+    > span:first-child {
+      @media (min-width: 576px) and (max-width: 767px) {
+        font-size: 22px !important;
+      }
+    }
+  }
+}
+
+.bulletPtsTeachersAndStudents {
+  bottom: 0px !important;
+
+  @media (max-width: 767px) {
+    bottom: -3px !important;
+  }
+
+  @media(max-width: 575px){
+    bottom: -5px !important;
+  }
+}
+
+.bulletPtsTeachersAndStudents {
+  button svg {
+    font-size: 25px !important;
+  }
+}
+
+.grantReviewsBulletPtsSec{
+  @media(max-width: 575px){
+    bottom: -5px !important;
+  }
+}
+

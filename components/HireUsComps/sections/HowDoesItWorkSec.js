@@ -32,10 +32,12 @@ const HowDoesItWorkSec = () => {
             <source src="./videos/client-asset-to-lesson-animation.mp4" type="video/mp4" />
         </video>
     );
+
+
     const cardVideoSec2 = isDOMLoaded && (
         <div className="video-styles rounded overflow-hidden">
             <ReactPlayer
-                url='https://www.youtube.com/watch?v=V0EtA5pbVSY'
+                url='https://youtu.be/QnoVSKx4G1c '
                 width='100%'
                 height="100%"
                 light
@@ -47,34 +49,24 @@ const HowDoesItWorkSec = () => {
     const hireUsCardsSectionTexts = [{ text: "1. You give us your outreach goals, along with complex texts, data, and media related to your work: ", mobileTxt: "You give us your outreach goals, along with complex texts, data, and any media you might have related to your work: ", content: cardVideoSec1 }, { text: "2. We create lessons and supporting media that achieve your outreach aims by making your work accessible to teachers around the world. ", mobileTxt: "We create lessons and supporting multimedia that achieve your outreach aims by making your work accessible to teachers around the world.", content: cardVideoSec2 }]
 
     return (
-        <section className="d-flex flex-column mt-5 mb-5 howDoesItWorkSec">
+        <section className="d-flex flex-column mt-2 mb-2 howDoesItWorkSec">
             <section className="d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch ps-sm-5 pe-sm-5">
                 <h3 className="text-center text-sm-start">
                     How does it work?
                 </h3>
             </section>
-            <section className="d-flex flex-column justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch flex-lg-row ps-sm-5 pe-sm-5 mt-3">
-                {/* {hireUsCardsSectionTexts.map(({ content, text, mobileTxt }, index) => {
-                    return (
-                        <>
-                            <HireUsCardSection key={index} text={text} mobileTxt={mobileTxt} content={content} />
-                            {(index === 0) && (
-                                <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3'>
-                                    <Image src="/imgs/pretty-down-arrow.png" width={50} height={50} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
-                                </section>
-                            )}
-                        </>
-                    );
-                })} */}
+            <section className="d-flex flex-column justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch flex-lg-row ps-sm-5 pe-sm-5">
                 <HireUsCardSection
+                    dynamicCss='looped-video-sec'
                     text={hireUsCardsSectionTexts[0].text}
                     mobileTxt={hireUsCardsSectionTexts[0].mobileTxt}
                     content={hireUsCardsSectionTexts[0].content}
                 />
-                <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3'>
-                    <Image src="/imgs/pretty-down-arrow.png" width={50} height={50} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
+                <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3 mb-3 mb-sm-3'>
+                    <Image src="/imgs/pretty-down-arrow.jpeg" width={50} height={50} alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="arrowHowDoesItWork" />
                 </section>
                 <HireUsCardSection
+                    dynamicCss='youtube-vid-sec'
                     text={hireUsCardsSectionTexts[1].text}
                     mobileTxt={hireUsCardsSectionTexts[1].mobileTxt}
                     content={hireUsCardsSectionTexts[1].content}
