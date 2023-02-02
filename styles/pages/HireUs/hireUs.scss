@@ -369,13 +369,26 @@
 }
 
 .hireUsInfoStyledContainer {
-  height: 350px;
+  // height: 350px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 
   @media (min-width: 768px) and (max-width: 1199px) {
     height: 250px !important;
+
+
+    > *{
+      transform: translateY(-22px) !important;
+    }
+  }
+
+
+
+  @media(min-width: 1200px){
+    > *{
+      transform: translateY(-15px) !important;
+    }
   }
 
   @media (max-width: 767px) {
@@ -626,6 +639,7 @@
   @media (min-width: 1200px) {
     width: 34vw !important;
     min-width: 425px !important;
+    max-width: 550px !important;
     // max-width
   }
 
