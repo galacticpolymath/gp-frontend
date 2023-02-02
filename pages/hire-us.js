@@ -81,6 +81,7 @@ const HireUsPage = () => {
                                             backgroundImgSrc={WhatOurClientsSayBackground.src}
                                             headerContainerClassNamesDynamic="cardHeadingSec"
                                             customCardStyles="clientsContainer"
+                                            _customBulletPtsSecCss="clientsBulletPtsSec"
                                         />
                                     </section>
                                     <WhoMakesTheLessonsSec />

@@ -1,6 +1,7 @@
 @import "../globalVars.scss";
 
 $carouselBackgroundColor: #ffeded;
+$feedbackTxtFontSizeDesktop: 24px !important;
 
 * {
   box-sizing: border-box;
@@ -16,8 +17,6 @@ $carouselBackgroundColor: #ffeded;
   overflow: hidden;
 }
 
-
-
 .navBtnLeftCarousel {
   transform: translate(-15px, -10px) !important;
 }
@@ -26,11 +25,10 @@ $carouselBackgroundColor: #ffeded;
   transform: translate(15px, -10px) !important;
 }
 
-
 .navBtnLeftCarousel,
-.navBtnRightCarousel{
-  @media(min-width: 576px) and (max-width: 767px){
-    svg{
+.navBtnRightCarousel {
+  @media (min-width: 576px) and (max-width: 767px) {
+    svg {
       font-size: 50px !important;
     }
   }
@@ -116,18 +114,18 @@ $carouselBackgroundColor: #ffeded;
   white-space: normal;
   margin: 0 auto;
   display: block;
-  // font-size: $spanFontSize;
-  font-size: 18px !important;
   font-weight: 249;
   height: fit-content !important;
-  
-  @media(min-width: 768px) and (max-width: 991px){
+
+  @media (min-width: 768px) and (max-width: 991px) {
     line-height: 23px !important;
   }
 
   @media (max-width: 767px) {
     width: 400px !important;
   }
+
+  font-size: $feedbackTxtFontSizeDesktop;
 
   @media (max-width: 575px) {
     width: fit-content !important;
@@ -244,13 +242,12 @@ $carouselBackgroundColor: #ffeded;
 
   position: absolute !important;
   @media (min-width: 768px) {
+    @media (min-width: 1200px) {
+    }
+    transform: translateY(-20px) !important;
   }
 
   @media (max-width: 767px) {
-    // white-space: normal !important;
-    // word-wrap: break-word !important;
-    // width: 200px !important;
-    // text-align: center !important;
     font-size: $spanFontSizeSmall;
   }
 }
@@ -474,13 +471,10 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-
-
-
-.grantReviewTxtStyles{
+.grantReviewTxtStyles {
   > section {
-    > section{
-      > span{
+    > section {
+      > span {
         width: 85% !important;
         text-align: center !important;
       }
@@ -491,12 +485,11 @@ $carouselBackgroundColor: #ffeded;
 .grantReviewsCard {
   height: 250px !important;
 
-
-  @media(min-width: 576px){
+  @media (min-width: 576px) {
     min-width: 547px !important;
   }
 
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     min-width: 750px !important;
   }
 
@@ -509,49 +502,44 @@ $carouselBackgroundColor: #ffeded;
   @media (max-width: 575px) {
     height: 300px !important;
 
-    @media(max-width: 392px){
+    @media (max-width: 392px) {
       height: 320px !important;
     }
 
-    @media(max-width: 392px){
+    @media (max-width: 392px) {
       height: 340px !important;
     }
 
-    @media(max-width: 350px){
+    @media (max-width: 350px) {
       height: 410px !important;
     }
   }
 }
 
-
-.grantReviewShortTxtStyles{
-  @media(max-width: 575px){
-    > section:first-child{
+.grantReviewShortTxtStyles {
+  @media (max-width: 575px) {
+    > section:first-child {
       transform: translateY(20px) !important;
 
-      @media(max-width: 392px){
+      @media (max-width: 392px) {
         transform: translateY(40px) !important;
       }
 
-      @media(max-width: 350px){
+      @media (max-width: 350px) {
         transform: translateY(70px) !important;
       }
     }
   }
 }
 
-
-
-
-.grantReviewTxtStyles{
-  @media(max-width: 575px){
-    > section:first-child{
+.grantReviewTxtStyles {
+  @media (max-width: 575px) {
+    > section:first-child {
       transform: translateY(10px) !important;
 
-      @media(max-width: 392px){
+      @media (max-width: 392px) {
         transform: translateY(30px) !important;
       }
-
     }
   }
 }
@@ -588,12 +576,12 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.grantReviewShortTxtStyles{
-  @media(min-width: 576px){
-    > section > section > span > span{
+.grantReviewShortTxtStyles {
+  @media (min-width: 576px) {
+    > section > section > span > span {
       inset: auto -100px -60px auto !important;
 
-      @media(max-width: 767px){
+      @media (max-width: 767px) {
         inset: auto -40px -60px auto !important;
       }
     }
@@ -601,11 +589,10 @@ $carouselBackgroundColor: #ffeded;
 }
 
 .grantReviewTxtStyles {
-  @media(min-width: 576px){
-    > section > section > span > span{
+  @media (min-width: 576px) {
+    > section > section > span > span {
       right: 20px !important;
       bottom: -40px !important;
-
     }
   }
 }
@@ -716,10 +703,10 @@ $carouselBackgroundColor: #ffeded;
   // }
 }
 
-.bulletPtsTeachersAndStudents{
-  @media(min-width: 768px) and (max-width: 991px){
-    > section:last-child{
-      margin-top: 0px !important;;
+.bulletPtsTeachersAndStudents {
+  @media (min-width: 768px) and (max-width: 991px) {
+    > section:last-child {
+      margin-top: 0px !important;
     }
 
     transform: translateY(4px) !important;
@@ -760,7 +747,6 @@ $carouselBackgroundColor: #ffeded;
     }
   }
 }
-
 
 .clientReview {
   @media (min-width: 992px) {
@@ -818,13 +804,23 @@ $carouselBackgroundColor: #ffeded;
     min-width: 560px !important;
   }
 
+  @media (min-width: 1200px) {
+    min-width: 1150px !important;
+  }
+
+ 
 
   @media (max-width: 575px) {
     height: 360px !important;
 
-    @media(max-width: 325px){
+    @media (max-width: 325px) {
       height: 380px !important;
     }
+
+    @media(max-width: 312px){
+      height: 420px !important;
+    }
+
     > div {
       > div {
         min-height: 300px !important;
@@ -861,7 +857,16 @@ $carouselBackgroundColor: #ffeded;
 
   @media (min-width: 576px) {
     max-width: 1224px !important;
-    height: 270px !important;
+    height: 290px !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    height: 290px !important;
+    min-width: 750px !important;
+  }
+
+  @media (min-width: 992px) {
+    min-width: 896px !important;
   }
 }
 
@@ -914,15 +919,30 @@ $carouselBackgroundColor: #ffeded;
     > section {
       > span {
         left: 10px !important;
-        transform: translateY(-20px) !important;
+        transform: translateY(-30px) !important;
+
+        @media (max-width: 768px) and (min-width: 576px) {
+        }
       }
       > section {
+
+        > span:first-child {
+          @media (max-width: 767px) and (min-width: 576px) {
+            line-height: 24px !important;
+          }
+        }
+
         > span {
           width: 75% !important;
 
           @media (max-width: 575px) {
             width: 100% !important;
+            line-height: 26px !important;;
             padding: 0px 0px 0px 0px !important;
+          }
+
+          @media (max-width: 768px) and (min-width: 576px) {
+            width: 90% !important;
           }
         }
       }
@@ -940,10 +960,6 @@ $carouselBackgroundColor: #ffeded;
       }
     }
   }
-
-  @media (max-width: 991px) {
-    // transform: translateY(-10px);
-  }
 }
 
 .studentTestimony {
@@ -957,22 +973,43 @@ $carouselBackgroundColor: #ffeded;
     transform: translateY(30px) !important;
   }
 
+  @media (min-width: 576px) and (max-width: 767px) {
+    transform: translateY(40px) !important;
+  }
+
   @media (min-width: 768px) {
     transform: translateY(30px) !important;
   }
 
-  @media(min-width: 992px){
+  @media (min-width: 992px) {
     transform: translateY(30px) !important;
   }
 
-  @media(min-width: 1200px){
+  @media (min-width: 1200px) {
     transform: translateY(30px) !important;
+  }
+
+  @media(max-width: 320px){
+    transform: translateY(80px) !important;
   }
 
   > section {
     // height: fit-content !important;
+    > span {
+      @media (min-width: 576px) and (max-width: 767px) {
+        // transform: translateX(-40px) !important;
+        transform: translateY(-10px) !important;
+      }
+    }
+
     > section:first-of-type {
       height: 80px !important;
+
+      > span:first-child {
+        @media (max-width: 767px) and (min-width: 576px) {
+          line-height: 24px !important;
+        }
+      }
     }
   }
 
@@ -984,12 +1021,17 @@ $carouselBackgroundColor: #ffeded;
         }
         > span {
           @media (max-width: 1199px) {
+            @media (min-width: 576px) and (max-width: 767px) {
+              top: 65px !important;
+              right: -50px !important;
+            }
+
             top: 45px !important;
             right: -50px !important;
           }
 
           @media (min-width: 1200px) {
-            top: 30px !important;
+            top: 50px !important;
             right: -60px !important;
           }
         }
@@ -1013,7 +1055,7 @@ $carouselBackgroundColor: #ffeded;
     transform: translateY(20px) !important;
   }
 
-  @media(min-width: 375px) and (max-width: 575px){
+  @media (min-width: 375px) and (max-width: 575px) {
     transform: translateY(40px) !important;
   }
 
@@ -1033,10 +1075,25 @@ $carouselBackgroundColor: #ffeded;
   @media (min-width: 768px) {
     transform: translateY(20px) !important;
   }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    transform: translateY(30px) !important;
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    transform: translateY(20px) !important;
+  }
 }
 
 .quoteInfoTxts {
   font-size: $spanFontSizeSmall;
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    span > span:not(:last-child) {
+      display: inline-block !important;
+      height: 18px !important;
+    }
+  }
 }
 
 .teacherTestimony {
@@ -1048,18 +1105,23 @@ $carouselBackgroundColor: #ffeded;
             top: 80px !important;
             right: -40px !important;
 
-            @media(min-width: 768px) and (max-width: 991px){
+            @media (min-width: 768px) and (max-width: 991px) {
               top: 70px !important;
+            }
+
+            @media (max-width: 767px) {
+              top: 90px !important;
+              right: 10px !important;
             }
           }
 
           @media (min-width: 992px) {
-            top: 50px !important;
-            right: -40px !important;
+            top: 75px !important;
+            right: -30px !important;
           }
 
           @media (min-width: 1200px) {
-            top: 40px !important;
+            top: 60px !important;
             right: 0px !important;
           }
         }
@@ -1117,7 +1179,7 @@ $carouselBackgroundColor: #ffeded;
     bottom: -3px !important;
   }
 
-  @media(max-width: 575px){
+  @media (max-width: 575px) {
     bottom: -5px !important;
   }
 }
@@ -1128,9 +1190,12 @@ $carouselBackgroundColor: #ffeded;
   }
 }
 
-.grantReviewsBulletPtsSec{
-  @media(max-width: 575px){
+.grantReviewsBulletPtsSec {
+  @media (max-width: 575px) {
     bottom: -5px !important;
   }
 }
 
+.clientsBulletPtsSec {
+  border: solid pink !important;
+}
