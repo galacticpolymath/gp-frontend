@@ -260,6 +260,8 @@ img{
 
   h3{
     @media(max-width: 575px) {
+      max-width: 155px !important;
+      text-align: start !important;
       margin-top: 10px !important;
     }
   }

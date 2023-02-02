@@ -587,7 +587,6 @@ $scientistFontSize: 1.3rem !important;
   .GPConstellationSec > section:last-child {
     @media (max-width: 575px) {
       margin-top: 25px !important;
-      // padding-right: 50px !important;
     }
   }
 
@@ -646,28 +645,7 @@ $scientistFontSize: 1.3rem !important;
   }
 }
 
-@media (max-width: 575px) {
-  .GPConstellationSec {
-    flex-direction: column !important;
-    > section:last-child {
-      > div {
-        width: 100% !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        img {
-          max-width: 580px !important;
-          width: 300px !important;
-          height: 180px !important;
 
-          @media (max-width: 400px) {
-            width: 240px !important;
-          }
-        }
-      }
-    }
-  }
-}
 
 @media (min-width: 1200px) {
   .scientist:nth-child(even) {
@@ -744,6 +722,40 @@ $scientistFontSize: 1.3rem !important;
   }
 }
 
+@media (max-width: 575px) {
+  .GPConstellationSec {
+    flex-direction: column !important;
+    > section:first-child{
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      > span{
+        display: inline !important;
+        padding-left: 13px !important;
+        padding-right: 13px !important;
+      }
+    }
+
+    > section:last-child {
+      > div {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        img {
+          max-width: 580px !important;
+          width: 300px !important;
+          height: 180px !important;
+
+          @media (max-width: 400px) {
+            width: 240px !important;
+          }
+        }
+      }
+    }
+  }
+}
+
 .mattsAwardParentSec {
   > section:nth-child(2) {
     @media (min-width: 1200px) {
@@ -759,4 +771,11 @@ $scientistFontSize: 1.3rem !important;
 
 .grantReviewsBulletPtsSec{
   bottom: 0px !important;
+}
+
+
+.GPConstellationSec{
+  section:first-child{
+    // @media
+  }
 }

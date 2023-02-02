@@ -62,7 +62,7 @@ const HowDoesItWorkSec = () => {
                     content={hireUsCardsSectionTexts[0].content}
                 />
                 <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3'>
-                    <Image src="/imgs/pretty-down-arrow.png" width={50} height={50} alt="Galactic_PolyMath_First_Sec_Mobile_Info" />
+                    <Image src="/imgs/pretty-down-arrow.jpeg" width={50} height={50} alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="arrowHowDoesItWork" />
                 </section>
                 <HireUsCardSection
                     text={hireUsCardsSectionTexts[1].text}

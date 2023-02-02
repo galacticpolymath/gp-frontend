@@ -24,6 +24,11 @@ span{
   font-size: $spanFontSize;
 }
 
+.arrowHowDoesItWork{
+  background-color: $hireUsPgMainCardColor !important;;
+  mix-blend-mode: multiply !important;;
+}
+
 .mattsAwardParentSec {
   @media (min-width: 768px) {
     > section:nth-child(2) {
@@ -547,6 +552,8 @@ span{
 
 .HireUsCardFirstSecMobile {
   @media (min-width: 768px) {
+    
+
     > section:first-child {
       > span {
         width: 100px !important;
@@ -556,6 +563,11 @@ span{
   }
 
   @media (max-width: 767px) {
+    @media(min-width: 576px){
+      // border: solid pink !important;
+      max-width: 480px !important;
+    }
+
     > section:first-child {
       > span {
         width: 80px !important;

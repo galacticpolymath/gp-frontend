@@ -55,6 +55,10 @@
       min-width: 750px !important;
     }
 
+    @media(max-width: 991px){
+      height: 310px !important;
+    }
+
     @media (min-width: 992px) {
       min-width: 900px !important;
     }
@@ -75,9 +79,16 @@
               margin-top: 160px !important;
             }
 
-            transform: translateY(90px) !important;
 
-            // margin-top: 125px !important;
+            transform: translateY(70px) !important;
+
+            @media(max-width: 1199px){
+            transform: translateY(100px) !important;
+            }
+
+            @media(max-width: 767px){
+              transform: translateY(90px) !important;
+            }
           }
         }
       }

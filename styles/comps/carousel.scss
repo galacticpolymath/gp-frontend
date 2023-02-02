@@ -860,6 +860,7 @@ $carouselBackgroundColor: #ffeded;
   }
 
   @media (min-width: 576px) {
+    max-width: 1224px !important;
     height: 270px !important;
   }
 }

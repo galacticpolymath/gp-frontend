@@ -1,5 +1,4 @@
-$borderColorForWhatDoWeDoSec: #D0B4BF;
-
+$borderColorForWhatDoWeDoSec: #d0b4bf;
 
 .whatDoWeDoSec {
   border-radius: 1.3em;
@@ -69,8 +68,14 @@ $borderColorForWhatDoWeDoSec: #D0B4BF;
   height: 60px !important;
 }
 
-.hireUsCardBoldedTxt{
-  @media(min-width: 1400px){
-    white-space: nowrap !important;;
+.HireUsCardFirstSecMobile:first-child > section:first-child {
+  img {
+    width: 35px !important;
+  }
+}
+
+.hireUsCardBoldedTxt {
+  @media (min-width: 1400px) {
+    white-space: nowrap !important;
   }
 }
