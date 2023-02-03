@@ -5,6 +5,18 @@ import Hero from '../../components/Hero';
 import Layout from '../../components/Layout';
 
 const LessonsPage = ({ lessons }) => {
+
+  const uniqueIDs = []
+
+  const publishedLessons = lessons.filter(({ PublicationStatus, ReleaseDate, id }) => {
+    if (!uniqueIDs.includes(id) 
+      && PublicationStatus==="Live") {
+        uniqueIDs.push(id);
+        return true;
+      }
+    return false;
+  });
+
   return (
     <Layout>
       <Hero className="bg-secondary">
@@ -14,12 +26,12 @@ const LessonsPage = ({ lessons }) => {
 
       <div className='bg-light-gray'>
         <div className='container mx-auto grid py-5 px-3 gap-3'>
-          {lessons
+          {publishedLessons
             .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
-            .map((lesson, i) => (
+            .map((lesson) => (
               <Link
-                key={i}
-                href={`/lessons/${lesson.id}`}
+                key={lesson.locale + lesson.id}
+                href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
                 passHref
               >
                 <a className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
