@@ -11,6 +11,8 @@
 @import "./hireUsComps/whatOurClientSay.scss";
 @import "./hireUsComps/shareYourKnowledgeSec.scss";
 @import "./hireUsComps/clientFundingSec.scss";
+@import "./hireUsComps/ownerSec.scss";
+@import "./hireUsComps/whatYouWillGetSec.scss";
 
 .hireUsPg h1{
   @media(min-width: 992px){
@@ -87,31 +89,7 @@
   }
 }
 
-.ownerSection {
-  > section:first-child {
-    @media (min-width: 768px) and (max-width: 991px) {
-      > span {
-        margin-left: 0px !important;
-        line-height: 23px !important;
-      }
-    }
-  }
-}
 
-.ownerInfoSec {
-  > section:nth-child(2) {
-    margin-top: 10px !important;
-  }
-}
-
-.ownerInfoSec {
-  > section:nth-child(2) {
-    > span:last-child {
-      // padding-left: 8px !important;
-      // padding-right: 8px !important;
-    }
-  }
-}
 
 .picAndImgSec {
   @media (max-width: 575px) {
@@ -519,57 +497,9 @@
   }
 }
 
-.whatWillYouGetSec:nth-child(4),
-.whatWillYouGetSec:nth-child(3) {
-  @media (min-width: 768px) {
-    margin-left: 12px !important;
-  }
-}
 
-.whatWillYouGetSec {
-  @media (min-width: 992px) {
-    height: 110px !important;
-  }
 
-  @media (min-width: 768px) and (max-width: 991px) {
-    height: 130px !important;
-  }
-}
 
-.whatWillYouGetSec:nth-child(even) {
-  @media (min-width: 992px) {
-    margin-top: 18px !important;
-  }
-}
-
-.whatWillYouGetSec:nth-child(even) {
-  @media (max-width: 850px) and (min-width: 768px) {
-    margin-top: 50px !important;
-  }
-}
-
-.whatWillYouGetSec:not(:first-child) {
-  margin-top: 20px !important;
-}
-
-.whatWillYouGetSec:nth-child(even) {
-  @media(min-width: 768px) and (max-width: 1199px){
-    margin-top: 50px !important; 
-
-    @media(max-width: 890px){
-      margin-top: 90px !important; 
-    }
-   }
-}
-
-.whatWillYouGetSec {
-  @media (min-width: 768px) {
-    > section:last-child {
-      width: 80% !important;
-      margin-left: 20px !important;
-    }
-  }
-}
 
 .HireUsCardFirstSecMobile {
   @media (min-width: 768px) {

@@ -13,11 +13,6 @@
   }
 }
 
-.starsSec{
-  // border: solid pink !important;
-}
-
-
 
 .clientFundingDesktop,
 .dynamicTeamsSec {
@@ -65,7 +60,7 @@
         padding: 0 !important;
 
         span {
-          font-size: 24px !important;
+          font-size: 27px !important;
           font-weight: 350 !important;
           font-style: italic !important;
           line-height: 33px !important;
@@ -106,10 +101,6 @@
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      
-      > h2{
-        width: 80% !important;
-      }
     }
 
     > section:last-child{

@@ -1,0 +1,52 @@
+.whatWillYouGetSec:nth-child(4),
+.whatWillYouGetSec:nth-child(3) {
+  @media (min-width: 768px) {
+    margin-left: 12px !important;
+}
+}
+
+.whatWillYouGetSec {
+  @media (min-width: 992px) {
+    height: 110px !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    height: 130px !important;
+  }
+}
+
+.whatWillYouGetSec:nth-child(even) {
+  @media (min-width: 992px) {
+    margin-top: 18px !important;
+  }
+
+  @media (min-width: 1200px) {
+    margin-top: 50px !important;
+  }
+}
+
+.whatWillYouGetSec:nth-child(even) {
+    @media (max-width: 850px) and (min-width: 768px) {
+      margin-top: 50px !important;
+    }
+  }
+  
+  
+  .whatWillYouGetSec:nth-child(even) {
+    @media(min-width: 768px) and (max-width: 1199px){
+      margin-top: 50px !important; 
+  
+      @media(max-width: 890px){
+        margin-top: 90px !important; 
+      }
+     }
+  }
+  
+  .whatWillYouGetSec {
+    @media (min-width: 768px) {
+      > section:last-child {
+        width: 80% !important;
+        margin-left: 20px !important;
+      }
+    }
+  }
