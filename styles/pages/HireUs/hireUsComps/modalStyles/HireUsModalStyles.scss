@@ -13,6 +13,11 @@ $modalBorderColor: #707070;
 
   span{
     line-height: 21px !important;
+
+    @media(min-width: 768px){
+      line-height: $lineHeight;
+      font-size: $spanDesktopFontSize;
+    }
   }
 }
 

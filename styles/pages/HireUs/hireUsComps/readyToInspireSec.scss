@@ -4,7 +4,7 @@
   position: relative;
   width: 100vw;
   border: none;
-
+  
   @media(max-width: 767px){
     height: 800px !important;
   }
@@ -12,10 +12,10 @@
 
 .readyToInspireSec {
   background-color: #2e0b1b;
+  max-width: 1440px !important;
 
   @media(min-width: 768px){
     transform: translateY(-165px);
-    // max-width: 1440px !important;
 
     @media (min-width: 768px) {
       padding-bottom: 100px !important;
