@@ -100,7 +100,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                 </section>
                 <section className="mt-2">
                     <section className="mt-2">
-                        <h4 className="text-dark fst-italic  fw200 text-center text-sm-start">Example Product: </h4>
+                        <h4 className="text-dark fst-italic  fw200 text-center text-sm-start exampleProductTxt">Example Product: </h4>
                     </section>
                     <section className="productSec">
                         <div className="imgProductContainer">

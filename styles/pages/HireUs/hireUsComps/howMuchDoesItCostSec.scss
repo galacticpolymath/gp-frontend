@@ -1,0 +1,8 @@
+.howMuchDoesItCostSec{
+    @media(min-width: 768px){
+        span:nth-child(2),
+        span:first-child{
+            font-size: $spanDesktopFontSize;
+        }
+    }
+}
