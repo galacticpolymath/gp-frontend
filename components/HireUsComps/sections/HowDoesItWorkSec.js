@@ -57,7 +57,7 @@ const HowDoesItWorkSec = () => {
             </section>
             <section className="d-flex flex-column justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch flex-lg-row ps-sm-5 pe-sm-5">
                 <HireUsCardSection
-                    dynamicCss='looped-video-sec mt-4 ms-4 me-4 ms-sm-0 me-sm-0'
+                    dynamicCss='looped-video-sec mt-4 mt-md-0 ms-4 me-4 ms-sm-0 me-sm-0'
                     text={hireUsCardsSectionTexts[0].text}
                     mobileTxt={hireUsCardsSectionTexts[0].mobileTxt}
                     content={hireUsCardsSectionTexts[0].content}

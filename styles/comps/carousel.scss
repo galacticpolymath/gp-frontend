@@ -675,6 +675,12 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   }
 }
 
+.carouselImgContainer:last-child{
+  > img{
+    width: 80px !important;
+  }
+}
+
 .carouselImgContainer:nth-last-of-type(2) {
   @media (min-width: 768px) {
     img {

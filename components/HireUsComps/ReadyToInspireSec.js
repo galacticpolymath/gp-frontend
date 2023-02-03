@@ -26,8 +26,8 @@ const ReadyToInspireSec = () => {
                 <section className="mt-2 d-flex d-md-block readyToInspireImgSec">
                     <Parallax bgImage={ClassRoom2.src} className="readyToInspireImg" contentClassName='classRoom2ContentStyles position-relative' />
                 </section>
-                <section className="readyToInspireTxtsSec pt-md-2">
-                    <section className="ps-sm-5 ps-md-0 mt-5 mt-sm-4 d-flex flex-column readyInspireSec">
+                <section className="readyToInspireTxtsSec pt-md-2 pt-sm-0 pt-4">
+                    <section className="ps-sm-5 ps-md-0 mt-3 mt-sm-4 mt-md-2 mt-lg-0 d-flex flex-column readyInspireSec">
                         <span className="fs-24 d-block fw700 d-none d-sm-inline d-md-none">Ready to inspire students with</span>
                         <span className="fs-24 d-block fw700 d-none d-sm-inline d-md-none">your work?</span>
                         <span className="fs-24 d-block fw700 d-none d-md-inline text-start">Ready to inspire students with your work?</span>

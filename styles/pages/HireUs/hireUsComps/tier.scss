@@ -33,6 +33,10 @@ $desktopFontSizeTierStatus: 24px !important;
 
   .tierDefaultStyles:nth-last-child(-n + 2) {
     margin-left: 20px !important;
+
+    @media(min-width: 1200px) and (max-width: 1300px){
+      margin-left: 40px !important;
+    }
   }
 }
 
@@ -182,8 +186,8 @@ img{
   > img {
     max-width: 400px !important;
     position: absolute !important;
-    width: 300px !important;
-    height: 130px !important;
+    // width: 300px !important;
+    height: 108px !important;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

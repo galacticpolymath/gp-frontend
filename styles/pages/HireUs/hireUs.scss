@@ -440,8 +440,8 @@
 
 .video-styles {
   width: 100% !important;
-  height: 300px !important;
   border-radius: $borderRadiusModal;
+  height: 300px !important;
 
   @media (max-width: 767px) {
     width: 90% !important;
@@ -480,13 +480,16 @@
 .video-styles,
 .looped-vid-hire-us {
   @media (max-width: 575px) {
-    width: 300px !important;
-    height: 300px !important;
+    // width: 300px !important;
+    // height: 300px !important;
+    max-width: 300px !important;
+    min-width: 225px !important;
+    height: 225px !important;
   }
 
   @media (max-width: 375px) {
-    width: 225px !important;
-    height: 225px !important;
+    // width: 225px !important;
+    // height: 225px !important;
   }
 }
 
@@ -574,6 +577,10 @@
 .HireUsCardFirstSecMobile:not(:first-child) {
   @media (max-width: 767px) and (min-width: 576px) {
     margin-top: 55px !important;
+  }
+
+  @media(max-width: 575px){
+    margin-top: 25px !important;
   }
 }
 
@@ -683,6 +690,7 @@
   @media (max-width: 575px) {
     max-width: 450px !important;
     min-width: 247px !important;
+    padding: 20px 0px 20px 0px !important;
 
 
     > section:nth-child(2){
@@ -699,7 +707,7 @@
   .howDoesItWorkSec {
     > section:last-child {
       > section:nth-last-child(3) {
-        margin: 30px 0px 30px 0px !important;
+        margin: 30px 0px 0px 0px !important;
       }
     }
   }
@@ -968,6 +976,8 @@
   }
 }
 
+
+
 .whatYouWillGetMainSec {
   > section:last-of-type {
     @media (max-width: 575px) {
@@ -975,3 +985,4 @@
     }
   }
 }
+

@@ -20,7 +20,7 @@ const HireUsCardSection = ({ text, content, mobileTxt, dynamicCss }) => {
                 </div>
             </div>
             <div className="d-flex flex-column d-md-none mt-sm-0 infoCardHireUs ps-sm-5 pe-sm-5 ">
-                <section className="d-flex justify-content-center ps-3 pe-3 pt-2 pb-4 pb-xl-0 pt-md-5 ps-sm-0 pe-sm-0">
+                <section className="d-flex justify-content-center ps-3 pe-3 pt-2 pb-0 pb-sm-4 pb-xl-0 pt-md-5 ps-sm-0 pe-sm-0">
                     <span className="text-dark hireUsCardTxt responsiveInfoTxt text-center text-sm-start">
                         {mobileTxt}
                     </span>

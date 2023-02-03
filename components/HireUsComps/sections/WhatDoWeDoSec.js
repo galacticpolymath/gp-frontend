@@ -24,7 +24,7 @@ const WhatDoWeDoSec = () => {
                     What do we do?
                 </h3>
             </section>
-            <section className="pb-4 pb-md-0 mt-3 ps-sm-5 pe-sm-5">
+            <section className="pb-sm-4 pb-md-0 mt-3 ps-sm-5 pe-sm-5">
                 <span className='d-sm-none bolder text-wrap text-dark text-center w-100 d-block responsiveInfoTxt'>
                     We mobilize knowledge
                 </span>
@@ -42,7 +42,7 @@ const WhatDoWeDoSec = () => {
                     {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} customCssClass='weMobileKnowledgeSec' />)}
                 </div>
             </section>
-            <section className="d-none d-md-block d-lg-none ps-5 pe-5 mt-5">
+            <section className="d-none d-md-block d-lg-none ps-5 pe-5 mt-md-4 mt-lg-5">
                 <div className="d-flex justify-content-center flex-column whatDoWeDoSec align-items-center ps-3 pe-3">
                     <section className="w-100 d-flex justify-content-center align-items-center position-relative">
                             {infoTxtsFirstSec.slice(0, 2).map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} customCssClass='weMobileKnowledgeSec' />)}
@@ -52,7 +52,7 @@ const WhatDoWeDoSec = () => {
                     </section>
                 </div>
             </section>
-            <section className="d-flex d-md-none justify-content-center align-items-center mt-0 mt-md-5">
+            <section className="d-flex mt-4 d-md-none justify-content-center align-items-center mt-0 mt-md-5">
                 <div className="d-flex d-md-none flex-column ps-sm-5 pe-sm-5 ms-4 me-4 ms-sm-5 me-sm-5 whatDoWeDoSec pb-5">
                     {infoTxtsFirstSec.map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} index={index} />)}
                 </div>

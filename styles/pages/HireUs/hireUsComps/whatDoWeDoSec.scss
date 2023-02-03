@@ -20,7 +20,8 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
   }
 
   @media(max-width: 575px){
-    padding: 10px 45px 10px 45px;
+    // padding: 10px 45px 10px 45px;
+    padding: 20px 0px 20px 0px !important;
     max-width: 450px !important;
   }
 
@@ -31,6 +32,16 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
   }
 }
 
+.HireUsCardFirstSecMobile{
+  @media(max-width: 575px){
+    > section:last-child{
+      > span{
+        max-width: 430px !important;
+      }
+    }
+    
+  }
+}
 
 .howDoesItWorkSec{
   @media(min-width: 1200px){
