@@ -11,19 +11,13 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    // padding: 35px 45px 45px 45px !important;
-    height: 300px !important;
+    padding: 35px 45px 45px 45px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-
-    > section:last-of-type{
-      height: 45px !important;
-    }
   }
 
   @media(max-width: 575px){
-    // padding: 10px 45px 10px 45px;
     padding: 20px 0px 20px 0px !important;
     max-width: 450px !important;
   }
@@ -70,14 +64,15 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
 
 .weMobileKnowledgeSec.lastSec {
   width: 60% !important;
-  margin-top: 45px !important;
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
   .whatDoWeDoSec {
-    > section:first-child {
-      height: 112px !important;
-      width: 100% !important;
+    > section > section:last-child {
+      margin-top: 50px !important;
+      @media(max-width: 850px){
+        margin-top: 70px !important;
+      }
     }
   }
 
@@ -92,7 +87,7 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
 }
 
 .weMobileKnowledgeSec.lastSec {
-  margin-top: 75px !important;
+  // margin-top: 75px !important;
 }
 
 .weMobileKnowledgeSec {

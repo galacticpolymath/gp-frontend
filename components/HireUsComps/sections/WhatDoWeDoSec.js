@@ -44,11 +44,13 @@ const WhatDoWeDoSec = () => {
             </section>
             <section className="d-none d-md-block d-lg-none ps-5 pe-5 mt-md-4 mt-lg-5">
                 <div className="d-flex justify-content-center flex-column whatDoWeDoSec align-items-center ps-3 pe-3">
-                    <section className="w-100 d-flex justify-content-center align-items-center position-relative">
+                    <section className="d-flex flex-column">
+                        <section className="w-100 d-flex justify-content-center align-items-center position-relative">
                             {infoTxtsFirstSec.slice(0, 2).map((textsAndImg, index) => <HireUsCardFirstSecMobile key={index} textsAndImg={textsAndImg} customCssClass='weMobileKnowledgeSec' />)}
-                    </section>
-                    <section className="w-100 d-flex justify-content-center align-items-center">
-                        <HireUsCardFirstSecMobile textsAndImg={infoTxtsFirstSec[2]} customCssClass='weMobileKnowledgeSec lastSec' />
+                        </section>
+                        <section className="w-100 d-flex justify-content-center align-items-center">
+                            <HireUsCardFirstSecMobile textsAndImg={infoTxtsFirstSec[2]} customCssClass='weMobileKnowledgeSec lastSec' />
+                        </section>
                     </section>
                 </div>
             </section>
