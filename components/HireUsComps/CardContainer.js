@@ -157,7 +157,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                     <div className={autoCarouselContainerStyles}>
                                         <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
                                             {userInputs.map((userInput, index) => {
-                                                const { feedback, person, occupation, city, stars, product, institution, location, cssClass, uniqueCssClass } = userInput;
+                                                const { feedback, person, occupation, city, stars, product, institution, location, cssClass, uniqueCssClass, quoteInfo } = userInput;
 
 
                                                 return (
@@ -173,7 +173,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                                 <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275 position-relative">
                                                                     "{feedback}"
                                                                     {/* d-none d-md-flex */}
-                                                                    <span className='d-none d-sm-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 quoteInfoTxts position-absolute'>
+                                                                    <span className={`'d-none d-sm-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 quoteInfoTxts position-absolute ${quoteInfo ?? ""}`} >
                                                                         <span className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
                                                                             <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
                                                                             {(!!occupation || !!institution) && <span className="text-wrap text-center text-sm-start text-dark fst-italic fw275">{occupation ?? institution}</span>}
@@ -185,7 +185,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                                     </span>
                                                                 </span>
                                                             </section>
-                                                            <section className='d-flex d-sm-none justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 quoteInfoSec'>
+                                                            <section className={`d-flex d-sm-none justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 quoteInfoSec ${quoteInfo ?? ""}`}>
                                                                 <section className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
                                                                     <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
                                                                     {(!!occupation || !!institution) && <span className="text-wrap text-dark fst-italic fw275 text-center text-sm-start">{occupation ?? institution}</span>}

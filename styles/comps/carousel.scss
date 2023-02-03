@@ -1215,3 +1215,12 @@ $feedbackTxtFontSizeDesktop: 24px !important;
     bottom: -5px !important;
   }
 }
+
+.grantReview4QuoteInfo{
+  @media(min-width: 1200px){
+    transform: translateX(-30px);
+  }
+}
+
+
+

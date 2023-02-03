@@ -19,6 +19,7 @@
     {
         "feedback": "I liked the broader impacts proposed in this application... well done.",
         "person": "Anonymous Reviewer #4",
-        "cssClass": "grantReviewShortTxtStyles"
+        "cssClass": "grantReviewShortTxtStyles",
+        "quoteInfo": "grantReview4QuoteInfo"
     }
 ]

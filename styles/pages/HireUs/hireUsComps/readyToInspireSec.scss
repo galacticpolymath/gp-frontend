@@ -12,7 +12,15 @@
 
 .readyToInspireSec {
   background-color: #2e0b1b;
-  max-width: 1440px !important;
+
+  @media(min-width: 1200px){
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  > section{
+      max-width: 695.82px !important;
+    }
+  }
 
   @media(min-width: 768px){
     transform: translateY(-165px);
