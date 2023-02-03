@@ -32,6 +32,12 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
   }
 }
 
+.whatDoWeDoParentSec{
+  span{
+    font-size: $spanDesktopFontSize
+  }
+}
+
 .HireUsCardFirstSecMobile{
   @media(max-width: 575px){
     > section:last-child{

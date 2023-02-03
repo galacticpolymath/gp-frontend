@@ -16,10 +16,21 @@
   }
 }
 
+.hireUsPg h3{
+  @media(min-width: 992px){
+    font-size: $h3DesktopFontSize;
+  }
+}
+
 .subTxtHeadingDesktop{
   @media(min-width: 992px){
     font-size: $subHeaderDesktop;
   }
+}
+
+
+
+.hireUsCardIntroTxt{
 }
 
 
@@ -567,7 +578,7 @@
 
   > section:last-child {
     span {
-      @media (min-width: 768px) {
+      @media (min-width: 768px) and (max-width: 991px){
         font-size: $spanFontSize;
       }
     }

@@ -18,7 +18,7 @@ import HireUsCardFirstSecMobile from '../HireUsCardFirstSecMobile'
 
 const WhatDoWeDoSec = () => {
     return (
-        <section className="d-flex flex-column mb-5">
+        <section className="d-flex flex-column mb-5 whatDoWeDoParentSec">
             <section className="d-flex ps-sm-5 pe-sm-5">
                 <h3 className="text-center text-sm-start w-100 text-sm-nowrap">
                     What do we do?
