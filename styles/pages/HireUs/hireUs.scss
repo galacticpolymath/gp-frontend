@@ -441,7 +441,6 @@
 .video-styles {
   width: 100% !important;
   border-radius: $borderRadiusModal;
-  height: 300px !important;
 
   @media (max-width: 767px) {
     width: 90% !important;
@@ -460,7 +459,6 @@
 .looped-vid-hire-us {
   width: 100% !important;
   object-fit: fill !important;
-  height: 300px !important;
   border-radius: $borderRadiusModal;
 
   @media (max-width: 767px) {
@@ -479,17 +477,12 @@
 
 .video-styles,
 .looped-vid-hire-us {
+  height: 225px !important;
+
   @media (max-width: 575px) {
-    // width: 300px !important;
-    // height: 300px !important;
     max-width: 300px !important;
     min-width: 225px !important;
     height: 225px !important;
-  }
-
-  @media (max-width: 375px) {
-    // width: 225px !important;
-    // height: 225px !important;
   }
 }
 
