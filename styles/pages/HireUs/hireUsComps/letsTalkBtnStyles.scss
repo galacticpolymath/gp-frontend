@@ -1,33 +1,35 @@
 .letTalksMainBtnSec {
-  @media(min-width: 768px){
-    transform: translateY(-110px) !important;    
+  @media (min-width: 768px) {
+    transform: translateY(-110px) !important;
 
-    
-
-    @media(max-width: 1199px){
+    @media (max-width: 1199px) {
       width: 100% !important;
     }
 
     width: 100% !important;
 
-    @media(min-width: 992px){
+    @media (min-width: 992px) {
       transform: translateY(-90px) !important;
     }
 
-    @media(max-width: 991px){
-      transform: translateY(-55px) !important;    
+    @media (max-width: 991px) {
+      transform: translateY(-85px) !important;
+
+      @media (max-width: 850px) {
+        transform: translateY(-75px) !important;
+      }
     }
   }
 
-  > section{
-    @media(min-width: 768px) and (max-width: 1199px){
+  > section {
+    @media (min-width: 768px) and (max-width: 1199px) {
       width: 100% !important;
     }
   }
 }
 
 .defaultStylingLetsTalkBtn {
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     border-radius: 2.5em !important;
   }
 }
@@ -81,15 +83,14 @@
     }
   }
 
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     transform: translateY(35px) !important;
   }
 
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     height: 100px !important;
   }
 }
-
 
 .letsTalkBtnContainer {
   background-color: $btnColor;
@@ -164,11 +165,9 @@
   height: 85px !important;
   border: solid 1px rgb(255, 255, 255) !important;
 
-  span{
+  span {
     font-size: 24px !important;
   }
-
-
 
   @media (min-width: 768px) {
     > div:last-of-type {
@@ -213,14 +212,13 @@
     height: 85px !important;
   }
 
-  @media(min-width: 576px) and (max-width: 767px){
-    // width: 
+  @media (min-width: 576px) and (max-width: 767px) {
+    // width:
   }
 
   @media (max-width: 575px) {
     width: 225px !important;
     height: 70px !important;
-
   }
 }
 
@@ -241,11 +239,9 @@
   width: 258px !important;
 }
 
-
-
-.introMainBtnInnerSec{
+.introMainBtnInnerSec {
   > div:last-of-type {
-    span{
+    span {
       font-size: 24px !important;
     }
   }

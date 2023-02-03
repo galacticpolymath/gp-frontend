@@ -20,13 +20,13 @@ import LayoutBackGroundImg from '../../../assets/img/1_northeast_merlot_darker.p
 const IntroSecHireUs = () => {
     return (
         <section className='d-flex flex-row parallax row introSecHireUsPg' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
-            <section className="w-100 d-flex justify-content-center align-items-center d-none d-md-flex">
+            <section className="w-100 justify-content-center align-items-center d-none d-md-flex">
                 <section className="d-none d-md-flex flex-column w-100 noMargin col-12 introSecAndLetTalksSec">
                     <section className="d-flex flex-column w-100 justify-content-center align-items-center">
                         <section className="w-100 ps-5">
                             <h1 className={`${styles.shadow} headingHireUs`}>Easier, Classroom-Ready Outreach</h1>
                         </section>
-                        <section className="w-100 ps-5 position-relative d-flex mt-4 mt-lg-0 mb-4 mb-lg-0">
+                        <section className="w-100 ps-5 position-relative d-flex mt-lg-4 mt-lg-0 mb-4 mb-lg-0">
                             <span className={`${styles.shadow} subTxtHeadingDesktop spanSubheader noMargin noPadding w-75`}>
                                 We translate your work so that non-experts can teach mind-opening lessons.
                             </span>
