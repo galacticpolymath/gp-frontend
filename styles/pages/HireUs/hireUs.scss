@@ -10,6 +10,7 @@
 @import "./hireUsComps/introSecHireUs.scss";
 @import "./hireUsComps/whatOurClientSay.scss";
 @import "./hireUsComps/shareYourKnowledgeSec.scss";
+@import "./hireUsComps/clientFundingSec.scss";
 
 .hireUsPg h1{
   @media(min-width: 992px){
@@ -440,6 +441,13 @@
       > div {
         margin-top: auto !important;
       }
+    }
+  }
+
+  span{
+    @media(min-width: 768px){
+      font-size: $spanDesktopFontSize;
+      line-height: $lineHeight;
     }
   }
 }
@@ -902,14 +910,7 @@
   }
 }
 
-.clientFundingDesktop {
-  > section:first-child {
-    > h2 {
-      color: white !important;
-      font-size: 1.75rem !important;
-    }
-  }
-}
+
 
 .btnContainerWhenShouldIReach {
   > div {

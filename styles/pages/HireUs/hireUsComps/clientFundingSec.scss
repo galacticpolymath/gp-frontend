@@ -1,0 +1,12 @@
+.clientFundingDesktop {
+  > section:first-child {
+    > h2 {
+      color: white !important;
+      font-size: 1.75rem !important;
+
+      @media(min-width: 768px){
+        font-size: $carouselHeader;
+      }
+    }
+  }
+}
