@@ -361,9 +361,9 @@
 .hireUsCardIntroTxt {
   color: #363636 !important;
   width: 75%;
-  font-size: $spanFontSize;
 
-  > span:first-child {
+  @media(min-width: 768px){
+    font-size: $spanFontSize;
   }
 
   @media (max-width: 767px) {
@@ -376,8 +376,10 @@
 
 .hireUsCardSectionTxt {
   height: 100px;
-  @media (min-width: 768px) {
-    font-size: $spanFontSize;
+  line-height: 23px;
+
+  @media (min-width: 768px){
+    font-size: $spanDesktopFontSize;
   }
 }
 
@@ -393,7 +395,6 @@
 }
 
 .hireUsInfoStyledContainer {
-  // height: 350px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -406,6 +407,11 @@
     }
   }
 
+  @media(min-width: 992px){
+    // transform: translateY(30px) !important;
+    margin-top: 40px !important;
+  }
+
   @media (min-width: 1200px) {
     > * {
       transform: translateY(-15px) !important;
@@ -415,6 +421,14 @@
   @media (max-width: 767px) {
     border: solid 0.5px #707070;
     border-radius: $borderRadiusModal;
+  }
+}
+
+.howDoesItWorkSec{
+  > section:last-child{
+    @media(min-width: 992px){
+      margin-top: 20px !important;
+    }
   }
 }
 
@@ -508,6 +522,10 @@
     min-width: 225px !important;
     height: 225px !important;
   }
+
+  @media(min-width: 768px) and (max-width: 991px){
+    max-width: 410px !important;
+  }
 }
 
 .whatWillYouGetSec:nth-child(4),
@@ -579,7 +597,7 @@
   > section:last-child {
     span {
       @media (min-width: 768px) and (max-width: 991px){
-        font-size: $spanFontSize;
+        font-size: $spanDesktopFontSize;
       }
     }
   }
@@ -663,6 +681,8 @@
       align-items: center !important;
     }
   }
+
+
 }
 
 .infoCardHireUs {
@@ -698,6 +718,7 @@
   @media (min-width: 768px) and (max-width: 991px) {
     width: 75vw !important;
     min-width: 637.5px !important;
+    height: 400px !important;;
   }
 
   @media (min-width: 768px) and (max-width: 1199px) {

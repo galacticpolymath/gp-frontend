@@ -11,11 +11,14 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    padding: 35px 45px 35px 45px !important;
+    // padding: 35px 45px 45px 45px !important;
+    height: 300px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 
     > section:last-of-type{
       height: 45px !important;
-      padding-bottom: 25px !important;
     }
   }
 
