@@ -26,17 +26,34 @@ $desktopFontSizeTierStatus: 24px !important;
 
 @media (min-width: 768px) {
   .tierDefaultStyles {
+    border: solid pink !important;
     @media (min-width: 1200px) {
       padding-bottom: 100px !important;
-      // width: 30% !important;
+      max-width: 520px !important;
+      // min-width:  330px !important;
+      // border: solid pink !important;
     }
   }
 
+
+  @media(min-width: 1200px){
+
+    .tierCard:nth-child(2){
+      width: 45% !important;
+    }
+    
+    .tierDefaultStyles:first-child,
+    .tierDefaultStyles:last-child{
+      width: 45% !important;
+    }
+  }
+
+
   .tierDefaultStyles:nth-last-child(-n + 2) {
-    margin-left: 20px !important;
+    // margin-left: 20px !important;
 
     @media (min-width: 1200px) and (max-width: 1300px) {
-      margin-left: 40px !important;
+      // margin-left: 40px !important;
     }
   }
 }
