@@ -2,6 +2,8 @@
   @media(min-width: 768px){
     transform: translateY(-110px) !important;    
 
+    
+
     @media(max-width: 1199px){
       width: 100% !important;
     }
@@ -10,6 +12,10 @@
 
     @media(min-width: 992px){
       transform: translateY(-90px) !important;
+    }
+
+    @media(max-width: 991px){
+      transform: translateY(-55px) !important;    
     }
   }
 

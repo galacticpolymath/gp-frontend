@@ -55,8 +55,9 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
     }
 
     // ps-md-5 pe-md-5
+    // ms-xl-3 me-xl-3
     return (
-        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2 me-md-0 me-xl-2 pt-md-1'} ps-xl-5 pe-xl-5 mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles ${index !== 0 ? 'ms-xl-3 me-xl-3' : ''}`}>
+        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2 me-md-0 me-xl-2 pt-md-1'} ps-xl-3 pe-xl-3 mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles ${index !== 0 ? '' : ''}`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
                     <Img src={img} alt={`${tierName}_img`} className="tierImg" height={120} />

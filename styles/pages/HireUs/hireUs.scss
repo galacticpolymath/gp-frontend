@@ -17,19 +17,19 @@
 @import "./hireUsComps/howMuchDoesItCostSec.scss";
 
 .hireUsPg h1{
-  @media(min-width: 992px){
+  @media(min-width: 768px){
     font-size: $h1DesktopFontSize;
   }
 }
 
 .hireUsPg h3{
-  @media(min-width: 992px){
+  @media(min-width: 768px){
     font-size: $h3DesktopFontSize;
   }
 }
 
 .subTxtHeadingDesktop{
-  @media(min-width: 992px){
+  @media(min-width: 768px){
     font-size: $subHeaderDesktop;
   }
 }
