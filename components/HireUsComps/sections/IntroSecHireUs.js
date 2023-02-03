@@ -26,7 +26,7 @@ const IntroSecHireUs = () => {
                         <section className="w-100 ps-5">
                             <h1 className={`${styles.shadow} headingHireUs`}>Easier, Classroom-Ready Outreach</h1>
                         </section>
-                        <section className="w-100 ps-5 position-relative d-flex mt-4">
+                        <section className="w-100 ps-5 position-relative d-flex mt-4 mt-lg-0 mb-4 mb-lg-0">
                             <span className={`${styles.shadow} subTxtHeadingDesktop spanSubheader noMargin noPadding w-75`}>
                                 We translate your work so that non-experts can teach mind-opening lessons.
                             </span>

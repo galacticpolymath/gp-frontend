@@ -7,6 +7,10 @@
     }
 
     width: 100% !important;
+
+    @media(min-width: 992px){
+      transform: translateY(-90px) !important;
+    }
   }
 
   > section{

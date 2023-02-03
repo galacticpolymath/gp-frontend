@@ -262,10 +262,12 @@ $scientistFontSize: 1.3rem !important;
       align-items: center !important;
     }
   }
+
   > section {
     @media(min-width: 1200px){
-      width: 50% !important;
+      // width: 50% !important;
     }
+
     img {
       width: 100% !important;
       // height: 170px !important;

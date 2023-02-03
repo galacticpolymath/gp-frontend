@@ -10,6 +10,19 @@
 @import "./hireUsComps/introSecHireUs.scss";
 @import "./hireUsComps/whatOurClientSay.scss";
 
+.hireUsPg h1{
+  @media(min-width: 992px){
+    font-size: $h1DesktopFontSize;
+  }
+}
+
+.subTxtHeadingDesktop{
+  @media(min-width: 992px){
+    font-size: $subHeaderDesktop;
+  }
+}
+
+
 .humanDescriptionTxt {
   line-height: 33px;
 }
