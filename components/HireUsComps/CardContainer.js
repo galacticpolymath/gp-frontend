@@ -157,11 +157,11 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                     <div className={autoCarouselContainerStyles}>
                                         <div className="autoCarouselSlider" style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
                                             {userInputs.map((userInput, index) => {
-                                                const { feedback, person, occupation, city, stars, product, institution, location, cssClass } = userInput;
+                                                const { feedback, person, occupation, city, stars, product, institution, location, cssClass, uniqueCssClass } = userInput;
 
 
                                                 return (
-                                                    <div className={`${cssClass} autoCarouselItem position-relative`} key={index}>
+                                                    <div className={`${cssClass} autoCarouselItem position-relative ${uniqueCssClass ?? ''}`} key={index}>
                                                         <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-sm-start justify-content-sm-center  align-items-center justify-content-md-start align-items-md-stretch position-relative">
                                                             {stars &&
                                                                 <span className="text-dark fst-italic fw275 productReviewTxt d-none d-sm-inline">

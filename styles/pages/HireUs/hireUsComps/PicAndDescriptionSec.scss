@@ -172,6 +172,14 @@ $scientistFontSize: 1.3rem !important;
   @media (min-width: 576px) {
     > section:first-child {
       margin-left: 20px !important;
+
+      @media(max-width: 767px){
+        padding-left: 10px !important;
+      }
+
+      @media(min-width: 1200px){
+        padding-top: 15px !important;
+      }
     }
   }
 
@@ -237,7 +245,7 @@ $scientistFontSize: 1.3rem !important;
 
   @media (min-width: 1300px) {
     > section:first-child {
-      padding-top: 15px !important;
+      padding-top: 20px !important;
     }
   }
 
@@ -255,21 +263,17 @@ $scientistFontSize: 1.3rem !important;
     }
   }
   > section {
+    @media(min-width: 1200px){
+      width: 50% !important;
+    }
     img {
-      max-width: none !important;
-      width: 170px !important;
-      height: 170px !important;
+      width: 100% !important;
+      // height: 170px !important;
+      min-width: 200px !important;
+      height: 200px !important;
 
       @media (min-width: 768px) {
-        width: 200px !important;
-        height: 200px !important;
-      }
-
-      @media (min-width: 1200px) {
-        // width: 200px !important;
-        width: 170px !important;
-        height: 170px !important;
-        // height: 200px !important;
+        max-width: 210px !important;
       }
     }
   }
@@ -759,7 +763,6 @@ $scientistFontSize: 1.3rem !important;
 .mattsAwardParentSec {
   > section:nth-child(2) {
     @media (min-width: 1200px) {
-      // border: solid pink !important;
       width: 45% !important;
       > section:first-child {
         padding-right: 40px !important;

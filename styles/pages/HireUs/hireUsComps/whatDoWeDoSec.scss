@@ -21,6 +21,7 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
 
   @media(max-width: 575px){
     padding: 10px 45px 10px 45px;
+    max-width: 450px !important;
   }
 
   > section:first-child > section{

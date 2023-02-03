@@ -377,16 +377,13 @@
   @media (min-width: 768px) and (max-width: 1199px) {
     height: 250px !important;
 
-
-    > *{
+    > * {
       transform: translateY(-22px) !important;
     }
   }
 
-
-
-  @media(min-width: 1200px){
-    > *{
+  @media (min-width: 1200px) {
+    > * {
       transform: translateY(-15px) !important;
     }
   }
@@ -627,10 +624,38 @@
   }
 }
 
+.howDoesItWorkSec {
+  @media (max-width: 767px) {
+    > section:last-child > section {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+  }
+
+  @media (max-width: 575px) {
+    > section:last-child {
+      justify-content: center !important;
+      align-items: center !important;
+    }
+  }
+}
+
 .infoCardHireUs {
   border: solid 1px #d0b4bf;
-  padding: 25px;
   border-radius: 1.3rem !important;
+
+  @media (min-width: 768px) {
+    padding: 25px;
+  }
+
+  @media (max-width: 767px) {
+    max-width: 577px !important;
+
+    @media(min-width: 576px){
+      padding: 25px 45px 25px 45px !important;
+    }
+  }
 
   @media (min-width: 992px) and (max-width: 1199px) {
     width: 37vw !important;
@@ -640,20 +665,33 @@
     width: 34vw !important;
     min-width: 425px !important;
     max-width: 550px !important;
-    // max-width
   }
-
 
   @media (min-width: 992px) and (max-width: 1199px) {
     min-width: 347px !important;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    width: 635px !important;
+    width: 75vw !important;
+    min-width: 637.5px !important;
   }
 
   @media (min-width: 768px) and (max-width: 1199px) {
     padding: 25px 25px 50px 25px !important;
+  }
+
+  @media (max-width: 575px) {
+    max-width: 450px !important;
+    min-width: 247px !important;
+
+
+    > section:nth-child(2){
+      // padding-left: 5px !important;
+      // padding-right: 5px !important;
+    }
+
+    // min-width: 280px !important;
+    // padding: 10px 45px 10px 45px !important;
   }
 }
 
@@ -706,12 +744,6 @@
   > section:first-child {
     @media (max-width: 575px) {
       width: 100%;
-    }
-  }
-
-  > section:last-child {
-    @media (min-width: 768px) and (max-width: 1199px) {
-      margin-top: 20px !important;
     }
   }
 }
@@ -892,7 +924,6 @@
       svg {
         // width: 40px !important;
         // height: 40px !important;
-        
       }
     }
   }

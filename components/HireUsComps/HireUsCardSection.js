@@ -8,8 +8,8 @@
 
 const HireUsCardSection = ({ text, content, mobileTxt, dynamicCss }) => {
     return (
-        <section className={dynamicCss ?? 'HireUCardSectionParent'}>
-            <div className="d-none d-md-flex flex-column infoCardHireUs justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretchs">
+        <section className={`${dynamicCss ?? 'HireUCardSectionParent'} ps-2 pe-2 ps-sm-0 pe-sm-0`}>
+            <div className="d-none d-md-flex flex-column infoCardHireUs justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch">
                 <section className="d-flex justify-content-center w-100">
                     <h4 className="hireUsCardTxt pe-1 text-dark hireUsCardSectionTxt fwtHireUsCard">{text}</h4>
                 </section>
@@ -19,7 +19,7 @@ const HireUsCardSection = ({ text, content, mobileTxt, dynamicCss }) => {
                     </section>
                 </div>
             </div>
-            <div className="d-flex flex-column d-md-none mt-sm-0">
+            <div className="d-flex flex-column d-md-none mt-sm-0 infoCardHireUs ps-sm-5 pe-sm-5 ">
                 <section className="d-flex justify-content-center ps-3 pe-3 pt-2 pb-4 pb-xl-0 pt-md-5 ps-sm-0 pe-sm-0">
                     <span className="text-dark hireUsCardTxt responsiveInfoTxt text-center text-sm-start">
                         {mobileTxt}

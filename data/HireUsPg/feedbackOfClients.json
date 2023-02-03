@@ -18,7 +18,8 @@
         "person": "Dr. Johana Goyes Vallejos",
         "location": "University of Missouri",
         "institution": "Department of Biological Sciences",
-        "cssClass": "longClientReview"
+        "cssClass": "longClientReview",
+        "uniqueCssClass": "johanaReviewStyles"
     },
     {
         "feedback": "Such productive and satisfying work with Galactic Polymath! Matt is a former teacher that knows how to magnify the broader impacts of an NSF grant!",

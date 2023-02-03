@@ -20,6 +20,10 @@
   @media (max-width: 575px) {
     transform: translateY(90px);
 
+    @media(max-width: 375px){
+      transform: translateY(130px);
+    }
+
     @media(max-width: 325px){
         transform: translateY(150px);
     }
@@ -28,10 +32,14 @@
 
 .shortTxtClientReview > section > section > span,
 .longClientReview > section > section > span {
+  line-height: 22px !important;
+
   @media (max-width: 1199px) {
     @media (max-width: 767px) {
       width: 100% !important;
     }
+
+
 
     @media (min-width: 768px) {
       width: 90% !important;
@@ -48,15 +56,14 @@
 .clientsContainer {
   @media (min-width: 576px) {
     height: 300px !important;
-    min-width: 560px !important;
-    //   min-height: 555px !important;
+    min-width: 570px !important;
 
     @media (min-width: 768px) {
       min-width: 750px !important;
     }
 
-    @media(max-width: 991px){
-      height: 310px !important;
+    @media(max-width: 1199px){
+      height: 330px !important;
     }
 
     @media (min-width: 992px) {
@@ -80,10 +87,9 @@
             }
 
 
-            transform: translateY(70px) !important;
 
             @media(max-width: 1199px){
-            transform: translateY(100px) !important;
+            // transform: translateY(100px) !important;
             }
 
             @media(max-width: 767px){
@@ -109,10 +115,6 @@
             @media (max-width: 575px) {
               margin-top: 160px !important;
             }
-
-            transform: translateY(70px) !important;
-
-            // margin-top: 125px !important;
           }
         }
       }
@@ -133,8 +135,6 @@
   }
 
   @media (min-width: 1200px) {
-    //   min-height: 420px !important;
-
     min-width: 1150px !important;
 
     > div {
@@ -147,10 +147,10 @@
   }
 
   @media (max-width: 575px) {
-    height: 410px !important;
+    height: 420px !important;
 
     @media (max-width: 510px) {
-      height: 425px !important;
+      height: 455px !important;
     }
 
     @media (max-width: 450px) {
@@ -158,28 +158,29 @@
     }
 
     @media (max-width: 410px) {
-      height: 485px !important;
-    }
-
-    @media (max-width: 374px) {
       height: 505px !important;
     }
 
-    @media (max-width: 346px) {
-      height: 535px !important;
+    @media (max-width: 385px) {
+      height: 525px !important;
+    }
+
+    @media (max-width: 355px) {
+      height: 585px !important;
     }
 
     @media (max-width: 328px) {
-      height: 575px !important;
+      height: 585px !important;
     }
 
     @media (max-width: 310px) {
-      height: 605px !important;
+      height: 655px !important;
     }
 
     @media (max-width: 295px) {    
-      height: 660px !important;
+      height: 690px !important;
     }
+
     > div {
       > div {
         > div {
@@ -192,14 +193,14 @@
         // bullet points section
         > section:last-of-type {
           z-index: 100;
-          margin-top: 40px !important;
+          margin-top: 35px !important;
         }
       }
     }
   }
 
   @media (min-width: 576px) and (max-width: 767px) {
-    height: 360px !important;
+    height: 380px !important;
     > div {
       > div {
         > div {
@@ -218,31 +219,27 @@
   }
 }
 
+
+
 .clientsContainer {
 }
 
-// .shortTxtClientReview {
-//     @media (max-width: 325px) {
-//       transform: translateY(345px) !important;
-//     }
+.johanaReviewStyles{
+  @media(max-width: 575px){
+    transform: translateY(70px) !important;
+  }
 
-//     @media (min-width: 326px) {
-//       transform: translateY(200px) !important;
-//     }
+  @media(min-width: 992px) and (max-width: 1199px){
+    transform: translateY(40px) !important;
+  }
+}
 
-//     @media (min-width: 460px) {
-//       transform: translateY(120px) !important;
-//     }
+.clientsBulletPtsSec{
+  @media(min-width: 576px){
+    transform: translateY(60px) !important;
+  }
 
-//     @media (min-width: 576px) and (max-width: 767px) {
-//       transform: translateY(90px) !important;
-//     }
-
-//     @media (min-width: 768px) {
-//       transform: translateY(40px) !important;
-//     }
-
-//     @media (min-width: 1300px) {
-//       transform: translateY(20px) !important;
-//     }
-//   }
+  @media(min-width: 768px) and (max-width: 1199px){
+    transform: translateY(95px) !important;
+  }
+}

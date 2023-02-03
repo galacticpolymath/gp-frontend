@@ -42,19 +42,16 @@ $feedbackTxtFontSizeDesktop: 24px !important;
     max-width: 1224px !important;
   }
 
-  @media (min-width: 576px) and (max-width: 767px) {
-    // min-width: 550px !important;
-    // width: 98% !important;
-    // max-width: 700px !important;
-  }
-
   @media (max-width: 575px) {
     width: 95% !important;
   }
 
-  // @media (min-width: 768px) and (max-width: 1299px) {
-  //   width: 95% !important;
-  // }
+
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    width: 95% !important;
+    min-width: 565px !important;
+  }
 }
 
 // @media (min-width: 768px) and (max-width: 1299px) {
@@ -80,6 +77,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
+
       > div {
         height: 100% !important;
         padding-top: 30px !important;
@@ -90,6 +88,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   @media (max-width: 575px) {
     max-width: 450px !important;
   }
+
 }
 
 .cardBodyStyles,
@@ -114,8 +113,14 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   white-space: normal;
   margin: 0 auto;
   display: block;
+  line-height: 22px !important;
   font-weight: 249;
   height: fit-content !important;
+
+  @media(min-width: 576px) and (max-width: 767px){
+    // transform: translateX(5px);
+    // border: solid pink !important;
+  }
 
   @media (min-width: 768px) and (max-width: 991px) {
     line-height: 23px !important;
@@ -123,6 +128,10 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
   @media (max-width: 767px) {
     width: 400px !important;
+  }
+
+  @media(min-width: 1200px){
+    padding-left: 10px !important;
   }
 
   font-size: $feedbackTxtFontSizeDesktop;
@@ -255,15 +264,6 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 .studentInfoSec {
   width: 100% !important;
 
-  // @media (min-width: 768px) and (max-width: 1299px) {
-  //   > span {
-  //     transform: translateY(60px) !important;
-  //     @media (max-width: 992px) {
-  //       transform: translateY(70px);
-  //     }
-  //   }
-  // }
-
   @media (max-width: 767px) {
     display: grid !important;
     align-items: center !important;
@@ -314,11 +314,6 @@ $feedbackTxtFontSizeDesktop: 24px !important;
         align-items: center;
       }
     }
-  }
-
-  @media (max-width: 575px) {
-    // height: 500px;
-    // border: solid pink !important;
   }
 }
 
@@ -392,8 +387,8 @@ $feedbackTxtFontSizeDesktop: 24px !important;
     max-width: none !important;
 
     @media (min-width: 576px) {
-      width: 100px !important;
-      height: 100px !important;
+      width: 90px !important;
+      height: 90px !important;
     }
 
     @media (min-width: 768px) {
@@ -415,6 +410,12 @@ $feedbackTxtFontSizeDesktop: 24px !important;
       width: 140px !important;
       height: 140px !important;
     }
+  }
+}
+
+.carouselImgContainer:last-of-type{
+  @media(min-width: 576px) and (max-width: 767px){
+    transform: translateX(10px)
   }
 }
 
@@ -471,19 +472,27 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   }
 }
 
+
+
 .grantReviewTxtStyles {
   > section {
     > section {
       > span {
         width: 85% !important;
         text-align: center !important;
+
+        @media(min-width: 576px){
+          text-align: start !important;
+        }
+
+        line-height: 22px !important;
       }
     }
   }
 }
 
 .grantReviewsCard {
-  height: 250px !important;
+  height: 270px !important;
 
   @media (min-width: 576px) {
     min-width: 547px !important;
@@ -502,12 +511,12 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   @media (max-width: 575px) {
     height: 300px !important;
 
-    @media (max-width: 392px) {
-      height: 320px !important;
+    @media (max-width: 410px) {
+      height: 330px !important;
     }
 
-    @media (max-width: 392px) {
-      height: 340px !important;
+    @media (max-width: 393px) {
+      height: 360px !important;
     }
 
     @media (max-width: 350px) {
@@ -519,7 +528,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 .grantReviewShortTxtStyles {
   @media (max-width: 575px) {
     > section:first-child {
-      transform: translateY(20px) !important;
+      transform: translateY(40px) !important;
 
       @media (max-width: 392px) {
         transform: translateY(40px) !important;
@@ -533,12 +542,16 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 }
 
 .grantReviewTxtStyles {
+  > section:first-child {
+    transform: translateY(20px) !important;
+  }
+
   @media (max-width: 575px) {
     > section:first-child {
-      transform: translateY(10px) !important;
+      transform: translateY(20px) !important;
 
       @media (max-width: 392px) {
-        transform: translateY(30px) !important;
+        transform: translateY(40px) !important;
       }
     }
   }
@@ -574,6 +587,11 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   @media (min-width: 768px) {
     height: 100px !important;
   }
+
+  @media(min-width: 1200px){
+    transform: translateY(20px) !important;
+  }
+
 }
 
 .grantReviewShortTxtStyles {
@@ -620,19 +638,6 @@ $feedbackTxtFontSizeDesktop: 24px !important;
       width: 100% !important;
     }
   }
-
-  // @media (min-width: 768px) and (max-width: 1299px) {
-  //   > section {
-  //     min-height: 200px !important;
-  //   }
-
-  //   > section:last-of-type {
-  //     > section:last-of-type {
-  //       right: 35px !important;
-  //       bottom: -38px !important;
-  //     }
-  //   }
-  // }
 
   @media (max-width: 767px) {
     min-height: 230px !important;
@@ -979,14 +984,18 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
   @media (min-width: 768px) {
     transform: translateY(30px) !important;
+
+    @media(max-width: 992px){
+      transform: translateY(50px) !important;
+    }
   }
 
   @media (min-width: 992px) {
-    transform: translateY(30px) !important;
+    transform: translateY(50px) !important;
   }
 
   @media (min-width: 1200px) {
-    transform: translateY(30px) !important;
+    transform: translateY(50px) !important;
   }
 
   @media(max-width: 320px){
@@ -1083,6 +1092,10 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   @media (min-width: 576px) and (max-width: 767px) {
     transform: translateY(20px) !important;
   }
+
+  @media(min-width: 1200px){
+    transform: translateY(35px) !important;
+  }
 }
 
 .quoteInfoTxts {
@@ -1107,6 +1120,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
             @media (min-width: 768px) and (max-width: 991px) {
               top: 70px !important;
+              right: 20px !important;
             }
 
             @media (max-width: 767px) {
@@ -1194,8 +1208,4 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   @media (max-width: 575px) {
     bottom: -5px !important;
   }
-}
-
-.clientsBulletPtsSec {
-  border: solid pink !important;
 }
