@@ -423,7 +423,7 @@ $scientistFontSize: 1.3rem !important;
       margin-top: 20px !important;
       > span {
         line-height: 24px !important;
-        font-size: $spanFontSize;
+        font-size: $spanDesktopFontSize;
       }
     }
 
@@ -637,7 +637,7 @@ $scientistFontSize: 1.3rem !important;
 
 @media (min-width: 1200px) {
   .scientist:nth-child(even) {
-    margin-top: 100px !important;
+    margin-top: 50px !important;
   }
 }
 

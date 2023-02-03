@@ -13,6 +13,7 @@
 @import "./hireUsComps/clientFundingSec.scss";
 @import "./hireUsComps/ownerSec.scss";
 @import "./hireUsComps/whatYouWillGetSec.scss";
+@import "./hireUsComps/scientistSec.scss";
 
 .hireUsPg h1{
   @media(min-width: 992px){
@@ -776,36 +777,8 @@
   }
 }
 
-.scientistHeadingTxt {
-  font-style: italic !important;
-  @media (min-width: 768px) {
-    color: #000000 !important;
-    font-size: $h3CustomFontSize;
-  }
 
-  @media (max-width: 767px) {
-    font-size: $h3CustomFontSize;
-  }
 
-  @media (max-width: 575px) {
-    line-height: 32px !important;
-  }
-}
-
-.scientistSec {
-  @media (min-width: 768px) {
-    column-count: 2 !important;
-    width: 100% !important;
-  }
-
-  @media (max-width: 767px) {
-    width: 75% !important;
-  }
-
-  @media (min-width: 768px) and (max-width: 1199px) {
-    column-gap: 50px;
-  }
-}
 
 @media (max-width: 575px) {
   .shareYourKnowledgeImgContainer > img {
