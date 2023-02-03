@@ -145,19 +145,6 @@ $scientistFontSize: 1.3rem !important;
   }
 }
 
-.eachLessonWrapper {
-  @media (min-width: 1200px) {
-    max-height: 385.5px !important;
-  }
-
-  > section {
-    > h3 {
-      color: black !important;
-      font-weight: 249;
-      font-size: 20px !important;
-    }
-  }
-}
 
 .ownerSection {
   > section {
@@ -529,11 +516,6 @@ $scientistFontSize: 1.3rem !important;
   }
 }
 
-.shareYourKnowledgeImgContainer.classRoom {
-  @media (min-width: 1200px) {
-    padding-top: 24px !important;
-  }
-}
 
 .regImgSec,
 .shareYourKnowledgeImgContainer.classRoom {

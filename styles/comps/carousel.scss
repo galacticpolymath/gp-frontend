@@ -199,7 +199,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   @media (min-width: 768px) {
     > h2 {
       font-weight: 800 !important;
-      font-size: 1.75rem !important;
+      font-size: $carouselHeader;
     }
   }
 
@@ -930,7 +930,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
     > section {
       > span {
         left: 10px !important;
-        transform: translateY(-30px) !important;
+        transform: translateY(-15px) !important;
 
         @media (max-width: 768px) and (min-width: 576px) {
         }

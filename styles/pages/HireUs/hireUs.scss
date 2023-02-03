@@ -9,6 +9,7 @@
 @import "./hireUsComps/letsTalkBtnStyles.scss";
 @import "./hireUsComps/introSecHireUs.scss";
 @import "./hireUsComps/whatOurClientSay.scss";
+@import "./hireUsComps/shareYourKnowledgeSec.scss";
 
 .hireUsPg h1{
   @media(min-width: 992px){
@@ -192,20 +193,6 @@
   }
 }
 
-.introTxtShareYourKnowledge {
-  > span {
-    font-size: $spanFontSize;
-    font-weight: 250 !important;
-    @media (min-width: 1200px) {
-      // padding-right: 70px !important;
-      padding-right: 70px !important;
-    }
-
-    @media (min-width: 768px) {
-      color: #000000 !important;
-    }
-  }
-}
 
 .hireUsPgInfoCardBody {
   @media (min-width: 768px) {
@@ -800,48 +787,8 @@
   }
 }
 
-.eachLessonInfoList {
-  @media (min-width: 768px) and (max-width: 1199px) {
-    column-count: 2;
-    column-gap: 40px !important;
-  }
 
-  li {
-    font-size: $spanFontSize;
-    max-width: 580px !important;
-    font-weight: 200 !important;
-  }
 
-  @media (max-width: 767px) and (min-width: 1200px) {
-    li:not(:first-child) {
-      margin-top: 13px;
-    }
-  }
-  @media (min-width: 768px) and (max-width: 1199px) {
-    li {
-      height: 80px !important;
-
-      @media (min-width: 992px) {
-        padding-right: 40px !important;
-      }
-    }
-  }
-
-  @media (max-width: 767px) {
-    li:not(:first-child) {
-      margin-top: 15px !important;
-    }
-  }
-}
-
-.eachLessonMainSec {
-  > section {
-    h5 {
-      font-size: 30px !important;
-      font-weight: 380;
-    }
-  }
-}
 
 .ourClientsFundingSourcesHeadingTxt {
   font-size: 30px !important;
@@ -1029,4 +976,5 @@
     }
   }
 }
+
 

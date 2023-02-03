@@ -19,7 +19,6 @@
 
 import PicAndDescriptionSec from './PicAndDescriptionSec'
 import Image from 'next/image'
-import { Parallax } from 'react-parallax';
 
 const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
     return (
@@ -60,7 +59,7 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
             </>
             :
             <section className="d-none d-md-flex flex-column ps-5 pe-5 mt-5 shareYourKnowledgeDesktopSec">
-                <section className="w-100 d-flex mt-3">
+                <section className="w-100 d-flex mt-3 mb-xl-4">
                     <section className="w-50 d-flex flex-column pt-xl-2">
                         <section className="w-100">
                             <h3 className="text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
