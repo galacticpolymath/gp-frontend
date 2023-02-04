@@ -1,8 +1,8 @@
 import { format } from 'date-fns';
 
-import Layout from '../../components/Layout';
-import RichText from '../../components/RichText';
-import LessonSection, { NUMBERED_SECTIONS } from '../../components/LessonSection';
+import Layout from '../../../components/Layout';
+import RichText from '../../../components/RichText';
+import LessonSection, { NUMBERED_SECTIONS } from '../../../components/LessonSection';
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
