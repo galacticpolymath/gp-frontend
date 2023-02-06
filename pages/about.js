@@ -39,7 +39,7 @@ const AboutPage = () => (
       </div>
     </div>
 
-    <div className='bg-info'>
+    <div className='bg-primary-light'>
       <div className='container mx-auto py-5 row align-items-center flex-wrap flex-lg-nowrap white-divider-lg'>
         <h3 className='col fs-1 fw-light text-nowrap flex-grow-0 pb-3 pb-lg-0 pe-lg-4'>Our Mission</h3>
         <p className='m-0 col-auto flex-shrink-1 fs-3 fw-light ps-lg-4 pt-3 pt-lg-0'>To create a direct pipeline between the sources of knowledge and grade 5-12 classrooms by translating complex topics from researchers, non-profits, and sustainable corporations, into high-quality, open-access educational materials.</p>

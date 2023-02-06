@@ -63,7 +63,7 @@ export default function Home() {
 
           <div className='bg-white p-4 row align-items-center rounded-3'>
             <div className='col-9 text-center'>
-              <div className='badge bg-primary fs-5 text-center mb-2'>New release!</div>
+              <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
               <img
                 className='border'
                 src={NewReleaseImage.src}
@@ -136,7 +136,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-info">
+      <div className="bg-primary-light">
         <div className="container row mx-auto py-5 align-items-center">
           <div className="col-12 col-md-6 order-1 order-md-2">
             <h4 className="mb-4">Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>.</h4>
@@ -182,7 +182,7 @@ export default function Home() {
           </div>
         </div> */}
 
-        <div className='bg-primary-light'>
+        <div className='bg-secondary-light'>
           <div className='container p-3 p-lg-5 mx-auto text-center'>
             <p className='fs-4'>Real Research + Real Stories + Real Data + Real Careers =</p>
             <p className='fs-3'>Real Learning</p>
