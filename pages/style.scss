@@ -2,9 +2,21 @@ $enable-cssgrid: true;
 
 @import 'colors';
 
-$primary: $burst-purple;
-$secondary: $atomic-blue;
-$info: lighten($hydrogen-blue-light, 25%);
+$primary: $hydrogen-blue;
+$secondary: $burst-purple;
+$info: $atomic-blue;
+
+$btn-padding-x: 1.75rem;
+$btn-padding-y: 0.85rem;
+$btn-font-size: 1.1rem;
+
+$btn-padding-x-sm: 1.25rem;
+$btn-padding-y-sm: 0.5rem;
+$btn-font-size-sm: 1rem;
+
+$btn-font-weight: 500;
+
+$font-size-root: 18px;
 
 @import '../node_modules/bootstrap/scss/bootstrap';
 @import '../node_modules/react-responsive-carousel/lib/styles/carousel.min.css';
@@ -16,6 +28,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-size: 18px;
 }
 
 a {
@@ -28,9 +41,23 @@ a {
 a > span {
   vertical-align: middle;
 }
+strong {
+  font-weight: 700;
+}
 
 img {
   max-width: 100%;
+}
+
+h1 {
+  font-weight: 700;
+}
+h3 {
+  font-weight: 300;
+}
+
+li {
+  margin-bottom: 0.5rem;
 }
 
 * {
@@ -56,8 +83,14 @@ img {
 .bg-light-gray {
   background-color: #eee;
 }
+.bg-dark-gray {
+  background-color: #444;
+}
 .bg-primary-light {
   background-color: lighten($primary, 45%);
+}
+.bg-secondary-light {
+  background-color: lighten($secondary, 45%);
 }
 .bg-science {
   background-color: $science;
@@ -86,6 +119,15 @@ img {
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
 
 // bootstrap overrides
+.btn {
+  text-transform: uppercase;
+}
+.btn-primary {
+  color: $white;
+  &:active, &:focus {
+    color: $white;
+  }
+}
 .btn-light {
   background-color: $sparkle-white;
   &:active, &:focus {
@@ -94,6 +136,29 @@ img {
 }
 .btn.text-left {
   text-align: left;
+}
+.btn-primary-light {
+  background: lighten($hydrogen-blue-light, 25%);
+}
+
+.bg-dark-gray .btn-primary {
+  background-color: lighten($primary, 5%);
+  border-color: lighten($primary, 5%);
+  color: $white;
+  &:hover, &:active, &:focus {
+    color: $white;
+  }
+}
+.bg-dark-gray .btn-secondary {
+  background-color: lighten($secondary, 15%);
+  border-color: lighten($secondary, 15%);
+  color: $white;
+  &:hover, &:active, &:focus {
+    color: $white;
+  }
+}
+.text-gray {
+  color: #aaa;
 }
 
 .white-divider-lg > :not(:first-child) {
