@@ -8,7 +8,7 @@ export default function Navbar() {
   const router = useRouter();
 
   return (
-    <nav className='navbar navbar-expand-lg navbar-dark bg-dark'>
+    <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-dark'>
       <div className='container'>
         <Link href="/" className='flex-grow-1'>
           <Image

@@ -6,6 +6,8 @@ $primary: $burst-purple;
 $secondary: $atomic-blue;
 $info: lighten($hydrogen-blue-light, 25%);
 
+$font-size-root: 18px;
+
 @import '../node_modules/bootstrap/scss/bootstrap';
 @import '../node_modules/react-responsive-carousel/lib/styles/carousel.min.css';
 @import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
