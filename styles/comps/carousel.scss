@@ -1,0 +1,1226 @@
+@import "../globalVars.scss";
+
+$carouselBackgroundColor: #ffeded;
+$feedbackTxtFontSizeDesktop: 24px !important;
+
+* {
+  box-sizing: border-box;
+}
+
+.bg-carousel-color {
+  background-color: $carouselBackgroundColor;
+}
+
+.slider {
+  width: 300px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.navBtnLeftCarousel {
+  transform: translate(-15px, -10px) !important;
+}
+
+.navBtnRightCarousel {
+  transform: translate(15px, -10px) !important;
+}
+
+.navBtnLeftCarousel,
+.navBtnRightCarousel {
+  @media (min-width: 576px) and (max-width: 767px) {
+    svg {
+      font-size: 50px !important;
+    }
+  }
+}
+
+.autoCarouselContainerCard {
+  width: 85% !important;
+  border-radius: 1.3em;
+
+  @media (min-width: 1200px) {
+    max-width: 1224px !important;
+  }
+
+  @media (max-width: 575px) {
+    width: 95% !important;
+  }
+
+
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    width: 95% !important;
+    min-width: 565px !important;
+  }
+}
+
+// @media (min-width: 768px) and (max-width: 1299px) {
+//   .feedbackTxt {
+//     width: 75% !important;
+//     transform: translateY(20px);
+
+//     @media (max-width: 992px) {
+//     }
+//   }
+// }
+
+.picsCardContainercardOnlyStyles {
+  @media (min-width: 768px) {
+    margin-top: 25px !important;
+    width: 95% !important;
+
+    > div {
+      padding-top: 30px !important;
+    }
+
+    @media (max-width: 991px) {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+
+      > div {
+        height: 100% !important;
+        padding-top: 30px !important;
+      }
+    }
+  }
+
+  @media (max-width: 575px) {
+    max-width: 450px !important;
+  }
+
+}
+
+.cardBodyStyles,
+.autoCarouselContainerCard {
+  @media (min-width: 1300px) {
+    // height: 345px !important;
+    // height: 200px !important;
+  }
+}
+
+.picsCardContainercardOnlyStyles {
+  @media (min-width: 768px) {
+    height: 205px !important;
+  }
+}
+
+.autoCarouselContainerHeading {
+  height: 150px;
+}
+
+.feedbackTxt {
+  white-space: normal;
+  margin: 0 auto;
+  display: block;
+  line-height: 22px !important;
+  font-weight: 249;
+  height: fit-content !important;
+
+  @media(min-width: 576px) and (max-width: 767px){
+    // transform: translateX(5px);
+    // border: solid pink !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    line-height: 23px !important;
+  }
+
+  @media (max-width: 767px) {
+    width: 400px !important;
+  }
+
+  @media(min-width: 1200px){
+    padding-left: 10px !important;
+  }
+
+  font-size: $feedbackTxtFontSizeDesktop;
+
+  @media (max-width: 575px) {
+    width: fit-content !important;
+    padding: 0px 5px 0px 5px !important;
+  }
+}
+
+.navBtnSec {
+  z-index: 10000000;
+}
+
+.autoCarouselSlider {
+  white-space: nowrap;
+  transition: ease 1000ms;
+}
+
+.carouselTxt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.react-parallax-bgimage {
+  @media (min-width: 768px) {
+    height: 800px !important;
+  }
+}
+
+.defaultHeadingCarouselStyles {
+  color: black !important;
+
+  @media (min-width: 768px) {
+    font-weight: 400 !important;
+    // font-size: 48px !important;
+  }
+
+  @media (max-width: 767px) {
+    font-weight: 800 !important;
+  }
+
+  @media (max-width: 575px) {
+    // font-size: 33px !important;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+.ourClientsFundingSourcesHeadingTxt {
+  @media (min-width: 768px) {
+    font-weight: 149 !important;
+  }
+
+  @media (max-width: 767px) {
+    font-weight: 240 !important;
+  }
+}
+
+.cardHeadingSec {
+  height: 100px !important;
+
+  @media (min-width: 768px) {
+    > h2 {
+      font-weight: 800 !important;
+      font-size: $carouselHeader;
+    }
+  }
+
+  @media (max-width: 767px) {
+    height: 150px !important;
+  }
+}
+
+.feedBackSec {
+  @media (min-width: 768px) {
+    min-height: 180px !important;
+  }
+
+  @media (min-width: 768px) {
+    min-height: 280px !important;
+
+    > section:first-of-type {
+      align-items: stretch !important;
+      padding-top: 20px !important;
+    }
+  }
+
+  @media (min-width: 1300px) {
+    // min-height: 210px !important;
+  }
+}
+
+.autoCarouselContainer {
+  margin: 0 auto;
+  overflow: hidden;
+  height: 100% !important;
+  position: relative !important;
+
+  @media (min-width: 768px) {
+    max-width: 1000px !important;
+  }
+
+  @media (max-width: 767px) {
+    max-width: 500px;
+  }
+}
+
+.productReviewTxt {
+  @media (max-width: 767px) {
+    // display: none !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+
+  position: absolute !important;
+  @media (min-width: 768px) {
+    @media (min-width: 1200px) {
+    }
+    transform: translateY(-20px) !important;
+  }
+
+  @media (max-width: 767px) {
+    font-size: $spanFontSizeSmall;
+  }
+}
+
+.studentInfoSec {
+  width: 100% !important;
+
+  @media (max-width: 767px) {
+    display: grid !important;
+    align-items: center !important;
+  }
+
+  @media (min-width: 768px) {
+    transform: translateY(40px) !important;
+  }
+}
+
+.studentParentStyles {
+  @media (max-width: 767px) {
+    transform: translateY(75px) !important;
+  }
+
+  @media (max-width: 575px) {
+    transform: translateY(65px) !important;
+
+    @media (max-width: 425px) {
+      transform: translateY(95px) !important;
+    }
+
+    @media (max-width: 325px) {
+      transform: translateY(115px) !important;
+    }
+
+    @media (max-width: 305px) {
+      transform: translateY(135px) !important;
+    }
+  }
+}
+
+.autoCarouselItem {
+  display: inline-flex;
+  border-radius: 40px;
+  width: 100%;
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+
+  > section {
+    > section:first-child {
+      @media (max-width: 575px) {
+        // min-height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+}
+
+.slides {
+  display: flex;
+
+  overflow-x: hidden;
+  scroll-snap-type: x mandatory;
+  width: 305px;
+  // width: 200px;
+
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.slides::-webkit-scrollbar {
+  height: 1px;
+}
+.slides::-webkit-scrollbar-thumb {
+  background: black;
+  border-radius: 1px;
+}
+.slides::-webkit-scrollbar-track {
+  background: transparent;
+}
+.slides > div {
+  scroll-snap-align: center;
+  flex-shrink: 0;
+  width: 300px;
+  height: 300px;
+  margin-right: 50px;
+  border-radius: 10px;
+  background: #eee;
+  transform-origin: center center;
+  transform: scale(1);
+  transition: transform 0.5s;
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 100px;
+}
+
+.author-info {
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 0.75rem;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+}
+
+.author-info a {
+  color: white;
+}
+
+.headingCarousel {
+  color: #ffffff !important;
+  // font-size: 40px;
+}
+
+.carouselImgContainer {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+
+  img {
+    max-width: none !important;
+
+    @media (min-width: 576px) {
+      width: 90px !important;
+      height: 90px !important;
+    }
+
+    @media (min-width: 768px) {
+      width: 100px !important;
+      height: 100px !important;
+    }
+
+    @media (min-width: 992px) {
+      width: 140px !important;
+      height: 140px !important;
+    }
+
+    @media (min-width: 1300px) {
+      width: 170px !important;
+      height: 170px !important;
+    }
+
+    @media (max-width: 575px) {
+      width: 140px !important;
+      height: 140px !important;
+    }
+  }
+}
+
+.carouselImgContainer:last-of-type{
+  @media(min-width: 576px) and (max-width: 767px){
+    transform: translateX(10px)
+  }
+}
+
+.carouselImgContainer {
+  @media (min-width: 768px) {
+    width: 135px;
+    height: 135px;
+
+    @media (min-width: 950px) {
+      width: 155px;
+    }
+
+    @media (min-width: 992px) {
+      width: 185px;
+    }
+
+    @media (min-width: 1200px) {
+      width: 135px !important;
+    }
+  }
+
+  @media (max-width: 767px) {
+    width: 125px;
+    height: 98px;
+  }
+
+  @media (max-width: 575px) {
+    width: 185px;
+    height: 185px;
+  }
+}
+
+.carouselImgContainer:not(:first-child) {
+  @media (min-width: 1200px) {
+    margin-left: 85px !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    // margin-left: 20px !important;
+  }
+}
+
+.picsCardContainer {
+  @media (max-width: 575px) {
+    width: 50% !important;
+    min-width: 255.5px !important;
+    // width: fit-content;
+  }
+}
+
+.carouselImgContainer:not(:first-child) {
+  @media (max-width: 575px) {
+    margin-top: 30px !important;
+  }
+}
+
+
+
+.grantReviewTxtStyles {
+  > section {
+    > section {
+      > span {
+        width: 85% !important;
+        text-align: center !important;
+
+        @media(min-width: 576px){
+          text-align: start !important;
+        }
+
+        line-height: 22px !important;
+      }
+    }
+  }
+}
+
+.grantReviewsCard {
+  height: 270px !important;
+
+  @media (min-width: 576px) {
+    min-width: 547px !important;
+  }
+
+  @media (min-width: 768px) {
+    min-width: 750px !important;
+  }
+
+  @media (min-width: 1200px) {
+    // min-width: 1135.59px;
+    // max-width: 1180px !important;
+    width: 1000px !important;
+  }
+
+  @media (max-width: 575px) {
+    height: 300px !important;
+
+    @media (max-width: 410px) {
+      height: 330px !important;
+    }
+
+    @media (max-width: 393px) {
+      height: 360px !important;
+    }
+
+    @media (max-width: 350px) {
+      height: 410px !important;
+    }
+  }
+}
+
+.grantReviewShortTxtStyles {
+  @media (max-width: 575px) {
+    > section:first-child {
+      transform: translateY(40px) !important;
+
+      @media (max-width: 392px) {
+        transform: translateY(40px) !important;
+      }
+
+      @media (max-width: 350px) {
+        transform: translateY(70px) !important;
+      }
+    }
+  }
+}
+
+.grantReviewTxtStyles {
+  > section:first-child {
+    transform: translateY(20px) !important;
+  }
+
+  @media (max-width: 575px) {
+    > section:first-child {
+      transform: translateY(20px) !important;
+
+      @media (max-width: 392px) {
+        transform: translateY(40px) !important;
+      }
+    }
+  }
+}
+
+.grantReviewItemCarousel.longTxtContent {
+  @media (max-width: 575px) {
+    transform: translateY(-50px);
+  }
+}
+
+.grantReviewerBulletPtsSec {
+  @media (max-width: 575px) {
+    transform: translateY(-50px) !important;
+  }
+
+  @media (min-width: 768px) {
+    transform: translateY(25px) !important;
+  }
+}
+
+.grantReviewerBulletPtsSec {
+  @media (min-width: 768px) {
+    margin-top: 25px !important;
+  }
+
+  @media (max-width: 767px) {
+    margin-top: 25px !important;
+  }
+}
+
+.grantReviewShortTxtStyles {
+  @media (min-width: 768px) {
+    height: 100px !important;
+  }
+
+  @media(min-width: 1200px){
+    transform: translateY(20px) !important;
+  }
+
+}
+
+.grantReviewShortTxtStyles {
+  @media (min-width: 576px) {
+    > section > section > span > span {
+      inset: auto -100px -60px auto !important;
+
+      @media (max-width: 767px) {
+        inset: auto -40px -60px auto !important;
+      }
+    }
+  }
+}
+
+.grantReviewTxtStyles {
+  @media (min-width: 576px) {
+    > section > section > span > span {
+      right: 20px !important;
+      bottom: -40px !important;
+    }
+  }
+}
+
+.grantReviewItemCarousel {
+  @media (min-width: 768px) {
+    > section {
+      > section:first-child {
+        width: 100%;
+        @media (max-width: 1199px) {
+          height: 230px !important;
+        }
+        span {
+          text-align: center !important;
+          transform: translateY(50px) !important;
+        }
+      }
+
+      > section:last-child {
+        right: 20px !important;
+      }
+    }
+    width: 100% !important;
+    span {
+      width: 100% !important;
+    }
+  }
+
+  @media (max-width: 767px) {
+    min-height: 230px !important;
+  }
+}
+
+.carouselImgContainer:first-of-type,
+.carouselImgContainer:nth-last-of-type(2) {
+  @media (max-width: 575px) {
+    img {
+      width: 265px !important;
+    }
+  }
+}
+
+@media (max-width: 767px) and (min-width: 576px) {
+  .carouselImgContainer:first-of-type {
+    img {
+      width: 120px !important;
+    }
+  }
+
+  .carouselImgContainer:nth-last-of-type(2) {
+    img {
+      width: 167px !important;
+    }
+  }
+}
+
+.carouselImgContainer:first-of-type {
+  @media (min-width: 768px) {
+    img {
+      width: 187px !important;
+    }
+  }
+}
+
+.carouselImgContainer:last-child{
+  > img{
+    width: 80px !important;
+  }
+}
+
+.carouselImgContainer:nth-last-of-type(2) {
+  @media (min-width: 768px) {
+    img {
+      width: 209px !important;
+    }
+
+    @media (min-width: 950px) {
+      img {
+        width: 220px !important;
+      }
+    }
+
+    @media (min-width: 992px) {
+      img {
+        width: 240px !important;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      img {
+        width: 300px !important;
+      }
+    }
+  }
+}
+
+.starsContainer {
+  height: fit-content !important;
+  // @media (min-width: 768px) and (max-width: 1299px) {
+  //   transform: translateX(25px);
+  // }
+}
+
+.bulletPtsTeachersAndStudents {
+  @media (min-width: 768px) and (max-width: 991px) {
+    > section:last-child {
+      margin-top: 0px !important;
+    }
+
+    transform: translateY(4px) !important;
+  }
+}
+.bulletPtsSec {
+  @media (min-width: 768px) and (max-width: 992px) {
+    margin-top: 50px !important;
+  }
+}
+
+.shortFeedbackTxtSec {
+  @media (min-width: 1400px) {
+    transform: translateY(90px);
+  }
+
+  @media (min-width: 768px) and (max-width: 1399px) {
+    > span {
+      height: fit-content !important;
+      transform: translateY(90px);
+    }
+  }
+
+  @media (max-width: 767px) {
+    > span {
+      height: fit-content !important;
+      transform: translateY(110px) !important;
+    }
+  }
+}
+
+.shortQuoteInfoSec {
+  @media (max-width: 767px) {
+    transform: translateY(110px) !important;
+
+    @media (max-width: 575px) {
+      transform: translateY(80px) !important;
+    }
+  }
+}
+
+.clientReview {
+  @media (min-width: 992px) {
+    > section {
+      > section:last-of-type {
+        bottom: -43px !important;
+      }
+    }
+  }
+
+  @media (min-width: 1200px) {
+    > section {
+      > section:last-of-type {
+        bottom: -43px !important;
+      }
+    }
+  }
+}
+
+.grantReviewerBulletPtsSec {
+  @media (min-width: 768px) {
+    margin-top: 20px !important;
+    height: 120px !important;
+  }
+}
+
+.nonStudentInfoSec.shortQuoteInfoSec {
+  @media (max-width: 575px) {
+    transform: translateY(100px) !important;
+  }
+}
+
+.clientReview.shortTxtContent {
+  height: 100% !important;
+}
+
+.feedbackInfoSec.nonStudentInfoSec {
+  @media (min-width: 1300px) {
+    transform: translateY(30px) !important;
+  }
+}
+
+.teachersAndStudentReview {
+  > section {
+    > section:first-of-type {
+      > span {
+        transform: translateY(10px);
+      }
+    }
+  }
+}
+
+.cardMainStylesTeachersAndStudents {
+  @media (min-width: 576px) and (max-width: 767px) {
+    min-width: 560px !important;
+  }
+
+  @media (min-width: 1200px) {
+    min-width: 1150px !important;
+  }
+
+ 
+
+  @media (max-width: 575px) {
+    height: 360px !important;
+
+    @media (max-width: 325px) {
+      height: 380px !important;
+    }
+
+    @media(max-width: 312px){
+      height: 420px !important;
+    }
+
+    > div {
+      > div {
+        min-height: 300px !important;
+        @media (max-width: 379px) {
+          // height: 480px !important;
+        }
+
+        @media (max-width: 345px) {
+          // height: 550px !important;
+        }
+
+        > div {
+          // quote info box
+          section:nth-child(2) {
+            bottom: -120px !important;
+          }
+        }
+
+        // bullet points section
+        > section:last-of-type {
+          // margin-top: 70px !important;
+
+          @media (max-width: 379px) {
+            margin-top: 110px !important;
+          }
+
+          @media (max-width: 345px) {
+            margin-top: 180px !important;
+          }
+        }
+      }
+    }
+  }
+
+  @media (min-width: 576px) {
+    max-width: 1224px !important;
+    height: 290px !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    height: 290px !important;
+    min-width: 750px !important;
+  }
+
+  @media (min-width: 992px) {
+    min-width: 896px !important;
+  }
+}
+
+.teachersAndStudentsTestimoniesSec {
+  @media (max-width: 767px) {
+    min-height: 220px !important;
+    > section:first-of-type {
+      transform: translateY(20px) !important;
+    }
+  }
+
+  @media (min-width: 768px) {
+    min-height: 200px !important;
+
+    > section:last-of-type {
+      bottom: -35px !important;
+
+      @media (min-width: 1200px) {
+        bottom: 25px !important;
+      }
+    }
+  }
+
+  @media (max-width: 575px) {
+    height: 250px !important;
+  }
+
+  @media (max-width: 459px) {
+    height: 295px !important;
+  }
+}
+
+.grantReviewerBulletPtsSec {
+  @media (max-width: 575px) {
+    margin-top: 55px !important;
+    transform: translateY(0px) !important;
+  }
+}
+
+.grantReviewShortTxtStyles {
+  @media (max-width: 767px) {
+    transform: translateY(30px) !important;
+  }
+}
+
+.teacherTestimony {
+  height: 100px !important;
+
+  @media (max-width: 1199px) {
+    > section {
+      > span {
+        left: 10px !important;
+        transform: translateY(-15px) !important;
+
+        @media (max-width: 768px) and (min-width: 576px) {
+        }
+      }
+      > section {
+
+        > span:first-child {
+          @media (max-width: 767px) and (min-width: 576px) {
+            line-height: 24px !important;
+          }
+        }
+
+        > span {
+          width: 75% !important;
+
+          @media (max-width: 575px) {
+            width: 100% !important;
+            line-height: 26px !important;;
+            padding: 0px 0px 0px 0px !important;
+          }
+
+          @media (max-width: 768px) and (min-width: 576px) {
+            width: 90% !important;
+          }
+        }
+      }
+
+      > section:last-of-type {
+        top: 70px !important;
+      }
+    }
+  }
+
+  @media (min-width: 1200px) {
+    > section {
+      > section:last-of-type {
+        top: 70px !important;
+      }
+    }
+  }
+}
+
+.studentTestimony {
+  height: 100px !important;
+
+  @media (max-width: 575px) {
+    transform: translateY(60px) !important;
+  }
+
+  @media (min-width: 576px) {
+    transform: translateY(30px) !important;
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    transform: translateY(40px) !important;
+  }
+
+  @media (min-width: 768px) {
+    transform: translateY(30px) !important;
+
+    @media(max-width: 992px){
+      transform: translateY(50px) !important;
+    }
+  }
+
+  @media (min-width: 992px) {
+    transform: translateY(50px) !important;
+  }
+
+  @media (min-width: 1200px) {
+    transform: translateY(50px) !important;
+  }
+
+  @media(max-width: 320px){
+    transform: translateY(80px) !important;
+  }
+
+  > section {
+    // height: fit-content !important;
+    > span {
+      @media (min-width: 576px) and (max-width: 767px) {
+        // transform: translateX(-40px) !important;
+        transform: translateY(-10px) !important;
+      }
+    }
+
+    > section:first-of-type {
+      height: 80px !important;
+
+      > span:first-child {
+        @media (max-width: 767px) and (min-width: 576px) {
+          line-height: 24px !important;
+        }
+      }
+    }
+  }
+
+  > section {
+    > section {
+      > span {
+        @media (max-width: 767px) {
+          text-align: center !important;
+        }
+        > span {
+          @media (max-width: 1199px) {
+            @media (min-width: 576px) and (max-width: 767px) {
+              top: 65px !important;
+              right: -50px !important;
+            }
+
+            top: 45px !important;
+            right: -50px !important;
+          }
+
+          @media (min-width: 1200px) {
+            top: 50px !important;
+            right: -60px !important;
+          }
+        }
+      }
+    }
+    // quote section
+    > section:last-of-type {
+      @media (min-width: 768px) {
+        right: 230px !important;
+      }
+
+      @media (min-width: 1200px) {
+        right: 230px !important;
+      }
+    }
+  }
+}
+
+.teacherTestimony {
+  @media (max-width: 575px) {
+    transform: translateY(20px) !important;
+  }
+
+  @media (min-width: 375px) and (max-width: 575px) {
+    transform: translateY(40px) !important;
+  }
+
+  > section {
+    // quote section
+    > section:last-of-type {
+      @media (max-width: 1199px) {
+        right: 60px !important;
+      }
+
+      @media (max-width: 991px) {
+        // transform: translateY(7px) !important;
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    transform: translateY(20px) !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    transform: translateY(30px) !important;
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    transform: translateY(20px) !important;
+  }
+
+  @media(min-width: 1200px){
+    transform: translateY(35px) !important;
+  }
+}
+
+.quoteInfoTxts {
+  font-size: $spanFontSizeSmall;
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    span > span:not(:last-child) {
+      display: inline-block !important;
+      height: 18px !important;
+    }
+  }
+}
+
+.teacherTestimony {
+  > section {
+    > section {
+      > span {
+        > span {
+          @media (min-width: 576px) {
+            top: 80px !important;
+            right: -40px !important;
+
+            @media (min-width: 768px) and (max-width: 991px) {
+              top: 70px !important;
+              right: 20px !important;
+            }
+
+            @media (max-width: 767px) {
+              top: 90px !important;
+              right: 10px !important;
+            }
+          }
+
+          @media (min-width: 992px) {
+            top: 75px !important;
+            right: -30px !important;
+          }
+
+          @media (min-width: 1200px) {
+            top: 60px !important;
+            right: 0px !important;
+          }
+        }
+      }
+    }
+    // quote section
+    > section:last-of-type {
+      @media (min-width: 768px) {
+        right: 230px !important;
+      }
+
+      @media (min-width: 1200px) {
+        right: 230px !important;
+      }
+    }
+  }
+}
+
+.quoteInfoSec {
+  bottom: -10px;
+  right: 15px;
+
+  @media (max-width: 767px) and (min-width: 576px) {
+    bottom: 70px;
+    right: 24px;
+
+    @media (min-width: 576px) {
+      bottom: 20px;
+    }
+
+    @media (max-width: 575px) {
+      span {
+        text-align: center !important;
+      }
+    }
+  }
+
+  > section {
+    > span {
+      font-size: $spanFontSizeSmall;
+    }
+
+    > span:first-child {
+      @media (min-width: 576px) and (max-width: 767px) {
+        font-size: 22px !important;
+      }
+    }
+  }
+}
+
+.bulletPtsTeachersAndStudents {
+  bottom: 0px !important;
+
+  @media (max-width: 767px) {
+    bottom: -3px !important;
+  }
+
+  @media (max-width: 575px) {
+    bottom: -5px !important;
+  }
+}
+
+.bulletPtsTeachersAndStudents {
+  button svg {
+    font-size: 25px !important;
+  }
+}
+
+.grantReviewsBulletPtsSec {
+  @media (max-width: 575px) {
+    bottom: -5px !important;
+  }
+}
+
+.grantReview4QuoteInfo{
+  @media(min-width: 1200px){
+    transform: translateX(-30px);
+  }
+}
+
+
+

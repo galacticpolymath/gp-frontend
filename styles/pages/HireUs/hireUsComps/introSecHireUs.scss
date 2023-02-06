@@ -1,0 +1,132 @@
+.headerSection {
+  @media (min-width: 576px) and (max-width: 767px) {
+    width: 75% !important;
+  }
+
+  @media (max-width: 575px) {
+    width: 100% !important;
+  }
+
+  @media (min-width: 375px) and (max-width: 575px) {
+    padding-left: 40px !important;
+  }
+
+  @media (max-width: 374px) {
+    padding-left: 15px !important;
+    padding-right: 5px !important;
+  }
+}
+
+.subTxtHeadingDesktop {
+  display: block !important;
+  max-width: 770px !important;
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    // width: 55% !important;
+  }
+}
+
+.subTxtHeadingContainerHireUsPg {
+  width: 75% !important;
+
+  @media (max-width: 575px) {
+    width: 100% !important;
+  }
+
+  @media (min-width: 375px) and (max-width: 575px) {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+
+    > span {
+      font-size: 22px !important;
+    }
+  }
+
+  @media (max-width: 374px) {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+
+    > span {
+      font-size: 17px !important;
+    }
+  }
+}
+
+.introSecAndLetTalksSec {
+  max-width: 1464px !important;
+
+  @media (max-width: 767px) {
+    height: 450px;
+  }
+
+  @media (max-width: 652px) {
+    height: 470px !important;
+  }
+
+  @media (max-width: 575px) {
+    height: 450px !important;
+    display: flex !important;
+    justify-content: end !important;
+    align-items: end !important;
+    padding-bottom: 75px !important;
+  }
+
+  @media (min-width: 768px) {
+    height: 500px !important;
+    flex-direction: column !important;
+    justify-content: end !important;
+    align-items: end !important;
+    padding-bottom: 40px !important;
+  }
+
+  > section {
+    @media(max-width: 767px) and (min-width: 576px){
+      padding-left: 40px !important;
+    }
+    > section:last-child {
+      @media (max-width: 767px) {
+        width: 75% !important;
+      }
+
+      @media (max-width: 575px) {
+        width: 100% !important;
+      }
+      @media (min-width: 375px) and (max-width: 575px) {
+        padding-left: 40px !important;
+      }
+
+      @media (max-width: 374px) {
+        padding-left: 18px !important;
+        padding-right: 18px !important;
+      }
+    }
+  }
+
+  > section:first-child {
+    @media (min-width: 768px) {
+      height: 310px !important;
+    }
+  }
+
+  > section:last-child {
+    @media (min-width: 768px) {
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    > section:first-child {
+      margin-left: 30px;
+    }
+  }
+}
+
+.headingHireUs {
+  @media (max-width: 767px) {
+    font-size: 34px !important;
+
+    @media(max-width: 575px){
+      padding-right: 15px !important;
+    }
+  }
+}
+

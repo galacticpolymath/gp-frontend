@@ -1,6 +1,8 @@
 $enable-cssgrid: true;
 
-@import 'colors';
+@import "colors";
+
+@import '../styles/globalVars.scss';
 
 $primary: $hydrogen-blue;
 $secondary: $burst-purple;
@@ -29,6 +31,16 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   font-size: 18px;
+}
+
+.fst-italic {
+    font-style: italic !important;
+    white-space: normal !important;;
+}
+
+
+* {
+  text-underline-offset: 4px !important;
 }
 
 a {
@@ -75,8 +87,34 @@ li {
 .text-height-1 {
   line-height: 1.5;
 }
+
 .fs-7 {
   font-size: 0.75rem;
+}
+
+.fs-larger {
+  font-size: 33px;
+}
+
+
+
+.fs-md-larger{
+  @media(min-width: 768px){
+    font-size: 33px !important;
+  }
+}
+
+.fs-large {
+  font-size: 28px;
+}
+
+
+.fs-24{
+  font-size: 24px;
+}
+
+.fs-med{
+  font-size: 20px !important;
 }
 
 // background color utilities
@@ -130,7 +168,8 @@ li {
 }
 .btn-light {
   background-color: $sparkle-white;
-  &:active, &:focus {
+  &:active,
+  &:focus {
     background-color: $sparkle-white;
   }
 }
@@ -170,6 +209,254 @@ li {
     border-top: 0;
   }
 }
+
+.noPadding {
+  padding: 0 !important;
+}
+
+.noMargin {
+  margin: 0 !important;
+}
+
+.noBackground {
+  background-color: transparent !important;
+}
+
+.noBorder {
+  border: none !important;
+}
+
+.bolder {
+  font-weight: 700 !important;
+}
+
+.underline-less-thick {
+  text-decoration-thickness: .5px !important;
+}
+
+.fw650{
+  font-weight: 650 !important;
+}
+
+.fw625{
+  font-weight: 625 !important;
+}
+
+.fw700{
+  font-weight: 700 !important;
+}
+
+.fw450 {
+  font-weight: 450 !important;
+}
+
+.fw425 {
+  font-weight: 425 !important;
+}
+
+.fw400 {
+  font-weight: 400 !important;
+}
+
+.fw375{
+  font-weight: 375 !important;
+}
+
+.fw350 {
+  font-weight: 350 !important;
+}
+
+.fw325 {
+  font-weight: 325 !important;
+}
+
+.fw300 {
+  font-weight: 300 !important;
+}
+
+.fw275{
+  font-weight: 275 !important;
+}
+
+.rotateRight{
+  transform: rotate(-90deg);
+}
+
+.fw250 {
+  font-weight: 250 !important;
+}
+
+.fw249 {
+  font-weight: 249 !important;
+}
+
+.fw225 {
+  font-weight: 225 !important;
+}
+
+.fw245 {
+  font-weight: 245 !important;
+}
+
+.fw200 {
+  font-weight: 200 !important;
+}
+
+.parallax {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.pt-8{
+  padding-top: 7rem !important;
+}
+
+.pb-8{
+  padding-bottom: 7rem !important;
+}
+
+.mt-6 {
+  margin-top: 60px;
+}
+
+.mt-7 {
+  margin-top: 70px !important;
+}
+
+.mt-md-7{
+  @media(min-width: 768px){
+    margin-top: 70px !important;
+  }
+}
+
+.mt-sm-7{
+  @media(min-width: 576px){
+    margin-top: 70px !important;
+  }
+}
+
+.mt-8 {
+  margin-top: 80px;
+}
+
+.mt-15 {
+  margin-top: 150px;
+}
+
+.mb-15 {
+  margin-bottom: 150px !important;
+}
+
+.w-95 {
+  width: 95%;
+}
+
+.w-90 {
+  width: 90%;
+}
+
+.w-sm-90{
+  @media(min-width: 576px){
+    width: 90% !important;
+  }
+}
+
+.w-85 {
+  width: 85%;
+}
+
+.w-sm-85{
+  @media(min-width: 576px){
+    width: 85% !important;
+  }
+}
+
+.w-80 {
+  width: 80%;
+}
+
+.negative-z-index {
+  z-index: -1;
+}
+
+.square {
+  width: 50vw;
+  height: 50vw;
+}
+
+.borderThicker {
+  border: solid 1.3px #707070 !important;
+}
+
+.underline-1 {
+  text-decoration-thickness: 0.03em !important;
+}
+
+.noBackground {
+  background: none !important;
+}
+
+.noBorder {
+  border-style: none !important;
+}
+
+.noBtnStyles {
+  background-repeat: no-repeat;
+  border: none;
+  background: none;
+  overflow: hidden;
+  outline: none;
+}
+
+.roundedBorder{
+  border-radius: 1.3em;;
+}
+
+.hyphen{
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: -2px;
+  font-weight: 100;
+}
+
+.op-5{
+  opacity: .5 !important;
+}
+
+
+
+.moveLeft{
+  transform: translateX(-15px) !important;
+}
+
+.no-underline{
+  text-decoration: none !important;
+}
+
+.underline-on-hover:hover{
+  text-decoration: underline !important;
+  cursor: pointer !important;
+}
+
+.pointer{
+ cursor:  pointer !important;
+}
+
+.btnColorChangeOnHover:hover{
+  opacity: .8 !important;
+}
+
+.moveRight{
+  transform: translateX(15px) !important;
+}
+
+
+.spanSubheader{
+  font-size: 18px !important;
+  font-weight: 249 !important;
+}
+
 
 .accordion-header button {
   &.collapsed .bi-chevron-up {

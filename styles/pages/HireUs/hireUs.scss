@@ -1,0 +1,885 @@
+@import "../../globalVars.scss";
+@import "./hireUsComps/TestimoniesAndReviewsSec";
+@import "./hireUsComps/PicAndDescriptionSec.scss";
+@import "../../comps/carousel.scss";
+@import "../HireUs/hireUsComps/modalStyles/HireUsModalStyles.scss";
+@import "../HireUs/hireUsComps/readyToInspireSec.scss";
+@import "../HireUs/hireUsComps/whatDoWeDoSec.scss";
+@import "./hireUsComps/tier.scss";
+@import "./hireUsComps/letsTalkBtnStyles.scss";
+@import "./hireUsComps/introSecHireUs.scss";
+@import "./hireUsComps/whatOurClientSay.scss";
+@import "./hireUsComps/shareYourKnowledgeSec.scss";
+@import "./hireUsComps/clientFundingSec.scss";
+@import "./hireUsComps/ownerSec.scss";
+@import "./hireUsComps/whatYouWillGetSec.scss";
+@import "./hireUsComps/scientistSec.scss";
+@import "./hireUsComps/howMuchDoesItCostSec.scss";
+
+.hireUsPg h1{
+  @media(min-width: 768px){
+    font-size: $h1DesktopFontSize;
+  }
+}
+
+.hireUsPg h3{
+  @media(min-width: 768px){
+    font-size: $h3DesktopFontSize;
+  }
+}
+
+.subTxtHeadingDesktop{
+  @media(min-width: 768px){
+    font-size: $subHeaderDesktop;
+  }
+}
+
+.humanDescriptionTxt {
+  line-height: 33px;
+}
+
+.responsiveInfoTxt {
+  @media(min-width: 768px){
+    font-size: $spanDesktopFontSize;
+  }
+}
+
+.arrowHowDoesItWork {
+  background-color: $hireUsPgMainCardColor !important;
+  mix-blend-mode: multiply !important;
+}
+
+.mattsAwardsSec {
+  @media (min-width: 768px) and (max-width: 991px) {
+    padding-left: 35px !important;
+  }
+}
+
+.mattsAward {
+  @media (min-width: 768px) and (max-width: 991px) {
+    display: flex;
+    justify-content: space-between;
+    > section:first-child {
+      width: 100% !important;
+      height: 100px !important;
+      padding-top: 10px !important;
+      span {
+        text-align: start !important;
+        display: inline-block !important;
+        width: 100% !important;
+        max-width: 500px !important;
+        margin-top: 10px !important;
+      }
+    }
+  }
+
+  @media (min-width: 1200px) {
+    // width: 500px !important;
+    max-width: 600px !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    position: relative !important;
+    // border: solid pink !important;
+
+    > section:first-child {
+      max-width: 460px !important;
+    }
+
+    > section:last-of-type {
+      width: 100px !important;
+    }
+  }
+}
+
+
+
+.picAndImgSec {
+  @media (max-width: 575px) {
+    height: fit-content;
+  }
+}
+
+.promoteLessonsTxtContainer {
+  width: 50% !important;
+
+  @media (max-width: 575px) {
+    width: 100% !important;
+  }
+}
+
+.promoteLessonsTxtClass {
+  font-size: 28px !important;
+}
+
+.move10pxRight {
+  transform: translateX(10px);
+}
+
+.move10pxRightResponsive {
+  @media (min-width: 576px) {
+    transform: translateX(10px);
+  }
+}
+
+.hireUsPgWrapper {
+  overflow-x: hidden !important;
+}
+
+.hireUsPg {
+  color: #ffffff;
+  background-size: cover;
+  background-position: 70% center;
+  height: auto !important;
+  overflow-x: hidden !important;
+}
+
+.normalTxtOnHireUsPg {
+  font-size: 22px !important;
+}
+
+.CardSec {
+  @media (min-width: 768px) {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
+
+.hireUsPgInfoCard {
+  max-width: 1392px !important;
+  min-width: 265px !important;
+  min-height: 700px;
+  border-radius: $borderRadiusModal;
+  background-color: $hireUsPgMainCardColor;
+
+  @media (min-width: 768px) {
+    // transform: translateY(-100px);
+    transform: translateY(-50px);
+    padding-bottom: 170px !important;
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    transform: translateY(-100px);
+  }
+
+  @media (max-width: 575px) {
+    transform: translateY(-40px) !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    min-width: 755px !important;
+  }
+
+  @media (min-width: 1200px) {
+    // transform: translateY(-50px);
+  }
+}
+
+
+.hireUsPgInfoCardBody {
+  @media (min-width: 768px) {
+    padding: 0 !important;
+  }
+
+  h3 {
+    color: $mobileTxtColor !important;
+    font-weight: 800;
+  }
+
+  @media (max-width: 767px) and (min-width: 576px) {
+    h3 {
+      padding-right: 2px !important;
+    }
+  }
+
+  @media (max-width: 575px) {
+    h3 {
+      // font-size: 42px !important;
+      text-align: center !important;
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+    }
+  }
+
+  @media (max-width: 767px) {
+    padding: 0 !important;
+  }
+}
+
+.whatWillYouGetTxtUnBolded {
+  @media (max-width: 575px) {
+    &::first-letter {
+      text-transform: capitalize;
+    }
+
+    max-width: 430px !important;
+  }
+}
+
+.shareYourKnowledgeImgContainer.classRoom {
+  @media (min-width: 768px) and (max-width: 1199px) {
+    width: 40vw !important;
+    min-width: 500px !important;
+    height: 305px !important;
+  }
+}
+
+.shareYourKnowledgeImgContainer.classRoom {
+  @media (min-width: 768px) {
+    width: 560px !important;
+  }
+}
+
+.shareYourKnowledgeImgContainer {
+  @media (min-width: 768px) {
+    > img {
+      border-radius: 3.3rem !important;
+    }
+  }
+
+  > img {
+    border-radius: 0.3rem !important;
+  }
+
+  @media (max-width: 575px) {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    > img {
+      position: relative !important;
+      width: 200px !important;
+      height: 200px !important;
+    }
+  }
+}
+
+.shareYourKnowledgeImgSec {
+  @media (min-width: 768px) {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  @media (min-width: 1200px) {
+    width: 50% !important;
+  }
+}
+
+.GPConstellation {
+  @media (max-width: 767px) {
+    height: 370px !important;
+  }
+}
+
+.shareYourKnowledgeImgContainer {
+  height: 400px;
+
+  @media (min-width: 1200px) {
+    height: 280px;
+  }
+
+  @media (max-width: 767px) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    > img {
+      position: static !important;
+    }
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    height: fit-content !important;
+  }
+
+  @media (max-width: 575px) {
+    height: 280px !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    width: 75% !important;
+    height: fit-content !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  @media (max-width: 767px) {
+    width: 100% !important;
+  }
+
+  > span {
+    border-radius: $borderRadiusModal !important;
+    border: solid 1px #707070 !important;
+
+    @media (max-width: 575px) {
+      height: 250px !important;
+    }
+  }
+}
+
+.fwtHireUsCard {
+  font-weight: 249 !important;
+}
+
+.hireUsCardIntroTxt {
+  color: #363636 !important;
+  width: 75%;
+
+  @media(min-width: 768px){
+    font-size: $spanFontSize;
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+
+  @media (max-width: 575px) {
+  }
+}
+
+.hireUsCardSectionTxt {
+  height: 100px;
+  line-height: 23px;
+
+  @media (min-width: 768px){
+    font-size: $spanDesktopFontSize;
+  }
+}
+
+.whatYouWillGetSec {
+  @media (min-width: 768px) {
+    margin-top: 20px !important;
+    column-count: 2 !important;
+
+    > section {
+      width: 100% !important;
+    }
+  }
+}
+
+.hireUsInfoStyledContainer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    height: 250px !important;
+
+    > * {
+      transform: translateY(-22px) !important;
+    }
+  }
+
+  @media(min-width: 992px){
+    // transform: translateY(30px) !important;
+    margin-top: 40px !important;
+  }
+
+  @media (min-width: 1200px) {
+    > * {
+      transform: translateY(-15px) !important;
+    }
+  }
+
+  @media (max-width: 767px) {
+    border: solid 0.5px #707070;
+    border-radius: $borderRadiusModal;
+  }
+}
+
+.howDoesItWorkSec{
+  > section:last-child{
+    @media(min-width: 992px){
+      margin-top: 20px !important;
+    }
+  }
+}
+
+.hireUsCardTxt {
+  @media (max-width: 767px) {
+    font-weight: 249;
+  }
+}
+
+.anyTimeSec {
+  > section:first-child {
+    @media (min-width: 768px) {
+      width: 100% !important;
+      max-width: 800px !important;
+    }
+
+    @media (max-width: 767px) {
+      width: 100% !important;
+    }
+  }
+
+  > section:last-child {
+    display: flex !important;
+    flex-direction: column !important;
+    @media (min-width: 768px) and (max-width: 991px) {
+      > div {
+        margin-top: auto !important;
+      }
+    }
+  }
+
+  span{
+    @media(min-width: 768px){
+      font-size: $spanDesktopFontSize;
+      line-height: $lineHeight;
+    }
+  }
+}
+
+.arrowDown {
+  font-size: 50px !important;
+}
+
+.player-wrapper {
+  position: relative;
+  padding-top: 56.25%; /* 720 / 1280 = 0.5625 */
+}
+
+.react-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.video-styles {
+  width: 100% !important;
+  border-radius: $borderRadiusModal;
+
+  @media (max-width: 767px) {
+    width: 90% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 348px !important;
+
+    > * > * {
+      width: 100% !important;
+      border-radius: 0.375rem !important;
+    }
+  }
+}
+
+.looped-vid-hire-us {
+  width: 100% !important;
+  object-fit: fill !important;
+  border-radius: $borderRadiusModal;
+
+  @media (max-width: 767px) {
+    width: 90% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    > * > * {
+      width: 100% !important;
+      border: 1px solid #dee2e6 !important;
+      border-radius: 0.375rem !important;
+    }
+  }
+}
+
+.video-styles,
+.looped-vid-hire-us {
+  height: 225px !important;
+
+  @media (max-width: 575px) {
+    max-width: 300px !important;
+    min-width: 225px !important;
+    height: 225px !important;
+  }
+
+  @media(min-width: 768px) and (max-width: 991px){
+    max-width: 410px !important;
+  }
+}
+
+
+
+
+
+.HireUsCardFirstSecMobile {
+  @media (min-width: 768px) {
+    > section:first-child {
+      > span {
+        width: 100px !important;
+        height: 100px !important;
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+
+    @media (min-width: 576px) {
+      max-width: 480px !important;
+    }
+
+    > section:first-child {
+      > span {
+        width: 80px !important;
+        height: 80px !important;
+      }
+    }
+  }
+
+  > section:last-child {
+    span {
+      @media (min-width: 768px) and (max-width: 991px){
+        font-size: $spanDesktopFontSize;
+      }
+    }
+  }
+}
+
+.HireUsCardFirstSecMobile:first-child {
+  @media (max-width: 767px) and (min-width: 576px) {
+    margin-top: 20px !important;
+  }
+}
+
+.HireUsCardFirstSecMobile:not(:first-child) {
+  @media (max-width: 767px) and (min-width: 576px) {
+    margin-top: 55px !important;
+  }
+
+  @media(max-width: 575px){
+    margin-top: 25px !important;
+  }
+}
+
+.HireUsCardFirstSecMobile {
+  > section {
+    @media (max-width: 575px) {
+      width: 100% !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  > section:last-child {
+    > span {
+      text-align: center;
+
+      @media (min-width: 1200px) {
+      }
+    }
+  }
+}
+
+.whatWillYouGetSec {
+  > section:last-child {
+    @media (min-width: 1200px) {
+      width: 425px !important;
+    }
+  }
+}
+
+.introSubTextHireUs {
+  @media (min-width: 768px) and (max-width: 879px) {
+    font-size: 35px !important;
+  }
+
+  @media (min-width: 880px) and (max-width: 991px) {
+    font-size: 38px !important;
+  }
+
+  @media (min-width: 992px) {
+    font-size: 40px !important;
+  }
+
+  @media (max-width: 767px) {
+    width: 79% !important;
+    font-size: 45px !important;
+  }
+}
+
+.howDoesItWorkSec {
+  @media (max-width: 767px) {
+    > section:last-child > section {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+  }
+
+  @media (max-width: 575px) {
+    > section:last-child {
+      justify-content: center !important;
+      align-items: center !important;
+    }
+  }
+
+
+}
+
+.infoCardHireUs {
+  border: solid 1px #d0b4bf;
+  border-radius: 1.3rem !important;
+
+  @media (min-width: 768px) {
+    padding: 25px;
+  }
+
+  @media (max-width: 767px) {
+    max-width: 577px !important;
+
+    @media(min-width: 576px){
+      padding: 25px 45px 25px 45px !important;
+    }
+  }
+
+  @media (min-width: 992px) and (max-width: 1199px) {
+    width: 37vw !important;
+  }
+
+  @media (min-width: 1200px) {
+    width: 34vw !important;
+    min-width: 425px !important;
+    max-width: 550px !important;
+  }
+
+  @media (min-width: 992px) and (max-width: 1199px) {
+    min-width: 347px !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    width: 75vw !important;
+    min-width: 637.5px !important;
+    height: 400px !important;;
+  }
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    padding: 25px 25px 50px 25px !important;
+  }
+
+  @media (max-width: 575px) {
+    max-width: 450px !important;
+    min-width: 247px !important;
+    padding: 20px 0px 20px 0px !important;
+
+
+    > section:nth-child(2){
+      // padding-left: 5px !important;
+      // padding-right: 5px !important;
+    }
+
+    // min-width: 280px !important;
+    // padding: 10px 45px 10px 45px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .howDoesItWorkSec {
+    > section:last-child {
+      > section:nth-last-child(3) {
+        margin: 30px 0px 0px 0px !important;
+      }
+    }
+  }
+}
+
+.arrowSec {
+  background-color: #fff8f8 !important;
+  z-index: -1;
+  @media (min-width: 992px) {
+    > img {
+      transform: rotate(-90deg);
+    }
+  }
+  @media (min-width: 1200px) {
+    padding-left: 35px !important;
+    padding-right: 35px !important;
+
+    img {
+      background-color: #fff8f8;
+      mix-blend-mode: multiply !important;
+    }
+  }
+
+  img {
+    max-width: none !important;
+    width: 55px !important;
+    height: 55px !important;
+
+    @media (min-width: 768px) {
+      width: 60px !important;
+      height: 60px !important;
+    }
+
+    @media (min-width: 1200px) {
+      width: 70px !important;
+      height: 70px !important;
+    }
+  }
+}
+
+.howDoesItWorkSec {
+  > section:first-child {
+    @media (max-width: 575px) {
+      width: 100%;
+    }
+  }
+}
+
+
+
+
+.ourClientsFundingSourcesHeadingTxt {
+  font-size: 30px !important;
+}
+
+.imgContainerHireUsDefaultStyles {
+  @media (max-width: 575px) {
+    height: 100% !important;
+    width: 100% !important;
+  }
+}
+
+.imgContainerHireUsPg {
+  width: 80% !important;
+
+  @media (max-width: 575px) {
+    margin-top: 15px !important;
+    width: 75% !important;
+    height: 215px !important;
+  }
+}
+
+.howMuchDoesItCostSec {
+  @media (min-width: 768px) {
+    padding-top: 20px !important;
+  }
+
+  > section:nth-child(2) {
+    span {
+      line-height: 20px !important;
+      width: 100%;
+    }
+  }
+  > section:nth-child(2) {
+    span {
+      width: 100%;
+    }
+  }
+  > section:nth-child(2) {
+    > span {
+      @media (max-width: 575px) {
+        line-height: 20px !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+      }
+    }
+  }
+}
+
+
+
+
+@media (max-width: 575px) {
+  .shareYourKnowledgeImgContainer > img {
+    max-width: 580px !important;
+    width: auto !important;
+    height: 170px !important;
+
+    @media (max-width: 400px) {
+      width: 240px !important;
+    }
+  }
+}
+
+.introMainBtnInnerSec {
+  > * {
+    height: 80px !important;
+  }
+
+  span {
+    font-size: 2.5rem !important;
+  }
+}
+
+.txtOnHireUsPg {
+  font-size: $spanFontSize;
+}
+
+.eachLessonMainSec {
+  h3 {
+    color: black !important;
+    font-weight: 380 !important;
+  }
+}
+
+
+
+.btnContainerWhenShouldIReach {
+  > div {
+    > div:last-of-type {
+      span {
+        font-size: $bntFontSize;
+      }
+    }
+
+    > div:first-of-type {
+      svg {
+        // width: 40px !important;
+        // height: 40px !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  .mattsAward:not(:first-child) {
+    margin-top: 50px !important;
+
+    @media (max-width: 767px) and (min-width: 576px) {
+      margin-top: 0px !important;
+    }
+  }
+
+  .mattsAward {
+    > section:first-child {
+      margin-top: 10px !important;
+      > a span {
+        text-decoration-thickness: 0.5px !important;
+      }
+    }
+  }
+}
+
+.looped-video-sec {
+  @media (max-width: 575px) {
+    > div:last-of-type {
+      > section:last-of-type {
+        padding-top: 20px !important;
+      }
+    }
+  }
+}
+
+.youtube-vid-sec {
+  @media (max-width: 575px) {
+    > div:last-of-type {
+      > section:last-of-type {
+        padding-top: 20px !important;
+      }
+    }
+  }
+}
+
+
+
+.whatYouWillGetMainSec {
+  > section:last-of-type {
+    @media (max-width: 575px) {
+      margin-top: 10px !important;
+    }
+  }
+}
+
+

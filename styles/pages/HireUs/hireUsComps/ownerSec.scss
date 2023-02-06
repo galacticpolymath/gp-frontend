@@ -1,0 +1,35 @@
+.ownerSection {
+  > section:first-child {
+    @media (min-width: 768px) and (max-width: 991px) {
+      > span {
+        margin-left: 0px !important;
+        line-height: 23px !important;
+      }
+    }
+  }
+}
+
+.ownerInfoSec {
+  > section:nth-child(2) {
+    margin-top: 10px !important;
+  }
+}
+
+.ownerInfoSec {
+  > section:nth-child(2) {
+    > span:last-child {
+      // padding-left: 8px !important;
+      // padding-right: 8px !important;
+    }
+  }
+}
+
+.ownerInfoSec{
+    span{
+        @media(min-width: 768px){
+            font-size: $spanDesktopFontSize;
+        }
+    }
+}
+
+

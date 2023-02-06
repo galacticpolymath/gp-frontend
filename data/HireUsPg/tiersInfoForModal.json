@@ -1,0 +1,82 @@
+[
+    {
+        "title": "GP Learning Experience",
+        "texts": [
+            {
+                "normalTxt": "We mobilize knowledge by packaging it into lessons that are fun, accessible, and easy to teach. Our lessons are: "
+            },
+            {
+                "boldTxt": "Interdisciplinary: ", 
+                "normalTxt": "aligned to standards in Science, Math, Language Arts, and Social Studies"
+            },
+            {
+                "boldTxt": "Media-infused: ",
+                "normalTxt": "we craft engaging videos and visuals to simplify complex topics and maintain students’ attention"
+            },
+            {
+                "boldTxt": "Active learning: ",
+                "normalTxt": "we design lessons with minimal lecture and many opportunities for student voice, choice, and movement"
+            },
+            {
+                "boldTxt": "Narrative-based: ",
+                "normalTxt": "memorable lessons based around human stories and real world problems lead to long-term learning retention"
+            },
+            {
+                "boldTxt": "Data-centered: ",
+                "normalTxt": "we find creative ways to bring authentic data and critical thinking into lessons to build data literacy and 21st Century skills"
+            }
+        ]
+    },
+    {
+        "title": "Project Support",
+        "texts": [
+            {
+                "normalTxt": "For a set period of time, we will actively maintain lessons to improve usability, correct issues, and help teachers who contact us."
+            },
+            {
+                "normalTxt": "We will also periodically promote your lesson to ensure it's running smoothly in as many classrooms as possible."
+            },
+            {
+                "normalTxt": "After project support has run out, your lesson will continue to be hosted at galacticpolymath.com, without active maintenance."
+            }
+        ]
+    },
+    {
+        "title": "Basic Video",
+        "texts": [
+            {
+                "normalTxt": "Basic videos do most of the work to simplify complexity and engage students. These are relatively simple sequences including virtual conferencing interviews, existing video clips, Google Earth visualizations, and simple transitions. "
+            },
+            {
+                "normalTxt": "Price includes background research, script drafting, storyboarding, recording, editing, narration, scoring, and limited revisions."
+            }
+        ],
+        "videoLink": "https://www.youtube.com/watch?v=hR28Rd53S6g"
+    },
+    {
+        "title": "Complex Video",
+        "texts": [
+            {
+                "normalTxt": "Most projects require some amount of complex video to be interwoven with basic video. This allows you to fully engage audiences and unpack dense concepts in compelling ways. Examples include full animation, custom visualizations, or complex editing. "
+            },
+            {
+                "normalTxt": "Price includes background research, script drafting, storyboarding, recording/animation, editing, narration, scoring, and limited revisions."
+            }
+        ],
+        "videoLink": "https://www.youtube.com/watch?v=oFQmNq8sJ2Y"
+    },
+    {
+        "title": "Major Extension",
+        "texts": [
+            {
+                "normalTxt": "A major extension is another 1-2 part lesson that builds upon the foundation of an existing lesson."
+            },
+            {
+                "normalTxt": "A common scenario would be to build an extension in Year 3 of a three-year grant to incorporate the latest findings into activities."
+            },
+            {
+                "normalTxt": "Typically, the first lesson we develop together (in Year 1) will function as an adaptor that allows students to understand the broader body of research your work contributes to and become invested in the types of problems you are trying to solve. The extension then gives the opportunity for students to engage with scaffolded activities involving your hot-off-the-press work funded by the grant."
+            }
+        ]
+    }
+]

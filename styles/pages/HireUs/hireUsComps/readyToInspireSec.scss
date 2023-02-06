@@ -1,0 +1,174 @@
+.readyToInspireParentSec {
+  background-color: #2e0b1b;
+  height: fit-content !important;
+  position: relative;
+  width: 100vw;
+  border: none;
+  
+  @media(max-width: 767px){
+    height: 800px !important;
+  }
+}
+
+.readyToInspireSec {
+  background-color: #2e0b1b;
+
+  @media(min-width: 1200px){
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  > section{
+      max-width: 695.82px !important;
+    }
+  }
+
+  @media(min-width: 768px){
+    transform: translateY(-165px);
+
+    @media (min-width: 768px) {
+      padding-bottom: 100px !important;
+    }
+  }
+
+  @media (max-width: 767px) {
+    width: 100vw;
+    height: 800px;
+    bottom: 0;
+    margin-left: calc(-1 * ((100vw - 100%) / 2));
+    margin-right: calc(-1 * ((100vw - 100%) / 2));
+    position: absolute;
+    transform: translateY(-165px);
+  }
+
+  > section:first-child {
+    @media (min-width: 992px) {
+      margin-right: 45px !important;
+    }
+  }
+}
+
+
+
+.readyToInspireImgSec{
+  img{
+    height: 500px !important;
+
+    @media(min-width: 576px) and (max-width: 1199px){
+      height: 500px !important;
+      width: 100% !important;
+    }
+
+    @media(max-width: 575px){
+      height: 300px !important;
+    }
+  }
+
+  @media(min-width: 992px){
+    width: 50% !important;
+    height: 575px !important;
+    min-width: 452px !important;
+  }
+
+  > section:first-child{
+    border: solid pink !important;
+  }
+}
+
+.readyToInspireImg{
+  // margin-top: 50px !important;
+  img{
+    height: 100% !important;
+    @media(min-width: 1200px){
+      min-width: 650px !important;
+    }
+  }
+}
+
+
+
+
+.readyToInspireImg{
+  @media(min-width: 768px){
+    height: 100% !important;
+
+  }
+
+  @media(max-width: 767px){
+    width: 100vw !important;
+    margin-left: calc(-1 * (100vw - 100%) / 2);
+    margin-right: calc(-1 * (100vw - 100%) / 2);
+  }
+}
+
+
+.classRoom2ContentStyles {
+  @media (min-width: 768px) {
+    height: 500px !important;
+  }
+
+  @media (max-width: 767px) {
+    height: 400px !important;
+
+    @media(max-width: 575px){
+      height: 300px !important;
+    }
+  }
+
+  > section {
+    bottom: 30px !important;
+  }
+}
+
+.readyToInspireTxtsSec{
+  @media(min-width: 768px) {
+    width: 50% !important;
+    padding-left: 100px !important;
+  }
+
+  @media(min-width: 768px) and (max-width: 991px){
+    padding-left: 50px !important;
+    padding-bottom: 50px !important;
+  }
+}
+
+.orderLaCarteSec,
+.readyInspireSec{
+
+  @media(min-width: 768px){
+    span{
+      text-align: start !important;
+      font-size: 2.5rem !important;
+      max-width: 470px !important;
+    }
+    
+
+    > span:not(:first-child){
+      @media(max-width: 991px){
+        margin-top: 25px !important;
+      }
+    }
+
+    > span{
+      line-height: 48px !important;
+      height: 180px !important;
+      @media(max-width: 1200px){
+        padding-right: 25px !important;
+      }
+
+      @media(max-width: 991px){
+        height: fit-content !important;
+      }
+    }
+  }
+
+  @media(min-width: 1200px) and (max-width: 1400px){
+    > span{
+      padding-right: 45px !important;
+    }
+  }
+}
+
+.orderLaCarteSec{
+
+}
+

@@ -1,0 +1,85 @@
+.eachLessonInfoList {
+  @media (min-width: 768px) and (max-width: 1199px) {
+    column-count: 2;
+    column-gap: 40px !important;
+  }
+
+  li {
+    font-size: $spanFontSize;
+    max-width: 580px !important;
+    font-weight: 200 !important;
+  }
+
+  @media (max-width: 767px) and (min-width: 1200px) {
+    li:not(:first-child) {
+      margin-top: 13px;
+    }
+  }
+  @media (min-width: 768px) and (max-width: 1199px) {
+    li {
+      height: 150px !important;
+      list-style: disc !important;
+
+      @media (min-width: 992px) {
+        padding-right: 40px !important;
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    li:not(:first-child) {
+      margin-top: 15px !important;
+    }
+  }
+}
+
+.eachLessonMainSec {
+    > section {
+      h5 {
+        font-size: 30px !important;
+        font-weight: 380;
+      }
+    }
+  }
+
+.introTxtShareYourKnowledge {
+  > span {
+    font-size: $spanFontSize;
+    font-weight: 250 !important;
+    @media (min-width: 1200px) {
+      // padding-right: 70px !important;
+      padding-right: 70px !important;
+    }
+
+    @media (min-width: 768px) {
+      color: #000000 !important;
+    }
+  }
+}
+
+.shareYourKnowledgeDesktopSec li,
+.shareYourKnowledgeDesktopSec span {
+  @media (min-width: 768px) {
+    font-size: $spanDesktopFontSize;
+  }
+}
+
+.eachLessonWrapper {
+    @media (min-width: 1200px) {
+      max-height: 385.5px !important;
+    }
+  
+    > section {
+      > h3 {
+        color: black !important;
+        font-weight: 249;
+        font-size: 24px !important;
+      }
+    }
+
+    @media(min-width: 768px) and (max-width: 1199px){
+      li:nth-child(even) {
+        // margin-top: 10px !important;
+      }
+    }
+  }
