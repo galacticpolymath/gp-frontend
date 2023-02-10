@@ -7,7 +7,6 @@
   li {
     font-size: $spanFontSize;
     max-width: 580px !important;
-    font-weight: 200 !important;
   }
 
   @media (max-width: 767px) and (min-width: 1200px) {
@@ -45,7 +44,6 @@
 .introTxtShareYourKnowledge {
   > span {
     font-size: $spanFontSize;
-    font-weight: 250 !important;
     @media (min-width: 1200px) {
       // padding-right: 70px !important;
       padding-right: 70px !important;
@@ -65,21 +63,14 @@
 }
 
 .eachLessonWrapper {
-    @media (min-width: 1200px) {
-      max-height: 385.5px !important;
-    }
-  
-    > section {
-      > h3 {
-        color: black !important;
-        font-weight: 249;
-        font-size: 24px !important;
-      }
-    }
+  @media (min-width: 1200px) {
+    max-height: 385.5px !important;
+  }
 
-    @media(min-width: 768px) and (max-width: 1199px){
-      li:nth-child(even) {
-        // margin-top: 10px !important;
-      }
+  > section {
+    > h3 {
+      color: black !important;
+      font-size: 24px !important;
     }
   }
+}

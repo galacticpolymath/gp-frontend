@@ -34,7 +34,7 @@ const LessonDetails = ({ lesson }) => {
   };
 
   return (
-    <Layout>
+    <Layout className="plain-h3">
       <div className="container p-4">
         {lastSubRelease && (
           <p>

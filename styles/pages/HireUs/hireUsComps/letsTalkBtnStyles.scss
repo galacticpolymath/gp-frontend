@@ -73,7 +73,6 @@
 
     span {
       font-size: 24px !important;
-      font-weight: 250;
       text-decoration: underline;
       text-decoration-thickness: 1px;
 
@@ -113,11 +112,9 @@
   div:last-of-type {
     span {
       font-size: 34px;
-      font-weight: 250;
 
       @media (max-width: 767px) {
         padding: 0px 0px 8px 10px;
-        font-weight: 200;
         text-decoration: underline;
         text-decoration-thickness: 1.5px;
       }
@@ -135,7 +132,6 @@
     div:last-of-type {
       span {
         font-size: 24px;
-        font-weight: 250;
       }
     }
   }
@@ -152,7 +148,6 @@
     div:last-of-type {
       span {
         font-size: 24px;
-        font-weight: 210;
       }
     }
   }
@@ -202,7 +197,6 @@
       width: 200% !important;
 
       span {
-        font-weight: 249;
         text-decoration-thickness: 1px !important;
       }
     }
