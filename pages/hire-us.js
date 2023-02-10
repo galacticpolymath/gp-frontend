@@ -53,14 +53,14 @@ const HireUsPage = () => {
           <div className="container-fluid noPadding noMargin w-100 hireUsPgWrapper">
             <IntroSecHireUs />
             <section className="CardSec d-flex justify-content-center align-items-center flex-column align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
-              <Card className='hireUsPgInfoCard w-100 border shadow pt-4 pb-5'>
+              <Card className='hireUsPgInfoCard w-100 border shadow py-5'>
                 <Card.Body className="hireUsPgInfoCardBody">
                   <WhatDoWeDoSec />
                   <HowDoesItWorkSec />
                   <WhatYouWillGetSec />
                   <section className="d-flex mt-5">
                     <CardContainer
-                      headingTxt="What teachers & students says: "
+                      headingTxt="What teachers & students say: "
                       _userInputs={teacherTestimonies}
                       backgroundImgSrc={WhatTeachersSaysBackground.src}
                       headerContainerClassNamesDynamic="cardHeadingSec mt-5 mt-sm-0 pb-3 pb-sm-0"
