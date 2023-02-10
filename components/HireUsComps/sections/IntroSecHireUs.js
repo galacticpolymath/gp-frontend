@@ -30,12 +30,11 @@ const IntroSecHireUs = () => {
                             <span className={`${styles.shadow} subTxtHeadingDesktop spanSubheader noMargin noPadding w-75`}>
                                 We translate your work so that non-experts can teach mind-opening lessons.
                             </span>
-                            {/* <LetsTalkBtnContainer isMainBtn isAbsolute cssClasses='mainBtnAboveMobile d-none d-md-flex' /> */}
                         </section>
                     </section>
                     <section className="d-flex ps-md-5 letTalksMainBtnSec">
-                        <section className="introMainBtnInnerSec">
-                            <LetsTalkBtnContainer isMainBtn />
+                        <section className="introMainBtnInnerSec mt-3">
+                            <LetsTalkBtnContainer />
                         </section>
                     </section>
                 </section>

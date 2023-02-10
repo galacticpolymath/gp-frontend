@@ -40,11 +40,11 @@ const ReadyToInspireSec = () => {
                         <span className="fs-med d-block fw249 d-sm-none text-center ps-5 ps-sm-0 pe-5 pe-sm-0">Let us know how we can help! Order <span className="fst-italic">à la carte</span> or customize a package.</span>
                     </section>
                     <section className="d-none d-lg-flex mt-5">
-                        <LetsTalkBtnContainer isInReadyToInspireSec isDarker />
+                        <LetsTalkBtnContainer />
                     </section>
                 </section>
                 <section className="mt-4 mb-4 d-flex d-sm-block justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch ps-sm-5 d-flex d-lg-none pb-5">
-                    <LetsTalkBtnContainer isInReadyToInspireSec isDarker />
+                    <LetsTalkBtnContainer />
                 </section>
             </div>
         </section>

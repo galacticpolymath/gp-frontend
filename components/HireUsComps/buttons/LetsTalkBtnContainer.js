@@ -18,38 +18,9 @@ import MessageBoxIcon from '../../svgs/MessageBoxIcon';
 import Button from 'react-bootstrap/Button';
 
 
-const LetsTalkBtnContainer = ({isMainBtn, isInReadyToInspireSec, isAbsolute, isNoUnderline, isDarker, cssClasses }) => {
-    let _className = `${isMainBtn ? "mainBtnLetsTalk" : "letsTalkBtnContainer"} ${isAbsolute ? 'position-absolute' : 'position-relative'} border-white d-flex flex-row-reverse  ${isInReadyToInspireSec ? 'inReadyToInspireSec' : ''} defaultStylingLetsTalkBtn ${isDarker ? 'letsTalkDarker' : ''}`
-
-    if(_className){
-        _className += ' ' + cssClasses
-    }
-
-    let btnTxtStyles = 'text-nowrap letsTalkBtnTxt'
-
-    if(isMainBtn){
-        btnTxtStyles += ' mainBtnTxt'
-    }
-
-    if(isNoUnderline){
-        btnTxtStyles += ' no-underline'
-    }
-
-    const handleOnClick = () => {
-        window.open('https://portal.galacticpolymath.com/public/form/view/604d904c80fecb0cd51e2529', '_blank')
-    }
-
-    return (
-        <div className={_className}>
-            <div className="d-flex align-items-center justify-content-center">
-                <MessageBoxIcon />
-            </div>
-            <div className="d-flex align-items-center justify-content-center">
-                <span className={btnTxtStyles}>Let's talk!</span>
-            </div>
-            <Button onClick={handleOnClick} className="w-100 h-100 noBackground noBorder position-absolute" />
-        </div>
-    )
-}
+const LetsTalkBtnContainer = () => <button className='my-3 btn btn-primary whitespace-nowrap d-flex align-items-center gap-3'>
+    Let&apos;s talk!
+    <MessageBoxIcon />
+</button>
 
 export default LetsTalkBtnContainer;
