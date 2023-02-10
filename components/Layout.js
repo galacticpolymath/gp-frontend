@@ -21,8 +21,6 @@ export default function Layout({ title, keywords, description, children }) {
 
       <Navbar />
 
-      {/* {router.pathname === '/' && <Showcase />} */}
-
       {children}
       
       <Footer />
