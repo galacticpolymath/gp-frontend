@@ -375,12 +375,6 @@
   }
 }
 
-.hireUsCardTxt {
-  @media (max-width: 767px) {
-    font-weight: 249;
-  }
-}
-
 .anyTimeSec {
   > section:first-child {
     @media (min-width: 768px) {
@@ -641,15 +635,6 @@
     max-width: 450px !important;
     min-width: 247px !important;
     padding: 20px 0px 20px 0px !important;
-
-
-    > section:nth-child(2){
-      // padding-left: 5px !important;
-      // padding-right: 5px !important;
-    }
-
-    // min-width: 280px !important;
-    // padding: 10px 45px 10px 45px !important;
   }
 }
 
@@ -800,13 +785,6 @@
     > div:last-of-type {
       span {
         font-size: $bntFontSize;
-      }
-    }
-
-    > div:first-of-type {
-      svg {
-        // width: 40px !important;
-        // height: 40px !important;
       }
     }
   }

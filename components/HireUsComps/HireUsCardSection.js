@@ -11,7 +11,7 @@ const HireUsCardSection = ({ text, content, mobileTxt, dynamicCss }) => {
         <section className={`${dynamicCss ?? 'HireUCardSectionParent'} ps-2 pe-2 ps-sm-0 pe-sm-0`}>
             <div className="d-none d-md-flex flex-column infoCardHireUs justify-content-md-center align-items-md-center justify-content-lg-start align-items-lg-stretch">
                 <section className="d-flex justify-content-center w-100">
-                    <h4 className="hireUsCardTxt pe-1 text-dark hireUsCardSectionTxt fwtHireUsCard">{text}</h4>
+                    <div className="fs-4 hireUsCardTxt pe-1 text-dark hireUsCardSectionTxt fwtHireUsCard">{text}</div>
                 </section>
                 <div className="hireUsInfoStyledContainer mt-lg-4 mt-xl-0 w-100 border-dark d-none d-md-flex justify-content-center align-items-center">
                     <section className="d-flex justify-content-center align-items-center w-75">

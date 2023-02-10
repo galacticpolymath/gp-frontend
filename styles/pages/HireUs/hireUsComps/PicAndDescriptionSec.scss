@@ -516,16 +516,6 @@ $scientistFontSize: 1.3rem !important;
   }
 }
 
-
-.regImgSec,
-.shareYourKnowledgeImgContainer.classRoom {
-  @media (min-width: 768px) {
-    > img {
-      // height: 340px !important;
-    }
-  }
-}
-
 .shareYourKnowledgeDesktopSec {
   > section:first-child {
     > section:last-child {
@@ -645,7 +635,6 @@ $scientistFontSize: 1.3rem !important;
   > section:first-child {
     > span {
       font-size: $spanFontSize;
-      font-weight: 250 !important;
       padding-right: 40px !important;
 
       @media (max-width: 767px) {
@@ -760,9 +749,3 @@ $scientistFontSize: 1.3rem !important;
   bottom: 0px !important;
 }
 
-
-.GPConstellationSec{
-  section:first-child{
-    // @media
-  }
-}
