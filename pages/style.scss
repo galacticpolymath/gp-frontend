@@ -68,6 +68,10 @@ h3 {
   color: $burst-purple-dark;
   font-weight: 800;
 }
+.plain-h3 h3 {
+  color: $black;
+  font-weight: 500;
+}
 
 li {
   margin-bottom: 0.5rem;
