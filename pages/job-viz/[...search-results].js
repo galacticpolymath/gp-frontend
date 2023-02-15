@@ -3,26 +3,21 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 import JobViz from '.';
-import jobVizData from '../../data/Jobviz/jobVizData.json';
+import useSWR from 'swr';
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 const JobVizSearchResults = () => {
+    console.log(useSWR);
+
+    const { data, error } = useSWR('/api/jobVizData', fetcher);
+
+    if(data){
+        console.log('data: ', JSON.parse(data));
+    }
+    console.log('error: ', error);
+
     return <JobViz />;
 };
-
-export const getStaticProps = async ({ params }) => {
-    console.log('params:', params);
-    return {
-        props: {
-            startingSearchResults: jobVizData
-        }
-    };
-};
-
-export async function getStaticPaths() {
-    return {
-        paths: [{ params: { 'search-results': '1' } }],
-        fallback: false, // can also be true or 'blocking'
-    };
-}
 
 export default JobVizSearchResults;

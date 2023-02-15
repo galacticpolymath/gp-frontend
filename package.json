@@ -26,7 +26,8 @@
     "react-responsive-carousel": "^3.2.23",
     "react-scroll-parallax": "^3.3.2",
     "react-showdown": "^2.3.1",
-    "reactstrap": "^9.1.5"
+    "reactstrap": "^9.1.5",
+    "swr": "^2.0.3"
   },
   "devDependencies": {
     "eslint": "8.11.0",
