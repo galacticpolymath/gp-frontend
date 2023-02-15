@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 import Hero from '../components/Hero';
@@ -36,23 +38,28 @@ const JobViz = () => {
                         </section>
                     </section>
                 </section>
-                <section className="d-flex justify-content-center align-items-center w-100 border pt-5 mt-5">
+                <section className="d-flex justify-content-center align-items-center w-100 pt-5 mt-5">
                     {/* put modal card for job categories here */}
                     <Card className="jobVizCard border-0 shadow">
-                        <Body className="position-relative">
-                            <h4 className='text-muted text-center'>Job Categories</h4>
-                            <div>
-                                {/* <img /> */}
+                        <Body className="position-relative d-flex flex-column justify-content-end">
+                            <div className="jobVizIconContainer rounded-circle shadow position-absolute">
+                                <img
+                                    src="/imgs/jobViz/jobVizBrick.jpg" alt="Galactic_Polymath_JobViz_Icon_Search"
+                                    className='jobVizIcon rounded-circle'
+                                />
                             </div>
-                            <section className="d-flex justify-content-center align-items-center w-100">
-                                <Button id="jobVizBtnSearch" className="d-flex justify-content-center align-items-center">
-                                    <span className="w-25 h-100 d-flex justify-content-center align-items-center">
-                                        <IoNewspaperOutline />
-                                    </span>
-                                    <span className="w-75 h-100 d-flex justify-content-center align-items-center ps-1">
-                                        Details
-                                    </span>
-                                </Button>
+                            <section>
+                                <h4 className='text-muted text-center'>Job Categories</h4>
+                                <section className="d-flex justify-content-center align-items-center w-100">
+                                    <Button id="jobVizBtnSearch" className="d-flex justify-content-center align-items-center">
+                                        <span className="w-25 h-100 d-flex justify-content-center align-items-center">
+                                            <IoNewspaperOutline />
+                                        </span>
+                                        <span className="w-75 h-100 d-flex justify-content-center align-items-center ps-1">
+                                            Details
+                                        </span>
+                                    </Button>
+                                </section>
                             </section>
                         </Body>
                     </Card>

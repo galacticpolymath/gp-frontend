@@ -3,6 +3,7 @@ import Image from 'next/image';
 
 import Hero from '../../components/Hero';
 import Layout from '../../components/Layout';
+import JobVizIcon from '../../components/JobViz/JobVizIcon';
 
 const LessonsPage = ({ lessons }) => {
   return (
@@ -18,13 +19,7 @@ const LessonsPage = ({ lessons }) => {
             <section className="d-flex w-100">
               <section className="imgSec d-flex justify-content-center align-items-center">
                 {/* put the image for jobViz here */}
-                <div className="jobVizImgContainer rounded-circle border">
-                  <img
-                    src=""
-                    alt="jobViz_Galactic_Polymath"
-                    className='jobVizImg'
-                  />
-                </div>
+                <JobVizIcon />
               </section>
               <section className="d-flex justify-content-center align-items-center flex-column">
                 <h4>

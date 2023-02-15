@@ -4,14 +4,14 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 const JobVizIcon = ({ isOnJobVizPg }) => {
-    const imgContainerStyles = `${isOnJobVizPg ? 'jobVizImgContainerOnPg' : 'jobVizImgContainer'} rounded-circle border`;
+    const imgContainerStyles = `${isOnJobVizPg ? 'jobVizImgContainerOnPg' : 'jobVizImgContainer'} rounded-circle`;
 
     return (
         <div className={imgContainerStyles}>
             <img
-                src=""
+                src="/imgs/jobViz/jobviz_icon.png"
                 alt="jobViz_Galactic_Polymath"
-                className='jobVizImg'
+                className='jobVizImg rounded-circle'
             />
         </div>
     )
