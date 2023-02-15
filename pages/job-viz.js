@@ -39,7 +39,6 @@ const JobViz = () => {
                     </section>
                 </section>
                 <section className="d-flex justify-content-center align-items-center w-100 pt-5 mt-5">
-                    {/* put modal card for job categories here */}
                     <Card className="jobVizCard border-0 shadow">
                         <Body className="position-relative d-flex flex-column justify-content-end">
                             <div className="jobVizIconContainer rounded-circle shadow position-absolute">
@@ -64,8 +63,15 @@ const JobViz = () => {
                         </Body>
                     </Card>
                 </section>
-                <section>
+                <section className="bracketSec w-100 d-flex justify-content-center align-items-center">
                     {/* put bracket image */}
+                    <div className="bracketImgContainer">
+                        <img
+                            src="/imgs/jobViz/bracket_search.png" 
+                            alt="Galactic_Polymath_JobViz_Icon_Search"
+                            className='w-100 h-100'
+                        />
+                    </div>
                 </section>
                 <section>
                     {/* job modal cards */}
