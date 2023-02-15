@@ -6,6 +6,7 @@ import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 
 const LessonsPage = ({ lessons }) => {
+  
   return (
     <Layout>
       <Hero className="bg-secondary">

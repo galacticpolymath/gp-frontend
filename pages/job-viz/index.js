@@ -1,17 +1,27 @@
+/* eslint-disable no-console */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import Hero from '../components/Hero';
-import JobVizIcon from '../components/JobViz/JobVizIcon';
-import Layout from '../components/Layout';
+import Hero from '../../components/Hero';
+import JobVizIcon from '../../components/JobViz/JobVizIcon';
+import Layout from '../../components/Layout';
 import { BsSearch } from 'react-icons/bs';
 import { Button, Card } from 'react-bootstrap';
 import { IoNewspaperOutline } from 'react-icons/io5';
 
 const { Body } = Card;
+// get static props in order to get the json data to display on the JobViz page 
+// have the argument be the current search results to display on the UI
 
-const JobViz = () => {
+const JobViz = ({ searchResults, startingSearchResults }) => {
+    console.log(searchResults);
+    console.log('startingSearchResults: ', startingSearchResults);
+    // brain dump:
+    // get static props to get the json data
+    // show to the user the six island cards
+    // when the user clicks on modal cards, take the user to a specific level of the results  
+
     return (
         <Layout>
             <Hero className="jobVizHero">
@@ -67,7 +77,7 @@ const JobViz = () => {
                     {/* put bracket image */}
                     <div className="bracketImgContainer">
                         <img
-                            src="/imgs/jobViz/bracket_search.png" 
+                            src="/imgs/jobViz/bracket_search.png"
                             alt="Galactic_Polymath_JobViz_Icon_Search"
                             className='w-100 h-100'
                         />
