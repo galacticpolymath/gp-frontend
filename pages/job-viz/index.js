@@ -9,6 +9,7 @@ import Layout from '../../components/Layout';
 import { BsSearch } from 'react-icons/bs';
 import { Button, Card } from 'react-bootstrap';
 import { IoNewspaperOutline } from 'react-icons/io5';
+import JobCategories from '../../components/JobViz/JobCategories';
 
 const { Body } = Card;
 // get static props in order to get the json data to display on the JobViz page 
@@ -36,7 +37,7 @@ const JobViz = ({ searchResults, startingSearchResults }) => {
                     </section>
                 </section>
             </Hero>
-            <div className="jobVizContent min-vh-100 pt-5">
+            <div className="jobVizContent min-vh-100 pt-5 pb-5">
                 <section className="w-100 d-flex justify-content-center align-items-center">
                     {/* put search bar here */}
                     <section className="d-flex inputSec">
@@ -83,9 +84,8 @@ const JobViz = ({ searchResults, startingSearchResults }) => {
                         />
                     </div>
                 </section>
-                <section>
-                    {/* job modal cards */}
-                </section>
+                {/* job modal cards */}
+                <JobCategories />
             </div>
         </Layout>
     );

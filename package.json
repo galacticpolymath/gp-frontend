@@ -8,6 +8,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@material-ui/icons": "^4.11.3",
     "@next/font": "^13.1.6",
     "@popperjs/core": "^2.11.4",
     "bootstrap": "^5.1.3",

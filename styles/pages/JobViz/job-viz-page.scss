@@ -1,3 +1,5 @@
+@import './sections/jobCategories.scss';
+
 $heroColor: #f0f4ff;
 
 .jobVizHero {
@@ -30,7 +32,7 @@ $heroColor: #f0f4ff;
 
 .bracketImgContainer{
   height: 100px;
-  width: 75%;
+  width: 85%;
 }
 
 
@@ -62,13 +64,13 @@ $heroColor: #f0f4ff;
 
 #jobVizBtnSearch{
   > span:last-child{
-    font-size: 12px !important;  
+    font-size: 12px;  
   }
 }
 
 .inputSec{
   svg{
-    font-size: 25px !important;
+    font-size: 25px;
   }
   input{
     border: solid 2px #6c757d;
@@ -82,3 +84,5 @@ $heroColor: #f0f4ff;
     }
   }
 }
+
+
