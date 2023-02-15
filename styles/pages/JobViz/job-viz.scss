@@ -1,0 +1,63 @@
+$heroColor: #f0f4ff;
+
+.jobVizHero {
+  background-color: $heroColor;
+}
+
+.jobVizImgContainerOnPg {
+  width: 350px;
+  height: 350px;
+  color: #6c757d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.jobVizHeroMainSec {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.jobVizHero {
+  > div > div {
+    width: 90%;
+    position: relative;
+  }
+}
+
+.jobVizCard{
+  width: 20rem;
+  height: 209px;
+
+  h4{
+    font-weight: 249;
+  }
+}
+
+.jobVizContent input{
+  outline: none;
+}
+
+#jobVizBtnSearch{
+  > span:last-child{
+    font-size: 12px !important;  
+  }
+}
+
+.inputSec{
+  svg{
+    font-size: 25px !important;
+  }
+  input{
+    border: solid 2px #6c757d;
+  }
+}
+
+.jobVizHeroMainSec {
+  > section {
+    p {
+      max-width: 600px;
+    }
+  }
+}
