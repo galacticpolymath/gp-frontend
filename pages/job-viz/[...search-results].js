@@ -10,7 +10,8 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 const JobVizSearchResults = () => {
     console.log(useSWR);
 
-    const { data, error } = useSWR('/api/jobVizData', fetcher);
+    // put the params in the path
+    const { data, error } = useSWR('/api/jobVizData/{"data": "data"}', fetcher);
 
     if(data){
         console.log('data: ', JSON.parse(data));

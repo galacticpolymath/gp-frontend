@@ -10,15 +10,18 @@ import { promises as fileSystem } from 'fs';
 
 export default async function handler(req, res) {
   //Find the absolute path of the json directory
-  console.log('req: ', req);
+  console.log('req.query: ', req.query);
 
   const jsonDirectory = path.join(process.cwd(), 'data/Jobviz');
   //Read the json data file data.json
   const targetFile = `${jsonDirectory}/jobVizData.json`;
   const fileContents = await fileSystem.readFile(targetFile, 'utf8');
-  console.log('fileContents: ', fileContents);
-  
+  // const _fileContents = fileContents.filter(content => {
+  //   const { level1, hierarchy } = content;
+
+  //   return ((level1 === '17-0000') && hierarchy === 2);
+  // });
+
   //Return the content of the data file in json format
-  console.log('res: ', res);
   res.status(200).json(fileContents);
 }

@@ -60,7 +60,7 @@ const JobCategories = ({ searchResults }) => {
     // When the user clicks on 
 
     return (
-        <section className="pt-5 d-flex justify-content-center align-items-center">
+        <section className="pt-3 d-flex justify-content-center align-items-center">
             {searchResults ?
                 <div>
                     {/* display the search results based on what is stored in the params */}
