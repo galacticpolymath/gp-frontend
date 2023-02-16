@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable no-console */
@@ -19,34 +20,34 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 
 // GOAL #1: get the current job cards when the user clicks on the more jobs (get it in the form of json data)
 
+// const { data: jobResults, error, isLoading } = useSWR(`/api/jobVizData/${JSON.stringify(jobSearchCriteria)}`, fetcher);
+
+const getJobs = async jobSearchCriteria => {
+    const response = await fetch(`/api/jobVizData/${JSON.stringify(jobSearchCriteria)}`);
+    const data = await response.json();
+    return data;
+};
+
 const JobVizSearchResults = () => {
     const router = useRouter();
-    console.log('router?.query: ', router?.query);
+    console.log("router?.query: ", router?.query['search-results']);
     const _jobSearchCriteria = router?.query?.['search-results'] ?? [];
-    console.log('_jobSearchCriteria: ', _jobSearchCriteria);
     const [jobSearchCriteria, setJobSearchCriteria] = useState(_jobSearchCriteria);
     const [willGetNewResults, setWillGetNewResults] = useState(true);
     // the params will contain the following: 
     // { jobSearchCriteria: { hierarchy: number, level1: 17-0000 (string number) } }
     // GOAL: the user is on a specific level of the job search
     // send the following to the server: { jobSearchCriteria: { hierarchy: number, level1: 17-0000 (string number) } }
-    const { data: jobResults, error, isLoading } = useSWR(`/api/jobVizData/${JSON.stringify(jobSearchCriteria)}`, fetcher);
+    const { data, error, isLoading } = useSWR(`/api/jobVizData/${JSON.stringify(jobSearchCriteria)}`, fetcher);
 
-    
-
-    if (error) {
-        // CASE: an error has occurred, take the user to default page of JobViz
+    if(error || data?.didErr){
+        console.log("An error has occurred: ", error);
         return <JobViz />;
     }
 
-    if (isLoading) {
-        console.log('jobResults: ', jobResults);
-        // parse the data and pass it into the results
-        return <JobViz setWillGetNewResults={setWillGetNewResults} isLoading={isLoading} />;
-    }
-
-
-    return <JobViz setWillGetNewResults={setWillGetNewResults} dynamicJobResults={jobResults} />;
+    
+    
+    return <JobViz dynamicJobResults={data} />;
 };
 
 export default JobVizSearchResults;

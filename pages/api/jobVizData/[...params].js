@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   const targetHierarchyNum = parseInt(targetHierarchy);
 
   if(isNaN(targetHierarchyNum)){
-    res.status(404).json({ message: 'Invalid value for hierarchy params.' });
+    res.status(404).json({ message: 'Invalid value for hierarchy params.', didErr: true });
   }
 
   const jsonDirectory = path.join(process.cwd(), 'data/Jobviz');
