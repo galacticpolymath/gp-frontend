@@ -14,7 +14,7 @@ const startingResults =
     [
         {
             jobField: "Architecture & Engineering occupations",
-            id: "engineeringElId",
+            id: 120,
             path: "17-0000"
         },
         {
@@ -24,23 +24,23 @@ const startingResults =
         },
         {
             jobField: "Building & grounds cleaning & maintenance occupations",
-            id: "maintenanceElId",
+            id: 581,
             startingLevel: "37-0000"
         },
         {
             jobField: "Business & financial operations occupations",
-            id: "businessElId",
+            id: 355,
             startingLevel: "13-0000"
         }
         ,
         {
             jobField: "Community & social service occupations",
-            id: "serviceElId",
+            id: 232,
             startingLevel: "21-0000"
         },
         {
             jobField: "Computer & mathematical occupations",
-            id: "computerElId",
+            id: 92,
             startingLevel: "15-0000"
         }
     ]
@@ -51,7 +51,7 @@ const startingResults =
 // get all of data from jobVizData that meets the following criteria: 
 // hierarchy = 2
 // level1 = 17-0000
-const JobCategories = ({ searchResults }) => {
+const JobCategories = ({ dynamicResults }) => {
     // put the path into the url:
 
 
@@ -61,7 +61,7 @@ const JobCategories = ({ searchResults }) => {
 
     return (
         <section className="pt-3 d-flex justify-content-center align-items-center">
-            {searchResults ?
+            {dynamicResults ?
                 <div>
                     {/* display the search results based on what is stored in the params */}
                 </div>

@@ -1,3 +1,6 @@
+/* eslint-disable quotes */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-multiple-empty-lines */
 /* eslint-disable no-console */
 import path from 'path';
 import { promises as fileSystem } from 'fs';
@@ -10,18 +13,27 @@ import { promises as fileSystem } from 'fs';
 
 export default async function handler(req, res) {
   //Find the absolute path of the json directory
-  console.log('req.query: ', req.query);
+  const { params } = req.query ?? {};
+
+  if (!params){
+    res.status(404).json({ message: 'No params found' });
+  }
+  
+  const[targetHierarchy, targetLevel1] = JSON.parse(params);
+  const targetHierarchyNum = parseInt(targetHierarchy);
+
+  if(isNaN(targetHierarchyNum)){
+    res.status(404).json({ message: 'Invalid value for hierarchy params.' });
+  }
 
   const jsonDirectory = path.join(process.cwd(), 'data/Jobviz');
-  //Read the json data file data.json
   const targetFile = `${jsonDirectory}/jobVizData.json`;
-  const fileContents = await fileSystem.readFile(targetFile, 'utf8');
-  // const _fileContents = fileContents.filter(content => {
-  //   const { level1, hierarchy } = content;
+  const fileContents = JSON.parse(await fileSystem.readFile(targetFile, 'utf8'));
+  const fileContentsFiltered = fileContents.filter(file => {
+    const { hierarchy, level1 } = file; 
 
-  //   return ((level1 === '17-0000') && hierarchy === 2);
-  // });
+    return ((hierarchy === targetHierarchyNum) && (level1 === targetLevel1));
+  });
 
-  //Return the content of the data file in json format
-  res.status(200).json(fileContents);
+  res.status(200).json(fileContentsFiltered);
 }
