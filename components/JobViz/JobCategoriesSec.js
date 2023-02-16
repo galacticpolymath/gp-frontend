@@ -55,8 +55,10 @@ const startingJobResults =
 // get all of data from jobVizData that meets the following criteria: 
 // hierarchy = 2
 // level1 = 17-0000
-const JobCategories = ({ dynamicJobResults, currentLevelNum, setWillGetNewResults }) => {
+const JobCategories = ({ dynamicJobResults, currentLevelNum, setWillGetNewResults, isLoading }) => {
     const router = useRouter();
+    const jobResults = dynamicJobResults ?? startingJobResults;
+    console.log("jobResults: ", jobResults)
     // put the path into the url:
 
 
@@ -66,7 +68,7 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, setWillGetNewResult
     const handleBtnClick = level => {
         console.log('level: ', level);
         router.push(`/job-viz/${currentLevelNum + 1}/${level}`)
-        setWillGetNewResults && setWillGetNewResults(true);
+        // setWillGetNewResults && setWillGetNewResults(true);
         // GOAL: get the second level of job search results and displayed them onto the dom
         // the new results are passed into as a prop and the whole comp is re-rendered
         // th response with all of the new results are attained in the parent comp
@@ -76,10 +78,13 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, setWillGetNewResult
     }
 
     return (
-        <section className="pt-3 d-flex justify-content-center align-items-center"> 
-                <div className="jobCategoriesSec">
-                    {/* display the default search results */}
-                    {(dynamicJobResults ?? startingJobResults).map(({ jobField, id, startingLevel }) =>
+        <section className="pt-3 d-flex justify-content-center align-items-center">
+            <div className="jobCategoriesSec">
+                {/* display the default search results */}
+                {!jobResults ?
+                    <span>Loading results...</span>
+                    :
+                    jobResults.map(({ jobField, id, startingLevel }) =>
                         <div id={id} key={id} className="shadow jobFieldStartingResult d-flex flex-column">
                             <section className="w-100 h-50 d-flex justify-content-center align-items-center">
                                 <h4 className="text-center">{jobField}</h4>
@@ -91,7 +96,7 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, setWillGetNewResult
                             </section>
                         </div>
                     )}
-                </div>
+            </div>
         </section>
     );
 };

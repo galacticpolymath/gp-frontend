@@ -21,34 +21,32 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 
 const JobVizSearchResults = () => {
     const router = useRouter();
+    console.log('router?.query: ', router?.query);
     const _jobSearchCriteria = router?.query?.['search-results'] ?? [];
+    console.log('_jobSearchCriteria: ', _jobSearchCriteria);
     const [jobSearchCriteria, setJobSearchCriteria] = useState(_jobSearchCriteria);
     const [willGetNewResults, setWillGetNewResults] = useState(true);
     // the params will contain the following: 
     // { jobSearchCriteria: { hierarchy: number, level1: 17-0000 (string number) } }
     // GOAL: the user is on a specific level of the job search
     // send the following to the server: { jobSearchCriteria: { hierarchy: number, level1: 17-0000 (string number) } }
-    const { data, error } = useSWR(`/api/jobVizData/${JSON.stringify(jobSearchCriteria)}`, fetcher);
+    const { data: jobResults, error, isLoading } = useSWR(`/api/jobVizData/${JSON.stringify(jobSearchCriteria)}`, fetcher);
 
-    useEffect(() => {
-        if(willGetNewResults){
-            // get the new results from the api
-            setWillGetNewResults(false);
-        }
-    }, [willGetNewResults]);
+    
 
     if (error) {
         // CASE: an error has occurred, take the user to default page of JobViz
         return <JobViz />;
     }
 
-    if (data) {
-        console.log('data: ', data);
+    if (isLoading) {
+        console.log('jobResults: ', jobResults);
         // parse the data and pass it into the results
+        return <JobViz setWillGetNewResults={setWillGetNewResults} isLoading={isLoading} />;
     }
 
 
-    return <JobViz setWillGetNewResults={setWillGetNewResults} />;
+    return <JobViz setWillGetNewResults={setWillGetNewResults} dynamicJobResults={jobResults} />;
 };
 
 export default JobVizSearchResults;
