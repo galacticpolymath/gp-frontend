@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable no-console */
 /* eslint-disable comma-dangle */
@@ -6,6 +7,7 @@
 import JobViz from '.';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 // need to get the following when the user is on a dynamic route:
@@ -19,21 +21,21 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 
 const JobVizSearchResults = () => {
     const router = useRouter();
-    const jobSearchCriteria = router?.query?.['search-results'] ?? [];
-    
-    // console.log('router?.query: ', router?.query);
-    // const [hierarchyNum, level1] = router?.query ?? [];
-    // let jobSearchCriteria = {};
-
-    // if (hierarchyNum && level1) {
-    //     jobSearchCriteria = { hierarchy: hierarchyNum, level1: level1 };
-    // }
-
+    const _jobSearchCriteria = router?.query?.['search-results'] ?? [];
+    const [jobSearchCriteria, setJobSearchCriteria] = useState(_jobSearchCriteria);
+    const [willGetNewResults, setWillGetNewResults] = useState(true);
     // the params will contain the following: 
     // { jobSearchCriteria: { hierarchy: number, level1: 17-0000 (string number) } }
     // GOAL: the user is on a specific level of the job search
     // send the following to the server: { jobSearchCriteria: { hierarchy: number, level1: 17-0000 (string number) } }
     const { data, error } = useSWR(`/api/jobVizData/${JSON.stringify(jobSearchCriteria)}`, fetcher);
+
+    useEffect(() => {
+        if(willGetNewResults){
+            // get the new results from the api
+            setWillGetNewResults(false);
+        }
+    }, [willGetNewResults]);
 
     if (error) {
         // CASE: an error has occurred, take the user to default page of JobViz
@@ -46,9 +48,7 @@ const JobVizSearchResults = () => {
     }
 
 
-    console.log('error: ', error);
-
-    return <JobViz />;
+    return <JobViz setWillGetNewResults={setWillGetNewResults} />;
 };
 
 export default JobVizSearchResults;
