@@ -49,24 +49,23 @@ export const useGetJobCategories = (hierarchyNum, level) => {
 
     useEffect(() => {
         console.log("hierarchyNumAndLevel: ", hierarchyNumAndLevel);
-        const { hierarchyNum: targetHierarchyNum, level: targetLevel1 } = hierarchyNumAndLevel ?? {};
+        const { hierarchyNum: targetHierarchyNum, level: selectedLevel } = hierarchyNumAndLevel ?? {};
         
-        if (isGettingData && targetHierarchyNum && targetLevel1) {
-            let targetJobCategories = jobVizData.filter(file => {
-                const { hierarchy, level1 } = file;
-
-                return ((hierarchy === parseInt(targetHierarchyNum)) && (level1 === targetLevel1));
+        if (isGettingData && targetHierarchyNum && selectedLevel) {
+            let targetJobCategories = jobVizData.filter(jobCategory => {
+                const targetLevel = jobCategory[`level${targetHierarchyNum - 1}`]; 
+                return ((jobCategory.hierarchy === parseInt(targetHierarchyNum)) && (targetLevel === selectedLevel));
             });
             targetJobCategories = targetJobCategories.map(job => {
                 const { hierarchy, id, title } = job;
                 console.log("job: ", job)
-                const targetLevel = job[`level${hierarchy}`] 
-                console.log("targetLevel: ", targetLevel)
+                const selectedLevel = job[`level${hierarchy}`] 
+                console.log("selectedLevel: ", selectedLevel)
 
                 return {
                     ...job,
                     id,
-                    currentLevel: targetLevel,
+                    currentLevel: selectedLevel,
                     title: title
                 }
             });
@@ -74,7 +73,7 @@ export const useGetJobCategories = (hierarchyNum, level) => {
             // MAIN GOAL: create a state that contain all of the job categories that were selected so that they can be represented onto the UI as a chain 
             // GOALs:
             // GOAL #1: get the name of the job category that was clicked 
-            // GOAL #2: add it as an object to the jobCategoriesChain state (to get the name, find the object that contains do hierarchyNum - 1 as its value in hierarchyNum, and the previous targetLevel)
+            // GOAL #2: add it as an object to the jobCategoriesChain state (to get the name, find the object that contains do hierarchyNum - 1 as its value in hierarchyNum, and the previous selectedLevel)
 
 
             setJobCategories(targetJobCategories);

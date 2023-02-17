@@ -12,6 +12,7 @@
 import { Button } from "react-bootstrap";
 import AccountTreeIcon from "@material-ui/icons/AccountTree";
 import { useRouter } from "next/router";
+import { IoNewspaperOutline } from 'react-icons/io5';
 
 // if there are no results, then display the default results (see the current ui)
 const startingJobResults =
@@ -86,17 +87,30 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, isLoading, getNewJo
                 {!jobResults ?
                     <span>Loading results...</span>
                     :
-                    jobResults.map(({ title, id, currentLevel }) =>
-                        <div id={id} key={id} className="shadow jobFieldStartingResult d-flex flex-column">
+                    jobResults.map(({ title, id, currentLevel, occupation_type }) => (
+                        <div id={id} key={id} className="shadow jobFieldStartingResult d-inline-block flex-column">
                             <section className="w-100 h-50 d-flex justify-content-center align-items-center">
                                 <h4 className="text-center">{title}</h4>
                             </section>
                             <section className="w-100 h-50 d-flex justify-content-center align-items-center">
-                                <Button id={`${id}_btn`} className="d-flex job-categories-btn shadow" onClick={() => handleBtnClick(currentLevel)}>
-                                    <AccountTreeIcon /> More Jobs
-                                </Button>
+                                {(occupation_type === "Line item") ?
+                                    <Button id={`details_btn_${id}`} className="d-flex justify-content-center align-items-center">
+                                        <span className="w-25 h-100 d-flex justify-content-center align-items-center">
+                                            <IoNewspaperOutline />
+                                        </span>
+                                        <span className="w-75 h-100 d-flex justify-content-center align-items-center ps-1">
+                                            Details
+                                        </span>
+                                    </Button>
+                                    :
+                                    <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn shadow" onClick={() => handleBtnClick(currentLevel)}>
+                                        <AccountTreeIcon /> More Jobs
+                                    </Button>
+
+                                }
                             </section>
                         </div>
+                    )
                     )}
             </div>
         </section>
