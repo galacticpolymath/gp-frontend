@@ -13,10 +13,26 @@ import { IoNewspaperOutline } from 'react-icons/io5';
 import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 
 const { Body } = Card;
-// get static props in order to get the json data to display on the JobViz page 
-// have the argument be the current search results to display on the UI
 
 const JobViz = ({ dynamicJobResults, setWillGetNewResults, currentLevelNum, isLoadingJobCategories, getNewJobsData }) => {
+    // WHen the user goes n level deep, get the title of the card in which the the clicked button was located in. 
+
+    // CASE: the user clicks on the engineering button.
+    // GOAL: the following should appear onto the UI: 
+    // for the chaining, the first level should read Job Categories 
+    // the current level, it should read: Architecture & Engineering occupations
+
+    // BRAIN DUMP: 
+    // the first level will always be Job Categories
+    // the formatting for the next levels will be as follows: { level: the level, name: (the job category name) }
+    // put the above in an array and map through it to display the chaining onto the UI
+    // the last element in the array will be the current level, that will be card body
+    // when the user clicks on either of the chaining links, execute getNewJobsData and pass in target hierarchyNum and the job category name
+
+    // CASE: the user clicks on a button on the first level
+    // the [...search-results].js page will be rendered, pass the state called jobCategoriesChain, have the first value be an object, with the following format: { hierarchyNum: 1, name: 'Job Categories' }. Have the second object be the following object with the key-value pairs: { hierarchyNum: 2, name: 'Architecture & Engineering occupations', filterLevel: 'a string that will be used to filter the job categories from'  }
+    
+
     
     return (
         <Layout>
