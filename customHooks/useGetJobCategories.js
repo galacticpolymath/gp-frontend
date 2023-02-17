@@ -44,11 +44,12 @@ export const useGetJobCategories = (hierarchyNum, level) => {
     }, [hierarchyNum, level])
 
     
+    // GOAL: solve the bug when getting the third level of job categories 
+    // GOAL: getting results should be dynamic when the user clicks on a specific job category
 
     useEffect(() => {
         console.log("hierarchyNumAndLevel: ", hierarchyNumAndLevel);
         const { hierarchyNum: targetHierarchyNum, level: targetLevel1 } = hierarchyNumAndLevel ?? {};
-
         
         if (isGettingData && targetHierarchyNum && targetLevel1) {
             let targetJobCategories = jobVizData.filter(file => {
@@ -63,13 +64,19 @@ export const useGetJobCategories = (hierarchyNum, level) => {
                 console.log("targetLevel: ", targetLevel)
 
                 return {
+                    ...job,
                     id,
                     currentLevel: targetLevel,
                     title: title
                 }
             });
-            debugger
-            console.log("targetJobCategories: ", targetJobCategories)
+            console.log("targetJobCategories: ", targetJobCategories);
+            // MAIN GOAL: create a state that contain all of the job categories that were selected so that they can be represented onto the UI as a chain 
+            // GOALs:
+            // GOAL #1: get the name of the job category that was clicked 
+            // GOAL #2: add it as an object to the jobCategoriesChain state (to get the name, find the object that contains do hierarchyNum - 1 as its value in hierarchyNum, and the previous targetLevel)
+
+
             setJobCategories(targetJobCategories);
             setIsGettingData(false);
             return;

@@ -14,7 +14,9 @@ import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 
 const { Body } = Card;
 
-const JobViz = ({ dynamicJobResults, setWillGetNewResults, currentLevelNum, isLoadingJobCategories, getNewJobsData }) => {
+const JobViz = ({ fns, vals }) => {
+    const { setWillGetNewResults, getNewJobsData } = fns ?? {};
+    const { dynamicJobResults, currentLevelNum, isLoading } = vals ?? {};
     // WHen the user goes n level deep, get the title of the card in which the the clicked button was located in. 
 
     // CASE: the user clicks on the engineering button.
@@ -100,7 +102,7 @@ const JobViz = ({ dynamicJobResults, setWillGetNewResults, currentLevelNum, isLo
                     setWillGetNewResults={setWillGetNewResults} 
                     dynamicJobResults={dynamicJobResults} 
                     currentLevelNum={currentLevelNum ?? 1} 
-                    isLoading={isLoadingJobCategories} 
+                    isLoading={isLoading} 
                     getNewJobsData={getNewJobsData}
                 />
             </div>

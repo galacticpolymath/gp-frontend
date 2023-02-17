@@ -37,17 +37,17 @@ const JobVizSearchResults = () => {
     const params = router.query?.['search-results'] ?? null;
     console.log("params first: ", params?.[0]);
     const { isGettingData, getNewJobsData, jobCategories } = useGetJobCategories(params?.[0] ?? null, params?.[1] ?? null);
-    debugger
-
-    console.log("jobCategories: ", jobCategories)
+    const [jobCategoriesChain, setJobCategoriesChain] = useState([{ hierarchyNum: 1, name: 'Job Categories' }])
+    const fns = { getNewJobsData: getNewJobsData, setJobCategoriesChain: setJobCategoriesChain };
+    const vals = { dynamicJobResults: jobCategories, currentLevelNum: (params?.[0] && parseInt(params?.[0])) ?? 1 }
 
     JobVizSearchResults.getInitialProps = async () => {
         return {};
-    }    
+    }
 
-    
-    
-    return isGettingData ? <JobViz isLoading /> : <JobViz dynamicJobResults={jobCategories} getNewJobsData={getNewJobsData} currentLevelNum={params?.[0] ?? 1} /> ;
+
+
+    return isGettingData ? <JobViz vals={{ isLoading: true }} /> : <JobViz fns={fns} vals={vals} />;
 };
 
 export default JobVizSearchResults;
