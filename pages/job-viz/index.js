@@ -16,7 +16,7 @@ const { Body } = Card;
 // get static props in order to get the json data to display on the JobViz page 
 // have the argument be the current search results to display on the UI
 
-const JobViz = ({ dynamicJobResults, setWillGetNewResults, currentLevelNum }) => {
+const JobViz = ({ dynamicJobResults, setWillGetNewResults, currentLevelNum, isLoadingJobCategories, getNewJobsData }) => {
     
     return (
         <Layout>
@@ -80,7 +80,13 @@ const JobViz = ({ dynamicJobResults, setWillGetNewResults, currentLevelNum }) =>
                     </div>
                 </section>
                 {/* job modal cards */}
-                <JobCategoriesSec setWillGetNewResults={setWillGetNewResults} dynamicJobResults={dynamicJobResults} currentLevelNum={currentLevelNum ?? 1} />
+                <JobCategoriesSec 
+                    setWillGetNewResults={setWillGetNewResults} 
+                    dynamicJobResults={dynamicJobResults} 
+                    currentLevelNum={currentLevelNum ?? 1} 
+                    isLoading={isLoadingJobCategories} 
+                    getNewJobsData={getNewJobsData}
+                />
             </div>
         </Layout>
     );

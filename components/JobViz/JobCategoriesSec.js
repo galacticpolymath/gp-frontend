@@ -17,35 +17,35 @@ import { useRouter } from "next/router";
 const startingJobResults =
     [
         {
-            jobField: "Architecture & Engineering occupations",
+            title: "Architecture & Engineering occupations",
             id: 120,
-            startingLevel: "17-0000"
+            currentLevel: "17-0000"
         },
         {
-            jobField: "Arts, design, entertainment, sports, & media occupations",
+            title: "Arts, design, entertainment, sports, & media occupations",
             id: "artsDesignElId",
-            startingLevel: "27-0000"
+            currentLevel: "27-0000"
         },
         {
-            jobField: "Building & grounds cleaning & maintenance occupations",
+            title: "Building & grounds cleaning & maintenance occupations",
             id: 581,
-            startingLevel: "37-0000"
+            currentLevel: "37-0000"
         },
         {
-            jobField: "Business & financial operations occupations",
+            title: "Business & financial operations occupations",
             id: 355,
-            startingLevel: "13-0000"
+            currentLevel: "13-0000"
         }
         ,
         {
-            jobField: "Community & social service occupations",
+            title: "Community & social service occupations",
             id: 232,
-            startingLevel: "21-0000"
+            currentLevel: "21-0000"
         },
         {
-            jobField: "Computer & mathematical occupations",
+            title: "Computer & mathematical occupations",
             id: 92,
-            startingLevel: "15-0000"
+            currentLevel: "15-0000"
         }
     ]
 
@@ -55,7 +55,7 @@ const startingJobResults =
 // get all of data from jobVizData that meets the following criteria: 
 // hierarchy = 2
 // level1 = 17-0000
-const JobCategories = ({ dynamicJobResults, currentLevelNum, setWillGetNewResults, isLoading }) => {
+const JobCategories = ({ dynamicJobResults, currentLevelNum, isLoading, getNewJobsData }) => {
     const router = useRouter();
     const jobResults = dynamicJobResults ?? startingJobResults;
     console.log("jobResults: ", jobResults)
@@ -67,7 +67,9 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, setWillGetNewResult
     // When the user clicks on 
     const handleBtnClick = level => {
         console.log('level: ', level);
-        router.push(`/job-viz/${currentLevelNum + 1}/${level}`)
+        const _currentLevelNum = currentLevelNum + 1
+        router.push(`/job-viz/${_currentLevelNum}/${level}`)
+        getNewJobsData && getNewJobsData(_currentLevelNum, level);
         // setWillGetNewResults && setWillGetNewResults(true);
         // GOAL: get the second level of job search results and displayed them onto the dom
         // the new results are passed into as a prop and the whole comp is re-rendered
@@ -84,13 +86,13 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, setWillGetNewResult
                 {!jobResults ?
                     <span>Loading results...</span>
                     :
-                    jobResults.map(({ jobField, id, startingLevel }) =>
+                    jobResults.map(({ title, id, currentLevel }) =>
                         <div id={id} key={id} className="shadow jobFieldStartingResult d-flex flex-column">
                             <section className="w-100 h-50 d-flex justify-content-center align-items-center">
-                                <h4 className="text-center">{jobField}</h4>
+                                <h4 className="text-center">{title}</h4>
                             </section>
                             <section className="w-100 h-50 d-flex justify-content-center align-items-center">
-                                <Button id={`${id}_btn`} className="d-flex job-categories-btn shadow" onClick={() => handleBtnClick(startingLevel)}>
+                                <Button id={`${id}_btn`} className="d-flex job-categories-btn shadow" onClick={() => handleBtnClick(currentLevel)}>
                                     <AccountTreeIcon /> More Jobs
                                 </Button>
                             </section>
