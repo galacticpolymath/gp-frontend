@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable semi */
 /* eslint-disable quotes */
@@ -11,7 +12,7 @@ import JobViz from '.';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useJobCategories } from '../../customHooks/useJobCategories';
+import { useGetJobCategories } from '../../customHooks/useGetJobCategories';
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 // need to get the following when the user is on a dynamic route:
@@ -34,18 +35,15 @@ const getJobs = async jobSearchCriteria => {
 const JobVizSearchResults = () => {
     const router = useRouter();
     const params = router.query?.['search-results'] ?? null;
-    const { isGettingData, getNewJobsData, jobCategories } = useJobCategories(params?.[0] ?? null, params?.[1] ?? null);
+    console.log("params first: ", params?.[0]);
+    const { isGettingData, getNewJobsData, jobCategories } = useGetJobCategories(params?.[0] ?? null, params?.[1] ?? null);
+    debugger
 
     console.log("jobCategories: ", jobCategories)
 
     JobVizSearchResults.getInitialProps = async () => {
         return {};
-    }
-
-    // useEffect(() => {
-    //     console.log("jobCategories: ", jobCategories)
-    // })
-    
+    }    
 
     
     

@@ -19,9 +19,11 @@ import jobVizData from '../data/Jobviz/jobVizData.json';
 // while doing that, return isLoading true
 // 
 
-export const useJobCategories = (hierarchyNum, level) => {
+export const useGetJobCategories = (hierarchyNum, level) => {
+    console.log("hierarchyNum: ", hierarchyNum);
     const [isGettingData, setIsGettingData] = useState(true);
     const [hierarchyNumAndLevel, setHierarchyNumAndLevel] = useState({ hierarchyNum: hierarchyNum, level: level });
+    console.log("hierarchyNumAndLevel: ", hierarchyNumAndLevel);
     const [jobCategories, setJobCategories] = useState([]);
 
     const getNewJobsData = (hierarchyNum, level) => {
@@ -32,6 +34,7 @@ export const useJobCategories = (hierarchyNum, level) => {
     useEffect(() => {
         console.log("hierarchyNumAndLevel: ", hierarchyNumAndLevel);
         const { hierarchyNum: targetHierarchyNum, level: targetLevel1 } = hierarchyNumAndLevel ?? {};
+        debugger
         
         if (isGettingData && targetHierarchyNum && targetLevel1) {
             let targetJobCategories = jobVizData.filter(file => {
@@ -51,6 +54,8 @@ export const useJobCategories = (hierarchyNum, level) => {
                     title: title
                 }
             });
+            debugger
+            console.log("targetJobCategories: ", targetJobCategories)
             setJobCategories(targetJobCategories);
             setIsGettingData(false);
         }
