@@ -16,14 +16,17 @@ export const useGetJobCategories = (hierarchyNum, level) => {
     const [isGettingData, setIsGettingData] = useState(true);
     const [hierarchyNumAndLevel, setHierarchyNumAndLevel] = useState({ hierarchyNum: hierarchyNum, level: level });
     const [jobCategories, setJobCategories] = useState([]);
+    const [parentJobCategories, setParentJobCategories] = useState([{ categoryName: 'Job Categories', hierarchyNum: null, level: null }]);
 
-    const getNewJobsData = (hierarchyNum, level) => {
+    const getNewJobsData = (hierarchyNum, level, title) => {
         setIsGettingData(true);
         setHierarchyNumAndLevel({ hierarchyNum: hierarchyNum, level: level });
+        setParentJobCategories(parentJobCategories => [...parentJobCategories, { categoryName: title, hierarchyNum: hierarchyNum, level: level }].reverse());
     };
 
     useEffect(() => {
         const { hierarchyNum: currentHierarchyNum, level: currentLevel } = hierarchyNumAndLevel ?? {};
+
         if ((currentHierarchyNum !== hierarchyNum) || (currentLevel !== level)){
             setHierarchyNumAndLevel({ hierarchyNum: hierarchyNum, level: level });
         }
@@ -42,5 +45,5 @@ export const useGetJobCategories = (hierarchyNum, level) => {
         }
     }, [isGettingData, hierarchyNumAndLevel]);
 
-    return { isGettingData, getNewJobsData, jobCategories };
+    return { isGettingData, getNewJobsData, jobCategories, parentJobCategories };
 };

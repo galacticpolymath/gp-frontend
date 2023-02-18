@@ -36,10 +36,9 @@ const JobVizSearchResults = () => {
     const router = useRouter();
     const params = router.query?.['search-results'] ?? null;
     console.log("params first: ", params?.[0]);
-    const { isGettingData, getNewJobsData, jobCategories } = useGetJobCategories(params?.[0] ?? null, params?.[1] ?? null);
-    const [jobCategoriesChain, setJobCategoriesChain] = useState([{ hierarchyNum: 1, name: 'Job Categories' }])
-    const fns = { getNewJobsData: getNewJobsData, setJobCategoriesChain: setJobCategoriesChain };
-    const vals = { dynamicJobResults: jobCategories, currentLevelNum: (params?.[0] && parseInt(params?.[0])) ?? 1 }
+    const { isGettingData, getNewJobsData, jobCategories, parentJobCategories } = useGetJobCategories(params?.[0] ?? null, params?.[1] ?? null);
+    const fns = { getNewJobsData: getNewJobsData };
+    const vals = { dynamicJobResults: jobCategories, currentLevelNum: (params?.[0] && parseInt(params?.[0])) ?? 1, parentJobCategories }
 
     JobVizSearchResults.getInitialProps = async () => {
         return {};

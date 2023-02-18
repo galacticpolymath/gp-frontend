@@ -37,7 +37,7 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, isLoading, getNewJo
     const handleBtnClick = (level, title) => {
         console.log('level: ', level);
         const _currentLevelNum = (currentLevelNum + 1)
-        getNewJobsData && getNewJobsData(_currentLevelNum, level);
+        getNewJobsData && getNewJobsData(_currentLevelNum, level, title);
         router.push(`/job-viz/${_currentLevelNum}/${level}`)
     }
 
