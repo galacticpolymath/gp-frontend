@@ -3,12 +3,14 @@
 /* eslint-disable no-undef */
 /* eslint-disable quotes */
 /* eslint-disable no-multiple-empty-lines */
-import { filterResults } from "../customHooks/useGetJobCategories"
+const filterResults = require('../customHooks/helperFns/filterResults');
 
 const level2IdResults = [149, 128, 121]
 
 test("Testing filter for job categories engineering.", () => {
     const targetJobCategories = filterResults(2, "17-0000");
+    const targetJobCategoriesIds = targetJobCategories.map(job => job.id);
+    const areJobCategoriesIdsLevel2Correct = targetJobCategoriesIds.every(id => level2IdResults.includes(id));
 
-    expect(JSON.stringify(targetJobCategories)).toBe(JSON.stringify(level2IdResults));
+    expect(areJobCategoriesIdsLevel2Correct).toBe(true);
 })

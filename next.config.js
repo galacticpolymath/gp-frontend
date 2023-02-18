@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,

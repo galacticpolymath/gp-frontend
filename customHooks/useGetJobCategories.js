@@ -22,24 +22,24 @@ import jobVizData from '../data/Jobviz/jobVizData.json';
 
 // WHEN THE PROPS CHANGE, it does not update hierarchyNumAndLevel state 
 
-export const filterResults = (targetHierarchyNum, selectedLevel) => {
-    let targetJobCategories = jobVizData.filter(jobCategory => {
-        const targetLevel = jobCategory[`level${targetHierarchyNum - 1}`]; 
-        return ((jobCategory.hierarchy === parseInt(targetHierarchyNum)) && (targetLevel === selectedLevel));
-    });
-    targetJobCategories = targetJobCategories.map(job => {
-        const { hierarchy, id, title } = job;
-        const selectedLevel = job[`level${hierarchy}`] 
+// export const filterResults = (targetHierarchyNum, selectedLevel) => {
+//     let targetJobCategories = jobVizData.filter(jobCategory => {
+//         const targetLevel = jobCategory[`level${targetHierarchyNum - 1}`]; 
+//         return ((jobCategory.hierarchy === parseInt(targetHierarchyNum)) && (targetLevel === selectedLevel));
+//     });
+//     targetJobCategories = targetJobCategories.map(job => {
+//         const { hierarchy, id, title } = job;
+//         const selectedLevel = job[`level${hierarchy}`] 
 
-        return {
-            ...job,
-            id,
-            currentLevel: selectedLevel,
-            title: title
-        }
-    });
-    return targetJobCategories;
-}
+//         return {
+//             ...job,
+//             id,
+//             currentLevel: selectedLevel,
+//             title: title
+//         }
+//     });
+//     return targetJobCategories;
+// }
 
 
 
