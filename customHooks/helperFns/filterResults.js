@@ -63,6 +63,7 @@ const filterResults = (targetHierarchyNum, selectedLevel) => {
             title: title
         }
     });
+
     return targetJobCategories;
 }
 

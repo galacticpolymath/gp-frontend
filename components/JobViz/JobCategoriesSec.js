@@ -14,15 +14,25 @@ import AccountTreeIcon from "@material-ui/icons/AccountTree";
 import { useRouter } from "next/router";
 import { IoNewspaperOutline } from 'react-icons/io5';
 import jobVizData from '../../data/Jobviz/jobVizData.json';
+import { useMemo } from "react";
 
 
 const startingJobResults = jobVizData.filter(jobCategory => jobCategory.hierarchy === 1).map(jobCategory => ({ ...jobCategory, currentLevel: jobCategory.level1 }))
 
+const sortJobResults = jobResults => {
+    return jobResults.sort((jobA, jobB) => {
+        const _jobA = jobA.title.toUpperCase();
+        const _jobB = jobB.title.toUpperCase();
+
+        return (_jobA === _jobB) ? 0 : ((_jobA > _jobB) ? 1 : -1);
+    })
+}
+
 
 const JobCategories = ({ dynamicJobResults, currentLevelNum, isLoading, getNewJobsData }) => {
     const router = useRouter();
-    const jobResults = dynamicJobResults ?? startingJobResults;
-    
+    let jobResults = dynamicJobResults ?? startingJobResults;
+    jobResults = useMemo(() => sortJobResults(jobResults), dynamicJobResults)
 
     const handleBtnClick = level => {
         console.log('level: ', level);

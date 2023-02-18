@@ -22,7 +22,7 @@
     },
     {
       "id": 2,
-      "title": "Management",
+      "title": "Management Occupations",
       "soc_code": "11-0000",
       "occupation_type": "Summary",
       "hierarchy": 1,
@@ -645,7 +645,7 @@
     },
     {
       "id": 27,
-      "title": "Other management",
+      "title": "Other management occupations",
       "soc_code": "11-9000",
       "occupation_type": "Summary",
       "hierarchy": 2,
@@ -6384,7 +6384,7 @@
     },
     {
       "id": 255,
-      "title": "Legal",
+      "title": "Legal Occupations",
       "soc_code": "23-0000",
       "occupation_type": "Summary",
       "hierarchy": 1,
@@ -22800,7 +22800,7 @@
     },
     {
       "id": 907,
-      "title": "Production",
+      "title": "Production Occupations",
       "soc_code": "51-0000",
       "occupation_type": "Summary",
       "hierarchy": 1,
