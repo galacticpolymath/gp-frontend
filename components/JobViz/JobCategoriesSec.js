@@ -32,13 +32,14 @@ const sortJobResults = jobResults => {
 const JobCategories = ({ dynamicJobResults, currentLevelNum, isLoading, getNewJobsData }) => {
     const router = useRouter();
     let jobResults = dynamicJobResults ?? startingJobResults;
-    jobResults = useMemo(() => sortJobResults(jobResults), dynamicJobResults)
+    jobResults = useMemo(() => sortJobResults(jobResults), [dynamicJobResults])
 
     const handleBtnClick = (level, title) => {
         console.log('level: ', level);
         const _currentLevelNum = (currentLevelNum + 1)
-        getNewJobsData && getNewJobsData(_currentLevelNum, level, title);
-        router.push(`/job-viz/${_currentLevelNum}/${level}`)
+        console.log("title: ", title)
+        getNewJobsData && getNewJobsData(_currentLevelNum, level);
+        router.push(`/job-viz/${_currentLevelNum}/${level}/${title}`)
     }
 
     return (
