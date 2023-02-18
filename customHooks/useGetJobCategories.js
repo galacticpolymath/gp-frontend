@@ -8,7 +8,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-multiple-empty-lines */
 import { useEffect, useState } from 'react';
-import jobVizData from '../data/Jobviz/jobVizData.json';
+import filterResults from './helperFns/filterResults';
+
 
 // this hook will return the following:
 // isGettingData: true
@@ -69,24 +70,8 @@ export const useGetJobCategories = (hierarchyNum, level) => {
         const { hierarchyNum: targetHierarchyNum, level: selectedLevel } = hierarchyNumAndLevel ?? {};
         
         if (isGettingData && targetHierarchyNum && selectedLevel) {
-            let targetJobCategories = jobVizData.filter(jobCategory => {
-                const targetLevel = jobCategory[`level${targetHierarchyNum - 1}`]; 
-                return ((jobCategory.hierarchy === parseInt(targetHierarchyNum)) && (targetLevel === selectedLevel));
-            });
-            targetJobCategories = targetJobCategories.map(job => {
-                const { hierarchy, id, title } = job;
-                const selectedLevel = job[`level${hierarchy}`] 
-
-                return {
-                    ...job,
-                    id,
-                    currentLevel: selectedLevel,
-                    title: title
-                }
-            });
-            
-
-
+            const targetJobCategories = filterResults(parseInt(targetHierarchyNum), selectedLevel);
+            console.log("targetJobCategories: ", targetJobCategories);
             setJobCategories(targetJobCategories);
             setIsGettingData(false);
             return;
