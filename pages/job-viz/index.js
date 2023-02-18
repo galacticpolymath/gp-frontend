@@ -63,6 +63,12 @@ const JobViz = ({ fns, vals }) => {
                     </section>
                 </section>
                 <section className="d-flex justify-content-center align-items-center w-100 pt-5 mt-5">
+                {/* GOAL: when the user clicks on the job category, the name of that job category should appear in the h4 tag */}
+                {/* the name of the job category is displayed in the h4 tag and the card is render onto the dom for the last element of the array that was passed in for this component */}
+                {/* all elements in the array that was passed in from ...search-results comp, besides the last element, are mapped onto the dom as chain */}
+                {/* the selected job category was added to the state of selectedJobCategories. It will have the following data structure: { categoryName, hierarchyNum, parentLevel }. For the last its values will be as follows: { categoryName: 'Job Categories', hierarchyNum: null, parentLevel: null } */}
+                {/* get the name of the job category */}
+                {/* the user presses the more jobs button */}
                     <Card className="jobVizCard border-0 shadow">
                         <Body className="position-relative d-flex flex-column justify-content-end">
                             <div className="jobVizIconContainer rounded-circle shadow position-absolute">

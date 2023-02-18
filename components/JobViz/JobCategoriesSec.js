@@ -34,11 +34,11 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, isLoading, getNewJo
     let jobResults = dynamicJobResults ?? startingJobResults;
     jobResults = useMemo(() => sortJobResults(jobResults), dynamicJobResults)
 
-    const handleBtnClick = level => {
+    const handleBtnClick = (level, title) => {
         console.log('level: ', level);
         const _currentLevelNum = (currentLevelNum + 1)
-        router.push(`/job-viz/${_currentLevelNum}/${level}`)
         getNewJobsData && getNewJobsData(_currentLevelNum, level);
+        router.push(`/job-viz/${_currentLevelNum}/${level}`)
     }
 
     return (
@@ -51,7 +51,7 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, isLoading, getNewJo
                     jobResults.map(({ title, id, currentLevel, occupation_type }) => (
                         <div id={id} key={id} className="shadow jobFieldStartingResult d-inline-block flex-column">
                             <section className="w-100 h-50 d-flex justify-content-center align-items-center">
-                                <h4 className="text-center">{title}</h4>
+                                <h4 id="currentJobCategory" className="text-center">{title}</h4>
                             </section>
                             <section className="w-100 h-50 d-flex justify-content-center align-items-center">
                                 {(occupation_type === "Line item") ?
@@ -64,7 +64,7 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, isLoading, getNewJo
                                         </span>
                                     </Button>
                                     :
-                                    <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn shadow" onClick={() => handleBtnClick(currentLevel)}>
+                                    <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn shadow" onClick={() => handleBtnClick(currentLevel, title)}>
                                         <AccountTreeIcon /> More Jobs
                                     </Button>
 
