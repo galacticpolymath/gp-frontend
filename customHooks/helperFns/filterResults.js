@@ -1,3 +1,4 @@
+/* eslint-disable curly */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable semi */
@@ -9,9 +10,13 @@ const getLastNumFromLevel = selectedLevel => {
     const selectedLevelSplitted = selectedLevel.split('-')
     const lastNum = parseInt(selectedLevelSplitted[selectedLevelSplitted.length - 1]);
     const firstNum = parseInt(selectedLevelSplitted[0]);
-    
+
     return [firstNum, lastNum]
 }
+
+// GOAL: get results four levels deep, use the following conditionals: 
+// if the hierarchy is equal to four 
+// using the value for selectedLevel, get the third level and check if it is equal to the level3 value for each jobCategory object  
 
 const filterResults = (targetHierarchyNum, selectedLevel) => {
     let targetJobCategories = jobVizData.filter(jobCategory => {
@@ -20,7 +25,9 @@ const filterResults = (targetHierarchyNum, selectedLevel) => {
             return ((jobCategory.hierarchy === parseInt(targetHierarchyNum)) && (targetLevel === selectedLevel));
         }
 
-        return jobCategory.hierarchy === 3;
+        if (targetHierarchyNum === 3) return jobCategory.hierarchy === 3;
+
+        return jobCategory.hierarchy === 4;
     });
 
     if (targetHierarchyNum === 3) {
@@ -33,7 +40,15 @@ const filterResults = (targetHierarchyNum, selectedLevel) => {
             const [rangeStart, rangeEnd] = range
             delete job.range;
 
-            return ((firstNumSelectedLevel === firstNum) && (lastNum > rangeStart) && (lastNum < rangeEnd)) 
+            return ((firstNumSelectedLevel === firstNum) && (lastNum > rangeStart) && (lastNum < rangeEnd))
+        })
+    }
+
+    if (targetHierarchyNum === 4) {
+        targetJobCategories = targetJobCategories.filter(job => {
+            const { level3, hierarchy } = job;
+
+            return ((hierarchy === 4) && (level3 === selectedLevel));
         })
     }
 

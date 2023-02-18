@@ -11,42 +11,8 @@ import { useEffect, useState } from 'react';
 import filterResults from './helperFns/filterResults';
 
 
-// this hook will return the following:
-// isGettingData: true
-// jobs
-// setIsGettingData
-// state called hierarchyAndLevel
-// make the query to jobVizData.json in a useEffect hook
-// while doing that, return isLoading true
-// 
 
-
-// WHEN THE PROPS CHANGE, it does not update hierarchyNumAndLevel state 
-
-// export const filterResults = (targetHierarchyNum, selectedLevel) => {
-//     let targetJobCategories = jobVizData.filter(jobCategory => {
-//         const targetLevel = jobCategory[`level${targetHierarchyNum - 1}`]; 
-//         return ((jobCategory.hierarchy === parseInt(targetHierarchyNum)) && (targetLevel === selectedLevel));
-//     });
-//     targetJobCategories = targetJobCategories.map(job => {
-//         const { hierarchy, id, title } = job;
-//         const selectedLevel = job[`level${hierarchy}`] 
-
-//         return {
-//             ...job,
-//             id,
-//             currentLevel: selectedLevel,
-//             title: title
-//         }
-//     });
-//     return targetJobCategories;
-// }
-
-
-
-// WHAT I WANT: when the hierarchNum and level props changes, update the hierarchyNumAndLevel state
 export const useGetJobCategories = (hierarchyNum, level) => {
-    console.log("hierarchyNum: ", hierarchyNum);
     const [isGettingData, setIsGettingData] = useState(true);
     const [hierarchyNumAndLevel, setHierarchyNumAndLevel] = useState({ hierarchyNum: hierarchyNum, level: level });
     const [jobCategories, setJobCategories] = useState([]);
@@ -58,7 +24,7 @@ export const useGetJobCategories = (hierarchyNum, level) => {
 
     useEffect(() => {
         const { hierarchyNum: currentHierarchyNum, level: currentLevel } = hierarchyNumAndLevel ?? {};
-        if (currentHierarchyNum !== hierarchyNum || currentLevel !== level){
+        if ((currentHierarchyNum !== hierarchyNum) || (currentLevel !== level)){
             setHierarchyNumAndLevel({ hierarchyNum: hierarchyNum, level: level });
         }
     }, [hierarchyNum, level])
@@ -66,12 +32,10 @@ export const useGetJobCategories = (hierarchyNum, level) => {
 
 
     useEffect(() => {
-        console.log("hierarchyNumAndLevel: ", hierarchyNumAndLevel);
         const { hierarchyNum: targetHierarchyNum, level: selectedLevel } = hierarchyNumAndLevel ?? {};
         
         if (isGettingData && targetHierarchyNum && selectedLevel) {
             const targetJobCategories = filterResults(parseInt(targetHierarchyNum), selectedLevel);
-            console.log("targetJobCategories: ", targetJobCategories);
             setJobCategories(targetJobCategories);
             setIsGettingData(false);
             return;
