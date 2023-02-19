@@ -25,6 +25,7 @@ const JobCategoryChain = ({ index, isBrick, jobCategory }) => {
             router.push({ pathname: '/job-viz' }, null, { scroll: false })
             return;
         }
+        
         params.splice(0, 2)
         router.push({ pathname: getNewUrl(jobCategory, params) }, null, { scroll: false })
     }
