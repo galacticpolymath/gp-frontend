@@ -20,12 +20,10 @@ import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
 
 const { Body } = Card;
 
-const JobViz = ({ fns, vals }) => {
-    const { setForceReRenderer } = fns ?? {};
+const JobViz = ({ vals }) => {
     const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
 
     const handleJobCategoryChainBtnClick = () =>{
-        setForceReRenderer()
     }
 
     return (
@@ -57,7 +55,7 @@ const JobViz = ({ fns, vals }) => {
                 {parentJobCategories &&
                     <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
                         {parentJobCategories.map((jobCategory, index, self) => {
-                            const { categoryName, hierarchyNum, parentLevel } = jobCategory ?? {};
+                            const { categoryName, hierarchyNum, parentLevel, id } = jobCategory ?? {};
 
                             if (index === 0) {
                                 return (
@@ -152,7 +150,6 @@ const JobViz = ({ fns, vals }) => {
                     dynamicJobResults={dynamicJobResults}
                     currentHierarchyNum={currentHierarchyNum ?? 1}
                     isLoading={isLoading}
-                    setForceReRenderer={setForceReRenderer}
                 />
             </div>
         </Layout>

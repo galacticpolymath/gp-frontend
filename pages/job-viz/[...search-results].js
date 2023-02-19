@@ -65,7 +65,6 @@ const JobVizSearchResults = () => {
 
     const forceUpdate = useCallback(() => rerenderComp(), []);
     const jobCategoryIds = router.query?.['search-results'] ? router.query?.['search-results'].slice(2) : [];
-    const fns = { setForceReRenderer: forceUpdate };
     const parentJobCategories = useMemo(() => getParentJobCategories(jobCategoryIds.map(id => parseInt(id))), [params])
     const vals = { dynamicJobResults: jobCategories, currentHierarchyNum: (params?.[0] && parseInt(params?.[0])) ?? 1, parentJobCategories: parentJobCategories }
 
@@ -77,7 +76,7 @@ const JobVizSearchResults = () => {
 
 
 
-    return isGettingData ? <JobViz vals={{ isLoading: true }} /> : <JobViz fns={fns} vals={vals} />;
+    return isGettingData ? <JobViz vals={{ isLoading: true }} /> : <JobViz vals={vals} />;
 };
 
 export default JobVizSearchResults;
