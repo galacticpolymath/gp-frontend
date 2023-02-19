@@ -11,8 +11,9 @@
 import JobViz from '.';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useGetJobCategories } from '../../customHooks/useGetJobCategories';
+import jobVizData from "../../data/Jobviz/jobVizData.json";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 // need to get the following when the user is on a dynamic route:
@@ -32,18 +33,39 @@ const getJobs = async jobSearchCriteria => {
     return data;
 };
 
+const getParentJobCategories = jobCategoryIds => {
+    let _jobVizData = jobVizData.filter(jobCategory => jobCategoryIds.includes(jobCategory.id))
+    _jobVizData = _jobVizData.map(job => {
+        const { hierarchy, id, title } = job;
+        const selectedLevel = job[`level${hierarchy}`]
+
+        return {
+            ...job,
+            id,
+            currentLevel: selectedLevel,
+            categoryName: title
+        }
+    })
+    _jobVizData.splice(0, 0, { categoryName: 'Job Categories', 'hierarchyNum': null, 'currentLevel': null })
+
+    return _jobVizData;
+}
+
 const JobVizSearchResults = () => {
     const router = useRouter();
     const params = router.query?.['search-results'] ?? null;
-    console.log("router: ", router)
-    console.log("params first: ", params?.[0]);
-    const { isGettingData, getNewJobsData, jobCategories, parentJobCategories } = useGetJobCategories(params?.[0] ?? null, params?.[1] ?? null);
+    const { isGettingData, getNewJobsData, jobCategories } = useGetJobCategories(params?.[0] ?? null, params?.[1] ?? null, );
+    const jobCategoryIds = router.query?.['search-results'] ? router.query?.['search-results'].slice(2) : [];
     const fns = { getNewJobsData: getNewJobsData };
-    const vals = { dynamicJobResults: jobCategories, currentLevelNum: (params?.[0] && parseInt(params?.[0])) ?? 1, parentJobCategories }
+    const parentJobCategories = useMemo(() => getParentJobCategories(jobCategoryIds.map(id => parseInt(id))), [params])
+    console.log('parentJobCategories: ', parentJobCategories)
+    const vals = { dynamicJobResults: jobCategories, currentLevelNum: (params?.[0] && parseInt(params?.[0])) ?? 1, parentJobCategories: parentJobCategories }
 
+    
     JobVizSearchResults.getInitialProps = async () => {
         return {};
     }
+    
 
 
 

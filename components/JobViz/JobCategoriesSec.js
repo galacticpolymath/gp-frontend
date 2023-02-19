@@ -32,24 +32,22 @@ const sortJobResults = jobResults => {
 
 const JobCategories = ({ dynamicJobResults, currentLevelNum, isLoading, getNewJobsData }) => {
     const router = useRouter();
-    const { query } = router ?? {}
     let jobResults = dynamicJobResults ?? startingJobResults;
     jobResults = useMemo(() => sortJobResults(jobResults), [dynamicJobResults])
 
     const handleBtnClick = (level, currentJobsCategoryId) => {
-
         const nextLevelNum = (currentLevelNum + 1)
         getNewJobsData && getNewJobsData(nextLevelNum, level);
         const { query, asPath } = router;
-        if(asPath == '/job-viz'){
-            router.push(`/job-viz/${nextLevelNum}/${level}/${currentJobsCategoryId}`)
+        if (asPath == '/job-viz') {
+            router.push({ pathname: `/job-viz/${nextLevelNum}/${level}/${currentJobsCategoryId}` }, null, { scroll: false })
             return;
         }
         let jobCategoryIds = query[`search-results`]
         jobCategoryIds.splice(0, 2)
         jobCategoryIds.push(currentJobsCategoryId)
         const pathUpdated = `/job-viz/${nextLevelNum}/${level}/${jobCategoryIds.join('/')}`
-        router.push(pathUpdated)
+        router.push({ pathname: pathUpdated }, null, { scroll: false })
     }
 
     return (

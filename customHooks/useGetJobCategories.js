@@ -23,7 +23,6 @@ export const useGetJobCategories = (hierarchyNum, level, title) => {
         setHierarchyNumAndLevel({ hierarchyNum: hierarchyNum, level: level });
     };
 
-    // GOAL:  update parentJobCategories array when the user changes levels
 
     useEffect(() => {
         const { hierarchyNum: currentHierarchyNum, level: currentLevel } = hierarchyNumAndLevel ?? {};
@@ -42,7 +41,6 @@ export const useGetJobCategories = (hierarchyNum, level, title) => {
             const targetJobCategories = filterResults(parseInt(targetHierarchyNum), selectedLevel);
             setJobCategories(targetJobCategories);
             setIsGettingData(false);
-            // setParentJobCategories(parentJobCategories => [...parentJobCategories, { categoryName: title, hierarchyNum: hierarchyNum, level: level }].reverse());
             return;
         }
     }, [isGettingData, hierarchyNumAndLevel]);

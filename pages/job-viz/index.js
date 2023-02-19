@@ -1,4 +1,3 @@
-/* eslint-disable quotes */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-closing-tag-location */
 /* eslint-disable no-unexpected-multiline */
@@ -17,34 +16,12 @@ import { Button, Card } from 'react-bootstrap';
 import { IoNewspaperOutline } from 'react-icons/io5';
 import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
-import { useEffect } from 'react';
 
 const { Body } = Card;
 
 const JobViz = ({ fns, vals }) => {
     const { setWillGetNewResults, getNewJobsData } = fns ?? {};
     const { dynamicJobResults, currentLevelNum, isLoading, parentJobCategories } = vals ?? {};
-    // WHen the user goes n level deep, get the title of the card in which the the clicked button was located in. 
-
-    // CASE: the user clicks on the engineering button.
-    // GOAL: the following should appear onto the UI: 
-    // for the chaining, the first level should read Job Categories 
-    // the current level, it should read: Architecture & Engineering occupations
-
-    // BRAIN DUMP: 
-    // the first level will always be Job Categories
-    // the formatting for the next levels will be as follows: { level: the level, name: (the job category name) }
-    // put the above in an array and map through it to display the chaining onto the UI
-    // the last element in the array will be the current level, that will be card body
-    // when the user clicks on either of the chaining links, execute getNewJobsData and pass in target hierarchyNum and the job category name
-
-    // CASE: the user clicks on a button on the first level
-    // the [...search-results].js page will be rendered, pass the state called jobCategoriesChain, have the first value be an object, with the following format: { hierarchyNum: 1, name: 'Job Categories' }. Have the second object be the following object with the key-value pairs: { hierarchyNum: 2, name: 'Architecture & Engineering occupations', filterLevel: 'a string that will be used to filter the job categories from'  }
-
-    useEffect(() => {
-        console.log("parentJobCategories: ", parentJobCategories)
-    })
-
 
 
     return (
@@ -97,7 +74,7 @@ const JobViz = ({ fns, vals }) => {
                                         </section>
                                         <section className="moveLeftJobViz">
                                             <button className='no-btn-styles text-center jobViz-chain-txt text-nowrap'>
-                                                {/* {categoryName.toUpperCase()} */}
+                                                {categoryName.toUpperCase()}
                                             </button>
                                         </section>
                                     </section>
