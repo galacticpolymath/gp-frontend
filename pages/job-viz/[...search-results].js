@@ -35,6 +35,7 @@ const getJobs = async jobSearchCriteria => {
 const JobVizSearchResults = () => {
     const router = useRouter();
     const params = router.query?.['search-results'] ?? null;
+    console.log("router: ", router)
     console.log("params first: ", params?.[0]);
     const { isGettingData, getNewJobsData, jobCategories, parentJobCategories } = useGetJobCategories(params?.[0] ?? null, params?.[1] ?? null);
     const fns = { getNewJobsData: getNewJobsData };
