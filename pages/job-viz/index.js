@@ -51,31 +51,27 @@ const JobViz = ({ fns, vals }) => {
                     </section>
                 </section>
                 {parentJobCategories &&
-                    <section className="d-flex justify-content-center align-items-center flex-column w-100 pt-5 mt-5">
-                        {/* GOAL: when the user clicks on the job category, the name of that job category should appear in the h4 tag */}
-                        {/* the name of the job category is displayed in the h4 tag and the card is render onto the dom for the last element of the array that was passed in for this component */}
-                        {/* all elements in the array that was passed in from ...search-results comp, besides the last element, are mapped onto the dom as chain */}
-                        {/* the selected job category was added to the state of selectedJobCategories. It will have the following data structure: { categoryName, hierarchyNum, parentLevel }. For the last its values will be as follows: { categoryName: 'Job Categories', hierarchyNum: null, parentLevel: null } */}
-                        {/* get the name of the job category */}
-                        {/* the user presses the more jobs button */}
+                    <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
                         {parentJobCategories.map((jobCategory, index, self) => {
                             const { categoryName, hierarchyNum, parentLevel } = jobCategory ?? {};
 
                             if (index === 0) {
                                 return (
                                     <section id={`chain-${index}`} key={index} className="d-flex justify-content-center align-items-center jobVizChain">
-                                        <section>
-                                            <div className="position-relative jobVizChainIconContainer">
-                                                <img
-                                                    src="/imgs/jobViz/jobVizBrick.jpg" alt="Galactic_Polymath_JobViz_Icon_Search"
-                                                    className='jobVizIcon position-absolute'
-                                                />
-                                            </div>
-                                        </section>
-                                        <section className="moveLeftJobViz">
-                                            <button className='no-btn-styles text-center jobViz-chain-txt text-nowrap'>
-                                                {categoryName.toUpperCase()}
-                                            </button>
+                                        <section className="d-flex">
+                                            <section>
+                                                <div className="position-relative jobVizChainIconContainer">
+                                                    <img
+                                                        src="/imgs/jobViz/jobVizBrick.jpg" alt="Galactic_Polymath_JobViz_Icon_Search"
+                                                        className='jobVizIcon position-absolute'
+                                                    />
+                                                </div>
+                                            </section>
+                                            <section className="moveLeftJobViz d-flex justify-content-center align-items-center">
+                                                <button className='no-btn-styles text-center jobViz-chain-txt text-nowrap'>
+                                                    {categoryName.toUpperCase()}
+                                                </button>
+                                            </section>
                                         </section>
                                     </section>
                                 )
@@ -84,32 +80,36 @@ const JobViz = ({ fns, vals }) => {
                             if ((index !== 0) && (index !== self.length - 1)) {
                                 return (
                                     <section key={index} className="d-flex justify-content-center align-items-center jobVizChain">
-                                        <section>
-                                            <div className="position-absolute">
-                                                <img
-                                                    src="/imgs/jobViz/branch-job-categories-search.jpg" alt="Galactic_Polymath_JobViz_Icon_Search"
-                                                    className='jobVizIcon'
-                                                />
-                                            </div>
-                                        </section>
-                                        <section>
-                                            <button className='no-btn-styles text-center' onClick={() => getNewJobsData(hierarchyNum, parentLevel)}>
-                                                {categoryName.toUpperCase()}
-                                            </button>
+                                        <section className="d-flex">
+                                            <section>
+                                                <div className="position-relative jobVizChainIconContainer">
+                                                    <img
+                                                        src="/imgs/jobViz/branch-job-categories-search.jpg" alt="Galactic_Polymath_JobViz_Icon_Search"
+                                                        className='jobVizIcon'
+                                                    />
+                                                </div>
+                                            </section>
+                                            <section className="d-flex justify-content-center align-items-center">
+                                                <button className='no-btn-styles text-center jobViz-chain-txt text-nowrap' onClick={() => getNewJobsData(hierarchyNum, parentLevel)}>
+                                                    {categoryName.toUpperCase()}
+                                                </button>
+                                            </section>
                                         </section>
                                     </section>
                                 )
                             }
 
                             return (
-                                <Card key={index} className="jobVizCard border-0 shadow">
+                                <Card key={index} className="jobVizCard border-0 shadow mt-5">
                                     <Body className="position-relative d-flex flex-column justify-content-end">
+                                    <section className="position-relative iconSec">
                                         <div className="jobVizIconContainer rounded-circle shadow position-absolute">
                                             <img
                                                 src="/imgs/jobViz/branch-job-categories-search.jpg" alt="Galactic_Polymath_JobViz_Icon_Search"
                                                 className='jobVizIcon rounded-circle'
                                             />
                                         </div>
+                                    </section>
                                         <section>
                                             <h4 id="currentJobCategoryHeaderTxt" className='text-muted text-center'>{categoryName}</h4>
                                             <section className="d-flex justify-content-center align-items-center w-100">

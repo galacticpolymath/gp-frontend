@@ -17,7 +17,11 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
 }
 
 .jobVizChain{
-  // transform: translateX(40px)
+  width: 500px;
+}
+
+.iconSec{
+  height: 100px;
 }
 
 .jobVizImgContainerOnPg {
@@ -73,9 +77,12 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
   }
 }
 
+.jobVizCard-buttonSec{
+  min-height: 120px;
+}
+
 .jobVizCard{
   width: 20rem;
-  height: 225px;
 
   h4{
     font-weight: 249;
