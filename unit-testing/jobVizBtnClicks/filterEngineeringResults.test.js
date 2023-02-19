@@ -4,7 +4,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable quotes */
 /* eslint-disable no-multiple-empty-lines */
-const filterResults = require('../../customHooks/helperFns/filterResults');
+const filterResults = require('../../helperFns/filterResults');
 
 const level2IdResults = [149, 128, 121]
 const level3IdResults = [129, 130, 131, 132, 133, 134, 135, 138, 139, 142, 143, 145, 144, 146, 147, 148]

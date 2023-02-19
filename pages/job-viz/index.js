@@ -17,6 +17,7 @@ import { Button, Card } from 'react-bootstrap';
 import { IoNewspaperOutline } from 'react-icons/io5';
 import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
+import JobCategoryChain from '../../components/JobViz/JobCategoryChain';
 
 const { Body } = Card;
 
@@ -55,78 +56,18 @@ const JobViz = ({ vals }) => {
                 {parentJobCategories &&
                     <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
                         {parentJobCategories.map((jobCategory, index, self) => {
-                            const { categoryName, hierarchyNum, parentLevel, id } = jobCategory ?? {};
 
+                            /* Job Categories */
                             if (index === 0) {
-                                return (
-                                    <section id={`chain-${index}`} key={index} className="d-flex justify-content-center align-items-center jobVizChain">
-                                        <section className="d-flex">
-                                            <section>
-                                                <div className="position-relative jobVizChainIconContainer">
-                                                    <img
-                                                        src="/imgs/jobViz/jobVizBrick.jpg" alt="Galactic_Polymath_JobViz_Icon_Search"
-                                                        className='jobVizIcon position-absolute'
-                                                    />
-                                                </div>
-                                            </section>
-                                            <section className="moveLeftJobViz d-flex justify-content-center align-items-center">
-                                                <button className='no-btn-styles text-center jobViz-chain-txt text-nowrap'>
-                                                    {categoryName.toUpperCase()}
-                                                </button>
-                                            </section>
-                                        </section>
-                                    </section>
-                                )
+                                return <JobCategoryChain key={index} jobCategory={jobCategory} isBrick />
                             }
 
                             if ((index !== 0) && (index !== self.length - 1)) {
-                                return (
-                                    <section key={index} className="d-flex justify-content-center align-items-center jobVizChain">
-                                        <section className="d-flex">
-                                            <section>
-                                                <div className="position-relative jobVizChainIconContainer">
-                                                    <img
-                                                        src="/imgs/jobViz/branch-job-categories-search.jpg" alt="Galactic_Polymath_JobViz_Icon_Search"
-                                                        className='jobVizIcon'
-                                                    />
-                                                </div>
-                                            </section>
-                                            <section className="d-flex justify-content-center align-items-center">
-                                                <button className='no-btn-styles text-center jobViz-chain-txt text-nowrap' onClick={handleJobCategoryChainBtnClick}>
-                                                    {categoryName.toUpperCase()}
-                                                </button>
-                                            </section>
-                                        </section>
-                                    </section>
-                                )
+                                return <JobCategoryChain key={index} jobCategory={jobCategory} />
                             }
 
                             return (
-                                <Card key={index} className="jobVizCard border-0 shadow mt-5">
-                                    <Body className="position-relative d-flex flex-column justify-content-end">
-                                    <section className="position-relative iconSec">
-                                        <div className="jobVizIconContainer rounded-circle shadow position-absolute">
-                                            <img
-                                                src="/imgs/jobViz/branch-job-categories-search.jpg" alt="Galactic_Polymath_JobViz_Icon_Search"
-                                                className='jobVizIcon rounded-circle'
-                                            />
-                                        </div>
-                                    </section>
-                                        <section>
-                                            <h4 id="currentJobCategoryHeaderTxt" className='text-muted text-center'>{categoryName}</h4>
-                                            <section className="d-flex justify-content-center align-items-center w-100">
-                                                <Button id="jobVizBtnSearch" className="d-flex justify-content-center align-items-center">
-                                                    <span className="w-25 h-100 d-flex justify-content-center align-items-center">
-                                                        <IoNewspaperOutline />
-                                                    </span>
-                                                    <span className="w-75 h-100 d-flex justify-content-center align-items-center ps-1">
-                                                        Details
-                                                    </span>
-                                                </Button>
-                                            </section>
-                                        </section>
-                                    </Body>
-                                </Card>
+                               <JobCategoryChainCard key={index} jobCategoryName={jobCategory.categoryName.toUpperCase()} index={index} />
                             )
                         })}
                     </section>}

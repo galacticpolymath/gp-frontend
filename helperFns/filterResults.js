@@ -4,7 +4,7 @@
 /* eslint-disable semi */
 /* eslint-disable comma-dangle */
 /* eslint-disable indent */
-const jobVizData = require('../../data/Jobviz/jobVizData.json');
+const jobVizData = require('../data/Jobviz/jobVizData.json');
 
 const getLastNumFromLevel = selectedLevel => {
     const selectedLevelSplitted = selectedLevel.split('-')

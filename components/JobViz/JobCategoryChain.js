@@ -12,13 +12,16 @@ import { useRouter } from "next/router";
 import { useGetJobCategories } from "../../customHooks/useGetJobCategories";
 
 
-const JobCategoryChain = ({ categoryName, index, isBrick, hierarchyNum, parentLevel, id }) => {
+
+
+const JobCategoryChain = ({ index, isBrick, jobCategory }) => {
+    const { hierarchy, parentLevel, id, categoryName, currentLevel } = jobCategory;
     const src = isBrick ? '/imgs/jobViz/jobVizBrick.jpg' : '/imgs/jobViz/branch-job-categories-search.jpg';
     const router = useRouter();
     const params = router.query?.['search-results'] ?? null;
 
     const handleBtnClick = () => {
-        console.log({ hierarchyNum: hierarchyNum, parentLevel: parentLevel })
+        console.log("jobCategory: ", jobCategory)
         
 
         // WHAT I HAVE: 
@@ -29,26 +32,28 @@ const JobCategoryChain = ({ categoryName, index, isBrick, hierarchyNum, parentLe
         // GOAL #1: get the hierarchy number and targeted level
         // WHAT I NEED:
         // the hierarchy number http://localhost:3000/job-viz/{thisValueHere}/17-2070/120/128/135 (H)
-        // and the target level: jobData['level${hierarchyNum}']}] http://localhost:3000/job-viz/4/{thisValHere}/120/128/135 = Y
+        // and the target level: jobData['level${hierarchy}']}] http://localhost:3000/job-viz/4/{thisValHere}/120/128/135 = Y
         
         // BRAIN DUMPS:
         // get the target jobVizData object from jobVizData array by using the id, call this object A 
         // get the hierarchy number for that object, add one to it  
         // get the current level, by implementing the following:
-        // A['level${hierarchyNum}']}], this value will be the target level (Y)
+        // A['level${hierarchy}']}], this value will be the target level (Y)
         // the hierarchy number for that object, add one to it, this will be (H)  
 
         // GOAL: get the above values, hierarchy number and target level for the new url 
-        // the hierarchy number and the target level, has been accessed 
+        // the hierarchy number and the target level, has been attained 
         // A['level${A.hierarchyNumber}']}], this value will be the target level (Y)
         // get the Y (target level), by implementing the above: 
-        // add one to it, this will be H
-        // the hierarchy number 
+        // get the hierarchy number 
         // call this object A
         // jobVizData target object was attained from the jobVizData array by using the id 
         // using the id, get the targeted jobVizData object from the jobVizData array
         // the id was attained for the specific job category that the user clicked on 
         // the user clicks on one of the job categories button 
+        
+
+        console.log("jobCategory: ", jobCategory)
 
         // CASE: the user wants to go to the second level, the user is currently on the fourth level 
         // GOAL #2: the third level and the fourth level were spliced out of the url
@@ -62,11 +67,11 @@ const JobCategoryChain = ({ categoryName, index, isBrick, hierarchyNum, parentLe
         // delete the last element of arrayA
         // the id is the last element of A
         // if the id is the last element of A, then delete the last element
-        // get the index of the hierarchyNum 
+        // get the index of the hierarchy 
         // splice the first two elements 
         // get the query params (router.query['search-results']), call it array A 
 
-        // GOAL: go to the new url with the given values: hierarchyNum/targetLevel/levelNumX/levelNumY
+        // GOAL: go to the new url with the given values: hierarchy/targetLevel/levelNumX/levelNumY
     }
 
     return (

@@ -8,7 +8,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-multiple-empty-lines */
 import { useEffect, useState } from 'react';
-import filterResults from './helperFns/filterResults';
+import filterResults from '../helperFns/filterResults';
 
 
 
