@@ -12,17 +12,11 @@ import filterResults from './helperFns/filterResults';
 
 
 
-export const useGetJobCategories = (hierarchyNum, level, title) => {
+export const useGetJobCategories = (hierarchyNum, level) => {
     const [isGettingData, setIsGettingData] = useState(true);
     const [hierarchyNumAndLevel, setHierarchyNumAndLevel] = useState({ hierarchyNum: hierarchyNum, level: level });
     const [jobCategories, setJobCategories] = useState([]);
-    const [parentJobCategories, setParentJobCategories] = useState([]);
-
-    const getNewJobsData = (hierarchyNum, level) => {
-        setIsGettingData(true);
-        setHierarchyNumAndLevel({ hierarchyNum: hierarchyNum, level: level });
-    };
-
+    const _setIsGettingData = [isGettingData, setIsGettingData]
 
     useEffect(() => {
         const { hierarchyNum: currentHierarchyNum, level: currentLevel } = hierarchyNumAndLevel ?? {};
@@ -37,13 +31,13 @@ export const useGetJobCategories = (hierarchyNum, level, title) => {
     useEffect(() => {
         const { hierarchyNum: targetHierarchyNum, level: selectedLevel } = hierarchyNumAndLevel ?? {};
         
-        if (isGettingData && targetHierarchyNum && selectedLevel) {
+        if (targetHierarchyNum && selectedLevel) {
             const targetJobCategories = filterResults(parseInt(targetHierarchyNum), selectedLevel);
             setJobCategories(targetJobCategories);
             setIsGettingData(false);
             return;
         }
-    }, [isGettingData, hierarchyNumAndLevel]);
+    }, [hierarchyNumAndLevel]);
 
-    return { isGettingData, getNewJobsData, jobCategories, parentJobCategories };
+    return { jobCategories, _setIsGettingData };
 };

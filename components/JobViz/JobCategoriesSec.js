@@ -30,15 +30,14 @@ const sortJobResults = jobResults => {
 }
 
 
-const JobCategories = ({ dynamicJobResults, currentHierarchyNum, isLoading, getNewJobsData }) => {
+const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading, setForceReRenderer }) => {
     const router = useRouter();
     let jobResults = dynamicJobResults ?? startingJobResults;
     jobResults = useMemo(() => sortJobResults(jobResults), [dynamicJobResults])
 
     const handleBtnClick = (level, currentJobsCategoryId) => {
-
         const nextLevelHierarchyNum = (currentHierarchyNum + 1)
-        getNewJobsData && getNewJobsData(nextLevelHierarchyNum, level);
+        setForceReRenderer && setForceReRenderer()
         const { query, asPath } = router;
         debugger
         if (asPath == '/job-viz') {
@@ -89,4 +88,4 @@ const JobCategories = ({ dynamicJobResults, currentHierarchyNum, isLoading, getN
     );
 };
 
-export default JobCategories;
+export default JobCategoriesSec;

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-closing-tag-location */
 /* eslint-disable no-unexpected-multiline */
@@ -20,8 +21,12 @@ import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
 const { Body } = Card;
 
 const JobViz = ({ fns, vals }) => {
-    const { setWillGetNewResults, getNewJobsData } = fns ?? {};
+    const { setForceReRenderer } = fns ?? {};
     const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
+
+    const handleJobCategoryChainBtnClick = () =>{
+        setForceReRenderer()
+    }
 
     return (
         <Layout>
@@ -89,7 +94,7 @@ const JobViz = ({ fns, vals }) => {
                                                 </div>
                                             </section>
                                             <section className="d-flex justify-content-center align-items-center">
-                                                <button className='no-btn-styles text-center jobViz-chain-txt text-nowrap' onClick={() => getNewJobsData(hierarchyNum, parentLevel)}>
+                                                <button className='no-btn-styles text-center jobViz-chain-txt text-nowrap' onClick={handleJobCategoryChainBtnClick}>
                                                     {categoryName.toUpperCase()}
                                                 </button>
                                             </section>
@@ -144,11 +149,10 @@ const JobViz = ({ fns, vals }) => {
                 </section>
                 {/* job modal cards */}
                 <JobCategoriesSec
-                    setWillGetNewResults={setWillGetNewResults}
                     dynamicJobResults={dynamicJobResults}
                     currentHierarchyNum={currentHierarchyNum ?? 1}
                     isLoading={isLoading}
-                    getNewJobsData={getNewJobsData}
+                    setForceReRenderer={setForceReRenderer}
                 />
             </div>
         </Layout>
