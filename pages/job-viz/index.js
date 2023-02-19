@@ -21,8 +21,7 @@ const { Body } = Card;
 
 const JobViz = ({ fns, vals }) => {
     const { setWillGetNewResults, getNewJobsData } = fns ?? {};
-    const { dynamicJobResults, currentLevelNum, isLoading, parentJobCategories } = vals ?? {};
-
+    const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
 
     return (
         <Layout>
@@ -147,7 +146,7 @@ const JobViz = ({ fns, vals }) => {
                 <JobCategoriesSec
                     setWillGetNewResults={setWillGetNewResults}
                     dynamicJobResults={dynamicJobResults}
-                    currentLevelNum={currentLevelNum ?? 1}
+                    currentHierarchyNum={currentHierarchyNum ?? 1}
                     isLoading={isLoading}
                     getNewJobsData={getNewJobsData}
                 />

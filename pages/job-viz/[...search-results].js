@@ -59,7 +59,7 @@ const JobVizSearchResults = () => {
     const fns = { getNewJobsData: getNewJobsData };
     const parentJobCategories = useMemo(() => getParentJobCategories(jobCategoryIds.map(id => parseInt(id))), [params])
     console.log('parentJobCategories: ', parentJobCategories)
-    const vals = { dynamicJobResults: jobCategories, currentLevelNum: (params?.[0] && parseInt(params?.[0])) ?? 1, parentJobCategories: parentJobCategories }
+    const vals = { dynamicJobResults: jobCategories, currentHierarchyNum: (params?.[0] && parseInt(params?.[0])) ?? 1, parentJobCategories: parentJobCategories }
 
     
     JobVizSearchResults.getInitialProps = async () => {
