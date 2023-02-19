@@ -1,26 +1,5 @@
 [
     {
-      "id": 1,
-      "title": "Total, all",
-      "soc_code": "00-0000",
-      "occupation_type": "Summary",
-      "hierarchy": 0,
-      "path": "",
-      "employment_2021": 158134700,
-      "employment_2031": 166452100,
-      "employment_change_2021-31": 8317.4,
-      "percent_employment_change_2021-31": 5.3,
-      "percent_self_employed_2021": 6.3,
-      "occupational_openings_2021-31_annual_average": 19532.5,
-      "median_annual_wage_2021": "45760",
-      "typical_education_needed_for_entry": "Data Unavailable",
-      "work_experience_in_a_related_occupation": "Data Unavailable",
-      "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation": "Data Unavailable",
-      "def": "No definition found for this Summary Category.",
-      "median_wage_col": "#472B7AFF",
-      "percent_employment_change_col": "#CF4C74FF"
-    },
-    {
       "id": 2,
       "title": "Management Occupations",
       "soc_code": "11-0000",

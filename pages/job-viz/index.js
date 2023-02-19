@@ -18,13 +18,17 @@ import { IoNewspaperOutline } from 'react-icons/io5';
 import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
 import JobCategoryChain from '../../components/JobViz/JobCategoryChain';
+import { useState } from 'react';
+import SearchInputSec from '../../components/JobViz/SearchInputSec';
 
 const { Body } = Card;
 
 const JobViz = ({ vals }) => {
     const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
+    const [searchResults, setSearchResults] = useState([])
 
-    const handleJobCategoryChainBtnClick = () =>{
+
+    const handleJobCategoryChainBtnClick = () => {
     }
 
     return (
@@ -42,17 +46,7 @@ const JobViz = ({ vals }) => {
                 </section>
             </Hero>
             <div className="jobVizContent min-vh-100 pt-5 pb-5">
-                <section className="w-100 d-flex justify-content-center align-items-center">
-                    {/* put search bar here */}
-                    <section className="d-flex inputSec">
-                        <section>
-                            <input className='border-4 rounded ps-1 pe-1' placeholder='Search Jobs' />
-                        </section>
-                        <section className="d-flex justify-content-center align-items-center ps-1">
-                            <BsSearch />
-                        </section>
-                    </section>
-                </section>
+                <SearchInputSec _searchResults={[searchResults, setSearchResults]} />
                 {parentJobCategories &&
                     <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
                         {parentJobCategories.map((jobCategory, index, self) => {
@@ -67,17 +61,18 @@ const JobViz = ({ vals }) => {
                             }
 
                             return (
-                               <JobCategoryChainCard key={index} jobCategoryName={jobCategory.categoryName.toUpperCase()} index={index} />
+                                <JobCategoryChainCard key={index} jobCategoryName={jobCategory.categoryName.toUpperCase()} index={index} />
                             )
                         })}
-                    </section>}
+                    </section>
+                }
                 {!parentJobCategories &&
+                    /* starting section, no jobViz button has been pressed */
                     <section className="d-flex justify-content-center align-items-center flex-column w-100 pt-5 mt-5">
                         <JobCategoryChainCard jobCategoryName="Job Categories" />
                     </section>
                 }
                 <section className="bracketSec w-100 d-flex justify-content-center align-items-center">
-                    {/* put bracket image */}
                     <div className="bracketImgContainer">
                         <img
                             src="/imgs/jobViz/bracket_search.png"

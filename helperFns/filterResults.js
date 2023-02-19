@@ -14,10 +14,6 @@ const getLastNumFromLevel = selectedLevel => {
     return [firstNum, lastNum]
 }
 
-// GOAL: get results four levels deep, use the following conditionals: 
-// if the hierarchy is equal to four 
-// using the value for selectedLevel, get the third level and check if it is equal to the level3 value for each jobCategory object  
-
 const filterResults = (targetHierarchyNum, selectedLevel) => {
     let targetJobCategories = jobVizData.filter(jobCategory => {
         if (targetHierarchyNum === 2) {
