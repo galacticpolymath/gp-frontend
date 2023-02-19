@@ -34,12 +34,10 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, isLoading, getNewJo
     let jobResults = dynamicJobResults ?? startingJobResults;
     jobResults = useMemo(() => sortJobResults(jobResults), [dynamicJobResults])
 
-    const handleBtnClick = (level, title) => {
-        console.log('level: ', level);
-        const _currentLevelNum = (currentLevelNum + 1)
-        console.log("title: ", title)
-        getNewJobsData && getNewJobsData(_currentLevelNum, level);
-        router.push(`/job-viz/${_currentLevelNum}/${level}/${title}`)
+    const handleBtnClick = (level, currentJobsCategoryId) => {
+        const nextLevelNum = (currentLevelNum + 1)
+        getNewJobsData && getNewJobsData(nextLevelNum, level);
+        router.push(`/job-viz/${nextLevelNum}/${level}/${currentJobsCategoryId}`)
     }
 
     return (
@@ -65,10 +63,9 @@ const JobCategories = ({ dynamicJobResults, currentLevelNum, isLoading, getNewJo
                                         </span>
                                     </Button>
                                     :
-                                    <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn shadow" onClick={() => handleBtnClick(currentLevel, title)}>
+                                    <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn shadow" onClick={() => handleBtnClick(currentLevel, id)}>
                                         <AccountTreeIcon /> More Jobs
                                     </Button>
-
                                 }
                             </section>
                         </div>

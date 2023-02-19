@@ -12,17 +12,18 @@ import filterResults from './helperFns/filterResults';
 
 
 
-export const useGetJobCategories = (hierarchyNum, level) => {
+export const useGetJobCategories = (hierarchyNum, level, title) => {
     const [isGettingData, setIsGettingData] = useState(true);
     const [hierarchyNumAndLevel, setHierarchyNumAndLevel] = useState({ hierarchyNum: hierarchyNum, level: level });
     const [jobCategories, setJobCategories] = useState([]);
-    const [parentJobCategories, setParentJobCategories] = useState([{ categoryName: 'Job Categories', hierarchyNum: null, level: null }]);
+    const [parentJobCategories, setParentJobCategories] = useState([]);
 
-    const getNewJobsData = (hierarchyNum, level, title) => {
-        console.log("title: ", title)
+    const getNewJobsData = (hierarchyNum, level) => {
         setIsGettingData(true);
-        setHierarchyNumAndLevel({ hierarchyNum: hierarchyNum, level: level, title });
+        setHierarchyNumAndLevel({ hierarchyNum: hierarchyNum, level: level });
     };
+
+    // GOAL:  update parentJobCategories array when the user changes levels
 
     useEffect(() => {
         const { hierarchyNum: currentHierarchyNum, level: currentLevel } = hierarchyNumAndLevel ?? {};
@@ -39,9 +40,9 @@ export const useGetJobCategories = (hierarchyNum, level) => {
         
         if (isGettingData && targetHierarchyNum && selectedLevel) {
             const targetJobCategories = filterResults(parseInt(targetHierarchyNum), selectedLevel);
-            // setParentJobCategories(parentJobCategories => [...parentJobCategories, { categoryName: title, hierarchyNum: hierarchyNum, level: level }].reverse());
             setJobCategories(targetJobCategories);
             setIsGettingData(false);
+            // setParentJobCategories(parentJobCategories => [...parentJobCategories, { categoryName: title, hierarchyNum: hierarchyNum, level: level }].reverse());
             return;
         }
     }, [isGettingData, hierarchyNumAndLevel]);

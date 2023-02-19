@@ -97,7 +97,7 @@ const JobViz = ({ fns, vals }) => {
                                         </section>
                                         <section className="moveLeftJobViz">
                                             <button className='no-btn-styles text-center jobViz-chain-txt text-nowrap'>
-                                                {categoryName.toUpperCase()}
+                                                {/* {categoryName.toUpperCase()} */}
                                             </button>
                                         </section>
                                     </section>
