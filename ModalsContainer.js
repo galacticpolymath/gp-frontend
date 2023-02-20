@@ -14,7 +14,7 @@
 
 import { useContext } from "react";
 import { ModalContext } from "./providers/ModalProvider";
-import SelectedJob from "./components/Modals/Modals/SelectedJob";
+import SelectedJob from "./components/Modals/SelectedJob";
 
 const ModalContainers = () => {
     const { _selectedJob } = useContext(ModalContext);
