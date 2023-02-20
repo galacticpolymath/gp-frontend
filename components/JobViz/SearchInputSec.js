@@ -33,14 +33,16 @@ const SearchInputSec = ({ _searchResults }) => {
     const forceUpdate = useCallback(() => rerenderComp(), []);
 
     const handleInput = event => {
-        const results = getSearchResults(event.target.value);
-
-        if(results.didErr){
-            alert("Could not get search results. Refresh the page and try again.");
-            return;
+        if (event.target.value) {
+            const results = getSearchResults(event.target.value.toLowerCase());
+            
+            if(results.didErr){
+                alert("Could not get search results. Refresh the page and try again.");
+                return;
+            }
+            
+            setSearchResults(results);
         }
-
-        setSearchResults(results);
     }
 
     const forceUpdateComp = () => {

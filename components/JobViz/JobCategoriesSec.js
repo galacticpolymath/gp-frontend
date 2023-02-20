@@ -57,10 +57,10 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
                 {!jobResults ?
                     <span>Loading results...</span>
                     :
-                    jobResults.map(({ soc_title, id, currentLevel, occupation_type }) => (
+                    jobResults.map(({ title, id, currentLevel, occupation_type }) => (
                         <div id={id} key={id} className="shadow jobFieldStartingResult d-inline-block flex-column">
                             <section className="w-100 h-50 d-flex justify-content-center align-items-center">
-                                <h4 id="currentJobCategory" className="text-center">{soc_title}</h4>
+                                <h4 id="currentJobCategory" className="text-center">{title}</h4>
                             </section>
                             <section className="w-100 h-50 d-flex justify-content-center align-items-center">
                                 {(occupation_type === "Line item") ?

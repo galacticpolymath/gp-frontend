@@ -10,7 +10,7 @@
 const jobVizData = require('../data/Jobviz/jobVizData.json');
 
 const getSearchResults = (searchInput) => {
-    const searchResultsFiltered = jobVizData.filter(({ title }) => title.includes(searchInput))
+    const searchResultsFiltered = jobVizData.filter(({ title }) => title.toLowerCase().includes(searchInput))
     let groupedSearchResults = [];
     
     searchResultsFiltered.forEach(job => {
