@@ -14,13 +14,13 @@
 import { useRouter } from "next/router";
 import { useCallback, useContext, useState } from "react";
 import getPathsOfSearchResult from "../../../helperFns/getPathsOfSearchResult";
-import { ModalContext } from "../../../providers/ModalProviders";
+import { ModalContext } from "../../../providers/ModalProvider";
 
 
 
 const SearchResult = ({ result, forceUpdateParentComp }) => {
-    const { _isJobInfoModalOn, _selectedJob } = useContext(ModalContext);
-    const [, setIsJobInfoModalOn] = _isJobInfoModalOn;
+    const { _selectedJob } = useContext(ModalContext);
+    console.log("_selectedJob: ", _selectedJob)
     const [, setSelectedJob] = _selectedJob;
     const { letter, jobs } = result;
     const router = useRouter();

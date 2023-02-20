@@ -11,23 +11,18 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-
-import { useState } from "react";
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
 
-export const ModalContext = createContext();
+export const ModalContext = createContext(null);
 
 export const ModalProvider = ({ children }) => {
     const [isJobInfoModalOn, setIsJobInfoModalOn] = useState(false);
-    const [selectedJob, setSelectedJob] = useState(false);
-    const _value = {
-        _isJobInfoModalOn: [isJobInfoModalOn, setIsJobInfoModalOn], 
-        _selectedJob: [selectedJob, setSelectedJob]
-    }
+    const [selectedJob, setSelectedJob] = useState(null);
+    const _selectedJob = [selectedJob, setSelectedJob]
 
     return (
-        <ModalContext.Provider value={_value}>
+        <ModalContext.Provider value={{ _selectedJob }}>
             {children}
         </ModalContext.Provider>
     )

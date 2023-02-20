@@ -13,13 +13,14 @@
 /* eslint-disable react/jsx-indent */
 
 import { useContext } from "react";
-import { ModalContext } from "./providers/ModalProviders";
+import { ModalContext } from "./providers/ModalProvider";
 import SelectedJob from "./components/Modals/Modals/SelectedJob";
 
 const ModalContainers = () => {
-    const { _isJobInfoModalOn, _selectedJob } = useContext(ModalContext);
-    const [isJobInfoModalOn,] = _isJobInfoModalOn
+    const { _selectedJob } = useContext(ModalContext);
     const [selectedJob,] = _selectedJob;
+
+    console.log("selectedJob: ", selectedJob)
 
     return (
         <>

@@ -13,20 +13,23 @@
 /* eslint-disable react/jsx-indent */
 import { useContext } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import { ModalContext } from '../../../providers/ModalProviders';
+import { ModalContext } from '../../../providers/ModalProvider';
 
 const { Header, Title, Body, Footer } = Modal;
 
 const SelectedJob = () => {
     const { _selectedJob } = useContext(ModalContext);
-    const [selectedJob, ] = _selectedJob;
+    const [selectedJob, setSelectedJob] = _selectedJob;
+    const { soc_title } = selectedJob;
 
-    console.log("selectedJob: ", selectedJob);
+    const handleOnHide = () => {
+        setSelectedJob(null);
+    }
 
     return (
-        <Modal>
+        <Modal show={selectedJob} onHide={handleOnHide}>
             <Title>
-                <h3></h3>
+                <h3>{soc_title}</h3>
             </Title>
         </Modal>
     )

@@ -1,7 +1,7 @@
+/* eslint-disable react/jsx-indent */
 import Head from 'next/head';
 import Footer from './Footer';
 import Navbar from './Navbar';
-
 import { Montserrat } from '@next/font/google';
 
 const montserrat = Montserrat({
@@ -22,7 +22,7 @@ export default function Layout({ title, keywords, className, description, childr
       <Navbar />
 
       {children}
-      
+
       <Footer />
     </div>
   );

@@ -6,7 +6,8 @@ import '../styles/pages/Lessons/lessons.scss';
 import '../styles/pages/JobViz/job-viz-page.scss';
 import '../styles/icons/icons.scss';
 import '../styles/comps/carousel.scss';
-import { ModalProvider } from '../providers/ModalProviders';
+import { ModalProvider } from '../providers/ModalProvider';
+import ModalsContainer from '../ModalsContainer';
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
@@ -16,6 +17,7 @@ function MyApp({ Component, pageProps }) {
   return (
       <ModalProvider>
         <Component {...pageProps} />
+        <ModalsContainer />
       </ModalProvider>
   );
 }
