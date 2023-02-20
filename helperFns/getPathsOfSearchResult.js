@@ -12,7 +12,7 @@
 const jobVizData = require("../data/Jobviz/jobVizData.json");
 
 const getFirstParentJobCategory = jobCategories => jobCategories.reduce((firstParentJobCategory, jobCategory) => {
-    return (jobCategory?.hierarchy > firstParentJobCategory.hierarchy) ? jobCategory : firstParentJobCategory;
+    return (jobCategory?.hierarchy > firstParentJobCategory?.hierarchy) ? jobCategory : firstParentJobCategory;
 });
 
 const getAllParentJobCategories = (jobCategory, _num) => {
@@ -31,16 +31,18 @@ const getAllParentJobCategories = (jobCategory, _num) => {
 
 
 const getPathsOfSearchResult = jobCategory => {
+    const isLineItem = jobCategory.occupation_type === "Line item"
 
-    // if(hierarchyNum === 4){   
-    let targetLevels = getAllParentJobCategories(jobCategory, (jobCategory.hierarchy === 1) ? jobCategory.hierarchy : (jobCategory.hierarchy - 1));
+    // if (isLineItem && (jobCategory.hierarchy === 3)) {
+    //     delete jobCategory.level3
+    // }
+
+    let targetLevels = getAllParentJobCategories(jobCategory, ((jobCategory.hierarchy === 1) || (jobCategory.hierarchy === 2) || ((jobCategory.hierarchy === 3) && !isLineItem)) ? jobCategory.hierarchy : (jobCategory.hierarchy - 1));
     const firstParentJobCategory = getFirstParentJobCategory(targetLevels);
     const { hierarchy, soc_code } = firstParentJobCategory
-    console.log("hierarchy: ", hierarchy)
     targetLevels = targetLevels.sort((levelA, levelB) => levelA.hierarchy - levelB.hierarchy);
 
     return `/${hierarchy + 1}/${soc_code}/${targetLevels.map(({ id }) => id).join('/')}`
-    // }
 
 
 
