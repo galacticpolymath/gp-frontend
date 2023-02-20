@@ -46,8 +46,8 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
         jobCategoryIds.splice(0, 2)
         jobCategoryIds.push(currentJobsCategoryId)
         const pathUpdated = `/job-viz/${nextLevelHierarchyNum}/${level}/${jobCategoryIds.join('/')}`
+        
         router.push({ pathname: pathUpdated }, null, { scroll: false })
-
     }
 
     return (

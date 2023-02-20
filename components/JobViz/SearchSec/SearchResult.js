@@ -12,24 +12,30 @@
 /* eslint-disable react/jsx-indent */
 
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import getPathsOfSearchResult from "../../../helperFns/getPathsOfSearchResult";
+import { ModalContext } from "../../../providers/ModalProviders";
 
 
 
 const SearchResult = ({ result, forceUpdateParentComp }) => {
+    const { _isJobInfoModalOn, _selectedJob } = useContext(ModalContext);
+    const [, setIsJobInfoModalOn] = _isJobInfoModalOn;
+    const [, setSelectedJob] = _selectedJob;
     const { letter, jobs } = result;
     const router = useRouter();
 
     const handleBtnClick = jobCategory => {
         const currentPath = router.pathname
         const paths = getPathsOfSearchResult(jobCategory);
-        
+
         router.push({ pathname: `/job-viz${paths}` }, null, { scroll: false })
 
-        if(currentPath !== "/job-viz"){
+        if (currentPath !== "/job-viz") {
             forceUpdateParentComp()
         }
+
+        setSelectedJob(jobCategory);
     }
 
     return (

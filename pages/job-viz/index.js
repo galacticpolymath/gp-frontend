@@ -27,10 +27,6 @@ const JobViz = ({ vals }) => {
     const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
     const [searchResults, setSearchResults] = useState([])
 
-
-    const handleJobCategoryChainBtnClick = () => {
-    }
-
     return (
         <Layout>
             <Hero className="jobVizHero">
