@@ -14,17 +14,38 @@
 import { BsSearch } from "react-icons/bs"
 import { Button, Card } from 'react-bootstrap';
 import getSearchResults from "../../helperFns/getSearchResults";
-import { useRef } from "react";
+import { useCallback, useRef, useState } from "react";
+import getPathsOfSearchResult from "../../helperFns/getPathsOfSearchResult";
+import { useRouter } from "next/router";
+import SearchResult from "./SearchSec/SearchResult";
 
 const { Title, Body } = Card;
 
 const SearchInputSec = ({ _searchResults }) => {
     const [searchResults, setSearchResults] = _searchResults;
     const inputRef = useRef();
+    const [, setForceReRenderer] = useState({});
+
+    const rerenderComp = () => {
+        setForceReRenderer({});
+    }
+
+    const forceUpdate = useCallback(() => rerenderComp(), []);
 
     const handleInput = event => {
         const results = getSearchResults(event.target.value);
+
+        if(results.didErr){
+            alert("Could not get search results. Refresh the page and try again.");
+            return;
+        }
+
         setSearchResults(results);
+    }
+
+    const forceUpdateComp = () => {
+        inputRef.current.value = "";
+        forceUpdate()
     }
 
     return (
@@ -43,28 +64,7 @@ const SearchInputSec = ({ _searchResults }) => {
                     <Card className="w-75">
                         <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
                         <Body>
-                            {!!searchResults?.length && searchResults.map((result, index) => {
-                                const { letter, jobs } = result;
-                                return (
-                                    <div key={index} className="d-flex justify-content-between align-items-center flex-column border-bottom">
-                                        <section>
-                                            <div>
-                                                <h5>{letter}</h5>
-                                            </div>
-                                        </section>
-                                        <section>
-                                            {jobs.map(job => {
-                                                const { title, id } = job;
-                                                return (
-                                                    <div key={id} className="searchResultJob">
-                                                        <button className="no-btn-styles">{title}</button>
-                                                    </div>
-                                                )
-                                            })}
-                                        </section>
-                                    </div>
-                                )
-                            })}
+                            {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
                         </Body>
                     </Card>
                 }

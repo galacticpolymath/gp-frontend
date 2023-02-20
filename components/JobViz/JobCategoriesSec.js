@@ -38,7 +38,6 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
     const handleBtnClick = (level, currentJobsCategoryId) => {
         const nextLevelHierarchyNum = (currentHierarchyNum + 1)
         const { query, asPath } = router;
-        debugger
         if (asPath == '/job-viz') {
             router.push({ pathname: `/job-viz/${nextLevelHierarchyNum}/${level}/${currentJobsCategoryId}` }, null, { scroll: false })
             return;

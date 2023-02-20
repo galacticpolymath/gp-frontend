@@ -19,83 +19,37 @@ const getAllParentJobCategories = (jobCategory, _num) => {
     let targetLevels = [];
     let num = _num;
 
-    while (num != 0) {
+
+    // check if num is a number
+    if ((typeof num !== "number") || isNaN(num)) {
+        return { didErr: true };
+    }
+    while (!(num <= 0)) {
         const levelN = jobCategory[`level${num}`];
         const parentJobCategoryAtNLvl = jobVizData.find(({ soc_code, occupation_type }) => (soc_code === levelN) && (occupation_type === "Summary"));
         targetLevels.push(parentJobCategoryAtNLvl)
         num--;
     }
 
-    return targetLevels;
+    return { targetLevels: targetLevels };
 }
 
 
 const getPathsOfSearchResult = jobCategory => {
-    const isLineItem = jobCategory.occupation_type === "Line item"
+    const { hierarchy, occupation_type } = jobCategory;
+    const isLineItem = occupation_type === "Line item"
+    const numForWhileLoop = ((hierarchy === 1) || (hierarchy === 2) || ((hierarchy === 3) && !isLineItem)) ? hierarchy : (hierarchy - 1)
+    let { targetLevels, didErr } = getAllParentJobCategories(jobCategory, numForWhileLoop);
 
-    // if (isLineItem && (jobCategory.hierarchy === 3)) {
-    //     delete jobCategory.level3
-    // }
+    if (didErr) {
+        return { didErr: true }
+    }
 
-    let targetLevels = getAllParentJobCategories(jobCategory, ((jobCategory.hierarchy === 1) || (jobCategory.hierarchy === 2) || ((jobCategory.hierarchy === 3) && !isLineItem)) ? jobCategory.hierarchy : (jobCategory.hierarchy - 1));
     const firstParentJobCategory = getFirstParentJobCategory(targetLevels);
-    const { hierarchy, soc_code } = firstParentJobCategory
+    const { hierarchy: firstParentJobCategoryHierarchy, soc_code } = firstParentJobCategory
     targetLevels = targetLevels.sort((levelA, levelB) => levelA.hierarchy - levelB.hierarchy);
 
-    return `/${hierarchy + 1}/${soc_code}/${targetLevels.map(({ id }) => id).join('/')}`
-
-
-
-    // BRAIN DUMP:
-    // get the hierarchy number for the specific job category 
-    // need to get the previous job results
-    // we get the job category object from the jobVizData file
-
-
-
-    // CASE: the user goes to a line item in hierarchy level 4 
-    // the following will be pushed into the url: currentHierarchy/source_code/level2/level3/level4
-    // currentHierarchy/source_code/level2/level3/level4 will pushed into the url
-    // the levelN id has been attained
-    // target object with levelN id has been attained
-    // using jobCategory.levelN and occupation_type === "Summary"
-    // get the parent job category summary levels, by doing the above:
-    // get the latest parent job category level, get its source_code (this is the parent level) and its (hierarchy level + 1) == currentHierarchy  (the object with the highest number for the 'hierarchy' field)
-    // a line item was clicked for on the job search 
-
-    // if ((hierarchy === 4) && (occupation_type === "Line item")) {
-    //     let targetLevels = getAllParentJobCategories(jobCategory, 3); 
-    //     const firstParentJobCategory = getFirstParentJobCategory(targetLevels);
-    //     const { hierarchy, soc_code } = firstParentJobCategory
-    //     targetLevels = targetLevels.sort((levelA, levelB) => levelA.hierarchy - levelB.hierarchy);
-
-    //     return `/${hierarchy + 1}/${soc_code}/${targetLevels.map(({ id }) => id).join('/')}`
-
-    // }
-
-
-
-
-
-
-
-    // CASE: the user goes to a summary of a level 4 job categories 
-
-
-
-    // CASE: the user goes to a summary of level 3 job categories 
-
-
-
-    // CASE: the user goes to a line item in level 3 job categories 
-
-
-
-    // CASE: the user goes to a line item in level 2 job categories 
-
-
-
-    // CASE: the user goes to a summary of level 2 job categories 
+    return `/${firstParentJobCategoryHierarchy + 1}/${soc_code}/${targetLevels.map(({ id }) => id).join('/')}`
 }
 
 module.exports = getPathsOfSearchResult
