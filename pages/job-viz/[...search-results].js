@@ -20,14 +20,14 @@ import jobVizData from "../../data/Jobviz/jobVizData.json";
 const getParentJobCategories = jobCategoryIds => {
     let _jobVizData = jobVizData.filter(jobCategory => jobCategoryIds.includes(jobCategory.id))
     _jobVizData = _jobVizData.map(job => {
-        const { hierarchy, id, title } = job;
+        const { hierarchy, id, soc_title } = job;
         const selectedLevel = job[`level${hierarchy}`]
 
         return {
             ...job,
             id,
             currentLevel: selectedLevel,
-            categoryName: title
+            categoryName: soc_title
         }
     })
     _jobVizData.splice(0, 0, { categoryName: 'Job Categories', 'hierarchyNum': null, 'currentLevel': null })

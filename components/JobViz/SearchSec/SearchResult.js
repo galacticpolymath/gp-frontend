@@ -22,14 +22,14 @@ const SearchResult = ({ result, forceUpdateParentComp }) => {
     const router = useRouter();
 
     const handleBtnClick = jobCategory => {
-        const currentPath = router.pathname;
+        const currentPath = router.pathname
+        const paths = getPathsOfSearchResult(jobCategory);
+        
+        router.push({ pathname: `/job-viz${paths}` }, null, { scroll: false })
 
         if(currentPath !== "/job-viz"){
             forceUpdateParentComp()
         }
-
-        const paths = getPathsOfSearchResult(jobCategory);
-        router.push({ pathname: `/job-viz${paths}` }, null, { scroll: false })
     }
 
     return (
