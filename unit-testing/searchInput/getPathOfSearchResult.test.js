@@ -13,20 +13,28 @@ const jobVizData = require("../../data/Jobviz/jobVizData.json")
 const selectedJobCategoryTest1 = jobVizData.find(({ id }) => id === 759);
 // summary item, "hierarchy": 1
 const selectedJobCategoryTest2 = jobVizData.find(({ id }) => id === 558);
-// child item summary, at the second level 
+// summary item, at the second level 
 const selectedJobCategoryTest3 = jobVizData.find(({ id }) => id === 1009);
-// child item summary, at the second level
+// summary item, at the second level
 const selectedJobCategoryTest4 = jobVizData.find(({ id }) => id === 490);
-// child item summary, at the third level
+// line item, at the fourth level
 const selectedJobCategoryTest5 = jobVizData.find(({ id }) => id === 494);
-// third level, main parent
+// third level, summary item
 const selectedJobCategoryTest6 = jobVizData.find(({ id }) => id === 492);
 // line item at the third level
 const selectedJobCategoryTest7 = jobVizData.find(({ id }) => id === 1091);
 // line item at level four
 const selectedJobCategoryTest8 = jobVizData.find(({ id }) => id === 1090);
 // line item at third level
-const selectedJobCategoryTest9 = jobVizData.find(({ id }) => id === 115);
+const selectedJobCategoryTest9 = jobVizData.find(({ id }) => id === 93);
+// summary item at level one
+const selectedJobCategoryTest10 = jobVizData.find(({ id }) => id === 742);
+// summary item at level 3
+const selectedJobCategoryTest11 = jobVizData.find(({ id }) => id === 546);
+// summary item at level 3
+const selectedJobCategoryTest12 = jobVizData.find(({ id }) => id === 513);
+// summary item at level 3
+const selectedJobCategoryTest13 = jobVizData.find(({ id }) => id === 580);
 
 
 const test1CorrectResult = '/4/45-4020/742/756/758'
@@ -37,6 +45,10 @@ const test5And6CorrectResult = '/4/29-9090/412/490/492'
 const test7CorrectResult = '/3/53-6000/1047/1085'
 const test8CorrectResult = '/4/53-6030/1047/1085/1088'
 const test9CorrectResult = '/3/15-1200/92/93'
+const test10CorrectResult = '/2/45-0000/742'
+const test11CorrectResult = '/3/33-9000/522/546'
+const test12CorrectResult = '/4/31-9090/497/511/513'
+const test13CorrectResult = '/3/35-9000/558/576'
 
 
 
@@ -69,11 +81,27 @@ test("Get the path of the selected search result.", () => {
 
     expect(newPathsTest7).toBe(test7CorrectResult)  
 
-    // const newPathsTest8 = getPathsOfSearchResult(selectedJobCategoryTest8);
+    const newPathsTest9 = getPathsOfSearchResult(selectedJobCategoryTest9);
 
-    // expect(newPathsTest8).toBe(test8CorrectResult)  
+    expect(newPathsTest9).toBe(test9CorrectResult)  
 
-    // const newPathsTest9 = getPathsOfSearchResult(selectedJobCategoryTest9);
+    const newPathsTest8 = getPathsOfSearchResult(selectedJobCategoryTest8);
 
-    // expect(newPathsTest9).toBe(test9CorrectResult)  
+    expect(newPathsTest8).toBe(test8CorrectResult)  
+
+    const newPathsTest10 = getPathsOfSearchResult(selectedJobCategoryTest10);
+
+    expect(newPathsTest10).toBe(test10CorrectResult)  
+
+    const newPathsTest11 = getPathsOfSearchResult(selectedJobCategoryTest11);
+
+    expect(newPathsTest11).toBe(test11CorrectResult)  
+    
+    const newPathsTest12 = getPathsOfSearchResult(selectedJobCategoryTest12);
+
+    expect(newPathsTest12).toBe(test12CorrectResult)
+
+    const newPathsTest13 = getPathsOfSearchResult(selectedJobCategoryTest13);
+
+    expect(newPathsTest13).toBe(test13CorrectResult)  
 })
