@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-debugger */
 /* eslint-disable no-multiple-empty-lines */
@@ -9,34 +10,40 @@
 /* eslint-disable indent */
 const jobVizData = require('../data/Jobviz/jobVizData.json');
 
-const getSearchResults = (searchInput) => {
-    const searchResultsFiltered = jobVizData.filter(({ title }) => title.toLowerCase().includes(searchInput))
-    let groupedSearchResults = [];
-    
-    searchResultsFiltered.forEach(job => {
-        const firstLetter = job.title[0];
+const getSearchResultsAsync = (searchInput) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const searchResultsFiltered = jobVizData.filter(({ title }) => title.toLowerCase().includes(searchInput))
+            let groupedSearchResults = [];
 
-        if (groupedSearchResults.length === 0) {
-            groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
-            return
+            searchResultsFiltered.forEach(job => {
+                const firstLetter = job.title[0];
+
+                if (groupedSearchResults.length === 0) {
+                    groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
+                    return
+                }
+
+                const targetGroup = groupedSearchResults.find(({ letter }) => letter === firstLetter);
+
+                if (targetGroup) {
+                    targetGroup.jobs.push(job);
+                    const targetGroupIndex = groupedSearchResults.findIndex(({ letter }) => letter === firstLetter);
+                    groupedSearchResults.splice(targetGroupIndex, 1, targetGroup);
+                    return
+                }
+
+                groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
+            })
+
+            resolve(groupedSearchResults);
+        } catch (error) {
+            reject(error);
         }
-
-        const targetGroup = groupedSearchResults.find(({ letter }) => letter === firstLetter);
-
-        if (targetGroup) {
-            targetGroup.jobs.push(job);
-            const targetGroupIndex = groupedSearchResults.findIndex(({ letter }) => letter === firstLetter);
-            groupedSearchResults.splice(targetGroupIndex, 1, targetGroup);
-            return
-        }
-
-        groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
-    })
-
-    return groupedSearchResults;
+    });
 }
 
-module.exports = getSearchResults;
+module.exports = getSearchResultsAsync;
 
 
 

@@ -13,7 +13,7 @@
 
 import { BsSearch } from "react-icons/bs"
 import { Button, Card } from 'react-bootstrap';
-import getSearchResults from "../../helperFns/getSearchResults";
+import getSearchResultsAsync from "../../helperFns/getSearchResults";
 import { useCallback, useRef, useState } from "react";
 import getPathsOfSearchResult from "../../helperFns/getPathsOfSearchResult";
 import { useRouter } from "next/router";
@@ -34,15 +34,16 @@ const SearchInputSec = ({ _searchResults }) => {
 
     const handleInput = event => {
         if (event.target.value) {
-            const results = getSearchResults(event.target.value.toLowerCase());
-            
-            if(results.didErr){
-                alert("Could not get search results. Refresh the page and try again.");
-                return;
-            }
-            
-            setSearchResults(results);
+            getSearchResultsAsync(event.target.value.toLowerCase())
+                .then(results => {
+                    setSearchResults(results);
+                })
+                .catch(error => {
+                    console.error("Something went wrong: ", error)
+                })
+            return;
         }
+        forceUpdate();
     }
 
     const forceUpdateComp = () => {
