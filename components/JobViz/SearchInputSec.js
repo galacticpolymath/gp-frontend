@@ -32,6 +32,11 @@ const SearchInputSec = ({ _searchResults }) => {
 
     const forceUpdate = useCallback(() => rerenderComp(), []);
 
+    const forceUpdateComp = () => {
+        inputRef.current.value = "";
+        forceUpdate()
+    }
+
     const handleInput = event => {
         if (event.target.value) {
             getSearchResultsAsync(event.target.value.toLowerCase())
@@ -46,10 +51,7 @@ const SearchInputSec = ({ _searchResults }) => {
         forceUpdate();
     }
 
-    const forceUpdateComp = () => {
-        inputRef.current.value = "";
-        forceUpdate()
-    }
+    
 
     return (
         <section className="w-100 d-flex justify-content-center align-items-center flex-column">

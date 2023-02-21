@@ -73,6 +73,10 @@ h3 {
   font-weight: 500;
 }
 
+::-webkit-scrollbar{
+  width: .01rem;
+}
+
 li {
   margin-bottom: 0.5rem;
 }
