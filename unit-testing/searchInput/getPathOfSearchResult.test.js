@@ -41,6 +41,8 @@ const selectedJobCategoryTest16 = jobVizData.find(({ id }) => id === 47);
 const selectedJobCategoryTest17 = jobVizData.find(({ id }) => id === 94);
 const selectedJobCategoryTest18 = jobVizData.find(({ id }) => id === 231);
 const selectedJobCategoryTest19 = jobVizData.find(({ id }) => id === 499);
+const selectedJobCategoryTest20 = jobVizData.find(({ id }) => id === 561);
+const test20CorrectResult = '/3/35-1000/558/559'
 const test18CorrectResult = '/3/19-5000/166/229'
 const test19CorrectResult = '/3/31-1100/497/498'
 const test14CorrectResult = '/3/13-1000/51/52'
@@ -141,4 +143,8 @@ test("Get the path of the selected search result.", () => {
     const newPathsTest19 = getPathsOfSearchResult(selectedJobCategoryTest19);
 
     expect(newPathsTest19).toBe(test19CorrectResult)  
+
+    const newPathsTest20 = getPathsOfSearchResult(selectedJobCategoryTest20);
+
+    expect(newPathsTest20).toBe(test20CorrectResult)  
 })

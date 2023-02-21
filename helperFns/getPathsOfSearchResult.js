@@ -42,7 +42,7 @@ const getAllParentJobCategories = (jobCategory, _num) => {
             // levelNLastNumStr will always be a thousand number. Check if there is a digit greater than 0 in the hundreds place 
             let isThereANonZeroNumSteInHundredsPlace = (levelNLastNumStr % 1000) > 0
             
-            if(isOnLevel2 && isThereANonZeroNumSteInHundredsPlace && !(levelN === "15-1200")){
+            if(isOnLevel2 && isThereANonZeroNumSteInHundredsPlace && !exceptionsAtLevel2.includes(levelN)){
                 levelNLastNumStr = levelNLastNumStr - (levelNLastNumStr % 1000)
                 levelN = `${levelNFirstNumStr}-${levelNLastNumStr}`
             }
