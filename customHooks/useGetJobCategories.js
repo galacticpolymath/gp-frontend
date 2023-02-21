@@ -21,7 +21,7 @@ export const useGetJobCategories = (hierarchyNum, level) => {
     useEffect(() => {
         const { hierarchyNum: currentHierarchyNum, level: currentLevel } = hierarchyNumAndLevel ?? {};
 
-        if ((currentHierarchyNum !== hierarchyNum) || (currentLevel !== level)){
+        if ((currentHierarchyNum !== hierarchyNum) || (currentLevel !== level)) {
             setHierarchyNumAndLevel({ hierarchyNum: hierarchyNum, level: level });
         }
     }, [hierarchyNum, level])
@@ -30,10 +30,10 @@ export const useGetJobCategories = (hierarchyNum, level) => {
 
     useEffect(() => {
         const { hierarchyNum: targetHierarchyNum, level: selectedLevel } = hierarchyNumAndLevel ?? {};
-        
+
         if (targetHierarchyNum && selectedLevel) {
+            console.log("hierarchyNumAndLevel: ", hierarchyNumAndLevel)
             const targetJobCategories = filterResults(parseInt(targetHierarchyNum), selectedLevel);
-            console.log("targetJobCategories: ", targetJobCategories)
             setJobCategories(targetJobCategories);
             setIsGettingData(false);
             debugger
