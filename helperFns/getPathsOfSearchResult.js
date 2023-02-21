@@ -28,6 +28,8 @@ const getAllParentJobCategories = (jobCategory, _num) => {
     if ((typeof num !== "number") || isNaN(num)) {
         return { didErr: true };
     }
+
+
     while (!(num <= 0)) {
         const levelFieldName = `level${num}`
         let levelN = jobCategory[levelFieldName];
