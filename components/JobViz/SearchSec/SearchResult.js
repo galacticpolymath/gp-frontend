@@ -50,7 +50,7 @@ const SearchResult = ({ result, forceUpdateParentComp }) => {
                     const { title, id } = job;
                     return (
                         <div key={id} id={`${id}_searchResult`} className="searchResultJob">
-                            <button id={`${id}_searchResult`} onClick={() => handleBtnClick(job)} className="no-btn-styles">{title}</button>
+                            <button id={`${id}_searchResult_btn`} onClick={() => handleBtnClick(job)} className="no-btn-styles">{title}</button>
                         </div>
                     )
                 })}

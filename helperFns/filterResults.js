@@ -8,10 +8,10 @@ const jobVizData = require('../data/Jobviz/jobVizData.json');
 
 const getLastNumFromLevel = selectedLevel => {
     const selectedLevelSplitted = selectedLevel.split('-')
-    const lastNum = parseInt(selectedLevelSplitted[selectedLevelSplitted.length - 1]);
+    const lastNumStr = selectedLevelSplitted[selectedLevelSplitted.length - 1];
     const firstNum = parseInt(selectedLevelSplitted[0]);
 
-    return [firstNum, lastNum]
+    return [firstNum, lastNumStr]
 }
 
 const filterResults = (targetHierarchyNum, selectedLevel) => {
@@ -27,8 +27,16 @@ const filterResults = (targetHierarchyNum, selectedLevel) => {
     });
 
     if (targetHierarchyNum === 3) {
-        const [firstNumSelectedLevel, rangeStart] = getLastNumFromLevel(selectedLevel);
-        const range = [rangeStart, (rangeStart + 1000) - 1];
+        let [firstNumSelectedLevel, rangeStart] = getLastNumFromLevel(selectedLevel);
+        let rangeStartSplitted = rangeStart.split('');
+        let rangeStartStrSecond = rangeStartSplitted[1];
+
+        if(rangeStartStrSecond !== "0"){
+            rangeStartSplitted[1] = "0";
+            rangeStart = parseInt(rangeStartSplitted.join(''));
+        }
+
+        const range = [rangeStart, (((typeof rangeStart === 'string') ? parseInt(rangeStart) : rangeStart) + 1000) - 1];
         targetJobCategories = targetJobCategories.map(job => ({ ...job, range: range }));
         targetJobCategories = targetJobCategories.filter(job => {
             const { range, soc_code } = job;

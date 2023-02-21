@@ -38,7 +38,7 @@ const SearchInputSec = ({ _searchResults }) => {
         forceUpdate()
     }
 
-    // FOR TESTING PURPOSES ONLY
+    // FOR TESTING PURPOSES ONLY, UNCOMMENT FOR TESTING
     // useEffect(() => {
     //     console.log("hello there")
     //     let groupedSearchResults = [];
@@ -95,6 +95,7 @@ const SearchInputSec = ({ _searchResults }) => {
             </section>
             <section className="min-vw-100 border d-flex justify-content-center">
                 {/* show the search results in this section, present a card with all of the search results */}
+                {/* comment for testing */}
                 {!!inputRef?.current?.value &&
                 <Card className="w-75">
                     <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
@@ -102,6 +103,14 @@ const SearchInputSec = ({ _searchResults }) => {
                         {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
                     </Body>
                 </Card>}
+
+                {/* FOR TESTING PURPOSES ONLY, UNCOMMENT FOR TESTING */}
+                {/* <Card className="w-75">
+                    <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
+                    <Body>
+                        {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
+                    </Body>
+                </Card> */}
             </section>
         </section>
     )

@@ -26,7 +26,7 @@ const { Header, Title, Body, Footer } = Modal;
 const SelectedJob = () => {
     const { _selectedJob } = useContext(ModalContext);
     const [selectedJob, setSelectedJob] = _selectedJob;
-    let { soc_title, def, median_annual_wage_2021, typical_education_needed_for_entry, employment_2021, employment_2031 } = selectedJob;
+    let { soc_title, def, title, median_annual_wage_2021, typical_education_needed_for_entry, employment_2021, employment_2031 } = selectedJob;
     const projectedPercentageEmploymentChange = selectedJob["percent_employment_change_2021-31"];
     const onTheJobTraining = selectedJob["typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"]
     def = def.toLowerCase() === "no definition found for this summary category." ? null : def;
@@ -47,7 +47,7 @@ const SelectedJob = () => {
         <Modal show={selectedJob} size="md" onHide={handleOnHide} contentClassName="selectedJobModal" dialogClassName='dialogJobVizModal'>
             <Header className='selectedJobHeader border-0' closeButton>
                 <Title className="w-100 ps-3">
-                    <h3 className="text-center">{soc_title}</h3>
+                    <h3 className="text-center">{soc_title ?? title}</h3>
                 </Title>
             </Header>
             <Body className='selectedJobBody'>

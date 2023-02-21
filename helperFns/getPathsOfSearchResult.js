@@ -29,27 +29,31 @@ const getAllParentJobCategories = (jobCategory, _num) => {
     while (!(num <= 0)) {
         const levelFieldName = `level${num}`
         let levelN = jobCategory[levelFieldName];
-        const isOnLevel2 = levelFieldName === "level2"
-        let levelNSplitted = levelN.split("-")
-        let levelNFirstNumStr = levelNSplitted[0]
-        let levelNLastNumStr = levelNSplitted[1]
-        // levelNLastNumStr will always be a thousand number. Check if there is a digit greater than 0 in the hundreds place 
-        let isThereANonZeroNumSteInHundredsPlace = (levelNLastNumStr % 1000) > 0
+        let parentJobCategoryAtNLvl = jobCategory;
 
-        if(isOnLevel2 && isThereANonZeroNumSteInHundredsPlace){
-            levelNLastNumStr = levelNLastNumStr - (levelNLastNumStr % 1000)
-            levelN = `${levelNFirstNumStr}-${levelNLastNumStr}`
+        if (jobCategory.soc_code !== levelN){
+            // if on level 2 and "level2": "15-1200", then insert "15-1200" into levelN 
+            const isOnLevel2 = levelFieldName === "level2"
+            let levelNSplitted = levelN.split("-")
+            let levelNFirstNumStr = levelNSplitted[0]
+            let levelNLastNumStr = levelNSplitted[1]
+            // levelNLastNumStr will always be a thousand number. Check if there is a digit greater than 0 in the hundreds place 
+            let isThereANonZeroNumSteInHundredsPlace = (levelNLastNumStr % 1000) > 0
+            
+            if(isOnLevel2 && isThereANonZeroNumSteInHundredsPlace && !(levelN === "15-1200")){
+                levelNLastNumStr = levelNLastNumStr - (levelNLastNumStr % 1000)
+                levelN = `${levelNFirstNumStr}-${levelNLastNumStr}`
+            }
+
+            parentJobCategoryAtNLvl = jobVizData.find(({ soc_code, occupation_type }) => (soc_code === levelN) && (occupation_type === "Summary"));
         }
         
 
 
 
-        const parentJobCategoryAtNLvl = jobVizData.find(({ soc_code, occupation_type }) => (soc_code === levelN) && (occupation_type === "Summary"));
         targetLevels.push(parentJobCategoryAtNLvl)
         num--;
     }
-
-    console.log("targetLevels: ", targetLevels)
 
     return { targetLevels: targetLevels };
 }

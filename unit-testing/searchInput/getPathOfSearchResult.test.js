@@ -38,9 +38,13 @@ const selectedJobCategoryTest13 = jobVizData.find(({ id }) => id === 580);
 const selectedJobCategoryTest14 = jobVizData.find(({ id }) => id === 67);
 const selectedJobCategoryTest15 = jobVizData.find(({ id }) => id === 1050);
 const selectedJobCategoryTest16 = jobVizData.find(({ id }) => id === 47);
+const selectedJobCategoryTest17 = jobVizData.find(({ id }) => id === 94);
+const selectedJobCategoryTest18 = jobVizData.find(({ id }) => id === 231);
+const test18CorrectResult = '/3/19-5000/166/229'
 const test14CorrectResult = '/3/13-1000/51/52'
 const test15CorrectResult = '/3/53-1000/1047/1048'
 const test16CorrectResult = '/4/11-9170/2/27/47'
+const test17CorrectResult = '/4/15-1210/92/93/94'
 
 
 const test1CorrectResult = '/4/45-4020/742/756/758'
@@ -60,67 +64,75 @@ const test13CorrectResult = '/3/35-9000/558/576'
 
 
 test("Get the path of the selected search result.", () => {
-    // const newPathsTest1 = getPathsOfSearchResult(selectedJobCategoryTest1);
+    const newPathsTest1 = getPathsOfSearchResult(selectedJobCategoryTest1);
 
-    // expect(newPathsTest1).toBe(test1CorrectResult)    
+    expect(newPathsTest1).toBe(test1CorrectResult)    
 
-    // const newPathsTest2 = getPathsOfSearchResult(selectedJobCategoryTest2);
+    const newPathsTest2 = getPathsOfSearchResult(selectedJobCategoryTest2);
 
-    // expect(newPathsTest2).toBe(test2CorrectResult)  
+    expect(newPathsTest2).toBe(test2CorrectResult)  
 
-    // const newPathsTest3 = getPathsOfSearchResult(selectedJobCategoryTest3);
+    const newPathsTest3 = getPathsOfSearchResult(selectedJobCategoryTest3);
 
-    // expect(newPathsTest3).toBe(test3CorrectResult)  
+    expect(newPathsTest3).toBe(test3CorrectResult)  
 
-    // const newPathsTest4 = getPathsOfSearchResult(selectedJobCategoryTest4);
+    const newPathsTest4 = getPathsOfSearchResult(selectedJobCategoryTest4);
 
-    // expect(newPathsTest4).toBe(test4CorrectResult)  
+    expect(newPathsTest4).toBe(test4CorrectResult)  
 
-    // const newPathsTest5 = getPathsOfSearchResult(selectedJobCategoryTest5);
+    const newPathsTest5 = getPathsOfSearchResult(selectedJobCategoryTest5);
 
-    // expect(newPathsTest5).toBe(test5And6CorrectResult)  
+    expect(newPathsTest5).toBe(test5And6CorrectResult)  
 
-    // const newPathsTest6 = getPathsOfSearchResult(selectedJobCategoryTest6);
+    const newPathsTest6 = getPathsOfSearchResult(selectedJobCategoryTest6);
 
-    // expect(newPathsTest6).toBe(test5And6CorrectResult)  
+    expect(newPathsTest6).toBe(test5And6CorrectResult)  
 
-    // const newPathsTest7 = getPathsOfSearchResult(selectedJobCategoryTest7);
+    const newPathsTest7 = getPathsOfSearchResult(selectedJobCategoryTest7);
 
-    // expect(newPathsTest7).toBe(test7CorrectResult)  
+    expect(newPathsTest7).toBe(test7CorrectResult)  
 
     const newPathsTest9 = getPathsOfSearchResult(selectedJobCategoryTest9);
 
     expect(newPathsTest9).toBe(test9CorrectResult)  
 
-    // const newPathsTest8 = getPathsOfSearchResult(selectedJobCategoryTest8);
+    const newPathsTest8 = getPathsOfSearchResult(selectedJobCategoryTest8);
 
-    // expect(newPathsTest8).toBe(test8CorrectResult)  
+    expect(newPathsTest8).toBe(test8CorrectResult)  
 
-    // const newPathsTest10 = getPathsOfSearchResult(selectedJobCategoryTest10);
+    const newPathsTest10 = getPathsOfSearchResult(selectedJobCategoryTest10);
 
-    // expect(newPathsTest10).toBe(test10CorrectResult)  
+    expect(newPathsTest10).toBe(test10CorrectResult)  
 
-    // const newPathsTest11 = getPathsOfSearchResult(selectedJobCategoryTest11);
+    const newPathsTest11 = getPathsOfSearchResult(selectedJobCategoryTest11);
 
-    // expect(newPathsTest11).toBe(test11CorrectResult)  
+    expect(newPathsTest11).toBe(test11CorrectResult)  
     
-    // const newPathsTest12 = getPathsOfSearchResult(selectedJobCategoryTest12);
+    const newPathsTest12 = getPathsOfSearchResult(selectedJobCategoryTest12);
 
-    // expect(newPathsTest12).toBe(test12CorrectResult)
+    expect(newPathsTest12).toBe(test12CorrectResult)
 
-    // const newPathsTest13 = getPathsOfSearchResult(selectedJobCategoryTest13);
+    const newPathsTest13 = getPathsOfSearchResult(selectedJobCategoryTest13);
 
-    // expect(newPathsTest13).toBe(test13CorrectResult)  
+    expect(newPathsTest13).toBe(test13CorrectResult)  
 
-    // const newPathsTest14 = getPathsOfSearchResult(selectedJobCategoryTest14);
+    const newPathsTest14 = getPathsOfSearchResult(selectedJobCategoryTest14);
 
-    // expect(newPathsTest14).toBe(test14CorrectResult)  
+    expect(newPathsTest14).toBe(test14CorrectResult)  
 
-    // const newPathsTest15 = getPathsOfSearchResult(selectedJobCategoryTest15);
+    const newPathsTest15 = getPathsOfSearchResult(selectedJobCategoryTest15);
 
-    // expect(newPathsTest15).toBe(test15CorrectResult)  
+    expect(newPathsTest15).toBe(test15CorrectResult)  
 
     const newPathsTest16 = getPathsOfSearchResult(selectedJobCategoryTest16);
 
     expect(newPathsTest16).toBe(test16CorrectResult)  
+
+    const newPathsTest17 = getPathsOfSearchResult(selectedJobCategoryTest17);
+
+    expect(newPathsTest17).toBe(test17CorrectResult)  
+
+    const newPathsTest18 = getPathsOfSearchResult(selectedJobCategoryTest18);
+
+    expect(newPathsTest18).toBe(test18CorrectResult)  
 })
