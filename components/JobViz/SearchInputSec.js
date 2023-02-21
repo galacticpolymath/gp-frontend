@@ -14,10 +14,11 @@
 import { BsSearch } from "react-icons/bs"
 import { Button, Card } from 'react-bootstrap';
 import getSearchResultsAsync from "../../helperFns/getSearchResults";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import getPathsOfSearchResult from "../../helperFns/getPathsOfSearchResult";
 import { useRouter } from "next/router";
 import SearchResult from "./SearchSec/SearchResult";
+import jobVizData from '../../data/Jobviz/jobVizData.json'
 
 const { Title, Body } = Card;
 
@@ -37,6 +38,35 @@ const SearchInputSec = ({ _searchResults }) => {
         forceUpdate()
     }
 
+    // FOR TESTING PURPOSES ONLY
+    // useEffect(() => {
+    //     console.log("hello there")
+    //     let groupedSearchResults = [];
+
+    //     jobVizData.forEach(job => {
+    //         const firstLetter = job.title[0];
+
+    //         if (groupedSearchResults.length === 0) {
+    //             groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
+    //             return
+    //         }
+
+    //         const targetGroup = groupedSearchResults.find(({ letter }) => letter === firstLetter);
+
+    //         if (targetGroup) {
+    //             targetGroup.jobs.push(job);
+    //             const targetGroupIndex = groupedSearchResults.findIndex(({ letter }) => letter === firstLetter);
+    //             groupedSearchResults.splice(targetGroupIndex, 1, targetGroup);
+    //             return
+    //         }
+
+    //         groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
+    //     })
+
+
+    //     setSearchResults(groupedSearchResults)
+    // }, [])
+
     const handleInput = event => {
         if (event.target.value) {
             getSearchResultsAsync(event.target.value.toLowerCase())
@@ -51,7 +81,7 @@ const SearchInputSec = ({ _searchResults }) => {
         forceUpdate();
     }
 
-    
+
 
     return (
         <section className="w-100 d-flex justify-content-center align-items-center flex-column">
@@ -66,13 +96,12 @@ const SearchInputSec = ({ _searchResults }) => {
             <section className="min-vw-100 border d-flex justify-content-center">
                 {/* show the search results in this section, present a card with all of the search results */}
                 {!!inputRef?.current?.value &&
-                    <Card className="w-75">
-                        <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
-                        <Body>
-                            {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
-                        </Body>
-                    </Card>
-                }
+                <Card className="w-75">
+                    <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
+                    <Body>
+                        {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
+                    </Body>
+                </Card>}
             </section>
         </section>
     )

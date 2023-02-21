@@ -49,8 +49,8 @@ const SearchResult = ({ result, forceUpdateParentComp }) => {
                 {jobs.map(job => {
                     const { title, id } = job;
                     return (
-                        <div key={id} className="searchResultJob">
-                            <button onClick={() => handleBtnClick(job)} className="no-btn-styles">{title}</button>
+                        <div key={id} id={`${id}_searchResult`} className="searchResultJob">
+                            <button id={`${id}_searchResult`} onClick={() => handleBtnClick(job)} className="no-btn-styles">{title}</button>
                         </div>
                     )
                 })}
