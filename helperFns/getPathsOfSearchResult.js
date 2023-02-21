@@ -15,6 +15,8 @@ const getFirstParentJobCategory = jobCategories => jobCategories.reduce((firstPa
     return (jobCategory?.hierarchy > firstParentJobCategory?.hierarchy) ? jobCategory : firstParentJobCategory;
 });
 
+const exceptionsAtLevel2 = ["15-1200", "31-1100"]
+
 const getAllParentJobCategories = (jobCategory, _num) => {
     let targetLevels = [];
     let num = _num;
