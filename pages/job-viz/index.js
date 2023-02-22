@@ -12,16 +12,13 @@
 import Hero from '../../components/Hero';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import Layout from '../../components/Layout';
-import { BsSearch } from 'react-icons/bs';
-import { Button, Card } from 'react-bootstrap';
-import { IoNewspaperOutline } from 'react-icons/io5';
 import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
-import JobCategoryChain from '../../components/JobViz/JobCategoryChain';
+import PreviouslySelectedJobCategory from '../../components/JobViz/PreviouslySelectedJobCategory';
 import { useState } from 'react';
 import SearchInputSec from '../../components/JobViz/SearchInputSec';
+import Image from 'next/image';
 
-const { Body } = Card;
 
 const JobViz = ({ vals }) => {
     const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
@@ -37,7 +34,7 @@ const JobViz = ({ vals }) => {
                         <p className='text-muted'>What do you want to be?</p>
                     </section>
                     <section>
-                        <JobVizIcon isOnJobVizPg={true} />
+                        <JobVizIcon isOnJobVizPg />
                     </section>
                 </section>
             </Hero>
@@ -48,12 +45,23 @@ const JobViz = ({ vals }) => {
                         {parentJobCategories.map((jobCategory, index, self) => {
 
                             /* Job Categories */
+                            {/* insert the chain here as well */ }
                             if (index === 0) {
-                                return <JobCategoryChain key={index} jobCategory={jobCategory} isBrick />
+                                return (
+                                    <>
+                                        <PreviouslySelectedJobCategory key={index} jobCategory={jobCategory} isBrick />
+                                        <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} /> 
+                                    </>
+                                )
                             }
 
+                            {/* insert the chain here */ }
                             if ((index !== 0) && (index !== self.length - 1)) {
-                                return <JobCategoryChain key={index} jobCategory={jobCategory} />
+
+                                return <>
+                                    <PreviouslySelectedJobCategory key={index} jobCategory={jobCategory} />
+                                    <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} /> 
+                                </>
                             }
 
                             return (

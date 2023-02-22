@@ -26,10 +26,9 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
   }
 }
 
-.jobVizChain
 
 .iconSec{
-  height: 100px;
+  // height: 120px;
 }
 
 .jobVizImgContainerOnPg {
@@ -71,10 +70,12 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
 }
 
 .bracketImgContainer{
-  height: 100px;
+  // height: 20px;
   // width: 85%;
+  max-width: 1025px;
+
   @media(min-width: 992px){
-    min-width: 895px
+    min-width: 970.95px;
   }
 }
 
@@ -107,11 +108,8 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
   }
 }
 
-.jobVizCard-buttonSec{
-  min-height: 120px;
-}
-
 .jobVizCard{
+  // height: 250px;
 
   h4{
     font-weight: 249;
@@ -171,16 +169,13 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
 }
 
 .searchResultJob{
-  margin-top: 10px;
+  margin-top: 20px;
   max-width: 300px;
-  height: 70px;
   position: relative;
+  height: 100px;
+  border: solid red;
   button{
-    line-height: 25px;
-    position: absolute;
     line-height: 23px;
-    top: 0;
-    left: 0;
   }
 
   button:hover{

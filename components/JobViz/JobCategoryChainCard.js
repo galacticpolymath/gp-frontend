@@ -11,8 +11,8 @@ import { IoNewspaperOutline } from 'react-icons/io5';
 
 const JobCategoryChainCard = ({ jobCategoryName, index }) => {
     return (
-        <Card key={index ?? "0"} className="jobVizCard border-0 shadow mt-5">
-            <Card.Body className="position-relative d-flex flex-column justify-content-end">
+        <Card key={index ?? "0"} className="jobVizCard border-0 shadow">
+            <Card.Body className="position-relative d-flex flex-column justify-content-end jobVizCardBody">
                 <section className="position-relative iconSec">
                     <div className="jobVizIconContainer rounded-circle shadow position-absolute">
                         <img
@@ -25,7 +25,7 @@ const JobCategoryChainCard = ({ jobCategoryName, index }) => {
                 <section className="jobVizCard-buttonSec">
                     <h4 id="currentJobCategoryHeaderTxt" className='text-muted text-center'>{jobCategoryName}</h4>
                     <section className="d-flex justify-content-center align-items-center w-100">
-                        <Button id="jobVizBtnSearch" className="d-flex justify-content-center align-items-center">
+                        <Button id="jobVizBtnSearch" className="d-flex justify-content-center align-items-center job-categories-btn">
                             <span className="w-25 h-100 d-flex justify-content-center align-items-center">
                                 <IoNewspaperOutline />
                             </span>

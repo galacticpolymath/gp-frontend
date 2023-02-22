@@ -102,7 +102,7 @@ const SearchInputSec = ({ _searchResults }) => {
                             <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
                         </Header>
                         <Body>
-                            {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
+                            {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} index={index} />)}
                         </Body>
                     </Card>}
 

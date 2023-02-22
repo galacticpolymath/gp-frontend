@@ -9,13 +9,9 @@
 /* eslint-disable no-multiple-empty-lines */
 
 import { useRouter } from "next/router";
-import { useGetJobCategories } from "../../customHooks/useGetJobCategories";
 import getNewUrl from "../../helperFns/getNewUrl";
 
-
-
-
-const JobCategoryChain = ({ index, isBrick, jobCategory }) => {
+const PreviouslySelectedJobCategory = ({ index, isBrick, jobCategory }) => {
     const src = isBrick ? '/imgs/jobViz/jobVizBrick.jpg' : '/imgs/jobViz/branch-job-categories-search.jpg';
     const router = useRouter();
     const params = router.query?.['search-results'] ?? null;
@@ -51,4 +47,4 @@ const JobCategoryChain = ({ index, isBrick, jobCategory }) => {
     )
 };
 
-export default JobCategoryChain;
+export default PreviouslySelectedJobCategory;
