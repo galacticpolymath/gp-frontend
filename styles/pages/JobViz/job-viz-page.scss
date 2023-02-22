@@ -61,7 +61,10 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
 
 .bracketImgContainer{
   height: 100px;
-  width: 85%;
+  // width: 85%;
+  @media(min-width: 992px){
+    min-width: 895px
+  }
 }
 
 

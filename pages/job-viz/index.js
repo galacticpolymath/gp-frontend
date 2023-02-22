@@ -68,21 +68,23 @@ const JobViz = ({ vals }) => {
                         <JobCategoryChainCard jobCategoryName="Job Categories" />
                     </section>
                 }
-                <section className="bracketSec w-100 d-flex justify-content-center align-items-center">
-                    <div className="bracketImgContainer">
-                        <img
-                            src="/imgs/jobViz/bracket_search.png"
-                            alt="Galactic_Polymath_JobViz_Icon_Search"
-                            className='w-100 h-100'
-                        />
-                    </div>
+                <section className="jobCategoriesAndBracketSec d-flex justify-content-center align-items-center flex-column">
+                    <section className="bracketSec d-flex justify-content-center align-items-center">
+                        <div className="bracketImgContainer">
+                            <img
+                                src="/imgs/jobViz/bracket_search.png"
+                                alt="Galactic_Polymath_JobViz_Icon_Search"
+                                className='w-100 h-100'
+                            />
+                        </div>
+                    </section>
+                    {/* job modal cards */}
+                    <JobCategoriesSec
+                        dynamicJobResults={dynamicJobResults}
+                        currentHierarchyNum={currentHierarchyNum ?? 1}
+                        isLoading={isLoading}
+                    />
                 </section>
-                {/* job modal cards */}
-                <JobCategoriesSec
-                    dynamicJobResults={dynamicJobResults}
-                    currentHierarchyNum={currentHierarchyNum ?? 1}
-                    isLoading={isLoading}
-                />
             </div>
         </Layout>
     );

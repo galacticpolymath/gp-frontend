@@ -10,17 +10,26 @@ $moreJobsBtnColor: #6c2d82;
   }
 }
 
+.bracketSec,
+.jobCategoriesSec {
+  width: 85%;
+}
+
+.jobCategoriesSec {
+}
+
 .jobCategoriesSec {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: solid pink;
   > div {
-    width: 1100px;
+    @media (min-width: 992px) {
+        width: 992px;
+    }
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-}
+  }
 }
 
 .job-categories-btn {
@@ -41,5 +50,5 @@ $moreJobsBtnColor: #6c2d82;
 }
 
 .jobFieldStartingResult {
-  margin-top: 20px;
+  margin-top: 40px;
 }

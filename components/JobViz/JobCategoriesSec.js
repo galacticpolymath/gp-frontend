@@ -51,7 +51,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
     }
 
     return (
-        <section className="pt-3 d-flex justify-content-center align-items-center border">
+        <section className="pt-3 d-flex justify-content-center align-items-center">
             <div className="jobCategoriesSec">
                 {!jobResults ?
                     <span>Loading results...</span>
