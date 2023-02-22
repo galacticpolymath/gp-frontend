@@ -20,7 +20,6 @@ import { ModalContext } from "../../../providers/ModalProvider";
 
 const SearchResult = ({ result, forceUpdateParentComp, index }) => {
     const { _selectedJob } = useContext(ModalContext);
-    console.log("_selectedJob: ", _selectedJob)
     const [, setSelectedJob] = _selectedJob;
     const { letter, jobs } = result;
     const router = useRouter();
