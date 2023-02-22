@@ -73,7 +73,7 @@ const JobViz = ({ vals }) => {
                 {!parentJobCategories &&
                     /* starting section, no jobViz button has been pressed */
                     <section className="d-flex justify-content-center align-items-center flex-column w-100 pt-5 mt-5">
-                        <JobCategoryChainCard jobCategoryName="Job Categories" />
+                        <JobCategoryChainCard />
                     </section>
                 }
                 <section className="jobCategoriesAndBracketSec d-flex justify-content-center align-items-center flex-column">

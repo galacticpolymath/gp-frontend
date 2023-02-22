@@ -31,12 +31,13 @@ $jobInfoStatCard: #EFF8FE;
 
 .dialogJobVizModal{
     // overriding the default react-bootstrap modal max-width
-    max-width: 600px !important;
+    max-width: 625px !important;
 }
 
 .jobInfoStatCard{
     background-color: $jobInfoStatCard;
     height: 186px;
+    // width: 105%;
 
 
     h5{

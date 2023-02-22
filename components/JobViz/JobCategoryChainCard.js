@@ -11,12 +11,34 @@ import { Button, Card } from 'react-bootstrap';
 import { IoNewspaperOutline } from 'react-icons/io5';
 import { ModalContext } from "../../providers/ModalProvider";
 
+const jobsAllInfo = {
+    "id": 1,
+    "title": "Total, all",
+    "soc_code": "00-0000",
+    "occupation_type": "Summary",
+    "hierarchy": 0,
+    "path": "",
+    "employment_2021": 158134700,
+    "employment_2031": 166452100,
+    "employment_change_2021-31": 8317.4,
+    "percent_employment_change_2021-31": 5.3,
+    "percent_self_employed_2021": 6.3,
+    "occupational_openings_2021-31_annual_average": 19532.5,
+    "median_annual_wage_2021": "45760",
+    "typical_education_needed_for_entry": "Data Unavailable",
+    "work_experience_in_a_related_occupation": "Data Unavailable",
+    "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation": "Data Unavailable",
+    "def": "No definition found for this Summary Category.",
+    "median_wage_col": "#472B7AFF",
+    "percent_employment_change_col": "#CF4C74FF",
+}
+
 const JobCategoryChainCard = ({ jobCategory, index }) => {
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
 
     const handleBtnClick = () => {
-        setSelectedJob(jobCategory);
+        setSelectedJob(jobCategory ?? jobsAllInfo);
     }
 
     return (
@@ -32,7 +54,7 @@ const JobCategoryChainCard = ({ jobCategory, index }) => {
                     </div>
                 </section>
                 <section className="jobVizCard-buttonSec">
-                    <h4 id="currentJobCategoryHeaderTxt" className='text-muted text-center'>{jobCategory.categoryName.toUpperCase()}</h4>
+                    <h4 id="currentJobCategoryHeaderTxt" className='text-muted text-center'>{jobCategory?.categoryName?.toUpperCase() ?? "Job Categories"}</h4>
                     <section className="d-flex justify-content-center align-items-center w-100">
                         <Button
                             id="jobVizBtnSearch"

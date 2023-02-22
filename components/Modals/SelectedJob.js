@@ -27,6 +27,8 @@ const SelectedJob = () => {
     const { _selectedJob } = useContext(ModalContext);
     const [selectedJob, setSelectedJob] = _selectedJob;
     let { soc_title, def, title, median_annual_wage_2021, typical_education_needed_for_entry, employment_2021, employment_2031 } = selectedJob;
+    let jobTitle = soc_title ?? title;
+    jobTitle = jobTitle === "Total, all" ? "All US Jobs" : jobTitle;
     const projectedPercentageEmploymentChange = selectedJob["percent_employment_change_2021-31"];
     const onTheJobTraining = selectedJob["typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"]
     def = def.toLowerCase() === "no definition found for this summary category." ? null : def;
@@ -47,7 +49,7 @@ const SelectedJob = () => {
         <Modal show={selectedJob} size="md" onHide={handleOnHide} contentClassName="selectedJobModal" dialogClassName='dialogJobVizModal'>
             <Header className='selectedJobHeader border-0' closeButton>
                 <Title className="w-100 ps-3">
-                    <h3 className="text-center">{soc_title ?? title}</h3>
+                    <h3 className="text-center">{jobTitle}</h3>
                 </Title>
             </Header>
             <Body className='selectedJobBody'>
@@ -62,6 +64,25 @@ const SelectedJob = () => {
                 <section className="jobInfoStatSec pt-3">
                     {infoCards.map((card, index) => {
                         const { icon, title, txt } = card;
+                        let _txt = txt;
+
+                        if(title === "Median 2021 Annual Wage"){
+                            _txt = `$${parseInt(txt).toLocaleString()}`
+                        }
+
+                        if(title === "Percent change in Employment 2016 - 2026"){
+                            _txt = `+${txt}%`
+                        }
+
+                        if(title === "2021 Employment"){
+                            _txt = `${parseInt(txt).toLocaleString()}`
+                        }
+
+                        if(title === "2026 Employment"){
+                            _txt = `${parseInt(txt).toLocaleString()}`
+                        }
+
+
                         return (
                             <div className="d-block jobInfoStatCard shadow" key={index}>
                                 <div className="d-flex align-items-center justify-content-center border h-100">
@@ -73,7 +94,7 @@ const SelectedJob = () => {
                                             <h5 className="fw-bold">{title}</h5>
                                         </section>
                                         <section className="w-100 position-absolute">
-                                            <span className="d-inline-block w-100">{txt}</span>
+                                            <span className="d-inline-block w-100">{_txt}</span>
                                         </section>
                                     </section>
                                 </div>

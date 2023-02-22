@@ -16,6 +16,8 @@ import { useRouter } from "next/router";
 import { IoNewspaperOutline } from 'react-icons/io5';
 import jobVizData from '../../data/Jobviz/jobVizData.json';
 import { useMemo } from "react";
+import { useContext } from 'react';
+import { ModalContext } from "../../providers/ModalProvider";
 
 
 const startingJobResults = jobVizData.filter(jobCategory => jobCategory.hierarchy === 1).map(jobCategory => ({ ...jobCategory, currentLevel: jobCategory.level1 }))
@@ -32,10 +34,12 @@ const sortJobResults = jobResults => {
 
 const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading }) => {
     const router = useRouter();
+    const { _selectedJob } = useContext(ModalContext);
+    const [, setSelectedJob] = _selectedJob;
     let jobResults = dynamicJobResults ?? startingJobResults;
     jobResults = useMemo(() => sortJobResults(jobResults), [dynamicJobResults])
 
-    const handleDetailsBtnClick = (level, currentJobsCategoryId) => {
+    const handleMoreJobsBtnClick = (level, currentJobsCategoryId) => {
         const nextLevelHierarchyNum = (currentHierarchyNum + 1)
         const { query, asPath } = router;
         if (asPath == '/job-viz') {
@@ -50,6 +54,10 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
         router.push({ pathname: pathUpdated }, null, { scroll: false })
     }
 
+    const handleDetailsBtnClick = (jobToShowInModal) => {
+        setSelectedJob(jobToShowInModal)
+    }
+
 
     return (
         <section className="pt-sm-3 d-flex justify-content-center align-items-center">
@@ -58,35 +66,37 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
                     <span>Loading results...</span>
                     :
                     <div>
-                        {jobResults.map(({ title, id, currentLevel, occupation_type }) => (
-                            <div id={id} key={id} className="shadow jobFieldStartingResult d-inline-block flex-column">
-                                <section className="w-100 h-50 d-flex justify-content-center align-items-center">
-                                    <h4 id="currentJobCategory" className="text-center ps-2 pe-2 pt-3">{title}</h4>
-                                </section>
-                                <section className="w-100 h-50 d-flex justify-content-center align-items-center">
-                                    {(occupation_type === "Line item") ?
-                                        <Button id={`details_btn_${id}`} className="d-flex justify-content-center align-items-center job-categories-btn">
-                                            <span className="w-25 h-100 d-flex justify-content-center align-items-center">
-                                                <IoNewspaperOutline />
-                                            </span>
-                                            <span className="w-75 h-100 d-flex justify-content-center align-items-center ps-1">
-                                                Details
-                                            </span>
-                                        </Button>
-                                        :
-                                        <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn moreJobsBtn shadow" onClick={() => handleDetailsBtnClick(currentLevel, id)}>
-                                            <span className="d-inline-flex justify-content-center align-items-center h-100">
-                                                <AccountTreeIcon />
-                                            </span>
-                                            <span className="d-inline-flex ms-1 justify-content-center align-items-center h-100">
-                                                More Jobs
-                                            </span>
-                                        </Button>
-                                    }
-                                </section>
-                            </div>
-                        )
-                        )}
+                        {jobResults.map(job => {
+                            const { title, id, currentLevel, occupation_type } = job;
+                            return (
+                                <div id={id} key={id} className="shadow jobFieldStartingResult d-inline-block flex-column">
+                                    <section className="w-100 h-50 d-flex justify-content-center align-items-center">
+                                        <h4 id="currentJobCategory" className="text-center ps-2 pe-2 pt-3">{title}</h4>
+                                    </section>
+                                    <section className="w-100 h-50 d-flex justify-content-center align-items-center">
+                                        {(occupation_type === "Line item") ?
+                                            <Button id={`details_btn_${id}`} className="d-flex justify-content-center align-items-center job-categories-btn" onClick={() => handleDetailsBtnClick(job)}>
+                                                <span className="w-25 h-100 d-flex justify-content-center align-items-center">
+                                                    <IoNewspaperOutline />
+                                                </span>
+                                                <span className="w-75 h-100 d-flex justify-content-center align-items-center ps-1">
+                                                    Details
+                                                </span>
+                                            </Button>
+                                            :
+                                            <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn moreJobsBtn shadow" onClick={() => handleMoreJobsBtnClick(currentLevel, id)}>
+                                                <span className="d-inline-flex justify-content-center align-items-center h-100">
+                                                    <AccountTreeIcon />
+                                                </span>
+                                                <span className="d-inline-flex ms-1 justify-content-center align-items-center h-100">
+                                                    More Jobs
+                                                </span>
+                                            </Button>
+                                        }
+                                    </section>
+                                </div>
+                            )
+                        })}
                     </div>
                 }
             </div>
