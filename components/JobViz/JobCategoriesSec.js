@@ -35,7 +35,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
     let jobResults = dynamicJobResults ?? startingJobResults;
     jobResults = useMemo(() => sortJobResults(jobResults), [dynamicJobResults])
 
-    const handleBtnClick = (level, currentJobsCategoryId) => {
+    const handleDetailsBtnClick = (level, currentJobsCategoryId) => {
         const nextLevelHierarchyNum = (currentHierarchyNum + 1)
         const { query, asPath } = router;
         if (asPath == '/job-viz') {
@@ -74,7 +74,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
                                             </span>
                                         </Button>
                                         :
-                                        <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn moreJobsBtn shadow" onClick={() => handleBtnClick(currentLevel, id)}>
+                                        <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn moreJobsBtn shadow" onClick={() => handleDetailsBtnClick(currentLevel, id)}>
                                             <span className="d-inline-flex justify-content-center align-items-center h-100">
                                                 <AccountTreeIcon />
                                             </span>

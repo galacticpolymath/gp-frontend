@@ -65,7 +65,7 @@ const JobViz = ({ vals }) => {
                             }
 
                             return (
-                                <JobCategoryChainCard key={index} jobCategoryName={jobCategory.categoryName.toUpperCase()} index={index} />
+                                <JobCategoryChainCard key={index} jobCategory={jobCategory} index={index} />
                             )
                         })}
                     </section>
