@@ -13,7 +13,7 @@
 
 import { useRouter } from "next/router";
 import { useCallback, useContext, useState } from "react";
-import getPathsOfSearchResult from "../../../helperFns/getPathsOfSearchResult";
+import { getPathsOfSearchResult } from "../../../helperFns/getPathsOfSearchResult";
 import { ModalContext } from "../../../providers/ModalProvider";
 
 

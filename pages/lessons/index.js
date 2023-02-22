@@ -24,7 +24,7 @@ const LessonsPage = ({ lessons }) => {
               </section>
               <section className="d-flex justify-content-center align-items-center flex-column">
                 <h4>
-                  <Link href="/job-viz" className="text-muted">Jobviz Career Explorer</Link>
+                  <Link href="/job-viz" className="text-muted jobVizLink">Jobviz Career Explorer</Link>
                 </h4>
               </section>
             </section>

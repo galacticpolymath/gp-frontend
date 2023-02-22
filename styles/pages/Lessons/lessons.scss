@@ -15,8 +15,12 @@ $borderColor: darkgray;
 }
 
 .jobVizEntrySection span{
-    // font-size: $spanDesktopFontSize;
     font-size: 24px;
+}
+
+.jobVizLink:hover{
+    text-decoration-color: #6c757d;
+    text-decoration-thickness: .1px;
 }
 
 .jobVizImgContainer{

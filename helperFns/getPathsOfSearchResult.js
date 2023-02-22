@@ -15,15 +15,9 @@ const getFirstParentJobCategory = jobCategories => jobCategories.reduce((firstPa
     return (jobCategory?.hierarchy > firstParentJobCategory?.hierarchy) ? jobCategory : firstParentJobCategory;
 });
 
-const exceptionsAtLevel2 = ["15-1200", "31-1100"]
+// const exceptionsAtLevel2 = ["15-1200", "31-1100"]
+const exceptionsAtLevel2 = []
 
-const getParentJobCategoryAtNLvl = (jobCategory, num) => {
-    const levelFieldName = `level${num}`
-    const levelN = jobCategory[levelFieldName];
-    const parentJobCategoryAtNLvl = jobVizData.find(({ soc_code, occupation_type }) => (soc_code === levelN) && (occupation_type === "Summary"));
-
-    return parentJobCategoryAtNLvl;
-}
 
 const getAllParentJobCategories = (jobCategory, _num) => {
     let targetLevels = [];
@@ -39,23 +33,29 @@ const getAllParentJobCategories = (jobCategory, _num) => {
         let levelN = jobCategory[levelFieldName];
         let parentJobCategoryAtNLvl = jobCategory;
 
-        if (jobCategory.soc_code !== levelN){
+        // after doing the string manipulation above, find the object below. If the object doesn't exist. Then use the default string first (jobCategory[levelFieldName]) instead of the manipulated string. Insert that for the levelN and find the target parent job category. Do this first. 
+
+        if (jobCategory.soc_code !== levelN) {
             // if on level 2 and "level2": "15-1200", then insert "15-1200" into levelN 
             const isOnLevel2 = levelFieldName === "level2"
             let levelNSplitted = levelN.split("-")
             let levelNFirstNumStr = levelNSplitted[0]
             let levelNLastNumStr = levelNSplitted[1]
-            // levelNLastNumStr will always be a thousand number. Check if there is a digit greater than 0 in the hundreds place 
-            let isThereANonZeroNumSteInHundredsPlace = (levelNLastNumStr % 1000) > 0
-            
-            if(isOnLevel2 && isThereANonZeroNumSteInHundredsPlace && !exceptionsAtLevel2.includes(levelN)){
+            let isThereANonZeroNumInHundredsPlace = (levelNLastNumStr % 1000) > 0
+
+            if (isOnLevel2 && isThereANonZeroNumInHundredsPlace) {
                 levelNLastNumStr = levelNLastNumStr - (levelNLastNumStr % 1000)
                 levelN = `${levelNFirstNumStr}-${levelNLastNumStr}`
             }
 
             parentJobCategoryAtNLvl = jobVizData.find(({ soc_code, occupation_type }) => (soc_code === levelN) && (occupation_type === "Summary"));
+
+            if (!parentJobCategoryAtNLvl && isOnLevel2 && isThereANonZeroNumInHundredsPlace) {
+                levelN = jobCategory[levelFieldName]
+                parentJobCategoryAtNLvl = jobVizData.find(({ soc_code, occupation_type }) => (soc_code === levelN) && (occupation_type === "Summary"));
+            }
         }
-        
+
 
 
 
@@ -78,18 +78,7 @@ const getAllParentJobCategories = (jobCategory, _num) => {
 
 
 
-
-const getPathsOfSearchResult = _jobCategory => {
-    let jobCategory = _jobCategory;
-
-    if((jobCategory.hierarchy === 4) && !getParentJobCategoryAtNLvl(jobCategory, 3)){
-        jobCategory.level3 = jobCategory.level4;
-        delete jobCategory.level4;
-        jobCategory.hierarchy = 3;
-        const { level1, level2, level3 } = jobCategory;
-        jobCategory.path = `${level1}/${level2}/${level3}`
-    }
-
+const getPathsOfSearchResult = jobCategory => {
     const { hierarchy, occupation_type } = jobCategory;
     const isLineItem = occupation_type === "Line item"
     const numForWhileLoop = ((hierarchy === 1) || (hierarchy === 2) || ((hierarchy === 3) && !isLineItem)) ? hierarchy : (hierarchy - 1)
@@ -106,4 +95,4 @@ const getPathsOfSearchResult = _jobCategory => {
     return `/${firstParentJobCategoryHierarchy + 1}/${soc_code}/${targetLevels.map(({ id }) => id).join('/')}`
 }
 
-module.exports = getPathsOfSearchResult
+module.exports = { getPathsOfSearchResult }

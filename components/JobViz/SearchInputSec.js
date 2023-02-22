@@ -39,33 +39,33 @@ const SearchInputSec = ({ _searchResults }) => {
     }
 
     // FOR TESTING PURPOSES ONLY, UNCOMMENT FOR TESTING
-    useEffect(() => {
-        console.log("hello there")
-        let groupedSearchResults = [];
+    // useEffect(() => {
+    //     console.log("hello there")
+    //     let groupedSearchResults = [];
 
-        jobVizData.forEach(job => {
-            const firstLetter = job.title[0];
+    //     jobVizData.forEach(job => {
+    //         const firstLetter = job.title[0];
 
-            if (groupedSearchResults.length === 0) {
-                groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
-                return
-            }
+    //         if (groupedSearchResults.length === 0) {
+    //             groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
+    //             return
+    //         }
 
-            const targetGroup = groupedSearchResults.find(({ letter }) => letter === firstLetter);
+    //         const targetGroup = groupedSearchResults.find(({ letter }) => letter === firstLetter);
 
-            if (targetGroup) {
-                targetGroup.jobs.push(job);
-                const targetGroupIndex = groupedSearchResults.findIndex(({ letter }) => letter === firstLetter);
-                groupedSearchResults.splice(targetGroupIndex, 1, targetGroup);
-                return
-            }
+    //         if (targetGroup) {
+    //             targetGroup.jobs.push(job);
+    //             const targetGroupIndex = groupedSearchResults.findIndex(({ letter }) => letter === firstLetter);
+    //             groupedSearchResults.splice(targetGroupIndex, 1, targetGroup);
+    //             return
+    //         }
 
-            groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
-        })
+    //         groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
+    //     })
 
 
-        setSearchResults(groupedSearchResults)
-    }, [])
+    //     setSearchResults(groupedSearchResults)
+    // }, [])
 
     const handleInput = event => {
         if (event.target.value) {
@@ -96,21 +96,21 @@ const SearchInputSec = ({ _searchResults }) => {
             <section className="min-vw-100 border d-flex justify-content-center">
                 {/* show the search results in this section, present a card with all of the search results */}
                 {/* comment for testing */}
-                {/* {!!inputRef?.current?.value &&
+                {!!inputRef?.current?.value &&
                 <Card className="w-75">
                     <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
                     <Body>
                         {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
                     </Body>
-                </Card>} */}
+                </Card>}
 
                 {/* FOR TESTING PURPOSES ONLY, UNCOMMENT FOR TESTING */}
-                <Card className="w-75">
+                {/* <Card className="w-75">
                     <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
                     <Body>
                         {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
                     </Body>
-                </Card>
+                </Card> */}
             </section>
         </section>
     )

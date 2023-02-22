@@ -6,7 +6,6 @@
 /* eslint-disable semi */
 /* eslint-disable comma-dangle */
 /* eslint-disable indent */
-// GOAL: defined the parameters for this function 
 
 const getNewUrl = (jobCategory, queryParams) => {
     const { id, hierarchy } = jobCategory;
