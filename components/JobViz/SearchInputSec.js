@@ -97,7 +97,7 @@ const SearchInputSec = ({ _searchResults }) => {
                 {/* show the search results in this section, present a card with all of the search results */}
                 {/* comment for testing */}
                 {!!inputRef?.current?.value &&
-                    <Card className="w-75 jobSearchResultsCard mt-2">
+                    <Card className="jobSearchResultsCard mt-2">
                         <Header>
                             <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
                         </Header>

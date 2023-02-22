@@ -87,3 +87,13 @@ $moreJobsBtnColor: #6c2d82;
     margin-top: 10px;
 }
 
+.jobSearchResultsCard{
+  width: 85%;
+  max-width: 1100px;
+
+  @media(max-width: 767px){
+    width: 80%;
+    min-width: 240px;
+  }
+}
+

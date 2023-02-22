@@ -41,7 +41,7 @@ const SearchResult = ({ result, forceUpdateParentComp, index }) => {
     return (
         <div className="d-flex justify-content-between align-items-center flex-column">
             <section className={`w-100 ${(index !== 0) ? 'border-top' : ''} border-bottom`}>
-                <h5 className="ms-3 searchResultHeaderTxt fst-italic display-6">{letter}</h5>
+                <h5 className="ms-sm-3 searchResultHeaderTxt text-center text-sm-start fw-bold fst-italic display-6 ">{letter}</h5>
             </section>
             <section className="w-100 jobVizSearchResultsSec ps-3 pt-3 pb-5 pe-3">
                 {jobs.map(job => {
