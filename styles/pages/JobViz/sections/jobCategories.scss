@@ -24,7 +24,7 @@ $moreJobsBtnColor: #6c2d82;
   align-items: center;
   > div {
     @media (min-width: 992px) {
-        width: 992px;
+        min-width: 992px;
     }
     display: flex;
     flex-wrap: wrap;
@@ -51,4 +51,12 @@ $moreJobsBtnColor: #6c2d82;
 
 .jobFieldStartingResult {
   margin-top: 40px;
+
+  h4{
+    font-size: 20px;
+  }
+
+  @media(max-width: 575px){
+    width: 90%;
+  }
 }

@@ -7,6 +7,9 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
 
 .jobViz-chain-txt{
   color: $jobVizCategoryChainTxtHovered;
+  @media(min-width: 768px){
+    white-space: nowrap;
+  }
 }
 
 .jobViz-chain-txt:hover{
@@ -18,8 +21,12 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
 }
 
 .jobVizChain{
-  width: 500px;
+  @media(min-width: 500px){
+    width: 500px;
+  }
 }
+
+.jobVizChain
 
 .iconSec{
   height: 100px;
@@ -32,6 +39,10 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
   display: flex;
   justify-content: center;
   align-items: center;
+  @media(max-width: 575px){
+    width: 200px;
+    height: 200px;
+  }
 }
 .jobVizImg{
   background-blend-mode: normal;
@@ -50,7 +61,7 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
 .jobVizIconContainer{
   width: 130px; 
   height: 130px;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -70%);
   left: 50%;
   top: 6%;
 }
@@ -72,12 +83,27 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
   width: 100%;
   display: flex;
   justify-content: space-between;
+
+  @media(max-width: 767px){
+    flex-direction: column;
+    > section:last-child{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+    }
+  }
 }
 
 .jobVizHero {
   > div > div {
     width: 90%;
     position: relative;
+  }
+
+  @media(max-width: 767px){
+    // overriding .Hero_hero___E4fU class
+    padding: 40px 0px 30px 0px !important;;
   }
 }
 
@@ -86,10 +112,15 @@ $jobVizCategoryChainTxtHovered: #2e085c;;
 }
 
 .jobVizCard{
-  width: 20rem;
 
   h4{
     font-weight: 249;
+  }
+
+  width: 20rem;
+
+  @media(max-width: 575px){
+    width: 15rem;
   }
 }
 
