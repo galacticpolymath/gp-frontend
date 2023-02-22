@@ -3,56 +3,95 @@
 $borderThickness: 4px;
 $borderColor: darkgray;
 
-
-.lessonsSection{
-    border-top: solid $borderThickness $borderColor;
+.lessonsSection {
+  border-top: solid $borderThickness $borderColor;
 }
 
-.jobVizCareer{
-    border: solid $borderThickness $borderColor;
-    height: 300px;
-    width: 575px !important;
+.jobVizEntrySection span {
+  font-size: 24px;
 }
 
-.jobVizEntrySection span{
-    font-size: 24px;
-}
+.jobVizEntrySection {
+  h2 {
+    @media (max-width: 767px) {
+      width: 100%;
+    }
+  }
 
-.jobVizLink:hover{
-    text-decoration-color: #6c757d;
-    text-decoration-thickness: .1px;
-}
-
-.jobVizImgContainer{
-    height: 170px;
-    width: 170px;
+  @media (max-width: 767px) {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+  }
 }
 
-.jobVizImg{
-    font-size: 12px;
-    max-width: 100%;
-    max-height: 100%;
+.jobVizLink:hover {
+  text-decoration-color: #6c757d;
+  text-decoration-thickness: 0.1px;
 }
 
-.jobVizCareer > section:first-child{
-    height: 70%;
-    > section:first-child{
-        width: 43%;
+.jobVizImgContainer {
+  height: 170px;
+  width: 170px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.jobVizImg {
+  font-size: 12px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.jobVizCareer > section:first-child {
+  height: 70%;
+  > section:first-child {
+    width: 43%;
+  }
+
+  > section:nth-child(2) {
+    width: 57%;
+    h4 {
+      font-size: 35px;
+      font-weight: 350;
+      text-align: center;
+    }
+    h4:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}
+
+.jobVizCareer {
+  border: solid $borderThickness $borderColor;
+  width: 575px;
+
+  @media (min-width: 768px) {
+    height: 300px;
+  }
+
+  @media (max-width: 767px) and (min-width: 576px) {
+    width: 550px;
+  }
+
+  @media (max-width: 575px) {
+    > section:first-child {
+      flex-direction: column;
+      > section:first-child,
+      section:last-child {
+        width: 100%;
+      }
     }
 
-    > section:nth-child(2){
-        width: 57%;
-        h4{
-            font-size: 35px;
-            font-weight: 350;
-            text-align: center;
-        }
-        h4:hover{
-            text-decoration: underline;
-            cursor: pointer;
-        }
+    > section:last-child > span{
+      text-align: center;
+      margin-top: 10px;
     }
+    padding: 20px 10px 20px 10px;
+    width: 90%;
+  }
 }
+

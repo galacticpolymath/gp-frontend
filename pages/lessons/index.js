@@ -6,7 +6,7 @@ import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 
 const LessonsPage = ({ lessons }) => {
-  
+
   return (
     <Layout>
       <Hero className="bg-secondary">
@@ -14,25 +14,27 @@ const LessonsPage = ({ lessons }) => {
         <p>Our lessons are free. We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
       </Hero>
       <div className="lessonsPgContent">
-        <section className="jobVizEntrySection pb-3">
+        <section className="pb-3">
           <h2 className="mt-3 ms-4 text-muted">Galactic Polymath Learning Tools</h2>
-          <div className="ms-5 jobVizCareer d-flex flex-column">
-            <section className="d-flex w-100">
-              <section className="imgSec d-flex justify-content-center align-items-center">
-                {/* put the image for jobViz here */}
-                <JobVizIcon />
+          <section className="d-flex justify-content-center align-items-center d-sm-block justify-content-start align-items-stretch">
+            <div className="ms-md-5 jobVizCareer d-flex flex-column">
+              <section className="d-flex w-100">
+                <section className="imgSec d-flex justify-content-center align-items-center">
+                  {/* put the image for jobViz here */}
+                  <JobVizIcon />
+                </section>
+                <section className="d-flex justify-content-center align-items-center flex-column">
+                  <h4>
+                    <Link href="/job-viz" className="text-muted jobVizLink">Jobviz Career Explorer</Link>
+                  </h4>
+                </section>
               </section>
-              <section className="d-flex justify-content-center align-items-center flex-column">
-                <h4>
-                  <Link href="/job-viz" className="text-muted jobVizLink">Jobviz Career Explorer</Link>
-                </h4>
+              <section className="w-100 d-flex flex-column ps-sm-3">
+                <span className="text-muted">A starting point for students.</span>
+                <span className="text-muted">Exploration of 1,000 job possibilities.</span>
               </section>
-            </section>
-            <section className="w-100 d-flex flex-column ps-3">
-              <span className="text-muted">A starting point for students.</span>
-              <span className="text-muted">Exploration of 1,000 job possibilities.</span>
-            </section>
-          </div>
+            </div>
+          </section>
         </section>
         <section className="lessonsSection pt-2">
           <h2 className="ms-4 mb-4 text-muted">Galactic Polymath Releases</h2>
