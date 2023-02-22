@@ -35,6 +35,8 @@ const getSearchResultsAsync = (searchInput) => {
 
                 groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
             })
+            // sort groupedSearchResults by letter
+            groupedSearchResults.sort((searchResultA, searchResultB) => (searchResultA.letter > searchResultB.letter) ? 1 : -1);
 
             resolve(groupedSearchResults);
         } catch (error) {

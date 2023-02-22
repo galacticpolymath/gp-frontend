@@ -51,13 +51,13 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
     }
 
     return (
-        <section className="pt-3 d-flex justify-content-center align-items-center">
+        <section className="pt-3 d-flex justify-content-center align-items-center border">
             <div className="jobCategoriesSec">
-                {/* display the default search results */}
                 {!jobResults ?
                     <span>Loading results...</span>
                     :
-                    jobResults.map(({ title, id, currentLevel, occupation_type }) => (
+                    <div>
+                    {jobResults.map(({ title, id, currentLevel, occupation_type }) => (
                         <div id={id} key={id} className="shadow jobFieldStartingResult d-inline-block flex-column">
                             <section className="w-100 h-50 d-flex justify-content-center align-items-center">
                                 <h4 id="currentJobCategory" className="text-center">{title}</h4>
@@ -81,6 +81,8 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
                         </div>
                     )
                     )}
+                    </div>
+                }
             </div>
         </section>
     );

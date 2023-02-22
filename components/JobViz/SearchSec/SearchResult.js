@@ -39,18 +39,16 @@ const SearchResult = ({ result, forceUpdateParentComp }) => {
     }
 
     return (
-        <div className="d-flex justify-content-between align-items-center flex-column border-bottom">
-            <section>
-                <div>
-                    <h5>{letter}</h5>
-                </div>
+        <div className="d-flex justify-content-between align-items-center flex-column">
+            <section className="w-100">
+                <h5 className="ms-3 searchResultHeaderTxt fst-italic display-6">{letter}</h5>
             </section>
-            <section>
+            <section className="w-100 jobVizSearchResultsSec ps-3 pt-3 pb-5 pe-3">
                 {jobs.map(job => {
                     const { title, id } = job;
                     return (
-                        <div key={id} id={`${id}_searchResult`} className="searchResultJob">
-                            <button id={`${id}_searchResult_btn`} onClick={() => handleBtnClick(job)} className="no-btn-styles">{title}</button>
+                        <div key={id} id={`${id}_searchResult`} className="searchResultJob d-inline-flex w-100">
+                            <button id={`${id}_searchResult_btn`} onClick={() => handleBtnClick(job)} className="no-btn-styles text-center w-100">{title}</button>
                         </div>
                     )
                 })}

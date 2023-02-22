@@ -20,7 +20,7 @@ import { useRouter } from "next/router";
 import SearchResult from "./SearchSec/SearchResult";
 import jobVizData from '../../data/Jobviz/jobVizData.json'
 
-const { Title, Body } = Card;
+const { Title, Body, Header } = Card;
 
 const SearchInputSec = ({ _searchResults }) => {
     const [searchResults, setSearchResults] = _searchResults;
@@ -93,16 +93,18 @@ const SearchInputSec = ({ _searchResults }) => {
                     <BsSearch />
                 </section>
             </section>
-            <section className="min-vw-100 border d-flex justify-content-center">
+            <section className="min-vw-100 d-flex justify-content-center">
                 {/* show the search results in this section, present a card with all of the search results */}
                 {/* comment for testing */}
                 {!!inputRef?.current?.value &&
-                <Card className="w-75">
-                    <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
-                    <Body>
-                        {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
-                    </Body>
-                </Card>}
+                    <Card className="w-75 jobSearchResultsCard mt-2">
+                        <Header>
+                            <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
+                        </Header>
+                        <Body>
+                            {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
+                        </Body>
+                    </Card>}
 
                 {/* FOR TESTING PURPOSES ONLY, UNCOMMENT FOR TESTING */}
                 {/* <Card className="w-75">
