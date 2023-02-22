@@ -17,18 +17,22 @@ const getFirstParentJobCategory = jobCategories => jobCategories.reduce((firstPa
 
 const exceptionsAtLevel2 = ["15-1200", "31-1100"]
 
+const getParentJobCategoryAtNLvl = (jobCategory, num) => {
+    const levelFieldName = `level${num}`
+    const levelN = jobCategory[levelFieldName];
+    const parentJobCategoryAtNLvl = jobVizData.find(({ soc_code, occupation_type }) => (soc_code === levelN) && (occupation_type === "Summary"));
+
+    return parentJobCategoryAtNLvl;
+}
+
 const getAllParentJobCategories = (jobCategory, _num) => {
     let targetLevels = [];
     let num = _num;
-
-    
-    
 
     // check if num is a number
     if ((typeof num !== "number") || isNaN(num)) {
         return { didErr: true };
     }
-
 
     while (!(num <= 0)) {
         const levelFieldName = `level${num}`
@@ -62,8 +66,30 @@ const getAllParentJobCategories = (jobCategory, _num) => {
     return { targetLevels: targetLevels };
 }
 
+// 1) if the jobCategory is at level4 and the occupation_type === "Line item", find the parent job category at level3 by implementing the following algorithm:
+// jobVizData.find(({ soc_code, occupation_type }) => (soc_code === jobCategory.level3) && (occupation_type === "Summary"));
 
-const getPathsOfSearchResult = jobCategory => {
+// 2) if undefined, then modify the jobCategory object implement the following:
+// insert hierarchy4 into 3
+// delete hierarchy4
+// change hierarchy to 3
+// change the path to: level1/level2/level3
+
+
+
+
+
+const getPathsOfSearchResult = _jobCategory => {
+    let jobCategory = _jobCategory;
+
+    if((jobCategory.hierarchy === 4) && !getParentJobCategoryAtNLvl(jobCategory, 3)){
+        jobCategory.level3 = jobCategory.level4;
+        delete jobCategory.level4;
+        jobCategory.hierarchy = 3;
+        const { level1, level2, level3 } = jobCategory;
+        jobCategory.path = `${level1}/${level2}/${level3}`
+    }
+
     const { hierarchy, occupation_type } = jobCategory;
     const isLineItem = occupation_type === "Line item"
     const numForWhileLoop = ((hierarchy === 1) || (hierarchy === 2) || ((hierarchy === 3) && !isLineItem)) ? hierarchy : (hierarchy - 1)

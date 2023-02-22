@@ -48,7 +48,7 @@ const selectedJobCategoryTest23 = jobVizData.find(({ id }) => id === 594);
 const selectedJobCategoryTest24 = jobVizData.find(({ id }) => id === 595);
 const selectedJobCategoryTest25 = jobVizData.find(({ id }) => id === 634);
 const test22And23And24CorrectResult = "/3/37-3000/581/591"
-const test25CorrectResult = "/3/37-3000/581/591"
+const test25CorrectResult = "/3/39-6000/596/632"
 const test21CorrectResult = '/3/37-1000/581/582'
 const test20CorrectResult = '/3/35-1000/558/559'
 const test18CorrectResult = '/3/19-5000/166/229'
