@@ -48,7 +48,7 @@ const SelectedJob = () => {
     return (
         <Modal show={selectedJob} size="md" onHide={handleOnHide} contentClassName="selectedJobModal" dialogClassName='dialogJobVizModal'>
             <Header className='selectedJobHeader border-0' closeButton>
-                <Title className="w-100 ps-3">
+                <Title className="w-100 pt-1 d-flex justify-content-center place-items-center">
                     <h3 className="text-center">{jobTitle}</h3>
                 </Title>
             </Header>
