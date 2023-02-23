@@ -1,82 +1,84 @@
 $selectedJobTxtColor: #212121;
-$jobInfoStatCard: #EFF8FE;
+$jobInfoStatCard: #eff8fe;
 
-.selectedJobModal{
-    *{
-        color: $selectedJobTxtColor;
-    }
+.selectedJobModal {
+  * {
+    color: $selectedJobTxtColor;
+  }
 
-    h5{
-        font-weight: 300;
-        line-height: 30px;
-        font-size: 1.0625rem;
-    }
+  h5 {
+    font-weight: 300;
+    line-height: 30px;
+    font-size: 1.0625rem;
+  }
 
-    overflow-y: auto;
-    max-height: 650px;
+  overflow-y: auto;
+  max-height: 650px;
 }
 
-.selectedJobHeader{
-    position: relative;
-    min-height: 95px;
+.selectedJobHeader {
+  position: relative;
+  min-height: 95px;
 
-    h3{
-        width: 85%;
-    }
+  h3 {
+    width: 85%;
+  }
 
-    button{
-        top: 10px;
-        right: 15px;
-        position: absolute;
-    }
+  button {
+    top: 10px;
+    right: 15px;
+    position: absolute;
+  }
 }
 
-
-
-
-.dialogJobVizModal{
-    // overriding the default react-bootstrap modal max-width
-    max-width: 625px !important;
+.dialogJobVizModal {
+  // overriding the default react-bootstrap modal max-width
+  max-width: 625px !important;
 }
 
-.jobInfoStatCard{
-    background-color: $jobInfoStatCard;
-    height: 186px;
-    // width: 105%;
+.jobInfoStatCard {
+  background-color: $jobInfoStatCard;
+  height: 186px;
+  width: 195px;
+  // width: 105%;
 
+  h5 {
+    line-height: 1.3em;
+    font-size: 17px;
+  }
 
-    h5{
-        line-height: 1.3em;
-        font-size: 17px;
+  span {
+    font-weight: 300;
+    line-height: 20px;
+  }
+
+  svg {
+    font-size: 41px;
+  }
+
+  > div {
+    > section {
+      height: 160px;
+      > section:last-child {
+        bottom: 5px;
+        max-height: 50px;
+      }
     }
-
-    span{
-        font-weight: 300;
-        line-height: 20px;
-    }
-
-    svg{
-        font-size: 41px;
-    }
-
-    > div{
-        > section{
-            height: 160px;
-            > section:last-child{
-                bottom: 5px;
-                max-height: 50px;
-            }
-        }
-    }
+  }
 }
 
-@media(min-width: 992px){
-    .jobInfoStatCard:nth-child(even){
-        margin-top: 3px;
-    }
+@media (min-width: 992px) {
+  .jobInfoStatCard:nth-child(even) {
+    // margin-top: 3px;
+  }
 }
 
-.jobInfoStatSec{
-    column-count: 3;
-    column-gap: 0px;
+.jobInfoStatSec {
+//   column-count: 3;
+//   column-gap: 0px;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
