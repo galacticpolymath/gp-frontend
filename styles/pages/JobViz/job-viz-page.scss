@@ -148,6 +148,10 @@ $jobVizCategoryChainTxtHovered: #2e085c;
   }
 }
 
+.searchResultHighlight{
+  color: #ffc107;
+}
+
 #currentJobCategoryHeaderTxt{
   margin: 8px 0px 8px 0px; 
 }
@@ -155,6 +159,7 @@ $jobVizCategoryChainTxtHovered: #2e085c;
 .jobVizSearchResultsSec {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 
   @media(max-width: 767px){
     justify-content: space-evenly;

@@ -26,6 +26,7 @@ const SearchInputSec = ({ _searchResults }) => {
     const [searchResults, setSearchResults] = _searchResults;
     const inputRef = useRef();
     const [, setForceReRenderer] = useState({});
+    const [searchInput, setSearchInput] = useState("")
 
     const rerenderComp = () => {
         setForceReRenderer({});
@@ -72,13 +73,14 @@ const SearchInputSec = ({ _searchResults }) => {
             getSearchResultsAsync(event.target.value.toLowerCase())
                 .then(results => {
                     setSearchResults(results);
+                    setSearchInput(event.target.value);
                 })
                 .catch(error => {
                     console.error("Something went wrong: ", error)
                 })
             return;
         }
-        forceUpdate();
+        forceUpdateComp()
     }
 
 
@@ -102,7 +104,7 @@ const SearchInputSec = ({ _searchResults }) => {
                             <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
                         </Header>
                         <Body>
-                            {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} index={index} />)}
+                            {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} searchInput={searchInput} forceUpdateParentComp={forceUpdateComp} index={index} />)}
                         </Body>
                     </Card>}
 

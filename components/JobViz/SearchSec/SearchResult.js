@@ -15,10 +15,12 @@ import { useRouter } from "next/router";
 import { useCallback, useContext, useState } from "react";
 import { getPathsOfSearchResult } from "../../../helperFns/getPathsOfSearchResult";
 import { ModalContext } from "../../../providers/ModalProvider";
+import Highlighter from "react-highlight-words";
+import { useEffect } from "react";
 
 
 
-const SearchResult = ({ result, forceUpdateParentComp, index }) => {
+const SearchResult = ({ result, forceUpdateParentComp, index, searchInput }) => {
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
     const { letter, jobs } = result;
@@ -38,7 +40,7 @@ const SearchResult = ({ result, forceUpdateParentComp, index }) => {
     }
 
     return (
-        <div className="d-flex justify-content-between align-items-center flex-column">
+        <div key={`${index}_searchResultGroup`} className="d-flex justify-content-between align-items-center flex-column">
             <section className={`w-100 ${(index !== 0) ? 'border-top' : ''} border-bottom`}>
                 <h5 className="ms-sm-3 searchResultHeaderTxt text-center text-sm-start fw-bold fst-italic display-6 ">{letter}</h5>
             </section>
@@ -47,7 +49,14 @@ const SearchResult = ({ result, forceUpdateParentComp, index }) => {
                     const { title, id } = job;
                     return (
                         <div key={id} id={`${id}_searchResult`} className="searchResultJob d-inline-flex w-100">
-                            <button id={`${id}_searchResult_btn`} onClick={() => handleBtnClick(job)} className="no-btn-styles text-center w-100">{title}</button>
+                            <button id={`${id}_searchResult_btn`} onClick={() => handleBtnClick(job)} className="no-btn-styles text-center w-100">
+                                <Highlighter
+                                    highlightClassName="searchResultHighlight"
+                                    searchWords={[searchInput]}
+                                    autoEscape={true}
+                                    textToHighlight={title}
+                                />
+                            </button>
                         </div>
                     )
                 })}

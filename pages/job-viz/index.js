@@ -18,11 +18,15 @@ import PreviouslySelectedJobCategory from '../../components/JobViz/PreviouslySel
 import { useState } from 'react';
 import SearchInputSec from '../../components/JobViz/SearchInputSec';
 import Image from 'next/image';
+import useIsElementOnScreen from '../../customHooks/useIsElementOnScreen';
+import { useRef } from 'react';
 
 
 const JobViz = ({ vals }) => {
     const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
     const [searchResults, setSearchResults] = useState([])
+    const searchInputRef = useRef(null)
+    const isElementOnScreen = useIsElementOnScreen(searchInputRef);
 
     return (
         <Layout>

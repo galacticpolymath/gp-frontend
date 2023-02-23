@@ -90,6 +90,7 @@ $moreJobsBtnColor: #6c2d82;
 .jobSearchResultsCard{
   width: 85%;
   max-width: 1100px;
+  min-height: 200px;
 
   @media(max-width: 767px){
     width: 80%;
