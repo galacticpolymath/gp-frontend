@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable react/jsx-tag-spacing */
 /* eslint-disable quotes */
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable semi */
@@ -42,7 +44,7 @@ const JobCategoryChainCard = ({ jobCategory, index }) => {
     }
 
     return (
-        <Card key={index ?? "0"} className="jobVizCard border-0 shadow">
+        <Card key={index ?? "0"} className="jobVizCard border-0 shadow" id='jobCategoryChainCard' >
             <Card.Body className="position-relative d-flex flex-column justify-content-end jobVizCardBody">
                 <section className="position-relative iconSec">
                     <div className="jobVizIconContainer rounded-circle shadow position-absolute">

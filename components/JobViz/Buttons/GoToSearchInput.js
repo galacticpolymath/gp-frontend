@@ -11,23 +11,28 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import Fade from "../../Fade";
+import { IoArrowUp } from 'react-icons/io5';
 
-const GoToSearchInput = ({ searchInputRef, isScrollToInputBtnVisible }) => {
+const GoToSearchInput = ({ isScrollToInputBtnVisible }) => {
 
     const goToSearchInput = () => {
-        document.getElementById("searchInputField").scrollIntoView({ block: 'center', align: 'center' });
+        document.getElementById("searchInputField").scrollIntoView({ block: 'center', behavior: 'smooth' });
     }
 
     return (
-        <Fade showElement={isScrollToInputBtnVisible}>
+        <Fade showElement={isScrollToInputBtnVisible} containerId="searchInputBtnId">
             <Button
-                className={`position-fixed goToSearchInputBtn rounded-circle`}
+                className={`position-fixed goToSearchInputBtn rounded-circle d-flex flex-column`}
                 onClick={goToSearchInput}
             >
-                Go to search input
+                <span className="w-100">
+                    <IoArrowUp />
+                </span>
+                <span className="w-100 text-center">
+                    Go to search input
+                </span>
             </Button>
         </Fade>
     )

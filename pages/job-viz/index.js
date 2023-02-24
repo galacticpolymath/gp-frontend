@@ -21,7 +21,7 @@ import Image from 'next/image';
 import { useRef, useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';
-import Fade from '../../components/Fade';
+import GoToJobVizChain from '../../components/JobViz/Buttons/GoToJobVizChain';
 
 
 
@@ -29,10 +29,14 @@ const JobViz = ({ vals }) => {
     const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
     const [searchResults, setSearchResults] = useState([])
     const [searchInput, setSearchInput] = useState("")
+    const [wasRendered, setWasRendered] = useState(false);
     const [searchInputRef, setSearchInputRef] = useState(null)
     const [isScrollToInputBtnVisible, setIsScrollToInputBtnVisible] = useState(false);
     const mainChainCardRef = useRef();
     const { ref, inView, entry } = useInView({ threshold: 0 });
+    const { ref: refJobVizChainCard, inView: inViewJobVizCard } = useInView({ threshold: 0 });
+
+
 
 
 
@@ -110,7 +114,8 @@ const JobViz = ({ vals }) => {
                         isLoading={isLoading}
                     />
                 </section>
-                <GoToSearchInput searchInputRef={ref} isScrollToInputBtnVisible={!inView} />
+                {searchResults.length && <GoToSearchInput isScrollToInputBtnVisible={!inView} />}
+                {searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={!inView} />}
             </div>
         </Layout>
     );

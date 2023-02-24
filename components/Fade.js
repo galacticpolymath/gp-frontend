@@ -4,7 +4,7 @@
 /* eslint-disable quotes */
 import React, { useEffect, useState } from "react";
 
-const Fade = ({ showElement, children }) => {
+const Fade = ({ showElement, children, containerId }) => {
   const [renderToggled, setRenderToggled] = useState(showElement);
 
   useEffect(() => {
@@ -14,20 +14,20 @@ const Fade = ({ showElement, children }) => {
   const onAnimationEnd = () => {
     if (!showElement){
       setRenderToggled(false);
-      document.getElementById("container").style.opacity = "0";
+      document.getElementById(containerId).style.opacity = "0";
     }
   };
 
   useEffect(() => {
     if(!renderToggled && document?.getElementById("container")){
-      document.getElementById("container").style.opacity = "1";
+      document.getElementById(containerId).style.opacity = "1";
     }
   },[renderToggled]);
 
   return (
     renderToggled && (
       <div
-        id="container"
+        id={containerId}
         style={{ animation: `${showElement ? "fadeIn" : "fadeOut"} 1s` }}
         onAnimationEnd={onAnimationEnd}
       >

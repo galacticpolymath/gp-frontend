@@ -188,11 +188,28 @@ $jobVizCategoryChainTxtHovered: #2e085c;
 }
 
 .goToSearchInputBtn{
-  bottom: 100px;
+  bottom: 230px;
   right: 70px;
   font-size: 14px;
   width: 150px;
   height: 150px;
+
+  svg{
+    font-size: 32px;
+  }
+}
+
+.goToJobVizCardBtn{
+  bottom: 70px;
+  right: 70px;
+  font-size: 14px;
+  width: 150px;
+  height: 150px;
+  border: 0px;
+
+  svg{
+    font-size: 32px;
+  }
 }
 
 // .fadeInFromRight{
@@ -260,11 +277,5 @@ $jobVizCategoryChainTxtHovered: #2e085c;
   }
   100% {
     opacity: 0;
-  }
-}
-
-.fadeOut{
-  *{
-    border: solid pink;
   }
 }
