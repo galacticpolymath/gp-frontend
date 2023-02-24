@@ -46,26 +46,27 @@ const JobViz = ({ vals }) => {
 
     return (
         <Layout>
-            <Hero className="jobVizHero">
-                <section className="d-flex jobVizHeroMainSec">
-                    <section className="d-flex flex-column">
-                        <h1 className='text-muted'>JobViz Career Explorer</h1>
-                        <p className='text-muted'>A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.</p>
-                        <p className='text-muted'>What do you want to be?</p>
-                    </section>
-                    <section>
-                        <JobVizIcon isOnJobVizPg />
-                    </section>
-                </section>
-            </Hero>
-            <div className="jobVizContent min-vh-100 pt-5 pb-5 position-relative">
-                <SearchInputSec
-                    _searchResults={[searchResults, setSearchResults]}
-                    _searchInput={[searchInput, setSearchInput]}
-                    searchInputRef={ref}
-                    searchResultsCardRef={searchResultsCardRef}
-                    setIsScrollToInputBtnVisible={setIsScrollToInputBtnVisible}
-                />
+            <div className="jobVizContent min-vh-100 position-relative">
+                    <Hero className="jobVizHero">
+                        <section className="d-flex jobVizHeroMainSec">
+                            <section className="d-flex flex-column">
+                                <h1 className='text-muted'>JobViz Career Explorer</h1>
+                                <p className='text-muted'>A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.</p>
+                                <p className='text-muted'>What do you want to be?</p>
+                            </section>
+                            <section>
+                                <JobVizIcon isOnJobVizPg />
+                            </section>
+                        </section>
+                    </Hero>
+                <div ref={ref}>
+                    <SearchInputSec
+                        _searchResults={[searchResults, setSearchResults]}
+                        _searchInput={[searchInput, setSearchInput]}
+                        searchInputRef={ref}
+                        setIsScrollToInputBtnVisible={setIsScrollToInputBtnVisible}
+                    />
+                </div>
                 {parentJobCategories &&
                     <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
                         {parentJobCategories.map((jobCategory, index, self) => {
@@ -101,7 +102,7 @@ const JobViz = ({ vals }) => {
                         <JobCategoryChainCard />
                     </section>
                 }
-                <section className="jobCategoriesAndBracketSec d-flex justify-content-center align-items-center flex-column">
+                <section className="jobCategoriesAndBracketSec d-flex justify-content-center align-items-center flex-column pb-5 mb-5">
                     <section className="bracketSec d-flex justify-content-center align-items-center">
                         <div className="bracketImgContainer">
                             <img
@@ -118,8 +119,8 @@ const JobViz = ({ vals }) => {
                         isLoading={isLoading}
                     />
                 </section>
-                {!!searchResults.length && <GoToSearchInput isScrollToInputBtnVisible={!inView} />}
-                {!!searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={!inView} inViewSearchResultsCard={inViewSearchResultsCard} />}
+                {!!searchResults.length && <GoToSearchInput isScrollToInputBtnVisible={inView} />}
+                {!!searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={inView} inViewSearchResultsCard={inViewSearchResultsCard} />}
             </div>
         </Layout>
     );

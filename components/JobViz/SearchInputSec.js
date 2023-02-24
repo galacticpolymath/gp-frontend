@@ -90,16 +90,16 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
 
 
     return (
-        <section className="w-100 d-flex justify-content-center align-items-center flex-column">
+        <section className="w-100 pt-5 mt-3 d-flex justify-content-center align-items-center flex-column">
             <section className="d-flex inputSec">
                 <section>
-                    <input ref={searchInputRef} id="searchInputField" className='border-4 rounded ps-1 pe-1' placeholder='Search Jobs' onChange={handleInput} />
+                    <input id="searchInputField" className='border-4 rounded ps-1 pe-1' placeholder='Search Jobs' onChange={handleInput} />
                 </section>
                 <section className="d-flex justify-content-center align-items-center ps-1">
                     <BsSearch />
                 </section>
             </section>
-            <section className="min-vw-100 d-flex justify-content-center">
+            <section className="min-vw-100 d-flex justify-content-center position-relative">
                 {/* show the search results in this section, present a card with all of the search results */}
                 {/* comment for testing */}
                 {!!searchInput &&
@@ -119,6 +119,7 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                         {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
                     </Body>
                 </Card> */}
+                <div ref={searchInputRef} className="position-absolute w-100 mt-5 jobVizBtnElDeterminer" />
             </section>
         </section>
     )

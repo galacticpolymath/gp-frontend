@@ -4,6 +4,9 @@
 /* eslint-disable quotes */
 import React, { useEffect, useState } from "react";
 
+// if the search input field is in view, then don't show the button 
+// if the jobViz hero comp is in view, then don't show the button 
+
 const Fade = ({ showElement, children, containerId }) => {
   const [renderToggled, setRenderToggled] = useState(showElement);
 
@@ -11,7 +14,7 @@ const Fade = ({ showElement, children, containerId }) => {
     if (showElement) setRenderToggled(true);
   }, [showElement]);
 
-  const onAnimationEnd = () => {
+  const handleOnAnimationEnd = () => {
     if (!showElement){
       document.getElementById(containerId).style.opacity = "0";
       setRenderToggled(false);
@@ -19,7 +22,7 @@ const Fade = ({ showElement, children, containerId }) => {
   };
 
   useEffect(() => {
-    if(!renderToggled && document?.getElementById("container")){
+    if(!renderToggled && document?.getElementById(containerId)){
       document.getElementById(containerId).style.opacity = "1";
     }
   },[renderToggled]);
@@ -29,7 +32,7 @@ const Fade = ({ showElement, children, containerId }) => {
       <div
         id={containerId}
         style={{ animation: `${showElement ? "fadeIn" : "fadeOut"} 1s` }}
-        onAnimationEnd={onAnimationEnd}
+        onAnimationEnd={handleOnAnimationEnd}
       >
         {children}
       </div>
