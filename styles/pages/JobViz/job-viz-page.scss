@@ -148,12 +148,12 @@ $jobVizCategoryChainTxtHovered: #2e085c;
   }
 }
 
-.searchResultHighlight{
+.searchResultHighlight {
   color: #ffc107;
 }
 
-#currentJobCategoryHeaderTxt{
-  margin: 8px 0px 8px 0px; 
+#currentJobCategoryHeaderTxt {
+  margin: 8px 0px 8px 0px;
 }
 
 .jobVizSearchResultsSec {
@@ -161,7 +161,7 @@ $jobVizCategoryChainTxtHovered: #2e085c;
   flex-wrap: wrap;
   justify-content: center;
 
-  @media(max-width: 767px){
+  @media (max-width: 767px) {
     justify-content: space-evenly;
   }
 }
@@ -187,29 +187,61 @@ $jobVizCategoryChainTxtHovered: #2e085c;
   }
 }
 
-.goToSearchInputBtn{
-  bottom: 230px;
-  right: 70px;
+.jobVizNavBtn {
   font-size: 14px;
-  width: 150px;
-  height: 150px;
+  border: 0px;
+  right: 5%;
 
-  svg{
-    font-size: 32px;
+  @media (min-width: 768px) and (max-width: 991px) {
+    right: 2%;
+  }
+
+  @media (min-width: 992px) and (max-width: 1399px) {
+    right: 1%;
+  }
+
+
+  @media (min-width: 992px) {
+    width: 150px;
+    height: 150px;
+  }
+
+  @media (min-width: 576px) {
+    right: 1%;
+    width: 120px;
+    height: 120px;
+  }
+
+  @media(max-width: 575px){
+    right: 1%;
+    width: 100px;
+    height: 100px;
+    font-size: 12px;
+  }
+
+  svg {
+    font-size: 40px;
+
+    @media (min-width: 576px) {
+      font-size: 30px;
+    }
+
+    @media (max-width: 575px) {
+      font-size: 20px;
+    }
+  }
+
+  span {
+    line-height: 16px;
   }
 }
 
-.goToJobVizCardBtn{
-  bottom: 70px;
-  right: 70px;
-  font-size: 14px;
-  width: 150px;
-  height: 150px;
-  border: 0px;
+.goToSearchInputBtn {
+  bottom: 230px;
+}
 
-  svg{
-    font-size: 32px;
-  }
+.goToJobVizCardBtn {
+  bottom: 70px;
 }
 
 // .fadeInFromRight{
@@ -259,8 +291,6 @@ $jobVizCategoryChainTxtHovered: #2e085c;
 //     transform: translateX(100%);
 //   }
 // }
-
-
 
 @keyframes fadeIn {
   0% {

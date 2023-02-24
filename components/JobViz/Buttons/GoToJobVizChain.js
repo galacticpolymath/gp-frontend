@@ -26,13 +26,16 @@ const GoToJobVizChain = ({ isScrollToJobVizChainBtnVisible }) => {
     return (
         <Fade showElement={isScrollToJobVizChainBtnVisible} containerId="goToJobVizChainCardId">
             <Button
-                className={`position-fixed goToJobVizCardBtn rounded-circle d-flex flex-column bg-secondary`}
+                className={`position-fixed jobVizNavBtn goToJobVizCardBtn rounded-circle d-flex flex-column justify-content-between bg-secondary`}
                 onClick={goToJobVizChain}
             >
-                <span className="w-100 text-center h-50 d-inline-block pt-3">
+                <span className="pt-md-2 pt-lg-3 w-100 text-center h-50 d-none d-sm-flex justify-content-center align-items-center">
                     Go to Job Viz chains
                 </span>
-                <span className="w-100 h-50 d-inline-block pt-1">
+                <span className="pt-md-2 pt-lg-3 w-100 text-center h-50 d-flex d-sm-none justify-content-center align-items-center">
+                    Job Viz Chains
+                </span>
+                <span className="pt-md-3 pt-lg-0 w-100 h-50 d-flex justify-content-center align-items-center">
                     <IoArrowDown />
                 </span>
             </Button>

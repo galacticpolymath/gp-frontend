@@ -13,8 +13,8 @@ const Fade = ({ showElement, children, containerId }) => {
 
   const onAnimationEnd = () => {
     if (!showElement){
-      setRenderToggled(false);
       document.getElementById(containerId).style.opacity = "0";
+      setRenderToggled(false);
     }
   };
 

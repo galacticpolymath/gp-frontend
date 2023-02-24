@@ -114,8 +114,8 @@ const JobViz = ({ vals }) => {
                         isLoading={isLoading}
                     />
                 </section>
-                {searchResults.length && <GoToSearchInput isScrollToInputBtnVisible={!inView} />}
-                {searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={!inView} />}
+                {!!searchResults.length && <GoToSearchInput isScrollToInputBtnVisible={!inView} />}
+                {!!searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={!inView} />}
             </div>
         </Layout>
     );
