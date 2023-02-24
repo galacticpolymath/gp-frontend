@@ -4,6 +4,7 @@
 $heroColor: #f0f4ff;
 $jobVizCategoryChainTxt: #6812d1;
 $jobVizCategoryChainTxtHovered: #2e085c;
+$searchResultsHighlight: #ffc107;
 
 .jobViz-chain-txt {
   color: $jobVizCategoryChainTxtHovered;
@@ -149,7 +150,7 @@ $jobVizCategoryChainTxtHovered: #2e085c;
 }
 
 .searchResultHighlight {
-  color: #ffc107;
+  color: $searchResultsHighlight;
 }
 
 #currentJobCategoryHeaderTxt {
@@ -200,7 +201,6 @@ $jobVizCategoryChainTxtHovered: #2e085c;
     right: 1%;
   }
 
-
   @media (min-width: 992px) {
     width: 150px;
     height: 150px;
@@ -212,7 +212,7 @@ $jobVizCategoryChainTxtHovered: #2e085c;
     height: 120px;
   }
 
-  @media(max-width: 575px){
+  @media (max-width: 575px) {
     right: 1%;
     width: 100px;
     height: 100px;
@@ -244,11 +244,8 @@ $jobVizCategoryChainTxtHovered: #2e085c;
   bottom: 70px;
 }
 
-.jobVizBtnElDeterminer{
+.jobVizBtnElDeterminer {
   height: 100%;
-  // background-color: red;
-  // transform: translateY(1050px);
-  // border: solid red;
   z-index: -1;
 }
 
@@ -316,4 +313,90 @@ $jobVizCategoryChainTxtHovered: #2e085c;
   100% {
     opacity: 0;
   }
+}
+
+/* The switch - the box around the sliderForBtn */
+.switchMainContainer {
+  @media (min-width: 576px) {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+  }
+}
+
+.searchResultsHeader {
+  min-height: 85px;
+}
+
+.switchContainer {
+  // width: 100px;
+  // height: 10px;
+  height: 40px;
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The sliderForBtn */
+.sliderForBtn {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border: 0px;
+  border-width: 0px;
+}
+
+.sliderForBtn:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .sliderForBtn {
+  background-color: $searchResultsHighlight;
+  border: 0;
+}
+
+input:focus + .sliderForBtn {
+  box-shadow: 0 0 1px $searchResultsHighlight;
+}
+
+input:checked + .sliderForBtn:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.sliderForBtn.round {
+  border-radius: 34px;
+}
+
+.sliderForBtn.round:before {
+  border-radius: 50%;
 }

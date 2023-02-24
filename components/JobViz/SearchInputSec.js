@@ -109,7 +109,7 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                 {/* comment for testing */}
                 {!!searchInput &&
                     <Card ref={searchResultsCardRef} className="jobSearchResultsCard mt-2">
-                        <Header>
+                        <Header className="position-relative searchResultsHeader d-flex flex-sm-row flex-column">
                             {!isLoading ?
                                 <Title>
                                     {searchResults?.length ? "Search Results" : "No results"}
@@ -119,6 +119,19 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                                     Loading...
                                 </Title>
                             }
+                            {/* <div className="switchMainContainer d-flex flex-column">
+                                <section>
+                                    <span>Highlighter</span>
+                                </section>
+                                <section className="d-flex mt-2 mt-sm-0 justify-content-sm-center align-items-sm-center">
+                                    <div className="switchContainer">
+                                        <label className="switch w-100 h-100">
+                                            <input type="checkbox" />
+                                            <span className="sliderForBtn round"></span>
+                                        </label>
+                                    </div>
+                                </section>
+                            </div> */}
                         </Header>
                         <Body>
                             {isLoading && <div className="d-flex justify-content-center align-items-center w-100 h-100">
