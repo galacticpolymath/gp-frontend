@@ -34,7 +34,11 @@ const JobViz = ({ vals }) => {
     const [isScrollToInputBtnVisible, setIsScrollToInputBtnVisible] = useState(false);
     const mainChainCardRef = useRef();
     const { ref, inView, entry } = useInView({ threshold: 0 });
-    const { ref: refJobVizChainCard, inView: inViewJobVizCard } = useInView({ threshold: 0 });
+    const { ref: searchResultsCardRef, inView: inViewSearchResultsCard } = useInView({ threshold: 0 });
+    console.log("entry: ", entry)
+    // GOAL: wheN the user clicks on job viz chain button, the following should occur: 
+    // take the user to the job viz chain card 
+    // don't show the show button 
 
 
 
@@ -59,8 +63,8 @@ const JobViz = ({ vals }) => {
                     _searchResults={[searchResults, setSearchResults]}
                     _searchInput={[searchInput, setSearchInput]}
                     searchInputRef={ref}
+                    searchResultsCardRef={searchResultsCardRef}
                     setIsScrollToInputBtnVisible={setIsScrollToInputBtnVisible}
-                    setSearchInputRef={setSearchInputRef}
                 />
                 {parentJobCategories &&
                     <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
@@ -115,7 +119,7 @@ const JobViz = ({ vals }) => {
                     />
                 </section>
                 {!!searchResults.length && <GoToSearchInput isScrollToInputBtnVisible={!inView} />}
-                {!!searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={!inView} />}
+                {!!searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={!inView} inViewSearchResultsCard={inViewSearchResultsCard} />}
             </div>
         </Layout>
     );

@@ -22,7 +22,7 @@ import jobVizData from '../../data/Jobviz/jobVizData.json'
 
 const { Title, Body, Header } = Card;
 
-const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef }) => {
+const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchResultsCardRef }) => {
     const [searchResults, setSearchResults] = _searchResults;
     const [, setForceReRenderer] = useState({});
     const [searchInput, setSearchInput] = _searchInput
@@ -103,7 +103,7 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef }) => {
                 {/* show the search results in this section, present a card with all of the search results */}
                 {/* comment for testing */}
                 {!!searchInput &&
-                    <Card className="jobSearchResultsCard mt-2">
+                    <Card ref={searchResultsCardRef} className="jobSearchResultsCard mt-2">
                         <Header>
                             <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
                         </Header>
