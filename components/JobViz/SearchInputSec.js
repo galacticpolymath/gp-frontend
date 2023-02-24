@@ -22,11 +22,10 @@ import jobVizData from '../../data/Jobviz/jobVizData.json'
 
 const { Title, Body, Header } = Card;
 
-const SearchInputSec = ({ _searchResults }) => {
+const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef }) => {
     const [searchResults, setSearchResults] = _searchResults;
-    const inputRef = useRef();
     const [, setForceReRenderer] = useState({});
-    const [searchInput, setSearchInput] = useState("")
+    const [searchInput, setSearchInput] = _searchInput
 
     const rerenderComp = () => {
         setForceReRenderer({});
@@ -35,7 +34,6 @@ const SearchInputSec = ({ _searchResults }) => {
     const forceUpdate = useCallback(() => rerenderComp(), []);
 
     const forceUpdateComp = () => {
-        inputRef.current.value = "";
         forceUpdate()
     }
 
@@ -77,11 +75,17 @@ const SearchInputSec = ({ _searchResults }) => {
                 })
                 .catch(error => {
                     console.error("Something went wrong: ", error)
+                }).finally(() => {
+
                 })
             return;
         }
-        forceUpdateComp()
+        setSearchResults([]);
+        setSearchInput("");
     }
+
+    // if there are results and if there is user input, show the scroll up button (set isScrollToInputBtnVisible to true)
+    // if the input section is not visible and if there is search input, still show the scrollToInputBtn
 
 
 
@@ -89,7 +93,7 @@ const SearchInputSec = ({ _searchResults }) => {
         <section className="w-100 d-flex justify-content-center align-items-center flex-column">
             <section className="d-flex inputSec">
                 <section>
-                    <input ref={inputRef} className='border-4 rounded ps-1 pe-1' placeholder='Search Jobs' onChange={handleInput} />
+                    <input ref={searchInputRef} id="searchInputField" className='border-4 rounded ps-1 pe-1' placeholder='Search Jobs' onChange={handleInput} />
                 </section>
                 <section className="d-flex justify-content-center align-items-center ps-1">
                     <BsSearch />
@@ -98,7 +102,7 @@ const SearchInputSec = ({ _searchResults }) => {
             <section className="min-vw-100 d-flex justify-content-center">
                 {/* show the search results in this section, present a card with all of the search results */}
                 {/* comment for testing */}
-                {!!inputRef?.current?.value &&
+                {!!searchInput &&
                     <Card className="jobSearchResultsCard mt-2">
                         <Header>
                             <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>

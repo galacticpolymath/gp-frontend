@@ -186,3 +186,85 @@ $jobVizCategoryChainTxtHovered: #2e085c;
     text-decoration: underline;
   }
 }
+
+.goToSearchInputBtn{
+  bottom: 100px;
+  right: 70px;
+  font-size: 14px;
+  width: 150px;
+  height: 150px;
+}
+
+// .fadeInFromRight{
+//   animation: fadeInFromRight .7s ease-in-out;
+// }
+
+// @keyframes fadeInFromRight {
+//   0% {
+//     opacity: 0;
+//     transform: translateX(100%);
+//   }
+//   25%{
+//     opacity: 0.25;
+//   }
+//   50% {
+//     opacity: 0.5;
+//   }
+//   75% {
+//     opacity: 0.75;
+//   }
+//   100% {
+//     opacity: 1;
+//     transform: translateX(0%);
+//   }
+// }
+
+// .fadeOutToRight{
+//   animation: fadeOutToRight .7s ease-in-out;
+// }
+
+// @keyframes fadeOutToRight {
+//   0% {
+//     opacity: 1;
+//     transform: translateX(0%);
+//   }
+//   25%{
+//     opacity: 0.75;
+//   }
+//   50% {
+//     opacity: 0.5;
+//   }
+//   75% {
+//     opacity: 0.25;
+//   }
+//   100% {
+//     opacity: 0;
+//     transform: translateX(100%);
+//   }
+// }
+
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.fadeOut{
+  *{
+    border: solid pink;
+  }
+}

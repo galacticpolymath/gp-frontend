@@ -17,7 +17,6 @@ import { createContext, useState } from "react";
 export const ModalContext = createContext(null);
 
 export const ModalProvider = ({ children }) => {
-    const [isJobInfoModalOn, setIsJobInfoModalOn] = useState(false);
     const [selectedJob, setSelectedJob] = useState(null);
     const _selectedJob = [selectedJob, setSelectedJob]
 

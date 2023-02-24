@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-closing-tag-location */
@@ -15,18 +16,25 @@ import Layout from '../../components/Layout';
 import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
 import PreviouslySelectedJobCategory from '../../components/JobViz/PreviouslySelectedJobCategory';
-import { useState } from 'react';
 import SearchInputSec from '../../components/JobViz/SearchInputSec';
 import Image from 'next/image';
-import useIsElementOnScreen from '../../customHooks/useIsElementOnScreen';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';
+import Fade from '../../components/Fade';
+
 
 
 const JobViz = ({ vals }) => {
     const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
     const [searchResults, setSearchResults] = useState([])
-    const searchInputRef = useRef(null)
-    const isElementOnScreen = useIsElementOnScreen(searchInputRef);
+    const [searchInput, setSearchInput] = useState("")
+    const [searchInputRef, setSearchInputRef] = useState(null)
+    const [isScrollToInputBtnVisible, setIsScrollToInputBtnVisible] = useState(false);
+    const mainChainCardRef = useRef();
+    const { ref, inView, entry } = useInView({ threshold: 0 });
+
+
 
     return (
         <Layout>
@@ -42,8 +50,14 @@ const JobViz = ({ vals }) => {
                     </section>
                 </section>
             </Hero>
-            <div className="jobVizContent min-vh-100 pt-5 pb-5">
-                <SearchInputSec _searchResults={[searchResults, setSearchResults]} />
+            <div className="jobVizContent min-vh-100 pt-5 pb-5 position-relative">
+                <SearchInputSec
+                    _searchResults={[searchResults, setSearchResults]}
+                    _searchInput={[searchInput, setSearchInput]}
+                    searchInputRef={ref}
+                    setIsScrollToInputBtnVisible={setIsScrollToInputBtnVisible}
+                    setSearchInputRef={setSearchInputRef}
+                />
                 {parentJobCategories &&
                     <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
                         {parentJobCategories.map((jobCategory, index, self) => {
@@ -54,7 +68,7 @@ const JobViz = ({ vals }) => {
                                 return (
                                     <>
                                         <PreviouslySelectedJobCategory key={index} jobCategory={jobCategory} isBrick />
-                                        <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} /> 
+                                        <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} />
                                     </>
                                 )
                             }
@@ -64,13 +78,12 @@ const JobViz = ({ vals }) => {
 
                                 return <>
                                     <PreviouslySelectedJobCategory key={index} jobCategory={jobCategory} />
-                                    <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} /> 
+                                    <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} />
                                 </>
                             }
 
-                            return (
-                                <JobCategoryChainCard key={index} jobCategory={jobCategory} index={index} />
-                            )
+                            return <JobCategoryChainCard key={index} jobCategory={jobCategory} index={index} />
+
                         })}
                     </section>
                 }
@@ -97,6 +110,7 @@ const JobViz = ({ vals }) => {
                         isLoading={isLoading}
                     />
                 </section>
+                <GoToSearchInput searchInputRef={ref} isScrollToInputBtnVisible={!inView} />
             </div>
         </Layout>
     );
