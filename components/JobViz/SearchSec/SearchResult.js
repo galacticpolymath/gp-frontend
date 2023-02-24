@@ -20,13 +20,15 @@ import { useEffect } from "react";
 
 
 
-const SearchResult = ({ result, forceUpdateParentComp, index, searchInput }) => {
+const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setSearchResults }) => {
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
+    const [searchInput, setSearchInput] = _searchInput;
     const { letter, jobs } = result;
     const router = useRouter();
 
     const handleBtnClick = jobCategory => {
+        console.log("hey there")
         const currentPath = router.pathname
         const paths = getPathsOfSearchResult(jobCategory);
 
@@ -37,6 +39,8 @@ const SearchResult = ({ result, forceUpdateParentComp, index, searchInput }) => 
         }
 
         setSelectedJob(jobCategory);
+        setSearchResults([])
+        setSearchInput("")
     }
 
     return (

@@ -40,7 +40,9 @@ const JobViz = ({ vals }) => {
     // take the user to the job viz chain card 
     // don't show the show button 
 
-
+useEffect(() => {
+    console.log("searchResults: ",searchResults)
+})
 
 
 

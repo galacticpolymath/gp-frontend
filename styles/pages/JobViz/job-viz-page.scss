@@ -8,7 +8,7 @@ $jobVizCategoryChainTxtHovered: #2e085c;
 .jobViz-chain-txt {
   color: $jobVizCategoryChainTxtHovered;
   @media (min-width: 768px) {
-    white-space: nowrap;
+    // white-space: nowrap;
   }
 }
 
@@ -246,6 +246,10 @@ $jobVizCategoryChainTxtHovered: #2e085c;
 
 .jobVizBtnElDeterminer{
   height: 100%;
+  // background-color: red;
+  // transform: translateY(1050px);
+  // border: solid red;
+  z-index: -1;
 }
 
 // .fadeInFromRight{

@@ -25,6 +25,7 @@ const { Title, Body, Header } = Card;
 const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchResultsCardRef }) => {
     const [searchResults, setSearchResults] = _searchResults;
     const [, setForceReRenderer] = useState({});
+    const [isLoading, setIsLoading] = useState(false)
     const [searchInput, setSearchInput] = _searchInput
 
     const rerenderComp = () => {
@@ -67,21 +68,25 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
     // }, [])
 
     const handleInput = event => {
+        setIsLoading(true)
+        setSearchInput(event.target.value);
         if (event.target.value) {
-            getSearchResultsAsync(event.target.value.toLowerCase())
-                .then(results => {
-                    setSearchResults(results);
-                    setSearchInput(event.target.value);
-                })
-                .catch(error => {
-                    console.error("Something went wrong: ", error)
-                }).finally(() => {
-
-                })
+            setTimeout(() => {
+                getSearchResultsAsync(event.target.value.toLowerCase())
+                    .then(results => {
+                        setSearchResults(results);
+                    })
+                    .catch(error => {
+                        console.error("Something went wrong: ", error)
+                    }).finally(() => {
+                        setIsLoading(false)
+                    })
+            }, 800)
             return;
         }
         setSearchResults([]);
         setSearchInput("");
+        setIsLoading(false)
     }
 
     // if there are results and if there is user input, show the scroll up button (set isScrollToInputBtnVisible to true)
@@ -105,10 +110,24 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                 {!!searchInput &&
                     <Card ref={searchResultsCardRef} className="jobSearchResultsCard mt-2">
                         <Header>
-                            <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
+                            {!isLoading ?
+                                <Title>
+                                    {searchResults?.length ? "Search Results" : "No results"}
+                                </Title>
+                                :
+                                <Title>
+                                    Loading...
+                                </Title>
+                            }
                         </Header>
                         <Body>
-                            {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} searchInput={searchInput} forceUpdateParentComp={forceUpdateComp} index={index} />)}
+                            {isLoading && <div className="d-flex justify-content-center align-items-center w-100 h-100">
+                                <div className="spinner-border" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            }
+                            {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} searchInput={searchInput} forceUpdateParentComp={forceUpdateComp} index={index} setSearchResults={setSearchResults} _searchInput={[searchInput, setSearchInput]} />)}
                         </Body>
                     </Card>}
 

@@ -89,6 +89,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
                                                     <AccountTreeIcon />
                                                 </span>
                                                 <span className="d-inline-flex ms-1 justify-content-center align-items-center h-100">
+                                                {/* when the user presses on this button scroll into view the main job viz card */}
                                                     More Jobs
                                                 </span>
                                             </Button>

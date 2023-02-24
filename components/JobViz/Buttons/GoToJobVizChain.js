@@ -32,7 +32,7 @@ const GoToJobVizChain = ({ isScrollToJobVizChainBtnVisible }) => {
                 <span className="pt-md-2 pt-lg-3 w-100 text-center h-50 d-none d-sm-flex justify-content-center align-items-center">
                     Go to Job Viz chains
                 </span>
-                <span className="pt-md-2 pt-lg-3 w-100 text-center h-50 d-flex d-sm-none justify-content-center align-items-center">
+                <span className="pt-2 pt-md-2 pt-lg-3 w-100 text-center h-50 d-flex d-sm-none justify-content-center align-items-center">
                     Job Viz Chains
                 </span>
                 <span className="pt-md-3 pt-lg-0 w-100 h-50 d-flex justify-content-center align-items-center">
