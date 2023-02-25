@@ -24,7 +24,9 @@ $searchResultsHighlight: #ffc107;
 
 .jobVizChain {
   @media (min-width: 500px) {
-    width: 500px;
+    // width: 500px;
+    // padding: 0px 10px 0px 10px;
+    // border: solid pink;
   }
 }
 
@@ -329,8 +331,6 @@ $searchResultsHighlight: #ffc107;
 }
 
 .switchContainer {
-  // width: 100px;
-  // height: 10px;
   height: 40px;
   width: 60px;
   display: flex;
@@ -399,4 +399,9 @@ input:checked + .sliderForBtn:before {
 
 .sliderForBtn.round:before {
   border-radius: 50%;
+}
+
+.jobVizCategoryImgPrevWrapper{
+  position: absolute;
+  left: 10px;
 }

@@ -20,7 +20,7 @@ import { useEffect } from "react";
 
 
 
-const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setSearchResults, isHighlightDisabled }) => {
+const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setSearchResults, isHighlighterOn }) => {
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
     const [searchInput, setSearchInput] = _searchInput;
@@ -54,17 +54,17 @@ const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setS
                     return (
                         <div key={id} id={`${id}_searchResult`} className="searchResultJob d-inline-flex w-100">
                             <button id={`${id}_searchResult_btn`} onClick={() => handleBtnClick(job)} className="no-btn-styles text-center w-100">
-                                {isHighlightDisabled ?
-                                    <span>
-                                        title
-                                    </span>
-                                    :
+                                {isHighlighterOn ?
                                     <Highlighter
                                         highlightClassName="searchResultHighlight"
                                         searchWords={[searchInput]}
                                         autoEscape={true}
                                         textToHighlight={title}
                                     />
+                                    :
+                                    <span>
+                                        {title}
+                                    </span>
                                 }
                             </button>
                         </div>

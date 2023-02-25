@@ -28,8 +28,8 @@ const PreviouslySelectedJobCategory = ({ index, isBrick, jobCategory }) => {
 
     return (
         <section id={`chain-${index}`} key={index} className="d-flex justify-content-center align-items-center jobVizChain">
-            <section className="d-flex flex-column flex-md-row">
-                <section className="d-flex justify-content-center align-items-center justify-content-md-start align-items-md-stretch">
+            <section className="d-flex flex-column flex-lg-row">
+                <section className="d-flex justify-content-center align-items-center justify-content-lg-start align-items-lg-stretch">
                     <div className="position-relative jobVizChainIconContainer">
                         <img
                             src={src} alt="Galactic_Polymath_JobViz_Icon_Search"
@@ -38,7 +38,7 @@ const PreviouslySelectedJobCategory = ({ index, isBrick, jobCategory }) => {
                     </div>
                 </section>
                 <section className="moveLeftJobViz d-flex justify-content-center align-items-center">
-                    <button className='no-btn-styles text-center jobViz-chain-txt' onClick={handleBtnClick}>
+                    <button className='no-btn-styles text-center jobViz-chain-txt ps-4 pe-4 ps-lg-0 pe-lg-0' onClick={handleBtnClick}>
                         {jobCategory.categoryName.toUpperCase()}
                     </button>
                 </section>

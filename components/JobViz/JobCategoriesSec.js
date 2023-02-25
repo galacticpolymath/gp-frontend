@@ -32,7 +32,7 @@ const sortJobResults = jobResults => {
 }
 
 
-const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading }) => {
+const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch }) => {
     const router = useRouter();
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
@@ -42,10 +42,14 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, isLoading })
     const handleMoreJobsBtnClick = (level, currentJobsCategoryId) => {
         const nextLevelHierarchyNum = (currentHierarchyNum + 1)
         const { query, asPath } = router;
+
+        resetSearch()
+
         if (asPath == '/job-viz') {
             router.push({ pathname: `/job-viz/${nextLevelHierarchyNum}/${level}/${currentJobsCategoryId}` }, null, { scroll: false })
             return;
         }
+        
         let jobCategoryIds = query[`search-results`]
         jobCategoryIds.splice(0, 2)
         jobCategoryIds.push(currentJobsCategoryId)

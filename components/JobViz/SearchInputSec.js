@@ -22,11 +22,12 @@ import jobVizData from '../../data/Jobviz/jobVizData.json'
 
 const { Title, Body, Header } = Card;
 
-const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchResultsCardRef }) => {
+const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchResultsCardRef, _isHighlighterOn }) => {
     const [searchResults, setSearchResults] = _searchResults;
     const [, setForceReRenderer] = useState({});
     const [isLoading, setIsLoading] = useState(false)
-    const [searchInput, setSearchInput] = _searchInput
+    const [searchInput, setSearchInput] = _searchInput;
+    const [isHighlighterOn, setIsHighlighterOn] = _isHighlighterOn;
 
     const rerenderComp = () => {
         setForceReRenderer({});
@@ -89,8 +90,10 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
         setIsLoading(false)
     }
 
-    // if there are results and if there is user input, show the scroll up button (set isScrollToInputBtnVisible to true)
-    // if the input section is not visible and if there is search input, still show the scrollToInputBtn
+    const handleCheckBoxChange = event => {
+        setIsHighlighterOn(event.target.checked)
+    }
+
 
 
 
@@ -98,7 +101,7 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
         <section className="w-100 pt-5 mt-3 d-flex justify-content-center align-items-center flex-column">
             <section className="d-flex inputSec">
                 <section>
-                    <input id="searchInputField" className='border-4 rounded ps-1 pe-1' placeholder='Search Jobs' onChange={handleInput} />
+                    <input id="searchInputField" value={searchInput} className='border-4 rounded ps-1 pe-1' placeholder='Search Jobs' onChange={handleInput} />
                 </section>
                 <section className="d-flex justify-content-center align-items-center ps-1">
                     <BsSearch />
@@ -119,19 +122,23 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                                     Loading...
                                 </Title>
                             }
-                            {/* <div className="switchMainContainer d-flex flex-column">
+                            <div className="switchMainContainer d-flex flex-column">
                                 <section>
                                     <span>Highlighter</span>
                                 </section>
                                 <section className="d-flex mt-2 mt-sm-0 justify-content-sm-center align-items-sm-center">
                                     <div className="switchContainer">
                                         <label className="switch w-100 h-100">
-                                            <input type="checkbox" />
+                                            <input
+                                                type="checkbox"
+                                                onChange={handleCheckBoxChange}
+                                                checked={isHighlighterOn}
+                                            />
                                             <span className="sliderForBtn round"></span>
                                         </label>
                                     </div>
                                 </section>
-                            </div> */}
+                            </div>
                         </Header>
                         <Body>
                             {isLoading && <div className="d-flex justify-content-center align-items-center w-100 h-100">
@@ -140,7 +147,17 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                                 </div>
                             </div>
                             }
-                            {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} searchInput={searchInput} forceUpdateParentComp={forceUpdateComp} index={index} setSearchResults={setSearchResults} _searchInput={[searchInput, setSearchInput]} />)}
+                            {!!searchResults?.length && searchResults.map((result, index) =>
+                                <SearchResult
+                                    key={index}
+                                    result={result}
+                                    searchInput={searchInput}
+                                    forceUpdateParentComp={forceUpdateComp}
+                                    index={index}
+                                    setSearchResults={setSearchResults}
+                                    _searchInput={[searchInput, setSearchInput]}
+                                    isHighlighterOn={isHighlighterOn}
+                                />)}
                         </Body>
                     </Card>}
 

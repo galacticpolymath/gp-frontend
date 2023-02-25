@@ -29,101 +29,87 @@ const JobViz = ({ vals }) => {
     const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
     const [searchResults, setSearchResults] = useState([])
     const [searchInput, setSearchInput] = useState("")
-    const [wasRendered, setWasRendered] = useState(false);
-    const [searchInputRef, setSearchInputRef] = useState(null)
-    const [isScrollToInputBtnVisible, setIsScrollToInputBtnVisible] = useState(false);
-    const mainChainCardRef = useRef();
+    const [isHighlighterOn, setIsHighlighterOn] = useState(true);
     const { ref, inView, entry } = useInView({ threshold: 0 });
     const { ref: searchResultsCardRef, inView: inViewSearchResultsCard } = useInView({ threshold: 0 });
-    console.log("entry: ", entry)
-    // GOAL: wheN the user clicks on job viz chain button, the following should occur: 
-    // take the user to the job viz chain card 
-    // don't show the show button 
 
-useEffect(() => {
-    console.log("searchResults: ",searchResults)
-})
+    const resetSearchResults = () => {
+        setSearchInput("")
+        setSearchResults([])
+    }
 
 
 
     return (
         <Layout>
-            <div className="jobVizContent min-vh-100 position-relative">
-                    <Hero className="jobVizHero">
-                        <section className="d-flex jobVizHeroMainSec">
-                            <section className="d-flex flex-column">
-                                <h1 className='text-muted'>JobViz Career Explorer</h1>
-                                <p className='text-muted'>A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.</p>
-                                <p className='text-muted'>What do you want to be?</p>
-                            </section>
-                            <section>
-                                <JobVizIcon isOnJobVizPg />
-                            </section>
-                        </section>
-                    </Hero>
-                <div ref={ref}>
-                    <SearchInputSec
-                        _searchResults={[searchResults, setSearchResults]}
-                        _searchInput={[searchInput, setSearchInput]}
-                        searchInputRef={ref}
-                        setIsScrollToInputBtnVisible={setIsScrollToInputBtnVisible}
-                    />
-                </div>
-                {parentJobCategories &&
-                    <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
-                        {parentJobCategories.map((jobCategory, index, self) => {
-
-                            /* Job Categories */
-                            {/* insert the chain here as well */ }
-                            if (index === 0) {
-                                return (
-                                    <>
-                                        <PreviouslySelectedJobCategory key={index} jobCategory={jobCategory} isBrick />
-                                        <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} />
-                                    </>
-                                )
-                            }
-
-                            {/* insert the chain here */ }
-                            if ((index !== 0) && (index !== self.length - 1)) {
-
-                                return <>
-                                    <PreviouslySelectedJobCategory key={index} jobCategory={jobCategory} />
-                                    <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} />
-                                </>
-                            }
-
-                            return <JobCategoryChainCard key={index} jobCategory={jobCategory} index={index} />
-
-                        })}
+            <Hero className="jobVizHero">
+                <section className="d-flex jobVizHeroMainSec">
+                    <section className="d-flex flex-column">
+                        <h1 className='text-muted'>JobViz Career Explorer</h1>
+                        <p className='text-muted'>A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.</p>
+                        <p className='text-muted'>What do you want to be?</p>
                     </section>
-                }
-                {!parentJobCategories &&
-                    /* starting section, no jobViz button has been pressed */
-                    <section className="d-flex justify-content-center align-items-center flex-column w-100 pt-5 mt-5">
-                        <JobCategoryChainCard />
+                    <section>
+                        <JobVizIcon isOnJobVizPg />
                     </section>
-                }
-                <section className="jobCategoriesAndBracketSec d-flex justify-content-center align-items-center flex-column pb-5 mb-5">
-                    <section className="bracketSec d-flex justify-content-center align-items-center">
-                        <div className="bracketImgContainer">
-                            <img
-                                src="/imgs/jobViz/bracket_search.png"
-                                alt="Galactic_Polymath_JobViz_Icon_Search"
-                                className='w-100 h-100'
-                            />
-                        </div>
-                    </section>
-                    {/* job modal cards */}
-                    <JobCategoriesSec
-                        dynamicJobResults={dynamicJobResults}
-                        currentHierarchyNum={currentHierarchyNum ?? 1}
-                        isLoading={isLoading}
-                    />
                 </section>
-                {!!searchResults.length && <GoToSearchInput isScrollToInputBtnVisible={inView} />}
-                {!!searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={inView} inViewSearchResultsCard={inViewSearchResultsCard} />}
-            </div>
+            </Hero>
+            <SearchInputSec
+                _searchResults={[searchResults, setSearchResults]}
+                _searchInput={[searchInput, setSearchInput]}
+                searchInputRef={ref}
+                _isHighlighterOn={[isHighlighterOn, setIsHighlighterOn]}
+            />
+            {parentJobCategories &&
+                <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
+                    {parentJobCategories.map((jobCategory, index, self) => {
+
+                        if (index === 0) {
+                            return (
+                                <div key={index} className="d-flex justify-content-center align-items-center flex-column">
+                                    <PreviouslySelectedJobCategory jobCategory={jobCategory} isBrick />
+                                    <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} />
+                                </div>
+                            )
+                        }
+
+                        if ((index !== 0) && (index !== self.length - 1)) {
+
+                            return <div key={index} className="d-flex justify-content-center flex-column align-items-center">
+                                <PreviouslySelectedJobCategory jobCategory={jobCategory} />
+                                <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} />
+                            </div>
+                        }
+
+                        return <JobCategoryChainCard key={index} jobCategory={jobCategory} index={index} />
+
+                    })}
+                </section>
+            }
+            {!parentJobCategories &&
+                <section className="d-flex justify-content-center align-items-center flex-column w-100 pt-5 mt-5">
+                    <JobCategoryChainCard />
+                </section>
+            }
+            <section className="jobCategoriesAndBracketSec d-flex justify-content-center align-items-center flex-column pb-5 mb-5">
+                <section className="bracketSec d-flex justify-content-center align-items-center">
+                    <div className="bracketImgContainer">
+                        <img
+                            src="/imgs/jobViz/bracket_search.png"
+                            alt="Galactic_Polymath_JobViz_Icon_Search"
+                            className='w-100 h-100'
+                        />
+                    </div>
+                </section>
+                <JobCategoriesSec
+                    dynamicJobResults={dynamicJobResults}
+                    currentHierarchyNum={currentHierarchyNum ?? 1}
+                    isLoading={isLoading}
+                    resetSearch={resetSearchResults}
+                />
+            </section>
+            {!!searchResults.length && <GoToSearchInput isScrollToInputBtnVisible={inView} />}
+            {!!searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={inView} />}
         </Layout>
     );
 };
