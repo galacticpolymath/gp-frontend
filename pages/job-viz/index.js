@@ -18,7 +18,7 @@ import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
 import PreviouslySelectedJobCategory from '../../components/JobViz/PreviouslySelectedJobCategory';
 import SearchInputSec from '../../components/JobViz/SearchInputSec';
 import Image from 'next/image';
-import { useRef, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';
 import GoToJobVizChain from '../../components/JobViz/Buttons/GoToJobVizChain';
@@ -30,15 +30,12 @@ const JobViz = ({ vals }) => {
     const [searchResults, setSearchResults] = useState([])
     const [searchInput, setSearchInput] = useState("")
     const [isHighlighterOn, setIsHighlighterOn] = useState(true);
-    const { ref, inView, entry } = useInView({ threshold: 0 });
-    const { ref: searchResultsCardRef, inView: inViewSearchResultsCard } = useInView({ threshold: 0 });
+    const { ref, inView } = useInView({ threshold: 0 });
 
     const resetSearchResults = () => {
         setSearchInput("")
         setSearchResults([])
     }
-
-
 
     return (
         <Layout>
