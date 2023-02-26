@@ -1,0 +1,91 @@
+$selectedJobTxtColor: #212121;
+$jobInfoStatCard: #eff8fe;
+
+.selectedJobModal {
+  * {
+    color: $selectedJobTxtColor;
+  }
+
+  h5 {
+    font-weight: 300;
+    line-height: 30px;
+    font-size: 1.0625rem;
+  }
+
+  overflow-y: auto;
+  max-height: 650px;
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    // min-width: 550px;
+    width: 95%;
+  }
+}
+
+.selectedJobHeader {
+  position: relative;
+  // min-height: 95px;
+
+  button {
+    top: 10px;
+    right: 15px;
+    position: absolute;
+    font-size: 16px;
+  }
+}
+
+.dialogJobVizModal {
+  // overriding the default react-bootstrap modal max-width
+  max-width: 625px !important;
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.jobInfoStatCard {
+  background-color: $jobInfoStatCard;
+  height: 186px;
+  width: 195px;
+  // width: 105%;
+
+  h5 {
+    line-height: 1.3em;
+    font-size: 17px;
+  }
+
+  span {
+    font-weight: 300;
+    line-height: 20px;
+  }
+
+  svg {
+    font-size: 41px;
+  }
+
+  > div {
+    > section {
+      height: 160px;
+      > section:last-child {
+        bottom: 5px;
+        max-height: 50px;
+      }
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .jobInfoStatCard:nth-child(even) {
+    // margin-top: 3px;
+  }
+}
+
+.jobInfoStatSec {
+  //   column-count: 3;
+  //   column-gap: 0px;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}

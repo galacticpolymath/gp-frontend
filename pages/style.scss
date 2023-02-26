@@ -73,6 +73,10 @@ h3 {
   font-weight: 500;
 }
 
+::-webkit-scrollbar{
+  width: .01rem;
+}
+
 li {
   margin-bottom: 0.5rem;
 }
@@ -83,6 +87,20 @@ li {
 
 .no-hover-color-change:hover {
   color: inherit;
+}
+
+html { height: 100%; }
+
+
+
+.no-btn-styles{
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
 }
 
 // text utilities

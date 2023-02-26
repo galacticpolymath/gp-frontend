@@ -96,6 +96,10 @@ $modalBorderColor: #707070;
 }
 
 .tierInfoModalHeader {
+  height: 125px !important;
+  @media(max-width: 575px){
+    height: 100px !important;
+  }
   > div {
     font-size: $modalHeaderFontSize;
   }
@@ -116,12 +120,7 @@ $modalBorderColor: #707070;
 
 }
 
-.modal-header{
-  height: 125px !important;
-  @media(max-width: 575px){
-    height: 100px !important;
-  }
-}
+
 
 .modalImg{
   width: 100px !important;
