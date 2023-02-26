@@ -11,7 +11,7 @@
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable semi */
 import { Button } from "react-bootstrap";
-import AccountTreeIcon from "@material-ui/icons/AccountTree";
+import { MdAccountTree } from "react-icons/md";
 import { useRouter } from "next/router";
 import { IoNewspaperOutline } from 'react-icons/io5';
 import jobVizData from '../../data/Jobviz/jobVizData.json';
@@ -90,10 +90,9 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
                                             :
                                             <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn moreJobsBtn shadow" onClick={() => handleMoreJobsBtnClick(currentLevel, id)}>
                                                 <span className="d-inline-flex justify-content-center align-items-center h-100">
-                                                    <AccountTreeIcon />
+                                                    <MdAccountTree />
                                                 </span>
                                                 <span className="d-inline-flex ms-1 justify-content-center align-items-center h-100">
-                                                {/* when the user presses on this button scroll into view the main job viz card */}
                                                     More Jobs
                                                 </span>
                                             </Button>

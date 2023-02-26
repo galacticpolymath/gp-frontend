@@ -13,15 +13,12 @@
 /* eslint-disable react/jsx-indent */
 import { useContext } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import SchoolIcon from "@material-ui/icons/School";
-import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
-import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
-import TransferWithinAStationIcon from "@material-ui/icons/TransferWithinAStation";
-import TrendingUpIcon from "@material-ui/icons/TrendingUp";
+import { IoIosSchool } from "react-icons/io";
+import { BiTrendingUp } from "react-icons/bi";
+import { MdOutlineTransferWithinAStation, MdOutlineDirectionsWalk, MdSupervisedUserCircle, MdAttachMoney } from "react-icons/md";
 import { ModalContext } from '../../providers/ModalProvider';
 
-const { Header, Title, Body, Footer } = Modal;
+const { Header, Title, Body } = Modal;
 
 const SelectedJob = () => {
     const { _selectedJob } = useContext(ModalContext);
@@ -33,12 +30,36 @@ const SelectedJob = () => {
     const onTheJobTraining = selectedJob["typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"]
     def = def.toLowerCase() === "no definition found for this summary category." ? null : def;
     const infoCards = [
-        { title: "Median 2021 Annual Wage", txt: median_annual_wage_2021, icon: <AttachMoneyIcon /> },
-        { title: "2021 Employment", txt: employment_2021, icon: <DirectionsWalkIcon /> },
-        { title: "Education Needed", txt: typical_education_needed_for_entry, icon: <SchoolIcon /> },
-        { title: "2026 Employment", txt: employment_2031, icon: <TransferWithinAStationIcon /> },
-        { title: "On-the-job-Training", txt: onTheJobTraining, icon: <SupervisedUserCircleIcon /> },
-        { title: "Percent change in Employment 2016 - 2026", txt: projectedPercentageEmploymentChange, icon: <TrendingUpIcon /> }
+        {
+            title: "Median 2021 Annual Wage",
+            txt: median_annual_wage_2021,
+            icon: <MdAttachMoney />
+        },
+        {
+            title: "2021 Employment",
+            txt: employment_2021,
+            icon: <MdOutlineDirectionsWalk />
+        },
+        {
+            title: "Education Needed",
+            txt: typical_education_needed_for_entry,
+            icon: <IoIosSchool />
+        },
+        {
+            title: "2026 Employment",
+            txt: employment_2031,
+            icon: <MdOutlineTransferWithinAStation />
+        },
+        {
+            title: "On-the-job-Training",
+            txt: onTheJobTraining,
+            icon: <MdSupervisedUserCircle />
+        },
+        {
+            title: "Percent change in Employment 2016 - 2026",
+            txt: projectedPercentageEmploymentChange,
+            icon: <BiTrendingUp />
+        }
     ];
 
     const handleOnHide = () => {
@@ -66,19 +87,19 @@ const SelectedJob = () => {
                         const { icon, title, txt } = card;
                         let _txt = txt;
 
-                        if(title === "Median 2021 Annual Wage"){
+                        if (title === "Median 2021 Annual Wage") {
                             _txt = `$${parseInt(txt).toLocaleString()}`
                         }
 
-                        if(title === "Percent change in Employment 2016 - 2026"){
+                        if (title === "Percent change in Employment 2016 - 2026") {
                             _txt = `+${txt}%`
                         }
 
-                        if(title === "2021 Employment"){
+                        if (title === "2021 Employment") {
                             _txt = `${parseInt(txt).toLocaleString()}`
                         }
 
-                        if(title === "2026 Employment"){
+                        if (title === "2026 Employment") {
                             _txt = `${parseInt(txt).toLocaleString()}`
                         }
 
