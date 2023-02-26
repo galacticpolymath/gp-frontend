@@ -47,27 +47,29 @@ const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setS
                 <h5 className="ms-sm-3 searchResultHeaderTxt text-center text-sm-start fw-bold fst-italic display-6 ">{letter}</h5>
             </section>
             <section className="w-100 jobVizSearchResultsSec ps-3 pt-3 pb-5 pe-3">
-                {jobs.map(job => {
-                    const { title, id } = job;
-                    return (
-                        <div key={id} id={`${id}_searchResult`} className="searchResultJob d-inline-flex w-100">
-                            <button id={`${id}_searchResult_btn`} onClick={() => handleBtnClick(job)} className="no-btn-styles text-center w-100">
-                                {isHighlighterOn ?
-                                    <Highlighter
-                                        highlightClassName="searchResultHighlight"
-                                        searchWords={[searchInput]}
-                                        autoEscape={true}
-                                        textToHighlight={title}
-                                    />
-                                    :
-                                    <span>
-                                        {title}
-                                    </span>
-                                }
-                            </button>
-                        </div>
-                    )
-                })}
+                <ul className="w-100 h-100 jobVizSearchResultsSecUl">
+                    {jobs.map(job => {
+                        const { title, id } = job;
+                        return (
+                            <li key={id} id={`${id}_searchResult`} className="searchResultJob">
+                                <button id={`${id}_searchResult_btn`} onClick={() => handleBtnClick(job)} className="no-btn-styles text-center w-100">
+                                    {isHighlighterOn ?
+                                        <Highlighter
+                                            highlightClassName="searchResultHighlight"
+                                            searchWords={[searchInput]}
+                                            autoEscape={true}
+                                            textToHighlight={title}
+                                        />
+                                        :
+                                        <span>
+                                            {title}
+                                        </span>
+                                    }
+                                </button>
+                            </li>
+                        )
+                    })}
+                </ul>
             </section>
         </div>
     )

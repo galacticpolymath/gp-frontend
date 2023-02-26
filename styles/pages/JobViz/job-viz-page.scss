@@ -160,13 +160,13 @@ $searchResultsHighlight: #ffc107;
 }
 
 .jobVizSearchResultsSec {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  // display: flex;
+  // flex-wrap: wrap;
+  // justify-content: center;
 
-  @media (max-width: 767px) {
-    justify-content: space-evenly;
-  }
+  // @media (max-width: 767px) {
+  //   justify-content: space-evenly;
+  // }
 }
 
 .jobVizSearchResultsSec {
@@ -175,11 +175,25 @@ $searchResultsHighlight: #ffc107;
   }
 }
 
+.jobVizSearchResultsSecUl {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: circle outside;
+
+  @media (max-width: 767px) {
+    justify-content: space-evenly;
+  }
+}
+
 .searchResultJob {
   margin-top: 20px;
   max-width: 300px;
   position: relative;
   min-height: 100px;
+  // display: inline-flex;
+  width: 100%;
+  border: solid pink;
 
   button {
     line-height: 20px;
@@ -401,7 +415,7 @@ input:checked + .sliderForBtn:before {
   border-radius: 50%;
 }
 
-.jobVizCategoryImgPrevWrapper{
+.jobVizCategoryImgPrevWrapper {
   position: absolute;
   left: 10px;
 }
