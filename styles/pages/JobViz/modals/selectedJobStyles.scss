@@ -14,26 +14,33 @@ $jobInfoStatCard: #eff8fe;
 
   overflow-y: auto;
   max-height: 650px;
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    // min-width: 550px;
+    width: 95%;
+  }
 }
 
 .selectedJobHeader {
   position: relative;
-  min-height: 95px;
-
-  h3 {
-    width: 85%;
-  }
+  // min-height: 95px;
 
   button {
     top: 10px;
     right: 15px;
     position: absolute;
+    font-size: 16px;
   }
 }
 
 .dialogJobVizModal {
   // overriding the default react-bootstrap modal max-width
   max-width: 625px !important;
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .jobInfoStatCard {
@@ -74,8 +81,8 @@ $jobInfoStatCard: #eff8fe;
 }
 
 .jobInfoStatSec {
-//   column-count: 3;
-//   column-gap: 0px;
+  //   column-count: 3;
+  //   column-gap: 0px;
 
   display: flex;
   flex-wrap: wrap;

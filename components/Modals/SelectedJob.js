@@ -40,24 +40,24 @@ const SelectedJob = () => {
             icon: <MdAttachMoney />
         },
         {
-            title: `${data_start_yr} Employment`,
-            txt: employment_2021,
-            icon: <MdOutlineDirectionsWalk />
-        },
-        {
             title: "Education Needed",
             txt: typical_education_needed_for_entry,
             icon: <IoIosSchool />
         },
         {
-            title: `${data_end_yr} Employment`,
-            txt: employment_2031,
-            icon: <MdOutlineTransferWithinAStation />
-        },
-        {
             title: "On-the-job-Training",
             txt: onTheJobTraining,
             icon: <MdSupervisedUserCircle />
+        },
+        {
+            title: `${data_start_yr} Employment`,
+            txt: employment_2021,
+            icon: <MdOutlineDirectionsWalk />
+        },
+        {
+            title: `${data_end_yr} Employment`,
+            txt: employment_2031,
+            icon: <MdOutlineTransferWithinAStation />
         },
         {
             title: `Percent change in Employment ${data_start_yr} - ${data_end_yr}}`,
@@ -72,16 +72,15 @@ const SelectedJob = () => {
 
     return (
         <Modal show={selectedJob} size="md" onHide={handleOnHide} contentClassName="selectedJobModal" dialogClassName='dialogJobVizModal'>
-            <Header className='selectedJobHeader border-0' closeButton>
-                <Title className="w-100 pt-1 d-flex justify-content-center place-items-center">
-                    <h3 className="text-center">{jobTitle}</h3>
+            <Header className='selectedJobHeader border-0 pb-0 pt-3' closeButton>
+                <Title className="w-100 pt-1">
+                    <h3 className="text-center text-sm-start pt-2 pt-sm-0 mb-0">{jobTitle}</h3>
                 </Title>
             </Header>
             <Body className='selectedJobBody'>
                 {def &&
                     <section>
                         <h5>
-                            <strong>Definition: </strong>
                             {def}
                         </h5>
                     </section>
