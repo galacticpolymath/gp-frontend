@@ -12,13 +12,10 @@
 /* eslint-disable react/jsx-indent */
 
 import { BsSearch } from "react-icons/bs"
-import { Button, Card } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import getSearchResultsAsync from "../../helperFns/getSearchResults";
-import { useCallback, useEffect, useRef, useState } from "react";
-import getPathsOfSearchResult from "../../helperFns/getPathsOfSearchResult";
-import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
 import SearchResult from "./SearchSec/SearchResult";
-import jobVizData from '../../data/Jobviz/jobVizData.json'
 
 const { Title, Body, Header } = Card;
 
@@ -38,35 +35,6 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
     const forceUpdateComp = () => {
         forceUpdate()
     }
-
-    // FOR TESTING PURPOSES ONLY, UNCOMMENT FOR TESTING
-    // useEffect(() => {
-    //     console.log("hello there")
-    //     let groupedSearchResults = [];
-
-    //     jobVizData.forEach(job => {
-    //         const firstLetter = job.title[0];
-
-    //         if (groupedSearchResults.length === 0) {
-    //             groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
-    //             return
-    //         }
-
-    //         const targetGroup = groupedSearchResults.find(({ letter }) => letter === firstLetter);
-
-    //         if (targetGroup) {
-    //             targetGroup.jobs.push(job);
-    //             const targetGroupIndex = groupedSearchResults.findIndex(({ letter }) => letter === firstLetter);
-    //             groupedSearchResults.splice(targetGroupIndex, 1, targetGroup);
-    //             return
-    //         }
-
-    //         groupedSearchResults.push({ letter: firstLetter, jobs: [job] });
-    //     })
-
-
-    //     setSearchResults(groupedSearchResults)
-    // }, [])
 
     const handleInput = event => {
         setIsLoading(true)
@@ -108,8 +76,6 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                 </section>
             </section>
             <section className="min-vw-100 d-flex justify-content-center position-relative">
-                {/* show the search results in this section, present a card with all of the search results */}
-                {/* comment for testing */}
                 {!!searchInput &&
                     <Card ref={searchResultsCardRef} className="jobSearchResultsCard mt-2">
                         <Header className="position-relative searchResultsHeader d-flex flex-sm-row flex-column">
@@ -160,14 +126,6 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                                 />)}
                         </Body>
                     </Card>}
-
-                {/* FOR TESTING PURPOSES ONLY, UNCOMMENT FOR TESTING */}
-                {/* <Card className="w-75">
-                    <Title>{searchResults?.length ? "Search Results" : "No results"}</Title>
-                    <Body>
-                        {!!searchResults?.length && searchResults.map((result, index) => <SearchResult key={index} result={result} forceUpdateParentComp={forceUpdateComp} />)}
-                    </Body>
-                </Card> */}
                 <div ref={searchInputRef} className="position-absolute w-100 mt-5 jobVizBtnElDeterminer" />
             </section>
         </section>
