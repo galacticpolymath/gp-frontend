@@ -1,6 +1,6 @@
 import React from "react";
 import ReactFlagsSelect from "react-flags-select";
-import Flag from "react-flags";
+
 
 const locToCountry= {"en-US": "US", "en-GB": "GB", "en-NZ": "NZ", "fr": "FR", "de": "DE", "it": "IT", "fr-AW": "AW"}
 const countryToLoc= {"US": "en-US", "GB": "en-GB", "NZ": "en-NZ", "FR": "fr", "DE": "de", "IT": "it", "AW": "fr-AW"}
