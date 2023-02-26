@@ -19,16 +19,12 @@ export default function Home() {
           <Link passHref href="/lessons">
             <a className="btn btn-primary">Get Lessons</a>
           </Link>
-<<<<<<< HEAD
-          <Link passHref href="/hire-us">
-            <a className="btn btn-primary mx-3">Do Outreach</a>
-=======
+
           <Link
             href="/hire-us"
             className="btn btn-primary mx-2"
           >
             Do Outreach
->>>>>>> main
           </Link>
         </div>
       </Hero>
