@@ -10,8 +10,7 @@ const getLatestSubRelease = (sections) => {
     return null;
   }
   
-  const lastRelease =
-    versionSection.Data[versionSection.Data.length - 1].sub_releases;
+  const lastRelease = versionSection.Data[versionSection.Data.length - 1].sub_releases;
   const lastSubRelease = lastRelease[lastRelease.length - 1];
   return lastSubRelease;
 };
@@ -35,7 +34,7 @@ const LessonDetails = ({ lesson }) => {
   };
 
   return (
-    <Layout>
+    <Layout className="plain-h3">
       <div className="container p-4">
         {lastSubRelease && (
           <p>

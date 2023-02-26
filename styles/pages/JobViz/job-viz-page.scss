@@ -1,0 +1,407 @@
+@import "./sections/jobCategories.scss";
+@import "./modals/selectedJobStyles.scss";
+
+$heroColor: #f0f4ff;
+$jobVizCategoryChainTxt: #6812d1;
+$jobVizCategoryChainTxtHovered: #2e085c;
+$searchResultsHighlight: #ffc107;
+
+.jobViz-chain-txt {
+  color: $jobVizCategoryChainTxtHovered;
+  @media (min-width: 768px) {
+    // white-space: nowrap;
+  }
+}
+
+.jobViz-chain-txt:hover {
+  color: $jobVizCategoryChainTxt;
+}
+
+.jobVizHero {
+  background-color: $heroColor;
+  padding: 150px 0px !important;
+}
+
+.jobVizChain {
+  @media (min-width: 500px) {
+    // width: 500px;
+    // padding: 0px 10px 0px 10px;
+    // border: solid pink;
+  }
+}
+
+.iconSec {
+  // height: 120px;
+}
+
+.jobVizImgContainerOnPg {
+  width: 350px;
+  height: 350px;
+  color: #6c757d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media (max-width: 575px) {
+    width: 200px;
+    height: 200px;
+  }
+}
+.jobVizImg {
+  background-blend-mode: normal;
+}
+
+.jobVizIcon {
+  width: 100%;
+  height: 100%;
+}
+
+.jobVizChainIconContainer {
+  width: 40px;
+  height: 40px;
+}
+
+.jobVizIconContainer {
+  width: 130px;
+  height: 130px;
+  transform: translate(-50%, -70%);
+  left: 50%;
+  top: 6%;
+}
+
+.bracketSec {
+  padding-top: 10px;
+}
+
+.bracketImgContainer {
+  // height: 20px;
+  // width: 85%;
+  max-width: 1025px;
+
+  @media (min-width: 992px) {
+    min-width: 970.95px;
+  }
+}
+
+.jobVizHeroMainSec {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    > section:last-child {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+  }
+}
+
+.jobVizHero {
+  > div > div {
+    width: 90%;
+    position: relative;
+  }
+
+  @media (max-width: 767px) {
+    // overriding .Hero_hero___E4fU class
+    padding: 40px 0px 30px 0px !important;
+  }
+}
+
+.jobVizCard {
+  // height: 250px;
+
+  h4 {
+    font-weight: 249;
+  }
+
+  width: 20rem;
+
+  @media (max-width: 575px) {
+    width: 15rem;
+  }
+}
+
+.jobVizContent input {
+  outline: none;
+}
+
+#jobVizBtnSearch {
+  > span:last-child {
+    font-size: 12px;
+  }
+}
+
+.inputSec {
+  svg {
+    font-size: 25px;
+  }
+  input {
+    border: solid 2px #6c757d;
+  }
+}
+
+.jobVizHeroMainSec {
+  > section {
+    p {
+      max-width: 600px;
+    }
+  }
+}
+
+.searchResultHighlight {
+  color: $searchResultsHighlight;
+}
+
+#currentJobCategoryHeaderTxt {
+  margin: 8px 0px 8px 0px;
+}
+
+.jobVizSearchResultsSec {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  @media (max-width: 767px) {
+    justify-content: space-evenly;
+  }
+}
+
+.jobVizSearchResultsSec {
+  @media (min-width: 1200px) {
+    min-width: 700px;
+  }
+}
+
+.searchResultJob {
+  margin-top: 20px;
+  max-width: 300px;
+  position: relative;
+  min-height: 100px;
+
+  button {
+    line-height: 20px;
+  }
+
+  button:hover {
+    text-decoration: underline;
+  }
+}
+
+.jobVizNavBtn {
+  font-size: 14px;
+  border: 0px;
+  right: 5%;
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    right: 2%;
+  }
+
+  @media (min-width: 992px) and (max-width: 1399px) {
+    right: 1%;
+  }
+
+  @media (min-width: 992px) {
+    width: 150px;
+    height: 150px;
+  }
+
+  @media (min-width: 576px) {
+    right: 1%;
+    width: 120px;
+    height: 120px;
+  }
+
+  @media (max-width: 575px) {
+    right: 1%;
+    width: 100px;
+    height: 100px;
+    font-size: 12px;
+  }
+
+  svg {
+    font-size: 40px;
+
+    @media (min-width: 576px) {
+      font-size: 30px;
+    }
+
+    @media (max-width: 575px) {
+      font-size: 20px;
+    }
+  }
+
+  span {
+    line-height: 16px;
+  }
+}
+
+.goToSearchInputBtn {
+  bottom: 230px;
+}
+
+.goToJobVizCardBtn {
+  bottom: 70px;
+}
+
+.jobVizBtnElDeterminer {
+  height: 100%;
+  z-index: -1;
+}
+
+// .fadeInFromRight{
+//   animation: fadeInFromRight .7s ease-in-out;
+// }
+
+// @keyframes fadeInFromRight {
+//   0% {
+//     opacity: 0;
+//     transform: translateX(100%);
+//   }
+//   25%{
+//     opacity: 0.25;
+//   }
+//   50% {
+//     opacity: 0.5;
+//   }
+//   75% {
+//     opacity: 0.75;
+//   }
+//   100% {
+//     opacity: 1;
+//     transform: translateX(0%);
+//   }
+// }
+
+// .fadeOutToRight{
+//   animation: fadeOutToRight .7s ease-in-out;
+// }
+
+// @keyframes fadeOutToRight {
+//   0% {
+//     opacity: 1;
+//     transform: translateX(0%);
+//   }
+//   25%{
+//     opacity: 0.75;
+//   }
+//   50% {
+//     opacity: 0.5;
+//   }
+//   75% {
+//     opacity: 0.25;
+//   }
+//   100% {
+//     opacity: 0;
+//     transform: translateX(100%);
+//   }
+// }
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The switch - the box around the sliderForBtn */
+.switchMainContainer {
+  @media (min-width: 576px) {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+  }
+}
+
+.searchResultsHeader {
+  min-height: 85px;
+}
+
+.switchContainer {
+  height: 40px;
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The sliderForBtn */
+.sliderForBtn {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border: 0px;
+  border-width: 0px;
+}
+
+.sliderForBtn:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .sliderForBtn {
+  background-color: $searchResultsHighlight;
+  border: 0;
+}
+
+input:focus + .sliderForBtn {
+  box-shadow: 0 0 1px $searchResultsHighlight;
+}
+
+input:checked + .sliderForBtn:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.sliderForBtn.round {
+  border-radius: 34px;
+}
+
+.sliderForBtn.round:before {
+  border-radius: 50%;
+}
+
+.jobVizCategoryImgPrevWrapper{
+  position: absolute;
+  left: 10px;
+}

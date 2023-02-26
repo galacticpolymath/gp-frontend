@@ -1,0 +1,100 @@
+$moreJobsBtnColor: #6c2d82;
+
+.jobFieldStartingResult {
+  height: 185px;
+  width: 300px;
+  margin-top: 40px;
+
+  h4 {
+    padding: 0px 5px 0px 5px;
+    font-size: 18px;
+    font-weight: 600;
+
+    @media(max-width: 767px){
+      font-size: 18px;
+    }
+  }
+
+  @media(max-width: 575px){
+    width: 75%;
+    min-width: 200px;
+  }
+}
+
+.bracketSec,
+.jobCategoriesSec {
+  width: 85%;
+}
+
+.jobCategoriesSec {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
+  > div {
+    @media (min-width: 992px) {
+        min-width: 992px;
+    }
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+}
+
+.moreJobsBtn{
+  background-color: $moreJobsBtnColor;
+
+  &:hover{
+    background-color: #913bae;
+  }
+}
+
+.job-categories-btn {
+  color: white;
+  font-weight: 400;
+  padding: 10px 20px 10px 20px;
+  border-radius: 5px;
+  border: none;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: 50px;
+  width: 137px;
+  &:hover {
+    color: white;
+    transform: scale(1.02);
+  }
+
+  svg{
+    font-size: 1rem;
+  }
+
+
+
+  font-size: 12px;
+}
+
+.jobVizCardBody{
+    > section:first-child{
+        height:50px;
+    }
+}
+
+.jobVizCard{
+    margin-top: 80px;
+}
+
+#jobVizBtnSearch{
+    margin-top: 10px;
+}
+
+.jobSearchResultsCard{
+  width: 85%;
+  max-width: 1100px;
+  min-height: 200px;
+
+  @media(max-width: 767px){
+    width: 80%;
+    min-width: 240px;
+  }
+}
+

@@ -1,0 +1,242 @@
+.letTalksMainBtnSec {
+  @media (min-width: 768px) {
+    transform: translateY(-110px) !important;
+
+    @media (max-width: 1199px) {
+      width: 100% !important;
+    }
+
+    width: 100% !important;
+
+    @media (min-width: 992px) {
+      transform: translateY(-80px) !important;
+    }
+
+    @media (max-width: 991px) {
+      transform: translateY(-85px) !important;
+
+      @media (max-width: 850px) {
+        transform: translateY(-75px) !important;
+      }
+    }
+  }
+
+  > section {
+    @media (min-width: 768px) and (max-width: 1199px) {
+      width: 100% !important;
+    }
+  }
+}
+
+.defaultStylingLetsTalkBtn {
+  @media (max-width: 767px) {
+    border-radius: 2.5em !important;
+  }
+}
+
+.mainBtnLetsTalk {
+  background-color: $btnColorMobile !important;
+  border-radius: $borderRadiusModal;
+  width: 260px !important;
+  height: 85px !important;
+  border: solid 1px rgb(255, 255, 255) !important;
+
+  > div:first-of-type {
+    height: 100% !important;
+    width: 40% !important;
+  }
+
+  svg {
+    height: 50px;
+    width: 50px;
+  }
+
+  @media (max-width: 767px) {
+    width: 250px !important;
+    height: 65px !important;
+
+    svg {
+      width: 45px !important;
+      height: 45px !important;
+      transform: translate(-10px, -3px);
+    }
+  }
+
+  @media (max-width: 575px) {
+    width: 210px !important;
+    height: 65px !important;
+  }
+
+  > div:last-of-type {
+    height: 100% !important;
+    width: 60% !important;
+
+    span {
+      font-size: 24px !important;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+
+      @media (min-width: 768px) {
+        font-size: 27px !important;
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    transform: translateY(35px) !important;
+  }
+
+  @media (min-width: 768px) {
+    height: 100px !important;
+  }
+}
+
+.letsTalkBtnContainer {
+  background-color: $btnColor;
+  width: 350px !important;
+  height: 200px !important;
+  border: solid 0.5px #ffffff !important;
+  border-radius: $borderRadiusModal;
+
+  > div {
+    @media (min-width: 992px) {
+      width: 100% !important;
+      height: 50% !important;
+    }
+  }
+
+  div:first-of-type {
+    padding-bottom: 10px !important;
+  }
+
+  div:last-of-type {
+    span {
+      font-size: 34px;
+
+      @media (max-width: 767px) {
+        padding: 0px 0px 8px 10px;
+        text-decoration: underline;
+        text-decoration-thickness: 1.5px;
+      }
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    width: 240px !important;
+    height: 150px !important;
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    width: 300px !important;
+
+    div:last-of-type {
+      span {
+        font-size: 24px;
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    height: 75px !important;
+    border-radius: 2.8em;
+  }
+
+  @media (max-width: 575px) {
+    height: 70px !important;
+    width: 225px !important;
+
+    div:last-of-type {
+      span {
+        font-size: 24px;
+      }
+    }
+  }
+}
+
+.letsTalkDarker {
+  background-color: $btnColorMobile !important;
+  border-radius: $borderRadiusModal;
+  width: 220px !important;
+  height: 85px !important;
+  border: solid 1px rgb(255, 255, 255) !important;
+
+  span {
+    font-size: 24px !important;
+  }
+
+  @media (min-width: 768px) {
+    > div:last-of-type {
+      height: 100% !important;
+      width: 60% !important;
+
+      span {
+        font-size: 27px !important;
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    > div:first-of-type {
+      height: 100% !important;
+      width: 40% !important;
+    }
+
+    svg {
+      height: 50px;
+      width: 50px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    display: flex !important;
+    flex-direction: row-reverse !important;
+  }
+
+  @media (max-width: 767px) {
+    > div:last-of-type {
+      width: 200% !important;
+
+      span {
+        text-decoration-thickness: 1px !important;
+      }
+    }
+    svg {
+      transform: translate(-20px, -3px);
+    }
+    height: 85px !important;
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    // width:
+  }
+
+  @media (max-width: 575px) {
+    width: 225px !important;
+    height: 70px !important;
+  }
+}
+
+.letsTalkBtnTxt {
+  @media (min-width: 576px) and (max-width: 767px) {
+    text-align: center;
+  }
+}
+
+.darker-btn-color {
+  background-color: $btnColorDark !important;
+}
+
+.mainBtnAboveMobile {
+  right: 40px !important;
+  top: 20px !important;
+  height: 105px !important;
+  width: 258px !important;
+}
+
+.introMainBtnInnerSec {
+  > div:last-of-type {
+    span {
+      font-size: 24px !important;
+    }
+  }
+}

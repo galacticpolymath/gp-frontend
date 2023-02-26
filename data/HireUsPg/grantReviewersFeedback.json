@@ -1,0 +1,25 @@
+[
+    {
+        "feedback": "The Broader Impacts are creative and exciting.",
+        "person": "Anonymous Reviewer #1",
+        "occupation": "NSF Grant Review Panelist",
+        "cssClass": "grantReviewShortTxtStyles"
+        
+    },
+    {
+        "feedback": "The educational plan to develop a learning module for middle school students is very well-developed...overall the broader impacts activities are quite strong.",
+        "person": "Anonymous Reviewer #2",
+        "cssClass": "grantReviewTxtStyles"
+    },
+    {
+        "feedback": "A major strength of this proposed effort is that the module will be tied to national standards, making the program easy for teachers to incorporate into their curricula.",
+        "person": "Anonymous Reviewer #3",
+        "cssClass": "grantReviewTxtStyles"
+    },
+    {
+        "feedback": "I liked the broader impacts proposed in this application... well done.",
+        "person": "Anonymous Reviewer #4",
+        "cssClass": "grantReviewShortTxtStyles",
+        "quoteInfo": "grantReview4QuoteInfo"
+    }
+]

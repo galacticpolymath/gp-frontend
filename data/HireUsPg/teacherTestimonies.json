@@ -1,0 +1,41 @@
+{
+    "isTeachersAndStudentsTestimonies": true,
+    "arr":[
+        {
+            "feedback": "This is a fantastic lesson! I love how it combines actual research and allows the students the opportunity for analysis.",
+            "person": "Sarah Huneycutt",
+            "occupation": "Homeschool Teacher",
+            "city": "Nashville, TN",
+            "product": "Females Singing to be Heard",
+            "stars": 5,
+            "cssClass": "teacherTestimony"
+        },
+        {
+            "feedback": "The experiment was engaging and self-reflective! Students were able to apply principles and strategies to real world experiences!",
+            "person": "Kenton Wesby",
+            "occupation": "STEM Teacher",
+            "city": "Nashville, TN",
+            "product": "I Like That!",
+            "stars": 4,
+            "cssClass": "teacherTestimony"
+        },
+        {
+            "feedback": "It was very informative and I learned a lot 👍.",
+            "person": "Jasper",
+            "occupation": "Student, grade 7",
+            "city": null,
+            "product": "The Guardian Frogs of Borneo",
+            "stars": 4,
+            "cssClass": "studentTestimony"
+        },
+        {
+            "feedback": "I really enjoy this lesson! It is so engaging and fun!",
+            "person": "Alisha",
+            "occupation": "Student, grade 11",
+            "city": null,
+            "product": "Females Singing to be Heard",
+            "stars": 5,
+            "cssClass": "studentTestimony"
+        }
+    ]
+}

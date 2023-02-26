@@ -1,0 +1,55 @@
+.customMsgBoxStyles {
+  width: 50px !important;
+  height: 50px !important;
+
+
+  // @media (min-width: 768px) and (max-width: 991px) {
+  //   width: 70px;
+  //   height: 70px;
+  // }
+
+  // @media (max-width: 767px) {
+  //   width: 73px;
+  //   height: 73px;
+  //   // transform: translateX(-10px);
+  // }
+
+  // @media(min-width: 576px) and (max-width: 767px){
+  //   width: 55px;
+  //   height: 55px;
+  // }
+
+  // @media(max-width: 575px){
+  //   width: 40px !important;
+  //   height: 40px !important;
+
+  // }
+}
+
+.forwardBtnCarousel{
+  @media(max-width: 575px){
+    padding-left: 25px;
+  }
+}
+
+.backBtnCarousel{
+  @media(max-width: 575px){
+    padding-right: 25px;
+  }
+}
+
+.arrowNavigationCarousel{
+  font-size: 75px;
+
+  @media(max-width: 575px){
+    font-size: 65px !important;
+    padding-bottom: 20px !important;
+  }
+}
+
+.questionMarkIcon{
+  font-size: 15px !important;
+  @media(max-width: 575px){
+    font-size: 12px !important;
+  }
+}

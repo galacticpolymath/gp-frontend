@@ -1,0 +1,274 @@
+@import "../../../globalVars.scss";
+
+$backgroundColorTierCard: #ffeded;
+$tierHeadingFontSize: 22px !important;
+$desktopFontSizeTierStatus: 24px !important;
+
+.tierCard {
+  overflow: hidden;
+}
+
+.cardsCentralizedSec {
+  > div {
+    width: 540px !important;
+  }
+}
+
+.tierHeaderTag {
+  font-size: $tierHeadingFontSize;
+  @media (min-width: 1300px) {
+  }
+
+  @media (min-width: 1400px) {
+    white-space: nowrap !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .tierDefaultStyles {
+    @media (min-width: 1200px) {
+      padding-bottom: 100px !important;
+      max-width: 520px !important;
+      // min-width:  330px !important;
+      // border: solid pink !important;
+    }
+  }
+
+
+  @media(min-width: 1200px){    
+    .tierDefaultStyles:first-child,
+    .tierDefaultStyles:nth-child(2),
+    .tierDefaultStyles:last-child{
+      width: 45% !important;
+      width: 45% !important;
+      max-width: 520px !important;
+    }
+  }
+
+
+  .tierDefaultStyles:nth-last-child(-n + 2) {
+    // margin-left: 20px !important;
+
+    @media (min-width: 1200px) and (max-width: 1300px) {
+      // margin-left: 40px !important;
+    }
+  }
+}
+
+.tierImg {
+  @media (max-width: 575px) {
+    min-width: 80px !important;
+  }
+
+  width: 140px !important;
+  height: 140px !important;
+  @media (min-width: 768px) {
+    width: 120px !important;
+    height: 120px !important;
+  }
+}
+
+.tierTableRow {
+  @media (min-width: 768px) {
+    @media (min-width: 1440px) {
+      height: 10px !important;
+      white-space: nowrap !important;
+
+      td:last-child {
+        white-space: nowrap;
+      }
+    }
+
+    height: 60px !important;
+
+    @media(min-width: 1200px){
+      height: 70px !important;
+    }
+
+    line-height: 27px !important;
+    overflow: hidden !important;
+    td:last-child {
+      padding-left: 10px !important;
+    }
+  }
+}
+
+.tierTableRow:not(:first-child) {
+  td {
+    @media (max-width: 767px) {
+      padding-top: 20px;
+    }
+  }
+}
+
+.tierCard,
+.tierCardBodyAndHeader {
+  background-color: $backgroundColorTierCard;
+  border-radius: $borderRadiusModal;
+}
+
+.tierProductBorder {
+  border-top: solid 1px lightgray;
+  border-bottom: solid 1px lightgray;
+}
+
+.tierInfoStatus {
+  @media (min-width: 768px) {
+    white-space: nowrap;
+  }
+  text-align: right;
+}
+
+.productInfoTable {
+  * {
+    color: #000000;
+  }
+}
+
+.tierParagraphSec {
+  @media (min-width: 768px) {
+    p {
+      line-height: 20px !important;
+      font-size: $spanFontSize;
+    }
+  }
+}
+
+.productSec {
+  @media (min-width: 768px) {
+    section {
+      a {
+        line-height: normal;
+      }
+    }
+  }
+}
+
+.tierCard {
+  @media (min-width: 992px) and (max-width: 1199px) {
+    padding: 0px 2rem 4rem 2rem !important;
+  }
+}
+
+.tierCardBody {
+  position: relative;
+
+  @media (min-width: 992px) and (max-width: 1199px) {
+    padding: 0px;
+  }
+}
+
+.estimatedPriceWrapper {
+  @media (min-width: 768px) {
+    height: 150px !important;
+  }
+}
+
+.priceSection {
+  @media (min-width: 768px) {
+    margin-top: auto !important;
+    transform: translateY(40px);
+  }
+}
+
+.tierProductImg {
+  @media (max-width: 1199px) {
+    // max-width: none !important;
+  }
+  @media (min-width: 1200px) {
+    height: 170px !important;
+  }
+}
+
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.imgProductContainer {
+  position: relative !important;
+  height: 150px !important;
+
+  > img {
+    max-width: 400px !important;
+    position: absolute !important;
+    // width: 300px !important;
+    height: 108px !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    @media (min-width: 768px) and (max-width: 1199px) {
+      width: 515px !important;
+    }
+
+    @media (min-width: 1200px) {
+      min-width: 308px !important;
+    }
+
+    @media (min-width: 576px) and (max-width: 991px) {
+      width: 100% !important;
+      left: 48% !important;
+    }
+
+    @media (max-width: 575px) {
+      width: 100% !important;
+      min-width: 240px !important;
+      left: 50% !important;
+    }
+  }
+}
+
+.imgProductContainer {
+  width: 100% !important;
+
+  @media (max-width: 575px) {
+    width: 100% !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    width: 100% !important;
+  }
+
+  @media (min-width: 1200px) {
+  }
+}
+
+.priceTxt {
+  @media (min-width: 1200px) {
+    white-space: nowrap !important;
+  }
+}
+
+.priceTxtHorizontal {
+  > span {
+    font-size: 19px !important;
+  }
+}
+
+.tierInfoModalHeader {
+  padding: 5px 0px 5px 0px !important;
+
+  h3 {
+    @media (max-width: 575px) {
+      max-width: 150px !important;
+      text-align: start !important;
+      margin-top: 10px !important;
+    }
+  }
+}
+
+
+.tierDefaultStyles p{
+  @media(min-width: 768px){
+    line-height: 28px !important;;
+  }
+}
+
+@media(min-width: 768px){
+  .exampleProductTxt,
+  .tierDefaultStyles p,
+  .tierDefaultStyles td,
+  .tierDefaultStyles a {
+    font-size: $spanDesktopFontSize;
+  }
+}
