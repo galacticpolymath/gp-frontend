@@ -8,12 +8,13 @@
 /* eslint-disable semi */
 /* eslint-disable comma-dangle */
 /* eslint-disable indent */
-const jobVizData = require('../data/Jobviz/jobVizData.json');
+// const jobVizData = require('../data/Jobviz/jobVizData.json');
+const jobVizDataObj = require('../data/Jobviz/jobVizDataObj.json');
 
 const getSearchResultsAsync = (searchInput) => {
     return new Promise((resolve, reject) => {
         try {
-            const searchResultsFiltered = jobVizData.filter(({ title }) => title.toLowerCase().includes(searchInput))
+            const searchResultsFiltered = jobVizDataObj.data.filter(({ title }) => title.toLowerCase().includes(searchInput))
             let groupedSearchResults = [];
 
             searchResultsFiltered.forEach(job => {

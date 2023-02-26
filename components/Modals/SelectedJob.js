@@ -17,8 +17,12 @@ import { IoIosSchool } from "react-icons/io";
 import { BiTrendingUp } from "react-icons/bi";
 import { MdOutlineTransferWithinAStation, MdOutlineDirectionsWalk, MdSupervisedUserCircle, MdAttachMoney } from "react-icons/md";
 import { ModalContext } from '../../providers/ModalProvider';
+import jobVizDataObj from '../../data/Jobviz/jobVizDataObj.json';
 
 const { Header, Title, Body } = Modal;
+const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } = jobVizDataObj;
+const data_start_yr = _data_start_yr[0];
+const data_end_yr = _data_end_yr[0];
 
 const SelectedJob = () => {
     const { _selectedJob } = useContext(ModalContext);
@@ -31,12 +35,12 @@ const SelectedJob = () => {
     def = def.toLowerCase() === "no definition found for this summary category." ? null : def;
     const infoCards = [
         {
-            title: "Median 2021 Annual Wage",
+            title: `Median ${data_start_yr} Annual Wage`,
             txt: median_annual_wage_2021,
             icon: <MdAttachMoney />
         },
         {
-            title: "2021 Employment",
+            title: `${data_start_yr} Employment`,
             txt: employment_2021,
             icon: <MdOutlineDirectionsWalk />
         },
@@ -46,7 +50,7 @@ const SelectedJob = () => {
             icon: <IoIosSchool />
         },
         {
-            title: "2026 Employment",
+            title: `${data_end_yr} Employment`,
             txt: employment_2031,
             icon: <MdOutlineTransferWithinAStation />
         },
@@ -56,7 +60,7 @@ const SelectedJob = () => {
             icon: <MdSupervisedUserCircle />
         },
         {
-            title: "Percent change in Employment 2016 - 2026",
+            title: `Percent change in Employment ${data_start_yr} - ${data_end_yr}}`,
             txt: projectedPercentageEmploymentChange,
             icon: <BiTrendingUp />
         }
@@ -87,19 +91,19 @@ const SelectedJob = () => {
                         const { icon, title, txt } = card;
                         let _txt = txt;
 
-                        if (title === "Median 2021 Annual Wage") {
+                        if (title === `Median ${data_start_yr} Annual Wage`) {
                             _txt = `$${parseInt(txt).toLocaleString()}`
                         }
 
-                        if (title === "Percent change in Employment 2016 - 2026") {
+                        if (title === `Percent change in Employment ${data_start_yr} - ${data_end_yr}}`) {
                             _txt = `+${txt}%`
                         }
 
-                        if (title === "2021 Employment") {
+                        if (title === `${data_start_yr} Employment`) {
                             _txt = `${parseInt(txt).toLocaleString()}`
                         }
 
-                        if (title === "2026 Employment") {
+                        if (title === `${data_end_yr} Employment`) {
                             _txt = `${parseInt(txt).toLocaleString()}`
                         }
 

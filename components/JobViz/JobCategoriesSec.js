@@ -14,13 +14,13 @@ import { Button } from "react-bootstrap";
 import { MdAccountTree } from "react-icons/md";
 import { useRouter } from "next/router";
 import { IoNewspaperOutline } from 'react-icons/io5';
-import jobVizData from '../../data/Jobviz/jobVizData.json';
+import jobVizDataObj from '../../data/Jobviz/jobVizDataObj.json';
 import { useMemo } from "react";
 import { useContext } from 'react';
 import { ModalContext } from "../../providers/ModalProvider";
 
 
-const startingJobResults = jobVizData.filter(jobCategory => jobCategory.hierarchy === 1).map(jobCategory => ({ ...jobCategory, currentLevel: jobCategory.level1 }))
+const startingJobResults = jobVizDataObj.data.filter(jobCategory => jobCategory.hierarchy === 1).map(jobCategory => ({ ...jobCategory, currentLevel: jobCategory.level1 }))
 
 const sortJobResults = jobResults => {
     return jobResults.sort((jobA, jobB) => {
