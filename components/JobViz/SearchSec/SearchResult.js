@@ -12,11 +12,10 @@
 /* eslint-disable react/jsx-indent */
 
 import { useRouter } from "next/router";
-import { useCallback, useContext, useState } from "react";
+import { useContext } from "react";
 import { getPathsOfSearchResult } from "../../../helperFns/getPathsOfSearchResult";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Highlighter from "react-highlight-words";
-import { useEffect } from "react";
 
 
 
@@ -28,7 +27,6 @@ const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setS
     const router = useRouter();
 
     const handleBtnClick = jobCategory => {
-        console.log("hey there")
         const currentPath = router.pathname
         const paths = getPathsOfSearchResult(jobCategory);
 
