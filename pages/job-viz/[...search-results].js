@@ -9,9 +9,8 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 import JobViz from '.';
-import useSWR from 'swr';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useGetJobCategories } from '../../customHooks/useGetJobCategories';
 import jobVizData from "../../data/Jobviz/jobVizData.json";
 
