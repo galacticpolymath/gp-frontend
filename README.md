@@ -1,15 +1,10 @@
 
 In this PR:
     
-    - Fix bugs/hangs in search
+    - Incorporate this new JobViz data (slight restructuring with a header and all job data under a data attribute)
 
-    - Port over using new data in the description
+    - Modal changes:
 
-Still working on:
 
-    - fixing styling for modal and making it responsive
 
-Instructions to start unit tests:
-    
-    - Enter `npm test` in the terminal to begin unit test.
     
