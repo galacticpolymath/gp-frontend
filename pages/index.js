@@ -16,8 +16,8 @@ export default function Home() {
         <h1 className={styles.shadow}>We are an education studio.</h1>
         <p className={`${styles.shadow} my-4 fs-5 fw-light`}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
         <div>
-          <Link passHref href="/lessons">
-            <a className="btn btn-primary">Get Lessons</a>
+          <Link passHref href="/lessons" className="btn btn-primary">
+            Get Lessons
           </Link>
 
           <Link
@@ -83,8 +83,8 @@ export default function Home() {
             <p>
               We build lessons around <em><strong>real research, data, and stories</strong></em> from diverse STEM experts.
             </p>
-            <Link href="/lessons/5">
-              <a className='btn btn-primary'>See this lesson</a>
+            <Link href="/lessons/5" className='btn btn-primary'>
+              See this lesson
             </Link>
           </div>
         </div>
@@ -146,10 +146,10 @@ export default function Home() {
               Read the article
             </a>
             <br />
-            <Link href="/lessons/1">
-              <a className='btn btn-secondary'>
+            <Link href="/lessons/1" className='btn btn-secondary'>
+              
                 Check out the lesson
-              </a>
+              
             </Link>
           </div>
           <div className="col-12 col-md-6 order-2 order-md-1">
@@ -202,8 +202,8 @@ export default function Home() {
                   <li>Differentiated for grades 5-6, 7-8 & 9-12</li>
                   <li>Adaptable for different time lengths, extension activities, etc.</li>
                 </ul>
-                <Link href="/lessons">
-                  <a className='btn btn-primary'>Get lessons</a>
+                <Link href="/lessons" className='btn btn-primary'>
+                  Get lessons
                 </Link>
               </div>
             </div>
@@ -215,8 +215,8 @@ export default function Home() {
                   <li>Get detailed impact metrics to report to funders</li>
                   <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
                 </ul>
-                <Link href="/hire-us">
-                  <a className='btn btn-primary'>Get lessons</a>
+                <Link href="/hire-us" className='btn btn-primary'>
+                  Get lessons
                 </Link>
               </div>
             </div>

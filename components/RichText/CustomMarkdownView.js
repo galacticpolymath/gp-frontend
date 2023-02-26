@@ -5,9 +5,9 @@ import Link from 'next/link';
 const components = {
   AnchorLink ({ href, ...props }) {
     return (
-      <Link href={href} passHref>
-        <a {...props} />
-      </Link>
+      (<Link href={href} passHref {...props}>
+
+      </Link>)
     );
   },
   a (props) {
