@@ -54,11 +54,11 @@ const LessonsPage = ({ lessons }) => {
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
               .map((lesson, i) => (
                 <Link
-                key={lesson.locale + lesson.id}
-                href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
-                passHref
+                  key={lesson.locale + lesson.id}
+                  href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
+                  passHref
                   className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'
-                >
+                  legacyBehavior>
                   <div>
                     {lesson.CoverImage && lesson.CoverImage.url && (
                       <Image
