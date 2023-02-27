@@ -7,6 +7,17 @@ import JobVizIcon from '../../components/JobViz/JobVizIcon';
 
 const LessonsPage = ({ lessons }) => {
 
+  const uniqueIDs = [];
+
+  const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
+    if (!uniqueIDs.includes(id) 
+      && PublicationStatus === 'Live') {
+      uniqueIDs.push(id);
+      return true;
+    }
+    return false;
+  });
+
   return (
     <Layout>
       <Hero className="bg-secondary">
@@ -39,12 +50,13 @@ const LessonsPage = ({ lessons }) => {
         <section className="lessonsSection pt-2">
           <h2 className="ms-4 mb-4 text-muted">Galactic Polymath Releases</h2>
           <div className='container mx-auto grid pb-5 px-3 gap-3 bg-light-gray pt-3'>
-            {lessons
+            {publishedLessons
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
-              .map((lesson, i) => (
+              .map((lesson) => ((
                 <Link
-                  key={i}
-                  href={`/lessons/${lesson.id}`}
+                  key={lesson.locale + lesson.id}
+                  href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
+                  passHref
                   className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'
                 >
                   <div>
@@ -52,9 +64,13 @@ const LessonsPage = ({ lessons }) => {
                       <Image
                         src={lesson.CoverImage.url}
                         alt={lesson.Subtitle}
-                        layout="responsive"
                         width={1500}
                         height={450}
+                        sizes="100vw"
+                        style={{
+                          width: '100%',
+                          height: 'auto',
+                        }}
                       />
                     )}
                   </div>
@@ -66,6 +82,8 @@ const LessonsPage = ({ lessons }) => {
                     </span>
                   </div>
                 </Link>
+              )
+                
               ))}
           </div>
         </section>
@@ -74,12 +92,12 @@ const LessonsPage = ({ lessons }) => {
   );
 };
 
-export const getStaticProps = async () => {
+export async function getStaticProps() {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
 
   const lessons = await res.json();
 
   return { props: { lessons } };
-};
+}
 
 export default LessonsPage;

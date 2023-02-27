@@ -17,7 +17,7 @@ import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
 import PreviouslySelectedJobCategory from '../../components/JobViz/PreviouslySelectedJobCategory';
 import SearchInputSec from '../../components/JobViz/SearchInputSec';
-import Image from 'next/image';
+import Image from "next/image";
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';
@@ -65,17 +65,37 @@ const JobViz = ({ vals }) => {
                             return (
                                 <div key={index} className="d-flex justify-content-center align-items-center flex-column">
                                     <PreviouslySelectedJobCategory jobCategory={jobCategory} isBrick />
-                                    <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} />
+                                    <Image
+                                        src="/imgs/jobViz/chain.png"
+                                        alt="chain_JobViz_Galactic_Polymath"
+                                        width={3}
+                                        height={30}
+                                        style={{
+                                            maxWidth: "100%",
+                                            height: "auto",
+                                        }}
+                                    />
                                 </div>
-                            )
+                            );
                         }
 
                         if ((index !== 0) && (index !== self.length - 1)) {
 
-                            return <div key={index} className="d-flex justify-content-center flex-column align-items-center">
-                                <PreviouslySelectedJobCategory jobCategory={jobCategory} />
-                                <Image src="/imgs/jobViz/chain.png" alt="chain_JobViz_Galactic_Polymath" width={3} height={30} />
-                            </div>
+                            return (
+                                <div key={index} className="d-flex justify-content-center flex-column align-items-center">
+                                    <PreviouslySelectedJobCategory jobCategory={jobCategory} />
+                                    <Image
+                                        src="/imgs/jobViz/chain.png"
+                                        alt="chain_JobViz_Galactic_Polymath"
+                                        width={3}
+                                        height={30}
+                                        style={{
+                                            maxWidth: "100%",
+                                            height: "auto",
+                                        }}
+                                    />
+                                </div>
+                            );
                         }
 
                         return <JobCategoryChainCard key={index} jobCategory={jobCategory} index={index} />

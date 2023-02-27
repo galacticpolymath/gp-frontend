@@ -10,13 +10,23 @@ export default function Navbar() {
   return (
     <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-dark'>
       <div className='container'>
-        <Link href="/" className='flex-grow-1'>
+        <Link
+          href="/"
+          passHref
+          className='flex-grow-1'
+        >
+
           <Image
             alt="Galactic Polymath"
             src={Logo}
             height={35}
             width={300}
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+            }}
           />
+
         </Link>
         <button
           className='navbar-toggler'
@@ -33,7 +43,10 @@ export default function Navbar() {
           <div className='collapse navbar-collapse' id='navbarSupportedContent'>
             <ul className='navbar-nav me-auto mb-2 mb-lg-0 fs-5 text-uppercase'>
               <li className='nav-item'>
-                <Link href='/' className={`nav-link ${router.pathname === '/' ? 'fw-bold active' : 'fw-light'}`}>
+                <Link
+                  href='/'
+                  className={`nav-link ${router.pathname === '/' ? 'fw-bold active' : 'fw-light'}`}
+                >
                   Home
                 </Link>
               </li>
@@ -44,8 +57,13 @@ export default function Navbar() {
                 ['/about', 'About'],
               ].map(([url, title]) => (
                 <li key={url} className='nav-item'>
-                  <Link href={url} className={`nav-link ${router.pathname.includes(url) ? 'fw-bold active' : 'fw-light'}`}>
+                  <Link
+                    href={url}
+                    className={`nav-link ${router.pathname.includes(url) ? 'fw-bold active' : 'fw-light'}`}
+                  >
+
                     {title}
+
                   </Link>
                 </li>
               ))}

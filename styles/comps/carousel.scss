@@ -472,7 +472,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
         text-align: center !important;
 
         @media(min-width: 576px){
-          text-align: start !important;
+          text-align: flex-start !important;
         }
 
         line-height: 22px !important;

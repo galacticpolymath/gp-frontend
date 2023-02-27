@@ -41,7 +41,8 @@ const Overview = ({
             </div>
           </div>
 
-          <Link href="#learning_standards">
+          <Link passHref href="#learning_standards">
+
             <h5>Subject breakdown by standard alignments: </h5>
             {SteamEpaulette && SteamEpaulette.url && (
               <img
@@ -49,6 +50,7 @@ const Overview = ({
                 alt="Subject breakdown by standard alignments"
               />
             )}
+
           </Link>
         </div>
 

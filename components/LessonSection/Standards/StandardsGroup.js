@@ -41,7 +41,9 @@ const StandardsGroup = ({
             {[].concat(codes).map((code, i) => (
               <p className='mb-0' key={i}>
                 <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
-                <i className="bi bi-three-dots text-muted text-center"></i>
+                <div className='text-muted text-center'>
+                  <i className="bi bi-three-dots"></i>
+                </div>
               </p>
             ))}
           </div>
@@ -58,7 +60,7 @@ const StandardsGroup = ({
 
 StandardsGroup.propTypes = {
   id: PropTypes.string.isRequired,
-  grades: PropTypes.string,
+  grades: PropTypes.array,
   codes: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   statements: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   alignmentNotes: PropTypes.string,
