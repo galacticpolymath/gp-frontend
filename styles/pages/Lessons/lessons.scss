@@ -105,3 +105,12 @@ $borderColor: darkgray;
   }
 }
 
+.lessonsOnLessonsPg{
+  @media(min-width: 1200px){
+    // max-height: 285px;
+    img{
+      max-height: 150px;
+    }
+  }
+}
+
