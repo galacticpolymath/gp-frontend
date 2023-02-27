@@ -82,11 +82,8 @@ const SelectedJob = () => {
         return () => {
             console.log("wasRenderedRef.current: ", wasRenderedRef.current)
             if(wasRenderedRef.current){
-                console.log("will run only on unmount: ")
-                console.log("router?.query?.['search-results']: ", router?.query?.['search-results'])
                 const [currentHierarchyNum, currentLevel] = router?.query?.['search-results']
                 const newJobCategoryIdPaths = router?.query?.['search-results'].filter((_, index, self) => !([0, 1, self.length - 1].includes(index)))
-                console.log("newJobCategoryIdPaths: ", newJobCategoryIdPaths)
                 const pathUpdated = `/job-viz/${currentHierarchyNum}/${currentLevel}/${newJobCategoryIdPaths.join('/')}`
                 // router.push({ pathname: pathUpdated }, null, { scroll: false })
                 return;
