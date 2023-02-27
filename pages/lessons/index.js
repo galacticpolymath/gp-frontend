@@ -16,8 +16,8 @@ const LessonsPage = ({ lessons }) => {
       <div className="lessonsPgContent">
         <section className="pb-3">
           <h2 className="mt-3 ms-4 text-muted">Galactic Polymath Learning Tools</h2>
-          <section className="d-flex justify-content-center align-items-center d-sm-block justify-content-start align-items-stretch">
-            <div className="ms-md-5 jobVizCareer d-flex flex-column">
+          <section className="d-flex justify-content-center align-items-center">
+            <div className="ms-md-5 jobVizCareer d-flex flex-column rounded lessonsPgShadow pb-sm-3 pb-md-0">
               <section className="d-flex w-100">
                 <section className="imgSec d-flex justify-content-center align-items-center">
                   {/* put the image for jobViz here */}
