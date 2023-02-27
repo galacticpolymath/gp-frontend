@@ -72,8 +72,9 @@ const JobViz = ({ vals }) => {
                                         height={30}
                                         style={{
                                             maxWidth: "100%",
-                                            height: "auto"
-                                        }} />
+                                            height: "auto",
+                                        }}
+                                    />
                                 </div>
                             );
                         }
@@ -90,8 +91,9 @@ const JobViz = ({ vals }) => {
                                         height={30}
                                         style={{
                                             maxWidth: "100%",
-                                            height: "auto"
-                                        }} />
+                                            height: "auto",
+                                        }}
+                                    />
                                 </div>
                             );
                         }

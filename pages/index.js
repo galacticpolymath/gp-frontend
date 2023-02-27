@@ -86,7 +86,7 @@ export default function Home() {
             <p>
               We build lessons around <em><strong>real research, data, and stories</strong></em> from diverse STEM experts.
             </p>
-            <Link href="/lessons/5" className='btn btn-primary'>
+            <Link href="/lessons/en-US/5" className='btn btn-primary'>
               See this lesson
             </Link>
           </div>
@@ -149,7 +149,7 @@ export default function Home() {
               Read the article
             </a>
             <br />
-            <Link href="/lessons/1" className='btn btn-secondary'>
+            <Link href="/lessons/en-US/1" className='btn btn-secondary'>
 
               Check out the lesson
 

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 const HireUsCardFirstSecMobile = ({ textsAndImg, isWhatWillYouGetSec, customCssClass }) => {
   const { boldedTxt, unBoldedText, imgPath } = textsAndImg;
@@ -19,9 +19,10 @@ const HireUsCardFirstSecMobile = ({ textsAndImg, isWhatWillYouGetSec, customCssC
           height={75}
           alt="Galactic_PolyMath_First_Sec_Mobile_Info"
           style={{
-            maxWidth: "100%",
-            height: "auto"
-          }} />
+            maxWidth: '100%',
+            height: 'auto',
+          }}
+        />
       </section>
       <section className="ms-sm-4 ms-md-1 mt-3 mt-sm-0 ps-3 pe-3 ps-sm-0 pe-sm-0">
         <span className="d-flex flex-column flex-sm-row d-sm-inline-block hireUsCardFirstSecTxt responsiveInfoTxt text-center text-sm-start pe-lg-2">

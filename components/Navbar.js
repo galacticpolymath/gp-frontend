@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import Image from "next/image";
+import Image from 'next/image';
 import Link from 'next/link';
 
 import Logo from '../assets/img/galactic_polymath_white.png';
@@ -22,9 +22,10 @@ export default function Navbar() {
             height={35}
             width={300}
             style={{
-              maxWidth: "100%",
-              height: "auto"
-            }} />
+              maxWidth: '100%',
+              height: 'auto',
+            }}
+          />
 
         </Link>
         <button
