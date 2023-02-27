@@ -15,10 +15,21 @@
 import { useContext } from "react";
 import { ModalContext } from "./providers/ModalProvider";
 import SelectedJob from "./components/Modals/SelectedJob";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const ModalContainers = () => {
+    const router = useRouter();
     const { _selectedJob } = useContext(ModalContext);
     const [selectedJob,] = _selectedJob;
+
+    useEffect(() =>{
+        // if the selectedJOb is not null and the path changes, then reset selectedJob state to
+        if(selectedJob){
+            console.log("selectedJob: ", selectedJob)
+        }
+
+    },[router.asPath])
 
     return (
         <>

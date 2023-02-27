@@ -15,6 +15,7 @@ import { useGetJobCategories } from '../../customHooks/useGetJobCategories';
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { useEffect } from 'react';
 import { ModalContext } from '../../providers/ModalProvider';
+import { useState } from 'react';
 
 
 
@@ -41,31 +42,59 @@ const JobVizSearchResults = () => {
     const { _selectedJob } = useContext(ModalContext)
     const [, setSelectedJob] = _selectedJob;
     const params = router.query?.['search-results'] ?? null;
-    const { jobCategories } = useGetJobCategories(params?.[0] ?? null, params?.[1] ?? null,);
-    const jobCategoryIds = router.query?.['search-results'] ? router.query?.['search-results'].slice(2) : [];
+    const hierarchyNum = params?.[0] ?? null
+    let { jobCategories } = useGetJobCategories(hierarchyNum, params?.[1] ?? null,);
+    let jobCategoryIds = router.query?.['search-results'] ? router.query?.['search-results'].slice(2) : [];
+    (jobCategoryIds.length === parseInt(hierarchyNum)) && jobCategoryIds.pop()
     const parentJobCategories = useMemo(() => getParentJobCategories(jobCategoryIds.map(id => parseInt(id))), [params])
-
-    console.log("parentJobCategories: ", parentJobCategories)
-
-    const vals = { dynamicJobResults: jobCategories, currentHierarchyNum: (params?.[0] && parseInt(params?.[0])) ?? 1, parentJobCategories: parentJobCategories }
+    const vals = { dynamicJobResults: jobCategories, currentHierarchyNum: (hierarchyNum && parseInt(hierarchyNum)) ?? 1, parentJobCategories: parentJobCategories }
 
 
     JobVizSearchResults.getInitialProps = async () => {
         return {};
     }
 
+    const [willCheckParamsAgain, setWillCheckParamsAgain] = useState(false)
+
     useEffect(() => {
         console.log("params: ", params)
         const jobCategoryIds = params?.slice(2);
         let hierarchyNum = params?.[0]
+
+        console.log({ jobCategoryIds: jobCategoryIds?.length, hierarchyNum: hierarchyNum })
         
         if(parseInt(hierarchyNum) === jobCategoryIds?.length){
             let lastJobCategoryId = params?.[params.length - 1]
             const targetJobCategory = jobVizDataObj.data.find(jobCategory => jobCategory.id === parseInt(lastJobCategoryId))
             setSelectedJob(targetJobCategory)
-        }
+            return;
+        } 
+
+        setWillCheckParamsAgain(true)
 
     },[])
+
+    useEffect(() => {
+
+        if(willCheckParamsAgain){
+            let jobCategoryIds = params?.slice(2);
+
+            if(jobCategoryIds?.length === 0 || !jobCategoryIds?.length){
+                let pathsSplitted = window.location.pathname.split('/')
+                pathsSplitted.splice(0, 2)
+                const jobCategoryPaths = pathsSplitted.slice(2)
+
+                if(parseInt(pathsSplitted[0]) === jobCategoryPaths?.length){
+                    let lastJobCategoryId = jobCategoryPaths?.[jobCategoryPaths.length - 1]
+                    const targetJobCategory = jobVizDataObj.data.find(jobCategory => jobCategory.id === parseInt(lastJobCategoryId))
+                    setSelectedJob(targetJobCategory)
+                }
+                
+            }
+            setWillCheckParamsAgain(false) 
+        }
+
+    },[willCheckParamsAgain])
 
 
 

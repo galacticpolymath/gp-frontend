@@ -30,11 +30,12 @@ const data_start_yr = _data_start_yr[0];
 const data_end_yr = _data_end_yr[0];
 
 const SelectedJob = () => {
-    const { _selectedJob } = useContext(ModalContext);
+    const { _selectedJob, _isJobModalOn } = useContext(ModalContext);
     const router = useRouter();
     const paths = router.query?.['search-results'] ?? [];
     const lastPath = paths[paths.length - 1];
     const [selectedJob, setSelectedJob] = _selectedJob;
+    const [isJobModal, setIsJobModal] = _isJobModalOn;
     let { soc_title, def, title, median_annual_wage_2021, typical_education_needed_for_entry, employment_2021, employment_2031, id } = selectedJob;
     let jobTitle = soc_title ?? title;
     jobTitle = jobTitle === "Total, all" ? "All US Jobs" : jobTitle;
@@ -84,7 +85,9 @@ const SelectedJob = () => {
 
     useEffect(() => {
         console.log("selectedJob, modal: ", selectedJob)
-    }, [router.asPath])
+
+        setIsJobModal(true)
+    }, [])
 
     
 
