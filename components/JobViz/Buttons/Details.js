@@ -9,10 +9,11 @@
 /* eslint-disable react/jsx-no-undef */
 
 import { useRouter } from "next/router"
+import { Button } from "react-bootstrap"
 import { IoNewspaperOutline } from "react-icons/io5"
 import { getJobCategoryIds } from "../../../helperFns/getJobCategoryIds"
 
-const Details = ({ jobToShowInModal, setSelectedJob }) => {
+const Details = ({ jobToShowInModal, setSelectedJob, id }) => {
     const router = useRouter()
 
     const handleBtnClick = () => {
@@ -25,7 +26,7 @@ const Details = ({ jobToShowInModal, setSelectedJob }) => {
 
     return (
         <Button
-            id="jobVizBtnSearch"
+            id={id}
             className="d-flex justify-content-center align-items-center job-categories-btn"
             onClick={handleBtnClick}
         >

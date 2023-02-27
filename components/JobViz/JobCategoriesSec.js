@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-indent-props */
 /* eslint-disable no-debugger */
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
@@ -19,6 +20,7 @@ import { useMemo } from "react";
 import { useContext } from 'react';
 import { ModalContext } from "../../providers/ModalProvider";
 import { getJobCategoryIds } from '../../helperFns/getJobCategoryIds';
+import DetailsBtn from "./Buttons/Details";
 
 
 const startingJobResults = jobVizDataObj.data.filter(jobCategory => jobCategory.hierarchy === 1).map(jobCategory => ({ ...jobCategory, currentLevel: jobCategory.level1 }))
@@ -85,14 +87,11 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
                                     </section>
                                     <section className="w-100 h-50 d-flex justify-content-center align-items-center">
                                         {(occupation_type === "Line item") ?
-                                            <Button id={`details_btn_${id}`} className="d-flex justify-content-center align-items-center job-categories-btn" onClick={() => handleDetailsBtnClick(job)}>
-                                                <span className="w-25 h-100 d-flex justify-content-center align-items-center">
-                                                    <IoNewspaperOutline />
-                                                </span>
-                                                <span className="w-75 h-100 d-flex justify-content-center align-items-center ps-1">
-                                                    Details
-                                                </span>
-                                            </Button>
+                                            <DetailsBtn 
+                                                jobToShowInModal={job}
+                                                setSelectedJob={setSelectedJob}
+                                                id={`${id}_btn_more_jobs`}
+                                            />
                                             :
                                             <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn moreJobsBtn shadow" onClick={() => handleMoreJobsBtnClick(currentLevel, id)}>
                                                 <span className="d-inline-flex justify-content-center align-items-center h-100">
