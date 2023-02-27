@@ -1,18 +1,4 @@
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-first-prop-new-line */
-/* eslint-disable react/jsx-closing-bracket-location */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable semi */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable object-curly-spacing */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
-
-import Image from 'next/image';
+import Image from "next/legacy/image";
 
 const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRegImg }) => {
     let regImgStyles = isRegImg ? 'position-relative imgSection regImgSec ms-sm-1 ms-md-0' : 'position-relative imgSection ms-sm-1 ms-md-0'

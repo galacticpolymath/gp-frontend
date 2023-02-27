@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from "next/legacy/image";
 
 const HireUsCardFirstSecMobile = ({ textsAndImg, isWhatWillYouGetSec, customCssClass }) => {
   const { boldedTxt, unBoldedText, imgPath } = textsAndImg;
