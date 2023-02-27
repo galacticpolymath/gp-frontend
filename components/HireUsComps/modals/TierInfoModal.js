@@ -19,7 +19,7 @@
 /* eslint-disable react/jsx-indent */
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Image from "next/legacy/image";
+import Image from "next/image";
 import ReactPlayer from 'react-player';
 import { IoIosCloseCircle } from "react-icons/io";
 
@@ -37,7 +37,15 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
         <Modal show={isModalOn} onHide={handleCloseModal} contentClassName="tierInfoModal shadow">
         {/* flex-column-reverse flex-sm-row */}
             <Header className="tierInfoModalHeader pe-4 border-bottom d-flex pt-4 position-relative">
-                <Image src="/imgs/gp_logo_gradient_transBG.png" alt="Galatic_Polymath_Tier_Info_Modal" fill className="me-3 me-sm-0 modalImg position-absolute" />
+                <Image
+                    src="/imgs/gp_logo_gradient_transBG.png"
+                    alt="Galatic_Polymath_Tier_Info_Modal"
+                    fill
+                    className="me-3 me-sm-0 modalImg position-absolute"
+                    style={{
+                        maxWidth: "100%",
+                        height: "auto"
+                    }} />
                 <Title className="fw625 text-center text-sm-start border border-white modalTitleSec">
                     <h3 className="ms-2 ms-sm-0">{title}</h3>
                 </Title>
@@ -92,7 +100,7 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                 <Button variant="secondary" onClick={handleCloseModal} className="closeButtonBackgroundColor fw300">Close</Button>
             </Footer>
         </Modal>
-    )
+    );
 
 
 
