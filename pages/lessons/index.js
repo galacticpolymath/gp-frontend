@@ -92,12 +92,12 @@ const LessonsPage = ({ lessons }) => {
   );
 };
 
-export const getStaticProps = async () => {
+export async function getStaticProps() {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
 
   const lessons = await res.json();
 
   return { props: { lessons } };
-};
+}
 
 export default LessonsPage;
