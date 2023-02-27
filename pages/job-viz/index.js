@@ -107,8 +107,8 @@ const JobViz = ({ vals }) => {
                     resetSearch={resetSearchResults}
                 />
             </section>
-            {isSearchResultsModalOn && <GoToSearchInput isScrollToInputBtnVisible={inView} />}
-            {isSearchResultsModalOn && <GoToJobVizChain isScrollToJobVizChainBtnVisible={inView} />}
+            {isSearchResultsModalOn && (searchResults.length && <GoToSearchInput isScrollToInputBtnVisible={inView} />)}
+            {isSearchResultsModalOn && (searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={inView} />)}
         </Layout>
     );
 };

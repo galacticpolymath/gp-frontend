@@ -19,7 +19,7 @@ import Highlighter from "react-highlight-words";
 
 
 
-const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setSearchResults, isHighlighterOn }) => {
+const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setSearchResults, isHighlighterOn, closeSearchResultsModal }) => {
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
     const [searchInput, setSearchInput] = _searchInput;
@@ -39,6 +39,7 @@ const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setS
         setSelectedJob(jobCategory);
         setSearchResults([])
         setSearchInput("")
+        closeSearchResultsModal()
     }
 
     return (
@@ -52,7 +53,7 @@ const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setS
                         const { title, id } = job;
                         return (
                             <li key={id} id={`${id}_searchResult`} className="searchResultJob">
-                                <button id={`${id}_searchResult_btn`} onClick={() => handleBtnClick(job)} className="no-btn-styles text-center w-100">
+                                <button id={`${id}_searchResult_btn`} onClick={() => handleBtnClick(job)} className="no-btn-styles w-100 text-start">
                                     {isHighlighterOn ?
                                         <Highlighter
                                             highlightClassName="searchResultHighlight"

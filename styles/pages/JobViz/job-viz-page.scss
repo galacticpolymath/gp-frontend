@@ -151,6 +151,9 @@ $searchResultsHighlight: #ffc107;
 
 .searchResultHighlight {
   color: $searchResultsHighlight;
+  display: inline-block;;
+  height: fit-content;
+  height: 22px;
 }
 
 #currentJobCategoryHeaderTxt {
@@ -178,6 +181,7 @@ $searchResultsHighlight: #ffc107;
   flex-wrap: wrap;
   justify-content: center;
   list-style: circle outside;
+  // width: 100px;
 
   @media (max-width: 767px) {
     justify-content: space-evenly;
@@ -189,9 +193,16 @@ $searchResultsHighlight: #ffc107;
   max-width: 300px;
   position: relative;
   min-height: 100px;
-  // display: inline-flex;
+
+  @media(min-width: 576px){
+    padding-right: 40px;
+  }
+
+  span{
+    text-align: left;
+  }
+
   width: 100%;
-  border: solid pink;
 
   button {
     line-height: 20px;
@@ -259,17 +270,18 @@ $searchResultsHighlight: #ffc107;
 }
 
 .jobVizBtnElDeterminer {
-  height: 80%;
+  height: 100%;
   z-index: -1000;
   padding-top: 100px;
 }
 
 .searchCardContainer{
   // height: 1100px;
+  // background-color: red;
 }
 
 .jobSearchResultsCard{
-  // position: absolute;
+  max-width: 1050px; 
 }
 
 // .fadeInFromRight{

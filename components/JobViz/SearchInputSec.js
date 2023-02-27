@@ -73,18 +73,13 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
     }
 
     const handleEscapeKey = event => {
-        console.log("hey there")
-        console.log({ isSearchResultsModalOn })
         if (event.key === "Escape") {
-            console.log("closing search results modal")
             closeSearchResultsModal();
         }
     }
 
 
     useEffect(() => {
-        // when the user search results modal is on the page, if the user presses the escape key, close the modal
-
         document.addEventListener("keydown", handleEscapeKey);
     }, [])
 
@@ -92,7 +87,7 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
 
 
     return (
-        <section className="w-100 pt-5 mt-3 d-flex justify-content-center align-items-center flex-column">
+        <section className="w-100 pt-5 mt-3 d-flex justify-content-center align-items-center flex-column overflow-hidden">
             <section className="d-flex inputSec">
                 <section>
                     <input id="searchInputField" value={searchInput} className='border-4 rounded ps-1 pe-1' placeholder='Search Jobs' onChange={handleInput} />
@@ -101,9 +96,10 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                     <BsSearch />
                 </section>
             </section>
-            <section className="min-vw-100 d-flex justify-content-center position-relative searchCardContainer">
+            <section className="d-flex justify-content-center position-relative searchCardContainer min-vw-100">
+                <div ref={searchInputRef} className="position-absolute w-100 mt-5 jobVizBtnElDeterminer" />
                 {!!isSearchResultsModalOn &&
-                    <Card ref={searchResultsCardRef} className="jobSearchResultsCard mt-2">
+                    <Card className="jobSearchResultsCard mt-2">
                         <Header className="position-relative searchResultsHeader d-flex flex-sm-row flex-column">
                             <section className="d-flex flex-column">
                                 {!isLoading ?
@@ -158,10 +154,10 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                                     setSearchResults={setSearchResults}
                                     _searchInput={[searchInput, setSearchInput]}
                                     isHighlighterOn={isHighlighterOn}
+                                    closeSearchResultsModal={closeSearchResultsModal}
                                 />)}
                         </Body>
                     </Card>}
-                <div ref={searchInputRef} className="position-absolute w-100 mt-5 jobVizBtnElDeterminer" />
             </section>
         </section>
     )
