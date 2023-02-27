@@ -5,6 +5,14 @@ $borderColor: darkgray;
 
 .lessonsSection {
   border-top: solid $borderThickness $borderColor;
+
+  > div{
+    @media(max-width: 575px){
+      display: flex !important;
+      flex-direction: column;
+
+    }
+  }
 }
 
 .jobVizEntrySection span {
@@ -90,15 +98,15 @@ $borderColor: darkgray;
 
 .jobVizCareer {
   // border: solid $borderThickness $borderColor;
-  width: 575px;
-
+  
   @media (min-width: 768px) {
+    width: 575px;
     // height: 300px;
     // margin-left: 4rem !important;
   }
 
   @media (max-width: 767px) and (min-width: 576px) {
-    width: 550px;
+    width: 445px;
   }
 
   @media (max-width: 575px) {
@@ -108,15 +116,16 @@ $borderColor: darkgray;
       section:last-child {
         width: 100%;
       }
+
     }
 
     > section:last-child > span {
       text-align: center;
-      margin-top: 10px;
     }
-    // padding: 20px 10px 20px 10px;
-    // width: 90%;
-    width: 400px;
+
+    margin-top: 10px;
+    width: 100%;
+    max-width: 540px;
     min-width: 265px;
   }
 
