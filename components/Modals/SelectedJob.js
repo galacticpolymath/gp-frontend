@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-undef */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable comma-dangle */
@@ -13,7 +14,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { IoIosSchool } from "react-icons/io";
 import { BiTrendingUp } from "react-icons/bi";
@@ -31,9 +32,10 @@ const data_end_yr = _data_end_yr[0];
 const SelectedJob = () => {
     const { _selectedJob } = useContext(ModalContext);
     const router = useRouter();
+    const paths = router.query?.['search-results'] ?? [];
+    const lastPath = paths[paths.length - 1];
     const [selectedJob, setSelectedJob] = _selectedJob;
-    const wasRenderedRef = useRef(false);
-    let { soc_title, def, title, median_annual_wage_2021, typical_education_needed_for_entry, employment_2021, employment_2031 } = selectedJob;
+    let { soc_title, def, title, median_annual_wage_2021, typical_education_needed_for_entry, employment_2021, employment_2031, id } = selectedJob;
     let jobTitle = soc_title ?? title;
     jobTitle = jobTitle === "Total, all" ? "All US Jobs" : jobTitle;
     const projectedPercentageEmploymentChange = selectedJob["percent_employment_change_2021-31"];
@@ -51,7 +53,7 @@ const SelectedJob = () => {
             icon: <IoIosSchool />
         },
         {
-            title: "On-the-job-Training",
+            title: "On-the-job Training",
             txt: onTheJobTraining,
             icon: <MdSupervisedUserCircle />
         },
@@ -61,12 +63,12 @@ const SelectedJob = () => {
             icon: <MdOutlineDirectionsWalk />
         },
         {
-            title: `${data_end_yr} Employment`,
+            title: `Predicted ${data_end_yr} Employment`,
             txt: employment_2031,
             icon: <MdOutlineTransferWithinAStation />
         },
         {
-            title: `Percent change in Employment ${data_start_yr} - ${data_end_yr}`,
+            title: `Predicted change in Employment ${data_start_yr} - ${data_end_yr}`,
             txt: projectedPercentageEmploymentChange,
             icon: <BiTrendingUp />
         }
@@ -76,14 +78,22 @@ const SelectedJob = () => {
         // delete the last number in the paths of the url
         console.log("router.query?.['search-results']: ", router.query?.['search-results'])
         const newPaths = getNewPathsWhenModalCloses(router.query['search-results'])
-        router.push({ pathname: `/job-viz${newPaths}` }, null, { scroll: false })        
+        router.push({ pathname: `/job-viz${newPaths}` }, null, { scroll: false })
         setSelectedJob(null);
     }
 
-
-
+    useEffect(() => {
+        console.log("selectedJob, modal: ", selectedJob)
+    }, [router.asPath])
 
     
+
+
+
+
+
+
+
 
     return (
         <Modal show={selectedJob} size="md" onHide={handleOnHide} contentClassName="selectedJobModal" dialogClassName='dialogJobVizModal'>
@@ -106,18 +116,18 @@ const SelectedJob = () => {
                         let _txt = txt;
 
                         if (title === `Median ${data_start_yr} Annual Wage`) {
-                            _txt = `$${parseInt(txt).toLocaleString()}`
+                            _txt = isNaN(txt) ? "Data Unavailable" : `$${parseInt(txt).toLocaleString()}`
                         }
 
-                        if (title === `Percent change in Employment ${data_start_yr} - ${data_end_yr}}`) {
-                            _txt = `+${txt}%`
+                        if (title === `Predicted change in Employment ${data_start_yr} - ${data_end_yr}`) {
+                            isNaN(txt) ? _txt = "Data Unavailable" : _txt = `${Math.sign(parseInt(txt) === 1) ? "+" : ""}${parseInt(txt).toLocaleString()}%`
                         }
 
-                        if (title === `${data_start_yr} Employment`) {
+                        if (title === `Predicted ${data_end_yr} Employment`) {
                             _txt = `${parseInt(txt).toLocaleString()}`
                         }
 
-                        if (title === `${data_end_yr} Employment`) {
+                        if (title === `${data_start_yr} Employment`) {
                             _txt = `${parseInt(txt).toLocaleString()}`
                         }
 

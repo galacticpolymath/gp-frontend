@@ -38,6 +38,8 @@ const JobViz = ({ vals }) => {
         setSearchResults([])
     }
 
+    
+
     return (
         <Layout>
             <Hero className="jobVizHero">

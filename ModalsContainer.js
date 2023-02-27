@@ -20,8 +20,6 @@ const ModalContainers = () => {
     const { _selectedJob } = useContext(ModalContext);
     const [selectedJob,] = _selectedJob;
 
-    console.log("selectedJob: ", selectedJob)
-
     return (
         <>
             {selectedJob ? <SelectedJob /> : null}

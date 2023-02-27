@@ -10,14 +10,16 @@
 /* eslint-disable indent */
 import JobViz from '.';
 import { useRouter } from 'next/router';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { useGetJobCategories } from '../../customHooks/useGetJobCategories';
-import jobVizData from "../../data/Jobviz/jobVizData.json";
+import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
+import { useEffect } from 'react';
+import { ModalContext } from '../../providers/ModalProvider';
 
 
 
 const getParentJobCategories = jobCategoryIds => {
-    let _jobVizData = jobVizData.filter(jobCategory => jobCategoryIds.includes(jobCategory.id))
+    let _jobVizData = jobVizDataObj.data.filter(jobCategory => jobCategoryIds.includes(jobCategory.id))
     _jobVizData = _jobVizData.map(job => {
         const { hierarchy, id, soc_title } = job;
         const selectedLevel = job[`level${hierarchy}`]
@@ -36,6 +38,8 @@ const getParentJobCategories = jobCategoryIds => {
 
 const JobVizSearchResults = () => {
     const router = useRouter();
+    const { _selectedJob } = useContext(ModalContext)
+    const [, setSelectedJob] = _selectedJob;
     const params = router.query?.['search-results'] ?? null;
     const { jobCategories } = useGetJobCategories(params?.[0] ?? null, params?.[1] ?? null,);
     const jobCategoryIds = router.query?.['search-results'] ? router.query?.['search-results'].slice(2) : [];
@@ -49,6 +53,21 @@ const JobVizSearchResults = () => {
     JobVizSearchResults.getInitialProps = async () => {
         return {};
     }
+
+    useEffect(() => {
+        console.log("params: ", params)
+        const jobCategoryIds = params?.slice(2);
+        let hierarchyNum = params?.[0]
+        
+        if(parseInt(hierarchyNum) === jobCategoryIds?.length){
+            let lastJobCategoryId = params?.[params.length - 1]
+            const targetJobCategory = jobVizDataObj.data.find(jobCategory => jobCategory.id === parseInt(lastJobCategoryId))
+            setSelectedJob(targetJobCategory)
+        }
+
+    },[])
+
+
 
 
 
