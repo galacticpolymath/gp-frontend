@@ -14,17 +14,19 @@ export default function Home() {
     <Layout>
       <Hero imgSrc={HeroImage.src}>
         <h1 className={styles.shadow}>We are an education studio.</h1>
-        <p className={styles.shadow}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
+        <p className={`${styles.shadow} my-4 fs-5 fw-light`}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
         <div>
           <Link passHref href="/lessons">
             <a className="btn btn-primary">Get Lessons</a>
           </Link>
-          <Link passHref href="/hire-us">
-            <a className="btn btn-primary mx-3">Do Outreach</a>
+          <Link
+            href="/hire-us"
+            className="btn btn-primary mx-2"
+          >
+            Do Outreach
           </Link>
         </div>
       </Hero>
-
       <div className="container mx-auto row align-items-center px-3 py-4 py-lg-5">
         <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 text-center'>
           <img
@@ -33,18 +35,18 @@ export default function Home() {
             alt="Two people working on a diagram together"
           />
         </div>
-        <div className='col-12 col-lg-6 col-xl-5 order-2 order-lg-1 p-3'>
-          <h3>Open-Access</h3>
-          <p>
+        <div className='col-12 col-lg-6 col-xl-5 order-2 order-lg-1 p-3 text-center space-y-3'>
+          <h3 className='mb-2'>Open-Access</h3>
+          <p className='mb-4'>
             <em>We do not sell to schools.</em>{' '}
             We believe every student deserves access to free, high-quality learning content.
           </p>
 
-          <h3>Straight from the Source</h3>
-          <p>Our lessons are designed with extensive input from working scientists and other STEM experts, meaning they are current and authentic.</p>
+          <h3 className='mb-2'>Straight from the Source</h3>
+          <p className='mb-4'>Our lessons are designed with extensive input from working scientists and other STEM experts, meaning they are current and authentic.</p>
           
-          <h3>High-Quality</h3>
-          <p>We are a team of educators, scientists, and artists focused on publishing mind-expanding lessons that are also easy to teach.</p>
+          <h3 className='mb-2'>High-Quality</h3>
+          <p className='mb-4'>We are a team of educators, scientists, and artists focused on publishing mind-expanding lessons that are also easy to teach.</p>
         </div>
       </div>
 
@@ -55,9 +57,9 @@ export default function Home() {
             Learn everything.
           </h2>
 
-          <div className='bg-white p-4 row align-items-center'>
+          <div className='bg-white p-4 row align-items-center rounded-3'>
             <div className='col-9 text-center'>
-              <div className='badge bg-primary fs-5 text-center mb-2'>New release!</div>
+              <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
               <img
                 className='border'
                 src={NewReleaseImage.src}
@@ -94,8 +96,8 @@ export default function Home() {
         </h2>
         <div className="row pt-5">
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
-            <h5 className='mb-3 text-height-1'>
-              1. Clients hire us<br />
+            <h5 className='mb-3 text-height-1 fw-bold'>
+              1. Clients hire us;<br />
               <span className="fw-light fs-5">
                 <span className="visually-hidden">&mdash;</span>
                 researchers, nonprofits, &amp; companies pay
@@ -104,7 +106,7 @@ export default function Home() {
             <p>Government-funded researchers and organizations that want to support research impacts on society hire us to make a body of knowledge available to the public.</p>
           </div>
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
-            <h5 className='mb-3 text-height-1'>
+            <h5 className='mb-3 text-height-1 fw-bold'>
               2. We translate<br />
               <span className="fw-light fs-5">research into lessons</span>
             </h5>
@@ -114,15 +116,15 @@ export default function Home() {
             </p>
           </div>
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
-            <h5 className='mb-3 text-height-1'>
+            <h5 className='mb-3 text-height-1 fw-bold'>
               3. We publish<br />
               <span className="fw-light fs-5">free lessons for everyone</span>
             </h5>
             <p>Working closely with educators and districts in our growing network, lessons are tested and taught in classrooms. Equal access to lessons means more of the public can connect with the body of knowledge our clients care about.</p>
           </div>
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
-            <h5 className='mb-3 text-height-1'>
-              4. We improve<span className="visually-hidden">,</span><br />
+            <h5 className='mb-3 text-height-1 fw-bold'>
+              4. We improve,<span className="visually-hidden">,</span><br />
               <span className="fw-light fs-5">evaluate, revise, repeat</span>
             </h5>
             <p>All of our lessons are continuously evaluated, updated, and revised—meaning they are always up-to-date and working to make the jobs of teaching and outreach easier!</p>
@@ -130,7 +132,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-info">
+      <div className="bg-primary-light">
         <div className="container row mx-auto py-5 align-items-center">
           <div className="col-12 col-md-6 order-1 order-md-2">
             <h4 className="mb-4">Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>.</h4>
@@ -178,7 +180,7 @@ export default function Home() {
           </div>
         </div> */}
 
-        <div className='bg-primary-light'>
+        <div className='bg-secondary-light'>
           <div className='container p-3 p-lg-5 mx-auto text-center'>
             <p className='fs-4'>Real Research + Real Stories + Real Data + Real Careers =</p>
             <p className='fs-3'>Real Learning</p>

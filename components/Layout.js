@@ -1,10 +1,17 @@
+/* eslint-disable react/jsx-indent */
 import Head from 'next/head';
 import Footer from './Footer';
 import Navbar from './Navbar';
+import { Montserrat } from '@next/font/google';
 
-export default function Layout({ title, keywords, description, children }) {
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: 'variable',
+});
+
+export default function Layout({ title, keywords, className, description, children }) {
   return (
-    <div>
+    <div className={`${montserrat.className} ${className}`}>
       <Head>
         <title>{title}</title>
         <meta name='description' content={description} />
@@ -14,10 +21,8 @@ export default function Layout({ title, keywords, description, children }) {
 
       <Navbar />
 
-      {/* {router.pathname === '/' && <Showcase />} */}
-
       {children}
-      
+
       <Footer />
     </div>
   );

@@ -1,0 +1,45 @@
+.scientistSection{
+    span{
+        @media(min-width: 768px){
+            font-size: $spanDesktopFontSize
+        }
+    }
+}
+
+.scientistHeadingTxt {
+  font-style: italic !important;
+  @media (min-width: 768px) {
+    color: #000000 !important;
+    font-size: $h3CustomFontSize;
+  }
+
+  @media (max-width: 767px) {
+    font-size: $h3CustomFontSize;
+  }
+
+  @media (max-width: 575px) {
+    line-height: 32px !important;
+  }
+}
+
+.scientistSec {
+    @media (min-width: 768px) {
+      column-count: 2 !important;
+      width: 100% !important;
+    }
+  
+    @media (max-width: 767px) {
+      width: 75% !important;
+    }
+  
+    @media (min-width: 768px) and (max-width: 1199px) {
+      column-gap: 50px;
+    }
+  }
+
+.scientist:nth-child(even){
+    @media(min-width: 768px) and (max-width: 991px) {
+        margin-top: 20px !important;
+    }
+}
+

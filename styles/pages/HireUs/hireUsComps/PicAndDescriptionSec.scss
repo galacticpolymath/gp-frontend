@@ -1,0 +1,751 @@
+$scientistFontSize: 1.3rem !important;
+
+.ownerSection {
+  @media (min-width: 992px) and (max-width: 1299px) {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    > section:first-child {
+      margin-top: 25px !important;
+    }
+
+    > section:last-child {
+      width: 100% !important;
+    }
+  }
+
+  > section:first-child {
+    @media (max-width: 575px) {
+      margin-top: 17px !important;
+    }
+
+    > span {
+      @media (min-width: 768px) {
+        line-height: 28px;
+      }
+    }
+  }
+}
+
+.picAndDescriptionSec {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+
+  @media (min-width: 576px) {
+    margin-top: 0px !important;
+  }
+
+  > section {
+    > div {
+      @media (max-width: 767px) {
+        width: 150px !important;
+        height: 150px !important;
+      }
+    }
+  }
+
+  > section:last-child {
+    @media (min-width: 576px) {
+      height: 200px;
+    }
+  }
+
+  @media (min-width: 576px) {
+    > section:first-child {
+      margin-left: 25px !important;
+
+      @media (max-width: 767px) {
+      }
+    }
+  }
+
+  @media (min-width: 1200px) {
+    > section:first-child {
+      // margin-left: 0px !important;
+
+      @media (max-width: 767px) {
+      }
+    }
+  }
+
+  @media (max-width: 575px) {
+    flex-direction: column;
+    > section:first-child {
+      > span {
+        text-align: center;
+        display: block;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        font-size: $spanFontSize;
+      }
+    }
+  }
+}
+
+.mattsAward > section:last-child {
+  @media (min-width: 576px) {
+    padding-top: 10px !important;
+  }
+}
+
+.shareYourKnowledgeDesktopSec {
+  > section:first-child {
+    @media (min-width: 768px) and (max-width: 1199px) {
+      height: 300px !important;
+    }
+  }
+}
+
+.GPConstellationSec.onDesktop {
+  @media (min-width: 768px) {
+    > section:last-child {
+      div {
+        width: 40vw !important;
+        max-width: 576px !important;
+
+        @media (max-width: 1199px) {
+          width: 40vw !important;
+        }
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    > section:first-child {
+      display: none !important;
+    }
+    > section:last-child {
+      > div {
+        height: 300px !important;
+      }
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    > section:last-child {
+      height: auto !important;
+    }
+  }
+}
+
+.shareYourKnowledgeImgContainer > span,
+.GPConstellationSec.onDesktop span {
+  @media (min-width: 1200px) {
+    width: 30vw !important;
+    min-width: 475px !important;
+    border-radius: 0.8rem !important;
+  }
+}
+
+.lessonInfoSec {
+  @media (min-width: 1200px) {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-left: 0px !important;
+  }
+}
+
+
+.ownerSection {
+  > section {
+    > div {
+      @media (max-width: 767px) {
+        width: 165px !important;
+        height: 180px !important;
+      }
+    }
+  }
+
+  @media (min-width: 576px) {
+    > section:first-child {
+      margin-left: 20px !important;
+
+      @media(max-width: 767px){
+        padding-left: 10px !important;
+      }
+
+      @media(min-width: 1200px){
+        padding-top: 15px !important;
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    padding-bottom: 75px;
+
+    @media (max-width: 991px) {
+      padding-bottom: 20px !important;
+    }
+  }
+
+  > section:first-child {
+    > span {
+      line-height: 25px !important;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1299px) {
+    > section:last-child {
+      // width: 100% !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+
+    > section:first-child {
+      margin-left: 0 !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+
+      @media (min-width: 992px) {
+        margin-top: 20px !important;
+      }
+      > span {
+        @media (max-width: 991px) {
+          margin-left: 20px !important;
+        }
+        @media (min-width: 992px) {
+          text-align: center !important;
+        }
+
+        @media (min-width: 992px) and (max-width: 1199px) {
+          padding: 0px 15px 0px 15px !important;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 575px) {
+    padding-bottom: 25px;
+    > section:first-child {
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+    }
+  }
+}
+
+.ownerSection {
+  @media (min-width: 992px) and (max-width: 1299px) {
+    flex-direction: column-reverse !important;
+  }
+
+  @media (min-width: 1300px) {
+    > section:first-child {
+      padding-top: 20px !important;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    > section:first-child {
+      margin-left: 20px !important;
+    }
+  }
+
+  > section {
+    div {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+  }
+
+  > section {
+    @media(min-width: 1200px){
+      // width: 50% !important;
+    }
+
+    img {
+      width: 100% !important;
+      // height: 170px !important;
+      min-width: 200px !important;
+      height: 200px !important;
+
+      @media (min-width: 768px) {
+        max-width: 210px !important;
+      }
+    }
+  }
+}
+
+.imgSquareContainer {
+  @media (min-width: 768px) {
+    width: 70px;
+    height: 70px;
+  }
+
+  @media (max-width: 767px) {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+.picAndDescriptionSecInList:not(:first-child) {
+  @media (max-width: 991px) {
+    // margin-top: 90px !important;
+  }
+
+  @media (max-width: 575px) {
+    margin-top: 60px !important;
+  }
+}
+
+.mattsAwardsSec {
+  @media (min-width: 768px) {
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  @media (min-width: 992px) {
+    // margin-left: 80px !important;
+  }
+}
+
+.mattsAward {
+  @media (min-width: 768px) {
+    height: 110px !important;
+    span {
+      font-size: $spanFontSize;
+    }
+    > section:last-child {
+      height: 100% !important;
+      display: flex !important;
+      padding-top: 10px !important;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    height: 100px !important;
+  }
+
+  @media (max-width: 767px) {
+    span {
+      text-decoration: underline !important;
+      text-decoration-thickness: 1.5px !important;
+    }
+  }
+
+  @media (max-width: 991px) and (min-width: 576px) {
+    padding-left: 30px !important;
+    > section:last-child {
+      > div {
+        width: 120px !important;
+        height: 120px !important;
+      }
+    }
+  }
+
+  @media (max-width: 575px) {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+
+    > section:last-child {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+
+    > section:first-child {
+      margin-top: 15px !important;
+      padding: 0px 10px 0px 10px !important;
+      @media(min-width: 992px){
+        margin-left: 0px !important;
+      }
+      span {
+        display: block !important;
+        text-align: center !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+      }
+    }
+
+    span {
+      text-decoration: underline !important;
+      text-decoration-thickness: 1.5px !important;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    > section:first-child {
+      padding-top: 10px !important;
+      margin-left: 0px !important;
+    }
+  }
+}
+
+.secWithHumanPic {
+  img {
+    border-radius: 50% !important;
+    border: solid 1px #707070 !important;
+  }
+
+  @media (max-width: 575px) {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    > section:last-child {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      width: 100% !important;
+    }
+
+    > section:first-child {
+      span {
+        display: block !important;
+        text-align: center !important;
+      }
+      text-align: center !important;
+    }
+  }
+}
+
+.ownerSection > section:first-child span {
+  @media (min-width: 576px) and (max-width: 767px) {
+    margin-top: 10px !important;
+    display: inline-block !important;
+  }
+
+  @media (max-width: 575px) {
+    line-height: 25px !important;
+  }
+}
+
+.scientist {
+  @media (min-width: 768px) {
+    > section {
+      h4 {
+        font-size: $scientistFontSize;
+      }
+    }
+
+    > section:first-child {
+      margin-top: 20px !important;
+      > span {
+        line-height: 24px !important;
+        font-size: $spanDesktopFontSize;
+      }
+    }
+
+    display: inline-flex !important;
+    > section:last-child {
+      @media (max-width: 1199px) {
+        margin-bottom: 10px !important;
+      }
+      > div {
+        width: 200px !important;
+        border-radius: 0px !important;
+        height: 200px !important;
+        position: relative !important;
+        > span {
+          transform: translate(-50%, -50%) !important;
+          top: 50% !important;
+          left: 50% !important;
+          width: 175px !important;
+          height: 175px !important;
+        }
+      }
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1199px) {
+    flex-direction: column-reverse !important;
+    height: 350px !important;
+
+    > section:last-child {
+      width: 100% !important;
+      display: grid;
+      place-items: center;
+    }
+
+    > section:first-child {
+      height: 115px !important;
+      margin-top: 0px !important;
+      margin-left: 0px !important;
+
+      > h4 {
+        text-align: center !important;
+      }
+
+      > span {
+        text-align: center !important;
+        display: inline-block !important;
+        width: 100% !important;
+      }
+    }
+  }
+
+  @media (min-width: 1200px) {
+    display: inline-flex !important;
+  }
+
+  @media (max-width: 575px) {
+    > section:last-child {
+      margin-bottom: 15px !important;
+    }
+
+    span {
+      line-height: 33px !important;
+    }
+  }
+}
+
+.scientist {
+  @media (max-width: 575px) {
+    > section:first-child {
+      span {
+        line-height: 20px !important;
+      }
+    }
+  }
+}
+
+.scientist:not(:first-child) {
+  @media (max-width: 767px) {
+    margin-top: 10px !important;
+  }
+
+  @media (max-width: 575px) {
+    margin-top: 55px !important;
+  }
+}
+
+.regImgSec {
+  @media (min-width: 1200px) {
+    height: fit-content !important;
+  }
+}
+
+.shareYourKnowledgeDesktopSec {
+  > section:first-child {
+    > section:last-child {
+      @media (min-width: 1200px) {
+      }
+    }
+  }
+}
+
+.gpConstellation {
+  @media (min-width: 768px) {
+    height: 300px !important;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    min-width: 320px !important;
+    margin-left: 13px !important;
+  }
+
+  @media (min-width: 1200px) {
+    height: 281px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .gpConstellation,
+  .shareYourKnowledgeImgContainer > img {
+    width: 480px !important;
+    height: 280px !important;
+
+    @media (max-width: 1199px) {
+      width: 380px !important;
+      height: 280px !important;
+    }
+  }
+
+  .shareYourKnowledgeImgContainer {
+    @media (min-width: 1200px) {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: stretch !important;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .GPConstellationSec > section:last-child {
+    @media (max-width: 575px) {
+      margin-top: 25px !important;
+    }
+  }
+
+  .GPConstellationSec > section:last-child {
+    > div {
+      width: 40vw !important;
+      height: 250px !important;
+      display: grid !important;
+      align-items: center !important;
+
+      img {
+        @media (max-width: 767px) and (min-width: 576px) {
+          height: 192px !important;
+          min-width: 230px !important;
+        }
+      }
+    }
+    @media (min-width: 576px) {
+      margin-right: 10px !important;
+      margin-top: 0px !important;
+      margin-right: 0px !important;
+    }
+
+    @media (max-width: 575px) {
+      > div {
+        height: fit-content !important;
+        margin-top: 0px !important;
+      }
+    }
+  }
+  .shareYourKnowledgeImgContainer > img {
+    width: 350px !important;
+    height: 250px !important;
+  }
+}
+
+.lessonInfoSec {
+  @media (min-width: 1200px) {
+    transform: translateX(20px) !important;
+  }
+}
+
+.shareYourKnowledgeDesktopSec {
+  > section:first-child {
+    > section:first-child {
+      @media (min-width: 1300px) {
+        padding-left: 3rem !important;
+      }
+    }
+  }
+}
+
+.shareYourKnowledgeImgSec {
+  @media (min-width: 768px) {
+    margin-bottom: 50px !important;
+  }
+}
+
+
+
+@media (min-width: 1200px) {
+  .scientist:nth-child(even) {
+    margin-top: 50px !important;
+  }
+}
+
+.GPConstellationSec {
+  > section:first-child {
+    > span {
+      font-size: $spanFontSize;
+      padding-right: 40px !important;
+
+      @media (max-width: 767px) {
+        display: inline-flex !important;
+      }
+    }
+  }
+
+  @media (min-width: 576px) {
+    flex-direction: row !important;
+    > section:first-child {
+      margin-left: 0px !important;
+      padding-right: 5px !important;
+    }
+
+    > section:last-child {
+      div {
+        width: 35vw !important;
+        height: 200px !important;
+      }
+    }
+
+    @media (max-width: 767px) {
+      flex-direction: column !important;
+
+      @media (min-width: 576px) and (max-width: 767px) {
+        display: flex !important;
+        flex-direction: row !important;
+
+        > section:first-child {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+
+          > span {
+            @media (min-width: 576px) {
+            }
+          }
+        }
+      }
+
+      > section:last-child {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin-top: 15px !important;
+      }
+    }
+  }
+  @media (max-width: 575px) {
+    > section:last-child {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: center;
+      align-items: center;
+
+      div {
+        width: 70% !important;
+        height: 190px !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 575px) {
+  .GPConstellationSec {
+    flex-direction: column !important;
+    > section:first-child{
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      > span{
+        display: inline !important;
+        padding-left: 13px !important;
+        padding-right: 13px !important;
+      }
+    }
+
+    > section:last-child {
+      > div {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        img {
+          max-width: 580px !important;
+          width: 300px !important;
+          height: 180px !important;
+
+          @media (max-width: 400px) {
+            width: 240px !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+.mattsAwardParentSec {
+  > section:nth-child(2) {
+    @media (min-width: 1200px) {
+      width: 45% !important;
+      > section:first-child {
+        padding-right: 40px !important;
+      }
+    }
+  }
+}
+
+
+.grantReviewsBulletPtsSec{
+  bottom: 0px !important;
+}
+

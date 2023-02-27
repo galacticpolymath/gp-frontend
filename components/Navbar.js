@@ -8,7 +8,7 @@ export default function Navbar() {
   const router = useRouter();
 
   return (
-    <nav className='navbar navbar-expand-lg navbar-dark bg-dark'>
+    <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-dark'>
       <div className='container'>
         <Link href="/" passHref>
           <a className='flex-grow-1'>
@@ -41,8 +41,8 @@ export default function Navbar() {
               </li>
               {[
                 ['/lessons', 'Lessons'],
-                // ['/jobviz', 'Jobviz'],
-                // ['/hireus', 'Hire Us'],
+                //* ['/jobviz', 'Jobviz'], */}
+                ['/hire-us', 'Hire Us'],
                 ['/about', 'About'],
               ].map(([url, title]) => (
                 <li key={url} className='nav-item'>

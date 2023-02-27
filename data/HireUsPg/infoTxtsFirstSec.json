@@ -1,0 +1,17 @@
+[
+    {
+        "boldedTxt": "We help researchers",
+        "unBoldedText": "win grants and do outreach more easily.",
+        "imgPath": "/imgs/pretty-ribbon.png"
+    },
+    {
+        "boldedTxt": "We help nonprofits",
+        "unBoldedText": "grow student understanding and enthusiasm around their mission.",
+        "imgPath": "/imgs/pretty-sustainability.png"
+    },
+    {
+        "boldedTxt": "We help companies",
+        "unBoldedText": "build tomorrow’s workforce by connecting classwork to career paths.",
+        "imgPath": "/imgs/pretty-rocket-career.png"
+    }
+]
