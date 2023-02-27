@@ -7,9 +7,13 @@ import JobVizIcon from '../../components/JobViz/JobVizIcon';
 
 const LessonsPage = ({ lessons }) => {
 
+  const handleJobVizCardClick = () => {
+    window.location.href = '/job-viz';
+  };
+
   return (
     <Layout>
-      <Hero className="bg-secondary">
+      <Hero className="bg-secondary heroLessonsPg">
         <h1>Interdisciplinary Lessons</h1>
         <p>Our lessons are free. We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
       </Hero>
@@ -17,18 +21,16 @@ const LessonsPage = ({ lessons }) => {
         <section className="pb-3 pb-sm-5 pt-2">
           <h2 className="mt-3 ms-sm-4 text-center text-sm-start text-muted">Galactic Polymath Learning Tools</h2>
           <section className="d-flex d-md-block justify-content-center align-items-center justify-content-md-start align-items-md-start ps-lg-5 ms-md-3 mt-sm-3">
-            <div className="jobVizCareer cardOnLessonsPg d-flex flex-column rounded lessonsPgShadow pb-2 pb-sm-3 pb-md-4">
+            <div onClick={handleJobVizCardClick} className="jobVizCareer cardOnLessonsPg d-flex flex-column rounded lessonsPgShadow pb-2 pb-sm-3 pb-md-4">
               <section className="d-flex w-100">
                 <section className="imgSec d-flex justify-content-center align-items-center">
                   {/* put the image for jobViz here */}
                   <JobVizIcon />
                 </section>
                 <section className="d-flex justify-content-center align-items-center flex-column">
-                  <Link href="/job-viz">
-                    <h4 className="text-muted jobVizLink">
-                      Jobviz Career Explorer
-                    </h4>
-                  </Link>
+                  <h4 className="text-muted jobVizLink">
+                    Jobviz Career Explorer
+                  </h4>
                 </section>
               </section>
               <section className="w-100 d-flex flex-column ps-sm-3">

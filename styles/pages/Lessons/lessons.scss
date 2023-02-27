@@ -52,8 +52,8 @@ $borderColor: darkgray;
   }
 
   @media(max-width: 575px){
-    height: 100px;
-    width: 100px;
+    height: 80px;
+    width: 80px;
   }
 }
 
@@ -100,6 +100,10 @@ $borderColor: darkgray;
   cursor:pointer;
 }
 
+.heroLessonsPg{
+  padding: 13vh 0 !important;
+}
+
 .jobVizCareer {
   
   @media (min-width: 768px) {
@@ -125,7 +129,7 @@ $borderColor: darkgray;
     }
 
     margin-top: 10px;
-    width: 100%;
+    width: 95%;
     max-width: 540px;
     min-width: 265px;
   }
