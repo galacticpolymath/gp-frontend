@@ -151,23 +151,15 @@ $searchResultsHighlight: #ffc107;
 
 .searchResultHighlight {
   color: $searchResultsHighlight;
-  display: inline-block;;
-  height: fit-content;
-  height: 22px;
+  padding: 0;
+}
+
+.searchResultTitle{
+  line-height: 1.15px;
 }
 
 #currentJobCategoryHeaderTxt {
   margin: 8px 0px 8px 0px;
-}
-
-.jobVizSearchResultsSec {
-  // display: flex;
-  // flex-wrap: wrap;
-  // justify-content: center;
-
-  // @media (max-width: 767px) {
-  //   justify-content: space-evenly;
-  // }
 }
 
 .jobVizSearchResultsSec {

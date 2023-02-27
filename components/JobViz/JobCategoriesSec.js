@@ -18,9 +18,11 @@ import jobVizDataObj from '../../data/Jobviz/jobVizDataObj.json';
 import { useMemo } from "react";
 import { useContext } from 'react';
 import { ModalContext } from "../../providers/ModalProvider";
+import { getJobCategoryIds } from '../../helperFns/getJobCategoryIds';
 
 
 const startingJobResults = jobVizDataObj.data.filter(jobCategory => jobCategory.hierarchy === 1).map(jobCategory => ({ ...jobCategory, currentLevel: jobCategory.level1 }))
+
 
 const sortJobResults = jobResults => {
     return jobResults.sort((jobA, jobB) => {
@@ -49,7 +51,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
             router.push({ pathname: `/job-viz/${nextLevelHierarchyNum}/${level}/${currentJobsCategoryId}` }, null, { scroll: false })
             return;
         }
-        
+
         let jobCategoryIds = query[`search-results`]
         jobCategoryIds.splice(0, 2)
         jobCategoryIds.push(currentJobsCategoryId)
@@ -59,6 +61,10 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
     }
 
     const handleDetailsBtnClick = (jobToShowInModal) => {
+        // console.log("jobToShowInModal.id: ", jobToShowInModal.id)
+        const jobCategoryIdPaths = getJobCategoryIds(router.query['search-results'], jobToShowInModal.id.toString())
+        const pathUpdated = `/job-viz/${currentHierarchyNum}/${router.query['search-results'][1]}/${jobCategoryIdPaths.join('/')}`
+        router.push({ pathname: pathUpdated }, null, { scroll: false })
         setSelectedJob(jobToShowInModal)
     }
 

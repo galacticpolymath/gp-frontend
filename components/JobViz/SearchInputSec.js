@@ -138,24 +138,25 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                             </button>
                         </Header>
                         <Body>
-                            {isLoading && <div className="d-flex justify-content-center align-items-center w-100 h-100">
-                                <div className="spinner-border" role="status">
-                                    <span className="visually-hidden">Loading...</span>
+                            {isLoading ?
+                                <div className="d-flex justify-content-center align-items-center w-100 h-100">
+                                    <div className="spinner-border" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
                                 </div>
-                            </div>
-                            }
-                            {!!searchResults?.length && searchResults.map((result, index) =>
-                                <SearchResult
-                                    key={index}
-                                    result={result}
-                                    searchInput={searchInput}
-                                    forceUpdateParentComp={forceUpdateComp}
-                                    index={index}
-                                    setSearchResults={setSearchResults}
-                                    _searchInput={[searchInput, setSearchInput]}
-                                    isHighlighterOn={isHighlighterOn}
-                                    closeSearchResultsModal={closeSearchResultsModal}
-                                />)}
+                                :
+                                !!searchResults?.length && searchResults.map((result, index) =>
+                                    <SearchResult
+                                        key={index}
+                                        result={result}
+                                        searchInput={searchInput}
+                                        forceUpdateParentComp={forceUpdateComp}
+                                        index={index}
+                                        setSearchResults={setSearchResults}
+                                        _searchInput={[searchInput, setSearchInput]}
+                                        isHighlighterOn={isHighlighterOn}
+                                        closeSearchResultsModal={closeSearchResultsModal}
+                                    />)}
                         </Body>
                     </Card>}
             </section>

@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable comma-dangle */
 /* eslint-disable quotes */
 /* eslint-disable no-unused-vars */
@@ -11,13 +13,14 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { useContext } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { IoIosSchool } from "react-icons/io";
 import { BiTrendingUp } from "react-icons/bi";
 import { MdOutlineTransferWithinAStation, MdOutlineDirectionsWalk, MdSupervisedUserCircle, MdAttachMoney } from "react-icons/md";
 import { ModalContext } from '../../providers/ModalProvider';
 import jobVizDataObj from '../../data/Jobviz/jobVizDataObj.json';
+import { useRouter } from 'next/router'
 
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } = jobVizDataObj;
@@ -26,7 +29,9 @@ const data_end_yr = _data_end_yr[0];
 
 const SelectedJob = () => {
     const { _selectedJob } = useContext(ModalContext);
+    const router = useRouter();
     const [selectedJob, setSelectedJob] = _selectedJob;
+    const wasRenderedRef = useRef(false);
     let { soc_title, def, title, median_annual_wage_2021, typical_education_needed_for_entry, employment_2021, employment_2031 } = selectedJob;
     let jobTitle = soc_title ?? title;
     jobTitle = jobTitle === "Total, all" ? "All US Jobs" : jobTitle;
@@ -67,8 +72,30 @@ const SelectedJob = () => {
     ];
 
     const handleOnHide = () => {
+        // delete the last number in the paths of the url
+        console.log("router.query?.['search-results']: ", router.query?.['search-results'])
         setSelectedJob(null);
     }
+
+
+    useEffect(() => {
+        return () => {
+            console.log("wasRenderedRef.current: ", wasRenderedRef.current)
+            if(wasRenderedRef.current){
+                console.log("will run only on unmount: ")
+                console.log("router?.query?.['search-results']: ", router?.query?.['search-results'])
+                const [currentHierarchyNum, currentLevel] = router?.query?.['search-results']
+                const newJobCategoryIdPaths = router?.query?.['search-results'].filter((_, index, self) => !([0, 1, self.length - 1].includes(index)))
+                console.log("newJobCategoryIdPaths: ", newJobCategoryIdPaths)
+                const pathUpdated = `/job-viz/${currentHierarchyNum}/${currentLevel}/${newJobCategoryIdPaths.join('/')}`
+                // router.push({ pathname: pathUpdated }, null, { scroll: false })
+                return;
+            }
+            wasRenderedRef.current = true;
+        }
+    }, [])
+
+    
 
     return (
         <Modal show={selectedJob} size="md" onHide={handleOnHide} contentClassName="selectedJobModal" dialogClassName='dialogJobVizModal'>

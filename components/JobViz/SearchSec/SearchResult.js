@@ -56,13 +56,13 @@ const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setS
                                 <button id={`${id}_searchResult_btn`} onClick={() => handleBtnClick(job)} className="no-btn-styles w-100 text-start">
                                     {isHighlighterOn ?
                                         <Highlighter
-                                            highlightClassName="searchResultHighlight"
+                                            highlightClassName="searchResultHighlight searchResultTitle"
                                             searchWords={[searchInput]}
                                             autoEscape={true}
                                             textToHighlight={title}
                                         />
                                         :
-                                        <span>
+                                        <span className="searchResultTitle">
                                             {title}
                                         </span>
                                     }

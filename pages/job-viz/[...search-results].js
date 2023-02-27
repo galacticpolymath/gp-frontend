@@ -37,8 +37,7 @@ const getParentJobCategories = jobCategoryIds => {
 const JobVizSearchResults = () => {
     const router = useRouter();
     const params = router.query?.['search-results'] ?? null;
-    const { _setIsGettingData, jobCategories } = useGetJobCategories(params?.[0] ?? null, params?.[1] ?? null,);
-    const [isGettingData, setIsGettingData] = _setIsGettingData
+    const { jobCategories } = useGetJobCategories(params?.[0] ?? null, params?.[1] ?? null,);
     const jobCategoryIds = router.query?.['search-results'] ? router.query?.['search-results'].slice(2) : [];
     const parentJobCategories = useMemo(() => getParentJobCategories(jobCategoryIds.map(id => parseInt(id))), [params])
 
@@ -54,7 +53,7 @@ const JobVizSearchResults = () => {
 
 
 
-    return isGettingData ? <JobViz vals={{ isLoading: true }} /> : <JobViz vals={vals} />;
+    return <JobViz vals={vals} />;
 };
 
 export default JobVizSearchResults;

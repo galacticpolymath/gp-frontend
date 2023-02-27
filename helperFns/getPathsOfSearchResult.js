@@ -83,7 +83,7 @@ const getPathsOfSearchResult = jobCategory => {
     const { hierarchy: firstParentJobCategoryHierarchy, soc_code } = firstParentJobCategory
     targetLevels = targetLevels.sort((levelA, levelB) => levelA.hierarchy - levelB.hierarchy);
 
-    // GOAL: get the name of the job that was selected and '-' in replace of spaces. Then add that to the end of the path.
+    targetLevels.push(jobCategory)
 
     return `/${firstParentJobCategoryHierarchy + 1}/${soc_code}/${targetLevels.map(({ id }) => id).join('/')}`
 }
