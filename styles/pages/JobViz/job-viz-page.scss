@@ -30,9 +30,7 @@ $searchResultsHighlight: #ffc107;
   }
 }
 
-.iconSec {
-  // height: 120px;
-}
+
 
 .jobVizImgContainerOnPg {
   width: 350px;
@@ -261,8 +259,17 @@ $searchResultsHighlight: #ffc107;
 }
 
 .jobVizBtnElDeterminer {
-  height: 100%;
-  z-index: -1;
+  height: 80%;
+  z-index: -1000;
+  padding-top: 100px;
+}
+
+.searchCardContainer{
+  // height: 1100px;
+}
+
+.jobSearchResultsCard{
+  // position: absolute;
 }
 
 // .fadeInFromRight{

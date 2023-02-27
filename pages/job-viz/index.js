@@ -30,6 +30,7 @@ const JobViz = ({ vals }) => {
     const [searchResults, setSearchResults] = useState([])
     const [searchInput, setSearchInput] = useState("")
     const [isHighlighterOn, setIsHighlighterOn] = useState(true);
+    const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false)
     const { ref, inView } = useInView({ threshold: 0 });
 
     const resetSearchResults = () => {
@@ -56,6 +57,7 @@ const JobViz = ({ vals }) => {
                 _searchInput={[searchInput, setSearchInput]}
                 searchInputRef={ref}
                 _isHighlighterOn={[isHighlighterOn, setIsHighlighterOn]}
+                _isSearchResultsModalOn={[isSearchResultsModalOn, setIsSearchResultsModalOn]}
             />
             {parentJobCategories &&
                 <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
@@ -105,8 +107,8 @@ const JobViz = ({ vals }) => {
                     resetSearch={resetSearchResults}
                 />
             </section>
-            {!!searchResults.length && <GoToSearchInput isScrollToInputBtnVisible={inView} />}
-            {!!searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={inView} />}
+            {isSearchResultsModalOn && <GoToSearchInput isScrollToInputBtnVisible={inView} />}
+            {isSearchResultsModalOn && <GoToJobVizChain isScrollToJobVizChainBtnVisible={inView} />}
         </Layout>
     );
 };

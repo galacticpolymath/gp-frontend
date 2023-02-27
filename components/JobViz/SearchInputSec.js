@@ -20,11 +20,11 @@ import SearchResult from "./SearchSec/SearchResult";
 
 const { Title, Body, Header } = Card;
 
-const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchResultsCardRef, _isHighlighterOn }) => {
+const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchResultsCardRef, _isHighlighterOn, _isSearchResultsModalOn }) => {
     const [searchResults, setSearchResults] = _searchResults;
     const [, setForceReRenderer] = useState({});
     const [isLoading, setIsLoading] = useState(false);
-    const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false)
+    const [isSearchResultsModalOn, setIsSearchResultsModalOn] = _isSearchResultsModalOn;
     const [searchInput, setSearchInput] = _searchInput;
     const [isHighlighterOn, setIsHighlighterOn] = _isHighlighterOn;
 
@@ -101,7 +101,7 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                     <BsSearch />
                 </section>
             </section>
-            <section className="min-vw-100 d-flex justify-content-center position-relative">
+            <section className="min-vw-100 d-flex justify-content-center position-relative searchCardContainer">
                 {!!isSearchResultsModalOn &&
                     <Card ref={searchResultsCardRef} className="jobSearchResultsCard mt-2">
                         <Header className="position-relative searchResultsHeader d-flex flex-sm-row flex-column">
