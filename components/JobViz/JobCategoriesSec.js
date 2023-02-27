@@ -52,7 +52,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
             return;
         }
 
-        let jobCategoryIds = query[`search-results`]
+        let jobCategoryIds = [...query[`search-results`]]
         jobCategoryIds.splice(0, 2)
         jobCategoryIds.push(currentJobsCategoryId)
         const pathUpdated = `/job-viz/${nextLevelHierarchyNum}/${level}/${jobCategoryIds.join('/')}`
