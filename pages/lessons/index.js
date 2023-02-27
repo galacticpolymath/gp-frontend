@@ -16,7 +16,7 @@ const LessonsPage = ({ lessons }) => {
       <div className="lessonsPgContent">
         <section className="pb-3">
           <h2 className="mt-3 ms-4 text-muted">Galactic Polymath Learning Tools</h2>
-          <section className="d-flex justify-content-center align-items-center">
+          <section className="d-flex justify-content-center align-items-center d-md-block">
             <div className="ms-md-5 jobVizCareer d-flex flex-column rounded lessonsPgShadow pb-sm-3 pb-md-0">
               <section className="d-flex w-100">
                 <section className="imgSec d-flex justify-content-center align-items-center">
@@ -38,14 +38,14 @@ const LessonsPage = ({ lessons }) => {
         </section>
         <section className="lessonsSection pt-2">
           <h2 className="ms-4 mb-4 text-muted">Galactic Polymath Lesson Releases</h2>
-          <div className='container mx-auto grid pb-5 px-3 gap-3 bg-light-gray pt-3'>
+          <div className='container mx-auto grid pb-5 px-3 gap-3 pt-3'>
             {lessons
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
               .map((lesson, i) => (
                 <Link
                   key={i}
                   href={`/lessons/${lesson.id}`}
-                  className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'
+                  className='d-block bg-white rounded-3 g-col-6 no-hover-color-change lessonsPgShadow lessonsOnLessonsPg'
                 >
                   <div>
                     {lesson.CoverImage && lesson.CoverImage.url && (
