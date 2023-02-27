@@ -52,18 +52,18 @@ const LessonsPage = ({ lessons }) => {
           <div className='container mx-auto grid pb-5 px-3 gap-3 bg-light-gray pt-3'>
             {lessons
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
-              .map((lesson, i) => (
+              .map((lesson, i) => ((
                 <Link
-                  key={lesson.locale + lesson.id}
-                  href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
-                  passHref
-                  className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'
-                  legacyBehavior>
+                key={lesson.locale + lesson.id}
+                href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
+                passHref
+                className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
                   <div>
                     {lesson.CoverImage && lesson.CoverImage.url && (
                       <Image
                         src={lesson.CoverImage.url}
                         alt={lesson.Subtitle}
+                        layout="responsive"
                         width={1500}
                         height={450}
                       />
@@ -76,7 +76,8 @@ const LessonsPage = ({ lessons }) => {
                       {lesson.Section.overview.TargetSubject}
                     </span>
                   </div>
-                </Link>
+                </Link>)
+                
               ))}
           </div>
         </section>
