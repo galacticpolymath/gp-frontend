@@ -21,6 +21,7 @@ import { MdOutlineTransferWithinAStation, MdOutlineDirectionsWalk, MdSupervisedU
 import { ModalContext } from '../../providers/ModalProvider';
 import jobVizDataObj from '../../data/Jobviz/jobVizDataObj.json';
 import { useRouter } from 'next/router'
+import getNewPathsWhenModalCloses from '../../helperFns/getNewPathsWhenModalCloses';
 
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } = jobVizDataObj;
@@ -65,7 +66,7 @@ const SelectedJob = () => {
             icon: <MdOutlineTransferWithinAStation />
         },
         {
-            title: `Percent change in Employment ${data_start_yr} - ${data_end_yr}}`,
+            title: `Percent change in Employment ${data_start_yr} - ${data_end_yr}`,
             txt: projectedPercentageEmploymentChange,
             icon: <BiTrendingUp />
         }
@@ -74,23 +75,13 @@ const SelectedJob = () => {
     const handleOnHide = () => {
         // delete the last number in the paths of the url
         console.log("router.query?.['search-results']: ", router.query?.['search-results'])
+        const newPaths = getNewPathsWhenModalCloses(router.query['search-results'])
+        router.push({ pathname: `/job-viz${newPaths}` }, null, { scroll: false })        
         setSelectedJob(null);
     }
 
 
-    useEffect(() => {
-        return () => {
-            console.log("wasRenderedRef.current: ", wasRenderedRef.current)
-            if(wasRenderedRef.current){
-                const [currentHierarchyNum, currentLevel] = router?.query?.['search-results']
-                const newJobCategoryIdPaths = router?.query?.['search-results'].filter((_, index, self) => !([0, 1, self.length - 1].includes(index)))
-                const pathUpdated = `/job-viz/${currentHierarchyNum}/${currentLevel}/${newJobCategoryIdPaths.join('/')}`
-                // router.push({ pathname: pathUpdated }, null, { scroll: false })
-                return;
-            }
-            wasRenderedRef.current = true;
-        }
-    }, [])
+
 
     
 
