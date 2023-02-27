@@ -17,7 +17,7 @@ import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
 import PreviouslySelectedJobCategory from '../../components/JobViz/PreviouslySelectedJobCategory';
 import SearchInputSec from '../../components/JobViz/SearchInputSec';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';

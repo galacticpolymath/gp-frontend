@@ -18,7 +18,7 @@
 /* eslint-disable react/jsx-indent */
 
 import PicAndDescriptionSec from './PicAndDescriptionSec'
-import Image from 'next/image'
+import Image from "next/legacy/image";
 
 const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
     return (

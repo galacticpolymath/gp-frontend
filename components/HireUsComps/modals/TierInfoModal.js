@@ -19,7 +19,7 @@
 /* eslint-disable react/jsx-indent */
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Image from 'next/image'
+import Image from "next/legacy/image";
 import ReactPlayer from 'react-player';
 import { IoIosCloseCircle } from "react-icons/io";
 
