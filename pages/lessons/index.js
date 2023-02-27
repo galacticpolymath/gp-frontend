@@ -18,24 +18,23 @@ const LessonsPage = ({ lessons }) => {
           <h2 className="mt-3 ms-sm-4 text-center text-sm-start text-muted">Galactic Polymath Learning Tools</h2>
           <section className="d-flex d-md-block justify-content-center align-items-center justify-content-md-start align-items-md-start ps-lg-5 ms-md-3 mt-sm-3">
             <div className="jobVizCareer cardOnLessonsPg d-flex flex-column rounded lessonsPgShadow pb-2 pb-sm-3 pb-md-4">
-              <Link href="/job-viz">
-                <section className="d-flex w-100">
-                  <section className="imgSec d-flex justify-content-center align-items-center">
-                    {/* put the image for jobViz here */}
-                    <JobVizIcon />
-                  </section>
-                  <section className="d-flex justify-content-center align-items-center flex-column">
+              <section className="d-flex w-100">
+                <section className="imgSec d-flex justify-content-center align-items-center">
+                  {/* put the image for jobViz here */}
+                  <JobVizIcon />
+                </section>
+                <section className="d-flex justify-content-center align-items-center flex-column">
+                  <Link href="/job-viz">
                     <h4 className="text-muted jobVizLink">
                       Jobviz Career Explorer
-
                     </h4>
-                  </section>
+                  </Link>
                 </section>
-                <section className="w-100 d-flex flex-column ps-sm-3">
-                  <span className="text-muted">A starting point for students.</span>
-                  <span className="text-muted">Exploration of 1,000 job possibilities.</span>
-                </section>
-              </Link>
+              </section>
+              <section className="w-100 d-flex flex-column ps-sm-3">
+                <span className="text-muted">A starting point for students.</span>
+                <span className="text-muted">Exploration of 1,000 job possibilities.</span>
+              </section>
             </div>
           </section>
         </section>

@@ -96,13 +96,14 @@ $borderColor: darkgray;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
+.jobVizCareer:hover{
+  cursor:pointer;
+}
+
 .jobVizCareer {
-  // border: solid $borderThickness $borderColor;
   
   @media (min-width: 768px) {
     width: 575px;
-    // height: 300px;
-    // margin-left: 4rem !important;
   }
 
   @media (max-width: 767px) and (min-width: 576px) {
