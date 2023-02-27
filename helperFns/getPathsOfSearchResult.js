@@ -66,15 +66,6 @@ const getAllParentJobCategories = (jobCategory, _num) => {
     return { targetLevels: targetLevels };
 }
 
-// 1) if the jobCategory is at level4 and the occupation_type === "Line item", find the parent job category at level3 by implementing the following algorithm:
-// jobVizData.find(({ soc_code, occupation_type }) => (soc_code === jobCategory.level3) && (occupation_type === "Summary"));
-
-// 2) if undefined, then modify the jobCategory object implement the following:
-// insert hierarchy4 into 3
-// delete hierarchy4
-// change hierarchy to 3
-// change the path to: level1/level2/level3
-
 
 
 
@@ -91,6 +82,8 @@ const getPathsOfSearchResult = jobCategory => {
     const firstParentJobCategory = getFirstParentJobCategory(targetLevels);
     const { hierarchy: firstParentJobCategoryHierarchy, soc_code } = firstParentJobCategory
     targetLevels = targetLevels.sort((levelA, levelB) => levelA.hierarchy - levelB.hierarchy);
+
+    // GOAL: get the name of the job that was selected and '-' in replace of spaces. Then add that to the end of the path.
 
     return `/${firstParentJobCategoryHierarchy + 1}/${soc_code}/${targetLevels.map(({ id }) => id).join('/')}`
 }
