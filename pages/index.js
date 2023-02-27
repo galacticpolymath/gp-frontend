@@ -16,7 +16,11 @@ export default function Home() {
         <h1 className={styles.shadow}>We are an education studio.</h1>
         <p className={`${styles.shadow} my-4 fs-5 fw-light`}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
         <div>
-          <Link passHref href="/lessons" className="btn btn-primary">
+          <Link
+            passHref
+            href="/lessons"
+            className="btn btn-primary"
+          >
             Get Lessons
           </Link>
           <Link
@@ -44,7 +48,7 @@ export default function Home() {
 
           <h3 className='mb-2'>Straight from the Source</h3>
           <p className='mb-4'>Our lessons are designed with extensive input from working scientists and other STEM experts, meaning they are current and authentic.</p>
-          
+
           <h3 className='mb-2'>High-Quality</h3>
           <p className='mb-4'>We are a team of educators, scientists, and artists focused on publishing mind-expanding lessons that are also easy to teach.</p>
         </div>
@@ -146,9 +150,9 @@ export default function Home() {
             </a>
             <br />
             <Link href="/lessons/1" className='btn btn-secondary'>
-              
-                Check out the lesson
-              
+
+              Check out the lesson
+
             </Link>
           </div>
           <div className="col-12 col-md-6 order-2 order-md-1">

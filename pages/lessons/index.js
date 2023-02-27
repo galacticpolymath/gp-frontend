@@ -7,14 +7,14 @@ import JobVizIcon from '../../components/JobViz/JobVizIcon';
 
 const LessonsPage = ({ lessons }) => {
 
-  const uniqueIDs = []
+  const uniqueIDs = [];
 
-  const publishedLessons = lessons.filter(({ PublicationStatus, ReleaseDate, id }) => {
+  const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
     if (!uniqueIDs.includes(id) 
-      && PublicationStatus==="Live") {
-        uniqueIDs.push(id);
-        return true;
-      }
+      && PublicationStatus === 'Live') {
+      uniqueIDs.push(id);
+      return true;
+    }
     return false;
   });
 
@@ -52,12 +52,13 @@ const LessonsPage = ({ lessons }) => {
           <div className='container mx-auto grid pb-5 px-3 gap-3 bg-light-gray pt-3'>
             {publishedLessons
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
-              .map((lesson, i) => ((
+              .map((lesson) => ((
                 <Link
-                key={lesson.locale + lesson.id}
-                href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
-                passHref
-                className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'>
+                  key={lesson.locale + lesson.id}
+                  href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
+                  passHref
+                  className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'
+                >
                   <div>
                     {lesson.CoverImage && lesson.CoverImage.url && (
                       <Image
@@ -76,7 +77,8 @@ const LessonsPage = ({ lessons }) => {
                       {lesson.Section.overview.TargetSubject}
                     </span>
                   </div>
-                </Link>)
+                </Link>
+              )
                 
               ))}
           </div>

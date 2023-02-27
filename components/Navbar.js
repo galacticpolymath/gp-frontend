@@ -10,7 +10,11 @@ export default function Navbar() {
   return (
     <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-dark'>
       <div className='container'>
-        <Link href="/" passHref className='flex-grow-1'>
+        <Link
+          href="/"
+          passHref
+          className='flex-grow-1'
+        >
 
           <Image
             alt="Galactic Polymath"
@@ -37,7 +41,8 @@ export default function Navbar() {
               <li className='nav-item'>
                 <Link
                   href='/'
-                  className={`nav-link ${router.pathname === '/' ? 'fw-bold active' : 'fw-light'}`}>
+                  className={`nav-link ${router.pathname === '/' ? 'fw-bold active' : 'fw-light'}`}
+                >
                   Home
                 </Link>
               </li>
@@ -50,7 +55,8 @@ export default function Navbar() {
                 <li key={url} className='nav-item'>
                   <Link
                     href={url}
-                    className={`nav-link ${router.pathname.includes(url) ? 'fw-bold active' : 'fw-light'}`}>
+                    className={`nav-link ${router.pathname.includes(url) ? 'fw-bold active' : 'fw-light'}`}
+                  >
 
                     {title}
 
