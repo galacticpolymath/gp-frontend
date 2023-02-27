@@ -16,15 +16,15 @@ const LessonsPage = ({ lessons }) => {
       <div className="lessonsPgContent">
         <section className="pb-3">
           <h2 className="mt-3 ms-4 text-muted">Galactic Polymath Learning Tools</h2>
-          <section className="d-flex justify-content-center align-items-center d-md-block">
-            <div className="ms-md-5 jobVizCareer d-flex flex-column rounded lessonsPgShadow pb-sm-3 pb-md-0">
+          <section className="d-flex d-md-block justify-content-center align-items-center grid gap-3 px-3 justify-content-md-start align-items-md-start ps-sm-5">
+            <div className="jobVizCareer cardOnLessonsPg d-flex flex-column rounded lessonsPgShadow pb-2 pb-sm-3 pb-md-4">
               <section className="d-flex w-100">
                 <section className="imgSec d-flex justify-content-center align-items-center">
                   {/* put the image for jobViz here */}
                   <JobVizIcon />
                 </section>
                 <section className="d-flex justify-content-center align-items-center flex-column">
-                  <h4>
+                  <h4 className="">
                     <Link href="/job-viz" className="text-muted jobVizLink">Jobviz Career Explorer</Link>
                   </h4>
                 </section>
@@ -45,9 +45,9 @@ const LessonsPage = ({ lessons }) => {
                 <Link
                   key={i}
                   href={`/lessons/${lesson.id}`}
-                  className='d-block bg-white rounded-3 g-col-6 no-hover-color-change lessonsPgShadow lessonsOnLessonsPg'
+                  className='d-block position-relative bg-white rounded-3 g-col-6 no-hover-color-change lessonsPgShadow cardOnLessonsPg'
                 >
-                  <div>
+                  <div className="d-flex justify-content-center pt-lg-2">
                     {lesson.CoverImage && lesson.CoverImage.url && (
                       <Image
                         src={lesson.CoverImage.url}
@@ -58,13 +58,16 @@ const LessonsPage = ({ lessons }) => {
                       />
                     )}
                   </div>
-                  <div className='p-3'>
-                    <h3 className='fw-light text-black'>{lesson.Title}</h3>
+                  <div className='pt-2 ps-3'>
+                    <h3 className='fw-light text-black mb-0'>{lesson.Title}</h3>
                     <p className='text-black'>{lesson.Subtitle}</p>
-                    <span className={`badge bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
+                    {/* <span className={`badge lessonSubject bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
                       {lesson.Section.overview.TargetSubject}
-                    </span>
+                    </span> */}
                   </div>
+                  <span className={`badge position-absolute lessonSubject bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
+                    {lesson.Section.overview.TargetSubject}
+                  </span>
                 </Link>
               ))}
           </div>

@@ -37,6 +37,16 @@ $borderColor: darkgray;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media(max-width: 767px){
+    height: 130px;
+    width: 130px;
+  }
+
+  @media(max-width: 575px){
+    height: 100px;
+    width: 100px;
+  }
 }
 
 .jobVizImg {
@@ -54,9 +64,13 @@ $borderColor: darkgray;
   > section:nth-child(2) {
     width: 57%;
     h4 {
-      font-size: 35px;
+      font-size: 1.3em;
       font-weight: 350;
       text-align: center;
+
+      @media(max-width: 575px){
+        font-size: 1.1em;
+      }
     }
     h4:hover {
       text-decoration: underline;
@@ -65,13 +79,13 @@ $borderColor: darkgray;
   }
 }
 
-.lessonsPgShadow{
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+.lessonsPgShadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .lessonsPgShadow:hover {
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
 .jobVizCareer {
@@ -79,8 +93,8 @@ $borderColor: darkgray;
   width: 575px;
 
   @media (min-width: 768px) {
-    height: 300px;
-    margin-left: 4rem !important;
+    // height: 300px;
+    // margin-left: 4rem !important;
   }
 
   @media (max-width: 767px) and (min-width: 576px) {
@@ -96,21 +110,58 @@ $borderColor: darkgray;
       }
     }
 
-    > section:last-child > span{
+    > section:last-child > span {
       text-align: center;
       margin-top: 10px;
     }
-    padding: 20px 10px 20px 10px;
-    width: 90%;
+    // padding: 20px 10px 20px 10px;
+    // width: 90%;
+    width: 400px;
+    min-width: 265px;
   }
+
+  span{
+    font-size: 14px;
+  };
 }
 
-.lessonsOnLessonsPg{
-  @media(min-width: 1200px){
-    // max-height: 285px;
-    img{
+.lessonImgContainer{
+  height: 70px;
+}
+
+.cardOnLessonsPg {
+  @media (min-width: 1200px) {
+    img {
       max-height: 150px;
     }
   }
+
+  img{
+    max-width: 508px;
+  }
+
+  position: relative;
+
+
+  > div:nth-child(2) {
+    h3{
+      font-size: 1.3em;
+
+      @media(max-width: 575px){
+        font-size: 1.1em;
+      }
+    }
+
+    p{
+      font-size: 14px;
+    }
+  }
+
+
+  padding-bottom: 30px;
 }
 
+.lessonSubject {
+  bottom: 8px;
+  left: 15px;
+}
