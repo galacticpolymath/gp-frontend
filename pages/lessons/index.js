@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from "next/legacy/image";
+import Image from "next/image";
 
 import Hero from '../../components/Hero';
 import Layout from '../../components/Layout';
@@ -41,10 +41,13 @@ const LessonsPage = ({ lessons }) => {
                     <Image
                       src={lesson.CoverImage.url}
                       alt={lesson.Subtitle}
-                      layout="responsive"
                       width={1500}
                       height={450}
-                    />
+                      sizes="100vw"
+                      style={{
+                        width: "100%",
+                        height: "auto"
+                      }} />
                   )}
                 </div>
                 <div className='p-3'>
