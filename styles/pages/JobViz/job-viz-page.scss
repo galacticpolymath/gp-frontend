@@ -340,6 +340,18 @@ $searchResultsHighlight: #ffc107;
   }
 }
 
+.searchResultsCloseBtn{
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;;
+  > svg {
+    font-size: 32px !important;
+  }
+}
+
 .searchResultsHeader {
   min-height: 85px;
 }

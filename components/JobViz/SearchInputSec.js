@@ -12,9 +12,10 @@
 /* eslint-disable react/jsx-indent */
 
 import { BsSearch } from "react-icons/bs"
-import { Card } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
+import { AiOutlineClose } from 'react-icons/ai'
 import getSearchResultsAsync from "../../helperFns/getSearchResults";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SearchResult from "./SearchSec/SearchResult";
 
 const { Title, Body, Header } = Card;
@@ -22,7 +23,8 @@ const { Title, Body, Header } = Card;
 const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchResultsCardRef, _isHighlighterOn }) => {
     const [searchResults, setSearchResults] = _searchResults;
     const [, setForceReRenderer] = useState({});
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false)
     const [searchInput, setSearchInput] = _searchInput;
     const [isHighlighterOn, setIsHighlighterOn] = _isHighlighterOn;
 
@@ -36,10 +38,15 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
         forceUpdate()
     }
 
+    const closeSearchResultsModal = () => {
+        setIsSearchResultsModalOn(false)
+    }
+
     const handleInput = event => {
-        setIsLoading(true)
-        setSearchInput(event.target.value);
         if (event.target.value) {
+            setIsLoading(true)
+            setSearchInput(event.target.value);
+            setIsSearchResultsModalOn(true);
             setTimeout(() => {
                 getSearchResultsAsync(event.target.value.toLowerCase())
                     .then(results => {
@@ -57,12 +64,29 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
         }
         setSearchResults([]);
         setSearchInput("");
+        setIsSearchResultsModalOn(false)
         setIsLoading(false)
     }
 
     const handleCheckBoxChange = event => {
         setIsHighlighterOn(event.target.checked)
     }
+
+    const handleEscapeKey = event => {
+        console.log("hey there")
+        console.log({ isSearchResultsModalOn })
+        if (event.key === "Escape") {
+            console.log("closing search results modal")
+            closeSearchResultsModal();
+        }
+    }
+
+
+    useEffect(() => {
+        // when the user search results modal is on the page, if the user presses the escape key, close the modal
+
+        document.addEventListener("keydown", handleEscapeKey);
+    }, [])
 
 
 
@@ -78,35 +102,44 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                 </section>
             </section>
             <section className="min-vw-100 d-flex justify-content-center position-relative">
-                {!!searchInput &&
+                {!!isSearchResultsModalOn &&
                     <Card ref={searchResultsCardRef} className="jobSearchResultsCard mt-2">
                         <Header className="position-relative searchResultsHeader d-flex flex-sm-row flex-column">
-                            {!isLoading ?
-                                <Title>
-                                    {searchResults?.length ? "Search Results" : "No results"}
-                                </Title>
-                                :
-                                <Title>
-                                    Loading...
-                                </Title>
-                            }
-                            <div className="switchMainContainer d-flex flex-column">
-                                <section>
-                                    <span>Highlighter</span>
+                            <section className="d-flex flex-column">
+                                {!isLoading ?
+                                    <Title>
+                                        {searchResults?.length ? "Search Results" : "No results"}
+                                    </Title>
+                                    :
+                                    <Title>
+                                        Loading...
+                                    </Title>
+                                }
+                                <section className="switchMainContainer d-flex flex-column">
+                                    <section>
+                                        <span>Highlighter</span>
+                                    </section>
+                                    <section className="d-flex mt-1">
+                                        <div className="switchContainer">
+                                            <label className="switch w-100 h-100">
+                                                <input
+                                                    type="checkbox"
+                                                    onChange={handleCheckBoxChange}
+                                                    checked={isHighlighterOn}
+                                                />
+                                                <span className="sliderForBtn round"></span>
+                                            </label>
+                                        </div>
+                                    </section>
                                 </section>
-                                <section className="d-flex mt-2 mt-sm-0 justify-content-sm-center align-items-sm-center">
-                                    <div className="switchContainer">
-                                        <label className="switch w-100 h-100">
-                                            <input
-                                                type="checkbox"
-                                                onChange={handleCheckBoxChange}
-                                                checked={isHighlighterOn}
-                                            />
-                                            <span className="sliderForBtn round"></span>
-                                        </label>
-                                    </div>
-                                </section>
-                            </div>
+                            </section>
+                            {/* create a button that will close the modal */}
+                            <button
+                                className="searchResultsCloseBtn position-absolute top-0 end-0 noBtnStyles"
+                                onClick={closeSearchResultsModal}
+                            >
+                                <AiOutlineClose />
+                            </button>
                         </Header>
                         <Body>
                             {isLoading && <div className="d-flex justify-content-center align-items-center w-100 h-100">
