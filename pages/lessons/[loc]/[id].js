@@ -1,8 +1,9 @@
 import { format } from 'date-fns';
 
-import Layout from '../../components/Layout';
-import RichText from '../../components/RichText';
-import LessonSection, { NUMBERED_SECTIONS } from '../../components/LessonSection';
+import Layout from '../../../components/Layout';
+import RichText from '../../../components/RichText';
+import LessonSection, { NUMBERED_SECTIONS } from '../../../components/LessonSection';
+import LocDropdown from '../../../components/LocDropdown';
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
@@ -10,12 +11,13 @@ const getLatestSubRelease = (sections) => {
     return null;
   }
   
-  const lastRelease = versionSection.Data[versionSection.Data.length - 1].sub_releases;
+  const lastRelease =
+    versionSection.Data[versionSection.Data.length - 1].sub_releases;
   const lastSubRelease = lastRelease[lastRelease.length - 1];
   return lastSubRelease;
 };
 
-const LessonDetails = ({ lesson }) => {
+const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
 
   // Number the sections included in NUMBERED_SECTIONS.
@@ -34,14 +36,21 @@ const LessonDetails = ({ lesson }) => {
   };
 
   return (
-    <Layout className="plain-h3">
+    <Layout>
       <div className="container p-4">
-        {lastSubRelease && (
-          <p>
-            Version {lastSubRelease.version}{' '}
-            (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-          </p>
-        )}
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          {lastSubRelease && (
+            <p>
+              Version {lastSubRelease.version}{' '}
+              (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
+            </p>
+          )}
+          <LocDropdown
+            availLocs={availLocs}
+            loc={lesson.locale}
+            id={lesson.id}
+          />
+        </div>
         <h1>{lesson.Title}</h1>
         <h4 className='fw-light'>{lesson.Subtitle}</h4>
         {lesson.CoverImage && lesson.CoverImage.url && (
@@ -75,16 +84,17 @@ export const getStaticPaths = async () => {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   const lessons = await res.json();
   const paths = lessons.map(lesson => ({
-    params: { id: `${lesson.id}` },
+    params: { id: `${lesson.id}`, loc: `${lesson.locale}` },
   }));
 
   return { paths, fallback: false };
 };
 
-export const getStaticProps = async ({ params: { id } }) => {
+export const getStaticProps = async ({ params: { id, loc } }) => {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   const lessons = await res.json();
-  const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}`);
+  const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
+  const availLocs = lessons.filter((lesson) => `${lesson.id}` === `${id}`).map((lesson)=>lesson.locale);
 
   // TODO: revisit when/if Matt combines these sections in the JSON
   lesson.Section['teaching-materials'].Data = {
@@ -92,7 +102,7 @@ export const getStaticProps = async ({ params: { id } }) => {
     ...lesson.Section['teaching-materials'].Data,
   };
   
-  return { props: { lesson } };
+  return { props: { lesson, availLocs } };
 };
 
 export default LessonDetails;

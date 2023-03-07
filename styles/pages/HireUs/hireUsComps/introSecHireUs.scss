@@ -66,16 +66,16 @@
   @media (max-width: 575px) {
     height: 450px !important;
     display: flex !important;
-    justify-content: end !important;
-    align-items: end !important;
+    justify-content: flex-end !important;
+    align-items: flex-end !important;
     padding-bottom: 75px !important;
   }
 
   @media (min-width: 768px) {
     height: 500px !important;
     flex-direction: column !important;
-    justify-content: end !important;
-    align-items: end !important;
+    justify-content: flex-end !important;
+    align-items: flex-end !important;
     padding-bottom: 40px !important;
   }
 

@@ -11,6 +11,17 @@ const LessonsPage = ({ lessons }) => {
     window.location.href = '/job-viz';
   };
 
+  const uniqueIDs = [];
+
+  const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
+    if (!uniqueIDs.includes(id) 
+      && PublicationStatus === 'Live') {
+      uniqueIDs.push(id);
+      return true;
+    }
+    return false;
+  });
+
   return (
     <Layout>
       <Hero className="bg-secondary heroLessonsPg">
@@ -43,12 +54,13 @@ const LessonsPage = ({ lessons }) => {
         <section className="lessonsSection pt-1">
           <h2 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h2>
           <div className='container mx-auto grid pb-5 px-3 gap-3 pt-3'>
-            {lessons
+            {publishedLessons
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
-              .map((lesson, i) => (
+              .map((lesson) => ((
                 <Link
-                  key={i}
-                  href={`/lessons/${lesson.id}`}
+                  key={lesson.locale + lesson.id}
+                  href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
+                  passHref
                   className='d-block position-relative bg-white rounded-3 g-col-6 no-hover-color-change lessonsPgShadow cardOnLessonsPg'
                 >
                   <div className="d-flex justify-content-center pt-lg-2">
@@ -56,23 +68,27 @@ const LessonsPage = ({ lessons }) => {
                       <Image
                         src={lesson.CoverImage.url}
                         alt={lesson.Subtitle}
-                        layout="responsive"
                         width={1500}
                         height={450}
+                        sizes="100vw"
+                        style={{
+                          width: '100%',
+                          height: 'auto',
+                        }}
                       />
                     )}
                   </div>
                   <div className='pt-2 ps-3'>
                     <h3 className='fw-light text-black mb-0'>{lesson.Title}</h3>
                     <p className='text-black'>{lesson.Subtitle}</p>
-                    {/* <span className={`badge lessonSubject bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
+                    <span className={`badge lessonSubject bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
                       {lesson.Section.overview.TargetSubject}
-                    </span> */}
+                    </span>
                   </div>
-                  <span className={`badge position-absolute lessonSubject bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
-                    {lesson.Section.overview.TargetSubject}
-                  </span>
+                 
                 </Link>
+              )
+                
               ))}
           </div>
         </section>
@@ -81,12 +97,12 @@ const LessonsPage = ({ lessons }) => {
   );
 };
 
-export const getStaticProps = async () => {
+export async function getStaticProps() {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
 
   const lessons = await res.json();
 
   return { props: { lessons } };
-};
+}
 
 export default LessonsPage;

@@ -1,34 +1,16 @@
-/* eslint-disable no-multi-spaces */
-/* eslint-disable react/jsx-first-prop-new-line */
-/* eslint-disable react/jsx-closing-bracket-location */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable semi */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable prefer-template */
-/* eslint-disable comma-dangle */
-/* eslint-disable quotes */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable object-curly-spacing */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
-
-import Image from 'next/image';
+// import Image from 'next/image';
 import { Card } from 'react-bootstrap';
 import Layout from '../components/Layout';
 import CardContainer from '../components/HireUsComps/CardContainer';
-import teacherTestimonies from '../data/HireUsPg/teacherTestimonies.json'
-import grantReviewersFeedback from '../data/HireUsPg/grantReviewersFeedback.json'
-import feedbackOfClients from '../data/HireUsPg/feedbackOfClients.json'
+import teacherTestimonies from '../data/HireUsPg/teacherTestimonies.json';
+import grantReviewersFeedback from '../data/HireUsPg/grantReviewersFeedback.json';
+import feedbackOfClients from '../data/HireUsPg/feedbackOfClients.json';
 import WhatTeachersSaysBackground from '../public/imgs/background/2_southeast_purplish_1.png';
 import WhatOurClientsSayBackground from '../public/imgs/background/4_north-south_dark-heat-cline_1.png';
 import GrantReviewerFeedbackBackground from '../public/imgs/background/5_chaotic_bluish_1.png';
-import lessonsInfo from '../data/HireUsPg/lessonsInfo.json'
-import tiersInfoForModal from '../data/HireUsPg/tiersInfoForModal.json'
-import TierInfoModal from '../components/HireUsComps/modals/TierInfoModal'
+import lessonsInfo from '../data/HireUsPg/lessonsInfo.json';
+import tiersInfoForModal from '../data/HireUsPg/tiersInfoForModal.json';
+import TierInfoModal from '../components/HireUsComps/modals/TierInfoModal';
 import { useState } from 'react';
 import ReadyToInspireSec from '../components/HireUsComps/ReadyToInspireSec';
 import ShareYourKnowledge from '../components/HireUsComps/sections/ShareYourKnowledge';
@@ -42,9 +24,8 @@ import WhatDoWeDoSec from '../components/HireUsComps/sections/WhatDoWeDoSec';
 import HowDoesItWorkSec from '../components/HireUsComps/sections/HowDoesItWorkSec';
 import WhatYouWillGetSec from '../components/HireUsComps/sections/WhatYouWillGetSec';
 
-
 const HireUsPage = () => {
-  const [tiersInfoForModalArr, setTiersInfoForModalArr] = useState(tiersInfoForModal.map(tier => ({ ...tier, isModalOn: false })))
+  const [tiersInfoForModalArr, setTiersInfoForModalArr] = useState(tiersInfoForModal.map(tier => ({ ...tier, isModalOn: false })));
 
   return (
     <>

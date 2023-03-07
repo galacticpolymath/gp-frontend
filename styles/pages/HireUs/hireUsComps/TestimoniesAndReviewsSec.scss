@@ -43,7 +43,7 @@
     }
 
     > h2 {
-      text-align: start !important;
+      text-align: flex-start !important;
 
       @media (max-width: 575px) {
         text-align: center !important;
