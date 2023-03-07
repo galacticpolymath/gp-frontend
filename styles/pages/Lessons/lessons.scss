@@ -1,10 +1,18 @@
 @import "../../globalVars.scss";
 
-$borderThickness: 4px;
+$borderThickness: 1px;
 $borderColor: darkgray;
 
 .lessonsSection {
   border-top: solid $borderThickness $borderColor;
+
+  > div{
+    @media(max-width: 575px){
+      display: flex !important;
+      flex-direction: column;
+
+    }
+  }
 }
 
 .jobVizEntrySection span {
@@ -37,6 +45,16 @@ $borderColor: darkgray;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media(max-width: 767px){
+    height: 130px;
+    width: 130px;
+  }
+
+  @media(max-width: 575px){
+    height: 80px;
+    width: 80px;
+  }
 }
 
 .jobVizImg {
@@ -54,9 +72,13 @@ $borderColor: darkgray;
   > section:nth-child(2) {
     width: 57%;
     h4 {
-      font-size: 35px;
+      font-size: 1.3em;
       font-weight: 350;
       text-align: center;
+
+      @media(max-width: 575px){
+        font-size: 1.1em;
+      }
     }
     h4:hover {
       text-decoration: underline;
@@ -65,16 +87,31 @@ $borderColor: darkgray;
   }
 }
 
-.jobVizCareer {
-  border: solid $borderThickness $borderColor;
-  width: 575px;
+.lessonsPgShadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
 
+.lessonsPgShadow:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+.jobVizCareer:hover{
+  cursor:pointer;
+}
+
+.heroLessonsPg{
+  padding: 13vh 0 !important;
+}
+
+.jobVizCareer {
+  
   @media (min-width: 768px) {
-    height: 300px;
+    width: 575px;
   }
 
   @media (max-width: 767px) and (min-width: 576px) {
-    width: 550px;
+    width: 445px;
   }
 
   @media (max-width: 575px) {
@@ -84,14 +121,61 @@ $borderColor: darkgray;
       section:last-child {
         width: 100%;
       }
+
     }
 
-    > section:last-child > span{
+    > section:last-child > span {
       text-align: center;
-      margin-top: 10px;
     }
-    padding: 20px 10px 20px 10px;
-    width: 90%;
+
+    margin-top: 10px;
+    width: 95%;
+    max-width: 540px;
+    min-width: 265px;
   }
+
+  span{
+    font-size: 14px;
+  };
 }
 
+.lessonImgContainer{
+  height: 70px;
+}
+
+.cardOnLessonsPg {
+  @media (min-width: 1200px) {
+    img {
+      max-height: 150px;
+    }
+  }
+
+  img{
+    max-width: 508px;
+  }
+
+  position: relative;
+
+
+  > div:nth-child(2) {
+    h3{
+      font-size: 1.3em;
+
+      @media(max-width: 575px){
+        font-size: 1.1em;
+      }
+    }
+
+    p{
+      font-size: 14px;
+    }
+  }
+
+
+  padding-bottom: 30px;
+}
+
+.lessonSubject {
+  bottom: 8px;
+  left: 15px;
+}

@@ -7,6 +7,10 @@ import JobVizIcon from '../../components/JobViz/JobVizIcon';
 
 const LessonsPage = ({ lessons }) => {
 
+  const handleJobVizCardClick = () => {
+    window.location.href = '/job-viz';
+  };
+
   const uniqueIDs = [];
 
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
@@ -20,23 +24,23 @@ const LessonsPage = ({ lessons }) => {
 
   return (
     <Layout>
-      <Hero className="bg-secondary">
+      <Hero className="bg-secondary heroLessonsPg">
         <h1>Interdisciplinary Lessons</h1>
         <p>Our lessons are free. We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
       </Hero>
       <div className="lessonsPgContent">
-        <section className="pb-3">
-          <h2 className="mt-3 ms-4 text-muted">Galactic Polymath Learning Tools</h2>
-          <section className="d-flex justify-content-center align-items-center d-sm-block justify-content-start align-items-stretch">
-            <div className="ms-md-5 jobVizCareer d-flex flex-column">
+        <section className="pb-3 pb-sm-5 pt-2">
+          <h2 className="mt-3 ms-sm-4 text-center text-sm-start text-muted">Galactic Polymath Learning Tools</h2>
+          <section className="d-flex d-md-block justify-content-center align-items-center justify-content-md-start align-items-md-start ps-lg-5 ms-md-3 mt-sm-4">
+            <div onClick={handleJobVizCardClick} className="jobVizCareer cardOnLessonsPg d-flex flex-column rounded lessonsPgShadow pb-2 pb-sm-3 pb-md-4">
               <section className="d-flex w-100">
                 <section className="imgSec d-flex justify-content-center align-items-center">
                   {/* put the image for jobViz here */}
                   <JobVizIcon />
                 </section>
                 <section className="d-flex justify-content-center align-items-center flex-column">
-                  <h4>
-                    <Link href="/job-viz" className="text-muted jobVizLink">Jobviz Career Explorer</Link>
+                  <h4 className="text-muted jobVizLink">
+                    Jobviz Career Explorer
                   </h4>
                 </section>
               </section>
@@ -47,9 +51,9 @@ const LessonsPage = ({ lessons }) => {
             </div>
           </section>
         </section>
-        <section className="lessonsSection pt-2">
-          <h2 className="ms-4 mb-4 text-muted">Galactic Polymath Releases</h2>
-          <div className='container mx-auto grid pb-5 px-3 gap-3 bg-light-gray pt-3'>
+        <section className="lessonsSection pt-1">
+          <h2 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h2>
+          <div className='container mx-auto grid pb-5 px-3 gap-3 pt-3'>
             {publishedLessons
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
               .map((lesson) => ((
@@ -57,9 +61,9 @@ const LessonsPage = ({ lessons }) => {
                   key={lesson.locale + lesson.id}
                   href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
                   passHref
-                  className='d-block bg-white rounded-3 g-col-6 no-hover-color-change'
+                  className='d-block position-relative bg-white rounded-3 g-col-6 no-hover-color-change lessonsPgShadow cardOnLessonsPg'
                 >
-                  <div>
+                  <div className="d-flex justify-content-center pt-lg-2">
                     {lesson.CoverImage && lesson.CoverImage.url && (
                       <Image
                         src={lesson.CoverImage.url}
@@ -74,13 +78,14 @@ const LessonsPage = ({ lessons }) => {
                       />
                     )}
                   </div>
-                  <div className='p-3'>
-                    <h3 className='fw-light text-black'>{lesson.Title}</h3>
+                  <div className='pt-2 ps-3'>
+                    <h3 className='fw-light text-black mb-0'>{lesson.Title}</h3>
                     <p className='text-black'>{lesson.Subtitle}</p>
-                    <span className={`badge bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
+                    <span className={`badge lessonSubject bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
                       {lesson.Section.overview.TargetSubject}
                     </span>
                   </div>
+                 
                 </Link>
               )
                 

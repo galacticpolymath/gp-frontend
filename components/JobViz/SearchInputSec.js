@@ -12,17 +12,19 @@
 /* eslint-disable react/jsx-indent */
 
 import { BsSearch } from "react-icons/bs"
-import { Card } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
+import { AiOutlineClose } from 'react-icons/ai'
 import getSearchResultsAsync from "../../helperFns/getSearchResults";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SearchResult from "./SearchSec/SearchResult";
 
 const { Title, Body, Header } = Card;
 
-const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchResultsCardRef, _isHighlighterOn }) => {
+const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchResultsCardRef, _isHighlighterOn, _isSearchResultsModalOn }) => {
     const [searchResults, setSearchResults] = _searchResults;
     const [, setForceReRenderer] = useState({});
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSearchResultsModalOn, setIsSearchResultsModalOn] = _isSearchResultsModalOn;
     const [searchInput, setSearchInput] = _searchInput;
     const [isHighlighterOn, setIsHighlighterOn] = _isHighlighterOn;
 
@@ -36,10 +38,15 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
         forceUpdate()
     }
 
+    const closeSearchResultsModal = () => {
+        setIsSearchResultsModalOn(false)
+    }
+
     const handleInput = event => {
-        setIsLoading(true)
-        setSearchInput(event.target.value);
         if (event.target.value) {
+            setIsLoading(true)
+            setSearchInput(event.target.value);
+            setIsSearchResultsModalOn(true);
             setTimeout(() => {
                 getSearchResultsAsync(event.target.value.toLowerCase())
                     .then(results => {
@@ -57,6 +64,7 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
         }
         setSearchResults([]);
         setSearchInput("");
+        setIsSearchResultsModalOn(false)
         setIsLoading(false)
     }
 
@@ -64,11 +72,22 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
         setIsHighlighterOn(event.target.checked)
     }
 
+    const handleEscapeKey = event => {
+        if (event.key === "Escape") {
+            closeSearchResultsModal();
+        }
+    }
+
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleEscapeKey);
+    }, [])
+
 
 
 
     return (
-        <section className="w-100 pt-5 mt-3 d-flex justify-content-center align-items-center flex-column">
+        <section className="w-100 pt-5 mt-3 d-flex justify-content-center align-items-center flex-column overflow-hidden">
             <section className="d-flex inputSec">
                 <section>
                     <input id="searchInputField" value={searchInput} className='border-4 rounded ps-1 pe-1' placeholder='Search Jobs' onChange={handleInput} />
@@ -77,58 +96,69 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                     <BsSearch />
                 </section>
             </section>
-            <section className="min-vw-100 d-flex justify-content-center position-relative">
-                {!!searchInput &&
-                    <Card ref={searchResultsCardRef} className="jobSearchResultsCard mt-2">
+            <section className="d-flex justify-content-center position-relative searchCardContainer min-vw-100">
+                <div ref={searchInputRef} className="position-absolute w-100 mt-5 jobVizBtnElDeterminer" />
+                {!!isSearchResultsModalOn &&
+                    <Card className="jobSearchResultsCard mt-2">
                         <Header className="position-relative searchResultsHeader d-flex flex-sm-row flex-column">
-                            {!isLoading ?
-                                <Title>
-                                    {searchResults?.length ? "Search Results" : "No results"}
-                                </Title>
-                                :
-                                <Title>
-                                    Loading...
-                                </Title>
-                            }
-                            <div className="switchMainContainer d-flex flex-column">
-                                <section>
-                                    <span>Highlighter</span>
+                            <section className="d-flex flex-column">
+                                {!isLoading ?
+                                    <Title>
+                                        {searchResults?.length ? "Search Results" : "No results"}
+                                    </Title>
+                                    :
+                                    <Title>
+                                        Loading...
+                                    </Title>
+                                }
+                                <section className="switchMainContainer d-flex flex-column">
+                                    <section>
+                                        <span>Highlighter</span>
+                                    </section>
+                                    <section className="d-flex mt-1">
+                                        <div className="switchContainer">
+                                            <label className="switch w-100 h-100">
+                                                <input
+                                                    type="checkbox"
+                                                    onChange={handleCheckBoxChange}
+                                                    checked={isHighlighterOn}
+                                                />
+                                                <span className="sliderForBtn round"></span>
+                                            </label>
+                                        </div>
+                                    </section>
                                 </section>
-                                <section className="d-flex mt-2 mt-sm-0 justify-content-sm-center align-items-sm-center">
-                                    <div className="switchContainer">
-                                        <label className="switch w-100 h-100">
-                                            <input
-                                                type="checkbox"
-                                                onChange={handleCheckBoxChange}
-                                                checked={isHighlighterOn}
-                                            />
-                                            <span className="sliderForBtn round"></span>
-                                        </label>
-                                    </div>
-                                </section>
-                            </div>
+                            </section>
+                            {/* create a button that will close the modal */}
+                            <button
+                                className="searchResultsCloseBtn position-absolute top-0 end-0 noBtnStyles"
+                                onClick={closeSearchResultsModal}
+                            >
+                                <AiOutlineClose />
+                            </button>
                         </Header>
                         <Body>
-                            {isLoading && <div className="d-flex justify-content-center align-items-center w-100 h-100">
-                                <div className="spinner-border" role="status">
-                                    <span className="visually-hidden">Loading...</span>
+                            {isLoading ?
+                                <div className="d-flex justify-content-center align-items-center w-100 h-100">
+                                    <div className="spinner-border" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
                                 </div>
-                            </div>
-                            }
-                            {!!searchResults?.length && searchResults.map((result, index) =>
-                                <SearchResult
-                                    key={index}
-                                    result={result}
-                                    searchInput={searchInput}
-                                    forceUpdateParentComp={forceUpdateComp}
-                                    index={index}
-                                    setSearchResults={setSearchResults}
-                                    _searchInput={[searchInput, setSearchInput]}
-                                    isHighlighterOn={isHighlighterOn}
-                                />)}
+                                :
+                                !!searchResults?.length && searchResults.map((result, index) =>
+                                    <SearchResult
+                                        key={index}
+                                        result={result}
+                                        searchInput={searchInput}
+                                        forceUpdateParentComp={forceUpdateComp}
+                                        index={index}
+                                        setSearchResults={setSearchResults}
+                                        _searchInput={[searchInput, setSearchInput]}
+                                        isHighlighterOn={isHighlighterOn}
+                                        closeSearchResultsModal={closeSearchResultsModal}
+                                    />)}
                         </Body>
                     </Card>}
-                <div ref={searchInputRef} className="position-absolute w-100 mt-5 jobVizBtnElDeterminer" />
             </section>
         </section>
     )

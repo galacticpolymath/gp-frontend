@@ -19,7 +19,7 @@ $searchResultsHighlight: #ffc107;
 
 .jobVizHero {
   background-color: $heroColor;
-  padding: 150px 0px !important;
+  padding: 8vh 0 !important;
 }
 
 .jobVizChain {
@@ -30,9 +30,7 @@ $searchResultsHighlight: #ffc107;
   }
 }
 
-.iconSec {
-  // height: 120px;
-}
+
 
 .jobVizImgContainerOnPg {
   width: 350px;
@@ -153,20 +151,15 @@ $searchResultsHighlight: #ffc107;
 
 .searchResultHighlight {
   color: $searchResultsHighlight;
+  padding: 0;
+}
+
+.searchResultTitle{
+  line-height: 1.15px;
 }
 
 #currentJobCategoryHeaderTxt {
   margin: 8px 0px 8px 0px;
-}
-
-.jobVizSearchResultsSec {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  @media (max-width: 767px) {
-    justify-content: space-evenly;
-  }
 }
 
 .jobVizSearchResultsSec {
@@ -175,11 +168,33 @@ $searchResultsHighlight: #ffc107;
   }
 }
 
+.jobVizSearchResultsSecUl {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: circle outside;
+  // width: 100px;
+
+  @media (max-width: 767px) {
+    justify-content: space-evenly;
+  }
+}
+
 .searchResultJob {
   margin-top: 20px;
   max-width: 300px;
   position: relative;
   min-height: 100px;
+
+  @media(min-width: 576px){
+    padding-right: 40px;
+  }
+
+  span{
+    text-align: left;
+  }
+
+  width: 100%;
 
   button {
     line-height: 20px;
@@ -248,7 +263,17 @@ $searchResultsHighlight: #ffc107;
 
 .jobVizBtnElDeterminer {
   height: 100%;
-  z-index: -1;
+  z-index: -1000;
+  padding-top: 100px;
+}
+
+.searchCardContainer{
+  // height: 1100px;
+  // background-color: red;
+}
+
+.jobSearchResultsCard{
+  max-width: 1050px; 
 }
 
 // .fadeInFromRight{
@@ -320,9 +345,21 @@ $searchResultsHighlight: #ffc107;
 /* The switch - the box around the sliderForBtn */
 .switchMainContainer {
   @media (min-width: 576px) {
-    position: absolute;
-    right: 10px;
-    top: 5px;
+    // position: absolute;
+    // right: 10px;
+    // top: 5px;
+  }
+}
+
+.searchResultsCloseBtn{
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;;
+  > svg {
+    font-size: 32px !important;
   }
 }
 
@@ -401,7 +438,7 @@ input:checked + .sliderForBtn:before {
   border-radius: 50%;
 }
 
-.jobVizCategoryImgPrevWrapper{
+.jobVizCategoryImgPrevWrapper {
   position: absolute;
   left: 10px;
 }

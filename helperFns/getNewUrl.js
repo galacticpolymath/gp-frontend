@@ -7,6 +7,7 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable indent */
 
+// when the user clicks on a previously selected job category in the chain 
 const getNewUrl = (jobCategory, queryParams) => {
     const { id, hierarchy } = jobCategory;
     const mainLevel = hierarchy + 1;

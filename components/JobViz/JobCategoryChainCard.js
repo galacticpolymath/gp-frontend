@@ -9,9 +9,9 @@
 /* eslint-disable react/jsx-no-undef */
 
 import { useContext } from 'react';
-import { Button, Card } from 'react-bootstrap';
-import { IoNewspaperOutline } from 'react-icons/io5';
+import { Card } from 'react-bootstrap';
 import { ModalContext } from "../../providers/ModalProvider";
+import DetailsBtn from './Buttons/Details';
 
 const jobsAllInfo = {
     "id": 1,
@@ -39,9 +39,6 @@ const JobCategoryChainCard = ({ jobCategory, index }) => {
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
 
-    const handleBtnClick = () => {
-        setSelectedJob(jobCategory ?? jobsAllInfo);
-    }
 
     return (
         <Card key={index ?? "0"} className="jobVizCard border-0 shadow" id='jobCategoryChainCard' >
@@ -58,18 +55,10 @@ const JobCategoryChainCard = ({ jobCategory, index }) => {
                 <section className="jobVizCard-buttonSec">
                     <h4 id="currentJobCategoryHeaderTxt" className='text-muted text-center'>{jobCategory?.categoryName?.toUpperCase() ?? "Job Categories"}</h4>
                     <section className="d-flex justify-content-center align-items-center w-100">
-                        <Button
-                            id="jobVizBtnSearch"
-                            className="d-flex justify-content-center align-items-center job-categories-btn"
-                            onClick={handleBtnClick}
-                        >
-                            <span className="w-25 h-100 d-flex justify-content-center align-items-center">
-                                <IoNewspaperOutline />
-                            </span>
-                            <span className="w-75 h-100 d-flex justify-content-center align-items-center ps-1">
-                                Details
-                            </span>
-                        </Button>
+                        <DetailsBtn 
+                            jobToShowInModal={jobCategory ?? jobsAllInfo}
+                            setSelectedJob={setSelectedJob}
+                        />
                     </section>
                 </section>
             </Card.Body>

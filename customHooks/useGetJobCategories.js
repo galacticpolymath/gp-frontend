@@ -24,6 +24,7 @@ export const useGetJobCategories = (hierarchyNum, level) => {
         if ((currentHierarchyNum !== hierarchyNum) || (currentLevel !== level)) {
             setHierarchyNumAndLevel({ hierarchyNum: hierarchyNum, level: level });
         }
+        
     }, [hierarchyNum, level])
 
 
@@ -32,11 +33,9 @@ export const useGetJobCategories = (hierarchyNum, level) => {
         const { hierarchyNum: targetHierarchyNum, level: selectedLevel } = hierarchyNumAndLevel ?? {};
 
         if (targetHierarchyNum && selectedLevel) {
-            console.log("hierarchyNumAndLevel: ", hierarchyNumAndLevel)
             const targetJobCategories = filterResults(parseInt(targetHierarchyNum), selectedLevel);
             setJobCategories(targetJobCategories);
             setIsGettingData(false);
-            debugger
             return;
         }
     }, [hierarchyNumAndLevel]);
