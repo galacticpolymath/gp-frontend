@@ -109,7 +109,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                         </div>
                         <section className="mt-4 text-sm-start text-center">
                             <a href={link} target="_blank" className="text-dark text-decoration-underline  fst-italic fw200 underline-less-thick">
-                                "{txt}"
+                            &quot;{txt}&quot;
                             </a>
                         </section>
                     </section>
