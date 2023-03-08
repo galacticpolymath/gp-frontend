@@ -1,0 +1,51 @@
+.jobVizSearchResultsSecUl {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: circle outside;
+  // width: 100px;
+
+  @media (max-width: 767px) {
+    justify-content: space-evenly;
+  }
+}
+
+.searchResultJob {
+  margin-top: 20px;
+  max-width: 300px;
+  position: relative;
+  min-height: 100px;
+
+  @media (min-width: 576px) {
+    padding-right: 40px;
+  }
+
+  span {
+    text-align: left;
+  }
+
+  width: 100%;
+
+  button {
+    line-height: 20px;
+  }
+
+  button:hover {
+    text-decoration: underline;
+  }
+}
+
+.jobVizSearchResultsSec {
+  @media (min-width: 1200px) {
+    min-width: 700px;
+  }
+}
+
+.searchResultHighlight {
+  color: $searchResultsHighlight;
+  padding: 0;
+}
+
+.searchResultTitle {
+  line-height: 1.15px;
+}
