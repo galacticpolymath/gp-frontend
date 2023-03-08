@@ -15,18 +15,10 @@ $borderColor: darkgray;
   }
 }
 
-.lessonIslandsContainer{
-
-
-  // overriding the max-width value of container class
-  // max-width: 2450px !important;
-}
-
 .lessonsPgContent{
   @media(min-width: 1440px){
     > section:first-child{
-      
-      > section{
+      > section:last-of-type{
         @media(min-width: 1440px){
           display: flex;
           justify-content: center;
@@ -39,6 +31,18 @@ $borderColor: darkgray;
         }
       }
     } 
+  }
+}
+
+.headerSecLessonsPg{
+  @media(min-width: 1440px){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    h2{
+      max-width: 1413px !important;
+      width: 100%;
+    }
   }
 }
 

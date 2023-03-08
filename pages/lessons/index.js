@@ -30,7 +30,11 @@ const LessonsPage = ({ lessons }) => {
       </Hero>
       <div className="lessonsPgContent">
         <section className="pb-3 pb-sm-5 pt-2">
-          <h2 className="mt-3 ms-sm-4 text-center text-sm-start text-muted">Galactic Polymath Learning Tools</h2>
+          <section className="headerSecLessonsPg">
+            <h2 className="mt-3 ms-sm-4 text-center text-sm-start text-muted">
+              Galactic Polymath Learning Tools
+            </h2>
+          </section>
           <section>
             <section className="d-flex d-md-block justify-content-center align-items-center justify-content-md-start align-items-md-start ps-lg-5 ms-md-3 mt-sm-4">
               <div onClick={handleJobVizCardClick} className="jobVizCareer cardOnLessonsPg d-flex flex-column rounded lessonsPgShadow pb-2 pb-sm-3 pb-md-4">
@@ -54,7 +58,9 @@ const LessonsPage = ({ lessons }) => {
           </section>
         </section>
         <section className="lessonsSection pt-1">
-          <h2 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h2>
+          <section className="headerSecLessonsPg">
+            <h2 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h2>
+          </section>
           <div className='container mx-auto grid pb-5 px-3 gap-3 pt-3 lessonIslandsContainer'>
             {publishedLessons
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
