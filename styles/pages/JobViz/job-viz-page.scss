@@ -11,9 +11,6 @@ $searchResultsHighlight: #ffc107;
 
 .jobViz-chain-txt {
   color: $jobVizCategoryChainTxtHovered;
-  @media (min-width: 768px) {
-    // white-space: nowrap;
-  }
 }
 
 .jobViz-chain-txt:hover {

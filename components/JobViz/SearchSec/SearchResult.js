@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable quotes */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-wrap-multilines */
@@ -43,11 +44,14 @@ const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setS
     }
 
     return (
-        <div key={`${index}_searchResultGroup`} className="d-flex justify-content-between align-items-center flex-column">
-            <section className={`w-100 ${(index !== 0) ? 'border-top' : ''} border-bottom`}>
-                <h5 className="ms-sm-3 searchResultHeaderTxt text-center text-sm-start fw-bold fst-italic display-6 ">{letter}</h5>
+        <div key={`${index}_searchResultGroup`} className={`d-flex justify-content-between align-items-center position-relative border-bottom flex-sm-row flex-column`}>
+            <h5 className="ms-sm-3 searchResultHeaderTxt text-center text-sm-start fw-bold fst-italic display-6 position-absolute top-0 d-sm-block d-none">{letter}</h5>
+            <section className="d-sm-none d-flex w-100 p-0">
+                <h5 className="w-100 m-0">
+                    {letter}
+                </h5>
             </section>
-            <section className="w-100 jobVizSearchResultsSec ps-3 pt-3 pb-5 pe-3">
+            <section className="w-100 jobVizSearchResultsSec ps-sm-5 pt-3 pt-xl-4 pb-5 pe-sm-3">
                 <ul className="w-100 h-100 jobVizSearchResultsSecUl">
                     {jobs.map(job => {
                         const { title, id } = job;
