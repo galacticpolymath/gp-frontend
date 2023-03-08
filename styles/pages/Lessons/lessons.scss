@@ -15,6 +15,19 @@ $borderColor: darkgray;
   }
 }
 
+.lessonIslandsContainer{
+
+
+  // overriding the max-width value of container class
+  // max-width: 2450px !important;
+}
+
+.lessonsPgContent{
+  > section:first-child{
+    border: solid pink;
+  }
+}
+
 .jobVizEntrySection span {
   font-size: 24px;
 }
@@ -148,6 +161,7 @@ $borderColor: darkgray;
     img {
       max-height: 150px;
     }
+    max-width: 633px;
   }
 
   img{

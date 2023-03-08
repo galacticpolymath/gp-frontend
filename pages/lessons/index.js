@@ -53,7 +53,7 @@ const LessonsPage = ({ lessons }) => {
         </section>
         <section className="lessonsSection pt-1">
           <h2 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h2>
-          <div className='container mx-auto grid pb-5 px-3 gap-3 pt-3'>
+          <div className='container mx-auto grid pb-5 px-3 gap-3 pt-3 lessonIslandsContainer'>
             {publishedLessons
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
               .map((lesson) => ((
