@@ -23,8 +23,22 @@ $borderColor: darkgray;
 }
 
 .lessonsPgContent{
-  > section:first-child{
-    border: solid pink;
+  @media(min-width: 1440px){
+    > section:first-child{
+      
+      > section{
+        @media(min-width: 1440px){
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        > section{
+          width: 100%;
+          max-width: 1419px;
+        }
+      }
+    } 
   }
 }
 

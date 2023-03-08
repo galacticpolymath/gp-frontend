@@ -14,7 +14,7 @@ const LessonsPage = ({ lessons }) => {
   const uniqueIDs = [];
 
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
-    if (!uniqueIDs.includes(id) 
+    if (!uniqueIDs.includes(id)
       && PublicationStatus === 'Live') {
       uniqueIDs.push(id);
       return true;
@@ -31,24 +31,26 @@ const LessonsPage = ({ lessons }) => {
       <div className="lessonsPgContent">
         <section className="pb-3 pb-sm-5 pt-2">
           <h2 className="mt-3 ms-sm-4 text-center text-sm-start text-muted">Galactic Polymath Learning Tools</h2>
-          <section className="d-flex d-md-block justify-content-center align-items-center justify-content-md-start align-items-md-start ps-lg-5 ms-md-3 mt-sm-4">
-            <div onClick={handleJobVizCardClick} className="jobVizCareer cardOnLessonsPg d-flex flex-column rounded lessonsPgShadow pb-2 pb-sm-3 pb-md-4">
-              <section className="d-flex w-100">
-                <section className="imgSec d-flex justify-content-center align-items-center">
-                  {/* put the image for jobViz here */}
-                  <JobVizIcon />
+          <section>
+            <section className="d-flex d-md-block justify-content-center align-items-center justify-content-md-start align-items-md-start ps-lg-5 ms-md-3 mt-sm-4">
+              <div onClick={handleJobVizCardClick} className="jobVizCareer cardOnLessonsPg d-flex flex-column rounded lessonsPgShadow pb-2 pb-sm-3 pb-md-4">
+                <section className="d-flex w-100">
+                  <section className="imgSec d-flex justify-content-center align-items-center">
+                    {/* put the image for jobViz here */}
+                    <JobVizIcon />
+                  </section>
+                  <section className="d-flex justify-content-center align-items-center flex-column">
+                    <h4 className="text-muted jobVizLink">
+                      Jobviz Career Explorer
+                    </h4>
+                  </section>
                 </section>
-                <section className="d-flex justify-content-center align-items-center flex-column">
-                  <h4 className="text-muted jobVizLink">
-                    Jobviz Career Explorer
-                  </h4>
+                <section className="w-100 d-flex flex-column ps-sm-3">
+                  <span className="text-muted">A starting point for students.</span>
+                  <span className="text-muted">Exploration of 1,000 job possibilities.</span>
                 </section>
-              </section>
-              <section className="w-100 d-flex flex-column ps-sm-3">
-                <span className="text-muted">A starting point for students.</span>
-                <span className="text-muted">Exploration of 1,000 job possibilities.</span>
-              </section>
-            </div>
+              </div>
+            </section>
           </section>
         </section>
         <section className="lessonsSection pt-1">
@@ -85,10 +87,10 @@ const LessonsPage = ({ lessons }) => {
                       {lesson.Section.overview.TargetSubject}
                     </span>
                   </div>
-                 
+
                 </Link>
               )
-                
+
               ))}
           </div>
         </section>
