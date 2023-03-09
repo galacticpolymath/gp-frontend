@@ -1,16 +1,16 @@
-@import "./sections/jobCategories.scss";
-@import "./modals/selectedJobStyles.scss";
-
 $heroColor: #f0f4ff;
 $jobVizCategoryChainTxt: #6812d1;
 $jobVizCategoryChainTxtHovered: #2e085c;
 $searchResultsHighlight: #ffc107;
 
+@import "./sections/jobCategories.scss";
+@import "./modals/selectedJobStyles.scss";
+@import "./modals/searchResults.scss";
+
+
+
 .jobViz-chain-txt {
   color: $jobVizCategoryChainTxtHovered;
-  @media (min-width: 768px) {
-    // white-space: nowrap;
-  }
 }
 
 .jobViz-chain-txt:hover {
@@ -149,61 +149,13 @@ $searchResultsHighlight: #ffc107;
   }
 }
 
-.searchResultHighlight {
-  color: $searchResultsHighlight;
-  padding: 0;
-}
 
-.searchResultTitle{
-  line-height: 1.15px;
-}
 
 #currentJobCategoryHeaderTxt {
   margin: 8px 0px 8px 0px;
 }
 
-.jobVizSearchResultsSec {
-  @media (min-width: 1200px) {
-    min-width: 700px;
-  }
-}
 
-.jobVizSearchResultsSecUl {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  list-style: circle outside;
-  // width: 100px;
-
-  @media (max-width: 767px) {
-    justify-content: space-evenly;
-  }
-}
-
-.searchResultJob {
-  margin-top: 20px;
-  max-width: 300px;
-  position: relative;
-  min-height: 100px;
-
-  @media(min-width: 576px){
-    padding-right: 40px;
-  }
-
-  span{
-    text-align: left;
-  }
-
-  width: 100%;
-
-  button {
-    line-height: 20px;
-  }
-
-  button:hover {
-    text-decoration: underline;
-  }
-}
 
 .jobVizNavBtn {
   font-size: 14px;

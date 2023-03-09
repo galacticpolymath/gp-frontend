@@ -10,7 +10,37 @@ $borderColor: darkgray;
     @media(max-width: 575px){
       display: flex !important;
       flex-direction: column;
+    }
+  }
+}
 
+.lessonsPgContent{
+  @media(min-width: 1440px){
+    > section:first-child{
+      > section:last-of-type{
+        @media(min-width: 1440px){
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        > section{
+          width: 100%;
+          max-width: 1419px;
+        }
+      }
+    } 
+  }
+}
+
+.headerSecLessonsPg{
+  @media(min-width: 1440px){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    h2{
+      max-width: 1413px !important;
+      width: 100%;
     }
   }
 }
@@ -148,6 +178,7 @@ $borderColor: darkgray;
     img {
       max-height: 150px;
     }
+    max-width: 633px;
   }
 
   img{

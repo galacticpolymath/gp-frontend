@@ -10,10 +10,11 @@ $jobInfoStatCard: #eff8fe;
     font-weight: 300;
     line-height: 30px;
     font-size: 1.0625rem;
+    line-height: 1.2rem;
   }
 
   overflow-y: auto;
-  max-height: 650px;
+  max-height: 695px;
 
   @media (min-width: 576px) and (max-width: 767px) {
     // min-width: 550px;
@@ -45,11 +46,12 @@ $jobInfoStatCard: #eff8fe;
 
 .jobInfoStatCard {
   background-color: $jobInfoStatCard;
-  height: 186px;
+  // height: 186px;
+  height: 175px;
   width: 195px;
 
   h5 {
-    line-height: 1.3em;
+    line-height: 1em;
     font-size: 17px;
   }
 
@@ -66,7 +68,7 @@ $jobInfoStatCard: #eff8fe;
     > section {
       height: 160px;
       > section:last-child {
-        bottom: 5px;
+        bottom: 15px;
         max-height: 50px;
       }
     }
