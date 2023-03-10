@@ -226,6 +226,14 @@ $searchResultsHighlight: #ffc107;
 
 .jobSearchResultsCard{
   max-width: 1050px; 
+
+  @media(min-width: 576px){
+    min-width: 540px;
+  }
+
+  @media(min-width: 768px){
+    min-width: 600px;
+  }
 }
 
 // .fadeInFromRight{
@@ -295,15 +303,6 @@ $searchResultsHighlight: #ffc107;
 }
 
 /* The switch - the box around the sliderForBtn */
-.switchMainContainer {
-  border: solid pink;
-  @media (min-width: 576px) {
-    // position: absolute;
-    // right: 10px;
-    // top: 5px;
-  }
-}
-
 .searchResultsCloseBtn{
   width: 35px;
   height: 35px;
@@ -312,12 +311,13 @@ $searchResultsHighlight: #ffc107;
   align-items: center;
   background: none;;
   > svg {
-    font-size: 32px !important;
+    font-size: 55px !important;
   }
 }
 
+
 .searchResultsHeader {
-  min-height: 85px;
+  // min-height: 85px;
 }
 
 .switchContainer {

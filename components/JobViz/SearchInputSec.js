@@ -103,11 +103,11 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                         <Header className="position-relative searchResultsHeader d-flex flex-row">
                             <section className="d-flex flex-row justify-content-between w-100">
                                 {!isLoading ?
-                                    <Title>
+                                    <Title className="mb-0 d-flex justify-content-center align-items-center">
                                         {searchResults?.length ? "Search Results" : "No results"}
                                     </Title>
                                     :
-                                    <Title>
+                                    <Title className="mb-0 d-flex justify-content-center align-items-center">
                                         Loading...
                                     </Title>
                                 }
@@ -127,15 +127,16 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                                             </label>
                                         </div>
                                     </section>
+                                    <section className="h-100 d-flex justify-content-center align-items-center">
+                                        <button
+                                            className="searchResultsCloseBtn noBtnStyles"
+                                            onClick={closeSearchResultsModal}
+                                        >
+                                            <AiOutlineClose id="searchResultsCloseIcon" />
+                                        </button>
+                                    </section>
                                 </section>
                             </section>
-                            {/* create a button that will close the modal */}
-                            <button
-                                className="searchResultsCloseBtn position-absolute top-0 end-0 noBtnStyles"
-                                onClick={closeSearchResultsModal}
-                            >
-                                <AiOutlineClose />
-                            </button>
                         </Header>
                         <Body>
                             {isLoading ?
