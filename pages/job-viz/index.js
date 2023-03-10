@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+-/* eslint-disable quotes */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-closing-tag-location */
@@ -10,6 +10,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
+import.meta;
 import Hero from '../../components/Hero';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import Layout from '../../components/Layout';
