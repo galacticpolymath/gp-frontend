@@ -2,13 +2,22 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  //   flex-direction: column;
   list-style: circle outside;
-  //   max-height: 500px;
-  // width: 100px;
 
   @media (max-width: 767px) {
     justify-content: space-evenly;
+  }
+}
+
+.jobVizSearchResultsTitle{
+  @media(max-width: 575px){
+    font-size: 1.2rem;
+  }
+}
+
+.closeSearchResultsJobVizBtn{
+  @media(max-width: 575px){
+    right: 5px;
   }
 }
 
@@ -64,5 +73,24 @@
     @media(max-width: 767px){
       width: 80%;
       min-width: 240px;
+    }
+
+
+    max-width: 1050px; 
+
+    @media(min-width: 576px){
+      min-width: 540px;
+    }
+  
+    @media(min-width: 768px){
+      min-width: 600px;
+    }
+
+    @media(min-width: 1200px){
+      min-width: 700px;
+    }
+  
+    @media(max-width: 576px){
+      
     }
   }

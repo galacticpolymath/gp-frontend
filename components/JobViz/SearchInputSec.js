@@ -18,6 +18,7 @@ import getSearchResultsAsync from "../../helperFns/getSearchResults";
 import { useCallback, useEffect, useState } from "react";
 import SearchResult from "./SearchSec/SearchResult";
 import HighlighterComp from "./SearchSec/HighlighterComp";
+import CloseSearchResultsJobViz from "./Buttons/CloseSearchResultsJobViz";
 
 const { Title, Body, Header } = Card;
 
@@ -102,13 +103,13 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                 {!!isSearchResultsModalOn &&
                     <Card className="jobSearchResultsCard mt-2">
                         <Header className="position-relative searchResultsHeader d-flex flex-row">
-                            <section className="d-flex flex-row justify-content-between w-100">
+                            <section className="d-flex flex-column flex-sm-row justify-content-between w-100">
                                 {!isLoading ?
-                                    <Title className="mb-0 d-flex justify-content-center align-items-center">
+                                    <Title className="mb-0 d-flex justify-content-sm-center align-items-sm-center jobVizSearchResultsTitle">
                                         {searchResults?.length ? "Search Results" : "No results"}
                                     </Title>
                                     :
-                                    <Title className="mb-0 d-flex justify-content-center align-items-center">
+                                    <Title className="mb-0 d-flex justify-content-sm-center align-items-sm-center jobVizSearchResultsTitle">
                                         Loading...
                                     </Title>
                                 }
@@ -116,9 +117,9 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                                     handleCheckBoxChange={handleCheckBoxChange} 
                                     isHighlighterOn={isHighlighterOn}
                                     closeSearchResultsModal={closeSearchResultsModal}
-                                    isNotOnSmScreen
                                 />
                             </section>
+                            <CloseSearchResultsJobViz willShowOnlyOnSmScreen closeSearchResultsModal={closeSearchResultsModal} />
                         </Header>
                         <Body>
                             {isLoading ?

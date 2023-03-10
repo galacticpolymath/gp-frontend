@@ -224,21 +224,7 @@ $searchResultsHighlight: #ffc107;
   // background-color: red;
 }
 
-.jobSearchResultsCard{
-  max-width: 1050px; 
 
-  @media(min-width: 576px){
-    min-width: 540px;
-  }
-
-  @media(min-width: 768px){
-    min-width: 600px;
-  }
-
-  @media(max-width: 576px){
-    
-  }
-}
 
 // .fadeInFromRight{
 //   animation: fadeInFromRight .7s ease-in-out;

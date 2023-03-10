@@ -10,18 +10,16 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
+import CloseSearchResultsJobViz from "../Buttons/CloseSearchResultsJobViz";
 
-import { AiOutlineClose } from "react-icons/ai"
+const HighlighterComp = ({ handleCheckBoxChange, isHighlighterOn, closeSearchResultsModal }) => {
 
-const HighlighterComp = ({ handleCheckBoxChange, isHighlighterOn, closeSearchResultsModal, isNotOnSmScreen }) => {
-    const parentClassName = `switchMainContainer ${isNotOnSmScreen ? 'd-none d-sm-flex' : 'd-flex d-none'} flex-row` 
-    
     return (
-        <section className={parentClassName}>
-            <section className="h-100 d-flex justify-content-center align-items-center me-2">
+        <section className='switchMainContainer d-flex flex-column flex-sm-row mt-1 mt-sm-0'>
+            <section className="h-100 d-flex justify-content-sm-center align-items-sm-center me-2">
                 <span>Highlighter</span>
             </section>
-            <section className="h-100 d-flex justify-content-center align-items-center">
+            <section className="h-100 d-flex justify-content-sm-center align-items-sm-center mt-1 mt-sm-0">
                 <div className="switchContainer">
                     <label className="switch w-100 h-100">
                         <input
@@ -33,16 +31,9 @@ const HighlighterComp = ({ handleCheckBoxChange, isHighlighterOn, closeSearchRes
                     </label>
                 </div>
             </section>
-            {isNotOnSmScreen &&
-                <section className="h-100 d-flex justify-content-center align-items-center">
-                    <button
-                        className="searchResultsCloseBtn noBtnStyles"
-                        onClick={closeSearchResultsModal}
-                    >
-                        <AiOutlineClose id="searchResultsCloseIcon" />
-                    </button>
-                </section>
-            }
+            <section className="h-100 d-none d-sm-flex justify-content-center align-items-center">
+                <CloseSearchResultsJobViz closeSearchResultsModal={closeSearchResultsModal} />
+            </section>
         </section>
     )
 }
