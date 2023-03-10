@@ -17,6 +17,7 @@ import { AiOutlineClose } from 'react-icons/ai'
 import getSearchResultsAsync from "../../helperFns/getSearchResults";
 import { useCallback, useEffect, useState } from "react";
 import SearchResult from "./SearchSec/SearchResult";
+import HighlighterComp from "./SearchSec/HighlighterComp";
 
 const { Title, Body, Header } = Card;
 
@@ -111,31 +112,12 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                                         Loading...
                                     </Title>
                                 }
-                                <section className="switchMainContainer d-flex flex-row">
-                                    <section className="h-100 d-flex justify-content-center align-items-center me-2">
-                                        <span>Highlighter</span>
-                                    </section>
-                                    <section className="h-100 d-flex justify-content-center align-items-center">
-                                        <div className="switchContainer">
-                                            <label className="switch w-100 h-100">
-                                                <input
-                                                    type="checkbox"
-                                                    onChange={handleCheckBoxChange}
-                                                    checked={isHighlighterOn}
-                                                />
-                                                <span className="sliderForBtn round"></span>
-                                            </label>
-                                        </div>
-                                    </section>
-                                    <section className="h-100 d-flex justify-content-center align-items-center">
-                                        <button
-                                            className="searchResultsCloseBtn noBtnStyles"
-                                            onClick={closeSearchResultsModal}
-                                        >
-                                            <AiOutlineClose id="searchResultsCloseIcon" />
-                                        </button>
-                                    </section>
-                                </section>
+                                <HighlighterComp 
+                                    handleCheckBoxChange={handleCheckBoxChange} 
+                                    isHighlighterOn={isHighlighterOn}
+                                    closeSearchResultsModal={closeSearchResultsModal}
+                                    isNotOnSmScreen
+                                />
                             </section>
                         </Header>
                         <Body>
