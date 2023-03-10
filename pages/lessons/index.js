@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable quotes */
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -14,8 +16,7 @@ const LessonsPage = ({ lessons }) => {
   const uniqueIDs = [];
 
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
-    if (!uniqueIDs.includes(id)
-      && PublicationStatus === 'Live') {
+    if (!uniqueIDs.includes(id) && (PublicationStatus === 'Live')) {
       uniqueIDs.push(id);
       return true;
     }
