@@ -296,6 +296,7 @@ $searchResultsHighlight: #ffc107;
 
 /* The switch - the box around the sliderForBtn */
 .switchMainContainer {
+  border: solid pink;
   @media (min-width: 576px) {
     // position: absolute;
     // right: 10px;
@@ -320,8 +321,10 @@ $searchResultsHighlight: #ffc107;
 }
 
 .switchContainer {
-  height: 40px;
-  width: 60px;
+  // height: 40px;
+  width: 70px;
+  height: 30px;
+  // width: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -344,7 +347,7 @@ $searchResultsHighlight: #ffc107;
   position: absolute;
   cursor: pointer;
   top: 0;
-  left: 0;
+  left: 0px;
   right: 0;
   bottom: 0;
   background-color: #ccc;
@@ -357,10 +360,10 @@ $searchResultsHighlight: #ffc107;
 .sliderForBtn:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
+  height: 23px;
+  width: 23px;
   left: 4px;
-  bottom: 4px;
+  top: 3px;
   background-color: white;
   -webkit-transition: 0.4s;
   transition: 0.4s;
@@ -376,9 +379,9 @@ input:focus + .sliderForBtn {
 }
 
 input:checked + .sliderForBtn:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(33px);
+  -ms-transform: translateX(33px);
+  transform: translateX(33px);
 }
 
 /* Rounded sliders */

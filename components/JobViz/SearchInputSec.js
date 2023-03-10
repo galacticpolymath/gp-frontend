@@ -100,8 +100,8 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                 <div ref={searchInputRef} className="position-absolute w-100 mt-5 jobVizBtnElDeterminer" />
                 {!!isSearchResultsModalOn &&
                     <Card className="jobSearchResultsCard mt-2">
-                        <Header className="position-relative searchResultsHeader d-flex flex-sm-row flex-column">
-                            <section className="d-flex flex-column">
+                        <Header className="position-relative searchResultsHeader d-flex flex-row">
+                            <section className="d-flex flex-row justify-content-between w-100">
                                 {!isLoading ?
                                     <Title>
                                         {searchResults?.length ? "Search Results" : "No results"}
@@ -111,11 +111,11 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                                         Loading...
                                     </Title>
                                 }
-                                <section className="switchMainContainer d-flex flex-column">
-                                    <section>
+                                <section className="switchMainContainer d-flex flex-row">
+                                    <section className="h-100 d-flex justify-content-center align-items-center me-2">
                                         <span>Highlighter</span>
                                     </section>
-                                    <section className="d-flex mt-1">
+                                    <section className="h-100 d-flex justify-content-center align-items-center">
                                         <div className="switchContainer">
                                             <label className="switch w-100 h-100">
                                                 <input
