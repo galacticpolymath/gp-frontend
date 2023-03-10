@@ -24,7 +24,7 @@ import { useInView } from 'react-intersection-observer';
 import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';
 import GoToJobVizChain from '../../components/JobViz/Buttons/GoToJobVizChain';
 
-
+const DATA_SOURCE_LINK = "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm"
 
 const JobViz = ({ vals }) => {
     const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
@@ -38,8 +38,6 @@ const JobViz = ({ vals }) => {
         setSearchInput("")
         setSearchResults([])
     }
-
-    
 
     return (
         <Layout>
@@ -129,6 +127,16 @@ const JobViz = ({ vals }) => {
                     isLoading={isLoading}
                     resetSearch={resetSearchResults}
                 />
+                <section className="w-100 d-flex justify-content-sm-end justify-content-center align-items-center mt-5">
+                    <span className='d-block d-sm-inline me-sm-5'>
+                        <span className="d-block d-sm-inline font-weight-bold me-sm-2 text-sm-start text-center">
+                            Data Source: 
+                        </span>
+                        <a href={DATA_SOURCE_LINK} target="_blank" className="underline-on-hover text-sm-start text-center">
+                            US Bureau of Labor Statistics
+                        </a>
+                    </span>
+                </section>
             </section>
             {isSearchResultsModalOn && (searchResults.length && <GoToSearchInput isScrollToInputBtnVisible={inView} />)}
             {isSearchResultsModalOn && (searchResults.length && <GoToJobVizChain isScrollToJobVizChainBtnVisible={inView} />)}
