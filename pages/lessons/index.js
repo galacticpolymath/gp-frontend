@@ -14,14 +14,26 @@ const LessonsPage = ({ lessons }) => {
   };
 
   const uniqueIDs = [];
+  const lessonsAptFor = [{ lesson: 'Colourful Solutions', lessonAptFor: "YEARS: 9-13" }, { lesson: 'Genetic Rescue to the Rescue', lessonAptFor: "GRADES: 9-12" }, { lesson: 'The Guardian Frogs of Borneo', lessonAptFor: 'GRADES: 5-9' }, { lesson: 'Females singing to be heard', lessonAptFor: 'GRADES: ADAPTED FOR 5-6, 7-8, & 9-12' }, { lesson: 'I Like That!', lessonAptFor: 'GRADES: 5-9' }];
 
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
-    if (!uniqueIDs.includes(id) && (PublicationStatus === 'Live')) {
-      uniqueIDs.push(id);
-      return true;
+    const isUniqueAndStatusLive = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
+
+    isUniqueAndStatusLive && uniqueIDs.push(id);
+
+    return isUniqueAndStatusLive;
+  }).map(lesson => {
+    const lessonAptFor = lessonsAptFor.find(({ lesson: lessonTitle }) => lessonTitle === lesson.Title);
+
+    if(lessonsAptFor){
+      return {
+        ...lesson,
+        aptFor: lessonAptFor.lessonAptFor,
+      };
     }
-    return false;
-  });
+
+    return lesson;
+  } );
 
   return (
     <Layout>
@@ -92,6 +104,9 @@ const LessonsPage = ({ lessons }) => {
                     <p className='text-black'>{lesson.Subtitle}</p>
                     <span className={`badge lessonSubject bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
                       {lesson.Section.overview.TargetSubject}
+                    </span>
+                    <span className="">
+                      {lesson.aptFor}
                     </span>
                   </div>
 
