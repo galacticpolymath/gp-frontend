@@ -17,6 +17,8 @@ import { AiOutlineClose } from 'react-icons/ai'
 import getSearchResultsAsync from "../../helperFns/getSearchResults";
 import { useCallback, useEffect, useState } from "react";
 import SearchResult from "./SearchSec/SearchResult";
+import HighlighterComp from "./SearchSec/HighlighterComp";
+import CloseSearchResultsJobViz from "./Buttons/CloseSearchResultsJobViz";
 
 const { Title, Body, Header } = Card;
 
@@ -100,42 +102,24 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                 <div ref={searchInputRef} className="position-absolute w-100 mt-5 jobVizBtnElDeterminer" />
                 {!!isSearchResultsModalOn &&
                     <Card className="jobSearchResultsCard mt-2">
-                        <Header className="position-relative searchResultsHeader d-flex flex-sm-row flex-column">
-                            <section className="d-flex flex-column">
+                        <Header className="position-relative searchResultsHeader d-flex flex-row">
+                            <section className="d-flex flex-column flex-sm-row justify-content-between w-100">
                                 {!isLoading ?
-                                    <Title>
+                                    <Title className="mb-0 d-flex justify-content-sm-center align-items-sm-center jobVizSearchResultsTitle">
                                         {searchResults?.length ? "Search Results" : "No results"}
                                     </Title>
                                     :
-                                    <Title>
+                                    <Title className="mb-0 d-flex justify-content-sm-center align-items-sm-center jobVizSearchResultsTitle">
                                         Loading...
                                     </Title>
                                 }
-                                <section className="switchMainContainer d-flex flex-column">
-                                    <section>
-                                        <span>Highlighter</span>
-                                    </section>
-                                    <section className="d-flex mt-1">
-                                        <div className="switchContainer">
-                                            <label className="switch w-100 h-100">
-                                                <input
-                                                    type="checkbox"
-                                                    onChange={handleCheckBoxChange}
-                                                    checked={isHighlighterOn}
-                                                />
-                                                <span className="sliderForBtn round"></span>
-                                            </label>
-                                        </div>
-                                    </section>
-                                </section>
+                                <HighlighterComp 
+                                    handleCheckBoxChange={handleCheckBoxChange} 
+                                    isHighlighterOn={isHighlighterOn}
+                                    closeSearchResultsModal={closeSearchResultsModal}
+                                />
                             </section>
-                            {/* create a button that will close the modal */}
-                            <button
-                                className="searchResultsCloseBtn position-absolute top-0 end-0 noBtnStyles"
-                                onClick={closeSearchResultsModal}
-                            >
-                                <AiOutlineClose />
-                            </button>
+                            <CloseSearchResultsJobViz willShowOnlyOnSmScreen closeSearchResultsModal={closeSearchResultsModal} />
                         </Header>
                         <Body>
                             {isLoading ?
