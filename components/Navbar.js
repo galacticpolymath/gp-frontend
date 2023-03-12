@@ -24,7 +24,7 @@ export default function Navbar() {
             style={{
               maxWidth: '70vw',
               width: 'auto',
-              height: 'auto'
+              height: 'auto',
             }}
           />
 
