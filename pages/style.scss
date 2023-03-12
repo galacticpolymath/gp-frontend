@@ -482,3 +482,16 @@ html { height: 100%; }
     }
   }
 }
+
+.navbar-toggler {
+  margin-right: 1rem;
+  margin-left: 1rem;
+  @media screen and (max-width: 500px) {
+  
+    padding: 5px;
+    & .navbar-toggler-icon{
+      max-width: 20px;
+      border-color: red;
+    }
+  }
+}
