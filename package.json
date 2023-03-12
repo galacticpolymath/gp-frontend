@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next dev",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix --ext .js,.jsx .",
+    "lint_fix": "eslint --fix --ext .js,.jsx .",
     "test": "jest"
   },
   "dependencies": {
