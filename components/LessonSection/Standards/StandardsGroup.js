@@ -39,12 +39,12 @@ const StandardsGroup = ({
               <i className="fs-5 bi-chevron-up"></i>
             </h6>
             {[].concat(codes).map((code, i) => (
-              <p className='mb-0' key={i}>
+              <div className='mb-0' key={i}>
                 <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
                 <div className='text-muted text-center'>
                   <i className="bi bi-three-dots"></i>
                 </div>
-              </p>
+              </div>
             ))}
           </div>
         )}
