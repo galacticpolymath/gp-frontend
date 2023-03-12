@@ -41,14 +41,14 @@ const WhoMakesTheLessonsSec = () => {
                 <section className="mt-4 mb-4 mt-sm-5 mt-md-5 d-block d-lg-none">
                     <PicAndDescriptionSec
                         text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
-                        imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
+                        imgPath="/imgs/profilePics/matt_wilkins_profile3_sq_xs.jpg"
                         parentSecStyles="ownerSection secWithHumanPic"
                     />
                 </section>
                 <section className="d-none pt-lg-4 d-lg-block">
                     <PicAndDescriptionSec
                         text="Matt is an award-winning scientist, science communicator, and teacher at the middle school to college level."
-                        imgPath="/imgs/matt_wilkins_profile3_xs.jpg"
+                        imgPath="/imgs/profilePics/matt_wilkins_profile3_sq_xs.jpg"
                         parentSecStyles="ownerSection secWithHumanPic"
                     />
                 </section>
