@@ -33,7 +33,7 @@ const LocDropdown = ({ id, availLocs, loc }) => {
   // i can't get the flag to show up in the middle of a string
 
   return (
-    <div>
+    <div className="position-relative">
       <ReactFlagsSelect
         selected={loc}
         countries={countries}
