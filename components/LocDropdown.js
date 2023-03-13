@@ -14,7 +14,7 @@ const LocDropdown = ({ id, availLocs, loc }) => {
     const country = locToCountry[availLoc];
     countries.push(country);
     labels[country] = availLoc;
-  });  
+  });
 
   const changeLoc = (country, id) => {
     const locDest = countryToLoc[country];
@@ -23,7 +23,7 @@ const LocDropdown = ({ id, availLocs, loc }) => {
 
   if (countries.length === 1) {
     const { language } = countriesByLanguage.find(({ countries }) => countries.includes(countries[0]));
-    
+
     return <div>{language} ({countries[0]})</div>;
   }
 
@@ -33,17 +33,19 @@ const LocDropdown = ({ id, availLocs, loc }) => {
   // i can't get the flag to show up in the middle of a string
 
   return (
-    <ReactFlagsSelect
-      selected={loc}
-      countries={countries}
-      customLabels={labels}
-      onSelect={countryCode => {
-        changeLoc(countryCode, id);
-      }}
-      placeholder={`Current locale: ${loc}`}
-      alignOptionsToRight={true}
-      fullWidth={false}
-    />  
+    <div>
+      <ReactFlagsSelect
+        selected={loc}
+        countries={countries}
+        customLabels={labels}
+        onSelect={countryCode => {
+          changeLoc(countryCode, id);
+        }}
+        placeholder={`Current locale: ${loc}`}
+        alignOptionsToRight={true}
+        fullWidth={false}
+      />
+    </div>
   );
 };
 
