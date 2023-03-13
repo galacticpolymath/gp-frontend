@@ -49,11 +49,6 @@ const LocDropdown = ({ id, availLocs, loc }) => {
     return <div>{language} ({countries[0]})</div>;
   }
 
-  // if the country is an english country, then show the following on the ui: English (abbreviation of the country)
-
-  // const flag = <Flag name={loc} />
-  // i can't get the flag to show up in the middle of a string
-
   return (
     <div className="position-relative">
       <Fade containerId='clickMoreLocalesId' showElement={isToolTipModalOn}>
