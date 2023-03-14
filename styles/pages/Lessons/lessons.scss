@@ -1,7 +1,10 @@
 @import "../../globalVars.scss";
+@import "./tooltip.scss";
+
 
 $borderThickness: 1px;
 $borderColor: darkgray;
+$toolTipColor: #F0F4FF;
 
 .lessonsSection {
   border-top: solid $borderThickness $borderColor;
@@ -259,3 +262,5 @@ $borderColor: darkgray;
 
   }
 }
+
+
