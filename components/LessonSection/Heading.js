@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
+// accordion-header lessonsPgSec
+// bg-primary-light w-100 text-left
 
 const Heading = ({ index, SectionTitle }) => {
   return (
-    <div className='bg-primary-light w-100 text-left'>
+    <div className='lessonsStandardsSec text-left bg-primary-light'>
       <h2
         className="SectionHeading mb-0"
         id={SectionTitle.replace(/\s+/g, '_').toLowerCase()}

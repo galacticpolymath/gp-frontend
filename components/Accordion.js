@@ -15,7 +15,7 @@ const Accordion = ({
 }) => {
   return (
     <div className={className}>
-      <div className="accordion-header" id={`heading_${id}`}>
+      <div className="accordion-header lessonsPgSec" id={`heading_${id}`}>
         <button
           className={`${initiallyExpanded ? '' : 'collapsed'} ${buttonClassName}`}
           type="button"

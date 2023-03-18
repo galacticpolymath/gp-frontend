@@ -1,5 +1,6 @@
 @import "../../globalVars.scss";
 @import "./tooltip.scss";
+@import './selectedLessonPg.scss';
 
 
 $borderThickness: 1px;
@@ -15,10 +16,6 @@ $toolTipColor: #F0F4FF;
       flex-direction: column;
     }
   }
-}
-
-.selectedLessonPg{
-  padding: 5rem 11rem;
 }
 
 .lessonsPgAptFor {
@@ -266,5 +263,6 @@ $toolTipColor: #F0F4FF;
 
   }
 }
+
 
 

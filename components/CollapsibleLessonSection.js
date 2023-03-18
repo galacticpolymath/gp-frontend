@@ -17,7 +17,7 @@ const CollapsibleLessonSection = ({
     <Accordion
       initiallyExpanded={initiallyExpanded}
       id={(accordionId || SectionTitle).replace(/[\s!]/gi, '_').toLowerCase()}
-      className={className}
+      className={`${className} collapsibleLessonSection`}
       buttonClassName="btn btn-primary-light w-100 text-left"
       button={(
         <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-1'>
