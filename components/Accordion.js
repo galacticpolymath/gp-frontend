@@ -13,7 +13,6 @@ const Accordion = ({
   initiallyExpanded = false,
   button,
 }) => {
-  console.log('id hey there', id);
   return (
     <div className={className}>
       <div className="accordion-header" id={`heading_${id}`}>

@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable quotes */
+/* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import StandardsGroup from './StandardsGroup';
@@ -9,6 +12,15 @@ const Subject = ({
   initiallyExpanded, 
 }) => {
   const subjectSlug = subject.toLowerCase().replace(/\s/g, '');
+  const subjectDimensions = sets[0].dimensions;
+  let subjectSlugIds;
+
+  if (subjectDimensions.length > 1) {
+    subjectSlugIds = new Array(subjectDimensions.length).fill(subject).map((subject, index) => `${subjectSlug}-${index}`);
+  }
+
+  // WHAT IS HAPPENING: 
+  // when sets[0].dimensions has a length greater than 1, then if the first section is opened, every first section is opened as well because they all have the same id
   return (
     <Accordion
       id={accordionId}
@@ -23,7 +35,7 @@ const Subject = ({
       )}
     >
       <>
-        {sets[0].dimensions.map(({ name, standardsGroup }, i) => (
+        {subjectDimensions.map(({ name, standardsGroup }, i) => (
           <div className={`bg-${subjectSlug}-light p-2`} key={i}>
             <p className='mb-1 p-1'><strong>Dimension:</strong> {name}</p>
             {standardsGroup.map((group, i) => (
