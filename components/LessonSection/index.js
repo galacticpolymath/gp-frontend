@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 import PropTypes from 'prop-types';
@@ -17,10 +18,10 @@ export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
   HEADING: 'lesson-plan.section-heading',
   TEXT_BLOCK: 'lesson-plan.text-block',
-  
+
   // deprecated
   PROCEDURE: 'lesson-plan.procedure',
-  
+
   TEACH_IT: 'teaching-resources.teaching-resources',
   LEARNING_CHART: 'lesson-plan.learning-chart',
   STANDARDS: 'lesson-plan.standards',
@@ -34,10 +35,10 @@ export const NUMBERED_SECTIONS = [
   SECTIONS.OVERVIEW,
   SECTIONS.HEADING,
   SECTIONS.TEACH_IT,
-  
+
   // deprecated
   SECTIONS.PROCEDURE,
-  
+
   SECTIONS.ACKNOWLEDGMENTS,
   SECTIONS.VERSIONS,
   SECTIONS.COLLAPSIBLE_TEXT,
@@ -51,7 +52,7 @@ export const sectionTypeMap = {
 
   // deprecated
   [SECTIONS.PROCEDURE]: () => <></>,
-  
+
   [SECTIONS.TEACH_IT]: TeachIt,
   [SECTIONS.LEARNING_CHART]: LearningChart,
   [SECTIONS.STANDARDS]: Standards,
@@ -69,6 +70,7 @@ const LessonSection = ({ index, section }) => {
   ) : (
     <div>Invalid section {section.__component}</div>
   );
+  // return null;
 };
 
 LessonSection.propTypes = {

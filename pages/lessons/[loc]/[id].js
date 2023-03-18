@@ -13,9 +13,11 @@ const getLatestSubRelease = (sections) => {
   if (!versionSection) {
     return null;
   }
+
+  // GOAL: don't have the same id when there two different sections within the standards section
+  console.log("sections: ", sections)
   
-  const lastRelease =
-    versionSection.Data[versionSection.Data.length - 1].sub_releases;
+  const lastRelease = versionSection.Data[versionSection.Data.length - 1].sub_releases;
   const lastSubRelease = lastRelease[lastRelease.length - 1];
   return lastSubRelease;
 };
@@ -106,6 +108,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     ...lesson.Section.procedure.Data,
     ...lesson.Section['teaching-materials'].Data,
   };
+
+  console.log("lesson: ", lesson)
+
+  console.log("availLocs: ", availLocs)
   
   return { props: { lesson, availLocs } };
 };
