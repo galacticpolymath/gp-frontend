@@ -64,6 +64,11 @@ export const sectionTypeMap = {
 
 const LessonSection = ({ index, section }) => {
   const Component = sectionTypeMap[section.__component];
+  
+  if(section.SectionTitle === "Learning Standards"){
+    console.log("section.__component: ", section.__component);
+    console.log("section: ", section);
+  }
 
   return Component ? (
     <Component index={index} {...section} />
