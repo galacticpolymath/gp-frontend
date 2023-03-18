@@ -1,3 +1,6 @@
+/* eslint-disable semi */
+/* eslint-disable quotes */
+/* eslint-disable no-console */
 import { format } from 'date-fns';
 
 import Layout from '../../../components/Layout';

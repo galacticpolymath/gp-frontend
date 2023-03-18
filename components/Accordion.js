@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+/* eslint-disable no-console */
 import PropTypes from 'prop-types';
 
 /**
@@ -32,6 +34,7 @@ const Accordion = ({
         data-bs-parent="#accordionExample"
       >
         {children}
+        {/* <span className='bg-danger'>hi</span> */}
       </div>
     </div>
   );

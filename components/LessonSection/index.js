@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable quotes */
 import PropTypes from 'prop-types';
 
 import Overview from './Overview';
