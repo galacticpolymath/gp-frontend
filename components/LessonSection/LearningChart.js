@@ -1,11 +1,12 @@
 import Accordion from '../Accordion';
 import RichText from '../RichText';
+// import Image from 'next/image';
 
 const LearningChart = ({
   Title,
   Description,
   Footnote,
-  Badge,  
+  Badge,
 }) => {
   return (
     <div className='container pt-4'>
@@ -15,7 +16,6 @@ const LearningChart = ({
         src={Badge.url}
         className="border"
       />
-
       <Accordion
         id="learningChart"
         buttonClassName='w-100 text-start my-3'
