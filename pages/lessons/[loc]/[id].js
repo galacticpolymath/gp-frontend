@@ -16,7 +16,7 @@ const getLatestSubRelease = (sections) => {
 
   // GOAL: don't have the same id when there two different sections within the standards section
   console.log("sections: ", sections)
-  
+
   const lastRelease = versionSection.Data[versionSection.Data.length - 1].sub_releases;
   const lastSubRelease = lastRelease[lastRelease.length - 1];
   return lastSubRelease;
@@ -27,13 +27,13 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   // Number the sections included in NUMBERED_SECTIONS.
   let numberedElements = 0;
-  const renderSection = (section, i) => {
+  const renderSection = (section, index) => {
     if (NUMBERED_SECTIONS.includes(section.__component)) {
       numberedElements++;
     }
     return (
       <LessonSection
-        key={i}
+        key={index}
         index={numberedElements}
         section={section}
       />
@@ -44,9 +44,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   // if the user is on a lessons page where current locale only has one option, then don't show the dropdown menu for locale
 
+  /* p-4 */
   return (
     <Layout>
-      <div className="container p-4">
+      <div className="container selectedLessonPg">
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           {lastSubRelease && (
             <p>
@@ -83,8 +84,9 @@ const LessonDetails = ({ lesson, availLocs }) => {
           </div>
         </div>
       </div>
-
-      {Object.values(lesson.Section).map(renderSection)}
+      <div className="selectedLessonPg">
+        {Object.values(lesson.Section).map(renderSection)}
+      </div>
     </Layout>
   );
 };
@@ -103,7 +105,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   const lessons = await res.json();
   const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
-  const availLocs = lessons.filter((lesson) => `${lesson.id}` === `${id}`).map((lesson)=>lesson.locale);
+  const availLocs = lessons.filter((lesson) => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
 
   // TODO: revisit when/if Matt combines these sections in the JSON
   lesson.Section['teaching-materials'].Data = {
@@ -114,7 +116,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   console.log("lesson: ", lesson)
 
   console.log("availLocs: ", availLocs)
-  
+
   return { props: { lesson, availLocs } };
 };
 
