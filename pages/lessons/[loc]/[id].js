@@ -35,6 +35,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
     );
   };
 
+  // if the user is on a lessons page where current locale only has one option, then don't show the dropdown menu for locale
+
   return (
     <Layout>
       <div className="container p-4">

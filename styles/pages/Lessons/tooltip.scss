@@ -1,0 +1,62 @@
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.toolTipModal {
+  width: 120px;
+  background-color: #f0f4ff;
+  font-weight: bold;
+  height: 100px;
+  color: #3c4858;
+  text-align: center;
+  border-radius: 6px;
+  border-style: solid;
+  border-width: 2px;
+  top: 80%;
+  left: 50%;
+  margin-left: -60px;
+  position: absolute;
+  z-index: 1;
+  // animation: hideAnimation 0s ease-in 4s;
+  animation-fill-mode: forwards;
+}
+
+.toolTipModalWrapper{
+  padding: 10px 5px;
+}
+
+.closeToolTipModalBtn{
+  right: -6px;
+  top: -5px;
+  font-size: 15px;
+}
+
+.noBtnStyles{
+
+}
+
+// @keyframes hideAnimation {
+//   to {
+//     visibility: hidden;
+//     width: 0;
+//     height: 0;
+//   }
+// }
+
+.tooltip .toolTipModal::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.closeModalBtn{
+  width: fit-content;
+  height: fit-content;
+}
+
