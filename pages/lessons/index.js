@@ -15,7 +15,7 @@ const LessonsPage = ({ lessons }) => {
   };
 
   const uniqueIDs = [];
-  const lessonsAptFor = [{ lesson: 'Colourful Solutions', lessonAptFor: "YEARS: 9-13" }, { lesson: 'Genetic Rescue to the Rescue', lessonAptFor: "GRADES: 9-12" }, { lesson: 'The Guardian Frogs of Borneo', lessonAptFor: 'GRADES: 5-9' }, { lesson: 'Females singing to be heard', lessonAptFor: 'GRADES: ADAPTED FOR 5-6, 7-8, & 9-12' }, { lesson: 'I Like That!', lessonAptFor: 'GRADES: 5-9' }];
+  // const lessonsAptFor = [{ lesson: 'Colourful Solutions', lessonAptFor: "YEARS: 9-13" }, { lesson: 'Genetic Rescue to the Rescue', lessonAptFor: "GRADES: 9-12" }, { lesson: 'The Guardian Frogs of Borneo', lessonAptFor: 'GRADES: 5-9' }, { lesson: 'Females singing to be heard', lessonAptFor: 'GRADES: ADAPTED FOR 5-6, 7-8, & 9-12' }, { lesson: 'I Like That!', lessonAptFor: 'GRADES: 5-9' }];
 
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
     const isUniqueAndStatusLive = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
@@ -23,17 +23,6 @@ const LessonsPage = ({ lessons }) => {
     isUniqueAndStatusLive && uniqueIDs.push(id);
 
     return isUniqueAndStatusLive;
-  }).map(lesson => {
-    const lessonAptFor = lessonsAptFor.find(({ lesson: lessonTitle }) => lessonTitle === lesson.Title);
-
-    if (lessonsAptFor) {
-      return {
-        ...lesson,
-        aptFor: lessonAptFor.lessonAptFor,
-      };
-    }
-
-    return lesson;
   });
 
   return (
@@ -75,30 +64,32 @@ const LessonsPage = ({ lessons }) => {
           <section className="headerSecLessonsPg">
             <h2 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h2>
           </section>
-          <div className='container mx-auto grid pb-5 px-3 gap-3 pt-3 lessonIslandsContainer'>
+          <div className='container m-1 grid pb-5 px-3 gap-3 pt-3'>
             {publishedLessons
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
               .map((lesson) => {
-                const isOnFemaleSingLesson = "Females singing to be heard" === lesson.Title;
-                const classNameAptFor = isOnFemaleSingLesson ? 'mt-2 mt-sm-0 ms-sm-0 ms-md-2 lessonsPgAptFor' : 'mt-2 mt-sm-0 ms-sm-2 lessonsPgAptFor';
                 return (
                   <Link
                     key={lesson.locale + lesson.id}
                     href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
                     passHref
-                    className='d-block position-relative bg-white rounded-3 g-col-6 no-hover-color-change lessonsPgShadow cardOnLessonsPg availableLesson'
+                    className=' g-col-sm-6 d-grid pb-2 bg-white rounded-3 lessonsPgShadow'
+                    // style={{height: "500px"}}
+                    // cardOnLessonsPg availableLesson'
                   >
-                    <div className="d-flex justify-content-center pt-lg-2">
+                    
+                    <div className="position-relative overflow-hidden" >
                       {lesson.CoverImage && lesson.CoverImage.url && (
                         <Image
                           src={lesson.CoverImage.url}
                           alt={lesson.Subtitle}
-                          width={1500}
-                          height={450}
+                          width={15}
+                          height={4.5}
                           sizes="100vw"
+                          className="px-1 pt-1"
                           style={{
-                            width: '100%',
-                            height: 'auto',
+                            width: "100%",
+                            height: "auto"
                           }}
                         />
                       )}
@@ -107,12 +98,12 @@ const LessonsPage = ({ lessons }) => {
                       <h3 className='fw-light text-black mb-0'>{lesson.Title}</h3>
                       <p className='text-black'>{lesson.Subtitle}</p>
                       {/* d-flex flex-column d-sm-block */}
-                      <section className="d-flex flex-column d-sm-block">
-                        <span className={`badge lessonSubject bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
+                      <section className="d-flex flex-wrap gap-1">
+                        <span className={`badge me-1 lessonSubject bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
                           {lesson.Section.overview.TargetSubject}
                         </span>
-                        <span className={classNameAptFor}>
-                          {lesson.aptFor}
+                        <span className="badge rounded-pill bg-gray ml-3">
+                          {lesson.Section.overview.GradesOrYears+": "+lesson.Section.overview.ForGrades}
                         </span>
                       </section>
                     </div>

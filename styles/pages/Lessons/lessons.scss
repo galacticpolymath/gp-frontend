@@ -3,6 +3,7 @@
 $borderThickness: 1px;
 $borderColor: darkgray;
 
+
 .lessonsSection {
   border-top: solid $borderThickness $borderColor;
 
@@ -17,26 +18,25 @@ $borderColor: darkgray;
 .lessonsPgAptFor {
   background-color: #6c757d;
   color: #fff;
-  display: inline-flex;
   justify-content: center;
   align-items: center;
   font-size: 10.5px;
   text-align: center;
-  font-weight: 700;
+  // font-weight: 700;
   line-height: 1;
   white-space: nowrap;
   margin-right: 3px;
   border-radius: .375rem;
-  // padding: .65em .35em;
+  // // padding: .65em .35em;
   padding: .65em .95em;
-  @media(max-width: 767px){
-    padding: .65em .35em;
-  }
-  // max-width: 72px;
-  height: 23px;
-  width: fit-content;
-  // max-width: 200px;
-  // word-wrap: break-word;
+  // @media(max-width: 767px){
+  //   padding: .65em .35em;
+  // }
+  // // max-width: 72px;
+  // height: 23px;
+  // width: fit-content;
+  // // max-width: 200px;
+  // // word-wrap: break-word;
   text-transform: uppercase;
   vertical-align: baseline;
 }
