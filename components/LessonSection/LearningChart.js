@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import Accordion from '../Accordion';
 import RichText from '../RichText';
-// import Image from 'next/image';
+import Image from 'next/image';
 
 const LearningChart = ({
   Title,
@@ -11,11 +12,19 @@ const LearningChart = ({
   return (
     <div className='container pt-4'>
       {/* TODO: alt text */}
-      <img
+      {/* <img
         alt="Learning Standards Chart"
         src={Badge.url}
         className="border"
-      />
+      /> */}
+      <div className="chartContainer position-relative w-100" style={{ height: '500px', maxHeight: '80vw' }}>
+        <Image
+          src={Badge.url}
+          layout='fill'
+          style={{ objectFit: 'contain' }}
+          alt="Learning Standards Chart"
+        />
+      </div>
       <Accordion
         id="learningChart"
         buttonClassName='w-100 text-start my-3'

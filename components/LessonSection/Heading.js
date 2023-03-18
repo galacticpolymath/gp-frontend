@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const Heading = ({ index, SectionTitle }) => {
   return (
-    <div className='lessonsStandardsSec text-left bg-primary-light'>
+    <div className='lessonsStandardsSec text-left bg-primary-light mb-4'>
       <h2
         className="SectionHeading mb-0"
         id={SectionTitle.replace(/\s+/g, '_').toLowerCase()}
