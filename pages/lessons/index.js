@@ -64,7 +64,7 @@ const LessonsPage = ({ lessons }) => {
           <section className="headerSecLessonsPg">
             <h2 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h2>
           </section>
-          <div className='container m-1 grid pb-5 px-3 gap-3 pt-3'>
+          <div className=' mx-auto grid pb-5 p-4 gap-3 pt-3'>
             {publishedLessons
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
               .map((lesson) => {
@@ -73,7 +73,7 @@ const LessonsPage = ({ lessons }) => {
                     key={lesson.locale + lesson.id}
                     href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
                     passHref
-                    className=' g-col-sm-6 d-grid pb-2 bg-white rounded-3 lessonsPgShadow'
+                    className='g-col-sm-12 g-col-md-7 g-col-lg-4 g-col-xl-3 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow'
                     // style={{height: "500px"}}
                     // cardOnLessonsPg availableLesson'
                   >
