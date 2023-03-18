@@ -27,8 +27,8 @@ const LessonsPage = ({ lessons }) => {
     <Layout>
       <section className="bg-secondary p-4">
         <div className="text-white col-sm-12 col-md-10 col-lg-8 col-xl-7">
-        <h1>Free, Interdisciplinary Lessons</h1>
-        <p>We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
+          <h1>Free, Interdisciplinary Lessons</h1>
+          <p>We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
         </div>
       </section>
       <div className="">
@@ -47,7 +47,7 @@ const LessonsPage = ({ lessons }) => {
                     <JobVizIcon />
                   </section>
                   <section className="d-flex justify-content-center align-items-left flex-column ps-3">
-                    <h4 className='fw-light text-black mb-0 pb-1' >
+                    <h4 className='fw-light text-black mb-0 pb-1'>
                       Jobviz Career Explorer
                     </h4>
                     <span className="text-black">A starting point for students to explore 1,000 job possibilities</span>
@@ -76,7 +76,7 @@ const LessonsPage = ({ lessons }) => {
                     className='w-100 g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow'
                   >
                     
-                    <div className="position-relative overflow-hidden" >
+                    <div className="position-relative overflow-hidden">
                       {lesson.CoverImage && lesson.CoverImage.url && (
                         <Image
                           src={lesson.CoverImage.url}
@@ -87,7 +87,7 @@ const LessonsPage = ({ lessons }) => {
                           className="px-1 pt-1"
                           style={{
                             width: "100%",
-                            height: "auto"
+                            height: "auto",
                           }}
                         />
                       )}
@@ -101,7 +101,7 @@ const LessonsPage = ({ lessons }) => {
                           {lesson.Section.overview.TargetSubject}
                         </span>
                         <span className="badge rounded-pill bg-gray ml-3">
-                          {lesson.Section.overview.GradesOrYears+": "+lesson.Section.overview.ForGrades}
+                          {`${lesson.Section.overview.GradesOrYears}: ${lesson.Section.overview.ForGrades}`}
                         </span>
                       </section>
                     </div>

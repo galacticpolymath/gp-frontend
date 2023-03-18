@@ -124,18 +124,6 @@ $toolTipColor: #F0F4FF;
 
   @media (max-width: 575px) {
     padding: 10px 10px;
-    > section:first-child {
-      // flex-direction: column;
-      > section:first-child,
-      section:last-child {
-        // width: 100%;
-      }
-    }
-
-    > section:last-child > span {
-      // border: solid pink;
-    }
-
     margin-top: 10px;
     width: 95%;
     max-width: 540px;
