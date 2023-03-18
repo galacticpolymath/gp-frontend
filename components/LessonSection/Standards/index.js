@@ -42,7 +42,6 @@ const Standards = ({
           <div className='bg-primary-light p-3 mt-1 mb-3 mx-5 text-center'>
             <i className="bi-cursor" /> Click on any standard for details on how the lesson aligns to it.
           </div>
-
           <h4 className='fs-5 fw-bold mt-4'>Target Standard(s)</h4>
           <div className="mb-3">
             Skills and concepts directly taught or reinforced by this lesson
