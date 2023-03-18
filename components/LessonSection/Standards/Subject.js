@@ -9,18 +9,16 @@ const Subject = ({
   accordionId,
   sets,
   subject,
-  initiallyExpanded, 
+  initiallyExpanded,
 }) => {
   const subjectSlug = subject.toLowerCase().replace(/\s/g, '');
   const subjectDimensions = sets[0].dimensions;
   let subjectSlugIds;
 
   if (subjectDimensions.length > 1) {
-    subjectSlugIds = new Array(subjectDimensions.length).fill(subject).map((subject, index) => `${subjectSlug}-${index}`);
+    subjectSlugIds = new Array(subjectDimensions.length).fill(subjectSlug).map((subjectSlugId, index) => `${subjectSlugId}-${index}`);
   }
 
-  // WHAT IS HAPPENING: 
-  // when sets[0].dimensions has a length greater than 1, then if the first section is opened, every first section is opened as well because they all have the same id
   return (
     <Accordion
       id={accordionId}
@@ -35,18 +33,26 @@ const Subject = ({
       )}
     >
       <>
-        {subjectDimensions.map(({ name, standardsGroup }, i) => (
-          <div className={`bg-${subjectSlug}-light p-2`} key={i}>
-            <p className='mb-1 p-1'><strong>Dimension:</strong> {name}</p>
-            {standardsGroup.map((group, i) => (
-              <StandardsGroup
-                id={`${subjectSlug}-${i}`}
-                key={i}
-                {...group}
-              />
-            ))}
-          </div>
-        ))}
+        {subjectDimensions.map(({ name, standardsGroup }, subjectDimIndex) => {
+          let subjectSlugIdName = subjectSlug;
+
+          if (subjectDimensions.length > 1) {
+            subjectSlugIdName = subjectSlugIds[subjectDimIndex];
+          }
+
+          return (
+            <div className={`bg-${subjectSlug}-light p-2`} key={subjectDimIndex}>
+              <p className='mb-1 p-1'><strong>Dimension:</strong> {name}</p>
+              {standardsGroup.map((group, groupIndex) => (
+                <StandardsGroup
+                  id={`${subjectSlugIdName}-${groupIndex}`}
+                  key={groupIndex}
+                  {...group}
+                />
+              ))}
+            </div>
+          );
+        })}
       </>
     </Accordion>
   );
