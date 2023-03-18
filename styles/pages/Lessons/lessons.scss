@@ -15,69 +15,6 @@ $borderColor: darkgray;
   }
 }
 
-.lessonsPgAptFor {
-  background-color: #6c757d;
-  color: #fff;
-  justify-content: center;
-  align-items: center;
-  font-size: 10.5px;
-  text-align: center;
-  // font-weight: 700;
-  line-height: 1;
-  white-space: nowrap;
-  margin-right: 3px;
-  border-radius: .375rem;
-  // // padding: .65em .35em;
-  padding: .65em .95em;
-  // @media(max-width: 767px){
-  //   padding: .65em .35em;
-  // }
-  // // max-width: 72px;
-  // height: 23px;
-  // width: fit-content;
-  // // max-width: 200px;
-  // // word-wrap: break-word;
-  text-transform: uppercase;
-  vertical-align: baseline;
-}
-
-@media((min-width: 576px) and (max-width: 767px)){
-  .lessonsPgAptFor:nth-of-type(4){
-    // border: solid pink;
-  } 
-}
-
-
-.lessonsPgContent {
-  @media (min-width: 1440px) {
-    > section:first-child {
-      > section:last-of-type {
-        @media (min-width: 1440px) {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        > section {
-          width: 100%;
-          max-width: 1419px;
-        }
-      }
-    }
-  }
-}
-
-.headerSecLessonsPg {
-  @media (min-width: 1440px) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    h2 {
-      max-width: 1413px !important;
-      width: 100%;
-    }
-  }
-}
 
 .jobVizEntrySection span {
   font-size: 24px;
@@ -172,9 +109,6 @@ $borderColor: darkgray;
   cursor: pointer;
 }
 
-.heroLessonsPg {
-  padding: 13vh 0 !important;
-}
 
 .jobVizCareer {
   @media (min-width: 768px) {
