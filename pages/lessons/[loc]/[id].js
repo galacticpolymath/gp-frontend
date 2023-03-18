@@ -40,6 +40,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
     );
   };
 
+  console.log("lesson.Section: ", lesson.Section)
+
   // if the user is on a lessons page where current locale only has one option, then don't show the dropdown menu for locale
 
   return (

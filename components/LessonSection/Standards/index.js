@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import PropTypes from 'prop-types';
 
 import Accordion from '../../Accordion';
@@ -9,6 +10,7 @@ const Standards = ({
   Data,
   LearningObj,
 }) => {
+  console.log('data prop: ', Data);
   return (
     <div className='container mb-4'>
       <Accordion
@@ -25,7 +27,6 @@ const Standards = ({
       >
         <RichText content={LearningObj} />
       </Accordion>
-
       <Accordion
         id="standards"
         initiallyExpanded
