@@ -47,45 +47,50 @@ const LessonDetails = ({ lesson, availLocs }) => {
   /* p-4 */
   return (
     <Layout>
-      <div className="container selectedLessonPg">
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {lastSubRelease && (
-            <p>
-              Version {lastSubRelease.version}{' '}
-              (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-            </p>
-          )}
-          <LocDropdown
-            availLocs={availLocs}
-            loc={lesson.locale}
-            id={lesson.id}
-          />
-        </div>
-        <h1>{lesson.Title}</h1>
-        <h4 className='fw-light'>{lesson.Subtitle}</h4>
-        {lesson.CoverImage && lesson.CoverImage.url && (
-          <img
-            src={lesson.CoverImage.url}
-            alt={lesson.Subtitle}
-          />
-        )}
-        <div className='row mt-4'>
-          <div className="col col-md-6 col-lg-9">
-            <h5>Sponsored by:</h5>
-            <RichText content={lesson.SponsoredBy} />
-          </div>
-          <div className="col col-md-6 col-lg-3 position-relative">
-            {lesson.SponsorImage && lesson.SponsorImage.url && (
-              <img
-                src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
-                alt={lesson.Subtitle}
-              />
+      {/* selectedLessonPg */}
+      <div className="container d-flex justify-content-center pt-4 pb-4">
+        <div className="col-8">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            {lastSubRelease && (
+              <p>
+                Version {lastSubRelease.version}{' '}
+                (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
+              </p>
             )}
+            <LocDropdown
+              availLocs={availLocs}
+              loc={lesson.locale}
+              id={lesson.id}
+            />
+          </div>
+          <h1>{lesson.Title}</h1>
+          <h4 className='fw-light'>{lesson.Subtitle}</h4>
+          {lesson.CoverImage && lesson.CoverImage.url && (
+            <img
+              src={lesson.CoverImage.url}
+              alt={lesson.Subtitle}
+            />
+          )}
+          <div className='row mt-4'>
+            <div className="col col-md-6 col-lg-9">
+              <h5>Sponsored by:</h5>
+              <RichText content={lesson.SponsoredBy} />
+            </div>
+            <div className="col col-md-6 col-lg-3 position-relative">
+              {lesson.SponsorImage && lesson.SponsorImage.url && (
+                <img
+                  src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
+                  alt={lesson.Subtitle}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
-      <div className="selectedLessonPg">
-        {Object.values(lesson.Section).map(renderSection)}
+      <div className="container d-flex justify-content-center pt-4 pb-4">
+        <div className="col-8 p-0">
+          {Object.values(lesson.Section).map(renderSection)}
+        </div>
       </div>
     </Layout>
   );
