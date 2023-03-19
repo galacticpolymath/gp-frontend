@@ -23,12 +23,12 @@ const Overview = ({
       <div className='container mb-4'>
         <div className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center">
           <div className="grid mx-auto gap-3 py-3">
-            <div className='d-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>
+            <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>
               <i className="fs-3 mb-2 d-block bi-book-half"></i>
               <h5>Target Subject: </h5>
               <span>{TargetSubject}</span>
             </div>
-            <div className='d-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>
+            <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>
               <i className="fs-3 mb-2 d-block bi-person-circle"></i>
               <h5>Grades: </h5>
               <span>{ForGrades}</span>
@@ -38,8 +38,22 @@ const Overview = ({
               <h5>Estimated Time: </h5>
               <span>{EstLessonTime}</span>
             </div>
+            <div className='d-grid d-sm-none g-col g-col-12 align-items-center justify-content-center'>
+              <div className='d-grid bg-white rounded-3 col-12 py-3' style={{ width: '40vw' }}>
+                <i className="fs-3 mb-2 d-block bi-book-half"></i>
+                <h5>Target Subject: </h5>
+                <span>{TargetSubject}</span>
+              </div>
+            </div>
+            <div className='d-grid d-sm-none g-col g-col-12 align-items-center justify-content-center'>
+              <div className='d-grid bg-white rounded-3 col-12 py-3' style={{ width: '40vw' }}>
+                <i className="fs-3 mb-2 d-block bi-person-circle"></i>
+                <h5>Grades: </h5>
+                <span>{ForGrades}</span>
+              </div>
+            </div>
             <div className='d-grid d-sm-none g-col-12 align-items-center justify-content-center'>
-              <div className='d-grid bg-white rounded-3 col-12 px-3 py-4'>
+              <div className='d-grid bg-white rounded-3 col-12 py-3' style={{ width: '40vw' }}>
                 <i className="fs-3 mb-2 d-block bi-alarm"></i>
                 <h5>Estimated Time: </h5>
                 <span>{EstLessonTime}</span>

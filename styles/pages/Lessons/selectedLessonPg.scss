@@ -1,6 +1,10 @@
 .selectedLessonPg {
-  
+*{
+  // border: solid pink;
+}  
 }
+
+
 
 .lessonsStandardsSec {
   width: 100vw;
@@ -14,6 +18,9 @@
     > div {
       padding: .85rem 1.75rem;
       width: 75%;
+      @media(max-width: 767px){
+        width: 100%;
+      }
     }
   }
 }
@@ -54,6 +61,15 @@
       justify-content: center;
       > div {
         width: 75%;
+        @media(max-width: 767px){
+          width: 100% ;
+          button{
+            > div{
+              border: solid pink !important;
+              width: 100% !important;
+            }
+          }
+        }
       }
     }
   }
