@@ -74,7 +74,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
           <div className='row mt-4'>
             <div className="col col-md-6 col-lg-9">
               <h5>Sponsored by:</h5>
-              <RichText content={lesson.SponsoredBy} />
+              <RichText content={lesson.SponsoredBy} /> 
             </div>
             <div className="col col-md-6 col-lg-3 position-relative">
               {lesson.SponsorImage && lesson.SponsorImage.url && (
