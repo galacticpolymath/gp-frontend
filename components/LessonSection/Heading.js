@@ -5,14 +5,18 @@ import PropTypes from 'prop-types';
 const Heading = ({ index, SectionTitle }) => {
   return (
     <div className='lessonsStandardsSec text-left bg-primary-light mb-4'>
-      <h2
-        className="SectionHeading mb-0"
-        id={SectionTitle.replace(/\s+/g, '_').toLowerCase()}
-      >
-        <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-3'>
-          {index && `${index}. `}{SectionTitle}
+      <div>
+        <div>
+          <h2
+            className="SectionHeading mb-0"
+            id={SectionTitle.replace(/\s+/g, '_').toLowerCase()}
+          >
+            <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-3'>
+              {index && `${index}. `}{SectionTitle}
+            </div>
+          </h2>
         </div>
-      </h2>
+      </div>
     </div>
   );
 };
