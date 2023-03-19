@@ -1,6 +1,7 @@
+/* eslint-disable quotes */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-
+import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
 
@@ -81,7 +82,7 @@ const TeachIt = ({
         </div>
 
         {resources.links && (
-          <div className='text-center'>
+          <div className='text-center d-flex'>
             <a
               target='_blank'
               rel='noopener noreferrer'
@@ -93,6 +94,7 @@ const TeachIt = ({
                 {resources.links.linkText}
               </div>
             </a>
+            <AiOutlineQuestionCircle className="ms-2" style={{ fontSize: "20px" }} />
           </div>
         )}
 

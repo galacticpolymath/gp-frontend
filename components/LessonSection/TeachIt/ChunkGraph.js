@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable quotes */
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
@@ -7,6 +9,8 @@ export default function ChunkGraph({ durList, chunkNum }) {
   useEffect(() => {
     update();
   }, []);
+
+  console.log("update: ", update);
 
   function update() {
     /**
