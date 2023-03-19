@@ -1,15 +1,20 @@
+/* eslint-disable no-console */
 /* eslint-disable quotes */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
+import { ModalContext } from '../../../providers/ModalProvider';
+import { useContext } from 'react';
 
 const TeachIt = ({
   index,
   SectionTitle,
   Data,
 }) => {
+  const { _isDownloadModalInfoOn } = useContext(ModalContext);
+  const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const environments = ['classroom', 'remote']
     .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   const gradeVariations = Data[environments[0]].resources;
@@ -19,6 +24,12 @@ const TeachIt = ({
 
   const resources = Data[selectedEnvironment].resources
     .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
+
+  const handleIconClick = () => {
+    console.log("clicked");
+    setIsDownloadModalInfoOn(true);
+    console.log("isDownloadModalInfoOn: ", isDownloadModalInfoOn);
+  };
 
   return (
     <CollapsibleLessonSection
@@ -94,7 +105,11 @@ const TeachIt = ({
                 {resources.links.linkText}
               </div>
             </a>
-            <AiOutlineQuestionCircle className="ms-2" style={{ fontSize: "20px" }} />
+            <AiOutlineQuestionCircle
+              className="ms-2 downloadTipIcon"
+              style={{ fontSize: "20px" }}
+              onClick={handleIconClick}
+            />
           </div>
         )}
 

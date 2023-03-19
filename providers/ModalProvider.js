@@ -19,11 +19,13 @@ export const ModalContext = createContext(null);
 export const ModalProvider = ({ children }) => {
     const [selectedJob, setSelectedJob] = useState(null);
     const [isJobModalOn, setIsJobModalOn] = useState(false);
+    const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
     const _selectedJob = [selectedJob, setSelectedJob]
     const _isJobModalOn = [isJobModalOn, setIsJobModalOn]
+    const _isDownloadModalInfoOn = [isDownloadModalInfoOn, setIsDownloadModalInfoOn];
 
     return (
-        <ModalContext.Provider value={{ _selectedJob, _isJobModalOn }}>
+        <ModalContext.Provider value={{ _selectedJob, _isJobModalOn, _isDownloadModalInfoOn }}>
             {children}
         </ModalContext.Provider>
     )
