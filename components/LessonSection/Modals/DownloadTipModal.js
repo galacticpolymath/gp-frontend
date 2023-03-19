@@ -35,7 +35,7 @@ const DownloadTipModal = () => {
     }
 
     return (
-        <Modal show={isDownloadModalInfoOn} size="lg" onHide={handleCloseModal} contentClassName="" dialogClassName='downloadInfoModal'>
+        <Modal show={isDownloadModalInfoOn} size="lg" onHide={handleCloseModal} contentClassName="" dialogClassName='downloadInfoModal' className='ps-2 pe-2'>
             <Header closeButton>
                 <Title>
                     <h3>Download From Google Drive</h3>
@@ -43,13 +43,13 @@ const DownloadTipModal = () => {
             </Header>
             <Body className="d-flex p-3">
                 <section className="d-flex flex-column w-50 pe-3 ps-3 pt-3">
-                    <p>If logged into Google, click the dropdown menu on the folder containing handouts & presentations, and select download:</p>
+                    <p className="downloadInfoModal-txt" style={{ height: "90px" }}>If logged into Google, click the dropdown menu on the folder containing handouts & presentations, and select download:</p>
                     <div className="position-relative" style={{height: "300px"}}>
                         <Image src="/imgs/lessons/download_large.png" alt="Galactic_Polymath_download_image_large" layout='fill' style={{ objectFit: 'contain' }} className="w-100 h-100" />
                     </div>
                 </section>
                 <section className="d-flex flex-column w-50 pe-3 ps-3 pt-3">
-                    <p>
+                    <p className="downloadInfoModal-txt" style={{ height: "90px" }}>
                         If not logged into Google, click this icon in the upper right:
                     </p>
                     <div className="position-relative w-100" style={{height: "150px" }}>
