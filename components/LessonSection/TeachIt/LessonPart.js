@@ -1,6 +1,8 @@
+/* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
+import { useEffect } from 'react';
 
 const LessonPart = ({
   partNum,
@@ -9,6 +11,11 @@ const LessonPart = ({
   chunks = [],
   resources,
 }) => {
+
+  useEffect(() => {
+    console.log('resources.parts[partNum - 1].itemList: ', resources.parts[partNum - 1].itemList);
+  }, []);
+
   return (
     <Accordion
       buttonClassName='w-100 text-start'
@@ -43,7 +50,7 @@ const LessonPart = ({
             </li>
           ))}
         </ol>
-      
+
         <h4>Steps &amp; Flow</h4>
         {chunks.map((chunk, i) => (
           <LessonChunk
