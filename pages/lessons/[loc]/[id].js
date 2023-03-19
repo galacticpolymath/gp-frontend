@@ -87,7 +87,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
           </div>
         </div>
       </div>
-      <div className="container d-flex justify-content-center pt-4 pb-4">
+      <div className="container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
         <div className="col-11 col-sm-12 col-md-10 col-lg-8 p-0">
           {Object.values(lesson.Section).map(renderSection)}
         </div>
