@@ -38,6 +38,21 @@ const Overview = ({
               <h5>Estimated Time: </h5>
               <span>{EstLessonTime}</span>
             </div>
+            <div className='d-grid d-sm-none g-col-4 bg-white p-3 rounded-3'>
+              <i className="fs-3 mb-2 d-block bi-book-half"></i>
+              <h5>Target Subject: </h5>
+              <span>{TargetSubject}</span>
+            </div>
+            <div className='d-grid d-sm-none g-col-4 bg-white p-3 rounded-3'>
+              <i className="fs-3 mb-2 d-block bi-person-circle"></i>
+              <h5>Grades: </h5>
+              <span>{ForGrades}</span>
+            </div>
+            <div className='d-grid d-sm-none g-col g-col-md-4 bg-white p-3 rounded-3 col-start-7'>
+              <i className="fs-3 mb-2 d-block bi-alarm"></i>
+              <h5>Estimated Time: </h5>
+              <span>{EstLessonTime}</span>
+            </div>
           </div>
           <Link passHref href="#learning_standards">
             <h5>Subject breakdown by standard alignments: </h5>
@@ -55,7 +70,7 @@ const Overview = ({
 
         <h5 className='mt-4'>Keywords:</h5>
         {Tags && Tags.map(tag => (
-          <span 
+          <span
             key={tag.Value}
             className='fs-6 fw-light badge rounded-pill bg-white text-secondary border border-2 border-secondary me-2 mb-2 px-2'
           >

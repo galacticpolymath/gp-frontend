@@ -18,6 +18,22 @@
   }
 }
 
+.col-start-2{
+  grid-column-start: 2 !important;
+}
+
+.col-start-3{
+  grid-column-start: 3 !important;
+}
+
+.col-start-4{
+  grid-column-start: 4 !important;
+}
+
+.col-start-7{
+  grid-column-start: 7 !important;
+}
+
 .collapsibleLessonSection {
   > div:first-child {
     width: 100vw;
