@@ -13,5 +13,14 @@
     width: 100vw;
     margin-left: calc(-1 * ((100vw - 100%) / 2));
     margin-right: calc(-1 * ((100vw - 100%) / 2));
+    > div {
+      background-color: #e2f0fd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      > div{
+        width: 75%;
+      }
+    }
   }
 }
