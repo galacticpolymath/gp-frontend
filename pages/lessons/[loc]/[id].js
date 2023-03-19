@@ -49,7 +49,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
     <Layout>
       {/* selectedLessonPg */}
       <div className="container d-flex justify-content-center pt-4 pb-4">
-        <div className="col-8">
+        <div className="col-11 col-sm-12 col-md-10 col-lg-8">
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             {lastSubRelease && (
               <p>
@@ -88,7 +88,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
         </div>
       </div>
       <div className="container d-flex justify-content-center pt-4 pb-4">
-        <div className="col-8 p-0">
+        <div className="col-11 col-sm-12 col-md-10 col-lg-8 p-0">
           {Object.values(lesson.Section).map(renderSection)}
         </div>
       </div>

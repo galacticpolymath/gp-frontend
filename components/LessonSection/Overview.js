@@ -23,25 +23,23 @@ const Overview = ({
       <div className='container mb-4'>
         <div className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center">
           <div className="grid mx-auto gap-3 py-3">
-            <div className='g-col g-col-md-4 bg-white p-3 rounded-3'>
+            <div className='d-none d-sm-grid g-col g-col-md-4 bg-white p-3 rounded-3'>
               <i className="fs-3 mb-2 d-block bi-book-half"></i>
               <h5>Target Subject: </h5>
               <span>{TargetSubject}</span>
             </div>
-            <div className='g-col g-col-md-4 bg-white p-3 rounded-3'>
+            <div className='d-none d-sm-grid g-col g-col-md-4 bg-white p-3 rounded-3'>
               <i className="fs-3 mb-2 d-block bi-person-circle"></i>
               <h5>Grades: </h5>
               <span>{ForGrades}</span>
             </div>
-            <div className='g-col g-col-md-4 bg-white p-3 rounded-3'>
+            <div className='d-none d-sm-grid g-col g-col-md-4 bg-white p-3 rounded-3'>
               <i className="fs-3 mb-2 d-block bi-alarm"></i>
               <h5>Estimated Time: </h5>
               <span>{EstLessonTime}</span>
             </div>
           </div>
-
           <Link passHref href="#learning_standards">
-
             <h5>Subject breakdown by standard alignments: </h5>
             {SteamEpaulette && SteamEpaulette.url && (
               <img
