@@ -5,6 +5,7 @@ export const getMediaComponent = ({ type, mainLink }) => {
         width="560"
         height="315"
         src={mainLink}
+        style={{ minWidth: '170px' }}
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
@@ -46,7 +47,7 @@ const renderThumbs = items => {
       );
     } else if (type === 'pdf') {
       return (
-        <i 
+        <i
           key={i}
           className="bi-filetype-pdf fs-2"
         >

@@ -12,7 +12,7 @@ const Carousel = ({
   return items && (
     <RRCarousel
       showStatus={false}
-      className={`${styles.Carousel} bg-light-gray rounded p-3`}
+      className={`${styles.Carousel} bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center`}
       {...customControls}
     >
       {items.sort((a, b) => a.order - b.order).map((item, i) => <Slide key={i} {...item} />)}
