@@ -9,7 +9,7 @@ const TeachIt = ({
   SectionTitle,
   Data,
 }) => {
-  const environments = [ 'classroom', 'remote']
+  const environments = ['classroom', 'remote']
     .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   const gradeVariations = Data[environments[0]].resources;
 
@@ -36,12 +36,12 @@ const TeachIt = ({
             <p className='mb-0'>{Data.lessonPreface}</p>
           </div>
         </div>
-        
+
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
             <h3>Available Grade Bands</h3>
             {gradeVariations.map((variation, i) => (
-              <label 
+              <label
                 key={i}
                 className='text-capitalize d-block mb-1'
               >
