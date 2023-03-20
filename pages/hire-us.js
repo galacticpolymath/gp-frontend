@@ -48,6 +48,7 @@ const HireUsPage = () => {
                       itemCarouselStylesCustom="teachersAndStudentReview"
                       customCardStyles="cardMainStylesTeachersAndStudents"
                       _customBulletPtsSecCss="bulletPtsTeachersAndStudents"
+                      _autoCarouselContainerStyles="teachersAndStudentsAutoCarouselContainer"
                     />
                   </section>
                   <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />

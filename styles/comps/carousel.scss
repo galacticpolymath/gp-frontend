@@ -1067,6 +1067,12 @@ $feedbackTxtFontSizeDesktop: 24px ;
   }
 }
 
+.teachersAndStudentsAutoCarouselContainer{
+  @media(min-width: 1200px){
+    max-width: 840px;
+  }
+}
+
 .teacherTestimony {
   > section {
     > section {
