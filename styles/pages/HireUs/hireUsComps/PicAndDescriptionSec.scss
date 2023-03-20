@@ -1,21 +1,21 @@
-$scientistFontSize: 1.3rem !important;
+$scientistFontSize: 1.3rem;
 
 .ownerSection {
   @media (min-width: 992px) and (max-width: 1299px) {
-    display: flex !important;
-    flex-direction: column-reverse !important;
+    display: flex;
+    flex-direction: column-reverse;
     > section:first-child {
-      margin-top: 25px !important;
+      margin-top: 25px;
     }
 
     > section:last-child {
-      width: 100% !important;
+      width: 100%;
     }
   }
 
   > section:first-child {
     @media (max-width: 575px) {
-      margin-top: 17px !important;
+      margin-top: 17px;
     }
 
     > span {
@@ -27,18 +27,18 @@ $scientistFontSize: 1.3rem !important;
 }
 
 .picAndDescriptionSec {
-  display: flex !important;
-  flex-direction: row-reverse !important;
+  display: flex;
+  flex-direction: row-reverse;
 
   @media (min-width: 576px) {
-    margin-top: 0px !important;
+    margin-top: 0px;
   }
 
   > section {
     > div {
       @media (max-width: 767px) {
-        width: 150px !important;
-        height: 150px !important;
+        width: 150px;
+        height: 150px;
       }
     }
   }
@@ -51,7 +51,7 @@ $scientistFontSize: 1.3rem !important;
 
   @media (min-width: 576px) {
     > section:first-child {
-      margin-left: 25px !important;
+      margin-left: 25px;
 
       @media (max-width: 767px) {
       }
@@ -60,7 +60,7 @@ $scientistFontSize: 1.3rem !important;
 
   @media (min-width: 1200px) {
     > section:first-child {
-      // margin-left: 0px !important;
+      // margin-left: 0px;
 
       @media (max-width: 767px) {
       }
@@ -73,8 +73,8 @@ $scientistFontSize: 1.3rem !important;
       > span {
         text-align: center;
         display: block;
-        padding-left: 8px !important;
-        padding-right: 8px !important;
+        padding-left: 8px;
+        padding-right: 8px;
         font-size: $spanFontSize;
       }
     }
@@ -83,14 +83,14 @@ $scientistFontSize: 1.3rem !important;
 
 .mattsAward > section:last-child {
   @media (min-width: 576px) {
-    padding-top: 10px !important;
+    padding-top: 10px;
   }
 }
 
 .shareYourKnowledgeDesktopSec {
   > section:first-child {
     @media (min-width: 768px) and (max-width: 1199px) {
-      height: 300px !important;
+      height: 300px;
     }
   }
 }
@@ -99,11 +99,11 @@ $scientistFontSize: 1.3rem !important;
   @media (min-width: 768px) {
     > section:last-child {
       div {
-        width: 40vw !important;
-        max-width: 576px !important;
+        width: 40vw;
+        max-width: 576px;
 
         @media (max-width: 1199px) {
-          width: 40vw !important;
+          width: 40vw;
         }
       }
     }
@@ -111,18 +111,18 @@ $scientistFontSize: 1.3rem !important;
 
   @media (min-width: 768px) {
     > section:first-child {
-      display: none !important;
+      display: none;
     }
     > section:last-child {
       > div {
-        height: 300px !important;
+        height: 300px;
       }
     }
   }
 
   @media (min-width: 768px) and (max-width: 1199px) {
     > section:last-child {
-      height: auto !important;
+      height: auto;
     }
   }
 }
@@ -130,18 +130,18 @@ $scientistFontSize: 1.3rem !important;
 .shareYourKnowledgeImgContainer > span,
 .GPConstellationSec.onDesktop span {
   @media (min-width: 1200px) {
-    width: 30vw !important;
-    min-width: 475px !important;
-    border-radius: 0.8rem !important;
+    width: 30vw;
+    min-width: 475px;
+    border-radius: 0.8rem;
   }
 }
 
 .lessonInfoSec {
   @media (min-width: 1200px) {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    margin-left: 0px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 0px;
   }
 }
 
@@ -150,22 +150,22 @@ $scientistFontSize: 1.3rem !important;
   > section {
     > div {
       @media (max-width: 767px) {
-        width: 165px !important;
-        height: 180px !important;
+        width: 165px;
+        height: 180px;
       }
     }
   }
 
   @media (min-width: 576px) {
     > section:first-child {
-      margin-left: 20px !important;
+      margin-left: 20px;
 
       @media(max-width: 767px){
-        padding-left: 10px !important;
+        padding-left: 10px;
       }
 
       @media(min-width: 1200px){
-        padding-top: 15px !important;
+        padding-top: 15px;
       }
     }
   }
@@ -174,43 +174,43 @@ $scientistFontSize: 1.3rem !important;
     padding-bottom: 75px;
 
     @media (max-width: 991px) {
-      padding-bottom: 20px !important;
+      padding-bottom: 20px;
     }
   }
 
   > section:first-child {
     > span {
-      line-height: 25px !important;
+      line-height: 25px;
     }
   }
 
   @media (min-width: 768px) and (max-width: 1299px) {
     > section:last-child {
-      // width: 100% !important;
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
+      // width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     > section:first-child {
-      margin-left: 0 !important;
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
+      margin-left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       @media (min-width: 992px) {
-        margin-top: 20px !important;
+        margin-top: 20px;
       }
       > span {
         @media (max-width: 991px) {
-          margin-left: 20px !important;
+          margin-left: 20px;
         }
         @media (min-width: 992px) {
-          text-align: center !important;
+          text-align: center;
         }
 
         @media (min-width: 992px) and (max-width: 1199px) {
-          padding: 0px 15px 0px 15px !important;
+          padding: 0px 15px 0px 15px;
         }
       }
     }
@@ -219,50 +219,50 @@ $scientistFontSize: 1.3rem !important;
   @media (max-width: 575px) {
     padding-bottom: 25px;
     > section:first-child {
-      padding-left: 8px !important;
-      padding-right: 8px !important;
+      padding-left: 8px;
+      padding-right: 8px;
     }
   }
 }
 
 .ownerSection {
   @media (min-width: 992px) and (max-width: 1299px) {
-    flex-direction: column-reverse !important;
+    flex-direction: column-reverse;
   }
 
   @media (min-width: 1300px) {
     > section:first-child {
-      padding-top: 20px !important;
+      padding-top: 20px;
     }
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
     > section:first-child {
-      margin-left: 20px !important;
+      margin-left: 20px;
     }
   }
 
   > section {
     div {
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 
   > section {
     @media(min-width: 1200px){
-      // width: 50% !important;
+      // width: 50%;
     }
 
     img {
-      width: 100% !important;
-      // height: 170px !important;
-      min-width: 200px !important;
-      height: 200px !important;
+      width: 100%;
+      // height: 170px;
+      min-width: 200px;
+      height: 200px;
 
       @media (min-width: 768px) {
-        max-width: 210px !important;
+        max-width: 210px;
       }
     }
   }
@@ -282,132 +282,132 @@ $scientistFontSize: 1.3rem !important;
 
 .picAndDescriptionSecInList:not(:first-child) {
   @media (max-width: 991px) {
-    // margin-top: 90px !important;
+    // margin-top: 90px;
   }
 
   @media (max-width: 575px) {
-    margin-top: 60px !important;
+    margin-top: 60px;
   }
 }
 
 .mattsAwardsSec {
   @media (min-width: 768px) {
-    justify-content: center !important;
-    align-items: center !important;
+    justify-content: center;
+    align-items: center;
   }
+}
 
-  @media (min-width: 992px) {
-    // margin-left: 80px !important;
-  }
+.quoteInfoSpan{
+  line-height: 16px;
 }
 
 .mattsAward {
   @media (min-width: 768px) {
-    height: 110px !important;
+    height: 110px;
     span {
       font-size: $spanFontSize;
     }
     > section:last-child {
-      height: 100% !important;
-      display: flex !important;
-      padding-top: 10px !important;
+      height: 100%;
+      display: flex;
+      padding-top: 10px;
     }
   }
 
   @media (min-width: 768px) and (max-width: 1199px) {
-    height: 100px !important;
+    height: 150px;
   }
 
   @media (max-width: 767px) {
     span {
-      text-decoration: underline !important;
-      text-decoration-thickness: 1.5px !important;
+      text-decoration: underline;
+      text-decoration-thickness: 1.5px;
     }
   }
 
   @media (max-width: 991px) and (min-width: 576px) {
-    padding-left: 30px !important;
+    padding-left: 30px;
     > section:last-child {
       > div {
-        width: 120px !important;
-        height: 120px !important;
+        width: 120px;
+        height: 120px;
       }
     }
   }
 
   @media (max-width: 575px) {
-    display: flex !important;
-    flex-direction: column-reverse !important;
+    display: flex;
+    flex-direction: column-reverse;
 
     > section:last-child {
-      width: 100% !important;
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     > section:first-child {
-      margin-top: 15px !important;
-      padding: 0px 10px 0px 10px !important;
+      margin-top: 15px;
+      padding: 0px 10px 0px 10px;
       @media(min-width: 992px){
-        margin-left: 0px !important;
+        margin-left: 0px;
       }
       span {
-        display: block !important;
-        text-align: center !important;
-        padding-left: 10px !important;
-        padding-right: 10px !important;
+        display: block;
+        text-align: center;
+        padding-left: 10px;
+        padding-right: 10px;
       }
     }
 
     span {
-      text-decoration: underline !important;
-      text-decoration-thickness: 1.5px !important;
+      text-decoration: underline;
+      text-decoration-thickness: 1.5px;
     }
   }
 
   @media (min-width: 1200px) {
     > section:first-child {
-      padding-top: 10px !important;
-      margin-left: 0px !important;
+      padding-top: 10px;
+      margin-left: 0px;
     }
   }
 }
 
 .secWithHumanPic {
   img {
-    border-radius: 50% !important;
-    border: solid 1px #707070 !important;
+    border-radius: 50%;
+    border: solid 1px #707070;
   }
 
   @media (max-width: 575px) {
-    display: flex !important;
-    flex-direction: column-reverse !important;
+    display: flex;
+    flex-direction: column-reverse;
     > section:last-child {
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      width: 100% !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
     }
 
     > section:first-child {
       span {
-        display: block !important;
-        text-align: center !important;
+        display: block;
+        text-align: center;
       }
-      text-align: center !important;
+      text-align: center;
     }
   }
 }
 
 .ownerSection > section:first-child span {
   @media (min-width: 576px) and (max-width: 767px) {
-    margin-top: 10px !important;
-    display: inline-block !important;
+    margin-top: 10px;
+    display: inline-block;
   }
 
   @media (max-width: 575px) {
-    line-height: 25px !important;
+    line-height: 25px;
   }
 }
 
@@ -420,72 +420,72 @@ $scientistFontSize: 1.3rem !important;
     }
 
     > section:first-child {
-      margin-top: 20px !important;
+      margin-top: 20px;
       > span {
-        line-height: 24px !important;
+        line-height: 24px;
         font-size: $spanDesktopFontSize;
       }
     }
 
-    display: inline-flex !important;
+    display: inline-flex;
     > section:last-child {
       @media (max-width: 1199px) {
-        margin-bottom: 10px !important;
+        margin-bottom: 10px;
       }
       > div {
-        width: 200px !important;
-        border-radius: 0px !important;
-        height: 200px !important;
-        position: relative !important;
+        width: 200px;
+        border-radius: 0px;
+        height: 200px;
+        position: relative;
         > span {
-          transform: translate(-50%, -50%) !important;
-          top: 50% !important;
-          left: 50% !important;
-          width: 175px !important;
-          height: 175px !important;
+          transform: translate(-50%, -50%);
+          top: 50%;
+          left: 50%;
+          width: 175px;
+          height: 175px;
         }
       }
     }
   }
 
   @media (min-width: 768px) and (max-width: 1199px) {
-    flex-direction: column-reverse !important;
-    height: 350px !important;
+    flex-direction: column-reverse;
+    height: 350px;
 
     > section:last-child {
-      width: 100% !important;
+      width: 100%;
       display: grid;
       place-items: center;
     }
 
     > section:first-child {
-      height: 115px !important;
-      margin-top: 0px !important;
-      margin-left: 0px !important;
+      height: 115px;
+      margin-top: 0px;
+      margin-left: 0px;
 
       > h4 {
-        text-align: center !important;
+        text-align: center;
       }
 
       > span {
-        text-align: center !important;
-        display: inline-block !important;
-        width: 100% !important;
+        text-align: center;
+        display: inline-block;
+        width: 100%;
       }
     }
   }
 
   @media (min-width: 1200px) {
-    display: inline-flex !important;
+    display: inline-flex;
   }
 
   @media (max-width: 575px) {
     > section:last-child {
-      margin-bottom: 15px !important;
+      margin-bottom: 15px;
     }
 
     span {
-      line-height: 33px !important;
+      line-height: 33px;
     }
   }
 }
@@ -494,7 +494,7 @@ $scientistFontSize: 1.3rem !important;
   @media (max-width: 575px) {
     > section:first-child {
       span {
-        line-height: 20px !important;
+        line-height: 20px;
       }
     }
   }
@@ -502,17 +502,17 @@ $scientistFontSize: 1.3rem !important;
 
 .scientist:not(:first-child) {
   @media (max-width: 767px) {
-    margin-top: 10px !important;
+    margin-top: 10px;
   }
 
   @media (max-width: 575px) {
-    margin-top: 55px !important;
+    margin-top: 55px;
   }
 }
 
 .regImgSec {
   @media (min-width: 1200px) {
-    height: fit-content !important;
+    height: fit-content;
   }
 }
 
@@ -527,36 +527,36 @@ $scientistFontSize: 1.3rem !important;
 
 .gpConstellation {
   @media (min-width: 768px) {
-    height: 300px !important;
+    height: 300px;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    min-width: 320px !important;
-    margin-left: 13px !important;
+    min-width: 320px;
+    margin-left: 13px;
   }
 
   @media (min-width: 1200px) {
-    height: 281px !important;
+    height: 281px;
   }
 }
 
 @media (min-width: 768px) {
   .gpConstellation,
   .shareYourKnowledgeImgContainer > img {
-    width: 480px !important;
-    height: 280px !important;
+    width: 480px;
+    height: 280px;
 
     @media (max-width: 1199px) {
-      width: 380px !important;
-      height: 280px !important;
+      width: 380px;
+      height: 280px;
     }
   }
 
   .shareYourKnowledgeImgContainer {
     @media (min-width: 1200px) {
-      display: flex !important;
-      justify-content: center !important;
-      align-items: stretch !important;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
     }
   }
 }
@@ -564,46 +564,46 @@ $scientistFontSize: 1.3rem !important;
 @media (max-width: 767px) {
   .GPConstellationSec > section:last-child {
     @media (max-width: 575px) {
-      margin-top: 25px !important;
+      margin-top: 25px;
     }
   }
 
   .GPConstellationSec > section:last-child {
     > div {
-      width: 40vw !important;
-      height: 250px !important;
-      display: grid !important;
-      align-items: center !important;
+      width: 40vw;
+      height: 250px;
+      display: grid;
+      align-items: center;
 
       img {
         @media (max-width: 767px) and (min-width: 576px) {
-          height: 192px !important;
-          min-width: 230px !important;
+          height: 192px;
+          min-width: 230px;
         }
       }
     }
     @media (min-width: 576px) {
-      margin-right: 10px !important;
-      margin-top: 0px !important;
-      margin-right: 0px !important;
+      margin-right: 10px;
+      margin-top: 0px;
+      margin-right: 0px;
     }
 
     @media (max-width: 575px) {
       > div {
-        height: fit-content !important;
-        margin-top: 0px !important;
+        height: fit-content;
+        margin-top: 0px;
       }
     }
   }
   .shareYourKnowledgeImgContainer > img {
-    width: 350px !important;
-    height: 250px !important;
+    width: 350px;
+    height: 250px;
   }
 }
 
 .lessonInfoSec {
   @media (min-width: 1200px) {
-    transform: translateX(20px) !important;
+    transform: translateX(20px);
   }
 }
 
@@ -611,7 +611,7 @@ $scientistFontSize: 1.3rem !important;
   > section:first-child {
     > section:first-child {
       @media (min-width: 1300px) {
-        padding-left: 3rem !important;
+        padding-left: 3rem;
       }
     }
   }
@@ -619,7 +619,7 @@ $scientistFontSize: 1.3rem !important;
 
 .shareYourKnowledgeImgSec {
   @media (min-width: 768px) {
-    margin-bottom: 50px !important;
+    margin-bottom: 50px;
   }
 }
 
@@ -627,7 +627,7 @@ $scientistFontSize: 1.3rem !important;
 
 @media (min-width: 1200px) {
   .scientist:nth-child(even) {
-    margin-top: 50px !important;
+    margin-top: 50px;
   }
 }
 
@@ -635,39 +635,39 @@ $scientistFontSize: 1.3rem !important;
   > section:first-child {
     > span {
       font-size: $spanFontSize;
-      padding-right: 40px !important;
+      padding-right: 40px;
 
       @media (max-width: 767px) {
-        display: inline-flex !important;
+        display: inline-flex;
       }
     }
   }
 
   @media (min-width: 576px) {
-    flex-direction: row !important;
+    flex-direction: row;
     > section:first-child {
-      margin-left: 0px !important;
-      padding-right: 5px !important;
+      margin-left: 0px;
+      padding-right: 5px;
     }
 
     > section:last-child {
       div {
-        width: 35vw !important;
-        height: 200px !important;
+        width: 35vw;
+        height: 200px;
       }
     }
 
     @media (max-width: 767px) {
-      flex-direction: column !important;
+      flex-direction: column;
 
       @media (min-width: 576px) and (max-width: 767px) {
-        display: flex !important;
-        flex-direction: row !important;
+        display: flex;
+        flex-direction: row;
 
         > section:first-child {
-          display: flex !important;
-          justify-content: center !important;
-          align-items: center !important;
+          display: flex;
+          justify-content: center;
+          align-items: center;
 
           > span {
             @media (min-width: 576px) {
@@ -677,23 +677,23 @@ $scientistFontSize: 1.3rem !important;
       }
 
       > section:last-child {
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        margin-top: 15px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 15px;
       }
     }
   }
   @media (max-width: 575px) {
     > section:last-child {
-      width: 100% !important;
-      display: flex !important;
+      width: 100%;
+      display: flex;
       justify-content: center;
       align-items: center;
 
       div {
-        width: 70% !important;
-        height: 190px !important;
+        width: 70%;
+        height: 190px;
       }
     }
   }
@@ -701,31 +701,31 @@ $scientistFontSize: 1.3rem !important;
 
 @media (max-width: 575px) {
   .GPConstellationSec {
-    flex-direction: column !important;
+    flex-direction: column;
     > section:first-child{
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       > span{
-        display: inline !important;
-        padding-left: 13px !important;
-        padding-right: 13px !important;
+        display: inline;
+        padding-left: 13px;
+        padding-right: 13px;
       }
     }
 
     > section:last-child {
       > div {
-        width: 100% !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         img {
-          max-width: 580px !important;
-          width: 300px !important;
-          height: 180px !important;
+          max-width: 580px;
+          width: 300px;
+          height: 180px;
 
           @media (max-width: 400px) {
-            width: 240px !important;
+            width: 240px;
           }
         }
       }
@@ -736,9 +736,9 @@ $scientistFontSize: 1.3rem !important;
 .mattsAwardParentSec {
   > section:nth-child(2) {
     @media (min-width: 1200px) {
-      width: 45% !important;
+      width: 45%;
       > section:first-child {
-        padding-right: 40px !important;
+        padding-right: 40px;
       }
     }
   }
@@ -746,6 +746,6 @@ $scientistFontSize: 1.3rem !important;
 
 
 .grantReviewsBulletPtsSec{
-  bottom: 0px !important;
+  bottom: 0px;
 }
 

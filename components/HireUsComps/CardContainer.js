@@ -174,7 +174,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                                     "{feedback}"
                                                                     {/* d-none d-md-flex */}
                                                                     <span className={`'d-none d-sm-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 quoteInfoTxts position-absolute ${quoteInfo ?? ""}`} >
-                                                                        <span className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch'>
+                                                                        <span className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch quoteInfoSpan'>
                                                                             <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
                                                                             {(!!occupation || !!institution) && <span className="text-wrap text-center text-sm-start text-dark fst-italic fw275">{occupation ?? institution}</span>}
                                                                             {(!!city || !!location) && <span className="text-center text-sm-start text-wrap text-dark fst-italic fw275">{city ?? location}</span>}

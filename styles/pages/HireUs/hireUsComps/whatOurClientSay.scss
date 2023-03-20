@@ -3,7 +3,7 @@
 
   > section:first-child {
     > section > span > span {
-      inset: auto 0px -80px auto !important;
+      inset: auto 0px -80px auto;
     }
   }
 }
@@ -13,7 +13,7 @@
 
   > section:first-child {
     > section > span > span {
-      inset: auto 0px -80px auto !important;
+      inset: auto 0px -80px auto;
     }
   }
 
@@ -32,42 +32,42 @@
 
 .shortTxtClientReview > section > section > span,
 .longClientReview > section > section > span {
-  line-height: 22px !important;
+  line-height: 22px;
 
   @media (max-width: 1199px) {
     @media (max-width: 767px) {
-      width: 100% !important;
+      width: 100%;
     }
 
 
 
     @media (min-width: 768px) {
-      width: 90% !important;
+      width: 90%;
     }
   }
 }
 
 .longClientReview {
   @media (max-width: 1199px) {
-    transform: translateY(10px) !important;
+    transform: translateY(10px);
   }
 }
 
 .clientsContainer {
   @media (min-width: 576px) {
-    height: 300px !important;
-    min-width: 570px !important;
+    height: 300px;
+    min-width: 570px;
 
     @media (min-width: 768px) {
-      min-width: 750px !important;
+      min-width: 750px;
     }
 
     @media(max-width: 1199px){
-      height: 330px !important;
+      height: 330px;
     }
 
     @media (min-width: 992px) {
-      min-width: 900px !important;
+      min-width: 900px;
     }
 
     @media (max-width: 1399px) {
@@ -76,24 +76,24 @@
           > div {
             // quote info box
             section:nth-child(2) {
-              bottom: -120px !important;
+              bottom: -120px;
             }
           }
 
           // bullet points section
           > section:last-of-type {
             @media (max-width: 575px) {
-              margin-top: 160px !important;
+              margin-top: 160px;
             }
 
 
 
             @media(max-width: 1199px){
-            // transform: translateY(100px) !important;
+            // transform: translateY(100px);
             }
 
             @media(max-width: 767px){
-              transform: translateY(90px) !important;
+              transform: translateY(90px);
             }
           }
         }
@@ -106,14 +106,14 @@
           > div {
             // quote info box
             section:nth-child(2) {
-              bottom: -120px !important;
+              bottom: -120px;
             }
           }
 
           // bullet points section
           > section:last-of-type {
             @media (max-width: 575px) {
-              margin-top: 160px !important;
+              margin-top: 160px;
             }
           }
         }
@@ -126,7 +126,7 @@
           > div {
             // quote info box
             section:nth-child(2) {
-              bottom: -85px !important;
+              bottom: -85px;
             }
           }
         }
@@ -135,50 +135,50 @@
   }
 
   @media (min-width: 1200px) {
-    min-width: 1150px !important;
+    min-width: 1150px;
 
     > div {
       > div {
         > section {
-          margin-top: 3.5rem !important;
+          margin-top: 3.5rem;
         }
       }
     }
   }
 
   @media (max-width: 575px) {
-    height: 420px !important;
+    height: 420px;
 
     @media (max-width: 510px) {
-      height: 455px !important;
+      height: 455px;
     }
 
     @media (max-width: 450px) {
-      height: 455px !important;
+      height: 455px;
     }
 
     @media (max-width: 410px) {
-      height: 505px !important;
+      height: 505px;
     }
 
     @media (max-width: 385px) {
-      height: 525px !important;
+      height: 525px;
     }
 
     @media (max-width: 355px) {
-      height: 585px !important;
+      height: 585px;
     }
 
     @media (max-width: 328px) {
-      height: 585px !important;
+      height: 585px;
     }
 
     @media (max-width: 310px) {
-      height: 655px !important;
+      height: 655px;
     }
 
     @media (max-width: 295px) {    
-      height: 690px !important;
+      height: 690px;
     }
 
     > div {
@@ -186,33 +186,33 @@
         > div {
           // quote info box
           section:nth-child(2) {
-            // bottom: -80px !important;
+            // bottom: -80px;
           }
         }
 
         // bullet points section
         > section:last-of-type {
           z-index: 100;
-          margin-top: 35px !important;
+          margin-top: 35px;
         }
       }
     }
   }
 
   @media (min-width: 576px) and (max-width: 767px) {
-    height: 380px !important;
+    height: 380px;
     > div {
       > div {
         > div {
           // quote info box
           section:nth-child(2) {
-            bottom: 0px !important;
+            bottom: 0px;
           }
         }
 
         // bullet points section
         > section:last-of-type {
-          //   margin-top: 30px !important;
+          //   margin-top: 30px;
         }
       }
     }
@@ -226,20 +226,22 @@
 
 .johanaReviewStyles{
   @media(max-width: 575px){
-    transform: translateY(70px) !important;
+    transform: translateY(70px);
   }
 
   @media(min-width: 992px) and (max-width: 1199px){
-    transform: translateY(40px) !important;
+    transform: translateY(40px);
   }
 }
 
 .clientsBulletPtsSec{
+  bottom: 0;
+
   @media(min-width: 576px){
-    transform: translateY(60px) !important;
+    transform: translateY(60px);
   }
 
   @media(min-width: 768px) and (max-width: 1199px){
-    transform: translateY(95px) !important;
+    transform: translateY(95px);
   }
 }

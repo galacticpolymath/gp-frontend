@@ -1,7 +1,7 @@
 @import "../globalVars.scss";
 
 $carouselBackgroundColor: #ffeded;
-$feedbackTxtFontSizeDesktop: 24px !important;
+$feedbackTxtFontSizeDesktop: 24px ;
 
 * {
   box-sizing: border-box;
@@ -18,45 +18,45 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 }
 
 .navBtnLeftCarousel {
-  transform: translate(-15px, -10px) !important;
+  transform: translate(-15px, -10px) ;
 }
 
 .navBtnRightCarousel {
-  transform: translate(15px, -10px) !important;
+  transform: translate(15px, -10px) ;
 }
 
 .navBtnLeftCarousel,
 .navBtnRightCarousel {
   @media (min-width: 576px) and (max-width: 767px) {
     svg {
-      font-size: 50px !important;
+      font-size: 50px ;
     }
   }
 }
 
 .autoCarouselContainerCard {
-  width: 85% !important;
+  width: 85% ;
   border-radius: 1.3em;
 
   @media (min-width: 1200px) {
-    max-width: 1224px !important;
+    max-width: 1224px ;
   }
 
   @media (max-width: 575px) {
-    width: 95% !important;
+    width: 95% ;
   }
 
 
 
   @media (min-width: 576px) and (max-width: 767px) {
-    width: 95% !important;
-    min-width: 565px !important;
+    width: 95% ;
+    min-width: 565px ;
   }
 }
 
 // @media (min-width: 768px) and (max-width: 1299px) {
 //   .feedbackTxt {
-//     width: 75% !important;
+//     width: 75% ;
 //     transform: translateY(20px);
 
 //     @media (max-width: 992px) {
@@ -66,27 +66,27 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
 .picsCardContainercardOnlyStyles {
   @media (min-width: 768px) {
-    margin-top: 25px !important;
-    width: 95% !important;
+    margin-top: 25px ;
+    width: 95% ;
 
     > div {
-      padding-top: 30px !important;
+      padding-top: 30px ;
     }
 
     @media (max-width: 991px) {
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
+      display: flex ;
+      justify-content: center ;
+      align-items: center ;
 
       > div {
-        height: 100% !important;
-        padding-top: 30px !important;
+        height: 100% ;
+        padding-top: 30px ;
       }
     }
   }
 
   @media (max-width: 575px) {
-    max-width: 450px !important;
+    max-width: 450px ;
   }
 
 }
@@ -94,14 +94,14 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 .cardBodyStyles,
 .autoCarouselContainerCard {
   @media (min-width: 1300px) {
-    // height: 345px !important;
-    // height: 200px !important;
+    // height: 345px ;
+    // height: 200px ;
   }
 }
 
 .picsCardContainercardOnlyStyles {
   @media (min-width: 768px) {
-    height: 205px !important;
+    height: 205px ;
   }
 }
 
@@ -113,32 +113,32 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   white-space: normal;
   margin: 0 auto;
   display: block;
-  line-height: 22px !important;
+  line-height: 22px ;
   font-weight: 249;
-  height: fit-content !important;
+  height: fit-content ;
 
   @media(min-width: 576px) and (max-width: 767px){
     // transform: translateX(5px);
-    // border: solid pink !important;
+    // border: solid pink ;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    line-height: 23px !important;
+    line-height: 23px ;
   }
 
   @media (max-width: 767px) {
-    width: 400px !important;
+    width: 400px ;
   }
 
   @media(min-width: 1200px){
-    padding-left: 10px !important;
+    padding-left: 10px ;
   }
 
   font-size: $feedbackTxtFontSizeDesktop;
 
   @media (max-width: 575px) {
-    width: fit-content !important;
-    padding: 0px 5px 0px 5px !important;
+    width: fit-content ;
+    padding: 0px 5px 0px 5px ;
   }
 }
 
@@ -160,71 +160,71 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
 .react-parallax-bgimage {
   @media (min-width: 768px) {
-    height: 800px !important;
+    height: 800px ;
   }
 }
 
 .defaultHeadingCarouselStyles {
-  color: black !important;
+  color: black ;
 
   @media (min-width: 768px) {
-    font-weight: 400 !important;
-    // font-size: 48px !important;
+    font-weight: 400 ;
+    // font-size: 48px ;
   }
 
   @media (max-width: 767px) {
-    font-weight: 800 !important;
+    font-weight: 800 ;
   }
 
   @media (max-width: 575px) {
-    // font-size: 33px !important;
+    // font-size: 33px ;
     padding-left: 8px;
     padding-right: 8px;
   }
 }
 
 .cardHeadingSec {
-  height: 100px !important;
+  height: 100px ;
 
   @media (min-width: 768px) {
     > h2 {
-      font-weight: 800 !important;
+      font-weight: 800 ;
       font-size: $carouselHeader;
     }
   }
 
   @media (max-width: 767px) {
-    height: 150px !important;
+    height: 150px ;
   }
 }
 
 .feedBackSec {
   @media (min-width: 768px) {
-    min-height: 180px !important;
+    min-height: 180px ;
   }
 
   @media (min-width: 768px) {
-    min-height: 280px !important;
+    min-height: 280px ;
 
     > section:first-of-type {
-      align-items: stretch !important;
-      padding-top: 20px !important;
+      align-items: stretch ;
+      padding-top: 20px ;
     }
   }
 
   @media (min-width: 1300px) {
-    // min-height: 210px !important;
+    // min-height: 210px ;
   }
 }
 
 .autoCarouselContainer {
   margin: 0 auto;
   overflow: hidden;
-  height: 100% !important;
-  position: relative !important;
+  height: 100% ;
+  position: relative ;
 
   @media (min-width: 768px) {
-    max-width: 1000px !important;
+    max-width: 1000px ;
   }
 
   @media (max-width: 767px) {
@@ -234,16 +234,16 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
 .productReviewTxt {
   @media (max-width: 767px) {
-    // display: none !important;
-    top: 0 !important;
-    left: 0 !important;
+    // display: none ;
+    top: 0 ;
+    left: 0 ;
   }
 
-  position: absolute !important;
+  position: absolute ;
   @media (min-width: 768px) {
     @media (min-width: 1200px) {
     }
-    transform: translateY(-20px) !important;
+    transform: translateY(-20px) ;
   }
 
   @media (max-width: 767px) {
@@ -252,36 +252,36 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 }
 
 .studentInfoSec {
-  width: 100% !important;
+  width: 100% ;
 
   @media (max-width: 767px) {
-    display: grid !important;
-    align-items: center !important;
+    display: grid ;
+    align-items: center ;
   }
 
   @media (min-width: 768px) {
-    transform: translateY(40px) !important;
+    transform: translateY(40px) ;
   }
 }
 
 .studentParentStyles {
   @media (max-width: 767px) {
-    transform: translateY(75px) !important;
+    transform: translateY(75px) ;
   }
 
   @media (max-width: 575px) {
-    transform: translateY(65px) !important;
+    transform: translateY(65px) ;
 
     @media (max-width: 425px) {
-      transform: translateY(95px) !important;
+      transform: translateY(95px) ;
     }
 
     @media (max-width: 325px) {
-      transform: translateY(115px) !important;
+      transform: translateY(115px) ;
     }
 
     @media (max-width: 305px) {
-      transform: translateY(135px) !important;
+      transform: translateY(135px) ;
     }
   }
 }
@@ -364,41 +364,41 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 }
 
 .headingCarousel {
-  color: #ffffff !important;
+  color: #ffffff ;
   // font-size: 40px;
 }
 
 .carouselImgContainer {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
+  display: flex ;
+  justify-content: center ;
+  align-items: center ;
 
   img {
-    max-width: none !important;
+    max-width: none ;
 
     @media (min-width: 576px) {
-      width: 90px !important;
-      height: 90px !important;
+      width: 90px ;
+      height: 90px ;
     }
 
     @media (min-width: 768px) {
-      width: 100px !important;
-      height: 100px !important;
+      width: 100px ;
+      height: 100px ;
     }
 
     @media (min-width: 992px) {
-      width: 140px !important;
-      height: 140px !important;
+      width: 140px ;
+      height: 140px ;
     }
 
     @media (min-width: 1300px) {
-      width: 170px !important;
-      height: 170px !important;
+      width: 170px ;
+      height: 170px ;
     }
 
     @media (max-width: 575px) {
-      width: 140px !important;
-      height: 140px !important;
+      width: 140px ;
+      height: 140px ;
     }
   }
 }
@@ -423,7 +423,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
     }
 
     @media (min-width: 1200px) {
-      width: 135px !important;
+      width: 135px ;
     }
   }
 
@@ -440,25 +440,25 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
 .carouselImgContainer:not(:first-child) {
   @media (min-width: 1200px) {
-    margin-left: 85px !important;
+    margin-left: 85px ;
   }
 
   @media (min-width: 768px) and (max-width: 1199px) {
-    // margin-left: 20px !important;
+    // margin-left: 20px ;
   }
 }
 
 .picsCardContainer {
   @media (max-width: 575px) {
-    width: 50% !important;
-    min-width: 255.5px !important;
+    width: 50% ;
+    min-width: 255.5px ;
     // width: fit-content;
   }
 }
 
 .carouselImgContainer:not(:first-child) {
   @media (max-width: 575px) {
-    margin-top: 30px !important;
+    margin-top: 30px ;
   }
 }
 
@@ -468,49 +468,49 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   > section {
     > section {
       > span {
-        width: 85% !important;
-        text-align: center !important;
+        width: 85% ;
+        text-align: center ;
 
         @media(min-width: 576px){
-          text-align: flex-start !important;
+          text-align: flex-start ;
         }
 
-        line-height: 22px !important;
+        line-height: 22px ;
       }
     }
   }
 }
 
 .grantReviewsCard {
-  height: 270px !important;
+  height: 270px ;
 
   @media (min-width: 576px) {
-    min-width: 547px !important;
+    min-width: 547px ;
   }
 
   @media (min-width: 768px) {
-    min-width: 750px !important;
+    min-width: 750px ;
   }
 
   @media (min-width: 1200px) {
     // min-width: 1135.59px;
-    // max-width: 1180px !important;
-    width: 1000px !important;
+    // max-width: 1180px ;
+    width: 1000px ;
   }
 
   @media (max-width: 575px) {
-    height: 300px !important;
+    height: 300px ;
 
     @media (max-width: 410px) {
-      height: 330px !important;
+      height: 330px ;
     }
 
     @media (max-width: 393px) {
-      height: 360px !important;
+      height: 360px ;
     }
 
     @media (max-width: 350px) {
-      height: 410px !important;
+      height: 410px ;
     }
   }
 }
@@ -518,14 +518,14 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 .grantReviewShortTxtStyles {
   @media (max-width: 575px) {
     > section:first-child {
-      transform: translateY(40px) !important;
+      transform: translateY(40px) ;
 
       @media (max-width: 392px) {
-        transform: translateY(40px) !important;
+        transform: translateY(40px) ;
       }
 
       @media (max-width: 350px) {
-        transform: translateY(70px) !important;
+        transform: translateY(70px) ;
       }
     }
   }
@@ -533,15 +533,15 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
 .grantReviewTxtStyles {
   > section:first-child {
-    transform: translateY(20px) !important;
+    transform: translateY(20px) ;
   }
 
   @media (max-width: 575px) {
     > section:first-child {
-      transform: translateY(20px) !important;
+      transform: translateY(20px) ;
 
       @media (max-width: 392px) {
-        transform: translateY(40px) !important;
+        transform: translateY(40px) ;
       }
     }
   }
@@ -555,31 +555,31 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
 .grantReviewerBulletPtsSec {
   @media (max-width: 575px) {
-    transform: translateY(-50px) !important;
+    transform: translateY(-50px) ;
   }
 
   @media (min-width: 768px) {
-    transform: translateY(25px) !important;
+    transform: translateY(25px) ;
   }
 }
 
 .grantReviewerBulletPtsSec {
   @media (min-width: 768px) {
-    margin-top: 25px !important;
+    margin-top: 25px ;
   }
 
   @media (max-width: 767px) {
-    margin-top: 25px !important;
+    margin-top: 25px ;
   }
 }
 
 .grantReviewShortTxtStyles {
   @media (min-width: 768px) {
-    height: 100px !important;
+    height: 100px ;
   }
 
   @media(min-width: 1200px){
-    transform: translateY(20px) !important;
+    transform: translateY(20px) ;
   }
 
 }
@@ -587,10 +587,10 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 .grantReviewShortTxtStyles {
   @media (min-width: 576px) {
     > section > section > span > span {
-      inset: auto -100px -60px auto !important;
+      inset: auto -100px -60px auto ;
 
       @media (max-width: 767px) {
-        inset: auto -40px -60px auto !important;
+        inset: auto -40px -60px auto ;
       }
     }
   }
@@ -599,8 +599,8 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 .grantReviewTxtStyles {
   @media (min-width: 576px) {
     > section > section > span > span {
-      right: 20px !important;
-      bottom: -40px !important;
+      right: 20px ;
+      bottom: -40px ;
     }
   }
 }
@@ -611,26 +611,26 @@ $feedbackTxtFontSizeDesktop: 24px !important;
       > section:first-child {
         width: 100%;
         @media (max-width: 1199px) {
-          height: 230px !important;
+          height: 230px ;
         }
         span {
-          text-align: center !important;
-          transform: translateY(50px) !important;
+          text-align: center ;
+          transform: translateY(50px) ;
         }
       }
 
       > section:last-child {
-        right: 20px !important;
+        right: 20px ;
       }
     }
-    width: 100% !important;
+    width: 100% ;
     span {
-      width: 100% !important;
+      width: 100% ;
     }
   }
 
   @media (max-width: 767px) {
-    min-height: 230px !important;
+    min-height: 230px ;
   }
 }
 
@@ -638,7 +638,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 .carouselImgContainer:nth-last-of-type(2) {
   @media (max-width: 575px) {
     img {
-      width: 265px !important;
+      width: 265px ;
     }
   }
 }
@@ -646,13 +646,13 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 @media (max-width: 767px) and (min-width: 576px) {
   .carouselImgContainer:first-of-type {
     img {
-      width: 120px !important;
+      width: 120px ;
     }
   }
 
   .carouselImgContainer:nth-last-of-type(2) {
     img {
-      width: 167px !important;
+      width: 167px ;
     }
   }
 }
@@ -660,45 +660,45 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 .carouselImgContainer:first-of-type {
   @media (min-width: 768px) {
     img {
-      width: 187px !important;
+      width: 187px ;
     }
   }
 }
 
 .carouselImgContainer:last-child{
   > img{
-    width: 80px !important;
+    width: 80px ;
   }
 }
 
 .carouselImgContainer:nth-last-of-type(2) {
   @media (min-width: 768px) {
     img {
-      width: 209px !important;
+      width: 209px ;
     }
 
     @media (min-width: 950px) {
       img {
-        width: 220px !important;
+        width: 220px ;
       }
     }
 
     @media (min-width: 992px) {
       img {
-        width: 240px !important;
+        width: 240px ;
       }
     }
 
     @media (min-width: 1200px) {
       img {
-        width: 300px !important;
+        width: 300px ;
       }
     }
   }
 }
 
 .starsContainer {
-  height: fit-content !important;
+  height: fit-content ;
   // @media (min-width: 768px) and (max-width: 1299px) {
   //   transform: translateX(25px);
   // }
@@ -707,15 +707,15 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 .bulletPtsTeachersAndStudents {
   @media (min-width: 768px) and (max-width: 991px) {
     > section:last-child {
-      margin-top: 0px !important;
+      margin-top: 0px ;
     }
 
-    transform: translateY(4px) !important;
+    transform: translateY(4px) ;
   }
 }
 .bulletPtsSec {
   @media (min-width: 768px) and (max-width: 992px) {
-    margin-top: 50px !important;
+    margin-top: 50px ;
   }
 }
 
@@ -726,25 +726,25 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
   @media (min-width: 768px) and (max-width: 1399px) {
     > span {
-      height: fit-content !important;
+      height: fit-content ;
       transform: translateY(90px);
     }
   }
 
   @media (max-width: 767px) {
     > span {
-      height: fit-content !important;
-      transform: translateY(110px) !important;
+      height: fit-content ;
+      transform: translateY(110px) ;
     }
   }
 }
 
 .shortQuoteInfoSec {
   @media (max-width: 767px) {
-    transform: translateY(110px) !important;
+    transform: translateY(110px) ;
 
     @media (max-width: 575px) {
-      transform: translateY(80px) !important;
+      transform: translateY(80px) ;
     }
   }
 }
@@ -753,7 +753,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   @media (min-width: 992px) {
     > section {
       > section:last-of-type {
-        bottom: -43px !important;
+        bottom: -43px ;
       }
     }
   }
@@ -761,7 +761,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   @media (min-width: 1200px) {
     > section {
       > section:last-of-type {
-        bottom: -43px !important;
+        bottom: -43px ;
       }
     }
   }
@@ -769,24 +769,24 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
 .grantReviewerBulletPtsSec {
   @media (min-width: 768px) {
-    margin-top: 20px !important;
-    height: 120px !important;
+    margin-top: 20px ;
+    height: 120px ;
   }
 }
 
 .nonStudentInfoSec.shortQuoteInfoSec {
   @media (max-width: 575px) {
-    transform: translateY(100px) !important;
+    transform: translateY(100px) ;
   }
 }
 
 .clientReview.shortTxtContent {
-  height: 100% !important;
+  height: 100% ;
 }
 
 .feedbackInfoSec.nonStudentInfoSec {
   @media (min-width: 1300px) {
-    transform: translateY(30px) !important;
+    transform: translateY(30px) ;
   }
 }
 
@@ -802,54 +802,54 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
 .cardMainStylesTeachersAndStudents {
   @media (min-width: 576px) and (max-width: 767px) {
-    min-width: 560px !important;
+    min-width: 560px ;
   }
 
   @media (min-width: 1200px) {
-    min-width: 1150px !important;
+    min-width: 1150px ;
   }
 
  
 
   @media (max-width: 575px) {
-    height: 360px !important;
+    height: 360px ;
 
     @media (max-width: 325px) {
-      height: 380px !important;
+      height: 380px ;
     }
 
     @media(max-width: 312px){
-      height: 420px !important;
+      height: 420px ;
     }
 
     > div {
       > div {
-        min-height: 300px !important;
+        min-height: 300px ;
         @media (max-width: 379px) {
-          // height: 480px !important;
+          // height: 480px ;
         }
 
         @media (max-width: 345px) {
-          // height: 550px !important;
+          // height: 550px ;
         }
 
         > div {
           // quote info box
           section:nth-child(2) {
-            bottom: -120px !important;
+            bottom: -120px ;
           }
         }
 
         // bullet points section
         > section:last-of-type {
-          // margin-top: 70px !important;
+          // margin-top: 70px ;
 
           @media (max-width: 379px) {
-            margin-top: 110px !important;
+            margin-top: 110px ;
           }
 
           @media (max-width: 345px) {
-            margin-top: 180px !important;
+            margin-top: 180px ;
           }
         }
       }
@@ -857,70 +857,70 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   }
 
   @media (min-width: 576px) {
-    max-width: 1224px !important;
-    height: 290px !important;
+    max-width: 1224px ;
+    height: 290px ;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    height: 290px !important;
-    min-width: 750px !important;
+    height: 290px ;
+    min-width: 750px ;
   }
 
   @media (min-width: 992px) {
-    min-width: 896px !important;
+    min-width: 896px ;
   }
 }
 
 .teachersAndStudentsTestimoniesSec {
   @media (max-width: 767px) {
-    min-height: 220px !important;
+    min-height: 220px ;
     > section:first-of-type {
-      transform: translateY(20px) !important;
+      transform: translateY(20px) ;
     }
   }
 
   @media (min-width: 768px) {
-    min-height: 200px !important;
+    min-height: 200px ;
 
     > section:last-of-type {
-      bottom: -35px !important;
+      bottom: -35px ;
 
       @media (min-width: 1200px) {
-        bottom: 25px !important;
+        bottom: 25px ;
       }
     }
   }
 
   @media (max-width: 575px) {
-    height: 250px !important;
+    height: 250px ;
   }
 
   @media (max-width: 459px) {
-    height: 295px !important;
+    height: 295px ;
   }
 }
 
 .grantReviewerBulletPtsSec {
   @media (max-width: 575px) {
-    margin-top: 55px !important;
-    transform: translateY(0px) !important;
+    margin-top: 55px ;
+    transform: translateY(0px) ;
   }
 }
 
 .grantReviewShortTxtStyles {
   @media (max-width: 767px) {
-    transform: translateY(30px) !important;
+    transform: translateY(30px) ;
   }
 }
 
 .teacherTestimony {
-  height: 100px !important;
+  height: 100px ;
 
   @media (max-width: 1199px) {
     > section {
       > span {
-        left: 10px !important;
-        transform: translateY(-15px) !important;
+        left: 10px ;
+        transform: translateY(-15px) ;
 
         @media (max-width: 768px) and (min-width: 576px) {
         }
@@ -929,27 +929,27 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
         > span:first-child {
           @media (max-width: 767px) and (min-width: 576px) {
-            line-height: 24px !important;
+            line-height: 24px ;
           }
         }
 
         > span {
-          width: 75% !important;
+          width: 75% ;
 
           @media (max-width: 575px) {
-            width: 100% !important;
-            line-height: 26px !important;;
-            padding: 0px 0px 0px 0px !important;
+            width: 100% ;
+            line-height: 26px ;;
+            padding: 0px 0px 0px 0px ;
           }
 
           @media (max-width: 768px) and (min-width: 576px) {
-            width: 90% !important;
+            width: 90% ;
           }
         }
       }
 
       > section:last-of-type {
-        top: 70px !important;
+        top: 70px ;
       }
     }
   }
@@ -957,62 +957,62 @@ $feedbackTxtFontSizeDesktop: 24px !important;
   @media (min-width: 1200px) {
     > section {
       > section:last-of-type {
-        top: 70px !important;
+        top: 70px ;
       }
     }
   }
 }
 
 .studentTestimony {
-  height: 100px !important;
+  height: 100px ;
 
   @media (max-width: 575px) {
-    transform: translateY(60px) !important;
+    transform: translateY(60px) ;
   }
 
   @media (min-width: 576px) {
-    transform: translateY(30px) !important;
+    transform: translateY(30px) ;
   }
 
   @media (min-width: 576px) and (max-width: 767px) {
-    transform: translateY(40px) !important;
+    transform: translateY(40px) ;
   }
 
   @media (min-width: 768px) {
-    transform: translateY(30px) !important;
+    transform: translateY(30px) ;
 
     @media(max-width: 992px){
-      transform: translateY(50px) !important;
+      transform: translateY(50px) ;
     }
   }
 
   @media (min-width: 992px) {
-    transform: translateY(50px) !important;
+    transform: translateY(50px) ;
   }
 
   @media (min-width: 1200px) {
-    transform: translateY(50px) !important;
+    transform: translateY(50px) ;
   }
 
   @media(max-width: 320px){
-    transform: translateY(80px) !important;
+    transform: translateY(80px) ;
   }
 
   > section {
-    // height: fit-content !important;
+    // height: fit-content ;
     > span {
       @media (min-width: 576px) and (max-width: 767px) {
-        // transform: translateX(-40px) !important;
-        transform: translateY(-10px) !important;
+        // transform: translateX(-40px) ;
+        transform: translateY(-10px) ;
       }
     }
 
     > section:first-of-type {
-      height: 80px !important;
+      height: 80px ;
 
       > span:first-child {
         @media (max-width: 767px) and (min-width: 576px) {
-          line-height: 24px !important;
+          line-height: 24px ;
         }
       }
     }
@@ -1022,22 +1022,22 @@ $feedbackTxtFontSizeDesktop: 24px !important;
     > section {
       > span {
         @media (max-width: 767px) {
-          text-align: center !important;
+          text-align: center ;
         }
         > span {
           @media (max-width: 1199px) {
             @media (min-width: 576px) and (max-width: 767px) {
-              top: 65px !important;
-              right: -50px !important;
+              top: 65px ;
+              right: -50px ;
             }
 
-            top: 45px !important;
-            right: -50px !important;
+            top: 45px ;
+            right: -50px ;
           }
 
           @media (min-width: 1200px) {
-            top: 50px !important;
-            right: -60px !important;
+            top: 50px ;
+            right: -60px ;
           }
         }
       }
@@ -1045,11 +1045,11 @@ $feedbackTxtFontSizeDesktop: 24px !important;
     // quote section
     > section:last-of-type {
       @media (min-width: 768px) {
-        right: 230px !important;
+        right: 230px ;
       }
 
       @media (min-width: 1200px) {
-        right: 230px !important;
+        right: 230px ;
       }
     }
   }
@@ -1057,40 +1057,40 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
 .teacherTestimony {
   @media (max-width: 575px) {
-    transform: translateY(20px) !important;
+    transform: translateY(20px) ;
   }
 
   @media (min-width: 375px) and (max-width: 575px) {
-    transform: translateY(40px) !important;
+    transform: translateY(40px) ;
   }
 
   > section {
     // quote section
     > section:last-of-type {
       @media (max-width: 1199px) {
-        right: 60px !important;
+        right: 60px ;
       }
 
       @media (max-width: 991px) {
-        // transform: translateY(7px) !important;
+        // transform: translateY(7px) ;
       }
     }
   }
 
   @media (min-width: 768px) {
-    transform: translateY(20px) !important;
+    transform: translateY(20px) ;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    transform: translateY(30px) !important;
+    transform: translateY(30px) ;
   }
 
   @media (min-width: 576px) and (max-width: 767px) {
-    transform: translateY(20px) !important;
+    transform: translateY(20px) ;
   }
 
   @media(min-width: 1200px){
-    transform: translateY(35px) !important;
+    transform: translateY(35px) ;
   }
 }
 
@@ -1099,8 +1099,8 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
   @media (min-width: 576px) and (max-width: 767px) {
     span > span:not(:last-child) {
-      display: inline-block !important;
-      height: 18px !important;
+      display: inline-block ;
+      height: 18px ;
     }
   }
 }
@@ -1111,28 +1111,28 @@ $feedbackTxtFontSizeDesktop: 24px !important;
       > span {
         > span {
           @media (min-width: 576px) {
-            top: 80px !important;
-            right: -40px !important;
+            top: 80px ;
+            right: -40px ;
 
             @media (min-width: 768px) and (max-width: 991px) {
-              top: 70px !important;
-              right: 20px !important;
+              top: 70px ;
+              right: 20px ;
             }
 
             @media (max-width: 767px) {
-              top: 90px !important;
-              right: 10px !important;
+              top: 90px ;
+              right: 10px ;
             }
           }
 
           @media (min-width: 992px) {
-            top: 75px !important;
-            right: -30px !important;
+            top: 75px ;
+            right: -30px ;
           }
 
           @media (min-width: 1200px) {
-            top: 60px !important;
-            right: 0px !important;
+            top: 60px ;
+            right: 0px ;
           }
         }
       }
@@ -1140,11 +1140,11 @@ $feedbackTxtFontSizeDesktop: 24px !important;
     // quote section
     > section:last-of-type {
       @media (min-width: 768px) {
-        right: 230px !important;
+        right: 230px ;
       }
 
       @media (min-width: 1200px) {
-        right: 230px !important;
+        right: 230px ;
       }
     }
   }
@@ -1164,7 +1164,7 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
     @media (max-width: 575px) {
       span {
-        text-align: center !important;
+        text-align: center ;
       }
     }
   }
@@ -1176,33 +1176,33 @@ $feedbackTxtFontSizeDesktop: 24px !important;
 
     > span:first-child {
       @media (min-width: 576px) and (max-width: 767px) {
-        font-size: 22px !important;
+        font-size: 22px ;
       }
     }
   }
 }
 
 .bulletPtsTeachersAndStudents {
-  bottom: 0px !important;
+  bottom: 0px ;
 
   @media (max-width: 767px) {
-    bottom: -3px !important;
+    bottom: -3px ;
   }
 
   @media (max-width: 575px) {
-    bottom: -5px !important;
+    bottom: -5px ;
   }
 }
 
 .bulletPtsTeachersAndStudents {
   button svg {
-    font-size: 25px !important;
+    font-size: 25px ;
   }
 }
 
 .grantReviewsBulletPtsSec {
   @media (max-width: 575px) {
-    bottom: -5px !important;
+    bottom: -5px ;
   }
 }
 
