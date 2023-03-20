@@ -814,48 +814,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
  
 
   @media (max-width: 575px) {
-    height: 360px ;
-
-    @media (max-width: 325px) {
-      height: 380px ;
-    }
-
-    @media(max-width: 312px){
-      height: 420px ;
-    }
-
-    > div {
-      > div {
-        min-height: 300px ;
-        @media (max-width: 379px) {
-          // height: 480px ;
-        }
-
-        @media (max-width: 345px) {
-          // height: 550px ;
-        }
-
-        > div {
-          // quote info box
-          section:nth-child(2) {
-            bottom: -120px ;
-          }
-        }
-
-        // bullet points section
-        > section:last-of-type {
-          // margin-top: 70px ;
-
-          @media (max-width: 379px) {
-            margin-top: 110px ;
-          }
-
-          @media (max-width: 345px) {
-            margin-top: 180px ;
-          }
-        }
-      }
-    }
+    height: 360px;
   }
 
   @media (min-width: 576px) {
