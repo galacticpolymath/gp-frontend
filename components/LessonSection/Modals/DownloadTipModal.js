@@ -35,30 +35,30 @@ const DownloadTipModal = () => {
     }
 
     return (
-        <Modal show={isDownloadModalInfoOn} size="lg" onHide={handleCloseModal} contentClassName="" dialogClassName='downloadInfoModal' className='ps-2 pe-2'>
-            <Header closeButton>
+        <Modal show={isDownloadModalInfoOn} size="lg" onHide={handleCloseModal} contentClassName="downloadInfoModal border" dialogClassName='' className='ps-2 pe-2'>
+            <Header className="p-2 p-sm-4 downloadTipModalHeader position-relative" closeButton>
                 <Title>
-                    <h3>Download From Google Drive</h3>
+                    <h3 style={{ lineHeight: '22px' }}>Download From Google Drive</h3>
                 </Title>
             </Header>
-            <Body className="d-flex p-3">
-                <section className="d-flex flex-column w-50 pe-3 ps-3 pt-3">
-                    <p className="downloadInfoModal-txt" style={{ height: "90px" }}>If logged into Google, click the dropdown menu on the folder containing handouts & presentations, and select download:</p>
-                    <div className="position-relative" style={{height: "300px"}}>
+            <Body className="d-flex p-2 flex-md-row flex-column justify-content-md-start justify-content-center align-items-center align-items-md-start ">
+                <section className="mt-1 mt-sm-0 d-flex flex-column pe-sm-3 ps-sm-3 pt-sm-1 pt-md-2">
+                    <p className="downloadInfoModal-txt mb-1" style={{ lineHeight: '20px' }}>If logged into Google, click the dropdown menu on the folder containing handouts & presentations, and select download:</p>
+                    <div className="position-relative mt-2" style={{ height: "300px" }}>
                         <Image src="/imgs/lessons/download_large.png" alt="Galactic_Polymath_download_image_large" layout='fill' style={{ objectFit: 'contain' }} className="w-100 h-100" />
                     </div>
                 </section>
-                <section className="d-flex flex-column w-50 pe-3 ps-3 pt-3">
-                    <p className="downloadInfoModal-txt" style={{ height: "90px" }}>
+                <section className="d-flex flex-column mt-3 mt-sm-0 pe-sm-3 ps-sm-3 pt-sm-1 pt-md-2">
+                    <p className="downloadInfoModal-txt mb-1" style={{ lineHeight: '20px' }}>
                         If not logged into Google, click this icon in the upper right:
                     </p>
-                    <div className="position-relative w-100" style={{height: "150px" }}>
+                    <div className="position-relative w-100 mt-2" style={{ height: "150px" }}>
                         <Image src="/imgs/lessons/download_small.png" className="w-100 h-100" alt="Galactic_Polymath_download_image_large" layout='fill' style={{ objectFit: 'contain' }} />
                     </div>
                 </section>
             </Body>
             <Footer>
-                <Button variant="secondary" onClick={handleCloseModal} className="closeButtonBackgroundColor fw300">OKAY!</Button>
+                <Button variant="secondary" style={{ height: "45px" }} onClick={handleCloseModal} className="closeButtonBackgroundColor fw300 d-flex justify-content-center align-items-center">OKAY!</Button>
             </Footer>
         </Modal>
     )

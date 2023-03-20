@@ -51,7 +51,7 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                 </Title>
                 <button onClick={handleCloseModal} className="position-absolute top-0 end-0 noBtnStyles"><IoIosCloseCircle className="closeButtonTxtColor" /></button>
             </Header>
-            <Body>
+            <Body className="hireUsModalStyles">
                 <section className="d-flex flex-column">
                     <section className="d-flex flex-column">
                         {isOnGPLearningExpModal ?

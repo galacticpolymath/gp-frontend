@@ -25,9 +25,6 @@ const ModalContainers = () => {
     const [selectedJob,] = _selectedJob;
     const [isDownloadModalInfoOn] = _isDownloadModalInfoOn;
 
-    console.log("isDownloadModalInfoOn: " , isDownloadModalInfoOn)
-    
-
     return (
         <>
             {selectedJob ? <SelectedJob /> : null}
