@@ -34,7 +34,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
     cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 fw245') : cardStyles
-    let customBulletPtsSecCss = _customBulletPtsSecCss ? `mt-md-0 position-absolute w-100 ${_customBulletPtsSecCss}` : 'mt-md-0 position-absolute w-100'
+    let customBulletPtsSecCss = _customBulletPtsSecCss ? `mt-md-0 position-absolute ${_customBulletPtsSecCss}` : 'mt-md-0 position-absolute'
     let autoCarouselContainerStyles = 'autoCarouselContainer'
     const userInputs = _userInputs?.isTeachersAndStudentsTestimonies ? _userInputs.arr : _userInputs;
 
@@ -169,12 +169,12 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                                 </span>
                                                             }
                                                             {/* pb-sm-5 mb-sm-5 me-sm-3  */}
-                                                            <section className='pb-md-0 mb-md-0 me-md-0 d-flex justify-content-center align-items-center w-100'>
+                                                            <section className='pb-md-0 mb-md-0 me-md-0  d-flex justify-content-center align-items-center w-100'>
                                                                 <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275 position-relative">
                                                                     "{feedback}"
                                                                     {/* d-none d-md-flex */}
                                                                     <span className={`'d-none d-sm-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 quoteInfoTxts position-absolute ${quoteInfo ?? ""}`} >
-                                                                        <span className='flex-column d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch quoteInfoSpan'>
+                                                                        <span className='flex-column d-none d-sm-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch quoteInfoSpan'>
                                                                             <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>
                                                                             {(!!occupation || !!institution) && <span className="text-wrap text-center text-sm-start text-dark fst-italic fw275">{occupation ?? institution}</span>}
                                                                             {(!!city || !!location) && <span className="text-center text-sm-start text-wrap text-dark fst-italic fw275">{city ?? location}</span>}
@@ -200,28 +200,6 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                 )
                                             })}
                                         </div>
-                                        <section className={`d-flex flex-column justify-content-center align-items-center pb-1 mt-4 mt-sm-3 ${customBulletPtsSecCss}`}>
-                                            <section className="w-100 d-flex justify-content-center align-items-center">
-                                                {BULL_POINT_INDEX_NUMS.map((num, _index) => (
-                                                    (num === index) ?
-                                                        <BsCircleFill
-                                                            key={_index}
-                                                            className="text-dark ms-1"
-                                                        />
-                                                        :
-                                                        <BsCircle
-                                                            className="text-dark ms-1"
-                                                            key={_index}
-                                                            onClick={() => { handleBulletPtClick(num) }}
-                                                        />
-                                                ))}
-                                            </section>
-                                            <section className="d-flex justify-content-center align-items-center mt-1 mt-md-2">
-                                                <button className="noBtnStyles" onClick={handlePausePlayBtnClick}>
-                                                    {isCarouselPaused ? <BsFillPlayCircleFill className="fs-larger" /> : <BsFillPauseCircleFill className="fs-larger" />}
-                                                </button>
-                                            </section>
-                                        </section>
                                     </div>
                                 </>
                             }
@@ -240,6 +218,34 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                     </section>
                                 </div>
                             }
+                            {/* <div> */}
+                            {(userInputs && !isCardOnly) &&
+                                <section className={`d-flex flex-column justify-content-center align-items-center pb-1 mt-4 bottom-0 start-50 end-50 mt-sm-3 ${customBulletPtsSecCss}`}>
+                                    <div className="position-relative">
+                                        <section className="w-100 d-flex justify-content-center align-items-center">
+                                            {BULL_POINT_INDEX_NUMS.map((num, _index) => (
+                                                (num === index) ?
+                                                    <BsCircleFill
+                                                        key={_index}
+                                                        className="text-dark ms-1"
+                                                    />
+                                                    :
+                                                    <BsCircle
+                                                        className="text-dark ms-1"
+                                                        key={_index}
+                                                        onClick={() => { handleBulletPtClick(num) }}
+                                                    />
+                                            ))}
+                                        </section>
+                                        <section className="d-flex justify-content-center align-items-center mt-1 mt-md-2">
+                                            <button className="noBtnStyles" onClick={handlePausePlayBtnClick}>
+                                                {isCarouselPaused ? <BsFillPlayCircleFill className="fs-larger" /> : <BsFillPauseCircleFill className="fs-larger" />}
+                                            </button>
+                                        </section>
+                                    </div>
+                                </section>
+                            }
+                            {/* </div> */}
                         </Card.Body>
                     </Card>
                 </section>

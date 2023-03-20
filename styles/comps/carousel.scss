@@ -91,6 +91,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 }
 
+
 .cardBodyStyles,
 .autoCarouselContainerCard {
   @media (min-width: 1300px) {
@@ -221,7 +222,8 @@ $feedbackTxtFontSizeDesktop: 24px ;
   margin: 0 auto;
   overflow: hidden;
   height: 100% ;
-  position: relative ;
+  position: relative;
+  // max-height: 200px;
 
   @media (min-width: 768px) {
     max-width: 1000px ;
@@ -863,7 +865,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
   @media (min-width: 768px) and (max-width: 991px) {
     height: 290px ;
-    min-width: 750px ;
+    min-width: 757px;
   }
 
   @media (min-width: 992px) {
@@ -1096,6 +1098,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .quoteInfoTxts {
   font-size: $spanFontSizeSmall;
+  transform: translateX(-10px);
 
   @media (min-width: 576px) and (max-width: 767px) {
     span > span:not(:last-child) {
@@ -1157,16 +1160,15 @@ $feedbackTxtFontSizeDesktop: 24px ;
   @media (max-width: 767px) and (min-width: 576px) {
     bottom: 70px;
     right: 24px;
-
+    
     @media (min-width: 576px) {
       bottom: 20px;
     }
+  }
 
-    @media (max-width: 575px) {
-      span {
-        text-align: center ;
-      }
-    }
+  @media (max-width: 575px) {
+    line-height: 16px;
+    transform: translateY(20px)
   }
 
   > section {
@@ -1184,6 +1186,8 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .bulletPtsTeachersAndStudents {
   bottom: 0px ;
+  margin-left: calc(-1 * ((100vw - 100%) / 2));
+  margin-right: calc(-1 * ((100vw - 100%) / 2));
 
   @media (max-width: 767px) {
     bottom: -3px ;
