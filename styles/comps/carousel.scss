@@ -49,8 +49,8 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 
   @media (min-width: 576px) and (max-width: 767px) {
-    width: 95% ;
-    min-width: 565px ;
+    width: 95%;
+    // min-width: 565px ;
   }
 }
 
@@ -117,11 +117,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
   line-height: 22px ;
   font-weight: 249;
   height: fit-content ;
-
-  @media(min-width: 576px) and (max-width: 767px){
-    // transform: translateX(5px);
-    // border: solid pink ;
-  }
+  
 
   @media (min-width: 768px) and (max-width: 991px) {
     line-height: 23px ;
@@ -140,6 +136,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
   @media (max-width: 575px) {
     width: fit-content ;
     padding: 0px 5px 0px 5px ;
+    font-size: 1.15rem;
   }
 }
 

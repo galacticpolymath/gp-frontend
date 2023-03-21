@@ -18,15 +18,7 @@
   }
 
   @media (max-width: 575px) {
-    transform: translateY(90px);
-
-    @media(max-width: 375px){
-      transform: translateY(130px);
-    }
-
-    @media(max-width: 325px){
-        transform: translateY(150px);
-    }
+    transform: translateY(55px);
   }
 }
 
@@ -56,149 +48,64 @@
 .clientsBulletPtsSec{
 }
 
+.clientsContainer{
+}
+
+.longClientReview > section:first-child > section > span > span {
+  @media(min-width: 576px) and (max-width: 767px){
+    transform: translate(-3px,-10px);
+  }
+}
+
 .clientsContainer {
-  @media (min-width: 576px) {
-    height: 330px;
-    min-width: 570px;
+  height: 330px;
 
-    @media (min-width: 768px) {
-      min-width: 750px;
-    }
-
-    @media(max-width: 1199px){
-      height: 330px;
-    }
-
-    @media (min-width: 992px) {
-      min-width: 900px;
-    }
-
-    @media (max-width: 1399px) {
-      > div {
-        > div {
-          > div {
-            // quote info box
-            section:nth-child(2) {
-              bottom: -120px;
-            }
-          }
-
-          // bullet points section
-          > section:last-of-type {
-            @media (max-width: 575px) {
-              margin-top: 160px;
-            }
-
-
-
-            @media(max-width: 1199px){
-            // transform: translateY(100px);
-            }
-
-            @media(max-width: 767px){
-              transform: translateY(90px);
-            }
-          }
-        }
-      }
-    }
-
-    @media (min-width: 1400px) {
-      > div {
-        > div {
-          > div {
-            // quote info box
-            section:nth-child(2) {
-              bottom: -120px;
-            }
-          }
-
-          // bullet points section
-          > section:last-of-type {
-            @media (max-width: 575px) {
-              margin-top: 160px;
-            }
-          }
-        }
-      }
-    }
-
-    @media (min-width: 1300px) {
-      > div {
-        > div {
-          > div {
-            // quote info box
-            section:nth-child(2) {
-              bottom: -85px;
-            }
-          }
-        }
-      }
-    }
+  @media(min-width: 768px) and (max-width: 991px){
+    height: 370px;
   }
 
-  @media (min-width: 1200px) {
-    min-width: 1150px;
-
-    > div {
-      > div {
-        > section {
-          margin-top: 3.5rem;
-        }
-      }
-    }
+  @media(min-width: 992px) and (max-width: 1199px){
+    min-width: 864px;
   }
 
-  @media (max-width: 575px) {
-    height: 420px;
-
-
-    > div {
-      > div {
-        > div {
-          // quote info box
-          section:nth-child(2) {
-            // bottom: -80px;
-          }
-        }
-
-        // bullet points section
-        > section:last-of-type {
-          z-index: 100;
-          margin-top: 35px;
-        }
-      }
-    }
+  @media(min-width: 768px) and (max-width: 991px){
+    min-width: 685px;
   }
 
-  @media (min-width: 576px) and (max-width: 767px) {
-    height: 380px;
-    > div {
-      > div {
-        > div {
-          // quote info box
-          section:nth-child(2) {
-            bottom: 0px;
-          }
-        }
-
-        // bullet points section
-        > section:last-of-type {
-          //   margin-top: 30px;
-        }
-      }
-    }
+  @media(min-width: 576px) and (max-width: 767px){
+    height: 420px; 
+    min-width: 565px; 
   }
+
+  @media(max-width: 575px){
+    height: 575px; 
+  }
+}
+
+.longClientReview{
+  @media(max-width: 575px){
+    transform: translateY(43px);
+
+    > section:first-child{
+      > section:last-of-type {
+        transform: translateY(-5px)
+      }
+
+      > section:first-of-type{
+        span{
+          line-height: 16.8px;
+        }
+      } 
+    }
+  } 
 }
 
 
 
-.clientsContainer {
-}
 
 .johanaReviewStyles{
   @media(max-width: 575px){
-    transform: translateY(70px);
+    transform: translateY(50px);
   }
 
   @media(min-width: 992px) and (max-width: 1199px){
