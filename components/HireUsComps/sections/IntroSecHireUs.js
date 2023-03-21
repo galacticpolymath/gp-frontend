@@ -32,7 +32,7 @@ const IntroSecHireUs = () => {
             <h1 className={`${styles.shadow} headingHireUs noMargin`}>Classroom-ready</h1>
             <h1 className={`${styles.shadow} headingHireUs noMargin`}>Outreach</h1>
           </section>
-          <section className="subTxtHeadingContainerHireUsPg w-75 ps-1 mt-4">
+          <section className="subTxtHeadingContainerHireUsPg w-75 ps-1 mt-2 mt-sm-4">
             <span className={`${styles.shadow} noMargin noPadding spanSubheader`}>
               We translate your work so that non-experts can teach mind-opening lessons.
             </span>
