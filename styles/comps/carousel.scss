@@ -1,7 +1,7 @@
 @import "../globalVars.scss";
 
 $carouselBackgroundColor: #ffeded;
-$feedbackTxtFontSizeDesktop: 24px ;
+$feedbackTxtFontSizeDesktop: 24px;
 
 * {
   box-sizing: border-box;
@@ -18,35 +18,33 @@ $feedbackTxtFontSizeDesktop: 24px ;
 }
 
 .navBtnLeftCarousel {
-  transform: translate(-15px, -10px) ;
+  transform: translate(-15px, -10px);
 }
 
 .navBtnRightCarousel {
-  transform: translate(15px, -10px) ;
+  transform: translate(15px, -10px);
 }
 
 .navBtnLeftCarousel,
 .navBtnRightCarousel {
   @media (min-width: 576px) and (max-width: 767px) {
     svg {
-      font-size: 50px ;
+      font-size: 50px;
     }
   }
 }
 
 .autoCarouselContainerCard {
-  width: 85% ;
+  width: 85%;
   border-radius: 1.3em;
 
   @media (min-width: 1200px) {
-    max-width: 1224px ;
+    max-width: 1224px;
   }
 
   @media (max-width: 575px) {
-    width: 95% ;
+    width: 95%;
   }
-
-
 
   @media (min-width: 576px) and (max-width: 767px) {
     width: 95%;
@@ -66,31 +64,29 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .picsCardContainercardOnlyStyles {
   @media (min-width: 768px) {
-    margin-top: 25px ;
-    width: 95% ;
+    margin-top: 25px;
+    width: 95%;
 
     > div {
-      padding-top: 30px ;
+      padding-top: 30px;
     }
 
     @media (max-width: 991px) {
-      display: flex ;
-      justify-content: center ;
-      align-items: center ;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       > div {
-        height: 100% ;
-        padding-top: 30px ;
+        height: 100%;
+        padding-top: 30px;
       }
     }
   }
 
   @media (max-width: 575px) {
-    max-width: 450px ;
+    max-width: 450px;
   }
-
 }
-
 
 .cardBodyStyles,
 .autoCarouselContainerCard {
@@ -102,7 +98,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .picsCardContainercardOnlyStyles {
   @media (min-width: 768px) {
-    height: 205px ;
+    height: 205px;
   }
 }
 
@@ -114,28 +110,27 @@ $feedbackTxtFontSizeDesktop: 24px ;
   white-space: normal;
   margin: 0 auto;
   display: block;
-  line-height: 22px ;
+  line-height: 22px;
   font-weight: 249;
-  height: fit-content ;
-  
+  height: fit-content;
 
   @media (min-width: 768px) and (max-width: 991px) {
-    line-height: 23px ;
+    line-height: 23px;
   }
 
   @media (max-width: 767px) {
-    width: 400px ;
+    width: 400px;
   }
 
-  @media(min-width: 1200px){
-    padding-left: 10px ;
+  @media (min-width: 1200px) {
+    padding-left: 10px;
   }
 
   font-size: $feedbackTxtFontSizeDesktop;
 
   @media (max-width: 575px) {
-    width: fit-content ;
-    padding: 0px 5px 0px 5px ;
+    width: fit-content;
+    padding: 0px 5px 0px 5px;
     font-size: 1.15rem;
   }
 }
@@ -158,20 +153,20 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .react-parallax-bgimage {
   @media (min-width: 768px) {
-    height: 800px ;
+    height: 800px;
   }
 }
 
 .defaultHeadingCarouselStyles {
-  color: black ;
+  color: black;
 
   @media (min-width: 768px) {
-    font-weight: 400 ;
+    font-weight: 400;
     // font-size: 48px ;
   }
 
   @media (max-width: 767px) {
-    font-weight: 800 ;
+    font-weight: 800;
   }
 
   @media (max-width: 575px) {
@@ -182,31 +177,31 @@ $feedbackTxtFontSizeDesktop: 24px ;
 }
 
 .cardHeadingSec {
-  height: 100px ;
+  height: 100px;
 
   @media (min-width: 768px) {
     > h2 {
-      font-weight: 800 ;
+      font-weight: 800;
       font-size: $carouselHeader;
     }
   }
 
   @media (max-width: 767px) {
-    height: 150px ;
+    height: 150px;
   }
 }
 
 .feedBackSec {
   @media (min-width: 768px) {
-    min-height: 180px ;
+    min-height: 180px;
   }
 
   @media (min-width: 768px) {
-    min-height: 280px ;
+    min-height: 280px;
 
     > section:first-of-type {
-      align-items: stretch ;
-      padding-top: 20px ;
+      align-items: stretch;
+      padding-top: 20px;
     }
   }
 
@@ -218,12 +213,12 @@ $feedbackTxtFontSizeDesktop: 24px ;
 .autoCarouselContainer {
   margin: 0 auto;
   overflow: hidden;
-  height: 100% ;
+  height: 100%;
   position: relative;
   // max-height: 200px;
 
   @media (min-width: 768px) {
-    max-width: 1000px ;
+    max-width: 1000px;
   }
 
   @media (max-width: 767px) {
@@ -234,15 +229,15 @@ $feedbackTxtFontSizeDesktop: 24px ;
 .productReviewTxt {
   @media (max-width: 767px) {
     // display: none ;
-    top: 0 ;
-    left: 0 ;
+    top: 0;
+    left: 0;
   }
 
-  position: absolute ;
+  position: absolute;
   @media (min-width: 768px) {
     @media (min-width: 1200px) {
     }
-    transform: translateY(-20px) ;
+    transform: translateY(-20px);
   }
 
   @media (max-width: 767px) {
@@ -251,36 +246,36 @@ $feedbackTxtFontSizeDesktop: 24px ;
 }
 
 .studentInfoSec {
-  width: 100% ;
+  width: 100%;
 
   @media (max-width: 767px) {
-    display: grid ;
-    align-items: center ;
+    display: grid;
+    align-items: center;
   }
 
   @media (min-width: 768px) {
-    transform: translateY(40px) ;
+    transform: translateY(40px);
   }
 }
 
 .studentParentStyles {
   @media (max-width: 767px) {
-    transform: translateY(75px) ;
+    transform: translateY(75px);
   }
 
   @media (max-width: 575px) {
-    transform: translateY(65px) ;
+    transform: translateY(65px);
 
     @media (max-width: 425px) {
-      transform: translateY(95px) ;
+      transform: translateY(95px);
     }
 
     @media (max-width: 325px) {
-      transform: translateY(115px) ;
+      transform: translateY(115px);
     }
 
     @media (max-width: 305px) {
-      transform: translateY(135px) ;
+      transform: translateY(135px);
     }
   }
 }
@@ -363,48 +358,48 @@ $feedbackTxtFontSizeDesktop: 24px ;
 }
 
 .headingCarousel {
-  color: #ffffff ;
+  color: #ffffff;
   // font-size: 40px;
 }
 
 .carouselImgContainer {
-  display: flex ;
-  justify-content: center ;
-  align-items: center ;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   img {
-    max-width: none ;
+    max-width: none;
 
     @media (min-width: 576px) {
-      width: 90px ;
-      height: 90px ;
+      width: 90px;
+      height: 90px;
     }
 
     @media (min-width: 768px) {
-      width: 100px ;
-      height: 100px ;
+      width: 100px;
+      height: 100px;
     }
 
     @media (min-width: 992px) {
-      width: 140px ;
-      height: 140px ;
+      width: 140px;
+      height: 140px;
     }
 
     @media (min-width: 1300px) {
-      width: 170px ;
-      height: 170px ;
+      width: 170px;
+      height: 170px;
     }
 
     @media (max-width: 575px) {
-      width: 140px ;
-      height: 140px ;
+      width: 140px;
+      height: 140px;
     }
   }
 }
 
-.carouselImgContainer:last-of-type{
-  @media(min-width: 576px) and (max-width: 767px){
-    transform: translateX(10px)
+.carouselImgContainer:last-of-type {
+  @media (min-width: 576px) and (max-width: 767px) {
+    transform: translateX(10px);
   }
 }
 
@@ -422,7 +417,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
     }
 
     @media (min-width: 1200px) {
-      width: 135px ;
+      width: 135px;
     }
   }
 
@@ -439,7 +434,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .carouselImgContainer:not(:first-child) {
   @media (min-width: 1200px) {
-    margin-left: 85px ;
+    margin-left: 85px;
   }
 
   @media (min-width: 768px) and (max-width: 1199px) {
@@ -449,67 +444,65 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .picsCardContainer {
   @media (max-width: 575px) {
-    width: 50% ;
-    min-width: 255.5px ;
+    width: 50%;
+    min-width: 255.5px;
     // width: fit-content;
   }
 }
 
 .carouselImgContainer:not(:first-child) {
   @media (max-width: 575px) {
-    margin-top: 30px ;
+    margin-top: 30px;
   }
 }
-
-
 
 .grantReviewTxtStyles {
   > section {
     > section {
       > span {
-        width: 85% ;
-        text-align: center ;
+        width: 85%;
+        text-align: center;
 
-        @media(min-width: 576px){
-          text-align: flex-start ;
+        @media (min-width: 576px) {
+          text-align: flex-start;
         }
 
-        line-height: 22px ;
+        line-height: 22px;
       }
     }
   }
 }
 
 .grantReviewsCard {
-  height: 270px ;
+  height: 270px;
 
   @media (min-width: 576px) {
-    min-width: 547px ;
+    min-width: 547px;
   }
 
   @media (min-width: 768px) {
-    min-width: 750px ;
+    min-width: 750px;
   }
 
   @media (min-width: 1200px) {
     // min-width: 1135.59px;
     // max-width: 1180px ;
-    width: 1000px ;
+    width: 1000px;
   }
 
   @media (max-width: 575px) {
-    height: 300px ;
+    height: 300px;
 
     @media (max-width: 410px) {
-      height: 330px ;
+      height: 330px;
     }
 
     @media (max-width: 393px) {
-      height: 360px ;
+      height: 360px;
     }
 
     @media (max-width: 350px) {
-      height: 410px ;
+      height: 410px;
     }
   }
 }
@@ -517,14 +510,14 @@ $feedbackTxtFontSizeDesktop: 24px ;
 .grantReviewShortTxtStyles {
   @media (max-width: 575px) {
     > section:first-child {
-      transform: translateY(40px) ;
+      transform: translateY(40px);
 
       @media (max-width: 392px) {
-        transform: translateY(40px) ;
+        transform: translateY(40px);
       }
 
       @media (max-width: 350px) {
-        transform: translateY(70px) ;
+        transform: translateY(70px);
       }
     }
   }
@@ -532,15 +525,15 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .grantReviewTxtStyles {
   > section:first-child {
-    transform: translateY(20px) ;
+    transform: translateY(20px);
   }
 
   @media (max-width: 575px) {
     > section:first-child {
-      transform: translateY(20px) ;
+      transform: translateY(20px);
 
       @media (max-width: 392px) {
-        transform: translateY(40px) ;
+        transform: translateY(40px);
       }
     }
   }
@@ -554,42 +547,41 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .grantReviewerBulletPtsSec {
   @media (max-width: 575px) {
-    transform: translateY(-50px) ;
+    transform: translateY(-50px);
   }
 
   @media (min-width: 768px) {
-    transform: translateY(25px) ;
+    transform: translateY(25px);
   }
 }
 
 .grantReviewerBulletPtsSec {
   @media (min-width: 768px) {
-    margin-top: 25px ;
+    margin-top: 25px;
   }
 
   @media (max-width: 767px) {
-    margin-top: 25px ;
+    margin-top: 25px;
   }
 }
 
 .grantReviewShortTxtStyles {
   @media (min-width: 768px) {
-    height: 100px ;
+    height: 100px;
   }
 
-  @media(min-width: 1200px){
-    transform: translateY(20px) ;
+  @media (min-width: 1200px) {
+    transform: translateY(20px);
   }
-
 }
 
 .grantReviewShortTxtStyles {
   @media (min-width: 576px) {
     > section > section > span > span {
-      inset: auto -100px -60px auto ;
+      inset: auto -100px -60px auto;
 
       @media (max-width: 767px) {
-        inset: auto -40px -60px auto ;
+        inset: auto -40px -60px auto;
       }
     }
   }
@@ -598,8 +590,8 @@ $feedbackTxtFontSizeDesktop: 24px ;
 .grantReviewTxtStyles {
   @media (min-width: 576px) {
     > section > section > span > span {
-      right: 20px ;
-      bottom: -40px ;
+      right: 20px;
+      bottom: -40px;
     }
   }
 }
@@ -610,26 +602,26 @@ $feedbackTxtFontSizeDesktop: 24px ;
       > section:first-child {
         width: 100%;
         @media (max-width: 1199px) {
-          height: 230px ;
+          height: 230px;
         }
         span {
-          text-align: center ;
-          transform: translateY(50px) ;
+          text-align: center;
+          transform: translateY(50px);
         }
       }
 
       > section:last-child {
-        right: 20px ;
+        right: 20px;
       }
     }
-    width: 100% ;
+    width: 100%;
     span {
-      width: 100% ;
+      width: 100%;
     }
   }
 
   @media (max-width: 767px) {
-    min-height: 230px ;
+    min-height: 230px;
   }
 }
 
@@ -637,7 +629,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
 .carouselImgContainer:nth-last-of-type(2) {
   @media (max-width: 575px) {
     img {
-      width: 265px ;
+      width: 265px;
     }
   }
 }
@@ -645,13 +637,13 @@ $feedbackTxtFontSizeDesktop: 24px ;
 @media (max-width: 767px) and (min-width: 576px) {
   .carouselImgContainer:first-of-type {
     img {
-      width: 120px ;
+      width: 120px;
     }
   }
 
   .carouselImgContainer:nth-last-of-type(2) {
     img {
-      width: 167px ;
+      width: 167px;
     }
   }
 }
@@ -659,45 +651,45 @@ $feedbackTxtFontSizeDesktop: 24px ;
 .carouselImgContainer:first-of-type {
   @media (min-width: 768px) {
     img {
-      width: 187px ;
+      width: 187px;
     }
   }
 }
 
-.carouselImgContainer:last-child{
-  > img{
-    width: 80px ;
+.carouselImgContainer:last-child {
+  > img {
+    width: 80px;
   }
 }
 
 .carouselImgContainer:nth-last-of-type(2) {
   @media (min-width: 768px) {
     img {
-      width: 209px ;
+      width: 209px;
     }
 
     @media (min-width: 950px) {
       img {
-        width: 220px ;
+        width: 220px;
       }
     }
 
     @media (min-width: 992px) {
       img {
-        width: 240px ;
+        width: 240px;
       }
     }
 
     @media (min-width: 1200px) {
       img {
-        width: 300px ;
+        width: 300px;
       }
     }
   }
 }
 
 .starsContainer {
-  height: fit-content ;
+  height: fit-content;
   // @media (min-width: 768px) and (max-width: 1299px) {
   //   transform: translateX(25px);
   // }
@@ -706,15 +698,15 @@ $feedbackTxtFontSizeDesktop: 24px ;
 .bulletPtsTeachersAndStudents {
   @media (min-width: 768px) and (max-width: 991px) {
     > section:last-child {
-      margin-top: 0px ;
+      margin-top: 0px;
     }
 
-    transform: translateY(4px) ;
+    transform: translateY(4px);
   }
 }
 .bulletPtsSec {
   @media (min-width: 768px) and (max-width: 992px) {
-    margin-top: 50px ;
+    margin-top: 50px;
   }
 }
 
@@ -725,25 +717,25 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
   @media (min-width: 768px) and (max-width: 1399px) {
     > span {
-      height: fit-content ;
+      height: fit-content;
       transform: translateY(90px);
     }
   }
 
   @media (max-width: 767px) {
     > span {
-      height: fit-content ;
-      transform: translateY(110px) ;
+      height: fit-content;
+      transform: translateY(110px);
     }
   }
 }
 
 .shortQuoteInfoSec {
   @media (max-width: 767px) {
-    transform: translateY(110px) ;
+    transform: translateY(110px);
 
     @media (max-width: 575px) {
-      transform: translateY(80px) ;
+      transform: translateY(80px);
     }
   }
 }
@@ -752,7 +744,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
   @media (min-width: 992px) {
     > section {
       > section:last-of-type {
-        bottom: -43px ;
+        bottom: -43px;
       }
     }
   }
@@ -760,7 +752,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
   @media (min-width: 1200px) {
     > section {
       > section:last-of-type {
-        bottom: -43px ;
+        bottom: -43px;
       }
     }
   }
@@ -768,24 +760,24 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .grantReviewerBulletPtsSec {
   @media (min-width: 768px) {
-    margin-top: 20px ;
-    height: 120px ;
+    margin-top: 20px;
+    height: 120px;
   }
 }
 
 .nonStudentInfoSec.shortQuoteInfoSec {
   @media (max-width: 575px) {
-    transform: translateY(100px) ;
+    transform: translateY(100px);
   }
 }
 
 .clientReview.shortTxtContent {
-  height: 100% ;
+  height: 100%;
 }
 
 .feedbackInfoSec.nonStudentInfoSec {
   @media (min-width: 1300px) {
-    transform: translateY(30px) ;
+    transform: translateY(30px);
   }
 }
 
@@ -801,113 +793,110 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .cardMainStylesTeachersAndStudents {
   @media (min-width: 576px) and (max-width: 767px) {
-    min-width: 560px ;
+    min-width: 560px;
   }
 
   @media (min-width: 1200px) {
-    min-width: 1150px ;
+    min-width: 1150px;
   }
-
- 
 
   @media (max-width: 575px) {
     height: 360px;
   }
 
   @media (min-width: 576px) {
-    max-width: 1224px ;
-    height: 290px ;
+    max-width: 1224px;
+    height: 290px;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    height: 290px ;
+    height: 290px;
     min-width: 757px;
   }
 
   @media (min-width: 992px) {
-    min-width: 896px ;
+    min-width: 896px;
   }
 }
 
 .teachersAndStudentsTestimoniesSec {
   @media (max-width: 767px) {
-    min-height: 220px ;
+    min-height: 220px;
     > section:first-of-type {
-      transform: translateY(20px) ;
+      transform: translateY(20px);
     }
   }
 
   @media (min-width: 768px) {
-    min-height: 200px ;
+    min-height: 200px;
 
     > section:last-of-type {
-      bottom: -35px ;
+      bottom: -35px;
 
       @media (min-width: 1200px) {
-        bottom: 25px ;
+        bottom: 25px;
       }
     }
   }
 
   @media (max-width: 575px) {
-    height: 250px ;
+    height: 250px;
   }
 
   @media (max-width: 459px) {
-    height: 295px ;
+    height: 295px;
   }
 }
 
 .grantReviewerBulletPtsSec {
   @media (max-width: 575px) {
-    margin-top: 55px ;
-    transform: translateY(0px) ;
+    margin-top: 55px;
+    transform: translateY(0px);
   }
 }
 
 .grantReviewShortTxtStyles {
   @media (max-width: 767px) {
-    transform: translateY(30px) ;
+    transform: translateY(30px);
   }
 }
 
 .teacherTestimony {
-  height: 100px ;
+  height: 100px;
 
-  @media (max-width: 1199px) {
+  @media (max-width: 1199px) and (min-width: 576px) {
     > section {
       > span {
-        left: 10px ;
-        transform: translateY(-15px) ;
+        left: 10px;
+        transform: translateY(-15px);
 
         @media (max-width: 768px) and (min-width: 576px) {
         }
       }
       > section {
-
         > span:first-child {
           @media (max-width: 767px) and (min-width: 576px) {
-            line-height: 24px ;
+            line-height: 24px;
           }
         }
 
         > span {
-          width: 75% ;
+          width: 75%;
 
           @media (max-width: 575px) {
-            width: 100% ;
-            line-height: 26px ;;
-            padding: 0px 0px 0px 0px ;
+            width: 100%;
+            line-height: 26px;
+            padding: 0px 0px 0px 0px;
           }
 
           @media (max-width: 768px) and (min-width: 576px) {
-            width: 90% ;
+            width: 90%;
           }
         }
       }
 
       > section:last-of-type {
-        top: 70px ;
+        top: 70px;
       }
     }
   }
@@ -915,45 +904,45 @@ $feedbackTxtFontSizeDesktop: 24px ;
   @media (min-width: 1200px) {
     > section {
       > section:last-of-type {
-        top: 70px ;
+        top: 70px;
       }
     }
   }
 }
 
 .studentTestimony {
-  height: 100px ;
+  height: 100px;
 
   @media (max-width: 575px) {
-    transform: translateY(60px) ;
+    transform: translateY(60px);
   }
 
   @media (min-width: 576px) {
-    transform: translateY(30px) ;
+    transform: translateY(30px);
   }
 
   @media (min-width: 576px) and (max-width: 767px) {
-    transform: translateY(40px) ;
+    transform: translateY(40px);
   }
 
   @media (min-width: 768px) {
-    transform: translateY(30px) ;
+    transform: translateY(30px);
 
-    @media(max-width: 992px){
-      transform: translateY(50px) ;
+    @media (max-width: 992px) {
+      transform: translateY(50px);
     }
   }
 
   @media (min-width: 992px) {
-    transform: translateY(50px) ;
+    transform: translateY(50px);
   }
 
   @media (min-width: 1200px) {
-    transform: translateY(50px) ;
+    transform: translateY(50px);
   }
 
-  @media(max-width: 320px){
-    transform: translateY(80px) ;
+  @media (max-width: 320px) {
+    transform: translateY(80px);
   }
 
   > section {
@@ -961,16 +950,16 @@ $feedbackTxtFontSizeDesktop: 24px ;
     > span {
       @media (min-width: 576px) and (max-width: 767px) {
         // transform: translateX(-40px) ;
-        transform: translateY(-10px) ;
+        transform: translateY(-10px);
       }
     }
 
     > section:first-of-type {
-      height: 80px ;
+      height: 80px;
 
       > span:first-child {
         @media (max-width: 767px) and (min-width: 576px) {
-          line-height: 24px ;
+          line-height: 24px;
         }
       }
     }
@@ -980,22 +969,22 @@ $feedbackTxtFontSizeDesktop: 24px ;
     > section {
       > span {
         @media (max-width: 767px) {
-          text-align: center ;
+          text-align: center;
         }
         > span {
           @media (max-width: 1199px) {
             @media (min-width: 576px) and (max-width: 767px) {
-              top: 65px ;
-              right: -50px ;
+              top: 65px;
+              right: -50px;
             }
 
-            top: 45px ;
-            right: -50px ;
+            top: 45px;
+            right: -50px;
           }
 
           @media (min-width: 1200px) {
-            top: 50px ;
-            right: -60px ;
+            top: 50px;
+            right: -60px;
           }
         }
       }
@@ -1003,11 +992,11 @@ $feedbackTxtFontSizeDesktop: 24px ;
     // quote section
     > section:last-of-type {
       @media (min-width: 768px) {
-        right: 230px ;
+        right: 230px;
       }
 
       @media (min-width: 1200px) {
-        right: 230px ;
+        right: 230px;
       }
     }
   }
@@ -1015,40 +1004,45 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
 .teacherTestimony {
   @media (max-width: 575px) {
-    transform: translateY(20px) ;
+    transform: translateY(20px);
   }
 
   @media (min-width: 375px) and (max-width: 575px) {
-    transform: translateY(40px) ;
+    transform: translateY(40px);
   }
 
   > section {
     // quote section
     > section:last-of-type {
       @media (max-width: 1199px) {
-        right: 60px ;
+        right: 60px;
       }
 
       @media (max-width: 991px) {
         // transform: translateY(7px) ;
       }
+
+      @media(max-width: 575px){
+        transform: translateY(-5px);
+        line-height: 15px;
+      }
     }
   }
 
   @media (min-width: 768px) {
-    transform: translateY(20px) ;
+    transform: translateY(20px);
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    transform: translateY(30px) ;
+    transform: translateY(30px);
   }
 
   @media (min-width: 576px) and (max-width: 767px) {
-    transform: translateY(20px) ;
+    transform: translateY(20px);
   }
 
-  @media(min-width: 1200px){
-    transform: translateY(35px) ;
+  @media (min-width: 1200px) {
+    transform: translateY(35px);
   }
 }
 
@@ -1058,14 +1052,14 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
   @media (min-width: 576px) and (max-width: 767px) {
     span > span:not(:last-child) {
-      display: inline-block ;
-      height: 18px ;
+      display: inline-block;
+      height: 18px;
     }
   }
 }
 
-.teachersAndStudentsAutoCarouselContainer{
-  @media(min-width: 1200px){
+.teachersAndStudentsAutoCarouselContainer {
+  @media (min-width: 1200px) {
     max-width: 840px;
   }
 }
@@ -1076,28 +1070,28 @@ $feedbackTxtFontSizeDesktop: 24px ;
       > span {
         > span {
           @media (min-width: 576px) {
-            top: 80px ;
-            right: -40px ;
+            top: 80px;
+            right: -40px;
+          }
 
-            @media (min-width: 768px) and (max-width: 991px) {
-              top: 70px ;
-              right: 20px ;
-            }
+          @media (min-width: 768px) and (max-width: 991px) {
+            top: 70px;
+            right: 20px;
+          }
 
-            @media (max-width: 767px) {
-              top: 90px ;
-              right: 10px ;
-            }
+          @media (min-width: 576px) and (max-width: 767px) {
+            top: 90px;
+            right: 10px;
           }
 
           @media (min-width: 992px) {
-            top: 75px ;
-            right: -30px ;
+            top: 75px;
+            right: -30px;
           }
 
           @media (min-width: 1200px) {
-            top: 60px ;
-            right: 0px ;
+            top: 60px;
+            right: 0px;
           }
         }
       }
@@ -1105,11 +1099,11 @@ $feedbackTxtFontSizeDesktop: 24px ;
     // quote section
     > section:last-of-type {
       @media (min-width: 768px) {
-        right: 230px ;
+        right: 230px;
       }
 
       @media (min-width: 1200px) {
-        right: 230px ;
+        right: 230px;
       }
     }
   }
@@ -1122,7 +1116,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
   @media (max-width: 767px) and (min-width: 576px) {
     bottom: 70px;
     right: 24px;
-    
+
     @media (min-width: 576px) {
       bottom: 20px;
     }
@@ -1130,7 +1124,7 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
   @media (max-width: 575px) {
     line-height: 16px;
-    transform: translateY(20px)
+    transform: translateY(20px);
   }
 
   > section {
@@ -1140,43 +1134,40 @@ $feedbackTxtFontSizeDesktop: 24px ;
 
     > span:first-child {
       @media (min-width: 576px) and (max-width: 767px) {
-        font-size: 22px ;
+        font-size: 22px;
       }
     }
   }
 }
 
 .bulletPtsTeachersAndStudents {
-  bottom: 0px ;
+  bottom: 0px;
   margin-left: calc(-1 * ((100vw - 100%) / 2));
   margin-right: calc(-1 * ((100vw - 100%) / 2));
 
   @media (max-width: 767px) {
-    bottom: -3px ;
+    bottom: -3px;
   }
 
   @media (max-width: 575px) {
-    bottom: -5px ;
+    bottom: -5px;
   }
 }
 
 .bulletPtsTeachersAndStudents {
   button svg {
-    font-size: 25px ;
+    font-size: 25px;
   }
 }
 
 .grantReviewsBulletPtsSec {
   @media (max-width: 575px) {
-    bottom: -5px ;
+    bottom: -5px;
   }
 }
 
-.grantReview4QuoteInfo{
-  @media(min-width: 1200px){
+.grantReview4QuoteInfo {
+  @media (min-width: 1200px) {
     transform: translateX(-30px);
   }
 }
-
-
-

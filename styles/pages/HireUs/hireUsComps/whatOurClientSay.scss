@@ -45,12 +45,6 @@
   }
 }
 
-.clientsBulletPtsSec{
-}
-
-.clientsContainer{
-}
-
 .longClientReview > section:first-child > section > span > span {
   @media(min-width: 576px) and (max-width: 767px){
     transform: translate(-3px,-10px);
@@ -80,6 +74,10 @@
   @media(max-width: 575px){
     height: 575px; 
   }
+
+  @media(min-width: 1200px){
+    min-width: 1103px;
+  }
 }
 
 .longClientReview{
@@ -88,12 +86,12 @@
 
     > section:first-child{
       > section:last-of-type {
-        transform: translateY(-5px)
+        transform: translateY(-10px)
       }
 
       > section:first-of-type{
         span{
-          line-height: 16.8px;
+          line-height: 17px;
         }
       } 
     }
