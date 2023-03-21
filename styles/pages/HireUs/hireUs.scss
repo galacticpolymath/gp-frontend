@@ -35,6 +35,10 @@
 .arrowHowDoesItWork {
   background-color: $hireUsPgMainCardColor;
   mix-blend-mode: multiply;
+
+  @media(min-width: 992px){
+    transform: rotate(270deg)
+  }
 }
 
 .mattsAwardsSec {
@@ -321,6 +325,14 @@
   @media (min-width: 768px) {
     font-size: $spanDesktopFontSize;
   }
+
+  @media(min-width: 768px) and (max-width: 991px){
+    line-height: 20px;
+  }
+
+  @media(min-width: 992px){
+    line-height: 20px;
+  }
 }
 
 .whatYouWillGetSec {
@@ -348,9 +360,12 @@
   }
 
   @media (min-width: 992px) {
-    // transform: translateY(30px) ;
     margin-top: 40px;
+      transform: translateY(20px)
   }
+
+  // @media(min-width: 992px) and (max-width: 1199px){
+  // }
 
   @media (min-width: 1200px) {
     > * {
@@ -361,6 +376,10 @@
   @media (max-width: 767px) {
     border: solid 0.5px #707070;
     border-radius: $borderRadiusModal;
+  }
+
+  @media(min-width: 768px) and (max-width: 991px){
+    margin-top: 10px;
   }
 }
 
@@ -475,7 +494,7 @@
   }
 
   @media(min-width: 992px){
-    line-height: 29px;
+    line-height: 25px;
   }
 }
 

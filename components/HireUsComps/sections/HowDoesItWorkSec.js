@@ -63,16 +63,14 @@ const HowDoesItWorkSec = () => {
                     content={hireUsCardsSectionTexts[0].content}
                 />
                 <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3 mb-3 mb-sm-3'>
-                    <Image
-                        src="/imgs/pretty-down-arrow.jpeg"
-                        width={50}
-                        height={50}
-                        alt="Galactic_PolyMath_First_Sec_Mobile_Info"
-                        className="arrowHowDoesItWork"
-                        style={{
-                            maxWidth: "100%",
-                            height: "auto",
-                        }} />
+                    <div style={{ width: 50, height: 50 }} className="position-relative">
+                        <Image
+                            src="/imgs/pretty-down-arrow.jpeg"
+                            alt="Galactic_PolyMath_First_Sec_Mobile_Info"
+                            className="arrowHowDoesItWork"
+                            fill
+                        />
+                    </div>
                 </section>
                 <HireUsCardSection
                     dynamicCss='youtube-vid-sec ms-4 me-4 ms-sm-0 me-sm-0'
