@@ -1,4 +1,3 @@
-// import Image from 'next/image';
 import { Card } from 'react-bootstrap';
 import Layout from '../components/Layout';
 import CardContainer from '../components/HireUsComps/CardContainer';

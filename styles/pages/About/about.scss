@@ -1,0 +1,11 @@
+.ourVisionImgContainer{
+    width: 60vw;
+    height: 300px;
+    @media(max-width: 767px){
+        width: 100vw;
+    }
+
+    @media(max-width: 575px){
+        height: 150px;
+    }
+}

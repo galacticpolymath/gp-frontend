@@ -3,6 +3,7 @@ import Layout from '../components/Layout';
 import HeroImage from '../assets/img/city_network.jpg';
 import styles from './index.module.css';
 import TeamMemberCard from '../components/TeamMemberCard';
+import Image from 'next/image';
 
 const AboutPage = () => (
   <Layout>
@@ -47,10 +48,18 @@ const AboutPage = () => (
     </div>
 
     <div className='container mx-auto py-5 row'>
-      <div className='col-12 col-lg-6 mb-4 mb-lg-0'>
-        [TODO: image]
+      <div className='col-12 col-lg-6 mb-2 mb-sm-4 mb-lg-0 d-flex justify-content-center align-items-center'>
+        <div className="position-relative ourVisionImgContainer">
+          <Image
+            fill
+            alt="Our_Vision_Galactic_Polymath"
+            style={{ objectFit: 'contain', maxHeight: '100%', minHeight: '100%' }}
+            className="w-100 h-100"
+            src="/imgs/about/our_vision.jpeg"
+          />
+        </div>
       </div>
-      <div className='col-12 col-lg-6'>
+      <div className='col-12 col-lg-6 mt-2'>
         <h3 className='fw-light'>Our Vision</h3>
         <p>We are a{' '}
           <a
@@ -79,7 +88,7 @@ const AboutPage = () => (
     <div className='bg-light-gray'>
       <div className='container mx-auto p-3 py-lg-5 gap-3 d-flex flex-column'>
         <h2 className='text-center mt-4 fs-1'>Meet Our Team</h2>
-        
+
         <div className='row'>
           <div className='col-12 text-center p-3 py-lg-4 px-lg-5'>
             <h3 className='fs-4 mb-3 text-uppercase fw-light'>Leadership</h3>
