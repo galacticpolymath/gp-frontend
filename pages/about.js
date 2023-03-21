@@ -101,6 +101,7 @@ const AboutPage = () => (
             className='col-12 col-lg-6 offset-lg-3 text-center'
             name="Matt Wilkins, PhD"
             position="Founder, CEO"
+            imgSrc="/imgs/profilePics/matt_wilkins_profile3_sq_xs.jpg"
           >
             <p>A scientist, teacher, writer, and pusher of boulders. Matt wants to live in a world where critical thinking and curiosity are as essential as breathing. Enjoys rock climbing, wildlife photography, and doing silly voices.</p>
           </TeamMemberCard>
