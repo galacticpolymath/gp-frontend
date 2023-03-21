@@ -55,6 +55,12 @@
   }
 }
 
+.shareYourKnowledgeDesktopSec li{
+  @media (min-width: 768px)  and (max-width: 991px){
+    line-height: 26px;;
+  }
+}
+
 .shareYourKnowledgeDesktopSec li,
 .shareYourKnowledgeDesktopSec span {
   @media (min-width: 768px) {

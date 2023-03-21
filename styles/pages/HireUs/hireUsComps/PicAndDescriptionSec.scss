@@ -412,6 +412,7 @@ $scientistFontSize: 1.3rem;
 }
 
 .scientist {
+
   @media (min-width: 768px) {
     > section {
       h4 {
@@ -463,6 +464,7 @@ $scientistFontSize: 1.3rem;
       margin-top: 0px;
       margin-left: 0px;
 
+
       > h4 {
         text-align: center;
       }
@@ -489,6 +491,10 @@ $scientistFontSize: 1.3rem;
     }
   }
 }
+
+
+
+
 
 .scientist {
   @media (max-width: 575px) {
@@ -630,6 +636,7 @@ $scientistFontSize: 1.3rem;
     margin-top: 50px;
   }
 }
+
 
 .GPConstellationSec {
   > section:first-child {
