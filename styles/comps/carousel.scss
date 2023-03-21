@@ -491,19 +491,7 @@ $feedbackTxtFontSizeDesktop: 24px;
   }
 
   @media (max-width: 575px) {
-    height: 300px;
-
-    @media (max-width: 410px) {
-      height: 330px;
-    }
-
-    @media (max-width: 393px) {
-      height: 360px;
-    }
-
-    @media (max-width: 350px) {
-      height: 410px;
-    }
+    height: 400px;
   }
 }
 
@@ -596,6 +584,12 @@ $feedbackTxtFontSizeDesktop: 24px;
     > section > section > span > span {
       right: 20px;
       bottom: -40px;
+    }
+  }
+
+  @media(max-width: 575px){
+    > section > section:last-of-type  {
+      transform: translateY(-5px);
     }
   }
 }
