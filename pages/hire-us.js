@@ -85,6 +85,7 @@ const HireUsPage = () => {
                       customCardStyles='grantReviewsCard'
                       itemCarouselStylesCustom='grantReviewItemCarousel'
                       _customBulletPtsSecCss="grantReviewsBulletPtsSec"
+                      _autoCarouselContainerStyles='grantReviewsAutoCarouselContainer'
                     />
                   </section>
                   <HowMuchDoesItCostSec setTiersInfoForModalArr={setTiersInfoForModalArr} />
