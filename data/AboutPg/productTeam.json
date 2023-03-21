@@ -1,0 +1,71 @@
+[
+    {
+        "name": "Stephanie Castillo",
+        "description": "A PhD candidate in science communication, award winning video producer,and previous Jackson Wild Media Lab Fellow. Stephanie is also founder of Phuture Doctors—a media company showcasing diverse voices in STEM.",
+        "position": "DIGITAL MULTIMEDIA SPECIALIST",
+        "imgSrc": "/imgs/profilePics/Stephanie.jpeg",
+        "links": [
+            {
+                "link": "https://www.phuturedoctors.com/",
+                "icon": "bi bi-globe"
+            },
+            {
+                "link":"https://www.linkedin.com/in/castils/",
+                "icon": "bi bi-linkedin"
+            },
+            {
+                "link": "https://twitter.com/PhutureDoctors",
+                "icon": "bi bi-twitter"
+            },
+            {
+                "link": "https://www.youtube.com/channel/UCyvY9PeDHl-CW_nuGn2Caug",
+                "icon": "bi bi-youtube"
+            },
+            {
+                "link": "https://www.instagram.com/phuturedoctors/",
+                "icon": "bi bi-instagram"
+            }
+        ]
+    },
+    {
+        "name": "Elaine Perignat, PhD",
+        "description": "A spirited over-thinker with genuine enthusiasm for teaching and learning. Elaine loves to paint, create, build, and play if it means getting her hands dirty. Literally.",
+        "position": "EDUCATION SPECIALIST"
+    },
+    {
+        "name": "Carver Lee, MSc",
+        "description": "A geologist, sailor, teacher, and designer all rolled into one, Carver believes that learning and creating are always the way forward.",
+        "position": "GRAPHIC DESIGN + MARKETING LEAD"
+    },
+    {
+        "name": "Aarati Asundi, PhD",
+        "description": "A scientist, entrepreneur, and storyteller. From biology to climate change, she loves learning about the latest scientific research and sharing it with the world.",
+        "position": "VIDEO CREATOR",
+        "imgSrc": "/imgs/profilePics/aarati.jpg",
+        "links": [
+            {
+                "link":"https://www.linkedin.com/company/sykom/",
+                "icon": "bi bi-linkedin"
+            },
+            {
+                "link": "https://www.youtube.com/channel/UCNrMG2ZCou7b9FdNwzsZV3w",
+                "icon": "bi bi-youtube"
+            }
+        ]
+    },
+    {
+        "name": "Jayme Dyer, PhD",
+        "description": "A biology educator and science communicator, Jayme says Wow a lot (especially about science!) and works to help others do the same.",
+        "position": "VIDEO CREATOR"
+    },
+    {
+        "name": "Caitlin Friesen",
+        "description": "A biologist, scientist, educator, artist, and cyclist in constant pursuit of making things a little bit better. She loves learning, creating, and being outdoors!",
+        "position": "LEARNING MULTIMEDIA ARTIST"
+    },
+    {
+        "name": "Audrey Serene",
+        "description": "An animator and experimental filmmaker who loves anything and everything that combines art and technology. Especially when it’s for a good cause.",
+        "position": "ANIMATOR"
+    }
+]

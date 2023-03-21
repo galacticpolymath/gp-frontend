@@ -5,6 +5,15 @@ import styles from './index.module.css';
 import TeamMemberCard from '../components/TeamMemberCard';
 import Image from 'next/image';
 
+const MATT_LINKS =
+  [
+    { link: 'https://www.mattwilkinsbio.com/', icon: 'bi bi-globe' },
+    { link: 'https://github.com/drwilkins', icon: 'bi bi-github' },
+    { link: 'https://www.linkedin.com/in/mattwilkinsphd/', icon: 'bi bi-linkedin' },
+    { link: 'https://twitter.com/mattwilkinsbio', icon: 'bi bi-twitter' },
+    { link: 'https://twitter.com/mattwilkinsbio', imgSrc: '/imgs/about/google_scholar.png' },
+  ];
+
 const AboutPage = () => (
   <Layout>
     <Hero imgSrc={HeroImage.src}>
@@ -102,6 +111,7 @@ const AboutPage = () => (
             name="Matt Wilkins, PhD"
             position="Founder, CEO"
             imgSrc="/imgs/profilePics/matt_wilkins_profile3_sq_xs.jpg"
+            links={MATT_LINKS}
           >
             <p>A scientist, teacher, writer, and pusher of boulders. Matt wants to live in a world where critical thinking and curiosity are as essential as breathing. Enjoys rock climbing, wildlife photography, and doing silly voices.</p>
           </TeamMemberCard>
