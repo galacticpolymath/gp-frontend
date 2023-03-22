@@ -24,6 +24,7 @@
 // 
 import { useEffect, useRef, useState } from 'react';
 import { Card } from 'react-bootstrap';
+import Image from 'next/image';
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { BsCircle, BsCircleFill, BsFillPauseCircleFill, BsFillPlayCircleFill } from "react-icons/bs";
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
@@ -115,7 +116,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                             pics.map(({ path, alt }, index) => {
                                                 return (
                                                     <div key={index} className="carouselImgContainer position-relative">
-                                                        <img src={path} alt={alt} />
+                                                        <Image src={path} alt={alt} fill />
                                                     </div>
                                                 )
                                             })
@@ -210,7 +211,8 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                             pics.map(({ path, alt }, index) => {
                                                 return (
                                                     <div key={index} className="carouselImgContainer position-relative">
-                                                        <img src={path} alt={alt} />
+                                                        {/* <img src={path} alt={alt} /> */}
+                                                        <Image src={path} alt={alt} fill /> 
                                                     </div>
                                                 )
                                             })
