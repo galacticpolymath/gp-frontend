@@ -1,4 +1,4 @@
-// import Image from 'next/image';
+import Image from 'next/image';
 
 const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRegImg }) => {
   let regImgStyles = isRegImg ? 'position-relative imgSection regImgSec ms-sm-1 ms-md-0' : 'position-relative imgSection ms-sm-1 ms-md-0';
@@ -23,17 +23,25 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
           )}
       </section>
       {!link && (
-        <section className={regImgStyles}>
+        <section style={{ width: '33vw' }} className={regImgStyles}>
           {isRegImg ? (
-            <img
-              src={imgPath}
-              alt="Galactic_PolyMath_HireUs_Img"
-              className='w-100 gpConstellation'
-            />
+            <div className="w-100 gpConstellation position-relative">
+              <Image
+                src={imgPath}
+                alt="Galactic_PolyMath_HireUs_Img"
+                className='w-100 h-100'
+                fill
+              />
+            </div>
           )
             : (
               <div className="position-relative">
-                <img src={imgPath} alt="Galactic_PolyMath_HireUs_Img" />
+                <Image
+                  src={imgPath}
+                  alt="Galactic_PolyMath_HireUs_Img"
+                  className='w-100 h-100'
+                  fill
+                />
               </div>
             )}
         </section>
@@ -41,7 +49,12 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
       {link && (
         <section>
           <div className="imgSquareContainer position-relative borderThicker">
-            <img src={imgPath} alt="Galactic_PolyMath_HireUs_Img" />
+            <Image
+              src={imgPath}
+              alt="Galactic_PolyMath_HireUs_Img"
+              className='w-100 h-100'
+              fill
+            />
           </div>
         </section>
       )}

@@ -145,7 +145,6 @@ $scientistFontSize: 1.3rem;
   }
 }
 
-
 .ownerSection {
   > section {
     > div {
@@ -160,11 +159,11 @@ $scientistFontSize: 1.3rem;
     > section:first-child {
       margin-left: 20px;
 
-      @media(max-width: 767px){
+      @media (max-width: 767px) {
         padding-left: 10px;
       }
 
-      @media(min-width: 1200px){
+      @media (min-width: 1200px) {
         padding-top: 15px;
       }
     }
@@ -251,7 +250,7 @@ $scientistFontSize: 1.3rem;
   }
 
   > section {
-    @media(min-width: 1200px){
+    @media (min-width: 1200px) {
       // width: 50%;
     }
 
@@ -297,7 +296,7 @@ $scientistFontSize: 1.3rem;
   }
 }
 
-.quoteInfoSpan{
+.quoteInfoSpan {
   line-height: 16px;
 }
 
@@ -349,7 +348,7 @@ $scientistFontSize: 1.3rem;
     > section:first-child {
       margin-top: 15px;
       padding: 0px 10px 0px 10px;
-      @media(min-width: 992px){
+      @media (min-width: 992px) {
         margin-left: 0px;
       }
       span {
@@ -412,7 +411,6 @@ $scientistFontSize: 1.3rem;
 }
 
 .scientist {
-
   @media (min-width: 768px) {
     > section {
       h4 {
@@ -464,7 +462,6 @@ $scientistFontSize: 1.3rem;
       margin-top: 0px;
       margin-left: 0px;
 
-
       > h4 {
         text-align: center;
       }
@@ -491,10 +488,6 @@ $scientistFontSize: 1.3rem;
     }
   }
 }
-
-
-
-
 
 .scientist {
   @media (max-width: 575px) {
@@ -541,8 +534,16 @@ $scientistFontSize: 1.3rem;
     margin-left: 13px;
   }
 
+  @media(min-width: 768px){
+    // min-width: 
+  }
+
+  @media(min-width: 992px){
+    min-width: 360px;
+  }
+
   @media (min-width: 1200px) {
-    height: 281px;
+    min-width: 450px;
   }
 }
 
@@ -565,6 +566,10 @@ $scientistFontSize: 1.3rem;
       align-items: stretch;
     }
   }
+}
+
+.gpConstellation {
+  width: 480px;
 }
 
 @media (max-width: 767px) {
@@ -629,14 +634,11 @@ $scientistFontSize: 1.3rem;
   }
 }
 
-
-
 @media (min-width: 1200px) {
   .scientist:nth-child(even) {
     margin-top: 50px;
   }
 }
-
 
 .GPConstellationSec {
   > section:first-child {
@@ -709,11 +711,11 @@ $scientistFontSize: 1.3rem;
 @media (max-width: 575px) {
   .GPConstellationSec {
     flex-direction: column;
-    > section:first-child{
+    > section:first-child {
       display: flex;
       justify-content: center;
       align-items: center;
-      > span{
+      > span {
         display: inline;
         padding-left: 13px;
         padding-right: 13px;
@@ -751,8 +753,6 @@ $scientistFontSize: 1.3rem;
   }
 }
 
-
-.grantReviewsBulletPtsSec{
+.grantReviewsBulletPtsSec {
   bottom: 0px;
 }
-

@@ -87,11 +87,10 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
             <section className="w-100 d-flex flex-md-column-reverse flex-xl-row">
                 <section className="d-flex justify-content-center shareYourKnowledgeImgSec">
                     <div className='shareYourKnowledgeImgContainer classRoom position-relative'>
-                        {/* <Image src="/imgs/classroom.jpg" layout='fill' alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="h-100 w-100 position-absolute" /> */}
-                        <img src="/imgs/classroom.jpg" alt="Galactic_PolyMath_First_Sec_Mobile_Info" className='' />
+                        <Image src="/imgs/classroom.jpg" fill alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="h-100 w-100" />
                     </div>
                 </section>
-                <section className="d-flex flex-column justify-content-center align-items-center mt-md-5 mt-xl-0 ms-xl-5 mb-md-4 mt-xl-0 lessonInfoSec">
+                <section className="d-flex flex-column justify-content-center align-items-center mt-md-5 mt-xl-3 ms-xl-5 mb-md-4 mt-xl-0 lessonInfoSec">
                     <div className="eachLessonWrapper">
                         <section className="w-100">
                             <h3 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h3>
