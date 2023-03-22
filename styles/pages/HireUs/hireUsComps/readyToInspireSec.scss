@@ -1,12 +1,12 @@
 .readyToInspireParentSec {
   background-color: #2e0b1b;
-  height: fit-content !important;
+  height: fit-content;
   position: relative;
   width: 100vw;
   border: none;
   
   @media(max-width: 767px){
-    height: 800px !important;
+    height: 800px;
   }
 }
 
@@ -14,11 +14,11 @@
   background-color: #2e0b1b;
 
   @media(min-width: 1200px){
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   > section{
-      max-width: 695.82px !important;
+      max-width: 695.82px;
     }
   }
 
@@ -26,7 +26,7 @@
     transform: translateY(-165px);
 
     @media (min-width: 768px) {
-      padding-bottom: 100px !important;
+      padding-bottom: 100px;
     }
   }
 
@@ -42,7 +42,7 @@
 
   > section:first-child {
     @media (min-width: 992px) {
-      margin-right: 45px !important;
+      margin-right: 45px;
     }
   }
 }
@@ -51,35 +51,35 @@
 
 .readyToInspireImgSec{
   img{
-    height: 500px !important;
+    height: 500px;
 
     @media(min-width: 576px) and (max-width: 1199px){
-      height: 500px !important;
-      width: 100% !important;
+      height: 500px;
+      width: 100%;
     }
 
     @media(max-width: 575px){
-      height: 300px !important;
+      height: 300px;
     }
   }
 
   @media(min-width: 992px){
-    width: 50% !important;
-    height: 575px !important;
-    min-width: 452px !important;
+    width: 50%;
+    height: 575px;
+    min-width: 452px;
   }
 
   > section:first-child{
-    border: solid pink !important;
+    // border: solid pink;
   }
 }
 
 .readyToInspireImg{
-  // margin-top: 50px !important;
+  // margin-top: 50px;
   img{
-    height: 100% !important;
+    height: 100%;
     @media(min-width: 1200px){
-      min-width: 650px !important;
+      min-width: 650px;
     }
   }
 }
@@ -89,12 +89,12 @@
 
 .readyToInspireImg{
   @media(min-width: 768px){
-    height: 100% !important;
+    height: 100%;
 
   }
 
   @media(max-width: 767px){
-    width: 100vw !important;
+    width: 100vw;
     margin-left: calc(-1 * (100vw - 100%) / 2);
     margin-right: calc(-1 * (100vw - 100%) / 2);
   }
@@ -103,29 +103,29 @@
 
 .classRoom2ContentStyles {
   @media (min-width: 768px) {
-    height: 500px !important;
+    height: 500px;
   }
 
   @media (max-width: 767px) {
-    height: 400px !important;
+    height: 400px;
 
     @media(max-width: 575px){
-      height: 300px !important;
+      height: 300px;
     }
   }
 
   > section {
-    bottom: 30px !important;
+    bottom: 30px;
   }
 }
 
 .readyToInspireTxtsSec{
   @media(min-width: 992px) {
-    padding-left: 100px !important;
+    padding-left: 100px;
   }
 
   @media(min-width: 992px){
-    width: 50% !important;
+    width: 50%;
 
     button{
       transform: translateY(15px);
@@ -133,23 +133,37 @@
   }
 
   @media(min-width: 768px) and (max-width: 991px){
-    // padding-left: 50px !important;
-    // padding-bottom: 50px !important;
+    // padding-left: 50px;
+    // padding-bottom: 50px;
 
     > section{
       // display: flex;
       // justify-content: center;
       // align-items: center;
       width: 100%;
-      border: solid pink;
+      // border: solid pink;
 
       > span{
         width: 100%;
-        border: solid pink;
+      }
+
+      span{
+        font-size: 35px;
+      }
+    }
+  }
+
+  @media(min-width: 992px){
+    > section{
+      width: 100%;
+
+      span{
+        line-height: 43px;
       }
     }
   }
 }
+
 
 
 
@@ -158,39 +172,39 @@
 
   @media(min-width: 768px){
     span{
-      font-size: 2.5rem !important;
+      font-size: 2.5rem;
     }
     
 
     > span:not(:first-child){
       @media(max-width: 991px){
-        margin-top: 25px !important;
+        margin-top: 25px;
       }
     }
 
     > span{
-      line-height: 48px !important;
-      height: 180px !important;
+      line-height: 48px;
+      height: 180px;
       @media(max-width: 1200px){
-        padding-right: 25px !important;
+        padding-right: 25px;
       }
 
       @media(max-width: 991px){
-        height: fit-content !important;
+        height: fit-content;
       }
     }
   }
 
   @media(min-width: 992px){
     span{
-      max-width: 470px !important;
-      text-align: start !important;
+      max-width: 470px;
+      text-align: start;
     }
   }
 
   @media(min-width: 1200px) and (max-width: 1400px){
     > span{
-      padding-right: 45px !important;
+      padding-right: 45px;
     }
   }
 }
