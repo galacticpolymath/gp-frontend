@@ -35,19 +35,23 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
 
     return (
         <Modal show={isModalOn} onHide={handleCloseModal} contentClassName="tierInfoModal shadow">
-        {/* flex-column-reverse flex-sm-row */}
+            {/* flex-column-reverse flex-sm-row */}
             <Header className="tierInfoModalHeader pe-4 border-bottom d-flex pt-4 position-relative">
-                <Image
-                    src="/imgs/gp_logo_gradient_transBG.png"
-                    alt="Galatic_Polymath_Tier_Info_Modal"
-                    fill
-                    className="me-3 me-sm-0 modalImg position-absolute"
-                    style={{
-                        maxWidth: "100%",
-                        objectFit: 'contain'
-                    }} />
+                <div style={{ right: "10px" }} className="position-absolute">
+                    <div className="modalImgContainer position-relative">
+                        <Image
+                            src="/imgs/gp_logo_gradient_transBG.png"
+                            alt="Galatic_Polymath_Tier_Info_Modal"
+                            fill
+                            className="me-3 me-sm-0 position-absolute"
+                            style={{
+                                maxWidth: "100%",
+                                objectFit: 'contain'
+                            }} />
+                    </div>
+                </div>
                 <Title className="fw625 text-center text-sm-start border border-white modalTitleSec">
-                    <h3 className="ms-2 ms-sm-0">{title}</h3>
+                    <h3 className="ms-2 ms-sm-3 ps-lg-2">{title}</h3>
                 </Title>
                 <button onClick={handleCloseModal} className="position-absolute top-0 end-0 noBtnStyles"><IoIosCloseCircle className="closeButtonTxtColor" /></button>
             </Header>
@@ -96,7 +100,7 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                     }
                 </section>
             </Body>
-            <Footer>
+            <Footer className="tierInfoModalFooter">
                 <Button variant="secondary" onClick={handleCloseModal} className="closeButtonBackgroundColor fw300">Close</Button>
             </Footer>
         </Modal>
