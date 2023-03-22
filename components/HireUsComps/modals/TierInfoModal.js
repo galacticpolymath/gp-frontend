@@ -44,7 +44,7 @@ const TierInfoModal = ({ tierModalInfo, setTiersInfoForModalArr, index }) => {
                     className="me-3 me-sm-0 modalImg position-absolute"
                     style={{
                         maxWidth: "100%",
-                        height: "auto"
+                        objectFit: 'contain'
                     }} />
                 <Title className="fw625 text-center text-sm-start border border-white modalTitleSec">
                     <h3 className="ms-2 ms-sm-0">{title}</h3>

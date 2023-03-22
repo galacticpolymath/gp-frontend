@@ -404,31 +404,17 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .carouselImgContainer {
-  @media (min-width: 768px) {
-    width: 135px;
-    height: 135px;
+  width: 125px;
+  height: 125px;
 
-    @media (min-width: 950px) {
-      width: 155px;
-    }
-
-    @media (min-width: 992px) {
-      width: 185px;
-    }
-
-    @media (min-width: 1200px) {
-      width: 135px;
-    }
+  @media(min-width: 576px){
+    width: 130px;
+    height: 130px;
   }
 
-  @media (max-width: 767px) {
-    width: 125px;
-    height: 98px;
-  }
-
-  @media (max-width: 575px) {
-    width: 185px;
-    height: 185px;
+  @media(min-width: 768px){
+    width: 140px;
+    height: 140px;
   }
 }
 
@@ -436,17 +422,12 @@ $feedbackTxtFontSizeDesktop: 24px;
   @media (min-width: 1200px) {
     margin-left: 85px;
   }
-
-  @media (min-width: 768px) and (max-width: 1199px) {
-    // margin-left: 20px ;
-  }
 }
 
 .picsCardContainer {
   @media (max-width: 575px) {
     width: 50%;
     min-width: 255.5px;
-    // width: fit-content;
   }
 }
 
@@ -660,6 +641,12 @@ $feedbackTxtFontSizeDesktop: 24px;
   }
 }
 
+.carouselImgContainer{
+  @media(max-width: 575px){
+    
+  }
+}
+
 .carouselImgContainer:nth-last-of-type(2) {
   @media (min-width: 768px) {
     img {
@@ -867,8 +854,9 @@ $feedbackTxtFontSizeDesktop: 24px;
       > span {
         left: 10px;
         transform: translateY(-15px);
-
+        
         @media (max-width: 768px) and (min-width: 576px) {
+          transform: translateY(-25px);
         }
       }
       > section {
