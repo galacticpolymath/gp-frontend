@@ -5,6 +5,7 @@ import styles from './index.module.css';
 import TeamMemberCard from '../components/TeamMemberCard';
 import productTeam from '../data/AboutPg/productTeam.json';
 import devTeam from '../data/AboutPg/devTeam.json';
+import alumni from '../data/AboutPg/alumni.json';
 import Image from 'next/image';
 
 const MATT_LINKS =
@@ -191,34 +192,17 @@ const AboutPage = () => (
         </div>
 
         <div className='row justify-content-center align-items-stretch'>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Maria Brock"
-            position="Front End Web Developer, GP Publishing Workflow"
-          >
-            A Software Developer who loves problem solving, puzzles, and art. Fan of gaming, learning, and crocheting adorable, nerdy things. Powered by coffee.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Castle Crawford"
-            position="Front End Web Developer"
-          >
-            A food fanatic, day hiker, video game vanquisher, Corgi lover, and Software Developer. Loves being part of a team focused on making a difference.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Tyler Lemburg, MSc"
-            position="Previous Lead Developer, JobViz"
-          >
-            A Senior Software Engineer working remotely for Cognito. Tyler built the first iteration of JobViz. He has worked for several nonprofits as a web developer and recently earned a Masters in Climatology.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Arda Turkmen"
-            position="Back End Developer"
-          >
-            Arda is a senior at Vanderbilt University, majoring in Computer Science and Mathematics. He was key in developing our early website in 2019-2020 using Node.JS, React, and SQL managed through AWS.
-          </TeamMemberCard>
+          {alumni.map(({ name, position, description }, index) => (
+            <TeamMemberCard
+              key={`${index}_${name}`}
+              className='col-12 col-lg-6 col-xl-4'
+              name={name}
+              position={position}
+            >
+              {description}
+            </TeamMemberCard>
+          )
+          )}
         </div>
       </div>
     </div>
