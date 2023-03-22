@@ -107,8 +107,9 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                         <h4 className="text-dark fst-italic  fw200 text-center text-sm-start exampleProductTxt">Example Product: </h4>
                     </section>
                     <section className="productSec">
-                        <div className="imgProductContainer">
-                            <Img src={productImg} alt={`${tierName}_ProductImg`} onClick={handleImgClick} className={`tierProductImg pointer ${tierName}_style`} height={170} />
+                        <div className={`imgProductContainer position-relative border pointer ${tierName}_style`} style={{ height: 170 }}>
+                            {/* <Img src={productImg} alt={`${tierName}_ProductImg`} onClick={handleImgClick} className={`tierProductImg pointer ${tierName}_style` } height={170} /> */}
+                            <Image src={productImg} fill alt={`${tierName}_ProductImg`} onClick={handleImgClick} />
                         </div>
                         <section className="mt-4 text-sm-start text-center">
                             <a href={link} target="_blank" className="text-dark text-decoration-underline  fst-italic fw200 underline-less-thick">
