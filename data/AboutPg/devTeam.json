@@ -1,3 +1,58 @@
 [
-
+    {
+        "name": "Kenzie Bottoms",
+        "position": "LEAD DEVELOPER, GP PUBLISHING WORKFLOW",
+        "imgSrc": "/imgs/about/devTeam/Kenzie_Bottoms.webp",
+        "description": "A problem solver who codes, makes art, and roller skates, Kenzie is trying to pay it forward and delighted to work with such kind, talented people in the process.",
+        "links": [
+            {
+                "link": "https://kenzie.ink/",
+                "icon": "bi bi-globe"
+            },
+            {
+                "link":"https://www.linkedin.com/in/castils/",
+                "icon": "bi bi-linkedin"
+            },
+            {
+                "link": "https://twitter.com/kenziebottoms",
+                "icon": "bi bi-twitter"
+            },
+            {
+                "link": "https://github.com/kenziebottoms",
+                "icon": "bi bi-github"
+            }
+        ]
+    },
+    {
+        "name": "Gabriel Torion",
+        "position": "LEAD DEVELOPER, JOBVIZ, HIRE US, SOFTWARE MAINTENANCE",
+        "imgSrc": "/imgs/about/devTeam/Gabe_Torion.jpeg",
+        "description": "A software developer with a business-first/entrepreneurial mindset. Gabriel is passionate about building products that solve real problems and make people's lives easier.",
+        "links": [
+            {
+                "link":"https://www.linkedin.com/in/castils/",
+                "icon": "bi bi-linkedin"
+            },
+            {
+                "link": "https://www.youtube.com/@gtorio",
+                "icon": "bi bi-youtube"
+            },
+            {
+                "link": "https://github.com/Toriong",
+                "icon": "bi bi-github"
+            }
+        ]
+    },
+    {
+        "name": "Patrick Cheng",
+        "position": "LESSON PLAN UI/UX LEAD",
+        "imgSrc": "/imgs/about/devTeam/Patrick-Cheng.webp",
+        "description": "An earnest problem solver that loves to break things down and build things up. Loves food, beer, and communing with the great outdoors.",
+        "links": [
+            {
+                "link": "https://github.com/chengp3",
+                "icon": "bi bi-github"
+            }
+        ]
+    }
 ]

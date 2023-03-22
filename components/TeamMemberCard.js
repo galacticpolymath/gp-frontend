@@ -3,6 +3,8 @@
 import Image from 'next/image';
 // import { ReactComponent as ScholarIcon } from '../public/imgs/about/google-scholar.svg';
 
+const DEFAULT_IMG_SRC = '/imgs/gp_logo_gradient_transBG.png';
+
 const TeamMemberCard = ({
   name,
   position,
@@ -17,11 +19,11 @@ const TeamMemberCard = ({
         <section className="d-flex justify-content-center align-items-center">
           <div style={{ width: 130, height: 130 }} className="position-relative">
             <Image
-              src={imgSrc}
+              src={imgSrc ?? DEFAULT_IMG_SRC}
               alt="Team_member_image"
               fill
               style={{ objectFit: 'contain' }}
-              className="rounded-circle"
+              className="rounded-circle shadow"
             />
           </div>
         </section>
@@ -29,7 +31,7 @@ const TeamMemberCard = ({
           <p className='text-center fw-bold fs-4 mb-1'>{name}</p>
           <p className='text-muted text-center fw-light text-uppercase m-0'>{position}</p>
         </div>
-        <div className='flex-grow-1'>{children}</div>
+        <div className='flex-grow-1 text-center'>{children}</div>
         <div className='d-flex justify-content-center align-items-center'>
           <div className="d-flex">
             {links && links.map(({ link, icon, imgSrc }, index) => (
@@ -39,7 +41,7 @@ const TeamMemberCard = ({
                 className={`linkHover rounded-circle d-flex justify-content-center align-items-center ${(index !== 0) ? 'ms-1' : ''}`}
                 href={link}
               >
-                {icon ? <i className={icon} /> : <div style={{ width: 30, height: 30 }} className='position-relative'><Image fill src={imgSrc} alt='Galactic_Polymath_Icon_Link' /></div>}
+                {icon ? <i className={icon} /> : <div style={{ width: 30, height: 30 }} className='position-relative'><Image fill style={{ objectFit: 'cover' }} src={imgSrc} alt='Galactic_Polymath_Icon_Link' /></div>}
               </a>
             ))}
           </div>

@@ -3,6 +3,8 @@ import Layout from '../components/Layout';
 import HeroImage from '../assets/img/city_network.jpg';
 import styles from './index.module.css';
 import TeamMemberCard from '../components/TeamMemberCard';
+import productTeam from '../data/AboutPg/productTeam.json';
+import devTeam from '../data/AboutPg/devTeam.json';
 import Image from 'next/image';
 
 const MATT_LINKS =
@@ -125,55 +127,35 @@ const AboutPage = () => (
         </div>
 
         <div className='row justify-content-center align-items-stretch'>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Stephanie Castillo"
-            position="Digital Multimedia Specialist"
-          >
-            A PhD candidate in science communication, award winning video producer,and previous Jackson Wild Media Lab Fellow. Stephanie is also founder of Phuture Doctors—a media company showcasing diverse voices in STEM.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Elaine Perignat, PhD"
-            position="Education Specialist"
-          >
-            A spirited over-thinker with genuine enthusiasm for teaching and learning. Elaine loves to paint, create, build, and play if it means getting her hands dirty. Literally.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Carver Lee, MSc"
-            position="Graphic Design + Marketing Lead"
-          >
-            A geologist, sailor, teacher, and designer all rolled into one, Carver believes that learning and creating are always the way forward.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Aarati Asundi, PhD"
-            position="Video Creator"
-          >
-            A scientist, entrepreneur, and storyteller. From biology to climate change, she loves learning about the latest scientific research and sharing it with the world.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name='Jayme Dyer, PhD'
-            position="Video Creator"
-          >
-            A biology educator and science communicator, Jayme says Wow a lot <em>(especially about science!)</em> and works to help others do the same.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name='Caitlin Friesen'
-            position="Learning Multimedia Artist"
-          >
-            A biologist, scientist, educator, artist, and cyclist in constant pursuit of making things a little bit better. She loves learning, creating, and being outdoors!
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name='Audrey Serene'
-            position="Animator"
-          >
-            An animator and experimental filmmaker who loves anything and everything that combines art and technology. Especially when it’s for a good cause.
-          </TeamMemberCard>
+          {productTeam.map((member, index) => {
+            const { name, description, position, imgSrc, links } = member;
+
+            if (imgSrc && links) {
+              return (
+                <TeamMemberCard
+                  key={`${index}_${name}`}
+                  className='col-12 col-lg-6 col-xl-4'
+                  name={name}
+                  position={position}
+                  links={links}
+                  imgSrc={imgSrc}
+                >
+                  {description}
+                </TeamMemberCard>
+              );
+            }
+
+            return (
+              <TeamMemberCard
+                key={`${index}_${name}`}
+                className='col-12 col-lg-6 col-xl-4'
+                name={name}
+                position={position}
+              >
+                {description}
+              </TeamMemberCard>
+            );
+          })}
         </div>
 
         <div className='row'>
@@ -184,27 +166,21 @@ const AboutPage = () => (
         </div>
 
         <div className='row justify-content-center align-items-stretch'>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Kenzie Bottoms"
-            position="Lead Developer, GP Publishing Workflow"
-          >
-            A problem solver who codes, makes art, and roller skates, Kenzie is trying to pay it forward and delighted to work with such kind, talented people in the process.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Leigha Robinson"
-            position="Lead Developer, JobViz"
-          >
-            A Software Developer with a love of music, gardening, and using technology to make the world a better place. Leigha deeply believes in TEAM: Together Everyone Achieves More!
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Patrick Cheng"
-            position="Lesson Plan UI/UX Lead"
-          >
-            An earnest problem solver that loves to break things down and build things up. Loves food, beer, and communing with the great outdoors.
-          </TeamMemberCard>
+          {devTeam.map((member, index) => {
+            const { name, position, links, imgSrc, description } = member;
+            return (
+              <TeamMemberCard
+                key={`${index}_${name}`}
+                className='col-12 col-lg-6 col-xl-4'
+                name={name}
+                position={position}
+                links={links}
+                imgSrc={imgSrc}
+              >
+                {description}
+              </TeamMemberCard>
+            );
+          })}
         </div>
 
         <div className='row'>
