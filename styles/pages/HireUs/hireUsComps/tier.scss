@@ -1,8 +1,8 @@
 @import "../../../globalVars.scss";
 
 $backgroundColorTierCard: #ffeded;
-$tierHeadingFontSize: 22px !important;
-$desktopFontSizeTierStatus: 24px !important;
+$tierHeadingFontSize: 22px;
+$desktopFontSizeTierStatus: 24px;
 
 .tierCard {
   overflow: hidden;
@@ -10,7 +10,7 @@ $desktopFontSizeTierStatus: 24px !important;
 
 .cardsCentralizedSec {
   > div {
-    width: 540px !important;
+    width: 540px;
   }
 }
 
@@ -20,17 +20,17 @@ $desktopFontSizeTierStatus: 24px !important;
   }
 
   @media (min-width: 1400px) {
-    white-space: nowrap !important;
+    white-space: nowrap;
   }
 }
 
 @media (min-width: 768px) {
   .tierDefaultStyles {
     @media (min-width: 1200px) {
-      padding-bottom: 100px !important;
-      max-width: 520px !important;
-      // min-width:  330px !important;
-      // border: solid pink !important;
+      padding-bottom: 100px;
+      max-width: 520px;
+      // min-width:  330px;
+      // border: solid pink;
     }
   }
 
@@ -39,56 +39,56 @@ $desktopFontSizeTierStatus: 24px !important;
     .tierDefaultStyles:first-child,
     .tierDefaultStyles:nth-child(2),
     .tierDefaultStyles:last-child{
-      width: 45% !important;
-      width: 45% !important;
-      max-width: 520px !important;
+      width: 45%;
+      width: 45%;
+      max-width: 520px;
     }
   }
 
 
   .tierDefaultStyles:nth-last-child(-n + 2) {
-    // margin-left: 20px !important;
+    // margin-left: 20px;
 
     @media (min-width: 1200px) and (max-width: 1300px) {
-      // margin-left: 40px !important;
+      // margin-left: 40px;
     }
   }
 }
 
 .tierImg {
   @media (max-width: 575px) {
-    min-width: 80px !important;
+    min-width: 80px;
   }
 
-  width: 140px !important;
-  height: 140px !important;
+  width: 140px;
+  height: 140px;
   @media (min-width: 768px) {
-    width: 120px !important;
-    height: 120px !important;
+    width: 120px;
+    height: 120px;
   }
 }
 
 .tierTableRow {
   @media (min-width: 768px) {
     @media (min-width: 1440px) {
-      height: 10px !important;
-      white-space: nowrap !important;
+      height: 10px;
+      white-space: nowrap;
 
       td:last-child {
         white-space: nowrap;
       }
     }
 
-    height: 60px !important;
+    height: 60px;
 
     @media(min-width: 1200px){
-      height: 70px !important;
+      height: 70px;
     }
 
-    line-height: 27px !important;
-    overflow: hidden !important;
+    line-height: 27px;
+    overflow: hidden;
     td:last-child {
-      padding-left: 10px !important;
+      padding-left: 10px;
     }
   }
 }
@@ -128,7 +128,7 @@ $desktopFontSizeTierStatus: 24px !important;
 .tierParagraphSec {
   @media (min-width: 768px) {
     p {
-      line-height: 20px !important;
+      line-height: 20px;
       font-size: $spanFontSize;
     }
   }
@@ -144,11 +144,6 @@ $desktopFontSizeTierStatus: 24px !important;
   }
 }
 
-.tierCard {
-  @media (min-width: 992px) and (max-width: 1199px) {
-    padding: 0px 2rem 4rem 2rem !important;
-  }
-}
 
 .tierCardBody {
   position: relative;
@@ -160,23 +155,23 @@ $desktopFontSizeTierStatus: 24px !important;
 
 .estimatedPriceWrapper {
   @media (min-width: 768px) {
-    height: 150px !important;
+    height: 150px;
   }
 }
 
 .priceSection {
   @media (min-width: 768px) {
-    margin-top: auto !important;
+    margin-top: auto;
     transform: translateY(40px);
   }
 }
 
 .tierProductImg {
   @media (max-width: 1199px) {
-    // max-width: none !important;
+    // max-width: none;
   }
   @media (min-width: 1200px) {
-    height: 170px !important;
+    height: 170px;
   }
 }
 
@@ -185,48 +180,48 @@ img {
 }
 
 .imgProductContainer {
-  position: relative !important;
-  height: 150px !important;
+  position: relative;
+  height: 150px;
 
   // > img {
-  //   max-width: 400px !important;
-  //   position: absolute !important;
-  //   // width: 300px !important;
-  //   height: 108px !important;
+  //   max-width: 400px;
+  //   position: absolute;
+  //   // width: 300px;
+  //   height: 108px;
   //   top: 50%;
   //   left: 50%;
   //   transform: translate(-50%, -50%);
 
   //   @media (min-width: 768px) and (max-width: 1199px) {
-  //     width: 515px !important;
+  //     width: 515px;
   //   }
 
   //   @media (min-width: 1200px) {
-  //     min-width: 308px !important;
+  //     min-width: 308px;
   //   }
 
   //   @media (min-width: 576px) and (max-width: 991px) {
-  //     width: 100% !important;
-  //     left: 48% !important;
+  //     width: 100%;
+  //     left: 48%;
   //   }
 
   //   @media (max-width: 575px) {
-  //     width: 100% !important;
-  //     min-width: 240px !important;
-  //     left: 50% !important;
+  //     width: 100%;
+  //     min-width: 240px;
+  //     left: 50%;
   //   }
   // }
 }
 
 .imgProductContainer {
-  width: 100% !important;
+  width: 100%;
 
   @media (max-width: 575px) {
-    width: 100% !important;
+    width: 100%;
   }
 
   @media (min-width: 768px) and (max-width: 1199px) {
-    width: 100% !important;
+    width: 100%;
   }
 
   @media (min-width: 1200px) {
@@ -235,24 +230,24 @@ img {
 
 .priceTxt {
   @media (min-width: 1200px) {
-    white-space: nowrap !important;
+    white-space: nowrap;
   }
 }
 
 .priceTxtHorizontal {
   > span {
-    font-size: 19px !important;
+    font-size: 19px;
   }
 }
 
 .tierInfoModalHeader {
-  padding: 5px 0px 5px 0px !important;
+  padding: 5px 0px 5px 0px;
 
   h3 {
     @media (max-width: 575px) {
-      max-width: 150px !important;
-      text-align: flex-start !important;
-      margin-top: 10px !important;
+      max-width: 150px;
+      text-align: flex-start;
+      margin-top: 10px;
     }
   }
 }
@@ -260,7 +255,7 @@ img {
 
 .tierDefaultStyles p{
   @media(min-width: 768px){
-    line-height: 28px !important;;
+    line-height: 28px;;
   }
 }
 

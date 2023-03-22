@@ -57,7 +57,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
     // ps-md-5 pe-md-5
     // ms-xl-3 me-xl-3
     return (
-        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2 me-md-0 me-xl-2 pt-md-1'} ps-xl-3 pe-xl-3 mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles ${index !== 0 ? '' : ''}`}>
+        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pe-lg-3 ps-lg-3 pe-xl-0 ps-xl-0 pt-5 ms-xl-2 me-xl-2 me-md-0 me-xl-2 pt-md-1'} ps-lg-3 pe-lg-3  mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles ${index !== 0 ? '' : ''}`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
                     {/* <Img src={img} alt={`${tierName}_img`} className="tierImg" height={120} /> */}
@@ -107,9 +107,9 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                         <h4 className="text-dark fst-italic  fw200 text-center text-sm-start exampleProductTxt">Example Product: </h4>
                     </section>
                     <section className="productSec">
-                        <div className={`imgProductContainer position-relative border pointer ${tierName}_style`} style={{ height: 170 }}>
+                        <div className={`imgProductContainer position-relative pointer ${tierName}_style`} style={{ height: 170 }}>
                             {/* <Img src={productImg} alt={`${tierName}_ProductImg`} onClick={handleImgClick} className={`tierProductImg pointer ${tierName}_style` } height={170} /> */}
-                            <Image src={productImg} fill alt={`${tierName}_ProductImg`} onClick={handleImgClick} />
+                            <Image src={productImg} fill alt={`${tierName}_ProductImg`} onClick={handleImgClick} style={{ objectFit: 'contain' }} />
                         </div>
                         <section className="mt-4 text-sm-start text-center">
                             <a href={link} target="_blank" className="text-dark text-decoration-underline  fst-italic fw200 underline-less-thick">
