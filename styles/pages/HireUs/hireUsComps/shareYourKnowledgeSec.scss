@@ -45,6 +45,11 @@
   .shareYourKnowledgeImgContainer.onSmallScreens{
     height: 300px;
     max-width: 500px;
+
+    @media(max-width: 575px){
+      max-width: 320px;
+      height: 190px;
+    }
   }
 
 .introTxtShareYourKnowledge {

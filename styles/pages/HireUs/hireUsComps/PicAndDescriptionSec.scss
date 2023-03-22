@@ -555,8 +555,8 @@ $scientistFontSize: 1.3rem;
 @media (min-width: 768px) {
   .gpConstellation,
   .shareYourKnowledgeImgContainer > img {
-    width: 480px;
-    height: 280px;
+    // width: 480px;
+    // height: 280px;
 
     @media (max-width: 1199px) {
       width: 380px;
@@ -590,13 +590,6 @@ $scientistFontSize: 1.3rem;
       height: 250px;
       display: grid;
       align-items: center;
-
-      img {
-        @media (max-width: 767px) and (min-width: 576px) {
-          height: 192px;
-          min-width: 230px;
-        }
-      }
     }
     @media (min-width: 576px) {
       margin-right: 10px;
@@ -681,7 +674,7 @@ $scientistFontSize: 1.3rem;
         > section:first-child {
           display: flex;
           justify-content: center;
-          align-items: center;
+          padding-top: 25px;
 
           > span {
             @media (min-width: 576px) {
@@ -707,7 +700,7 @@ $scientistFontSize: 1.3rem;
 
       div {
         width: 70%;
-        height: 190px;
+        height: 150px;
       }
     }
   }
@@ -720,6 +713,7 @@ $scientistFontSize: 1.3rem;
       display: flex;
       justify-content: center;
       align-items: center;
+      width: 100%;
       > span {
         display: inline;
         padding-left: 13px;
@@ -729,19 +723,11 @@ $scientistFontSize: 1.3rem;
 
     > section:last-child {
       > div {
-        width: 100%;
+        width: 95%;
         display: flex;
         justify-content: center;
         align-items: center;
-        img {
-          max-width: 580px;
-          width: 300px;
-          height: 180px;
-
-          @media (max-width: 400px) {
-            width: 240px;
-          }
-        }
+        max-width: 290px;
       }
     }
   }
@@ -752,6 +738,7 @@ $scientistFontSize: 1.3rem;
     width: 33vw;
   }
 }
+
 
 .mattsAwardParentSec {
   > section:nth-child(2) {

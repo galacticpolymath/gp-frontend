@@ -61,7 +61,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
                     {/* <Img src={img} alt={`${tierName}_img`} className="tierImg" height={120} /> */}
-                    <div className="position-relative" style={{ height: "120px" }}>
+                    <div className="position-relative" style={{ height: "120px", width: "120px" }}>
                         <Image src={img} alt={`${tierName}_img`} className='teirImg' fill />
                     </div>
                 </section>

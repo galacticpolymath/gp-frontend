@@ -23,21 +23,23 @@ import Image from "next/image";
 const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
     return isMobile ?
         <>
-            <section className="d-flex d-md-none ps-2 pe-2 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 mt-5 ps-xl-5 pe-xl-5 justify-content-sm-center align-items-sm-center justify-content-xl-start align-items-xl-stretch">
-                <div className='shareYourKnowledgeImgContainer onSmallScreens position-relative border'>
+            <section className="d-flex d-md-none ps-2 pe-2 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 mt-5 ps-xl-5 pe-xl-5 justify-content-center align-items-center justify-content-xl-start align-items-xl-stretch">
+                <div className='shareYourKnowledgeImgContainer onSmallScreens position-relative'>
                     <Image
                         src="/imgs/classroom.jpg"
                         alt="Galactic_PolyMath_First_Sec_Mobile_Info"
+                        style={{ objectFit: "contain" }}
+                        className="rounded"
                         fill
                     />
                 </div>
             </section>
-            <section className="mt-sm-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none pe-sm-3">
+            <section className="mt-4 mt-sm-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none pe-sm-3">
                 <section>
                     <h3 className="text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
                 </section>
             </section>
-            <section className="mt-4 mt-md-7 ps-sm-5 pe-sm-5 d-flex d-md-none">
+            <section className="mt-4 mt-md-7 ps-sm-5 pe-sm-5 d-flex d-md-none justify-content-center align-items-center">
                 <PicAndDescriptionSec
                     text="We promote lessons through our growing GP Constellation dissemination network."
                     imgPath="/imgs/GP_Constellation_dark.png"
@@ -86,7 +88,7 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
             <section className="w-100 d-flex flex-md-column-reverse flex-xl-row">
                 <section className="d-flex justify-content-center shareYourKnowledgeImgSec">
                     <div className='shareYourKnowledgeImgContainer classRoom position-relative'>
-                        <Image src="/imgs/classroom.jpg" fill alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="h-100 w-100" />
+                        <Image src="/imgs/classroom.jpg" fill alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="h-100 w-100 rounded" style={{ objectFit: "contain" }} />
                     </div>
                 </section>
                 <section className="d-flex flex-column justify-content-center align-items-center mt-md-5 mt-xl-3 ms-xl-5 mb-md-4 mt-xl-0 lessonInfoSec">
