@@ -41,11 +41,16 @@
     }
   }
 
+
+  .shareYourKnowledgeImgContainer.onSmallScreens{
+    height: 300px;
+    max-width: 500px;
+  }
+
 .introTxtShareYourKnowledge {
   > span {
     font-size: $spanFontSize;
     @media (min-width: 1200px) {
-      // padding-right: 70px !important;
       padding-right: 70px !important;
     }
 

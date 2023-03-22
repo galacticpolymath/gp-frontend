@@ -23,9 +23,9 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
           )}
       </section>
       {!link && (
-        <section style={{ width: '33vw' }} className={regImgStyles}>
+        <section className={regImgStyles}>
           {isRegImg ? (
-            <div className="w-100 gpConstellation position-relative">
+            <div className="w-100 gpConstellation position-relative" style={{ height: '300px' }}>
               <Image
                 src={imgPath}
                 alt="Galactic_PolyMath_HireUs_Img"

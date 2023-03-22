@@ -19,7 +19,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
-// import { Head } from "next/document";
+import Image from 'next/image';
 import { Card } from "react-bootstrap"
 import { HiOutlineX } from "react-icons/hi"
 import { GoCheck } from "react-icons/go"
@@ -60,7 +60,10 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
         <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2 me-md-0 me-xl-2 pt-md-1'} ps-xl-3 pe-xl-3 mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles ${index !== 0 ? '' : ''}`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
-                    <Img src={img} alt={`${tierName}_img`} className="tierImg" height={120} />
+                    {/* <Img src={img} alt={`${tierName}_img`} className="tierImg" height={120} /> */}
+                    <div className="position-relative" style={{ height: "120px" }}>
+                        <Image src={img} alt={`${tierName}_img`} className='teirImg' fill />
+                    </div>
                 </section>
                 <section className="mt-4">
                     <h4 className="text-dark tierHeaderTag mt-2 fw450 text-center text-sm-start">{tierName.toUpperCase()}</h4>

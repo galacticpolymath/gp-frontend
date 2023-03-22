@@ -23,14 +23,13 @@ import Image from "next/image";
 const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
     return isMobile ?
         <>
-            <section className="d-flex d-md-none ps-2 pe-2 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 mt-5 ps-xl-5 pe-xl-5 justify-content-md-center align-items-md-center justify-content-xl-start align-items-xl-stretch">
-                <div className='shareYourKnowledgeImgContainer position-relative'>
+            <section className="d-flex d-md-none ps-2 pe-2 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 mt-5 ps-xl-5 pe-xl-5 justify-content-sm-center align-items-sm-center justify-content-xl-start align-items-xl-stretch">
+                <div className='shareYourKnowledgeImgContainer onSmallScreens position-relative border'>
                     <Image
                         src="/imgs/classroom.jpg"
                         alt="Galactic_PolyMath_First_Sec_Mobile_Info"
-                        className="h-100 w-100 position-absolute"
                         fill
-                        sizes="100vw" />
+                    />
                 </div>
             </section>
             <section className="mt-sm-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none pe-sm-3">
@@ -62,7 +61,7 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
             </section>
         </>
         :
-        <section className="d-none d-md-flex flex-column ps-5 pe-5 mt-5 shareYourKnowledgeDesktopSec">
+        <section className="d-none d-md-flex flex-column ps-5 pe-5 mt-5 shareYourKnowledgeDesktopSec pb-4">
             <section className="w-100 d-flex mt-3 mb-xl-4">
                 <section className="w-50 d-flex flex-column pt-xl-2">
                     <section className="w-100">

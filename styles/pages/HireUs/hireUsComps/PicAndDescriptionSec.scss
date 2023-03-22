@@ -24,6 +24,7 @@ $scientistFontSize: 1.3rem;
       }
     }
   }
+
 }
 
 .picAndDescriptionSec {
@@ -184,13 +185,6 @@ $scientistFontSize: 1.3rem;
   }
 
   @media (min-width: 768px) and (max-width: 1299px) {
-    > section:last-child {
-      // width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
     > section:first-child {
       margin-left: 0;
       display: flex;
@@ -220,6 +214,17 @@ $scientistFontSize: 1.3rem;
     > section:first-child {
       padding-left: 8px;
       padding-right: 8px;
+    }
+  }
+
+  > section:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    > div{
+      height: 200px;
+      width: 200px;
     }
   }
 }
@@ -739,6 +744,12 @@ $scientistFontSize: 1.3rem;
         }
       }
     }
+  }
+}
+
+.GPConstellationSec{
+  > section{
+    width: 33vw;
   }
 }
 
