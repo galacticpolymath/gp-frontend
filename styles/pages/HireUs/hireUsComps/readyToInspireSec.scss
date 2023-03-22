@@ -120,7 +120,7 @@
 }
 
 .readyToInspireTxtsSec{
-  @media(min-width: 768px) {
+  @media(min-width: 992px) {
     padding-left: 100px !important;
   }
 
@@ -133,8 +133,21 @@
   }
 
   @media(min-width: 768px) and (max-width: 991px){
-    padding-left: 50px !important;
-    padding-bottom: 50px !important;
+    // padding-left: 50px !important;
+    // padding-bottom: 50px !important;
+
+    > section{
+      // display: flex;
+      // justify-content: center;
+      // align-items: center;
+      width: 100%;
+      border: solid pink;
+
+      > span{
+        width: 100%;
+        border: solid pink;
+      }
+    }
   }
 }
 
@@ -145,9 +158,7 @@
 
   @media(min-width: 768px){
     span{
-      text-align: start !important;
       font-size: 2.5rem !important;
-      max-width: 470px !important;
     }
     
 
@@ -167,6 +178,13 @@
       @media(max-width: 991px){
         height: fit-content !important;
       }
+    }
+  }
+
+  @media(min-width: 992px){
+    span{
+      max-width: 470px !important;
+      text-align: start !important;
     }
   }
 
