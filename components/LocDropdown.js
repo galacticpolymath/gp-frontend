@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import React, { useState } from 'react';
@@ -21,6 +22,7 @@ const LocDropdown = ({ id, availLocs, loc }) => {
     countries.push(country);
     labels[country] = availLoc;
   });
+  countries = countries.filter((country, index, self) => self.indexOf(country) === index);
 
   const changeLoc = (country, id) => {
     const locDest = countryToLoc[country];

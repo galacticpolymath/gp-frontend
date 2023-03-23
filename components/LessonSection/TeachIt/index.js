@@ -8,6 +8,19 @@ import LessonPart from './LessonPart';
 import { ModalContext } from '../../../providers/ModalProvider';
 import { useContext } from 'react';
 
+const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
+const getObjVals = obj => {
+  const keys = Object.keys(obj);
+  let vals = [];
+
+  keys.forEach(key => {
+    const val = obj[key];
+    vals.push(val);
+  });
+  
+  return vals;
+};
+
 const TeachIt = ({
   index,
   SectionTitle,
@@ -17,14 +30,15 @@ const TeachIt = ({
   const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const environments = ['classroom', 'remote']
     .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
-  const gradeVariations = Data[environments[0]].resources;
-
+  const gradeVariations = getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources;
+  console.log("gradeVariations: ", gradeVariations);
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations[0]);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
+  const allResources = getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources;
+  let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
 
-  const resources = Data[selectedEnvironment].resources
-    .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
-
+  resources = getIsValObj(resources) ? [resources] : resources;
+  
   const handleIconClick = () => {
     console.log("clicked");
     setIsDownloadModalInfoOn(true);

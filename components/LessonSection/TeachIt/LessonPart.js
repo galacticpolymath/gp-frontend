@@ -12,8 +12,10 @@ const LessonPart = ({
   resources,
 }) => {
 
+  console.log('resources: ', resources);
+
   useEffect(() => {
-    console.log('resources.parts[partNum - 1].itemList: ', resources.parts[partNum - 1].itemList);
+    console.log('resources.parts[partNum - 1].itemList: ', resources?.parts?.[partNum - 1]?.itemList);
   }, []);
 
   return (
@@ -30,7 +32,7 @@ const LessonPart = ({
     >
       <>
         <ol className='mt-3'>
-          {(resources.parts[partNum - 1].itemList || []).map(item => (
+          {(resources.parts?.[partNum - 1]?.itemList || []).map(item => (
             <li key={item.itemTitle} className='mb-2'>
               <strong>{item.itemTitle}</strong>
               <ul>
@@ -57,7 +59,7 @@ const LessonPart = ({
             key={i}
             chunkNum={i}
             durList={chunks.map(({ chunkDur }) => chunkDur)}
-            partInfo={resources.parts[partNum - 1]}
+            partInfo={resources?.parts?.[partNum - 1]}
             {...chunk}
           />
         ))}
