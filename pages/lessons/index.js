@@ -40,7 +40,7 @@ const LessonsPage = ({ lessons }) => {
           </section>
           <section>
             <section className=" mx-auto grid pb-1 p-4 gap-3 pt-3">
-              <div onClick={handleJobVizCardClick} className="g-col-sm-12 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow">
+              <div onClick={handleJobVizCardClick} className="pointer g-col-sm-12 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow">
                 <section className="d-flex w-100">
                   <section className="imgSec d-flex justify-content-center ">
                     {/* put the image for jobViz here */}

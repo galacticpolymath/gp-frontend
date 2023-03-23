@@ -9,11 +9,12 @@ const JobVizIcon = ({ isOnJobVizPg }) => {
     const imgContainerStyles = `${isOnJobVizPg ? 'jobVizImgContainerOnPg' : 'jobVizImgContainer'} rounded-circle`;
 
     return (
-        <div className={imgContainerStyles}>
-            <img
+        <div className={`${imgContainerStyles} jobVizImg position-relative`}>
+            <Image
                 src="/imgs/jobViz/jobviz_icon.png"
                 alt="jobViz_Galactic_Polymath"
-                className='jobVizImg rounded-circle'
+                className="rounded-circle"
+                fill
             />
         </div>
     )
