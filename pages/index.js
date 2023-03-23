@@ -268,11 +268,27 @@ export default function Home() {
             </Link>
           </div>
           <div className="col-12 col-md-6 order-2 order-md-1">
-            <img
+            {/* <img
               className='border'
               src={ScientificAmericanImage.src}
               alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-            />
+            /> */}
+            <div className="position-relative d-xl-block d-none" style={{ height: 429 }}>
+              <Image
+                fill
+                src={ScientificAmericanImage.src}
+                alt="Why We Didn't Know that Female Birds Sing, Scientific American."
+                style={{ objectFit: 'contain' }}
+              />
+            </div>
+            <div className="position-relative d-none d-md-block d-xl-none" style={{ height: 430, width: '100%' }}>
+              <Image
+                fill
+                src={ScientificAmericanImage.src}
+                alt="Why We Didn't Know that Female Birds Sing, Scientific American."
+                style={{ objectFit: 'contain' }}
+              />
+            </div>
           </div>
         </div>
       </div>
