@@ -144,9 +144,6 @@ export default function Home() {
                 <div className="d-flex justify-content-center align-items-center mt-3">
                   <h5 className='fw-light d-sm-none'>Sponsor:</h5>
                 </div>
-                {/* <a href="https://www.nsf.gov/">
-                <img src={NSFImage.src} alt="National Science Foundation" />
-              </a> */}
                 <div className="position-relative d-none d-lg-block" style={{ height: 175, width: 175 }}>
                   <a href="https://www.nsf.gov/">
                     <Image
@@ -272,11 +269,6 @@ export default function Home() {
           </section>
           <section className="row w-100 w-md-75">
             <div className="col-12 d-flex justify-content-center align-items-center d-sm-block">
-              {/* <img
-              className='border'
-              src={ScientificAmericanImage.src}
-              alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-            /> */}
               <div className="position-relative d-xl-block d-none" style={{ height: 429 }}>
                 <Image
                   fill
@@ -315,24 +307,6 @@ export default function Home() {
       </div>
 
       <div className="bg-light-gray">
-        {/* <div className="container mx-auto p-3 py-5 p-lg-5">
-          <div className='col-12 col-lg-10 offset-lg-1'>
-            <div className='text-center'>[video]</div>
-            <h2 className="mt-5 mb-3">JobViz</h2>
-            <h5>Connect lessons to careers with this free tool!</h5>
-            <ul>
-              <li>Search and browse ~1,000 jobs</li>
-              <li>Explore US Bureau of Labor Statistics data most relevant to students</li>
-              <li>Clean, responsive user interface</li>
-              <li>Share links to jobs (useful for assignments)</li>
-              <li>Create a springboard for independent career research</li>
-            </ul>
-            <Link href="/jobviz">
-              <a className='btn btn-secondary mt-3'>Explore jobs</a>
-            </Link>
-          </div>
-        </div> */}
-
         <div className='bg-secondary-light'>
           <div className='container p-3 p-lg-5 mx-auto text-center d-none d-lg-block'>
             <p className='fs-4'>Real Research + Real Stories + Real Data + Real Careers =</p>
