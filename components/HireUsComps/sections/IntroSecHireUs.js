@@ -26,7 +26,6 @@ const IntroSecHireUs = () => {
           </section>
         </section>
       </section>
-      {/* for mobile */}
       <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
         <section className="w-100 d-flex justify-content-start align-items-stretch  flex-column justify-content-md-center align-items-md-center pt-4">
           <section className="headerSection">
