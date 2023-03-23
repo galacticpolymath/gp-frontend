@@ -1,5 +1,5 @@
 import Link from 'next/link';
-
+import Image from 'next/image';
 import Layout from '../components/Layout';
 import Hero from '../components/Hero';
 import styles from './index.module.css';
@@ -33,11 +33,33 @@ export default function Home() {
       </Hero>
       <div className="container mx-auto row align-items-center px-3 py-4 py-lg-5">
         <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 text-center'>
-          <img
-            className='border'
-            src={EngineeringImage.src}
-            alt="Two people working on a diagram together"
-          />
+          <div className="position-relative d-none d-md-block" style={{ height: 525 }}>
+            <Image
+              src={EngineeringImage.src}
+              alt="Two people working on a diagram together"
+              fill
+              className='d-block h-100'
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
+          <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 325 }}>
+            <Image
+              src={EngineeringImage.src}
+              alt="Two people working on a diagram together"
+              fill
+              className='d-block h-100'
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
+          <div className="position-relative d-block d-sm-none" style={{ height: 225 }}>
+            <Image
+              src={EngineeringImage.src}
+              alt="Two people working on a diagram together"
+              fill
+              className='d-block h-100'
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
         </div>
         <div className='col-12 col-lg-6 col-xl-5 order-2 order-lg-1 p-3 text-center space-y-3'>
           <h3 className='mb-2'>Open-Access</h3>
