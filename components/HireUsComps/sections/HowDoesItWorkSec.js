@@ -63,12 +63,13 @@ const HowDoesItWorkSec = () => {
                     content={hireUsCardsSectionTexts[0].content}
                 />
                 <section className='d-flex justify-content-center align-items-center mt-3 arrowSec ms-sm-3 me-sm-3 mb-3 mb-sm-3'>
-                    <div style={{ width: 50, height: 50 }} className="position-relative">
+                    <div style={{ width: 50, height: 50, backgroundBlendMode: 'multiply', backgroundColor: '#fff8f8' }} className="position-relative">
                         <Image
-                            src="/imgs/pretty-down-arrow.jpeg"
+                            src="/imgs/pretty-down-arrow.png"
                             alt="Galactic_PolyMath_First_Sec_Mobile_Info"
                             className="arrowHowDoesItWork"
                             fill
+                            style={{ objectFit: 'contain'}}
                         />
                     </div>
                 </section>

@@ -32,16 +32,16 @@
   }
 }
 
-.arrowSec {
-  background-color: #fff8f8 !important;
-  background-blend-mode: multiply;
+// .arrowSec {
+//   background-color: #fff8f8 !important;
+//   background-blend-mode: multiply;
 
-  div,
-  img {
-    background-color: #fff8f8;
-    background-blend-mode: multiply;
-  }
-}
+//   div,
+//   img {
+//     background-color: #fff8f8;
+//     background-blend-mode: multiply;
+//   }
+// }
 
 .arrowHowDoesItWork {
   @media (min-width: 992px) {
@@ -671,41 +671,41 @@
   }
 }
 
-.arrowSec {
-  // background-color: #fff8f8;
-  z-index: -1;
-  @media (min-width: 992px) {
-    > img {
-      transform: rotate(-90deg);
-    }
-  }
-  @media (min-width: 1200px) {
-    padding-left: 35px;
-    padding-right: 35px;
+// .arrowSec {
+//   // background-color: #fff8f8;
+//   z-index: -1;
+//   @media (min-width: 992px) {
+//     > img {
+//       transform: rotate(-90deg);
+//     }
+//   }
+//   @media (min-width: 1200px) {
+//     padding-left: 35px;
+//     padding-right: 35px;
 
-    img {
-      // background-color: #fff8f8;
-      mix-blend-mode: multiply;
-      background-blend-mode: normalx;
-    }
-  }
+//     img {
+//       // background-color: #fff8f8;
+//       mix-blend-mode: multiply;
+//       background-blend-mode: normalx;
+//     }
+//   }
 
-  img {
-    max-width: none;
-    width: 55px;
-    height: 55px;
+//   img {
+//     max-width: none;
+//     width: 55px;
+//     height: 55px;
 
-    @media (min-width: 768px) {
-      width: 60px;
-      height: 60px;
-    }
+//     @media (min-width: 768px) {
+//       width: 60px;
+//       height: 60px;
+//     }
 
-    @media (min-width: 1200px) {
-      width: 70px;
-      height: 70px;
-    }
-  }
-}
+//     @media (min-width: 1200px) {
+//       width: 70px;
+//       height: 70px;
+//     }
+//   }
+// }
 
 .howDoesItWorkSec {
   > section:first-child {
