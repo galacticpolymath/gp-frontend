@@ -38,7 +38,7 @@ export default function Home() {
               src={EngineeringImage.src}
               alt="Two people working on a diagram together"
               fill
-              className='d-block h-100'
+              className='d-block h-100 border'
               style={{ objectFit: 'contain' }}
             />
           </div>
@@ -47,7 +47,7 @@ export default function Home() {
               src={EngineeringImage.src}
               alt="Two people working on a diagram together"
               fill
-              className='d-block h-100'
+              className='d-block h-100 border'
               style={{ objectFit: 'contain' }}
             />
           </div>
@@ -56,7 +56,7 @@ export default function Home() {
               src={EngineeringImage.src}
               alt="Two people working on a diagram together"
               fill
-              className='d-block h-100'
+              className='d-block h-100 border'
               style={{ objectFit: 'contain' }}
             />
           </div>
@@ -86,11 +86,51 @@ export default function Home() {
           <div className='bg-white p-4 row align-items-center rounded-3'>
             <div className='col-9 text-center'>
               <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
-              <img
-                className='border'
-                src={NewReleaseImage.src}
-                alt="I Like That! How perception, emotion, and cognition shape our preferences"
-              />
+              <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 316 }}>
+                <Image
+                  className='border'
+                  src={NewReleaseImage.src}
+                  fill
+                  style={{ objectFit: 'contain' }}
+                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
+                />
+              </div>
+              <div className="position-relative d-none d-lg-block d-xl-none" style={{ height: 442 }}>
+                <Image
+                  className='border'
+                  src={NewReleaseImage.src}
+                  fill
+                  style={{ objectFit: 'contain' }}
+                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
+                />
+              </div>
+              <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 222 }}>
+                <Image
+                  className='border'
+                  src={NewReleaseImage.src}
+                  fill
+                  style={{ objectFit: 'contain' }}
+                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
+                />
+              </div>
+              <div className="position-relative d-none d-xl-block" style={{ height: 630 }}>
+                <Image
+                  className='border'
+                  src={NewReleaseImage.src}
+                  fill
+                  style={{ objectFit: 'contain' }}
+                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
+                />
+              </div>
+              <div className="position-relative d-block d-sm-none" style={{ height: 85 }}>
+                <Image
+                  className='border'
+                  src={NewReleaseImage.src}
+                  fill
+                  style={{ objectFit: 'contain' }}
+                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
+                />
+              </div>
             </div>
             <div className='col-3 text-center'>
               <h5 className='fw-light'>Sponsor:</h5>
