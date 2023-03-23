@@ -76,16 +76,19 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="bg-light-gray py-5">
-        <div className="container mx-auto row align-items-center">
+      <div className="bg-light-gray py-5 border">
+        <div className="container mx-auto row align-items-center d-flex d-sm-block justify-content-sm-start justify-content-center flex-column">
           <h2 className="fw-light fs-1 text-center p-3 p-lg-4">
             Think <strong>bigger</strong>.<br />{' '}
             Learn everything.
           </h2>
 
-          <div className='bg-white p-4 row align-items-center rounded-3'>
-            <div className='col-9 text-center'>
-              <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
+          <div className='bg-white p-4 row align-items-center rounded-3 d-flex d-sm-block flex-column'>
+            <div className='col-sm-9 text-center'>
+              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-sm-block w-50'>New release!</div>
+              <div className="w-100 d-flex d-sm-none justify-content-center align-items-center">
+                <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
+              </div>
               <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 316 }}>
                 <Image
                   className='border'
@@ -122,21 +125,45 @@ export default function Home() {
                   alt="I Like That! How perception, emotion, and cognition shape our preferences"
                 />
               </div>
-              <div className="position-relative d-block d-sm-none" style={{ height: 85 }}>
-                <Image
-                  className='border'
-                  src={NewReleaseImage.src}
-                  fill
-                  style={{ objectFit: 'contain' }}
-                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
-                />
-              </div>
+              <section className='row d-flex d-sm-none justify-content-center'>
+                <div className="position-relative d-block d-sm-none border" style={{ height: 150, width: '50vw' }}>
+                  <Image
+                    src={NewReleaseImage.src}
+                    fill
+                    style={{ objectFit: 'fill' }}
+                    alt="I Like That! How perception, emotion, and cognition shape our preferences"
+                  />
+                </div>
+              </section>
             </div>
             <div className='col-3 text-center'>
-              <h5 className='fw-light'>Sponsor:</h5>
-              <a href="https://www.nsf.gov/">
+              <h5 className='fw-light d-none d-sm-block'>Sponsor:</h5>
+              <div className="w-100 d-flex justify-content-center align-items-center">
+                <h5 className='fw-light d-sm-none'>Sponsor:</h5>
+              </div>
+              {/* <a href="https://www.nsf.gov/">
                 <img src={NSFImage.src} alt="National Science Foundation" />
-              </a>
+              </a> */}
+              <div className="position-relative d-none d-lg-block" style={{ height: 285 }}>
+                <a href="https://www.nsf.gov/">
+                  <Image
+                    src={NSFImage.src}
+                    fill
+                    style={{ objectFit: 'contain' }}
+                    alt="National Science Foundation"
+                  />
+                </a>
+              </div>
+              <div className="position-relative d-block d-sm-none" style={{ height: 85, width: 85 }}>
+                <a href="https://www.nsf.gov/">
+                  <Image
+                    src={NSFImage.src}
+                    fill
+                    style={{ objectFit: 'contain' }}
+                    alt="National Science Foundation"
+                  />
+                </a>
+              </div>
             </div>
           </div>
 
