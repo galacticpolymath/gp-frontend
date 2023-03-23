@@ -1,11 +1,25 @@
-export default function Footer () {
+const SOCIAL_MEDIA_ITEMS = [{ link: 'https://twitter.com/galacticPM', icon: 'bi bi-twitter' }, { link: 'https://www.youtube.com/channel/UCfyBNvN3CH4uWmwOCQVhmhg', icon: 'bi bi-youtube', color: 'red' }];
+
+export default function Footer() {
+
   return (
     <footer className="pt-4 bg-dark-gray text-white">
       <div className="container py-4 row mx-auto gap-2 gap-lg-0">
         <div className="col-12 col-lg-5">
           <h4 className="fs-5">Galactic Polymath</h4>
           <p>We translate current research into creative interdisciplinary lessons for grades 5+ that are <em>free for everyone.</em></p>
-          <p>[social media icons]</p>
+          <div className="d-flex">
+            {SOCIAL_MEDIA_ITEMS.map(({ link, icon, color }, index) => (
+              <a
+                key={index}
+                style={{ fontSize: '21px', color: color ?? '#2D83C3', width: 40, height: 40 }}
+                className={`linkHover rounded-circle d-flex justify-content-center align-items-center ${(index !== 0) ? 'ms-1' : ''}`}
+                href={link}
+              >
+                <i className={icon} />
+              </a>
+            ))}
+          </div>
         </div>
         <div className="col-12 col-lg-3">
           <h4 className="fs-5">Contact</h4>
@@ -32,7 +46,7 @@ export default function Footer () {
         </div>
       </div>
       <div className="bg-dark text-center text-gray py-3 fs-7">
-        made with [love] by Galactic Polymath &copy; [year]
+        made with [love] by Galactic Polymath &copy; {new Date().getFullYear()}
       </div>
     </footer>
   );
