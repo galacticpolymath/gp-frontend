@@ -3,6 +3,8 @@
 /* eslint-disable semi */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
+import Image from "next/image";
+
 const JobVizIcon = ({ isOnJobVizPg }) => {
     const imgContainerStyles = `${isOnJobVizPg ? 'jobVizImgContainerOnPg' : 'jobVizImgContainer'} rounded-circle`;
 
