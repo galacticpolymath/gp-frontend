@@ -31,14 +31,14 @@ export default function Home() {
           </Link>
         </div>
       </Hero>
-      <div className="container mx-auto row align-items-center px-3 py-4 py-lg-5">
-        <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 text-center'>
+      <div className="container mx-auto d-flex align-items-center px-3 py-4 py-lg-5 flex-column flex-lg-row">
+        <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 d-flex d-sm-block justify-content-center align-items-center'>
           <div className="position-relative d-none d-md-block" style={{ height: 525 }}>
             <Image
               src={EngineeringImage.src}
               alt="Two people working on a diagram together"
               fill
-              className='d-block h-100 border'
+              className='d-block h-100'
               style={{ objectFit: 'contain' }}
             />
           </div>
@@ -47,17 +47,17 @@ export default function Home() {
               src={EngineeringImage.src}
               alt="Two people working on a diagram together"
               fill
-              className='d-block h-100 border'
+              className='d-block h-100'
               style={{ objectFit: 'contain' }}
             />
           </div>
-          <div className="position-relative d-block d-sm-none" style={{ height: 105 }}>
+          <div className="position-relative d-block d-sm-none" style={{ height: 125, maxWidth: 300, width: '100%' }}>
             <Image
               src={EngineeringImage.src}
               alt="Two people working on a diagram together"
               fill
               className='d-block h-100 border'
-              style={{ objectFit: 'contain' }}
+              style={{ objectFit: 'fill' }}
             />
           </div>
         </div>
@@ -85,7 +85,8 @@ export default function Home() {
 
           <div className='bg-white p-4 row align-items-center rounded-3 d-flex d-sm-flex flex-column flex-sm-row'>
             <div className='col-sm-9 text-center'>
-              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-sm-block w-25'>New release!</div>
+              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-xl-block w-25'>New release!</div>
+              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-none d-md-block d-xl-none w-50'>New release!</div>
               <div className="w-100 d-flex d-sm-none justify-content-center align-items-center">
                 <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
               </div>
@@ -125,8 +126,8 @@ export default function Home() {
                   alt="I Like That! How perception, emotion, and cognition shape our preferences"
                 />
               </div>
-              <section className='row d-flex d-sm-none justify-content-center'>
-                <div className="position-relative d-block d-sm-none border" style={{ height: 85, width: '50vw' }}>
+              <section className='row d-flex d-sm-none justify-content-center mt-2'>
+                <div className="position-relative d-block d-sm-none border" style={{ height: 125, maxWidth: 300, width: '100%' }}>
                   <Image
                     src={NewReleaseImage.src}
                     fill
@@ -137,7 +138,7 @@ export default function Home() {
               </section>
             </div>
             <div className='col-12 col-sm-3 text-sm-center d-flex justify-content-center mt-2 mt-sm-0 align-items-center'>
-              <section className="d-flex mt-1">
+              <section className="d-flex mt-1 flex-column justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch">
                 <h5 className='fw-light d-none d-sm-block'>Sponsor:</h5>
                 <div className="d-flex justify-content-center align-items-center mt-3">
                   <h5 className='fw-light d-sm-none'>Sponsor:</h5>
@@ -145,7 +146,7 @@ export default function Home() {
                 {/* <a href="https://www.nsf.gov/">
                 <img src={NSFImage.src} alt="National Science Foundation" />
               </a> */}
-                <div className="position-relative d-none d-lg-block" style={{ height: 285 }}>
+                <div className="position-relative d-none d-lg-block" style={{ height: 175, width: 175 }}>
                   <a href="https://www.nsf.gov/">
                     <Image
                       src={NSFImage.src}
@@ -155,7 +156,27 @@ export default function Home() {
                     />
                   </a>
                 </div>
-                <div className="position-relative d-block d-sm-none ms-2 ms-sm-0" style={{ height: 65, width: 65 }}>
+                <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 125, width: 125 }}>
+                  <a href="https://www.nsf.gov/">
+                    <Image
+                      src={NSFImage.src}
+                      fill
+                      style={{ objectFit: 'contain' }}
+                      alt="National Science Foundation"
+                    />
+                  </a>
+                </div>
+                <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 95, width: 95 }}>
+                  <a href="https://www.nsf.gov/">
+                    <Image
+                      src={NSFImage.src}
+                      fill
+                      style={{ objectFit: 'contain' }}
+                      alt="National Science Foundation"
+                    />
+                  </a>
+                </div>
+                <div className="position-relative d-block d-sm-none" style={{ height: 65, width: 65 }}>
                   <a href="https://www.nsf.gov/">
                     <Image
                       src={NSFImage.src}
