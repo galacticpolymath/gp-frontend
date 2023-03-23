@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable react/jsx-wrap-multilines */
 import Image from 'next/image';
-// import { ReactComponent as ScholarIcon } from '../public/imgs/about/google-scholar.svg';
 
 const DEFAULT_IMG_SRC = '/imgs/gp_logo_gradient_transBG.png';
 

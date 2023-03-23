@@ -33,7 +33,6 @@ const SelectedJob = () => {
     const { _selectedJob, _isJobModalOn } = useContext(ModalContext);
     const router = useRouter();
     const paths = router.query?.['search-results'] ?? [];
-    const lastPath = paths[paths.length - 1];
     const [selectedJob, setSelectedJob] = _selectedJob;
     const [isJobModal, setIsJobModal] = _isJobModalOn;
     let { soc_title, def, title, median_annual_wage_2021, typical_education_needed_for_entry, employment_2021, employment_2031, id } = selectedJob;
@@ -42,6 +41,8 @@ const SelectedJob = () => {
     const projectedPercentageEmploymentChange = selectedJob["percent_employment_change_2021-31"];
     const onTheJobTraining = selectedJob["typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"]
     def = def.toLowerCase() === "no definition found for this summary category." ? null : def;
+
+    // create a helper function to generate this function 
     const infoCards = [
         {
             title: `Median ${data_start_yr} Annual Wage`,

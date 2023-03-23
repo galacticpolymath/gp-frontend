@@ -1,4 +1,6 @@
+/* eslint-disable react/jsx-max-props-per-line */
 import LetsTalkBtnContainer from '../buttons/LetsTalkBtnContainer';
+// import Image from 'next/image';
 import styles from '../../../pages/index.module.css';
 import LayoutBackGroundImg from '../../../assets/img/1_northeast_merlot_darker.png';
 

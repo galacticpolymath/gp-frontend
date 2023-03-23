@@ -32,12 +32,20 @@
   }
 }
 
-.arrowHowDoesItWork {
-  background-color: $hireUsPgMainCardColor;
-  mix-blend-mode: multiply;
+.arrowSec {
+  background-color: #fff8f8 !important;
+  background-blend-mode: multiply;
 
-  @media(min-width: 992px){
-    transform: rotate(270deg)
+  div,
+  img {
+    background-color: #fff8f8;
+    background-blend-mode: multiply;
+  }
+}
+
+.arrowHowDoesItWork {
+  @media (min-width: 992px) {
+    transform: rotate(270deg);
   }
 }
 
@@ -322,11 +330,11 @@
     font-size: $spanDesktopFontSize;
   }
 
-  @media(min-width: 768px) and (max-width: 991px){
+  @media (min-width: 768px) and (max-width: 991px) {
     line-height: 20px;
   }
 
-  @media(min-width: 992px){
+  @media (min-width: 992px) {
     line-height: 20px;
   }
 }
@@ -357,7 +365,7 @@
 
   @media (min-width: 992px) {
     margin-top: 40px;
-      transform: translateY(20px)
+    transform: translateY(20px);
   }
 
   // @media(min-width: 992px) and (max-width: 1199px){
@@ -374,7 +382,7 @@
     border-radius: $borderRadiusModal;
   }
 
-  @media(min-width: 768px) and (max-width: 991px){
+  @media (min-width: 768px) and (max-width: 991px) {
     margin-top: 10px;
   }
 }
@@ -484,12 +492,12 @@
   }
 }
 
-.hireUsCardFirstSecTxt{
-  @media(min-width: 768px) and (max-width: 991px){
+.hireUsCardFirstSecTxt {
+  @media (min-width: 768px) and (max-width: 991px) {
     line-height: 27px;
   }
 
-  @media(min-width: 992px){
+  @media (min-width: 992px) {
     line-height: 25px;
   }
 }
@@ -664,7 +672,7 @@
 }
 
 .arrowSec {
-  background-color: #fff8f8;
+  // background-color: #fff8f8;
   z-index: -1;
   @media (min-width: 992px) {
     > img {
@@ -676,8 +684,9 @@
     padding-right: 35px;
 
     img {
-      background-color: #fff8f8;
+      // background-color: #fff8f8;
       mix-blend-mode: multiply;
+      background-blend-mode: normalx;
     }
   }
 
