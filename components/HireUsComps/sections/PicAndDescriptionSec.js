@@ -30,6 +30,7 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
                 src={imgPath}
                 alt="Galactic_PolyMath_HireUs_Img"
                 className='w-100 h-100'
+                style={{ objectFit: 'contain' }}
                 fill
               />
             </div>
@@ -40,6 +41,7 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
                   src={imgPath}
                   alt="Galactic_PolyMath_HireUs_Img"
                   className='w-100 h-100'
+                  style={{ objectFit: 'contain' }}
                   fill
                 />
               </div>
@@ -53,6 +55,7 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
               src={imgPath}
               alt="Galactic_PolyMath_HireUs_Img"
               className='w-100 h-100'
+              style={{ objectFit: 'contain' }}
               fill
             />
           </div>

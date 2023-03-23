@@ -116,7 +116,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                             pics.map(({ path, alt }, index) => {
                                                 return (
                                                     <div key={index} className="carouselImgContainer position-relative">
-                                                        <Image src={path} alt={alt} fill />
+                                                        <Image src={path} alt={alt} fill style={{ objectFit: 'contain' }} />
                                                     </div>
                                                 )
                                             })
@@ -211,8 +211,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                             pics.map(({ path, alt }, index) => {
                                                 return (
                                                     <div key={index} className="carouselImgContainer position-relative">
-                                                        {/* <img src={path} alt={alt} /> */}
-                                                        <Image src={path} alt={alt} fill /> 
+                                                        <Image src={path} alt={alt} fill style={{ objectFit: 'contain' }} /> 
                                                     </div>
                                                 )
                                             })

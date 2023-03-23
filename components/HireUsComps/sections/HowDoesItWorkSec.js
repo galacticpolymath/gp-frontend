@@ -68,6 +68,7 @@ const HowDoesItWorkSec = () => {
                             src="/imgs/pretty-down-arrow.jpeg"
                             alt="Galactic_PolyMath_First_Sec_Mobile_Info"
                             className="arrowHowDoesItWork"
+                            style={{ objectFit: 'contain' }}
                             fill
                         />
                     </div>
