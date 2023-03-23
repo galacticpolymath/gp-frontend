@@ -51,7 +51,7 @@ export default function Home() {
               style={{ objectFit: 'contain' }}
             />
           </div>
-          <div className="position-relative d-block d-sm-none" style={{ height: 225 }}>
+          <div className="position-relative d-block d-sm-none" style={{ height: 105 }}>
             <Image
               src={EngineeringImage.src}
               alt="Two people working on a diagram together"
@@ -83,9 +83,9 @@ export default function Home() {
             Learn everything.
           </h2>
 
-          <div className='bg-white p-4 row align-items-center rounded-3 d-flex d-sm-block flex-column'>
+          <div className='bg-white p-4 row align-items-center rounded-3 d-flex d-sm-flex flex-column flex-sm-row'>
             <div className='col-sm-9 text-center'>
-              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-sm-block w-50'>New release!</div>
+              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-sm-block w-25'>New release!</div>
               <div className="w-100 d-flex d-sm-none justify-content-center align-items-center">
                 <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
               </div>
@@ -126,7 +126,7 @@ export default function Home() {
                 />
               </div>
               <section className='row d-flex d-sm-none justify-content-center'>
-                <div className="position-relative d-block d-sm-none border" style={{ height: 150, width: '50vw' }}>
+                <div className="position-relative d-block d-sm-none border" style={{ height: 85, width: '50vw' }}>
                   <Image
                     src={NewReleaseImage.src}
                     fill
@@ -136,34 +136,36 @@ export default function Home() {
                 </div>
               </section>
             </div>
-            <div className='col-3 text-center'>
-              <h5 className='fw-light d-none d-sm-block'>Sponsor:</h5>
-              <div className="w-100 d-flex justify-content-center align-items-center">
-                <h5 className='fw-light d-sm-none'>Sponsor:</h5>
-              </div>
-              {/* <a href="https://www.nsf.gov/">
+            <div className='col-12 col-sm-3 text-sm-center d-flex justify-content-center mt-2 mt-sm-0 align-items-center'>
+              <section className="d-flex mt-1">
+                <h5 className='fw-light d-none d-sm-block'>Sponsor:</h5>
+                <div className="d-flex justify-content-center align-items-center mt-3">
+                  <h5 className='fw-light d-sm-none'>Sponsor:</h5>
+                </div>
+                {/* <a href="https://www.nsf.gov/">
                 <img src={NSFImage.src} alt="National Science Foundation" />
               </a> */}
-              <div className="position-relative d-none d-lg-block" style={{ height: 285 }}>
-                <a href="https://www.nsf.gov/">
-                  <Image
-                    src={NSFImage.src}
-                    fill
-                    style={{ objectFit: 'contain' }}
-                    alt="National Science Foundation"
-                  />
-                </a>
-              </div>
-              <div className="position-relative d-block d-sm-none" style={{ height: 85, width: 85 }}>
-                <a href="https://www.nsf.gov/">
-                  <Image
-                    src={NSFImage.src}
-                    fill
-                    style={{ objectFit: 'contain' }}
-                    alt="National Science Foundation"
-                  />
-                </a>
-              </div>
+                <div className="position-relative d-none d-lg-block" style={{ height: 285 }}>
+                  <a href="https://www.nsf.gov/">
+                    <Image
+                      src={NSFImage.src}
+                      fill
+                      style={{ objectFit: 'contain' }}
+                      alt="National Science Foundation"
+                    />
+                  </a>
+                </div>
+                <div className="position-relative d-block d-sm-none ms-2 ms-sm-0" style={{ height: 65, width: 65 }}>
+                  <a href="https://www.nsf.gov/">
+                    <Image
+                      src={NSFImage.src}
+                      fill
+                      style={{ objectFit: 'contain' }}
+                      alt="National Science Foundation"
+                    />
+                  </a>
+                </div>
+              </section>
             </div>
           </div>
 
