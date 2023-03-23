@@ -39,6 +39,7 @@ const TeamMemberCard = ({
                 style={{ fontSize: '21px', color: '#2D83C3', width: 40, height: 40 }}
                 className={`linkHover rounded-circle d-flex justify-content-center align-items-center ${(index !== 0) ? 'ms-1' : ''}`}
                 href={link}
+                target="_blank"
               >
                 {icon ? <i className={icon} /> : <div style={{ width: 30, height: 30 }} className='position-relative'><Image fill style={{ objectFit: 'cover' }} src={imgSrc} alt='Galactic_Polymath_Icon_Link' /></div>}
               </a>
