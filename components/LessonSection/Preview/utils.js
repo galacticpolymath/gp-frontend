@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 export const getMediaComponent = ({ type, mainLink }) => {
   if (type === 'video') {
     return (
@@ -68,15 +69,17 @@ const renderArrowPrev = (clickHandler, hasPrev) => (
   </button>
 );
 
-const renderArrowNext = (clickHandler, hasNext) => (
-  <button
-    disabled={!hasNext}
-    onClick={clickHandler}
-    className='btn bg-transparent m-0 p-1'
-  >
-    <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block"></i>
-  </button>
-);
+const renderArrowNext = (clickHandler, hasNext) => {
+  return (
+    <button
+      disabled={!hasNext}
+      onClick={clickHandler}
+      className='btn bg-transparent m-0 p-1'
+    >
+      <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block"></i>
+    </button>
+  );
+};
 
 export const customControls = {
   renderThumbs,

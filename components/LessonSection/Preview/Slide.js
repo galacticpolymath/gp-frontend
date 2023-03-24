@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable quotes */
 import { getMediaComponent } from './utils';
 
 import styles from './index.module.scss';
@@ -10,6 +12,7 @@ const Slide = ({
   byLink,
   mainLink,
 }) => {
+  console.log("was rendered");
   return (
     <div className='bg-white rounded p-3' style={{ 'width': '100%' }}>
       {getMediaComponent({ type, mainLink })}
