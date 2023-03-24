@@ -71,10 +71,15 @@ const renderArrowPrev = (clickHandler, hasPrev) => (
 
 const renderArrowNext = (clickHandler, hasNext) => {
   console.log('clickHandler: ', clickHandler);
+
+  const _clickHandler = () => {
+    clickHandler();
+  };
+
   return (
     <button
       disabled={!hasNext}
-      onClick={clickHandler}
+      onClick={_clickHandler}
       className='btn bg-transparent m-0 p-1'
     >
       <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block"></i>
