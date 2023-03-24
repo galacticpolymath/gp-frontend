@@ -1,3 +1,6 @@
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/jsx-closing-bracket-location */
+/* eslint-disable react/jsx-closing-tag-location */
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
@@ -15,9 +18,21 @@ import { useEffect, useState } from 'react';
 const Carousel = ({
   items,
 }) => {
-  const { renderArrowNext, renderArrowPrev,..._customControls } = customControls;
+  const { renderArrowNext, renderArrowPrev, ..._customControls } = customControls;
   const [toggleCompRender, setToggleCompRender] = useState(0);
-  
+
+  const handleNextBtn = () => {
+    setToggleCompRender(toggleCompRender + 1);
+  };
+
+  const _renderArrowNext = () => <button
+    disabled={false}
+    onClick={handleNextBtn}
+    className='btn bg-transparent m-0 p-1'
+  >
+    <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block"></i>
+  </button>;
+
   return items && (
     <RRCarousel
       showStatus={false}

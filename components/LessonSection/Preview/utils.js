@@ -70,6 +70,7 @@ const renderArrowPrev = (clickHandler, hasPrev) => (
 );
 
 const renderArrowNext = (clickHandler, hasNext) => {
+  console.log('clickHandler: ', clickHandler);
   return (
     <button
       disabled={!hasNext}
