@@ -70,9 +70,8 @@ const renderArrowPrev = (clickHandler, hasPrev) => (
 );
 
 const renderArrowNext = (clickHandler, hasNext) => {
-  console.log('clickHandler: ', clickHandler);
-
   const _clickHandler = () => {
+    console.log('clickHandler was called');
     clickHandler();
   };
 

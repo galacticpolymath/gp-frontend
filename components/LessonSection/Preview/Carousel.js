@@ -13,6 +13,7 @@ import { customControls } from './utils';
 
 import styles from './index.module.scss';
 import { useEffect, useState } from 'react';
+import RenderArrowNext from './RenderArrowNext';
 
 // how do I access the current picture/file that is being displayed on the ui? 
 
@@ -35,32 +36,34 @@ const Carousel = ({
   // GOAL:
   // when the user clicks on the next button, present next item in the items array 
 
-  const _renderArrowNext = () => <button
-    disabled={itemsIndex === (items.length - 1)}
-    onClick={handleNextBtn}
-    className='btn bg-transparent m-0 p-1'
-  >
-    <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block"></i>
-  </button>;
-
-  const _renderArrowPrev = () => <button
-    onClick={handlePrevBtnClick}
-    disabled={itemsIndex === 0}
-    className='btn bg-transparent m-0 p-1'
-  >
-    <i className="fs-1 text-black bi-arrow-left-circle-fill lh-1 d-block"></i>
-  </button>;
-
   const renderItemObj = items[itemsIndex];
   const renderItem = () => <Slide key={itemsIndex} {...renderItemObj} />;
-  const { renderArrowNext, ..._customControls } = customControls;
+  // const { , ..._customControls } = customControls;
+
+  // CASE: the user clicks on the right arrow button
+  
+  // BUG:
+  // WHAT IS HAPPENING:
+  // when the user clicks on the next button, nothing is being shown on the ui 
+
+  // WHAT I WANT:
+  // when the user clicks on the right arrow button, have the following to occur:
+  // present the next item in the items array
+  // update the index of the current item that is being displayed
+
+  // the next item in the items array is shown on the ui
+  // the itemsIndex state is increased by one 
+  // the user clicks on the right arrow button
+
+
 
   return items && (
     <RRCarousel
       showStatus={false}
       className={`${styles.Carousel} bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center`}
-      renderArrowNext={renderArrowNext}
-      {..._customControls}
+      renderArrowNext={customControls.renderArrowNext}
+      renderArrowPrev={customControls.renderArrowPrev}
+      renderThumbs={customControls.renderThumbs}
     // renderArrowNext={customControls.renderArrowNext}
     // renderArrowPrev={renderArrowPrev}
     // renderThumbs={customControls.renderThumbs}
