@@ -6,6 +6,8 @@ import { customControls } from './utils';
 
 import styles from './index.module.scss';
 
+// how do I access the current picture/file that is being displayed on the ui? 
+
 const Carousel = ({
   items,
 }) => {

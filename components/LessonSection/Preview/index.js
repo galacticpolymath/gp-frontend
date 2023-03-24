@@ -1,4 +1,6 @@
+/* eslint-disable no-console */
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 
 import RichText from '../../../components/RichText';
 
@@ -13,6 +15,9 @@ const Preview = ({
   QuickPrep,
 }) => {
   // d-flex d-sm-block flex-column flex-sm-row justify-content-sm-start justify-content-center align-items-center align-items-sm-start
+  useEffect(() => {
+    console.log('Multimedia: ', Multimedia);
+  });
   return (
     <CollapsibleLessonSection
       index={index}
