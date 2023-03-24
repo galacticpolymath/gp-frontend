@@ -16,6 +16,7 @@ const LessonPart = ({
 
   useEffect(() => {
     console.log('resources.parts[partNum - 1].itemList: ', resources?.parts?.[partNum - 1]?.itemList);
+    console.log('resources?.parts: ', resources?.parts);
   }, []);
 
   return (
