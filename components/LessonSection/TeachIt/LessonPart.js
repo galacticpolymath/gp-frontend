@@ -2,7 +2,6 @@
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
-import { useEffect } from 'react';
 
 const LessonPart = ({
   partNum,
@@ -11,13 +10,6 @@ const LessonPart = ({
   chunks = [],
   resources,
 }) => {
-
-  console.log('resources: ', resources);
-
-  useEffect(() => {
-    console.log('resources.parts[partNum - 1].itemList: ', resources?.parts?.[partNum - 1]?.itemList);
-    console.log('resources?.parts: ', resources?.parts);
-  }, []);
 
   return (
     <Accordion
@@ -33,7 +25,7 @@ const LessonPart = ({
     >
       <>
         <ol className='mt-3'>
-          {(resources.parts?.[partNum - 1]?.itemList || []).map(item => (
+          {(resources?.[0]?.parts?.[partNum - 1]?.itemList || []).map(item => (
             <li key={item.itemTitle} className='mb-2'>
               <strong>{item.itemTitle}</strong>
               <ul>
