@@ -12,36 +12,36 @@ import Slide from './Slide';
 import { customControls } from './utils';
 
 import styles from './index.module.scss';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import RenderArrowNext from './RenderArrowNext';
+import { LessonsCarouselContext } from '../../../providers/LessonsCarouselProvider';
 
 // how do I access the current picture/file that is being displayed on the ui? 
+
+
+
 
 const Carousel = ({
   items,
 }) => {
-  const [itemsIndex, setItemsIndex] = useState(0);
+  const { _lessonItemsIndex } = useContext(LessonsCarouselContext);
+  const [lessonItemsIndex, setLessonsItemsIndex] = _lessonItemsIndex;
 
-  const handleNextBtn = () => {
-    // setToggleCompRender(toggleCompRender + 1);
-    setItemsIndex(itemsIndex + 1);
-  };
-
-  const handlePrevBtnClick = () => {
-    setItemsIndex(itemsIndex - 1);
-  };
 
   // BRAIN DUMP:
 
   // GOAL:
   // when the user clicks on the next button, present next item in the items array 
 
-  const renderItemObj = items[itemsIndex];
-  const renderItem = () => <Slide key={itemsIndex} {...renderItemObj} />;
+  const renderItemObj = items[lessonItemsIndex];
+  const renderItem = () => <Slide key={lessonItemsIndex} {...renderItemObj} />;
+
+
+
   // const { , ..._customControls } = customControls;
 
   // CASE: the user clicks on the right arrow button
-  
+
   // BUG:
   // WHAT IS HAPPENING:
   // when the user clicks on the next button, nothing is being shown on the ui 
@@ -55,19 +55,44 @@ const Carousel = ({
   // the itemsIndex state is increased by one 
   // the user clicks on the right arrow button
 
+  // BRAIN DUMP:
+  // when RenderArrowNext is initially rendered, get the clickHandler function and store it into a state 
+  // when the user clicks on the right arrow button, display the next item in the items array 
+  // show this item onto the ui by getting the next item 
 
+
+  // CASE: the user clicks on a bullet point 
+
+
+
+  // CASE: the user clicks on the left arrow button
+  // hi
+
+
+
+  // CASE: the user clicks on the right arrow button
+  // GOAL: show the next item in the items array
+
+
+
+  // CASE: the user clicks on a thumbnail 
+
+
+
+
+  // BRAIN DUMP:
+  // check if handleBtnClick will be called whenever the user clicks on either of the nav buttons
+
+
+  console.log('hey there: ');
 
   return items && (
     <RRCarousel
       showStatus={false}
       className={`${styles.Carousel} bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center`}
-      renderArrowNext={customControls.renderArrowNext}
-      renderArrowPrev={customControls.renderArrowPrev}
       renderThumbs={customControls.renderThumbs}
-    // renderArrowNext={customControls.renderArrowNext}
-    // renderArrowPrev={renderArrowPrev}
-    // renderThumbs={customControls.renderThumbs}
-    // onChange={() => { console.log('item was changed'); }}
+      renderItem={renderItem}
+      {...customControls}
     >
       {items.sort((a, b) => a.order - b.order).map((item, i) => <Slide key={i} {...item} />)}
     </RRCarousel>

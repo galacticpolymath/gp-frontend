@@ -10,26 +10,44 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 
+import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { LessonsCarouselContext } from "../../../providers/LessonsCarouselProvider";
 
-const RenderArrowNext = (clickHandler, hasNext) => {
-    const { _lessonItemsIndex } = useContext(LessonsCarouselContext);
-    // const [, setLessonItemsIndex] = _lessonItemsIndex;
-    console.log('clickHandler: ', clickHandler);
-    // GOAL: use a function to update the index of the current item that is being displayed
-    // the function is received from the context provider and is called in the clickHandler function 
-    // import the function that will update the index of the current item
+const RenderArrowNext = ({ showNextItem, hasNext }) => {
+    const { _showNextItem, _lessonItemsIndex } = useContext(LessonsCarouselContext);
+    const [, setShowNextItemFn] = _showNextItem;
+    const [, setLessonsItemsIndex] = _lessonItemsIndex;
+    const [willChangeUI, setWillChangeUI] = useState(false);
 
-    const _clickHandler = () => {
-        console.log('clickHandler was called');
-        clickHandler();
+    const handleBtnClick = event => {
+        // event.preventDefault();
+        setLessonsItemsIndex(lessonsItemsIndex => lessonsItemsIndex + 1);
+        // showNextItem();
+        // setWillChangeUI(true);
+        
     };
+
+    // useEffect(() => {
+    //     // setShowNextItemFn(showNextItem);
+    //     if(willChangeUI) {
+    //         showNextItem();
+    //         setWillChangeUI(false);
+    //     }
+
+    // }, [willChangeUI]);
+
+    // GOAL: when the user clicks on the right arrow button, present the next item in the items array
+    // the next item is presented onto the ui
+    // the current index of the selected item is presented onto the ui
+    // increase the state of itemsIndexNum by one 
+    // the user clicks on the right arrow button  
+    
 
     return (
         <button
             disabled={!hasNext}
-            onClick={_clickHandler}
+            onClick={handleBtnClick}
             className='btn bg-transparent m-0 p-1'
         >
             <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block"></i>

@@ -1,3 +1,5 @@
+import RenderArrowNext from './RenderArrowNext';
+
 /* eslint-disable no-console */
 export const getMediaComponent = ({ type, mainLink }) => {
   if (type === 'video') {
@@ -69,21 +71,8 @@ const renderArrowPrev = (clickHandler, hasPrev) => (
   </button>
 );
 
-const renderArrowNext = (clickHandler, hasNext) => {
-  const _clickHandler = () => {
-    console.log('clickHandler was called');
-    clickHandler();
-  };
-
-  return (
-    <button
-      disabled={!hasNext}
-      onClick={_clickHandler}
-      className='btn bg-transparent m-0 p-1'
-    >
-      <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block"></i>
-    </button>
-  );
+const renderArrowNext = (showNextItem, hasNext) => {
+  return <RenderArrowNext showNextItem={showNextItem} hasNext={hasNext} />;
 };
 
 export const customControls = {
