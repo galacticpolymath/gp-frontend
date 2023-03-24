@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
@@ -44,6 +44,10 @@ const TeachIt = ({
     setIsDownloadModalInfoOn(true);
     console.log("isDownloadModalInfoOn: ", isDownloadModalInfoOn);
   };
+
+  useEffect(() => {
+    console.log("Data.parts: ", Data.parts);
+  });
 
   return (
     <CollapsibleLessonSection
