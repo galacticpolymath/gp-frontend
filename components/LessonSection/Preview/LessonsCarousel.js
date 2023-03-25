@@ -31,7 +31,7 @@ import Image from 'next/image';
 
 const LessonsCarousel = ({ mediaItems }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const mediaItemsSorted = mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((item, index) => ({ ...item, isOnUI: index === 0 }));
+    const mediaItemsSorted = mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((item, index) => ({ ...item, isVisible: index === 0 }));
     const [controlDots, setControlDots] = useState(mediaItemsSorted);
 
     const handleNextBtnClick = () => {
@@ -41,10 +41,10 @@ const LessonsCarousel = ({ mediaItems }) => {
         setControlDots(controlDots => {
             return controlDots.map((item, index) => {
                 if (index === newItemIndexOnUI) {
-                    return { ...item, isOnUI: true }
+                    return { ...item, isVisible: true }
                 }
 
-                return { ...item, isOnUI: false }
+                return { ...item, isVisible: false }
             })
         })
     }
@@ -55,10 +55,10 @@ const LessonsCarousel = ({ mediaItems }) => {
         setControlDots(controlDots => {
             return controlDots.map((item, index) => {
                 if (index === newItemIndexOnUI) {
-                    return { ...item, isOnUI: true }
+                    return { ...item, isVisible: true }
                 }
 
-                return { ...item, isOnUI: false }
+                return { ...item, isVisible: false }
             })
         })
     }
@@ -68,10 +68,10 @@ const LessonsCarousel = ({ mediaItems }) => {
         setControlDots(controlDots => {
             return controlDots.map((item, index) => {
                 if (index === selectedItemIndex) {
-                    return { ...item, isOnUI: true }
+                    return { ...item, isVisible: true }
                 }
 
-                return { ...item, isOnUI: false }
+                return { ...item, isVisible: false }
             })
         })
     }
@@ -102,28 +102,28 @@ const LessonsCarousel = ({ mediaItems }) => {
             </section>
             <section className="d-flex justify-content-center align-items-center my-4">
                 <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
-                    {controlDots.map(({ isOnUI }, index) => (<li
+                    {controlDots.map(({ isVisible }, index) => (<li
                         key={index}
                         className='d-inline-block'
                         role='button'
                         onClick={() => handleDotOrThumbNailClick(index)}
-                        style={{ border: 'none', borderColor: !isOnUI ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in" }}
+                        style={{ border: 'none', borderColor: !isVisible ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in" }}
                     >
                         <i
-                            style={{ backgroundColor: isOnUI ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isOnUI ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" }}
+                            style={{ backgroundColor: isVisible ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isVisible ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" }}
                         />
                     </li>))}
                 </ul>
             </section>
             <section>
-                <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
+                <ul className='ps-0 mb-0 d-flex flex-wrap justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
                     {controlDots.map((item, index) => {
-                        const { type, title, mainLink, isOnUI } = item;
+                        const { type, title, mainLink, isVisible } = item;
 
                         return (
                             <li
                                 role='button'
-                                style={{ width: 80, height: 65, backgroundColor: isOnUI ? '#f5c1e3' : 'white', transition: "background-color .15s ease-in" }}
+                                style={{ width: 80, height: 65, backgroundColor: isVisible ? '#f5c1e3' : 'white', transition: "background-color .15s ease-in" }}
                                 key={index}
                                 onClick={() => handleDotOrThumbNailClick(index)}
                                 className='d-inline-block me-2 p-2 d-flex justify-content-center align-items-center position-relative'>
