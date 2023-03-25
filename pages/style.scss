@@ -91,7 +91,9 @@ li {
 
 html { height: 100%; }
 
-
+.btn-disabled{
+  opacity: .5;
+}
 
 .no-btn-styles{
   background: none;

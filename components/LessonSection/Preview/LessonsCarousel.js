@@ -30,6 +30,8 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 const LessonsCarousel = ({ mediaItems }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const mediaItemsSorted = mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order)
+    const [controlDots, setControlDots] = useState(mediaItemsSorted.map((item, index) => ({ ...item, isOnUI: index === 0 })));
 
     const handleNextBtnClick = () => {
         console.log('next btn was clicked: ');
@@ -49,8 +51,36 @@ const LessonsCarousel = ({ mediaItems }) => {
                 </div>
             </section>
             <section className="border d-flex justify-content-center align-items-center mt-4">
-                <Button variant="outline-primary" onClick={handlePrevBtnClick} className="me-3" disabled={currentIndex === 0}><FaArrowLeft /></Button>
-                <Button variant="outline-primary" onClick={handleNextBtnClick} className="ms-3" disabled={(mediaItems.length - 1) === currentIndex}><FaArrowRight /></Button>
+                <button
+                    variant="outline-none"
+                    onClick={handlePrevBtnClick}
+                    className={`noBtnStyles me-2 p-0 ${(0 === currentIndex) ? 'btn-disabled' : ''}`}
+                    disabled={currentIndex === 0}
+                >
+                    <i class="fs-1 text-black bi-arrow-left-circle-fill lh-1 d-block" />
+                </button>
+                <button
+                    onClick={handleNextBtnClick}
+                    className={`noBtnStyles ms-2 p-0 ${((mediaItems.length - 1) === currentIndex) ? 'btn-disabled' : ''}`}
+                    disabled={(mediaItems.length - 1) === currentIndex}>
+                    <i class="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
+                </button>
+            </section>
+            <section className="border d-flex justify-content-center align-items-center my-4">
+                <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center'>
+                    {controlDots.map(({ isOnUI }, index) => (<li
+                        key={index}
+                        className='d-inline-block'
+                        role='button'
+                        style={{ border: 'none', borderColor: !isOnUI ? 'rgb(190, 190, 190)' : '' }}
+                    >
+                        {/* show icon for a bullet point */}
+                        <i
+                            // className={`bi-circle-fill ${(item.isOnUI) ? 'text-primary' : 'text-secondary'}`} 
+                            style={{ backgroundColor: isOnUI ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px',border: '2px solid #bebebe', borderColor: isOnUI ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1 }}
+                        />
+                    </li>))}
+                </ul>
             </section>
         </div>
     );
