@@ -13,12 +13,12 @@ const LessonSlide = ({
   mainLink,
 }) => {
   return (
-    <div className='bg-white autoCarouselItem rounded p-3' style={{ 'width': '100%' }}>
-      <div>
+    <div className='autoCarouselItem rounded justify-content-center align-items-center ms-1 me-1' style={{ 'width': '100%' }}>
+      <div className='bg-white p-3'>
         {getMediaComponent({ type, mainLink })}
         <div className={`${styles.SlideBody}`}>
-          <h5>{title}</h5>
-          <p>{lessonRelevance}</p>
+          <h5 style={{ maxWidth: "350px", whiteSpace: 'pre-line' }} className='text-left'>{title}</h5>
+          <p style={{ maxWidth: '200px', whiteSpace: 'pre-line' }} className="border">{lessonRelevance}</p>
           <span className="text-left">by{' '}
             <a
               href={byLink}
