@@ -26,6 +26,7 @@ import LessonSlide from './LessonSlide';
 import { customControls, getVideoThumb } from './utils';
 import { Button } from 'react-bootstrap';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import Image from 'next/image';
 
 
 const LessonsCarousel = ({ mediaItems }) => {
@@ -75,6 +76,7 @@ const LessonsCarousel = ({ mediaItems }) => {
         })
     }
 
+
     return (
         <div className={`bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center ${styles.Carousel}`} >
             <section style={{ height: 'fit-content' }} className="autoCarouselContainer">
@@ -104,7 +106,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                         key={index}
                         className='d-inline-block'
                         role='button'
-                        onClick={() => handleDotOrThumbNailClick(index)} 
+                        onClick={() => handleDotOrThumbNailClick(index)}
                         style={{ border: 'none', borderColor: !isOnUI ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in" }}
                     >
                         <i
@@ -119,22 +121,25 @@ const LessonsCarousel = ({ mediaItems }) => {
                         const { type, title, mainLink, isOnUI } = item;
 
                         return (
-                            <li 
-                            role='button' 
-                            style={{ width: 80, height: 65, backgroundColor: isOnUI ? '#f5c1e3' : 'white', transition: "background-color .15s ease-in" }} 
-                            key={index}
-                            onClick={() => handleDotOrThumbNailClick(index)} 
-                            className='d-inline-block me-2 p-2 d-flex justify-content-center align-items-center'>
+                            <li
+                                role='button'
+                                style={{ width: 80, height: 65, backgroundColor: isOnUI ? '#f5c1e3' : 'white', transition: "background-color .15s ease-in" }}
+                                key={index}
+                                onClick={() => handleDotOrThumbNailClick(index)}
+                                className='d-inline-block me-2 p-2 d-flex justify-content-center align-items-center position-relative'>
                                 {(type === 'video') ?
-                                    <img
-                                        src={getVideoThumb(mainLink)}
-                                        alt={title}
-                                    />
-                                    :
-                                    <i
-                                        key={index}
-                                        className="bi-filetype-pdf fs-2"
-                                    />}
+                                    <div className="position-relative w-100 h-100">
+                                        <Image
+                                            src={getVideoThumb(mainLink)}
+                                            alt={title}
+                                            fill
+                                        />
+                                    </div>
+                                :
+                                <i
+                                    key={index}
+                                    className="bi-filetype-pdf fs-2"
+                                />}
                             </li>
                         )
                     })}
@@ -145,3 +150,15 @@ const LessonsCarousel = ({ mediaItems }) => {
 }
 
 export default LessonsCarousel;
+
+{/* <div className="w-100 h-100">
+                                        <Image
+                                            src={getVideoThumb(mainLink)}
+                                            alt={title}
+                                            fill
+                                        />
+                                    </div> */}
+{/* <img 
+                                    src={getVideoThumb(mainLink)}
+                                    alt={title} /> */}
+

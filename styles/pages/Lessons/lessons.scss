@@ -179,9 +179,20 @@ $toolTipColor: #F0F4FF;
   max-width: 70rem !important;
 }
 
-.autoCarouselItem.onLessonsPg{
-  // border: solid pink;
-  // width: 1000px !important;
+.lesson-media{
+  @media(min-width: 992px) and (max-width: 1199px){
+    max-width: 475px;
+  }
+
+  @media(min-width: 768px) and (max-width: 991px){
+    max-width: 380px;
+  }
+}
+
+.carouselSelectedLessons{
+  @media(min-width: 768px){
+    // min-width: 595px
+  }
 }
 
 .lessonSubject {

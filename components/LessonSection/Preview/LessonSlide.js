@@ -13,8 +13,8 @@ const LessonSlide = ({
   mainLink,
 }) => {
   return (
-    <div className='autoCarouselItem onLessonsPg rounded p-1 justify-content-center align-items-center' style={{ 'width': '100%' }}>
-      <div className='bg-white p-3 rounded' style={{ maxWidth: 785 }}>
+    <div className='autoCarouselItem onLessonsPg rounded px-5 py-1 px-lg-1 py-lg-1 justify-content-center align-items-center' style={{ 'width': '100%' }}>
+      <div className='bg-white p-4 p-lg-3 rounded' style={{ maxWidth: 785 }}>
         <div className='justify-content-center d-flex align-items-center'>
           {getMediaComponent({ type, mainLink })}
         </div>
