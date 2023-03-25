@@ -49,12 +49,24 @@ const LessonsCarousel = ({ mediaItems }) => {
     }
 
     const handlePrevBtnClick = () => {
-        console.log('next btn was clicked: ');
         const newItemIndexOnUI = currentIndex - 1
         setCurrentIndex(newItemIndexOnUI);
         setControlDots(controlDots => {
             return controlDots.map((item, index) => {
                 if (index === newItemIndexOnUI) {
+                    return { ...item, isOnUI: true }
+                }
+
+                return { ...item, isOnUI: false }
+            })
+        })
+    }
+
+    const handleDotOrThumbNailClick = selectedItemIndex => {
+        setCurrentIndex(selectedItemIndex);
+        setControlDots(controlDots => {
+            return controlDots.map((item, index) => {
+                if (index === selectedItemIndex) {
                     return { ...item, isOnUI: true }
                 }
 
@@ -92,6 +104,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                         key={index}
                         className='d-inline-block'
                         role='button'
+                        onClick={() => handleDotOrThumbNailClick(index)} 
                         style={{ border: 'none', borderColor: !isOnUI ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in" }}
                     >
                         <i
@@ -104,13 +117,13 @@ const LessonsCarousel = ({ mediaItems }) => {
                 <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
                     {controlDots.map((item, index) => {
                         const { type, title, mainLink, isOnUI } = item;
-                        console.log("hey there isOnUI: ", isOnUI)
 
                         return (
                             <li 
                             role='button' 
                             style={{ width: 80, height: 65, backgroundColor: isOnUI ? '#f5c1e3' : 'white', transition: "background-color .15s ease-in" }} 
-                            key={index} 
+                            key={index}
+                            onClick={() => handleDotOrThumbNailClick(index)} 
                             className='d-inline-block me-2 p-2 d-flex justify-content-center align-items-center'>
                                 {(type === 'video') ?
                                     <img
