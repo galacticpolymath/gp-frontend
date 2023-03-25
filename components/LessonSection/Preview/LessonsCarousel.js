@@ -70,7 +70,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                     {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => <LessonSlide key={index} {...lessonDocument} />)}
                 </div>
             </section>
-            <section className="border d-flex justify-content-center align-items-center mt-4">
+            <section className="d-flex justify-content-center align-items-center mt-4">
                 <button
                     variant="outline-none"
                     onClick={handlePrevBtnClick}
@@ -86,23 +86,22 @@ const LessonsCarousel = ({ mediaItems }) => {
                     <i class="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
                 </button>
             </section>
-            <section className="border d-flex justify-content-center align-items-center my-4">
-                <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center'>
+            <section className="d-flex justify-content-center align-items-center my-4">
+                <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
                     {controlDots.map(({ isOnUI }, index) => (<li
                         key={index}
                         className='d-inline-block'
                         role='button'
-                        style={{ border: 'none', borderColor: !isOnUI ? 'rgb(190, 190, 190)' : '' }}
+                        style={{ border: 'none', borderColor: !isOnUI ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in" }}
                     >
                         <i
-                            style={{ backgroundColor: isOnUI ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isOnUI ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1 }}
+                            style={{ backgroundColor: isOnUI ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isOnUI ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" }}
                         />
                     </li>))}
                 </ul>
             </section>
             <section>
-                {/* {customControls.renderThumbs(mediaItemsSorted)} */}
-                <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all 2s ease-in', listStyle: 'none' }}>
+                <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
                     {controlDots.map((item, index) => {
                         const { type, title, mainLink, isOnUI } = item;
                         console.log("hey there isOnUI: ", isOnUI)
@@ -110,7 +109,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                         return (
                             <li 
                             role='button' 
-                            style={{ width: 80, height: 65, backgroundColor: isOnUI ? '#f5c1e3' : 'white', transition: "backgroundColor 2s ease-in" }} 
+                            style={{ width: 80, height: 65, backgroundColor: isOnUI ? '#f5c1e3' : 'white', transition: "background-color .15s ease-in" }} 
                             key={index} 
                             className='d-inline-block me-2 p-2 d-flex justify-content-center align-items-center'>
                                 {(type === 'video') ?
