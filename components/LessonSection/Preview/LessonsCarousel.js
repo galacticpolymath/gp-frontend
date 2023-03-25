@@ -22,6 +22,7 @@
 /* eslint-disable react/jsx-indent */
 import { useState } from 'react';
 import styles from './index.module.scss';
+import LessonSlide from './LessonSlide';
 import Slide from './Slide';
 
 
@@ -30,8 +31,8 @@ const LessonsCarousel = ({ mediaItems }) => {
 
     return (
         <div className={`bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center ${styles.Carousel}`} >
-            <div className="autoCarouselSlider" style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}>
-                {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => <Slide key={index} {...lessonDocument} />)}
+            <div className="autoCarouselSlider overflow-hidden" style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}>
+                {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => <LessonSlide key={index} {...lessonDocument} />)}
             </div>
         </div>
     );

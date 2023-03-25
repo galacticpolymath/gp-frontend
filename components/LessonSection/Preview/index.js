@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
@@ -6,6 +7,7 @@ import RichText from '../../../components/RichText';
 
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import Carousel from './Carousel';
+import LessonsCarousel from './LessonsCarousel';
 
 const Preview = ({
   index,
@@ -31,7 +33,8 @@ const Preview = ({
             <RichText content={QuickPrep} />
           </div>
         </div>
-        <Carousel items={Multimedia} />
+        {/* <Carousel items={Multimedia} /> */}
+        <LessonsCarousel mediaItems={Multimedia} />
       </div>
     </CollapsibleLessonSection>
   );
