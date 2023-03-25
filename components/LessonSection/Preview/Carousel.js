@@ -26,65 +26,8 @@ const Carousel = ({
 }) => {
   const { _lessonItemsIndex } = useContext(LessonsCarouselContext);
   const [lessonItemsIndex, setLessonsItemsIndex] = _lessonItemsIndex;
-
-
-  // BRAIN DUMP:
-
-  // GOAL:
-  // when the user clicks on the next button, present next item in the items array 
-
   const renderItemObj = items[lessonItemsIndex];
   const renderItem = () => <Slide key={lessonItemsIndex} {...renderItemObj} />;
-
-
-
-  // const { , ..._customControls } = customControls;
-
-  // CASE: the user clicks on the right arrow button
-
-  // BUG:
-  // WHAT IS HAPPENING:
-  // when the user clicks on the next button, nothing is being shown on the ui 
-
-  // WHAT I WANT:
-  // when the user clicks on the right arrow button, have the following to occur:
-  // present the next item in the items array
-  // update the index of the current item that is being displayed
-
-  // the next item in the items array is shown on the ui
-  // the itemsIndex state is increased by one 
-  // the user clicks on the right arrow button
-
-  // BRAIN DUMP:
-  // when RenderArrowNext is initially rendered, get the clickHandler function and store it into a state 
-  // when the user clicks on the right arrow button, display the next item in the items array 
-  // show this item onto the ui by getting the next item 
-
-
-  // CASE: the user clicks on a bullet point 
-
-
-
-  // CASE: the user clicks on the left arrow button
-  // hi
-
-
-
-  // CASE: the user clicks on the right arrow button
-  // GOAL: show the next item in the items array
-
-
-
-  // CASE: the user clicks on a thumbnail 
-
-
-
-
-  // BRAIN DUMP:
-  // check if handleBtnClick will be called whenever the user clicks on either of the nav buttons
-
-
-  console.log('hey there: ');
 
   return items && (
     <RRCarousel

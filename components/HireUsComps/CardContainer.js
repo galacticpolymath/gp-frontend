@@ -21,7 +21,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
-// 
+
 import { useEffect, useRef, useState } from 'react';
 import { Card } from 'react-bootstrap';
 import Image from 'next/image';
