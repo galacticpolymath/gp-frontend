@@ -43,12 +43,12 @@ const LessonsCarousel = ({ mediaItems }) => {
 
     return (
         <div className={`bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center ${styles.Carousel}`} >
-            <section className="autoCarouselContainer">
+            <section style={{ height: 'fit-content' }} className="autoCarouselContainer">
                 <div className="autoCarouselSlider" style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}>
                     {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => <LessonSlide key={index} {...lessonDocument} />)}
                 </div>
             </section>
-            <section className="border d-flex justify-content-center align-items-center">
+            <section className="border d-flex justify-content-center align-items-center mt-4">
                 <Button variant="outline-primary" onClick={handlePrevBtnClick} className="me-3" disabled={currentIndex === 0}><FaArrowLeft /></Button>
                 <Button variant="outline-primary" onClick={handleNextBtnClick} className="ms-3" disabled={(mediaItems.length - 1) === currentIndex}><FaArrowRight /></Button>
             </section>
