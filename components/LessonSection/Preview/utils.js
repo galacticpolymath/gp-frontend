@@ -26,7 +26,7 @@ export const getMediaComponent = ({ type, mainLink }) => {
   }
 };
 
-const getVideoThumb = link => {
+export const getVideoThumb = link => {
   if (!link) {
     return '';
   }

@@ -23,24 +23,44 @@
 import { useState } from 'react';
 import styles from './index.module.scss';
 import LessonSlide from './LessonSlide';
-import Slide from './Slide';
+import { customControls, getVideoThumb } from './utils';
 import { Button } from 'react-bootstrap';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 
 const LessonsCarousel = ({ mediaItems }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const mediaItemsSorted = mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order)
-    const [controlDots, setControlDots] = useState(mediaItemsSorted.map((item, index) => ({ ...item, isOnUI: index === 0 })));
+    const mediaItemsSorted = mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((item, index) => ({ ...item, isOnUI: index === 0 }));
+    const [controlDots, setControlDots] = useState(mediaItemsSorted);
 
     const handleNextBtnClick = () => {
         console.log('next btn was clicked: ');
-        setCurrentIndex(currentIndex + 1);
+        const newItemIndexOnUI = currentIndex + 1
+        setCurrentIndex(newItemIndexOnUI);
+        setControlDots(controlDots => {
+            return controlDots.map((item, index) => {
+                if (index === newItemIndexOnUI) {
+                    return { ...item, isOnUI: true }
+                }
+
+                return { ...item, isOnUI: false }
+            })
+        })
     }
 
     const handlePrevBtnClick = () => {
         console.log('next btn was clicked: ');
-        setCurrentIndex(currentIndex - 1);
+        const newItemIndexOnUI = currentIndex - 1
+        setCurrentIndex(newItemIndexOnUI);
+        setControlDots(controlDots => {
+            return controlDots.map((item, index) => {
+                if (index === newItemIndexOnUI) {
+                    return { ...item, isOnUI: true }
+                }
+
+                return { ...item, isOnUI: false }
+            })
+        })
     }
 
     return (
@@ -74,12 +94,38 @@ const LessonsCarousel = ({ mediaItems }) => {
                         role='button'
                         style={{ border: 'none', borderColor: !isOnUI ? 'rgb(190, 190, 190)' : '' }}
                     >
-                        {/* show icon for a bullet point */}
                         <i
-                            // className={`bi-circle-fill ${(item.isOnUI) ? 'text-primary' : 'text-secondary'}`} 
-                            style={{ backgroundColor: isOnUI ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px',border: '2px solid #bebebe', borderColor: isOnUI ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1 }}
+                            style={{ backgroundColor: isOnUI ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isOnUI ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1 }}
                         />
                     </li>))}
+                </ul>
+            </section>
+            <section>
+                {/* {customControls.renderThumbs(mediaItemsSorted)} */}
+                <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all 2s ease-in', listStyle: 'none' }}>
+                    {controlDots.map((item, index) => {
+                        const { type, title, mainLink, isOnUI } = item;
+                        console.log("hey there isOnUI: ", isOnUI)
+
+                        return (
+                            <li 
+                            role='button' 
+                            style={{ width: 80, height: 65, backgroundColor: isOnUI ? '#f5c1e3' : 'white', transition: "backgroundColor 2s ease-in" }} 
+                            key={index} 
+                            className='d-inline-block me-2 p-2 d-flex justify-content-center align-items-center'>
+                                {(type === 'video') ?
+                                    <img
+                                        src={getVideoThumb(mainLink)}
+                                        alt={title}
+                                    />
+                                    :
+                                    <i
+                                        key={index}
+                                        className="bi-filetype-pdf fs-2"
+                                    />}
+                            </li>
+                        )
+                    })}
                 </ul>
             </section>
         </div>
