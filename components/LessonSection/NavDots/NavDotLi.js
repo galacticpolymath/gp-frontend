@@ -11,10 +11,17 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 
-import { useState } from "react";
-
-const NavDotLi = ({ index, isInView, SectionTitle, sectionId, setSectionDots, willShowTitle }) => {
+const NavDotLi = ({ index, isInView, SectionTitle, sectionId, setSectionDots, willShowTitle, _isOnADot }) => {
     const iconStyles = { backgroundColor: isInView ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isInView ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" }
+    const [isOnADot, setIsOnADot] = _isOnADot;
+
+    const handleMouseOver = () => {
+        setIsOnADot(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsOnADot(false);
+    };
 
     const handleLiClick = isOnMobile => {
         if(isOnMobile){
@@ -57,23 +64,25 @@ const NavDotLi = ({ index, isInView, SectionTitle, sectionId, setSectionDots, wi
         <>
             <li
                 key={index}
-                className='d-none d-md-inline-flex justify-content-end'
+                className='d-none d-lg-inline-flex justify-content-end'
                 role='button'
                 onClick={_ => handleLiClick()}
                 style={{ border: 'none', borderColor: !isInView ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in", 'width': '200px' }}
             >
                 <section className='d-flex justify-content-center align-items-center'>
-                    <span className='text-black text-nowrap bg-white shadow p-1 rounded'>{SectionTitle}</span>
+                    <span style={{ opacity: isOnADot ? 1 : 0, transition: "opacity .15s ease-in" }} className='text-black text-nowrap bg-white shadow p-1 rounded'>{SectionTitle}</span>
                 </section>
                 <section className='d-flex justify-content-center align-items-center'>
                     <i
+                        onMouseOver={handleMouseOver}
+                        onMouseLeave={handleMouseLeave}
                         style={iconStyles}
                     />
                 </section>
             </li>
             <li
                 key={index}
-                className='d-inline-flex d-md-none justify-content-end'
+                className='d-inline-flex d-lg-none justify-content-end'
                 role='button'
                 style={{ border: 'none', borderColor: !isInView ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in", 'width': '200px' }}
             >
