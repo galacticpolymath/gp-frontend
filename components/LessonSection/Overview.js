@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
-import { useInView } from 'react-intersection-observer';
+import useGetElementInView from '../../customHooks/useLessonElementInView';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
@@ -17,30 +16,8 @@ const Overview = ({
   Tags,
   _sectionDots,
 }) => {
-  const { ref, inView } = useInView({ threshold: .1 });
   const SectionTitle = 'Overview';
-  const h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-  const [sectionDots, setSectionDots] = _sectionDots;
-
-  useEffect(() => {
-    if (inView) {
-      console.log('sectionDots hey there collapsible: ', sectionDots);
-      setSectionDots(sectionDots => sectionDots.map(sectionDot => {
-        if ((sectionDot.sectionId === h2Id) && inView) {
-          return {
-            ...sectionDot,
-            isInView: true,
-          };
-        }
-
-        return {
-          ...sectionDot,
-          isInView: false,
-        };
-      }));
-    }
-
-  }, [inView]);
+  const { ref } = useGetElementInView(_sectionDots, SectionTitle);
 
   return (
     <CollapsibleLessonSection

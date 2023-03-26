@@ -14,6 +14,7 @@ import Acknowledgments from './Acknowledgments';
 import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
 import Preview from './Preview';
+import { useEffect } from 'react';
 
 export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
@@ -68,6 +69,10 @@ const COMPS_NOT_TO_PASS_SECTION_DOTS_TO = ['LearningChart', 'Standards'];
 const LessonSection = ({ index, section, _sectionDots }) => {
   const Component = sectionTypeMap[section.__component];
   const _section = COMPS_NOT_TO_PASS_SECTION_DOTS_TO.includes(Component.name) ? section : { ...section, _sectionDots };
+
+  useEffect(() => {
+    console.log('hey there Component: ', Component.name);
+  });
   
   return Component ? (
     <Component index={index} {..._section} />

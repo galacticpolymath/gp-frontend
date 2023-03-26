@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
@@ -33,7 +34,7 @@ const Preview = ({
           </div>
         </div>
         {/* <Carousel items={Multimedia} /> */}
-        <LessonsCarousel mediaItems={Multimedia} />
+        <LessonsCarousel mediaItems={Multimedia} _sectionDots={_sectionDots} SectionTitle={SectionTitle} />
       </div>
     </CollapsibleLessonSection>
   );
