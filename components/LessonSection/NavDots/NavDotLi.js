@@ -11,16 +11,16 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 
-const NavDotLi = ({ index, isInView, SectionTitle, sectionId, setSectionDots, willShowTitle, _isOnADot }) => {
+const NavDotLi = ({ index, isInView, SectionTitle, sectionId, setSectionDots, willShowTitle, _willShowTitles }) => {
     const iconStyles = { backgroundColor: isInView ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isInView ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" }
-    const [isOnADot, setIsOnADot] = _isOnADot;
+    const [willShowTitles, setWillShowTitles] = _willShowTitles;
 
     const handleMouseOver = () => {
-        setIsOnADot(true);
+        setWillShowTitles(true);
     };
 
     const handleMouseLeave = () => {
-        setIsOnADot(false);
+        setWillShowTitles(false);
     };
 
     const handleLiClick = isOnMobile => {
@@ -67,15 +67,13 @@ const NavDotLi = ({ index, isInView, SectionTitle, sectionId, setSectionDots, wi
                 className='d-none d-lg-inline-flex justify-content-end'
                 role='button'
                 onClick={_ => handleLiClick()}
-                style={{ border: 'none', borderColor: !isInView ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in", 'width': '200px' }}
+                style={{ border: 'none', borderColor: !isInView ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in", 'width': '200px', zIndex: willShowTitles ? 100 : 0 }}
             >
+                    <span style={{ opacity: willShowTitles ? 1 : 0, transition: "all .15s ease-in", backgroundColor: isInView ? '#d5e6f3' : 'white', border: isInView ? '#363636 1px solid' : 'none', transitionProperty: 'border, background-color, opacity', fontWeight: 400, padding: 6 }} className='text-black text-nowrap shadow rounded'>{SectionTitle}</span>
                 <section className='d-flex justify-content-center align-items-center'>
-                    <span style={{ opacity: isOnADot ? 1 : 0, transition: "opacity .15s ease-in" }} className='text-black text-nowrap bg-white shadow p-1 rounded'>{SectionTitle}</span>
                 </section>
                 <section className='d-flex justify-content-center align-items-center'>
                     <i
-                        onMouseOver={handleMouseOver}
-                        onMouseLeave={handleMouseLeave}
                         style={iconStyles}
                     />
                 </section>

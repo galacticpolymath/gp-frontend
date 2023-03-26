@@ -16,11 +16,19 @@ import NavDotLi from "./NavDots/NavDotLi";
 
 const LessonsSecsNavDots = ({ _sectionDots }) => {
     const [sectionDots, setSectionDots] = _sectionDots;
-    const [isOnADot, setIsOnDot] = useState(false);
+    const [willShowTitles, setWillShowTitles] = useState(false);
+
+    const handleMouseEnter = () => {
+        setWillShowTitles(true);
+    };
+
+    const handleMouseLeave = () => {
+        setWillShowTitles(false);
+    };
 
     return (
         <div className="position-fixed lessonSecsNavDotsListContainer">
-            <ul className='ps-0 mb-0 d-flex flex-column justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
+            <ul className='ps-0 mb-0 d-flex flex-column position-relative justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
                 {sectionDots.map(({ isInView, SectionTitle, sectionId, willShowTitle }, index) => (
                     <NavDotLi
                         key={index}
@@ -30,9 +38,16 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
                         sectionId={sectionId}
                         setSectionDots={setSectionDots}
                         willShowTitle={willShowTitle}
-                        _isOnADot={[isOnADot, setIsOnDot]}
+                        _willShowTitles={[willShowTitles, setWillShowTitles]}
                     />
                 ))}
+                {/* <div
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    className="position-absolute end-0 h-100"
+                    style={{ width: 20 }}
+
+                /> */}
             </ul>
         </div>
     )
