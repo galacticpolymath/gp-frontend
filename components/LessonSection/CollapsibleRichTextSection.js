@@ -10,6 +10,7 @@ const CollapsibleRichTextSection = ({
   <CollapsibleLessonSection initiallyExpanded={InitiallyExpanded} {...props}>
     <div className='container mx-auto mb-4'>
       <RichText className='mt-4' content={Content} />
+      <h1>yolo</h1>
     </div>
   </CollapsibleLessonSection>
 );

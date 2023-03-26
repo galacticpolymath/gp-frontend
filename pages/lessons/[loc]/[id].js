@@ -24,7 +24,8 @@ const getLatestSubRelease = (sections) => {
 
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
-  const _sections = Object.values(lesson.Section)
+  const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
+  console.log("_sections: ", _sections)
   const getSectionDotsDefaultVal = () => {
     const startingSectionVals = [{ sectionId: 'title', isInView: true }, ..._sections.slice(1, _sections.length)].filter(({ SectionTitle }) => !!SectionTitle)
     const idsAddedToSectionVals = startingSectionVals.map(({ SectionTitle }, index) => {
@@ -37,10 +38,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
     return idsAddedToSectionVals
   }
   const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
-
-  useEffect(() => {
-    console.log("sectionDots hey there: ", sectionDots)
-  })
 
   // BRAIN DUMP:
   // if the section is view, then have the section's specific dot turn blue 
@@ -58,23 +55,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   // GOAL #4: get all of the sections that are viewable placed them into the sections array state
 
   // Number the sections included in NUMBERED_SECTIONS.
-  let numberedElements = 0;
-
-  const renderSection = (section, index) => {
-    if (NUMBERED_SECTIONS.includes(section.__component)) {
-      numberedElements++;
-    }
-
-    return (
-      <LessonSection
-        key={index}
-        index={numberedElements}
-        section={section}
-      />
-    );
-  };
-
-  console.log("lesson.Section: ", lesson.Section)
 
   // if the user is on a lessons page where current locale only has one option, then don't show the dropdown menu for locale
 

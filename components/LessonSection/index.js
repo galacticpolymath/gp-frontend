@@ -62,20 +62,18 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 
+// GOAL
+
 const LessonSection = ({ index, section, _sectionDots }) => {
   const Component = sectionTypeMap[section.__component];
-
-  // BRAIN DUMP:
-  // what's in _sectionDots
-
-  console.log("Component.name hi:", Component.name );
+  
+  console.log('Component hey there: ', Component.name);
 
   return Component ? (
     <Component index={index} {...section} />
   ) : (
     <div>Invalid section {section.__component}</div>
   );
-  // return null;
 };
 
 LessonSection.propTypes = {

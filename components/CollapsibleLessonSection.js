@@ -15,10 +15,10 @@ const CollapsibleLessonSection = ({
   children,
   initiallyExpanded = false,
   accordionId,
+  _sectionDots
   
 }) => {
   const h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-  console.log("h2Id: ", h2Id);
   
   return (
     <Accordion
