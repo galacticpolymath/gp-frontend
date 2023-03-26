@@ -1,5 +1,8 @@
+/* eslint-disable no-console */
 import Link from 'next/link';
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
@@ -14,6 +17,31 @@ const Overview = ({
   Tags,
   _sectionDots,
 }) => {
+  const { ref, inView } = useInView({ threshold: .1 });
+  const SectionTitle = 'Overview';
+  const h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
+  const [sectionDots, setSectionDots] = _sectionDots;
+
+  useEffect(() => {
+    if (inView) {
+      console.log('sectionDots hey there collapsible: ', sectionDots);
+      setSectionDots(sectionDots => sectionDots.map(sectionDot => {
+        if ((sectionDot.sectionId === h2Id) && inView) {
+          return {
+            ...sectionDot,
+            isInView: true,
+          };
+        }
+
+        return {
+          ...sectionDot,
+          isInView: false,
+        };
+      }));
+    }
+
+  }, [inView]);
+
   return (
     <CollapsibleLessonSection
       className="Overview"
@@ -22,7 +50,7 @@ const Overview = ({
       initiallyExpanded
       _sectionDots={_sectionDots}
     >
-      <div className='container mb-4'>
+      <div className='container mb-4' ref={ref}>
         <div className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center">
           <div className="grid mx-auto gap-3 py-3 justify-content-center justify-content-sm-start">
             <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>

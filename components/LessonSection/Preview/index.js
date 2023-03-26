@@ -17,10 +17,7 @@ const Preview = ({
   QuickPrep,
   _sectionDots,
 }) => {
-  // d-flex d-sm-block flex-column flex-sm-row justify-content-sm-start justify-content-center align-items-center align-items-sm-start
-  useEffect(() => {
-    console.log('Multimedia: ', Multimedia);
-  });
+  
   return (
     <CollapsibleLessonSection
       index={index}
