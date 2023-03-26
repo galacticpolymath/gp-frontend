@@ -93,13 +93,13 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
                     className={`noBtnStyles me-2 p-0 ${(0 === currentIndex) ? 'btn-disabled' : ''}`}
                     disabled={currentIndex === 0}
                 >
-                    <i class="fs-1 text-black bi-arrow-left-circle-fill lh-1 d-block" />
+                    <i className="fs-1 text-black bi-arrow-left-circle-fill lh-1 d-block" />
                 </button>
                 <button
                     onClick={handleNextBtnClick}
                     className={`noBtnStyles ms-2 p-0 ${((mediaItems.length - 1) === currentIndex) ? 'btn-disabled' : ''}`}
                     disabled={(mediaItems.length - 1) === currentIndex}>
-                    <i class="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
+                    <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
                 </button>
             </section>
             <section className="d-flex justify-content-center align-items-center my-4">

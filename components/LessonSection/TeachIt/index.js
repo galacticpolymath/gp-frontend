@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
@@ -29,7 +29,7 @@ const TeachIt = ({
   _sectionDots,
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
-  const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
+  const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const environments = ['classroom', 'remote']
     .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   const gradeVariations = getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources;
@@ -38,17 +38,12 @@ const TeachIt = ({
   const allResources = getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources;
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
+  console.log("SectionTitle teach it yo: ", SectionTitle);
   const { ref } = useLessonElementInView(_sectionDots, SectionTitle);
 
   const handleIconClick = () => {
-    console.log("clicked");
     setIsDownloadModalInfoOn(true);
-    console.log("isDownloadModalInfoOn: ", isDownloadModalInfoOn);
   };
-
-  useEffect(() => {
-    console.log("Data.parts: ", Data.parts);
-  });
 
   return (
     <CollapsibleLessonSection
