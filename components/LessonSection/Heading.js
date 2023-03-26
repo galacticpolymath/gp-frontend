@@ -8,19 +8,25 @@ import { useEffect } from 'react';
 
 const Heading = ({ index, SectionTitle, _sectionDots }) => {
   const { ref, inView } = useInView({ threshold: .2 });
-  // WHAT THIS COMP WILL HAVE:
-  // a setter that will control if the comp is view or not 
-
-  // GOAL: when the comp is view, then insert a true boolean into the setter that controls whether or not its corresponding dot is blue. The comps corresponding blue dot will be blue
-  // the comp's corresponding blue dot will be blue 
-  // a true boolean is passed into the setter that controls whether or not its corresponding dot is blue
-  // the comp is in view 
-
-  // GOAL: when the comp is not in view, then its corresponding dot will not be blue 
+  const [, setSectionDots] = _sectionDots;
+  const h2Id = SectionTitle.replace(/\s+/g, '_').toLowerCase();
 
   useEffect(() => {
-    console.log("setSectionDots: ", _sectionDots);
-    console.log("sectionId for lessons: ", SectionTitle.replace(/\s+/g, '_').toLowerCase());
+    if (inView) {
+      setSectionDots(sectionDots => sectionDots.map(sectionDot => {
+        if ((sectionDot.sectionId === h2Id) && inView) {
+          return {
+            ...sectionDot,
+            isInView: true,
+          };
+        }
+
+        return {
+          ...sectionDot,
+          isInView: false,
+        };
+      }));
+    }
   }, [inView]);
 
   return (
@@ -29,7 +35,7 @@ const Heading = ({ index, SectionTitle, _sectionDots }) => {
         <div>
           <h2
             className="SectionHeading mb-0"
-            id={SectionTitle.replace(/\s+/g, '_').toLowerCase()}
+            id={h2Id}
           >
             <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-3'>
               {index && `${index}. `}{SectionTitle}
