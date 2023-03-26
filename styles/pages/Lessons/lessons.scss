@@ -217,14 +217,17 @@ $toolTipColor: #F0F4FF;
   }
 
   @media(max-width: 575px){
-    // max-width: 205px;
     width: 60vw;
   }
 }
 
-.carouselSelectedLessons{
-  @media(min-width: 768px){
-    // min-width: 595px
+.lessonSecsNavDotsListContainer{
+  top: 95px;
+  right: 20px;
+  z-index: 1000;
+  
+  @media(max-width: 575px){
+    right: 10px
   }
 }
 

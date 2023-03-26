@@ -16,6 +16,7 @@ import LocDropdown from '../../../components/LocDropdown';
 import { useEffect, useState } from 'react';
 import ParentLessonSection from '../../../components/LessonSection/ParentLessonSection';
 import { useInView } from 'react-intersection-observer';
+import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
@@ -91,26 +92,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
   return (
     <Layout>
       {/* selectedLessonPg */}
-      <div style={{ top: 105, right: 20 }} className="position-fixed">
-        <ul className='ps-0 mb-0 d-flex flex-column justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
-          {sectionDots.map(({ isInView, SectionTitle, sectionId }, index) => (<li
-            key={index}
-            className='d-inline-flex justify-content-end'
-            role='button'
-            onClick={_ => handleDotClick(sectionId)}
-            style={{ border: 'none', borderColor: !isInView ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in", 'width': '200px' }}
-          >
-            <section className='d-flex justify-content-center align-items-center'>
-              <span className='text-black text-nowrap bg-white p-1 rounded'>{SectionTitle}</span>
-            </section>
-            <section className='d-flex justify-content-center align-items-center'>
-              <i
-                style={{ backgroundColor: isInView ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isInView ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" }}
-              />
-            </section>
-          </li>))}
-        </ul>
-      </div>
+      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} />
       <div className="container d-flex justify-content-center pt-4 pb-4">
         <div className="col-11 col-sm-12 col-md-10 col-lg-8">
           <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
