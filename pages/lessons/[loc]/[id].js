@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable semi */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
@@ -24,8 +25,19 @@ const getLatestSubRelease = (sections) => {
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const _sections = Object.values(lesson.Section)
-  console.log("_sections: ", _sections)
-  const [sectionDots, setSectionDots] = useState([{ sectionId: 'title', isInView: true }, ..._sections.slice(1, _sections.length)])
+  const getSectionDotsDefaultVal = () => {
+    const startingSectionVals = [{ sectionId: 'title', isInView: true }, ..._sections.slice(1, _sections.length)].filter(({ SectionTitle }) => !!SectionTitle);
+    const idsAddedToSectionVals = startingSectionVals.map((section, index) => {
+      console.log("section: ", section)
+      return {
+        ...section,
+        sectionId: index === 0 ? 'lessonTitleId' : section.SectionTitle.replace(/[\s!]/gi, '_').toLowerCase(),
+      }
+    })
+
+    return idsAddedToSectionVals
+  }
+  const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
 
   useEffect(() => {
     console.log("sectionDots: ", sectionDots)
@@ -86,7 +98,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
               id={lesson.id}
             />
           </div>
-          <h1 className="mt-4">{lesson.Title}</h1>
+          <h1 id="lessonTitleId" className="mt-4">{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
           {lesson.CoverImage && lesson.CoverImage.url && (
             <img
