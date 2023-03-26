@@ -25,7 +25,7 @@ const Overview = ({
           <div className="grid mx-auto gap-3 py-3 justify-content-center justify-content-sm-start">
             <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>
               <i className="fs-3 mb-2 d-block bi-book-half"></i>
-              <h5>Target Subject: </h5>
+              <h5 id='selectedLessonTitle'>Target Subject: </h5>
               <span>{TargetSubject}</span>
             </div>
             <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>

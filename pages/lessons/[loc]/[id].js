@@ -7,15 +7,13 @@ import Layout from '../../../components/Layout';
 import RichText from '../../../components/RichText';
 import LessonSection, { NUMBERED_SECTIONS } from '../../../components/LessonSection';
 import LocDropdown from '../../../components/LocDropdown';
+import { useEffect, useState } from 'react';
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
   if (!versionSection) {
     return null;
   }
-
-  // GOAL: don't have the same id when there two different sections within the standards section
-  console.log("sections: ", sections)
 
   const lastRelease = versionSection.Data[versionSection.Data.length - 1].sub_releases;
   const lastSubRelease = lastRelease[lastRelease.length - 1];
@@ -24,6 +22,27 @@ const getLatestSubRelease = (sections) => {
 
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
+  const _sections = Object.values(lesson.Section)
+  const [sections, setSections] = useState([{ sectionId: 'title', isInView: true }, ..._sections.slice(1, _sections.length)])
+
+  useEffect(() => {
+    console.log("sections: ", sections)
+  })
+
+  // BRAIN DUMP:
+  // if the section is view, then have the section's specific dot turn blue 
+  // create an array of all of the dots that represents each section
+  // if the user is at a specific section, then have its corresponding dot turn blue 
+  // create an array, for each value of the array it will be an object. The object will have the following fields:
+  // 1. the section's name
+  // 2. isVisible: boolean
+
+  // map this array onto the dom, if the user clicks on a dot, then scroll to the corresponding section
+
+  // GOAL #1: have the dots be clickable, when clicked, scroll to the corresponding section
+  // GOAL #2: have the dot turn blue when the user is at the corresponding section when scrolling down the page
+  // GOAL #3: display the dots onto the ui 
+  // GOAL #4: get all of the sections that are viewable placed them into the sections array state
 
   // Number the sections included in NUMBERED_SECTIONS.
   let numberedElements = 0;
@@ -31,6 +50,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
     if (NUMBERED_SECTIONS.includes(section.__component)) {
       numberedElements++;
     }
+
     return (
       <LessonSection
         key={index}
@@ -74,7 +94,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
           <div className='row mt-4'>
             <div className="col col-md-6 col-lg-9">
               <h5>Sponsored by:</h5>
-              <RichText content={lesson.SponsoredBy} /> 
+              <RichText content={lesson.SponsoredBy} />
             </div>
             <div className="col col-md-6 col-lg-3 position-relative">
               {lesson.SponsorImage && lesson.SponsorImage.url && (
@@ -89,7 +109,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       </div>
       <div className="container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
         <div className="col-12 col-sm-12 col-md-10 col-lg-8 p-0">
-          {Object.values(lesson.Section).map(renderSection)}
+          {_sections.map(renderSection)}
         </div>
       </div>
     </Layout>
@@ -112,15 +132,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter((lesson) => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
 
-  // TODO: revisit when/if Matt combines these sections in the JSON
   lesson.Section['teaching-materials'].Data = {
     ...lesson.Section.procedure.Data,
     ...lesson.Section['teaching-materials'].Data,
   };
-
-  console.log("lesson: ", lesson)
-
-  console.log("availLocs: ", availLocs)
 
   return { props: { lesson, availLocs } };
 };
