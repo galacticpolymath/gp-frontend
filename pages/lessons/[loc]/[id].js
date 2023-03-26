@@ -58,7 +58,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
         isInView: index === 0,
         SectionTitle: _sectionTitle,
         sectionId: (index === 0) ? 'lessonTitleId' : sectionId,
-        willShowSecOnMobile: false,
+        willShowTitle: false,
       }
     })
   }
