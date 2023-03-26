@@ -25,6 +25,7 @@ const TeachIt = ({
   index,
   SectionTitle,
   Data,
+  _sectionDots,
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
@@ -54,6 +55,7 @@ const TeachIt = ({
       SectionTitle={SectionTitle}
       highlighted
       initiallyExpanded
+      _sectionDots={_sectionDots}
     >
       <>
         <div className='container row mx-auto mt-4'>

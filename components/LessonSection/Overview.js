@@ -12,6 +12,7 @@ const Overview = ({
   SteamEpaulette,
   Text,
   Tags,
+  _sectionDots,
 }) => {
   return (
     <CollapsibleLessonSection
@@ -19,6 +20,7 @@ const Overview = ({
       index={index}
       SectionTitle="Overview"
       initiallyExpanded
+      _sectionDots={_sectionDots}
     >
       <div className='container mb-4'>
         <div className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center">

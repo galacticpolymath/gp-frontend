@@ -15,6 +15,7 @@ const Preview = ({
   InitiallyExpanded,
   Multimedia,
   QuickPrep,
+  _sectionDots,
 }) => {
   // d-flex d-sm-block flex-column flex-sm-row justify-content-sm-start justify-content-center align-items-center align-items-sm-start
   useEffect(() => {
@@ -25,6 +26,7 @@ const Preview = ({
       index={index}
       SectionTitle={SectionTitle}
       initiallyExpanded={InitiallyExpanded !== false}
+      _sectionDots={_sectionDots}
     >
       <div className='container row mx-auto pb-4 justify-content-center justify-content-sm-start'>
         <div className="col col-md-8 offset-md-2">

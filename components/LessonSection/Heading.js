@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 // accordion-header lessonsPgSec
 // bg-primary-light w-100 text-left
 
-const Heading = ({ index, SectionTitle, setSectionDots }) => {
+const Heading = ({ index, SectionTitle, _sectionDots }) => {
   const { ref, inView } = useInView({ threshold: .2 });
   // WHAT THIS COMP WILL HAVE:
   // a setter that will control if the comp is view or not 
@@ -19,7 +19,7 @@ const Heading = ({ index, SectionTitle, setSectionDots }) => {
   // GOAL: when the comp is not in view, then its corresponding dot will not be blue 
 
   useEffect(() => {
-    console.log("setSectionDots: ", setSectionDots);
+    console.log("setSectionDots: ", _sectionDots);
     console.log("sectionId for lessons: ", SectionTitle.replace(/\s+/g, '_').toLowerCase());
   }, [inView]);
 

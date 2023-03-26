@@ -61,16 +61,15 @@ export const sectionTypeMap = {
   [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleRichTextSection,
   [SECTIONS.PREVIEW]: Preview,
 };
-
-// GOAL
+// 
+const COMPS_NOT_TO_PASS_SECTION_DOTS_TO = ['LearningChart', 'Standards'];
 
 const LessonSection = ({ index, section, _sectionDots }) => {
   const Component = sectionTypeMap[section.__component];
+  const _section = COMPS_NOT_TO_PASS_SECTION_DOTS_TO.includes(Component.name) ? section : { ...section, _sectionDots };
   
-  console.log('Component hey there: ', Component.name);
-
   return Component ? (
-    <Component index={index} {...section} />
+    <Component index={index} {..._section} />
   ) : (
     <div>Invalid section {section.__component}</div>
   );

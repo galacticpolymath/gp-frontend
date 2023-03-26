@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-max-props-per-line */
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 
 import Accordion from './Accordion';
 
@@ -15,10 +16,14 @@ const CollapsibleLessonSection = ({
   children,
   initiallyExpanded = false,
   accordionId,
-  _sectionDots
+  _sectionDots,
   
 }) => {
   const h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
+
+  useEffect(() => {
+    console.log('_sectionDots: ', _sectionDots);
+  });
   
   return (
     <Accordion
