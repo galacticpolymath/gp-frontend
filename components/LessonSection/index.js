@@ -62,9 +62,13 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 
-const LessonSection = ({ index, section, setSectionDots }) => {
+const LessonSection = ({ index, section, _sectionDots }) => {
   const Component = sectionTypeMap[section.__component];
-  console.log("section: ", section);
+
+  // BRAIN DUMP:
+  // what's in _sectionDots
+
+  console.log("Component.name hi:", Component.name );
 
   return Component ? (
     <Component index={index} {...section} />

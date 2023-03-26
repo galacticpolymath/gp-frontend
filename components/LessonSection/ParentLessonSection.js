@@ -8,13 +8,11 @@
 import LessonSection, { NUMBERED_SECTIONS } from './index';
 
 const ParentLessonSection = ({ section, index, _sectionDots }) => {
-    const [sectionDots, setSectionDots] = _sectionDots;
-
     return (
         <LessonSection
             index={index + 1}
             section={section}
-            setSectionDots={setSectionDots}
+            _sectionDots={_sectionDots}
         />
     );
 };

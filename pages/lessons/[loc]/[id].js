@@ -26,12 +26,11 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const _sections = Object.values(lesson.Section)
   const getSectionDotsDefaultVal = () => {
-    const startingSectionVals = [{ sectionId: 'title', isInView: true }, ..._sections.slice(1, _sections.length)].filter(({ SectionTitle }) => !!SectionTitle);
-    const idsAddedToSectionVals = startingSectionVals.map((section, index) => {
-      console.log("section: ", section)
+    const startingSectionVals = [{ sectionId: 'title', isInView: true }, ..._sections.slice(1, _sections.length)].filter(({ SectionTitle }) => !!SectionTitle)
+    const idsAddedToSectionVals = startingSectionVals.map(({ SectionTitle }, index) => {
       return {
-        ...section,
-        sectionId: index === 0 ? 'lessonTitleId' : section.SectionTitle.replace(/[\s!]/gi, '_').toLowerCase(),
+        isInView: index === 0,
+        sectionId: index === 0 ? 'lessonTitleId' : SectionTitle.replace(/[\s!]/gi, '_').toLowerCase(),
       }
     })
 
@@ -40,7 +39,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
 
   useEffect(() => {
-    console.log("sectionDots: ", sectionDots)
+    console.log("sectionDots hey there: ", sectionDots)
   })
 
   // BRAIN DUMP:

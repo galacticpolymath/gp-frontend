@@ -18,8 +18,9 @@ const Heading = ({ index, SectionTitle, setSectionDots }) => {
 
   // GOAL: when the comp is not in view, then its corresponding dot will not be blue 
 
-  useEffect(() =>{
+  useEffect(() => {
     console.log("setSectionDots: ", setSectionDots);
+    console.log("sectionId for lessons: ", SectionTitle.replace(/\s+/g, '_').toLowerCase());
   }, [inView]);
 
   return (
