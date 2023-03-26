@@ -19,7 +19,6 @@ const useLessonElementInView = (_sectionDots, SectionTitle) => {
 
     useEffect(() => {
         if (inView) {
-            console.log('sectionDots hey there collapsible: ', sectionDots);
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
                 if ((sectionDot.sectionId === h2Id) && inView) {
                     return {
@@ -37,7 +36,7 @@ const useLessonElementInView = (_sectionDots, SectionTitle) => {
 
     }, [inView]);
 
-    return { ref, inView, h2Id }
+    return { ref, inView, h2Id: h2Id }
 }
 
 export default useLessonElementInView;

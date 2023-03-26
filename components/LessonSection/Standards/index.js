@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
+import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 import Accordion from '../../Accordion';
 import RichText from '../../RichText';
@@ -9,9 +10,12 @@ import Subject from './Subject';
 const Standards = ({
   Data,
   LearningObj,
+  _sectionDots,
 }) => {
+  const { ref } = useLessonElementInView(_sectionDots, 'learning standards');
+  
   return (
-    <div className='container mb-4'>
+    <div ref={ref} className='container mb-4'>
       <Accordion
         id="learningObj"
         initiallyExpanded
@@ -38,7 +42,7 @@ const Standards = ({
           </div>
         )}
       >
-        <>
+        <div>
           <div className='bg-primary-light p-3 mt-1 mb-3 mx-5 text-center'>
             <i className="bi-cursor" /> Click on any standard for details on how the lesson aligns to it.
           </div>
@@ -66,7 +70,7 @@ const Standards = ({
               {...subject}
             />
           ))}
-        </>
+        </div>
       </Accordion>
     </div>
   );

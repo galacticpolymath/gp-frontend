@@ -1,16 +1,21 @@
+/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 import Accordion from '../Accordion';
 import RichText from '../RichText';
 import Image from 'next/image';
+import useLessonElementInView from '../../customHooks/useLessonElementInView';
 
 const LearningChart = ({
   Title,
   Description,
   Footnote,
   Badge,
+  _sectionDots,
 }) => {
+  const { ref } = useLessonElementInView(_sectionDots, 'Learning Standards');
+
   return (
-    <div className='container pt-4'>
+    <div ref={ref} className='container pt-4'>
       {/* TODO: alt text */}
       {/* <img
         alt="Learning Standards Chart"

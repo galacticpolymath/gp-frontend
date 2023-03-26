@@ -1,33 +1,12 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
-import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
+import useLessonElementInView from '../../customHooks/useLessonElementInView';
 // accordion-header lessonsPgSec
 // bg-primary-light w-100 text-left
 
 const Heading = ({ index, SectionTitle, _sectionDots }) => {
-  const { ref, inView } = useInView({ threshold: .2 });
-  const [, setSectionDots] = _sectionDots;
-  const h2Id = SectionTitle.replace(/\s+/g, '_').toLowerCase();
-
-  useEffect(() => {
-    if (inView) {
-      setSectionDots(sectionDots => sectionDots.map(sectionDot => {
-        if ((sectionDot.sectionId === h2Id) && inView) {
-          return {
-            ...sectionDot,
-            isInView: true,
-          };
-        }
-
-        return {
-          ...sectionDot,
-          isInView: false,
-        };
-      }));
-    }
-  }, [inView]);
+  const { ref, h2Id } = useLessonElementInView(_sectionDots, SectionTitle);
 
   return (
     <div ref={ref} className='lessonsStandardsSec text-left bg-primary-light mb-4'>

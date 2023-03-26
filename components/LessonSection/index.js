@@ -64,16 +64,18 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 // 
-const COMPS_NOT_TO_PASS_SECTION_DOTS_TO = ['LearningChart', 'Standards'];
+const COMPS_NOT_TO_PASS_SECTION_DOTS_TO = ['LearningChart'];
 
 const LessonSection = ({ index, section, _sectionDots }) => {
   const Component = sectionTypeMap[section.__component];
-  const _section = COMPS_NOT_TO_PASS_SECTION_DOTS_TO.includes(Component.name) ? section : { ...section, _sectionDots };
+  // const _section = COMPS_NOT_TO_PASS_SECTION_DOTS_TO.includes(Component.name) ? section : { ...section, _sectionDots };
+  const _section = { ...section, _sectionDots };
 
   useEffect(() => {
-    console.log('hey there Component: ', Component.name);
+    console.log('lesson Component yo meng boi: ', Component.name);
   });
-  
+
+  console.log("_section: ", _section);
   return Component ? (
     <Component index={index} {..._section} />
   ) : (
