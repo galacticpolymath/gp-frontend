@@ -24,6 +24,7 @@ const getLatestSubRelease = (sections) => {
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const _sections = Object.values(lesson.Section)
+  console.log("_sections: ", _sections)
   const [sectionDots, setSectionDots] = useState([{ sectionId: 'title', isInView: true }, ..._sections.slice(1, _sections.length)])
 
   useEffect(() => {
