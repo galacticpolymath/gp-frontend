@@ -27,14 +27,12 @@ import { customControls, getVideoThumb } from './utils';
 import { Button } from 'react-bootstrap';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import Image from 'next/image';
-import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 
 const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const mediaItemsSorted = mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((item, index) => ({ ...item, isVisible: index === 0 }));
     const [controlDots, setControlDots] = useState(mediaItemsSorted);
-    const { ref } = useLessonElementInView(_sectionDots, SectionTitle)
 
     const handleNextBtnClick = () => {
         console.log('next btn was clicked: ');
@@ -80,7 +78,7 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
 
 
     return (
-        <div ref={ref} className={`bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center ${styles.Carousel}`} >
+        <div className={`bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center ${styles.Carousel}`} >
             <section style={{ height: 'fit-content' }} className="autoCarouselContainer">
                 <div className="autoCarouselSlider" style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}>
                     {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => <LessonSlide key={index} {...lessonDocument} />)}

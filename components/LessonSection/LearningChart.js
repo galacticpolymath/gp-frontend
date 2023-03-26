@@ -12,10 +12,9 @@ const LearningChart = ({
   Badge,
   _sectionDots,
 }) => {
-  const { ref } = useLessonElementInView(_sectionDots, 'Learning Standards');
 
   return (
-    <div ref={ref} className='container pt-4'>
+    <div className='container pt-4'>
       {/* TODO: alt text */}
       {/* <img
         alt="Learning Standards Chart"

@@ -19,7 +19,6 @@ const Preview = ({
   QuickPrep,
   _sectionDots,
 }) => {
-  const { ref } = useLessonElementInView(_sectionDots, SectionTitle);
   
   return (
     <CollapsibleLessonSection
@@ -28,7 +27,7 @@ const Preview = ({
       initiallyExpanded={InitiallyExpanded !== false}
       _sectionDots={_sectionDots}
     >
-      <div ref={ref} className='container row mx-auto pb-4 justify-content-center justify-content-sm-start'>
+      <div className='container row mx-auto pb-4 justify-content-center justify-content-sm-start'>
         <div className="col col-md-8 offset-md-2">
           <div className='bg-primary-light p-4 pb-2 fs-5 my-4 fw-light'>
             <h4>&quot;Teach it in 15&quot; Quick Prep</h4>

@@ -62,6 +62,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }
   const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
 
+  const handleDotClick = sectionId => {
+    const targetSection = document.getElementById(sectionId);
+
+    if (targetSection) {
+      targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   useEffect(() => {
     if (inView) {
       setSectionDots(sectionDots => sectionDots.map(sectionDot => {
@@ -80,19 +88,16 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }, [inView])
 
-  useEffect(() => {
-    console.log("sectionDots: ", sectionDots)
-  })
-
   return (
     <Layout>
       {/* selectedLessonPg */}
       <div style={{ top: 105, right: 20 }} className="position-fixed">
         <ul className='ps-0 mb-0 d-flex flex-column justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
-          {sectionDots.map(({ isInView, SectionTitle }, index) => (<li
+          {sectionDots.map(({ isInView, SectionTitle, sectionId }, index) => (<li
             key={index}
             className='d-inline-flex justify-content-end'
             role='button'
+            onClick={_ => handleDotClick(sectionId)}
             style={{ border: 'none', borderColor: !isInView ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in", 'width': '200px' }}
           >
             <section className='d-flex justify-content-center align-items-center'>

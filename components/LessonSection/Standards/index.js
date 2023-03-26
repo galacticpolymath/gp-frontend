@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
-import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 import Accordion from '../../Accordion';
 import RichText from '../../RichText';
@@ -10,12 +9,10 @@ import Subject from './Subject';
 const Standards = ({
   Data,
   LearningObj,
-  _sectionDots,
 }) => {
-  const { ref } = useLessonElementInView(_sectionDots, 'learning standards');
   
   return (
-    <div ref={ref} className='container mb-4'>
+    <div className='container mb-4'>
       <Accordion
         id="learningObj"
         initiallyExpanded

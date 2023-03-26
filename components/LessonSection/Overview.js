@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import useGetElementInView from '../../customHooks/useLessonElementInView';
+// import useGetElementInView from '../../customHooks/useLessonElementInView';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
@@ -16,8 +16,6 @@ const Overview = ({
   Tags,
   _sectionDots,
 }) => {
-  const SectionTitle = 'Overview';
-  const { ref } = useGetElementInView(_sectionDots, SectionTitle);
 
   return (
     <CollapsibleLessonSection
@@ -27,7 +25,7 @@ const Overview = ({
       initiallyExpanded
       _sectionDots={_sectionDots}
     >
-      <div className='container mb-4' ref={ref}>
+      <div className='container mb-4'>
         <div className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center">
           <div className="grid mx-auto gap-3 py-3 justify-content-center justify-content-sm-start">
             <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>

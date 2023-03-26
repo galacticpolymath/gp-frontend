@@ -7,7 +7,7 @@ import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
 import { ModalContext } from '../../../providers/ModalProvider';
 import { useContext } from 'react';
-import useLessonElementInView from '../../../customHooks/useLessonElementInView';
+// import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
 const getObjVals = obj => {
@@ -38,8 +38,6 @@ const TeachIt = ({
   const allResources = getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources;
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
-  console.log("SectionTitle teach it yo: ", SectionTitle);
-  const { ref } = useLessonElementInView(_sectionDots, SectionTitle);
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
@@ -53,7 +51,7 @@ const TeachIt = ({
       initiallyExpanded
       _sectionDots={_sectionDots}
     >
-      <div ref={ref}>
+      <div>
         <div className='container row mx-auto mt-4'>
           <div className='col-12 col-xl-8 offset-xl-2 bg-light-gray p-3 row align-items-center gap-3 gap-lg-0'>
             <div className='fs-5 mb-2'>
@@ -63,7 +61,6 @@ const TeachIt = ({
             <p className='mb-0'>{Data.lessonPreface}</p>
           </div>
         </div>
-
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
             <h3>Available Grade Bands</h3>
