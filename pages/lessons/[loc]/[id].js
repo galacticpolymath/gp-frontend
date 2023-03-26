@@ -8,6 +8,7 @@ import RichText from '../../../components/RichText';
 import LessonSection, { NUMBERED_SECTIONS } from '../../../components/LessonSection';
 import LocDropdown from '../../../components/LocDropdown';
 import { useEffect, useState } from 'react';
+import ParentLessonSection from '../../../components/LessonSection/ParentLessonSection';
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
@@ -23,10 +24,10 @@ const getLatestSubRelease = (sections) => {
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const _sections = Object.values(lesson.Section)
-  const [sections, setSections] = useState([{ sectionId: 'title', isInView: true }, ..._sections.slice(1, _sections.length)])
+  const [sectionDots, setSectionDots] = useState([{ sectionId: 'title', isInView: true }, ..._sections.slice(1, _sections.length)])
 
   useEffect(() => {
-    console.log("sections: ", sections)
+    console.log("sectionDots: ", sectionDots)
   })
 
   // BRAIN DUMP:
@@ -46,6 +47,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   // Number the sections included in NUMBERED_SECTIONS.
   let numberedElements = 0;
+
   const renderSection = (section, index) => {
     if (NUMBERED_SECTIONS.includes(section.__component)) {
       numberedElements++;
@@ -109,7 +111,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
       </div>
       <div className="container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
         <div className="col-12 col-sm-12 col-md-10 col-lg-8 p-0">
-          {_sections.map(renderSection)}
+          {_sections.map((section, index) => (
+            <ParentLessonSection
+              key={index}
+              section={section}
+              index={index}
+              _sectionDots={[sectionDots, setSectionDots]}
+            />
+          ))}
         </div>
       </div>
     </Layout>

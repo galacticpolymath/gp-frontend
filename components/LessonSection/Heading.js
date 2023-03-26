@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+/* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import { useInView } from 'react-intersection-observer';
 import { useEffect } from 'react';
@@ -17,7 +19,7 @@ const Heading = ({ index, SectionTitle, setSectionDots }) => {
   // GOAL: when the comp is not in view, then its corresponding dot will not be blue 
 
   useEffect(() =>{
-    
+    console.log("setSectionDots: ", setSectionDots);
   }, [inView]);
 
   return (
