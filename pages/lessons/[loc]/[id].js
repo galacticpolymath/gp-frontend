@@ -1,3 +1,4 @@
+/* eslint-disable curly */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-closing-bracket-location */
 /* eslint-disable react/jsx-closing-tag-location */
@@ -29,12 +30,23 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
   const getSectionDotsDefaultVal = () => {
-    const startingSectionVals = [{ sectionId: 'title', isInView: true }, ..._sections.slice(1, _sections.length)].filter(({ SectionTitle }) => !!SectionTitle)
-    const idsAddedToSectionVals = startingSectionVals.map(({ SectionTitle }, index) => {
+    let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
+    startingSectionVals = startingSectionVals.filter(section => {
+      if(((section?.__component === 'lesson-plan.overview') && !section?.SectionTitle)){
+        return true
+      }
+      
+      return !!section?.SectionTitle
+    })
+
+    const idsAddedToSectionVals = startingSectionVals.map((section, index) => {
+      const { SectionTitle, __component } = section
+      const _sectionTitle = (__component === 'lesson-plan.overview') ? 'Overview' : SectionTitle;
+
       return {
         isInView: index === 0,
-        SectionTitle: SectionTitle,
-        sectionId: (index === 0) ? 'lessonTitleId' : SectionTitle.replace(/[\s!]/gi, '_').toLowerCase(),
+        SectionTitle: _sectionTitle,
+        sectionId: (index === 0) ? 'lessonTitleId' : _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase(),
       }
     })
 
@@ -42,30 +54,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }
   const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
 
-  useEffect(() => {
-    console.log("sectionDots: ", sectionDots)
-  })
-
-  // BRAIN DUMP:
-  // if the section is view, then have the section's specific dot turn blue 
-  // create an array of all of the dots that represents each section
-  // if the user is at a specific section, then have its corresponding dot turn blue 
-  // create an array, for each value of the array it will be an object. The object will have the following fields:
-  // 1. the section's name
-  // 2. isVisible: boolean
-
-  // map this array onto the dom, if the user clicks on a dot, then scroll to the corresponding section
-
-  // GOAL #1: have the dots be clickable, when clicked, scroll to the corresponding section
-  // GOAL #2: have the dot turn blue when the user is at the corresponding section when scrolling down the page
-  // GOAL #3: display the dots onto the ui 
-  // GOAL #4: get all of the sections that are viewable placed them into the sections array state
-
-  // Number the sections included in NUMBERED_SECTIONS.
-
-  // if the user is on a lessons page where current locale only has one option, then don't show the dropdown menu for locale
-
-  /* p-4 */
   return (
     <Layout>
       {/* selectedLessonPg */}
