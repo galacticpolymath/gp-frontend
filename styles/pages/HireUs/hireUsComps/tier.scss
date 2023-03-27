@@ -160,9 +160,11 @@ $desktopFontSizeTierStatus: 24px;
 }
 
 .priceSection {
+  
   @media (min-width: 768px) {
     margin-top: auto;
-    transform: translateY(40px);
+    bottom: -10px;
+    // transform: translateY(40px);
   }
 }
 
