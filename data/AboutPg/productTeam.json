@@ -29,13 +29,15 @@
     },
     {
         "name": "Elaine Perignat, PhD",
+        "position": "Education Specialist",
+        "imgSrc": "/imgs/about/alumni/E_Perignat.webp",
         "description": "A spirited over-thinker with genuine enthusiasm for teaching and learning. Elaine loves to paint, create, build, and play if it means getting her hands dirty. Literally.",
-        "position": "EDUCATION SPECIALIST"
-    },
-    {
-        "name": "Carver Lee, MSc",
-        "description": "A geologist, sailor, teacher, and designer all rolled into one, Carver believes that learning and creating are always the way forward.",
-        "position": "GRAPHIC DESIGN + MARKETING LEAD"
+        "links": [
+            {
+                "imgSrc": "/imgs/about/google_scholar.png", 
+                "link": "https://scholar.google.com/citations?user=G12SJQoAAAAJ&hl=en&oi=ao"
+            }           
+        ]
     },
     {
         "name": "Aarati Asundi, PhD",
@@ -52,20 +54,5 @@
                 "icon": "bi bi-youtube"
             }
         ]
-    },
-    {
-        "name": "Jayme Dyer, PhD",
-        "description": "A biology educator and science communicator, Jayme says Wow a lot (especially about science!) and works to help others do the same.",
-        "position": "VIDEO CREATOR"
-    },
-    {
-        "name": "Caitlin Friesen",
-        "description": "A biologist, scientist, educator, artist, and cyclist in constant pursuit of making things a little bit better. She loves learning, creating, and being outdoors!",
-        "position": "LEARNING MULTIMEDIA ARTIST"
-    },
-    {
-        "name": "Audrey Serene",
-        "description": "An animator and experimental filmmaker who loves anything and everything that combines art and technology. Especially when it’s for a good cause.",
-        "position": "ANIMATOR"
     }
 ]

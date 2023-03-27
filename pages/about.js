@@ -14,8 +14,7 @@ const MATT_LINKS =
     { link: 'https://github.com/drwilkins', icon: 'bi bi-github' },
     { link: 'https://www.linkedin.com/in/mattwilkinsphd/', icon: 'bi bi-linkedin' },
     { link: 'https://twitter.com/mattwilkinsbio', icon: 'bi bi-twitter' },
-    // change to matt's google scholar link
-    { link: 'https://twitter.com/mattwilkinsbio', imgSrc: '/imgs/about/google_scholar.png' },
+    { link: 'https://scholar.google.com/citations?user=MZKGDvAAAAAJ&hl=en', imgSrc: '/imgs/about/google_scholar.png' },
   ];
 
 const AboutPage = () => (

@@ -1,37 +1,5 @@
 [
     {
-        "name": "Maria Brock",
-        "position": "Front End Web Developer, GP Publishing Workflow",
-        "description": "A Software Developer who loves problem solving, puzzles, and art. Fan of gaming, learning, and crocheting adorable, nerdy things. Powered by coffee."
-    },
-    {
-        "name": "Castle Crawford",
-        "position": "Front End Web Developer",
-        "description": "A food fanatic, day hiker, video game vanquisher, Corgi lover, and Software Developer. Loves being part of a team focused on making a difference."
-    },
-    {
-        "name": "Tyler Lemburg, MSc",
-        "position": "Previous Lead Developer, JobViz",
-        "description": "A Senior Software Engineer working remotely for Cognito. Tyler built the first iteration of JobViz. He has worked for several nonprofits as a web developer and recently earned a Masters in Climatology."
-    },
-    {
-        "name": "Arda Turkmen",
-        "position": "Back End Developer",
-        "description": "Arda is a senior at Vanderbilt University, majoring in Computer Science and Mathematics. He was key in developing our early website in 2019-2020 using Node.JS, React, and SQL managed through AWS."
-    },
-    {
-        "name": "Elaine Perignat, PhD",
-        "position": "Education Specialist",
-        "imgSrc": "/imgs/about/alumni/E_Perignat.webp",
-        "description": "A spirited over-thinker with genuine enthusiasm for teaching and learning. Elaine loves to paint, create, build, and play if it means getting her hands dirty. Literally.",
-        "links": [
-            {
-                "imgSrc": "/imgs/about/google_scholar.png", 
-                "link": "https://scholar.google.com/citations?user=G12SJQoAAAAJ&hl=en&oi=ao"
-            }           
-        ]
-    },
-    {
         "name": "Carver Lee, MSc",
         "position": "Graphic Design + Marketing Lead",
         "imgSrc": "/imgs/about/alumni/Carver_Lee.webp",
