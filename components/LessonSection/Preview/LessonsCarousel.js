@@ -27,10 +27,12 @@ import { customControls, getVideoThumb } from './utils';
 import { Button } from 'react-bootstrap';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import Image from 'next/image';
+import { useEffect } from 'react';
 
 
 const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [willApplyStyles, setWillApplyStyles] = useState(false);
     const mediaItemsSorted = mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((item, index) => ({ ...item, isVisible: index === 0 }));
     const [controlDots, setControlDots] = useState(mediaItemsSorted);
 
@@ -76,6 +78,10 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
         })
     }
 
+    useEffect(() => {
+        setWillApplyStyles(true);
+    }, [])
+
 
     return (
         <div className={`bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center ${styles.Carousel}`} >
@@ -107,10 +113,10 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
                         className='d-inline-block'
                         role='button'
                         onClick={() => handleDotOrThumbNailClick(index)}
-                        style={{ border: 'none', borderColor: !isVisible ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in" }}
+                        style={willApplyStyles ? { border: 'none', borderColor: !isVisible ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in" } : {}}
                     >
                         <i
-                            style={{ backgroundColor: isVisible ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isVisible ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" }}
+                            style={willApplyStyles ? { backgroundColor: isVisible ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isVisible ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" } : {}}
                         />
                     </li>))}
                 </ul>

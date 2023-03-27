@@ -11,10 +11,12 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { v4 } from "uuid";
 
 const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
+    const [willGetIconStyles, setWillGetIconStyles] = useState(false)
     const { goToSection, handleDotClick } = fns;
 
     const handleMouseOverIcon = () => {
@@ -26,6 +28,10 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
     }
 
     const getIconStyles = willChangeIconColor => ({ backgroundColor: isInView || willChangeIconColor ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isInView || willChangeIconColor ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" })
+
+    useEffect(() => {
+        setWillGetIconStyles(true);
+    }, [])
 
     return (
         <>
@@ -40,7 +46,7 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
                     <i
                         onMouseOver={handleMouseOverIcon}
                         onMouseLeave={handleMouseLeaveIcon}
-                        style={getIconStyles(willChangeIconColor)} />
+                        style={willGetIconStyles ? getIconStyles(willChangeIconColor) : {}} />
                 </li>
                 :
                 <li
@@ -51,7 +57,7 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
                 >
                     <i
                         onClick={_ => handleDotClick(sectionId, true)}
-                        style={getIconStyles(willChangeIconColor)} />
+                        style={willGetIconStyles ? getIconStyles(willChangeIconColor) : {}} />
                 </li>
             }
         </>

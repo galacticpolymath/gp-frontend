@@ -15,14 +15,11 @@
 
 import { useEffect, useState } from "react";
 import LiNavDot from "./NavDots/LiNavDot";
-import NavDotLi from "./NavDots/NavDotLi";
+import { v4 } from "uuid";
 
 const LessonsSecsNavDots = ({ _sectionDots }) => {
     const [sectionDots, setSectionDots] = _sectionDots;
     const [willShowTitles, setWillShowTitles] = useState(false);
-    // const iconStyles = { backgroundColor: isInView ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isInView ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" }
-
-    const getIconStyles = (isInView, willChangeIconColor) => ({ backgroundColor: isInView || willChangeIconColor ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isInView || willChangeIconColor ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" })
 
     const handleMouseEnterIconList = () => {
         setWillShowTitles(true);
@@ -64,8 +61,6 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     const goToSection = (sectionId, isOnMobile) => {
         if (isOnMobile) {
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
-                // console.log("sectionDot.sectionId: ", sectionDot.sectionId);
-                console.log('sectionId hi yo: ', sectionId)
                 return {
                     ...sectionDot,
                     willShowTitle: false,
@@ -77,17 +72,14 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     }
     const liNavDotFns = { goToSection, handleDotClick }
 
-    // !isInView ? 'rgb(190, 190, 190)' : '#363636 1px solid !important'
-
     return (
         <div className="position-fixed lessonSecsNavDotsListContainer d-flex">
             <ul className='ps-0 mb-0 d-flex flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
                 {sectionDots.map(({ isInView, SectionTitle, willShowTitle, sectionId }, index) => {
-                    console.log("isInView: ", isInView)
+                    
                     return (
-                        <>
+                        <div key={index}>
                             <li
-                                key={index}
                                 className='d-none d-lg-inline-flex justify-content-end'
                                 role='button'
                                 style={{ borderColor: !isInView ? 'rgb(190, 190, 190)' : '#363636 1px solid !important', opacity: willShowTitles ? 1 : 0, transition: "all .15s ease-in", height: "30px", 'width': '200px', transitionProperty: 'border-color, opacity' }}
@@ -97,10 +89,9 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
                                 </span>
                             </li>
                             <li
-                                key={index}
-                                className='d-inline-flex d-lg-none justify-content-end'
+                                className='d-lg-none d-inline-flex justify-content-end'
                                 role='button'
-                                style={{ border: 'none', opacity: willShowTitle ? 1 : 0, transition: "all .15s ease-in", height: "30px", 'width': '200px', transitionProperty: 'border-color, opacity' }}
+                                style={{ border: 'none', opacity:  willShowTitle ? 1 : 0, transition: "all .15s ease-in", height: "30px", 'width': '200px', transitionProperty: 'border-color, display' }}
                             >
                                 <span
                                     style={{ transition: "all .15s ease-in", backgroundColor: isInView ? '#d5e6f3' : 'white', border: '#363636 1px solid', transitionProperty: 'background-color, opacity, border', fontWeight: 400, padding: 6 }}
@@ -110,7 +101,7 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
                                     {SectionTitle}
                                 </span>
                             </li>
-                        </>
+                        </div>
                     )
                 })}
             </ul>

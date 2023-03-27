@@ -66,9 +66,9 @@ LessonPart.propTypes = {
   partTitle: PropTypes.string.isRequired,
   partPreface: PropTypes.string.isRequired,
   chunks: PropTypes.array.isRequired,
-  resources: PropTypes.shape({
-    parts: PropTypes.array,
-  }),
+  resources: PropTypes.oneOfType([
+    PropTypes.array, PropTypes.object,
+  ]),
 };
 
 export default LessonPart;
