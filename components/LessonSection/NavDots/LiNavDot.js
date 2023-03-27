@@ -11,12 +11,11 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { v4 } from "uuid";
 
 const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
-    const [willGetIconStyles, setWillGetIconStyles] = useState(false)
     const { goToSection, handleDotClick } = fns;
 
     const handleMouseOverIcon = () => {
@@ -27,11 +26,18 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
         setWillChangeIconColor(false);
     }
 
-    const getIconStyles = willChangeIconColor => ({ backgroundColor: isInView || willChangeIconColor ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isInView || willChangeIconColor ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" })
+    const getIconStyles = _ => {
+        const isTeachingMaterialsId = sectionId === 'teaching_materials';
+        const bgColor = (isInView || willChangeIconColor) ? (isTeachingMaterialsId ? '#cb1f8e' : 'rgba(44, 131, 195, 0.6)') : 'rgba(0,0,0,.1)';
+        const borderColor = (isInView || willChangeIconColor) ? (isTeachingMaterialsId ? '#cb1f8e' : '#2c83c3') : (isTeachingMaterialsId ? '#cb1f8e' : '#bebebe');
 
-    useEffect(() => {
-        setWillGetIconStyles(true);
-    }, [])
+        return (
+            {
+                backgroundColor: bgColor, height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid', borderColor: borderColor, padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color",
+            }
+        )
+    }
+    const iconStyles = useMemo(() => getIconStyles(), [willChangeIconColor, isInView, sectionId]);
 
     return (
         <>
@@ -46,7 +52,7 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
                     <i
                         onMouseOver={handleMouseOverIcon}
                         onMouseLeave={handleMouseLeaveIcon}
-                        style={willGetIconStyles ? getIconStyles(willChangeIconColor) : {}} />
+                        style={iconStyles} />
                 </li>
                 :
                 <li
@@ -57,7 +63,7 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
                 >
                     <i
                         onClick={_ => handleDotClick(sectionId, true)}
-                        style={willGetIconStyles ? getIconStyles(willChangeIconColor) : {}} />
+                        style={iconStyles} />
                 </li>
             }
         </>
