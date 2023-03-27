@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable react/jsx-tag-spacing */
 /* eslint-disable quotes */
@@ -35,7 +36,7 @@ const jobsAllInfo = {
     "percent_employment_change_col": "#CF4C74FF",
 }
 
-const JobCategoryChainCard = ({ jobCategory, index }) => {
+const JobCategoryChainCard = ({ jobCategory, index, isSearchResultsChainPresent }) => {
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
 
@@ -55,10 +56,15 @@ const JobCategoryChainCard = ({ jobCategory, index }) => {
                 <section className="jobVizCard-buttonSec">
                     <h4 id="currentJobCategoryHeaderTxt" className='text-muted text-center'>{jobCategory?.categoryName?.toUpperCase() ?? "Job Categories"}</h4>
                     <section className="d-flex justify-content-center align-items-center w-100">
-                        <DetailsBtn 
-                            jobToShowInModal={jobCategory ?? jobsAllInfo}
-                            setSelectedJob={setSelectedJob}
-                        />
+                        {isSearchResultsChainPresent ?
+                            <DetailsBtn
+                                jobToShowInModal={jobCategory ?? jobsAllInfo}
+                                setSelectedJob={setSelectedJob}
+                            />
+                            :
+                            <span style={{ maxWidth: 230, wordWrap: 'break-word' }} className='mt-2 text-muted fst-italic text-center d-block w-100'>Click to explore a job category</span>
+                        }
+
                     </section>
                 </section>
             </Card.Body>
