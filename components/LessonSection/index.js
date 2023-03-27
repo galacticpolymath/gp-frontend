@@ -63,17 +63,10 @@ export const sectionTypeMap = {
   [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleRichTextSection,
   [SECTIONS.PREVIEW]: Preview,
 };
-// 
-const COMPS_NOT_TO_PASS_SECTION_DOTS_TO = ['LearningChart'];
 
 const LessonSection = ({ index, section, _sectionDots }) => {
   const Component = sectionTypeMap[section.__component];
   const _section = { ...section, _sectionDots };
-
-  useEffect(() => {
-    console.log("Component.name: ", Component.name);
-    console.log("section sup meng: ", section);
-  });
 
   return Component ? (
     <Component index={index} {..._section} />
