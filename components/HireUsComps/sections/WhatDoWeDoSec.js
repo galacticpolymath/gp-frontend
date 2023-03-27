@@ -22,18 +22,19 @@ const WhatDoWeDoSec = () => {
           </span>
         </span>
       </section>
-      <section className="d-none d-lg-block ps-5 pe-5 mt-2 mt-md-4">
+      <section className="d-none d-xl-block ps-5 pe-5 mt-2 mt-md-4">
         <div className="d-flex flex-row whatDoWeDoSec ps-3 pe-3">
           {infoTxtsFirstSec.map((textsAndImg, index) => (
             <HireUsCardFirstSecMobile
               key={index}
               textsAndImg={textsAndImg}
               customCssClass='weMobileKnowledgeSec'
+              index={index}
             />
           ))}
         </div>
       </section>
-      <section className="d-none d-md-block d-lg-none ps-5 pe-5 mt-md-4 mt-lg-5">
+      <section className="d-none d-md-block d-xl-none ps-5 pe-5 mt-md-4 mt-lg-5">
         <div className="d-flex justify-content-center flex-column whatDoWeDoSec align-items-center ps-3 pe-3">
           <section className="d-flex flex-column">
             <section className="w-100 d-flex justify-content-center align-items-center position-relative">
@@ -41,11 +42,11 @@ const WhatDoWeDoSec = () => {
                 <HireUsCardFirstSecMobile
                   key={index}
                   textsAndImg={textsAndImg}
-                  customCssClass='weMobileKnowledgeSec'
+                  customCssClass='weMobileKnowledgeSec topLevel'
                 />
               ))}
             </section>
-            <section className="w-100 d-flex justify-content-center align-items-center">
+            <section className="w-100 d-flex justify-content-center align-items-center mt-md-5 mt-lg-3">
               <HireUsCardFirstSecMobile textsAndImg={infoTxtsFirstSec[2]} customCssClass='weMobileKnowledgeSec lastSec' />
             </section>
           </section>

@@ -1,10 +1,10 @@
 import Image from 'next/image';
 
-const HireUsCardFirstSecMobile = ({ textsAndImg, isWhatWillYouGetSec, customCssClass }) => {
+const HireUsCardFirstSecMobile = ({ textsAndImg, isWhatWillYouGetSec, customCssClass, index }) => {
   const { boldedTxt, unBoldedText, imgPath } = textsAndImg;
-  let imgSecClassName = 'pt-0 pt-sm-2 pt-md-0 mt-sm-2 mt-sm-0 d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch';
-  // ${(index === 2) ? "pe-4 pe-sm-0" : ""}
+  let imgSecClassName = 'pt-0 pt-sm-2 pt-md-0 d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch';
   let parentClassName = 'd-flex flex-sm-row flex-column HireUsCardFirstSecMobile';
+  let marginStartForTxtSec = (index !== 0) ? 'transformRightTxtSec' : '';
 
   if (customCssClass) {
     parentClassName += ` ${customCssClass}`;
@@ -13,19 +13,20 @@ const HireUsCardFirstSecMobile = ({ textsAndImg, isWhatWillYouGetSec, customCssC
   return (
     <section className={parentClassName}>
       <section className={imgSecClassName}>
-        <Image
-          src={imgPath}
-          width={75}
-          height={75}
-          alt="Galactic_PolyMath_First_Sec_Mobile_Info"
-          style={{
-            maxWidth: '100%',
-            height: 'auto',
-          }}
-        />
+        <div style={{ width: 65, height: 65 }} className='position-relative'>
+          <Image
+            src={imgPath}
+            fill
+            alt="Galactic_PolyMath_First_Sec_Mobile_Info"
+            style={{
+              maxWidth: '100%',
+              objectFit: 'contain',
+            }}
+          />
+        </div>
       </section>
-      <section className="ms-sm-4 ms-md-1 mt-3 mt-sm-0 ps-3 pe-3 ps-sm-0 pe-sm-0">
-        <span className="d-flex flex-column flex-sm-row d-sm-inline-block hireUsCardFirstSecTxt responsiveInfoTxt text-center text-sm-start pe-lg-2">
+      <section className={`ms-sm-4 ms-md-0 mt-3 mt-sm-0 px-md-2 px-xl-0 ps-3 pe-3 ps-sm-0 pe-sm-0 ${marginStartForTxtSec}`}>
+        <span className="d-flex flex-column flex-sm-row d-sm-inline-block hireUsCardFirstSecTxt responsiveInfoTxt text-center text-sm-start ps-xl-1">
           <span className='bolder text-dark fst-italic hireUsCardBoldedTxt'>
             {boldedTxt}
           </span>{' '}

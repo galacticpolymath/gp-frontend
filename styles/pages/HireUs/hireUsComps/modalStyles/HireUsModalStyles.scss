@@ -14,6 +14,10 @@ $modalBorderColor: #707070;
       line-height: $lineHeight;
       font-size: $spanDesktopFontSize;
     }
+
+    @media(max-width: 575px){
+      line-height: 19px;
+    }
   }
 }
 
@@ -129,8 +133,6 @@ $modalBorderColor: #707070;
 }
 
 .modalImgContainer {
-  // width: 95px;
-  // height: 95px;
   width: 85px;
   height: 85px;
   inset: auto 10px auto auto;
@@ -138,7 +140,7 @@ $modalBorderColor: #707070;
   @media (max-width: 575px) {
     width: 85px;
     height: 85px;
-    inset: auto 10px auto auto;
+    inset: -10px 10px auto auto;
   }
 }
 
