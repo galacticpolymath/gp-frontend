@@ -14,6 +14,7 @@ const MATT_LINKS =
     { link: 'https://github.com/drwilkins', icon: 'bi bi-github' },
     { link: 'https://www.linkedin.com/in/mattwilkinsphd/', icon: 'bi bi-linkedin' },
     { link: 'https://twitter.com/mattwilkinsbio', icon: 'bi bi-twitter' },
+    // change to matt's google scholar link
     { link: 'https://twitter.com/mattwilkinsbio', imgSrc: '/imgs/about/google_scholar.png' },
   ];
 
@@ -192,16 +193,23 @@ const AboutPage = () => (
         </div>
 
         <div className='row justify-content-center align-items-stretch'>
-          {alumni.map(({ name, position, description }, index) => (
-            <TeamMemberCard
-              key={`${index}_${name}`}
-              className='col-12 col-lg-6 col-xl-4'
-              name={name}
-              position={position}
-            >
-              {description}
-            </TeamMemberCard>
-          )
+          {alumni.map(({ name, position, description, imgSrc, links }, index) => {
+            const props = { className: 'col-12 col-lg-6 col-xl-4', name, position };
+
+            if (links) {
+              props['links'] = links;
+            }
+
+            if (imgSrc) {
+              props['imgSrc'] = imgSrc;
+            }
+
+            return (
+              <TeamMemberCard key={`${index}_${name}`} {...props}>
+                {description}
+              </TeamMemberCard>
+            );
+          }
           )}
         </div>
       </div>

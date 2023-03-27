@@ -18,5 +18,49 @@
         "name": "Arda Turkmen",
         "position": "Back End Developer",
         "description": "Arda is a senior at Vanderbilt University, majoring in Computer Science and Mathematics. He was key in developing our early website in 2019-2020 using Node.JS, React, and SQL managed through AWS."
+    },
+    {
+        "name": "Elaine Perignat, PhD",
+        "position": "Education Specialist",
+        "imgSrc": "/imgs/about/alumni/E_Perignat.webp",
+        "description": "A spirited over-thinker with genuine enthusiasm for teaching and learning. Elaine loves to paint, create, build, and play if it means getting her hands dirty. Literally.",
+        "links": [
+            {
+                "imgSrc": "/imgs/about/google_scholar.png", 
+                "link": "https://scholar.google.com/citations?user=G12SJQoAAAAJ&hl=en&oi=ao"
+            }           
+        ]
+    },
+    {
+        "name": "Carver Lee, MSc",
+        "position": "Graphic Design + Marketing Lead",
+        "imgSrc": "/imgs/about/alumni/Carver_Lee.webp",
+        "description": "A geologist, sailor, teacher, and designer all rolled into one, Carver believes that learning and creating are always the way forward.",
+        "links":[
+            {
+                "icon": "bi bi-linkedin",
+                "link": "https://www.linkedin.com/in/carverelee/"
+            },
+            {
+                "icon": "bi bi-twitter",
+                "link": "https://twitter.com/basalticcraver"
+            }
+        ]
+    },
+    {
+        "name": "Leigha Robinson",
+        "position": "LEAD DEVELOPER, JOBVIZ",
+        "imgSrc": "/imgs/about/alumni/Leigha_Robinson.webp",
+        "description": "A Software Developer with a love of music, gardening, and using technology to make the world a better place. Leigha deeply believes in TEAM: Together Everyone Achieves More!",
+        "links":[
+            {
+                "link": "https://github.com/leigharobinson?tab=repositories",
+                "icon": "bi bi-github"
+            },
+            {
+                "icon": "bi bi-linkedin",
+                "link": "https://www.linkedin.com/in/leigha-robinson/"
+            }
+        ]
     }
 ]
