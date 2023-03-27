@@ -50,8 +50,9 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
                 ...sectionDot,
                 willShowTitle: false,
             }
-        })
-        );
+        }));
+        
+        !willShowTitles && setWillShowTitles(true);
     }
 
     useEffect(() => {
@@ -66,6 +67,7 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
                     willShowTitle: false,
                 }
             }));
+            setWillShowTitles(false)
         }
 
         scrollSectionIntoView(sectionId);
@@ -74,7 +76,7 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
 
     return (
         <div className="position-fixed lessonSecsNavDotsListContainer d-flex">
-            <ul className='ps-0 mb-0 d-flex flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
+            <ul className='ps-0 mb-0  d-lg-flex flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
                 {sectionDots.map(({ isInView, SectionTitle, willShowTitle, sectionId }, index) => {
                     
                     return (
@@ -89,9 +91,9 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
                                 </span>
                             </li>
                             <li
-                                className='d-lg-none d-inline-flex justify-content-end'
+                                className='d-lg-none d-inline-flex justify-content-end position-relative'
                                 role='button'
-                                style={{ border: 'none', opacity:  willShowTitle ? 1 : 0, transition: "all .15s ease-in", height: "30px", 'width': '200px', transitionProperty: 'border-color, display' }}
+                                style={{ border: 'none', opacity:  willShowTitle ? 1 : 0, transition: "all .15s ease-in", height: "30px", 'width': '200px', transitionProperty: 'border-color, display', zIndex: willShowTitle ? 100 : -1 }}
                             >
                                 <span
                                     style={{ transition: "all .15s ease-in", backgroundColor: isInView ? '#d5e6f3' : 'white', border: '#363636 1px solid', transitionProperty: 'background-color, opacity, border', fontWeight: 400, padding: 6 }}

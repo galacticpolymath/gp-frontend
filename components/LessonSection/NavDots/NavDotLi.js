@@ -15,14 +15,6 @@ const NavDotLi = ({ index, isInView, SectionTitle, sectionId, setSectionDots, wi
     const iconStyles = { backgroundColor: isInView ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isInView ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" }
     const [willShowTitles, setWillShowTitles] = _willShowTitles;
 
-    const handleMouseOver = () => {
-        setWillShowTitles(true);
-    };
-
-    const handleMouseLeave = () => {
-        setWillShowTitles(false);
-    };
-
     const handleLiClick = isOnMobile => {
         if(isOnMobile){
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {

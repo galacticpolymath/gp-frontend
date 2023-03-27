@@ -43,6 +43,7 @@ const TeachIt = ({
     setIsDownloadModalInfoOn(true);
   };
 
+  /* col-12 col-xl-8 offset-xl-2 */
   return (
     <CollapsibleLessonSection
       index={index}
@@ -52,13 +53,15 @@ const TeachIt = ({
       _sectionDots={_sectionDots}
     >
       <div>
-        <div className='container row mx-auto mt-4'>
-          <div className='col-12 col-xl-8 offset-xl-2 bg-light-gray p-3 row align-items-center gap-3 gap-lg-0'>
-            <div className='fs-5 mb-2'>
-              <i className="bi-alarm fs-4 me-2"></i>
-              {Data.lessonDur}
+        <div className='container-fluid mt-4'>
+          <div className='row'>
+            <div className='col-12 bg-light-gray py-3 p-3 align-items-center'>
+              <div className='fs-5 mb-2'>
+                <i className="bi-alarm fs-4 me-2"></i>
+                {Data.lessonDur}
+              </div>
+              <p className='mb-0'>{Data.lessonPreface}</p>
             </div>
-            <p className='mb-0'>{Data.lessonPreface}</p>
           </div>
         </div>
         <div className="container row mx-auto py-4">
