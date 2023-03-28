@@ -11,11 +11,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer"
+import { useInViewport } from 'react-in-viewport';
 
-const useLessonElementInView = (_sectionDots, SectionTitle) => {
-    const { ref, inView } = useInView({ threshold: .1 });
-    // const inView = false
-    // const ref = useRef()
+// GOAL: using inViewport, check whether or not the element is in the viewport
+
+const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
+    const { inViewport: inView } = useInViewport(ref);    
     const h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
     const [sectionDots, setSectionDots] = _sectionDots;
 
@@ -38,7 +39,7 @@ const useLessonElementInView = (_sectionDots, SectionTitle) => {
 
     }, [inView]);
 
-    return { ref, inView, h2Id: h2Id }
+    return { inView, h2Id: h2Id }
 }
 
 export default useLessonElementInView;

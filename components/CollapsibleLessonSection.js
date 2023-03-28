@@ -2,8 +2,8 @@
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-max-props-per-line */
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
-import { useInView } from 'react-intersection-observer';
+import { useRef } from 'react';
+import useLessonElementInView from '../customHooks/useLessonElementInView';
 import Accordion from './Accordion';
 
 /**
@@ -19,29 +19,9 @@ const CollapsibleLessonSection = ({
   _sectionDots,
 
 }) => {
-  const { ref, inView } = useInView({ threshold: .2 });
-  const h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-  const [, setSectionDots] = _sectionDots;
-
-  useEffect(() => {
-    if (inView) {
-      setSectionDots(sectionDots => sectionDots.map(sectionDot => {
-        if ((sectionDot.sectionId === h2Id) && inView) {
-          return {
-            ...sectionDot,
-            isInView: true,
-          };
-        }
-
-        return {
-          ...sectionDot,
-          isInView: false,
-        };
-      }));
-    }
-
-  }, [inView]);
-
+  const ref = useRef();
+  const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
+  
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}

@@ -1,12 +1,14 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
+import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 // accordion-header lessonsPgSec
 // bg-primary-light w-100 text-left
 
 const Heading = ({ index, SectionTitle, _sectionDots }) => {
-  const { ref, h2Id } = useLessonElementInView(_sectionDots, SectionTitle);
+  const ref = useRef();
+  const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   return (
     <div
