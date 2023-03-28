@@ -10,6 +10,7 @@
 
 import { useRouter } from "next/router";
 import getNewUrl from "../../helperFns/getNewUrl";
+import Image from 'next/image'
 
 const PreviouslySelectedJobCategory = ({ index, isBrick, jobCategory }) => {
     const src = isBrick ? '/imgs/jobViz/jobVizBrick.jpg' : '/imgs/jobViz/branch-job-categories-search.jpg';
@@ -31,9 +32,15 @@ const PreviouslySelectedJobCategory = ({ index, isBrick, jobCategory }) => {
             <section className="d-flex flex-column flex-lg-row">
                 <section className="d-flex justify-content-center align-items-center justify-content-lg-start align-items-lg-stretch">
                     <div className="position-relative jobVizChainIconContainer">
-                        <img
-                            src={src} alt="Galactic_Polymath_JobViz_Icon_Search"
-                            className='jobVizIcon position-absolute'
+                        <Image
+                            src={src} 
+                            alt="Galactic_Polymath_JobViz_Icon_Search"
+                            className='jobVizIcon position-absolute '
+                            fill
+                            sizes="40px"
+                            style={{
+                                objectFit: 'contain',
+                            }}
                         />
                     </div>
                 </section>
