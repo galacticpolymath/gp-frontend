@@ -101,7 +101,7 @@ const JobViz = ({ vals }) => {
                             );
                         }
 
-                        return <JobCategoryChainCard key={index} jobCategory={jobCategory} index={index} />
+                        return <JobCategoryChainCard key={index} jobCategory={jobCategory} index={index} isSearchResultsChainPresent />
 
                     })}
                 </section>
