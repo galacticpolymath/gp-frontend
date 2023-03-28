@@ -13,6 +13,7 @@ import { useContext } from 'react';
 import { Card } from 'react-bootstrap';
 import { ModalContext } from "../../providers/ModalProvider";
 import DetailsBtn from './Buttons/Details';
+import Image from 'next/image'
 
 const jobsAllInfo = {
     "id": 1,
@@ -46,9 +47,14 @@ const JobCategoryChainCard = ({ jobCategory, index, isSearchResultsChainPresent 
             <Card.Body className="position-relative d-flex flex-column justify-content-end jobVizCardBody">
                 <section className="position-relative iconSec">
                     <div className="jobVizIconContainer rounded-circle shadow position-absolute">
-                        <img
+                        <Image
                             src="/imgs/jobViz/branch-job-categories-search.jpg"
                             alt="Galactic_Polymath_JobViz_Icon_Search"
+                            fill
+                            style={{
+                                objectFit: 'contain',
+                            }}
+                            sizes="130px"
                             className='jobVizIcon rounded-circle'
                         />
                     </div>

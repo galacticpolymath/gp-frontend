@@ -94,7 +94,7 @@ const JobViz = ({ vals }) => {
                                         height={30}
                                         style={{
                                             maxWidth: "100%",
-                                            height: "auto",
+                                            height: 14,
                                         }}
                                     />
                                 </div>
