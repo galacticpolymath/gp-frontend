@@ -76,7 +76,7 @@ const LessonsPage = ({ lessons }) => {
                     passHref
                     className='w-100 g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
                   >
-                    
+
                     <div className="position-relative overflow-hidden ">
                       {lesson.CoverImage && lesson.CoverImage.url && (
                         <Image
@@ -93,7 +93,7 @@ const LessonsPage = ({ lessons }) => {
                         />
                       )}
                     </div>
-                    <div className='pt-2 ps-sm-3 d-flex flex-column container'>
+                    <div className='pt-2 ps-sm-3 d-grid'>
                       <h3 className='w-light text-black mb-0'>{lesson.Title}</h3>
                       <p className='text-black'>{lesson.Subtitle}</p>
                       {/* d-flex flex-column d-sm-block */}
@@ -101,7 +101,7 @@ const LessonsPage = ({ lessons }) => {
                         <span className={`badge me-1 lessonSubject bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
                           {lesson.Section.overview.TargetSubject}
                         </span>
-                        <span className="badge rounded-pill bg-gray ml-3">
+                        <span style={{ whiteSpace: 'normal' }} className="badge rounded-pill bg-gray ml-3">
                           {`${lesson.Section.overview.GradesOrYears}: ${lesson.Section.overview.ForGrades}`}
                         </span>
                       </section>
