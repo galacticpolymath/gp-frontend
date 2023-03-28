@@ -80,14 +80,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }, [inView])
 
-  const handleScroll = _ => {
-    console.log("The user is scrolling.")
-  }
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true })
-  }, [])
-
   return (
     <Layout>
       {/* selectedLessonPg */}
