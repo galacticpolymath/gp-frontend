@@ -44,7 +44,6 @@ const LessonsPage = ({ lessons }) => {
               <div onClick={handleJobVizCardClick} className="pointer g-col-12 g-col-sm-10 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg">
                 <section className="d-flex flex-column flex-sm-row w-100">
                   <section className="imgSec d-flex justify-content-center ">
-                    {/* put the image for jobViz here */}
                     <JobVizIcon />
                   </section>
                   <section className="d-flex justify-content-center align-items-left flex-column ps-3">
