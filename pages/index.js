@@ -97,6 +97,7 @@ export default function Home() {
               </div>
               <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 316 }}>
                 <Image
+                  priority
                   className='border'
                   src={NewReleaseImage.src}
                   fill
@@ -107,6 +108,7 @@ export default function Home() {
               </div>
               <div className="position-relative d-none d-lg-block d-xl-none" style={{ height: 442 }}>
                 <Image
+                  priority
                   className='border'
                   src={NewReleaseImage.src}
                   fill
@@ -117,6 +119,7 @@ export default function Home() {
               </div>
               <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 222 }}>
                 <Image
+                  priority
                   className='border'
                   src={NewReleaseImage.src}
                   fill
@@ -127,6 +130,7 @@ export default function Home() {
               </div>
               <div className="position-relative d-none d-xl-block" style={{ height: 630 }}>
                 <Image
+                  priority
                   className='border'
                   src={NewReleaseImage.src}
                   fill
@@ -138,6 +142,7 @@ export default function Home() {
               <section className='row d-flex d-sm-none justify-content-center mt-2'>
                 <div className="position-relative d-block d-sm-none" style={{ height: 125, maxWidth: 300, width: '100%' }}>
                   <Image
+                    priority
                     src={NewReleaseImage.src}
                     fill
                     style={{ objectFit: 'contain' }}
@@ -153,8 +158,8 @@ export default function Home() {
                 <div className="d-flex justify-content-center align-items-center mt-3">
                   <h5 className='fw-light d-sm-none'>Sponsor:</h5>
                 </div>
-                <div className="position-relative d-none d-lg-block" style={{ height: 175, width: 175 }}>
-                  <a href="https://www.nsf.gov/">
+                <a href="https://www.nsf.gov/">
+                  <div className="position-relative d-none d-lg-block" style={{ height: 175, width: 175 }}>
                     <Image
                       src={NSFImage.src}
                       fill
@@ -162,8 +167,8 @@ export default function Home() {
                       sizes="175px"
                       alt="National Science Foundation"
                     />
-                  </a>
-                </div>
+                  </div>
+                </a>
                 <a href="https://www.nsf.gov/">
                   <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 125, width: 125 }}>
                     <Image
@@ -175,8 +180,8 @@ export default function Home() {
                     />
                   </div>
                 </a>
-                <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 95, width: 95 }}>
-                  <a href="https://www.nsf.gov/">
+                <a href="https://www.nsf.gov/">
+                  <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 95, width: 95 }}>
                     <Image
                       src={NSFImage.src}
                       fill
@@ -184,10 +189,10 @@ export default function Home() {
                       sizes="(max-width: 767px) 95px, 175px"
                       alt="National Science Foundation"
                     />
-                  </a>
-                </div>
-                <div className="position-relative d-block d-sm-none" style={{ height: 65, width: 65 }}>
-                  <a href="https://www.nsf.gov/">
+                  </div>
+                </a>
+                <a href="https://www.nsf.gov/">
+                  <div className="position-relative d-block d-sm-none" style={{ height: 65, width: 65 }}>
                     <Image
                       src={NSFImage.src}
                       fill
@@ -195,8 +200,8 @@ export default function Home() {
                       style={{ objectFit: 'contain' }}
                       alt="National Science Foundation"
                     />
-                  </a>
-                </div>
+                  </div>
+                </a>
               </section>
             </div>
           </div>
