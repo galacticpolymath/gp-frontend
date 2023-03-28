@@ -51,7 +51,6 @@ const SectionTitlesUl = ({ sectionDots, willShowTitles, goToSection }) => {
             </ul>
             <ul className='ps-0 d-flex d-lg-none flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
                 {sectionDots.map(({ isInView, SectionTitle, willShowTitle, sectionId }, index) => {
-                    console.log('sectionId: ', sectionId)
                     const isMaterialsTeachingSecId = sectionId === 'teaching_materials'
                     const liBorderColor = !isInView ? 'rgb(190, 190, 190)' : '#363636 1px solid !important'
                     const backgroundColor = isInView ? (isMaterialsTeachingSecId ? '#FEEAF8' : '#d5e6f3') : 'white'

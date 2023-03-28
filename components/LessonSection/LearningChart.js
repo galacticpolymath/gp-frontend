@@ -24,7 +24,8 @@ const LearningChart = ({
       <div className="chartContainer position-relative w-100" style={{ height: '500px', maxHeight: '80vw' }}>
         <Image
           src={Badge.url}
-          layout='fill'
+          fill
+          sizes="(max-width: 575px) 521px, (max-width: 767px) 486px, (max-width: 991px) 550.5px, (max-width: 1199px) 594.992px, 835px"
           style={{ objectFit: 'contain' }}
           alt="Learning Standards Chart"
         />

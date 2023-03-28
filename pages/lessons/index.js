@@ -89,6 +89,7 @@ const LessonsPage = ({ lessons }) => {
                             width: "100%",
                             height: "auto",
                           }}
+                          priority
                         />
                       )}
                     </div>
