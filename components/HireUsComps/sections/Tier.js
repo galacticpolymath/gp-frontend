@@ -62,7 +62,13 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
                     {/* <Img src={img} alt={`${tierName}_img`} className="tierImg" height={120} /> */}
                     <div className="position-relative" style={{ height: "120px", width: "120px" }}>
-                        <Image src={img} alt={`${tierName}_img`} className='teirImg' fill />
+                        <Image
+                            src={img}
+                            alt={`${tierName}_img`}
+                            className='teirImg'
+                            fill
+                            sizes="120px"
+                        />
                     </div>
                 </section>
                 <section className="mt-4">
@@ -108,8 +114,14 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                     </section>
                     <section className="productSec">
                         <div className={`imgProductContainer position-relative pointer ${tierName}_style`} style={{ height: 170 }}>
-                            {/* <Img src={productImg} alt={`${tierName}_ProductImg`} onClick={handleImgClick} className={`tierProductImg pointer ${tierName}_style` } height={170} /> */}
-                            <Image src={productImg} fill alt={`${tierName}_ProductImg`} onClick={handleImgClick} style={{ objectFit: 'contain' }} />
+                            <Image
+                                src={productImg}
+                                fill
+                                alt={`${tierName}_ProductImg`}
+                                onClick={handleImgClick}
+                                style={{ objectFit: 'contain' }}
+                                sizes="(max-width: 575px) 490px, (max-width: 767px) 567px, (max-width: 991px) 504px, 24vw"
+                            />
                         </div>
                         <section className="mt-4 text-sm-start text-center">
                             <a href={link} target="_blank" className="text-dark text-decoration-underline  fst-italic fw200 underline-less-thick">
