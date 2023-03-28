@@ -74,10 +74,10 @@ const LessonsPage = ({ lessons }) => {
                     key={lesson.locale + lesson.id}
                     href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
                     passHref
-                    className='w-100 g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow'
+                    className='w-100 g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
                   >
                     
-                    <div className="position-relative overflow-hidden">
+                    <div className="position-relative overflow-hidden ">
                       {lesson.CoverImage && lesson.CoverImage.url && (
                         <Image
                           src={lesson.CoverImage.url}
@@ -93,7 +93,7 @@ const LessonsPage = ({ lessons }) => {
                         />
                       )}
                     </div>
-                    <div className='pt-2 ps-sm-3 d-grid'>
+                    <div className='pt-2 ps-sm-3 d-flex flex-column container'>
                       <h3 className='w-light text-black mb-0'>{lesson.Title}</h3>
                       <p className='text-black'>{lesson.Subtitle}</p>
                       {/* d-flex flex-column d-sm-block */}
