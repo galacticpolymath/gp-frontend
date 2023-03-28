@@ -209,22 +209,6 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                     </div>
                                 </>
                             }
-                            {(pics && !isCardOnly) &&
-                                <div className="w-100">
-                                    <section className="w-100 d-flex flex-column flex-sm-row justify-content-center align-items-center">
-                                        {
-                                            pics.map(({ path, alt }, index) => {
-                                                return (
-                                                    <div key={index} className="carouselImgContainer position-relative">
-                                                        <Image src={path} alt={alt} fill style={{ objectFit: 'contain' }} />
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </section>
-                                </div>
-                            }
-                            {/* <div> */}
                             {(userInputs && !isCardOnly) &&
                                 <section className={`d-flex flex-column justify-content-center align-items-center pb-1 mt-4 bottom-0 start-50 end-50 mt-sm-3 ${customBulletPtsSecCss}`}>
                                     <div className="position-relative">
@@ -251,7 +235,6 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                     </div>
                                 </section>
                             }
-                            {/* </div> */}
                         </Card.Body>
                     </Card>
                 </section>

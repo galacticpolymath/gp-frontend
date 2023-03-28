@@ -58,6 +58,7 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
               alt="Galactic_PolyMath_HireUs_Img"
               className='w-100 h-100'
               style={{ objectFit: 'contain' }}
+              sizes="(max-width: 575px) 148px, (max-width: 991px) 118px, 68px"
               fill
             />
           </div>
