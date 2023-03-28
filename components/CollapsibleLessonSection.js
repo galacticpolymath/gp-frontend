@@ -4,7 +4,6 @@
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-
 import Accordion from './Accordion';
 
 /**
@@ -26,7 +25,6 @@ const CollapsibleLessonSection = ({
 
   useEffect(() => {
     if (inView) {
-      console.log('sectionDots hey there collapsible: ', sectionDots);
       setSectionDots(sectionDots => sectionDots.map(sectionDot => {
         if ((sectionDot.sectionId === h2Id) && inView) {
           return {
@@ -52,7 +50,14 @@ const CollapsibleLessonSection = ({
       buttonClassName="btn btn-primary-light w-100 text-left"
       button={(
         <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-1'>
-          <h2 ref={ref} id={h2Id} className='m-0' style={{ width: '100%', overflowWrap: 'break-word' }}>{index && `${index}. `}{SectionTitle}</h2>
+          <h2
+            // ref={ref}
+            // id={h2Id}
+            className='m-0'
+            style={{ width: '100%', overflowWrap: 'break-word' }}
+          >
+            {index && `${index}. `}{SectionTitle}
+          </h2>
           <i className="fs-3 bi-chevron-down"></i>
           <i className="fs-3 bi-chevron-up"></i>
         </div>

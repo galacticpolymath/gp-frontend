@@ -8,10 +8,8 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import { format } from 'date-fns';
-import Image from 'next/image'
 import Layout from '../../../components/Layout';
 import RichText from '../../../components/RichText';
-import LessonSection, { NUMBERED_SECTIONS } from '../../../components/LessonSection';
 import LocDropdown from '../../../components/LocDropdown';
 import { useEffect, useState } from 'react';
 import ParentLessonSection from '../../../components/LessonSection/ParentLessonSection';
@@ -64,14 +62,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }
   const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
 
-  const handleDotClick = sectionId => {
-    const targetSection = document.getElementById(sectionId);
-
-    if (targetSection) {
-      targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }
-
   useEffect(() => {
     if (inView) {
       setSectionDots(sectionDots => sectionDots.map(sectionDot => {
@@ -89,6 +79,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
       }));
     }
   }, [inView])
+
+  const handleScroll = _ => {
+    console.log("The user is scrolling.")
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+  }, [])
 
   return (
     <Layout>
@@ -112,7 +110,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
           <h1 ref={ref} id="lessonTitleId" className="mt-4">{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
           {lesson.CoverImage && lesson.CoverImage.url && (
-            <img 
+            <img
               src={lesson.CoverImage.url}
               alt={lesson.Subtitle}
             />
