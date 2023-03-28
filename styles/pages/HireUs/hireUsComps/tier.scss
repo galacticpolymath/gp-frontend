@@ -34,17 +34,15 @@ $desktopFontSizeTierStatus: 24px;
     }
   }
 
-
-  @media(min-width: 1200px){    
+  @media (min-width: 1200px) {
     .tierDefaultStyles:first-child,
     .tierDefaultStyles:nth-child(2),
-    .tierDefaultStyles:last-child{
+    .tierDefaultStyles:last-child {
       width: 45%;
       width: 45%;
       max-width: 520px;
     }
   }
-
 
   .tierDefaultStyles:nth-last-child(-n + 2) {
     // margin-left: 20px;
@@ -81,7 +79,7 @@ $desktopFontSizeTierStatus: 24px;
 
     height: 60px;
 
-    @media(min-width: 1200px){
+    @media (min-width: 1200px) {
       height: 70px;
     }
 
@@ -144,7 +142,6 @@ $desktopFontSizeTierStatus: 24px;
   }
 }
 
-
 .tierCardBody {
   position: relative;
 
@@ -160,18 +157,16 @@ $desktopFontSizeTierStatus: 24px;
 }
 
 .priceSection {
-  
+  margin-top: auto;
+
   @media (min-width: 768px) {
-    margin-top: auto;
+    position: absolute;
     bottom: -10px;
-    // transform: translateY(40px);
+    left: 15px;
   }
 }
 
 .tierProductImg {
-  @media (max-width: 1199px) {
-    // max-width: none;
-  }
   @media (min-width: 1200px) {
     height: 170px;
   }
@@ -254,14 +249,13 @@ img {
   }
 }
 
-
-.tierDefaultStyles p{
-  @media(min-width: 768px){
-    line-height: 28px;;
+.tierDefaultStyles p {
+  @media (min-width: 768px) {
+    line-height: 28px;
   }
 }
 
-@media(min-width: 768px){
+@media (min-width: 768px) {
   .exampleProductTxt,
   .tierDefaultStyles p,
   .tierDefaultStyles td,

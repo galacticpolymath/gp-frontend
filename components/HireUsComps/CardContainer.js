@@ -113,13 +113,18 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                 <div className="w-100">
                                     <section className="w-100 d-flex flex-column flex-sm-row justify-content-center align-items-center">
                                         {
-                                            pics.map(({ path, alt }, index) => {
-                                                return (
-                                                    <div key={index} className="carouselImgContainer position-relative">
-                                                        <Image src={path} alt={alt} fill style={{ objectFit: 'contain' }} />
-                                                    </div>
-                                                )
-                                            })
+                                            pics.map(({ path, alt }, index) => (
+                                                <div key={index} className="carouselImgContainer position-relative">
+                                                    <Image
+                                                        src={path}
+                                                        alt={alt}
+                                                        fill
+                                                        sizes="(max-width: 575px) 125px, (max-width: 767px) 130px, 140px"
+                                                        style={{ objectFit: 'contain' }}
+                                                    />
+                                                </div>
+                                            )
+                                            )
                                         }
                                     </section>
                                 </div>
@@ -211,7 +216,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                             pics.map(({ path, alt }, index) => {
                                                 return (
                                                     <div key={index} className="carouselImgContainer position-relative">
-                                                        <Image src={path} alt={alt} fill style={{ objectFit: 'contain' }} /> 
+                                                        <Image src={path} alt={alt} fill style={{ objectFit: 'contain' }} />
                                                     </div>
                                                 )
                                             })

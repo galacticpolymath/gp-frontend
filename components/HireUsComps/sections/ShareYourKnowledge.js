@@ -30,6 +30,7 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
                         alt="Galactic_PolyMath_First_Sec_Mobile_Info"
                         style={{ objectFit: "contain" }}
                         className="rounded"
+                        sizes="(max-width: 575px) 320px, 500px"
                         fill
                     />
                 </div>
@@ -88,7 +89,14 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
             <section className="w-100 d-flex flex-md-column-reverse flex-xl-row">
                 <section className="d-flex justify-content-center shareYourKnowledgeImgSec">
                     <div className='shareYourKnowledgeImgContainer classRoom position-relative'>
-                        <Image src="/imgs/classroom.jpg" fill alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="h-100 w-100 rounded" style={{ objectFit: "contain" }} />
+                        <Image
+                            src="/imgs/classroom.jpg"
+                            fill
+                            alt="Galactic_PolyMath_First_Sec_Mobile_Info"
+                            className="h-100 w-100 rounded"
+                            sizes="(max-width: 575px) 320px, 500px"
+                            style={{ objectFit: "contain" }}
+                        />
                     </div>
                 </section>
                 <section className="d-flex flex-column justify-content-center align-items-center mt-md-5 mt-xl-3 ms-xl-5 mb-md-4 mt-xl-0 lessonInfoSec">

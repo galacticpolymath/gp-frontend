@@ -17,6 +17,7 @@ const HireUsCardFirstSecMobile = ({ textsAndImg, isWhatWillYouGetSec, customCssC
           <Image
             src={imgPath}
             fill
+            sizes="65px"
             alt="Galactic_PolyMath_First_Sec_Mobile_Info"
             style={{
               maxWidth: '100%',

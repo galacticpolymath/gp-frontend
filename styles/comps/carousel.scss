@@ -119,9 +119,6 @@ $feedbackTxtFontSizeDesktop: 24px;
 .autoCarouselSlider {
   white-space: nowrap;
   transition: ease 1000ms;
-  // border: solid pink;
-  // margin: 0 50px;
-  // width: fit-content;
 }
 
 .carouselTxt {
@@ -386,12 +383,12 @@ $feedbackTxtFontSizeDesktop: 24px;
   width: 125px;
   height: 125px;
 
-  @media(min-width: 576px){
+  @media (min-width: 576px) {
     width: 130px;
     height: 130px;
   }
 
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     width: 140px;
     height: 140px;
   }
@@ -400,6 +397,18 @@ $feedbackTxtFontSizeDesktop: 24px;
 .carouselImgContainer:not(:first-child) {
   @media (min-width: 1200px) {
     margin-left: 85px;
+  }
+}
+
+.carouselImgContainer:nth-child(4) {
+  width: 260px;
+
+  @media(min-width: 576px){
+    width: 220px;
+  }
+
+  @media (min-width: 992px) {
+    width: 280px;
   }
 }
 
@@ -526,13 +535,13 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media(min-width: 576px) and (max-width: 767px){
+  @media (min-width: 576px) and (max-width: 767px) {
     > section > section > span > span {
       inset: auto -40px -60px auto;
     }
   }
 
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     > section > section > span > span {
       inset: auto -10px -60px auto;
     }
@@ -547,8 +556,8 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media(max-width: 575px){
-    > section > section:last-of-type  {
+  @media (max-width: 575px) {
+    > section > section:last-of-type {
       transform: translateY(-5px);
     }
   }
@@ -598,12 +607,6 @@ $feedbackTxtFontSizeDesktop: 24px;
       width: 120px;
     }
   }
-
-  .carouselImgContainer:nth-last-of-type(2) {
-    img {
-      width: 167px;
-    }
-  }
 }
 
 .carouselImgContainer:first-of-type {
@@ -620,9 +623,8 @@ $feedbackTxtFontSizeDesktop: 24px;
   }
 }
 
-.carouselImgContainer{
-  @media(max-width: 575px){
-    
+.carouselImgContainer {
+  @media (max-width: 575px) {
   }
 }
 
@@ -654,9 +656,6 @@ $feedbackTxtFontSizeDesktop: 24px;
 
 .starsContainer {
   height: fit-content;
-  // @media (min-width: 768px) and (max-width: 1299px) {
-  //   transform: translateX(25px);
-  // }
 }
 
 .bulletPtsTeachersAndStudents {
@@ -833,7 +832,7 @@ $feedbackTxtFontSizeDesktop: 24px;
       > span {
         left: 10px;
         transform: translateY(-15px);
-        
+
         @media (max-width: 768px) and (min-width: 576px) {
           transform: translateY(-25px);
         }
@@ -968,8 +967,8 @@ $feedbackTxtFontSizeDesktop: 24px;
   }
 }
 
-.grantReviewsAutoCarouselContainer{
-  @media(min-width: 1200px){
+.grantReviewsAutoCarouselContainer {
+  @media (min-width: 1200px) {
     max-width: 810px;
     // border: solid pink;
   }
@@ -995,7 +994,7 @@ $feedbackTxtFontSizeDesktop: 24px;
         // transform: translateY(7px) ;
       }
 
-      @media(max-width: 575px){
+      @media (max-width: 575px) {
         transform: translateY(-5px);
         line-height: 15px;
       }
