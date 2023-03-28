@@ -42,10 +42,6 @@ const CollapsibleLessonSection = ({
 
   }, [inView]);
 
-  useEffect(() => {
-    // console.log("useInView ref: ", ref.current);
-  });
-
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}

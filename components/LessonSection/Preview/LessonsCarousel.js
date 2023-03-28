@@ -37,7 +37,6 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
     const [controlDots, setControlDots] = useState(mediaItemsSorted);
 
     const handleNextBtnClick = () => {
-        console.log('next btn was clicked: ');
         const newItemIndexOnUI = currentIndex + 1
         setCurrentIndex(newItemIndexOnUI);
         setControlDots(controlDots => {
@@ -108,7 +107,7 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
                 </button>
             </section>
             <section className="d-flex justify-content-center align-items-center my-4">
-                <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
+                <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
                     {controlDots.map(({ isVisible }, index) => (<li
                         key={index}
                         className='d-inline-block'
@@ -123,7 +122,7 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
                 </ul>
             </section>
             <section>
-                <ul className='ps-0 mb-0 d-flex flex-wrap justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
+                <ul className='ps-0 mb-0 d-flex flex-wrap justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
                     {controlDots.map((item, index) => {
                         const { type, title, mainLink, isVisible } = item;
 

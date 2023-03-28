@@ -1,16 +1,10 @@
--/* eslint-disable quotes */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable no-unexpected-multiline */
-/* eslint-disable semi */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import.meta;
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/jsx-indent-props */
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable quotes */
+/* eslint-disable semi */
+/* eslint-disable indent */
 import Hero from '../../components/Hero';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import Layout from '../../components/Layout';
@@ -18,7 +12,7 @@ import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
 import PreviouslySelectedJobCategory from '../../components/JobViz/PreviouslySelectedJobCategory';
 import SearchInputSec from '../../components/JobViz/SearchInputSec';
-import Image from "next/image";
+import Image from 'next/image';
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';
@@ -128,6 +122,7 @@ const JobViz = ({ vals }) => {
                                 objectFit: 'fill',
                             }}
                             size="(max-width: 575px) 488.75px, (max-width: 767px) 651.945px, (max-width: 991px) 842.344px, (max-width: 1199px) 1019.15px, 1025px"
+                            priority
                         />
                     </div>
                 </section>
