@@ -22,6 +22,7 @@ const TeamMemberCard = ({
               alt="Team_member_image"
               fill
               style={{ objectFit: 'contain' }}
+              sizes="130px"
               className="rounded-circle shadow"
             />
           </div>
@@ -41,7 +42,18 @@ const TeamMemberCard = ({
                 href={link}
                 target="_blank"
               >
-                {icon ? <i className={icon} /> : <div style={{ width: 30, height: 30 }} className='position-relative'><Image fill style={{ objectFit: 'cover' }} src={imgSrc} alt='Galactic_Polymath_Icon_Link' /></div>}
+                {icon ?
+                  <i className={icon} />
+                  :
+                  <div style={{ width: 30, height: 30 }} className='position-relative'>
+                    <Image
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      src={imgSrc}
+                      alt='Galactic_Polymath_Icon_Link'
+                      sizes="30px"
+                    />
+                  </div>}
               </a>
             ))}
           </div>

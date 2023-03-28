@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-indent-props */
 import Hero from '../components/Hero';
 import Layout from '../components/Layout';
 import HeroImage from '../assets/img/city_network.jpg';
@@ -7,6 +8,7 @@ import productTeam from '../data/AboutPg/productTeam.json';
 import devTeam from '../data/AboutPg/devTeam.json';
 import alumni from '../data/AboutPg/alumni.json';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const MATT_LINKS =
   [
@@ -47,7 +49,16 @@ const AboutPage = () => (
         </div>
 
         <div className='pb-4 px-5 text-center'>
-          <p className='fs-4 fw-bold'>Learn how we can level up your outreach in [TODO: link hireus]</p>
+          <p className='fs-4 fw-bold'>Learn how we can level up your outreach in
+            <Link
+              style={{ color: 'skyblue' }}
+              className='underline-on-hover mx-1'
+              href='/hire-us'
+            >
+              HIRE US
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </div>
@@ -67,13 +78,14 @@ const AboutPage = () => (
             alt="Our_Vision_Galactic_Polymath"
             style={{ objectFit: 'contain', maxHeight: '100%', minHeight: '100%' }}
             className="w-100 h-100"
+            sizes="(max-width: 575px) 521px, (max-width: 767px) 486px, (max-width: 991px) 594.594px, (max-width: 1199px) "
             src="/imgs/about/our_vision.jpeg"
           />
         </div>
       </div>
-      <div className='col-12 col-lg-6 mt-2'>
-        <h3 className='fw-light'>Our Vision</h3>
-        <p>We are a{' '}
+      <div className='col-12 col-lg-6 mt-3 mt-sm-2'>
+        <h3 className='fw-light text-center text-sm-start'>Our Vision</h3>
+        <p className="text-center text-sm-start mt-2">We are a{' '}
           <a
             target='_blank'
             rel='noopener noreferrer'
