@@ -18,7 +18,7 @@ import { useInViewport } from 'react-in-viewport';
 const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
     const { inViewport: inView } = useInViewport(ref);    
     const h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-    const [sectionDots, setSectionDots] = _sectionDots;
+    const [, setSectionDots] = _sectionDots;
 
     useEffect(() => {
         if (inView) {
