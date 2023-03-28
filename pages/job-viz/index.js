@@ -113,11 +113,15 @@ const JobViz = ({ vals }) => {
             }
             <section className="jobCategoriesAndBracketSec d-flex justify-content-center align-items-center flex-column pb-5 mb-5">
                 <section className="bracketSec d-flex justify-content-center align-items-center">
-                    <div className="bracketImgContainer">
-                        <img
+                    <div style={{ height: 70 }} className="bracketImgContainer position-relative w-100">
+                        <Image
                             src="/imgs/jobViz/bracket_search.png"
                             alt="Galactic_Polymath_JobViz_Icon_Search"
-                            className='w-100 h-100'
+                            fill
+                            style={{
+                                objectFit: 'fill',
+                            }}
+                            size="(max-width: 575px) 488.75px, (max-width: 767px) 651.945px, (max-width: 991px) 842.344px, (max-width: 1199px) 1019.15px, 1025px"
                         />
                     </div>
                 </section>

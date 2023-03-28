@@ -17,6 +17,7 @@ const JobVizIcon = ({ isOnJobVizPg }) => {
                 className="rounded-circle"
                 fill
                 sizes={sizes}
+                priority={isOnJobVizPg}
             />
         </div>
     )
