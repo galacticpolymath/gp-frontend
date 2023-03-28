@@ -9,11 +9,13 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer"
 
 const useLessonElementInView = (_sectionDots, SectionTitle) => {
     const { ref, inView } = useInView({ threshold: .1 });
+    // const inView = false
+    // const ref = useRef()
     const h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
     const [sectionDots, setSectionDots] = _sectionDots;
 

@@ -8,6 +8,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import { format } from 'date-fns';
+import Image from 'next/image';
 import Layout from '../../../components/Layout';
 import RichText from '../../../components/RichText';
 import LocDropdown from '../../../components/LocDropdown';

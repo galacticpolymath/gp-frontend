@@ -40,6 +40,7 @@ export default function Home() {
               alt="Two people working on a diagram together"
               fill
               className='d-block h-100'
+              sizes='(max-width: 991px) 648px, (max-width: 1199px) 426px, 713px'
               style={{ objectFit: 'contain' }}
             />
           </div>
@@ -49,6 +50,7 @@ export default function Home() {
               alt="Two people working on a diagram together"
               fill
               className='d-block h-100'
+              sizes='(max-width: 767px) 468px, 713px'
               style={{ objectFit: 'contain' }}
             />
           </div>
@@ -58,6 +60,7 @@ export default function Home() {
               alt="Two people working on a diagram together"
               fill
               className='d-block h-100 border'
+              sizes='(max-width: 575px) 300px, 713px'
               style={{ objectFit: 'fill' }}
             />
           </div>
@@ -87,7 +90,8 @@ export default function Home() {
           <div className='bg-white p-4 row align-items-center rounded-3 d-flex d-sm-flex flex-column flex-sm-row'>
             <div className='col-sm-9 text-center'>
               <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-xl-block w-25'>New release!</div>
-              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-none d-md-block d-xl-none w-50'>New release!</div>
+              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-md-block d-xl-none w-50'>New release!</div>
+              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-sm-block d-md-none d-xl-none w-75'>New release!</div>
               <div className="w-100 d-flex d-sm-none justify-content-center align-items-center">
                 <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
               </div>
@@ -96,6 +100,7 @@ export default function Home() {
                   className='border'
                   src={NewReleaseImage.src}
                   fill
+                  sizes="(max-width: 991px) 452.25px, 902.25px"
                   style={{ objectFit: 'contain' }}
                   alt="I Like That! How perception, emotion, and cognition shape our preferences"
                 />
@@ -105,6 +110,7 @@ export default function Home() {
                   className='border'
                   src={NewReleaseImage.src}
                   fill
+                  sizes="(max-width: 991px) 632.25px, 902.25px"
                   style={{ objectFit: 'contain' }}
                   alt="I Like That! How perception, emotion, and cognition shape our preferences"
                 />
@@ -114,6 +120,7 @@ export default function Home() {
                   className='border'
                   src={NewReleaseImage.src}
                   fill
+                  sizes="(max-width: 767px) 317.25px, 902.25px"
                   style={{ objectFit: 'contain' }}
                   alt="I Like That! How perception, emotion, and cognition shape our preferences"
                 />
@@ -124,15 +131,17 @@ export default function Home() {
                   src={NewReleaseImage.src}
                   fill
                   style={{ objectFit: 'contain' }}
+                  sizes="902.25px"
                   alt="I Like That! How perception, emotion, and cognition shape our preferences"
                 />
               </div>
               <section className='row d-flex d-sm-none justify-content-center mt-2'>
-                <div className="position-relative d-block d-sm-none border" style={{ height: 125, maxWidth: 300, width: '100%' }}>
+                <div className="position-relative d-block d-sm-none" style={{ height: 125, maxWidth: 300, width: '100%' }}>
                   <Image
                     src={NewReleaseImage.src}
                     fill
-                    style={{ objectFit: 'fill' }}
+                    style={{ objectFit: 'contain' }}
+                    sizes="(max-width: 575px) 300px, 902.25px"
                     alt="I Like That! How perception, emotion, and cognition shape our preferences"
                   />
                 </div>
@@ -150,26 +159,29 @@ export default function Home() {
                       src={NSFImage.src}
                       fill
                       style={{ objectFit: 'contain' }}
+                      sizes="175px"
                       alt="National Science Foundation"
                     />
                   </a>
                 </div>
-                <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 125, width: 125 }}>
-                  <a href="https://www.nsf.gov/">
+                <a href="https://www.nsf.gov/">
+                  <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 125, width: 125 }}>
                     <Image
                       src={NSFImage.src}
                       fill
+                      sizes="(max-width: 991px) 125px, 175px"
                       style={{ objectFit: 'contain' }}
                       alt="National Science Foundation"
                     />
-                  </a>
-                </div>
+                  </div>
+                </a>
                 <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 95, width: 95 }}>
                   <a href="https://www.nsf.gov/">
                     <Image
                       src={NSFImage.src}
                       fill
                       style={{ objectFit: 'contain' }}
+                      sizes="(max-width: 767px) 95px, 175px"
                       alt="National Science Foundation"
                     />
                   </a>
@@ -179,6 +191,7 @@ export default function Home() {
                     <Image
                       src={NSFImage.src}
                       fill
+                      sizes="(max-width: 575px) 65px, 175px"
                       style={{ objectFit: 'contain' }}
                       alt="National Science Foundation"
                     />
@@ -273,32 +286,40 @@ export default function Home() {
                 <Image
                   fill
                   src={ScientificAmericanImage.src}
+                  sizes="646.5px"
                   alt="Why We Didn't Know that Female Birds Sing, Scientific American."
                   style={{ objectFit: 'contain' }}
+                  priority
                 />
               </div>
               <div className="position-relative d-none d-lg-block d-xl-none" style={{ height: 430, width: '100%' }}>
                 <Image
                   fill
                   src={ScientificAmericanImage.src}
+                  sizes="(max-width: 1199px) 466.5px, 646.5px"
                   alt="Why We Didn't Know that Female Birds Sing, Scientific American."
                   style={{ objectFit: 'contain' }}
+                  priority
                 />
               </div>
               <div className="position-relative d-none d-sm-block d-lg-none d-xl-none ps-0" style={{ height: 380, width: '100%', maxWidth: 600 }}>
                 <Image
                   fill
+                  sizes="(max-width: 767px) 486px, (max-width: 991px) 600px, 646.5px"
                   src={ScientificAmericanImage.src}
                   alt="Why We Didn't Know that Female Birds Sing, Scientific American."
                   style={{ objectFit: 'fill' }}
+                  priority
                 />
               </div>
               <div className="position-relative d-block d-sm-none ps-0" style={{ height: 225, width: '100%', maxWidth: 300 }}>
                 <Image
                   fill
                   src={ScientificAmericanImage.src}
+                  sizes="(max-width: 575px) 300px, 646.5px"
                   alt="Why We Didn't Know that Female Birds Sing, Scientific American."
                   style={{ objectFit: 'fill' }}
+                  priority
                 />
               </div>
             </div>

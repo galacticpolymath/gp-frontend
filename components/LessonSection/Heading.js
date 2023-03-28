@@ -10,14 +10,14 @@ const Heading = ({ index, SectionTitle, _sectionDots }) => {
 
   return (
     <div
-      // ref={ref}
+      ref={ref}
       className='lessonsStandardsSec text-left bg-primary-light mb-4'
     >
       <div>
         <div>
           <h2
             className="SectionHeading mb-0"
-            // id={h2Id}
+            id={h2Id}
           >
             <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-3'>
               {index && `${index}. `}{SectionTitle}

@@ -28,6 +28,7 @@ const LearningChart = ({
           sizes="(max-width: 575px) 521px, (max-width: 767px) 486px, (max-width: 991px) 550.5px, (max-width: 1199px) 594.992px, 835px"
           style={{ objectFit: 'contain' }}
           alt="Learning Standards Chart"
+          priority
         />
       </div>
       <Accordion

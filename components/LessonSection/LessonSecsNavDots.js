@@ -15,7 +15,6 @@
 
 import { useEffect, useState } from "react";
 import LiNavDot from "./NavDots/LiNavDot";
-import { v4 } from "uuid";
 import SectionTitlesUl from "./NavDots/SectionTitlesUl";
 
 const LessonsSecsNavDots = ({ _sectionDots }) => {
@@ -54,10 +53,6 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
         }));
         !willShowTitles && setWillShowTitles(true);
     }
-
-    useEffect(() => {
-        console.log("sectionDots: ", sectionDots)
-    }, [sectionDots])
 
     const goToSection = (sectionId, isOnMobile) => {
         if (isOnMobile) {

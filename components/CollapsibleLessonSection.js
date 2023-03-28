@@ -21,7 +21,7 @@ const CollapsibleLessonSection = ({
 }) => {
   const { ref, inView } = useInView({ threshold: .2 });
   const h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-  const [sectionDots, setSectionDots] = _sectionDots;
+  const [, setSectionDots] = _sectionDots;
 
   useEffect(() => {
     if (inView) {
@@ -42,6 +42,10 @@ const CollapsibleLessonSection = ({
 
   }, [inView]);
 
+  useEffect(() => {
+    // console.log("useInView ref: ", ref.current);
+  });
+
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}
@@ -51,8 +55,8 @@ const CollapsibleLessonSection = ({
       button={(
         <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-1'>
           <h2
-            // ref={ref}
-            // id={h2Id}
+            ref={ref}
+            id={h2Id}
             className='m-0'
             style={{ width: '100%', overflowWrap: 'break-word' }}
           >

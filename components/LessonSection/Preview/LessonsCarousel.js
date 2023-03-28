@@ -79,6 +79,7 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
     }
 
     useEffect(() => {
+        // apply styles on the server side by using memo
         setWillApplyStyles(true);
     }, [])
 
@@ -139,6 +140,7 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
                                             src={getVideoThumb(mainLink)}
                                             alt={title}
                                             fill
+                                            sizes="62px"
                                         />
                                     </div>
                                     :
@@ -157,14 +159,4 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
 
 export default LessonsCarousel;
 
-{/* <div className="w-100 h-100">
-                                        <Image
-                                            src={getVideoThumb(mainLink)}
-                                            alt={title}
-                                            fill
-                                        />
-                                    </div> */}
-{/* <img 
-                                    src={getVideoThumb(mainLink)}
-                                    alt={title} /> */}
 
