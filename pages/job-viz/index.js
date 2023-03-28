@@ -68,16 +68,19 @@ const JobViz = ({ vals }) => {
                             return (
                                 <div key={index} className="d-flex justify-content-center align-items-center flex-column">
                                     <PreviouslySelectedJobCategory jobCategory={jobCategory} isBrick />
-                                    <Image
-                                        src="/imgs/jobViz/chain.png"
-                                        alt="chain_JobViz_Galactic_Polymath"
-                                        width={3}
-                                        height={30}
-                                        style={{
-                                            maxWidth: "100%",
-                                            height: "auto",
-                                        }}
-                                    />
+                                    <section className='w-100 d-flex justify-content-center align-items-center'> 
+                                        <div style={{ height: 14, width: 3 }} className='position-relative'>
+                                            <Image
+                                                src="/imgs/jobViz/chain.png"
+                                                alt="chain_JobViz_Galactic_Polymath"
+                                                fill
+                                                sizes="3px"
+                                                style={{
+                                                    object: "fit",
+                                                }}
+                                            />
+                                        </div>
+                                    </section>
                                 </div>
                             );
                         }
@@ -87,16 +90,19 @@ const JobViz = ({ vals }) => {
                             return (
                                 <div key={index} className="d-flex justify-content-center flex-column align-items-center">
                                     <PreviouslySelectedJobCategory jobCategory={jobCategory} />
-                                    <Image
-                                        src="/imgs/jobViz/chain.png"
-                                        alt="chain_JobViz_Galactic_Polymath"
-                                        width={3}
-                                        height={30}
-                                        style={{
-                                            maxWidth: "100%",
-                                            height: 14,
-                                        }}
-                                    />
+                                    <section className='w-100 d-flex justify-content-center align-items-center'> 
+                                        <div style={{ height: 14, width: 3 }} className='position-relative'>
+                                            <Image
+                                                src="/imgs/jobViz/chain.png"
+                                                alt="chain_JobViz_Galactic_Polymath"
+                                                fill
+                                                sizes="3px"
+                                                style={{
+                                                    object: "fit",
+                                                }}
+                                            />
+                                        </div>
+                                    </section>
                                 </div>
                             );
                         }
