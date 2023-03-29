@@ -91,10 +91,10 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
                 style={{ height: 'fit-content' }}
                 className="autoCarouselContainer"
             >
-                <div 
-                    className="autoCarouselSlider" 
-                    style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }} 
-                    onLoad={_ => { window.addEventListener('scroll', handleScroll, { passive: true }); }} onScroll={_ => { window.addEventListener('scroll', handleScroll, { passive: true }); }} >
+                <div
+                    className="autoCarouselSlider"
+                    style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
+                >
                     {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => <LessonSlide key={index} {...lessonDocument} />)}
                 </div>
             </section>
