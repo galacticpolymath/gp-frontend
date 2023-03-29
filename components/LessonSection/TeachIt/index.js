@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
@@ -32,6 +32,7 @@ const TeachIt = ({
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const environments = ['classroom', 'remote']
     .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
+  console.log("Data[environments[0]]: ", Data[environments[0]]);
   const gradeVariations = getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources;
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations[0]);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
@@ -42,6 +43,10 @@ const TeachIt = ({
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
   };
+
+  useEffect(() => {
+    console.log("resources.links: ", resources.links);
+  });
 
   /* col-12 col-xl-8 offset-xl-2 */
   return (
