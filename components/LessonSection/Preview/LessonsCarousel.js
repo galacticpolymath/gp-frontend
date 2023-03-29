@@ -30,10 +30,10 @@ import Image from 'next/image';
 import { useEffect } from 'react';
 
 
-const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
+const LessonsCarousel = ({ mediaItems }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [willApplyStyles, setWillApplyStyles] = useState(false);
-    const mediaItemsSorted = mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((item, index) => ({ ...item, isVisible: index === 0 }));
+    const mediaItemsSorted = mediaItems ? mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((item, index) => ({ ...item, isVisible: index === 0 })) : []
     const [controlDots, setControlDots] = useState(mediaItemsSorted);
 
     const handleNextBtnClick = () => {
@@ -78,11 +78,9 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
     }
 
     useEffect(() => {
-        // apply styles on the server side by using memo
         setWillApplyStyles(true);
     }, [])
 
-    const handleScroll = _ => { }
 
 
     return (
@@ -109,29 +107,14 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
                 </button>
                 <button
                     onClick={handleNextBtnClick}
-                    className={`noBtnStyles ms-2 p-0 ${((mediaItems.length - 1) === currentIndex) ? 'btn-disabled' : ''}`}
-                    disabled={(mediaItems.length - 1) === currentIndex}>
+                    className={`noBtnStyles ms-2 p-0 ${((mediaItems?.length - 1) === currentIndex) ? 'btn-disabled' : ''}`}
+                    disabled={(mediaItems?.length - 1) === currentIndex}>
                     <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
                 </button>
             </section>
-            <section className="d-flex justify-content-center align-items-center my-4">
-                {/* <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
-                    {controlDots.map(({ isVisible }, index) => (<li
-                        key={index}
-                        className='d-inline-block'
-                        role='button'
-                        onClick={() => handleDotOrThumbNailClick(index)}
-                        style={willApplyStyles ? { border: 'none', borderColor: !isVisible ? 'rgb(190, 190, 190)' : '', transition: "background-color .15s ease-in" } : {}}
-                    >
-                        <i
-                            style={willApplyStyles ? { backgroundColor: isVisible ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isVisible ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" } : {}}
-                        />
-                    </li>))}
-                </ul> */}
-            </section>
-            <section>
+            <section className="mt-3">
                 <ul className='ps-0 mb-0 d-flex flex-wrap justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
-                    {controlDots.map((item, index) => {
+                    {controlDots?.length && controlDots.map((item, index) => {
                         const { type, title, mainLink, isVisible } = item;
 
                         return (

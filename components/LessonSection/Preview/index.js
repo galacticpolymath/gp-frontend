@@ -35,7 +35,7 @@ const Preview = ({
           </div>
         </div>
         {/* <Carousel items={Multimedia} /> */}
-        <LessonsCarousel mediaItems={Multimedia} _sectionDots={_sectionDots} SectionTitle={SectionTitle} />
+        <LessonsCarousel mediaItems={Multimedia} />
       </div>
     </CollapsibleLessonSection>
   );

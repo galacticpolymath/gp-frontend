@@ -23,8 +23,8 @@ const getLatestSubRelease = (sections) => {
     return null;
   }
 
-  const lastRelease = versionSection.Data[versionSection.Data.length - 1].sub_releases;
-  const lastSubRelease = lastRelease[lastRelease.length - 1];
+  const lastRelease = versionSection.Data[versionSection?.Data?.length - 1].sub_releases;
+  const lastSubRelease = lastRelease[lastRelease?.length - 1];
   return lastSubRelease;
 };
 
@@ -65,19 +65,25 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   useEffect(() => {
     if (inView) {
-      setSectionDots(sectionDots => sectionDots.map(sectionDot => {
-        if ((sectionDot.sectionId === 'lessonTitleId') && inView) {
-          return {
-            ...sectionDot,
-            isInView: true,
-          };
+      setSectionDots(sectionDots => {
+        if (sectionDots?.length) {
+          return sectionDots.map(sectionDot => {
+            if ((sectionDot.sectionId === 'lessonTitleId') && inView) {
+              return {
+                ...sectionDot,
+                isInView: true,
+              };
+            }
+
+            return {
+              ...sectionDot,
+              isInView: false,
+            };
+          })
         }
 
-        return {
-          ...sectionDot,
-          isInView: false,
-        };
-      }));
+        return sectionDots;
+      })
     }
   }, [inView])
 

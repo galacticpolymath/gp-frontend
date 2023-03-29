@@ -72,7 +72,7 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     return (
         <div className="position-fixed lessonSecsNavDotsListContainer d-flex">
             <SectionTitlesUl sectionDots={sectionDots} willShowTitles={willShowTitles} goToSection={goToSection} />
-            <ul onMouseEnter={handleMouseEnterIconList} onMouseLeave={handleMouseLeaveIconList} className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
+            <ul onMouseEnter={handleMouseEnterIconList} onMouseLeave={handleMouseLeaveIconList} className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
                 {sectionDots.map(({ isInView, sectionId }, index) => (
                     <LiNavDot
                         key={index}
@@ -84,7 +84,7 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
                     />
                 ))}
             </ul>
-            <ul className='ps-0 d-flex d-lg-none flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transition-duration': '3500ms', transition: 'all .15s ease-in' }}>
+            <ul className='ps-0 d-flex d-lg-none flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
                 {sectionDots.map(({ isInView, sectionId }, index) => (
                     <LiNavDot
                         key={index}
