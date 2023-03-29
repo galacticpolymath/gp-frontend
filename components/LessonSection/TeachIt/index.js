@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 import { useEffect, useState } from 'react';
@@ -33,6 +34,7 @@ const TeachIt = ({
   const environments = ['classroom', 'remote']
     .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   console.log("Data[environments[0]]: ", Data[environments[0]]);
+  const hasResources = Data?.[environments[0]]?.resources;
   const gradeVariations = getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources;
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations[0]);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
@@ -45,7 +47,8 @@ const TeachIt = ({
   };
 
   useEffect(() => {
-    console.log("resources.links: ", resources.links);
+    console.log('allResources: ', allResources);
+    console.log('allResources: ', allResources);
   });
 
   /* col-12 col-xl-8 offset-xl-2 */
@@ -112,17 +115,17 @@ const TeachIt = ({
           </div>
         </div>
 
-        {resources.links && (
+        {hasResources && (
           <div className='text-center d-flex'>
             <a
               target='_blank'
               rel='noopener noreferrer'
-              href={resources.links.url}
+              href={'_'}
               className='btn btn-primary px-3 py-2 d-inline-block mb-3'
             >
               <div className='d-flex align-items-center gap-2'>
                 <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
-                {resources.links.linkText}
+                {/* {resources.links.linkText} */}
               </div>
             </a>
             <AiOutlineQuestionCircle
