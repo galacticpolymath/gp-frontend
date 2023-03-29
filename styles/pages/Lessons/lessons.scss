@@ -221,6 +221,15 @@ $toolTipColor: #F0F4FF;
   }
 }
 
+.pdf-media{
+  @media(min-width: 576px) and (max-width: 1199px){
+    max-width: 450px;
+  }
+  
+  @media(max-width: 575px){
+    max-width: 205px;
+  }
+}
 
 
 .lessonSecsNavDotsListContainer{

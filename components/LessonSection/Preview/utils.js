@@ -1,7 +1,7 @@
 import RenderArrowNext from './RenderArrowNext';
 
 /* eslint-disable no-console */
-const handleOnScroll = () => {};
+// const handleOnScroll = () => {};
 
 export const getMediaComponent = ({ type, mainLink }) => {
   if (type === 'video') {
@@ -13,11 +13,7 @@ export const getMediaComponent = ({ type, mainLink }) => {
         style={{ minWidth: '170px' }}
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
         className='lesson-media'
-        onLoad={() => {
-          window.addEventListener('scroll', handleOnScroll, { passive: true });
-        }}
       />
     );
   } else if (type === 'pdf') {
@@ -27,6 +23,7 @@ export const getMediaComponent = ({ type, mainLink }) => {
         width="640"
         height="480"
         allow="autoplay"
+        className='pdf-media'
       />
     );
   }
