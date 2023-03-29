@@ -257,3 +257,13 @@ $toolTipColor: #F0F4FF;
   display: block;
 }
 
+@media (max-width: 767px) {
+  .dotLine{
+    border-bottom: 1px dashed #363636;
+    // left: 50%;
+    top: 50%;
+    // left: 101%;
+    width: 90%;
+    vertical-align: text-top;
+  }
+}

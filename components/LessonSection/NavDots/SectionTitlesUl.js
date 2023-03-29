@@ -56,20 +56,11 @@ const SectionTitlesUl = ({ sectionDots, willShowTitles, goToSection }) => {
                     const backgroundColor = isInView ? (isMaterialsTeachingSecId ? '#FEEAF8' : '#d5e6f3') : 'white'
 
                     return (
-                        <div style={{ display: willShowTitles ? 'block' : 'none' }} key={index}>
-                            <li
-                                className='d-none d-lg-inline-flex justify-content-end'
-                                role='button'
-                                style={{ borderColor: liBorderColor, opacity: willShowTitles ? 1 : 0, transition: "all .15s ease-in", height: "30px", 'width': '200px', transitionProperty: 'border-color, opacity' }}
-                            >
-                                <span style={{ transition: "all .15s ease-in", backgroundColor: backgroundColor, border: '#363636 1px solid', transitionProperty: 'border, background-color, opacity', fontWeight: 400, padding: 6 }} className='text-black  text-nowrap shadow rounded d-lg-inline-flex justify-content-center align-items-center d-none'>
-                                    {SectionTitle}
-                                </span>
-                            </li>
+                        <div className='w-100 justify-content-end' style={{ display: willShowTitles ? 'flex' : 'none' }} key={index}>
                             <li
                                 className='d-lg-none d-inline-flex justify-content-end position-relative'
                                 role='button'
-                                style={{ border: 'none', opacity: willShowTitle ? 1 : 0, transition: "all .15s ease-in", height: "30px", 'width': '200px', transitionProperty: 'border-color, display', zIndex: willShowTitle ? 100 : -1 }}
+                                style={{ border: 'none', opacity: willShowTitle ? 1 : 0, transition: "all .15s ease-in", height: "30px", transitionProperty: 'border-color, display', zIndex: willShowTitle ? 100 : -1 }}
                             >
                                 <span
                                     style={{ transition: "all .15s ease-in", backgroundColor: backgroundColor, border: '#363636 1px solid', transitionProperty: 'background-color, opacity, border', fontWeight: 400, padding: 6 }}
@@ -77,6 +68,9 @@ const SectionTitlesUl = ({ sectionDots, willShowTitles, goToSection }) => {
                                     onClick={_ => goToSection(sectionId, true)}
                                 >
                                     {SectionTitle}
+                                </span>
+                                <span style={{ width: 55 }} className='d-flex justify-content-center align-items-center ps-1'>
+                                    <span className="dotLine" />
                                 </span>
                             </li>
                         </div>
