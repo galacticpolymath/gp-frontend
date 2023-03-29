@@ -107,7 +107,7 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
                 </button>
             </section>
             <section className="d-flex justify-content-center align-items-center my-4">
-                <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
+                {/* <ul className='ps-0 mb-0 d-flex justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
                     {controlDots.map(({ isVisible }, index) => (<li
                         key={index}
                         className='d-inline-block'
@@ -119,7 +119,7 @@ const LessonsCarousel = ({ mediaItems, _sectionDots, SectionTitle }) => {
                             style={willApplyStyles ? { backgroundColor: isVisible ? 'rgba(44, 131, 195, 0.6)' : '', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid #bebebe', borderColor: isVisible ? '#2c83c3' : 'rgb(190, 190, 190)', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color" } : {}}
                         />
                     </li>))}
-                </ul>
+                </ul> */}
             </section>
             <section>
                 <ul className='ps-0 mb-0 d-flex flex-wrap justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>

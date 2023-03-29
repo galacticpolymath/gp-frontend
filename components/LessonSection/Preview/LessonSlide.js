@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 import { getMediaComponent } from './utils';
-
 import styles from './index.module.scss';
 
 const LessonSlide = ({

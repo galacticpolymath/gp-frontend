@@ -1,4 +1,5 @@
 import RenderArrowNext from './RenderArrowNext';
+import Iframe from 'react-iframe';
 
 /* eslint-disable no-console */
 export const getMediaComponent = ({ type, mainLink }) => {
@@ -14,6 +15,7 @@ export const getMediaComponent = ({ type, mainLink }) => {
         allowFullScreen
         className='lesson-media'
       />
+      // <Iframe src={mainLink} />
     );
   } else if (type === 'pdf') {
     return (
