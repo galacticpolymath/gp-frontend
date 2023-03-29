@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import React, { useState } from 'react';
@@ -13,14 +14,15 @@ const countriesByLanguage = [{ language: 'English', countries: ['US', 'GB', 'NZ'
 const LocDropdown = ({ id, availLocs, loc }) => {
   const [isToolTipModalOn, setIsToolTipModalOn] = useState(true);
   const [timer, setTimer] = useState(null);
-
   let countries = [];
   let labels = {};
+  
   availLocs.forEach((availLoc) => {
     const country = locToCountry[availLoc];
     countries.push(country);
     labels[country] = availLoc;
   });
+  countries = countries.filter((country, index, self) => self.indexOf(country) === index);
 
   const changeLoc = (country, id) => {
     const locDest = countryToLoc[country];
@@ -33,10 +35,15 @@ const LocDropdown = ({ id, availLocs, loc }) => {
   };
 
   useEffect(() => {
-    let timer = setTimeout(() => {
-      setIsToolTipModalOn(false);
-    }, 3500);
-    setTimer(timer);
+    let timer;
+
+    if (countries.length > 1) {
+      console.log('hey there meng');
+      timer = setTimeout(() => {
+        setIsToolTipModalOn(false);
+      }, 3500);
+      setTimer(timer);
+    }
 
     return () => {
       clearTimeout(timer);

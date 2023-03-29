@@ -15,18 +15,20 @@
 import { useContext } from "react";
 import { ModalContext } from "./providers/ModalProvider";
 import SelectedJob from "./components/Modals/SelectedJob";
+import DownloadTipModal from "./components/LessonSection/Modals/DownloadTipModal";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 const ModalContainers = () => {
-    const { _selectedJob } = useContext(ModalContext);
+    const { _selectedJob, _isDownloadModalInfoOn } = useContext(ModalContext);
     const [selectedJob,] = _selectedJob;
-    
+    const [isDownloadModalInfoOn] = _isDownloadModalInfoOn;
 
     return (
         <>
             {selectedJob ? <SelectedJob /> : null}
+            {isDownloadModalInfoOn ? <DownloadTipModal /> : null}
         </>
     )
 }

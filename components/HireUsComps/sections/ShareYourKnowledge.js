@@ -23,22 +23,24 @@ import Image from "next/image";
 const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
     return isMobile ?
         <>
-            <section className="d-flex d-md-none ps-2 pe-2 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 mt-5 ps-xl-5 pe-xl-5 justify-content-md-center align-items-md-center justify-content-xl-start align-items-xl-stretch">
-                <div className='shareYourKnowledgeImgContainer position-relative'>
+            <section className="d-flex d-md-none ps-2 pe-2 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 mt-5 ps-xl-5 pe-xl-5 justify-content-center align-items-center justify-content-xl-start align-items-xl-stretch">
+                <div className='shareYourKnowledgeImgContainer onSmallScreens position-relative'>
                     <Image
                         src="/imgs/classroom.jpg"
                         alt="Galactic_PolyMath_First_Sec_Mobile_Info"
-                        className="h-100 w-100 position-absolute"
+                        style={{ objectFit: "contain" }}
+                        className="rounded"
+                        sizes="(max-width: 575px) 320px, 500px"
                         fill
-                        sizes="100vw" />
+                    />
                 </div>
             </section>
-            <section className="mt-sm-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none pe-sm-3">
+            <section className="mt-4 mt-sm-5 ps-sm-5 d-flex justify-content-center justify-content-sm-start d-md-none pe-sm-3">
                 <section>
                     <h3 className="text-center text-sm-start noMargin">Share your knowledge with anyone, anywhere!</h3>
                 </section>
             </section>
-            <section className="mt-4 mt-md-7 ps-sm-5 pe-sm-5 d-flex d-md-none">
+            <section className="mt-4 mt-md-7 ps-sm-5 pe-sm-5 d-flex d-md-none justify-content-center align-items-center">
                 <PicAndDescriptionSec
                     text="We promote lessons through our growing GP Constellation dissemination network."
                     imgPath="/imgs/GP_Constellation_dark.png"
@@ -62,7 +64,7 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
             </section>
         </>
         :
-        <section className="d-none d-md-flex flex-column ps-5 pe-5 mt-5 shareYourKnowledgeDesktopSec">
+        <section className="d-none d-md-flex flex-column ps-5 pe-5 mt-5 shareYourKnowledgeDesktopSec pb-4">
             <section className="w-100 d-flex mt-3 mb-xl-4">
                 <section className="w-50 d-flex flex-column pt-xl-2">
                     <section className="w-100">
@@ -87,11 +89,17 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
             <section className="w-100 d-flex flex-md-column-reverse flex-xl-row">
                 <section className="d-flex justify-content-center shareYourKnowledgeImgSec">
                     <div className='shareYourKnowledgeImgContainer classRoom position-relative'>
-                        {/* <Image src="/imgs/classroom.jpg" layout='fill' alt="Galactic_PolyMath_First_Sec_Mobile_Info" className="h-100 w-100 position-absolute" /> */}
-                        <img src="/imgs/classroom.jpg" alt="Galactic_PolyMath_First_Sec_Mobile_Info" className='' />
+                        <Image
+                            src="/imgs/classroom.jpg"
+                            fill
+                            alt="Galactic_PolyMath_First_Sec_Mobile_Info"
+                            className="h-100 w-100 rounded"
+                            sizes="(max-width: 575px) 320px, 500px"
+                            style={{ objectFit: "contain" }}
+                        />
                     </div>
                 </section>
-                <section className="d-flex flex-column justify-content-center align-items-center mt-md-5 mt-xl-0 ms-xl-5 mb-md-4 mt-xl-0 lessonInfoSec">
+                <section className="d-flex flex-column justify-content-center align-items-center mt-md-5 mt-xl-3 ms-xl-5 mb-md-4 mt-xl-0 lessonInfoSec">
                     <div className="eachLessonWrapper">
                         <section className="w-100">
                             <h3 className="fst-italic text-dark text-center text-wrap w-100 text-sm-start move10pxRightResponsive">Each lesson is: </h3>

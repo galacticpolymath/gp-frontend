@@ -4,13 +4,15 @@ import RichText from '../RichText';
 const Acknowledgments = ({
   index,
   SectionTitle,
-  Data = [],  
+  Data = [],
+  _sectionDots,  
 }) => {
   return Data && (
     <CollapsibleLessonSection
       SectionTitle={`${index}. ${SectionTitle}`}
       initiallyExpanded
       accordionId={SectionTitle}
+      _sectionDots={_sectionDots}
     >
       <div className='container mx-auto my-4'>
         {Data.map(({ role, def, records = [] }, i) => (

@@ -1,0 +1,133 @@
+.selectedLessonPg {
+*{
+  // border: solid pink;
+}  
+}
+
+
+
+.lessonsStandardsSec {
+  width: 100vw;
+  margin-left: calc(-1 * ((100vw - 100%) / 2));
+  margin-right: calc(-1 * ((100vw - 100%) / 2));
+  > div {
+    background-color: #e2f0fd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    > div {
+      padding: .85rem 1.75rem;
+      width: 75%;
+      @media(max-width: 767px){
+        width: 100%;
+      }
+    }
+  }
+}
+
+.col-start-2{
+  grid-column-start: 2 !important;
+}
+
+.col-start-3{
+  grid-column-start: 3 !important;
+}
+
+.col-start-4{
+  grid-column-start: 4 !important;
+}
+
+.col-start-5{
+  grid-column-start: 5 !important;
+}
+
+.col-start-6{
+  grid-column-start: 6 !important;
+}
+
+.col-start-7{
+  grid-column-start: 7 !important;
+}
+
+.carouselSelectedLessons{
+  @media(max-width: 575px){
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+    min-width: 250px; 
+  }
+}
+
+.collapsibleLessonSection {
+  > div:first-child {
+    width: 100vw;
+    margin-left: calc(-1 * ((100vw - 100%) / 2));
+    margin-right: calc(-1 * ((100vw - 100%) / 2));
+    > div {
+      background-color: #e2f0fd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      > div {
+        width: 75%;
+        @media(max-width: 767px){
+          width: 100% ;
+          button{
+            > div{
+              // border: solid pink !important;
+              width: 100% !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.vocabTxt{
+  li::marker{
+    color: #CD2A93;
+  }
+}
+
+.downloadTipIcon{
+  cursor: pointer;
+}
+
+.downloadInfoModal{
+  max-width: 800px !important;
+  // width: 180vw;
+  // min-width: 260px;
+
+  section{
+    @media(min-width: 768px){
+      width: 50%;
+    }
+  }
+}
+
+.downloadInfoModal-txt{
+  line-height: 1.2;
+  
+  @media(min-width: 768px){
+    height: 110px;
+  }
+
+  @media(min-width: 1200px){
+    height: 90px;
+  }
+}
+
+.thumbs-wrapper{
+  display: flex;
+  justify-content: center;
+}
+
+.downloadTipModalHeader{
+  button{
+    font-size: 15px;
+    top: 10px;
+    right: 10px;
+    position: absolute;
+  }
+}
+

@@ -91,7 +91,13 @@ li {
 
 html { height: 100%; }
 
+.btn-disabled{
+  opacity: .5;
+}
 
+ol li{
+  word-break: break-word;
+}
 
 .no-btn-styles{
   background: none;
@@ -394,6 +400,13 @@ html { height: 100%; }
 .square {
   width: 50vw;
   height: 50vw;
+}
+
+
+.w-md-75{
+  @media(min-width: 768px){
+    width: 75%;
+  }
 }
 
 .borderThicker {

@@ -41,7 +41,7 @@ const ScientistSection = () => (
                             text={description}
                             name={name}
                             alt={alt}
-                            parentSecStyles="secWithHumanPic scientist d-md-inline-flex"
+                            parentSecStyles={`secWithHumanPic scientist d-md-inline-flex`}
                         />
                     )
                 })}

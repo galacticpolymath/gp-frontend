@@ -1,5 +1,6 @@
 @import "../../globalVars.scss";
 @import "./tooltip.scss";
+@import './selectedLessonPg.scss';
 
 
 $borderThickness: 1px;
@@ -17,7 +18,6 @@ $toolTipColor: #F0F4FF;
     }
   }
 }
-
 
 .jobVizEntrySection span {
   font-size: 24px;
@@ -175,6 +175,73 @@ $toolTipColor: #F0F4FF;
   padding-bottom: 30px;
 }
 
+.carouselSelectedLessons{
+  max-width: 70rem !important;
+}
+
+.lessonSlideBody{
+  h5, p{
+    width: 90%;
+    @media(max-width: 575px){
+      width: 100%;
+    }
+  }
+
+  span{
+    @media(max-width: 575px){
+
+    }
+  }
+}
+
+.autoCarouselItem.onLessonsPg{
+  // max-width: 300px;
+  > div > div:first-child{
+    // width: 100%;
+    // max-width: 250px;
+    // border: solid pink;
+  }
+}
+
+.lesson-media{
+  @media(min-width: 992px) and (max-width: 1199px){
+    max-width: 475px;
+  }
+
+  @media(min-width: 768px) and (max-width: 991px){
+    max-width: 380px;
+  }
+
+  @media(max-width: 767px) and (min-width: 576px){
+    max-width: 300px;
+  }
+
+  @media(max-width: 575px){
+    width: 60vw;
+  }
+}
+
+.pdf-media{
+  @media(min-width: 576px) and (max-width: 1199px){
+    max-width: 450px;
+  }
+  
+  @media(max-width: 575px){
+    max-width: 205px;
+  }
+}
+
+
+.lessonSecsNavDotsListContainer{
+  top: 95px;
+  right: 20px;
+  z-index: 1000;
+  
+  @media(max-width: 575px){
+    right: 10px
+  }
+}
+
 .lessonSubject {
   bottom: 8px;
   left: 15px;
@@ -185,4 +252,8 @@ $toolTipColor: #F0F4FF;
   }
 }
 
+.lightbar{
+  // height: 100px;
+  display: block;
+}
 

@@ -1,3 +1,10 @@
+/* eslint-disable brace-style */
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/jsx-closing-bracket-location */
+/* eslint-disable react/jsx-closing-tag-location */
+/* eslint-disable no-multiple-empty-lines */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
 import { Carousel as RRCarousel } from 'react-responsive-carousel';
 import PropTypes from 'prop-types';
 
@@ -5,14 +12,29 @@ import Slide from './Slide';
 import { customControls } from './utils';
 
 import styles from './index.module.scss';
+import { useContext, useEffect, useState } from 'react';
+import RenderArrowNext from './RenderArrowNext';
+import { LessonsCarouselContext } from '../../../providers/LessonsCarouselProvider';
+
+// how do I access the current picture/file that is being displayed on the ui? 
+
+
+
 
 const Carousel = ({
   items,
 }) => {
+  const { _lessonItemsIndex } = useContext(LessonsCarouselContext);
+  const [lessonItemsIndex, setLessonsItemsIndex] = _lessonItemsIndex;
+  const renderItemObj = items[lessonItemsIndex];
+  const renderItem = () => <Slide key={lessonItemsIndex} {...renderItemObj} />;
+
   return items && (
     <RRCarousel
       showStatus={false}
-      className={`${styles.Carousel} bg-light-gray rounded p-3`}
+      className={`${styles.Carousel} bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center`}
+      renderThumbs={customControls.renderThumbs}
+      renderItem={renderItem}
       {...customControls}
     >
       {items.sort((a, b) => a.order - b.order).map((item, i) => <Slide key={i} {...item} />)}

@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable quotes */
 import { getMediaComponent } from './utils';
 
 import styles from './index.module.scss';
@@ -11,9 +13,9 @@ const Slide = ({
   mainLink,
 }) => {
   return (
-    <div className='bg-white rounded p-3'>
+    <div className='bg-white rounded p-3' style={{ 'width': '100%' }}>
       {getMediaComponent({ type, mainLink })}
-      <div className={styles.SlideBody}>
+      <div className={`${styles.SlideBody}`}>
         <h5>{title}</h5>
         <p>{lessonRelevance}</p>
         <span className="text-left">by{' '}

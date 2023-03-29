@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-max-props-per-line */
 import LetsTalkBtnContainer from '../buttons/LetsTalkBtnContainer';
 import styles from '../../../pages/index.module.css';
 import LayoutBackGroundImg from '../../../assets/img/1_northeast_merlot_darker.png';
@@ -24,7 +25,6 @@ const IntroSecHireUs = () => {
           </section>
         </section>
       </section>
-      {/* for mobile */}
       <section className="d-flex d-md-none w-100 noMargin col-12 introSecAndLetTalksSec">
         <section className="w-100 d-flex justify-content-start align-items-stretch  flex-column justify-content-md-center align-items-md-center pt-4">
           <section className="headerSection">
@@ -32,7 +32,7 @@ const IntroSecHireUs = () => {
             <h1 className={`${styles.shadow} headingHireUs noMargin`}>Classroom-ready</h1>
             <h1 className={`${styles.shadow} headingHireUs noMargin`}>Outreach</h1>
           </section>
-          <section className="subTxtHeadingContainerHireUsPg w-75 ps-1 mt-4">
+          <section className="subTxtHeadingContainerHireUsPg w-75 ps-1 mt-2 mt-sm-4">
             <span className={`${styles.shadow} noMargin noPadding spanSubheader`}>
               We translate your work so that non-experts can teach mind-opening lessons.
             </span>

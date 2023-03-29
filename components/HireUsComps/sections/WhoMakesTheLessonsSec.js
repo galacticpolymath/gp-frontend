@@ -23,6 +23,9 @@
 import PicAndDescriptionSec from "./PicAndDescriptionSec";
 import mattsAwards from '../../../data/HireUsPg/mattsAwards.json'
 
+
+// PROBLEM: the image for the owner section is not showing up at all 
+
 const WhoMakesTheLessonsSec = () => {
 
     return (

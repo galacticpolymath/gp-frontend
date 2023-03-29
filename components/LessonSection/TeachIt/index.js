@@ -1,47 +1,74 @@
+/* eslint-disable no-console */
+/* eslint-disable quotes */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-
+import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
+import { ModalContext } from '../../../providers/ModalProvider';
+import { useContext } from 'react';
+// import useLessonElementInView from '../../../customHooks/useLessonElementInView';
+
+const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
+const getObjVals = obj => {
+  const keys = Object.keys(obj);
+  let vals = [];
+
+  keys.forEach(key => {
+    const val = obj[key];
+    vals.push(val);
+  });
+
+  return vals;
+};
 
 const TeachIt = ({
   index,
   SectionTitle,
   Data,
+  _sectionDots,
 }) => {
-  const environments = [ 'classroom', 'remote']
+  const { _isDownloadModalInfoOn } = useContext(ModalContext);
+  const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
+  const environments = ['classroom', 'remote']
     .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
-  const gradeVariations = Data[environments[0]].resources;
-
+  const gradeVariations = getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources;
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations[0]);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
+  const allResources = getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources;
+  let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
+  resources = getIsValObj(resources) ? [resources] : resources;
 
-  const resources = Data[selectedEnvironment].resources
-    .find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
+  const handleIconClick = () => {
+    setIsDownloadModalInfoOn(true);
+  };
 
+  /* col-12 col-xl-8 offset-xl-2 */
   return (
     <CollapsibleLessonSection
       index={index}
       SectionTitle={SectionTitle}
       highlighted
       initiallyExpanded
+      _sectionDots={_sectionDots}
     >
-      <>
-        <div className='container row mx-auto mt-4'>
-          <div className='col-12 col-xl-8 offset-xl-2 bg-light-gray p-3 row align-items-center gap-3 gap-lg-0'>
-            <div className='fs-5 mb-2'>
-              <i className="bi-alarm fs-4 me-2"></i>
-              {Data.lessonDur}
+      <div>
+        <div className='container-fluid mt-4'>
+          <div className='row'>
+            <div className='col-12 bg-light-gray py-3 p-3 align-items-center'>
+              <div className='fs-5 mb-2'>
+                <i className="bi-alarm fs-4 me-2"></i>
+                {Data.lessonDur}
+              </div>
+              <p className='mb-0'>{Data.lessonPreface}</p>
             </div>
-            <p className='mb-0'>{Data.lessonPreface}</p>
           </div>
         </div>
-        
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
             <h3>Available Grade Bands</h3>
             {gradeVariations.map((variation, i) => (
-              <label 
+              <label
                 key={i}
                 className='text-capitalize d-block mb-1'
               >
@@ -81,7 +108,7 @@ const TeachIt = ({
         </div>
 
         {resources.links && (
-          <div className='text-center'>
+          <div className='text-center d-flex'>
             <a
               target='_blank'
               rel='noopener noreferrer'
@@ -93,6 +120,11 @@ const TeachIt = ({
                 {resources.links.linkText}
               </div>
             </a>
+            <AiOutlineQuestionCircle
+              className="ms-2 downloadTipIcon"
+              style={{ fontSize: "20px" }}
+              onClick={handleIconClick}
+            />
           </div>
         )}
 
@@ -105,7 +137,7 @@ const TeachIt = ({
             />
           ))}
         </div>
-      </>
+      </div>
     </CollapsibleLessonSection>
   );
 };

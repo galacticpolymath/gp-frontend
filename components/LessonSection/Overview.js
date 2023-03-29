@@ -1,6 +1,7 @@
+/* eslint-disable no-console */
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-
+// import useGetElementInView from '../../customHooks/useLessonElementInView';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
@@ -13,36 +14,96 @@ const Overview = ({
   SteamEpaulette,
   Text,
   Tags,
+  _sectionDots,
 }) => {
+
   return (
     <CollapsibleLessonSection
       className="Overview"
       index={index}
       SectionTitle="Overview"
       initiallyExpanded
+      _sectionDots={_sectionDots}
     >
       <div className='container mb-4'>
         <div className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center">
-          <div className="grid mx-auto gap-3 py-3">
-            <div className='g-col g-col-md-4 bg-white p-3 rounded-3'>
+          <div className="grid mx-auto gap-3 py-3 justify-content-center justify-content-sm-start">
+            <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>
               <i className="fs-3 mb-2 d-block bi-book-half"></i>
-              <h5>Target Subject: </h5>
+              <h5 id='selectedLessonTitle'>Target Subject: </h5>
               <span>{TargetSubject}</span>
             </div>
-            <div className='g-col g-col-md-4 bg-white p-3 rounded-3'>
+            <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>
               <i className="fs-3 mb-2 d-block bi-person-circle"></i>
               <h5>Grades: </h5>
               <span>{ForGrades}</span>
             </div>
-            <div className='g-col g-col-md-4 bg-white p-3 rounded-3'>
+            <div className='d-none d-sm-grid g-col g-col-sm-4 bg-white pt-sm-3 pe-sm-4 pb-sm-3 ps-sm-2 p-md-3 rounded-3'>
               <i className="fs-3 mb-2 d-block bi-alarm"></i>
               <h5>Estimated Time: </h5>
               <span>{EstLessonTime}</span>
             </div>
+            <div className='d-grid d-sm-none g-col g-col-12 align-items-center justify-content-center'>
+              <div className='d-grid bg-white rounded-3 col-12 py-3' style={{ width: '40vw', minWidth: '150px' }}>
+                <i className="fs-3 mb-2 d-block bi-book-half"></i>
+                <h5>Target Subject: </h5>
+                <span>{TargetSubject}</span>
+              </div>
+            </div>
+            <div className='d-grid d-sm-none g-col g-col-12 align-items-center justify-content-center'>
+              <div className='d-grid bg-white rounded-3 col-12 py-3' style={{ width: '40vw', minWidth: '150px' }}>
+                <i className="fs-3 mb-2 d-block bi-person-circle"></i>
+                <h5>Grades: </h5>
+                <span>{ForGrades}</span>
+              </div>
+            </div>
+            <div className='d-grid d-sm-none g-col-12 align-items-center justify-content-center'>
+              <div className='d-grid bg-white rounded-3 col-12 py-3' style={{ width: '40vw', minWidth: '150px' }}>
+                <i className="fs-3 mb-2 d-block bi-alarm"></i>
+                <h5>Estimated Time: </h5>
+                <span>{EstLessonTime}</span>
+              </div>
+            </div>
+            {/* below 575px */}
+            {/* <div className='d-grid d-sm-none g-col g-col-md-4 bg-white p-3 rounded-3'>
+              <i className="fs-3 mb-2 d-block bi-book-half"></i>
+              <h5>Target Subject: </h5>
+              <span>{TargetSubject}</span>
+            </div>
+            <div className='d-grid d-sm-none g-col g-col-md-4 bg-white p-3 rounded-3'>
+              <i className="fs-3 mb-2 d-block bi-person-circle"></i>
+              <h5>Grades: </h5>
+              <span>{ForGrades}</span>
+            </div>
+            <div className='d-grid d-sm-none g-col g-col-md-4 bg-white p-3 rounded-3'>
+              <i className="fs-3 mb-2 d-block bi-alarm"></i>
+              <h5>Estimated Time: </h5>
+              <span>{EstLessonTime}</span>
+            </div> */}
+
+            {/* <div className="d-flex flex-column col-start-5">
+              <div className="d-flex">
+                <div className='d-grid d-sm-none g-col-4 bg-white p-3 rounded-3 me-1'>
+                  <i className="fs-3 mb-2 d-block bi-book-half"></i>
+                  <h5>Target Subject: </h5>
+                  <span>{TargetSubject}</span>
+                </div>
+                <div className='d-grid d-sm-none g-col-4 bg-white p-3 rounded-3 ms-1'>
+                  <i className="fs-3 mb-2 d-block bi-person-circle"></i>
+                  <h5>Grades: </h5>
+                  <span>{ForGrades}</span>
+                </div>
+              </div>
+              <div className="w-100 d-flex justify-content-center align-items-center mt-2">
+                <div className='d-grid d-sm-none g-col g-col-md-4 bg-white p-3 rounded-3 col-start-7' style={{ maxWidth: '150px' }}>
+                  <i className="fs-3 mb-2 d-block bi-alarm"></i>
+                  <h5>Estimated Time: </h5>
+                  <span>{EstLessonTime}</span>
+                </div>
+              </div>
+            </div> */}
           </div>
-
           <Link passHref href="#learning_standards">
-
             <h5>Subject breakdown by standard alignments: </h5>
             {SteamEpaulette && SteamEpaulette.url && (
               <img
@@ -58,7 +119,7 @@ const Overview = ({
 
         <h5 className='mt-4'>Keywords:</h5>
         {Tags && Tags.map(tag => (
-          <span 
+          <span
             key={tag.Value}
             className='fs-6 fw-light badge rounded-pill bg-white text-secondary border border-2 border-secondary me-2 mb-2 px-2'
           >

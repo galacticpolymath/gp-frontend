@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
@@ -9,6 +10,7 @@ const LessonPart = ({
   chunks = [],
   resources,
 }) => {
+
   return (
     <Accordion
       buttonClassName='w-100 text-start'
@@ -23,7 +25,7 @@ const LessonPart = ({
     >
       <>
         <ol className='mt-3'>
-          {(resources.parts[partNum - 1].itemList || []).map(item => (
+          {(resources?.[0]?.parts?.[partNum - 1]?.itemList || []).map(item => (
             <li key={item.itemTitle} className='mb-2'>
               <strong>{item.itemTitle}</strong>
               <ul>
@@ -43,14 +45,14 @@ const LessonPart = ({
             </li>
           ))}
         </ol>
-      
+
         <h4>Steps &amp; Flow</h4>
         {chunks.map((chunk, i) => (
           <LessonChunk
             key={i}
             chunkNum={i}
             durList={chunks.map(({ chunkDur }) => chunkDur)}
-            partInfo={resources.parts[partNum - 1]}
+            partInfo={resources?.parts?.[partNum - 1]}
             {...chunk}
           />
         ))}
@@ -64,9 +66,9 @@ LessonPart.propTypes = {
   partTitle: PropTypes.string.isRequired,
   partPreface: PropTypes.string.isRequired,
   chunks: PropTypes.array.isRequired,
-  resources: PropTypes.shape({
-    parts: PropTypes.array,
-  }),
+  resources: PropTypes.oneOfType([
+    PropTypes.array, PropTypes.object,
+  ]),
 };
 
 export default LessonPart;

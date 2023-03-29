@@ -19,7 +19,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
-// import { Head } from "next/document";
+import Image from 'next/image';
 import { Card } from "react-bootstrap"
 import { HiOutlineX } from "react-icons/hi"
 import { GoCheck } from "react-icons/go"
@@ -57,10 +57,19 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
     // ps-md-5 pe-md-5
     // ms-xl-3 me-xl-3
     return (
-        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pt-5 ms-2 me-2 me-md-0 me-xl-2 pt-md-1'} ps-xl-3 pe-xl-3 mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles ${index !== 0 ? '' : ''}`}>
+        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pe-lg-3 ps-lg-3 pe-xl-0 ps-xl-0 pt-5 ms-xl-2 me-xl-2 me-md-0 me-xl-2 pt-md-1'} ps-lg-3 pe-lg-3  mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles ${index !== 0 ? '' : ''}`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch">
-                    <Img src={img} alt={`${tierName}_img`} className="tierImg" height={120} />
+                    {/* <Img src={img} alt={`${tierName}_img`} className="tierImg" height={120} /> */}
+                    <div className="position-relative" style={{ height: "120px", width: "120px" }}>
+                        <Image
+                            src={img}
+                            alt={`${tierName}_img`}
+                            className='teirImg'
+                            fill
+                            sizes="120px"
+                        />
+                    </div>
                 </section>
                 <section className="mt-4">
                     <h4 className="text-dark tierHeaderTag mt-2 fw450 text-center text-sm-start">{tierName.toUpperCase()}</h4>
@@ -104,8 +113,15 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                         <h4 className="text-dark fst-italic  fw200 text-center text-sm-start exampleProductTxt">Example Product: </h4>
                     </section>
                     <section className="productSec">
-                        <div className="imgProductContainer">
-                            <Img src={productImg} alt={`${tierName}_ProductImg`} onClick={handleImgClick} className={`tierProductImg pointer ${tierName}_style`} height={170} />
+                        <div className={`imgProductContainer position-relative pointer ${tierName}_style`} style={{ height: 170 }}>
+                            <Image
+                                src={productImg}
+                                fill
+                                alt={`${tierName}_ProductImg`}
+                                onClick={handleImgClick}
+                                style={{ objectFit: 'contain' }}
+                                sizes="(max-width: 575px) 490px, (max-width: 767px) 567px, (max-width: 991px) 504px, 24vw"
+                            />
                         </div>
                         <section className="mt-4 text-sm-start text-center">
                             <a href={link} target="_blank" className="text-dark text-decoration-underline  fst-italic fw200 underline-less-thick">
@@ -114,7 +130,8 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                         </section>
                     </section>
                 </section>
-                <section className="mt-5 w-100 d-flex justify-content-center align-items-center  justify-content-sm-start align-items-sm-stretch align-self-end priceSection">
+                <div style={{ height: 100 }} />
+                <section className="mt-md-5 w-100 d-flex justify-content-center align-items-center  justify-content-sm-start align-items-sm-stretch align-self-end priceSection">
                     <h4 className="text-dark fst-italic  text-center text-sm-start">
                         <section className="d-flex flex-column priceTxtHorizontal">
                             <span>Estimated Price: </span>

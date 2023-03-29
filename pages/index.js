@@ -1,5 +1,6 @@
+/* eslint-disable react/jsx-max-props-per-line */
 import Link from 'next/link';
-
+import Image from 'next/image';
 import Layout from '../components/Layout';
 import Hero from '../components/Hero';
 import styles from './index.module.css';
@@ -15,7 +16,7 @@ export default function Home() {
       <Hero imgSrc={HeroImage.src}>
         <h1 className={styles.shadow}>We are an education studio.</h1>
         <p className={`${styles.shadow} my-4 fs-5 fw-light`}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
-        <div>
+        <div className="d-flex d-sm-block flex-column justify-content-start align-items-start">
           <Link
             passHref
             href="/lessons"
@@ -25,65 +26,192 @@ export default function Home() {
           </Link>
           <Link
             href="/hire-us"
-            className="btn btn-primary mx-2"
+            className="btn btn-primary mt-4 mt-sm-0 mx-sm-2"
           >
             Do Outreach
           </Link>
         </div>
       </Hero>
-      <div className="container mx-auto row align-items-center px-3 py-4 py-lg-5">
-        <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 text-center'>
-          <img
-            className='border'
-            src={EngineeringImage.src}
-            alt="Two people working on a diagram together"
-          />
+      <div className="container mx-auto d-flex align-items-center px-3 py-4 py-lg-5 flex-column flex-lg-row">
+        <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 d-flex d-sm-block justify-content-center align-items-center'>
+          <div className="position-relative d-none d-md-block" style={{ height: 425 }}>
+            <Image
+              src={EngineeringImage.src}
+              alt="Two people working on a diagram together"
+              fill
+              className='d-block h-100'
+              sizes='(max-width: 991px) 648px, (max-width: 1199px) 426px, 713px'
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
+          <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 325 }}>
+            <Image
+              src={EngineeringImage.src}
+              alt="Two people working on a diagram together"
+              fill
+              className='d-block h-100'
+              sizes='(max-width: 767px) 468px, 713px'
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
+          <div className="position-relative d-block d-sm-none" style={{ height: 125, maxWidth: 300, width: '100%' }}>
+            <Image
+              src={EngineeringImage.src}
+              alt="Two people working on a diagram together"
+              fill
+              className='d-block h-100 border'
+              sizes='(max-width: 575px) 300px, 713px'
+              style={{ objectFit: 'fill' }}
+            />
+          </div>
         </div>
         <div className='col-12 col-lg-6 col-xl-5 order-2 order-lg-1 p-3 text-center space-y-3'>
-          <h3 className='mb-2'>Open-Access</h3>
-          <p className='mb-4'>
+          <h3 className='mb-2 text-center text-sm-start text-lg-center'>Open-Access</h3>
+          <p className='mb-4 text-center text-sm-start text-lg-center'>
             <em>We do not sell to schools.</em>{' '}
             We believe every student deserves access to free, high-quality learning content.
           </p>
 
-          <h3 className='mb-2'>Straight from the Source</h3>
-          <p className='mb-4'>Our lessons are designed with extensive input from working scientists and other STEM experts, meaning they are current and authentic.</p>
+          <h3 className='mb-2 text-center text-sm-start text-lg-center'>Straight from the Source</h3>
+          <p className='mb-4 text-center text-sm-start text-lg-center'>Our lessons are designed with extensive input from working scientists and other STEM experts, meaning they are current and authentic.</p>
 
-          <h3 className='mb-2'>High-Quality</h3>
-          <p className='mb-4'>We are a team of educators, scientists, and artists focused on publishing mind-expanding lessons that are also easy to teach.</p>
+          <h3 className='mb-2 text-center text-sm-start text-lg-center'>High-Quality</h3>
+          <p className='mb-4 text-center text-sm-start text-lg-center'>We are a team of educators, scientists, and artists focused on publishing mind-expanding lessons that are also easy to teach.</p>
         </div>
       </div>
 
-      <div className="bg-light-gray py-5">
-        <div className="container mx-auto row align-items-center">
-          <h2 className="fw-light fs-1 text-center p-3 p-lg-4">
+      <div className="bg-light-gray py-3 py-sm-5 border">
+        <div className="container mx-auto row align-items-center d-flex d-sm-block justify-content-sm-start justify-content-center flex-column">
+          <h2 className="fw-light fs-1 text-center text-sm-start text-lg-center p-3 p-lg-4">
             Think <strong>bigger</strong>.<br />{' '}
             Learn everything.
           </h2>
 
-          <div className='bg-white p-4 row align-items-center rounded-3'>
-            <div className='col-9 text-center'>
-              <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
-              <img
-                className='border'
-                src={NewReleaseImage.src}
-                alt="I Like That! How perception, emotion, and cognition shape our preferences"
-              />
+          <div className='bg-white p-4 row align-items-center rounded-3 d-flex d-sm-flex flex-column flex-sm-row'>
+            <div className='col-sm-9 text-center'>
+              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-xl-block w-25'>New release!</div>
+              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-md-block d-xl-none w-50'>New release!</div>
+              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-sm-block d-md-none d-xl-none w-75'>New release!</div>
+              <div className="w-100 d-flex d-sm-none justify-content-center align-items-center">
+                <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
+              </div>
+              <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 316 }}>
+                <Image
+                  priority
+                  className='border'
+                  src={NewReleaseImage.src}
+                  fill
+                  sizes="(max-width: 991px) 452.25px, 902.25px"
+                  style={{ objectFit: 'contain' }}
+                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
+                />
+              </div>
+              <div className="position-relative d-none d-lg-block d-xl-none" style={{ height: 442 }}>
+                <Image
+                  priority
+                  className='border'
+                  src={NewReleaseImage.src}
+                  fill
+                  sizes="(max-width: 991px) 632.25px, 902.25px"
+                  style={{ objectFit: 'contain' }}
+                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
+                />
+              </div>
+              <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 222 }}>
+                <Image
+                  priority
+                  className='border'
+                  src={NewReleaseImage.src}
+                  fill
+                  sizes="(max-width: 767px) 317.25px, 902.25px"
+                  style={{ objectFit: 'contain' }}
+                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
+                />
+              </div>
+              <div className="position-relative d-none d-xl-block" style={{ height: 630 }}>
+                <Image
+                  priority
+                  className='border'
+                  src={NewReleaseImage.src}
+                  fill
+                  style={{ objectFit: 'contain' }}
+                  sizes="902.25px"
+                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
+                />
+              </div>
+              <section className='row d-flex d-sm-none justify-content-center mt-2'>
+                <div className="position-relative d-block d-sm-none" style={{ height: 125, maxWidth: 300, width: '100%' }}>
+                  <Image
+                    priority
+                    src={NewReleaseImage.src}
+                    fill
+                    style={{ objectFit: 'contain' }}
+                    sizes="(max-width: 575px) 300px, 902.25px"
+                    alt="I Like That! How perception, emotion, and cognition shape our preferences"
+                  />
+                </div>
+              </section>
             </div>
-            <div className='col-3 text-center'>
-              <h5 className='fw-light'>Sponsor:</h5>
-              <a href="https://www.nsf.gov/">
-                <img src={NSFImage.src} alt="National Science Foundation" />
-              </a>
+            <div className='col-12 col-sm-3 text-sm-center d-flex justify-content-center mt-2 mt-sm-0 align-items-center'>
+              <section className="d-flex mt-1 flex-column justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch">
+                <h5 className='fw-light d-none d-sm-block'>Sponsor:</h5>
+                <div className="d-flex justify-content-center align-items-center mt-3">
+                  <h5 className='fw-light d-sm-none'>Sponsor:</h5>
+                </div>
+                <a href="https://www.nsf.gov/">
+                  <div className="position-relative d-none d-lg-block" style={{ height: 175, width: 175 }}>
+                    <Image
+                      src={NSFImage.src}
+                      fill
+                      style={{ objectFit: 'contain' }}
+                      sizes="175px"
+                      alt="National Science Foundation"
+                    />
+                  </div>
+                </a>
+                <a href="https://www.nsf.gov/">
+                  <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 125, width: 125 }}>
+                    <Image
+                      src={NSFImage.src}
+                      fill
+                      sizes="(max-width: 991px) 125px, 175px"
+                      style={{ objectFit: 'contain' }}
+                      alt="National Science Foundation"
+                    />
+                  </div>
+                </a>
+                <a href="https://www.nsf.gov/">
+                  <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 95, width: 95 }}>
+                    <Image
+                      src={NSFImage.src}
+                      fill
+                      style={{ objectFit: 'contain' }}
+                      sizes="(max-width: 767px) 95px, 175px"
+                      alt="National Science Foundation"
+                    />
+                  </div>
+                </a>
+                <a href="https://www.nsf.gov/">
+                  <div className="position-relative d-block d-sm-none" style={{ height: 65, width: 65 }}>
+                    <Image
+                      src={NSFImage.src}
+                      fill
+                      sizes="(max-width: 575px) 65px, 175px"
+                      style={{ objectFit: 'contain' }}
+                      alt="National Science Foundation"
+                    />
+                  </div>
+                </a>
+              </section>
             </div>
           </div>
 
-          <div className="col-12 col-lg-10 offset-lg-1 px-0 py-3 mt-4">
-            <h4>We want to empower students with <em>agency</em> and <em>critical thinking</em>.</h4>
-            <p>
+          <div className="col-12 col-lg-10 offset-lg-1 px-0 py-3 mt-4 d-flex flex-column justify-content d-sm-block align-items-center">
+            <h4 className="text-center text-sm-start">We want to empower students with <em>agency</em> and <em>critical thinking</em>.</h4>
+            <p className="text-center text-sm-start">
               Our lessons can be <em><strong>taught in any subject classroom!</strong></em> We align to learning standards in ELA, math, social studies and science to provide deeper understanding and longer retention.
             </p>
-            <p>
+            <p className="text-center text-sm-start">
               We build lessons around <em><strong>real research, data, and stories</strong></em> from diverse STEM experts.
             </p>
             <Link href="/lessons/en-US/5" className='btn btn-primary'>
@@ -94,11 +222,11 @@ export default function Home() {
       </div>
 
       <div className="container mx-auto py-5">
-        <h2 className='text-center'>
+        <h2 className='text-center text-sm-start text-lg-center'>
           What We Do<br />
           <span className='fs-4 fw-light'>(And how we make it free for teachers)</span>
         </h2>
-        <div className="row pt-5">
+        <div className="row text-center text-sm-start text-lg-center pt-lg-5">
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
             <h5 className='mb-3 text-height-1 fw-bold'>
               1. Clients hire us;<br />
@@ -137,90 +265,165 @@ export default function Home() {
       </div>
 
       <div className="bg-primary-light">
-        <div className="container row mx-auto py-5 align-items-center">
-          <div className="col-12 col-md-6 order-1 order-md-2">
-            <h4 className="mb-4">Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>.</h4>
-            <a
-              className='btn btn-primary mb-2'
-              href="https://www.scientificamerican.com/article/why-it-took-so-long-to-appreciate-female-birds-songs/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Read the article
-            </a>
-            <br />
-            <Link href="/lessons/en-US/1" className='btn btn-secondary'>
+        <div className="container d-flex flex-column-reverse flex-lg-row-reverse mx-auto py-5 align-items-center">
+          <section className="row w-100 w-md-75 mt-3 mt-lg-0">
+            <div className="col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-sm-block">
+              <h4 className="mb-4 text-center text-sm-start">Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>.</h4>
+              <a
+                className='btn btn-primary mb-2'
+                href="https://www.scientificamerican.com/article/why-it-took-so-long-to-appreciate-female-birds-songs/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Read the article
+              </a>
+              <br />
+              <Link href="/lessons/en-US/1" className='btn btn-secondary'>
 
-              Check out the lesson
+                Check out the lesson
 
-            </Link>
-          </div>
-          <div className="col-12 col-md-6 order-2 order-md-1">
-            <img
-              className='border'
-              src={ScientificAmericanImage.src}
-              alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-            />
-          </div>
+              </Link>
+            </div>
+          </section>
+          <section className="row w-100 w-md-75">
+            <div className="col-12 d-flex justify-content-center align-items-center d-sm-block">
+              <div className="position-relative d-xl-block d-none" style={{ height: 429 }}>
+                <Image
+                  fill
+                  src={ScientificAmericanImage.src}
+                  sizes="646.5px"
+                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
+                  style={{ objectFit: 'contain' }}
+                  priority
+                />
+              </div>
+              <div className="position-relative d-none d-lg-block d-xl-none" style={{ height: 430, width: '100%' }}>
+                <Image
+                  fill
+                  src={ScientificAmericanImage.src}
+                  sizes="(max-width: 1199px) 466.5px, 646.5px"
+                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
+                  style={{ objectFit: 'contain' }}
+                  priority
+                />
+              </div>
+              <div className="position-relative d-none d-sm-block d-lg-none d-xl-none ps-0" style={{ height: 380, width: '100%', maxWidth: 600 }}>
+                <Image
+                  fill
+                  sizes="(max-width: 767px) 486px, (max-width: 991px) 600px, 646.5px"
+                  src={ScientificAmericanImage.src}
+                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
+                  style={{ objectFit: 'fill' }}
+                  priority
+                />
+              </div>
+              <div className="position-relative d-block d-sm-none ps-0" style={{ height: 225, width: '100%', maxWidth: 300 }}>
+                <Image
+                  fill
+                  src={ScientificAmericanImage.src}
+                  sizes="(max-width: 575px) 300px, 646.5px"
+                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
+                  style={{ objectFit: 'fill' }}
+                  priority
+                />
+              </div>
+            </div>
+          </section>
         </div>
       </div>
 
       <div className="bg-light-gray">
-        {/* <div className="container mx-auto p-3 py-5 p-lg-5">
-          <div className='col-12 col-lg-10 offset-lg-1'>
-            <div className='text-center'>[video]</div>
-            <h2 className="mt-5 mb-3">JobViz</h2>
-            <h5>Connect lessons to careers with this free tool!</h5>
-            <ul>
-              <li>Search and browse ~1,000 jobs</li>
-              <li>Explore US Bureau of Labor Statistics data most relevant to students</li>
-              <li>Clean, responsive user interface</li>
-              <li>Share links to jobs (useful for assignments)</li>
-              <li>Create a springboard for independent career research</li>
-            </ul>
-            <Link href="/jobviz">
-              <a className='btn btn-secondary mt-3'>Explore jobs</a>
-            </Link>
-          </div>
-        </div> */}
-
         <div className='bg-secondary-light'>
-          <div className='container p-3 p-lg-5 mx-auto text-center'>
+          <div className='container p-3 p-lg-5 mx-auto text-center d-none d-lg-block'>
             <p className='fs-4'>Real Research + Real Stories + Real Data + Real Careers =</p>
             <p className='fs-3'>Real Learning</p>
+          </div>
+          <div className='py-3 border mx-auto d-block d-lg-none'>
+            <p className='w-100 text-center mb-0'>Real Research + Real Stories + Real Data + Real Careers</p>
+            <p className='w-100 text-center mb-0 mt-0'>=</p>
+            <p className='w-100 text-center mb-0'>Real Learning</p>
           </div>
         </div>
 
         <div className='bg-light-gray py-4'>
           <div className='container p-3 p-lg-5 mx-auto row'>
             <div className='col-12 mb-4'>
-              <h3 className='col-lg-8 col-xl-6 offset-lg-2 offset-xl-3 text-center fw-light fs-2 mb-3'>Benefits of connecting classrooms to the world of Academia</h3>
+              <h3 className='col-lg-8 col-xl-6 offset-lg-2 offset-xl-3 text-center text-sm-start text-lg-center fw-light fs-2 mb-3'>Benefits of connecting classrooms to the world of Academia</h3>
             </div>
             <div className='col-12 col-lg-6 mb-4 mb-lg-0'>
-              <div className='bg-white rounded-3 p-4'>
-                <h4>For Teachers</h4>
-                <ul>
-                  <li>Free (open-access), high-quality lessons</li>
-                  <li>Regularly updated based on your feedback</li>
-                  <li>Differentiated for grades 5-6, 7-8 & 9-12</li>
-                  <li>Adaptable for different time lengths, extension activities, etc.</li>
-                </ul>
-                <Link href="/lessons" className='btn btn-primary'>
-                  Get lessons
-                </Link>
-              </div>
-            </div>
-            <div className='col-12 col-lg-6'>
-              <div className='bg-white rounded-3 p-4'>
-                <h4>For Clients</h4>
-                <ul>
+              <div style={{ height: '400px' }} className='bg-white rounded-3 p-4 d-none d-sm-flex d-sm-block flex-column justify-content-center align-items-center'>
+                <h4 className="text-center text-sm-start w-100">For Teachers</h4>
+                <ul style={{ height: 190 }} className="d-none d-xl-block pt-2">
                   <li>Magnify the impact of your research and outreach efforts</li>
                   <li>Get detailed impact metrics to report to funders</li>
                   <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
                 </ul>
-                <Link href="/hire-us" className='btn btn-primary'>
-                  Get lessons
-                </Link>
+                <ul style={{ height: 225 }} className="d-sm-block d-md-none pt-2">
+                  <li>Magnify the impact of your research and outreach efforts</li>
+                  <li>Get detailed impact metrics to report to funders</li>
+                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
+                </ul>
+                <ul style={{ height: 240 }} className="d-none d-md-block d-xl-none">
+                  <li>Magnify the impact of your research and outreach efforts</li>
+                  <li>Get detailed impact metrics to report to funders</li>
+                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
+                </ul>
+                <div className="d-flex justify-content-center">
+                  <Link href="/lessons" className='btn btn-primary'>
+                    Get lessons
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <div className='col-12 col-lg-6 d-flex d-sm-block flex-column justify-content-center align-items-center'>
+              <div style={{ height: '400px' }} className='bg-white rounded-3 p-4 d-none d-sm-flex d-sm-block flex-column justify-content-center align-items-center'>
+                <h4 className="text-center text-sm-start w-100">For Clients</h4>
+                <ul style={{ height: 190 }} className="d-none d-md-block d-lg-none d-xl-block pt-2">
+                  <li>Magnify the impact of your research and outreach efforts</li>
+                  <li>Get detailed impact metrics to report to funders</li>
+                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
+                </ul>
+                <ul style={{ height: 225 }} className="d-block d-md-none pt-2">
+                  <li>Magnify the impact of your research and outreach efforts</li>
+                  <li>Get detailed impact metrics to report to funders</li>
+                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
+                </ul>
+                <ul style={{ height: 240 }} className="d-none d-lg-block d-xl-none">
+                  <li>Magnify the impact of your research and outreach efforts</li>
+                  <li>Get detailed impact metrics to report to funders</li>
+                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
+                </ul>
+                <div className="d-flex justify-content-center">
+                  <Link href="/hire-us" className='btn btn-primary'>
+                    Get lessons
+                  </Link>
+                </div>
+              </div>
+              <div style={{ minWidth: 240 }} className='bg-white rounded-3 p-4 d-flex d-sm-none d-sm-block flex-column justify-content-center align-items-center'>
+                <h4 className="text-center text-sm-start w-100">For Teachers</h4>
+                <ul className="d-block d-md-none pt-2">
+                  <li>Magnify the impact of your research and outreach efforts</li>
+                  <li>Get detailed impact metrics to report to funders</li>
+                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
+                </ul>
+                <div className="d-flex justify-content-center">
+                  <Link href="/hire-us" className='btn btn-primary'>
+                    Get lessons
+                  </Link>
+                </div>
+              </div>
+              <div style={{ minWidth: 240 }} className='bg-white mt-3 rounded-3 p-4 d-flex d-sm-none d-sm-block flex-column justify-content-center align-items-center'>
+                <h4 className="text-center text-sm-start w-100">For Clients</h4>
+                <ul className="d-block d-md-none pt-2">
+                  <li>Magnify the impact of your research and outreach efforts</li>
+                  <li>Get detailed impact metrics to report to funders</li>
+                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
+                </ul>
+                <div className="d-flex justify-content-center">
+                  <Link href="/hire-us" className='btn btn-primary'>
+                    Get lessons
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

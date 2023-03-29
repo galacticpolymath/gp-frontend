@@ -1,16 +1,10 @@
--/* eslint-disable quotes */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable no-unexpected-multiline */
-/* eslint-disable semi */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import.meta;
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/jsx-indent-props */
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable quotes */
+/* eslint-disable semi */
+/* eslint-disable indent */
 import Hero from '../../components/Hero';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import Layout from '../../components/Layout';
@@ -18,7 +12,7 @@ import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
 import PreviouslySelectedJobCategory from '../../components/JobViz/PreviouslySelectedJobCategory';
 import SearchInputSec from '../../components/JobViz/SearchInputSec';
-import Image from "next/image";
+import Image from 'next/image';
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';
@@ -68,16 +62,19 @@ const JobViz = ({ vals }) => {
                             return (
                                 <div key={index} className="d-flex justify-content-center align-items-center flex-column">
                                     <PreviouslySelectedJobCategory jobCategory={jobCategory} isBrick />
-                                    <Image
-                                        src="/imgs/jobViz/chain.png"
-                                        alt="chain_JobViz_Galactic_Polymath"
-                                        width={3}
-                                        height={30}
-                                        style={{
-                                            maxWidth: "100%",
-                                            height: "auto",
-                                        }}
-                                    />
+                                    <section className='w-100 d-flex justify-content-center align-items-center'> 
+                                        <div style={{ height: 14, width: 3 }} className='position-relative'>
+                                            <Image
+                                                src="/imgs/jobViz/chain.png"
+                                                alt="chain_JobViz_Galactic_Polymath"
+                                                fill
+                                                sizes="3px"
+                                                style={{
+                                                    object: "fit",
+                                                }}
+                                            />
+                                        </div>
+                                    </section>
                                 </div>
                             );
                         }
@@ -87,21 +84,24 @@ const JobViz = ({ vals }) => {
                             return (
                                 <div key={index} className="d-flex justify-content-center flex-column align-items-center">
                                     <PreviouslySelectedJobCategory jobCategory={jobCategory} />
-                                    <Image
-                                        src="/imgs/jobViz/chain.png"
-                                        alt="chain_JobViz_Galactic_Polymath"
-                                        width={3}
-                                        height={30}
-                                        style={{
-                                            maxWidth: "100%",
-                                            height: "auto",
-                                        }}
-                                    />
+                                    <section className='w-100 d-flex justify-content-center align-items-center'> 
+                                        <div style={{ height: 14, width: 3 }} className='position-relative'>
+                                            <Image
+                                                src="/imgs/jobViz/chain.png"
+                                                alt="chain_JobViz_Galactic_Polymath"
+                                                fill
+                                                sizes="3px"
+                                                style={{
+                                                    object: "fit",
+                                                }}
+                                            />
+                                        </div>
+                                    </section>
                                 </div>
                             );
                         }
 
-                        return <JobCategoryChainCard key={index} jobCategory={jobCategory} index={index} />
+                        return <JobCategoryChainCard key={index} jobCategory={jobCategory} index={index} isSearchResultsChainPresent />
 
                     })}
                 </section>
@@ -113,11 +113,16 @@ const JobViz = ({ vals }) => {
             }
             <section className="jobCategoriesAndBracketSec d-flex justify-content-center align-items-center flex-column pb-5 mb-5">
                 <section className="bracketSec d-flex justify-content-center align-items-center">
-                    <div className="bracketImgContainer">
-                        <img
+                    <div style={{ height: 70 }} className="bracketImgContainer position-relative w-100">
+                        <Image
                             src="/imgs/jobViz/bracket_search.png"
                             alt="Galactic_Polymath_JobViz_Icon_Search"
-                            className='w-100 h-100'
+                            fill
+                            style={{
+                                objectFit: 'fill',
+                            }}
+                            size="(max-width: 575px) 488.75px, (max-width: 767px) 651.945px, (max-width: 991px) 842.344px, (max-width: 1199px) 1019.15px, 1025px"
+                            priority
                         />
                     </div>
                 </section>

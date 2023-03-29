@@ -41,17 +41,33 @@
     }
   }
 
+
+  .shareYourKnowledgeImgContainer.onSmallScreens{
+    height: 300px;
+    max-width: 500px;
+
+    @media(max-width: 575px){
+      max-width: 320px;
+      height: 190px;
+    }
+  }
+
 .introTxtShareYourKnowledge {
   > span {
     font-size: $spanFontSize;
     @media (min-width: 1200px) {
-      // padding-right: 70px !important;
       padding-right: 70px !important;
     }
 
     @media (min-width: 768px) {
       color: #000000 !important;
     }
+  }
+}
+
+.shareYourKnowledgeDesktopSec li{
+  @media (min-width: 768px)  and (max-width: 991px){
+    line-height: 26px;;
   }
 }
 

@@ -1,8 +1,23 @@
+/* eslint-disable react/jsx-indent-props */
 import Hero from '../components/Hero';
 import Layout from '../components/Layout';
 import HeroImage from '../assets/img/city_network.jpg';
 import styles from './index.module.css';
 import TeamMemberCard from '../components/TeamMemberCard';
+import productTeam from '../data/AboutPg/productTeam.json';
+import devTeam from '../data/AboutPg/devTeam.json';
+import alumni from '../data/AboutPg/alumni.json';
+import Image from 'next/image';
+import Link from 'next/link';
+
+const MATT_LINKS =
+  [
+    { link: 'https://www.mattwilkinsbio.com/', icon: 'bi bi-globe' },
+    { link: 'https://github.com/drwilkins', icon: 'bi bi-github' },
+    { link: 'https://www.linkedin.com/in/mattwilkinsphd/', icon: 'bi bi-linkedin' },
+    { link: 'https://twitter.com/mattwilkinsbio', icon: 'bi bi-twitter' },
+    { link: 'https://scholar.google.com/citations?user=MZKGDvAAAAAJ&hl=en', imgSrc: '/imgs/about/google_scholar.png' },
+  ];
 
 const AboutPage = () => (
   <Layout>
@@ -34,7 +49,16 @@ const AboutPage = () => (
         </div>
 
         <div className='pb-4 px-5 text-center'>
-          <p className='fs-4 fw-bold'>Learn how we can level up your outreach in [TODO: link hireus]</p>
+          <p className='fs-4 fw-bold'>Learn how we can level up your outreach in
+            <Link
+              style={{ color: 'skyblue' }}
+              className='underline-on-hover mx-1'
+              href='/hire-us'
+            >
+              HIRE US
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </div>
@@ -47,12 +71,21 @@ const AboutPage = () => (
     </div>
 
     <div className='container mx-auto py-5 row'>
-      <div className='col-12 col-lg-6 mb-4 mb-lg-0'>
-        [TODO: image]
+      <div className='col-12 col-lg-6 mb-2 mb-sm-4 mb-lg-0 d-flex justify-content-center align-items-center'>
+        <div className="position-relative ourVisionImgContainer">
+          <Image
+            fill
+            alt="Our_Vision_Galactic_Polymath"
+            style={{ objectFit: 'contain', maxHeight: '100%', minHeight: '100%' }}
+            className="w-100 h-100"
+            sizes="(max-width: 575px) 521px, (max-width: 767px) 486px, (max-width: 991px) 594.594px, (max-width: 1199px) "
+            src="/imgs/about/our_vision.jpeg"
+          />
+        </div>
       </div>
-      <div className='col-12 col-lg-6'>
-        <h3 className='fw-light'>Our Vision</h3>
-        <p>We are a{' '}
+      <div className='col-12 col-lg-6 mt-3 mt-sm-2'>
+        <h3 className='fw-light text-center text-sm-start'>Our Vision</h3>
+        <p className="text-center text-sm-start mt-2">We are a{' '}
           <a
             target='_blank'
             rel='noopener noreferrer'
@@ -79,7 +112,7 @@ const AboutPage = () => (
     <div className='bg-light-gray'>
       <div className='container mx-auto p-3 py-lg-5 gap-3 d-flex flex-column'>
         <h2 className='text-center mt-4 fs-1'>Meet Our Team</h2>
-        
+
         <div className='row'>
           <div className='col-12 text-center p-3 py-lg-4 px-lg-5'>
             <h3 className='fs-4 mb-3 text-uppercase fw-light'>Leadership</h3>
@@ -92,6 +125,8 @@ const AboutPage = () => (
             className='col-12 col-lg-6 offset-lg-3 text-center'
             name="Matt Wilkins, PhD"
             position="Founder, CEO"
+            imgSrc="/imgs/profilePics/matt_wilkins_profile3_sq_xs.jpg"
+            links={MATT_LINKS}
           >
             <p>A scientist, teacher, writer, and pusher of boulders. Matt wants to live in a world where critical thinking and curiosity are as essential as breathing. Enjoys rock climbing, wildlife photography, and doing silly voices.</p>
           </TeamMemberCard>
@@ -105,55 +140,35 @@ const AboutPage = () => (
         </div>
 
         <div className='row justify-content-center align-items-stretch'>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Stephanie Castillo"
-            position="Digital Multimedia Specialist"
-          >
-            A PhD candidate in science communication, award winning video producer,and previous Jackson Wild Media Lab Fellow. Stephanie is also founder of Phuture Doctors—a media company showcasing diverse voices in STEM.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Elaine Perignat, PhD"
-            position="Education Specialist"
-          >
-            A spirited over-thinker with genuine enthusiasm for teaching and learning. Elaine loves to paint, create, build, and play if it means getting her hands dirty. Literally.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Carver Lee, MSc"
-            position="Graphic Design + Marketing Lead"
-          >
-            A geologist, sailor, teacher, and designer all rolled into one, Carver believes that learning and creating are always the way forward.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Aarati Asundi, PhD"
-            position="Video Creator"
-          >
-            A scientist, entrepreneur, and storyteller. From biology to climate change, she loves learning about the latest scientific research and sharing it with the world.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name='Jayme Dyer, PhD'
-            position="Video Creator"
-          >
-            A biology educator and science communicator, Jayme says Wow a lot <em>(especially about science!)</em> and works to help others do the same.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name='Caitlin Friesen'
-            position="Learning Multimedia Artist"
-          >
-            A biologist, scientist, educator, artist, and cyclist in constant pursuit of making things a little bit better. She loves learning, creating, and being outdoors!
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name='Audrey Serene'
-            position="Animator"
-          >
-            An animator and experimental filmmaker who loves anything and everything that combines art and technology. Especially when it’s for a good cause.
-          </TeamMemberCard>
+          {productTeam.map((member, index) => {
+            const { name, description, position, imgSrc, links } = member;
+
+            if (imgSrc && links) {
+              return (
+                <TeamMemberCard
+                  key={`${index}_${name}`}
+                  className='col-12 col-lg-6 col-xl-4'
+                  name={name}
+                  position={position}
+                  links={links}
+                  imgSrc={imgSrc}
+                >
+                  {description}
+                </TeamMemberCard>
+              );
+            }
+
+            return (
+              <TeamMemberCard
+                key={`${index}_${name}`}
+                className='col-12 col-lg-6 col-xl-4'
+                name={name}
+                position={position}
+              >
+                {description}
+              </TeamMemberCard>
+            );
+          })}
         </div>
 
         <div className='row'>
@@ -164,27 +179,21 @@ const AboutPage = () => (
         </div>
 
         <div className='row justify-content-center align-items-stretch'>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Kenzie Bottoms"
-            position="Lead Developer, GP Publishing Workflow"
-          >
-            A problem solver who codes, makes art, and roller skates, Kenzie is trying to pay it forward and delighted to work with such kind, talented people in the process.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Leigha Robinson"
-            position="Lead Developer, JobViz"
-          >
-            A Software Developer with a love of music, gardening, and using technology to make the world a better place. Leigha deeply believes in TEAM: Together Everyone Achieves More!
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Patrick Cheng"
-            position="Lesson Plan UI/UX Lead"
-          >
-            An earnest problem solver that loves to break things down and build things up. Loves food, beer, and communing with the great outdoors.
-          </TeamMemberCard>
+          {devTeam.map((member, index) => {
+            const { name, position, links, imgSrc, description } = member;
+            return (
+              <TeamMemberCard
+                key={`${index}_${name}`}
+                className='col-12 col-lg-6 col-xl-4'
+                name={name}
+                position={position}
+                links={links}
+                imgSrc={imgSrc}
+              >
+                {description}
+              </TeamMemberCard>
+            );
+          })}
         </div>
 
         <div className='row'>
@@ -195,34 +204,24 @@ const AboutPage = () => (
         </div>
 
         <div className='row justify-content-center align-items-stretch'>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Maria Brock"
-            position="Front End Web Developer, GP Publishing Workflow"
-          >
-            A Software Developer who loves problem solving, puzzles, and art. Fan of gaming, learning, and crocheting adorable, nerdy things. Powered by coffee.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Castle Crawford"
-            position="Front End Web Developer"
-          >
-            A food fanatic, day hiker, video game vanquisher, Corgi lover, and Software Developer. Loves being part of a team focused on making a difference.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Tyler Lemburg, MSc"
-            position="Previous Lead Developer, JobViz"
-          >
-            A Senior Software Engineer working remotely for Cognito. Tyler built the first iteration of JobViz. He has worked for several nonprofits as a web developer and recently earned a Masters in Climatology.
-          </TeamMemberCard>
-          <TeamMemberCard
-            className='col-12 col-lg-6 col-xl-4'
-            name="Arda Turkmen"
-            position="Back End Developer"
-          >
-            Arda is a senior at Vanderbilt University, majoring in Computer Science and Mathematics. He was key in developing our early website in 2019-2020 using Node.JS, React, and SQL managed through AWS.
-          </TeamMemberCard>
+          {alumni.map(({ name, position, description, imgSrc, links }, index) => {
+            const props = { className: 'col-12 col-lg-6 col-xl-4', name, position };
+
+            if (links) {
+              props['links'] = links;
+            }
+
+            if (imgSrc) {
+              props['imgSrc'] = imgSrc;
+            }
+
+            return (
+              <TeamMemberCard key={`${index}_${name}`} {...props}>
+                {description}
+              </TeamMemberCard>
+            );
+          }
+          )}
         </div>
       </div>
     </div>

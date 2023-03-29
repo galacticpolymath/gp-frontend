@@ -19,9 +19,9 @@ const LessonStep = ({
         <RichText content={StepQuickDescription} />
         <RichText content={StepDetails} />
         {Vocab && (
-          <div className="bg-light-gray vocab p-3 pb-1">
+          <div className="bg-white vocab p-3 pb-1 mb-4 border border-white shadow">
             <h6>Vocab</h6>
-            <RichText content={Vocab} />
+            <RichText content={Vocab} className="vocabTxt" />
           </div>
         )}
         {VariantNotes && (

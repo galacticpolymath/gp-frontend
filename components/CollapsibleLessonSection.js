@@ -1,5 +1,9 @@
+/* eslint-disable quotes */
+/* eslint-disable no-console */
+/* eslint-disable react/jsx-max-props-per-line */
 import PropTypes from 'prop-types';
-
+import { useRef } from 'react';
+import useLessonElementInView from '../customHooks/useLessonElementInView';
 import Accordion from './Accordion';
 
 /**
@@ -12,16 +16,28 @@ const CollapsibleLessonSection = ({
   children,
   initiallyExpanded = false,
   accordionId,
+  _sectionDots,
+
 }) => {
+  const ref = useRef();
+  const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
+  
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}
       id={(accordionId || SectionTitle).replace(/[\s!]/gi, '_').toLowerCase()}
-      className={className}
+      className={`${className} collapsibleLessonSection`}
       buttonClassName="btn btn-primary-light w-100 text-left"
       button={(
         <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-1'>
-          <h2 className='m-0'>{index && `${index}. `}{SectionTitle}</h2>
+          <h2
+            ref={ref}
+            id={h2Id}
+            className='m-0'
+            style={{ width: '100%', overflowWrap: 'break-word' }}
+          >
+            {index && `${index}. `}{SectionTitle}
+          </h2>
           <i className="fs-3 bi-chevron-down"></i>
           <i className="fs-3 bi-chevron-up"></i>
         </div>

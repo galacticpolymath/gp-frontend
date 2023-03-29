@@ -21,7 +21,7 @@ import Tier from './Tier';
 
 
 const HowMuchDoesItCostSec = ({ setTiersInfoForModalArr }) => (
-    <section className="howMuchDoesItCostSec">
+    <section className="howMuchDoesItCostSec pb-5 mb-3">
         <section className="pt-5 ps-sm-5 pe-sm-5">
             <h3 className="noMargin">How much does it cost?</h3>
         </section>

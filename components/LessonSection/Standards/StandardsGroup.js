@@ -19,7 +19,7 @@ export const formatAlignmentNotes = (text) => {
   return text.replace(/•/g, '-').replace(/\^2/g, '²');
 };
 
-const StandardsGroup = ({ 
+const StandardsGroup = ({
   id,
   codes,
   grades,
@@ -60,7 +60,7 @@ const StandardsGroup = ({
 
 StandardsGroup.propTypes = {
   id: PropTypes.string.isRequired,
-  grades: PropTypes.array,
+  grades: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   codes: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   statements: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   alignmentNotes: PropTypes.string,

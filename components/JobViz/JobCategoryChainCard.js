@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable react/jsx-tag-spacing */
 /* eslint-disable quotes */
@@ -12,6 +13,7 @@ import { useContext } from 'react';
 import { Card } from 'react-bootstrap';
 import { ModalContext } from "../../providers/ModalProvider";
 import DetailsBtn from './Buttons/Details';
+import Image from 'next/image'
 
 const jobsAllInfo = {
     "id": 1,
@@ -35,7 +37,7 @@ const jobsAllInfo = {
     "percent_employment_change_col": "#CF4C74FF",
 }
 
-const JobCategoryChainCard = ({ jobCategory, index }) => {
+const JobCategoryChainCard = ({ jobCategory, index, isSearchResultsChainPresent }) => {
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
 
@@ -45,9 +47,14 @@ const JobCategoryChainCard = ({ jobCategory, index }) => {
             <Card.Body className="position-relative d-flex flex-column justify-content-end jobVizCardBody">
                 <section className="position-relative iconSec">
                     <div className="jobVizIconContainer rounded-circle shadow position-absolute">
-                        <img
+                        <Image
                             src="/imgs/jobViz/branch-job-categories-search.jpg"
                             alt="Galactic_Polymath_JobViz_Icon_Search"
+                            fill
+                            style={{
+                                objectFit: 'contain',
+                            }}
+                            sizes="130px"
                             className='jobVizIcon rounded-circle'
                         />
                     </div>
@@ -55,10 +62,15 @@ const JobCategoryChainCard = ({ jobCategory, index }) => {
                 <section className="jobVizCard-buttonSec">
                     <h4 id="currentJobCategoryHeaderTxt" className='text-muted text-center'>{jobCategory?.categoryName?.toUpperCase() ?? "Job Categories"}</h4>
                     <section className="d-flex justify-content-center align-items-center w-100">
-                        <DetailsBtn 
-                            jobToShowInModal={jobCategory ?? jobsAllInfo}
-                            setSelectedJob={setSelectedJob}
-                        />
+                        {isSearchResultsChainPresent ?
+                            <DetailsBtn
+                                jobToShowInModal={jobCategory ?? jobsAllInfo}
+                                setSelectedJob={setSelectedJob}
+                            />
+                            :
+                            <span style={{ maxWidth: 230, wordWrap: 'break-word' }} className='mt-2 text-muted fst-italic text-center d-block w-100'>Click to explore a job category</span>
+                        }
+
                     </section>
                 </section>
             </Card.Body>

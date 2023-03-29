@@ -1,4 +1,4 @@
-// import Image from 'next/image';
+import Image from 'next/image';
 
 const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRegImg }) => {
   let regImgStyles = isRegImg ? 'position-relative imgSection regImgSec ms-sm-1 ms-md-0' : 'position-relative imgSection ms-sm-1 ms-md-0';
@@ -25,15 +25,27 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
       {!link && (
         <section className={regImgStyles}>
           {isRegImg ? (
-            <img
-              src={imgPath}
-              alt="Galactic_PolyMath_HireUs_Img"
-              className='w-100 gpConstellation'
-            />
+            <div className="w-100 gpConstellation position-relative" style={{ height: '300px' }}>
+              <Image
+                src={imgPath}
+                alt="Galactic_PolyMath_HireUs_Img"
+                className='w-100 h-100'
+                sizes="(max-width: 575px) 290px, (max-width: 767px) 253.109px, (max-width: 991px) 327.023px, (max-width: 1199) 395.664px, 475.195px"
+                style={{ objectFit: 'contain' }}
+                fill
+              />
+            </div>
           )
             : (
               <div className="position-relative">
-                <img src={imgPath} alt="Galactic_PolyMath_HireUs_Img" />
+                <Image
+                  src={imgPath}
+                  alt="Galactic_PolyMath_HireUs_Img"
+                  sizes="(max-width: 767px) 150px, 200px"
+                  className='w-100 h-100'
+                  style={{ objectFit: 'contain' }}
+                  fill
+                />
               </div>
             )}
         </section>
@@ -41,7 +53,14 @@ const PicAndDescriptionSec = ({ text, imgPath, link, name, parentSecStyles, isRe
       {link && (
         <section>
           <div className="imgSquareContainer position-relative borderThicker">
-            <img src={imgPath} alt="Galactic_PolyMath_HireUs_Img" />
+            <Image
+              src={imgPath}
+              alt="Galactic_PolyMath_HireUs_Img"
+              className='w-100 h-100'
+              style={{ objectFit: 'contain' }}
+              sizes="(max-width: 575px) 148px, (max-width: 991px) 118px, 68px"
+              fill
+            />
           </div>
         </section>
       )}

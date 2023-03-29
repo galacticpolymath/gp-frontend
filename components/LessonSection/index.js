@@ -1,3 +1,7 @@
+/* eslint-disable no-debugger */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
+/* eslint-disable quotes */
 import PropTypes from 'prop-types';
 
 import Overview from './Overview';
@@ -10,15 +14,16 @@ import Acknowledgments from './Acknowledgments';
 import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
 import Preview from './Preview';
+import { useEffect } from 'react';
 
 export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
   HEADING: 'lesson-plan.section-heading',
   TEXT_BLOCK: 'lesson-plan.text-block',
-  
+
   // deprecated
   PROCEDURE: 'lesson-plan.procedure',
-  
+
   TEACH_IT: 'teaching-resources.teaching-resources',
   LEARNING_CHART: 'lesson-plan.learning-chart',
   STANDARDS: 'lesson-plan.standards',
@@ -32,10 +37,10 @@ export const NUMBERED_SECTIONS = [
   SECTIONS.OVERVIEW,
   SECTIONS.HEADING,
   SECTIONS.TEACH_IT,
-  
+
   // deprecated
   SECTIONS.PROCEDURE,
-  
+
   SECTIONS.ACKNOWLEDGMENTS,
   SECTIONS.VERSIONS,
   SECTIONS.COLLAPSIBLE_TEXT,
@@ -49,7 +54,7 @@ export const sectionTypeMap = {
 
   // deprecated
   [SECTIONS.PROCEDURE]: () => <></>,
-  
+
   [SECTIONS.TEACH_IT]: TeachIt,
   [SECTIONS.LEARNING_CHART]: LearningChart,
   [SECTIONS.STANDARDS]: Standards,
@@ -59,11 +64,12 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 
-const LessonSection = ({ index, section }) => {
+const LessonSection = ({ index, section, _sectionDots }) => {
   const Component = sectionTypeMap[section.__component];
+  const _section = { ...section, _sectionDots };
 
   return Component ? (
-    <Component index={index} {...section} />
+    <Component index={index} {..._section} />
   ) : (
     <div>Invalid section {section.__component}</div>
   );

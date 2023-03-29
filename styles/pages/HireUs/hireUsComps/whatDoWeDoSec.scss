@@ -6,25 +6,25 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
   padding: 25px 45px 25px 45px;
 
   @media (min-width: 1300px) {
-    padding-left: 40px !important;
-    padding-right: 40px !important;
+    padding-left: 40px;
+    padding-right: 40px;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
-    padding: 35px 45px 45px 45px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    padding: 35px 45px 45px 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   @media(max-width: 575px){
-    padding: 20px 0px 20px 0px !important;
-    max-width: 450px !important;
+    padding: 20px 0px 20px 0px;
+    max-width: 450px;
   }
 
   > section:first-child > section{
     img{
-      width: 35px !important;
+      width: 35px;
     }
   }
 }
@@ -39,7 +39,7 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
   @media(max-width: 575px){
     > section:last-child{
       > span{
-        max-width: 430px !important;
+        max-width: 430px;
       }
     }
     
@@ -48,74 +48,81 @@ $borderColorForWhatDoWeDoSec: #d0b4bf;
 
 .howDoesItWorkSec{
   @media(min-width: 1200px){
-    margin-top: 70px !important;
+    margin-top: 70px;
 
     > section:last-child{
-      margin-top: 20px !important;
+      margin-top: 20px;
     }
+  }
+}
+
+.weMobileKnowledgeSec.topLevel{
+  @media(min-width: 992px) and (max-width: 1199px){
+    height: 102px;
   }
 }
 
 .HireUsCardFirstSecMobile.weMobileKnowledgeSec:not(:first-child) {
   @media (min-width: 1200px) {
-    margin-left: 15px !important;
+    margin-left: 15px;
+  }
+}
+
+.HireUsCardFirstSecMobile.weMobileKnowledgeSec:nth-child(2){
+  @media(min-width: 1200px){
+    // border: solid pink;
+    // transform: translateX(20px);
+  }
+}
+
+.transformRightTxtSec{
+  @media(min-width: 1200px){
+    transform: translateX(5px);
   }
 }
 
 .weMobileKnowledgeSec.lastSec {
-  width: 60% !important;
+  width: 60%;
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
   .whatDoWeDoSec {
     > section > section:last-child {
-      margin-top: 50px !important;
+      margin-top: 50px;
       @media(max-width: 850px){
-        margin-top: 70px !important;
+        margin-top: 70px;
       }
     }
   }
 
   .weMobileKnowledgeSec:nth-child(2) {
-    transform: translateX(20px) !important;
+    transform: translateX(20px);
   }
 
   .weMobileKnowledgeSec:nth-child(1),
   .weMobileKnowledgeSec:nth-child(2) {
-    height: 109px !important;
+    height: 109px;
   }
 }
 
 
 .weMobileKnowledgeSec {
   @media (min-width: 992px) and (max-width: 1299px) {
-    padding-right: 15px !important;
+    padding-right: 15px;
   }
 }
 
 .weMobileKnowledgeSec {
   @media (min-width: 768px) {
     > section:last-child {
-      margin-left: 15px !important;
+      margin-left: 15px;
     }
-  }
-}
-
-.HireUsCardFirstSecMobile > section:first-child img {
-  max-width: none !important;
-  width: 50px !important;
-  height: 60px !important;
-}
-
-.HireUsCardFirstSecMobile:first-child > section:first-child {
-  img {
-    // width: 35px !important;
   }
 }
 
 .hireUsCardBoldedTxt {
   @media (min-width: 1400px) {
-    white-space: nowrap !important;
+    white-space: nowrap;
   }
 }
 

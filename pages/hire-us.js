@@ -1,4 +1,3 @@
-// import Image from 'next/image';
 import { Card } from 'react-bootstrap';
 import Layout from '../components/Layout';
 import CardContainer from '../components/HireUsComps/CardContainer';
@@ -34,7 +33,7 @@ const HireUsPage = () => {
           <div className="container-fluid noPadding noMargin w-100 hireUsPgWrapper">
             <IntroSecHireUs />
             <section className="CardSec d-flex justify-content-center align-items-center flex-column align-sm-items-stretch ps-3 pe-3 ps-sm-4 pe-sm-4">
-              <Card className='hireUsPgInfoCard w-100 border shadow py-5'>
+              <Card className='ps-1 pe-1 ps-sm-0 pe-sm-0 hireUsPgInfoCard w-100 border shadow py-5'>
                 <Card.Body className="hireUsPgInfoCardBody">
                   <WhatDoWeDoSec />
                   <HowDoesItWorkSec />
@@ -48,6 +47,7 @@ const HireUsPage = () => {
                       itemCarouselStylesCustom="teachersAndStudentReview"
                       customCardStyles="cardMainStylesTeachersAndStudents"
                       _customBulletPtsSecCss="bulletPtsTeachersAndStudents"
+                      _autoCarouselContainerStyles="teachersAndStudentsAutoCarouselContainer"
                     />
                   </section>
                   <ShareYourKnowledge lessonsInfo={lessonsInfo} isMobile />
@@ -84,6 +84,7 @@ const HireUsPage = () => {
                       customCardStyles='grantReviewsCard'
                       itemCarouselStylesCustom='grantReviewItemCarousel'
                       _customBulletPtsSecCss="grantReviewsBulletPtsSec"
+                      _autoCarouselContainerStyles='grantReviewsAutoCarouselContainer'
                     />
                   </section>
                   <HowMuchDoesItCostSec setTiersInfoForModalArr={setTiersInfoForModalArr} />

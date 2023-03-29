@@ -1,110 +1,84 @@
 .headerSection {
   @media (min-width: 576px) and (max-width: 767px) {
-    width: 75% !important;
+    width: 75%;
   }
 
   @media (max-width: 575px) {
-    width: 100% !important;
-  }
+    width: 100%;
 
-  @media (min-width: 375px) and (max-width: 575px) {
-    padding-left: 40px !important;
-  }
-
-  @media (max-width: 374px) {
-    padding-left: 15px !important;
-    padding-right: 5px !important;
+    h1{
+      line-height: 40px;
+    }
   }
 }
 
 .subTxtHeadingDesktop {
-  display: block !important;
-  max-width: 770px !important;
+  display: block;
+  max-width: 770px;
 
-  @media (min-width: 768px) and (max-width: 1199px) {
-    // width: 55% !important;
-  }
 }
 
 .subTxtHeadingContainerHireUsPg {
-  width: 75% !important;
+  width: 75%;
 
   @media (max-width: 575px) {
-    width: 100% !important;
+    width: 100%;
+    transform: translateY(20px);
+    line-height: 20px;
   }
+}
 
-  @media (min-width: 375px) and (max-width: 575px) {
-    padding-left: 40px !important;
-    padding-right: 40px !important;
-
-    > span {
-      font-size: 22px !important;
-    }
-  }
-
-  @media (max-width: 374px) {
-    padding-left: 18px !important;
-    padding-right: 18px !important;
-
-    > span {
-      font-size: 17px !important;
+.letTalksMainBtnSec{
+  > button{
+    @media(max-width: 575px){
+      height: 60px;
     }
   }
 }
 
 .introSecAndLetTalksSec {
-  max-width: 1464px !important;
+  max-width: 1464px;
 
   @media (max-width: 767px) {
     height: 450px;
   }
 
-  @media (max-width: 652px) {
-    height: 470px !important;
-  }
-
   @media (max-width: 575px) {
-    height: 450px !important;
-    display: flex !important;
-    justify-content: flex-end !important;
-    align-items: flex-end !important;
-    padding-bottom: 75px !important;
+    height: 450px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    // padding-bottom: 75px;
+    padding: 0px 0px 75px 35px;
+    transform: translateY(25px);
   }
 
   @media (min-width: 768px) {
-    height: 500px !important;
-    flex-direction: column !important;
-    justify-content: flex-end !important;
-    align-items: flex-end !important;
-    padding-bottom: 40px !important;
+    height: 500px;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding-bottom: 40px;
   }
 
   > section {
-    @media(max-width: 767px) and (min-width: 576px){
-      padding-left: 40px !important;
+    @media (max-width: 767px) and (min-width: 576px) {
+      padding-left: 40px;
     }
     > section:last-child {
       @media (max-width: 767px) {
-        width: 75% !important;
+        width: 75%;
       }
 
       @media (max-width: 575px) {
-        width: 100% !important;
-      }
-      @media (min-width: 375px) and (max-width: 575px) {
-        padding-left: 40px !important;
-      }
-
-      @media (max-width: 374px) {
-        padding-left: 18px !important;
-        padding-right: 18px !important;
+        width: 100%;
       }
     }
   }
 
   > section:first-child {
     @media (min-width: 768px) {
-      height: 310px !important;
+      height: 310px;
     }
   }
 
@@ -122,11 +96,10 @@
 
 .headingHireUs {
   @media (max-width: 767px) {
-    font-size: 34px !important;
+    font-size: 34px;
 
-    @media(max-width: 575px){
-      padding-right: 15px !important;
+    @media (max-width: 575px) {
+      padding-right: 15px;
     }
   }
 }
-
