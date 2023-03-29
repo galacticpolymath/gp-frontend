@@ -1,7 +1,8 @@
 import RenderArrowNext from './RenderArrowNext';
-import Iframe from 'react-iframe';
 
 /* eslint-disable no-console */
+const handleOnScroll = () => {};
+
 export const getMediaComponent = ({ type, mainLink }) => {
   if (type === 'video') {
     return (
@@ -14,8 +15,10 @@ export const getMediaComponent = ({ type, mainLink }) => {
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
         className='lesson-media'
+        onLoad={() => {
+          window.addEventListener('scroll', handleOnScroll, { passive: true });
+        }}
       />
-      // <Iframe src={mainLink} />
     );
   } else if (type === 'pdf') {
     return (
