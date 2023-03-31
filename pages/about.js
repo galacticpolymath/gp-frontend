@@ -23,6 +23,9 @@ const AboutPage = () => (
   <Layout>
     <Hero 
       imgSrc='/imgs/about/about_hero.png'
+      isImgToTheSide
+      className='about-hero d-flex pt-4 pb-4 pt-md-0 pb-md-0 flex-column-reverse flex-md-row-reverse'
+      isStylesHereOn={false}
       // imgSrc={HeroImage.src}
     >
       <h1 className={styles.shadow}>About GP</h1>
