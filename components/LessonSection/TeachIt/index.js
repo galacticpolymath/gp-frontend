@@ -125,23 +125,25 @@ const TeachIt = ({
         </div>
 
         {selectedGradeResources && (
-          <div style={{ height: 'fit-content' }} className='d-flex justify-content-center align-items-center position-relative'>
-            <a
-              target='_blank'
-              rel='noopener noreferrer'
-              href={selectedGradeResources.url}
-              className='btn btn-primary px-3 py-2 d-inline-block mb-3'
-            >
-              <div className='d-flex align-items-center gap-2'>
-                <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
-                {selectedGradeResources.linkText}
-              </div>
-            </a>
-            <AiOutlineQuestionCircle
-              className="ms-2 downloadTipIcon position-absolute"
-              style={{ fontSize: "20px" }}
-              onClick={handleIconClick}
-            />
+          <div style={{ height: 'fit-content' }} className='d-flex justify-content-center align-items-center mt-3 mb-3'>
+            <div className='position-relative'>
+              <a
+                target='_blank'
+                rel='noopener noreferrer'
+                href={selectedGradeResources.url}
+                className='btn btn-primary px-3 py-2 d-inline-block mb-3'
+              >
+                <div className='d-flex align-items-center gap-2'>
+                  <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
+                  {selectedGradeResources.linkText}
+                </div>
+              </a>
+              <AiOutlineQuestionCircle
+                className="downloadTipIcon position-absolute"
+                style={{ fontSize: "20px", width: 'fit-content', top: -10 }}
+                onClick={handleIconClick}
+              />
+            </div>
           </div>
         )}
 
