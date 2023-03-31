@@ -125,24 +125,27 @@ const TeachIt = ({
         </div>
 
         {selectedGradeResources && (
-          <div style={{ height: 'fit-content' }} className='d-flex justify-content-center align-items-center mt-3 mb-3'>
-            <div className='position-relative'>
-              <a
-                target='_blank'
-                rel='noopener noreferrer'
-                href={selectedGradeResources.url}
-                className='btn btn-primary px-3 py-2 d-inline-block mb-3'
-              >
-                <div className='d-flex align-items-center gap-2'>
-                  <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
-                  {selectedGradeResources.linkText}
-                </div>
-              </a>
-              <AiOutlineQuestionCircle
-                className="downloadTipIcon position-absolute"
-                style={{ fontSize: "20px", width: 'fit-content', top: -10 }}
-                onClick={handleIconClick}
-              />
+          <div style={{ height: 'fit-content' }} className='d-flex mt-3 mb-3 container justify-content-center'>
+            <div className=" m-0 row d-flex justify-content-center align-items-center">
+              <div className='position-relative col-11 col-md-12'>
+                <a
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  href={selectedGradeResources.url}
+                  className='btn btn-primary px-3 py-2 d-inline-block mb-3'
+                >
+                  <div className='d-flex flex-column flex-md-row align-items-md-center gap-2'>
+                    <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
+                    <span style={{ lineHeight: "23px" }} className="d-none d-sm-inline">{selectedGradeResources.linkText}</span>
+                    <span style={{ lineHeight: "17px", fontSize: "14px" }} className="d-inline d-sm-none">{selectedGradeResources.linkText}</span>
+                  </div>
+                </a>
+                <AiOutlineQuestionCircle
+                  className="downloadTipIcon position-absolute"
+                  style={{ fontSize: "20px", width: 'fit-content', top: -10 }}
+                  onClick={handleIconClick}
+                />
+              </div>
             </div>
           </div>
         )}
