@@ -92,7 +92,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       {/* selectedLessonPg */}
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} />
       <div className="container d-flex justify-content-center pt-4 pb-4">
-        <div className="col-11 col-sm-12 col-md-10 col-lg-8">
+        <div className="col-11 col-sm-12 col-md-10">
           <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
             {lastSubRelease && (
               <p>
