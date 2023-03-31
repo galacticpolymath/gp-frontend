@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-indent-props */
 import Hero from '../components/Hero';
 import Layout from '../components/Layout';
-import HeroImage from '../assets/img/city_network.jpg';
+// import HeroImage from '../assets/img/city_network.jpg';
 import styles from './index.module.css';
 import TeamMemberCard from '../components/TeamMemberCard';
 import productTeam from '../data/AboutPg/productTeam.json';
@@ -21,7 +21,10 @@ const MATT_LINKS =
 
 const AboutPage = () => (
   <Layout>
-    <Hero imgSrc={HeroImage.src}>
+    <Hero 
+      imgSrc='/imgs/about/about_hero.png'
+      // imgSrc={HeroImage.src}
+    >
       <h1 className={styles.shadow}>About GP</h1>
       <p className={styles.shadow}>Galactic Polymath (GP) is an education studio. We help scientists, nonprofits, and sustainable companies achieve outreach at scale by translating complex, cutting-edge research into mind-blowing lessons for grades 5+.</p>
     </Hero>
