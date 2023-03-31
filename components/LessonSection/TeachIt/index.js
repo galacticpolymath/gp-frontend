@@ -34,16 +34,25 @@ const TeachIt = ({
   const environments = ['classroom', 'remote']
     .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   console.log("Data[environments[0]]: ", Data[environments[0]]);
-  const hasResources = Data?.[environments[0]]?.resources;
   const gradeVariations = getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources;
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations[0]);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
   const allResources = getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources;
+  // GOAL #1: on the first render, show the text for the first grade variation
+  // create state called selectedGrade. This state will hold the first object in allResources as its defatul value.
+  const [selectedGradeResources, setSelectedGradeResources] = useState(allResources?.[0]?.links);
+
+  // GOAL #2: when the user clicks on a different grade variation, show the text for that grade variation
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
+  };
+
+  const handleOnChange = selectedGrade => {
+    setSelectedGradeResources(selectedGrade.links);
+    setSelectedGrade(selectedGrade);
   };
 
   useEffect(() => {
@@ -87,7 +96,7 @@ const TeachIt = ({
                   id={variation.grades}
                   value={variation.grades}
                   checked={variation.grades === selectedGrade.grades}
-                  onChange={() => setSelectedGrade(variation)}
+                  onChange={() => handleOnChange(variation)}
                 />
                 {variation.grades}
               </label>
@@ -115,21 +124,21 @@ const TeachIt = ({
           </div>
         </div>
 
-        {hasResources && (
-          <div className='text-center d-flex'>
+        {selectedGradeResources && (
+          <div style={{ height: 'fit-content' }} className='d-flex justify-content-center align-items-center position-relative'>
             <a
               target='_blank'
               rel='noopener noreferrer'
-              href={'_'}
+              href={selectedGradeResources.url}
               className='btn btn-primary px-3 py-2 d-inline-block mb-3'
             >
               <div className='d-flex align-items-center gap-2'>
                 <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
-                {/* {resources.links.linkText} */}
+                {selectedGradeResources.linkText}
               </div>
             </a>
             <AiOutlineQuestionCircle
-              className="ms-2 downloadTipIcon"
+              className="ms-2 downloadTipIcon position-absolute"
               style={{ fontSize: "20px" }}
               onClick={handleIconClick}
             />
