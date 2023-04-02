@@ -14,6 +14,11 @@ import Image from 'next/image';
 import Button from 'react-bootstrap/Button';
 
 const CollaborateSec = () => {
+    
+    const handleBtnClick = () => {
+        window.open('mailto:info@galacticpolymath.com')
+    }
+
     return (
         <section className='container-fluid d-flex flex-column pb-5'>
             <section className='row d-flex flex-column justify-content-center align-items-center'>
@@ -58,7 +63,11 @@ const CollaborateSec = () => {
                     </p>
                 </section>
                 <section className='col-12 d-flex justify-content-center align-items-center mt-4'>
-                    <Button variant='primary' className="pointer">
+                    <Button 
+                        variant='primary' 
+                        className="pointer"
+                        onClick={handleBtnClick}
+                    >
                         GET IN TOUCH!
                     </Button>
                 </section>
