@@ -15,23 +15,23 @@ import Image from 'next/image'
 
 const Partners = () => {
     return (
-        <section className='container-fluid pt-3'>
+        <section className='container-fluid pt-3 ps-0 pe-0 pb-0'>
             <section className='row'>
                 <section className='col-12 d-flex justify-content-center align-items-center flex-column'>
                     <h3 className='fs-4 mb-3 text-uppercase fw-light'>PARTNERS</h3>
                     <p style={{ maxWidth: '900px' }} className='fs-5 text-center'>The amazing organizations we work with to generate high quality multimedia, develop new education tools, and improve access to STEM careers for underserved communities.</p>
                 </section>
             </section>
-            <section className='row'>
-                <section className='col-12 d-flex justify-content-center'>
+            <section className='row mt-3'>
+                <section className='col-12 d-none d-lg-flex justify-content-center px-5'>
                     {CompanyPartners.map(({ name, type, imgPath, alt, description, link }, index) => {
                         const containerHeight = (index === 2) ? '40px' : '110px';
                         const parentSecMargin = index === 1 ? 'ms-4 me-4' : ''
 
                         return (
-                            <section className={`w-25 d-flex align-items-center flex-column ${parentSecMargin}`} key={index}>
+                            <section style={{ width: '33%' }} className={`d-flex align-items-center flex-column ${parentSecMargin}`} key={index}>
                                 <section className='w-100 d-flex justify-content-center align-items-center'>
-                                    <div className='rounded bg-white shadow d-flex justify-content-center align-items-center' style={{ height: '130px', width: '130px' }}>
+                                    <div className='rounded bg-white company-partner-img-container d-flex justify-content-center align-items-center pointer' style={{ height: '130px', width: '130px' }}>
                                         <a href={link} target="_blank">
                                             <div style={{ height: containerHeight, width: '110px' }} className='position-relative'>
                                                 <Image
