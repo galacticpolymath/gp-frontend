@@ -109,10 +109,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
           <h1 ref={ref} id="lessonTitleId" className="mt-4">{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
           {lesson.CoverImage && lesson.CoverImage.url && (
-            <img
-              src={lesson.CoverImage.url}
-              alt={lesson.Subtitle}
-            />
+            <div className='position-relative mt-2 mb-2' style={{ height: 233, width: "100%" }}>
+              <Image
+                src={lesson.CoverImage.url}
+                alt={lesson.Subtitle}
+                fill
+                style={{ objectFit: 'fill' }}
+              />
+            </div>
           )}
           <div className='row mt-4'>
             <div className="col col-md-6 col-lg-9">
@@ -171,3 +175,16 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 };
 
 export default LessonDetails;
+
+{/* <img
+              src={lesson.CoverImage.url}
+              alt={lesson.Subtitle}
+            /> */}
+{/* <div className='position-relative'>
+              <Image
+                src={lesson.CoverImage.url}
+                alt={lesson.Subtitle}
+                fill
+                style={{ objectFit: 'contain' }}
+              />
+            </div> */}
