@@ -24,11 +24,11 @@ const Partners = () => {
                 </section>
             </section>
             <section className='row mt-3'>
-                <section className='col-12 d-flex flex-wrap justify-content-center align-items-center'>
+                <section className='d-flex flex-wrap flex-column flex-lg-row justify-content-center align-items-center'>
                     {CompanyPartners.map(({ name, type, imgPath, alt, description, link }, index) => {
                         const containerHeight = (index === 2) ? '40px' : '110px';
-                        const parentSecMargin = index === 1 ? 'ms-4 me-4' : ''
-                        const props = { name: name, type: type, imgPath: imgPath, containerHeight: containerHeight, alt: alt, parentSecMargin, description: description, link: link }
+                        {/* const parentSecMargin = index === 1 ? 'ms-4 me-4' : '' */}
+                        const props = { name: name, type: type, imgPath: imgPath, containerHeight: containerHeight, alt: alt, description: description, link: link }
 
                         return <Partner key={index} {...props} />
 

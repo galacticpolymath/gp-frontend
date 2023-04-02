@@ -264,7 +264,9 @@ $toolTipColor: #f0f4ff;
 }
 
 .partnerCompany{
-  height: 400px;
+  @media(min-width: 992px){
+    height: 400px;
+  }
 }
 
 .partnerSec{

@@ -14,8 +14,8 @@ import Image from 'next/image';
 
 const Partner = ({ link, containerHeight, parentSecMargin, imgPath, alt, name, type, description, index }) => {
     return (
-        <section style={{ width: "33%" }} className={`partnerCompany d-flex align-items-center flex-column ${parentSecMargin}`} key={index}>
-            <section className='w-100 d-flex justify-content-center align-items-center'>
+        <section style={{ width: "40%" }} className={`partnerCompany pb-4 pb-lg-0 d-flex align-items-center flex-column ${parentSecMargin}`} key={index}>
+            <section style={{ minWidth: '220px' }} className='w-100 d-flex justify-content-center align-items-center'>
                 <div className='rounded bg-white company-partner-img-container d-flex justify-content-center align-items-center pointer' style={{ height: '130px', width: '130px' }}>
                     <a href={link} target="_blank">
                         <div style={{ height: containerHeight, width: '110px' }} className='position-relative'>
@@ -34,7 +34,7 @@ const Partner = ({ link, containerHeight, parentSecMargin, imgPath, alt, name, t
             <section className='mt-4'>
                 <h4 className='text-center'>{name}</h4>
                 <h6 className='text-center fw-light text-muted'>{type}</h6>
-                <p className='text-center'>{description}</p>
+                <p style={{ maxWidth: "450px", minWidth: "200px" }} className='w-100 text-center ps-lg-1 pe-lg-1 ps-xl-0 pe-xl-0'>{description}</p>
             </section>
         </section>
     )
