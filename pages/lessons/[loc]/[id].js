@@ -114,22 +114,34 @@ const LessonDetails = ({ lesson, availLocs }) => {
                 src={lesson.CoverImage.url}
                 alt={lesson.Subtitle}
                 fill
+                className='d-sm-block d-none'
                 style={{ objectFit: 'fill' }}
+              />
+              <Image
+                src={lesson.CoverImage.url}
+                alt={lesson.Subtitle}
+                fill
+                className='d-sm-none d-block'
+                style={{ objectFit: 'contain' }}
               />
             </div>
           )}
-          <div className='row mt-4'>
+          <div className='row mt-4 d-flex flex-column flex-sm-row'>
             <div className="col col-md-6 col-lg-9">
               <h5>Sponsored by:</h5>
               <RichText content={lesson.SponsoredBy} />
             </div>
-            <div className="col col-md-6 col-lg-3 position-relative">
-              {lesson.SponsorImage && lesson.SponsorImage.url && (
-                <img
-                  src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
-                  alt={lesson.Subtitle}
-                />
-              )}
+            <div className="col col-md-6 col-lg-3 mt-3 mt-sm-0">
+              <div style={{ height: '270.039px' }} className="position-relative">
+                {lesson.SponsorImage && lesson.SponsorImage.url && (
+                  <Image
+                    src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
+                    alt={lesson.Subtitle}
+                    fill
+                    style={{ objectFit: 'contain' }}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -175,16 +187,3 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 };
 
 export default LessonDetails;
-
-{/* <img
-              src={lesson.CoverImage.url}
-              alt={lesson.Subtitle}
-            /> */}
-{/* <div className='position-relative'>
-              <Image
-                src={lesson.CoverImage.url}
-                alt={lesson.Subtitle}
-                fill
-                style={{ objectFit: 'contain' }}
-              />
-            </div> */}

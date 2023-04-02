@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import Link from 'next/link';
 import PropTypes from 'prop-types';
+import Image from 'next/image';
 // import useGetElementInView from '../../customHooks/useLessonElementInView';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
@@ -64,54 +65,21 @@ const Overview = ({
                 <span>{EstLessonTime}</span>
               </div>
             </div>
-            {/* below 575px */}
-            {/* <div className='d-grid d-sm-none g-col g-col-md-4 bg-white p-3 rounded-3'>
-              <i className="fs-3 mb-2 d-block bi-book-half"></i>
-              <h5>Target Subject: </h5>
-              <span>{TargetSubject}</span>
-            </div>
-            <div className='d-grid d-sm-none g-col g-col-md-4 bg-white p-3 rounded-3'>
-              <i className="fs-3 mb-2 d-block bi-person-circle"></i>
-              <h5>Grades: </h5>
-              <span>{ForGrades}</span>
-            </div>
-            <div className='d-grid d-sm-none g-col g-col-md-4 bg-white p-3 rounded-3'>
-              <i className="fs-3 mb-2 d-block bi-alarm"></i>
-              <h5>Estimated Time: </h5>
-              <span>{EstLessonTime}</span>
-            </div> */}
-
-            {/* <div className="d-flex flex-column col-start-5">
-              <div className="d-flex">
-                <div className='d-grid d-sm-none g-col-4 bg-white p-3 rounded-3 me-1'>
-                  <i className="fs-3 mb-2 d-block bi-book-half"></i>
-                  <h5>Target Subject: </h5>
-                  <span>{TargetSubject}</span>
-                </div>
-                <div className='d-grid d-sm-none g-col-4 bg-white p-3 rounded-3 ms-1'>
-                  <i className="fs-3 mb-2 d-block bi-person-circle"></i>
-                  <h5>Grades: </h5>
-                  <span>{ForGrades}</span>
-                </div>
-              </div>
-              <div className="w-100 d-flex justify-content-center align-items-center mt-2">
-                <div className='d-grid d-sm-none g-col g-col-md-4 bg-white p-3 rounded-3 col-start-7' style={{ maxWidth: '150px' }}>
-                  <i className="fs-3 mb-2 d-block bi-alarm"></i>
-                  <h5>Estimated Time: </h5>
-                  <span>{EstLessonTime}</span>
-                </div>
-              </div>
-            </div> */}
           </div>
           <Link passHref href="#learning_standards">
             <h5>Subject breakdown by standard alignments: </h5>
             {SteamEpaulette && SteamEpaulette.url && (
-              <img
-                src={SteamEpaulette.url}
-                alt="Subject breakdown by standard alignments"
-              />
+              <div style={{ height: 'clamp(28px, 10vh, 138px)' }} className='position-relative'>
+                <Image
+                  src={SteamEpaulette.url}
+                  alt="Subject breakdown by standard alignments"
+                  fill
+                  style={{
+                    objectFit: 'contain',
+                  }}
+                />
+              </div>
             )}
-
           </Link>
         </div>
 

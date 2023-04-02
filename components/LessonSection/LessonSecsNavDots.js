@@ -13,7 +13,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LiNavDot from "./NavDots/LiNavDot";
 import SectionTitlesUl from "./NavDots/SectionTitlesUl";
 
