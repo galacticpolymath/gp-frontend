@@ -12,10 +12,11 @@
 /* eslint-disable no-console */
 import CompanyPartners from '../../../data/AboutPg/Partners.json';
 import Image from 'next/image'
+import Partner from '../childOfSections/Partner';
 
 const Partners = () => {
     return (
-        <section className='container-fluid pt-3 ps-0 pe-0 pb-0'>
+        <section style={{ height: 'fit-content' }} className='container-fluid pt-3 pb-5 partnerSec'>
             <section className='row'>
                 <section className='col-12 d-flex justify-content-center align-items-center flex-column'>
                     <h3 className='fs-4 mb-3 text-uppercase fw-light'>PARTNERS</h3>
@@ -23,36 +24,14 @@ const Partners = () => {
                 </section>
             </section>
             <section className='row mt-3'>
-                <section className='col-12 d-none d-lg-flex justify-content-center px-5'>
+                <section className='col-12 d-flex flex-wrap justify-content-center align-items-center'>
                     {CompanyPartners.map(({ name, type, imgPath, alt, description, link }, index) => {
                         const containerHeight = (index === 2) ? '40px' : '110px';
                         const parentSecMargin = index === 1 ? 'ms-4 me-4' : ''
+                        const props = { name: name, type: type, imgPath: imgPath, containerHeight: containerHeight, alt: alt, parentSecMargin, description: description, link: link }
 
-                        return (
-                            <section style={{ width: '33%' }} className={`d-flex align-items-center flex-column ${parentSecMargin}`} key={index}>
-                                <section className='w-100 d-flex justify-content-center align-items-center'>
-                                    <div className='rounded bg-white company-partner-img-container d-flex justify-content-center align-items-center pointer' style={{ height: '130px', width: '130px' }}>
-                                        <a href={link} target="_blank">
-                                            <div style={{ height: containerHeight, width: '110px' }} className='position-relative'>
-                                                <Image
-                                                    src={imgPath}
-                                                    alt={alt}
-                                                    fill
-                                                    style={{
-                                                        object: 'contain',
-                                                    }}
-                                                />
-                                            </div>
-                                        </a>
-                                    </div>
-                                </section>
-                                <section className='mt-4'>
-                                    <h4 className='text-center'>{name}</h4>
-                                    <h6 className='text-center fw-light text-muted'>{type}</h6>
-                                    <p className='text-center'>{description}</p>
-                                </section>
-                            </section>
-                        )
+                        return <Partner key={index} {...props} />
+
                     })}
                 </section>
             </section>

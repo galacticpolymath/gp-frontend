@@ -1,0 +1,43 @@
+/* eslint-disable react/jsx-indent */
+/* eslint-disable react/jsx-indent-props */
+/* eslint-disable indent */
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable curly */
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/jsx-closing-bracket-location */
+/* eslint-disable react/jsx-closing-tag-location */
+/* eslint-disable no-unused-vars */
+/* eslint-disable semi */
+/* eslint-disable quotes */
+/* eslint-disable no-console */
+import Image from 'next/image';
+
+const Partner = ({ link, containerHeight, parentSecMargin, imgPath, alt, name, type, description, index }) => {
+    return (
+        <section style={{ width: "33%" }} className={`partnerCompany d-flex align-items-center flex-column ${parentSecMargin}`} key={index}>
+            <section className='w-100 d-flex justify-content-center align-items-center'>
+                <div className='rounded bg-white company-partner-img-container d-flex justify-content-center align-items-center pointer' style={{ height: '130px', width: '130px' }}>
+                    <a href={link} target="_blank">
+                        <div style={{ height: containerHeight, width: '110px' }} className='position-relative'>
+                            <Image
+                                src={imgPath}
+                                alt={alt}
+                                fill
+                                style={{
+                                    object: 'contain',
+                                }}
+                            />
+                        </div>
+                    </a>
+                </div>
+            </section>
+            <section className='mt-4'>
+                <h4 className='text-center'>{name}</h4>
+                <h6 className='text-center fw-light text-muted'>{type}</h6>
+                <p className='text-center'>{description}</p>
+            </section>
+        </section>
+    )
+}
+
+export default Partner;
