@@ -10,6 +10,7 @@ import alumni from '../data/AboutPg/alumni.json';
 import Image from 'next/image';
 import Link from 'next/link';
 import Partners from '../components/AboutPgComps/sections/Partners';
+import CollaborateSec from '../components/AboutPgComps/sections/CollaborateSec';
 
 const MATT_LINKS =
   [
@@ -233,6 +234,7 @@ const AboutPage = () => (
       </div>
     </div>
     <Partners />
+    <CollaborateSec />
   </Layout>
 );
 

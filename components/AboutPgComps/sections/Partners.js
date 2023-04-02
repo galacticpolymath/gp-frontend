@@ -12,7 +12,7 @@
 /* eslint-disable no-console */
 import CompanyPartners from '../../../data/AboutPg/Partners.json';
 import Image from 'next/image'
-import Partner from '../childOfSections/Partner';
+import Partner from '../sectionChildren/Partner';
 
 const Partners = () => {
     return (

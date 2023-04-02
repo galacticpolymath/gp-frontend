@@ -466,6 +466,12 @@ ol li{
  cursor:  pointer !important;
 }
 
+.position-sm-absolute{
+  @media(min-width: 576px){
+    position: absolute !important;
+  }
+}
+
 .btnColorChangeOnHover:hover{
   opacity: .8 !important;
 }

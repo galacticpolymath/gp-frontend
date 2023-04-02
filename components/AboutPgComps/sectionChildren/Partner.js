@@ -12,9 +12,9 @@
 /* eslint-disable no-console */
 import Image from 'next/image';
 
-const Partner = ({ link, containerHeight, parentSecMargin, imgPath, alt, name, type, description, index }) => {
+const Partner = ({ link, containerHeight, imgPath, alt, name, type, description, index }) => {
     return (
-        <section style={{ width: "40%" }} className={`partnerCompany pb-4 pb-lg-0 d-flex align-items-center flex-column ${parentSecMargin}`} key={index}>
+        <section className='partnerCompany pb-4 pb-lg-0 d-flex align-items-center flex-column' key={index}>
             <section style={{ minWidth: '220px' }} className='w-100 d-flex justify-content-center align-items-center'>
                 <div className='rounded bg-white company-partner-img-container d-flex justify-content-center align-items-center pointer' style={{ height: '130px', width: '130px' }}>
                     <a href={link} target="_blank">

@@ -269,8 +269,26 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.partnerSec{
-  * {
-    // border: solid pink;
+.human-wave-emoji{
+  width: 15% !important;
+  height: 100% !important;
+  color: rgb(203, 31, 142);
+}
+
+.collaborateImg{
+  @media(min-width: 576px){
+    transform: translate(65%, -30%)
+  }
+}
+
+.partnerCompany{
+  width: 40%;
+
+  @media(min-width: 768px) and (max-width: 991px){
+    width: 75%;
+  }
+
+  @media(max-width: 767px){
+    width: 90%;
   }
 }
