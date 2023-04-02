@@ -1,7 +1,7 @@
 import { Parallax } from 'react-parallax';
 import LetsTalkBtnContainer from './buttons/LetsTalkBtnContainer';
 import ClassRoom2 from '../../public/imgs/classroom2.jpg';
-
+// comment
 const ReadyToInspireSec = () => {
   return (
     <section className='readyToInspireParentSec mt-5'>
