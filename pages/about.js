@@ -9,6 +9,7 @@ import devTeam from '../data/AboutPg/devTeam.json';
 import alumni from '../data/AboutPg/alumni.json';
 import Image from 'next/image';
 import Link from 'next/link';
+import Partners from '../components/AboutPgComps/sections/Partners';
 
 const MATT_LINKS =
   [
@@ -231,6 +232,7 @@ const AboutPage = () => (
         </div>
       </div>
     </div>
+    <Partners />
   </Layout>
 );
 
