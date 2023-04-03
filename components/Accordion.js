@@ -13,6 +13,7 @@ const Accordion = ({
   initiallyExpanded = false,
   button,
 }) => {
+  console.log('id: ', id);
   return (
     <div className={className}>
       <div className="accordion-header lessonsPgSec" id={`heading_${id}`}>
