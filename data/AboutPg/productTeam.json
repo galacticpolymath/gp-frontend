@@ -28,18 +28,6 @@
         ]
     },
     {
-        "name": "Elaine Perignat, PhD",
-        "position": "Education Specialist",
-        "imgSrc": "/imgs/about/alumni/E_Perignat.webp",
-        "description": "A spirited over-thinker with genuine enthusiasm for teaching and learning. Elaine loves to paint, create, build, and play if it means getting her hands dirty. Literally.",
-        "links": [
-            {
-                "imgSrc": "/imgs/about/google_scholar.png", 
-                "link": "https://scholar.google.com/citations?user=G12SJQoAAAAJ&hl=en&oi=ao"
-            }           
-        ]
-    },
-    {
         "name": "Aarati Asundi, PhD",
         "description": "A scientist, entrepreneur, and storyteller. From biology to climate change, she loves learning about the latest scientific research and sharing it with the world.",
         "position": "VIDEO CREATOR",

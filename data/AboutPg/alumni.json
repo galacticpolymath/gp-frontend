@@ -16,6 +16,18 @@
         ]
     },
     {
+        "name": "Elaine Perignat, PhD",
+        "position": "Education Specialist",
+        "imgSrc": "/imgs/about/alumni/E_Perignat.webp",
+        "description": "A spirited over-thinker with genuine enthusiasm for teaching and learning. Elaine loves to paint, create, build, and play if it means getting her hands dirty. Literally.",
+        "links": [
+            {
+                "imgSrc": "/imgs/about/google_scholar.png", 
+                "link": "https://scholar.google.com/citations?user=G12SJQoAAAAJ&hl=en&oi=ao"
+            }           
+        ]
+    },
+    {
         "name": "Leigha Robinson",
         "position": "LEAD DEVELOPER, JOBVIZ",
         "imgSrc": "/imgs/about/alumni/Leigha_Robinson.webp",
