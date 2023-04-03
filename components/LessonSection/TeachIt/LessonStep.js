@@ -15,12 +15,16 @@ const LessonStep = ({
 }) => {
 
   return (
-    <div className='mt-4 ms-sm-3'>
-      <div className='d-flex align-items-center gap-2 fs-5 mb-3'>
+    <div className='mt-4 ms-sm-3 d-flex justify-content-center align-items-center flex-column'>
+      <div className='d-none d-sm-flex align-items-center gap-2 fs-5 mb-3'>
         <div className="badge bg-primary">{Step}</div>
         <h6 className='m-0 fs-5'>{StepTitle}</h6>
       </div>
-      <div className='ms-5'>
+      <div className='d-flex d-sm-none gap-2 fs-5 mb-3 w-100'>
+        <div style={{ width: "31px", height: '29px' }} className="badge bg-primary d-flex justify-content-center align-items-center">{Step}</div>
+        <h6 className='m-0 fs-5'>{StepTitle}</h6>
+      </div>
+      <div className='ms-sm-5'>
         <RichText content={StepQuickDescription} />
         <RichText content={StepDetails} />
         {Vocab && (
