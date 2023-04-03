@@ -10,12 +10,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.0",
     "@popperjs/core": "^2.11.6",
     "@smakss/react-scroll-direction": "^1.0.4",
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.3",
     "d3": "^7.8.2",
     "date-fns": "^2.29.3",
+    "font-awesome": "^4.7.0",
     "latest-version": "^7.0.0",
     "moment": "^2.29.4",
     "next": "^13.2.1",

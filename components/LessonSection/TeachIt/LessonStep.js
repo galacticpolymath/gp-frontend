@@ -1,4 +1,7 @@
+/* eslint-disable quotes */
+/* eslint-disable no-console */
 import RichText from '../../RichText';
+import { faSplit } from '@fortawesome/free-solid-svg-icons';
 
 const LessonStep = ({
   Step,
@@ -9,6 +12,8 @@ const LessonStep = ({
   VariantNotes,
   StepQuickDescription,
 }) => {
+
+  console.log("faSplit: ", faSplit);
   return (
     <div className='mt-4 ms-3'>
       <div className='d-flex align-items-center gap-2 fs-5 mb-3'>

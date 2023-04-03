@@ -16,10 +16,6 @@ const LessonPart = ({
   const durList = isOnLastPart ? null : chunks.map(({ chunkDur }) => chunkDur);
   const linkResources = isOnLastPart ? chunks : (resources?.[0]?.parts?.[partNum - 1]?.itemList || []);
 
-  console.log({
-    durList,
-  });
-
   return (
     <Accordion
       buttonClassName='w-100 text-start'
