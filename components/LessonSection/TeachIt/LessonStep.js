@@ -1,7 +1,8 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import RichText from '../../RichText';
-import { faSplit } from '@fortawesome/free-solid-svg-icons';
+import { TbArrowsSplit2 } from "react-icons/tb";
+import { HiLightBulb } from "react-icons/hi2";
 
 const LessonStep = ({
   Step,
@@ -13,9 +14,8 @@ const LessonStep = ({
   StepQuickDescription,
 }) => {
 
-  console.log("faSplit: ", faSplit);
   return (
-    <div className='mt-4 ms-3'>
+    <div className='mt-4 ms-sm-3'>
       <div className='d-flex align-items-center gap-2 fs-5 mb-3'>
         <div className="badge bg-primary">{Step}</div>
         <h6 className='m-0 fs-5'>{StepTitle}</h6>
@@ -31,14 +31,22 @@ const LessonStep = ({
         )}
         {VariantNotes && (
           <div className='d-flex align-items-start my-3 gap-2'>
-            [TODO: img]
-            <RichText content={VariantNotes} />
+            <div>
+              <TbArrowsSplit2 style={{ transform: "rotate(270deg)", fontSize: 22 }} />
+            </div>
+            <div>
+              <RichText content={VariantNotes} />
+            </div>
           </div>
         )}
         {TeachingTips && (
           <div className='d-flex align-items-start my-3 gap-2'>
-            [TODO: img]
-            <RichText content={TeachingTips} />
+            <div>
+              <HiLightBulb style={{ fontSize: 22 }} />
+            </div>
+            <div>
+              <RichText content={TeachingTips} />
+            </div>
           </div>
         )}
       </div>
