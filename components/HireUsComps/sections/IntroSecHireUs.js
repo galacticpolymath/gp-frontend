@@ -1,31 +1,12 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-max-props-per-line */
 import LetsTalkBtnContainer from '../buttons/LetsTalkBtnContainer';
 import styles from '../../../pages/index.module.css';
-import LayoutBackGroundImg from '../../../assets/img/1_northeast_merlot_darker.png';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 
 const IntroSecHireUs = () => {
-  const [wasRendered, setWasRendered] = useState(false);
-
-  const handleScroll = () => {
-    const parallaxContainer = document.getElementById('parallax-container');
-    const scrollPosition = window.scrollY;
-    parallaxContainer.style.backgroundPositionY = `-${scrollPosition * .9}px`;
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [wasRendered]);
-
   return (
-    <section id='parallax-container' className='d-flex flex-row row introSecHireUsPg' style={{ position: 'relative', overflow: 'hidden' }}>
-      <Image src='/imgs/hireUsHero.png' alt='Hero_Intro_Pic' fill style={{ objectFit: 'cover' }} priority />
+    <section className='d-flex flex-row row introSecHireUsPg position-relative'>
+      <Image src='/imgs/heroImgHireUs.png' alt='hire_us_img_hero' style={{ zIndex: -1 }} fill className='h-100 w-100 position-absolute' />
       <section className="w-100 justify-content-center align-items-center d-none d-md-flex">
         <section className="d-none d-md-flex flex-column w-100 noMargin col-12 introSecAndLetTalksSec">
           <section className="d-flex flex-column w-100 justify-content-center align-items-center">
