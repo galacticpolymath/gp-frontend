@@ -409,6 +409,12 @@ ol li{
   }
 }
 
+.w-lg-75{
+  @media(min-width: 992px){
+    width: 75% !important;
+  }
+}
+
 .borderThicker {
   border: solid 1.3px #707070 !important;
 }

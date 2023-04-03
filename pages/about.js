@@ -235,28 +235,30 @@ const AboutPage = () => (
           </div>
         </div>
         <div className='row d-flex justify-content-center align-items-center'>
-          {alumni.map(({ name, position, description, imgSrc, links }, index) => {
-            const props = { className: 'col-11 col-sm-10 col-lg-6 col-xl-4 ms-lg-3 mt-2', name, position };
+          <div className='w-100 w-lg-75'>
+            {alumni.map(({ name, position, description, imgSrc, links }, index) => {
+              const props = { className: 'col-11 col-sm-10 col-lg-6 col-xl-4 ms-lg-3 mt-2', name, position };
 
-            if (links) {
-              props['links'] = links;
+              if (links) {
+                props['links'] = links;
+              }
+
+              if (imgSrc) {
+                props['imgSrc'] = imgSrc;
+              }
+
+              return (
+                <Accordion key={`${index}_${name}`} className='w-100 w-md-75' id={`${index}`} buttonClassName='noBtnStyles w-100' button={<AlumniBtn alumniName={name} />}>
+                  <div className='d-lg-block d-flex justify-content-center align-items-center'>
+                    <TeamMemberCard {...props}>
+                      {description}
+                    </TeamMemberCard>
+                  </div>
+                </Accordion>
+              );
             }
-
-            if (imgSrc) {
-              props['imgSrc'] = imgSrc;
-            }
-
-            return (
-              <Accordion key={`${index}_${name}`} className='w-100 w-md-75' id={`${index}`} buttonClassName='noBtnStyles w-100' button={<AlumniBtn alumniName={name} />}>
-                <div className='d-lg-block d-flex justify-content-center align-items-center'>
-                  <TeamMemberCard {...props}>
-                    {description}
-                  </TeamMemberCard>
-                </div>
-              </Accordion>
-            );
-          }
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
