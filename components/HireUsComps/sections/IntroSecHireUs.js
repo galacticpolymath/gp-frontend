@@ -24,7 +24,7 @@ const IntroSecHireUs = () => {
   }, [wasRendered]);
 
   return (
-    <section id='parallax-container' className='d-flex flex-row row introSecHireUsPg' style={{ height: '100vh', position: 'relative', overflow: 'hidden' }}>
+    <section id='parallax-container' className='d-flex flex-row row introSecHireUsPg' style={{ position: 'relative', overflow: 'hidden' }}>
       <Image src='/imgs/hireUsHero.png' alt='Hero_Intro_Pic' fill style={{ objectFit: 'cover' }} priority />
       <section className="w-100 justify-content-center align-items-center d-none d-md-flex">
         <section className="d-none d-md-flex flex-column w-100 noMargin col-12 introSecAndLetTalksSec">
