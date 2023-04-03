@@ -236,7 +236,7 @@ const AboutPage = () => (
         </div>
         <div className='row d-flex justify-content-center align-items-center'>
           {alumni.map(({ name, position, description, imgSrc, links }, index) => {
-            const props = { className: 'col-12 col-lg-6 col-xl-4', name, position };
+            const props = { className: 'col-11 col-sm-10 col-lg-6 col-xl-4 ms-lg-3 mt-2', name, position };
 
             if (links) {
               props['links'] = links;
@@ -246,13 +246,13 @@ const AboutPage = () => (
               props['imgSrc'] = imgSrc;
             }
 
-            console.log('${index}_${name}: ', `${index}_${name}`);
-
             return (
-              <Accordion key={`${index}_${name}`} className='w-75' id={`${index}`} buttonClassName='noBtnStyles w-100' button={<AlumniBtn alumniName={name} />}>
-                <TeamMemberCard {...props}>
-                  {description}
-                </TeamMemberCard>
+              <Accordion key={`${index}_${name}`} className='w-100 w-md-75' id={`${index}`} buttonClassName='noBtnStyles w-100' button={<AlumniBtn alumniName={name} />}>
+                <div className='d-lg-block d-flex justify-content-center align-items-center'>
+                  <TeamMemberCard {...props}>
+                    {description}
+                  </TeamMemberCard>
+                </div>
               </Accordion>
             );
           }

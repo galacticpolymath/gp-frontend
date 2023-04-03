@@ -425,6 +425,14 @@ ol li{
   border-style: none !important;
 }
 
+
+
+.w-sm-75{
+  @media(min-width: 576px){
+    width: 75% !important;
+  }
+}
+
 .noBtnStyles {
   background-repeat: no-repeat;
   border: none;

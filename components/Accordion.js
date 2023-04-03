@@ -12,10 +12,12 @@ const Accordion = ({
   children,
   initiallyExpanded = false,
   button,
+  style = {},
 }) => {
-  console.log('id: ', id);
+
+  console.log('style: ', style);
   return (
-    <div className={className}>
+    <div style={style} className={className}>
       <div className="accordion-header lessonsPgSec" id={`heading_${id}`}>
         <div>
           <div>
