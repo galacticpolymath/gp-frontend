@@ -42,7 +42,7 @@ const TeachIt = ({
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
   let assessmentPart = Data.classroom.resources[0].parts[Data?.classroom?.resources[0]?.parts?.length - 1];
-  assessmentPart = assessmentPart ? { chunks: assessmentPart.itemList, partTitle: assessmentPart.title } : assessmentPart;
+  assessmentPart = (assessmentPart?.title === 'Assessments') ? { chunks: assessmentPart.itemList, partTitle: assessmentPart.title } : null;
   const parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
 
   const handleIconClick = () => {
