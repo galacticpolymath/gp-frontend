@@ -38,13 +38,12 @@ const TeachIt = ({
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations[0]);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
   const allResources = getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources;
-  // GOAL #1: on the first render, show the text for the first grade variation
-  // create state called selectedGrade. This state will hold the first object in allResources as its defatul value.
   const [selectedGradeResources, setSelectedGradeResources] = useState(allResources?.[0]?.links);
-
-  // GOAL #2: when the user clicks on a different grade variation, show the text for that grade variation
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
+  let assessmentPart = Data.classroom.resources[0].parts[Data?.classroom?.resources[0]?.parts?.length - 1];
+  assessmentPart = assessmentPart ? { chunks: assessmentPart.itemList, partTitle: assessmentPart.title } : assessmentPart;
+  const parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
@@ -56,8 +55,9 @@ const TeachIt = ({
   };
 
   useEffect(() => {
-    console.log('allResources: ', allResources);
-    console.log('allResources: ', allResources);
+    console.log({
+      parts, oldParts: Data.parts,
+    });
   });
 
   /* col-12 col-xl-8 offset-xl-2 */
@@ -151,7 +151,7 @@ const TeachIt = ({
         )}
 
         <div className='container pb-4'>
-          {Data.parts.map(part => (
+          {parts.map(part => (
             <LessonPart
               key={part.partNum}
               resources={resources}
