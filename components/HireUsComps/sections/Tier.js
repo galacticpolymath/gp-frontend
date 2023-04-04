@@ -86,7 +86,10 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                             <tbody>
                                 <tr className="tierTableRow">
                                     <td className="tierInfoStatus text-center text-sm-end text-sm-nowrap">{learningExperience}</td>
-                                    <td id="0" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">GP Learning Experience <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
+                                    <td id="0" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">
+                                        GP Learning Experience
+                                        <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" />
+                                    </td>
                                 </tr>
                                 <tr className="tierTableRow">
                                     <td className="w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap ">{projectSupport}</td>
