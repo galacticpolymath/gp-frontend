@@ -86,23 +86,23 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                             <tbody>
                                 <tr className="tierTableRow">
                                     <td className="tierInfoStatus text-center text-sm-end text-sm-nowrap">{learningExperience}</td>
-                                    <td id="0" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">GP Learning Experience <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon border" /></td>
+                                    <td id="0" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">GP Learning Experience <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
                                     <td className="w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap ">{projectSupport}</td>
-                                    <td id="1" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">Years of Project Support <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon border" /></td>
+                                    <td id="1" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover">Years of Project Support <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
                                     <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap   ${basic ? '' : 'op-5'}`}>{basic ? `${basic} min` : <HiOutlineX />}</td>
-                                    <td id="2" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${basic ? '' : 'op-5'}`}>Basic Video <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon border" /></td>
+                                    <td id="2" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${basic ? '' : 'op-5'}`}>Basic Video <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
                                     <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap   ${complex ? '' : 'op-5'}`}>{complex ? `${complex} min` : <HiOutlineX />}</td>
-                                    <td id="3" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${complex ? '' : 'op-5'}`}>Complex Video <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon border" /></td>
+                                    <td id="3" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${complex ? '' : 'op-5'}`}>Complex Video <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
                                     <td className={`w-25 tierInfoStatus text-center text-sm-end text-sm-nowrap   ${isMajorExtension ? '' : 'op-5'}`}>{isMajorExtension ? <GoCheck /> : <HiOutlineX />}</td>
-                                    <td id="4" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${isMajorExtension ? '' : 'op-5'}`}>Major extension in Year 3 <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon border" /></td>
+                                    <td id="4" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-5 text-center text-sm-start position-relative underline-on-hover ${isMajorExtension ? '' : 'op-5'}`}>Major extension in Year 3 <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                             </tbody>
                         </table>

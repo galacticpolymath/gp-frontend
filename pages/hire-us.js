@@ -23,6 +23,8 @@ import WhatDoWeDoSec from '../components/HireUsComps/sections/WhatDoWeDoSec';
 import HowDoesItWorkSec from '../components/HireUsComps/sections/HowDoesItWorkSec';
 import WhatYouWillGetSec from '../components/HireUsComps/sections/WhatYouWillGetSec';
 
+// making modal left text align
+
 const HireUsPage = () => {
   const [tiersInfoForModalArr, setTiersInfoForModalArr] = useState(tiersInfoForModal.map(tier => ({ ...tier, isModalOn: false })));
 
