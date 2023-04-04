@@ -23,6 +23,7 @@ const Partner = ({ link, containerHeight, imgPath, alt, name, type, description,
                                 src={imgPath}
                                 alt={alt}
                                 fill
+                                sizes="110px"
                                 style={{
                                     object: 'contain',
                                 }}

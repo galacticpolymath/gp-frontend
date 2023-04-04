@@ -31,6 +31,7 @@ const CollaborateSec = () => {
                             className='position-absolute collaborateImg d-none d-sm-block end-0 top-0'
                             width={160}
                             height={80}
+                            size='160px'
                             style={{
                                 objectFit: 'contain',
                             }}
@@ -41,6 +42,7 @@ const CollaborateSec = () => {
                                 alt='Collaborate_Galactic_Polymath_Section'
                                 width={160}
                                 height={80}
+                                size='160px'
                                 style={{
                                     objectFit: 'contain',
                                 }}

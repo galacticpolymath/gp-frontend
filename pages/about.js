@@ -224,10 +224,6 @@ const AboutPage = () => (
             );
           })}
         </div>
-
-        {/* GOAL: make each alumni expandable on click */}
-
-        {/* GOAL #1: style the button with a div */}
         <div className='row'>
           <div className='col-12 text-center p-3 py-lg-4 px-lg-5'>
             <h3 className='fs-4 mb-3 text-uppercase fw-light'>Alumni</h3>
