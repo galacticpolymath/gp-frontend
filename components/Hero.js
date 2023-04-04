@@ -13,10 +13,10 @@ const Hero = ({
 }) => {
   return (
     <div className={`${isStylesHereOn ? styles.hero : ''} ${className} position-relative`}>
-      {(imgSrc && !isImgToTheSide) && <Image src={imgSrc} alt="Hero_Image_Galactic_Polymath" fill priority style={{ objectFit: 'cover', zIndex: -1 }} />}
+      {(imgSrc && !isImgToTheSide) && <Image src={imgSrc} alt="Hero_Image_Galactic_Polymath" sizes="(max-width: 575px) 270px, (max-width: 767px) 767px, (max-width: 991px) 480px, (max-width: 1199px) 584px, 705px" fill priority style={{ objectFit: 'cover', zIndex: -1 }} />}
       {(imgSrc && isImgToTheSide) && (
         <div className="position-relative h-100 w-100 mb-2 me-md-3">
-          <Image src={imgSrc} alt="Hero_Image_Galactic_Polymath" fill priority style={{ objectFit: 'contain' }} />
+          <Image src={imgSrc} alt="Hero_Image_Galactic_Polymath" fill sizes="(max-width: 575px) 270px, (max-width: 767px) 767px, (max-width: 991px) 480px, (max-width: 1199px) 584px, 705px" priority style={{ objectFit: 'contain' }} />
         </div>
       )}
       <div className="container row mx-auto align-items-start">

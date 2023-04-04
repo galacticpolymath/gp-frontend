@@ -49,7 +49,6 @@ const AboutPage = () => (
       isImgToTheSide
       className='about-hero d-flex pt-4 pb-4 pt-md-0 pb-md-0 flex-column-reverse flex-md-row-reverse'
       isStylesHereOn={false}
-    // imgSrc={HeroImage.src}
     >
       <h1 className={styles.shadow}>About GP</h1>
       <p className={styles.shadow}>Galactic Polymath (GP) is an education studio. We help scientists, nonprofits, and sustainable companies achieve outreach at scale by translating complex, cutting-edge research into mind-blowing lessons for grades 5+.</p>
