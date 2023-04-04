@@ -16,6 +16,9 @@ import { useEffect, useState } from 'react';
 import ParentLessonSection from '../../../components/LessonSection/ParentLessonSection';
 import { useInView } from 'react-intersection-observer';
 import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
+import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
+
+const isOnProduction = process.env.NODE_ENV === 'production';
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
@@ -61,6 +64,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       }
     })
   }
+
   const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
 
   useEffect(() => {
@@ -87,10 +91,13 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }, [inView])
 
+  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
+
   return (
     <Layout>
       {/* selectedLessonPg */}
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} />
+      <ShareWidget {...shareWidgetFixedProps} />
       <div className="container d-flex justify-content-center pt-4 pb-4">
         <div className="col-11 col-sm-12 col-md-10">
           <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
@@ -175,6 +182,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params: { id, loc } }) => {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   const lessons = await res.json();
+  console.log('lessons: ', lessons)
   const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter((lesson) => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
 
