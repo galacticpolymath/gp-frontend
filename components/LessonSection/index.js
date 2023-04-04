@@ -14,7 +14,6 @@ import Acknowledgments from './Acknowledgments';
 import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
 import Preview from './Preview';
-import { useEffect } from 'react';
 
 export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',

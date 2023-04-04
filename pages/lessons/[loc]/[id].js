@@ -188,6 +188,9 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   console.log('lessons: ', lessons)
   const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter((lesson) => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
+  // find the parts in the lesson.section
+  console.log("lesson.Section['teaching-materials']: ", lesson.Section['teaching-materials'])
+  console.log('lesson?.Section?.procedure?.Data ', lesson?.Section?.procedure?.Data)
 
   lesson.Section['teaching-materials'].Data = {
     ...lesson.Section.procedure.Data,
