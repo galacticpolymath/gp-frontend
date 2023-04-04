@@ -95,7 +95,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   return (
     <Layout>
-      {/* selectedLessonPg */}
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} />
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="container d-flex justify-content-center pt-4 pb-4">

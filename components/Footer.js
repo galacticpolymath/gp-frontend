@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-max-props-per-line */
 const SOCIAL_MEDIA_ITEMS = [{ link: 'https://twitter.com/galacticPM', icon: 'bi bi-twitter' }, { link: 'https://www.youtube.com/channel/UCfyBNvN3CH4uWmwOCQVhmhg', icon: 'bi bi-youtube', color: 'red' }];
 
 export default function Footer() {
@@ -46,7 +47,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="bg-dark text-center text-gray py-3 fs-7">
-        made with [love] by Galactic Polymath &copy; {new Date().getFullYear()}
+        made with <span role="img" aria-label="heart" className='mx-1'>❤️</span> by Galactic Polymath &copy; {new Date().getFullYear()}
       </div>
     </footer>
   );

@@ -14,8 +14,6 @@ const Accordion = ({
   button,
   style = {},
 }) => {
-
-  console.log('style: ', style);
   return (
     <div style={style} className={className}>
       <div className="accordion-header lessonsPgSec" id={`heading_${id}`}>
@@ -41,7 +39,6 @@ const Accordion = ({
         data-bs-parent="#accordionExample"
       >
         {children}
-        {/* <span className='bg-danger'>hi</span> */}
       </div>
     </div>
   );
