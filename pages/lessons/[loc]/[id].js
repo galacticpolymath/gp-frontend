@@ -121,18 +121,22 @@ const LessonDetails = ({ lesson, availLocs }) => {
                 src={lesson.CoverImage.url}
                 alt={lesson.Subtitle}
                 fill
-                className='d-sm-block d-none'
+                className='d-md-block d-none'
                 style={{ objectFit: 'fill' }}
               />
               <Image
                 src={lesson.CoverImage.url}
                 alt={lesson.Subtitle}
                 fill
-                className='d-sm-none d-block'
+                className='d-md-none d-block'
                 style={{ objectFit: 'contain' }}
               />
             </div>
           )}
+          <div className='d-flex d-md-none'>
+            <label className='d-flex justify-content-center align-items-center'>Share: </label>
+            {isOnProduction ? <ShareWidget pinterestMedia={lesson.CoverImage.url} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lesson.CoverImage.url} />}
+          </div>
           <div className='row mt-4 d-flex flex-column flex-sm-row'>
             <div className="col col-md-6 col-lg-9">
               <h5>Sponsored by:</h5>

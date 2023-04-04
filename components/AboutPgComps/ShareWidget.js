@@ -22,26 +22,27 @@ import {
     TwitterIcon,
 } from "react-share";
 
-// check if the application is on production
 const isOnProduction = process.env.NODE_ENV === 'production';
 
 const ShareWidget = ({ pinterestMedia, isOnSide, developmentUrl }) => {
-    const widgetPosition = isOnSide ? 'd-none d-md-flex position-fixed flex-column' : 'd-flex d-md-none flex-row';
+    const widgetDynamicCss = isOnSide ? 'd-none d-md-flex position-fixed flex-column bg-white py-2 shadow start-0' : 'd-flex d-md-none flex-row bg-transparent';
     const url = isOnProduction ? ((typeof window !== 'undefined') && window?.location?.href) : developmentUrl;
+    const shareWidgetStyleOnSide = { borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', boxShadow: '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)', top: 150, width: "60px" }
+    const shareWidgetStyle = isOnSide ? shareWidgetStyleOnSide : {}
 
     return (
-        <div style={{ borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', boxShadow: '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)', top: 150, width: "60px" }} className={`shadow start-0 share-widget bg-white py-2 ${widgetPosition}`}>
+        <div style={shareWidgetStyle} className={`share-widget ${widgetDynamicCss}`}>
             <FacebookShareButton
                 url={url}
                 quote="Check out this lesson!"
-                className="my-1"
+                className="mx-1 my-md-1"
                 hashtag={['#learning', "#GalacticPolymath"]}
             >
                 <FacebookIcon size={32} round />
             </FacebookShareButton>
             <TwitterShareButton
                 url={url}
-                className="my-1"
+                className="mx-1 my-md-1"
                 title="Check out this lesson!"
                 hashtag={['#learning', "#GalacticPolymath"]}
             >
@@ -49,7 +50,7 @@ const ShareWidget = ({ pinterestMedia, isOnSide, developmentUrl }) => {
             </TwitterShareButton>
             <PinterestShareButton
                 url={url}
-                className="my-1"
+                className="mx-1 my-md-1"
                 media={pinterestMedia}
                 description="Check out this lesson!"
             >
@@ -57,7 +58,7 @@ const ShareWidget = ({ pinterestMedia, isOnSide, developmentUrl }) => {
             </PinterestShareButton>
             <EmailShareButton
                 url={url}
-                className="my-1"
+                className="mx-1 my-md-1"
                 subject="Check out this lesson!"
                 body="Check out this lesson from Galactic Polymath!"
             >
