@@ -98,7 +98,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} />
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="container d-flex justify-content-center pt-4 pb-4">
-        <div className="col-11 col-sm-12 col-md-10">
+        <div className="col-11 col-md-10">
           <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
             {lastSubRelease && (
               <p>
@@ -112,26 +112,17 @@ const LessonDetails = ({ lesson, availLocs }) => {
               id={lesson.id}
             />
           </div>
-          <h1 ref={ref} id="lessonTitleId" className="mt-4">{lesson.Title}</h1>
+          <h1 ref={ref} id="lessonTitleId" className="mt-2">{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
           {lesson.CoverImage && lesson.CoverImage.url && (
-            <div className='position-relative mt-2 mb-2' style={{ height: 233, width: "100%" }}>
+            <div className='position-relative mt-2 mb-2'  >
               <Image
                 src={lesson.CoverImage.url}
                 alt={lesson.Subtitle}
-                fill
-                className='d-md-block d-none'
-                sizes='(max-width: 991px) 578px, (max-width: 1199px) 778px, 1077.5px'
-                style={{ objectFit: 'fill' }}
-              />
-              <Image
-                src={lesson.CoverImage.url}
-                alt={lesson.Subtitle}
-                fill
-                priority
-                sizes='(max-width: 767px) 513px, (max-width: 575px) 502.328px'
-                className='d-md-none d-block'
-                style={{ objectFit: 'contain' }}
+                width= "1500"
+                height="450"
+                style={{width:"100%",height:'auto'}}
+                
               />
             </div>
           )}
@@ -139,23 +130,24 @@ const LessonDetails = ({ lesson, availLocs }) => {
             <label className='d-flex justify-content-center align-items-center'>Share: </label>
             {isOnProduction ? <ShareWidget pinterestMedia={lesson.CoverImage.url} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lesson.CoverImage.url} />}
           </div>
-          <div className='row mt-4 d-flex flex-column flex-sm-row'>
-            <div className="col col-md-6 col-lg-9">
+          <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
+            <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
               <h5>Sponsored by:</h5>
               <RichText content={lesson.SponsoredBy} />
             </div>
-            <div className="col col-md-6 col-lg-3 mt-3 mt-sm-0">
-              <div style={{ height: '270.039px' }} className="position-relative">
+            <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid  ">
+              
                 {lesson.SponsorImage && lesson.SponsorImage.url && (
                   <Image
                     src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                     alt={lesson.Subtitle}
-                    sizes='(max-width: 575px) 503px, (max-width: 767px) 243px, (max-width: 991px) 275.25px, (max-width: 1199px) 175px, 250px'
-                    fill
-                    style={{ objectFit: 'contain' }}
+                    // sizes='(max-width: 575px) 503px, (max-width: 767px) 243px, (max-width: 991px) 275.25px, (max-width: 1199px) 175px, 250px'
+                    width="100"
+                    height="100"
+                    style={{ width:"100%",height:'auto' }}
                   />
                 )}
-              </div>
+              
             </div>
           </div>
         </div>
