@@ -118,27 +118,30 @@ const TeachIt = ({
         </div>
 
         {selectedGradeResources && (
-          <div style={{ height: 'fit-content' }} className='d-flex mt-3 mb-3 container justify-content-center'>
-            <div className=" m-0 row d-flex justify-content-center align-items-center">
-              <div className='position-relative col-11 col-md-12'>
-                <a
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  href={selectedGradeResources.url}
-                  className='btn btn-primary px-3 py-2 d-inline-block mb-3'
-                >
-                  <div className='d-flex flex-column flex-md-row align-items-md-center gap-2'>
-                    <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
-                    <span style={{ lineHeight: "23px" }} className="d-none d-sm-inline">{selectedGradeResources.linkText}</span>
-                    <span style={{ lineHeight: "17px", fontSize: "14px" }} className="d-inline d-sm-none">{selectedGradeResources.linkText}</span>
-                  </div>
-                </a>
+          <div className='d-flex container justify-content-center mb-5 mt-0 col-11'>
+            <div className=" row flex-nowrap  align-items-center col-md-8">
+
+              <a
+                target='_blank'
+                rel='noopener noreferrer'
+                href={selectedGradeResources.url}
+                className='btn btn-primary px-3 py-2 '
+              >
+                <div className='d-flex flex-md-row align-items-md-center justify-content-center gap-2 '>
+                  <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
+                  <span style={{ lineHeight: "23px" }} className="d-none d-sm-inline">{selectedGradeResources.linkText}</span>
+                  <span style={{ lineHeight: "17px", fontSize: "14px" }} className="d-inline d-sm-none">{selectedGradeResources.linkText}</span>
+                </div>
+              </a>
+              <div className=' '>
                 <AiOutlineQuestionCircle
-                  className="downloadTipIcon position-absolute"
-                  style={{ fontSize: "20px", width: 'fit-content', top: -10 }}
+                  className="downloadTipIcon position-absolute "
+                  style={{ fontSize: "1.75rem"}}
                   onClick={handleIconClick}
+                  
                 />
               </div>
+
             </div>
           </div>
         )}

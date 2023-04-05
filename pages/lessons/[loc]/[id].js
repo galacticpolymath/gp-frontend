@@ -153,7 +153,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
         </div>
       </div>
       <div className="container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
-        <div className="col-12 col-sm-12 col-md-10 col-lg-8 p-0">
+        <div className="col-11 col-md-10 p-0">
           {_sections.map((section, index) => (
             <ParentLessonSection
               key={index}
