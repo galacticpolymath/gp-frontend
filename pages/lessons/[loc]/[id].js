@@ -191,11 +191,14 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   // find the parts in the lesson.section
   console.log("lesson.Section['teaching-materials']: ", lesson.Section['teaching-materials'])
   console.log('lesson?.Section?.procedure?.Data ', lesson?.Section?.procedure?.Data)
+  const _data = lesson?.Section?.procedure?.Data ?? lesson.Section;
 
   lesson.Section['teaching-materials'].Data = {
-    ...lesson.Section.procedure.Data,
+    ..._data,
     ...lesson.Section['teaching-materials'].Data,
   };
+
+  console.log('props received: ')
 
   return { props: { lesson, availLocs } };
 };
