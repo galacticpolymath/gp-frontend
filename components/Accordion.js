@@ -1,6 +1,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 import { useRef } from 'react';
 
 const getId = () => {
@@ -25,7 +26,13 @@ const Accordion = ({
   style = {},
 }) => {
 
-  const contentId = useRef(getId());  
+  const contentId = useRef();
+  
+  useEffect(() => {
+    if (!contentId.current) {
+      contentId.current = getId();
+    }
+  },[]);
 
   return (
     <div style={style} className={className}>

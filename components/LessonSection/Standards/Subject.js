@@ -20,13 +20,6 @@ const Subject = ({
     subjectSlugIds = new Array(subjectDimensions.length).fill(subjectSlug).map((subjectSlugId, index) => `${subjectSlugId}-${index}`);
   }
 
-  useEffect(() => {
-    console.log({
-      accordionId: accordionId,
-      subject: subject,
-    });
-  });
-
   return (
     <Accordion
       id={accordionId}

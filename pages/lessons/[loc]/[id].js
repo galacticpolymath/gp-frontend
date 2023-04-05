@@ -121,12 +121,15 @@ const LessonDetails = ({ lesson, availLocs }) => {
                 alt={lesson.Subtitle}
                 fill
                 className='d-md-block d-none'
+                sizes='(max-width: 991px) 578px, (max-width: 1199px) 778px, 1077.5px'
                 style={{ objectFit: 'fill' }}
               />
               <Image
                 src={lesson.CoverImage.url}
                 alt={lesson.Subtitle}
                 fill
+                priority
+                sizes='(max-width: 767px) 513px, (max-width: 575px) 502.328px'
                 className='d-md-none d-block'
                 style={{ objectFit: 'contain' }}
               />
@@ -147,6 +150,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
                   <Image
                     src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                     alt={lesson.Subtitle}
+                    sizes='(max-width: 575px) 503px, (max-width: 767px) 243px, (max-width: 991px) 275.25px, (max-width: 1199px) 175px, 250px'
                     fill
                     style={{ objectFit: 'contain' }}
                   />

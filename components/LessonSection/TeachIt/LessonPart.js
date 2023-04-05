@@ -12,7 +12,6 @@ const LessonPart = ({
   resources,
 }) => {
   const isOnLastPart = partTitle === 'Assessments';
-  console.log({ chunks });
   const durList = isOnLastPart ? null : chunks.map(({ chunkDur }) => chunkDur);
   const linkResources = isOnLastPart ? chunks : (resources?.[0]?.parts?.[partNum - 1]?.itemList || []);
 
