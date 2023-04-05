@@ -118,24 +118,24 @@ const TeachIt = ({
         </div>
 
         {selectedGradeResources && (
-          <div className='d-flex container justify-content-center mb-5 mt-0'>
-            <div className=" row flex-nowrap  align-items-center">
+          <div className='d-flex container justify-content-center mb-5 mt-0 col-11'>
+            <div className=" row flex-nowrap  align-items-center col-md-8">
 
               <a
                 target='_blank'
                 rel='noopener noreferrer'
                 href={selectedGradeResources.url}
-                className='btn btn-primary px-3 py-2 d-inline-block'
+                className='btn btn-primary px-3 py-2 '
               >
-                <div className='d-flex flex-md-row align-items-md-center justify-content-center gap-2'>
+                <div className='d-flex flex-md-row align-items-md-center justify-content-center gap-2 '>
                   <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
                   <span style={{ lineHeight: "23px" }} className="d-none d-sm-inline">{selectedGradeResources.linkText}</span>
                   <span style={{ lineHeight: "17px", fontSize: "14px" }} className="d-inline d-sm-none">{selectedGradeResources.linkText}</span>
                 </div>
               </a>
-              <div className='align-content-center '>
+              <div className=' '>
                 <AiOutlineQuestionCircle
-                  className="downloadTipIcon "
+                  className="downloadTipIcon position-absolute "
                   style={{ fontSize: "1.75rem"}}
                   onClick={handleIconClick}
                   
