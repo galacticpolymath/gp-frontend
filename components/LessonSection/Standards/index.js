@@ -10,7 +10,7 @@ const Standards = ({
   Data,
   LearningObj,
 }) => {
-  
+
   return (
     <div className='container mb-4'>
       <Accordion
@@ -48,24 +48,30 @@ const Standards = ({
             Skills and concepts directly taught or reinforced by this lesson
           </div>
           {Data.filter(({ target }) => target).map((subject, i) => (
-            <Subject
-              initiallyExpanded
-              key={`target-${i}`}
-              accordionId={`target-${i}`}
-              {...subject}
-            />
+            <>
+              sup meng 
+              <Subject
+                initiallyExpanded
+                key={`target-${i}`}
+                accordionId={`target-${i}`}
+                {...subject}
+              />
+            </>
           ))}
-          
+
           <h4 className='fs-5 fw-bold mt-4'>Connected Standard(s)</h4>
           <div className="my-3">
             Skills and concepts reviewed or hinted at in this lesson (for building upon)
           </div>
           {Data.filter(({ target }) => !target).map((subject, i) => (
-            <Subject 
-              key={`connected-${i}`}
-              accordionId={`connected-${i}`}
-              {...subject}
-            />
+            <>
+              sup there
+              <Subject
+                key={`connected-${i}`}
+                accordionId={`connected-${i}`}
+                {...subject}
+              />
+            </>
           ))}
         </div>
       </Accordion>

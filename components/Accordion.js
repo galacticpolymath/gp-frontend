@@ -1,6 +1,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 
 /**
  * An unstyled collapsible panel with internal open/close state.
@@ -14,6 +15,11 @@ const Accordion = ({
   button,
   style = {},
 }) => {
+
+  useEffect(() => {
+    console.log('#content_${id}: ', `#content_${id}`);
+  });
+
   return (
     <div style={style} className={className}>
       <div className="accordion-header lessonsPgSec" id={`heading_${id}`}>
