@@ -48,15 +48,12 @@ const Standards = ({
             Skills and concepts directly taught or reinforced by this lesson
           </div>
           {Data.filter(({ target }) => target).map((subject, i) => (
-            <>
-              sup meng 
-              <Subject
-                initiallyExpanded
-                key={`target-${i}`}
-                accordionId={`target-${i}`}
-                {...subject}
-              />
-            </>
+            <Subject
+              initiallyExpanded
+              key={`target-${i}`}
+              accordionId={`target-${i}`}
+              {...subject}
+            />
           ))}
 
           <h4 className='fs-5 fw-bold mt-4'>Connected Standard(s)</h4>
@@ -64,14 +61,11 @@ const Standards = ({
             Skills and concepts reviewed or hinted at in this lesson (for building upon)
           </div>
           {Data.filter(({ target }) => !target).map((subject, i) => (
-            <>
-              sup there
-              <Subject
-                key={`connected-${i}`}
-                accordionId={`connected-${i}`}
-                {...subject}
-              />
-            </>
+            <Subject
+              key={`connected-${i}`}
+              accordionId={`connected-${i}`}
+              {...subject}
+            />
           ))}
         </div>
       </Accordion>

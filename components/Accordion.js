@@ -1,7 +1,16 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useRef } from 'react';
+
+const getId = () => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (character) => {
+    const random = (Math.random() * 16) | 0;
+    const value = character === "x" ? random : (random & 0x3) | 0x8;
+
+    return value.toString(16);
+  });
+};
 
 /**
  * An unstyled collapsible panel with internal open/close state.
@@ -16,9 +25,7 @@ const Accordion = ({
   style = {},
 }) => {
 
-  useEffect(() => {
-    console.log('#content_${id}: ', `#content_${id}`);
-  });
+  const contentId = useRef(getId());  
 
   return (
     <div style={style} className={className}>
@@ -29,7 +36,7 @@ const Accordion = ({
               className={`${initiallyExpanded ? '' : 'collapsed'} ${buttonClassName}`}
               type="button"
               data-bs-toggle="collapse"
-              data-bs-target={`#content_${id}`}
+              data-bs-target={`#content_${contentId?.current}`}
               aria-expanded="true"
               aria-controls="collapseOne"
             >
@@ -39,7 +46,7 @@ const Accordion = ({
         </div>
       </div>
       <div
-        id={`content_${id}`}
+        id={`content_${contentId?.current}`}
         className={`collapse ${initiallyExpanded ? 'show' : ''}`}
         aria-labelledby={`${id}_content`}
         data-bs-parent="#accordionExample"
