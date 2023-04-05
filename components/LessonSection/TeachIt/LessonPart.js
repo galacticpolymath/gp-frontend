@@ -70,10 +70,10 @@ const LessonPart = ({
 };
 
 LessonPart.propTypes = {
-  partNum: PropTypes.number.isRequired,
-  partTitle: PropTypes.string.isRequired,
-  partPreface: PropTypes.string.isRequired,
-  chunks: PropTypes.array.isRequired,
+  partNum: PropTypes.number,
+  partTitle: PropTypes.string,
+  partPreface: PropTypes.string,
+  chunks: PropTypes.array,
   resources: PropTypes.oneOfType([
     PropTypes.array, PropTypes.object,
   ]),
