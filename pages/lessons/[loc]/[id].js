@@ -91,6 +91,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }, [inView])
 
+  useEffect(() => {
+    console.log('lesson: ', lesson)
+  })
+
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
 
   return (
@@ -185,16 +189,15 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params: { id, loc } }) => {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   const lessons = await res.json();
-  console.log('lessons: ', lessons)
   const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter((lesson) => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
-  // find the parts in the lesson.section
-  console.log("lesson.Section['teaching-materials']: ", lesson.Section['teaching-materials'])
-  console.log('lesson?.Section?.procedure?.Data ', lesson?.Section?.procedure?.Data)
-  const _data = lesson?.Section?.procedure?.Data ?? lesson.Section;
+
+  if(!lesson?.Section?.procedure?.Data) {
+    return { props: { lesson: lesson, availLocs } };
+  }
 
   lesson.Section['teaching-materials'].Data = {
-    ..._data,
+    ...lesson.Section.procedure.Data,
     ...lesson.Section['teaching-materials'].Data,
   };
 
