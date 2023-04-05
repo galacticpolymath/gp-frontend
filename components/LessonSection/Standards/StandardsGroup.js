@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import RichText from '../../RichText';
@@ -26,6 +27,8 @@ const StandardsGroup = ({
   alignmentNotes,
   statements,
 }) => {
+  console.log('standardsGroup id: ', id);
+
   return (
     <div className='border-bottom border-gray'>
       <Accordion

@@ -2,8 +2,18 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 import Accordion from '../../Accordion';
 import StandardsGroup from './StandardsGroup';
+
+const getId = () => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (character) => {
+    const random = (Math.random() * 16) | 0;
+    const value = character === "x" ? random : (random & 0x3) | 0x8;
+
+    return value.toString(16);
+  });
+};
 
 const Subject = ({
   accordionId,
@@ -18,6 +28,13 @@ const Subject = ({
   if (subjectDimensions.length > 1) {
     subjectSlugIds = new Array(subjectDimensions.length).fill(subjectSlug).map((subjectSlugId, index) => `${subjectSlugId}-${index}`);
   }
+
+  useEffect(() => {
+    console.log({
+      accordionId: accordionId,
+      subject: subject,
+    });
+  });
 
   return (
     <Accordion
