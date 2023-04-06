@@ -25,7 +25,6 @@ const MATT_LINKS =
     { link: 'https://scholar.google.com/citations?user=MZKGDvAAAAAJ&hl=en', imgSrc: '/imgs/about/google_scholar.png' },
   ];
 
-// need to get the name of the alumni and display onto the button 
 const AlumniBtn = props => {
   return (
     <div className='container bg-white border-bottom w-100'>

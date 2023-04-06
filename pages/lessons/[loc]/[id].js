@@ -181,7 +181,6 @@ export const getStaticPaths = async () => {
 // getting data from vercel api 
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  // const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   const res = await fetch('https://gp-catalog.vercel.app/index.json')
   const lessons = await res.json();
   const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
