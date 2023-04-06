@@ -38,7 +38,7 @@ export default function Home() {
             src={EngineeringImage.src}
             alt="Two people working on a diagram together"
             fill
-            sizes='(max-width: 991px) 648px, (max-width: 1199px) 426px, 713px'
+            sizes='100%'
             style={{ objectFit: 'contain' }}
           />
         </div>

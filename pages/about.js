@@ -104,11 +104,10 @@ const AboutPage = () => (
       <div className='col-12 col-lg-6 mb-2 mb-sm-4 mb-lg-0 d-flex justify-content-center align-items-center'>
         <div className="position-relative ourVisionImgContainer">
           <Image
-            fill
             alt="Our_Vision_Galactic_Polymath"
             style={{ objectFit: 'contain', maxHeight: '100%', minHeight: '100%' }}
-            className="w-100 h-100"
-            sizes="(max-width: 575px) 521px, (max-width: 767px) 486px, (max-width: 991px) 594.594px, (max-width: 1199px) "
+            fill
+            sizes="100%"
             src="/imgs/about/our_vision.jpeg"
           />
         </div>
