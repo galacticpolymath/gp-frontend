@@ -136,9 +136,9 @@ const TeachIt = ({
               <div className=' '>
                 <AiOutlineQuestionCircle
                   className="downloadTipIcon position-absolute "
-                  style={{ fontSize: "1.75rem"}}
+                  style={{ fontSize: "1.75rem" }}
                   onClick={handleIconClick}
-                  
+
                 />
               </div>
 

@@ -74,7 +74,7 @@ const Overview = ({
                   alt="Subject breakdown by standard alignments"
                   fill
                   priority
-                  sizes='(max-width: 575px) 467px, (max-width: 767px) 432px, (max-width: 991px) 496.5px, (max-width: 1199px) 540.992px, 781px'
+                  sizes='100%'
                   style={{
                     objectFit: 'contain',
                   }}
