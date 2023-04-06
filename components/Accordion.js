@@ -24,12 +24,12 @@ const Accordion = ({
   initiallyExpanded = false,
   button,
   style = {},
+  willUseGetId = true,
 }) => {
-
   const contentId = useRef();
   
   useEffect(() => {
-    if (!contentId.current) {
+    if (!contentId.current && willUseGetId) {
       contentId.current = getId();
     }
   },[]);
@@ -43,7 +43,7 @@ const Accordion = ({
               className={`${initiallyExpanded ? '' : 'collapsed'} ${buttonClassName}`}
               type="button"
               data-bs-toggle="collapse"
-              data-bs-target={`#content_${contentId?.current}`}
+              data-bs-target={`#content_${willUseGetId ? contentId?.current : id}`}
               aria-expanded="true"
               aria-controls="collapseOne"
             >
@@ -53,7 +53,7 @@ const Accordion = ({
         </div>
       </div>
       <div
-        id={`content_${contentId?.current}`}
+        id={`content_${willUseGetId ? contentId?.current : id}`}
         className={`collapse ${initiallyExpanded ? 'show' : ''}`}
         aria-labelledby={`${id}_content`}
         data-bs-parent="#accordionExample"

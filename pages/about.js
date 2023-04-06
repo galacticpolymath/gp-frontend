@@ -242,7 +242,7 @@ const AboutPage = () => (
               }
 
               return (
-                <Accordion key={`${index}_${name}`} className='w-100 w-md-75' id={`${index}`} buttonClassName='noBtnStyles w-100' button={<AlumniBtn alumniName={name} />}>
+                <Accordion key={`${index}_${name}`} willUseGetId={false} className='w-100 w-md-75' id={`${index}`} buttonClassName='noBtnStyles w-100' button={<AlumniBtn alumniName={name} />}>
                   <div className='d-lg-block d-flex justify-content-center align-items-center'>
                     <TeamMemberCard {...props}>
                       {description}
