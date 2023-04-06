@@ -115,23 +115,15 @@ const LessonDetails = ({ lesson, availLocs }) => {
           <h1 ref={ref} id="lessonTitleId" className="mt-4">{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
           {lesson.CoverImage && lesson.CoverImage.url && (
-            <div className='position-relative mt-2 mb-2' style={{ height: 233, width: "100%" }}>
+            <div className='position-relative mt-2 mb-2'>
               <Image
                 src={lesson.CoverImage.url}
                 alt={lesson.Subtitle}
-                fill
-                className='d-md-block d-none'
                 sizes='(max-width: 991px) 578px, (max-width: 1199px) 778px, 1077.5px'
-                style={{ objectFit: 'fill' }}
-              />
-              <Image
-                src={lesson.CoverImage.url}
-                alt={lesson.Subtitle}
-                fill
+                width="1500"
+                height="450"
                 priority
-                sizes='(max-width: 767px) 513px, (max-width: 575px) 502.328px'
-                className='d-md-none d-block'
-                style={{ objectFit: 'contain' }}
+                style={{ width: '100%', height: 'auto' }}
               />
             </div>
           )}

@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
-// import useGetElementInView from '../../customHooks/useLessonElementInView';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
@@ -74,6 +73,8 @@ const Overview = ({
                   src={SteamEpaulette.url}
                   alt="Subject breakdown by standard alignments"
                   fill
+                  priority
+                  sizes='(max-width: 575px) 467px, (max-width: 767px) 432px, (max-width: 991px) 496.5px, (max-width: 1199px) 540.992px, 781px'
                   style={{
                     objectFit: 'contain',
                   }}
