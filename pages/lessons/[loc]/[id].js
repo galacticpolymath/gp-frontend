@@ -117,16 +117,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
           <h1 ref={ref} id="lessonTitleId" className="mt-2">{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
           {lesson.CoverImage && lesson.CoverImage.url && (
-            <div style={{ height: '300px' }} className='w-100 position-relative mt-2 mb-2'>
+            <div className='w-100 position-relative mt-2 mb-2'>
               <Image
                 src={lesson.CoverImage.url}
                 alt={lesson.Subtitle}
-                // width="1500"
-                // height="450"
+                width={1500}
+                height={450}
                 priority
-                style={{ objectFit: 'contain' }}
-                fill
-                sizes="100%"
+                style={{ width: "100%", height: "auto", objectFit: 'contain' }}
               />
             </div>
           )}
@@ -142,16 +140,13 @@ const LessonDetails = ({ lesson, availLocs }) => {
             <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid  ">
 
               {lesson.SponsorImage && lesson.SponsorImage.url && (
-                <div style={{ width: "210px", height: "210px" }} className='position-relative'>
+                <div className='position-relative'>
                   <Image
                     src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                     alt={lesson.Subtitle}
-                    // width="100"
-                    // height="100"
-                    // style={{ width: "100%", height: 'auto' }}
-                    fill
-                    sizes="100%"
-                    style={{ objectFit: 'contain' }}
+                    width={80}
+                    height={80}
+                    style={{ width: "100%", height: 'auto', objectFit: 'contain' }}
                   />
                 </div>
               )}
