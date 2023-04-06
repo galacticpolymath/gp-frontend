@@ -6,3 +6,12 @@
         height: 200px;
     }
 }
+
+.newReleaseImg{
+    height: 630px;
+
+    @media(max-width: 575px){
+        height: 170px;
+    }
+}
+

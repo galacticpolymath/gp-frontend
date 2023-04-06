@@ -32,8 +32,8 @@ export default function Home() {
           </Link>
         </div>
       </Hero>
-      <div className="container mx-auto d-flex align-items-center px-3 py-4 py-lg-5 flex-column flex-lg-row-reverse">
-        <div className="position-relative col-12 col-lg-6 col-xl-5 col-lg-6 engineeringImgHomePg">
+      <div className="container d-flex align-items-center mx-auto px-3 py-4 py-lg-5 flex-column flex-lg-row-reverse">
+        <div className="position-relative col-12 col-lg-6 engineeringImgHomePg">
           <Image
             src={EngineeringImage.src}
             alt="Two people working on a diagram together"
@@ -42,7 +42,7 @@ export default function Home() {
             style={{ objectFit: 'contain' }}
           />
         </div>
-        <div className='col-12 col-lg-6 col-xl-5 order-2 order-lg-1 p-3 text-center space-y-3'>
+        <div className='col-12 col-lg-6 order-2 order-lg-1 p-3 text-center space-y-3'>
           <h3 className='mb-2 text-center text-sm-start text-lg-center'>Open-Access</h3>
           <p className='mb-4 text-center text-sm-start text-lg-center'>
             <em>We do not sell to schools.</em>{' '}
@@ -72,10 +72,10 @@ export default function Home() {
               <div className="w-100 d-flex d-sm-none justify-content-center align-items-center">
                 <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
               </div>
-              <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 316 }}>
+              <div className="position-relative newReleaseImg">
                 <Image
                   priority
-                  className='border'
+                  // className='border'
                   src={NewReleaseImage.src}
                   fill
                   sizes="(max-width: 991px) 452.25px, 902.25px"
@@ -83,51 +83,6 @@ export default function Home() {
                   alt="I Like That! How perception, emotion, and cognition shape our preferences"
                 />
               </div>
-              <div className="position-relative d-none d-lg-block d-xl-none" style={{ height: 442 }}>
-                <Image
-                  priority
-                  className='border'
-                  src={NewReleaseImage.src}
-                  fill
-                  sizes="(max-width: 991px) 632.25px, 902.25px"
-                  style={{ objectFit: 'contain' }}
-                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
-                />
-              </div>
-              <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 222 }}>
-                <Image
-                  priority
-                  className='border'
-                  src={NewReleaseImage.src}
-                  fill
-                  sizes="(max-width: 767px) 317.25px, 902.25px"
-                  style={{ objectFit: 'contain' }}
-                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
-                />
-              </div>
-              <div className="position-relative d-none d-xl-block" style={{ height: 630 }}>
-                <Image
-                  priority
-                  className='border'
-                  src={NewReleaseImage.src}
-                  fill
-                  style={{ objectFit: 'contain' }}
-                  sizes="902.25px"
-                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
-                />
-              </div>
-              <section className='row d-flex d-sm-none justify-content-center mt-2'>
-                <div className="position-relative d-block d-sm-none" style={{ height: 125, maxWidth: 300, width: '100%' }}>
-                  <Image
-                    priority
-                    src={NewReleaseImage.src}
-                    fill
-                    style={{ objectFit: 'contain' }}
-                    sizes="(max-width: 575px) 300px, 902.25px"
-                    alt="I Like That! How perception, emotion, and cognition shape our preferences"
-                  />
-                </div>
-              </section>
             </div>
             <div className='col-12 col-sm-3 text-sm-center d-flex justify-content-center mt-2 mt-sm-0 align-items-center'>
               <section className="d-flex mt-1 flex-column justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch">
