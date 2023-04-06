@@ -1,0 +1,8 @@
+.engineeringImgHomePg{
+    height: 425px;
+
+    @media(max-width: 575px){
+        // height: 50vh;
+        height: 200px;
+    }
+}

@@ -32,38 +32,15 @@ export default function Home() {
           </Link>
         </div>
       </Hero>
-      <div className="container mx-auto d-flex align-items-center px-3 py-4 py-lg-5 flex-column flex-lg-row">
-        <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 d-flex d-sm-block justify-content-center align-items-center'>
-          <div className="position-relative d-none d-md-block" style={{ height: 425 }}>
-            <Image
-              src={EngineeringImage.src}
-              alt="Two people working on a diagram together"
-              fill
-              className='d-block h-100'
-              sizes='(max-width: 991px) 648px, (max-width: 1199px) 426px, 713px'
-              style={{ objectFit: 'contain' }}
-            />
-          </div>
-          <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 325 }}>
-            <Image
-              src={EngineeringImage.src}
-              alt="Two people working on a diagram together"
-              fill
-              className='d-block h-100'
-              sizes='(max-width: 767px) 468px, 713px'
-              style={{ objectFit: 'contain' }}
-            />
-          </div>
-          <div className="position-relative d-block d-sm-none" style={{ height: 125, maxWidth: 300, width: '100%' }}>
-            <Image
-              src={EngineeringImage.src}
-              alt="Two people working on a diagram together"
-              fill
-              className='d-block h-100 border'
-              sizes='(max-width: 575px) 300px, 713px'
-              style={{ objectFit: 'fill' }}
-            />
-          </div>
+      <div className="container mx-auto d-flex align-items-center px-3 py-4 py-lg-5 flex-column flex-lg-row-reverse">
+        <div className="position-relative col-12 col-lg-6 col-xl-5 col-lg-6 engineeringImgHomePg">
+          <Image
+            src={EngineeringImage.src}
+            alt="Two people working on a diagram together"
+            fill
+            sizes='(max-width: 991px) 648px, (max-width: 1199px) 426px, 713px'
+            style={{ objectFit: 'contain' }}
+          />
         </div>
         <div className='col-12 col-lg-6 col-xl-5 order-2 order-lg-1 p-3 text-center space-y-3'>
           <h3 className='mb-2 text-center text-sm-start text-lg-center'>Open-Access</h3>
