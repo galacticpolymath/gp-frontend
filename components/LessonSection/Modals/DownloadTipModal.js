@@ -49,7 +49,7 @@ const DownloadTipModal = () => {
                             fill
                             style={{ objectFit: 'contain' }}
                             className="w-100 h-100"
-                            sizes="(max-width: 575px) 519px, (max-width: 767px) 444px, (max-width: 991px) 204px, 354px"
+                            sizes="100%"
                         />
                     </div>
                 </section>
@@ -60,7 +60,7 @@ const DownloadTipModal = () => {
                     <div className="position-relative w-100 mt-4 mt-md-3 mt-lg-2" style={{ height: "150px" }}>
                         <Image src="/imgs/lessons/download_small.png" className="w-100 h-100" alt="Galactic_Polymath_download_image_large" 
                         fill style={{ objectFit: 'contain' }} 
-                            sizes="(max-width: 575px) 462px, (max-width: 767px) 444px, (max-width: 991px) 204px, 354px"
+                            sizes="100%"
                         />
                     </div>
                 </section>

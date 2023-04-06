@@ -74,7 +74,7 @@ export default function Home() {
                   priority
                   src={NewReleaseImage.src}
                   fill
-                  sizes="(max-width: 991px) 452.25px, 902.25px"
+                  sizes="100%"
                   style={{ objectFit: 'contain' }}
                   alt="I Like That! How perception, emotion, and cognition shape our preferences"
                 />
@@ -184,7 +184,7 @@ export default function Home() {
               <div className="position-relative ps-0 w-100 scientificAmericanImgContainer">
                 <Image
                   fill
-                  sizes="(max-width: 767px) 486px, (max-width: 991px) 600px, 646.5px"
+                  sizes="100%"
                   src={ScientificAmericanImage.src}
                   alt="Why We Didn't Know that Female Birds Sing, Scientific American."
                   style={{ objectFit: 'contain' }}
