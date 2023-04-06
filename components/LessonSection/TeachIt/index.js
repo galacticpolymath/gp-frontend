@@ -147,9 +147,9 @@ const TeachIt = ({
         )}
 
         <div className='container pb-4'>
-          {parts.map(part => (
+          {parts.map((part, index) => (
             <LessonPart
-              key={part.partNum}
+              key={`${index}_part`}
               resources={resources}
               {...part}
             />

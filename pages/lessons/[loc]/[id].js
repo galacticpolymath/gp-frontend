@@ -121,6 +121,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
                 alt={lesson.Subtitle}
                 // width="1500"
                 // height="450"
+                priority
+                style={{ objectFit: 'contain' }}
                 fill
                 sizes="100%"
               />
@@ -138,13 +140,18 @@ const LessonDetails = ({ lesson, availLocs }) => {
             <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid  ">
 
               {lesson.SponsorImage && lesson.SponsorImage.url && (
-                <Image
-                  src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
-                  alt={lesson.Subtitle}
-                  width="100"
-                  height="100"
-                  style={{ width: "100%", height: 'auto' }}
-                />
+                <div style={{ width: "210px", height: "210px" }} className='position-relative'>
+                  <Image
+                    src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
+                    alt={lesson.Subtitle}
+                    // width="100"
+                    // height="100"
+                    // style={{ width: "100%", height: 'auto' }}
+                    fill
+                    sizes="100%"
+                    style={{ objectFit: 'contain' }}
+                  />
+                </div>
               )}
 
             </div>
