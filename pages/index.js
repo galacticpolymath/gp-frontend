@@ -181,43 +181,13 @@ export default function Home() {
           </section>
           <section className="row w-100 w-md-75">
             <div className="col-12 d-flex justify-content-center align-items-center d-sm-block">
-              <div className="position-relative d-xl-block d-none" style={{ height: 429 }}>
-                <Image
-                  fill
-                  src={ScientificAmericanImage.src}
-                  sizes="646.5px"
-                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-                  style={{ objectFit: 'contain' }}
-                  priority
-                />
-              </div>
-              <div className="position-relative d-none d-lg-block d-xl-none" style={{ height: 430, width: '100%' }}>
-                <Image
-                  fill
-                  src={ScientificAmericanImage.src}
-                  sizes="(max-width: 1199px) 466.5px, 646.5px"
-                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-                  style={{ objectFit: 'contain' }}
-                  priority
-                />
-              </div>
-              <div className="position-relative d-none d-sm-block d-lg-none d-xl-none ps-0" style={{ height: 380, width: '100%', maxWidth: 600 }}>
+              <div className="position-relative ps-0 w-100 scientificAmericanImgContainer">
                 <Image
                   fill
                   sizes="(max-width: 767px) 486px, (max-width: 991px) 600px, 646.5px"
                   src={ScientificAmericanImage.src}
                   alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-                  style={{ objectFit: 'fill' }}
-                  priority
-                />
-              </div>
-              <div className="position-relative d-block d-sm-none ps-0" style={{ height: 225, width: '100%', maxWidth: 300 }}>
-                <Image
-                  fill
-                  src={ScientificAmericanImage.src}
-                  sizes="(max-width: 575px) 300px, 646.5px"
-                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-                  style={{ objectFit: 'fill' }}
+                  style={{ objectFit: 'contain' }}
                   priority
                 />
               </div>
