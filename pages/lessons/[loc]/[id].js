@@ -186,6 +186,8 @@ export const getStaticPaths = async () => {
   return { paths, fallback: false };
 };
 
+// getting data from vercel api 
+
 export const getStaticProps = async ({ params: { id, loc } }) => {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   const lessons = await res.json();
