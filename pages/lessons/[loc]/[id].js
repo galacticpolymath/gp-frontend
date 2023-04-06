@@ -91,6 +91,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }, [inView])
 
+  // testing push to github
+
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
 
   return (
