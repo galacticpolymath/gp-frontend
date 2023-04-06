@@ -210,26 +210,14 @@ export default function Home() {
         </div>
 
         <div className='bg-light-gray py-4'>
-          <div className='container p-3 p-lg-5 mx-auto row'>
+          <div className='container p-3 p-lg-5 mx-auto row justify-content-center align-items-center'>
             <div className='col-12 mb-4'>
-              <h3 className='col-lg-8 col-xl-6 offset-lg-2 offset-xl-3 text-center text-sm-start text-lg-center fw-light fs-2 mb-3'>Benefits of connecting classrooms to the world of Academia</h3>
+              <h3 className='col-lg-8 col-xl-6 offset-lg-2 offset-xl-3 text-center fw-light fs-2 mb-3'>Benefits of connecting classrooms to the world of Academia</h3>
             </div>
-            <div className='col-12 col-lg-6 mb-4 mb-lg-0'>
-              <div style={{ height: '400px' }} className='bg-white rounded-3 p-4 d-none d-sm-flex d-sm-block flex-column justify-content-center align-items-center'>
+            <div className='col-12 col-md-10 col-lg-6 mb-4 mb-lg-0 d-flex justify-content-center align-items-center'>
+              <div style={{ minWidth: 265 }} className='bg-white rounded-3 px-3 py-4 d-flex flex-column justify-content-center align-items-center teacherAndClientsIsland'>
                 <h4 className="text-center text-sm-start w-100">For Teachers</h4>
-                <ul style={{ height: 210 }} className="d-none d-xl-block pt-2">
-                  <li>Free (open-access), high-quality lessons</li>
-                  <li>Regularly updated based on your feedback</li>
-                  <li>Differentiated for grades 5-6, 7-8 & 9-12</li>
-                  <li>Adaptable for different time lengths, extension activities, etc.</li>
-                </ul>
-                <ul style={{ height: 225 }} className="d-sm-block d-md-none pt-2">
-                  <li>Free (open-access), high-quality lessons</li>
-                  <li>Regularly updated based on your feedback</li>
-                  <li>Differentiated for grades 5-6, 7-8 & 9-12</li>
-                  <li>Adaptable for different time lengths, extension activities, etc.</li>
-                </ul>
-                <ul style={{ height: 240 }} className="d-none d-md-block d-xl-none">
+                <ul className="teacherAndClientsUl pt-2">
                   <li>Free (open-access), high-quality lessons</li>
                   <li>Regularly updated based on your feedback</li>
                   <li>Differentiated for grades 5-6, 7-8 & 9-12</li>
@@ -242,47 +230,10 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className='col-12 col-lg-6 d-flex d-sm-block flex-column justify-content-center align-items-center'>
-              <div style={{ height: '400px' }} className='bg-white rounded-3 p-4 d-none d-sm-flex d-sm-block flex-column justify-content-center align-items-center'>
+            <div className='col-12 col-md-10 col-lg-6 d-flex justify-content-center align-items-center'>
+              <div style={{ minWidth: 265 }} className='bg-white rounded-3 d-flex flex-column justify-content-center align-items-center px-3 py-4 teacherAndClientsIsland'>
                 <h4 className="text-center text-sm-start w-100">For Clients</h4>
-                <ul style={{ height: 210 }} className="d-none d-md-block d-lg-none d-xl-block pt-2">
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
-                </ul>
-                <ul style={{ height: 225 }} className="d-block d-md-none pt-2">
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
-                </ul>
-                <ul style={{ height: 240 }} className="d-none d-lg-block d-xl-none">
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
-                </ul>
-                <div className="d-flex justify-content-center">
-                  <Link href="/hire-us" className='btn btn-primary'>
-                    Get lessons
-                  </Link>
-                </div>
-              </div>
-              <div style={{ minWidth: 240 }} className='bg-white rounded-3 p-4 d-flex d-sm-none d-sm-block flex-column justify-content-center align-items-center'>
-                <h4 className="text-center text-sm-start w-100">For Teachers</h4>
-                <ul className="d-block d-md-none pt-2">
-                  <li>Free (open-access), high-quality lessons</li>
-                  <li>Regularly updated based on your feedback</li>
-                  <li>Differentiated for grades 5-6, 7-8 & 9-12</li>
-                  <li>Adaptable for different time lengths, extension activities, etc.</li>
-                </ul>
-                <div className="d-flex justify-content-center">
-                  <Link href="/hire-us" className='btn btn-primary'>
-                    Get lessons
-                  </Link>
-                </div>
-              </div>
-              <div style={{ minWidth: 240 }} className='bg-white mt-3 rounded-3 p-4 d-flex d-sm-none d-sm-block flex-column justify-content-center align-items-center'>
-                <h4 className="text-center text-sm-start w-100">For Clients</h4>
-                <ul className="d-block d-md-none pt-2">
+                <ul className="teacherAndClientsUl pt-2">
                   <li>Magnify the impact of your research and outreach efforts</li>
                   <li>Get detailed impact metrics to report to funders</li>
                   <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
