@@ -10,8 +10,41 @@
 .newReleaseImg{
     height: 630px;
 
-    @media(max-width: 575px){
+    @media(min-width: 992px) and (max-width: 1199px){
+        height: 375px;
+    }
+
+    @media(min-width: 768px) and (max-width: 991px){
+        height: 250px;
+    }
+
+    @media(max-width: 767px){
         height: 170px;
+    }
+}
+
+.nsfImgContainer{
+    height: 175px; 
+    width: 175px;
+
+    @media(min-width: 992px) and (max-width: 1199px){
+        height: 140px;
+        width: 140px;
+    }
+
+    @media(min-width: 768px) and (max-width: 991px){
+        height: 105px;
+        width: 105px;  
+    }
+
+    @media(min-width: 576px) and (max-width: 767px){
+        height: 90px;
+        width: 90px;
+    }
+
+    @media(max-width: 575px){
+        height: 90px;
+        width: 90px;
     }
 }
 

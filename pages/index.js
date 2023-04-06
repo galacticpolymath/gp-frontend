@@ -66,16 +66,12 @@ export default function Home() {
 
           <div className='bg-white p-4 row align-items-center rounded-3 d-flex d-sm-flex flex-column flex-sm-row'>
             <div className='col-sm-9 text-center'>
-              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-xl-block w-25'>New release!</div>
-              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-md-block d-xl-none w-50'>New release!</div>
-              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-sm-block d-md-none d-xl-none w-75'>New release!</div>
-              <div className="w-100 d-flex d-sm-none justify-content-center align-items-center">
+              <div className="d-flex justify-content-center justify-content-sm-start align-items-stretch">
                 <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
               </div>
               <div className="position-relative newReleaseImg">
                 <Image
                   priority
-                  // className='border'
                   src={NewReleaseImage.src}
                   fill
                   sizes="(max-width: 991px) 452.25px, 902.25px"
@@ -86,50 +82,16 @@ export default function Home() {
             </div>
             <div className='col-12 col-sm-3 text-sm-center d-flex justify-content-center mt-2 mt-sm-0 align-items-center'>
               <section className="d-flex mt-1 flex-column justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch">
-                <h5 className='fw-light d-none d-sm-block'>Sponsor:</h5>
                 <div className="d-flex justify-content-center align-items-center mt-3">
-                  <h5 className='fw-light d-sm-none'>Sponsor:</h5>
+                  <h5 className='fw-light'>Sponsor:</h5>
                 </div>
                 <a href="https://www.nsf.gov/">
-                  <div className="position-relative d-none d-lg-block" style={{ height: 175, width: 175 }}>
+                  <div className="position-relative nsfImgContainer">
                     <Image
                       src={NSFImage.src}
                       fill
                       style={{ objectFit: 'contain' }}
                       sizes="175px"
-                      alt="National Science Foundation"
-                    />
-                  </div>
-                </a>
-                <a href="https://www.nsf.gov/">
-                  <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 125, width: 125 }}>
-                    <Image
-                      src={NSFImage.src}
-                      fill
-                      sizes="(max-width: 991px) 125px, 175px"
-                      style={{ objectFit: 'contain' }}
-                      alt="National Science Foundation"
-                    />
-                  </div>
-                </a>
-                <a href="https://www.nsf.gov/">
-                  <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 95, width: 95 }}>
-                    <Image
-                      src={NSFImage.src}
-                      fill
-                      style={{ objectFit: 'contain' }}
-                      sizes="(max-width: 767px) 95px, 175px"
-                      alt="National Science Foundation"
-                    />
-                  </div>
-                </a>
-                <a href="https://www.nsf.gov/">
-                  <div className="position-relative d-block d-sm-none" style={{ height: 65, width: 65 }}>
-                    <Image
-                      src={NSFImage.src}
-                      fill
-                      sizes="(max-width: 575px) 65px, 175px"
-                      style={{ objectFit: 'contain' }}
                       alt="National Science Foundation"
                     />
                   </div>
