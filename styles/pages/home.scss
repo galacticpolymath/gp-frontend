@@ -1,0 +1,74 @@
+.engineeringImgHomePg{
+    height: 425px;
+
+    @media(max-width: 575px){
+        height: 200px;
+    }
+}
+
+.newReleaseImg{
+    height: 630px;
+
+    @media(min-width: 992px) and (max-width: 1199px){
+        height: 375px;
+    }
+
+    @media(min-width: 768px) and (max-width: 991px){
+        height: 250px;
+    }
+
+    @media(max-width: 767px){
+        height: 170px;
+    }
+}
+
+.nsfImgContainer{
+    height: 175px; 
+    width: 175px;
+
+    @media(min-width: 992px) and (max-width: 1199px){
+        height: 140px;
+        width: 140px;
+    }
+
+    @media(min-width: 768px) and (max-width: 991px){
+        height: 105px;
+        width: 105px;  
+    }
+
+    @media(min-width: 576px) and (max-width: 767px){
+        height: 90px;
+        width: 90px;
+    }
+
+    @media(max-width: 575px){
+        height: 90px;
+        width: 90px;
+    }
+}
+
+.scientificAmericanImgContainer{
+    height: 450px;
+
+    @media(min-width: 768px) and (max-width: 991px){
+        height: 480px;
+    }
+
+    @media(max-width: 575px){
+        height: 240px;
+    }
+}
+
+.teacherAndClientsUl{
+    @media(min-width: 1200px){
+        height: 230px;
+    }
+    
+    @media(min-width: 992px) and (max-width: 1199px){
+        height: 290px;
+    }
+}
+
+.teacherAndClientsIsland{
+    // height: 400px;
+}

@@ -1,12 +1,10 @@
 @import "../../globalVars.scss";
 @import "./tooltip.scss";
-@import './selectedLessonPg.scss';
-
+@import "./selectedLessonPg.scss";
 
 $borderThickness: 1px;
 $borderColor: darkgray;
-$toolTipColor: #F0F4FF;
-
+$toolTipColor: #f0f4ff;
 
 .lessonsSection {
   border-top: solid $borderThickness $borderColor;
@@ -67,9 +65,9 @@ $toolTipColor: #F0F4FF;
   max-height: 100%;
 }
 
-.jobVizCareer.cardOnLessonsPg.linkCard{
+.jobVizCareer.cardOnLessonsPg.linkCard {
   // background-color: pink !important;;
-  @media(max-width: 575px){
+  @media (max-width: 575px) {
     // border: solid pink;
     max-width: 447px !important;
   }
@@ -112,7 +110,6 @@ $toolTipColor: #F0F4FF;
   cursor: pointer;
 }
 
-
 .jobVizCareer {
   @media (min-width: 768px) {
     width: 575px;
@@ -132,8 +129,8 @@ $toolTipColor: #F0F4FF;
 
   span {
     font-size: 14px;
-    
-    @media(max-width: 575px){
+
+    @media (max-width: 575px) {
       padding-left: 20px;
       line-height: 17px;
     }
@@ -175,70 +172,60 @@ $toolTipColor: #F0F4FF;
   padding-bottom: 30px;
 }
 
-.carouselSelectedLessons{
+.carouselSelectedLessons {
   max-width: 70rem !important;
 }
 
-.lessonSlideBody{
-  h5, p{
+.lessonSlideBody {
+  h5,
+  p {
     width: 90%;
-    @media(max-width: 575px){
+    @media (max-width: 575px) {
       width: 100%;
     }
   }
 
-  span{
-    @media(max-width: 575px){
-
+  span {
+    @media (max-width: 575px) {
     }
   }
 }
 
-.autoCarouselItem.onLessonsPg{
-  // max-width: 300px;
-  > div > div:first-child{
-    // width: 100%;
-    // max-width: 250px;
-    // border: solid pink;
-  }
-}
-
-.lesson-media{
-  @media(min-width: 992px) and (max-width: 1199px){
+.lesson-media {
+  @media (min-width: 992px) and (max-width: 1199px) {
     max-width: 475px;
   }
 
-  @media(min-width: 768px) and (max-width: 991px){
+  @media (min-width: 768px) and (max-width: 991px) {
     max-width: 380px;
   }
 
-  @media(max-width: 767px) and (min-width: 576px){
+  @media (max-width: 767px) and (min-width: 576px) {
     max-width: 300px;
   }
 
-  @media(max-width: 575px){
+  @media (max-width: 575px) {
     width: 60vw;
   }
 }
 
-.pdf-media{
-  @media(min-width: 576px) and (max-width: 1199px){
+.pdf-media {
+  @media (min-width: 576px) and (max-width: 1199px) {
     max-width: 450px;
   }
-  
-  @media(max-width: 575px){
+
+  @media (max-width: 575px) {
     max-width: 205px;
   }
 }
 
-
-.lessonSecsNavDotsListContainer{
+.lessonSecsNavDotsListContainer {
   top: 95px;
   right: 20px;
   z-index: 1000;
-  
-  @media(max-width: 575px){
-    right: 10px
+
+  @media (max-width: 575px) {
+    right: 10px;
   }
 }
 
@@ -247,13 +234,66 @@ $toolTipColor: #F0F4FF;
   left: 15px;
   width: fit-content;
 
-  @media(max-width: 575px){
-
+  @media (max-width: 575px) {
   }
 }
 
-.lightbar{
+.lightbar {
   // height: 100px;
   display: block;
+}
+
+@media (max-width: 767px) {
+  .dotLine {
+    border-bottom: 1px dashed #363636;
+    // left: 50%;
+    top: 50%;
+    // left: 101%;
+    width: 90%;
+    vertical-align: text-top;
+  }
+}
+
+.company-partner-img-container {
+  box-shadow: 0 16px 38px -12px rgba(54,54,54,.56), 0 4px 25px 0 rgba(54,54,54,.12), 0 8px 10px -5px rgba(54,54,54,.2);
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.company-partner-img-container:hover {
+  box-shadow: 0 16px 38px -6px rgba(54, 54, 54, 0.56), 0 4px 28px 0px rgba(54, 54, 54, 0.12), 0 8px 12px -2px rgba(54, 54, 54, 0.2);
+}
+
+.partnerCompany{
+  @media(min-width: 992px){
+    height: 400px;
+  }
+}
+
+.human-wave-emoji{
+  width: 15% !important;
+  height: 100% !important;
+  color: rgb(203, 31, 142);
+}
+
+.collaborateImg{
+  @media(min-width: 576px){
+    transform: translate(65%, -30%)
+  }
+}
+
+.partnerCompany{
+  width: 40%;
+
+  @media(min-width: 768px) and (max-width: 991px){
+    width: 75%;
+  }
+
+  @media(max-width: 767px){
+    width: 90%;
+  }
+}
+
+.share-widget{
+  
 }
 

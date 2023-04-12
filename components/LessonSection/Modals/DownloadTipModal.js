@@ -44,16 +44,24 @@ const DownloadTipModal = () => {
             <Body className="d-flex p-2 flex-md-row flex-column justify-content-md-start justify-content-center align-items-center align-items-md-start ">
                 <section className="mt-1 mt-sm-0 d-flex flex-column pe-sm-3 ps-sm-3 pt-sm-1 pt-md-2">
                     <p className="downloadInfoModal-txt mb-1" style={{ lineHeight: '20px' }}>If logged into Google, click the dropdown menu on the folder containing handouts & presentations, and select download:</p>
-                    <div className="position-relative mt-2" style={{ height: "300px" }}>
-                        <Image src="/imgs/lessons/download_large.png" alt="Galactic_Polymath_download_image_large" layout='fill' style={{ objectFit: 'contain' }} className="w-100 h-100" />
+                    <div className="position-relative mt-4 mt-md-3 mt-lg-2" style={{ height: "300px" }}>
+                        <Image src="/imgs/lessons/download_large.png" alt="Galactic_Polymath_download_image_large"
+                            fill
+                            style={{ objectFit: 'contain' }}
+                            className="w-100 h-100"
+                            sizes="100%"
+                        />
                     </div>
                 </section>
-                <section className="d-flex flex-column mt-3 mt-sm-0 pe-sm-3 ps-sm-3 pt-sm-1 pt-md-2">
+                <section className="d-flex flex-column mt-3 mt-sm-4 mb-sm-4 mb-md-0 mt-md-0 pe-sm-3 ps-sm-3 pt-sm-1 pt-md-2">
                     <p className="downloadInfoModal-txt mb-1" style={{ lineHeight: '20px' }}>
                         If not logged into Google, click this icon in the upper right:
                     </p>
-                    <div className="position-relative w-100 mt-2" style={{ height: "150px" }}>
-                        <Image src="/imgs/lessons/download_small.png" className="w-100 h-100" alt="Galactic_Polymath_download_image_large" layout='fill' style={{ objectFit: 'contain' }} />
+                    <div className="position-relative w-100 mt-4 mt-md-3 mt-lg-2" style={{ height: "150px" }}>
+                        <Image src="/imgs/lessons/download_small.png" className="w-100 h-100" alt="Galactic_Polymath_download_image_large" 
+                        fill style={{ objectFit: 'contain' }} 
+                            sizes="100%"
+                        />
                     </div>
                 </section>
             </Body>

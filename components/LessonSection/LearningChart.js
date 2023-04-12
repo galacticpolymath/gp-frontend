@@ -15,12 +15,6 @@ const LearningChart = ({
 
   return (
     <div className='container pt-4'>
-      {/* TODO: alt text */}
-      {/* <img
-        alt="Learning Standards Chart"
-        src={Badge.url}
-        className="border"
-      /> */}
       <div className="chartContainer position-relative w-100" style={{ height: '500px', maxHeight: '80vw' }}>
         <Image
           src={Badge.url}

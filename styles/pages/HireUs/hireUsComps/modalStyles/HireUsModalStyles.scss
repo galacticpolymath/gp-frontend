@@ -140,7 +140,7 @@ $modalBorderColor: #707070;
   @media (max-width: 575px) {
     width: 85px;
     height: 85px;
-    inset: -10px 10px auto auto;
+    inset: -4px 10px auto auto;
   }
 }
 
@@ -157,6 +157,15 @@ $modalBorderColor: #707070;
 }
 
 .tierModalTxt{
-  // line-height: ;
   line-height: 16px;
 }
+
+
+.tierTableRow{
+  @media(max-width: 575px){
+    td:last-of-type{
+      word-spacing: .05em;
+    }
+  }
+}
+

@@ -409,6 +409,12 @@ ol li{
   }
 }
 
+.w-lg-75{
+  @media(min-width: 992px){
+    width: 75% !important;
+  }
+}
+
 .borderThicker {
   border: solid 1.3px #707070 !important;
 }
@@ -423,6 +429,14 @@ ol li{
 
 .noBorder {
   border-style: none !important;
+}
+
+
+
+.w-sm-75{
+  @media(min-width: 576px){
+    width: 75% !important;
+  }
 }
 
 .noBtnStyles {
@@ -466,9 +480,17 @@ ol li{
  cursor:  pointer !important;
 }
 
+.position-sm-absolute{
+  @media(min-width: 576px){
+    position: absolute !important;
+  }
+}
+
 .btnColorChangeOnHover:hover{
   opacity: .8 !important;
 }
+
+
 
 .moveRight{
   transform: translateX(15px) !important;

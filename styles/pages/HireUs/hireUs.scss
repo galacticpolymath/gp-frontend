@@ -482,9 +482,9 @@
   height: 225px;
 
   @media (max-width: 575px) {
-    max-width: 300px;
-    min-width: 225px;
     height: 225px;
+    width: 225px;
+    object-fit: contain;
   }
 
   @media (min-width: 768px) and (max-width: 991px) {

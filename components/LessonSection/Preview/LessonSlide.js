@@ -2,7 +2,6 @@
 /* eslint-disable quotes */
 import { getMediaComponent } from './utils';
 import styles from './index.module.scss';
-import { useEffect } from 'react';
 
 const LessonSlide = ({
   type,
@@ -12,13 +11,6 @@ const LessonSlide = ({
   byLink,
   mainLink,
 }) => {
-  
-  const handleScrollHandler = () => {};
-
-  useEffect(() => {
-    document.querySelector('iframe').addEventListener('scroll', handleScrollHandler, { passive: true });
-  });
- 
   return (
     <div className='autoCarouselItem onLessonsPg rounded px-5 py-1 px-lg-1 py-lg-1 justify-content-center align-items-center' style={{ 'width': '100%' }}>
       <div className='bg-white pb-3 pe-3 pe-sm-0 ps-3 ps-sm-0 pt-4 pt-0 p-sm-4 p-lg-3 rounded' style={{ maxWidth: 785 }}>

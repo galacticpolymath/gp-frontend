@@ -1,7 +1,10 @@
+/* eslint-disable no-console */
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/jsx-indent-props */
 import Hero from '../components/Hero';
 import Layout from '../components/Layout';
-import HeroImage from '../assets/img/city_network.jpg';
+// import HeroImage from '../assets/img/city_network.jpg';
 import styles from './index.module.css';
 import TeamMemberCard from '../components/TeamMemberCard';
 import productTeam from '../data/AboutPg/productTeam.json';
@@ -9,6 +12,9 @@ import devTeam from '../data/AboutPg/devTeam.json';
 import alumni from '../data/AboutPg/alumni.json';
 import Image from 'next/image';
 import Link from 'next/link';
+import Accordion from '../components/Accordion';
+import Partners from '../components/AboutPgComps/sections/Partners';
+import CollaborateSec from '../components/AboutPgComps/sections/CollaborateSec';
 
 const MATT_LINKS =
   [
@@ -19,9 +25,33 @@ const MATT_LINKS =
     { link: 'https://scholar.google.com/citations?user=MZKGDvAAAAAJ&hl=en', imgSrc: '/imgs/about/google_scholar.png' },
   ];
 
+const AlumniBtn = props => {
+  return (
+    <div className='container bg-white border-bottom w-100'>
+      <div className='row'>
+        <div className='col-12 d-flex justify-content-between'>
+          <h2 style={{ fontSize: '15px' }} className='d-flex justify-content-center align-items-center h-100'>{props.alumniName}</h2>
+          <div className='d-flex justify-content-center align-items-center'>
+            <i className="fs-3 bi-chevron-down"></i>
+            <i className="fs-3 bi-chevron-up"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AboutPage = () => (
   <Layout>
-    <Hero imgSrc={HeroImage.src}>
+    <Hero
+      imgSrc='/imgs/about/about_hero.png'
+      isImgToTheSide
+      childrenContainerStyle={{ maxWidth: '705px' }}
+      imgContainerStyle={{ maxWidth: '718px' }}
+      childrenContainerClassName='mx-auto mx-xl-0'
+      className='about-hero d-flex pt-4 pb-4 pt-md-0 pb-md-0 flex-column-reverse flex-md-row-reverse justify-content-xl-center align-items-xl-center'
+      isStylesHereOn={false}
+    >
       <h1 className={styles.shadow}>About GP</h1>
       <p className={styles.shadow}>Galactic Polymath (GP) is an education studio. We help scientists, nonprofits, and sustainable companies achieve outreach at scale by translating complex, cutting-edge research into mind-blowing lessons for grades 5+.</p>
     </Hero>
@@ -74,11 +104,10 @@ const AboutPage = () => (
       <div className='col-12 col-lg-6 mb-2 mb-sm-4 mb-lg-0 d-flex justify-content-center align-items-center'>
         <div className="position-relative ourVisionImgContainer">
           <Image
-            fill
             alt="Our_Vision_Galactic_Polymath"
             style={{ objectFit: 'contain', maxHeight: '100%', minHeight: '100%' }}
-            className="w-100 h-100"
-            sizes="(max-width: 575px) 521px, (max-width: 767px) 486px, (max-width: 991px) 594.594px, (max-width: 1199px) "
+            fill
+            sizes="100%"
             src="/imgs/about/our_vision.jpeg"
           />
         </div>
@@ -195,36 +224,42 @@ const AboutPage = () => (
             );
           })}
         </div>
-
         <div className='row'>
           <div className='col-12 text-center p-3 py-lg-4 px-lg-5'>
             <h3 className='fs-4 mb-3 text-uppercase fw-light'>Alumni</h3>
             <p className='fs-5'>We wouldn&apos;t be here without the hard work of these amazing folks!</p>
           </div>
         </div>
+        <div className='row d-flex justify-content-center align-items-center'>
+          <div className='w-100 w-lg-75'>
+            {alumni.map(({ name, position, description, imgSrc, links }, index) => {
+              const props = { className: 'col-11 col-sm-10 col-lg-6 col-xl-4 ms-lg-3 mt-2', name, position };
 
-        <div className='row justify-content-center align-items-stretch'>
-          {alumni.map(({ name, position, description, imgSrc, links }, index) => {
-            const props = { className: 'col-12 col-lg-6 col-xl-4', name, position };
+              if (links) {
+                props['links'] = links;
+              }
 
-            if (links) {
-              props['links'] = links;
+              if (imgSrc) {
+                props['imgSrc'] = imgSrc;
+              }
+
+              return (
+                <Accordion key={`${index}_${name}`} willUseGetId={false} className='w-100 w-md-75' id={`${index}`} buttonClassName='noBtnStyles w-100' button={<AlumniBtn alumniName={name} />}>
+                  <div className='d-lg-block d-flex justify-content-center align-items-center'>
+                    <TeamMemberCard {...props}>
+                      {description}
+                    </TeamMemberCard>
+                  </div>
+                </Accordion>
+              );
             }
-
-            if (imgSrc) {
-              props['imgSrc'] = imgSrc;
-            }
-
-            return (
-              <TeamMemberCard key={`${index}_${name}`} {...props}>
-                {description}
-              </TeamMemberCard>
-            );
-          }
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
+    <Partners />
+    <CollaborateSec />
   </Layout>
 );
 

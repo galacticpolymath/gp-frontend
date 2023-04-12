@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-max-props-per-line */
 import LetsTalkBtnContainer from '../buttons/LetsTalkBtnContainer';
 import styles from '../../../pages/index.module.css';
-import LayoutBackGroundImg from '../../../assets/img/1_northeast_merlot_darker.png';
+import Image from 'next/image';
 
 const IntroSecHireUs = () => {
   return (
-    <section className='d-flex flex-row parallax row introSecHireUsPg' style={{ backgroundImage: `url(${LayoutBackGroundImg.src})` }}>
+    <section className='d-flex flex-row row introSecHireUsPg position-relative'>
+      <Image src='/imgs/heroImgHireUs.png' alt='hire_us_img_hero' style={{ zIndex: -1 }} fill className='h-100 w-100 position-absolute' />
       <section className="w-100 justify-content-center align-items-center d-none d-md-flex">
         <section className="d-none d-md-flex flex-column w-100 noMargin col-12 introSecAndLetTalksSec">
           <section className="d-flex flex-column w-100 justify-content-center align-items-center">

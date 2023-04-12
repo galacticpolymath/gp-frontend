@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
@@ -10,6 +11,9 @@ const LessonPart = ({
   chunks = [],
   resources,
 }) => {
+  const isOnLastPart = partTitle === 'Assessments';
+  const durList = isOnLastPart ? null : chunks.map(({ chunkDur }) => chunkDur);
+  const linkResources = isOnLastPart ? chunks : (resources?.[0]?.parts?.[partNum - 1]?.itemList || []);
 
   return (
     <Accordion
@@ -18,14 +22,14 @@ const LessonPart = ({
       id={`part_${partNum}`}
       button={(
         <div>
-          <h3>Part {partNum}: {partTitle}</h3>
+          <h3>{isOnLastPart ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
           <div>{partPreface}</div>
         </div>
       )}
     >
       <>
         <ol className='mt-3'>
-          {(resources?.[0]?.parts?.[partNum - 1]?.itemList || []).map(item => (
+          {linkResources.map(item => (
             <li key={item.itemTitle} className='mb-2'>
               <strong>{item.itemTitle}</strong>
               <ul>
@@ -46,26 +50,30 @@ const LessonPart = ({
           ))}
         </ol>
 
-        <h4>Steps &amp; Flow</h4>
-        {chunks.map((chunk, i) => (
-          <LessonChunk
-            key={i}
-            chunkNum={i}
-            durList={chunks.map(({ chunkDur }) => chunkDur)}
-            partInfo={resources?.parts?.[partNum - 1]}
-            {...chunk}
-          />
-        ))}
+        {(!isOnLastPart && durList) &&
+          <>
+            <h4>Steps &amp; Flow</h4>
+            {chunks.map((chunk, i) => (
+              <LessonChunk
+                key={i}
+                chunkNum={i}
+                durList={durList}
+                partInfo={resources?.parts?.[partNum - 1]}
+                {...chunk}
+              />
+            ))}
+          </>
+        }
       </>
     </Accordion>
   );
 };
 
 LessonPart.propTypes = {
-  partNum: PropTypes.number.isRequired,
-  partTitle: PropTypes.string.isRequired,
-  partPreface: PropTypes.string.isRequired,
-  chunks: PropTypes.array.isRequired,
+  partNum: PropTypes.number,
+  partTitle: PropTypes.string,
+  partPreface: PropTypes.string,
+  chunks: PropTypes.array,
   resources: PropTypes.oneOfType([
     PropTypes.array, PropTypes.object,
   ]),

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 import { useState } from 'react';
@@ -36,11 +37,20 @@ const TeachIt = ({
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations[0]);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
   const allResources = getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources;
+  const [selectedGradeResources, setSelectedGradeResources] = useState(allResources?.[0]?.links);
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
+  let assessmentPart = Data.classroom.resources[0].parts[Data?.classroom?.resources[0]?.parts?.length - 1];
+  assessmentPart = (assessmentPart?.title === 'Assessments') ? { chunks: assessmentPart.itemList, partTitle: assessmentPart.title } : null;
+  const parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
+  };
+
+  const handleOnChange = selectedGrade => {
+    setSelectedGradeResources(selectedGrade.links);
+    setSelectedGrade(selectedGrade);
   };
 
   /* col-12 col-xl-8 offset-xl-2 */
@@ -79,7 +89,7 @@ const TeachIt = ({
                   id={variation.grades}
                   value={variation.grades}
                   checked={variation.grades === selectedGrade.grades}
-                  onChange={() => setSelectedGrade(variation)}
+                  onChange={() => handleOnChange(variation)}
                 />
                 {variation.grades}
               </label>
@@ -107,31 +117,39 @@ const TeachIt = ({
           </div>
         </div>
 
-        {resources.links && (
-          <div className='text-center d-flex'>
-            <a
-              target='_blank'
-              rel='noopener noreferrer'
-              href={resources.links.url}
-              className='btn btn-primary px-3 py-2 d-inline-block mb-3'
-            >
-              <div className='d-flex align-items-center gap-2'>
-                <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
-                {resources.links.linkText}
+        {selectedGradeResources && (
+          <div className='d-flex container justify-content-center mb-5 mt-0 col-11'>
+            <div className=" row flex-nowrap  align-items-center col-md-8">
+
+              <a
+                target='_blank'
+                rel='noopener noreferrer'
+                href={selectedGradeResources.url}
+                className='btn btn-primary px-3 py-2 '
+              >
+                <div className='d-flex flex-md-row align-items-md-center justify-content-center gap-2 '>
+                  <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
+                  <span style={{ lineHeight: "23px" }} className="d-none d-sm-inline">{selectedGradeResources.linkText}</span>
+                  <span style={{ lineHeight: "17px", fontSize: "14px" }} className="d-inline d-sm-none">{selectedGradeResources.linkText}</span>
+                </div>
+              </a>
+              <div className=' '>
+                <AiOutlineQuestionCircle
+                  className="downloadTipIcon position-absolute "
+                  style={{ fontSize: "1.75rem" }}
+                  onClick={handleIconClick}
+
+                />
               </div>
-            </a>
-            <AiOutlineQuestionCircle
-              className="ms-2 downloadTipIcon"
-              style={{ fontSize: "20px" }}
-              onClick={handleIconClick}
-            />
+
+            </div>
           </div>
         )}
 
-        <div className='container pb-4'>
-          {Data.parts.map(part => (
+        <div className='container ps-0 pe-1 px-md-2  pb-4'>
+          {parts.map((part, index) => (
             <LessonPart
-              key={part.partNum}
+              key={`${index}_part`}
               resources={resources}
               {...part}
             />

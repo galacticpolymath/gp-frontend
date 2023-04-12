@@ -9,7 +9,7 @@ const Chunk = ({
 }) => {
   return (
     <>
-      <div className='bg-light-gray p-3 mb-3 rounded'>
+      <div className='bg-light-gray p-3 mx-0 mb-3 rounded'>
         <h5 className='fw-bold mb-0'>{chunkTitle}</h5>
         <ChunkGraph durList={durList} chunkNum={chunkNum} />
       </div>

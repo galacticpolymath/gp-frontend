@@ -11,8 +11,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 
-import { useEffect, useMemo, useState } from "react";
-import { v4 } from "uuid";
+import { useMemo, useState } from "react";
 
 const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)

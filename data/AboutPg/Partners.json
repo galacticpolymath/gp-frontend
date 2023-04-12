@@ -1,0 +1,18 @@
+[
+    {
+      "name": "STEM Advocacy Institute",
+      "type": "NONPROFIT PARTNER",
+      "link": "https://stemadvocacy.org/",
+      "imgPath": "/imgs/about/partners/stem_advocacy_institute.webp",
+      "alt": "Galactic_Polymath_Partner_stem_advocacy_institue",
+      "description": "As an SAI Affiliate, we are working together to tell the stories of scientists and STEM professionals, and connect with underserved audiences."
+    },
+    {
+      "name": "PhutureDoctors",
+      "type": "MULTIMEDIA PARTNER",
+      "link": "https://www.phuturedoctors.com/",
+      "imgPath": "/imgs/about/partners/phutureDoctorsLogo.webp",
+      "alt": "Galactic_Polymath_Partner_phuture_doctors_logo",
+      "description": "Galactic Polymath and Phuture Doctors are both committed to amplifying diverse voices in STEM and nurturing curiosity and critical thinking in everyone."
+    }
+]

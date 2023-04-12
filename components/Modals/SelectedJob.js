@@ -42,7 +42,6 @@ const SelectedJob = () => {
     const onTheJobTraining = selectedJob["typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"]
     def = def.toLowerCase() === "no definition found for this summary category." ? null : def;
 
-    // create a helper function to generate this function 
     const infoCards = [
         {
             title: `Median ${data_start_yr} Annual Wage`,

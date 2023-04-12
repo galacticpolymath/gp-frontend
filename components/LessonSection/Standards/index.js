@@ -10,7 +10,7 @@ const Standards = ({
   Data,
   LearningObj,
 }) => {
-  
+
   return (
     <div className='container mb-4'>
       <Accordion
@@ -55,13 +55,13 @@ const Standards = ({
               {...subject}
             />
           ))}
-          
+
           <h4 className='fs-5 fw-bold mt-4'>Connected Standard(s)</h4>
           <div className="my-3">
             Skills and concepts reviewed or hinted at in this lesson (for building upon)
           </div>
           {Data.filter(({ target }) => !target).map((subject, i) => (
-            <Subject 
+            <Subject
               key={`connected-${i}`}
               accordionId={`connected-${i}`}
               {...subject}

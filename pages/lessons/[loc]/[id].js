@@ -16,6 +16,9 @@ import { useEffect, useState } from 'react';
 import ParentLessonSection from '../../../components/LessonSection/ParentLessonSection';
 import { useInView } from 'react-intersection-observer';
 import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
+import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
+
+const isOnProduction = process.env.NODE_ENV === 'production';
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
@@ -61,6 +64,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       }
     })
   }
+
   const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
 
   useEffect(() => {
@@ -87,12 +91,16 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }, [inView])
 
+  // testing push to github
+
+  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
+
   return (
     <Layout>
-      {/* selectedLessonPg */}
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} />
+      <ShareWidget {...shareWidgetFixedProps} />
       <div className="container d-flex justify-content-center pt-4 pb-4">
-        <div className="col-11 col-sm-12 col-md-10 col-lg-8">
+        <div className="col-11 col-md-10">
           <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
             {lastSubRelease && (
               <p>
@@ -106,32 +114,49 @@ const LessonDetails = ({ lesson, availLocs }) => {
               id={lesson.id}
             />
           </div>
-          <h1 ref={ref} id="lessonTitleId" className="mt-4">{lesson.Title}</h1>
+          <h1 ref={ref} id="lessonTitleId" className="mt-2">{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
           {lesson.CoverImage && lesson.CoverImage.url && (
-            <img
-              src={lesson.CoverImage.url}
-              alt={lesson.Subtitle}
-            />
+            <div className='w-100 position-relative mt-2 mb-2'>
+              <Image
+                src={lesson.CoverImage.url}
+                alt={lesson.Subtitle}
+                width={1500}
+                height={450}
+                priority
+                style={{ width: "100%", height: "auto", objectFit: 'contain' }}
+              />
+            </div>
           )}
-          <div className='row mt-4'>
-            <div className="col col-md-6 col-lg-9">
+          <div className='d-flex d-md-none'>
+            <label className='d-flex justify-content-center align-items-center'>Share: </label>
+            {isOnProduction ? <ShareWidget pinterestMedia={lesson.CoverImage.url} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lesson.CoverImage.url} />}
+          </div>
+          <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
+            <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
               <h5>Sponsored by:</h5>
               <RichText content={lesson.SponsoredBy} />
             </div>
-            <div className="col col-md-6 col-lg-3 position-relative">
+            <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid  ">
+
               {lesson.SponsorImage && lesson.SponsorImage.url && (
-                <img
-                  src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
-                  alt={lesson.Subtitle}
-                />
+                <div className='position-relative'>
+                  <Image
+                    src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
+                    alt={lesson.Subtitle}
+                    width={80}
+                    height={80}
+                    style={{ width: "100%", height: 'auto', objectFit: 'contain' }}
+                  />
+                </div>
               )}
+
             </div>
           </div>
         </div>
       </div>
       <div className="container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
-        <div className="col-12 col-sm-12 col-md-10 col-lg-8 p-0">
+        <div className="col-11 col-md-10 p-0">
           {_sections.map((section, index) => (
             <ParentLessonSection
               key={index}
@@ -156,11 +181,17 @@ export const getStaticPaths = async () => {
   return { paths, fallback: false };
 };
 
+// getting data from vercel api 
+
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  const res = await fetch('https://gp-catalog.vercel.app/index.json')
   const lessons = await res.json();
   const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter((lesson) => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
+
+  if (!lesson?.Section?.procedure?.Data) {
+    return { props: { lesson: lesson, availLocs } };
+  }
 
   lesson.Section['teaching-materials'].Data = {
     ...lesson.Section.procedure.Data,

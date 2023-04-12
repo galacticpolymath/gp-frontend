@@ -32,40 +32,17 @@ export default function Home() {
           </Link>
         </div>
       </Hero>
-      <div className="container mx-auto d-flex align-items-center px-3 py-4 py-lg-5 flex-column flex-lg-row">
-        <div className='col-12 col-lg-6 col-xl-7 order-1 order-lg-2 p-3 d-flex d-sm-block justify-content-center align-items-center'>
-          <div className="position-relative d-none d-md-block" style={{ height: 425 }}>
-            <Image
-              src={EngineeringImage.src}
-              alt="Two people working on a diagram together"
-              fill
-              className='d-block h-100'
-              sizes='(max-width: 991px) 648px, (max-width: 1199px) 426px, 713px'
-              style={{ objectFit: 'contain' }}
-            />
-          </div>
-          <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 325 }}>
-            <Image
-              src={EngineeringImage.src}
-              alt="Two people working on a diagram together"
-              fill
-              className='d-block h-100'
-              sizes='(max-width: 767px) 468px, 713px'
-              style={{ objectFit: 'contain' }}
-            />
-          </div>
-          <div className="position-relative d-block d-sm-none" style={{ height: 125, maxWidth: 300, width: '100%' }}>
-            <Image
-              src={EngineeringImage.src}
-              alt="Two people working on a diagram together"
-              fill
-              className='d-block h-100 border'
-              sizes='(max-width: 575px) 300px, 713px'
-              style={{ objectFit: 'fill' }}
-            />
-          </div>
+      <div className="container d-flex align-items-center mx-auto px-3 py-4 py-lg-5 flex-column flex-lg-row-reverse">
+        <div className="position-relative col-12 col-lg-6 engineeringImgHomePg">
+          <Image
+            src={EngineeringImage.src}
+            alt="Two people working on a diagram together"
+            fill
+            sizes='100%'
+            style={{ objectFit: 'contain' }}
+          />
         </div>
-        <div className='col-12 col-lg-6 col-xl-5 order-2 order-lg-1 p-3 text-center space-y-3'>
+        <div className='col-12 col-lg-6 order-2 order-lg-1 p-3 text-center space-y-3'>
           <h3 className='mb-2 text-center text-sm-start text-lg-center'>Open-Access</h3>
           <p className='mb-4 text-center text-sm-start text-lg-center'>
             <em>We do not sell to schools.</em>{' '}
@@ -89,115 +66,32 @@ export default function Home() {
 
           <div className='bg-white p-4 row align-items-center rounded-3 d-flex d-sm-flex flex-column flex-sm-row'>
             <div className='col-sm-9 text-center'>
-              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-xl-block w-25'>New release!</div>
-              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-md-block d-xl-none w-50'>New release!</div>
-              <div className='badge bg-secondary-light fs-5 text-center mb-2 d-none d-sm-block d-md-none d-xl-none w-75'>New release!</div>
-              <div className="w-100 d-flex d-sm-none justify-content-center align-items-center">
+              <div className="d-flex justify-content-center justify-content-sm-start align-items-stretch">
                 <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
               </div>
-              <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 316 }}>
+              <div className="position-relative newReleaseImg">
                 <Image
                   priority
-                  className='border'
                   src={NewReleaseImage.src}
                   fill
-                  sizes="(max-width: 991px) 452.25px, 902.25px"
+                  sizes="100%"
                   style={{ objectFit: 'contain' }}
                   alt="I Like That! How perception, emotion, and cognition shape our preferences"
                 />
               </div>
-              <div className="position-relative d-none d-lg-block d-xl-none" style={{ height: 442 }}>
-                <Image
-                  priority
-                  className='border'
-                  src={NewReleaseImage.src}
-                  fill
-                  sizes="(max-width: 991px) 632.25px, 902.25px"
-                  style={{ objectFit: 'contain' }}
-                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
-                />
-              </div>
-              <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 222 }}>
-                <Image
-                  priority
-                  className='border'
-                  src={NewReleaseImage.src}
-                  fill
-                  sizes="(max-width: 767px) 317.25px, 902.25px"
-                  style={{ objectFit: 'contain' }}
-                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
-                />
-              </div>
-              <div className="position-relative d-none d-xl-block" style={{ height: 630 }}>
-                <Image
-                  priority
-                  className='border'
-                  src={NewReleaseImage.src}
-                  fill
-                  style={{ objectFit: 'contain' }}
-                  sizes="902.25px"
-                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
-                />
-              </div>
-              <section className='row d-flex d-sm-none justify-content-center mt-2'>
-                <div className="position-relative d-block d-sm-none" style={{ height: 125, maxWidth: 300, width: '100%' }}>
-                  <Image
-                    priority
-                    src={NewReleaseImage.src}
-                    fill
-                    style={{ objectFit: 'contain' }}
-                    sizes="(max-width: 575px) 300px, 902.25px"
-                    alt="I Like That! How perception, emotion, and cognition shape our preferences"
-                  />
-                </div>
-              </section>
             </div>
             <div className='col-12 col-sm-3 text-sm-center d-flex justify-content-center mt-2 mt-sm-0 align-items-center'>
               <section className="d-flex mt-1 flex-column justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch">
-                <h5 className='fw-light d-none d-sm-block'>Sponsor:</h5>
                 <div className="d-flex justify-content-center align-items-center mt-3">
-                  <h5 className='fw-light d-sm-none'>Sponsor:</h5>
+                  <h5 className='fw-light'>Sponsor:</h5>
                 </div>
                 <a href="https://www.nsf.gov/">
-                  <div className="position-relative d-none d-lg-block" style={{ height: 175, width: 175 }}>
+                  <div className="position-relative nsfImgContainer">
                     <Image
                       src={NSFImage.src}
                       fill
                       style={{ objectFit: 'contain' }}
                       sizes="175px"
-                      alt="National Science Foundation"
-                    />
-                  </div>
-                </a>
-                <a href="https://www.nsf.gov/">
-                  <div className="position-relative d-none d-md-block d-lg-none" style={{ height: 125, width: 125 }}>
-                    <Image
-                      src={NSFImage.src}
-                      fill
-                      sizes="(max-width: 991px) 125px, 175px"
-                      style={{ objectFit: 'contain' }}
-                      alt="National Science Foundation"
-                    />
-                  </div>
-                </a>
-                <a href="https://www.nsf.gov/">
-                  <div className="position-relative d-none d-sm-block d-md-none" style={{ height: 95, width: 95 }}>
-                    <Image
-                      src={NSFImage.src}
-                      fill
-                      style={{ objectFit: 'contain' }}
-                      sizes="(max-width: 767px) 95px, 175px"
-                      alt="National Science Foundation"
-                    />
-                  </div>
-                </a>
-                <a href="https://www.nsf.gov/">
-                  <div className="position-relative d-block d-sm-none" style={{ height: 65, width: 65 }}>
-                    <Image
-                      src={NSFImage.src}
-                      fill
-                      sizes="(max-width: 575px) 65px, 175px"
-                      style={{ objectFit: 'contain' }}
                       alt="National Science Foundation"
                     />
                   </div>
@@ -287,43 +181,13 @@ export default function Home() {
           </section>
           <section className="row w-100 w-md-75">
             <div className="col-12 d-flex justify-content-center align-items-center d-sm-block">
-              <div className="position-relative d-xl-block d-none" style={{ height: 429 }}>
+              <div className="position-relative ps-0 w-100 scientificAmericanImgContainer">
                 <Image
                   fill
+                  sizes="100%"
                   src={ScientificAmericanImage.src}
-                  sizes="646.5px"
                   alt="Why We Didn't Know that Female Birds Sing, Scientific American."
                   style={{ objectFit: 'contain' }}
-                  priority
-                />
-              </div>
-              <div className="position-relative d-none d-lg-block d-xl-none" style={{ height: 430, width: '100%' }}>
-                <Image
-                  fill
-                  src={ScientificAmericanImage.src}
-                  sizes="(max-width: 1199px) 466.5px, 646.5px"
-                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-                  style={{ objectFit: 'contain' }}
-                  priority
-                />
-              </div>
-              <div className="position-relative d-none d-sm-block d-lg-none d-xl-none ps-0" style={{ height: 380, width: '100%', maxWidth: 600 }}>
-                <Image
-                  fill
-                  sizes="(max-width: 767px) 486px, (max-width: 991px) 600px, 646.5px"
-                  src={ScientificAmericanImage.src}
-                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-                  style={{ objectFit: 'fill' }}
-                  priority
-                />
-              </div>
-              <div className="position-relative d-block d-sm-none ps-0" style={{ height: 225, width: '100%', maxWidth: 300 }}>
-                <Image
-                  fill
-                  src={ScientificAmericanImage.src}
-                  sizes="(max-width: 575px) 300px, 646.5px"
-                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-                  style={{ objectFit: 'fill' }}
                   priority
                 />
               </div>
@@ -346,27 +210,18 @@ export default function Home() {
         </div>
 
         <div className='bg-light-gray py-4'>
-          <div className='container p-3 p-lg-5 mx-auto row'>
+          <div className='container p-3 p-lg-5 mx-auto row justify-content-center align-items-center'>
             <div className='col-12 mb-4'>
-              <h3 className='col-lg-8 col-xl-6 offset-lg-2 offset-xl-3 text-center text-sm-start text-lg-center fw-light fs-2 mb-3'>Benefits of connecting classrooms to the world of Academia</h3>
+              <h3 className='col-lg-8 col-xl-6 offset-lg-2 offset-xl-3 text-center fw-light fs-2 mb-3'>Benefits of connecting classrooms to the world of Academia</h3>
             </div>
-            <div className='col-12 col-lg-6 mb-4 mb-lg-0'>
-              <div style={{ height: '400px' }} className='bg-white rounded-3 p-4 d-none d-sm-flex d-sm-block flex-column justify-content-center align-items-center'>
+            <div className='col-12 col-md-10 col-lg-6 mb-4 mb-lg-0 d-flex justify-content-center align-items-center'>
+              <div style={{ minWidth: 265 }} className='bg-white rounded-3 px-3 py-4 d-flex flex-column justify-content-center align-items-center teacherAndClientsIsland'>
                 <h4 className="text-center text-sm-start w-100">For Teachers</h4>
-                <ul style={{ height: 190 }} className="d-none d-xl-block pt-2">
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
-                </ul>
-                <ul style={{ height: 225 }} className="d-sm-block d-md-none pt-2">
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
-                </ul>
-                <ul style={{ height: 240 }} className="d-none d-md-block d-xl-none">
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
+                <ul className="teacherAndClientsUl pt-2">
+                  <li>Free (open-access), high-quality lessons</li>
+                  <li>Regularly updated based on your feedback</li>
+                  <li>Differentiated for grades 5-6, 7-8 & 9-12</li>
+                  <li>Adaptable for different time lengths, extension activities, etc.</li>
                 </ul>
                 <div className="d-flex justify-content-center">
                   <Link href="/lessons" className='btn btn-primary'>
@@ -375,46 +230,10 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className='col-12 col-lg-6 d-flex d-sm-block flex-column justify-content-center align-items-center'>
-              <div style={{ height: '400px' }} className='bg-white rounded-3 p-4 d-none d-sm-flex d-sm-block flex-column justify-content-center align-items-center'>
+            <div className='col-12 col-md-10 col-lg-6 d-flex justify-content-center align-items-center'>
+              <div style={{ minWidth: 265 }} className='bg-white rounded-3 d-flex flex-column justify-content-center align-items-center px-3 py-4 teacherAndClientsIsland'>
                 <h4 className="text-center text-sm-start w-100">For Clients</h4>
-                <ul style={{ height: 190 }} className="d-none d-md-block d-lg-none d-xl-block pt-2">
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
-                </ul>
-                <ul style={{ height: 225 }} className="d-block d-md-none pt-2">
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
-                </ul>
-                <ul style={{ height: 240 }} className="d-none d-lg-block d-xl-none">
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
-                </ul>
-                <div className="d-flex justify-content-center">
-                  <Link href="/hire-us" className='btn btn-primary'>
-                    Get lessons
-                  </Link>
-                </div>
-              </div>
-              <div style={{ minWidth: 240 }} className='bg-white rounded-3 p-4 d-flex d-sm-none d-sm-block flex-column justify-content-center align-items-center'>
-                <h4 className="text-center text-sm-start w-100">For Teachers</h4>
-                <ul className="d-block d-md-none pt-2">
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
-                </ul>
-                <div className="d-flex justify-content-center">
-                  <Link href="/hire-us" className='btn btn-primary'>
-                    Get lessons
-                  </Link>
-                </div>
-              </div>
-              <div style={{ minWidth: 240 }} className='bg-white mt-3 rounded-3 p-4 d-flex d-sm-none d-sm-block flex-column justify-content-center align-items-center'>
-                <h4 className="text-center text-sm-start w-100">For Clients</h4>
-                <ul className="d-block d-md-none pt-2">
+                <ul className="teacherAndClientsUl pt-2">
                   <li>Magnify the impact of your research and outreach efforts</li>
                   <li>Get detailed impact metrics to report to funders</li>
                   <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
