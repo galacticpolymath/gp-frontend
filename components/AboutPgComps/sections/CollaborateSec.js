@@ -10,6 +10,8 @@
 /* eslint-disable semi */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
+/* eslint-disable react/no-unescaped-entities */
+
 import Image from 'next/image';
 import Button from 'react-bootstrap/Button';
 
