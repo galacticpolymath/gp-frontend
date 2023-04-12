@@ -5,6 +5,7 @@ module.exports = {
   images: {
     domains: [
       'catalog.galacticpolymath.com',
+      'gp-catalog.vercel.app',
       'i3.ytimg.com',
     ],
   },
