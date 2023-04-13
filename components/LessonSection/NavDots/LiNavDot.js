@@ -12,6 +12,7 @@
 /* eslint-disable no-console */
 
 import { useMemo, useState } from "react";
+import { getIconStyles } from "../../../helperFns/getIconStyles";
 
 const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
@@ -36,18 +37,7 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
     // isInView, sectionId
     //  
 
-    const getIconStyles = _ => {
-        const isTeachingMaterialsId = sectionId === 'teaching_materials';
-        const bgColor = (isInView || willChangeIconColor) ? (isTeachingMaterialsId ? '#cb1f8e' : 'rgba(44, 131, 195, 0.6)') : 'rgba(0,0,0,.1)';
-        const borderColor = (isInView || willChangeIconColor) ? (isTeachingMaterialsId ? '#cb1f8e' : '#2c83c3') : (isTeachingMaterialsId ? '#cb1f8e' : '#bebebe');
-
-        return (
-            {
-                backgroundColor: bgColor, height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid', borderColor: borderColor, padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color",
-            }
-        )
-    }
-    const iconStyles = useMemo(() => getIconStyles(), [willChangeIconColor, isInView, sectionId]);
+    const iconStyles = useMemo(() => getIconStyles((isInView || willChangeIconColor), sectionId), [willChangeIconColor, isInView, sectionId]);
 
     return (
         <>
