@@ -323,10 +323,12 @@ $toolTipColor: #f0f4ff;
 
 // teachIt section
 .downloadTipIcon{
-  height: 80%;
+  // height: 70%;
+  width: 75%;
+  height: 100%;
 
   @media(max-width: 767px){
-    height: 40%;
+    width: 90%;
   }
 }
 

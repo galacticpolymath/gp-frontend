@@ -118,12 +118,12 @@ const TeachIt = ({
         </div>
         {selectedGradeResources && (
           <div className='d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11'>
-            <div className="row flex-column-reverse flex-sm-row flex-nowrap align-items-center col-md-8 position-relative">
+            <div className="row flex-nowrap align-items-center col-md-8 position-relative">
               <a
                 target='_blank'
                 rel='noopener noreferrer'
                 href={selectedGradeResources.url}
-                className='btn btn-primary px-3 py-2 col-10 col-md-12'
+                className='btn btn-primary px-3 py-2 col-8 col-md-12'
               >
                 <div className='d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2 '>
                   <div className='d-flex justify-content-center align-items-center'>
@@ -135,7 +135,7 @@ const TeachIt = ({
               </a>
               <div style={{ width: "70px" }} className='p-0 mt-0 d-flex justify-content-center align-items-center'>
                 <AiOutlineQuestionCircle
-                  className="downloadTipIcon w-100"
+                  className="downloadTipIcon"
                   style={{ fontSize: "1.75rem" }}
                   onClick={handleIconClick}
                 />
