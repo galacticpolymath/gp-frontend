@@ -116,11 +116,9 @@ const TeachIt = ({
             ))}
           </div>
         </div>
-
         {selectedGradeResources && (
           <div className='d-flex container justify-content-center mb-5 mt-0 col-11'>
-            <div className=" row flex-nowrap  align-items-center col-md-8">
-
+            <div className="row flex-nowrap  align-items-center col-md-8">
               <a
                 target='_blank'
                 rel='noopener noreferrer'
@@ -133,7 +131,7 @@ const TeachIt = ({
                   <span style={{ lineHeight: "17px", fontSize: "14px" }} className="d-inline d-sm-none">{selectedGradeResources.linkText}</span>
                 </div>
               </a>
-              <div className=' '>
+              <div className=''>
                 <AiOutlineQuestionCircle
                   className="downloadTipIcon position-absolute "
                   style={{ fontSize: "1.75rem" }}
@@ -141,7 +139,6 @@ const TeachIt = ({
 
                 />
               </div>
-
             </div>
           </div>
         )}

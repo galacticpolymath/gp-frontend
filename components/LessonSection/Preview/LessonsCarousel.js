@@ -82,9 +82,7 @@ const LessonsCarousel = ({ mediaItems }) => {
     useEffect(() => {
         setWillApplyStyles(true);
     }, [])
-
-
-
+    
     return (
         <div className={`bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center container ${styles.Carousel}`} >
             <section className='row'>
