@@ -13,7 +13,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LiNavDot from "./NavDots/LiNavDot";
 import SectionTitlesUl from "./NavDots/SectionTitlesUl";
 
@@ -31,43 +31,27 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
 
     const scrollSectionIntoView = sectionId => {
         const targetSection = document.getElementById(sectionId);
-
         targetSection && targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     const handleDotClick = sectionId => {
         setSectionDots(sectionDots => sectionDots.map(sectionDot => {
-            const { sectionId: _sectionId, willShowTitle } = sectionDot;
-            if (_sectionId === sectionId) {
-                console.log("dot was clicked on mobile: ", _sectionId === sectionId)
-                return {
-                    ...sectionDot,
-                    willShowTitle: !willShowTitle,
-                }
-            }
-
             return {
                 ...sectionDot,
-                willShowTitle: false,
+                willShowTitle: true,
             }
         }));
-        !willShowTitles && setWillShowTitles(true);
-    }
-
-    const goToSection = (sectionId, isOnMobile) => {
-        if (isOnMobile) {
-            setSectionDots(sectionDots => sectionDots.map(sectionDot => {
-                return {
-                    ...sectionDot,
-                    willShowTitle: false,
-                }
-            }));
-            setWillShowTitles(false)
-        }
-
+        setWillShowTitles(true);
         scrollSectionIntoView(sectionId);
     }
+
+    const goToSection = sectionId => {
+        scrollSectionIntoView(sectionId);
+    }
+
     const liNavDotFns = { goToSection, handleDotClick }
+
+    // detect when the user clicks anywhere on the page except when clicking on a nav dot or a section title. Do this within a useEffect hook
 
     return (
         <div className="position-fixed lessonSecsNavDotsListContainer d-flex">

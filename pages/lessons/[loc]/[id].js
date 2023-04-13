@@ -19,6 +19,7 @@ import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavD
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 
 const isOnProduction = process.env.NODE_ENV === 'production';
+const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
@@ -66,6 +67,30 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }
 
   const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
+
+  const handleDocumentClick = event => {
+    const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
+    
+    !wasANavDotElementClicked && setSectionDots(sectionDots => {
+      if (sectionDots?.length) {
+        return sectionDots.map(sectionDot => {
+          return {
+            ...sectionDot,
+            willShowTitle: false,
+          };
+        })
+      }
+
+      return sectionDots;
+    })
+  }
+
+  useEffect(() => {
+
+    document.body.addEventListener('click', handleDocumentClick);
+
+    return () => document.body.removeEventListener('click', handleDocumentClick);
+  }, [])
 
   useEffect(() => {
     if (inView) {

@@ -26,17 +26,6 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
         setWillChangeIconColor(false);
     }
 
-    // GOAL: 
-    // refactor the getIconStyles, use it to get the function
-    // make getIconStyles, put it into is file
-    // create a condition for this file, if this file is being used for navigation of the section, then insert a true boolean and use getIconStyles. Else,  refactor the getIconStyles to be used for the carousel navigation dots 
-
-    // BRAIN DUMP:
-    // when the user is on a selected lesson 
-    // for getIconStyles, it will have the following parameters:
-    // isInView, sectionId
-    //  
-
     const iconStyles = useMemo(() => getIconStyles((isInView || willChangeIconColor), sectionId), [willChangeIconColor, isInView, sectionId]);
 
     return (
@@ -59,10 +48,11 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
                     key={index}
                     style={{ height: "30px" }}
                     role='button'
-                    className='d-flex flex-inline justify-content-center align-items-center'
+                    className='d-flex flex-inline justify-content-center align-items-center sectionNavDotLi'
                 >
                     <i
                         onClick={_ => handleDotClick(sectionId, true)}
+                        className='sectionNavDot'
                         style={iconStyles} />
                 </li>
             }

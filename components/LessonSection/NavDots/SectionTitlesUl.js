@@ -56,20 +56,20 @@ const SectionTitlesUl = ({ sectionDots, willShowTitles, goToSection }) => {
                     const backgroundColor = isInView ? (isMaterialsTeachingSecId ? '#FEEAF8' : '#d5e6f3') : 'white'
 
                     return (
-                        <div className='w-100 justify-content-end' style={{ display: willShowTitles ? 'flex' : 'none' }} key={index}>
+                        <div className='w-100 justify-content-end sectionTitleParent' style={{ opacity: willShowTitles ? 1 : 0, display: 'flex', transitionProperty: 'opacity', transition: "all .15s ease-in" }} key={index}>
                             <li
-                                className='d-lg-none d-inline-flex justify-content-end position-relative'
+                                className='d-lg-none d-inline-flex justify-content-end position-relative sectionTitleLi'
                                 role='button'
-                                style={{ border: 'none', opacity: willShowTitle ? 1 : 0, transition: "all .15s ease-in", height: "30px", transitionProperty: 'border-color, display', zIndex: willShowTitle ? 100 : -1 }}
+                                style={{ border: 'none', opacity: willShowTitle ? 1 : 0, transition: "all .15s ease-in", height: "30px", transitionProperty: 'border-color, display, opacity', zIndex: willShowTitle ? 100 : -1 }}
                             >
                                 <span
                                     style={{ transition: "all .15s ease-in", backgroundColor: backgroundColor, border: '#363636 1px solid', transitionProperty: 'background-color, opacity, border', fontWeight: 400, padding: 6 }}
-                                    className='text-black text-nowrap shadow rounded d-inline-flex d-lg-none justify-content-center align-items-center'
+                                    className='text-black text-nowrap shadow rounded d-inline-flex d-lg-none justify-content-center align-items-center sectionTitleSpan'
                                     onClick={_ => goToSection(sectionId, true)}
                                 >
                                     {SectionTitle}
                                 </span>
-                                <span style={{ width: 55 }} className='d-flex justify-content-center align-items-center ps-1'>
+                                <span style={{ width: 55 }} className='d-flex justify-content-center align-items-center ps-1 sectionTitleSpan'>
                                     <span className="dotLine" />
                                 </span>
                             </li>
