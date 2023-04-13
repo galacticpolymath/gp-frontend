@@ -83,7 +83,6 @@ const Overview = ({
             )}
           </Link>
         </div>
-
         <RichText className='mt-4' content={Text} />
 
         <h5 className='mt-4'>Keywords:</h5>

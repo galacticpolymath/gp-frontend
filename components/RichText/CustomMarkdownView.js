@@ -9,6 +9,7 @@ const components = {
         <Link
           href={href}
           passHref
+          scroll={false}
           {...props}
         >
 
@@ -27,7 +28,7 @@ const components = {
       linkProps.rel = 'nooopener noreferrer';
     }
 
-    return <LinkComponent {...props} {...linkProps} />;
+    return <LinkComponent {...props} {...linkProps}></LinkComponent>;
   },
 };
 
