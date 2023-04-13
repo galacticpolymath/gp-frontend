@@ -321,7 +321,12 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.share-widget{
-  
+// teachIt section
+.downloadTipIcon{
+  height: 80%;
+
+  @media(max-width: 767px){
+    height: 40%;
+  }
 }
 

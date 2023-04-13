@@ -118,23 +118,25 @@ const TeachIt = ({
         </div>
         {selectedGradeResources && (
           <div className='d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11'>
-            <div className="row flex-nowrap align-items-center col-md-8 position-relative">
+            <div className="row flex-column-reverse flex-sm-row flex-nowrap align-items-center col-md-8 position-relative">
               <a
                 target='_blank'
                 rel='noopener noreferrer'
                 href={selectedGradeResources.url}
-                className='btn btn-primary px-3 py-2'
+                className='btn btn-primary px-3 py-2 col-10 col-md-12'
               >
-                <div className='d-flex flex-md-row align-items-md-center justify-content-center gap-2 '>
-                  <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
+                <div className='d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2 '>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
+                  </div>
                   <span style={{ lineHeight: "23px" }} className="d-none d-sm-inline">{selectedGradeResources.linkText}</span>
                   <span style={{ lineHeight: "17px", fontSize: "14px" }} className="d-inline d-sm-none">{selectedGradeResources.linkText}</span>
                 </div>
               </a>
-              <div style={{ width: "70px" }} className='h-100 p-0 mt-0 d-flex justify-content-center align-items-center'>
+              <div style={{ width: "70px" }} className='p-0 mt-0 d-flex justify-content-center align-items-center'>
                 <AiOutlineQuestionCircle
                   className="downloadTipIcon w-100"
-                  style={{ fontSize: "1.75rem", height: "80%" }}
+                  style={{ fontSize: "1.75rem" }}
                   onClick={handleIconClick}
                 />
               </div>
