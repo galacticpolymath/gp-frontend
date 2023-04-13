@@ -173,7 +173,14 @@ $toolTipColor: #f0f4ff;
 }
 
 .carouselSelectedLessons {
-  max-width: 70rem !important;
+  @media(min-width: 576px){
+    max-width: 70rem !important;
+  }
+
+  @media(max-width: 575px){
+    width: 80vw;
+    max-width: 90vw !important;
+  }
 }
 
 .lessonSlideBody {

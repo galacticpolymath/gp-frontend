@@ -84,19 +84,21 @@ const LessonsCarousel = ({ mediaItems }) => {
 
 
     return (
-        <div className={`bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center ${styles.Carousel}`} >
-            <section
-                style={{ height: 'fit-content' }}
-                className="autoCarouselContainer"
-            >
-                <div
-                    className="autoCarouselSlider"
-                    style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
+        <div className={`bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center container ${styles.Carousel}`} >
+            <section className='row'>
+                <section
+                    style={{ height: 'fit-content' }}
+                    className="autoCarouselContainer col-12"
                 >
-                    {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => <LessonSlide key={index} {...lessonDocument} />)}
-                </div>
+                    <div
+                        className="autoCarouselSlider"
+                        style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
+                    >
+                        {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => <LessonSlide key={index} {...lessonDocument} />)}
+                    </div>
+                </section>
             </section>
-            <section className="d-flex justify-content-center align-items-center mt-4">
+            <section className="d-flex justify-content-center align-items-center mt-1 mt-sm-4">
                 <button
                     variant="outline-none"
                     onClick={handlePrevBtnClick}
