@@ -25,6 +25,17 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
         setWillChangeIconColor(false);
     }
 
+    // GOAL: 
+    // refactor the getIconStyles, use it to get the function
+    // make getIconStyles, put it into is file
+    // create a condition for this file, if this file is being used for navigation of the section, then insert a true boolean and use getIconStyles. Else,  refactor the getIconStyles to be used for the carousel navigation dots 
+
+    // BRAIN DUMP:
+    // when the user is on a selected lesson 
+    // for getIconStyles, it will have the following parameters:
+    // isInView, sectionId
+    //  
+
     const getIconStyles = _ => {
         const isTeachingMaterialsId = sectionId === 'teaching_materials';
         const bgColor = (isInView || willChangeIconColor) ? (isTeachingMaterialsId ? '#cb1f8e' : 'rgba(44, 131, 195, 0.6)') : 'rgba(0,0,0,.1)';

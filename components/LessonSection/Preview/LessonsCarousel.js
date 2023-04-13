@@ -125,7 +125,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                                 style={{ width: 80, height: 65, backgroundColor: isVisible ? '#f5c1e3' : 'white', transition: "background-color .15s ease-in" }}
                                 key={index}
                                 onClick={() => handleDotOrThumbNailClick(index)}
-                                className='d-inline-block me-2 p-2 d-flex justify-content-center align-items-center position-relative'>
+                                className='d-none d-sm-inline-block me-2 p-2 justify-content-center align-items-center position-relative'>
                                 {(type === 'video') ?
                                     <div className="position-relative w-100 h-100">
                                         <Image
