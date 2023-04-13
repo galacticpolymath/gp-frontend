@@ -181,16 +181,16 @@ export const getStaticPaths = async () => {
   return { paths, fallback: false };
 };
 
-// getting data from vercel api 
-
 export const getStaticProps = async ({ params: { id, loc } }) => {
   const res = await fetch('https://gp-catalog.vercel.app/index.json')
   const lessons = await res.json();
-  const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
-  const availLocs = lessons.filter((lesson) => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
+  const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
+  console.log('lesson: ', lesson)
+  console.log('lesson.Section.procedure.Data: ', lesson.Section.procedure.Data)
+  const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
 
   if (!lesson?.Section?.procedure?.Data) {
-    return { props: { lesson: lesson, availLocs } };
+    return { props: { lesson, availLocs } };
   }
 
   lesson.Section['teaching-materials'].Data = {

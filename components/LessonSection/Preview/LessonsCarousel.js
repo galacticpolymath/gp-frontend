@@ -28,6 +28,8 @@ import { Button } from 'react-bootstrap';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import Image from 'next/image';
 import { useEffect } from 'react';
+import { getIconStyles } from '../../../helperFns/getIconStyles';
+import Dot from '../NavDots/Dot';
 
 
 const LessonsCarousel = ({ mediaItems }) => {
@@ -114,7 +116,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                     <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
                 </button>
             </section>
-            <section className="mt-3">
+            <section className="mt-2 mt-sm-3">
                 <ul className='ps-0 mb-0 d-flex flex-wrap justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
                     {controlDots?.length && controlDots.map((item, index) => {
                         const { type, title, mainLink, isVisible } = item;
@@ -122,24 +124,29 @@ const LessonsCarousel = ({ mediaItems }) => {
                         return (
                             <li
                                 role='button'
-                                style={{ width: 80, height: 65, backgroundColor: isVisible ? '#f5c1e3' : 'white', transition: "background-color .15s ease-in" }}
+                                style={{ transition: "background-color .15s ease-in" }}
                                 key={index}
                                 onClick={() => handleDotOrThumbNailClick(index)}
-                                className='d-none d-sm-inline-block me-2 p-2 justify-content-center align-items-center position-relative'>
-                                {(type === 'video') ?
-                                    <div className="position-relative w-100 h-100">
-                                        <Image
-                                            src={getVideoThumb(mainLink)}
-                                            alt={title}
-                                            fill
-                                            sizes="62px"
-                                        />
-                                    </div>
-                                    :
-                                    <i
-                                        key={index}
-                                        className="bi-filetype-pdf fs-2"
-                                    />}
+                                className={`d-inline-block me-sm-2 p-sm-2 justify-content-center align-items-center position-relative thumbnailLi ${isVisible ? 'itemVisible' : 'itemNotVisible'}`} >
+                                <div className='w-100 h-100 d-none d-sm-block'>
+                                    {(type === 'video') ?
+                                        <div className="position-relative w-100 h-100">
+                                            <Image
+                                                src={getVideoThumb(mainLink)}
+                                                alt={title}
+                                                fill
+                                                sizes="62px"
+                                            />
+                                        </div>
+                                        :
+                                        <i
+                                            key={index}
+                                            className="bi-filetype-pdf fs-2"
+                                        />}
+                                </div>
+                                <div className='w-100 h-100 d-block d-sm-none'>
+                                    <Dot isHighlighted={isVisible} />
+                                </div>
                             </li>
                         )
                     })}

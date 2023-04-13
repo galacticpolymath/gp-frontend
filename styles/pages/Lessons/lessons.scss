@@ -172,6 +172,27 @@ $toolTipColor: #f0f4ff;
   padding-bottom: 30px;
 }
 
+.thumbnailLi{
+
+  @media(min-width: 576px){
+    width: 80px;
+    height: 65px;
+  }
+}
+
+.itemVisible{
+  @media(min-width: 576px){
+    background-color: #f5c1e3;
+  }
+}
+
+.itemNotVisible{
+  @media(min-width: 576px){
+    background-color: white;
+  }
+}
+
+
 .carouselSelectedLessons {
   @media(min-width: 576px){
     max-width: 70rem !important;
