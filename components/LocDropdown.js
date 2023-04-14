@@ -38,7 +38,6 @@ const LocDropdown = ({ id, availLocs, loc }) => {
     let timer;
 
     if (countries.length > 1) {
-      console.log('hey there meng');
       timer = setTimeout(() => {
         setIsToolTipModalOn(false);
       }, 3500);

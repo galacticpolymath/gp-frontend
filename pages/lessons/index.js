@@ -24,6 +24,19 @@ const LessonsPage = ({ lessons }) => {
     return isUniqueAndStatusLive;
   });
 
+  // CASE: there is only one language for a specific lesson
+  // GOAL: take the user to that specific lesson with the id of the lesson in the url 
+  // the user is taken to the target lesson with the id of the lesson in the url 
+  // take the user to following url: lesson/[id] 
+  // get the id of the lesson
+  // the lesson only has one language 
+  // check if the lesson has only one language
+  // the user clicks on a lesson 
+
+  const handleLessonClick = lesson => {
+
+  }
+
   return (
     <Layout>
       <section className="bg-secondary p-4">
