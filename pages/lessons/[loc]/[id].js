@@ -94,6 +94,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }, [])
 
   useEffect(() => {
+    console.log('sectionDots: ', sectionDots)
+  })
+
+  useEffect(() => {
     if (inView) {
       setSectionDots(sectionDots => {
         if (sectionDots?.length) {

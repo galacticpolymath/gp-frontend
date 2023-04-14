@@ -31,6 +31,7 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
 
     const scrollSectionIntoView = sectionId => {
         const targetSection = document.getElementById(sectionId);
+        console.log('targetSection to scroll to: ', targetSection)
         targetSection && targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
@@ -42,10 +43,12 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
             }
         }));
         setWillShowTitles(true);
+        console.log('sectionId: ', sectionId)
         scrollSectionIntoView(sectionId);
     }
 
     const goToSection = sectionId => {
+        console.log('sectionId: ', sectionId)
         scrollSectionIntoView(sectionId);
     }
 

@@ -18,7 +18,6 @@ const LessonsPage = ({ lessons }) => {
   };
 
   const uniqueIDs = [];
-  // const lessonsAptFor = [{ lesson: 'Colourful Solutions', lessonAptFor: "YEARS: 9-13" }, { lesson: 'Genetic Rescue to the Rescue', lessonAptFor: "GRADES: 9-12" }, { lesson: 'The Guardian Frogs of Borneo', lessonAptFor: 'GRADES: 5-9' }, { lesson: 'Females singing to be heard', lessonAptFor: 'GRADES: ADAPTED FOR 5-6, 7-8, & 9-12' }, { lesson: 'I Like That!', lessonAptFor: 'GRADES: 5-9' }];
 
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
     const isUniqueAndStatusLive = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
@@ -27,15 +26,6 @@ const LessonsPage = ({ lessons }) => {
 
     return isUniqueAndStatusLive;
   });
-
-  // CASE: there is only one language for a specific lesson
-  // GOAL: take the user to that specific lesson with the id of the lesson in the url 
-  // the user is taken to the target lesson with the id of the lesson in the url 
-  // take the user to following url: lesson/[id] 
-  // get the id of the lesson
-  // the lesson only has one language 
-  // check if the lesson has only one language
-  // the user clicks on a lesson 
 
   const handleLessonClick = selectedLesson => {
     getLessons().then(lessons => {

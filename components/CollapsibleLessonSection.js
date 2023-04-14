@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-max-props-per-line */
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 import { useRef } from 'react';
 import useLessonElementInView from '../customHooks/useLessonElementInView';
 import Accordion from './Accordion';
@@ -21,6 +22,11 @@ const CollapsibleLessonSection = ({
 }) => {
   const ref = useRef();
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
+
+  useEffect(() => {
+    console.log('SectionTitle: ', SectionTitle);
+    console.log('accordionId: ', accordionId);
+  });
   
   return (
     <Accordion
