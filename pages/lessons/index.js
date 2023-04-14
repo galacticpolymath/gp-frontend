@@ -8,8 +8,10 @@ import Image from 'next/image';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import { getAvailLocales, getLessons } from '../../helperFns/getAvailLocales';
+import { useRouter } from 'next/router';
 
 const LessonsPage = ({ lessons }) => {
+  const router = useRouter()
 
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
@@ -37,13 +39,15 @@ const LessonsPage = ({ lessons }) => {
 
   const handleLessonClick = selectedLesson => {
     getLessons().then(lessons => {
-      // console.log('lessons: ', lessons)
       const availLocales = lessons.filter(_lesson => `${_lesson.id}` === `${selectedLesson.id}`)
-      console.log('availLocales: ', availLocales)
-      // return availLocales.length === 1
-    })
 
-    // href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
+      if(availLocales.length > 1){
+        router.push(`/lessons/${selectedLesson.DefaultLocale}/${selectedLesson.id}`)
+        return
+      }
+      
+      router.push(`/lessons/${selectedLesson.id}`)
+    })
   }
 
   return (
