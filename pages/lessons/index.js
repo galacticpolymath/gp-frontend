@@ -46,6 +46,9 @@ const LessonsPage = ({ lessons }) => {
         return
       }
       
+      // router.push(`/lessons/${selectedLesson.id}` )
+      // router.push('/lessons/[selectedLessonId]', `/lessons/${selectedLesson.id}`)
+      console.log('will go to target lessons pg: ')
       router.push(`/lessons/${selectedLesson.id}`)
     })
   }

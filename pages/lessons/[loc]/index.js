@@ -36,7 +36,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref, inView } = useInView({ threshold: 0.2 });
   const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
-  
   const getSectionDotsDefaultVal = () => {
     let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
     startingSectionVals = startingSectionVals.filter(section => {
@@ -199,7 +198,7 @@ export const getStaticPaths = async () => {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   const lessons = await res.json();
   const paths = lessons.map(lesson => ({
-    params: { id: `${lesson.id}`, loc: `${lesson.locale}` },
+    params: { loc: `${lesson.id}` },
   }));
 
   return { paths, fallback: false };
@@ -208,6 +207,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params: { id, loc } }) => {
   const res = await fetch('https://gp-catalog.vercel.app/index.json')
   const lessons = await res.json();
+  console.log('lessons in index.js file, loc hey there: ', loc)
   const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
   
