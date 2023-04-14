@@ -87,7 +87,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }
 
   useEffect(() => {
-
     document.body.addEventListener('click', handleDocumentClick);
 
     return () => document.body.removeEventListener('click', handleDocumentClick);

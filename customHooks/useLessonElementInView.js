@@ -13,6 +13,9 @@ import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer"
 import { useInViewport } from 'react-in-viewport';
 
+// WHAT IS HAPPENING:
+// the h2Id is wrong
+
 const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
     const { inViewport: inView } = useInViewport(ref);    
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
