@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
+import { getAvailLocales, getLessons } from '../../helperFns/getAvailLocales';
 
 const LessonsPage = ({ lessons }) => {
 
@@ -34,8 +35,14 @@ const LessonsPage = ({ lessons }) => {
   // check if the lesson has only one language
   // the user clicks on a lesson 
 
-  const handleLessonClick = lesson => {
-    console.log('lessons: ', lesson)
+  const handleLessonClick = selectedLesson => {
+    getLessons().then(lessons => {
+      // console.log('lessons: ', lessons)
+      const availLocales = lessons.filter(_lesson => `${_lesson.id}` === `${selectedLesson.id}`)
+      console.log('availLocales: ', availLocales)
+      // return availLocales.length === 1
+    })
+
     // href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
   }
 
