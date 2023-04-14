@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable semi */
 /* eslint-disable no-console */
@@ -34,7 +35,8 @@ const LessonsPage = ({ lessons }) => {
   // the user clicks on a lesson 
 
   const handleLessonClick = lesson => {
-
+    console.log('lessons: ', lesson)
+    // href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
   }
 
   return (
@@ -82,10 +84,10 @@ const LessonsPage = ({ lessons }) => {
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
               .map((lesson) => {
                 return (
-                  <Link
+                  <div
                     key={lesson.locale + lesson.id}
-                    href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
-                    passHref
+                    onClick={() => handleLessonClick(lesson)}
+                    // href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
                     className='w-100 g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
                   >
 
@@ -120,7 +122,7 @@ const LessonsPage = ({ lessons }) => {
                       </section>
                     </div>
 
-                  </Link>
+                  </div>
                 )
               }
 
