@@ -45,10 +45,7 @@ const LessonsPage = ({ lessons }) => {
         router.push(`/lessons/${selectedLesson.DefaultLocale}/${selectedLesson.id}`)
         return
       }
-      
-      // router.push(`/lessons/${selectedLesson.id}` )
-      // router.push('/lessons/[selectedLessonId]', `/lessons/${selectedLesson.id}`)
-      console.log('will go to target lessons pg: ')
+
       router.push(`/lessons/${selectedLesson.id}`)
     })
   }
@@ -101,8 +98,7 @@ const LessonsPage = ({ lessons }) => {
                   <div
                     key={lesson.locale + lesson.id}
                     onClick={() => handleLessonClick(lesson)}
-                    // href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
-                    className='w-100 g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
+                    className='w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
                   >
 
                     <div className="position-relative overflow-hidden ">
