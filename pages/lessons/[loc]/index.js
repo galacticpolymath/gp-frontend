@@ -33,6 +33,10 @@ const getLatestSubRelease = (sections) => {
 };
 
 const LessonDetails = ({ lesson, availLocs }) => {
+  useEffect(() => {
+    console.log('availLocs: ', availLocs)
+  })
+
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref, inView } = useInView({ threshold: 0.2 });
   const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');

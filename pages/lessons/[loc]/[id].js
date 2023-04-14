@@ -46,7 +46,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
       return !!section?.SectionTitle
     })
-    const LAST_2_SECTIONS = [{ name: 'acknowledgments', txtIdToAdd: "11." }, { name: 'version_notes', txtIdToAdd: "12." }]
+    const LAST_2_SECTIONS = [{ name: 'acknowledgments', txtIdToAdd: (availLocs.length > 1) ? 'heading' : "11." }, { name: 'version_notes', txtIdToAdd: (availLocs.length > 1) ? 'heading' : "12." }]
 
     return startingSectionVals.map((section, index) => {
       const { SectionTitle, __component } = section
@@ -92,10 +92,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
-
-  useEffect(() => {
-    console.log('sectionDots: ', sectionDots)
-  })
 
   useEffect(() => {
     if (inView) {

@@ -31,11 +31,11 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
 
     const scrollSectionIntoView = sectionId => {
         const targetSection = document.getElementById(sectionId);
-        console.log('targetSection to scroll to: ', targetSection)
         targetSection && targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     const handleDotClick = sectionId => {
+        console.log("was clicked...")
         setSectionDots(sectionDots => sectionDots.map(sectionDot => {
             return {
                 ...sectionDot,
@@ -43,18 +43,23 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
             }
         }));
         setWillShowTitles(true);
-        console.log('sectionId: ', sectionId)
         scrollSectionIntoView(sectionId);
     }
 
     const goToSection = sectionId => {
-        console.log('sectionId: ', sectionId)
+        console.log('sectionDots: ', sectionDots)
+        // setSectionDots(section => {
+        //     return section.map(sectionDot => {
+        //         return {
+        //             ...sectionDot,
+        //             willShowTitle: false,
+        //         }
+        //     })
+        // })
         scrollSectionIntoView(sectionId);
     }
 
     const liNavDotFns = { goToSection, handleDotClick }
-
-    // detect when the user clicks anywhere on the page except when clicking on a nav dot or a section title. Do this within a useEffect hook
 
     return (
         <div className="position-fixed lessonSecsNavDotsListContainer d-flex">
