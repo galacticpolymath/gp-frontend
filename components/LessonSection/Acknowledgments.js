@@ -6,6 +6,7 @@ const Acknowledgments = ({
   SectionTitle,
   Data = [],
   _sectionDots,  
+  isAvailLocsMoreThan1,
 }) => {
   return Data && (
     <CollapsibleLessonSection
@@ -13,6 +14,7 @@ const Acknowledgments = ({
       initiallyExpanded
       accordionId={SectionTitle}
       _sectionDots={_sectionDots}
+      isAvailLocsMoreThan1={isAvailLocsMoreThan1}
     >
       <div className='container mx-auto my-4'>
         {Data.map(({ role, def, records = [] }, i) => (

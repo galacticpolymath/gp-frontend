@@ -56,6 +56,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
       if (targetLast2Section) {
         sectionId = `${targetLast2Section.txtIdToAdd}_${sectionId}`
+        console.log('sup mengggg: ', sectionId)
       }
 
       return {

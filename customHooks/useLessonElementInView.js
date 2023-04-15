@@ -16,12 +16,21 @@ import { useInViewport } from 'react-in-viewport';
 // WHAT IS HAPPENING:
 // the h2Id is wrong
 
+const getLastTwoSecs = isAvailLocsMoreThan1 => [{ sectionTitle: '10. Acknowledgments', txtIdToAdd: isAvailLocsMoreThan1 ? 'heading' : "11." }, { sectionTitle: '11. Version Notes', txtIdToAdd: isAvailLocsMoreThan1 ? 'heading' : "12." }]
+
 const useLessonElementInView = (_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1) => {
     const { inViewport: inView } = useInViewport(ref);    
+    const lastTwoSecs = getLastTwoSecs(isAvailLocsMoreThan1);
+    console.log('SectionTitle: ', SectionTitle)
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-    const [, setSectionDots] = _sectionDots;
+    console.log('h2Id: ', h2Id)
+    const [sectionDots, setSectionDots] = _sectionDots;
+
+    // if the isAvailLocsMoreThan1 is true and the hook is being invoked in the acknowledgments section or the versions section, then h2Id needs to be heading_acknowledgments or heading_versions, 
 
     useEffect(() => {
+        console.log('sectionDots: ', sectionDots)
+        console.log('h2Id: ', h2Id);
         if (inView) {
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
                 if ((sectionDot.sectionId === h2Id) && inView) {

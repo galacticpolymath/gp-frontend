@@ -63,9 +63,13 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 
+const LAST_TWO_SECTIONS = ['lesson-plan.acknowledgments', 'lesson-plan.versions'];
+
 const LessonSection = ({ index, section, _sectionDots, isAvailLocsMoreThan1 }) => {
   const Component = sectionTypeMap[section.__component];
-  const _section = isAvailLocsMoreThan1 ? { ...section, _sectionDots, isAvailLocsMoreThan1: isAvailLocsMoreThan1 } : { ...section, _sectionDots };
+  // get the name of the component
+  const isOnLastTwoSections = LAST_TWO_SECTIONS.includes(section.__component);
+  const _section = (isAvailLocsMoreThan1 && isOnLastTwoSections) ? { ...section, _sectionDots, isAvailLocsMoreThan1: isAvailLocsMoreThan1 } : { ...section, _sectionDots };
 
   return Component ? (
     <Component index={index} {..._section} />
