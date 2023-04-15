@@ -46,7 +46,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
       return !!section?.SectionTitle
     })
-    const LAST_2_SECTIONS = [{ name: 'acknowledgments', txtIdToAdd: (availLocs.length > 1) ? 'heading' : "11." }, { name: 'version_notes', txtIdToAdd: (availLocs.length > 1) ? 'heading' : "12." }]
+    const LAST_2_SECTIONS = [{ name: 'acknowledgments', txtIdToAdd: "10." }, { name: 'version_notes', txtIdToAdd: "11." }]
 
     return startingSectionVals.map((section, index) => {
       const { SectionTitle, __component } = section
@@ -56,7 +56,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
       if (targetLast2Section) {
         sectionId = `${targetLast2Section.txtIdToAdd}_${sectionId}`
-        console.log('sup mengggg: ', sectionId)
       }
 
       return {
