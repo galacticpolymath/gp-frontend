@@ -59,6 +59,10 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
         scrollSectionIntoView(sectionId);
     }
 
+    useEffect(() => {
+        console.log('willShowTitles: ', willShowTitles)
+    })
+
     const liNavDotFns = { goToSection, handleDotClick }
 
     return (
