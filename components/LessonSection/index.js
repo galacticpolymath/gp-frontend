@@ -63,9 +63,9 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 
-const LessonSection = ({ index, section, _sectionDots }) => {
+const LessonSection = ({ index, section, _sectionDots, isAvailLocsMoreThan1 }) => {
   const Component = sectionTypeMap[section.__component];
-  const _section = { ...section, _sectionDots };
+  const _section = isAvailLocsMoreThan1 ? { ...section, _sectionDots, isAvailLocsMoreThan1: isAvailLocsMoreThan1 } : { ...section, _sectionDots };
 
   return Component ? (
     <Component index={index} {..._section} />

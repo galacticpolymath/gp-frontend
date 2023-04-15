@@ -16,7 +16,7 @@ import { useInViewport } from 'react-in-viewport';
 // WHAT IS HAPPENING:
 // the h2Id is wrong
 
-const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
+const useLessonElementInView = (_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1) => {
     const { inViewport: inView } = useInViewport(ref);    
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
     const [, setSectionDots] = _sectionDots;

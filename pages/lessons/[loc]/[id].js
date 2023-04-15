@@ -186,6 +186,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
               section={section}
               index={index}
               _sectionDots={[sectionDots, setSectionDots]}
+              isAvailLocsMoreThan1={(availLocs.length > 1)}
             />
           ))}
         </div>

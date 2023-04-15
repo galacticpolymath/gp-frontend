@@ -6,9 +6,9 @@ import useLessonElementInView from '../../customHooks/useLessonElementInView';
 // accordion-header lessonsPgSec
 // bg-primary-light w-100 text-left
 
-const Heading = ({ index, SectionTitle, _sectionDots }) => {
+const Heading = ({ index, SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) => {
   const ref = useRef();
-  const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
+  const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
 
   return (
     <div
