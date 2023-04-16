@@ -75,7 +75,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
 
-    if (wasANavDotElementClicked && (windowWidth <= 767)) {
+    if (!wasANavDotElementClicked && (windowWidth <= 767)) {
       setSectionDots(sectionDots => {
         if (sectionDots?.length) {
           return sectionDots.map(sectionDot => {
