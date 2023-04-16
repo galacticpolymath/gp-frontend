@@ -6,13 +6,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import Layout from '../../components/Layout';
-import JobVizIcon from '../../components/JobViz/JobVizIcon';
-import { getAvailLocales, getLessons } from '../../helperFns/getAvailLocales';
-import { useRouter } from 'next/router';
+import JobVizIcon from '../../components/JobViz/JobVizIcon'
 
 const LessonsPage = ({ lessons }) => {
-  const router = useRouter()
-
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
   };
@@ -26,19 +22,6 @@ const LessonsPage = ({ lessons }) => {
 
     return isUniqueAndStatusLive;
   });
-
-  const handleLessonClick = selectedLesson => {
-    getLessons().then(lessons => {
-      const availLocales = lessons.filter(_lesson => `${_lesson.id}` === `${selectedLesson.id}`)
-
-      if(availLocales.length > 1){
-        router.push(`/lessons/${selectedLesson.DefaultLocale}/${selectedLesson.id}` )
-        return
-      }
-
-      router.push(`/lessons/${selectedLesson.id}`)
-    })
-  }
 
   return (
     <Layout>
@@ -85,9 +68,9 @@ const LessonsPage = ({ lessons }) => {
               .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
               .map((lesson) => {
                 return (
-                  <div
+                  <Link
                     key={lesson.locale + lesson.id}
-                    onClick={() => handleLessonClick(lesson)}
+                    href={`/lessons/${lesson.locale}/${lesson.id}`}
                     className='w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
                   >
 
@@ -122,7 +105,7 @@ const LessonsPage = ({ lessons }) => {
                       </section>
                     </div>
 
-                  </div>
+                  </Link>
                 )
               }
 

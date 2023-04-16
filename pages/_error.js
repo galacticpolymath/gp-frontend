@@ -14,7 +14,7 @@ const ErrorPg = () => {
   return (
     <Layout>
       <div className="lessonDetailsContainer min-vh-100 pt-3 ps-3">
-        <span>404 page not found.</span>
+        <span>404 page not found 😔.</span>
       </div>
     </Layout>
   );
@@ -28,7 +28,6 @@ export const getServerSideProps = async (context) => {
     const res = await fetch('https://gp-catalog.vercel.app/index.json');
     const lessons = await res.json();
     const targetLesson = lessons.find(lesson => lesson.id === parseInt(lessonId));
-    const _destination = `/lessons/${targetLesson.DefaultLocale}/${targetLesson.id}`;
 
     return {
       redirect: {
