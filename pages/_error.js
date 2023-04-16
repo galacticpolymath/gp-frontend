@@ -9,16 +9,13 @@
 /* eslint-disable no-console */
 import Layout from '../components/Layout';
 
-const ErrorPg = () => {
-
-  return (
-    <Layout>
-      <div className="lessonDetailsContainer min-vh-100 pt-3 ps-3">
-        <span>404 page not found 😔.</span>
-      </div>
-    </Layout>
-  );
-};
+const ErrorPg = () => (
+  <Layout>
+    <div className="lessonDetailsContainer min-vh-100 pt-3 ps-3">
+      <span>404 page not found 😔.</span>
+    </div>
+  </Layout>
+);
 
 export const getServerSideProps = async (context) => {
   const REGEX = /\d+$/;
