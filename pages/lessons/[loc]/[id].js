@@ -73,49 +73,49 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
     
-    // !wasANavDotElementClicked && setSectionDots(sectionDots => {
-    //   if (sectionDots?.length) {
-    //     return sectionDots.map(sectionDot => {
-    //       return {
-    //         ...sectionDot,
-    //         willShowTitle: false,
-    //       };
-    //     })
-    //   }
+    !wasANavDotElementClicked && setSectionDots(sectionDots => {
+      if (sectionDots?.length) {
+        return sectionDots.map(sectionDot => {
+          return {
+            ...sectionDot,
+            willShowTitle: false,
+          };
+        })
+      }
 
-    //   return sectionDots;
-    // })
+      return sectionDots;
+    })
   }
 
-  // useEffect(() => {
-  //   document.body.addEventListener('click', handleDocumentClick);
+  useEffect(() => {
+    document.body.addEventListener('click', handleDocumentClick);
 
-  //   return () => document.body.removeEventListener('click', handleDocumentClick);
-  // }, [])
+    return () => document.body.removeEventListener('click', handleDocumentClick);
+  }, [])
 
-  // useEffect(() => {
-  //   if (inView) {
-  //     setSectionDots(sectionDots => {
-  //       if (sectionDots?.length) {
-  //         return sectionDots.map(sectionDot => {
-  //           if ((sectionDot.sectionId === 'lessonTitleId') && inView) {
-  //             return {
-  //               ...sectionDot,
-  //               isInView: true,
-  //             };
-  //           }
+  useEffect(() => {
+    if (inView) {
+      setSectionDots(sectionDots => {
+        if (sectionDots?.length) {
+          return sectionDots.map(sectionDot => {
+            if ((sectionDot.sectionId === 'lessonTitleId') && inView) {
+              return {
+                ...sectionDot,
+                isInView: true,
+              };
+            }
 
-  //           return {
-  //             ...sectionDot,
-  //             isInView: false,
-  //           };
-  //         })
-  //       }
+            return {
+              ...sectionDot,
+              isInView: false,
+            };
+          })
+        }
 
-  //       return sectionDots;
-  //     })
-  //   }
-  // }, [inView])
+        return sectionDots;
+      })
+    }
+  }, [inView])
 
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
 

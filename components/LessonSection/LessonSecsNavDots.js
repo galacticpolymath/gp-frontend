@@ -12,8 +12,6 @@
 /* eslint-disable semi */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
-
-import { useEffect, useState } from "react";
 import LiNavDot from "./NavDots/LiNavDot";
 
 const LessonsSecsNavDots = ({ _sectionDots }) => {
@@ -56,7 +54,6 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     }
 
     const goToSection = sectionId => {
-        console.log("hey there")
         scrollSectionIntoView(sectionId);
     }
 
