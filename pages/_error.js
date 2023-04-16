@@ -1,0 +1,44 @@
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable curly */
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/jsx-closing-bracket-location */
+/* eslint-disable react/jsx-closing-tag-location */
+/* eslint-disable no-unused-vars */
+/* eslint-disable semi */
+/* eslint-disable quotes */
+/* eslint-disable no-console */
+import Layout from '../components/Layout';
+
+const LessonDetails = () => {
+
+  return (
+    <Layout>
+      <div className="lessonDetailsContainer min-vh-100 pt-3 ps-3">
+        <span>404 page not found.</span>
+      </div>
+    </Layout>
+  );
+};
+
+export const getServerSideProps = async (context) => {
+  const REGEX = /\d+$/;
+
+  if (REGEX.test(context.resolvedUrl)) {
+    const lessonId = context.resolvedUrl.match(REGEX)[0];
+    const res = await fetch('https://gp-catalog.vercel.app/index.json');
+    const lessons = await res.json();
+    const targetLesson = lessons.find(lesson => lesson.id === parseInt(lessonId));
+    const _destination = `/lessons/${targetLesson.DefaultLocale}/${targetLesson.id}`;
+
+    return {
+      redirect: {
+        destination: `/lessons/${targetLesson.DefaultLocale}/${targetLesson.id}`,
+        permanent: true,
+      },
+    }
+  }
+
+  return { props: {} }
+};
+
+export default LessonDetails;
