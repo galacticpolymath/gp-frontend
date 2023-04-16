@@ -18,7 +18,7 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
     const { isInView, sectionId, SectionTitle: title, willShowTitle } = section;
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
     const { goToSection, handleDotClick } = fns;
-    const backgroundColor = isInView ? ((sectionId === 'teaching_materials') ? '#FEEAF8' : '#d5e6f3') : 'white'
+    const backgroundColor = isInView ? (sectionId === 'teaching_materials') ? '#FEEAF8' : '#d5e6f3' : 'white'
 
     const handleMouseOverIcon = () => {
         setWillChangeIconColor(true);

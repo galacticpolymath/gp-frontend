@@ -68,7 +68,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       }
     })
   }
-  // adding rewrites
+  
   const _sectionDots = useMemo(() => getSectionDotsDefaultVal(), [])
   const [sectionDots, setSectionDots] = useState(_sectionDots)
 

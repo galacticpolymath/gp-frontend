@@ -22,10 +22,13 @@ const useLessonElementInView = (_sectionDots, SectionTitle, ref, isAvailLocsMore
     const { inViewport: inView } = useInViewport(ref);    
     const lastTwoSecs = getLastTwoSecs(isAvailLocsMoreThan1);
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-    const [, setSectionDots] = _sectionDots;
+    const [sectionDots, setSectionDots] = _sectionDots;
 
     useEffect(() => {
+        console.log('h2Id: ', h2Id)
+        console.log('sectionDots: ', sectionDots)
         if (inView) {
+            
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
                 if ((sectionDot.sectionId === h2Id) && inView) {
                     return {
