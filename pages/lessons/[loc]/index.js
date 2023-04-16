@@ -115,6 +115,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }, [inView])
 
+  // comment
+
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
 
   return (
