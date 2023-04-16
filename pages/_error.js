@@ -9,7 +9,7 @@
 /* eslint-disable no-console */
 import Layout from '../components/Layout';
 
-const LessonDetails = () => {
+const ErrorPg = () => {
 
   return (
     <Layout>
@@ -41,4 +41,4 @@ export const getServerSideProps = async (context) => {
   return { props: {} }
 };
 
-export default LessonDetails;
+export default ErrorPg;

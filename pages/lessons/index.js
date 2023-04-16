@@ -32,7 +32,7 @@ const LessonsPage = ({ lessons }) => {
       const availLocales = lessons.filter(_lesson => `${_lesson.id}` === `${selectedLesson.id}`)
 
       if(availLocales.length > 1){
-        router.push(`/lessons/${selectedLesson.DefaultLocale}/${selectedLesson.id}`)
+        router.push(`/lessons/${selectedLesson.DefaultLocale}/${selectedLesson.id}` )
         return
       }
 
