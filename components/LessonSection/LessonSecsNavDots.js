@@ -60,7 +60,7 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
         scrollSectionIntoView(sectionId);
     }
 
-    const liNavDotFns = { goToSection, handleDotClick }
+    const liNavDotFns = { goToSection, handleDotClick, setSectionDots }
 
     return (
         <div className="position-fixed lessonSecsNavDotsListContainer d-flex">

@@ -13,11 +13,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getIconStyles } from "../../../helperFns/getIconStyles";
+import LiNavDotMobile from "./LiNavDotMobile";
 
 const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
     const { isInView, sectionId, SectionTitle: title, willShowTitle } = section;
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
-    const { goToSection, handleDotClick } = fns;
+    const { goToSection, handleDotClick, setSectionDots } = fns;
     const backgroundColor = isInView ? ((sectionId === 'teaching_materials') ? '#FEEAF8' : '#d5e6f3') : 'white'
 
     const handleMouseOverIcon = () => {
@@ -58,23 +59,7 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                     </div>
                 </li>
                 :
-                <li
-                    key={index}
-                    style={{ height: "30px" }}
-                    role='button'
-                    className='d-flex flex-inline justify-content-center align-items-center sectionNavDotLi'
-                >
-                    <i
-                        onClick={_ => handleDotClick(sectionId, true)}
-                        className='sectionNavDot'
-                        style={iconStyles} />
-                    <div style={{ opacity: willShowTitle ? 1 : 0, width: 'auto', right: '18px', pointerEvents: 'none' }} className='position-absolute d-flex'>
-                        <span style={{ transition: "all .15s ease-in", backgroundColor: backgroundColor, border: '#363636 1px solid', transitionProperty: 'background-color, opacity, border' }} className='text-nowrap p-1 rounded'>{title}</span>
-                        <span style={{ width: 55 }} className='d-flex d-md-none justify-content-center align-items-center ps-1 sectionTitleSpan'>
-                            <span className="dotLine" />
-                        </span>
-                    </div>
-                </li>
+                <LiNavDotMobile section={section} handleDotClick={handleDotClick} index={index} setSectionDots={setSectionDots} />
             }
         </>
     )

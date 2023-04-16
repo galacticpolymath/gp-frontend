@@ -72,30 +72,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
 
-  const handleDocumentClick = event => {
-    const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
-    
-    !wasANavDotElementClicked && setSectionDots(sectionDots => {
-      if (sectionDots?.length) {
-        return sectionDots.map(sectionDot => {
-          return {
-            ...sectionDot,
-            willShowTitle: false,
-          };
-        })
-      }
-
-      return sectionDots;
-    })
-  }
-
-  useEffect(() => {
-
-    document.body.addEventListener('click', handleDocumentClick);
-
-    return () => document.body.removeEventListener('click', handleDocumentClick);
-  }, [])
-
   useEffect(() => {
     if (inView) {
       setSectionDots(sectionDots => {
