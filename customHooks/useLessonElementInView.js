@@ -33,6 +33,7 @@ const useLessonElementInView = (_sectionDots, SectionTitle, ref, isAvailLocsMore
         console.log('h2Id: ', h2Id);
         if (inView) {
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
+                console.log('sectionDot: ', sectionDot)
                 if ((sectionDot.sectionId === h2Id) && inView) {
                     return {
                         ...sectionDot,

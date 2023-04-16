@@ -14,7 +14,7 @@ const LessonSlide = ({
   return (
     <div className='autoCarouselItem onLessonsPg rounded px-5 py-1 px-lg-1 py-lg-1 justify-content-center align-items-center' style={{ 'width': '100%' }}>
       <div className='bg-white pb-3 pe-3 pe-sm-0 ps-3 ps-sm-0 pt-2 pt-0 p-sm-4 p-lg-3 rounded' style={{ maxWidth: 785 }}>
-        <div className='px-2 px-md-0  justify-content-center d-flex align-items-center iframeContainer'>
+        <div className='px-sm-2 px-md-0  justify-content-center d-flex align-items-center iframeContainer'>
           {getMediaComponent({ type, mainLink })}
         </div>
         <div className={`${styles.SlideBody} mt-3 mt-sm-4 lessonSlideBody`}>
