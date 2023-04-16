@@ -15,6 +15,7 @@ import LocDropdown from '../../../components/LocDropdown';
 import { useEffect, useMemo, useState } from 'react';
 import ParentLessonSection from '../../../components/LessonSection/ParentLessonSection';
 import { useInView } from 'react-intersection-observer';
+import { useWindowWidth } from '@react-hook/window-size'
 import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 
@@ -35,8 +36,9 @@ const getLatestSubRelease = (sections) => {
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref, inView } = useInView({ threshold: 0.2 });
+  const windowWidth = useWindowWidth()
   const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
-  
+
   const getSectionDotsDefaultVal = () => {
     let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
     startingSectionVals = startingSectionVals.filter(section => {
@@ -62,7 +64,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
         isInView: index === 0,
         SectionTitle: _sectionTitle,
         sectionId: (index === 0) ? 'lessonTitleId' : sectionId,
-        willShowTitle: true,
+        willShowTitle: false,
       }
     })
   }
@@ -72,19 +74,21 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
-    
-    !wasANavDotElementClicked && setSectionDots(sectionDots => {
-      if (sectionDots?.length) {
-        return sectionDots.map(sectionDot => {
-          return {
-            ...sectionDot,
-            willShowTitle: false,
-          };
-        })
-      }
 
-      return sectionDots;
-    })
+    if (wasANavDotElementClicked && (windowWidth <= 767)) {
+      setSectionDots(sectionDots => {
+        if (sectionDots?.length) {
+          return sectionDots.map(sectionDot => {
+            return {
+              ...sectionDot,
+              willShowTitle: false,
+            };
+          })
+        }
+
+        return sectionDots;
+      })
+    }
   }
 
   useEffect(() => {
@@ -211,7 +215,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   const lessons = await res.json();
   const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
-  
+
   if (!lesson?.Section?.procedure?.Data) {
     return { props: { lesson, availLocs } };
   }
