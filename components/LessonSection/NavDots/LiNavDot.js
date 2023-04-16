@@ -42,12 +42,13 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                     style={{ height: "33px" }}
                     role='button'
                     onClick={_ => goToSection(sectionId)}
-                    className='d-flex flex-inline justify-content-center align-items-center position-relative'
+                    className='d-flex flex-inline justify-content-center align-items-center position-relative sectionNavDotLi'
                 >
                     <i
                         onMouseOver={handleMouseOverIcon}
                         onMouseLeave={handleMouseLeaveIcon}
                         style={iconStyles}
+                        className='sectionNavDot'
                     />
                     <div style={{ opacity: willShowTitle ? 1 : 0, width: 'auto', right: '25px', transition: "all .15s ease-in", pointerEvents: 'none', backgroundColor: backgroundColor, border: '#363636 1px solid', transitionProperty: 'background-color, opacity, border' }} className='p-1 rounded position-absolute d-flex'>
                         <span className='text-nowrap'>{title}</span>

@@ -75,18 +75,18 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
     
-    // !wasANavDotElementClicked && setSectionDots(sectionDots => {
-    //   if (sectionDots?.length) {
-    //     return sectionDots.map(sectionDot => {
-    //       return {
-    //         ...sectionDot,
-    //         willShowTitle: false,
-    //       };
-    //     })
-    //   }
+    !wasANavDotElementClicked && setSectionDots(sectionDots => {
+      if (sectionDots?.length) {
+        return sectionDots.map(sectionDot => {
+          return {
+            ...sectionDot,
+            willShowTitle: false,
+          };
+        })
+      }
 
-    //   return sectionDots;
-    // })
+      return sectionDots;
+    })
   }
 
   useEffect(() => {
