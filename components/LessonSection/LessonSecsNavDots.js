@@ -40,8 +40,8 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     const scrollSectionIntoView = sectionId => {
         const targetSection = document.getElementById(sectionId);
         let url = router.asPath;
-        
-        if(targetSection){
+
+        if (targetSection) {
             (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
             targetSection.scrollIntoView({ behavior: 'smooth', block: (sectionId === "lessonTitleId") ? 'center' : 'start' });
         }
@@ -64,29 +64,29 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     const liNavDotFns = { goToSection, handleDotClick, setSectionDots }
 
     return (
-        <div className="position-fixed lessonSecsNavDotsListContainer d-flex">
-            <ul onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
-                {sectionDots.map((section, index) => (
-                    <LiNavDot
-                        key={index}
-                        fns={liNavDotFns}
-                        section={section}
-                        index={index}
-                        isOnDesktop
-                    />
-                ))}
-            </ul>
-            <ul className='ps-0 d-flex d-lg-none flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
-                {sectionDots.map((section, index) => (
-                    <LiNavDot
-                        key={index}
-                        fns={liNavDotFns}
-                        section={section}
-                        index={index}
-                    />
-                ))}
-            </ul>
-        </div>
+            <div style={{ transform: 'translateY(17%)' }} className="position-fixed lessonSecsNavDotsListContainer d-flex">
+                <ul onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
+                    {sectionDots.map((section, index) => (
+                        <LiNavDot
+                            key={index}
+                            fns={liNavDotFns}
+                            section={section}
+                            index={index}
+                            isOnDesktop
+                        />
+                    ))}
+                </ul>
+                <ul className='ps-0 d-flex d-lg-none flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
+                    {sectionDots.map((section, index) => (
+                        <LiNavDot
+                            key={index}
+                            fns={liNavDotFns}
+                            section={section}
+                            index={index}
+                        />
+                    ))}
+                </ul>
+            </div>
     )
 }
 

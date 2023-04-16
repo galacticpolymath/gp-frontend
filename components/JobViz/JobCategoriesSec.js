@@ -63,7 +63,6 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
     }
 
     const handleDetailsBtnClick = (jobToShowInModal) => {
-        // console.log("jobToShowInModal.id: ", jobToShowInModal.id)
         const jobCategoryIdPaths = getJobCategoryIds(router.query['search-results'], jobToShowInModal.id.toString())
         const pathUpdated = `/job-viz/${currentHierarchyNum}/${router.query['search-results'][1]}/${jobCategoryIdPaths.join('/')}`
         router.push({ pathname: pathUpdated }, null, { scroll: false })

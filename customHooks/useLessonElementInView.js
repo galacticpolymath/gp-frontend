@@ -21,19 +21,12 @@ const getLastTwoSecs = isAvailLocsMoreThan1 => [{ sectionTitle: '10. Acknowledgm
 const useLessonElementInView = (_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1) => {
     const { inViewport: inView } = useInViewport(ref);    
     const lastTwoSecs = getLastTwoSecs(isAvailLocsMoreThan1);
-    console.log('SectionTitle: ', SectionTitle)
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-    console.log('h2Id: ', h2Id)
-    const [sectionDots, setSectionDots] = _sectionDots;
-
-    // if the isAvailLocsMoreThan1 is true and the hook is being invoked in the acknowledgments section or the versions section, then h2Id needs to be heading_acknowledgments or heading_versions, 
+    const [, setSectionDots] = _sectionDots;
 
     useEffect(() => {
-        console.log('sectionDots: ', sectionDots)
-        console.log('h2Id: ', h2Id);
         if (inView) {
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
-                console.log('sectionDot: ', sectionDot)
                 if ((sectionDot.sectionId === h2Id) && inView) {
                     return {
                         ...sectionDot,
