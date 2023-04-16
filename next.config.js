@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable semi */
 /* eslint-disable comma-dangle */
 /** @type {import('next').NextConfig} */
 module.exports = {
@@ -8,5 +10,5 @@ module.exports = {
       'gp-catalog.vercel.app',
       'i3.ytimg.com',
     ],
-  },
+  }
 };

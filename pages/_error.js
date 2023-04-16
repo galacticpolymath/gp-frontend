@@ -29,7 +29,7 @@ export const getServerSideProps = async (context) => {
     return {
       redirect: {
         destination: `/lessons/${targetLesson.DefaultLocale}/${targetLesson.id}`,
-        permanent: true,
+        permanent: false,
       },
     }
   }
