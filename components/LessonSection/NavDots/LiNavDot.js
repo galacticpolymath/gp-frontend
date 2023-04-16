@@ -14,7 +14,8 @@
 import { useMemo, useState } from "react";
 import { getIconStyles } from "../../../helperFns/getIconStyles";
 
-const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
+const LiNavDot = ({ sectionTitle, fns, index, isOnDesktop }) => {
+    const { isInView, sectionId, SectionTitle: title } = sectionTitle;
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
     const { goToSection, handleDotClick } = fns;
 
@@ -28,6 +29,8 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
 
     const iconStyles = useMemo(() => getIconStyles((isInView || willChangeIconColor), sectionId), [willChangeIconColor, isInView, sectionId]);
 
+    // show the section titles when the user hovers over the ul
+
     return (
         <>
             {isOnDesktop ?
@@ -36,12 +39,18 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
                     style={{ height: "30px" }}
                     role='button'
                     onClick={_ => goToSection(sectionId)}
-                    className='d-flex flex-inline justify-content-center align-items-center'
+                    className='d-flex flex-inline justify-content-center align-items-center position-relative'
                 >
                     <i
                         onMouseOver={handleMouseOverIcon}
                         onMouseLeave={handleMouseLeaveIcon}
                         style={iconStyles} />
+                    <div style={{ width: 'auto', right: '25px' }} className='p-1 bg-white rounded position-absolute d-flex'>
+                        <span className='text-nowrap'>{title}</span>
+                        <span style={{ width: 55 }} className='d-flex d-md-none justify-content-center align-items-center ps-1 sectionTitleSpan'>
+                            <span className="dotLine" />
+                        </span>
+                    </div>
                 </li>
                 :
                 <li

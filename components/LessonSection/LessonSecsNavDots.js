@@ -47,46 +47,37 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     }
 
     const goToSection = sectionId => {
-        console.log('sectionDots: ', sectionDots)
-        // setSectionDots(section => {
-        //     return section.map(sectionDot => {
-        //         return {
-        //             ...sectionDot,
-        //             willShowTitle: false,
-        //         }
-        //     })
-        // })
         scrollSectionIntoView(sectionId);
     }
 
+    const liNavDotFns = { goToSection, handleDotClick }
+
     useEffect(() => {
-        console.log('willShowTitles: ', willShowTitles)
+        console.log("sectionDots: ", sectionDots)
     })
 
-    const liNavDotFns = { goToSection, handleDotClick }
+    // when the user clicks on a dot, have the section title appear on the ui 
 
     return (
         <div className="position-fixed lessonSecsNavDotsListContainer d-flex">
-            <SectionTitlesUl sectionDots={sectionDots} willShowTitles={willShowTitles} goToSection={goToSection} />
-            <ul onMouseEnter={handleMouseEnterIconList} onMouseLeave={handleMouseLeaveIconList} className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
-                {sectionDots.map(({ isInView, sectionId }, index) => (
+            {/* <SectionTitlesUl sectionDots={sectionDots} willShowTitles={willShowTitles} goToSection={goToSection} /> */}
+            <ul onMouseEnter={handleMouseEnterIconList} onMouseLeave={handleMouseLeaveIconList} className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100 bg-danger' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
+                {sectionDots.map((sectionTitle, index) => (
                     <LiNavDot
                         key={index}
                         fns={liNavDotFns}
-                        isInView={isInView}
-                        sectionId={sectionId}
+                        sectionTitle={sectionTitle}
                         index={index}
                         isOnDesktop
                     />
                 ))}
             </ul>
             <ul className='ps-0 d-flex d-lg-none flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
-                {sectionDots.map(({ isInView, sectionId }, index) => (
+                {sectionDots.map((sectionTitle, index) => (
                     <LiNavDot
                         key={index}
                         fns={liNavDotFns}
-                        isInView={isInView}
-                        sectionId={sectionId}
+                        sectionTitle={sectionTitle}
                         index={index}
                     />
                 ))}
