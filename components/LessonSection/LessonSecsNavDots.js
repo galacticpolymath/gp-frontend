@@ -18,7 +18,6 @@ import LiNavDot from "./NavDots/LiNavDot";
 
 const LessonsSecsNavDots = ({ _sectionDots }) => {
     const [sectionDots, setSectionDots] = _sectionDots;
-    const [willShowTitles, setWillShowTitles] = useState(false);
 
     const handleMouseEnter = () => {
         setSectionDots(sectionDots => sectionDots.map(sectionDot => {
@@ -62,8 +61,6 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     }
 
     const liNavDotFns = { goToSection, handleDotClick }
-
-    // when the user clicks on a dot, have the section title appear on the ui 
 
     return (
         <div className="position-fixed lessonSecsNavDotsListContainer d-flex">

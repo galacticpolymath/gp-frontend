@@ -12,7 +12,7 @@ import Image from 'next/image';
 import Layout from '../../../components/Layout';
 import RichText from '../../../components/RichText';
 import LocDropdown from '../../../components/LocDropdown';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ParentLessonSection from '../../../components/LessonSection/ParentLessonSection';
 import { useInView } from 'react-intersection-observer';
 import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
@@ -62,12 +62,13 @@ const LessonDetails = ({ lesson, availLocs }) => {
         isInView: index === 0,
         SectionTitle: _sectionTitle,
         sectionId: (index === 0) ? 'lessonTitleId' : sectionId,
-        willShowTitle: false,
+        willShowTitle: true,
       }
     })
   }
 
-  const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
+  const _sectionDots = useMemo(() => getSectionDotsDefaultVal(), [])
+  const [sectionDots, setSectionDots] = useState(_sectionDots)
 
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
@@ -86,35 +87,35 @@ const LessonDetails = ({ lesson, availLocs }) => {
     // })
   }
 
-  useEffect(() => {
-    document.body.addEventListener('click', handleDocumentClick);
+  // useEffect(() => {
+  //   document.body.addEventListener('click', handleDocumentClick);
 
-    return () => document.body.removeEventListener('click', handleDocumentClick);
-  }, [])
+  //   return () => document.body.removeEventListener('click', handleDocumentClick);
+  // }, [])
 
-  useEffect(() => {
-    if (inView) {
-      setSectionDots(sectionDots => {
-        if (sectionDots?.length) {
-          return sectionDots.map(sectionDot => {
-            if ((sectionDot.sectionId === 'lessonTitleId') && inView) {
-              return {
-                ...sectionDot,
-                isInView: true,
-              };
-            }
+  // useEffect(() => {
+  //   if (inView) {
+  //     setSectionDots(sectionDots => {
+  //       if (sectionDots?.length) {
+  //         return sectionDots.map(sectionDot => {
+  //           if ((sectionDot.sectionId === 'lessonTitleId') && inView) {
+  //             return {
+  //               ...sectionDot,
+  //               isInView: true,
+  //             };
+  //           }
 
-            return {
-              ...sectionDot,
-              isInView: false,
-            };
-          })
-        }
+  //           return {
+  //             ...sectionDot,
+  //             isInView: false,
+  //           };
+  //         })
+  //       }
 
-        return sectionDots;
-      })
-    }
-  }, [inView])
+  //       return sectionDots;
+  //     })
+  //   }
+  // }, [inView])
 
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
 
