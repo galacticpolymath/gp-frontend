@@ -8,7 +8,8 @@ export default function Navbar() {
   const router = useRouter();
 
   return (
-    <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-dark'>
+    // <div style={{ height: '70px' }}>
+    <nav className='navbar sticky-top w-100 navbar-expand-lg navbar-dark bg-dark'>
       <div className='container'>
         <Link
           href="/"
@@ -73,5 +74,6 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+    // </div>
   );
 }

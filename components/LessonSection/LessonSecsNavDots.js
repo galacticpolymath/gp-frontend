@@ -12,10 +12,12 @@
 /* eslint-disable semi */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
+import { useRouter } from "next/router";
 import LiNavDot from "./NavDots/LiNavDot";
 
 const LessonsSecsNavDots = ({ _sectionDots }) => {
     const [sectionDots, setSectionDots] = _sectionDots;
+    const router = useRouter();
 
     const handleMouseEnter = () => {
         setSectionDots(sectionDots => sectionDots.map(sectionDot => {
@@ -27,7 +29,6 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     };
 
     const handleMouseLeave = () => {
-        console.log("mouse left...")
         setSectionDots(sectionDots => sectionDots.map(sectionDot => {
             return {
                 ...sectionDot,
@@ -38,12 +39,15 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
 
     const scrollSectionIntoView = sectionId => {
         const targetSection = document.getElementById(sectionId);
-        targetSection && targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        console.log("scrolling...")
+        let url = router.asPath;
+        
+        if(targetSection){
+            (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
+            targetSection.scrollIntoView({ behavior: 'smooth', block: (sectionId === "lessonTitleId") ? 'center' : 'start' });
+        }
     }
 
     const handleDotClick = sectionId => {
-        console.log("was clicked...")
         setSectionDots(sectionDots => sectionDots.map(sectionDot => {
             return {
                 ...sectionDot,

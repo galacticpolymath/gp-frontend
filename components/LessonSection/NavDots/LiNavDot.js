@@ -11,7 +11,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { getIconStyles } from "../../../helperFns/getIconStyles";
 
 const LiNavDot = ({ section, fns, index, isOnDesktop }) => {

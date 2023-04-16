@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
@@ -16,15 +17,15 @@ const Heading = ({ index, SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) =>
       className='lessonsStandardsSec text-left bg-primary-light mb-4'
     >
       <div>
-        <div>
+        <div className='position-relative'>
           <h2
             className="SectionHeading mb-0"
-            id={h2Id}
           >
             <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-3'>
               {index && `${index}. `}{SectionTitle}
             </div>
           </h2>
+          <div id={h2Id} style={{ height: 30, width: 30, transform: 'translateY(-180px)' }} className='position-absolute' />
         </div>
       </div>
     </div>

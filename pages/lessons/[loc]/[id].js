@@ -142,7 +142,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
               id={lesson.id}
             />
           </div>
-          <h1 ref={ref} id="lessonTitleId" className="mt-2">{lesson.Title}</h1>
+          <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
           {(lesson.CoverImage && lesson.CoverImage.url) && (
             <div className='w-100 position-relative mt-2 mb-2'>
