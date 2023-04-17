@@ -4,7 +4,7 @@
 
 
 export const getIconStyles = (isHighlighted, sectionId) => {
-    const isTeachingMaterialsId = sectionId === 'teaching_materials';
+    const isTeachingMaterialsId = sectionId === '3._teaching_materials';
     const bgColor = isHighlighted ? (isTeachingMaterialsId ? '#cb1f8e' : 'rgba(44, 131, 195, 0.6)') : 'rgba(0,0,0,.1)';
     const borderColor = isHighlighted ? (isTeachingMaterialsId ? '#cb1f8e' : '#2c83c3') : (isTeachingMaterialsId ? '#cb1f8e' : '#bebebe');
 

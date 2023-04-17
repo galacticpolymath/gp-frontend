@@ -34,17 +34,7 @@ const getLatestSubRelease = (sections) => {
   return lastSubRelease;
 };
 
-const getSectionId = (sectionComps, sectionTitle) => {
-  // CASE: the section exist
-  // GOAL: get the sectionId for the corresponding section
-  // the corresponding section is received and return 
-  // the corresponding section is received
-  // find the section via is index in the sections arr that was passed in
-  // pass the section array
-  // pass the index of the target section 
-
-  // CASE: the section does not exist
-  // GOAL: return -1
+const getSectionTitle = (sectionComps, sectionTitle) => {
   const targetSectionTitleIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === sectionTitle);
 
   if (targetSectionTitleIndex === -1) return -1;
@@ -59,23 +49,22 @@ const LessonDetails = ({ lesson, availLocs }) => {
   let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
   sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
   sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
-   
   const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
-    const sectionTitle = getSectionId(sectionComps, section.SectionTitle);
-    const targetSectionTitleIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === section.SectionTitle);
+    // can be -1 if the section is not found
+    const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
 
-    if(index === 0) {
+    if (index === 0) {
       return {
         ...section,
-        SectionTitle: `${index + 1}. ${sectionComps[index].SectionTitle}`,
+        SectionTitle: `${index + 1}. Overview`,
       }
     }
 
-    if(targetSectionTitleIndex === -1) return section;
-    
+    if (sectionTitle === -1) return section;
+
     return {
       ...section,
-      SectionTitle: `${targetSectionTitleIndex + 1}. ${section.SectionTitle}`,
+      SectionTitle: sectionTitle,
     }
   });
 
@@ -89,27 +78,20 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
       return !!section?.SectionTitle
     })
-    const LAST_2_SECTIONS = [{ name: 'acknowledgments', txtIdToAdd: "7." }, { name: 'version_notes', txtIdToAdd: "8." }]
 
     return startingSectionVals.map((section, index) => {
       const { SectionTitle, __component } = section
-      const _sectionTitle = (__component === 'lesson-plan.overview') ? 'Overview' : `${SectionTitle}`;
+      const sectionTitleForDot = (__component === 'lesson-plan.overview') ? 'Overview' : `${SectionTitle}`;
+      let _sectionTitle = getSectionTitle(sectionComps, SectionTitle);
+      _sectionTitle = (_sectionTitle !== -1) ? _sectionTitle : '1. Overview';
       let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-      const targetLast2Section = LAST_2_SECTIONS.find(({ name }) => name === sectionId)
-      const sectionTitleOnPg = `${index + 1}. ${section.SectionTitle}`;
 
-      if (targetLast2Section) {
-        sectionId = `${targetLast2Section.txtIdToAdd}_${sectionId}`
-      }
-
-      const _section = {
+      return {
         isInView: index === 0,
-        sectionTitleForDot: _sectionTitle,
+        sectionTitleForDot: sectionTitleForDot,
         sectionId: (index === 0) ? 'lessonTitleId' : sectionId,
         willShowTitle: false,
       }
-
-      return _section;
     })
   }
 
