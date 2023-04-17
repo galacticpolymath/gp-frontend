@@ -8,7 +8,6 @@
 import LessonSection, { NUMBERED_SECTIONS } from './index';
 
 const ParentLessonSection = ({ section, index, _sectionDots, isAvailLocsMoreThan1 }) => {
-    console.log('ParentLessonSection, section: ', section);
     return (
         <LessonSection
             index={index + 1}

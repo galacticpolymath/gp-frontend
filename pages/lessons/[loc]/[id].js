@@ -60,7 +60,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
       }
     }
 
-    if (sectionTitle === -1) return section;
+    console.log('section: ', section)
+
+    if (sectionTitle === -1){
+      return {
+        ...section,
+        SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
+      }
+    }
 
     return {
       ...section,
