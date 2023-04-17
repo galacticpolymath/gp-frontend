@@ -10,7 +10,6 @@ import Accordion from './Accordion';
  * A styled collapsible section of the Lesson Plan.
  */
 const CollapsibleLessonSection = ({
-  index,
   SectionTitle = '',
   className = '',
   children,
@@ -35,7 +34,7 @@ const CollapsibleLessonSection = ({
             className='m-0'
             style={{ width: '100%', overflowWrap: 'break-word' }}
           >
-            {index && `${index}. `}{SectionTitle}
+            {SectionTitle}
           </h2>
           <i className="fs-3 bi-chevron-down"></i>
           <i className="fs-3 bi-chevron-up"></i>

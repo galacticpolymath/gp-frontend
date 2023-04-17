@@ -2,7 +2,6 @@ import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
 const Versions = ({
-  index,
   SectionTitle,
   Data = [],
   _sectionDots,
@@ -11,7 +10,7 @@ const Versions = ({
   return Data && (
     <CollapsibleLessonSection
       accordionId={SectionTitle}
-      SectionTitle={`${index}. ${SectionTitle}`}
+      SectionTitle={SectionTitle}
       _sectionDots={_sectionDots}
       isAvailLocsMoreThan1={isAvailLocsMoreThan1}
     >

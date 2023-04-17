@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable curly */
 /* eslint-disable react/jsx-wrap-multilines */
@@ -37,9 +38,29 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref, inView } = useInView({ threshold: 0.2 });
   const windowWidth = useWindowWidth()
-  const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
+  let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
+  sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
+  sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
+  const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
+    const targetSectionTitleIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === section.SectionTitle);
+
+    if(index === 0) {
+      return {
+        ...section,
+        SectionTitle: `${index + 1}. ${sectionComps[index].SectionTitle}`,
+      }
+    }
+
+    if(targetSectionTitleIndex === -1) return section;
+    
+    return {
+      ...section,
+      SectionTitle: `${targetSectionTitleIndex + 1}. ${section.SectionTitle}`,
+    }
+  });
 
   const getSectionDotsDefaultVal = () => {
+    const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
     startingSectionVals = startingSectionVals.filter(section => {
       if (((section?.__component === 'lesson-plan.overview') && !section?.SectionTitle)) {
@@ -48,27 +69,30 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
       return !!section?.SectionTitle
     })
-    const LAST_2_SECTIONS = [{ name: 'acknowledgments', txtIdToAdd: "10." }, { name: 'version_notes', txtIdToAdd: "11." }]
+    const LAST_2_SECTIONS = [{ name: 'acknowledgments', txtIdToAdd: "7." }, { name: 'version_notes', txtIdToAdd: "8." }]
 
     return startingSectionVals.map((section, index) => {
       const { SectionTitle, __component } = section
-      const _sectionTitle = (__component === 'lesson-plan.overview') ? 'Overview' : SectionTitle;
+      const _sectionTitle = (__component === 'lesson-plan.overview') ? 'Overview' : `${SectionTitle}`;
       let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
       const targetLast2Section = LAST_2_SECTIONS.find(({ name }) => name === sectionId)
+      const sectionTitleOnPg = `${index + 1}. ${section.SectionTitle}`;
 
       if (targetLast2Section) {
         sectionId = `${targetLast2Section.txtIdToAdd}_${sectionId}`
       }
 
-      return {
+      const _section = {
         isInView: index === 0,
-        SectionTitle: _sectionTitle,
+        sectionTitleForDot: _sectionTitle,
         sectionId: (index === 0) ? 'lessonTitleId' : sectionId,
         willShowTitle: false,
       }
+
+      return _section;
     })
   }
-  
+
   const _sectionDots = useMemo(() => getSectionDotsDefaultVal(), [])
   const [sectionDots, setSectionDots] = useState(_sectionDots)
 

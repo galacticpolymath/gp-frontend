@@ -2,7 +2,6 @@ import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
 const Acknowledgments = ({
-  index,
   SectionTitle,
   Data = [],
   _sectionDots,  
@@ -10,7 +9,7 @@ const Acknowledgments = ({
 }) => {
   return Data && (
     <CollapsibleLessonSection
-      SectionTitle={`${index}. ${SectionTitle}`}
+      SectionTitle={`${SectionTitle}`}
       initiallyExpanded
       accordionId={SectionTitle}
       _sectionDots={_sectionDots}

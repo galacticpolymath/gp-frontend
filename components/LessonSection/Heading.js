@@ -7,7 +7,7 @@ import useLessonElementInView from '../../customHooks/useLessonElementInView';
 // accordion-header lessonsPgSec
 // bg-primary-light w-100 text-left
 
-const Heading = ({ index, SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) => {
+const Heading = ({ SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) => {
   const ref = useRef();
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
 
@@ -22,7 +22,7 @@ const Heading = ({ index, SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) =>
             className="SectionHeading mb-0"
           >
             <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-3'>
-              {index && `${index}. `}{SectionTitle}
+              {SectionTitle}
             </div>
           </h2>
           <div id={h2Id} style={{ height: 30, width: 30, transform: 'translateY(-180px)' }} className='position-absolute' />

@@ -15,13 +15,14 @@ const Overview = ({
   Text,
   Tags,
   _sectionDots,
+  SectionTitle,
 }) => {
 
   return (
     <CollapsibleLessonSection
       className="Overview"
       index={index}
-      SectionTitle="Overview"
+      SectionTitle={SectionTitle}
       initiallyExpanded
       _sectionDots={_sectionDots}
     >
