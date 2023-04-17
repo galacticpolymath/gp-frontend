@@ -10,7 +10,6 @@ const LearningChart = ({
   Description,
   Footnote,
   Badge,
-  _sectionDots,
 }) => {
 
   return (

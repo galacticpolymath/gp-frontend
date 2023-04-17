@@ -10,7 +10,7 @@ const Standards = ({
   Data,
   LearningObj,
 }) => {
-
+  
   return (
     <div className='container mb-4'>
       <Accordion

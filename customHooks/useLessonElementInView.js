@@ -10,14 +10,13 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import { useEffect, useState } from "react";
-// import { useInViewport } from 'react-in-viewport';
+import { useInViewport } from 'react-in-viewport';
 import { useIsVisible } from 'react-is-visible'
 
 const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
     const inView = useIsVisible(ref);
-    // const inView = false;
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-    const [sectionDots, setSectionDots] = _sectionDots;
+    const [, setSectionDots] = _sectionDots;
     const [wasRendered, setWasRendered] = useState(false);
 
     useEffect(() => {
