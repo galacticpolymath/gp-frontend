@@ -1,3 +1,4 @@
+/* eslint-disable brace-style */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable curly */
@@ -14,6 +15,7 @@ import { useIsVisible } from 'react-is-visible'
 
 const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
     const inView = useIsVisible(ref);
+    // const inView = false;
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
     const [sectionDots, setSectionDots] = _sectionDots;
     const [wasRendered, setWasRendered] = useState(false);
@@ -23,10 +25,7 @@ const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
     }, [])
 
     useEffect(() => {
-        console.log('inView: ', inView)
-        console.log('h2Id: ', h2Id)
         if (inView && wasRendered) {
-            console.log('h2Id: ', h2Id)
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
                 if ((sectionDot.sectionId === h2Id) && inView) {
                     return {

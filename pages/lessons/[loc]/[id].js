@@ -68,6 +68,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   });
 
+  useEffect(() => {
+    console.log('_sections: ', _sections)
+  })
+
   const getSectionDotsDefaultVal = () => {
     const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
