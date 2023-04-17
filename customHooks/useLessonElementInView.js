@@ -13,10 +13,19 @@ import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer"
 import { useInViewport } from 'react-in-viewport';
 
+// BUG: the dots are not changing when the user is at a specific section 
+
+// check what you are getting for sectionId and h2Id
+
 const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
     const { inViewport: inView } = useInViewport(ref);    
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
     const [sectionDots, setSectionDots] = _sectionDots;
+
+    useEffect(() => {
+        console.log('sectionDots: ', sectionDots)
+        console.log('h2Id: ', h2Id)
+    })
 
     useEffect(() => {
         if (inView) {

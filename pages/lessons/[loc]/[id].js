@@ -34,6 +34,24 @@ const getLatestSubRelease = (sections) => {
   return lastSubRelease;
 };
 
+const getSectionId = (sectionComps, sectionTitle) => {
+  // CASE: the section exist
+  // GOAL: get the sectionId for the corresponding section
+  // the corresponding section is received and return 
+  // the corresponding section is received
+  // find the section via is index in the sections arr that was passed in
+  // pass the section array
+  // pass the index of the target section 
+
+  // CASE: the section does not exist
+  // GOAL: return -1
+  const targetSectionTitleIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === sectionTitle);
+
+  if (targetSectionTitleIndex === -1) return -1;
+
+  return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
+}
+
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref, inView } = useInView({ threshold: 0.2 });
@@ -41,7 +59,9 @@ const LessonDetails = ({ lesson, availLocs }) => {
   let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
   sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
   sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
+   
   const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
+    const sectionTitle = getSectionId(sectionComps, section.SectionTitle);
     const targetSectionTitleIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === section.SectionTitle);
 
     if(index === 0) {
