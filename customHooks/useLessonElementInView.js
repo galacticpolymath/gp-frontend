@@ -9,18 +9,25 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useInViewport } from 'react-in-viewport';
 
 const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
     const { inViewport: inView } = useInViewport(ref);    
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
     const [sectionDots, setSectionDots] = _sectionDots;
+    const [wasRendered, setWasRendered] = useState(false);
+
+    useEffect(()=> {
+        setTimeout(() => {
+            setWasRendered(true);
+        }, 1500)
+    }, [])
 
     useEffect(() => {
         console.log('inView: ', inView)
         console.log('h2Id: ', h2Id)
-        if (inView) {
+        if (inView && wasRendered) {
             console.log('h2Id: ', h2Id)
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
                 if ((sectionDot.sectionId === h2Id) && inView) {
@@ -36,7 +43,7 @@ const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
                 };
             }));
         }
-    }, [inView]);
+    }, [inView, wasRendered]);
 
     return { inView, h2Id: h2Id }
 }
