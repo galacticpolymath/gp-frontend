@@ -1,14 +1,13 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
 import { ModalContext } from '../../../providers/ModalProvider';
-import { useContext } from 'react';
-// import useLessonElementInView from '../../../customHooks/useLessonElementInView';
+import { useContext, useState, useRef } from 'react';
+import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
 const getObjVals = obj => {
@@ -43,6 +42,9 @@ const TeachIt = ({
   let assessmentPart = Data.classroom.resources[0].parts[Data?.classroom?.resources[0]?.parts?.length - 1];
   assessmentPart = (assessmentPart?.title === 'Assessments') ? { chunks: assessmentPart.itemList, partTitle: assessmentPart.title } : null;
   const parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
+  const ref = useRef();
+
+  useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
@@ -53,7 +55,6 @@ const TeachIt = ({
     setSelectedGrade(selectedGrade);
   };
 
-  /* col-12 col-xl-8 offset-xl-2 */
   return (
     <CollapsibleLessonSection
       index={index}
@@ -62,7 +63,7 @@ const TeachIt = ({
       initiallyExpanded
       _sectionDots={_sectionDots}
     >
-      <div>
+      <div ref={ref}>
         <div className='container-fluid mt-4'>
           <div className='row'>
             <div className='col-12 bg-light-gray py-3 p-3 align-items-center'>

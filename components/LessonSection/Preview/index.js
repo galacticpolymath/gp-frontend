@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import RichText from '../../../components/RichText';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
@@ -19,7 +19,10 @@ const Preview = ({
   QuickPrep,
   _sectionDots,
 }) => {
+  const ref = useRef();
   
+  useLessonElementInView(_sectionDots, SectionTitle, ref);
+
   return (
     <CollapsibleLessonSection
       index={index}
@@ -27,7 +30,7 @@ const Preview = ({
       initiallyExpanded={InitiallyExpanded !== false}
       _sectionDots={_sectionDots}
     >
-      <div className='container row mx-auto pb-4 justify-content-center justify-content-sm-start'>
+      <div ref={ref} className='container row mx-auto pb-4 justify-content-center justify-content-sm-start'>
         <div className="col col-md-8 offset-md-2">
           <div className='bg-primary-light p-4 pb-2 fs-5 my-4 fw-light'>
             <h4>&quot;Teach it in 15&quot; Quick Prep</h4>
