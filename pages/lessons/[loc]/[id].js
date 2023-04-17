@@ -60,8 +60,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
       }
     }
 
-    console.log('section: ', section)
-
     if (sectionTitle === -1){
       return {
         ...section,
@@ -74,10 +72,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
       SectionTitle: sectionTitle,
     }
   });
-
-  useEffect(() => {
-    console.log('_sections: ', _sections)
-  })
 
   const getSectionDotsDefaultVal = () => {
     const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')

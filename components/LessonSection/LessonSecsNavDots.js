@@ -40,8 +40,6 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     const scrollSectionIntoView = sectionId => {
         const targetSection = document.getElementById(sectionId);
         let url = router.asPath;
-        console.log('sectionDots: ', sectionDots)
-        console.log('targetSection: ', targetSection)
 
         if (targetSection) {
             (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
@@ -50,8 +48,6 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     }
 
     const handleDotClick = sectionId => {
-        console.log('sectionId: ', sectionId)
-        console.log('dot was clicked')
         setSectionDots(sectionDots => sectionDots.map(sectionDot => {
             return {
                 ...sectionDot,
@@ -62,8 +58,6 @@ const LessonsSecsNavDots = ({ _sectionDots }) => {
     }
 
     const goToSection = sectionId => {
-        console.log('sectionId: ', sectionId)
-        console.log('going to section: ', sectionId)
         scrollSectionIntoView(sectionId);
     }
 
