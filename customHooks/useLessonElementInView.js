@@ -1,3 +1,4 @@
+/* eslint-disable brace-style */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable curly */
@@ -8,20 +9,22 @@
 /* eslint-disable semi */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
-
-import { useEffect, useRef, useState } from "react";
-import { useInView } from "react-intersection-observer"
+import { useEffect, useState } from "react";
 import { useInViewport } from 'react-in-viewport';
-
-// GOAL: using inViewport, check whether or not the element is in the viewport
+import { useIsVisible } from 'react-is-visible'
 
 const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
-    const { inViewport: inView } = useInViewport(ref);    
-    const h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
+    const inView = useIsVisible(ref);
+    let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
     const [, setSectionDots] = _sectionDots;
+    const [wasRendered, setWasRendered] = useState(false);
 
     useEffect(() => {
-        if (inView) {
+        setWasRendered(true);
+    }, [])
+
+    useEffect(() => {
+        if (inView && wasRendered) {
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
                 if ((sectionDot.sectionId === h2Id) && inView) {
                     return {
@@ -36,8 +39,7 @@ const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
                 };
             }));
         }
-
-    }, [inView]);
+    }, [inView, wasRendered]);
 
     return { inView, h2Id: h2Id }
 }

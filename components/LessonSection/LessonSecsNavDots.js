@@ -12,90 +12,81 @@
 /* eslint-disable semi */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
-
-import { useState } from "react";
+import { useRouter } from "next/router";
 import LiNavDot from "./NavDots/LiNavDot";
-import SectionTitlesUl from "./NavDots/SectionTitlesUl";
 
 const LessonsSecsNavDots = ({ _sectionDots }) => {
     const [sectionDots, setSectionDots] = _sectionDots;
-    const [willShowTitles, setWillShowTitles] = useState(false);
+    const router = useRouter();
 
-    const handleMouseEnterIconList = () => {
-        setWillShowTitles(true);
-    };
-
-    const handleMouseLeaveIconList = () => {
-        setWillShowTitles(false);
-    };
-
-    const scrollSectionIntoView = sectionId => {
-        const targetSection = document.getElementById(sectionId);
-
-        targetSection && targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    const handleDotClick = sectionId => {
+    const handleMouseEnter = () => {
         setSectionDots(sectionDots => sectionDots.map(sectionDot => {
-            const { sectionId: _sectionId, willShowTitle } = sectionDot;
-            if (_sectionId === sectionId) {
-                console.log("dot was clicked on mobile: ", _sectionId === sectionId)
-                return {
-                    ...sectionDot,
-                    willShowTitle: !willShowTitle,
-                }
+            return {
+                ...sectionDot,
+                willShowTitle: true,
             }
+        }));
+    };
 
+    const handleMouseLeave = () => {
+        setSectionDots(sectionDots => sectionDots.map(sectionDot => {
             return {
                 ...sectionDot,
                 willShowTitle: false,
             }
         }));
-        !willShowTitles && setWillShowTitles(true);
+    };
+
+    const scrollSectionIntoView = sectionId => {
+        const targetSection = document.getElementById(sectionId);
+        let url = router.asPath;
+
+        if (targetSection) {
+            (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
+            targetSection.scrollIntoView({ behavior: 'smooth', block: (sectionId === "lessonTitleId") ? 'center' : 'start' });
+        }
     }
 
-    const goToSection = (sectionId, isOnMobile) => {
-        if (isOnMobile) {
-            setSectionDots(sectionDots => sectionDots.map(sectionDot => {
-                return {
-                    ...sectionDot,
-                    willShowTitle: false,
-                }
-            }));
-            setWillShowTitles(false)
-        }
-
+    const handleDotClick = sectionId => {
+        setSectionDots(sectionDots => sectionDots.map(sectionDot => {
+            return {
+                ...sectionDot,
+                willShowTitle: true,
+            }
+        }));
         scrollSectionIntoView(sectionId);
     }
-    const liNavDotFns = { goToSection, handleDotClick }
+
+    const goToSection = sectionId => {
+        scrollSectionIntoView(sectionId);
+    }
+
+    const liNavDotFns = { goToSection, handleDotClick, setSectionDots }
 
     return (
-        <div className="position-fixed lessonSecsNavDotsListContainer d-flex">
-            <SectionTitlesUl sectionDots={sectionDots} willShowTitles={willShowTitles} goToSection={goToSection} />
-            <ul onMouseEnter={handleMouseEnterIconList} onMouseLeave={handleMouseLeaveIconList} className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
-                {sectionDots.map(({ isInView, sectionId }, index) => (
-                    <LiNavDot
-                        key={index}
-                        fns={liNavDotFns}
-                        isInView={isInView}
-                        sectionId={sectionId}
-                        index={index}
-                        isOnDesktop
-                    />
-                ))}
-            </ul>
-            <ul className='ps-0 d-flex d-lg-none flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
-                {sectionDots.map(({ isInView, sectionId }, index) => (
-                    <LiNavDot
-                        key={index}
-                        fns={liNavDotFns}
-                        isInView={isInView}
-                        sectionId={sectionId}
-                        index={index}
-                    />
-                ))}
-            </ul>
-        </div>
+            <div style={{ transform: 'translateY(17%)' }} className="position-fixed lessonSecsNavDotsListContainer d-flex">
+                <ul onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
+                    {sectionDots.map((section, index) => (
+                        <LiNavDot
+                            key={index}
+                            fns={liNavDotFns}
+                            section={section}
+                            index={index}
+                            isOnDesktop
+                        />
+                    ))}
+                </ul>
+                <ul className='ps-0 d-flex d-lg-none flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
+                    {sectionDots.map((section, index) => (
+                        <LiNavDot
+                            key={index}
+                            fns={liNavDotFns}
+                            section={section}
+                            index={index}
+                        />
+                    ))}
+                </ul>
+            </div>
     )
 }
 

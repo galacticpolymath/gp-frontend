@@ -172,8 +172,36 @@ $toolTipColor: #f0f4ff;
   padding-bottom: 30px;
 }
 
+.thumbnailLi{
+
+  @media(min-width: 576px){
+    width: 80px;
+    height: 65px;
+  }
+}
+
+.itemVisible{
+  @media(min-width: 576px){
+    background-color: #f5c1e3;
+  }
+}
+
+.itemNotVisible{
+  @media(min-width: 576px){
+    background-color: white;
+  }
+}
+
+
 .carouselSelectedLessons {
-  max-width: 70rem !important;
+  @media(min-width: 576px){
+    max-width: 70rem !important;
+  }
+
+  @media(max-width: 575px){
+    width: 80vw;
+    max-width: 90vw !important;
+  }
 }
 
 .lessonSlideBody {
@@ -293,7 +321,18 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.share-widget{
-  
+.iframeContainer{
+  // height: 1100px !important;
+}
+
+// teachIt section
+.downloadTipIcon{
+  // height: 70%;
+  width: 75%;
+  height: 100%;
+
+  @media(max-width: 767px){
+    width: 90%;
+  }
 }
 

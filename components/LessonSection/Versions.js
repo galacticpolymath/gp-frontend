@@ -2,16 +2,17 @@ import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
 const Versions = ({
-  index,
   SectionTitle,
   Data = [],
   _sectionDots,
+  isAvailLocsMoreThan1,
 }) => {
   return Data && (
     <CollapsibleLessonSection
       accordionId={SectionTitle}
-      SectionTitle={`${index}. ${SectionTitle}`}
+      SectionTitle={SectionTitle}
       _sectionDots={_sectionDots}
+      isAvailLocsMoreThan1={isAvailLocsMoreThan1}
     >
       <div className='container mx-auto my-4'>
         {Data.map(({ major_release, sub_releases = [] }, i) => (

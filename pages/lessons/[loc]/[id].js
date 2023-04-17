@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable curly */
 /* eslint-disable react/jsx-wrap-multilines */
@@ -12,13 +13,15 @@ import Image from 'next/image';
 import Layout from '../../../components/Layout';
 import RichText from '../../../components/RichText';
 import LocDropdown from '../../../components/LocDropdown';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ParentLessonSection from '../../../components/LessonSection/ParentLessonSection';
 import { useInView } from 'react-intersection-observer';
+import { useWindowWidth } from '@react-hook/window-size'
 import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 
 const isOnProduction = process.env.NODE_ENV === 'production';
+const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
@@ -31,11 +34,47 @@ const getLatestSubRelease = (sections) => {
   return lastSubRelease;
 };
 
+const getSectionTitle = (sectionComps, sectionTitle) => {
+  const targetSectionTitleIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === sectionTitle);
+
+  if (targetSectionTitleIndex === -1) return -1;
+
+  return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
+}
+
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref, inView } = useInView({ threshold: 0.2 });
-  const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
+  const windowWidth = useWindowWidth()
+  let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
+  sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
+  sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
+  const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
+    // can be -1 if the section is not found
+    const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
+
+    if (index === 0) {
+      return {
+        ...section,
+        SectionTitle: `${index + 1}. Overview`,
+      }
+    }
+
+    if (sectionTitle === -1){
+      return {
+        ...section,
+        SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
+      }
+    }
+
+    return {
+      ...section,
+      SectionTitle: sectionTitle,
+    }
+  });
+
   const getSectionDotsDefaultVal = () => {
+    const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
     startingSectionVals = startingSectionVals.filter(section => {
       if (((section?.__component === 'lesson-plan.overview') && !section?.SectionTitle)) {
@@ -44,28 +83,50 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
       return !!section?.SectionTitle
     })
-    const LAST_2_SECTIONS = [{ name: 'acknowledgments', txtIdToAdd: "11." }, { name: 'version_notes', txtIdToAdd: "12." }]
 
     return startingSectionVals.map((section, index) => {
       const { SectionTitle, __component } = section
-      const _sectionTitle = (__component === 'lesson-plan.overview') ? 'Overview' : SectionTitle;
+      const sectionTitleForDot = (__component === 'lesson-plan.overview') ? 'Overview' : `${SectionTitle}`;
+      let _sectionTitle = getSectionTitle(sectionComps, SectionTitle);
+      _sectionTitle = (_sectionTitle !== -1) ? _sectionTitle : '1. Overview';
       let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-      const targetLast2Section = LAST_2_SECTIONS.find(({ name }) => name === sectionId)
-
-      if (targetLast2Section) {
-        sectionId = `${targetLast2Section.txtIdToAdd}_${sectionId}`
-      }
 
       return {
         isInView: index === 0,
-        SectionTitle: _sectionTitle,
+        sectionTitleForDot: sectionTitleForDot,
         sectionId: (index === 0) ? 'lessonTitleId' : sectionId,
         willShowTitle: false,
       }
     })
   }
 
-  const [sectionDots, setSectionDots] = useState(getSectionDotsDefaultVal())
+  const _sectionDots = useMemo(() => getSectionDotsDefaultVal(), [])
+  const [sectionDots, setSectionDots] = useState(_sectionDots)
+
+  const handleDocumentClick = event => {
+    const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
+
+    if (!wasANavDotElementClicked && (windowWidth <= 767)) {
+      setSectionDots(sectionDots => {
+        if (sectionDots?.length) {
+          return sectionDots.map(sectionDot => {
+            return {
+              ...sectionDot,
+              willShowTitle: false,
+            };
+          })
+        }
+
+        return sectionDots;
+      })
+    }
+  }
+
+  useEffect(() => {
+    document.body.addEventListener('click', handleDocumentClick);
+
+    return () => document.body.removeEventListener('click', handleDocumentClick);
+  }, [])
 
   useEffect(() => {
     if (inView) {
@@ -91,8 +152,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }, [inView])
 
-  // testing push to github
-
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
 
   return (
@@ -114,9 +173,9 @@ const LessonDetails = ({ lesson, availLocs }) => {
               id={lesson.id}
             />
           </div>
-          <h1 ref={ref} id="lessonTitleId" className="mt-2">{lesson.Title}</h1>
+          <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
           <h4 className='fw-light'>{lesson.Subtitle}</h4>
-          {lesson.CoverImage && lesson.CoverImage.url && (
+          {(lesson.CoverImage && lesson.CoverImage.url) && (
             <div className='w-100 position-relative mt-2 mb-2'>
               <Image
                 src={lesson.CoverImage.url}
@@ -163,6 +222,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
               section={section}
               index={index}
               _sectionDots={[sectionDots, setSectionDots]}
+              isAvailLocsMoreThan1={(availLocs.length > 1)}
             />
           ))}
         </div>
@@ -181,16 +241,14 @@ export const getStaticPaths = async () => {
   return { paths, fallback: false };
 };
 
-// getting data from vercel api 
-
 export const getStaticProps = async ({ params: { id, loc } }) => {
   const res = await fetch('https://gp-catalog.vercel.app/index.json')
   const lessons = await res.json();
-  const lesson = lessons.find((lesson) => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
-  const availLocs = lessons.filter((lesson) => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
+  const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
+  const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
 
   if (!lesson?.Section?.procedure?.Data) {
-    return { props: { lesson: lesson, availLocs } };
+    return { props: { lesson, availLocs } };
   }
 
   lesson.Section['teaching-materials'].Data = {

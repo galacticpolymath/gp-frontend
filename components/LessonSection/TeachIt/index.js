@@ -1,14 +1,13 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
 import { ModalContext } from '../../../providers/ModalProvider';
-import { useContext } from 'react';
-// import useLessonElementInView from '../../../customHooks/useLessonElementInView';
+import { useContext, useState, useRef } from 'react';
+import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
 const getObjVals = obj => {
@@ -43,6 +42,9 @@ const TeachIt = ({
   let assessmentPart = Data.classroom.resources[0].parts[Data?.classroom?.resources[0]?.parts?.length - 1];
   assessmentPart = (assessmentPart?.title === 'Assessments') ? { chunks: assessmentPart.itemList, partTitle: assessmentPart.title } : null;
   const parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
+  const ref = useRef();
+
+  useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
@@ -53,7 +55,6 @@ const TeachIt = ({
     setSelectedGrade(selectedGrade);
   };
 
-  /* col-12 col-xl-8 offset-xl-2 */
   return (
     <CollapsibleLessonSection
       index={index}
@@ -62,7 +63,7 @@ const TeachIt = ({
       initiallyExpanded
       _sectionDots={_sectionDots}
     >
-      <div>
+      <div ref={ref}>
         <div className='container-fluid mt-4'>
           <div className='row'>
             <div className='col-12 bg-light-gray py-3 p-3 align-items-center'>
@@ -116,32 +117,30 @@ const TeachIt = ({
             ))}
           </div>
         </div>
-
         {selectedGradeResources && (
-          <div className='d-flex container justify-content-center mb-5 mt-0 col-11'>
-            <div className=" row flex-nowrap  align-items-center col-md-8">
-
+          <div className='d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11'>
+            <div className="row flex-nowrap align-items-center col-md-8 position-relative">
               <a
                 target='_blank'
                 rel='noopener noreferrer'
                 href={selectedGradeResources.url}
-                className='btn btn-primary px-3 py-2 '
+                className='btn btn-primary px-3 py-2 col-8 col-md-12'
               >
-                <div className='d-flex flex-md-row align-items-md-center justify-content-center gap-2 '>
-                  <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
+                <div className='d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2 '>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{' '}
+                  </div>
                   <span style={{ lineHeight: "23px" }} className="d-none d-sm-inline">{selectedGradeResources.linkText}</span>
                   <span style={{ lineHeight: "17px", fontSize: "14px" }} className="d-inline d-sm-none">{selectedGradeResources.linkText}</span>
                 </div>
               </a>
-              <div className=' '>
+              <div style={{ width: "70px" }} className='p-0 mt-0 d-flex justify-content-center align-items-center'>
                 <AiOutlineQuestionCircle
-                  className="downloadTipIcon position-absolute "
+                  className="downloadTipIcon"
                   style={{ fontSize: "1.75rem" }}
                   onClick={handleIconClick}
-
                 />
               </div>
-
             </div>
           </div>
         )}

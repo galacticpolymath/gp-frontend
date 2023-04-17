@@ -116,6 +116,14 @@ $feedbackTxtFontSizeDesktop: 24px;
   z-index: 10000000;
 }
 
+.iframeContainer{
+  height: 200px;
+
+  @media(min-width: 576px){
+    height: 315px
+  }
+}
+
 .autoCarouselSlider {
   white-space: nowrap;
   transition: ease 1000ms;
@@ -134,12 +142,25 @@ $feedbackTxtFontSizeDesktop: 24px;
   }
 }
 
+.lessonTitle{
+  @media(max-width: 575px){
+    font-size: 1.0625rem;
+    line-height: 18px;
+  }
+}
+
+.lessonRelevanceTxt{
+  @media(max-width: 575px){
+    font-size: .9rem;
+    line-height: 18px;
+  }
+}
+
 .defaultHeadingCarouselStyles {
   color: black;
 
   @media (min-width: 768px) {
     font-weight: 400;
-    // font-size: 48px ;
   }
 
   @media (max-width: 767px) {
@@ -147,7 +168,6 @@ $feedbackTxtFontSizeDesktop: 24px;
   }
 
   @media (max-width: 575px) {
-    // font-size: 33px ;
     padding-left: 8px;
     padding-right: 8px;
   }
@@ -969,7 +989,6 @@ $feedbackTxtFontSizeDesktop: 24px;
 .grantReviewsAutoCarouselContainer {
   @media (min-width: 1200px) {
     max-width: 810px;
-    // border: solid pink;
   }
 }
 

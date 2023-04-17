@@ -12,10 +12,13 @@
 /* eslint-disable no-console */
 
 import { useMemo, useState } from "react";
+import { getIconStyles } from "../../../helperFns/getIconStyles";
 
-const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
+const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
+    const { isInView, sectionId, sectionTitleForDot: title, willShowTitle } = section;
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
     const { goToSection, handleDotClick } = fns;
+    const backgroundColor = isInView ? (sectionId === '3._teaching_materials') ? '#FEEAF8' : '#d5e6f3' : 'white'
 
     const handleMouseOverIcon = () => {
         setWillChangeIconColor(true);
@@ -25,44 +28,48 @@ const LiNavDot = ({ isInView, sectionId, fns, index, isOnDesktop }) => {
         setWillChangeIconColor(false);
     }
 
-    const getIconStyles = _ => {
-        const isTeachingMaterialsId = sectionId === 'teaching_materials';
-        const bgColor = (isInView || willChangeIconColor) ? (isTeachingMaterialsId ? '#cb1f8e' : 'rgba(44, 131, 195, 0.6)') : 'rgba(0,0,0,.1)';
-        const borderColor = (isInView || willChangeIconColor) ? (isTeachingMaterialsId ? '#cb1f8e' : '#2c83c3') : (isTeachingMaterialsId ? '#cb1f8e' : '#bebebe');
-
-        return (
-            {
-                backgroundColor: bgColor, height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid', borderColor: borderColor, padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color",
-            }
-        )
-    }
-    const iconStyles = useMemo(() => getIconStyles(), [willChangeIconColor, isInView, sectionId]);
+    const iconStyles = useMemo(() => getIconStyles((isInView || willChangeIconColor), sectionId), [willChangeIconColor, isInView, sectionId]);
 
     return (
         <>
             {isOnDesktop ?
                 <li
                     key={index}
-                    style={{ height: "30px" }}
+                    style={{ height: "33px" }}
                     role='button'
                     onClick={_ => goToSection(sectionId)}
-                    className='d-flex flex-inline justify-content-center align-items-center'
+                    className='d-flex flex-inline justify-content-center align-items-center position-relative sectionNavDotLi'
                 >
                     <i
                         onMouseOver={handleMouseOverIcon}
                         onMouseLeave={handleMouseLeaveIcon}
-                        style={iconStyles} />
+                        style={iconStyles}
+                        className='sectionNavDot'
+                    />
+                    <div style={{ zIndex: 1100, opacity: willShowTitle ? 1 : 0, width: 'auto', right: '25px', transition: "all .15s ease-in", pointerEvents: 'none', backgroundColor: backgroundColor, border: '#363636 1px solid', transitionProperty: 'background-color, opacity, border' }} className='p-1 rounded position-absolute d-flex'>
+                        <span className='text-nowrap'>{title}</span>
+                        <span style={{ width: 55 }} className='d-flex d-md-none justify-content-center align-items-center ps-1 sectionTitleSpan'>
+                            <span className="dotLine" />
+                        </span>
+                    </div>
                 </li>
                 :
                 <li
                     key={index}
                     style={{ height: "30px" }}
                     role='button'
-                    className='d-flex flex-inline justify-content-center align-items-center'
+                    className='d-flex flex-inline justify-content-center align-items-center sectionNavDotLi'
                 >
                     <i
                         onClick={_ => handleDotClick(sectionId, true)}
+                        className='sectionNavDot'
                         style={iconStyles} />
+                    <div style={{ opacity: willShowTitle ? 1 : 0, width: 'auto', right: '18px', pointerEvents: 'none', transition: "all .15s ease-in", transitionProperty: 'opacity' }} className='position-absolute d-flex'>
+                        <span style={{ transition: "all .15s ease-in", backgroundColor: backgroundColor, border: '#363636 1px solid', transitionProperty: 'background-color, opacity, border' }} className='text-nowrap p-1 rounded'>{title}</span>
+                        <span style={{ width: 55 }} className='d-flex d-md-none justify-content-center align-items-center ps-1 sectionTitleSpan'>
+                            <span className="dotLine" />
+                        </span>
+                    </div>
                 </li>
             }
         </>

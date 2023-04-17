@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable semi */
 /* eslint-disable no-console */
@@ -5,16 +6,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import Layout from '../../components/Layout';
-import JobVizIcon from '../../components/JobViz/JobVizIcon';
+import JobVizIcon from '../../components/JobViz/JobVizIcon'
 
 const LessonsPage = ({ lessons }) => {
-
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
   };
 
   const uniqueIDs = [];
-  // const lessonsAptFor = [{ lesson: 'Colourful Solutions', lessonAptFor: "YEARS: 9-13" }, { lesson: 'Genetic Rescue to the Rescue', lessonAptFor: "GRADES: 9-12" }, { lesson: 'The Guardian Frogs of Borneo', lessonAptFor: 'GRADES: 5-9' }, { lesson: 'Females singing to be heard', lessonAptFor: 'GRADES: ADAPTED FOR 5-6, 7-8, & 9-12' }, { lesson: 'I Like That!', lessonAptFor: 'GRADES: 5-9' }];
 
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
     const isUniqueAndStatusLive = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
@@ -71,9 +70,8 @@ const LessonsPage = ({ lessons }) => {
                 return (
                   <Link
                     key={lesson.locale + lesson.id}
-                    href={`/lessons/${lesson.DefaultLocale}/${lesson.id}`}
-                    passHref
-                    className='w-100 g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
+                    href={`/lessons/${lesson.locale}/${lesson.id}`}
+                    className='w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
                   >
 
                     <div className="position-relative overflow-hidden ">

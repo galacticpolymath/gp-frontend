@@ -8,7 +8,8 @@ export const getMediaComponent = ({ type, mainLink }) => {
     return (
       <iframe
         width="560"
-        height="315"
+        // height="315"
+        height="100%"
         src={mainLink}
         style={{ minWidth: '170px' }}
         title="YouTube video player"
@@ -21,7 +22,9 @@ export const getMediaComponent = ({ type, mainLink }) => {
       <iframe
         src={mainLink}
         width="640"
-        height="480"
+        style={{ zIndex: 11100 }}
+        // height="480"
+        height="100%"
         allow="autoplay"
         className='pdf-media'
       />

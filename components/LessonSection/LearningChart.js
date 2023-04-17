@@ -4,6 +4,7 @@ import Accordion from '../Accordion';
 import RichText from '../RichText';
 import Image from 'next/image';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
+import { useRef } from 'react';
 
 const LearningChart = ({
   Title,
@@ -11,10 +12,13 @@ const LearningChart = ({
   Footnote,
   Badge,
   _sectionDots,
+  SectionTitle,
 }) => {
+  const ref = useRef();
+  useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   return (
-    <div className='container pt-4'>
+    <div ref={ref} className='container pt-4'>
       <div className="chartContainer position-relative w-100" style={{ height: '500px', maxHeight: '80vw' }}>
         <Image
           src={Badge.url}

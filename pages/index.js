@@ -240,7 +240,7 @@ export default function Home() {
                 </ul>
                 <div className="d-flex justify-content-center">
                   <Link href="/hire-us" className='btn btn-primary'>
-                    Get lessons
+                    Hire Us
                   </Link>
                 </div>
               </div>

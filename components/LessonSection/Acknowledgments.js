@@ -2,17 +2,18 @@ import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
 const Acknowledgments = ({
-  index,
   SectionTitle,
   Data = [],
   _sectionDots,  
+  isAvailLocsMoreThan1,
 }) => {
   return Data && (
     <CollapsibleLessonSection
-      SectionTitle={`${index}. ${SectionTitle}`}
+      SectionTitle={`${SectionTitle}`}
       initiallyExpanded
       accordionId={SectionTitle}
       _sectionDots={_sectionDots}
+      isAvailLocsMoreThan1={isAvailLocsMoreThan1}
     >
       <div className='container mx-auto my-4'>
         {Data.map(({ role, def, records = [] }, i) => (

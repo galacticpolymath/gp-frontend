@@ -10,18 +10,17 @@ import Accordion from './Accordion';
  * A styled collapsible section of the Lesson Plan.
  */
 const CollapsibleLessonSection = ({
-  index,
   SectionTitle = '',
   className = '',
   children,
   initiallyExpanded = false,
   accordionId,
   _sectionDots,
-
+  isAvailLocsMoreThan1,
 }) => {
   const ref = useRef();
-  const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
-  
+  const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
+
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}
@@ -29,17 +28,17 @@ const CollapsibleLessonSection = ({
       className={`${className} collapsibleLessonSection`}
       buttonClassName="btn btn-primary-light w-100 text-left"
       button={(
-        <div className='container mx-auto text-black d-flex justify-content-between align-items-center py-1'>
+        <div className='container position-relative mx-auto text-black d-flex justify-content-between align-items-center py-1'>
           <h2
             ref={ref}
-            id={h2Id}
             className='m-0'
             style={{ width: '100%', overflowWrap: 'break-word' }}
           >
-            {index && `${index}. `}{SectionTitle}
+            {SectionTitle}
           </h2>
           <i className="fs-3 bi-chevron-down"></i>
           <i className="fs-3 bi-chevron-up"></i>
+          <div id={h2Id} style={{ height: 30, width: 30, transform: 'translateY(-150px)' }} className='position-absolute' />
         </div>
       )}
     >
