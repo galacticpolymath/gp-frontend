@@ -60,7 +60,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       }
     }
 
-    if (sectionTitle === -1){
+    if (sectionTitle === -1) {
       return {
         ...section,
         SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
@@ -153,9 +153,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }, [inView])
 
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
+  const layoutProps = { title: lesson.Title, description: lesson.Description, image: lesson.CoverImage.url, url: lesson.URL }
 
   return (
-    <Layout>
+    <Layout {...layoutProps}>
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} />
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="container d-flex justify-content-center pt-4 pb-4">

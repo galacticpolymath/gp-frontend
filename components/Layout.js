@@ -17,13 +17,10 @@ export default function Layout({ title, keywords, className, description, childr
         <meta name='description' content={description} />
         <meta name='keywords' content={keywords} />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
-        <meta property="og:image" content={imgPreview} />
+        {imgPreview && <meta property="og:image" content={imgPreview} />}
       </Head>
-
       <Navbar />
-
       {children}
-
       <Footer />
     </div>
   );
