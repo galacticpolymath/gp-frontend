@@ -39,7 +39,7 @@ const JobViz = ({ vals }) => {
                 <section className="d-flex jobVizHeroMainSec">
                     <section className="d-flex flex-column">
                         <h1 className='text-muted'>JobViz Career Explorer</h1>
-                        <p className='text-muted'>A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.</p>
+                        <p className='text-muted'>A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousand jobs.</p>
                         <p className='text-muted'>What do you want to be?</p>
                     </section>
                     <section>
