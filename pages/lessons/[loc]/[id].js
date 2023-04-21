@@ -205,6 +205,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
                     src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                     alt={lesson.Subtitle}
                     className='sponsorImg'
+                    sizes="225px"
                     fill
                     style={{ width: "100%", objectFit: 'contain' }}
                   />
