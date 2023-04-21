@@ -27,6 +27,7 @@ const StandardsGroup = ({
   alignmentNotes,
   statements,
 }) => {
+  
   return (
     <div className='border-bottom border-gray'>
       <Accordion
