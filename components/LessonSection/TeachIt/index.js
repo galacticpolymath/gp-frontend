@@ -137,10 +137,9 @@ const TeachIt = ({
                   <span style={{ lineHeight: "17px", fontSize: "14px" }} className="d-inline d-sm-none">{selectedGradeResources.linkText}</span>
                 </div>
               </a>
-              <div style={{ width: "70px" }} className='p-0 mt-0 d-flex justify-content-center align-items-center'>
+              <div style={{ width: "2rem" }} className='p-0 ms-1 mt-0 d-flex justify-content-center align-items-center'>
                 <AiOutlineQuestionCircle
                   className="downloadTipIcon"
-                  style={{ fontSize: "1.75rem" }}
                   onClick={handleIconClick}
                 />
               </div>
