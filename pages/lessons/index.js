@@ -21,11 +21,8 @@ const LessonsPage = ({ lessons }) => {
     console.log('lessons: ', lessons)
   })
 
-  const publishedLessons = lessons.filter(({ PublicationStatus, id, ShortTitle }) => {
-    // const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
-    console.log("id: ", id)
-    const willShowLesson = !uniqueIDs.includes(id) && (ShortTitle !== 'TEST');
-    console.log('willShowLesson: ', willShowLesson)
+  const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
+    const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
 
     willShowLesson && uniqueIDs.push(id);
 
@@ -126,8 +123,8 @@ const LessonsPage = ({ lessons }) => {
 };
 
 export async function getStaticProps() {
-  // const res = await fetch('https://catalog.galacticpolymath.com/index.json');
-  const res = await fetch('https://gp-catalog.vercel.app/index.json');
+  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  // const res = await fetch('https://gp-catalog.vercel.app/index.json');
 
   const lessons = await res.json();
 
