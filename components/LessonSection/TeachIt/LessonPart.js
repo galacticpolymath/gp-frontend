@@ -12,7 +12,7 @@ const LessonPart = ({
   resources,
 }) => {
   const isOnLastPart = partTitle === 'Assessments';
-  const durList = isOnLastPart ? null : chunks.map(({ chunkDur }) => chunkDur);
+  const durList = isOnLastPart ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
   const linkResources = isOnLastPart ? chunks : (resources?.[0]?.parts?.[partNum - 1]?.itemList || []);
 
   return (
@@ -50,7 +50,7 @@ const LessonPart = ({
           ))}
         </ol>
 
-        {(!isOnLastPart && durList) &&
+        {(!isOnLastPart && durList && chunks) &&
           <>
             <h4>Steps &amp; Flow</h4>
             {chunks.map((chunk, i) => (

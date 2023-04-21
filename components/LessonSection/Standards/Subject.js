@@ -20,6 +20,10 @@ const Subject = ({
     subjectSlugIds = new Array(subjectDimensions.length).fill(subjectSlug).map((subjectSlugId, index) => `${subjectSlugId}-${index}`);
   }
 
+  useEffect(() => {
+    console.log('subjectDimensions: ', subjectDimensions);
+  });
+
   return (
     <Accordion
       id={accordionId}
@@ -44,13 +48,13 @@ const Subject = ({
           return (
             <div className={`bg-${subjectSlug}-light p-2`} key={subjectDimIndex}>
               <p className='mb-1 p-1'><strong>Dimension:</strong> {name}</p>
-              {standardsGroup.map((group, groupIndex) => (
+              {/* {standardsGroup.map((group, groupIndex) => (
                 <StandardsGroup
                   id={`${subjectSlugIdName}-${groupIndex}`}
                   key={groupIndex}
                   {...group}
                 />
-              ))}
+              ))} */}
             </div>
           );
         })}

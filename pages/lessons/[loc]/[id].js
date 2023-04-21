@@ -234,7 +234,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
 };
 
 export const getStaticPaths = async () => {
-  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  // const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  const res = await fetch('https://gp-catalog.vercel.app/index.json');
   const lessons = await res.json();
   const paths = lessons.map(lesson => ({
     params: { id: `${lesson.id}`, loc: `${lesson.locale}` },

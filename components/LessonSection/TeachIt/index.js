@@ -6,7 +6,7 @@ import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
 import { ModalContext } from '../../../providers/ModalProvider';
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
@@ -28,6 +28,9 @@ const TeachIt = ({
   Data,
   _sectionDots,
 }) => {
+  useEffect(() => {
+    console.log('LessonPart: ', LessonPart);
+  });
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const environments = ['classroom', 'remote']
@@ -43,6 +46,10 @@ const TeachIt = ({
   assessmentPart = (assessmentPart?.title === 'Assessments') ? { chunks: assessmentPart.itemList, partTitle: assessmentPart.title } : null;
   const parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
   const ref = useRef();
+
+  useEffect(( ) => {
+    console.log('parts: ', parts);
+  });
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
