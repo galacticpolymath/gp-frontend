@@ -27,7 +27,10 @@ const StandardsGroup = ({
   alignmentNotes,
   statements,
 }) => {
-  
+  // if grades is an array, convert it into a string
+  const _grades = Array.isArray(grades) ? grades.join(',') : grades;
+
+  console.log('_grades: ', _grades);
   return (
     <div className='border-bottom border-gray'>
       <Accordion
@@ -36,7 +39,7 @@ const StandardsGroup = ({
         button={(
           <div>
             <h6 className='text-muted mb-2 w-100 d-flex justify-content-between'>
-              {formatGrades(grades)}
+              {formatGrades(_grades)}
               <i className="fs-5 bi-chevron-down"></i>
               <i className="fs-5 bi-chevron-up"></i>
             </h6>
