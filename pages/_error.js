@@ -29,7 +29,7 @@ export const getServerSideProps = async (context) => {
 
     if(!targetLesson) return { props: {} }
 
-    console.log('will go to target lesson')
+    console.log('targetLesson: ', targetLesson.PublicationStatus)
 
     return {
       redirect: {
