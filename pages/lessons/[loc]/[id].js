@@ -197,17 +197,16 @@ const LessonDetails = ({ lesson, availLocs }) => {
               <h5>Sponsored by:</h5>
               <RichText content={lesson.SponsoredBy} />
             </div>
-            <div className="col-6 col-sm-7 col-md-4 col-lg-3 m-auto d-sm-grid">
+            <div className="col-12 col-sm-7 col-md-4 col-lg-3 m-auto d-flex justify-content-center align-items-center">
 
               {lesson.SponsorImage && lesson.SponsorImage.url && (
-                <div className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center'>
-                  <Image
+                <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
+                  <Image 
                     src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                     alt={lesson.Subtitle}
                     className='sponsorImg'
-                    width={80}
-                    height={80}
-                    style={{ width: "100%", height: 'auto', objectFit: 'contain' }}
+                    fill
+                    style={{ width: "100%", objectFit: 'contain' }}
                   />
                 </div>
               )}

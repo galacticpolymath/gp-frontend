@@ -321,19 +321,17 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.sponsorImgContainer{
-  // border: solid pink;
-}
-
 .sponsorImg{
-  // width: 100%;
-  // height: auto;
-  // object-fit: contain;
-  // min-width: 220px;
   min-width: 210px;
   min-height: 180px;
-  // min-height: 
-  // min-height: 
+
+  @media(max-width: 575px){
+    max-width: 225px;
+    // to override Image component's default css values
+    top: 50% !important;  
+    left: 50% !important; 
+    transform: translate(-50%, -50%) !important;
+  }
 }
 
 .iframeContainer{
