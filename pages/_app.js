@@ -12,27 +12,23 @@ import { ModalProvider } from '../providers/ModalProvider';
 import { LessonsCarouselProvider } from '../providers/LessonsCarouselProvider';
 import ModalsContainer from '../ModalsContainer';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { initGA, logPageView } from '../lib/analytics';
+import { GoogleAnalytics } from 'nextjs-google-analytics';
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap');
-
-    if (!window.GA_INITIALIZED) {
-      initGA();
-      window.GA_INITIALIZED = true;
-    }
-    
-    logPageView();
   }, []);
 
   return (
-    <LessonsCarouselProvider>
-      <ModalProvider>
-        <Component {...pageProps} />
-        <ModalsContainer />
-      </ModalProvider>
-    </LessonsCarouselProvider>
+    <>
+      <GoogleAnalytics id={process.env.GOOGLE_ANALYTICS_ID} trackPageViews />
+      <LessonsCarouselProvider>
+        <ModalProvider>
+          <Component {...pageProps} />
+          <ModalsContainer />
+        </ModalProvider>
+      </LessonsCarouselProvider>
+    </>
   );
 }
 
