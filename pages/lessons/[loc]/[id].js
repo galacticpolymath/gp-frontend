@@ -193,7 +193,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
             {isOnProduction ? <ShareWidget pinterestMedia={lesson.CoverImage.url} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lesson.CoverImage.url} />}
           </div>
           <div className='row mt-4 d-flex flex-column flex-md-row align-content-center'>
-            <div className="col-12 col-md-8 col-lg-9 d-grid">
+            <div className="col-12 col-md-8 col-lg-9">
               <h5>Sponsored by:</h5>
               <RichText content={lesson.SponsoredBy} />
             </div>
