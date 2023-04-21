@@ -192,18 +192,19 @@ const LessonDetails = ({ lesson, availLocs }) => {
             <label className='d-flex justify-content-center align-items-center'>Share: </label>
             {isOnProduction ? <ShareWidget pinterestMedia={lesson.CoverImage.url} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lesson.CoverImage.url} />}
           </div>
-          <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
-            <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
+          <div className='row mt-4 d-flex flex-column flex-md-row align-content-center'>
+            <div className="col-12 col-md-8 col-lg-9 d-grid">
               <h5>Sponsored by:</h5>
               <RichText content={lesson.SponsoredBy} />
             </div>
-            <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid  ">
+            <div className="col-6 col-sm-7 col-md-4 col-lg-3 m-auto d-sm-grid">
 
               {lesson.SponsorImage && lesson.SponsorImage.url && (
-                <div className='position-relative'>
+                <div className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center'>
                   <Image
                     src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                     alt={lesson.Subtitle}
+                    className='sponsorImg'
                     width={80}
                     height={80}
                     style={{ width: "100%", height: 'auto', objectFit: 'contain' }}
