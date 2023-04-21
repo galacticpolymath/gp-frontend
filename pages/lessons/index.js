@@ -128,8 +128,6 @@ export async function getStaticProps() {
 
   const lessons = await res.json();
 
-  console.log('all lesson ids: ', lessons.map(({ id }) => id))
-
   return { props: { lessons } };
 }
 
