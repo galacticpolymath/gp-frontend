@@ -2,7 +2,6 @@
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-max-props-per-line */
 import PropTypes from 'prop-types';
-import { useRef } from 'react';
 import useLessonElementInView from '../customHooks/useLessonElementInView';
 import Accordion from './Accordion';
 
@@ -19,7 +18,6 @@ const CollapsibleLessonSection = ({
 }) => {
   const { h2Id, ref } = useLessonElementInView(_sectionDots, SectionTitle);
   const _h2Id = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
-  
   
   return (
     <Accordion

@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
-import { useRef } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 import Accordion from '../../Accordion';
@@ -14,7 +13,7 @@ const Standards = ({
   _sectionDots,
   SectionTitle,
 }) => {
-  const { ref }  = useLessonElementInView(_sectionDots, SectionTitle);
+  const { ref } = useLessonElementInView(_sectionDots, SectionTitle);
 
   return (
     <div ref={ref} className='container mb-4'>

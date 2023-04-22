@@ -23,8 +23,6 @@ import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
-// GOAL: show the version notes on the ui even if the field of Data is empty 
-
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
   
@@ -90,8 +88,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
       if(['version notes', 'acknowledgments'].includes(section?.SectionTitle?.toLowerCase())) return section?.Data
       
-
-
       return !!section?.SectionTitle
     })
 

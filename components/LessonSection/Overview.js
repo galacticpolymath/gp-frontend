@@ -1,10 +1,22 @@
 /* eslint-disable no-console */
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable quotes */
+/* eslint-disable no-console */
+/* eslint-disable no-debugger */
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable curly */
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/jsx-closing-bracket-location */
+/* eslint-disable react/jsx-closing-tag-location */
+/* eslint-disable no-unused-vars */
+/* eslint-disable semi */
+/* eslint-disable quotes */
+/* eslint-disable no-console */
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
-import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 
 const Overview = ({
@@ -69,7 +81,11 @@ const Overview = ({
               </div>
             </div>
           </div>
-          <Link passHref href="#learning-standards" scroll={false}>
+          <Link
+            passHref
+            href="#learning-standards"
+            scroll={false}
+          >
             <h5>Subject breakdown by standard alignments: </h5>
             {SteamEpaulette && SteamEpaulette.url && (
               <div style={{ height: 'clamp(28px, 10vh, 138px)' }} className='position-relative'>

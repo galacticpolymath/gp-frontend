@@ -2,7 +2,6 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
-import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 // accordion-header lessonsPgSec
 // bg-primary-light w-100 text-left
