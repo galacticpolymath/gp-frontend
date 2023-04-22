@@ -15,9 +15,9 @@ import { useInView } from 'react-intersection-observer';
 const useLessonElementInView = (_sectionDots, SectionTitle) => {
     const { ref, inView, entry } = useInView({
         threshold: .1,
-      });
+    });
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-    const [, setSectionDots] = _sectionDots;
+    const [sectionDots, setSectionDots] = _sectionDots;
     const [wasRendered, setWasRendered] = useState(false);
 
     useEffect(() => {
@@ -25,19 +25,21 @@ const useLessonElementInView = (_sectionDots, SectionTitle) => {
     }, [])
 
     useEffect(() => {
-        console.log('entry: ', entry)
+
         if (inView && wasRendered) {
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
                 if ((sectionDot.sectionId === h2Id) && inView) {
                     return {
                         ...sectionDot,
                         isInView: true,
+                        entry,
                     };
                 }
 
                 return {
                     ...sectionDot,
                     isInView: false,
+                    entry,
                 };
             }));
         }
