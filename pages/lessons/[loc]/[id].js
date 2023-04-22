@@ -26,7 +26,6 @@ const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent'
 // GOAL: show the version notes on the ui even if the field of Data is empty 
 
 const getLatestSubRelease = (sections) => {
-  // console.log('sections: ', sections)
   const versionSection = sections.versions;
   
   if (!versionSection) {
@@ -266,8 +265,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     ...lesson.Section.procedure.Data,
     ...lesson.Section['teaching-materials'].Data,
   };
-
-  console.log('hey there new lesson: ')
 
   return { props: { lesson, availLocs } };
 };
