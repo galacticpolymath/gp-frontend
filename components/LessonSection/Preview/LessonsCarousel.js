@@ -34,7 +34,6 @@ import Dot from '../NavDots/Dot';
 
 const LessonsCarousel = ({ mediaItems }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [willApplyStyles, setWillApplyStyles] = useState(false);
     const mediaItemsSorted = mediaItems ? mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((item, index) => ({ ...item, isVisible: index === 0 })) : []
     const [controlDots, setControlDots] = useState(mediaItemsSorted);
 
@@ -78,10 +77,6 @@ const LessonsCarousel = ({ mediaItems }) => {
             })
         })
     }
-
-    useEffect(() => {
-        setWillApplyStyles(true);
-    }, [])
     
     return (
         <div className={`bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center container ${styles.Carousel}`} >
