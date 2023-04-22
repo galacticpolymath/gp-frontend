@@ -22,6 +22,7 @@ const CollapsibleLessonSection = ({
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
   const _h2Id = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
   
+  
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}

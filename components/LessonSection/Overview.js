@@ -70,7 +70,7 @@ const Overview = ({
               </div>
             </div>
           </div>
-          <Link passHref href="#learning_standards">
+          <Link passHref href="#learning-standards" scroll={false}>
             <h5>Subject breakdown by standard alignments: </h5>
             {SteamEpaulette && SteamEpaulette.url && (
               <div style={{ height: 'clamp(28px, 10vh, 138px)' }} className='position-relative'>

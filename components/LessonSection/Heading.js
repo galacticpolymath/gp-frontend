@@ -10,6 +10,7 @@ import useLessonElementInView from '../../customHooks/useLessonElementInView';
 const Heading = ({ SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) => {
   const ref = useRef();
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
+  const anchorLinkId = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
 
   return (
     <div
@@ -26,6 +27,7 @@ const Heading = ({ SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) => {
             </div>
           </h2>
           <div id={h2Id} style={{ height: 30, width: 30, transform: 'translateY(-180px)' }} className='position-absolute' />
+          <div id={anchorLinkId} style={{ height: 30, width: 30, transform: 'translateY(-180px)' }} className='position-absolute' />
         </div>
       </div>
     </div>

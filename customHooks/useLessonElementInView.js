@@ -41,7 +41,7 @@ const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
         }
     }, [inView, wasRendered]);
 
-    return { inView, h2Id: h2Id }
+    return { inView, h2Id }
 }
 
 export default useLessonElementInView;
