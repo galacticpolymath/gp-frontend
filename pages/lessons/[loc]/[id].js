@@ -25,7 +25,8 @@ const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent'
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
-  if (!versionSection) {
+  console.log('versionSection: ', versionSection)
+  if (!versionSection || !versionSection?.Data) {
     return null;
   }
 
