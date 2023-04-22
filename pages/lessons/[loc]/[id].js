@@ -23,11 +23,18 @@ import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
+// GOAL: show the version notes on the ui even if the field of Data is empty 
+
 const getLatestSubRelease = (sections) => {
+  // console.log('sections: ', sections)
   const versionSection = sections.versions;
-  console.log('versionSection: ', versionSection)
-  if (!versionSection || !versionSection?.Data) {
+  
+  if (!versionSection) {
     return null;
+  }
+
+  if(!versionSection?.Data){
+    return versionSection
   }
 
   const lastRelease = versionSection.Data[versionSection?.Data?.length - 1].sub_releases;
@@ -73,6 +80,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
       SectionTitle: sectionTitle,
     }
   });
+
+  useEffect(() => {
+    console.log('_sections: ', _sections)
+  })
 
   const getSectionDotsDefaultVal = () => {
     const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
@@ -163,7 +174,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       <div className="container d-flex justify-content-center pt-4 pb-4">
         <div className="col-11 col-md-10">
           <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
-            {lastSubRelease && (
+            {(lastSubRelease?.version && lastSubRelease?.date) && (
               <p>
                 Version {lastSubRelease.version}{' '}
                 (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
