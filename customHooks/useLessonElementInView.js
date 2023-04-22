@@ -10,11 +10,12 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import { useEffect, useState } from "react";
-import { useInViewport } from 'react-in-viewport';
-import { useIsVisible } from 'react-is-visible'
+import { useInView } from 'react-intersection-observer';
 
-const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
-    const inView = useIsVisible(ref);
+const useLessonElementInView = (_sectionDots, SectionTitle) => {
+    const { ref, inView, entry } = useInView({
+        threshold: .1,
+      });
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
     const [, setSectionDots] = _sectionDots;
     const [wasRendered, setWasRendered] = useState(false);
@@ -24,6 +25,7 @@ const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
     }, [])
 
     useEffect(() => {
+        console.log('entry: ', entry)
         if (inView && wasRendered) {
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
                 if ((sectionDot.sectionId === h2Id) && inView) {
@@ -41,7 +43,7 @@ const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
         }
     }, [inView, wasRendered]);
 
-    return { inView, h2Id }
+    return { inView, h2Id, ref, entry }
 }
 
 export default useLessonElementInView;

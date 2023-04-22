@@ -16,10 +16,9 @@ const CollapsibleLessonSection = ({
   initiallyExpanded = false,
   accordionId,
   _sectionDots,
-  isAvailLocsMoreThan1,
 }) => {
-  const ref = useRef();
-  const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
+  // const ref = useRef();
+  const { h2Id, ref } = useLessonElementInView(_sectionDots, SectionTitle);
   const _h2Id = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
   
   

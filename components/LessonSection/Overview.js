@@ -43,7 +43,7 @@ const Overview = ({
               <h5>Grades: </h5>
               <span>{ForGrades}</span>
             </div>
-            <div className='d-none d-sm-grid g-col g-col-sm-4 bg-white pt-sm-3 pe-sm-4 pb-sm-3 ps-sm-2 p-md-3 rounded-3'>
+            <div className='d-none d-sm-grid g-col g-col-sm-4 bg-white pt-sm-3 pe-md-4 pb-sm-3 ps-md-2 p-md-3 rounded-3'>
               <i className="fs-3 mb-2 d-block bi-alarm"></i>
               <h5>Estimated Time: </h5>
               <span>{EstLessonTime}</span>
