@@ -9,7 +9,7 @@ $toolTipColor: #f0f4ff;
 .lessonsSection {
   border-top: solid $borderThickness $borderColor;
 
-  > div {
+  >div {
     @media (max-width: 575px) {
       display: flex !important;
       flex-direction: column;
@@ -66,6 +66,7 @@ $toolTipColor: #f0f4ff;
 }
 
 .jobVizCareer.cardOnLessonsPg.linkCard {
+
   // background-color: pink !important;;
   @media (max-width: 575px) {
     // border: solid pink;
@@ -73,14 +74,16 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.jobVizCareer > section:first-child {
+.jobVizCareer>section:first-child {
   height: 70%;
-  > section:first-child {
+
+  >section:first-child {
     width: 43%;
   }
 
-  > section:nth-child(2) {
+  >section:nth-child(2) {
     width: 57%;
+
     h4 {
       font-size: 1.3em;
       font-weight: 350;
@@ -90,6 +93,7 @@ $toolTipColor: #f0f4ff;
         font-size: 1.1em;
       }
     }
+
     h4:hover {
       text-decoration: underline;
       cursor: pointer;
@@ -146,6 +150,7 @@ $toolTipColor: #f0f4ff;
     img {
       max-height: 150px;
     }
+
     max-width: 633px;
   }
 
@@ -155,7 +160,7 @@ $toolTipColor: #f0f4ff;
 
   position: relative;
 
-  > div:nth-child(2) {
+  >div:nth-child(2) {
     h3 {
       font-size: 1.3em;
 
@@ -172,50 +177,51 @@ $toolTipColor: #f0f4ff;
   padding-bottom: 30px;
 }
 
-.thumbnailLi{
+.thumbnailLi {
 
-  @media(min-width: 576px){
+  @media(min-width: 576px) {
     width: 80px;
     height: 65px;
   }
 }
 
-.itemVisible{
-  @media(min-width: 576px){
+.itemVisible {
+  @media(min-width: 576px) {
     background-color: #f5c1e3;
   }
 }
 
-.itemNotVisible{
-  @media(min-width: 576px){
+.itemNotVisible {
+  @media(min-width: 576px) {
     background-color: white;
   }
 }
 
 
 .carouselSelectedLessons {
-  @media(min-width: 576px){
+  @media(min-width: 576px) {
     max-width: 70rem !important;
   }
 
-  @media(max-width: 575px){
+  @media(max-width: 575px) {
     width: 80vw;
     max-width: 90vw !important;
   }
 }
 
 .lessonSlideBody {
+
   h5,
   p {
     width: 90%;
+
     @media (max-width: 575px) {
       width: 100%;
     }
   }
 
   span {
-    @media (max-width: 575px) {
-    }
+    @media (max-width: 575px) {}
   }
 }
 
@@ -262,8 +268,7 @@ $toolTipColor: #f0f4ff;
   left: 15px;
   width: fit-content;
 
-  @media (max-width: 575px) {
-  }
+  @media (max-width: 575px) {}
 }
 
 .lightbar {
@@ -271,19 +276,15 @@ $toolTipColor: #f0f4ff;
   display: block;
 }
 
-@media (max-width: 767px) {
-  .dotLine {
-    border-bottom: 1px dashed #363636;
-    // left: 50%;
-    top: 50%;
-    // left: 101%;
-    width: 90%;
-    vertical-align: text-top;
-  }
+.dotLine {
+  border-bottom: 1px dashed #363636;
+  top: 50%;
+  width: 90%;
+  vertical-align: text-top;
 }
 
 .company-partner-img-container {
-  box-shadow: 0 16px 38px -12px rgba(54,54,54,.56), 0 4px 25px 0 rgba(54,54,54,.12), 0 8px 10px -5px rgba(54,54,54,.2);
+  box-shadow: 0 16px 38px -12px rgba(54, 54, 54, .56), 0 4px 25px 0 rgba(54, 54, 54, .12), 0 8px 10px -5px rgba(54, 54, 54, .2);
   transition: box-shadow 0.15s ease-in-out;
 }
 
@@ -291,57 +292,56 @@ $toolTipColor: #f0f4ff;
   box-shadow: 0 16px 38px -6px rgba(54, 54, 54, 0.56), 0 4px 28px 0px rgba(54, 54, 54, 0.12), 0 8px 12px -2px rgba(54, 54, 54, 0.2);
 }
 
-.partnerCompany{
-  @media(min-width: 992px){
+.partnerCompany {
+  @media(min-width: 992px) {
     height: 400px;
   }
 }
 
-.human-wave-emoji{
+.human-wave-emoji {
   width: 15% !important;
   height: 100% !important;
   color: rgb(203, 31, 142);
 }
 
-.collaborateImg{
-  @media(min-width: 576px){
+.collaborateImg {
+  @media(min-width: 576px) {
     transform: translate(65%, -30%)
   }
 }
 
-.partnerCompany{
+.partnerCompany {
   width: 40%;
 
-  @media(min-width: 768px) and (max-width: 991px){
+  @media(min-width: 768px) and (max-width: 991px) {
     width: 75%;
   }
 
-  @media(max-width: 767px){
+  @media(max-width: 767px) {
     width: 90%;
   }
 }
 
-.sponsorImg{
+.sponsorImg {
   min-width: 210px;
   min-height: 180px;
 
-  @media(max-width: 575px){
+  @media(max-width: 575px) {
     max-width: 225px;
     // to override Image component's default css values
-    top: 50% !important;  
-    left: 50% !important; 
+    top: 50% !important;
+    left: 50% !important;
     transform: translate(-50%, -50%) !important;
   }
 }
 
 // teachIt section
-.downloadTipIcon{
+.downloadTipIcon {
   // height: 70%;
   width: 75%;
   height: 100%;
 
-  @media(max-width: 767px){
+  @media(max-width: 767px) {
     width: 90%;
   }
 }
-
