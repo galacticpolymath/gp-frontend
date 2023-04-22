@@ -19,6 +19,7 @@ const useLessonElementInView = (_sectionDots, SectionTitle) => {
     let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
     const [sectionDots, setSectionDots] = _sectionDots;
     const [wasRendered, setWasRendered] = useState(false);
+    const [isUserScrolling, setIsUserScrolling] = useState(false);
 
     useEffect(() => {
         setWasRendered(true);
@@ -26,20 +27,25 @@ const useLessonElementInView = (_sectionDots, SectionTitle) => {
 
     useEffect(() => {
 
+        console.log('sectionDots: ', sectionDots)
+        sectionDots.forEach(sectionDot => {
+            console.log('sectionDot.ref.current.getBoudingClientRect(): ', sectionDot)
+        })
+
         if (inView && wasRendered) {
             setSectionDots(sectionDots => sectionDots.map(sectionDot => {
                 if ((sectionDot.sectionId === h2Id) && inView) {
                     return {
                         ...sectionDot,
                         isInView: true,
-                        entry,
+                        ref: ref
                     };
                 }
 
                 return {
                     ...sectionDot,
                     isInView: false,
-                    entry,
+                    ref: ref
                 };
             }));
         }

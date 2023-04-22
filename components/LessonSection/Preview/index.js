@@ -18,14 +18,8 @@ const Preview = ({
   Multimedia,
   QuickPrep,
   _sectionDots,
-}) => {
-  const ref = useRef();
-  
-  useLessonElementInView(_sectionDots, SectionTitle, ref);
-
-  useEffect(() => {
-    console.log('Multimedia: ', Multimedia);
-  });
+}) => {  
+  const { ref } = useLessonElementInView(_sectionDots, SectionTitle);
 
   return (
     <CollapsibleLessonSection

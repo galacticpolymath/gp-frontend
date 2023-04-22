@@ -19,8 +19,7 @@ const Overview = ({
   _sectionDots,
   SectionTitle,
 }) => {
-  const ref = useRef();
-  useLessonElementInView(_sectionDots, SectionTitle, ref);
+  const { ref } = useLessonElementInView(_sectionDots, SectionTitle);
 
   return (
     <CollapsibleLessonSection

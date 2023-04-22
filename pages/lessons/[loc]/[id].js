@@ -88,6 +88,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
         return true
       }
 
+      if(['version notes', 'acknowledgments'].includes(section?.SectionTitle?.toLowerCase())) return section?.Data
+      
+
+
       return !!section?.SectionTitle
     })
 

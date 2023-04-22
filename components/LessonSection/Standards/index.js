@@ -14,8 +14,7 @@ const Standards = ({
   _sectionDots,
   SectionTitle,
 }) => {
-  const ref = useRef();
-  useLessonElementInView(_sectionDots, SectionTitle, ref);
+  const { ref }  = useLessonElementInView(_sectionDots, SectionTitle);
 
   return (
     <div ref={ref} className='container mb-4'>

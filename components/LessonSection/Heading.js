@@ -8,7 +8,6 @@ import useLessonElementInView from '../../customHooks/useLessonElementInView';
 // bg-primary-light w-100 text-left
 
 const Heading = ({ SectionTitle, _sectionDots }) => {
-  // const ref = useRef();
   const { h2Id, ref } = useLessonElementInView(_sectionDots, SectionTitle);
   const anchorLinkId = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
 

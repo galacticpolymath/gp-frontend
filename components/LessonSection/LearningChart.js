@@ -4,7 +4,6 @@ import Accordion from '../Accordion';
 import RichText from '../RichText';
 import Image from 'next/image';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
-import { useRef } from 'react';
 
 const LearningChart = ({
   Title,
@@ -14,7 +13,6 @@ const LearningChart = ({
   _sectionDots,
   SectionTitle,
 }) => {
-  // const ref = useRef();
   const { ref } = useLessonElementInView(_sectionDots, SectionTitle);
 
   return (

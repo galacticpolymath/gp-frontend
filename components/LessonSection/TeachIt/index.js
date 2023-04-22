@@ -45,9 +45,8 @@ const TeachIt = ({
   let assessmentPart = Data.classroom.resources[0].parts[Data?.classroom?.resources[0]?.parts?.length - 1];
   assessmentPart = (assessmentPart?.title === 'Assessments') ? { chunks: assessmentPart.itemList, partTitle: assessmentPart.title } : null;
   const parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
-  const ref = useRef();
 
-  useLessonElementInView(_sectionDots, SectionTitle, ref);
+  const { ref } = useLessonElementInView(_sectionDots, SectionTitle);
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
