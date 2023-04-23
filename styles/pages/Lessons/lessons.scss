@@ -321,8 +321,17 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.iframeContainer{
-  // height: 1100px !important;
+.sponsorImg{
+  min-width: 210px;
+  min-height: 180px;
+
+  @media(max-width: 575px){
+    max-width: 225px;
+    // to override Image component's default css values
+    top: 50% !important;  
+    left: 50% !important; 
+    transform: translate(-50%, -50%) !important;
+  }
 }
 
 // teachIt section

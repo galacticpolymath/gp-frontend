@@ -7,20 +7,26 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon'
+import { useEffect } from 'react';
 
 const LessonsPage = ({ lessons }) => {
+
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
   };
 
   const uniqueIDs = [];
 
+  useEffect(() => {
+    console.log('lessons: ', lessons)
+  })
+
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
-    const isUniqueAndStatusLive = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
+    const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
 
-    isUniqueAndStatusLive && uniqueIDs.push(id);
+    willShowLesson && uniqueIDs.push(id);
 
-    return isUniqueAndStatusLive;
+    return willShowLesson;
   });
 
   return (
@@ -65,7 +71,6 @@ const LessonsPage = ({ lessons }) => {
           </section>
           <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
             {publishedLessons
-              .filter(({ PublicationStatus }) => PublicationStatus === 'Live')
               .map((lesson) => {
                 return (
                   <Link
@@ -119,6 +124,7 @@ const LessonsPage = ({ lessons }) => {
 
 export async function getStaticProps() {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  // const res = await fetch('https://gp-catalog.vercel.app/index.json');
 
   const lessons = await res.json();
 

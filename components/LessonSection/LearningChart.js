@@ -19,14 +19,16 @@ const LearningChart = ({
 
   return (
     <div ref={ref} className='container pt-4'>
-      <div className="chartContainer position-relative w-100" style={{ height: '500px', maxHeight: '80vw' }}>
+      <div className="chartContainer position-relative w-100">
         <Image
           src={Badge.url}
-          fill
-          sizes="(max-width: 575px) 521px, (max-width: 767px) 486px, (max-width: 991px) 550.5px, (max-width: 1199px) 594.992px, 835px"
-          style={{ objectFit: 'contain' }}
+          width={1400}
+          height={900}
+          style={{
+            objectFit: 'contain',
+            width: '100%', height: 'auto',
+          }}
           alt="Learning Standards Chart"
-          priority
         />
       </div>
       <Accordion

@@ -6,7 +6,7 @@ import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
 import { ModalContext } from '../../../providers/ModalProvider';
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
@@ -28,6 +28,9 @@ const TeachIt = ({
   Data,
   _sectionDots,
 }) => {
+  useEffect(() => {
+    console.log('LessonPart: ', LessonPart);
+  });
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const environments = ['classroom', 'remote']
@@ -69,9 +72,9 @@ const TeachIt = ({
             <div className='col-12 bg-light-gray py-3 p-3 align-items-center'>
               <div className='fs-5 mb-2'>
                 <i className="bi-alarm fs-4 me-2"></i>
-                {Data.lessonDur}
+                {Data.lessonDur ?? "Lesson Duration: n/a"}
               </div>
-              <p className='mb-0'>{Data.lessonPreface}</p>
+              <p className='mb-0'>{Data.lessonPreface ?? "Lesson Preface: n/a"}</p>
             </div>
           </div>
         </div>
@@ -119,7 +122,7 @@ const TeachIt = ({
         </div>
         {selectedGradeResources && (
           <div className='d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11'>
-            <div className="row flex-nowrap align-items-center col-md-8 position-relative">
+            <div className="row flex-nowrap align-items-center justify-content-center col-md-8 position-relative">
               <a
                 target='_blank'
                 rel='noopener noreferrer'
@@ -134,10 +137,9 @@ const TeachIt = ({
                   <span style={{ lineHeight: "17px", fontSize: "14px" }} className="d-inline d-sm-none">{selectedGradeResources.linkText}</span>
                 </div>
               </a>
-              <div style={{ width: "70px" }} className='p-0 mt-0 d-flex justify-content-center align-items-center'>
+              <div style={{ width: "2rem" }} className='p-0 ms-1 mt-0 d-flex justify-content-center align-items-center'>
                 <AiOutlineQuestionCircle
                   className="downloadTipIcon"
-                  style={{ fontSize: "1.75rem" }}
                   onClick={handleIconClick}
                 />
               </div>

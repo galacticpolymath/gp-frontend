@@ -23,6 +23,10 @@ const Preview = ({
   
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
+  useEffect(() => {
+    console.log('Multimedia: ', Multimedia);
+  });
+
   return (
     <CollapsibleLessonSection
       index={index}
@@ -31,14 +35,13 @@ const Preview = ({
       _sectionDots={_sectionDots}
     >
       <div ref={ref} className='container row mx-auto pb-4 justify-content-center justify-content-sm-start'>
-        <div className="col col-md-8 offset-md-2">
-          <div className='bg-primary-light p-4 pb-2 fs-5 my-4 fw-light'>
-            <h4>&quot;Teach it in 15&quot; Quick Prep</h4>
+        <div className="col-12 col-md-8 offset-md-2">
+          <div className='bg-primary-light p-2 p-sm-4 pb-sm-2 fs-5 my-4 fw-light'>
+            <h4 className='text-center text-sm-start'>&quot;Teach it in 15&quot; Quick Prep</h4>
             <RichText content={QuickPrep} />
           </div>
         </div>
-        {/* <Carousel items={Multimedia} /> */}
-        <LessonsCarousel mediaItems={Multimedia} />
+        {Multimedia?.[0] && <LessonsCarousel mediaItems={Multimedia} />}
       </div>
     </CollapsibleLessonSection>
   );

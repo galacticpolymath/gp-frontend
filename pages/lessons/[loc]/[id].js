@@ -60,7 +60,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       }
     }
 
-    if (sectionTitle === -1){
+    if (sectionTitle === -1) {
       return {
         ...section,
         SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
@@ -153,9 +153,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }, [inView])
 
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
+  const layoutProps = { title: lesson.Title, description: lesson.Description, image: lesson.CoverImage.url, url: lesson.URL }
 
   return (
-    <Layout>
+    <Layout {...layoutProps}>
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} />
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="container d-flex justify-content-center pt-4 pb-4">
@@ -191,21 +192,22 @@ const LessonDetails = ({ lesson, availLocs }) => {
             <label className='d-flex justify-content-center align-items-center'>Share: </label>
             {isOnProduction ? <ShareWidget pinterestMedia={lesson.CoverImage.url} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lesson.CoverImage.url} />}
           </div>
-          <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
-            <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
+          <div className='row mt-4 d-flex flex-column flex-md-row align-content-center'>
+            <div className="col-12 col-md-8 col-lg-9">
               <h5>Sponsored by:</h5>
               <RichText content={lesson.SponsoredBy} />
             </div>
-            <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid  ">
+            <div className="col-12 col-sm-7 col-md-4 col-lg-3 m-auto d-flex justify-content-center align-items-center">
 
               {lesson.SponsorImage && lesson.SponsorImage.url && (
-                <div className='position-relative'>
-                  <Image
+                <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
+                  <Image 
                     src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                     alt={lesson.Subtitle}
-                    width={80}
-                    height={80}
-                    style={{ width: "100%", height: 'auto', objectFit: 'contain' }}
+                    className='sponsorImg'
+                    sizes="225px"
+                    fill
+                    style={{ width: "100%", objectFit: 'contain' }}
                   />
                 </div>
               )}
@@ -232,7 +234,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
 };
 
 export const getStaticPaths = async () => {
-  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  // const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  const res = await fetch('https://gp-catalog.vercel.app/index.json');
   const lessons = await res.json();
   const paths = lessons.map(lesson => ({
     params: { id: `${lesson.id}`, loc: `${lesson.locale}` },
@@ -255,6 +258,8 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     ...lesson.Section.procedure.Data,
     ...lesson.Section['teaching-materials'].Data,
   };
+
+  console.log('hey there new lesson: ')
 
   return { props: { lesson, availLocs } };
 };

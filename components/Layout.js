@@ -9,7 +9,7 @@ const montserrat = Montserrat({
   weight: 'variable',
 });
 
-export default function Layout({ title, keywords, className, description, children }) {
+export default function Layout({ title, keywords, className, description, children, imgPreview }) {
   return (
     <div className={`${montserrat.className} ${className}`}>
       <Head>
@@ -17,12 +17,10 @@ export default function Layout({ title, keywords, className, description, childr
         <meta name='description' content={description} />
         <meta name='keywords' content={keywords} />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
+        {imgPreview && <meta property="og:image" content={imgPreview} />}
       </Head>
-
       <Navbar />
-
       {children}
-
       <Footer />
     </div>
   );
