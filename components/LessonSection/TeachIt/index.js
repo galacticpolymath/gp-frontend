@@ -122,7 +122,7 @@ const TeachIt = ({
         </div>
         {selectedGradeResources && (
           <div className='d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11'>
-            <div className="row flex-nowrap align-items-center col-md-8 position-relative">
+            <div className="row flex-nowrap align-items-center justify-content-center col-md-8 position-relative">
               <a
                 target='_blank'
                 rel='noopener noreferrer'
