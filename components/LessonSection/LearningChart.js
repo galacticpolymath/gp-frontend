@@ -19,14 +19,14 @@ const LearningChart = ({
 
   return (
     <div ref={ref} className='container pt-4'>
-      <div className="chartContainer position-relative w-100" >
+      <div className="chartContainer position-relative w-100">
         <Image
           src={Badge.url}
           width={1400}
           height={900}
           style={{
             objectFit: 'contain',
-            width: '100%', height: 'auto'
+            width: '100%', height: 'auto',
           }}
           alt="Learning Standards Chart"
         />
