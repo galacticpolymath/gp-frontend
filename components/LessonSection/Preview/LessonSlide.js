@@ -20,7 +20,7 @@ const LessonSlide = ({
         </div>
         <div className={`${styles.SlideBody} mt-3 mt-sm-4 lessonSlideBody`}>
           {forPart && (
-            <div className='badge badge-pill bg-primary-light mb-1' style={{color: 'gray'}}>for Part {forPart}</div>
+            <div className='badge badge-pill bg-primary-light mb-1' style={{ color: 'gray' }}>for Part {forPart}</div>
           )}
           <h5 style={{ whiteSpace: 'pre-line' }} className='text-left pb-2 pb-sm-0 p-sm-0 p-sm-4 mb-0 mb-sm-1 text-sm-start lessonTitle'>{title}</h5>
           <p style={{ whiteSpace: 'pre-line' }} className="text-left pb-3 pb-sm-0 p-sm-0 p-sm-4 mb-0 mb-sm-1 text-sm-start lessonRelevanceTxt">{lessonRelevance}</p>
