@@ -25,12 +25,12 @@ const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent'
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
-  
+
   if (!versionSection) {
     return null;
   }
 
-  if(!versionSection?.Data){
+  if (!versionSection?.Data) {
     return versionSection
   }
 
@@ -86,8 +86,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
         return true
       }
 
-      if(['version notes', 'acknowledgments'].includes(section?.SectionTitle?.toLowerCase())) return section?.Data
-      
+      if (['version notes', 'acknowledgments'].includes(section?.SectionTitle?.toLowerCase())) return section?.Data
+
       return !!section?.SectionTitle
     })
 
@@ -160,7 +160,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }, [inView])
 
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: lesson.Title, description: lesson.Description, image: lesson.CoverImage.url, url: lesson.URL }
+  const layoutProps = { title: lesson.Title, description: lesson.Description, imgPreview: lesson.CoverImage.url, keywords: `${lesson.Title}, ${lesson.Subtitle}, Galactic Polymath Lesson` }
 
   return (
     <Layout {...layoutProps}>
@@ -208,7 +208,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
               {lesson.SponsorImage && lesson.SponsorImage.url && (
                 <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
-                  <Image 
+                  <Image
                     src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                     alt={lesson.Subtitle}
                     className='sponsorImg'
