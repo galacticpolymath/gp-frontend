@@ -65,15 +65,19 @@ const TeachIt = ({
     >
       <div ref={ref}>
         <div className='container-fluid mt-4'>
-          <div className='row'>
-            <div className='col-12 bg-light-gray py-3 p-3 align-items-center'>
-              <div className='fs-5 mb-2'>
-                <i className="bi-alarm fs-4 me-2"></i>
-                {Data.lessonDur ?? "Lesson Duration: n/a"}
+          {Data.lessonDur && (
+            <div className='row'>
+              <div className='col-12 bg-light-gray py-3 p-3 align-items-center'>
+                <div className='fs-5 mb-2'>
+
+                  <i className="bi-alarm fs-4 me-2"></i>
+                  {Data.lessonDur}
+
+                </div>
+                <p className='mb-0'>{Data.lessonPreface && (Data.lessonPreface)}</p>
               </div>
-              <p className='mb-0'>{Data.lessonPreface ?? "Lesson Preface: n/a"}</p>
             </div>
-          </div>
+          )}
         </div>
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
