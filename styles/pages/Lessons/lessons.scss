@@ -198,6 +198,13 @@ $toolTipColor: #f0f4ff;
 }
 
 
+.activeDot{
+  background-color: rgba(44, 131, 195, 0.6);
+}
+
+
+
+
 .carouselSelectedLessons {
   @media(min-width: 576px) {
     max-width: 70rem !important;

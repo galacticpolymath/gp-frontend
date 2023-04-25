@@ -57,7 +57,7 @@ const useScrollHandler = () => {
 
   const scrollAction =  () => {
     const scrollElems = Array.prototype.slice.call(
-      document.querySelectorAll(".SectionHeading")
+      document.querySelectorAll(".section-heading")
     );
 
     let elemOffsets = [];

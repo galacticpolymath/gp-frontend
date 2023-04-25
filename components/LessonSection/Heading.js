@@ -13,7 +13,7 @@ const Heading = ({ SectionTitle, _sectionDots }) => {
   return (
     <div
       ref={ref}
-      className='lessonsStandardsSec text-left bg-primary-light mb-4'
+      className='lessonsStandardsSec text-left bg-primary-light mb-4 section-heading'
     >
       <div>
         <div className='position-relative'>

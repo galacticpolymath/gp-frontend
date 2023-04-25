@@ -19,6 +19,7 @@ import { useInView } from 'react-intersection-observer';
 import { useWindowWidth } from '@react-hook/window-size'
 import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
+import useScrollHandler from '../../../customHooks/useScrollHandler';
 
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
@@ -158,6 +159,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
       })
     }
   }, [inView])
+
+  useScrollHandler()
 
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
   const layoutProps = { title: lesson.Title, description: lesson.Description, imgPreview: lesson.CoverImage.url, keywords: `${lesson.Title}, ${lesson.Subtitle}, Galactic Polymath Lesson` }

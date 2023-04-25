@@ -13,6 +13,10 @@ $txtShadow: 0px 0px 4px #470d29;
   }
 }
 
+.section-heading{
+  background-color: pink !important;
+}
+
 .linkHover:hover {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   z-index: 20;

@@ -20,6 +20,7 @@
     "date-fns": "^2.29.3",
     "font-awesome": "^4.7.0",
     "latest-version": "^7.0.0",
+    "lodash.throttle": "^4.1.1",
     "moment": "^2.29.4",
     "next": "^13.2.1",
     "nextjs-google-analytics": "^2.3.3",
