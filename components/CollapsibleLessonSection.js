@@ -17,6 +17,7 @@ const CollapsibleLessonSection = ({
   accordionId,
   _sectionDots,
   isAvailLocsMoreThan1,
+  highlighted = false,
 }) => {
   const ref = useRef();
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
@@ -27,7 +28,8 @@ const CollapsibleLessonSection = ({
       initiallyExpanded={initiallyExpanded}
       id={(accordionId || SectionTitle).replace(/[\s!]/gi, '_').toLowerCase()}
       className={`${className} collapsibleLessonSection`}
-      buttonClassName="btn btn-primary-light w-100 text-left"
+      buttonClassName={`btn ${highlighted ? '' : 'btn-primary-light'} w-100 text-left`}
+      highlighted={highlighted}
       button={(
         <div className='container position-relative mx-auto text-black d-flex justify-content-between align-items-center py-1'>
           <h2

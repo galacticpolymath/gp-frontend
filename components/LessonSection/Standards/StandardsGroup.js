@@ -30,7 +30,6 @@ const StandardsGroup = ({
   // if grades is an array, convert it into a string
   const _grades = Array.isArray(grades) ? grades.join(',') : grades;
 
-  console.log('_grades: ', _grades);
   return (
     <div className='border-bottom border-gray'>
       <Accordion

@@ -6,7 +6,7 @@ import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
 import { ModalContext } from '../../../providers/ModalProvider';
-import { useContext, useState, useRef, useEffect } from 'react';
+import { useContext, useState, useRef } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
@@ -28,9 +28,6 @@ const TeachIt = ({
   Data,
   _sectionDots,
 }) => {
-  useEffect(() => {
-    console.log('LessonPart: ', LessonPart);
-  });
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const environments = ['classroom', 'remote']
@@ -80,7 +77,7 @@ const TeachIt = ({
         </div>
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
-            <h3>Available Grade Bands</h3>
+            <h3 className='fs-5'>Available Grade Bands</h3>
             {gradeVariations.map((variation, i) => (
               <label
                 key={i}
@@ -100,7 +97,7 @@ const TeachIt = ({
             ))}
           </div>
           <div className="col w-1/2">
-            <h3>Available Teaching Environments</h3>
+            <h3 className='fs-5'>Available Teaching Environments</h3>
             {environments.map(env => (
               <label
                 className='text-capitalize d-block mb-1'

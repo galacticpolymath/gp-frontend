@@ -1,11 +1,3 @@
-.selectedLessonPg {
-*{
-  // border: solid pink;
-}  
-}
-
-
-
 .lessonsStandardsSec {
   width: 100vw;
   margin-left: calc(-1 * ((100vw - 100%) / 2));
@@ -73,12 +65,14 @@
           width: 100% ;
           button{
             > div{
-              // border: solid pink !important;
               width: 100% !important;
             }
           }
         }
       }
+    }
+    &.highlighted > div {
+      background-color: hsl(320, 98%, 94%);
     }
   }
 }
@@ -98,8 +92,6 @@
 
 .downloadInfoModal{
   max-width: 800px !important;
-  // width: 180vw;
-  // min-width: 260px;
 
   section{
     @media(min-width: 768px){
