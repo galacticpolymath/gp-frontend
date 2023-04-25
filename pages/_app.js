@@ -15,13 +15,14 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
 
 function MyApp({ Component, pageProps }) {
+
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap');
   }, []);
 
   return (
     <>
-      <GoogleAnalytics id={process.env.GOOGLE_ANALYTICS_ID} trackPageViews />
+      <GoogleAnalytics id='G-8B58Y7HD3T' trackPageViews />
       <LessonsCarouselProvider>
         <ModalProvider>
           <Component {...pageProps} />
