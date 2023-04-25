@@ -7,8 +7,10 @@ import RichText from '../RichText';
 import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 
+
 const Overview = ({
   index,
+  LearningSummary,
   Description,
   EstLessonTime,
   ForGrades,
@@ -32,6 +34,23 @@ const Overview = ({
     >
       <div ref={ref} className='container mb-4'>
         <div className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center">
+          {LearningSummary && (
+          
+          <div className="g-col-12 bg-white p-3 rounded-3 mt-2 text-start  align-items-center">
+            <Image
+                        src="/imgs/gp_logo_gradient_transBG.png"
+                        alt="Galactic_PolyMath_First_Sec_Mobile_Info"
+                        style={{ objectFit: "contain" }}
+                        className="d-inline-flex me-2"
+                        height={30}
+                        width={30}
+                    />
+            <h5 className="d-inline-flex">The Gist:</h5>
+            <div>
+            {LearningSummary}
+            </div>
+          </div>
+          )}
           <div className="grid mx-auto gap-3 py-3 justify-content-center justify-content-sm-start">
             <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>
               <i className="fs-3 mb-2 d-block bi-book-half"></i>
@@ -48,22 +67,22 @@ const Overview = ({
               <h5>Estimated Time: </h5>
               <span>{EstLessonTime}</span>
             </div>
-            <div className='d-grid d-sm-none g-col g-col-12 align-items-center justify-content-center'>
-              <div className='d-grid bg-white rounded-3 col-12 py-3' style={{ width: '40vw', minWidth: '150px' }}>
+            <div className='d-sm-none g-col-12 align-items-center justify-content-center'>
+              <div className='d-grid bg-white rounded-3 col-12 p-3'>
                 <i className="fs-3 mb-2 d-block bi-book-half"></i>
                 <h5>Target Subject: </h5>
                 <span>{TargetSubject}</span>
               </div>
             </div>
-            <div className='d-grid d-sm-none g-col g-col-12 align-items-center justify-content-center'>
-              <div className='d-grid bg-white rounded-3 col-12 py-3' style={{ width: '40vw', minWidth: '150px' }}>
+            <div className='d-sm-none g-col-12 align-items-center justify-content-center'>
+              <div className='d-grid bg-white rounded-3 col-12 p-3'>
                 <i className="fs-3 mb-2 d-block bi-person-circle"></i>
                 <h5>Grades: </h5>
                 <span>{ForGrades}</span>
               </div>
             </div>
-            <div className='d-grid d-sm-none g-col-12 align-items-center justify-content-center'>
-              <div className='d-grid bg-white rounded-3 col-12 py-3' style={{ width: '40vw', minWidth: '150px' }}>
+            <div className='d-sm-none g-col-12 align-items-center justify-content-center'>
+              <div className='d-grid bg-white rounded-3 col-12 p-3'>
                 <i className="fs-3 mb-2 d-block bi-alarm"></i>
                 <h5>Estimated Time: </h5>
                 <span>{EstLessonTime}</span>
@@ -71,17 +90,19 @@ const Overview = ({
             </div>
           </div>
           <Link passHref href="#learning_standards">
-            <h5>Subject breakdown by standard alignments: </h5>
+            Subject breakdown by standard alignments:
             {SteamEpaulette && SteamEpaulette.url && (
-              <div style={{ height: 'clamp(28px, 10vh, 138px)' }} className='position-relative'>
+              <div  className='position-relative'>
                 <Image
                   src={SteamEpaulette.url}
                   alt="Subject breakdown by standard alignments"
-                  fill
                   priority
-                  sizes='100%'
+                  height={160}
+                  width={2200}
                   style={{
                     objectFit: 'contain',
+                    height: "auto",
+                    width: "100%"
                   }}
                 />
               </div>
