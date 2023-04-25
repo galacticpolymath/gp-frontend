@@ -17,12 +17,12 @@ const LessonPart = ({
 
   return (
     <Accordion
-      buttonClassName='w-100 text-start'
+      buttonClassName='w-100 text-start border border-dark'
       key={partNum}
       id={`part_${partNum}`}
       button={(
-        <div>
-          <h3>{isOnLastPart ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
+        <div className='p-2'>
+          <h3 className='fs-6 fw-semibold'>{isOnLastPart ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
           <div>{partPreface}</div>
         </div>
       )}
