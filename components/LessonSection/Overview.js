@@ -7,7 +7,6 @@ import RichText from '../RichText';
 import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 
-
 const Overview = ({
   index,
   LearningSummary,
@@ -41,7 +40,7 @@ const Overview = ({
               <Image
                 src="/imgs/gp_logo_gradient_transBG.png"
                 alt="Galactic_PolyMath_First_Sec_Mobile_Info"
-                style={{ objectFit: "contain" }}
+                style={{ objectFit: 'contain' }}
                 className="d-inline-flex me-2 mb-2"
                 height={30}
                 width={30}
@@ -104,14 +103,12 @@ const Overview = ({
                     width={2200}
                     style={{
                       objectFit: 'contain',
-                      height: "auto",
-                      width: "100%"
+                      height: 'auto',
+                      width: '100%',
                     }}
 
                   />
                 </div>
-
-
 
                 <div className="d-sm-flex d-sm-none  row justify-content-start pb-2">
                   <Image
@@ -122,15 +119,17 @@ const Overview = ({
                     width={320}
                     style={{
                       objectFit: 'contain',
-                      height: "80vw",
-                      width: "auto"
+                      height: '80vw',
+                      width: 'auto',
                     }}
                     className='col p-0 d-flex align-self-end'
                   />
                   <div className="col text-start align-content-center mt-3">
-                    <i class="bi bi-arrow-90deg-left fs-2 mb-0 d-flex "></i>
-                    <div className="rounded p-1 mt-0 d-flex"
-                      style={{ border: '2px solid ' }}>
+                    <i className="bi bi-arrow-90deg-left fs-2 mb-0 d-flex "></i>
+                    <div
+                      className="rounded p-1 mt-0 d-flex"
+                      style={{ border: '2px solid ' }}
+                    >
                       <h5>Subject breakdown by standard alignments</h5>
                     </div>
                   </div>
