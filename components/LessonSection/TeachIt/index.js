@@ -28,9 +28,6 @@ const TeachIt = ({
   Data,
   _sectionDots,
 }) => {
-  useEffect(() => {
-    console.log('LessonPart: ', LessonPart);
-  });
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const environments = ['classroom', 'remote']

@@ -23,10 +23,6 @@ const Preview = ({
   
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
-  useEffect(() => {
-    console.log('Multimedia: ', Multimedia);
-  });
-
   return (
     <CollapsibleLessonSection
       index={index}

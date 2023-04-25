@@ -17,10 +17,6 @@ const LessonsPage = ({ lessons }) => {
 
   const uniqueIDs = [];
 
-  useEffect(() => {
-    console.log('lessons: ', lessons)
-  })
-
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
     const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
 

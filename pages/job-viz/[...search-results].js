@@ -57,12 +57,9 @@ const JobVizSearchResults = () => {
     const [willCheckParamsAgain, setWillCheckParamsAgain] = useState(false)
 
     useEffect(() => {
-        console.log("params: ", params)
         const jobCategoryIds = params?.slice(2);
         let hierarchyNum = params?.[0]
 
-        console.log({ jobCategoryIds: jobCategoryIds?.length, hierarchyNum: hierarchyNum })
-        
         if(parseInt(hierarchyNum) === jobCategoryIds?.length){
             let lastJobCategoryId = params?.[params.length - 1]
             const targetJobCategory = jobVizDataObj.data.find(jobCategory => jobCategory.id === parseInt(lastJobCategoryId))

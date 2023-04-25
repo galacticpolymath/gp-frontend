@@ -259,8 +259,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     ...lesson.Section['teaching-materials'].Data,
   };
 
-  console.log('hey there new lesson: ')
-
   return { props: { lesson, availLocs } };
 };
 
