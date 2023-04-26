@@ -10,12 +10,14 @@ import { useContext, useState, useEffect } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
+
 const getObjVals = obj => {
   const keys = Object.keys(obj);
   let vals = [];
 
   keys.forEach(key => {
     const val = obj[key];
+
     vals.push(val);
   });
 
@@ -28,9 +30,6 @@ const TeachIt = ({
   Data,
   _sectionDots,
 }) => {
-  useEffect(() => {
-    console.log('LessonPart: ', LessonPart);
-  });
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const environments = ['classroom', 'remote']
@@ -56,6 +55,10 @@ const TeachIt = ({
     setSelectedGradeResources(selectedGrade.links);
     setSelectedGrade(selectedGrade);
   };
+
+  useEffect(() => {
+    console.log('selectedGradeResources.url: ', selectedGradeResources.url)
+  })
 
   return (
     <CollapsibleLessonSection

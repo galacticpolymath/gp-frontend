@@ -160,7 +160,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }, [inView])
 
-  useScrollHandler()
+  // useScrollHandler()
 
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
   const layoutProps = { title: lesson.Title, description: lesson.Description, imgPreview: lesson.CoverImage.url, keywords: `${lesson.Title}, ${lesson.Subtitle}, Galactic Polymath Lesson` }

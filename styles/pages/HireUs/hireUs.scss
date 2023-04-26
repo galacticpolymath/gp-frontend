@@ -74,13 +74,10 @@
   }
 
   @media (min-width: 1200px) {
-    // width: 500px ;
     max-width: 600px;
     display: flex;
     justify-content: space-around;
     position: relative;
-    // border: solid pink ;
-
     > section:first-child {
       max-width: 460px;
     }

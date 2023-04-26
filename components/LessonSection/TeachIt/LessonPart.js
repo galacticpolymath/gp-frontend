@@ -3,6 +3,7 @@
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
+import { useEffect } from 'react';
 
 const LessonPart = ({
   partNum,
@@ -14,6 +15,10 @@ const LessonPart = ({
   const isOnLastPart = partTitle === 'Assessments';
   const durList = isOnLastPart ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
   const linkResources = isOnLastPart ? chunks : (resources?.[0]?.parts?.[partNum - 1]?.itemList || []);
+
+  useEffect(() => {
+    console.log("linkResources: ", linkResources)
+  })
 
   return (
     <Accordion
@@ -33,7 +38,6 @@ const LessonPart = ({
             <li key={item.itemTitle} className='mb-2'>
               <strong>{item.itemTitle}</strong>
               <ul>
-                {/* TODO: DATA: always want an array */}
                 {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => (
                   <li key={i}>
                     <a

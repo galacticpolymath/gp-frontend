@@ -34,9 +34,9 @@ const useScrollHandler = () => {
   };
 
   const scrollDown = (cursorBottom, elemOffsets, elemIds) =>{
-    // // you have the offset tops. find nearest one above current position by..
-    // // filtering out the ones below it and taking the last elem
-    // // filter:
+    // you have the offset tops. find nearest one above current position by..
+    // filtering out the ones below it and taking the last elem
+    // filter:
     // const removeBelow = elemOffsets.filter((x) => {
     //   return x < cursorBottom - window.innerHeight / 4;
     // });
