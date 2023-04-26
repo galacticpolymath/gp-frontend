@@ -20,6 +20,10 @@ const LessonPart = ({
     console.log("linkResources: ", linkResources)
   })
 
+  const handleLinkClick = url => {
+    window.open(url, "_blank");
+  }
+
   return (
     <Accordion
       buttonClassName='w-100 text-start'
@@ -40,13 +44,15 @@ const LessonPart = ({
               <ul>
                 {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => (
                   <li key={i}>
-                    <a
-                      href={link.url}
-                      target='_blank'
-                      rel='noopener noreferrer'
+                    <div
+                      className='text-primary underline-on-hover'
+                      onClick={() => handleLinkClick(link.url)}
+                      // href={link.url}
+                      // target='_blank'
+                      // rel='noopener noreferrer'
                     >
                       {link.linkText}
-                    </a>
+                    </div>
                   </li>
                 ))}
               </ul>
