@@ -1,7 +1,9 @@
 @import 'pages/colors';
 
 
-
+.test{
+  border: 1px solid red;
+}
 .Carousel {  
   > :global(.carousel-slider) {
     display: flex;
