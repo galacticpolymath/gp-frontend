@@ -11,7 +11,7 @@ export const getMediaComponent = ({ type, mainLink }) => {
         // // height="315"
         // height="100%"
         src={mainLink}
-        style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%"}}
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         className='lesson-media'
@@ -23,9 +23,7 @@ export const getMediaComponent = ({ type, mainLink }) => {
         src={mainLink}
         width="200"
         height="500"
-        
-        style={{ zIndex: 11100,position: "absolute", top: 0, left: 0, width: "100%", height: "100%"}}
-        
+        style={{ zIndex: 11100,position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
         allow="autoplay"
         className='pdf-media'
       />
