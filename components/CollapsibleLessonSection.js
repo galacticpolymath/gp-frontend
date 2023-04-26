@@ -18,7 +18,7 @@ const CollapsibleLessonSection = ({
 }) => {
   const { h2Id, ref } = useLessonElementInView(_sectionDots, SectionTitle);
   const _h2Id = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
-  const parentDivId = `${_h2Id}-parent`
+  const parentDivId = `${_h2Id}-parent`;
   
   return (
     <Accordion

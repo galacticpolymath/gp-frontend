@@ -1,8 +1,19 @@
+/* eslint-disable no-debugger */
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable curly */
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/jsx-closing-bracket-location */
+/* eslint-disable react/jsx-closing-tag-location */
+/* eslint-disable no-unused-vars */
+/* eslint-disable semi */
+/* eslint-disable quotes */
+/* eslint-disable no-console */
+
 import { useEffect } from 'react';
 
-import throttle from "lodash.throttle";
+import throttle from 'lodash.throttle';
 
-const getOffset = element =>  {
+const getOffset = element => {
   let top = 0;
   do {
     top += element.offsetTop || 0;
@@ -15,21 +26,20 @@ const getOffset = element =>  {
 const useScrollHandler = () => {
   let lastOffset = window.pageYOffset;
 
-
   const activateDot = (index, elemIds) => {
     const activeNodeid = elemIds[index];
-    debugger
+    debugger;
     const activeNode = document.querySelector(`.${activeNodeid}`);
 
-    if (!activeNode || !activeNode.classList.contains("activeDot")) {
-      activeNode && activeNode.classList.add("activeDot");
+    if (!activeNode || !activeNode.classList.contains('activeDot')) {
+      activeNode && activeNode.classList.add('activeDot');
     }
 
     let notActive = elemIds.slice();
     notActive.splice(index, 1);
     notActive.forEach((id) => {
       let div = document.querySelector(`.${id}`);
-      div && div.classList.remove("activeDot");
+      div && div.classList.remove('activeDot');
     });
   };
 
@@ -82,12 +92,12 @@ const useScrollHandler = () => {
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", throttle(() => scrollAction(), 100));
+    window.addEventListener('scroll', throttle(() => scrollAction(), 100));
 
     return () => {
-      window.removeEventListener("scroll", throttle(() => scrollAction(), 100));
+      window.removeEventListener('scroll', throttle(() => scrollAction(), 100));
     };
   }, []);
-}
+};
 
-export default useScrollHandler
+export default useScrollHandler;

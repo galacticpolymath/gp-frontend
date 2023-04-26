@@ -57,8 +57,8 @@ const TeachIt = ({
   };
 
   useEffect(() => {
-    console.log('selectedGradeResources.url: ', selectedGradeResources.url)
-  })
+    console.log('selectedGradeResources.url: ', selectedGradeResources.url);
+  });
 
   return (
     <CollapsibleLessonSection

@@ -13,11 +13,11 @@ const montserrat = Montserrat({
 export default function Layout({ title, keywords, className, description, children, imgPreview }) {
   // get the url of the page after the comp is rendered onto the UI within a useEffect 
   // and then pass it to the og:url meta tag
-  const [url, setUrl] = useState('')
+  const [url, setUrl] = useState('');
 
   useEffect(() => {
-    setUrl(window.location.href)
-  }, [])
+    setUrl(window.location.href);
+  }, []);
   
   return (
     <div className={`${montserrat.className} ${className}`}>

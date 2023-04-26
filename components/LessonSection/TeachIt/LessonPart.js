@@ -17,12 +17,12 @@ const LessonPart = ({
   const linkResources = isOnLastPart ? chunks : (resources?.[0]?.parts?.[partNum - 1]?.itemList || []);
 
   useEffect(() => {
-    console.log("linkResources: ", linkResources)
-  })
+    console.log('linkResources: ', linkResources);
+  });
 
   const handleLinkClick = url => {
-    window.open(url, "_blank");
-  }
+    window.open(url, '_blank');
+  };
 
   return (
     <Accordion
