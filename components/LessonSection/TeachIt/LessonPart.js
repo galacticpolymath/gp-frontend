@@ -3,7 +3,8 @@
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
+import Link from 'next/link';
 
 const LessonPart = ({
   partNum,
@@ -16,13 +17,9 @@ const LessonPart = ({
   const durList = isOnLastPart ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
   const linkResources = isOnLastPart ? chunks : (resources?.[0]?.parts?.[partNum - 1]?.itemList || []);
 
-  useEffect(() => {
-    console.log('linkResources: ', linkResources);
-  });
-
-  const handleLinkClick = url => {
-    window.open(url, '_blank');
-  };
+  // const handleLinkClick = url => {
+  //   window.open(url, '_blank');
+  // };
 
   return (
     <Accordion
@@ -44,15 +41,15 @@ const LessonPart = ({
               <ul>
                 {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => (
                   <li key={i}>
-                    <div
+                    <Link
                       className='text-primary underline-on-hover'
-                      onClick={() => handleLinkClick(link.url)}
-                      // href={link.url}
-                      // target='_blank'
+                      // onClick={() => handleLinkClick(link.url)}
+                      href={link.url}
+                      target='_blank'
                       // rel='noopener noreferrer'
                     >
                       {link.linkText}
-                    </div>
+                    </Link>
                   </li>
                 ))}
               </ul>
