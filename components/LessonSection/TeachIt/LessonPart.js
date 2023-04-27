@@ -1,5 +1,10 @@
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-console */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/jsx-max-props-per-line */
+/* eslint-disable semi */
+/* eslint-disable no-console */
+/* eslint-disable quotes */
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
@@ -38,18 +43,16 @@ const LessonPart = ({
               <strong>{item.itemTitle}</strong>
               <ul>
                 {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => {
-                  console.log('link.url: ', link.url)
-                  
                   return (
                     <li key={i}>
-                    <a
-                      className='text-primary underline-on-hover'
-                      href={link.url}
-                      target='_blank'
-                    >
-                      {link.linkText}
-                    </a>
-                  </li>
+                      <a
+                        className='text-primary underline-on-hover'
+                        href={link.url}
+                        target='_blank'
+                      >
+                        {link.linkText}
+                      </a>
+                    </li>
                   )
                 })}
               </ul>
