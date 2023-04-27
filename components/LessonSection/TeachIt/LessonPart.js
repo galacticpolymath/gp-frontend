@@ -21,8 +21,6 @@ const LessonPart = ({
   });
 
   const handleLinkClick = url => {
-    console.log('link was clicked!!!!');
-    console.log('url: ', url);
     window.open(url, '_blank');
   };
 
