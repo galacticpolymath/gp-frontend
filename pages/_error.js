@@ -9,6 +9,8 @@
 /* eslint-disable no-console */
 import Layout from '../components/Layout';
 
+// will delete this comp
+
 const ErrorPg = () => (
   <Layout>
     <div className="lessonDetailsContainer min-vh-100 pt-3 ps-3">
