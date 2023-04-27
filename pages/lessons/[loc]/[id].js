@@ -256,7 +256,6 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  console.log('getStaticProps in [id].js')
   const res = await fetch('https://gp-catalog.vercel.app/index.json')
   const lessons = await res.json();
   const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);

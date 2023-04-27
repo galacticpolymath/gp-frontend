@@ -18,10 +18,7 @@ const ErrorPg = () => (
 );
 
 export const getServerSideProps = async (context) => {
-  console.log('getServerSideProps in _error.js')
-
   const REGEX = /\d+$/;
-  console.log('context.resolvedUrl: ',context.resolvedUrl)
 
   if (REGEX.test(context.resolvedUrl)) {
     const res = await fetch('https://gp-catalog.vercel.app/index.json');

@@ -123,7 +123,6 @@ const LessonsPage = ({ lessons }) => {
 };
 
 export async function getStaticProps() {
-  console.log('getStaticProps in lessons/index.js')
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   // const res = await fetch('https://gp-catalog.vercel.app/index.json');
 
