@@ -32,6 +32,9 @@ const LessonPart = ({
           {linkResources.map(item => (
             <li key={item.itemTitle} className='mb-2'>
               <strong>{item.itemTitle}</strong>
+              <div className='fst-italic mb-1' style={{color:'#353637'}}>
+              {item.itemDescription}
+              </div>
               <ul>
                 {/* TODO: DATA: always want an array */}
                 {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => (
