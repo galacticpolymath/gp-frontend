@@ -3,8 +3,6 @@
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
-// import { useEffect } from 'react';
-import Link from 'next/link';
 
 const LessonPart = ({
   partNum,
@@ -39,19 +37,21 @@ const LessonPart = ({
             <li key={item.itemTitle} className='mb-2'>
               <strong>{item.itemTitle}</strong>
               <ul>
-                {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => (
-                  <li key={i}>
-                    <Link
+                {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => {
+                  console.log('link.url: ', link.url)
+                  
+                  return (
+                    <li key={i}>
+                    <a
                       className='text-primary underline-on-hover'
-                      // onClick={() => handleLinkClick(link.url)}
                       href={link.url}
                       target='_blank'
-                      // rel='noopener noreferrer'
                     >
                       {link.linkText}
-                    </Link>
+                    </a>
                   </li>
-                ))}
+                  )
+                })}
               </ul>
             </li>
           ))}
