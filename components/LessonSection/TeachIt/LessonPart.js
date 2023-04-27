@@ -20,9 +20,9 @@ const LessonPart = ({
   const durList = isOnLastPart ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
   const linkResources = isOnLastPart ? chunks : (resources?.[0]?.parts?.[partNum - 1]?.itemList || []);
 
-  // const handleLinkClick = url => {
-  //   window.open(url, '_blank');
-  // };
+  const handleLinkClick = event => {
+    window.location.href = event.target.href;
+  };
 
   return (
     <Accordion
@@ -48,7 +48,7 @@ const LessonPart = ({
                       <a
                         className='text-primary underline-on-hover'
                         href={link.url}
-                        target='_blank'
+                        onClick={event => handleLinkClick(event)}
                       >
                         {link.linkText}
                       </a>
