@@ -105,12 +105,15 @@ const LessonDetails = ({ lesson, availLocs }) => {
       let _sectionTitle = getSectionTitle(sectionComps, SectionTitle);
       _sectionTitle = (_sectionTitle !== -1) ? _sectionTitle : '1. Overview';
       let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
+      sectionId = (index === 0) ? 'lessonTitleId' : sectionId
 
       return {
         isInView: index === 0,
         sectionTitleForDot: sectionTitleForDot,
-        sectionId: (index === 0) ? 'lessonTitleId' : sectionId,
+        sectionId: sectionId,
         willShowTitle: false,
+        sectionDotId: `sectionDot-${sectionId}`,
+        SectionTitle: _sectionTitle
       }
     })
   }
@@ -145,14 +148,52 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   useEffect(() => {
     // console log when the parent element is in view
-    const parentElement = document.getElementById(parentId);
+    // const parentElement = document.getElementById(parentId);
+    // const sections = _sections.map(sectionDot => ({ ...sectionDot, sectionId: `${sectionDot.defaultSectionTitle}-parent`  })) 
+    // console.log('sections: ', sections)
+    // console.log("sectionDots: ", sectionDots)
+    console.log("_sections: ", _sections)
+    console.log("_sectionDots: ", _sectionDots)
+    // GOAL: insert the sectionDotId for each section
+    // for each iteration, using the sectiontitle, get its corresponding sectoinDotID from the _sectionDots array 
+    const __sections = _sections.map(section => {
+      const _sectionDotTarget = _sectionDots.find(({ SectionTitle }) => SectionTitle === section.SectionTitle) 
+      return {
+        ...section,
+        sectionDotId: _sectionDotTarget.sectionDotId,
+      }
+    })
+
+    console.log("__sections: ", __sections)
+
+    // WHEN A SECTION IS IN VIEW, get its corresponding dot id and change it to blue
+    
+    // when a section is in view, change its corresponding dot to blue 
+
+    // what do we have: 
+    // _sections being mapped onto the dom 
+    // the ids of the sections is SectionTitle-parent
+    // _sectionDots are being mapped for the dots in the nav 
+    // when a section is in the view, get its sectionDot id and get its corresponding dot and change it to blue 
+
     document.addEventListener('scroll', () => {
       // get all of the parent elements ids. check if they have a number. If they have a number, that means the element is in view. Get it's corresponding dot and turn it blue. Set all other dots to grey. 
       // change all dots to grey 
       // Using the id, get the element from the dom and change its color to blue 
       // the object that has number for percentageInview is attained. Get it's corresponding dot id  
-
-      const percentage = percentageSeen(parentElement);
+      // const sectionId = document.getElementById(section.sectionId)
+      // console.log('sectionId: ', sectionId)
+      let inViewPercentagesSections = _sections.map(sectionDot => {
+        const section = document.getElementById(`${sectionDot.SectionTitle}-parent`)
+                
+        return {
+          ...sectionDot,
+          percentageInView: percentageSeen(section),
+        }
+      })
+      inViewPercentagesSections = inViewPercentagesSections.filter(section => section.percentageInView > 0)
+      console.log('inViewPercentagesSections: ', inViewPercentagesSections)
+      
     })
   }, [])
 
