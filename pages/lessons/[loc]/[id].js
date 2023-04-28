@@ -189,9 +189,9 @@ const LessonDetails = ({ lesson, availLocs }) => {
     // when a section is in the view, get its sectionDot id and get its corresponding dot and change it to blue 
 
     document.addEventListener('scroll', () => {
-      let inViewPercentagesSections = _sections.map(sectionDot => {
+      let inViewPercentagesSections = _sections.map((sectionDot, index) => {
         console.log('sectionDot.SectionTitle: ', sectionDot.SectionTitle)
-        const section = document.getElementById(`${sectionDot.SectionTitle}-parent`)
+        const section = document.getElementById(`${sectionDot.SectionTitle}-parent-${index + 1}`)
 
         return {
           ...sectionDot,
