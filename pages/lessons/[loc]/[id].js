@@ -42,6 +42,21 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
   return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
 }
 
+const percentageSeen = element => {
+  // Get the relevant measurements and positions
+  const viewportHeight = window.innerHeight;
+  const scrollTop = window.scrollY;
+  const elementOffsetTop = element.offsetTop;
+  const elementHeight = element.offsetHeight;
+
+  // Calculate percentage of the element that's been seen
+  const distance = scrollTop + (viewportHeight - elementOffsetTop);
+  const percentage = Math.round(distance / ((viewportHeight + elementHeight) / 100));
+
+  // Restrict the range to between 0 and 100
+  return Math.min(100, Math.max(0, percentage));
+};
+
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref, inView } = useInView({ threshold: 0.2 });
@@ -60,7 +75,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       }
     }
 
-    if (sectionTitle === -1){
+    if (sectionTitle === -1) {
       return {
         ...section,
         SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
@@ -126,6 +141,19 @@ const LessonDetails = ({ lesson, availLocs }) => {
     document.body.addEventListener('click', handleDocumentClick);
 
     return () => document.body.removeEventListener('click', handleDocumentClick);
+  }, [])
+
+  useEffect(() => {
+    // console log when the parent element is in view
+    const parentElement = document.getElementById(parentId);
+    document.addEventListener('scroll', () => {
+      // get all of the parent elements ids. check if they have a number. If they have a number, that means the element is in view. Get it's corresponding dot and turn it blue. Set all other dots to grey. 
+      // change all dots to grey 
+      // Using the id, get the element from the dom and change its color to blue 
+      // the object that has number for percentageInview is attained. Get it's corresponding dot id  
+
+      const percentage = percentageSeen(parentElement);
+    })
   }, [])
 
   useEffect(() => {
