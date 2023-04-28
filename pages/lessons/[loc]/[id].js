@@ -42,7 +42,7 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
   return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
 }
 
-const percentageSeen = element => {
+const getPercentageSeen = element => {
   // Get the relevant measurements and positions
   const viewportHeight = window.innerHeight;
   const scrollTop = window.scrollY;
@@ -51,7 +51,7 @@ const percentageSeen = element => {
 
   // Calculate percentage of the element that's been seen
   const distance = scrollTop + (viewportHeight - elementOffsetTop);
-  const percentage = Math.round(distance / ((viewportHeight + elementHeight) / 100));
+  const percentage = 100 - Math.round(distance / ((viewportHeight + elementHeight) / 100));
 
   // Restrict the range to between 0 and 100
   return Math.min(100, Math.max(0, percentage));
@@ -59,12 +59,10 @@ const percentageSeen = element => {
 
 const getIsElementInView = element => {
   var rect = element.getBoundingClientRect();
-  var html = document.documentElement;
+  // var html = document.documentElement;
   return (
     rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || html.clientHeight) &&
-    rect.right <= (window.innerWidth || html.clientWidth)
+    rect.left >= 0
   );
 }
 
@@ -99,6 +97,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   });
 
+  console.log('_sections: ', _sections)
+
   const getSectionDotsDefaultVal = () => {
     const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
@@ -124,7 +124,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
         sectionId: sectionId,
         willShowTitle: false,
         sectionDotId: `sectionDot-${sectionId}`,
-        SectionTitle: _sectionTitle
+        SectionTitle: index === 0 ? '0. Title' : _sectionTitle
       }
     })
   }
@@ -157,6 +157,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
 
+
   useEffect(() => {
     // console log when the parent element is in view
     // const parentElement = document.getElementById(parentId);
@@ -188,32 +189,47 @@ const LessonDetails = ({ lesson, availLocs }) => {
     // when a section is in the view, get its sectionDot id and get its corresponding dot and change it to blue 
 
     document.addEventListener('scroll', () => {
-      // get all of the parent elements ids. check if they have a number. If they have a number, that means the element is in view. Get it's corresponding dot and turn it blue. Set all other dots to grey. 
-      // change all dots to grey 
-      // Using the id, get the element from the dom and change its color to blue 
-      // the object that has number for percentageInview is attained. Get it's corresponding dot id  
-      // const sectionId = document.getElementById(section.sectionId)
-      // console.log('sectionId: ', sectionId)
       let inViewPercentagesSections = _sections.map(sectionDot => {
+        console.log('sectionDot.SectionTitle: ', sectionDot.SectionTitle)
         const section = document.getElementById(`${sectionDot.SectionTitle}-parent`)
 
         return {
           ...sectionDot,
-          percentageInView: percentageSeen(section),
+          percentageInView: getPercentageSeen(section),
         }
       })
-      console.log('inViewPercentagesSections sup there: ', inViewPercentagesSections)
-      inViewPercentagesSections = inViewPercentagesSections.filter(section => section.percentageInView > 0)
-      console.log('inViewPercentagesSections after filter: ', inViewPercentagesSections)
+      console.log('inViewPercentagesSections before filter: ', inViewPercentagesSections)
+      console.log('sectionDots: ', sectionDots)
+      inViewPercentagesSections = inViewPercentagesSections.filter(section => ((section.percentageInView > 0) && (section.percentageInView < 100)))
 
       if (inViewPercentagesSections.length === 0) {
-        console.log('no sections in view')
-        sectionDots.forEach(sectionDot => {
-          if (sectionDot.sectionDotId === 'lessonTitleId') {
-            document.getElementById(sectionDot.sectionDotId).style.backgroundColor = 'rgba(44, 131, 195, 0.6)'
-            return;
-          }
-          document.getElementById(sectionDot.sectionDotId).style.backgroundColor = ('sectionDot-3._teaching_materials' === sectionDot.sectionDotId) ? '#cb1f8e' : 'rgba(0,0,0,.1)'
+        // console.log('no sections in view')
+        // sectionDots.forEach(sectionDot => {
+        //   // if (sectionDot.sectionDotId === 'lessonTitleId') {
+        //   // return;
+        //   // }
+        //   document.getElementById(sectionDot.sectionDotId).style.backgroundColor = ('sectionDot-3._teaching_materials' === sectionDot.sectionDotId) ? '#cb1f8e' : 'rgba(0,0,0,.1)'
+        // })
+        // const targetSectionElement = document.getElementById('lessonTitleId')
+        // console.log('targetSectionElement: ', targetSectionElement)
+        // targetSectionElement.style.backgroundColor = 'rgba(44, 131, 195, 0.6)'
+        // console.log('targetSectionElement: ', targetSectionElement.style.backgroundColor)
+        // setRerenderComp(!rerenderComp)
+        setSectionDots(sectionDots => {
+          console.log('sectionDots: ', sectionDots)
+          return sectionDots.map(sectionDot => {
+            if (sectionDot.sectionDotId === 'sectionDot-lessonTitleId') {
+              return {
+                ...sectionDot,
+                isInView: true,
+              }
+            }
+
+            return {
+              ...sectionDot,
+              isInView: false,
+            }
+          })
         })
         // document.getElementById('lessonTitleId').style.color = '#2c83c3'
         // change all other styles to grey
@@ -221,17 +237,26 @@ const LessonDetails = ({ lesson, availLocs }) => {
         return
       }
 
+      console.log("inViewPercentagesSections: ", inViewPercentagesSections)
+
       if (inViewPercentagesSections.length === 1) {
         const dotOfSecionInView = sectionDots.find(sectionDot => sectionDot.SectionTitle === inViewPercentagesSections[0].SectionTitle)
         console.log('dotOfSecionInView: ', dotOfSecionInView)
-        sectionDots.forEach(sectionDot => {
-          console.log('looping')
-          console.log('sectionDot: ', sectionDot)
-          if (sectionDot.SectionTitle === dotOfSecionInView.SectionTitle) {
-            document.getElementById(sectionDot.sectionDotId).style.backgroundColor = 'rgba(44, 131, 195, 0.6)'
-            return;
-          }
-          document.getElementById(sectionDot.sectionDotId).style.backgroundColor = ('sectionDot-3._teaching_materials' === sectionDot.sectionDotId) ? '#cb1f8e' : 'rgba(0,0,0,.1)'
+        setSectionDots(sectionDots => {
+          console.log('sectionDots: ', sectionDots)
+          return sectionDots.map(sectionDot => {
+            if (sectionDot.SectionTitle === dotOfSecionInView.SectionTitle) {
+              return {
+                ...sectionDot,
+                isInView: true,
+              }
+            }
+
+            return {
+              ...sectionDot,
+              isInView: false,
+            }
+          })
         })
         return
       }
@@ -255,17 +280,32 @@ const LessonDetails = ({ lesson, availLocs }) => {
       // }
 
       // get the section that is taking up most of the view
-      const secTakingUpMostOfView = inViewPercentagesSections.reduce((secTakingUpMostOfView, currentSec) => currentSec.percentageInView > secTakingUpMostOfView.num ? currentSec : secTakingUpMostOfView);
+      const secTakingUpMostOfView = inViewPercentagesSections.reduce((secTakingUpMostOfView, currentSec) => currentSec.percentageInView > secTakingUpMostOfView.percentageInView ? currentSec : secTakingUpMostOfView);
+      console.log('secTakingUpMostOfView: ', secTakingUpMostOfView)
       const dotOfSecionInView = sectionDots.find(sectionDot => sectionDot.SectionTitle === secTakingUpMostOfView.SectionTitle)
-        sectionDots.forEach(sectionDot => {
-          if (sectionDot.SectionTitle === dotOfSecionInView.SectionTitle) {
-            document.getElementById(sectionDot.sectionDotId).style.backgroundColor = 'rgba(44, 131, 195, 0.6)'
-            return;
+      console.log("dotOfSecionInView: ", dotOfSecionInView)
+      setSectionDots(sectionDots => {
+        console.log('sectionDots: ', sectionDots)
+        return sectionDots.map(sectionDot => {
+          if (sectionDot.sectionDotId === dotOfSecionInView.sectionDotId) {
+            return {
+              ...sectionDot,
+              isInView: true,
+            }
           }
-          document.getElementById(sectionDot.sectionDotId).style.backgroundColor = ('sectionDot-3._teaching_materials' === sectionDot.sectionDotId) ? '#cb1f8e' : 'rgba(0,0,0,.1)'
+
+          return {
+            ...sectionDot,
+            isInView: false,
+          }
         })
+      })
     })
   }, [])
+
+  useEffect(() => {
+    console.log('sectionDots: ', sectionDots)
+  }) 
 
   // useEffect(() => {
   //   if (inView) {

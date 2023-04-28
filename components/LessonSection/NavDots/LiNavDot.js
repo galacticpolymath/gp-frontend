@@ -65,6 +65,7 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                         onClick={_ => handleDotClick(sectionId, true)}
                         className='sectionNavDot'
                         style={iconStyles}
+                        // style={{ backgroundColor: 'rgba(0,0,0,.1)', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid', borderColor: '#bebebe', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color",}}
                         id={sectionDotId} 
                     />
                     <div style={{ opacity: willShowTitle ? 1 : 0, width: 'auto', right: '18px', pointerEvents: 'none', transition: "all .15s ease-in", transitionProperty: 'opacity' }} className='position-absolute d-flex'>
