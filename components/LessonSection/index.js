@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 import PropTypes from 'prop-types';
-
+import { InView } from 'react-intersection-observer';
 import Overview from './Overview';
 // import TextBlock from "./TextBlock";
 import Heading from './Heading.js';
@@ -14,6 +14,7 @@ import Acknowledgments from './Acknowledgments';
 import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
 import Preview from './Preview';
+import { useEffect } from 'react';
 
 export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
@@ -63,13 +64,39 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 
+const getIsElementInView = element => {
+  let rect = element.getBoundingClientRect();
+  let html = document.documentElement;
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || html.clientHeight) &&
+    rect.right <= (window.innerWidth || html.clientWidth)
+  );
+}
+
+
 const LessonSection = ({ index, section, _sectionDots, isAvailLocsMoreThan1 }) => {
   const Component = sectionTypeMap[section.__component];
   // const _section = (isAvailLocsMoreThan1 && isOnLastTwoSections) ? { ...section, _sectionDots, isAvailLocsMoreThan1: isAvailLocsMoreThan1 } : { ...section, _sectionDots };
   const _section = { ...section, _sectionDots };
+  const parentDivId = section.SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
+
+  useEffect(() => {
+    // const parentElement = document.getElementById(`${parentDivId}-parent`)
+    // console.log('parentElement: ', parentElement)
+    // document.addEventListener('scroll', () => {
+    //   let element = document.getElementById(`${parentDivId}-parent`);
+    //   let isInView = getIsElementInView(element);
+    //   console.log('isInView: ', isInView)
+    // })
+  },[])
+
 
   return Component ? (
-    <Component index={index} {..._section} />
+    <div id={`${parentDivId}-parent`} className="bg-danger">
+      <Component index={index} {..._section} />
+    </div>
   ) : (
     <div>Invalid section {section.__component}</div>
   );
