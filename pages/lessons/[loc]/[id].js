@@ -19,6 +19,7 @@ import { useInView } from 'react-intersection-observer';
 import { useWindowWidth } from '@react-hook/window-size'
 import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
+import { useRouter } from 'next/router';
 
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
@@ -69,6 +70,7 @@ const getIsElementInView = element => {
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref, inView } = useInView({ threshold: 0.2 });
+  const router = useRouter()
   const windowWidth = useWindowWidth()
   let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
   sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
@@ -131,6 +133,30 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const _sectionDots = useMemo(() => getSectionDotsDefaultVal(), [])
   const [sectionDots, setSectionDots] = useState({ dots: _sectionDots, clickedSectionId: null })
+  const [willGoToTargetSection, setWillGoToTargetSection] = useState(false)
+
+  const scrollSectionIntoView = sectionId => {
+    console.log('will scroll into view the target section')
+    console.log("scrolling section into view: ", sectionId)
+    const targetSection = document.getElementById(sectionId);
+    let url = router.asPath;
+
+    if (targetSection) {
+      (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
+      console.log('sectionId: ', sectionId)
+      targetSection.scrollIntoView({ behavior: 'smooth', block: (sectionId === "lessonTitleId") ? 'center' : 'start' });
+      // setTargetSec({ element: targetSection, id: sectionId })
+      // setTargetSectionId(sectionId)
+    }
+  }
+
+  useEffect(() => {
+    if (willGoToTargetSection) {
+      console.log('sectionDots, will go to target section: ', sectionDots)
+      setWillGoToTargetSection(false)
+      scrollSectionIntoView(sectionDots.clickedSectionId)
+    }
+  }, [willGoToTargetSection])
 
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
@@ -145,7 +171,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
               ...sectionDot,
               willShowTitle: false,
             };
-          })        }
+          })
+        }
       })
     }
   }
@@ -156,21 +183,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
 
-  const [wasASectionDotClicked, setWasASectionDotClicked] = useState(false)
-  const [targetSectionId, setTargetSectionId] = useState("")
-  const [willCheckIfSectionIsInView, setWillCheckIfSectionIsInView] = useState(false)
-
-  // GOAL: when the user clicks on a nav dot, create a side effect that is executed whenever sectionDots changes 
-
-  const [wasRendered, setWasRendered] = useState(false);
-
-  useEffect(() => {
-    if(!wasRendered){
-      setWasRendered(true)
-    } else {
-      console.log("sectionDots: ", sectionDots)
-    }    
-  }, [sectionDots])
+  const [wasASectionDotClicked, setWasASectionDotClicked] = useState(false);
+  const [willResetSectionDots, setWillResetSectionDots] = useState(false)
 
   useEffect(() => {
     // console log when the parent element is in view
@@ -230,7 +244,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
         // console.log('targetSectionElement: ', targetSectionElement.style.backgroundColor)
         // setRerenderComp(!rerenderComp)
         setSectionDots(sectionDots => {
-          console.log('sectionDots on title: ', sectionDots)
           setWasASectionDotClicked(true)
           // !sectionDots.clickedSectionId && setWillCheckIfSectionIsInView(true)
           const _dots = sectionDots.dots.map(sectionDot => {
@@ -260,10 +273,11 @@ const LessonDetails = ({ lesson, availLocs }) => {
             dots: _dots
           }
         })
-        setSectionDots(sectionDots => {
-          return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
-        })
 
+        setWillResetSectionDots(true);
+        // setSectionDots(sectionDots => {
+        //   return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
+        // })
         return
       }
 
@@ -273,9 +287,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
         setWasASectionDotClicked(true)
         const dotOfSecionInView = sectionDots.dots.find(sectionDot => sectionDot.SectionTitle === inViewPercentagesSections[0].SectionTitle)
         setSectionDots(sectionDots => {
-          console.log('sectionDots, only one section is in view: ', sectionDots)
           const _dots = sectionDots.dots.map(sectionDot => {
-            
+
             if (`sectionDot-${sectionDots?.clickedSectionId}` === sectionDot.sectionDotId) {
               setWasASectionDotClicked(true)
               return {
@@ -302,9 +315,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
             dots: _dots
           }
         })
-        setSectionDots(sectionDots => {
-          return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
-        })
+        setWillResetSectionDots(true);
+        // setSectionDots(sectionDots => {
+        //   return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
+        // })
         return
       }
 
@@ -337,14 +351,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
         const _dots = sectionDots.dots.map(sectionDot => {
           console.log("sectionDots?.clickedSectionId: ", sectionDots?.clickedSectionId)
           console.log("sectionDot.sectionDotId: ", sectionDot.sectionDotId)
-          console.log("sectionDots?.clickedSectionId === sectionDot.sectionDotId: " , sectionDots?.clickedSectionId === sectionDot.sectionDotId)
-          if(`sectionDot-${sectionDots?.clickedSectionId}` === sectionDot.sectionDotId) {
+          console.log("sectionDots?.clickedSectionId === sectionDot.sectionDotId: ", sectionDots?.clickedSectionId === sectionDot.sectionDotId)
+          if (`sectionDot-${sectionDots?.clickedSectionId}` === sectionDot.sectionDotId) {
             return {
               ...sectionDot,
               isInView: true,
             }
           }
-          
+
 
 
           if (!sectionDots?.clickedSectionId && (sectionDot.sectionDotId === dotOfSecionInView.sectionDotId)) {
@@ -365,60 +379,34 @@ const LessonDetails = ({ lesson, availLocs }) => {
           dots: _dots
         }
       })
-
-      // setSectionDots(sectionDots => {
-      //   return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
-      // })
+      // create a promise that will a true boolean into setWillResetSectionDots
+      // create a promise below:
     })
   }, [])
 
   useEffect(() => {
-    if(willCheckIfSectionIsInView){
-      console.log('sectionDots is in view: ', sectionDots)
+    if (willResetSectionDots) {
+      console.log('will reset section dots')
+      // let timer = 
+      setTimeout(() => {
+        setSectionDots(sectionDots => {
+          return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
+        })
+      }, 1000)
+      setWillResetSectionDots(false)
+
+      // return () => {
+      //   clearTimeout(timer)
+      // }
     }
-  }, [willCheckIfSectionIsInView])
+  }, [willResetSectionDots])
 
-  useEffect(() => {
-    console.log("targetSectionId: ", targetSectionId)
-    console.log("wasASectionDotClicked: ", wasASectionDotClicked)
-    if(wasASectionDotClicked){
-      console.log("A DOT WAS CLICKED")
-      console.log("targetSectionId: ", targetSectionId)
-      // setSectionDots(sectionDots => ({ ...sectionDots, clickedSectionId: null }))
-      console.log('sectionDots: ', sectionDots)
-      setWasASectionDotClicked(false)
-    }
-  }, [wasASectionDotClicked])
-
-  // useEffect(() => {
-  //   if (inView) {
-  //     setSectionDots(sectionDots => {
-  //       if (sectionDots?.length) {
-  //         return sectionDots.map(sectionDot => {
-  //           if ((sectionDot.sectionId === 'lessonTitleId') && inView) {
-  //             return {
-  //               ...sectionDot,
-  //               isInView: true,
-  //             };
-  //           }
-
-  //           return {
-  //             ...sectionDot,
-  //             isInView: false,
-  //           };
-  //         })
-  //       }
-
-  //       return sectionDots;
-  //     })
-  //   }
-  // }, [inView])
 
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
 
   return (
     <Layout>
-      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setTargetSectionId={setTargetSectionId} />
+      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} />
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="container d-flex justify-content-center pt-4 pb-4">
         <div className="col-11 col-md-10">

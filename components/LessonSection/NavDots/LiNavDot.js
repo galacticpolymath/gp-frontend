@@ -47,11 +47,11 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                         onMouseOver={handleMouseOverIcon}
                         onMouseLeave={handleMouseLeaveIcon}
                         style={iconStyles}
-                        onClick={_ => {
-                            console.log("sectionId that the user will go to, i icon clicked: ", sectionId)
-                            debugger
-                            goToSection(sectionId)
-                        }}
+                        // onClick={_ => {
+                        //     console.log("sectionId that the user will go to, i icon clicked: ", sectionId)
+                        //     debugger
+                        //     goToSection(sectionId)
+                        // }}
                         className='sectionNavDot'
                         id={sectionDotId}
                     />

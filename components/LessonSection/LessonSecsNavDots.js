@@ -17,15 +17,9 @@ import LiNavDot from "./NavDots/LiNavDot";
 import { useState } from "react";
 import { useEffect } from "react";
 
-const LessonsSecsNavDots = ({ _sectionDots, setTargetSectionId }) => {
+const LessonsSecsNavDots = ({ _sectionDots, setTargetSectionId, setWillGoToTargetSection }) => {
     const [sectionDots, setSectionDots] = _sectionDots;
-    const [willRerender, setWillRerender] = useState(false);
     const router = useRouter();
-
-    useEffect(() => {
-        console.log('comp LessonsSecsNavDots: ', willRerender)
-        setWillRerender(willRerender => !willRerender)
-    }, [])
 
     const handleMouseEnter = () => {
         setSectionDots(sectionDots => {
@@ -63,11 +57,9 @@ const LessonsSecsNavDots = ({ _sectionDots, setTargetSectionId }) => {
         const targetSection = document.getElementById(sectionId);
         let url = router.asPath;
         
-
         if (targetSection) {
             (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
             console.log('sectionId: ', sectionId)
-            setSectionDots(sectionDots => ({ ...sectionDots, clickedSectionId: sectionId }))
             setTargetSec({ element: targetSection, id: sectionId })
             setTargetSectionId(sectionId)
         }
@@ -97,8 +89,11 @@ const LessonsSecsNavDots = ({ _sectionDots, setTargetSectionId }) => {
 
     const goToSection = sectionId => {
         console.log("target section that was clicked, id: ", sectionId)
-        scrollSectionIntoView(sectionId);
+        setSectionDots(sectionDots => ({ ...sectionDots, clickedSectionId: sectionId }))
+        setWillGoToTargetSection(true)
     }
+
+    
 
     const liNavDotFns = { goToSection, handleDotClick, setSectionDots }
 
