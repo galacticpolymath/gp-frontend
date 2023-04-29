@@ -72,6 +72,7 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection }) => {
     }, [targetSec])
 
     const handleDotClick = sectionId => {
+        console.log("target section that was clicked, id: ", sectionId)
         setSectionDots(sectionDots => {
             return {
                 ...sectionDots,
@@ -84,7 +85,8 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection }) => {
             }
         });
         setSectionDots(sectionDots => ({ ...sectionDots, clickedSectionId: sectionId }))
-        scrollSectionIntoView(sectionId);
+        // scrollSectionIntoView(sectionId);
+        setWillGoToTargetSection(true)
     }
 
     const goToSection = sectionId => {

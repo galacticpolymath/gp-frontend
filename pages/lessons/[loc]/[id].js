@@ -152,9 +152,9 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   useEffect(() => {
     if (willGoToTargetSection) {
-      console.log('sectionDots, will go to target section: ', sectionDots)
-      setWillGoToTargetSection(false)
-      scrollSectionIntoView(sectionDots.clickedSectionId)
+        console.log('sectionDots, will go to target section: ', sectionDots)
+        scrollSectionIntoView(sectionDots.clickedSectionId)
+        setWillGoToTargetSection(false)
     }
   }, [willGoToTargetSection])
 
@@ -229,7 +229,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
       console.log('inViewPercentagesSections before filter: ', inViewPercentagesSections)
       console.log('sectionDots: ', sectionDots)
       inViewPercentagesSections = inViewPercentagesSections.filter(section => ((section.percentageInView > 0) && (section.percentageInView < 100)))
-
+      // print the inViewPercentagesSections after the filter
+      console.log('inViewPercentagesSections after filter: ', inViewPercentagesSections)
       if (inViewPercentagesSections.length === 0) {
         // console.log('no sections in view')
         // sectionDots.forEach(sectionDot => {
@@ -246,16 +247,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
         setSectionDots(sectionDots => {
           setWasASectionDotClicked(true)
           // !sectionDots.clickedSectionId && setWillCheckIfSectionIsInView(true)
-          const _dots = sectionDots.dots.map(sectionDot => {
-            if (sectionDots?.clickedSectionId === sectionDot.sectionDotId) {
-              return {
-                ...sectionDot,
-                isInView: true,
-              }
-            }
-
-
-            if (!sectionDots?.clickedSectionId && (sectionDot.sectionDotId === 'sectionDot-lessonTitleId')) {
+          const _dots = sectionDots.dots.map((sectionDot, index) => {
+            if(index === 0){
               return {
                 ...sectionDot,
                 isInView: true,
@@ -349,9 +342,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
       setSectionDots(sectionDots => {
         console.log('sectionDots, more than two sections are in view: ', sectionDots)
         const _dots = sectionDots.dots.map(sectionDot => {
-          console.log("sectionDots?.clickedSectionId: ", sectionDots?.clickedSectionId)
-          console.log("sectionDot.sectionDotId: ", sectionDot.sectionDotId)
-          console.log("sectionDots?.clickedSectionId === sectionDot.sectionDotId: ", sectionDots?.clickedSectionId === sectionDot.sectionDotId)
           if (`sectionDot-${sectionDots?.clickedSectionId}` === sectionDot.sectionDotId) {
             return {
               ...sectionDot,
@@ -379,8 +369,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
           dots: _dots
         }
       })
-      // create a promise that will a true boolean into setWillResetSectionDots
-      // create a promise below:
     })
   }, [])
 
@@ -388,11 +376,11 @@ const LessonDetails = ({ lesson, availLocs }) => {
     if (willResetSectionDots) {
       console.log('will reset section dots')
       // let timer = 
-      // setTimeout(() => {
-      //   setSectionDots(sectionDots => {
-      //     return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
-      //   })
-      // }, 1000)
+      setTimeout(() => {
+        setSectionDots(sectionDots => {
+          return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
+        })
+      }, 1000)
       setWillResetSectionDots(false)
 
       // return () => {
