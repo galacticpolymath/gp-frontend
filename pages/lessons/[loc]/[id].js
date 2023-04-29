@@ -130,23 +130,22 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }
 
   const _sectionDots = useMemo(() => getSectionDotsDefaultVal(), [])
-  const [sectionDots, setSectionDots] = useState(_sectionDots)
+  const [sectionDots, setSectionDots] = useState({ dots: _sectionDots, clickedSectionId: null })
 
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
 
     if (!wasANavDotElementClicked && (windowWidth <= 767)) {
       setSectionDots(sectionDots => {
-        if (sectionDots?.length) {
-          return sectionDots.map(sectionDot => {
+
+        return {
+          ...sectionDots,
+          dots: sectionDots?.dots.map(sectionDot => {
             return {
               ...sectionDot,
               willShowTitle: false,
             };
-          })
-        }
-
-        return sectionDots;
+          })        }
       })
     }
   }
@@ -157,6 +156,21 @@ const LessonDetails = ({ lesson, availLocs }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
 
+  const [wasASectionDotClicked, setWasASectionDotClicked] = useState(false)
+  const [targetSectionId, setTargetSectionId] = useState("")
+  const [willCheckIfSectionIsInView, setWillCheckIfSectionIsInView] = useState(false)
+
+  // GOAL: when the user clicks on a nav dot, create a side effect that is executed whenever sectionDots changes 
+
+  const [wasRendered, setWasRendered] = useState(false);
+
+  useEffect(() => {
+    if(!wasRendered){
+      setWasRendered(true)
+    } else {
+      console.log("sectionDots: ", sectionDots)
+    }    
+  }, [sectionDots])
 
   useEffect(() => {
     // console log when the parent element is in view
@@ -216,9 +230,19 @@ const LessonDetails = ({ lesson, availLocs }) => {
         // console.log('targetSectionElement: ', targetSectionElement.style.backgroundColor)
         // setRerenderComp(!rerenderComp)
         setSectionDots(sectionDots => {
-          console.log('sectionDots: ', sectionDots)
-          return sectionDots.map(sectionDot => {
-            if (sectionDot.sectionDotId === 'sectionDot-lessonTitleId') {
+          console.log('sectionDots on title: ', sectionDots)
+          setWasASectionDotClicked(true)
+          // !sectionDots.clickedSectionId && setWillCheckIfSectionIsInView(true)
+          const _dots = sectionDots.dots.map(sectionDot => {
+            if (sectionDots?.clickedSectionId === sectionDot.sectionDotId) {
+              return {
+                ...sectionDot,
+                isInView: true,
+              }
+            }
+
+
+            if (!sectionDots?.clickedSectionId && (sectionDot.sectionDotId === 'sectionDot-lessonTitleId')) {
               return {
                 ...sectionDot,
                 isInView: true,
@@ -230,9 +254,15 @@ const LessonDetails = ({ lesson, availLocs }) => {
               isInView: false,
             }
           })
+
+          return {
+            ...sectionDots,
+            dots: _dots
+          }
         })
-        // document.getElementById('lessonTitleId').style.color = '#2c83c3'
-        // change all other styles to grey
+        setSectionDots(sectionDots => {
+          return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
+        })
 
         return
       }
@@ -240,12 +270,21 @@ const LessonDetails = ({ lesson, availLocs }) => {
       console.log("inViewPercentagesSections: ", inViewPercentagesSections)
 
       if (inViewPercentagesSections.length === 1) {
-        const dotOfSecionInView = sectionDots.find(sectionDot => sectionDot.SectionTitle === inViewPercentagesSections[0].SectionTitle)
-        console.log('dotOfSecionInView: ', dotOfSecionInView)
+        setWasASectionDotClicked(true)
+        const dotOfSecionInView = sectionDots.dots.find(sectionDot => sectionDot.SectionTitle === inViewPercentagesSections[0].SectionTitle)
         setSectionDots(sectionDots => {
-          console.log('sectionDots: ', sectionDots)
-          return sectionDots.map(sectionDot => {
-            if (sectionDot.SectionTitle === dotOfSecionInView.SectionTitle) {
+          console.log('sectionDots, only one section is in view: ', sectionDots)
+          const _dots = sectionDots.dots.map(sectionDot => {
+            
+            if (`sectionDot-${sectionDots?.clickedSectionId}` === sectionDot.sectionDotId) {
+              setWasASectionDotClicked(true)
+              return {
+                ...sectionDot,
+                isInView: true,
+              }
+            }
+
+            if ((sectionDot.sectionDotId === dotOfSecionInView.sectionDotId) && !sectionDots?.clickedSectionId) {
               return {
                 ...sectionDot,
                 isInView: true,
@@ -257,6 +296,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
               isInView: false,
             }
           })
+
+          return {
+            ...sectionDots,
+            dots: _dots
+          }
+        })
+        setSectionDots(sectionDots => {
+          return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
         })
         return
       }
@@ -282,12 +329,25 @@ const LessonDetails = ({ lesson, availLocs }) => {
       // get the section that is taking up most of the view
       const secTakingUpMostOfView = inViewPercentagesSections.reduce((secTakingUpMostOfView, currentSec) => currentSec.percentageInView > secTakingUpMostOfView.percentageInView ? currentSec : secTakingUpMostOfView);
       console.log('secTakingUpMostOfView: ', secTakingUpMostOfView)
-      const dotOfSecionInView = sectionDots.find(sectionDot => sectionDot.SectionTitle === secTakingUpMostOfView.SectionTitle)
-      console.log("dotOfSecionInView: ", dotOfSecionInView)
+      const dotOfSecionInView = sectionDots.dots.find(sectionDot => sectionDot.SectionTitle === secTakingUpMostOfView.SectionTitle)
+      // console.log("dotOfSecionInView: ", dotOfSecionInView)
+      setWasASectionDotClicked(true)
       setSectionDots(sectionDots => {
-        console.log('sectionDots: ', sectionDots)
-        return sectionDots.map(sectionDot => {
-          if (sectionDot.sectionDotId === dotOfSecionInView.sectionDotId) {
+        console.log('sectionDots, more than two sections are in view: ', sectionDots)
+        const _dots = sectionDots.dots.map(sectionDot => {
+          console.log("sectionDots?.clickedSectionId: ", sectionDots?.clickedSectionId)
+          console.log("sectionDot.sectionDotId: ", sectionDot.sectionDotId)
+          console.log("sectionDots?.clickedSectionId === sectionDot.sectionDotId: " , sectionDots?.clickedSectionId === sectionDot.sectionDotId)
+          if(`sectionDot-${sectionDots?.clickedSectionId}` === sectionDot.sectionDotId) {
+            return {
+              ...sectionDot,
+              isInView: true,
+            }
+          }
+          
+
+
+          if (!sectionDots?.clickedSectionId && (sectionDot.sectionDotId === dotOfSecionInView.sectionDotId)) {
             return {
               ...sectionDot,
               isInView: true,
@@ -299,13 +359,36 @@ const LessonDetails = ({ lesson, availLocs }) => {
             isInView: false,
           }
         })
+
+        return {
+          ...sectionDots,
+          dots: _dots
+        }
       })
+
+      // setSectionDots(sectionDots => {
+      //   return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
+      // })
     })
   }, [])
 
   useEffect(() => {
-    console.log('sectionDots: ', sectionDots)
-  }) 
+    if(willCheckIfSectionIsInView){
+      console.log('sectionDots is in view: ', sectionDots)
+    }
+  }, [willCheckIfSectionIsInView])
+
+  useEffect(() => {
+    console.log("targetSectionId: ", targetSectionId)
+    console.log("wasASectionDotClicked: ", wasASectionDotClicked)
+    if(wasASectionDotClicked){
+      console.log("A DOT WAS CLICKED")
+      console.log("targetSectionId: ", targetSectionId)
+      // setSectionDots(sectionDots => ({ ...sectionDots, clickedSectionId: null }))
+      console.log('sectionDots: ', sectionDots)
+      setWasASectionDotClicked(false)
+    }
+  }, [wasASectionDotClicked])
 
   // useEffect(() => {
   //   if (inView) {
@@ -335,7 +418,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   return (
     <Layout>
-      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} />
+      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setTargetSectionId={setTargetSectionId} />
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="container d-flex justify-content-center pt-4 pb-4">
         <div className="col-11 col-md-10">

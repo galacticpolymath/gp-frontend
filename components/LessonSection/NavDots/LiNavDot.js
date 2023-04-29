@@ -37,13 +37,21 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                     key={index}
                     style={{ height: "33px" }}
                     role='button'
-                    onClick={_ => goToSection(sectionId)}
+                    onClick={_ => {
+                        console.log("sectionId that the user will go to: ", sectionId)
+                        goToSection(sectionId)
+                    }}
                     className='d-flex flex-inline justify-content-center align-items-center position-relative sectionNavDotLi'
                 >
                     <i
                         onMouseOver={handleMouseOverIcon}
                         onMouseLeave={handleMouseLeaveIcon}
                         style={iconStyles}
+                        onClick={_ => {
+                            console.log("sectionId that the user will go to, i icon clicked: ", sectionId)
+                            debugger
+                            goToSection(sectionId)
+                        }}
                         className='sectionNavDot'
                         id={sectionDotId}
                     />
