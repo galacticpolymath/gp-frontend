@@ -388,11 +388,11 @@ const LessonDetails = ({ lesson, availLocs }) => {
     if (willResetSectionDots) {
       console.log('will reset section dots')
       // let timer = 
-      setTimeout(() => {
-        setSectionDots(sectionDots => {
-          return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
-        })
-      }, 1000)
+      // setTimeout(() => {
+      //   setSectionDots(sectionDots => {
+      //     return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
+      //   })
+      // }, 1000)
       setWillResetSectionDots(false)
 
       // return () => {
