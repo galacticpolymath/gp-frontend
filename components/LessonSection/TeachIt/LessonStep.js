@@ -15,24 +15,35 @@ const LessonStep = ({
 }) => {
 
   return (
-    // Mobile
+    // Desktop Step Header
     <div className='mt-4 ms-sm-1 d-grid  align-items-center'>
       <div className='d-none d-sm-flex align-items-center gap-2 fs-5 mb-3'>
         <div className="badge bg-primary">{Step}</div>
-        <h6 className='m-1 fs-5'>{StepTitle}</h6>
+        <h4 className='m-1'>
+          <RichText content={StepTitle} />
+        </h4>
       </div>
-      {/* All else */}
-      <div className='d-flex d-sm-none gap-2 fs-5 mb-3 ml-2 w-100'>
+      {/* Mobile Step Header*/}
+      <div className='d-flex d-sm-none gap-2 fs-5 mb-1 ml-2 w-100'>
         <div
-          style={{ width: "31px", height: '29px' }} 
+          style={{ width: "31px", height: '29px' }}
           className="badge bg-primary d-flex justify-content-left align-items-center"
         >{Step}
         </div>
-        <h6 className='m-0 fs-5'>{StepTitle}</h6>
+        <h4 className='m-0 '>
+          <RichText content={StepTitle} />
+        </h4>
       </div>
+      {/* Same Step Detail formatting */}
       <div className='ms-xs-0 ms-sm-4 ps-xs-0 ps-sm-3 pe-1'>
-        <RichText content={StepQuickDescription} />
-        <RichText content={StepDetails} />
+        <div className='lead mb-2 ps-0'>
+          <RichText content={StepQuickDescription} />
+        </div>
+        {/* Partial border */}
+        <div className='d-block w-90 border-bottom'></div>
+        <div className='p-2 ps-0 mb-3 mt-2'>
+          <RichText content={StepDetails} />
+        </div>
         {Vocab && (
           <div className="bg-white vocab p-3 pb-1 mb-4 ms-xs-sm-0 ms-sm-4 border border-gray shadow-sm rounded">
             <h6>Vocab</h6>

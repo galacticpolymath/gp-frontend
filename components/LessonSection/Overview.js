@@ -47,7 +47,7 @@ const Overview = ({
               />
               <h5 className="d-inline-flex">The Gist:</h5>
               <div>
-                {LearningSummary}
+                <RichText content={LearningSummary} />
               </div>
             </div>
           )}
