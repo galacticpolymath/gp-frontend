@@ -187,38 +187,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const [willResetSectionDots, setWillResetSectionDots] = useState(false)
 
   useEffect(() => {
-    // console log when the parent element is in view
-    // const parentElement = document.getElementById(parentId);
-    // const sections = _sections.map(sectionDot => ({ ...sectionDot, sectionId: `${sectionDot.defaultSectionTitle}-parent`  })) 
-    // console.log('sections: ', sections)
-    // console.log("sectionDots: ", sectionDots)
-    console.log("_sections: ", _sections)
-    console.log("_sectionDots: ", _sectionDots)
-    // GOAL: insert the sectionDotId for each section
-    // for each iteration, using the sectiontitle, get its corresponding sectoinDotID from the _sectionDots array 
-    const __sections = _sections.map(section => {
-      const _sectionDotTarget = _sectionDots.find(({ SectionTitle }) => SectionTitle === section.SectionTitle)
-      return {
-        ...section,
-        sectionDotId: _sectionDotTarget.sectionDotId,
-      }
-    })
-
-    console.log("__sections: ", __sections)
-
-    // WHEN A SECTION IS IN VIEW, get its corresponding dot id and change it to blue
-
-    // when a section is in view, change its corresponding dot to blue 
-
-    // what do we have: 
-    // _sections being mapped onto the dom 
-    // the ids of the sections is SectionTitle-parent
-    // _sectionDots are being mapped for the dots in the nav 
-    // when a section is in the view, get its sectionDot id and get its corresponding dot and change it to blue 
-
     document.addEventListener('scroll', () => {
       let inViewPercentagesSections = _sections.map((sectionDot, index) => {
-        console.log('sectionDot.SectionTitle: ', sectionDot.SectionTitle)
         const section = document.getElementById(`${sectionDot.SectionTitle}-parent-${index + 1}`)
 
         return {
@@ -226,27 +196,13 @@ const LessonDetails = ({ lesson, availLocs }) => {
           percentageInView: getPercentageSeen(section),
         }
       })
-      console.log('inViewPercentagesSections before filter: ', inViewPercentagesSections)
-      console.log('sectionDots: ', sectionDots)
+      
+
       inViewPercentagesSections = inViewPercentagesSections.filter(section => ((section.percentageInView > 0) && (section.percentageInView < 100)))
-      // print the inViewPercentagesSections after the filter
-      console.log('inViewPercentagesSections after filter: ', inViewPercentagesSections)
+
       if (inViewPercentagesSections.length === 0) {
-        // console.log('no sections in view')
-        // sectionDots.forEach(sectionDot => {
-        //   // if (sectionDot.sectionDotId === 'lessonTitleId') {
-        //   // return;
-        //   // }
-        //   document.getElementById(sectionDot.sectionDotId).style.backgroundColor = ('sectionDot-3._teaching_materials' === sectionDot.sectionDotId) ? '#cb1f8e' : 'rgba(0,0,0,.1)'
-        // })
-        // const targetSectionElement = document.getElementById('lessonTitleId')
-        // console.log('targetSectionElement: ', targetSectionElement)
-        // targetSectionElement.style.backgroundColor = 'rgba(44, 131, 195, 0.6)'
-        // console.log('targetSectionElement: ', targetSectionElement.style.backgroundColor)
-        // setRerenderComp(!rerenderComp)
         setSectionDots(sectionDots => {
           setWasASectionDotClicked(true)
-          // !sectionDots.clickedSectionId && setWillCheckIfSectionIsInView(true)
           const _dots = sectionDots.dots.map((sectionDot, index) => {
             if(index === 0){
               return {
@@ -268,9 +224,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
         })
 
         setWillResetSectionDots(true);
-        // setSectionDots(sectionDots => {
-        //   return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
-        // })
         return
       }
 
@@ -309,35 +262,12 @@ const LessonDetails = ({ lesson, availLocs }) => {
           }
         })
         setWillResetSectionDots(true);
-        // setSectionDots(sectionDots => {
-        //   return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
-        // })
         return
       }
 
-      // given the last index of the sectionsInView, if it is smallest of the percentages, then it is the section in view. Change the dot to blue. Else, change the dots to grey
-      // else, get the section with the greatest percentage and change it to blue 
-
-      // const secBarelyInView = inViewPercentagesSections.reduce((secBarelyInView, currentSec) => currentSec.percentageInView < secBarelyInView.num ? currentSec : secBarelyInView);
-      // console.log('secBarelyInView: ', secBarelyInView)
-      // if(secBarelyInView.SectionTitle === inViewPercentagesSections[inViewPercentagesSections.length - 1].SectionTitle){
-      //   const dotOfSecionInView = sectionDots.find(sectionDot => sectionDot.SectionTitle === secBarelyInView.SectionTitle)
-      //   console.log('dotOfSecionInView: ', dotOfSecionInView)
-      //   sectionDots.forEach(sectionDot => {
-      //     if (sectionDot.SectionTitle === dotOfSecionInView.SectionTitle) {
-      //       document.getElementById(sectionDot.sectionDotId).style.backgroundColor = 'rgba(44, 131, 195, 0.6)'
-      //       return;
-      //     }
-      //     document.getElementById(sectionDot.sectionDotId).style.backgroundColor = ('sectionDot-3._teaching_materials' === sectionDot.sectionDotId) ? '#cb1f8e' : 'rgba(0,0,0,.1)'
-      //   })
-      //   return
-      // }
-
-      // get the section that is taking up most of the view
       const secTakingUpMostOfView = inViewPercentagesSections.reduce((secTakingUpMostOfView, currentSec) => currentSec.percentageInView > secTakingUpMostOfView.percentageInView ? currentSec : secTakingUpMostOfView);
       console.log('secTakingUpMostOfView: ', secTakingUpMostOfView)
       const dotOfSecionInView = sectionDots.dots.find(sectionDot => sectionDot.SectionTitle === secTakingUpMostOfView.SectionTitle)
-      // console.log("dotOfSecionInView: ", dotOfSecionInView)
       setWasASectionDotClicked(true)
       setSectionDots(sectionDots => {
         console.log('sectionDots, more than two sections are in view: ', sectionDots)
