@@ -30,7 +30,7 @@ const LessonStep = ({
           className="badge bg-primary d-flex justify-content-left align-items-center"
         >{Step}
         </div>
-        <h4 className='m-0 ' >
+        <h4 className='m-0 '>
           <RichText content={StepTitle} />
         </h4>
       </div>
@@ -40,7 +40,7 @@ const LessonStep = ({
           <RichText content={StepQuickDescription} />
         </div>
         {/* Partial border */}
-        <div className='d-block w-90 border-bottom' ></div>
+        <div className='d-block w-90 border-bottom'></div>
         <div className='p-2 ps-0 mb-3 mt-2'>
           <RichText content={StepDetails} />
         </div>

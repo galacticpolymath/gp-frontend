@@ -24,7 +24,7 @@ const LessonPart = ({
       button={(
         <div className='p-2'>
           <h3 className='fs-6 fw-semibold'>{isOnLastPart ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
-          <div><RichText content={partPreface}/></div>
+          <div><RichText content={partPreface} /></div>
         </div>
       )}
     >
@@ -32,9 +32,13 @@ const LessonPart = ({
         <ol className='mt-3'>
           {linkResources.map(item => (
             <li key={item.itemTitle} className='mb-0'>
-              <strong ><RichText content={item.itemTitle} /></strong>
+              <strong><RichText content={item.itemTitle} /></strong>
               <div className='fst-italic mb-2' style={{ color:'#353637' }}>
-                <RichText content={item.itemDescription} className='mb-n5' css={{color: 'red'}}/>
+                <RichText
+                  content={item.itemDescription}
+                  className='mb-n5'
+                  css={{ color: 'red' }}
+                />
               </div>
               <ul>
                 {/* TODO: DATA: always want an array */}
