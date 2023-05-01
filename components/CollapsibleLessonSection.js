@@ -25,10 +25,10 @@ const CollapsibleLessonSection = ({
     <Accordion
       initiallyExpanded={initiallyExpanded}
       id={(accordionId || SectionTitle).replace(/[\s!]/gi, '_').toLowerCase()}
-      className={`${className} collapsibleLessonSection`}
+      className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} ${className} collapsibleLessonSection`}
       buttonClassName="btn btn-primary-light w-100 text-left"
       button={(
-        <div className='container position-relative mx-auto text-black d-flex justify-content-between align-items-center py-1'>
+        <div className={`SectionHeading bg-danger ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} container position-relative mx-auto text-black d-flex justify-content-between align-items-center py-1`}>
           <h2
             ref={ref}
             className='m-0'

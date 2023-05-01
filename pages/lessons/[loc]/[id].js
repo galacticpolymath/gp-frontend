@@ -20,6 +20,7 @@ import { useWindowWidth } from '@react-hook/window-size'
 import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
+import useScrollHandler from '../../../customHooks/useScrollHandler';
 
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
@@ -152,9 +153,9 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   useEffect(() => {
     if (willGoToTargetSection) {
-        console.log('sectionDots, will go to target section: ', sectionDots)
-        scrollSectionIntoView(sectionDots.clickedSectionId)
-        setWillGoToTargetSection(false)
+      console.log('sectionDots, will go to target section: ', sectionDots)
+      scrollSectionIntoView(sectionDots.clickedSectionId)
+      setWillGoToTargetSection(false)
     }
   }, [willGoToTargetSection])
 
@@ -183,141 +184,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
 
-  const [wasASectionDotClicked, setWasASectionDotClicked] = useState(false);
-  const [willResetSectionDots, setWillResetSectionDots] = useState(false)
+  const [rerenderComp, setRenderComp] = useState(false)
 
-  useEffect(() => {
-    document.addEventListener('scroll', () => {
-      let inViewPercentagesSections = _sections.map((sectionDot, index) => {
-        const section = document.getElementById(`${sectionDot.SectionTitle}-parent-${index + 1}`)
+  const forceRenderComp = () => {
+    setRenderComp(toggleRender => !toggleRender)
+  }
 
-        return {
-          ...sectionDot,
-          percentageInView: getPercentageSeen(section),
-        }
-      })
-      
+  useScrollHandler(forceRenderComp)
 
-      inViewPercentagesSections = inViewPercentagesSections.filter(section => ((section.percentageInView > 0) && (section.percentageInView < 100)))
-
-      if (inViewPercentagesSections.length === 0) {
-        setSectionDots(sectionDots => {
-          setWasASectionDotClicked(true)
-          const _dots = sectionDots.dots.map((sectionDot, index) => {
-            if(index === 0){
-              return {
-                ...sectionDot,
-                isInView: true,
-              }
-            }
-
-            return {
-              ...sectionDot,
-              isInView: false,
-            }
-          })
-
-          return {
-            ...sectionDots,
-            dots: _dots
-          }
-        })
-
-        setWillResetSectionDots(true);
-        return
-      }
-
-      console.log("inViewPercentagesSections: ", inViewPercentagesSections)
-
-      if (inViewPercentagesSections.length === 1) {
-        setWasASectionDotClicked(true)
-        const dotOfSecionInView = sectionDots.dots.find(sectionDot => sectionDot.SectionTitle === inViewPercentagesSections[0].SectionTitle)
-        setSectionDots(sectionDots => {
-          const _dots = sectionDots.dots.map(sectionDot => {
-
-            if (`sectionDot-${sectionDots?.clickedSectionId}` === sectionDot.sectionDotId) {
-              setWasASectionDotClicked(true)
-              return {
-                ...sectionDot,
-                isInView: true,
-              }
-            }
-
-            if ((sectionDot.sectionDotId === dotOfSecionInView.sectionDotId) && !sectionDots?.clickedSectionId) {
-              return {
-                ...sectionDot,
-                isInView: true,
-              }
-            }
-
-            return {
-              ...sectionDot,
-              isInView: false,
-            }
-          })
-
-          return {
-            ...sectionDots,
-            dots: _dots
-          }
-        })
-        setWillResetSectionDots(true);
-        return
-      }
-
-      const secTakingUpMostOfView = inViewPercentagesSections.reduce((secTakingUpMostOfView, currentSec) => currentSec.percentageInView > secTakingUpMostOfView.percentageInView ? currentSec : secTakingUpMostOfView);
-      console.log('secTakingUpMostOfView: ', secTakingUpMostOfView)
-      const dotOfSecionInView = sectionDots.dots.find(sectionDot => sectionDot.SectionTitle === secTakingUpMostOfView.SectionTitle)
-      setWasASectionDotClicked(true)
-      setSectionDots(sectionDots => {
-        console.log('sectionDots, more than two sections are in view: ', sectionDots)
-        const _dots = sectionDots.dots.map(sectionDot => {
-          if (`sectionDot-${sectionDots?.clickedSectionId}` === sectionDot.sectionDotId) {
-            return {
-              ...sectionDot,
-              isInView: true,
-            }
-          }
-
-
-
-          if (!sectionDots?.clickedSectionId && (sectionDot.sectionDotId === dotOfSecionInView.sectionDotId)) {
-            return {
-              ...sectionDot,
-              isInView: true,
-            }
-          }
-
-          return {
-            ...sectionDot,
-            isInView: false,
-          }
-        })
-
-        return {
-          ...sectionDots,
-          dots: _dots
-        }
-      })
-    })
-  }, [])
-
-  useEffect(() => {
-    if (willResetSectionDots) {
-      console.log('will reset section dots')
-      // let timer = 
-      setTimeout(() => {
-        setSectionDots(sectionDots => {
-          return sectionDots.clickedSectionId ? { ...sectionDots, clickedSectionId: null } : sectionDots
-        })
-      }, 1000)
-      setWillResetSectionDots(false)
-
-      // return () => {
-      //   clearTimeout(timer)
-      // }
-    }
-  }, [willResetSectionDots])
 
 
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
@@ -326,58 +200,58 @@ const LessonDetails = ({ lesson, availLocs }) => {
     <Layout>
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} />
       <ShareWidget {...shareWidgetFixedProps} />
-      <div className="container d-flex justify-content-center pt-4 pb-4">
-        <div className="col-11 col-md-10">
-          <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
-            {lastSubRelease && (
-              <p>
-                Version {lastSubRelease.version}{' '}
-                (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-              </p>
-            )}
-            <LocDropdown
-              availLocs={availLocs}
-              loc={lesson.locale}
-              id={lesson.id}
-            />
-          </div>
-          <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
-          <h4 className='fw-light'>{lesson.Subtitle}</h4>
-          {(lesson.CoverImage && lesson.CoverImage.url) && (
-            <div className='w-100 position-relative mt-2 mb-2'>
-              <Image
-                src={lesson.CoverImage.url}
-                alt={lesson.Subtitle}
-                width={1500}
-                height={450}
-                priority
-                style={{ width: "100%", height: "auto", objectFit: 'contain' }}
+      <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
+        <div id="lessonTitleSecId" className="SectionHeading lessonTitleId">
+          <div className="col-11 col-md-10">
+            <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
+              {lastSubRelease && (
+                <p>
+                  Version {lastSubRelease.version}{' '}
+                  (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
+                </p>
+              )}
+              <LocDropdown
+                availLocs={availLocs}
+                loc={lesson.locale}
+                id={lesson.id}
               />
             </div>
-          )}
-          <div className='d-flex d-md-none'>
-            <label className='d-flex justify-content-center align-items-center'>Share: </label>
-            {isOnProduction ? <ShareWidget pinterestMedia={lesson.CoverImage.url} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lesson.CoverImage.url} />}
-          </div>
-          <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
-            <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
-              <h5>Sponsored by:</h5>
-              <RichText content={lesson.SponsoredBy} />
+            <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
+            <h4 className='fw-light'>{lesson.Subtitle}</h4>
+            {(lesson.CoverImage && lesson.CoverImage.url) && (
+              <div className='w-100 position-relative mt-2 mb-2'>
+                <Image
+                  src={lesson.CoverImage.url}
+                  alt={lesson.Subtitle}
+                  width={1500}
+                  height={450}
+                  priority
+                  style={{ width: "100%", height: "auto", objectFit: 'contain' }}
+                />
+              </div>
+            )}
+            <div className='d-flex d-md-none'>
+              <label className='d-flex justify-content-center align-items-center'>Share: </label>
+              {isOnProduction ? <ShareWidget pinterestMedia={lesson.CoverImage.url} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lesson.CoverImage.url} />}
             </div>
-            <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid  ">
-
-              {lesson.SponsorImage && lesson.SponsorImage.url && (
-                <div className='position-relative'>
-                  <Image
-                    src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
-                    alt={lesson.Subtitle}
-                    width={80}
-                    height={80}
-                    style={{ width: "100%", height: 'auto', objectFit: 'contain' }}
-                  />
-                </div>
-              )}
-
+            <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
+              <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
+                <h5>Sponsored by:</h5>
+                <RichText content={lesson.SponsoredBy} />
+              </div>
+              <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
+                {lesson.SponsorImage && lesson.SponsorImage.url && (
+                  <div className='position-relative'>
+                    <Image
+                      src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
+                      alt={lesson.Subtitle}
+                      width={80}
+                      height={80}
+                      style={{ width: "100%", height: 'auto', objectFit: 'contain' }}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -72,7 +72,7 @@ const LessonSection = ({ index, section, _sectionDots }) => {
   const parentId = `${section.SectionTitle}-parent-${index}`
 
   return Component ? (
-    <div id={parentId}>
+    <div id={parentId}  className={`SectionHeading ${section.SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()}`}>
       <Component index={index} {..._section} />
     </div>
   ) : (
