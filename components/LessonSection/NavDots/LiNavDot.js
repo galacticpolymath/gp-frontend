@@ -18,9 +18,9 @@ import { useEffect } from "react";
 const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
     const { isInView, sectionId, sectionTitleForDot: title, willShowTitle, sectionDotId } = section;
 
-    useEffect(() => {
-        console.log('sectionDotId: ', sectionDotId)
-    })
+    // useEffect(() => {
+    //     console.log('sectionDotId: ', sectionDotId)
+    // })
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
     const { goToSection, handleDotClick } = fns;
     const backgroundColor = isInView ? (sectionId === '3._teaching_materials') ? '#FEEAF8' : '#d5e6f3' : 'white'
@@ -51,7 +51,7 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                     <i
                         onMouseOver={handleMouseOverIcon}
                         onMouseLeave={handleMouseLeaveIcon}
-                        // style={iconStyles}
+                        style={iconStyles}
                         // style={{
                         //     backgroundColor: 'rgba(0,0,0,.1)', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid', borderColor: '#bebebe', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color",
                         // }}
@@ -83,10 +83,10 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                     <i
                         onClick={_ => handleDotClick(sectionId, true)}
                         className='sectionNavDot'
-                        // style={iconStyles}
-                        style={{
-                            backgroundColor: 'rgba(0,0,0,.1)', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid', borderColor: '#bebebe', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color",
-                        }}
+                        style={iconStyles}
+                        // style={{
+                        //     backgroundColor: 'rgba(0,0,0,.1)', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid', borderColor: '#bebebe', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color",
+                        // }}
                         // style={{ backgroundColor: 'rgba(0,0,0,.1)', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid', borderColor: '#bebebe', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color",}}
                         id={sectionDotId} 
                     />

@@ -17,7 +17,7 @@ import LiNavDot from "./NavDots/LiNavDot";
 import { useState } from "react";
 import { useEffect } from "react";
 
-const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection }) => {
+const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrollListenerOn }) => {
     const [sectionDots, setSectionDots] = _sectionDots;
     const router = useRouter();
 
@@ -89,10 +89,14 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection }) => {
         setWillGoToTargetSection(true)
     }
 
+    
+
     const goToSection = sectionId => {
         console.log("target section that was clicked, id: ", sectionId)
-        setSectionDots(sectionDots => ({ ...sectionDots, clickedSectionId: sectionId }))
-        setWillGoToTargetSection(true)
+        setIsScrollListenerOn(false)
+        // setSectionDots(sectionDots => ({ ...sectionDots, clickedSectionId: sectionId }))
+        // setWillGoToTargetSection(true)
+        // scrollSectionIntoView(sectionId)
     }
 
     

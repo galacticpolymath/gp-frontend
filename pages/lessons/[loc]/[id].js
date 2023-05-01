@@ -100,7 +100,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   });
 
-  console.log('_sections: ', _sections)
+  // console.log('_sections: ', _sections)
 
   const getSectionDotsDefaultVal = () => {
     const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
@@ -190,7 +190,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
     setRenderComp(toggleRender => !toggleRender)
   }
 
-  useScrollHandler(forceRenderComp)
+  const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
 
 
 
@@ -198,7 +198,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   return (
     <Layout>
-      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} />
+      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} setIsScrollListenerOn={setIsScrollListenerOn} />
       <ShareWidget {...shareWidgetFixedProps} />
       <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
         <div id="lessonTitleSecId" className="SectionHeading lessonTitleId">
