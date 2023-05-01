@@ -83,26 +83,31 @@ const useScrollHandler = rerenderComp => {
             document.querySelectorAll(".SectionHeading")
         );
 
-        console.log("scrollElems: ", scrollElems)
-
         let viewPortPercentOfElems = scrollElems.map(elem => {
             let liNavDotId;
-            elem.classList.forEach(elem => { liNavDotId = elem })
+
+            if (elem.classList[elem.classList.length - 1] === 'lessonTitleId') {
+                liNavDotId = 'lessonTitleId'
+            }
+
+            for(let index = 0; index < elem.classList.length; index++){
+                const className = elem.classList[index];
+                if(/\d+\./.test(className)){
+                    liNavDotId = className
+                    break
+                }
+            }
+
+            // liNavDotId = elem.classList.find(className => /\d+\./.test(className))
+            
             const percent = getPercentageSeen(elem);
             const _percentageInViewPort = (percent === 100) || (percent === 0) ? 0 : percent
             return { percentageInViewPort: _percentageInViewPort, elemId: elem.id, sectionDotId: `sectionDot-${liNavDotId}` }
         })
 
-
-
-        // console.log("viewPortPercentOfElems: ", viewPortPercentOfElems)
-        // debugger
-        const navDotElemIds = new Set(viewPortPercentOfElems.map(({ sectionDotId }) => sectionDotId))
-        console.log('navDotElemIds: ', navDotElemIds)
-        // make the above into a set
-        
-        // viewPortPercentOfElems.splice(viewPortPercentOfElems.findIndex(elem => !(/\d+\./.test(elem.sectionDotId))), 1)
         viewPortPercentOfElems = viewPortPercentOfElems.filter(({ percentageInViewPort }) => ((percentageInViewPort > 0) && (percentageInViewPort < 100)))
+        viewPortPercentOfElems = viewPortPercentOfElems.filter(({ elemId }) => elemId)
+                
 
 
 
@@ -147,8 +152,10 @@ const useScrollHandler = rerenderComp => {
                 return acc;
             }
         });
+        const navDotElemIds = new Set(viewPortPercentOfElems.map(({ sectionDotId }) => sectionDotId).filter(sectionDotId => sectionDotId !== sectionInView.sectionDotId))
+
+        
         // const sectionInView = viewPortPercentOfElems.find(({ percentageInViewPort }) => percentageInViewPort === percentOfSectionInView)
-        // console.log('sectionInView: ', sectionInView)
         if (sectionInView?.sectionDotId) {
             // targetElem.classList.add('active-dot')
             // GOAL: update all of the class names for all of the nav dot elements
@@ -159,21 +166,38 @@ const useScrollHandler = rerenderComp => {
             // loop through all of the classNames of all of the navDots 
             // navDotElemIds.forEach(navDotId => {
             //     const targetElem = document.getElementById(navDotId)
-
+                
             //     if(navDotId === sectionInView.sectionDotId){
             //         targetElem.classList.add('active-dot')   
-            //         console.log('targetElem.classList: ', targetElem.classList)                 
+            //         console.log('targetElem.classList: ', targetElem.classList)
+            //         rerenderComp()                 
+            //         debugger
             //     }
 
             //     if(targetElem.classList.contains('active-dot')){
             //         targetElem.classList.remove('active-dot')
+            //         rerenderComp()
             //     }
-            //     debugger
             // })
             const targetElem = document.getElementById(sectionInView?.sectionDotId)
             targetElem.classList.add('active-dot')
-            rerenderComp()
         }
+
+        // ABLE TO REMOVE BLUE FOR DOTS THAT ARE NOT THE FIRST SECTION
+
+        // for all other elements, remove the active-dot class name
+        // filter out the sectionINView.sectionDotId from navDotElemIds
+        navDotElemIds.forEach(navDotId => {
+            const targetElem = document.getElementById(navDotId)
+            console.log("targetElem.classList.contains('active-dot'): ", targetElem.classList.contains('active-dot'))
+            if(targetElem.classList.contains('active-dot')){
+                console.log('removing active-dot class name')
+                targetElem.classList.remove('active-dot')
+            }
+        })
+        
+        rerenderComp()
+
 
 
         // console.log("viewPortPercentOfElems: ", viewPortPercentOfElems)
