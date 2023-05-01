@@ -7,13 +7,15 @@
 /* eslint-disable quotes */
 import LessonSection, { NUMBERED_SECTIONS } from './index';
 
-const ParentLessonSection = ({ section, index, _sectionDots, isAvailLocsMoreThan1 }) => {
+const ParentLessonSection = ({ section, index, _sectionDots, _wasDotClicked, setIsScrollListenerOn, _isScrollListenerOn }) => {
     return (
         <LessonSection
             index={index + 1}
             section={section}
             _sectionDots={_sectionDots}
-            isAvailLocsMoreThan1={isAvailLocsMoreThan1}
+            _wasDotClicked={_wasDotClicked}
+            setIsScrollListenerOn={setIsScrollListenerOn}
+            _isScrollListenerOn={_isScrollListenerOn}
         />
     );
 };

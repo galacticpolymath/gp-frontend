@@ -80,7 +80,8 @@ const useScrollHandler = setSectionDots => {
         // activateDot(index, elemIds);
     };
 
-    const scrollAction = function () {
+    const scrollAction = throttle(() => {
+        console.log('sup')
         const scrollElems = Array.prototype.slice.call(
             document.querySelectorAll(".SectionHeading")
         );
@@ -109,16 +110,15 @@ const useScrollHandler = setSectionDots => {
 
         viewPortPercentOfElems = viewPortPercentOfElems.filter(({ percentageInViewPort }) => ((percentageInViewPort > 0) && (percentageInViewPort < 100)))
         const elemsThatAreInView = viewPortPercentOfElems.filter(({ elemId }) => elemId)
+        const elemTakingUpMostOfViewport = elemsThatAreInView.reduce((prev, curr) => (prev.percentageInViewPort > curr.percentageInViewPort) ? prev : curr)
 
         setSectionDots(sectionDots => {
-            const { dots, clickedSectionId } = sectionDots;
-
+            debugger
             return {
                 ...sectionDots,
-                dots: dots.map(dot => {
-                    const elemThatIsInView = elemsThatAreInView.find(({ sectionDotId }) => sectionDotId === dot.sectionDotId)
-                    console.log('elemThatIsInView: ', elemThatIsInView)
-                    if(clickedSectionId && (dot.sectionDotId === `sectionDot-${clickedSectionId}`)) {
+                dots: sectionDots.dots.map(dot => {
+                    // GOAL: if there are multiple elems in view, then get the element that takes up the most space in the viewport
+                    if(dot.sectionDotId === elemTakingUpMostOfViewport.sectionDotId){
                         return {
                             ...dot,
                             isInView: true
@@ -141,16 +141,18 @@ const useScrollHandler = setSectionDots => {
             //   scrollDown(cursorBottom, elemOffsets, elemIds);
         }
         lastOffset = window.pageYOffset;
-    };
+    }, 100);
 
     const handleScroll = () => {
         console.log('scrolling')
-        throttle(() => scrollAction(), 100)
+        scrollAction()
+        // throttle(() => scrollAction(), 100)
     }
 
     // when the user clicks on the dot, remove the event listener
     useEffect(() => {
         // scrollAction()
+        console.log('state had changed: ', isScrollListenerOn)
         if(isScrollListenerOn){
             window.addEventListener("scroll", handleScroll);
             console.log('scroll listener was added.')

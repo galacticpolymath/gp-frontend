@@ -184,12 +184,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
 
-  const [rerenderComp, setRenderComp] = useState(false)
-
-  const forceRenderComp = () => {
-    setRenderComp(toggleRender => !toggleRender)
-  }
-
+  
+  const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
 
 
@@ -198,7 +194,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   return (
     <Layout>
-      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} setIsScrollListenerOn={setIsScrollListenerOn} />
+      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} setIsScrollListenerOn={setIsScrollListenerOn} isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked} />
       <ShareWidget {...shareWidgetFixedProps} />
       <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
         <div id="lessonTitleSecId" className="SectionHeading lessonTitleId">
@@ -264,7 +260,9 @@ const LessonDetails = ({ lesson, availLocs }) => {
               section={section}
               index={index}
               _sectionDots={[sectionDots, setSectionDots]}
-              isAvailLocsMoreThan1={(availLocs.length > 1)}
+              _wasDotClicked={[wasDotClicked, setWasDotClicked]}
+              _isScrollListenerOn={[isScrollListenerOn, setIsScrollListenerOn]}
+              // isAvailLocsMoreThan1={(availLocs.length > 1)}
             />
           ))}
         </div>

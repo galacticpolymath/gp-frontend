@@ -17,7 +17,7 @@ import LiNavDot from "./NavDots/LiNavDot";
 import { useState } from "react";
 import { useEffect } from "react";
 
-const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrollListenerOn }) => {
+const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrollListenerOn, isScrollListenerOn, setWasDotClicked }) => {
     const [sectionDots, setSectionDots] = _sectionDots;
     const router = useRouter();
 
@@ -89,17 +89,40 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
         setWillGoToTargetSection(true)
     }
 
+    const [willScrollElemIntoView, setWillScrollElemIntoView] = useState(false);
+    let timer;
     
-
     const goToSection = sectionId => {
-        console.log("target section that was clicked, id: ", sectionId)
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+            setIsScrollListenerOn(true)
+        }, 1000)
         setIsScrollListenerOn(false)
-        // setSectionDots(sectionDots => ({ ...sectionDots, clickedSectionId: sectionId }))
-        // setWillGoToTargetSection(true)
-        // scrollSectionIntoView(sectionId)
+        setWillScrollElemIntoView(true);
+        setSectionDots(sectionDots => ({ 
+            clickedSectionId: sectionId, 
+            dots: sectionDots.dots.map(dot => {
+                if(dot.sectionDotId === `sectionDot-${sectionId}`) {
+                    return {
+                        ...dot,
+                        isInView: true
+                    }
+                }
+
+                return {
+                    ...dot,
+                    isInView: false
+                }
+            })  
+        }))
     }
 
-    
+    useEffect(() => {
+        if(willScrollElemIntoView && !isScrollListenerOn){
+            scrollSectionIntoView(sectionDots.clickedSectionId)
+            setWillScrollElemIntoView(false)
+        }
+    }, [willScrollElemIntoView, isScrollListenerOn])
 
     const liNavDotFns = { goToSection, handleDotClick, setSectionDots }
 
