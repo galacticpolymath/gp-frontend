@@ -71,17 +71,14 @@ const useScrollHandler = setSectionDots => {
 
 
     const scrollUp = function (cursorTop, elemOffsets, elemIds) {
-        // when you're scrolling up you want the nearest previous top.... find index - 1
         const removeBelow = elemOffsets.filter(function (x) {
             return x < cursorTop + window.innerHeight / 4;
         });
         const index = removeBelow.length > 0 ? removeBelow.length - 1 : 0;
 
-        // activateDot(index, elemIds);
     };
 
     const scrollAction = throttle(() => {
-        console.log('sup')
         const scrollElems = Array.prototype.slice.call(
             document.querySelectorAll(".SectionHeading")
         );
@@ -101,7 +98,6 @@ const useScrollHandler = setSectionDots => {
                 }
             }
 
-            // liNavDotId = elem.classList.find(className => /\d+\./.test(className))
 
             const percent = getPercentageSeen(elem);
             const _percentageInViewPort = (percent === 100) || (percent === 0) ? 0 : percent
@@ -113,11 +109,9 @@ const useScrollHandler = setSectionDots => {
         const elemTakingUpMostOfViewport = elemsThatAreInView.reduce((prev, curr) => (prev.percentageInViewPort > curr.percentageInViewPort) ? prev : curr)
 
         setSectionDots(sectionDots => {
-            debugger
             return {
                 ...sectionDots,
                 dots: sectionDots.dots.map(dot => {
-                    // GOAL: if there are multiple elems in view, then get the element that takes up the most space in the viewport
                     if(dot.sectionDotId === elemTakingUpMostOfViewport.sectionDotId){
                         return {
                             ...dot,

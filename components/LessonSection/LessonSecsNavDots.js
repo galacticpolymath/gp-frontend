@@ -71,11 +71,37 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
         }
     }, [targetSec])
 
+    const [willScrollElemIntoView, setWillScrollElemIntoView] = useState(false);
+    let timerForHandleDotClick;
+
     const handleDotClick = sectionId => {
         console.log("target section that was clicked, id: ", sectionId)
+        clearTimeout(timerForHandleDotClick)
+        timerForHandleDotClick = setTimeout(() => {
+            // setIsScrollListenerOn(true)
+            setSectionDots(sectionDots => ({ 
+                clickedSectionId: sectionId, 
+                dots: sectionDots.dots.map(dot => {
+                    if(dot.sectionDotId === `sectionDot-${sectionId}`) {
+                        return {
+                            ...dot,
+                            isInView: true
+                        }
+                    }
+    
+                    return {
+                        ...dot,
+                        isInView: false
+                    }
+                })  
+            }))
+            // setWillScrollElemIntoView(false);
+        }, 1000)
+        setWillScrollElemIntoView(true);        
         setSectionDots(sectionDots => {
             return {
                 ...sectionDots,
+                clickedSectionId: sectionId,
                 dots: sectionDots.dots.map(sectionDot => {
                     return {
                         ...sectionDot,
@@ -84,20 +110,35 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
                 })
             }
         });
-        setSectionDots(sectionDots => ({ ...sectionDots, clickedSectionId: sectionId }))
+        // setSectionDots(sectionDots => ({ ...sectionDots, clickedSectionId: sectionId }))
         // scrollSectionIntoView(sectionId);
-        setWillGoToTargetSection(true)
     }
 
-    const [willScrollElemIntoView, setWillScrollElemIntoView] = useState(false);
-    let timer;
+    let timerForGoToSectionFn;
     
     const goToSection = sectionId => {
-        clearTimeout(timer)
-        timer = setTimeout(() => {
-            setIsScrollListenerOn(true)
+        clearTimeout(timerForGoToSectionFn)
+        timerForGoToSectionFn = setTimeout(() => {
+            // setIsScrollListenerOn(true)
+            setSectionDots(sectionDots => ({ 
+                clickedSectionId: sectionId, 
+                dots: sectionDots.dots.map(dot => {
+                    if(dot.sectionDotId === `sectionDot-${sectionId}`) {
+                        return {
+                            ...dot,
+                            isInView: true
+                        }
+                    }
+    
+                    return {
+                        ...dot,
+                        isInView: false
+                    }
+                })  
+            }))
+            // setWillScrollElemIntoView(false);
         }, 1000)
-        setIsScrollListenerOn(false)
+        // setIsScrollListenerOn(false)
         setWillScrollElemIntoView(true);
         setSectionDots(sectionDots => ({ 
             clickedSectionId: sectionId, 
@@ -118,11 +159,15 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
     }
 
     useEffect(() => {
-        if(willScrollElemIntoView && !isScrollListenerOn){
+        if(willScrollElemIntoView){
             scrollSectionIntoView(sectionDots.clickedSectionId)
             setWillScrollElemIntoView(false)
         }
     }, [willScrollElemIntoView, isScrollListenerOn])
+
+    useEffect(() => {
+      console.log('sectionDots: ', sectionDots)  
+    })
 
     const liNavDotFns = { goToSection, handleDotClick, setSectionDots }
 

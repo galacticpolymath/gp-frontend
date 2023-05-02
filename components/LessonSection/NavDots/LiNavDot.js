@@ -17,10 +17,6 @@ import { useEffect } from "react";
 
 const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
     const { isInView, sectionId, sectionTitleForDot: title, willShowTitle, sectionDotId } = section;
-
-    // useEffect(() => {
-    //     console.log('sectionDotId: ', sectionDotId)
-    // })
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
     const { goToSection, handleDotClick } = fns;
     const backgroundColor = isInView ? (sectionId === '3._teaching_materials') ? '#FEEAF8' : '#d5e6f3' : 'white'
@@ -42,27 +38,13 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                     key={index}
                     style={{ height: "33px" }}
                     role='button'
-                    onClick={_ => {
-                        console.log("sectionId that the user will go to: ", sectionId)
-                        goToSection(sectionId)
-                    }}
+                    onClick={_ => { goToSection(sectionId) }}
                     className='d-flex flex-inline justify-content-center align-items-center position-relative sectionNavDotLi'
                 >
                     <i
                         onMouseOver={handleMouseOverIcon}
                         onMouseLeave={handleMouseLeaveIcon}
                         style={iconStyles}
-                        // style={{
-                        //     backgroundColor: 'rgba(0,0,0,.1)', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid', borderColor: '#bebebe', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color",
-                        // }}
-                        // style={{
-                        //     backgroundColor: isInView || 'rgba(0,0,0,.1)'
-                        // }}
-                        // onClick={_ => {
-                        //     console.log("sectionId that the user will go to, i icon clicked: ", sectionId)
-                        //     debugger
-                        //     goToSection(sectionId)
-                        // }}
                         className='sectionNavDot'
                         id={sectionDotId}
                     />
@@ -84,10 +66,6 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                         onClick={_ => handleDotClick(sectionId, true)}
                         className='sectionNavDot'
                         style={iconStyles}
-                        // style={{
-                        //     backgroundColor: 'rgba(0,0,0,.1)', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid', borderColor: '#bebebe', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color",
-                        // }}
-                        // style={{ backgroundColor: 'rgba(0,0,0,.1)', height: '10px', width: '10px', borderRadius: '50%', display: 'inline-block', margin: '0 5px', border: '2px solid', borderColor: '#bebebe', padding: '4px', opacity: 1, transition: "all .15s ease-in", transitionProperty: "background-color, border-color",}}
                         id={sectionDotId} 
                     />
                     <div style={{ opacity: willShowTitle ? 1 : 0, width: 'auto', right: '18px', pointerEvents: 'none', transition: "all .15s ease-in", transitionProperty: 'opacity' }} className='position-absolute d-flex'>
