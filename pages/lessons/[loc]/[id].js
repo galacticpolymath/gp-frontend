@@ -144,8 +144,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
       (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
       console.log('sectionId: ', sectionId)
       targetSection.scrollIntoView({ behavior: 'smooth', block: (sectionId === "lessonTitleId") ? 'center' : 'start' });
-      // setTargetSec({ element: targetSection, id: sectionId })
-      // setTargetSectionId(sectionId)
     }
   }
 
@@ -186,9 +184,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
 
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
+  const layoutProps = { title: lesson.Title, description: lesson.Description, image: lesson.CoverImage.url, url: lesson.URL }
 
   return (
-    <Layout>
+    <Layout {...layoutProps}>
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} setIsScrollListenerOn={setIsScrollListenerOn} isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked} />
       <ShareWidget {...shareWidgetFixedProps} />
       <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
