@@ -30,8 +30,8 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
                         ...sectionDot,
                         willShowTitle: true,
                     }
-                })
-            }
+                }),
+            };
         });
     };
 
@@ -44,16 +44,14 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
                         ...sectionDot,
                         willShowTitle: false,
                     }
-                })
+                }),
             }
         });
     };
 
-    const [targetSec, setTargetSec] = useState(null)
+    const [targetSec, setTargetSec] = useState(null);
 
     const scrollSectionIntoView = sectionId => {
-        console.log('will scroll into view the target section')
-        console.log("scrolling section into view: ", sectionId)
         const targetSection = document.getElementById(sectionId);
         let url = router.asPath;
         
@@ -85,18 +83,18 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
                     if(dot.sectionDotId === `sectionDot-${sectionId}`) {
                         return {
                             ...dot,
-                            isInView: true
+                            isInView: true,
                         }
                     }
     
                     return {
                         ...dot,
-                        isInView: false
+                        isInView: false,
                     }
-                })  
+                }),  
             }))
             // setWillScrollElemIntoView(false);
-            setIsScrollListenerOn(true)      
+            setIsScrollListenerOn(true);      
         }, 950)
         setIsScrollListenerOn(false);
         setWillScrollElemIntoView(true);      
@@ -109,11 +107,9 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
                         ...sectionDot,
                         willShowTitle: true,
                     }
-                })
-            }
+                }),
+            };
         });
-        // setSectionDots(sectionDots => ({ ...sectionDots, clickedSectionId: sectionId }))
-        // scrollSectionIntoView(sectionId);
     }
 
     let timerForGoToSectionFn;
@@ -128,18 +124,17 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
                     if(dot.sectionDotId === `sectionDot-${sectionId}`) {
                         return {
                             ...dot,
-                            isInView: true
+                            isInView: true,
                         }
                     }
     
                     return {
                         ...dot,
-                        isInView: false
+                        isInView: false,
                     }
-                })  
+                }),  
             }))
             setIsScrollListenerOn(true)
-            // setWillScrollElemIntoView(false);
         }, 950)
         setIsScrollListenerOn(false)
         setWillScrollElemIntoView(true);
@@ -149,17 +144,17 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
                 if(dot.sectionDotId === `sectionDot-${sectionId}`) {
                     return {
                         ...dot,
-                        isInView: true
-                    }
+                        isInView: true,
+                    };
                 }
 
                 return {
                     ...dot,
-                    isInView: false
-                }
-            })  
-        }))
-    }
+                    isInView: false,
+                };
+            }), 
+        }));
+    };
 
     useEffect(() => {
         if(willScrollElemIntoView){
@@ -167,10 +162,6 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
             setWillScrollElemIntoView(false)
         }
     }, [willScrollElemIntoView, isScrollListenerOn])
-
-    useEffect(() => {
-      console.log('sectionDots: ', sectionDots)  
-    })
 
     const liNavDotFns = { goToSection, handleDotClick, setSectionDots }
 

@@ -38,7 +38,7 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                     key={index}
                     style={{ height: "33px" }}
                     role='button'
-                    onClick={_ => { goToSection(sectionId) }}
+                    onClick={_ => goToSection(sectionId)}
                     className='d-flex flex-inline justify-content-center align-items-center position-relative sectionNavDotLi'
                 >
                     <i
@@ -66,7 +66,7 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                         onClick={_ => handleDotClick(sectionId, true)}
                         className='sectionNavDot'
                         style={iconStyles}
-                        id={sectionDotId} 
+                        id={sectionDotId}
                     />
                     <div style={{ opacity: willShowTitle ? 1 : 0, width: 'auto', right: '18px', pointerEvents: 'none', transition: "all .15s ease-in", transitionProperty: 'opacity' }} className='position-absolute d-flex'>
                         <span style={{ transition: "all .15s ease-in", backgroundColor: backgroundColor, border: '#363636 1px solid', transitionProperty: 'background-color, opacity, border' }} className='text-nowrap p-1 rounded'>{title}</span>

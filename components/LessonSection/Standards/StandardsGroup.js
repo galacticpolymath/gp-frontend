@@ -29,7 +29,7 @@ const StandardsGroup = ({
   alignmentNotes,
   statements,
 }) => {
-  console.log('grades, StandardsGroup: ', grades)
+  
   return (
     <div className='border-bottom border-gray'>
       <Accordion

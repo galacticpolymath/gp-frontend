@@ -100,8 +100,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   });
 
-  // console.log('_sections: ', _sections)
-
   const getSectionDotsDefaultVal = () => {
     const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
@@ -127,7 +125,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
         sectionId: sectionId,
         willShowTitle: false,
         sectionDotId: `sectionDot-${sectionId}`,
-        SectionTitle: index === 0 ? '0. Title' : _sectionTitle
+        SectionTitle: index === 0 ? '0. Title' : _sectionTitle,
       }
     })
   }
@@ -172,7 +170,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
               ...sectionDot,
               willShowTitle: false,
             };
-          })
+          }),
         }
       })
     }
@@ -184,11 +182,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
 
-  
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
-
-
 
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
 
@@ -262,7 +257,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
               _sectionDots={[sectionDots, setSectionDots]}
               _wasDotClicked={[wasDotClicked, setWasDotClicked]}
               _isScrollListenerOn={[isScrollListenerOn, setIsScrollListenerOn]}
-              // isAvailLocsMoreThan1={(availLocs.length > 1)}
             />
           ))}
         </div>

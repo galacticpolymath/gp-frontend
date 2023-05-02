@@ -64,19 +64,15 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 
-
 const LessonSection = ({ index, section, _sectionDots, _isScrollListenerOn, _wasDotClicked }) => {
   const Component = sectionTypeMap[section.__component];
-  const [wasDotClicked, setWasDotClicked] = _wasDotClicked
-  const [isScrollListenerOn, setIsScrollListenerOn] = _isScrollListenerOn
+  const [wasDotClicked, setWasDotClicked] = _wasDotClicked;
+  const [isScrollListenerOn, setIsScrollListenerOn] = _isScrollListenerOn;
   const _section = { ...section, _sectionDots };
   const parentId = `${section.SectionTitle}-parent-${index}`;
   
-
-  
-
   return Component ? (
-    <div id={parentId}  className={`SectionHeading ${section.SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()}`}>
+    <div id={parentId} className={`SectionHeading ${section.SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()}`}>
       <Component index={index} {..._section} />
     </div>
   ) : (
