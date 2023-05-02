@@ -64,53 +64,14 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 
-const getPercentageSeen = element => {
-  // Get the relevant measurements and positions
-  const viewportHeight = window.innerHeight;
-  const scrollTop = window.scrollY;
-  const elementOffsetTop = element.offsetTop;
-  const elementHeight = element.offsetHeight;
-
-  // Calculate percentage of the element that's been seen
-  const distance = scrollTop + (viewportHeight - elementOffsetTop);
-  const percentage = (100 - Math.round(distance / ((viewportHeight + elementHeight) / 100)));
-
-  // Restrict the range to between 0 and 100
-  return Math.min(100, Math.max(0, percentage));
-};
-
 
 const LessonSection = ({ index, section, _sectionDots, _isScrollListenerOn, _wasDotClicked }) => {
   const Component = sectionTypeMap[section.__component];
   const [wasDotClicked, setWasDotClicked] = _wasDotClicked
   const [isScrollListenerOn, setIsScrollListenerOn] = _isScrollListenerOn
-  // const _section = (isAvailLocsMoreThan1 && isOnLastTwoSections) ? { ...section, _sectionDots, isAvailLocsMoreThan1: isAvailLocsMoreThan1 } : { ...section, _sectionDots };
   const _section = { ...section, _sectionDots };
   const parentId = `${section.SectionTitle}-parent-${index}`;
   
-  // GOAL: if on scroll is disabled, and if the ref is view, then enable the scroll after one second (to give time for the scroll to finish)
-  // enable the scroll
-  // the element is within the viewport 
-  // if the element is within the viewport, then enable scrolling  
-  // get the position of the element within the viewport
-  // if the state of isAutoScroll is set false, then get the position of the element within the viewport after one second 
-  // the state of isScrollListenerOn set false  
-  // the state of isScrollListenerOn has changed 
-  
-  // let timer;
-  // useEffect(() => {
-  //   console.log('isScrollListenerOn: ', isScrollListenerOn)
-  //   if(!isScrollListenerOn){
-  //     timer = setTimeout(() => {
-  //       const element = document.getElementById(parentId);
-  //       const percentageSeen = getPercentageSeen(element);
-  //       console.log('percentageSeen: ', percentageSeen)
-  //       if(percentageSeen > 0){
-  //         setIsScrollListenerOn(true)
-  //       }
-  //     }, 1000)
-  //   }
-  // }, [isScrollListenerOn])
 
   
 

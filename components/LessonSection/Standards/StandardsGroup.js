@@ -8,10 +8,12 @@ const formatGrades = (grades) => {
     return '';
   }
 
-  const parsedGrades = grades.split(',').map((x) => x.replace(/^0/, ''));
+  const parsedGrades = (Array.isArray(grades) ? grades : grades.split(',')).map((x) => x.replace(/^0/, ''));
+
   if (parsedGrades.length === 1) {
     return `Grade: ${parsedGrades[0]}`;
   }
+
   return (
     `Grades: ${parsedGrades[0]}-${parsedGrades[parsedGrades.length - 1]}`
   );
@@ -27,6 +29,7 @@ const StandardsGroup = ({
   alignmentNotes,
   statements,
 }) => {
+  console.log('grades, StandardsGroup: ', grades)
   return (
     <div className='border-bottom border-gray'>
       <Accordion

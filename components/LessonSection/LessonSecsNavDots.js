@@ -96,8 +96,10 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
                 })  
             }))
             // setWillScrollElemIntoView(false);
-        }, 1000)
-        setWillScrollElemIntoView(true);        
+            setIsScrollListenerOn(true)      
+        }, 950)
+        setIsScrollListenerOn(false);
+        setWillScrollElemIntoView(true);      
         setSectionDots(sectionDots => {
             return {
                 ...sectionDots,
@@ -136,9 +138,10 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
                     }
                 })  
             }))
+            setIsScrollListenerOn(true)
             // setWillScrollElemIntoView(false);
-        }, 1000)
-        // setIsScrollListenerOn(false)
+        }, 950)
+        setIsScrollListenerOn(false)
         setWillScrollElemIntoView(true);
         setSectionDots(sectionDots => ({ 
             clickedSectionId: sectionId, 
