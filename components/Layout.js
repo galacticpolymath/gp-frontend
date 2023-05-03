@@ -14,8 +14,14 @@ export default function Layout({ title, keywords, className, description, childr
     <div className={`${montserrat.className} ${className}`}>
       <Head>
         <title>{title}</title>
-        <meta property="og:title" content={`GP page title: ${title}`} />
-        <meta property="twitter:title" content={`GP page title: ${title}`} />
+        
+        <meta property="pinterest" content="true" />
+        <meta property="pinterest:description" content={description} />
+        <meta property="pinterest:media" content={url} />
+        <meta property="pinterest:type" content="article" />
+
+        <meta property="og:title" content={title} />
+        <meta property="twitter:title" content={title} />
         <meta property="og:type" content="website" />
         <meta property='og:description' content={description} />
         {imgSrc && <meta property="og:image" content={imgSrc} />}
@@ -30,7 +36,7 @@ export default function Layout({ title, keywords, className, description, childr
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@GalacticPolymath" />
         <meta name="twitter:creator" content="@GalacticPolymath" />
-        <meta name="twitter:title" content={`GP page title: ${title}`} />
+        <meta name="twitter:title" content={title} />
         {description && <meta name="twitter:description" content={(description.length > 200) ? `${description.substring(0, 190)}...` : description} />}
         {imgSrc && <meta name="twitter:image" content={imgSrc} />}
         {imgAlt && <meta name="twitter:image:alt" content={imgAlt} />}

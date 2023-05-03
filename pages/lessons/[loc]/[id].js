@@ -70,9 +70,8 @@ const getIsElementInView = element => {
 
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
-  const { ref, inView } = useInView({ threshold: 0.2 });
+  const { ref } = useInView({ threshold: 0.2 });
   const router = useRouter()
-  const windowWidth = useWindowWidth()
   let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
   sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
   sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
@@ -99,6 +98,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
       SectionTitle: sectionTitle,
     }
   });
+
+  const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);  
 
   const getSectionDotsDefaultVal = () => {
     const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
@@ -135,21 +136,17 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false)
 
   const scrollSectionIntoView = sectionId => {
-    console.log('will scroll into view the target section')
-    console.log("scrolling section into view: ", sectionId)
     const targetSection = document.getElementById(sectionId);
     let url = router.asPath;
 
     if (targetSection) {
       (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
-      console.log('sectionId: ', sectionId)
       targetSection.scrollIntoView({ behavior: 'smooth', block: (sectionId === "lessonTitleId") ? 'center' : 'start' });
     }
   }
 
   useEffect(() => {
     if (willGoToTargetSection) {
-      console.log('sectionDots, will go to target section: ', sectionDots)
       scrollSectionIntoView(sectionDots.clickedSectionId)
       setWillGoToTargetSection(false)
     }
@@ -157,8 +154,9 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
+    const viewPortWidth = getViewportWidth()
 
-    if (!wasANavDotElementClicked && (windowWidth <= 767)) {
+    if (!wasANavDotElementClicked && (viewPortWidth <= 767)) {
       setSectionDots(sectionDots => {
 
         return {
@@ -185,7 +183,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: lesson.Title, description: removeHtmlTags(lesson.Section.overview.Description), imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
+  const layoutProps = { title: `Lesson Title: ${lesson.Title}`, description: removeHtmlTags(lesson.Section.overview.Description), imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
   return (
     <Layout {...layoutProps}>

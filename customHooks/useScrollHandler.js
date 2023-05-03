@@ -143,10 +143,14 @@ const useScrollHandler = setSectionDots => {
         // throttle(() => scrollAction(), 100)
     }
 
+    const [wasRendered, setWasRendered] = useState(false);
+
     // when the user clicks on the dot, remove the event listener
     useEffect(() => {
-        // scrollAction()
-        console.log('state had changed: ', isScrollListenerOn)
+        if(wasRendered){
+            setWasRendered(true)
+        }
+
         if(isScrollListenerOn){
             window.addEventListener("scroll", handleScroll);
             console.log('scroll listener was added.')
@@ -158,6 +162,9 @@ const useScrollHandler = setSectionDots => {
         }
 
         return () => {
+            if(wasRendered){
+                setIsScrollListenerOn(false)
+            }
             window.removeEventListener("scroll", handleScroll);
         };
     }, [isScrollListenerOn]);
