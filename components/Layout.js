@@ -9,12 +9,13 @@ const montserrat = Montserrat({
   weight: 'variable',
 });
 
-export default function Layout({ title, keywords, className, description, children, imgSrc, imgAlt, url }) {
+export default function Layout({ title, keywords, className, description, children, imgSrc, imgAlt, url, href }) {
   return (
     <div className={`${montserrat.className} ${className}`}>
       <Head>
         <title>{title}</title>
-        
+
+        {/* {href && <link rel="icon" href={href} />} */}
         <meta property="pinterest" content="true" />
         <meta property="pinterest:description" content={description} />
         <meta property="pinterest:media" content={url} />

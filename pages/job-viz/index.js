@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';
 import GoToJobVizChain from '../../components/JobViz/Buttons/GoToJobVizChain';
+import { useEffect } from 'react';
 
 const DATA_SOURCE_LINK = "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm"
 
@@ -27,19 +28,34 @@ const JobViz = ({ vals }) => {
     const [isHighlighterOn, setIsHighlighterOn] = useState(true);
     const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false)
     const { ref, inView } = useInView({ threshold: 0 });
+    const jobVizDescription = "A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs."
 
     const resetSearchResults = () => {
         setSearchInput("")
         setSearchResults([])
     }
 
+    const [didFirstRenderOccur, setDidFirstRenderOccur] = useState(false)
+
+    const layoutProps = {
+        title: "JobViz Career Explorer",
+        description: jobVizDescription,
+        // imgHref: "/imgs/jobViz/jobviz_icon.ico",
+        url: "https://galacticpolymath.com/job-viz",
+        keywords: "jobviz, job viz, career explorer, career, career exploration, career exploration tool, career exploration for students, career exploration for high school students, career exploration for middle school students, career exploration for teens, career exploration for teenagers, career exploration for kids, career exploration for children, career exploration for young adults, career exploration for young people, career exploration for youth, career exploration for adolescents, career exploration for parents, career exploration for teachers, career exploration for counselors, career exp" 
+    }
+
+    useEffect(() => {
+        setDidFirstRenderOccur(true);
+    }, [])
+
     return (
-        <Layout>
+        <Layout {...layoutProps}>
             <Hero className="jobVizHero">
                 <section className="d-flex jobVizHeroMainSec">
                     <section className="d-flex flex-column">
                         <h1 className='text-muted'>JobViz Career Explorer</h1>
-                        <p className='text-muted'>A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.</p>
+                        <p className='text-muted'>{jobVizDescription}</p>
                         <p className='text-muted'>What do you want to be?</p>
                     </section>
                     <section>
@@ -62,7 +78,7 @@ const JobViz = ({ vals }) => {
                             return (
                                 <div key={index} className="d-flex justify-content-center align-items-center flex-column">
                                     <PreviouslySelectedJobCategory jobCategory={jobCategory} isBrick />
-                                    <section className='w-100 d-flex justify-content-center align-items-center'> 
+                                    <section className='w-100 d-flex justify-content-center align-items-center'>
                                         <div style={{ height: 14, width: 3 }} className='position-relative'>
                                             <Image
                                                 src="/imgs/jobViz/chain.png"
@@ -84,7 +100,7 @@ const JobViz = ({ vals }) => {
                             return (
                                 <div key={index} className="d-flex justify-content-center flex-column align-items-center">
                                     <PreviouslySelectedJobCategory jobCategory={jobCategory} />
-                                    <section className='w-100 d-flex justify-content-center align-items-center'> 
+                                    <section className='w-100 d-flex justify-content-center align-items-center'>
                                         <div style={{ height: 14, width: 3 }} className='position-relative'>
                                             <Image
                                                 src="/imgs/jobViz/chain.png"
@@ -135,7 +151,7 @@ const JobViz = ({ vals }) => {
                 <section className="w-100 d-flex justify-content-sm-end justify-content-center align-items-center mt-5">
                     <span className='d-block d-sm-inline me-sm-5'>
                         <span className="d-block d-sm-inline font-weight-bold me-sm-2 text-sm-start text-center">
-                            Data Source: 
+                            Data Source:
                         </span>
                         <a href={DATA_SOURCE_LINK} target="_blank" className="underline-on-hover text-sm-start text-center">
                             US Bureau of Labor Statistics
