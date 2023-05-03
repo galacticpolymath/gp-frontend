@@ -9,7 +9,7 @@ const montserrat = Montserrat({
   weight: 'variable',
 });
 
-export default function Layout({ title, keywords, className, description, children, imgSrc, imgAlt, url, href }) {
+export default function Layout({ title, keywords, className, description, children, imgSrc, imgAlt, url }) {
   return (
     <div className={`${montserrat.className} ${className}`}>
       <Head>
