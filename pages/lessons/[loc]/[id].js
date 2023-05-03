@@ -174,6 +174,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }
 
+  const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
+
   useEffect(() => {
     document.body.addEventListener('click', handleDocumentClick);
 
@@ -182,9 +184,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
-
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: lesson.Title, description: lesson.Description, image: lesson.CoverImage.url, url: lesson.URL }
+  const layoutProps = { title: lesson.Title, description: removeHtmlTags(lesson.Section.overview.Description), imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
   return (
     <Layout {...layoutProps}>
@@ -278,6 +279,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   const res = await fetch('https://gp-catalog.vercel.app/index.json')
   const lessons = await res.json();
   const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
+  console.log('lesson: ', lesson)
   const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
 
   if (!lesson?.Section?.procedure?.Data) {
