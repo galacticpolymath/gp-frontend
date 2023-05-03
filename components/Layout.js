@@ -9,21 +9,14 @@ const montserrat = Montserrat({
   weight: 'variable',
 });
 
-export default function Layout({ title, keywords, className, description, children, imgSrc, imgAlt, url }) {
+export default function Layout({ title, keywords, className, description, children, imgSrc, imgAlt, url, type ='article' }) {
   return (
     <div className={`${montserrat.className} ${className}`}>
       <Head>
         <title>{title}</title>
 
-        {/* {href && <link rel="icon" href={href} />} */}
-        <meta property="pinterest" content="true" />
-        <meta property="pinterest:description" content={description} />
-        <meta property="pinterest:media" content={url} />
-        <meta property="pinterest:type" content="article" />
-
         <meta property="og:title" content={title} />
-        <meta property="twitter:title" content={title} />
-        <meta property="og:type" content="website" />
+\        <meta property="og:type" content={type} />
         <meta property='og:description' content={description} />
         {imgSrc && <meta property="og:image" content={imgSrc} />}
         {imgSrc && <meta property="og:image:type" content="image/jpeg" />}
@@ -34,6 +27,7 @@ export default function Layout({ title, keywords, className, description, childr
         <meta property='og:keywords' name='keywords' content={keywords} />
         <meta property='og:viewport' name='viewport' content='width=device-width, initial-scale=1' />
 
+        <meta property="twitter:title" content={title} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@GalacticPolymath" />
         <meta name="twitter:creator" content="@GalacticPolymath" />

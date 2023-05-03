@@ -47,7 +47,6 @@ const JobViz = ({ vals }) => {
 
     useEffect(() => {
         setDidFirstRenderOccur(true);
-        console.log('image meta: ', `${window.location.origin}/imgs/jobViz/jobviz_icon.png`)
     }, [])
 
     return (
