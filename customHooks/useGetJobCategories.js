@@ -32,6 +32,7 @@ export const useGetJobCategories = (hierarchyNum, level) => {
         const { hierarchyNum: targetHierarchyNum, level: selectedLevel } = hierarchyNumAndLevel ?? {};
 
         if (targetHierarchyNum && selectedLevel) {
+            console.log('targetHierarchyNum: ', targetHierarchyNum, 'selectedLevel: ', selectedLevel)
             const targetJobCategories = filterResults(parseInt(targetHierarchyNum), selectedLevel);
             console.log("targetJobCategories: ", targetJobCategories)
             setJobCategories(targetJobCategories);
