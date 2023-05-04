@@ -33,7 +33,7 @@ export const getServerSideProps = async (context) => {
 
     if(!targetLesson){
       return {
-        props: {}
+        props: {},
       }
     }
 

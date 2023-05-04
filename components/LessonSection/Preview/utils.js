@@ -18,7 +18,6 @@ export const getMediaComponent = ({ type, mainLink }) => {
       />
     );
   } else if (type === 'pdf') {
-    console.log('pdf link: ', mainLink)
     return (
       <iframe
         src={mainLink}

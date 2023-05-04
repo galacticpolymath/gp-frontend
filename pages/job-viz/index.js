@@ -42,9 +42,8 @@ const JobViz = ({ vals }) => {
         description: metaDescription || jobVizPgDescriptor,
         imgSrc: didFirstRenderOccur && `${window.location.origin}/imgs/jobViz/jobviz_icon.png`,
         url: "https://galacticpolymath.com/job-viz",
-        keywords: "jobviz, job viz, career explorer, career, career exploration, career exploration tool, career exploration for students, career exploration for high school students, career exploration for middle school students, career exploration for teens, career exploration for teenagers, career exploration for kids, career exploration for children, career exploration for young adults, career exploration for young people, career exploration for youth, career exploration for adolescents, career exploration for parents, career exploration for teachers, career exploration for counselors, career exp" 
+        keywords: "jobviz, job viz, career explorer, career, career exploration, career exploration tool, career exploration for students, career exploration for high school students, career exploration for middle school students, career exploration for teens, career exploration for teenagers, career exploration for kids, career exploration for children, career exploration for young adults, career exploration for young people, career exploration for youth, career exploration for adolescents, career exploration for parents, career exploration for teachers, career exploration for counselors, career exploration", 
     }
-
 
     useEffect(() => {
         setDidFirstRenderOccur(true);
