@@ -82,6 +82,11 @@ const useScrollHandler = setSectionDots => {
         const scrollElems = Array.prototype.slice.call(
             document.querySelectorAll(".SectionHeading")
         );
+        
+        if(scrollElems.length === 0){
+            return
+        }
+
 
         let viewPortPercentOfElems = scrollElems.map(elem => {
             let liNavDotId;
@@ -106,8 +111,9 @@ const useScrollHandler = setSectionDots => {
 
         viewPortPercentOfElems = viewPortPercentOfElems.filter(({ percentageInViewPort }) => ((percentageInViewPort > 0) && (percentageInViewPort < 100)))
         const elemsThatAreInView = viewPortPercentOfElems.filter(({ elemId }) => elemId)
+        console.log('elemsThatAreInView: ', elemsThatAreInView)
+        console.log('viewPortPercentOfElems: ', viewPortPercentOfElems)
         const elemTakingUpMostOfViewport = elemsThatAreInView.reduce((prev, curr) => (prev.percentageInViewPort > curr.percentageInViewPort) ? prev : curr)
-
         setSectionDots(sectionDots => {
             return {
                 ...sectionDots,
@@ -126,15 +132,6 @@ const useScrollHandler = setSectionDots => {
                 })
             }
         })
-
-
-        if (window.pageYOffset < lastOffset) {
-
-            //   scrollUp(cursorTop, elemOffsets, elemIds);
-        } else {
-            //   scrollDown(cursorBottom, elemOffsets, elemIds);
-        }
-        lastOffset = window.pageYOffset;
     }, 100);
 
     const handleScroll = () => {
@@ -147,10 +144,6 @@ const useScrollHandler = setSectionDots => {
 
     // when the user clicks on the dot, remove the event listener
     useEffect(() => {
-        if(wasRendered){
-            setWasRendered(true)
-        }
-
         if(isScrollListenerOn){
             window.addEventListener("scroll", handleScroll);
             console.log('scroll listener was added.')
@@ -162,10 +155,8 @@ const useScrollHandler = setSectionDots => {
         }
 
         return () => {
-            if(wasRendered){
-                setIsScrollListenerOn(false)
-            }
             window.removeEventListener("scroll", handleScroll);
+            console.log('event listener was removed.')
         };
     }, [isScrollListenerOn]);
 

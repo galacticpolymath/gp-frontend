@@ -121,6 +121,7 @@ export async function getStaticProps() {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
 
   const lessons = await res.json();
+  console.log('ids of lessons: ', lessons.map(({ id }) => id))
 
   return { props: { lessons } };
 }
