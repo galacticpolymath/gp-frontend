@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon'
+import { lessonsUrl } from '../../apiGlobalVals';
 
 const LessonsPage = ({ lessons }) => {
   const handleJobVizCardClick = () => {
@@ -118,7 +119,7 @@ const LessonsPage = ({ lessons }) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  const res = await fetch(lessonsUrl);
 
   const lessons = await res.json();
   console.log('ids of lessons: ', lessons.map(({ id }) => id))

@@ -21,6 +21,7 @@ import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavD
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
 import useScrollHandler from '../../../customHooks/useScrollHandler';
+import { lessonsUrl } from '../../../apiGlobalVals';
 
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
@@ -264,7 +265,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 };
 
 export const getStaticPaths = async () => {
-  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+  const res = await fetch(lessonsUrl);
   const lessons = await res.json();
   const paths = lessons.map(lesson => ({
     params: { id: `${lesson.id}`, loc: `${lesson.locale}` },
@@ -274,11 +275,8 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  const res = await fetch('https://gp-catalog.vercel.app/index.json')
+  const res = await fetch(lessonsUrl)
   const lessons = await res.json();
-  // console.log('lessons: ', lessons)
-  const lessonIds = lessons.map(({ id }) => id)
-  console.log('lessonIds: ', lessonIds)
   const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
 
