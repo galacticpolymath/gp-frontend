@@ -116,7 +116,7 @@ export const getServerSideProps = async (context) => {
 
         if (jobInModal) {
             return {
-                props: { metaDescription: jobInModal.def }
+                props: { metaDescription: `${jobInModal.soc_title}: ${jobInModal.def}` }
             }
         }
 
@@ -134,7 +134,7 @@ export const getServerSideProps = async (context) => {
         }
 
         return {
-            props: { metaDescription: jobInModal.def }
+            props: { metaDescription: `${jobInModal.soc_title}: ${jobInModal.def}` }
         }
     }
 
