@@ -22,13 +22,13 @@ import { useEffect } from 'react';
 const DATA_SOURCE_LINK = "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm"
 
 const JobViz = ({ vals }) => {
-    const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories } = vals ?? {};
+    const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories, metaDescription } = vals ?? {};
     const [searchResults, setSearchResults] = useState([])
     const [searchInput, setSearchInput] = useState("")
     const [isHighlighterOn, setIsHighlighterOn] = useState(true);
     const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false)
     const { ref, inView } = useInView({ threshold: 0 });
-    const jobVizDescription = "A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs."
+    const jobVizPgDescriptor = "A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs."
 
     const resetSearchResults = () => {
         setSearchInput("")
@@ -39,11 +39,12 @@ const JobViz = ({ vals }) => {
 
     const layoutProps = {
         title: "JobViz Career Explorer",
-        description: jobVizDescription,
+        description: metaDescription || jobVizPgDescriptor,
         imgSrc: didFirstRenderOccur && `${window.location.origin}/imgs/jobViz/jobviz_icon.png`,
         url: "https://galacticpolymath.com/job-viz",
         keywords: "jobviz, job viz, career explorer, career, career exploration, career exploration tool, career exploration for students, career exploration for high school students, career exploration for middle school students, career exploration for teens, career exploration for teenagers, career exploration for kids, career exploration for children, career exploration for young adults, career exploration for young people, career exploration for youth, career exploration for adolescents, career exploration for parents, career exploration for teachers, career exploration for counselors, career exp" 
     }
+
 
     useEffect(() => {
         setDidFirstRenderOccur(true);
@@ -55,7 +56,7 @@ const JobViz = ({ vals }) => {
                 <section className="d-flex jobVizHeroMainSec">
                     <section className="d-flex flex-column">
                         <h1 className='text-muted'>JobViz Career Explorer</h1>
-                        <p className='text-muted'>{jobVizDescription}</p>
+                        <p className='text-muted'>{jobVizPgDescriptor}</p>
                         <p className='text-muted'>What do you want to be?</p>
                     </section>
                     <section>

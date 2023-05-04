@@ -10,6 +10,8 @@ const montserrat = Montserrat({
 });
 
 export default function Layout({ title, keywords, className, description, children, imgSrc, imgAlt, url, type ='article' }) {
+  console.log('description: ', description)
+  
   return (
     <div className={`${montserrat.className} ${className}`}>
       <Head>
