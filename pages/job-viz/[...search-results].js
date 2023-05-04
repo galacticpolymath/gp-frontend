@@ -37,7 +37,7 @@ const getParentJobCategories = jobCategoryIds => {
     return _jobVizData;
 }
 
-const JobVizSearchResults = () => {
+const JobVizSearchResults = ({ metaDescription }) => {
     const router = useRouter();
     const { _selectedJob } = useContext(ModalContext)
     const [, setSelectedJob] = _selectedJob;
@@ -103,5 +103,32 @@ const JobVizSearchResults = () => {
 
     return <JobViz vals={vals} />;
 };
+
+// JobVizSearchResults.getInitialProps = async (context) => {
+//     console.log('context.req.url: ', context.req.url)
+//     const currentPaths = context.req.url.split('/')
+
+//     // z = the id of the selected job that is displayed in the modal
+
+//     // CASE: the user is two levels deep, with a modal on the screen: /job-viz/3/17-2000/A/B/Z
+    
+
+//     // CASE: the user is one level deep with modal on the screen: /job-viz/3/17-2000/A/Z
+
+//     // CASE: the user is three levels deep with a modal on the screen: /A/B/C/Z
+//     // the target job is attained by using the z id of the selected job
+//     // get the number last number of the array, this will be the id of the selected job that is displayed 
+//     // in the modal 
+//     // a job modal is being displayed on the screen 
+//     // there are 
+
+
+//     // PROBLEM: there is an overlap between a selected job in two levels deep (A/B/Z) and the user just being 
+//     // at the fourth level of the job viz page (A/B/C)
+
+//     return {
+//         props: { metaDescription: "" }
+//     }
+// }
 
 export default JobVizSearchResults;
