@@ -20,14 +20,12 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   return (
-    <GoogleAnalytics id='G-8B58Y7HD3T' trackPageViews>
       <LessonsCarouselProvider>
         <ModalProvider>
           <Component {...pageProps} />
           <ModalsContainer />
         </ModalProvider>
       </LessonsCarouselProvider>
-    </GoogleAnalytics>
   );
 }
 
