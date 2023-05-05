@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable react/jsx-wrap-multilines */
 import Image from 'next/image';
-import { faTwitch } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { BsTwitch } from 'react-icons/bs';
+
 
 const DEFAULT_IMG_SRC = '/imgs/gp_logo_gradient_transBG.png';
 
-const faIcons = [ { name: 'faTwitch', comp: faTwitch } ]
+const faIcons = [ { name: 'BsTwitch', comp: BsTwitch } ]
 
 
 const TeamMemberCard = ({
@@ -39,28 +39,27 @@ const TeamMemberCard = ({
         <div className='flex-grow-1 text-center'>{children}</div>
         <div className='d-flex justify-content-center align-items-center'>
           <div className="d-flex">
-            {links && links.map(({ link, icon, imgSrc, reactIcon }, index) => (
-              <a
-                key={`${index}_${name}`}
-                style={{ fontSize: '21px', color: '#2D83C3', width: 40, height: 40 }}
-                className={`linkHover rounded-circle d-flex justify-content-center align-items-center ${(index !== 0) ? 'ms-1' : ''}`}
-                href={link}
-                target="_blank"
-              >
-                {icon ?
-                  <i className={icon} />
-                  :
-                  <div style={{ width: 30, height: 30 }} className='position-relative'>
-                    <Image
-                      fill
-                      style={{ objectFit: 'cover' }}
-                      src={imgSrc}
-                      alt='Galactic_Polymath_Icon_Link'
-                      sizes="30px"
-                    />
-                  </div>}
-              </a>
-            ))}
+            {links && links.map(({ link, icon, imgSrc, reactIcon }, index) => {
+              let Icon;
+
+              if (reactIcon) {
+                Icon = faIcons.find(({ name }) => name === reactIcon)?.comp;
+              }
+
+              return (
+                <a
+                  key={`${index}_${name}`}
+                  style={{ fontSize: '21px', color: '#2D83C3', width: 40, height: 40 }}
+                  className={`linkHover rounded-circle pointer d-flex justify-content-center align-items-center ${(index !== 0) ? 'ms-1' : ''}`}
+                  href={link}
+                  target="_blank"
+                >
+                  {icon && <i className={icon} />}
+                  {(reactIcon && Icon) && <Icon />}
+                  {(!icon && !reactIcon) && <Image src={imgSrc} alt="social_icon" width={40} height={40} />}
+                </a>
+              )
+            })}
           </div>
         </div>
       </div>

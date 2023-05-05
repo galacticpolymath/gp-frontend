@@ -4,8 +4,6 @@
 /* eslint-disable react/jsx-indent-props */
 import Hero from '../components/Hero';
 import Layout from '../components/Layout';
-import { faTwitch } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './index.module.css';
 import TeamMemberCard from '../components/TeamMemberCard';
 import productTeam from '../data/AboutPg/productTeam.json';
