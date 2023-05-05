@@ -100,7 +100,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   });
 
-  const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);  
+  const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
   const getSectionDotsDefaultVal = () => {
     const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
@@ -231,13 +231,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
               </div>
               <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
                 {lesson.SponsorImage && lesson.SponsorImage.url && (
-                  <div className='position-relative'>
+                  <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
                     <Image
                       src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                       alt={lesson.Subtitle}
-                      width={80}
-                      height={80}
-                      style={{ width: "100%", height: 'auto', objectFit: 'contain' }}
+                      className='sponsorImg'
+                      sizes="225px"
+                      fill
+                      style={{ width: "100%", objectFit: 'contain' }}
                     />
                   </div>
                 )}
