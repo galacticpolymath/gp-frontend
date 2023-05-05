@@ -28,55 +28,8 @@ const getPercentageSeen = element => {
 };
 
 
-const scrollDown = function (cursorBottom, elemOffsets, elemIds) {
-    // you have the offset tops. find nearest one above current position by..
-    // filtering out the ones below it and taking the last elem
-    // filter:
-    const removeBelow = elemOffsets.filter(function (x) {
-        return x < cursorBottom - window.innerHeight / 4;
-    });
-    const index = removeBelow.length > 0 ? removeBelow.length - 1 : 0;
-
-    console.log('index: ', index)
-
-    console.log('elemIds: ', elemIds)
-
-    // activateDot(index, elemIds);
-};
-
 const useScrollHandler = setSectionDots => {
     const [isScrollListenerOn, setIsScrollListenerOn] = useState(true);
-    let lastOffset = typeof window !== 'undefined' ? window.pageYOffset : 0;
-
-
-    const activateDot = function (index, elemIds) {
-        const activeNodeid = elemIds[index];
-
-        console.log('activeNodeid: ', activeNodeid)
-
-        // const activeNode = document.querySelector(`.${activeNodeid}`);
-
-        // if (!activeNode || !activeNode.classList.contains("activeDot")) {
-        //   activeNode && activeNode.classList.add("activeDot");
-        // }
-
-        // let notActive = elemIds.slice();
-        // notActive.splice(index, 1);
-        // notActive.forEach((id) => {
-        //   let div = document.querySelector(`.${id}`);
-        //   div && div.classList.remove("activeDot");
-        // });
-    };
-
-
-
-    const scrollUp = function (cursorTop, elemOffsets, elemIds) {
-        const removeBelow = elemOffsets.filter(function (x) {
-            return x < cursorTop + window.innerHeight / 4;
-        });
-        const index = removeBelow.length > 0 ? removeBelow.length - 1 : 0;
-
-    };
 
     const scrollAction = throttle(() => {
         const scrollElems = Array.prototype.slice.call(
@@ -111,9 +64,8 @@ const useScrollHandler = setSectionDots => {
 
         viewPortPercentOfElems = viewPortPercentOfElems.filter(({ percentageInViewPort }) => ((percentageInViewPort > 0) && (percentageInViewPort < 100)))
         const elemsThatAreInView = viewPortPercentOfElems.filter(({ elemId }) => elemId)
-        console.log('elemsThatAreInView: ', elemsThatAreInView)
-        console.log('viewPortPercentOfElems: ', viewPortPercentOfElems)
         const elemTakingUpMostOfViewport = elemsThatAreInView.reduce((prev, curr) => (prev.percentageInViewPort > curr.percentageInViewPort) ? prev : curr)
+
         setSectionDots(sectionDots => {
             return {
                 ...sectionDots,
@@ -137,12 +89,9 @@ const useScrollHandler = setSectionDots => {
     const handleScroll = () => {
         console.log('scrolling')
         scrollAction()
-        // throttle(() => scrollAction(), 100)
     }
 
-    const [wasRendered, setWasRendered] = useState(false);
 
-    // when the user clicks on the dot, remove the event listener
     useEffect(() => {
         if(isScrollListenerOn){
             window.addEventListener("scroll", handleScroll);
