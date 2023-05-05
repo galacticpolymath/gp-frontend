@@ -45,29 +45,7 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
   return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
 }
 
-const getPercentageSeen = element => {
-  // Get the relevant measurements and positions
-  const viewportHeight = window.innerHeight;
-  const scrollTop = window.scrollY;
-  const elementOffsetTop = element.offsetTop;
-  const elementHeight = element.offsetHeight;
 
-  // Calculate percentage of the element that's been seen
-  const distance = scrollTop + (viewportHeight - elementOffsetTop);
-  const percentage = 100 - Math.round(distance / ((viewportHeight + elementHeight) / 100));
-
-  // Restrict the range to between 0 and 100
-  return Math.min(100, Math.max(0, percentage));
-};
-
-const getIsElementInView = element => {
-  var rect = element.getBoundingClientRect();
-  // var html = document.documentElement;
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0
-  );
-}
 
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
@@ -191,7 +169,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} setIsScrollListenerOn={setIsScrollListenerOn} isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked} />
       <ShareWidget {...shareWidgetFixedProps} />
       <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
-        <div id="lessonTitleSecId" className="SectionHeading lessonTitleId d-flex justify-content-center">
+        <div id="lessonTitleSecId" className="d-flex justify-content-center SectionHeading lessonTitleId">
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
               {lastSubRelease && (
