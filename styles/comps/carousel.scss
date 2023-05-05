@@ -925,15 +925,12 @@ $feedbackTxtFontSizeDesktop: 24px;
   }
 
   @media (max-width: 320px) {
-    border: solid pink;
     transform: translateY(80px);
   }
 
   > section {
-    // height: fit-content ;
     > span {
       @media (min-width: 576px) and (max-width: 767px) {
-        // transform: translateX(-40px) ;
         transform: translateY(-10px);
       }
     }
@@ -973,7 +970,6 @@ $feedbackTxtFontSizeDesktop: 24px;
         }
       }
     }
-    // quote section
     > section:last-of-type {
       @media (min-width: 768px) {
         right: 230px;
