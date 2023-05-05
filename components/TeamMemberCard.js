@@ -1,8 +1,13 @@
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable react/jsx-wrap-multilines */
 import Image from 'next/image';
+import { faTwitch } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const DEFAULT_IMG_SRC = '/imgs/gp_logo_gradient_transBG.png';
+
+const faIcons = [ { name: 'faTwitch', comp: faTwitch } ]
+
 
 const TeamMemberCard = ({
   name,
@@ -34,7 +39,7 @@ const TeamMemberCard = ({
         <div className='flex-grow-1 text-center'>{children}</div>
         <div className='d-flex justify-content-center align-items-center'>
           <div className="d-flex">
-            {links && links.map(({ link, icon, imgSrc }, index) => (
+            {links && links.map(({ link, icon, imgSrc, reactIcon }, index) => (
               <a
                 key={`${index}_${name}`}
                 style={{ fontSize: '21px', color: '#2D83C3', width: 40, height: 40 }}
