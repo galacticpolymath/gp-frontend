@@ -3,11 +3,9 @@
 import Image from 'next/image';
 import { BsTwitch } from 'react-icons/bs';
 
-
 const DEFAULT_IMG_SRC = '/imgs/gp_logo_gradient_transBG.png';
 
-const faIcons = [ { name: 'BsTwitch', comp: BsTwitch } ]
-
+const faIcons = [{ name: 'BsTwitch', comp: BsTwitch }];
 
 const TeamMemberCard = ({
   name,
@@ -58,7 +56,7 @@ const TeamMemberCard = ({
                   {(reactIcon && Icon) && <Icon />}
                   {(!icon && !reactIcon) && <Image src={imgSrc} alt="social_icon" width={40} height={40} />}
                 </a>
-              )
+              );
             })}
           </div>
         </div>
