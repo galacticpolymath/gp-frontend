@@ -11,4 +11,8 @@
   h3 {
     font-size: 1.5rem;
   }
+  // don't create a hard margin for lone items
+  p:only-child {
+    margin-bottom: 0;
+  }
 }

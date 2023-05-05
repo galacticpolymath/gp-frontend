@@ -17,10 +17,12 @@ const CollapsibleLessonSection = ({
   accordionId,
   _sectionDots,
   isAvailLocsMoreThan1,
+  highlighted = false,
 }) => {
   const ref = useRef();
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
-
+  const _h2Id = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
+  
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}
@@ -39,6 +41,7 @@ const CollapsibleLessonSection = ({
           <i className="fs-3 bi-chevron-down"></i>
           <i className="fs-3 bi-chevron-up"></i>
           <div id={h2Id} style={{ height: 30, width: 30, transform: 'translateY(-150px)' }} className='position-absolute' />
+          <div id={_h2Id} style={{ height: 30, width: 30, transform: 'translateY(-150px)' }} className='position-absolute' />
         </div>
       )}
     >

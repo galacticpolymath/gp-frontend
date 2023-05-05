@@ -81,26 +81,14 @@ const SelectedJob = () => {
 
     const handleOnHide = () => {
         // delete the last number in the paths of the url
-        console.log("router.query?.['search-results']: ", router.query?.['search-results'])
         const newPaths = getNewPathsWhenModalCloses(router.query['search-results'])
         router.push({ pathname: `/job-viz${newPaths}` }, null, { scroll: false })
         setSelectedJob(null);
     }
 
     useEffect(() => {
-        console.log("selectedJob, modal: ", selectedJob)
-
         setIsJobModal(true)
     }, [])
-
-    
-
-
-
-
-
-
-
 
     return (
         <Modal show={selectedJob} size="md" onHide={handleOnHide} contentClassName="selectedJobModal" dialogClassName='dialogJobVizModal'>

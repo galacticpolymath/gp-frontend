@@ -3,6 +3,7 @@
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
+import RichText from '../../RichText';
 
 const LessonPart = ({
   partNum,
@@ -17,13 +18,13 @@ const LessonPart = ({
 
   return (
     <Accordion
-      buttonClassName='w-100 text-start'
+      buttonClassName='w-100 text-start border border-dark'
       key={partNum}
       id={`part_${partNum}`}
       button={(
-        <div>
-          <h3>{isOnLastPart ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
-          <div>{partPreface}</div>
+        <div className='p-2'>
+          <h3 className='fs-6 fw-semibold'>{isOnLastPart ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
+          <div><RichText content={partPreface} /></div>
         </div>
       )}
     >
@@ -50,7 +51,7 @@ const LessonPart = ({
           ))}
         </ol>
 
-        {(!isOnLastPart && durList) &&
+        {(!isOnLastPart && durList && chunks) &&
           <>
             <h4>Steps &amp; Flow</h4>
             {chunks.map((chunk, i) => (

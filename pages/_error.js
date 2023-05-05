@@ -37,6 +37,8 @@ export const getServerSideProps = async (context) => {
       }
     }
 
+    if(!targetLesson) return { props: {} }
+
     return {
       redirect: {
         destination: `/lessons/${targetLesson.DefaultLocale}/${targetLesson.id}`,

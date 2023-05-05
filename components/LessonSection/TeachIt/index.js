@@ -65,19 +65,23 @@ const TeachIt = ({
     >
       <div ref={ref}>
         <div className='container-fluid mt-4'>
-          <div className='row'>
-            <div className='col-12 bg-light-gray py-3 p-3 align-items-center'>
-              <div className='fs-5 mb-2'>
-                <i className="bi-alarm fs-4 me-2"></i>
-                {Data.lessonDur}
+          {Data.lessonDur && (
+            <div className='row'>
+              <div className='col-12 bg-light-gray py-3 p-3 align-items-center'>
+                <div className='fs-5 mb-2'>
+
+                  <i className="bi-alarm fs-4 me-2"></i>
+                  {Data.lessonDur}
+
+                </div>
+                <p className='mb-0'>{Data.lessonPreface && (Data.lessonPreface)}</p>
               </div>
-              <p className='mb-0'>{Data.lessonPreface}</p>
             </div>
-          </div>
+          )}
         </div>
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
-            <h3>Available Grade Bands</h3>
+            <h3 className='fs-5'>Available Grade Bands</h3>
             {gradeVariations.map((variation, i) => (
               <label
                 key={i}
@@ -97,7 +101,7 @@ const TeachIt = ({
             ))}
           </div>
           <div className="col w-1/2">
-            <h3>Available Teaching Environments</h3>
+            <h3 className='fs-5'>Available Teaching Environments</h3>
             {environments.map(env => (
               <label
                 className='text-capitalize d-block mb-1'
@@ -119,7 +123,7 @@ const TeachIt = ({
         </div>
         {selectedGradeResources && (
           <div className='d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11'>
-            <div className="row flex-nowrap align-items-center col-md-8 position-relative">
+            <div className="row flex-nowrap align-items-center justify-content-center col-md-8 position-relative">
               <a
                 target='_blank'
                 rel='noopener noreferrer'
@@ -134,10 +138,9 @@ const TeachIt = ({
                   <span style={{ lineHeight: "17px", fontSize: "14px" }} className="d-inline d-sm-none">{selectedGradeResources.linkText}</span>
                 </div>
               </a>
-              <div style={{ width: "70px" }} className='p-0 mt-0 d-flex justify-content-center align-items-center'>
+              <div style={{ width: "2rem" }} className='p-0 ms-1 mt-0 d-flex justify-content-center align-items-center'>
                 <AiOutlineQuestionCircle
                   className="downloadTipIcon"
-                  style={{ fontSize: "1.75rem" }}
                   onClick={handleIconClick}
                 />
               </div>
