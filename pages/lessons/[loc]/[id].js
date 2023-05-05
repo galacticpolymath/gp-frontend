@@ -45,8 +45,6 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
   return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
 }
 
-
-
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
