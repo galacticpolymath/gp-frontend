@@ -39,8 +39,8 @@ const TeachIt = ({
   const [selectedGradeResources, setSelectedGradeResources] = useState(allResources?.[0]?.links);
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
-  let assessmentPart = Data.classroom.resources[0].parts[Data?.classroom?.resources[0]?.parts?.length - 1];
-  assessmentPart = (assessmentPart?.title === 'Assessments') ? { chunks: assessmentPart.itemList, partTitle: assessmentPart.title } : null;
+  let { title, itemList } = Data.classroom.resources[0]?.parts ?? {};
+  const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
   const parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
   const ref = useRef();
 
