@@ -53,7 +53,6 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                 getSearchResultsAsync(event.target.value.toLowerCase())
                     .then(results => {
                         setSearchResults(results);
-                        console.log("results attained")
                     })
                     .catch(error => {
                         console.error("Something went wrong: ", error)
@@ -61,7 +60,6 @@ const SearchInputSec = ({ _searchResults, _searchInput, searchInputRef, searchRe
                         setIsLoading(false)
                     })
             }, 800)
-            console.log("loading...")
             return;
         }
         setSearchResults([]);

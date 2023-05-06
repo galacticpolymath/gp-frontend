@@ -32,7 +32,9 @@ const Carousel = ({
   return items && (
     <RRCarousel
       showStatus={false}
-      className={`${styles.Carousel} bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center`}
+      className={`${styles.Carousel} bg-light-gray rounded p-sm-3 display-flex 
+      carouselSelectedLessons flex-column justify-content-center align-items-center
+      `}
       renderThumbs={customControls.renderThumbs}
       renderItem={renderItem}
       {...customControls}

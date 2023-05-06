@@ -82,11 +82,11 @@ const LessonsCarousel = ({ mediaItems }) => {
     }, [])
     
     return (
-        <div className={`bg-light-gray rounded p-sm-3 display-flex carouselSelectedLessons flex-column justify-content-center align-items-center container ${styles.Carousel}`} >
+        <div className='shadow rounded p-0 display-flex flex-column justify-content-center autoCarouselContainer '>
             <section className='row'>
                 <section
                     style={{ height: 'fit-content' }}
-                    className="autoCarouselContainer col-12"
+                    className=" col-12"
                 >
                     <div
                         className="autoCarouselSlider"
@@ -96,7 +96,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                     </div>
                 </section>
             </section>
-            <section className="d-flex justify-content-center align-items-center mt-1 mt-sm-4">
+            <section className="d-flex justify-content-center align-items-center m-0">
                 <button
                     variant="outline-none"
                     onClick={handlePrevBtnClick}
@@ -112,7 +112,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                     <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
                 </button>
             </section>
-            <section className="mt-2 mt-sm-3">
+            <section className="mt-1">
                 <ul className='ps-0 mb-0 d-flex flex-wrap justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
                     {controlDots?.length && controlDots.map((item, index) => {
                         const { type, title, mainLink, isVisible } = item;

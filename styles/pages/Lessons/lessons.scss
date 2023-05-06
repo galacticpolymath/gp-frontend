@@ -217,33 +217,33 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.lesson-media {
-  @media (min-width: 992px) and (max-width: 1199px) {
-    max-width: 475px;
-  }
+// .lesson-media {
+//   @media (min-width: 992px) and (max-width: 1199px) {
+//     max-width: 475px;
+//   }
 
-  @media (min-width: 768px) and (max-width: 991px) {
-    max-width: 380px;
-  }
+//   @media (min-width: 768px) and (max-width: 991px) {
+//     max-width: 380px;
+//   }
 
-  @media (max-width: 767px) and (min-width: 576px) {
-    max-width: 300px;
-  }
+//   @media (max-width: 767px) and (min-width: 576px) {
+//     max-width: 300px;
+//   }
 
-  @media (max-width: 576px) {
-    width: 60vw;
-  }
-}
+//   @media (max-width: 575px) {
+//     width: 60vw;
+//   }
+// }
 
-.pdf-media {
-  @media (min-width: 576px) and (max-width: 1199px) {
-    max-width: 450px;
-  }
+// .pdf-media {
+//   @media (min-width: 576px) and (max-width: 1199px) {
+//     max-width: 450px;
+//   }
 
-  @media (max-width: 575px) {
-    max-width: 205px;
-  }
-}
+//   @media (max-width: 575px) {
+//     max-width: 205px;
+//   }
+// }
 
 .lessonSecsNavDotsListContainer {
   top: 95px;
@@ -319,6 +319,18 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.sponsorImg{
+  min-width: 210px;
+  min-height: 180px;
+
+  @media(max-width: 575px){
+    max-width: 225px;
+    // to override Image component's default css values
+    top: 50% !important;  
+    left: 50% !important; 
+    transform: translate(-50%, -50%) !important;
+  }
+}
 
 // teachIt section
 .downloadTipIcon{

@@ -17,16 +17,19 @@ const CollapsibleLessonSection = ({
   accordionId,
   _sectionDots,
   isAvailLocsMoreThan1,
+  highlighted = false,
 }) => {
   const ref = useRef();
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
+  const _h2Id = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
 
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}
       id={(accordionId || SectionTitle).replace(/[\s!]/gi, '_').toLowerCase()}
       className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} ${className} collapsibleLessonSection`}
-      buttonClassName="btn btn-primary-light w-100 text-left"
+      buttonClassName={`btn ${highlighted ? '' : 'btn-primary-light'} w-100 text-left`}
+      highlighted={highlighted}
       button={(
         <div className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} container position-relative mx-auto text-black d-flex justify-content-between align-items-center py-1`}>
           <h2
@@ -39,6 +42,7 @@ const CollapsibleLessonSection = ({
           <i className="fs-3 bi-chevron-down"></i>
           <i className="fs-3 bi-chevron-up"></i>
           <div id={h2Id} style={{ height: 30, width: 30, transform: 'translateY(-150px)' }} className='position-absolute' />
+          <div id={_h2Id} style={{ height: 30, width: 30, transform: 'translateY(-150px)' }} className='position-absolute' />
         </div>
       )}
     >
