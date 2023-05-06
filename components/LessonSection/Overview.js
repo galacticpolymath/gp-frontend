@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 
 // GOAL: pass the object that contains the old lesson data for the current lesson 
@@ -27,10 +27,17 @@ const Overview = ({
   oldLessonImgUrls
 }) => {
   const ref = useRef();
-  useLessonElementInView(_sectionDots, SectionTitle, ref);
-  
+  const [backUpImgs, setBackUpImgs] = useState({ SteamEpaulette: null, SteamEpaulette_vert: null });
 
-  // GOAL: if there is an error in display the picture for the overview, then get the old lesson, and display the picture from the old lesson (SteamEpaulette.url)
+  useLessonElementInView(_sectionDots, SectionTitle, ref);
+
+  const handleSteamEpauletteError = () => {
+    setBackUpImgs({ ...backUpImgs, SteamEpaulette: oldLessonImgUrls.SteamEpaulette })
+  }
+
+  const handleSteamEpauletteVertError = () => {
+    setBackUpImgs({ ...backUpImgs, SteamEpaulette_vert: oldLessonImgUrls.SteamEpaulette_vert })
+  }
 
   return (
     <CollapsibleLessonSection
@@ -104,7 +111,7 @@ const Overview = ({
                 <div className="d-none d-sm-grid">
                   Subject breakdown by standard alignments:
                   <Image
-                    src={SteamEpaulette.url}
+                    src={backUpImgs.SteamEpaulette ?? SteamEpaulette.url}
                     alt="Subject breakdown by standard alignments"
                     priority
                     height={160}
@@ -114,13 +121,14 @@ const Overview = ({
                       height: 'auto',
                       width: '100%',
                     }}
+                    onError={handleSteamEpauletteError}
 
                   />
                 </div>
 
                 <div className="d-sm-flex d-sm-none  row justify-content-start pb-2">
                   <Image
-                    src={SteamEpaulette_vert.url}
+                    src={backUpImgs.SteamEpaulette_vert ?? SteamEpaulette_vert.url}
                     alt="Subject breakdown by standard alignments"
                     priority
                     height={1320}
@@ -131,6 +139,7 @@ const Overview = ({
                       width: 'auto',
                     }}
                     className='col p-0 d-flex align-self-end'
+                    onError={handleSteamEpauletteVertError}
                   />
                   <div className="col text-start align-content-center mt-3">
                     <i className="bi bi-arrow-90deg-left fs-2 mb-0 d-flex "></i>
