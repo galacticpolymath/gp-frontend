@@ -7,6 +7,10 @@ import RichText from '../RichText';
 import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 
+// GOAL: pass the object that contains the old lesson data for the current lesson 
+
+// get where the Overview comp is rendered 
+
 const Overview = ({
   index,
   LearningSummary,
@@ -20,9 +24,13 @@ const Overview = ({
   Tags,
   _sectionDots,
   SectionTitle,
+  oldLessonImgUrls
 }) => {
   const ref = useRef();
   useLessonElementInView(_sectionDots, SectionTitle, ref);
+  
+
+  // GOAL: if there is an error in display the picture for the overview, then get the old lesson, and display the picture from the old lesson (SteamEpaulette.url)
 
   return (
     <CollapsibleLessonSection
@@ -90,7 +98,7 @@ const Overview = ({
             </div>
           </div>
 
-          {SteamEpaulette && SteamEpaulette.url && (
+          {SteamEpaulette?.url && (
             <Link passHref href="#learning_standards">
               <div className='position-relative'>
                 <div className="d-none d-sm-grid">

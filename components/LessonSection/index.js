@@ -64,16 +64,41 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 
-const LessonSection = ({ index, section, _sectionDots, _isScrollListenerOn, _wasDotClicked }) => {
+// the array below will have the following format: the name of the section, fields that contain the url
+
+const SECTIONs_WITH_PICS = [ {  name: 'Overview', targetFields: ['SteamEpaulette', 'SteamEpaulette_vert'] } ]
+const NAMES_OF_SECS_WITH_PICS = SECTIONs_WITH_PICS.map( section => section.name )
+
+const LessonSection = ({ index, section, _sectionDots, oldLesson }) => {
   const Component = sectionTypeMap[section.__component];
-  const [wasDotClicked, setWasDotClicked] = _wasDotClicked;
-  const [isScrollListenerOn, setIsScrollListenerOn] = _isScrollListenerOn;
-  const _section = { ...section, _sectionDots };
+  const compProps = { ...section, _sectionDots };
+  
+  if(NAMES_OF_SECS_WITH_PICS.includes(Component.name)){
+    const targetSection = oldLesson.Section[Component.name.toLowerCase()]
+    // GOAL: get the image urls of the target section using the target fields and pass them to the component
+    // an object is creatd placed into the prop of oldLessonImgUrls via their names (i.e.: the object will have SteamEpaulette as its field, and its image url as its value)
+    // loop through targetFields, and for each iteration do the following: create a key value pair for the oldLessonImgUrls. The key will be the value of the iteration
+    // and the value will be the targetSection['value of the iteration']
+    // loop through the targetFields array
+    // get the targetFields array 
+    // the target section is attained 
+    // get the targetSection from  the SECTION_WITH_PICS array
+    // create an object called oldLessonImgUrls
+    let oldLessonImgUrls = {}
+    const { targetFields } = SECTIONs_WITH_PICS.find( sectionWithPics => sectionWithPics.name === Component.name)
+
+    targetFields.forEach(targetField => {
+      oldLessonImgUrls[targetField] = targetSection[targetField]?.url
+    })
+    compProps.oldLessonImgUrls = oldLessonImgUrls
+  }
+
+
   const parentId = `${section.SectionTitle}-parent-${index}`;
   
   return Component ? (
     <div id={parentId} className={`SectionHeading ${section.SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()}`}>
-      <Component index={index} {..._section} />
+      <Component index={index} {...compProps} />
     </div>
   ) : (
     <div>Invalid section {section.__component}</div>
