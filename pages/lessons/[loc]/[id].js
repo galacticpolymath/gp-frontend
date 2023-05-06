@@ -44,8 +44,6 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
   return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
 }
 
-
-
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
@@ -161,7 +159,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: `Lesson Title: ${lesson.Title}`, description: removeHtmlTags(lesson.Section.overview.Description), imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
+  const layoutProps = { title: `Lesson Title: ${lesson.Title}`, description: lesson?.Section?.overview?.Description ? removeHtmlTags(lesson.Section.overview.Description) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
   return (
     <Layout {...layoutProps}>
