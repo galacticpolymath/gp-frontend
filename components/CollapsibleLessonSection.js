@@ -17,6 +17,7 @@ const CollapsibleLessonSection = ({
   accordionId,
   _sectionDots,
   isAvailLocsMoreThan1,
+  highlighted = false,
 }) => {
   const ref = useRef();
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
