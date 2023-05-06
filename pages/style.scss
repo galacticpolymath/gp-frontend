@@ -470,6 +470,11 @@ ol li {
 }
 
 
+img {
+  image-rendering: -webkit-optimize-contrast;
+  // image-rendering: pixelated;
+}
+
 
 .w-sm-75 {
   @media(min-width: 576px) {
@@ -573,4 +578,3 @@ ol li {
     }
   }
 }
-

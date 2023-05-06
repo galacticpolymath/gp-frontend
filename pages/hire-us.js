@@ -22,10 +22,12 @@ import IntroSecHireUs from '../components/HireUsComps/sections/IntroSecHireUs';
 import WhatDoWeDoSec from '../components/HireUsComps/sections/WhatDoWeDoSec';
 import HowDoesItWorkSec from '../components/HireUsComps/sections/HowDoesItWorkSec';
 import WhatYouWillGetSec from '../components/HireUsComps/sections/WhatYouWillGetSec';
+import { oldLessonUrl } from '../apiGlobalVals';
 
 // making modal left text align
 
-const HireUsPage = () => {
+const HireUsPage = ({ uOfMLogo }) => {
+  console.log('uOfMLogo: ', uOfMLogo)
   const [tiersInfoForModalArr, setTiersInfoForModalArr] = useState(tiersInfoForModal.map(tier => ({ ...tier, isModalOn: false })));
 
   return (
@@ -108,5 +110,18 @@ const HireUsPage = () => {
     </>
   );
 };
+
+export const getStaticProps = async _ => {
+  const oldLessonRes = await fetch(oldLessonUrl);
+  const oldLessons = await oldLessonRes.json();
+  const oldLesson = oldLessons.find(lesson => `${lesson.id}` === '2' && `${lesson.locale}` === 'en-US');
+
+  return {
+    props: {
+      uOfMLogo: oldLesson.SponsorImage.url
+    }
+  }
+};
+
 
 export default HireUsPage;
