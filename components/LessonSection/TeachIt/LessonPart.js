@@ -30,7 +30,9 @@ const LessonPart = ({
     >
       <>
         <ol className='mt-3'>
-          {linkResources?.length && linkResources.map(item => (
+          {linkResources?.length && linkResources.map(item => {
+            console.log('item: ', item)
+            return (
             <li key={item.itemTitle} className='mb-0'>
               <strong><RichText content={item.itemTitle} /></strong>
               <div className='fst-italic mb-2' style={{ color:'#353637' }}>
@@ -41,7 +43,6 @@ const LessonPart = ({
                 />
               </div>
               <ul>
-                {/* TODO: DATA: always want an array */}
                 {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => (
                   <li key={i}>
                     <a
@@ -55,7 +56,7 @@ const LessonPart = ({
                 ))}
               </ul>
             </li>
-          ))}
+          )})}
         </ol>
 
         {(!isOnLastPart && durList && chunks) &&

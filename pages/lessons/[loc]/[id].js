@@ -20,7 +20,8 @@ import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavD
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
 import useScrollHandler from '../../../customHooks/useScrollHandler';
-import { lessonsUrl, oldLessonUrl } from '../../../apiGlobalVals';
+import { lessonsUrl, oldLessonsUrl } from '../../../apiGlobalVals';
+
 
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
@@ -45,7 +46,6 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 }
 
 const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
-  console.log('lesson: ', lesson)
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
   const router = useRouter()
@@ -258,7 +258,6 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
 
 export const getStaticPaths = async () => {
   const res = await fetch(lessonsUrl);  
-  const oldLessonRes = await fetch(oldLessonUrl);
   const lessons = await res.json();
   const paths = lessons.map(lesson => ({
     params: { id: `${lesson.id}`, loc: `${lesson.locale}` },
@@ -269,7 +268,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
   const res = await fetch(lessonsUrl)
-  const oldLessonRes = await fetch(oldLessonUrl);
+  const oldLessonRes = await fetch(oldLessonsUrl);
   const oldLessons = await oldLessonRes.json();
   const lessons = await res.json();
   const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
