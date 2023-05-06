@@ -5,6 +5,10 @@ import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
 
+// WHAT IS HAPPENING, THE PROBLEM: the lesson links are not showing up for lesson 4
+// GOAL: have the lesson links show up for lesson 4 
+
+
 const LessonPart = ({
   partNum,
   partTitle,
@@ -15,6 +19,7 @@ const LessonPart = ({
   const isOnLastPart = partTitle === 'Assessments';
   const durList = isOnLastPart ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
   const linkResources = isOnLastPart ? chunks : (resources?.[0]?.parts?.[partNum - 1]?.itemList || []);
+  debugger
 
   return (
     <Accordion
@@ -30,10 +35,11 @@ const LessonPart = ({
     >
       <>
         <ol className='mt-3'>
-          {linkResources?.length && linkResources.map(item => {
+          {!!linkResources?.length && linkResources.map(item => {
             console.log('item: ', item);
             return (
               <li key={item.itemTitle} className='mb-0'>
+                sup dude
                 <strong><RichText content={item.itemTitle} /></strong>
                 <div className='fst-italic mb-2' style={{ color:'#353637' }}>
                   <RichText
