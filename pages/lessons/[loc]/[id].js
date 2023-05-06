@@ -19,6 +19,7 @@ import { useInView } from 'react-intersection-observer';
 import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
+import { oldLessonUrl } from '../../../apiGlobalVals'
 import useScrollHandler from '../../../customHooks/useScrollHandler';
 import { lessonsUrl } from '../../../apiGlobalVals';
 
@@ -153,8 +154,12 @@ const LessonDetails = ({ lesson, availLocs }) => {
   useEffect(() => {
     document.body.addEventListener('click', handleDocumentClick);
 
+    console.log('lesson: ', lesson)
+
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
+
+
 
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
@@ -241,8 +246,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 };
 
 export const getStaticPaths = async () => {
-  // const res = await fetch('https://catalog.galacticpolymath.com/index.json');
-  const res = await fetch('https://gp-catalog.vercel.app/index.json');
+  const res = await fetch('https://catalog.galacticpolymath.com/index.json');  
   const lessons = await res.json();
   const paths = lessons.map(lesson => ({
     params: { id: `${lesson.id}`, loc: `${lesson.locale}` },
