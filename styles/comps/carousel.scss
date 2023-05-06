@@ -209,6 +209,7 @@ $feedbackTxtFontSizeDesktop: 24px;
   overflow: hidden;
   height: 100%;
   position: relative;
+  height: 100%;
 
   @media (min-width: 768px) {
     max-width: 1000px;
@@ -221,15 +222,12 @@ $feedbackTxtFontSizeDesktop: 24px;
 
 .productReviewTxt {
   @media (max-width: 767px) {
-    // display: none ;
     top: 0;
     left: 0;
   }
 
   position: absolute;
   @media (min-width: 768px) {
-    @media (min-width: 1200px) {
-    }
     transform: translateY(-20px);
   }
 
