@@ -57,7 +57,6 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
         
         if (targetSection) {
             (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
-            console.log('sectionId: ', sectionId)
             setTargetSec({ element: targetSection, id: sectionId })
         }
     }
@@ -73,10 +72,8 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
     let timerForHandleDotClick;
 
     const handleDotClick = sectionId => {
-        console.log("target section that was clicked, id: ", sectionId)
         clearTimeout(timerForHandleDotClick)
         timerForHandleDotClick = setTimeout(() => {
-            // setIsScrollListenerOn(true)
             setSectionDots(sectionDots => ({ 
                 clickedSectionId: sectionId, 
                 dots: sectionDots.dots.map(dot => {
@@ -93,7 +90,6 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
                     }
                 }),  
             }))
-            // setWillScrollElemIntoView(false);
             setIsScrollListenerOn(true);      
         }, 950)
         setIsScrollListenerOn(false);
@@ -117,7 +113,6 @@ const LessonsSecsNavDots = ({ _sectionDots, setWillGoToTargetSection, setIsScrol
     const goToSection = sectionId => {
         clearTimeout(timerForGoToSectionFn)
         timerForGoToSectionFn = setTimeout(() => {
-            // setIsScrollListenerOn(true)
             setSectionDots(sectionDots => ({ 
                 clickedSectionId: sectionId, 
                 dots: sectionDots.dots.map(dot => {

@@ -78,7 +78,6 @@ const LessonsCarousel = ({ mediaItems }) => {
 
     useEffect(() => {
         setWillApplyStyles(true);
-        console.log('mediaItems: ', mediaItems)
     }, [])
     
     return (
