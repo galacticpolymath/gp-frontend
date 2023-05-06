@@ -87,10 +87,9 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
             resetTimeout();
             const targetArr = userInputs ? userInputs : pics;
             timeoutRef.current = setTimeout(
-                () =>
-                    setIndex(prevIndex => {
-                        return (prevIndex === (targetArr.length - 1)) ? 0 : prevIndex + 1;
-                    }),
+                () => setIndex(prevIndex => {
+                    return (prevIndex === (targetArr.length - 1)) ? 0 : prevIndex + 1;
+                }),
                 4000
             );
 
@@ -125,7 +124,7 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                         />
                                                     </div>
                                                     :
-                                                    <div style={{ width: '250px',  height: "125px" }} className='position-relative d-sm-block d-flex justify-content-center align-items-center'>
+                                                    <div key={index} style={{ width: '250px', height: "125px" }} className='position-relative d-sm-block d-flex justify-content-center align-items-center'>
                                                         <Image
                                                             src={path}
                                                             alt={alt}
