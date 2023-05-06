@@ -21,7 +21,7 @@
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(55px);
   }
 }
@@ -75,7 +75,7 @@
     min-width: 565px; 
   }
 
-  @media(max-width: 575px){
+  @media(max-width: 576px){
     height: 575px; 
   }
 
@@ -85,7 +85,7 @@
 }
 
 .longClientReview{
-  @media(max-width: 575px){
+  @media(max-width: 576px){
     transform: translateY(43px);
 
     > section:first-child{
@@ -106,7 +106,7 @@
 
 
 .johanaReviewStyles{
-  @media(max-width: 575px){
+  @media(max-width: 576px){
     transform: translateY(50px);
   }
 

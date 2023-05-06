@@ -42,7 +42,7 @@ $feedbackTxtFontSizeDesktop: 22px;
     max-width: 1224px;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     width: 95%;
   }
 }
@@ -68,7 +68,7 @@ $feedbackTxtFontSizeDesktop: 22px;
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     max-width: 450px;
   }
 }
@@ -100,11 +100,12 @@ $feedbackTxtFontSizeDesktop: 22px;
 
   @media (min-width: 1200px) {
     padding-left: 10px;
+    padding-right: 10px;
   }
 
   font-size: $feedbackTxtFontSizeDesktop;
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     width: fit-content;
     padding: 0px 5px 0px 5px;
     font-size: 1.15rem;
@@ -143,14 +144,14 @@ $feedbackTxtFontSizeDesktop: 22px;
 }
 
 .lessonTitle{
-  @media(max-width: 575px){
+  @media(max-width: 576px){
     font-size: 1.0625rem;
     line-height: 18px;
   }
 }
 
 .lessonRelevanceTxt{
-  @media(max-width: 575px){
+  @media(max-width: 576px){
     font-size: .9rem;
     line-height: 18px;
   }
@@ -167,7 +168,7 @@ $feedbackTxtFontSizeDesktop: 22px;
     font-weight: 800;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     padding-left: 8px;
     padding-right: 8px;
   }
@@ -253,7 +254,7 @@ $feedbackTxtFontSizeDesktop: 22px;
     transform: translateY(75px);
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(65px);
 
     @media (max-width: 425px) {
@@ -281,7 +282,7 @@ $feedbackTxtFontSizeDesktop: 22px;
 
   > section {
     > section:first-child {
-      @media (max-width: 575px) {
+      @media (max-width: 576px) {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -379,7 +380,7 @@ $feedbackTxtFontSizeDesktop: 22px;
       height: 170px;
     }
 
-    @media (max-width: 575px) {
+    @media (max-width: 576px) {
       width: 140px;
       height: 140px;
     }
@@ -420,14 +421,14 @@ $feedbackTxtFontSizeDesktop: 22px;
 
 
 .picsCardContainer {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     width: 50%;
     min-width: 255.5px;
   }
 }
 
 .carouselImgContainer:not(:first-child) {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     margin-top: 30px;
   }
 }
@@ -466,13 +467,13 @@ $feedbackTxtFontSizeDesktop: 22px;
     width: 1000px;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     height: 400px;
   }
 }
 
 .grantReviewShortTxtStyles {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     > section:first-child {
       transform: translateY(40px);
 
@@ -492,7 +493,7 @@ $feedbackTxtFontSizeDesktop: 22px;
     transform: translateY(10px);
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     > section:first-child {
       transform: translateY(20px);
     }
@@ -500,13 +501,13 @@ $feedbackTxtFontSizeDesktop: 22px;
 }
 
 .grantReviewItemCarousel.longTxtContent {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(-50px);
   }
 }
 
 .grantReviewerBulletPtsSec {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(-50px);
   }
 
@@ -573,7 +574,7 @@ $feedbackTxtFontSizeDesktop: 22px;
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     > section > section:last-of-type {
       transform: translateY(-5px);
     }
@@ -613,7 +614,7 @@ $feedbackTxtFontSizeDesktop: 22px;
 
 .carouselImgContainer:first-of-type,
 .carouselImgContainer:nth-last-of-type(2) {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     img {
       width: 265px;
     }
@@ -643,7 +644,7 @@ $feedbackTxtFontSizeDesktop: 22px;
 }
 
 .carouselImgContainer {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
   }
 }
 
@@ -716,7 +717,7 @@ $feedbackTxtFontSizeDesktop: 22px;
   @media (max-width: 768px) {
     transform: translateY(110px);
 
-    @media (max-width: 575px) {
+    @media (max-width: 576px) {
       transform: translateY(80px);
     }
   }
@@ -748,7 +749,7 @@ $feedbackTxtFontSizeDesktop: 22px;
 }
 
 .nonStudentInfoSec.shortQuoteInfoSec {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(100px);
   }
 }
@@ -821,7 +822,7 @@ $feedbackTxtFontSizeDesktop: 22px;
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     height: 250px;
   }
 
@@ -831,7 +832,7 @@ $feedbackTxtFontSizeDesktop: 22px;
 }
 
 .grantReviewerBulletPtsSec {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     margin-top: 55px;
     transform: translateY(0px);
   }
@@ -869,7 +870,7 @@ $feedbackTxtFontSizeDesktop: 22px;
         > span {
           width: 75%;
 
-          @media (max-width: 575px) {
+          @media (max-width: 576px) {
             width: 100%;
             line-height: 26px;
             padding: 0px 0px 0px 0px;
@@ -899,7 +900,7 @@ $feedbackTxtFontSizeDesktop: 22px;
 .studentTestimony {
   height: 100px;
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(60px);
   }
 
@@ -992,11 +993,11 @@ $feedbackTxtFontSizeDesktop: 22px;
 }
 
 .teacherTestimony {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(20px);
   }
 
-  @media (min-width: 375px) and (max-width: 575px) {
+  @media (min-width: 375px) and (max-width: 576px) {
     transform: translateY(40px);
   }
 
@@ -1011,7 +1012,7 @@ $feedbackTxtFontSizeDesktop: 22px;
         // transform: translateY(7px) ;
       }
 
-      @media (max-width: 575px) {
+      @media (max-width: 576px) {
         transform: translateY(-5px);
         line-height: 15px;
       }
@@ -1111,7 +1112,7 @@ $feedbackTxtFontSizeDesktop: 22px;
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     line-height: 16px;
     transform: translateY(20px);
   }
@@ -1138,7 +1139,7 @@ $feedbackTxtFontSizeDesktop: 22px;
     bottom: -3px;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     bottom: -5px;
   }
 }
@@ -1150,7 +1151,7 @@ $feedbackTxtFontSizeDesktop: 22px;
 }
 
 .grantReviewsBulletPtsSec {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     bottom: -5px;
   }
 }
