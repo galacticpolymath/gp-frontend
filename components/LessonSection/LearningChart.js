@@ -14,21 +14,21 @@ const LearningChart = ({
   Badge,
   _sectionDots,
   SectionTitle,
-  oldLessonImgUrlsObj
+  oldLessonImgUrlsObj,
 }) => {
   const ref = useRef();
-  const [backUpImgUrl, setBackUpImgUrl] = useState(null)
+  const [backUpImgUrl, setBackUpImgUrl] = useState(null);
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   const handleImgError = () => {
-    setBackUpImgUrl(oldLessonImgUrlsObj.Badge)
-  }
+    setBackUpImgUrl(oldLessonImgUrlsObj.Badge);
+  };
 
   return (
     <div
       ref={ref}
-      className='container pt-4'
+      className="container pt-4"
       id="learning_standards"
     >
       <div className="chartContainer position-relative w-100">
@@ -38,7 +38,8 @@ const LearningChart = ({
           height={900}
           style={{
             objectFit: 'contain',
-            width: '100%', height: 'auto',
+            width: '100%',
+            height: 'auto',
           }}
           alt="Learning Standards Chart"
           onError={handleImgError}
@@ -46,10 +47,10 @@ const LearningChart = ({
       </div>
       <Accordion
         id="learningChart"
-        buttonClassName='w-100 text-start my-3'
+        buttonClassName="w-100 text-start my-3"
         button={(
-          <div className='d-flex justify-content-between align-items-center'>
-            <h3 className='fs-5 mb-0'>{Title}</h3>
+          <div className="d-flex justify-content-between align-items-center">
+            <h3 className="fs-5 mb-0">{Title}</h3>
             <i className="fs-4 bi-chevron-down"></i>
             <i className="fs-4 bi-chevron-up"></i>
           </div>

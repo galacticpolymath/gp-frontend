@@ -24,7 +24,7 @@ const Overview = ({
   Tags,
   _sectionDots,
   SectionTitle,
-  oldLessonImgUrlsObj
+  oldLessonImgUrlsObj,
 }) => {
   const ref = useRef();
   const [backUpImgs, setBackUpImgs] = useState({ SteamEpaulette: null, SteamEpaulette_vert: null });
@@ -32,12 +32,12 @@ const Overview = ({
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   const handleSteamEpauletteError = () => {
-    setBackUpImgs({ ...backUpImgs, SteamEpaulette: oldLessonImgUrlsObj.SteamEpaulette })
-  }
+    setBackUpImgs({ ...backUpImgs, SteamEpaulette: oldLessonImgUrlsObj.SteamEpaulette });
+  };
 
   const handleSteamEpauletteVertError = () => {
-    setBackUpImgs({ ...backUpImgs, SteamEpaulette_vert: oldLessonImgUrlsObj.SteamEpaulette_vert })
-  }
+    setBackUpImgs({ ...backUpImgs, SteamEpaulette_vert: oldLessonImgUrlsObj.SteamEpaulette_vert });
+  };
 
   return (
     <CollapsibleLessonSection
@@ -50,7 +50,6 @@ const Overview = ({
       <div ref={ref} className='container mb-4'>
         <div className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center">
           {LearningSummary && (
-
             <div className="g-col-12 bg-white p-3 rounded-3 mt-2 text-start  align-items-center">
               <Image
                 src="/imgs/gp_logo_gradient_transBG.png"

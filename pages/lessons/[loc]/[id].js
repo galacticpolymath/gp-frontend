@@ -158,8 +158,6 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
 
-
-
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [imgBannerSrcOnError, setImgBannerSrcOnError] = useState(null);
   const [imgSponsorSrcOnError, setImgSponsorSrcOnError] = useState(null);
@@ -278,7 +276,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
 
   if (!lesson?.Section?.procedure?.Data) {
-    return { props: { lesson, availLocs, oldLesson } };
+    return oldLesson ? { props: { lesson, availLocs, oldLesson } } : { props: { lesson, availLocs } };
   }
 
   lesson.Section['teaching-materials'].Data = {
