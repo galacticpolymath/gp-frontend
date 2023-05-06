@@ -31,32 +31,33 @@ const LessonPart = ({
       <>
         <ol className='mt-3'>
           {linkResources?.length && linkResources.map(item => {
-            console.log('item: ', item)
+            console.log('item: ', item);
             return (
-            <li key={item.itemTitle} className='mb-0'>
-              <strong><RichText content={item.itemTitle} /></strong>
-              <div className='fst-italic mb-2' style={{ color:'#353637' }}>
-                <RichText
-                  content={item.itemDescription}
-                  className='mb-n5'
-                  css={{ color: 'red' }}
-                />
-              </div>
-              <ul>
-                {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => (
-                  <li key={i}>
-                    <a
-                      href={link.url}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                    >
-                      {link.linkText}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          )})}
+              <li key={item.itemTitle} className='mb-0'>
+                <strong><RichText content={item.itemTitle} /></strong>
+                <div className='fst-italic mb-2' style={{ color:'#353637' }}>
+                  <RichText
+                    content={item.itemDescription}
+                    className='mb-n5'
+                    css={{ color: 'red' }}
+                  />
+                </div>
+                <ul>
+                  {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => (
+                    <li key={i}>
+                      <a
+                        href={link.url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                      >
+                        {link.linkText}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            );
+          })}
         </ol>
 
         {(!isOnLastPart && durList && chunks) &&

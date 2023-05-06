@@ -22,7 +22,6 @@ import { useRouter } from 'next/router';
 import useScrollHandler from '../../../customHooks/useScrollHandler';
 import { lessonsUrl, oldLessonsUrl } from '../../../apiGlobalVals';
 
-
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
