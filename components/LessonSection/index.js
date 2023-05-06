@@ -3,9 +3,7 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 import PropTypes from 'prop-types';
-
 import Overview from './Overview';
-// import TextBlock from "./TextBlock";
 import Heading from './Heading.js';
 import TeachIt from './TeachIt';
 import LearningChart from './LearningChart';
@@ -63,13 +61,46 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 
-const LessonSection = ({ index, section, _sectionDots, isAvailLocsMoreThan1 }) => {
+const SECTIONS_WITH_PICS = [
+  { name: 'Overview', targetFields: ['SteamEpaulette', 'SteamEpaulette_vert'], sectionCompName: 'Overview' },
+  { name: 'LearningChart', targetFields: ['Badge'], sectionCompName: 'learning-chart' },
+];
+const NAMES_OF_SECS_WITH_PICS = SECTIONS_WITH_PICS.map(section => section.name);
+
+const LessonSection = ({ index, section, _sectionDots, oldLesson }) => {
   const Component = sectionTypeMap[section.__component];
-  // const _section = (isAvailLocsMoreThan1 && isOnLastTwoSections) ? { ...section, _sectionDots, isAvailLocsMoreThan1: isAvailLocsMoreThan1 } : { ...section, _sectionDots };
-  const _section = { ...section, _sectionDots };
+  const compProps = { ...section, _sectionDots };
+
+  if (oldLesson && NAMES_OF_SECS_WITH_PICS.includes(Component.name)) {
+    const compName = SECTIONS_WITH_PICS.find(sectionWithPics => sectionWithPics.name === Component.name).sectionCompName;
+    const targetSection = oldLesson.Section[compName.toLowerCase()];
+    let oldLessonImgUrlsObj = null;
+    const { targetFields } = SECTIONS_WITH_PICS.find(sectionWithPics => sectionWithPics.name === Component.name);
+
+    targetFields.forEach(targetField => {
+      if (!targetSection[targetField]) {
+        console.error('No field with back-up image.');
+        return;
+      }
+
+      if (!oldLessonImgUrlsObj) {
+        oldLessonImgUrlsObj = {};
+      }
+
+      oldLessonImgUrlsObj[targetField] = targetSection[targetField]?.url;
+    });
+
+    if (oldLessonImgUrlsObj) {
+      compProps.oldLessonImgUrlsObj = oldLessonImgUrlsObj;
+    }
+  }
+
+  const parentId = `${section.SectionTitle}-parent-${index}`;
 
   return Component ? (
-    <Component index={index} {..._section} />
+    <div id={parentId} className={`SectionHeading ${section.SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()}`}>
+      <Component index={index} {...compProps} />
+    </div>
   ) : (
     <div>Invalid section {section.__component}</div>
   );

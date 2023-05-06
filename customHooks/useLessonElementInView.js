@@ -23,23 +23,16 @@ const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
         setWasRendered(true);
     }, [])
 
-    useEffect(() => {
-        if (inView && wasRendered) {
-            setSectionDots(sectionDots => sectionDots.map(sectionDot => {
-                if ((sectionDot.sectionId === h2Id) && inView) {
-                    return {
-                        ...sectionDot,
-                        isInView: true,
-                    };
-                }
-
-                return {
-                    ...sectionDot,
-                    isInView: false,
-                };
-            }));
-        }
-    }, [inView, wasRendered]);
+    // useEffect(() => {
+    //     if (inView && wasRendered) {
+    //         setSectionDots(sectionDots => {
+    //             return {
+    //                 ...sectionDots,
+    //                 clickedSectionId: null
+    //             }
+    //         });
+    //     }
+    // }, [inView, wasRendered]);
 
     return { inView, h2Id: h2Id }
 }

@@ -87,10 +87,9 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
             resetTimeout();
             const targetArr = userInputs ? userInputs : pics;
             timeoutRef.current = setTimeout(
-                () =>
-                    setIndex(prevIndex => {
-                        return (prevIndex === (targetArr.length - 1)) ? 0 : prevIndex + 1;
-                    }),
+                () => setIndex(prevIndex => {
+                    return (prevIndex === (targetArr.length - 1)) ? 0 : prevIndex + 1;
+                }),
                 4000
             );
 
@@ -111,18 +110,28 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                         <Card.Body className="position-relative cardBodyStyles">
                             {(pics && isCardOnly) &&
                                 <div className="w-100">
-                                    <section className="w-100 d-flex flex-column flex-sm-row justify-content-center align-items-center">
+                                    <section className="w-100 d-flex flex-column imgsSecCardContainer flex-sm-row justify-content-center align-items-center">
                                         {
                                             pics.map(({ path, alt }, index) => (
-                                                <div key={index} className="carouselImgContainer position-relative">
-                                                    <Image
-                                                        src={path}
-                                                        alt={alt}
-                                                        fill
-                                                        sizes="(max-width: 575px) 125px, (max-width: 767px) 130px, 140px"
-                                                        style={{ objectFit: 'contain' }}
-                                                    />
-                                                </div>
+                                                index !== 3 ?
+                                                    <div key={index} className="carouselImgContainer position-relative">
+                                                        <Image
+                                                            src={path}
+                                                            alt={alt}
+                                                            fill
+                                                            sizes="(max-width: 575px) 125px, (max-width: 767px) 130px, 140px"
+                                                            style={{ objectFit: 'contain' }}
+                                                        />
+                                                    </div>
+                                                    :
+                                                    <div key={index} style={{ width: '250px', height: "125px" }} className='position-relative d-sm-block d-flex justify-content-center align-items-center'>
+                                                        <Image
+                                                            src={path}
+                                                            alt={alt}
+                                                            fill
+                                                            style={{ width: "100%", objectFit: 'contain' }}
+                                                        />
+                                                    </div>
                                             )
                                             )
                                         }
@@ -165,7 +174,6 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                             {userInputs.map((userInput, index) => {
                                                 const { feedback, person, occupation, city, stars, product, institution, location, cssClass, uniqueCssClass, quoteInfo } = userInput;
 
-
                                                 return (
                                                     <div className={`${cssClass} autoCarouselItem position-relative ${uniqueCssClass ?? ''}`} key={index}>
                                                         <section className="w-100 h-100 d-flex flex-column flex-sm-row justify-content-sm-start justify-content-sm-center  align-items-center justify-content-md-start align-items-md-stretch position-relative">
@@ -174,11 +182,9 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                                                                     {`⭐ ${stars}/5`} stars {<>for '<i>{product}</i>':</>}
                                                                 </span>
                                                             }
-                                                            {/* pb-sm-5 mb-sm-5 me-sm-3  */}
                                                             <section className='pb-md-0 mb-md-0 me-md-0  d-flex justify-content-center align-items-center w-100'>
                                                                 <span className="text-dark fst-italic text-center text-sm-start feedbackTxt fw275 position-relative">
                                                                     "{feedback}"
-                                                                    {/* d-none d-md-flex */}
                                                                     <span className={`'d-none d-sm-flex justify-content-center align-items-center align-items-sm-stretch justify-content-sm-end mt-3 mt-sm-0 quoteInfoTxts position-absolute ${quoteInfo ?? ""}`} >
                                                                         <span className='flex-column d-none d-sm-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch quoteInfoSpan'>
                                                                             <span className="text-wrap text-center text-sm-start text-dark feedBackTxtName fst-italic fw275">- {person}</span>

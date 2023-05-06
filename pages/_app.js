@@ -21,7 +21,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
-      <GoogleAnalytics id={process.env.GOOGLE_ANALYTICS_ID} trackPageViews />
+      <GoogleAnalytics gaMeasurementId='G-8B58Y7HD3T' trackPageViews />
       <LessonsCarouselProvider>
         <ModalProvider>
           <Component {...pageProps} />

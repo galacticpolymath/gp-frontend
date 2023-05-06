@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon'
-import { useEffect } from 'react';
+import { lessonsUrl } from '../../apiGlobalVals';
 
 const LessonsPage = ({ lessons }) => {
 

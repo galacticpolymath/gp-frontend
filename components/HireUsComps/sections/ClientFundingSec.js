@@ -20,7 +20,7 @@
 import CardContainer from '../CardContainer'
 import clientFundingSourcesPics from '../../../data/HireUsPg/clientFundingSourcesPics.json'
 
-const ClientFundingSec = ({isMobile }) => {
+const ClientFundingSec = ({ isMobile }) => {
     return (
         isMobile ?
             <section className="mt-5 d-md-none">

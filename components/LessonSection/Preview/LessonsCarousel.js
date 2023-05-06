@@ -24,11 +24,8 @@ import { useMemo, useState } from 'react';
 import styles from './index.module.scss';
 import LessonSlide from './LessonSlide';
 import { customControls, getVideoThumb } from './utils';
-import { Button } from 'react-bootstrap';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import Image from 'next/image';
 import { useEffect } from 'react';
-import { getIconStyles } from '../../../helperFns/getIconStyles';
 import Dot from '../NavDots/Dot';
 
 

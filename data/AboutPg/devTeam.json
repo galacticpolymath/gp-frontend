@@ -40,6 +40,10 @@
             {
                 "link": "https://github.com/Toriong",
                 "icon": "bi bi-github"
+            },
+            {
+                "link": "https://www.twitch.tv/gtorio7",
+                "reactIcon": "BsTwitch"
             }
         ]
     },

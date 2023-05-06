@@ -66,9 +66,7 @@ $toolTipColor: #f0f4ff;
 }
 
 .jobVizCareer.cardOnLessonsPg.linkCard {
-  // background-color: pink !important;;
   @media (max-width: 575px) {
-    // border: solid pink;
     max-width: 447px !important;
   }
 }
@@ -343,5 +341,32 @@ $toolTipColor: #f0f4ff;
   @media(max-width: 767px){
     width: 90%;
   }
+}
+
+$active-dot-teacher-materials-dot: #cb1f8e;
+$active-dot-color: rgba(44, 131, 195, 0.6) !important; 
+
+
+.active-dot-teacher-materials{
+  background-color: $active-dot-teacher-materials-dot;
+}
+
+.active-dot{
+  background-color: $active-dot-color;
+}
+
+.sectionNavDot{
+  background-color: rgba(0,0,0,.1);
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;;
+  display: inline-block; 
+  margin: 0 5px; 
+  border: 2px solid; 
+  border-color: #bebebe; 
+  padding: 4px; 
+  opacity: 1; 
+  transition: all .15s ease-in; 
+  transition-property: background-color, border-color;
 }
 

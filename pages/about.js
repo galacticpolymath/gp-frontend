@@ -4,7 +4,6 @@
 /* eslint-disable react/jsx-indent-props */
 import Hero from '../components/Hero';
 import Layout from '../components/Layout';
-// import HeroImage from '../assets/img/city_network.jpg';
 import styles from './index.module.css';
 import TeamMemberCard from '../components/TeamMemberCard';
 import productTeam from '../data/AboutPg/productTeam.json';

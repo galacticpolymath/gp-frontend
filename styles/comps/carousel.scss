@@ -1,7 +1,7 @@
 @import "../globalVars.scss";
 
 $carouselBackgroundColor: #ffeded;
-$feedbackTxtFontSizeDesktop: 24px;
+$feedbackTxtFontSizeDesktop: 22px;
 
 * {
   box-sizing: border-box;
@@ -27,7 +27,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 
 .navBtnLeftCarousel,
 .navBtnRightCarousel {
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     svg {
       font-size: 50px;
     }
@@ -42,7 +42,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     max-width: 1224px;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     width: 95%;
   }
 }
@@ -68,7 +68,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     max-width: 450px;
   }
 }
@@ -92,20 +92,20 @@ $feedbackTxtFontSizeDesktop: 24px;
   height: fit-content;
 
   @media (min-width: 768px) and (max-width: 991px) {
-    line-height: 23px;
-  }
+    line-height: 23px;  }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     width: 400px;
   }
 
   @media (min-width: 1200px) {
     padding-left: 10px;
+    padding-right: 10px;
   }
 
   font-size: $feedbackTxtFontSizeDesktop;
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     width: fit-content;
     padding: 0px 5px 0px 5px;
     font-size: 1.15rem;
@@ -144,14 +144,14 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .lessonTitle{
-  @media(max-width: 575px){
+  @media(max-width: 576px){
     font-size: 1.0625rem;
     line-height: 18px;
   }
 }
 
 .lessonRelevanceTxt{
-  @media(max-width: 575px){
+  @media(max-width: 576px){
     font-size: .9rem;
     line-height: 18px;
   }
@@ -164,11 +164,11 @@ $feedbackTxtFontSizeDesktop: 24px;
     font-weight: 400;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     font-weight: 800;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     padding-left: 8px;
     padding-right: 8px;
   }
@@ -184,7 +184,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     height: 150px;
   }
 }
@@ -202,41 +202,36 @@ $feedbackTxtFontSizeDesktop: 24px;
       padding-top: 20px;
     }
   }
-
-  @media (min-width: 1300px) {
-    // min-height: 210px ;
-  }
 }
 
 .autoCarouselContainer {
   margin: 0 auto;
   overflow: hidden;
+  height: 100%;
   position: relative;
+  height: 100%;
 
   @media (min-width: 768px) {
     max-width: 1000px;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     max-width: 500px;
   }
 }
 
 .productReviewTxt {
-  @media (max-width: 767px) {
-    // display: none ;
+  @media (max-width: 768px) {
     top: 0;
     left: 0;
   }
 
   position: absolute;
   @media (min-width: 768px) {
-    @media (min-width: 1200px) {
-    }
     transform: translateY(-20px);
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     font-size: $spanFontSizeSmall;
   }
 }
@@ -244,7 +239,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 .studentInfoSec {
   width: 100%;
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     display: grid;
     align-items: center;
   }
@@ -255,11 +250,11 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .studentParentStyles {
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     transform: translateY(75px);
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(65px);
 
     @media (max-width: 425px) {
@@ -281,13 +276,13 @@ $feedbackTxtFontSizeDesktop: 24px;
   border-radius: 40px;
   width: 100%;
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     width: 100%;
   }
 
   > section {
     > section:first-child {
-      @media (max-width: 575px) {
+      @media (max-width: 576px) {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -385,7 +380,7 @@ $feedbackTxtFontSizeDesktop: 24px;
       height: 170px;
     }
 
-    @media (max-width: 575px) {
+    @media (max-width: 576px) {
       width: 140px;
       height: 140px;
     }
@@ -393,7 +388,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .carouselImgContainer:last-of-type {
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     transform: translateX(10px);
   }
 }
@@ -411,35 +406,29 @@ $feedbackTxtFontSizeDesktop: 24px;
     width: 140px;
     height: 140px;
   }
+
+  @media(min-width: 768px) and (max-width: 992px){
+    width: 105px;
+    height: 105px;
+  }
 }
 
-.carouselImgContainer:not(:first-child) {
+.imgsSecCardContainer > div:not(:first-child) {
   @media (min-width: 1200px) {
-    margin-left: 85px;
+    margin-left: 45px;
   }
 }
 
-.carouselImgContainer:nth-child(4) {
-  width: 260px;
-
-  @media(min-width: 576px){
-    width: 220px;
-  }
-
-  @media (min-width: 992px) {
-    width: 280px;
-  }
-}
 
 .picsCardContainer {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     width: 50%;
     min-width: 255.5px;
   }
 }
 
 .carouselImgContainer:not(:first-child) {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     margin-top: 30px;
   }
 }
@@ -478,13 +467,13 @@ $feedbackTxtFontSizeDesktop: 24px;
     width: 1000px;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     height: 400px;
   }
 }
 
 .grantReviewShortTxtStyles {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     > section:first-child {
       transform: translateY(40px);
 
@@ -504,7 +493,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     transform: translateY(10px);
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     > section:first-child {
       transform: translateY(20px);
     }
@@ -512,13 +501,13 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .grantReviewItemCarousel.longTxtContent {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(-50px);
   }
 }
 
 .grantReviewerBulletPtsSec {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(-50px);
   }
 
@@ -532,7 +521,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     margin-top: 25px;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     margin-top: 25px;
   }
 }
@@ -540,6 +529,16 @@ $feedbackTxtFontSizeDesktop: 24px;
 .grantReviewShortTxtStyles {
   @media (min-width: 768px) {
     height: 100px;
+  }
+
+  @media(max-width: 992px) and (min-width: 768px){
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    > section{
+      // overriding w-100 default class
+      width: 65% !important;
+    }
   }
 
   @media (min-width: 1200px) {
@@ -554,7 +553,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     > section > section > span > span {
       inset: auto -40px -60px auto;
     }
@@ -575,7 +574,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     > section > section:last-of-type {
       transform: translateY(-5px);
     }
@@ -587,9 +586,11 @@ $feedbackTxtFontSizeDesktop: 24px;
     > section {
       > section:first-child {
         width: 100%;
-        @media (max-width: 1199px) {
+
+        @media (max-width: 1200px) {
           height: 230px;
         }
+
         span {
           text-align: center;
           transform: translateY(50px);
@@ -606,21 +607,21 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     min-height: 230px;
   }
 }
 
 .carouselImgContainer:first-of-type,
 .carouselImgContainer:nth-last-of-type(2) {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     img {
       width: 265px;
     }
   }
 }
 
-@media (max-width: 767px) and (min-width: 576px) {
+@media (max-width: 768px) and (min-width: 576px) {
   .carouselImgContainer:first-of-type {
     img {
       width: 120px;
@@ -643,7 +644,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .carouselImgContainer {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
   }
 }
 
@@ -704,7 +705,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     > span {
       height: fit-content;
       transform: translateY(110px);
@@ -713,10 +714,10 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .shortQuoteInfoSec {
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     transform: translateY(110px);
 
-    @media (max-width: 575px) {
+    @media (max-width: 576px) {
       transform: translateY(80px);
     }
   }
@@ -748,7 +749,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .nonStudentInfoSec.shortQuoteInfoSec {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(100px);
   }
 }
@@ -774,7 +775,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .cardMainStylesTeachersAndStudents {
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     min-width: 560px;
   }
 
@@ -782,7 +783,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     min-width: 1150px;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     height: 360px;
   }
 
@@ -802,7 +803,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .teachersAndStudentsTestimoniesSec {
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     min-height: 220px;
     > section:first-of-type {
       transform: translateY(20px);
@@ -821,7 +822,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     height: 250px;
   }
 
@@ -831,14 +832,14 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .grantReviewerBulletPtsSec {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     margin-top: 55px;
     transform: translateY(0px);
   }
 }
 
 .grantReviewShortTxtStyles {
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     transform: translateY(30px);
   }
 }
@@ -846,11 +847,14 @@ $feedbackTxtFontSizeDesktop: 24px;
 .teacherTestimony {
   height: 100px;
 
-  @media (max-width: 1199px) and (min-width: 576px) {
+  @media (max-width: 1200px) and (min-width: 576px) {
     > section {
       > span {
         left: 10px;
-        transform: translateY(-15px);
+        
+        @media(max-width: 992px){
+          transform: translateY(-35px);
+        }
 
         @media (max-width: 768px) and (min-width: 576px) {
           transform: translateY(-25px);
@@ -858,7 +862,7 @@ $feedbackTxtFontSizeDesktop: 24px;
       }
       > section {
         > span:first-child {
-          @media (max-width: 767px) and (min-width: 576px) {
+          @media (max-width: 768px) and (min-width: 576px) {
             line-height: 24px;
           }
         }
@@ -866,7 +870,7 @@ $feedbackTxtFontSizeDesktop: 24px;
         > span {
           width: 75%;
 
-          @media (max-width: 575px) {
+          @media (max-width: 576px) {
             width: 100%;
             line-height: 26px;
             padding: 0px 0px 0px 0px;
@@ -896,7 +900,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 .studentTestimony {
   height: 100px;
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(60px);
   }
 
@@ -904,7 +908,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     transform: translateY(30px);
   }
 
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     transform: translateY(40px);
   }
 
@@ -925,15 +929,12 @@ $feedbackTxtFontSizeDesktop: 24px;
   }
 
   @media (max-width: 320px) {
-    border: solid pink;
     transform: translateY(80px);
   }
 
   > section {
-    // height: fit-content ;
     > span {
-      @media (min-width: 576px) and (max-width: 767px) {
-        // transform: translateX(-40px) ;
+      @media (min-width: 576px) and (max-width: 768px) {
         transform: translateY(-10px);
       }
     }
@@ -942,7 +943,7 @@ $feedbackTxtFontSizeDesktop: 24px;
       height: 80px;
 
       > span:first-child {
-        @media (max-width: 767px) and (min-width: 576px) {
+        @media (max-width: 768px) and (min-width: 576px) {
           line-height: 24px;
         }
       }
@@ -952,18 +953,18 @@ $feedbackTxtFontSizeDesktop: 24px;
   > section {
     > section {
       > span {
-        @media (max-width: 767px) {
+        @media (max-width: 768px) {
           text-align: center;
         }
         > span {
-          @media (max-width: 1199px) {
-            @media (min-width: 576px) and (max-width: 767px) {
+          @media (max-width: 1200px) {
+            @media (min-width: 576px) and (max-width: 768px) {
               top: 65px;
               right: -50px;
             }
 
             top: 45px;
-            right: -50px;
+            right: -30px;
           }
 
           @media (min-width: 1200px) {
@@ -973,7 +974,6 @@ $feedbackTxtFontSizeDesktop: 24px;
         }
       }
     }
-    // quote section
     > section:last-of-type {
       @media (min-width: 768px) {
         right: 230px;
@@ -993,18 +993,18 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .teacherTestimony {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(20px);
   }
 
-  @media (min-width: 375px) and (max-width: 575px) {
+  @media (min-width: 375px) and (max-width: 576px) {
     transform: translateY(40px);
   }
 
   > section {
     // quote section
     > section:last-of-type {
-      @media (max-width: 1199px) {
+      @media (max-width: 1200px) {
         right: 60px;
       }
 
@@ -1012,7 +1012,7 @@ $feedbackTxtFontSizeDesktop: 24px;
         // transform: translateY(7px) ;
       }
 
-      @media (max-width: 575px) {
+      @media (max-width: 576px) {
         transform: translateY(-5px);
         line-height: 15px;
       }
@@ -1027,7 +1027,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     transform: translateY(30px);
   }
 
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     transform: translateY(20px);
   }
 
@@ -1040,7 +1040,7 @@ $feedbackTxtFontSizeDesktop: 24px;
   font-size: $spanFontSizeSmall;
   transform: translateX(-10px);
 
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     span > span:not(:last-child) {
       display: inline-block;
       height: 18px;
@@ -1065,11 +1065,11 @@ $feedbackTxtFontSizeDesktop: 24px;
           }
 
           @media (min-width: 768px) and (max-width: 991px) {
-            top: 70px;
+            top: 90px;
             right: 20px;
           }
 
-          @media (min-width: 576px) and (max-width: 767px) {
+          @media (min-width: 576px) and (max-width: 768px) {
             top: 90px;
             right: 10px;
           }
@@ -1103,7 +1103,7 @@ $feedbackTxtFontSizeDesktop: 24px;
   bottom: -10px;
   right: 15px;
 
-  @media (max-width: 767px) and (min-width: 576px) {
+  @media (max-width: 768px) and (min-width: 576px) {
     bottom: 70px;
     right: 24px;
 
@@ -1112,7 +1112,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     line-height: 16px;
     transform: translateY(20px);
   }
@@ -1123,7 +1123,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
 
     > span:first-child {
-      @media (min-width: 576px) and (max-width: 767px) {
+      @media (min-width: 576px) and (max-width: 768px) {
         font-size: 22px;
       }
     }
@@ -1135,11 +1135,11 @@ $feedbackTxtFontSizeDesktop: 24px;
   margin-left: calc(-1 * ((100vw - 100%) / 2));
   margin-right: calc(-1 * ((100vw - 100%) / 2));
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     bottom: -3px;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     bottom: -5px;
   }
 }
@@ -1151,7 +1151,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .grantReviewsBulletPtsSec {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     bottom: -5px;
   }
 }

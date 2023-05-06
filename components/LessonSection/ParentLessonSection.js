@@ -5,15 +5,15 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import LessonSection, { NUMBERED_SECTIONS } from './index';
+import LessonSection from './index';
 
-const ParentLessonSection = ({ section, index, _sectionDots, isAvailLocsMoreThan1 }) => {
+const ParentLessonSection = ({ section, index, _sectionDots, oldLesson }) => {
     return (
         <LessonSection
             index={index + 1}
             section={section}
             _sectionDots={_sectionDots}
-            isAvailLocsMoreThan1={isAvailLocsMoreThan1}
+            oldLesson={oldLesson}
         />
     );
 };

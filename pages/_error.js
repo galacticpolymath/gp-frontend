@@ -19,12 +19,18 @@ const ErrorPg = () => (
 
 export const getServerSideProps = async (context) => {
   const REGEX = /\d+$/;
-
+  
   if (REGEX.test(context.resolvedUrl)) {
     const res = await fetch('https://gp-catalog.vercel.app/index.json');
     const lessons = await res.json();
     const lessonId = context.resolvedUrl.match(REGEX)[0];
     const targetLesson = lessons.find(lesson => lesson.id === parseInt(lessonId));
+
+    if(!targetLesson){
+      return {
+        props: {},
+      }
+    }
 
     if(!targetLesson) return { props: {} }
 
@@ -33,6 +39,7 @@ export const getServerSideProps = async (context) => {
         destination: `/lessons/${targetLesson.DefaultLocale}/${targetLesson.id}`,
         permanent: true,
       },
+      props: {},
     }
   }
 

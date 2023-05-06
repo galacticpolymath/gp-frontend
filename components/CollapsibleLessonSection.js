@@ -22,16 +22,16 @@ const CollapsibleLessonSection = ({
   const ref = useRef();
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
   const _h2Id = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
-  
+
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}
       id={(accordionId || SectionTitle).replace(/[\s!]/gi, '_').toLowerCase()}
-      className={`${className} collapsibleLessonSection`}
+      className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} ${className} collapsibleLessonSection`}
       buttonClassName={`btn ${highlighted ? '' : 'btn-primary-light'} w-100 text-left`}
       highlighted={highlighted}
       button={(
-        <div className='container position-relative mx-auto text-black d-flex justify-content-between align-items-center py-1'>
+        <div className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} container position-relative mx-auto text-black d-flex justify-content-between align-items-center py-1`}>
           <h2
             ref={ref}
             className='m-0'

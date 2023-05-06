@@ -4,6 +4,10 @@
   > section:first-child {
     > section > span > span {
       inset: auto 0px -80px auto;
+
+      @media(min-width: 576px) and (max-width: 768px){
+        inset: auto 10px -80px auto;
+      }
     }
   }
 }
@@ -17,7 +21,7 @@
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(55px);
   }
 }
@@ -71,7 +75,7 @@
     min-width: 565px; 
   }
 
-  @media(max-width: 575px){
+  @media(max-width: 576px){
     height: 575px; 
   }
 
@@ -81,7 +85,7 @@
 }
 
 .longClientReview{
-  @media(max-width: 575px){
+  @media(max-width: 576px){
     transform: translateY(43px);
 
     > section:first-child{
@@ -102,8 +106,13 @@
 
 
 .johanaReviewStyles{
-  @media(max-width: 575px){
+  @media(max-width: 576px){
     transform: translateY(50px);
+  }
+
+  @media(min-width: 576px) and (max-width: 768px){
+    transform: translate(10px, 40px);
+    // border: solid pink;
   }
 
   @media(min-width: 992px) and (max-width: 1199px){

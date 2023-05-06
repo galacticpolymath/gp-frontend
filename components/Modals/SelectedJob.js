@@ -42,6 +42,10 @@ const SelectedJob = () => {
     const onTheJobTraining = selectedJob["typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"]
     def = def.toLowerCase() === "no definition found for this summary category." ? null : def;
 
+    // on first render, update the meta tags for the job viz page with the following info: 
+    // og:title: JobViz Career Explorer
+    // og:description: Coaches and Scouts: {projectedPercentageEmploymentChange} in demand by 2031 
+
     const infoCards = [
         {
             title: `Median ${data_start_yr} Annual Wage`,
