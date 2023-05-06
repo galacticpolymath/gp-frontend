@@ -27,9 +27,7 @@ export const getServerSideProps = async (context) => {
     const lessonId = context.resolvedUrl.match(REGEX)[0];
     // print out all of the ids of the lessons
     const lessonIds = lessons.map(({ id }) => id)
-    console.log('lessonIds: ', lessonIds)
     const targetLesson = lessons.find(lesson => lesson.id === parseInt(lessonId));
-    console.log('targetLesson: ', targetLesson)
 
     if(!targetLesson){
       return {

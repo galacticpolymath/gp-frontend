@@ -168,7 +168,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} setIsScrollListenerOn={setIsScrollListenerOn} isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked} />
       <ShareWidget {...shareWidgetFixedProps} />
       <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
-        <div id="lessonTitleSecId" className="SectionHeading lessonTitleId">
+        <div id="lessonTitleSecId" className="d-flex justify-content-center SectionHeading lessonTitleId">
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
               {lastSubRelease && (

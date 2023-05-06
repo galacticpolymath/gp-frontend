@@ -202,15 +202,12 @@ $feedbackTxtFontSizeDesktop: 24px;
       padding-top: 20px;
     }
   }
-
-  @media (min-width: 1300px) {
-    // min-height: 210px ;
-  }
 }
 
 .autoCarouselContainer {
   margin: 0 auto;
   overflow: hidden;
+  height: 100%;
   position: relative;
 
   @media (min-width: 768px) {
