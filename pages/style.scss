@@ -469,10 +469,15 @@ ol li {
   border-style: none !important;
 }
 
+.center-absolutely{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
 
 img {
   image-rendering: -webkit-optimize-contrast;
-  // image-rendering: pixelated;
 }
 
 
@@ -578,3 +583,4 @@ img {
     }
   }
 }
+

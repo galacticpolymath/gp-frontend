@@ -26,8 +26,7 @@ import { oldLessonUrl } from '../apiGlobalVals';
 
 // making modal left text align
 
-const HireUsPage = ({ uOfMLogo }) => {
-  console.log('uOfMLogo: ', uOfMLogo)
+const HireUsPage = () => {
   const [tiersInfoForModalArr, setTiersInfoForModalArr] = useState(tiersInfoForModal.map(tier => ({ ...tier, isModalOn: false })));
 
   return (
@@ -111,17 +110,7 @@ const HireUsPage = ({ uOfMLogo }) => {
   );
 };
 
-export const getStaticProps = async _ => {
-  const oldLessonRes = await fetch(oldLessonUrl);
-  const oldLessons = await oldLessonRes.json();
-  const oldLesson = oldLessons.find(lesson => `${lesson.id}` === '2' && `${lesson.locale}` === 'en-US');
 
-  return {
-    props: {
-      uOfMLogo: oldLesson.SponsorImage.url
-    }
-  }
-};
 
 
 export default HireUsPage;

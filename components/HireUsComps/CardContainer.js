@@ -111,18 +111,28 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
                         <Card.Body className="position-relative cardBodyStyles">
                             {(pics && isCardOnly) &&
                                 <div className="w-100">
-                                    <section className="w-100 d-flex flex-column flex-sm-row justify-content-center align-items-center">
+                                    <section className="w-100 d-flex flex-column imgsSecCardContainer flex-sm-row justify-content-center align-items-center">
                                         {
                                             pics.map(({ path, alt }, index) => (
-                                                <div key={index} className="carouselImgContainer position-relative">
-                                                    <Image
-                                                        src={path}
-                                                        alt={alt}
-                                                        fill
-                                                        sizes="(max-width: 575px) 125px, (max-width: 767px) 130px, 140px"
-                                                        style={{ objectFit: 'contain' }}
-                                                    />
-                                                </div>
+                                                index !== 3 ?
+                                                    <div key={index} className="carouselImgContainer position-relative">
+                                                        <Image
+                                                            src={path}
+                                                            alt={alt}
+                                                            fill
+                                                            sizes="(max-width: 575px) 125px, (max-width: 767px) 130px, 140px"
+                                                            style={{ objectFit: 'contain' }}
+                                                        />
+                                                    </div>
+                                                    :
+                                                    <div style={{ width: '250px',  height: "125px" }} className='position-relative d-sm-block d-flex justify-content-center align-items-center'>
+                                                        <Image
+                                                            src={path}
+                                                            alt={alt}
+                                                            fill
+                                                            style={{ width: "100%", objectFit: 'contain' }}
+                                                        />
+                                                    </div>
                                             )
                                             )
                                         }

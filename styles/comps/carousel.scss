@@ -406,31 +406,19 @@ $feedbackTxtFontSizeDesktop: 24px;
     width: 140px;
     height: 140px;
   }
-}
 
-.carouselImgContainer:not(:first-child) {
-  @media (min-width: 1200px) {
-    margin-left: 85px;
+  @media(min-width: 768px) and (max-width: 992px){
+    width: 105px;
+    height: 105px;
   }
 }
 
-.carouselImgContainer:nth-child(4) {
-  // width: 260px;
-
-  // @media(min-width: 576px){
-  //   width: 220px;
-  // }
-
-  // @media (min-width: 992px) {
-  //   width: 280px;
-  // }
-
-  // image-rendering: -moz-crisp-edges;         /* Firefox */
-  // image-rendering:   -o-crisp-edges;         /* Opera */
-  // image-rendering: -webkit-optimize-contrast;/* Webkit (non-standard naming) */
-  // image-rendering: crisp-edges;
-  // -ms-interpolation-mode: nearest-neighbor
+.imgsSecCardContainer > div:not(:first-child) {
+  @media (min-width: 1200px) {
+    margin-left: 45px;
+  }
 }
+
 
 .picsCardContainer {
   @media (max-width: 575px) {
