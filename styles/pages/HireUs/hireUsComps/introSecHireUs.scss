@@ -1,9 +1,9 @@
 .headerSection {
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     width: 75%;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     width: 100%;
 
     h1{
@@ -21,7 +21,7 @@
 .subTxtHeadingContainerHireUsPg {
   width: 75%;
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     width: 100%;
     transform: translateY(20px);
     line-height: 20px;
@@ -30,7 +30,7 @@
 
 .letTalksMainBtnSec{
   > button{
-    @media(max-width: 575px){
+    @media(max-width: 576px){
       height: 60px;
     }
   }
@@ -39,11 +39,11 @@
 .introSecAndLetTalksSec {
   max-width: 1464px;
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     height: 450px;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     height: 450px;
     display: flex;
     justify-content: flex-end;
@@ -62,15 +62,15 @@
   }
 
   > section {
-    @media (max-width: 767px) and (min-width: 576px) {
+    @media (max-width: 768px) and (min-width: 576px) {
       padding-left: 40px;
     }
     > section:last-child {
-      @media (max-width: 767px) {
+      @media (max-width: 768px) {
         width: 75%;
       }
 
-      @media (max-width: 575px) {
+      @media (max-width: 576px) {
         width: 100%;
       }
     }
@@ -95,10 +95,10 @@
 }
 
 .headingHireUs {
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     font-size: 34px;
 
-    @media (max-width: 575px) {
+    @media (max-width: 576px) {
       padding-right: 15px;
     }
   }

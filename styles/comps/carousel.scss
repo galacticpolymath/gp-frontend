@@ -1,7 +1,7 @@
 @import "../globalVars.scss";
 
 $carouselBackgroundColor: #ffeded;
-$feedbackTxtFontSizeDesktop: 24px;
+$feedbackTxtFontSizeDesktop: 22px;
 
 * {
   box-sizing: border-box;
@@ -27,7 +27,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 
 .navBtnLeftCarousel,
 .navBtnRightCarousel {
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     svg {
       font-size: 50px;
     }
@@ -92,10 +92,9 @@ $feedbackTxtFontSizeDesktop: 24px;
   height: fit-content;
 
   @media (min-width: 768px) and (max-width: 991px) {
-    line-height: 23px;
-  }
+    line-height: 23px;  }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     width: 400px;
   }
 
@@ -164,7 +163,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     font-weight: 400;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     font-weight: 800;
   }
 
@@ -184,7 +183,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     height: 150px;
   }
 }
@@ -215,13 +214,13 @@ $feedbackTxtFontSizeDesktop: 24px;
     max-width: 1000px;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     max-width: 500px;
   }
 }
 
 .productReviewTxt {
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     top: 0;
     left: 0;
   }
@@ -231,7 +230,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     transform: translateY(-20px);
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     font-size: $spanFontSizeSmall;
   }
 }
@@ -239,7 +238,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 .studentInfoSec {
   width: 100%;
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     display: grid;
     align-items: center;
   }
@@ -250,7 +249,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .studentParentStyles {
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     transform: translateY(75px);
   }
 
@@ -276,7 +275,7 @@ $feedbackTxtFontSizeDesktop: 24px;
   border-radius: 40px;
   width: 100%;
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     width: 100%;
   }
 
@@ -388,7 +387,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .carouselImgContainer:last-of-type {
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     transform: translateX(10px);
   }
 }
@@ -521,7 +520,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     margin-top: 25px;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     margin-top: 25px;
   }
 }
@@ -529,6 +528,16 @@ $feedbackTxtFontSizeDesktop: 24px;
 .grantReviewShortTxtStyles {
   @media (min-width: 768px) {
     height: 100px;
+  }
+
+  @media(max-width: 992px) and (min-width: 768px){
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    > section{
+      // overriding w-100 default class
+      width: 65% !important;
+    }
   }
 
   @media (min-width: 1200px) {
@@ -543,7 +552,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     > section > section > span > span {
       inset: auto -40px -60px auto;
     }
@@ -576,9 +585,11 @@ $feedbackTxtFontSizeDesktop: 24px;
     > section {
       > section:first-child {
         width: 100%;
-        @media (max-width: 1199px) {
+
+        @media (max-width: 1200px) {
           height: 230px;
         }
+
         span {
           text-align: center;
           transform: translateY(50px);
@@ -595,7 +606,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     min-height: 230px;
   }
 }
@@ -609,7 +620,7 @@ $feedbackTxtFontSizeDesktop: 24px;
   }
 }
 
-@media (max-width: 767px) and (min-width: 576px) {
+@media (max-width: 768px) and (min-width: 576px) {
   .carouselImgContainer:first-of-type {
     img {
       width: 120px;
@@ -693,7 +704,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     > span {
       height: fit-content;
       transform: translateY(110px);
@@ -702,7 +713,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .shortQuoteInfoSec {
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     transform: translateY(110px);
 
     @media (max-width: 575px) {
@@ -763,7 +774,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .cardMainStylesTeachersAndStudents {
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     min-width: 560px;
   }
 
@@ -771,7 +782,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     min-width: 1150px;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     height: 360px;
   }
 
@@ -791,7 +802,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .teachersAndStudentsTestimoniesSec {
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     min-height: 220px;
     > section:first-of-type {
       transform: translateY(20px);
@@ -827,7 +838,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 }
 
 .grantReviewShortTxtStyles {
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     transform: translateY(30px);
   }
 }
@@ -835,11 +846,14 @@ $feedbackTxtFontSizeDesktop: 24px;
 .teacherTestimony {
   height: 100px;
 
-  @media (max-width: 1199px) and (min-width: 576px) {
+  @media (max-width: 1200px) and (min-width: 576px) {
     > section {
       > span {
         left: 10px;
-        transform: translateY(-15px);
+        
+        @media(max-width: 992px){
+          transform: translateY(-35px);
+        }
 
         @media (max-width: 768px) and (min-width: 576px) {
           transform: translateY(-25px);
@@ -847,7 +861,7 @@ $feedbackTxtFontSizeDesktop: 24px;
       }
       > section {
         > span:first-child {
-          @media (max-width: 767px) and (min-width: 576px) {
+          @media (max-width: 768px) and (min-width: 576px) {
             line-height: 24px;
           }
         }
@@ -893,7 +907,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     transform: translateY(30px);
   }
 
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     transform: translateY(40px);
   }
 
@@ -919,7 +933,7 @@ $feedbackTxtFontSizeDesktop: 24px;
 
   > section {
     > span {
-      @media (min-width: 576px) and (max-width: 767px) {
+      @media (min-width: 576px) and (max-width: 768px) {
         transform: translateY(-10px);
       }
     }
@@ -928,7 +942,7 @@ $feedbackTxtFontSizeDesktop: 24px;
       height: 80px;
 
       > span:first-child {
-        @media (max-width: 767px) and (min-width: 576px) {
+        @media (max-width: 768px) and (min-width: 576px) {
           line-height: 24px;
         }
       }
@@ -938,18 +952,18 @@ $feedbackTxtFontSizeDesktop: 24px;
   > section {
     > section {
       > span {
-        @media (max-width: 767px) {
+        @media (max-width: 768px) {
           text-align: center;
         }
         > span {
-          @media (max-width: 1199px) {
-            @media (min-width: 576px) and (max-width: 767px) {
+          @media (max-width: 1200px) {
+            @media (min-width: 576px) and (max-width: 768px) {
               top: 65px;
               right: -50px;
             }
 
             top: 45px;
-            right: -50px;
+            right: -30px;
           }
 
           @media (min-width: 1200px) {
@@ -989,7 +1003,7 @@ $feedbackTxtFontSizeDesktop: 24px;
   > section {
     // quote section
     > section:last-of-type {
-      @media (max-width: 1199px) {
+      @media (max-width: 1200px) {
         right: 60px;
       }
 
@@ -1012,7 +1026,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     transform: translateY(30px);
   }
 
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     transform: translateY(20px);
   }
 
@@ -1025,7 +1039,7 @@ $feedbackTxtFontSizeDesktop: 24px;
   font-size: $spanFontSizeSmall;
   transform: translateX(-10px);
 
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     span > span:not(:last-child) {
       display: inline-block;
       height: 18px;
@@ -1050,11 +1064,11 @@ $feedbackTxtFontSizeDesktop: 24px;
           }
 
           @media (min-width: 768px) and (max-width: 991px) {
-            top: 70px;
+            top: 90px;
             right: 20px;
           }
 
-          @media (min-width: 576px) and (max-width: 767px) {
+          @media (min-width: 576px) and (max-width: 768px) {
             top: 90px;
             right: 10px;
           }
@@ -1088,7 +1102,7 @@ $feedbackTxtFontSizeDesktop: 24px;
   bottom: -10px;
   right: 15px;
 
-  @media (max-width: 767px) and (min-width: 576px) {
+  @media (max-width: 768px) and (min-width: 576px) {
     bottom: 70px;
     right: 24px;
 
@@ -1108,7 +1122,7 @@ $feedbackTxtFontSizeDesktop: 24px;
     }
 
     > span:first-child {
-      @media (min-width: 576px) and (max-width: 767px) {
+      @media (min-width: 576px) and (max-width: 768px) {
         font-size: 22px;
       }
     }
@@ -1120,7 +1134,7 @@ $feedbackTxtFontSizeDesktop: 24px;
   margin-left: calc(-1 * ((100vw - 100%) / 2));
   margin-right: calc(-1 * ((100vw - 100%) / 2));
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     bottom: -3px;
   }
 

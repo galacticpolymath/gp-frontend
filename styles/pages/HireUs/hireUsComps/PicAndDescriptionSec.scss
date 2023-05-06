@@ -37,7 +37,7 @@ $scientistFontSize: 1.3rem;
 
   > section {
     > div {
-      @media (max-width: 767px) {
+      @media (max-width: 768px) {
         width: 150px;
         height: 150px;
       }
@@ -54,7 +54,7 @@ $scientistFontSize: 1.3rem;
     > section:first-child {
       margin-left: 25px;
 
-      @media (max-width: 767px) {
+      @media (max-width: 768px) {
       }
     }
   }
@@ -63,7 +63,7 @@ $scientistFontSize: 1.3rem;
     > section:first-child {
       // margin-left: 0px;
 
-      @media (max-width: 767px) {
+      @media (max-width: 768px) {
       }
     }
   }
@@ -149,7 +149,7 @@ $scientistFontSize: 1.3rem;
 .ownerSection {
   > section {
     > div {
-      @media (max-width: 767px) {
+      @media (max-width: 768px) {
         width: 165px;
         height: 180px;
       }
@@ -160,7 +160,7 @@ $scientistFontSize: 1.3rem;
     > section:first-child {
       margin-left: 20px;
 
-      @media (max-width: 767px) {
+      @media (max-width: 768px) {
         padding-left: 10px;
       }
 
@@ -278,7 +278,7 @@ $scientistFontSize: 1.3rem;
     height: 70px;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     width: 120px;
     height: 120px;
   }
@@ -322,7 +322,7 @@ $scientistFontSize: 1.3rem;
     height: 150px;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     span {
       text-decoration: underline;
       text-decoration-thickness: 1.5px;
@@ -405,7 +405,7 @@ $scientistFontSize: 1.3rem;
 }
 
 .ownerSection > section:first-child span {
-  @media (min-width: 576px) and (max-width: 767px) {
+  @media (min-width: 576px) and (max-width: 768px) {
     margin-top: 10px;
     display: inline-block;
   }
@@ -505,7 +505,7 @@ $scientistFontSize: 1.3rem;
 }
 
 .scientist:not(:first-child) {
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     margin-top: 10px;
   }
 
@@ -577,7 +577,7 @@ $scientistFontSize: 1.3rem;
   width: 480px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .GPConstellationSec > section:last-child {
     @media (max-width: 575px) {
       margin-top: 25px;
@@ -644,7 +644,7 @@ $scientistFontSize: 1.3rem;
       font-size: $spanFontSize;
       padding-right: 40px;
 
-      @media (max-width: 767px) {
+      @media (max-width: 768px) {
         display: inline-flex;
       }
     }
@@ -664,10 +664,10 @@ $scientistFontSize: 1.3rem;
       }
     }
 
-    @media (max-width: 767px) {
+    @media (max-width: 768px) {
       flex-direction: column;
 
-      @media (min-width: 576px) and (max-width: 767px) {
+      @media (min-width: 576px) and (max-width: 768px) {
         display: flex;
         flex-direction: row;
 

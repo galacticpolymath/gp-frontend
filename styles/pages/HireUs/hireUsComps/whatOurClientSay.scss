@@ -4,6 +4,10 @@
   > section:first-child {
     > section > span > span {
       inset: auto 0px -80px auto;
+
+      @media(min-width: 576px) and (max-width: 768px){
+        inset: auto 10px -80px auto;
+      }
     }
   }
 }
@@ -104,6 +108,11 @@
 .johanaReviewStyles{
   @media(max-width: 575px){
     transform: translateY(50px);
+  }
+
+  @media(min-width: 576px) and (max-width: 768px){
+    transform: translate(10px, 40px);
+    // border: solid pink;
   }
 
   @media(min-width: 992px) and (max-width: 1199px){

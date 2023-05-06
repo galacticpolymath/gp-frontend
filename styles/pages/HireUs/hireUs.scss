@@ -90,7 +90,7 @@
 }
 
 .picAndImgSec {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     height: fit-content;
   }
 }
@@ -98,7 +98,7 @@
 .promoteLessonsTxtContainer {
   width: 50%;
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     width: 100%;
   }
 }
@@ -157,7 +157,7 @@
     transform: translateY(-50px);
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     transform: translateY(-40px);
   }
 
@@ -177,7 +177,7 @@
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     h3 {
       // font-size: 42px ;
       text-align: center;
@@ -192,7 +192,7 @@
 }
 
 .whatWillYouGetTxtUnBolded {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     &::first-letter {
       text-transform: capitalize;
     }
@@ -226,7 +226,7 @@
     border-radius: 0.3rem;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -278,7 +278,7 @@
     height: fit-content;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     height: 280px;
   }
 
@@ -298,7 +298,7 @@
     border-radius: $borderRadiusModal;
     border: solid 1px #707070;
 
-    @media (max-width: 575px) {
+    @media (max-width: 576px) {
       height: 250px;
     }
   }
@@ -316,7 +316,7 @@
     width: 100%;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
   }
 }
 
@@ -479,7 +479,7 @@
 .looped-vid-hire-us {
   height: 225px;
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     height: 225px;
     width: 225px;
     object-fit: contain;
@@ -543,14 +543,14 @@
     margin-top: 55px;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     margin-top: 25px;
   }
 }
 
 .HireUsCardFirstSecMobile {
   > section {
-    @media (max-width: 575px) {
+    @media (max-width: 576px) {
       width: 100%;
       display: flex;
       justify-content: center;
@@ -604,7 +604,7 @@
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     > section:last-child {
       justify-content: center;
       align-items: center;
@@ -652,7 +652,7 @@
     padding: 25px 25px 50px 25px;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     max-width: 450px;
     min-width: 247px;
     padding: 20px 0px 20px 0px;
@@ -707,7 +707,7 @@
 
 .howDoesItWorkSec {
   > section:first-child {
-    @media (max-width: 575px) {
+    @media (max-width: 576px) {
       width: 100%;
     }
   }
@@ -718,7 +718,7 @@
 }
 
 .imgContainerHireUsDefaultStyles {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     height: 100%;
     width: 100%;
   }
@@ -727,7 +727,7 @@
 .imgContainerHireUsPg {
   width: 80%;
 
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     margin-top: 15px;
     width: 75%;
     height: 215px;
@@ -752,7 +752,7 @@
   }
   > section:nth-child(2) {
     > span {
-      @media (max-width: 575px) {
+      @media (max-width: 576px) {
         line-height: 20px;
         padding-left: 8px;
         padding-right: 8px;
@@ -761,7 +761,7 @@
   }
 }
 
-@media (max-width: 575px) {
+@media (max-width: 576px) {
   .shareYourKnowledgeImgContainer > img {
     max-width: 580px;
     width: auto;
@@ -824,7 +824,7 @@
 }
 
 .looped-video-sec {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     > div:last-of-type {
       > section:last-of-type {
         padding-top: 20px;
@@ -834,7 +834,7 @@
 }
 
 .youtube-vid-sec {
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     > div:last-of-type {
       > section:last-of-type {
         padding-top: 20px;
@@ -845,7 +845,7 @@
 
 .whatYouWillGetMainSec {
   > section:last-of-type {
-    @media (max-width: 575px) {
+    @media (max-width: 576px) {
       margin-top: 10px;
     }
   }
