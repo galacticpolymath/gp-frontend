@@ -23,6 +23,7 @@ const CollapsibleRichTextSection = ({
       <div
         ref={ref}
         className='container mx-auto mb-4'>
+          
         <RichText className='mt-4' content={Content} />
       </div>
     </CollapsibleLessonSection>

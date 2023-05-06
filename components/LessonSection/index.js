@@ -14,7 +14,6 @@ import Acknowledgments from './Acknowledgments';
 import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
 import Preview from './Preview';
-import { useEffect } from 'react';
 
 export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
@@ -64,33 +63,40 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
 };
 
-// the array below will have the following format: the name of the section, fields that contain the url
-
-const SECTIONs_WITH_PICS = [ {  name: 'Overview', targetFields: ['SteamEpaulette', 'SteamEpaulette_vert'] } ]
+const SECTIONs_WITH_PICS = [ {  name: 'Overview', targetFields: ['SteamEpaulette', 'SteamEpaulette_vert'], sectionCompName: 'Overview' }, { name: 'LearningChart', targetFields: ['Badge'], sectionCompName: 'learning-chart' } ]
 const NAMES_OF_SECS_WITH_PICS = SECTIONs_WITH_PICS.map( section => section.name )
 
 const LessonSection = ({ index, section, _sectionDots, oldLesson }) => {
   const Component = sectionTypeMap[section.__component];
   const compProps = { ...section, _sectionDots };
-  
+  console.log('Component.name: ', Component.name)
+
   if(NAMES_OF_SECS_WITH_PICS.includes(Component.name)){
-    const targetSection = oldLesson.Section[Component.name.toLowerCase()]
-    // GOAL: get the image urls of the target section using the target fields and pass them to the component
-    // an object is creatd placed into the prop of oldLessonImgUrls via their names (i.e.: the object will have SteamEpaulette as its field, and its image url as its value)
-    // loop through targetFields, and for each iteration do the following: create a key value pair for the oldLessonImgUrls. The key will be the value of the iteration
-    // and the value will be the targetSection['value of the iteration']
-    // loop through the targetFields array
-    // get the targetFields array 
-    // the target section is attained 
-    // get the targetSection from  the SECTION_WITH_PICS array
-    // create an object called oldLessonImgUrls
-    let oldLessonImgUrls = {}
+    const compName = SECTIONs_WITH_PICS.find( sectionWithPics => sectionWithPics.name === Component.name).sectionCompName 
+    const targetSection = oldLesson.Section[compName.toLowerCase()]
+    console.log('targetSection: ', targetSection)
+    let oldLessonImgUrlsObj = null
     const { targetFields } = SECTIONs_WITH_PICS.find( sectionWithPics => sectionWithPics.name === Component.name)
 
     targetFields.forEach(targetField => {
-      oldLessonImgUrls[targetField] = targetSection[targetField]?.url
+
+      if(!targetSection[targetField]){
+        console.error('No field with back-up image.')
+        return
+      }
+
+      if(!oldLessonImgUrlsObj) oldLessonImgUrlsObj = {}
+
+      // console.log('targetSection[targetField]?.url: ', targetSection[targetField]?.url)
+      
+      oldLessonImgUrlsObj[targetField] = targetSection[targetField]?.url
+      debugger
     })
-    compProps.oldLessonImgUrls = oldLessonImgUrls
+
+    if(oldLessonImgUrlsObj){
+      compProps.oldLessonImgUrlsObj = oldLessonImgUrlsObj
+    }
+    
   }
 
 

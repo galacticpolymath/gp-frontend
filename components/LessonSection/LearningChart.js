@@ -5,6 +5,7 @@ import RichText from '../RichText';
 import Image from 'next/image';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 import { useRef } from 'react';
+import { useState } from 'react';
 
 const LearningChart = ({
   Title,
@@ -13,9 +14,16 @@ const LearningChart = ({
   Badge,
   _sectionDots,
   SectionTitle,
+  oldLessonImgUrlsObj
 }) => {
   const ref = useRef();
+  const [backUpImgUrl, setBackUpImgUrl] = useState(null)
+
   useLessonElementInView(_sectionDots, SectionTitle, ref);
+
+  const handleImgError = () => {
+    setBackUpImgUrl(oldLessonImgUrlsObj.Badge)
+  }
 
   return (
     <div
@@ -25,7 +33,7 @@ const LearningChart = ({
     >
       <div className="chartContainer position-relative w-100">
         <Image
-          src={Badge.url}
+          src={backUpImgUrl ?? Badge.url}
           width={1400}
           height={900}
           style={{
@@ -33,6 +41,7 @@ const LearningChart = ({
             width: '100%', height: 'auto',
           }}
           alt="Learning Standards Chart"
+          onError={handleImgError}
         />
       </div>
       <Accordion

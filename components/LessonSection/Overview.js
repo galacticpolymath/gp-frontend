@@ -24,7 +24,7 @@ const Overview = ({
   Tags,
   _sectionDots,
   SectionTitle,
-  oldLessonImgUrls
+  oldLessonImgUrlsObj
 }) => {
   const ref = useRef();
   const [backUpImgs, setBackUpImgs] = useState({ SteamEpaulette: null, SteamEpaulette_vert: null });
@@ -32,11 +32,11 @@ const Overview = ({
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   const handleSteamEpauletteError = () => {
-    setBackUpImgs({ ...backUpImgs, SteamEpaulette: oldLessonImgUrls.SteamEpaulette })
+    setBackUpImgs({ ...backUpImgs, SteamEpaulette: oldLessonImgUrlsObj.SteamEpaulette })
   }
 
   const handleSteamEpauletteVertError = () => {
-    setBackUpImgs({ ...backUpImgs, SteamEpaulette_vert: oldLessonImgUrls.SteamEpaulette_vert })
+    setBackUpImgs({ ...backUpImgs, SteamEpaulette_vert: oldLessonImgUrlsObj.SteamEpaulette_vert })
   }
 
   return (
