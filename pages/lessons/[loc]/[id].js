@@ -153,8 +153,6 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
   useEffect(() => {
     document.body.addEventListener('click', handleDocumentClick);
 
-    console.log('lesson: ', lesson)
-
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
 
