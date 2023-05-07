@@ -150,13 +150,15 @@ const TeachIt = ({
         )}
 
         <div className='container ps-0 pe-1 px-md-2  pb-4'>
-          {parts.map((part, index) => (
-            <LessonPart
-              key={`${index}_part`}
-              resources={resources}
-              {...part}
-            />
-          ))}
+          {parts.map((part, index) => {
+            return (
+              <LessonPart
+                key={`${index}_part`}
+                resources={resources}
+                {...part}
+              />
+            );
+          })}
         </div>
       </div>
     </CollapsibleLessonSection>

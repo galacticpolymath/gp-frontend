@@ -5,10 +5,6 @@ import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
 
-// WHAT IS HAPPENING, THE PROBLEM: the lesson links are not showing up for lesson 4
-// GOAL: have the lesson links show up for lesson 4 
-
-
 const LessonPart = ({
   partNum,
   partTitle,
@@ -16,10 +12,10 @@ const LessonPart = ({
   chunks = [],
   resources,
 }) => {
-  const isOnLastPart = partTitle === 'Assessments';
-  const durList = isOnLastPart ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
-  const linkResources = isOnLastPart ? chunks : (resources?.[0]?.parts?.[partNum - 1]?.itemList || []);
-  debugger
+  const isOnAssessments = partTitle === 'Assessments';
+  const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
+  const has0Key = resources?.[0]?.parts ? '0' in resources[0].parts : false;
+  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[has0Key ? (partNum - 1) : partNum]?.itemList || []);  
 
   return (
     <Accordion
@@ -28,7 +24,7 @@ const LessonPart = ({
       id={`part_${partNum}`}
       button={(
         <div className='p-2'>
-          <h3 className='fs-6 fw-semibold'>{isOnLastPart ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
+          <h3 className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
           <div><RichText content={partPreface} /></div>
         </div>
       )}
@@ -36,10 +32,8 @@ const LessonPart = ({
       <>
         <ol className='mt-3'>
           {!!linkResources?.length && linkResources.map(item => {
-            console.log('item: ', item);
             return (
               <li key={item.itemTitle} className='mb-0'>
-                sup dude
                 <strong><RichText content={item.itemTitle} /></strong>
                 <div className='fst-italic mb-2' style={{ color:'#353637' }}>
                   <RichText
@@ -66,7 +60,7 @@ const LessonPart = ({
           })}
         </ol>
 
-        {(!isOnLastPart && durList && chunks) &&
+        {(!isOnAssessments && durList && chunks) &&
           <>
             <h4>Steps &amp; Flow</h4>
             {chunks.map((chunk, i) => (
