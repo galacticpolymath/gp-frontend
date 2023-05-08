@@ -11,6 +11,8 @@ import NSFImage from '../assets/img/nsf.png';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 
 export default function Home() {
+  const newReleasePath = "/lessons/en-US/6"
+
   const layoutProps = {
     title: 'Galactic Polymath - Home Page',
     description: 'We are an education studio. We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for everyone.',
@@ -74,18 +76,27 @@ export default function Home() {
 
           <div className='bg-white p-4 row align-items-center rounded-3 d-flex d-sm-flex flex-column flex-sm-row'>
             <div className='col-sm-9 text-center'>
-              <div className="d-flex justify-content-center justify-content-sm-start align-items-stretch">
-                <div className='badge bg-secondary-light fs-5 text-center mb-2'>New release!</div>
-              </div>
-              <div className="position-relative newReleaseImg">
-                <Image
-                  priority
-                  src={NewReleaseImage.src}
-                  fill
-                  sizes="100%"
-                  style={{ objectFit: 'contain' }}
-                  alt="I Like That! How perception, emotion, and cognition shape our preferences"
-                />
+
+              <div className="position-relative newReleaseImg  mright-auto p-0">
+                <Link href={newReleasePath}>
+                  <div className="d-flex justify-content-start align-items-stretch">
+                    <div className='badge bg-secondary fs-6  text-center p-absolute ' style={{ zIndex: 5, marginTop: "-5px", marginLeft: "-10px" }}>
+                      New release!
+                      </div>
+                  </div>
+                  <Image
+                    priority
+                    src={NewReleaseImage.src}
+                    fill
+                    sizes="100%"
+                    className='card w-auto mb-0'
+                    style={{ objectFit: 'contain', objectPosition: '0% 0%' }}
+                    alt="Electric Crystals: A tour of crystal symmetry through comics"
+                  />
+                  <div className='m-auto d-flex'>
+fds
+                  </div>
+                </Link>
               </div>
             </div>
             <div className='col-12 col-sm-3 text-sm-center d-flex justify-content-center mt-2 mt-sm-0 align-items-center'>
@@ -116,7 +127,7 @@ export default function Home() {
             <p className="text-center text-sm-start">
               We build lessons around <em><strong>real research, data, and stories</strong></em> from diverse STEM experts.
             </p>
-            <Link href="/lessons/en-US/5" className='btn btn-primary'>
+            <Link href={newReleasePath} className='btn btn-primary'>
               See this lesson
             </Link>
           </div>
