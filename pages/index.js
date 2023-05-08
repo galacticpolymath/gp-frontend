@@ -11,7 +11,7 @@ import NSFImage from '../assets/img/nsf.png';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 
 export default function Home() {
-  const newReleasePath = "/lessons/en-US/6"
+  const newReleasePath = '/lessons/en-US/6';
 
   const layoutProps = {
     title: 'Galactic Polymath - Home Page',
@@ -80,9 +80,9 @@ export default function Home() {
               <div className="position-relative newReleaseImg  mright-auto p-0">
                 <Link href={newReleasePath}>
                   <div className="d-flex justify-content-start align-items-stretch">
-                    <div className='badge bg-secondary fs-6  text-center p-absolute ' style={{ zIndex: 5, marginTop: "-5px", marginLeft: "-10px" }}>
+                    <div className='badge bg-secondary fs-6  text-center p-absolute ' style={{ zIndex: 5, marginTop: '-5px', marginLeft: '-10px' }}>
                       New release!
-                      </div>
+                    </div>
                   </div>
                   <Image
                     priority
@@ -94,7 +94,7 @@ export default function Home() {
                     alt="Electric Crystals: A tour of crystal symmetry through comics"
                   />
                   <div className='m-auto d-flex'>
-fds
+                    fds
                   </div>
                 </Link>
               </div>
