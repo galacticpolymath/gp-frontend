@@ -7,7 +7,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon'
-import { lessonsUrl } from '../../apiGlobalVals';
 
 const LessonsPage = ({ lessons }) => {
 
@@ -120,10 +119,9 @@ const LessonsPage = ({ lessons }) => {
 
 export async function getStaticProps() {
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
-  // const res = await fetch('https://gp-catalog.vercel.app/index.json');
 
-  const lessons = await res.json();
-  console.log('lessons: ', lessons.map(({ isTestRepo }) => isTestRepo)) 
+  let lessons = await res.json();
+  lessons  = lessons.filter(({ isTestRepo }) => !isTestRepo);
 
   return { props: { lessons } };
 }
