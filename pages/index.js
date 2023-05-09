@@ -80,7 +80,7 @@ export default function Home() {
               <div className="position-relative newReleaseImg  mright-auto p-0">
                 <Link href={newReleasePath}>
                   <div className="d-flex justify-content-start align-items-stretch">
-                    <div className='badge bg-secondary fs-6  text-center p-absolute ' style={{ zIndex: 5, marginTop: '-5px', marginLeft: '-10px' }}>
+                    <div className='badge no-hover-underline bg-secondary fs-6  text-center p-absolute ' style={{ zIndex: 5, marginTop: '-5px', marginLeft: '-10px'}}>
                       New release!
                     </div>
                   </div>

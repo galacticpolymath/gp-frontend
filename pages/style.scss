@@ -47,17 +47,20 @@ body {
 }
 
 a {
-  color: $atomic-blue;
+  color: $hydrogen-blue;
+  font-weight: bolder;
   text-decoration: none;
 
   &:hover {
-    color: $atomic-blue-dark;
+    color: lighten($hydrogen-blue, 15%);
+    text-decoration: underline;
   }
 }
 
 a>span {
   vertical-align: middle;
 }
+
 
 strong {
   font-weight: 700;
@@ -92,8 +95,13 @@ li {
   box-sizing: border-box;
 }
 
+//for removing hover effects of <a> tags
 .no-hover-color-change:hover {
   color: inherit;
+}
+
+.no-hover-underline:hover {
+  text-decoration: none;
 }
 
 html {
@@ -217,9 +225,10 @@ ol li {
   border: 3px solid $galactic-gray;
 }
 
-.quickPrep{
+.quickPrep {
+
   //remove margin for ol
-  ol{
+  ol {
     margin-bottom: 0;
   }
 }
@@ -227,13 +236,15 @@ ol li {
 // bootstrap overrides
 .btn {
   text-transform: uppercase;
+  color: $white;
 }
 
 .btn-primary {
   color: $white;
 
   &:active,
-  &:focus {
+  &:focus,
+  &:hover {
     color: $white;
   }
 }
@@ -266,7 +277,7 @@ ol li {
     &:active,
     &:focus {
       color: $white;
-      background-color: $primary;
+      background-color: lighten($primary, 15%);
     }
   }
 
@@ -278,7 +289,7 @@ ol li {
     &:hover,
     &:active,
     &:focus {
-      background-color: $secondary;
+      background-color: lighten($secondary,25%);
       color: $white;
     }
   }
