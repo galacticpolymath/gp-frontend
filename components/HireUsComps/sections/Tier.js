@@ -59,9 +59,9 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
     return (
         <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pe-lg-3 ps-lg-3 pe-xl-0 ps-xl-0 pt-5 ms-xl-2 me-xl-2 me-md-0 me-xl-2 pt-md-1'} ps-lg-3 pe-lg-3  mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles ${index !== 0 ? '' : ''}`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
-                <section className="imgSectionTier">
+                <section className="imgSectionTier pt-4">
                     {/* <Img src={img} alt={`${tierName}_img`} className="tierImg" height={120} /> */}
-                    <div className="position-relative" style={{ height: "120px", width: "120px" }}>
+                    <div className="position-relative ms-5" style={{ height: "120px", width: "120px" }}>
                         <Image
                             src={img}
                             alt={`${tierName}_img`}
@@ -126,9 +126,9 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                                 sizes="(max-width: 575px) 490px, (max-width: 767px) 567px, (max-width: 991px) 504px, 24vw"
                             />
                         </div>
-                        <section className="mt-4 text-sm-start">
-                            <a href={link} target="_blank" className="text-dark text-decoration-underline  fst-italic fw200 underline-less-thick">
-                                &quot;{txt}&quot;
+                        <section className="mt-1 text-sm-start">
+                            <a href={link} target="_blank" className=" fst-italic fw200 underline-less-thick">
+                            &#8220;{txt}&#8221;
                             </a>
                         </section>
                     </section>
@@ -138,8 +138,8 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                 <section className="mt-md-5 w-100 d-flex justify-content-start align-items-stretch align-self-end priceSection">
                     <h4 className="text-dark fst-italic  text-sm-start">
                         <section className="d-flex flex-row flex-sm-column priceTxtHorizontal">
-                            <span>Estimated Price: </span>
-                            <span className="ms-2 mt-sm-3 priceTxt">${low} - ${high}</span>
+                            <span>Starting At: </span>
+                            <span className="ms-2 mt-sm-3 priceTxt">${low}</span>
                         </section>
                     </h4>
                 </section>

@@ -78,9 +78,9 @@ export default function Home() {
             <div className='col-sm-9 text-center'>
 
               <div className="position-relative newReleaseImg  mright-auto p-0">
-                <Link href={newReleasePath}>
+                <Link href={newReleasePath} className='no-link-decoration'>
                   <div className="d-flex justify-content-start align-items-stretch">
-                    <div className='badge no-hover-underline bg-secondary fs-6  text-center p-absolute ' style={{ zIndex: 5, marginTop: '-5px', marginLeft: '-10px'}}>
+                    <div className='badge bg-secondary fs-6  text-center p-absolute ' style={{ zIndex: 5, marginTop: '-5px', marginLeft: '-10px'}}>
                       New release!
                     </div>
                   </div>
@@ -89,7 +89,7 @@ export default function Home() {
                     src={NewReleaseImage.src}
                     fill
                     sizes="100%"
-                    className='card w-auto mb-0'
+                    className='lessonsPgShadow rounded-4 w-auto mb-0'
                     style={{ objectFit: 'contain', objectPosition: '0% 0%' }}
                     alt="Electric Crystals: A tour of crystal symmetry through comics"
                   />

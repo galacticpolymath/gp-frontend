@@ -72,7 +72,7 @@ const LessonsPage = ({ lessons }) => {
                   <Link
                     key={lesson.locale + lesson.id}
                     href={`/lessons/${lesson.locale}/${lesson.id}`}
-                    className='w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
+                    className='w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow no-link-decoration'
                   >
 
                     <div className="position-relative overflow-hidden ">
