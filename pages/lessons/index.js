@@ -123,6 +123,7 @@ export async function getStaticProps() {
   // const res = await fetch('https://gp-catalog.vercel.app/index.json');
 
   const lessons = await res.json();
+  console.log('lessons: ', lessons.map(({ isTestRepo }) => isTestRepo)) 
 
   return { props: { lessons } };
 }
