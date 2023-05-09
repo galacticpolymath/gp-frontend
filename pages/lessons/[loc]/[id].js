@@ -21,6 +21,7 @@ import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
 import useScrollHandler from '../../../customHooks/useScrollHandler';
 import { lessonsUrl, oldLessonsUrl } from '../../../apiGlobalVals';
+import Link from 'next/link';
 
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
@@ -180,10 +181,12 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
               {lastSubRelease && (
+                <Link passHref href="#versions"  style={{color: 'black'}}>
                 <p>
                   Version {lastSubRelease.version}{' '}
                   (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
                 </p>
+                </Link>
               )}
               <LocDropdown
                 availLocs={availLocs}
