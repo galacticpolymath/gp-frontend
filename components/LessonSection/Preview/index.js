@@ -20,7 +20,7 @@ const Preview = ({
   _sectionDots,
 }) => {
   const ref = useRef();
-  
+
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   return (
@@ -30,13 +30,12 @@ const Preview = ({
       initiallyExpanded={InitiallyExpanded !== false}
       _sectionDots={_sectionDots}
     >
-      <div ref={ref} className='container row mx-auto pb-4 justify-content-center'>
-        <div className="col-12 col-md-8 col-lg-12">
-          <div className='infobox rounded-3 p-2 p-sm-4  fs-5 my-4 p-3 fw-light mx-auto'>
-            <h2 className='fw-light text-center'>&#8220;Teach it in 15&#8221;&nbsp; Quick Prep</h2>
-            <RichText content={QuickPrep} className='d-flex justify-content-center quickPrep'  />
-          </div>
+      <div ref={ref} className=' row mx-auto pb-4 justify-content-center'>
+        <div className='infobox rounded-3 p-2 p-sm-4 fs-5 my-4 p-3 fw-light w-auto'>
+          <h2 className='fw-light text-center'>&#8220;Teach it in 15&#8221;&nbsp; Quick Prep</h2>
+          <RichText content={QuickPrep} className='d-flex justify-content-center quickPrep' />
         </div>
+
         {Multimedia?.[0] && <LessonsCarousel mediaItems={Multimedia} />}
       </div>
     </CollapsibleLessonSection>
