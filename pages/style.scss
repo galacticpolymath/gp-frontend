@@ -3,6 +3,7 @@ $enable-cssgrid: true;
 @import "colors";
 
 @import '../styles/globalVars.scss';
+@import '../pages/_colors.scss';
 
 $primary: $hydrogen-blue;
 $secondary: $burst-purple;
@@ -209,6 +210,19 @@ ol li {
 }
 
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
+
+
+// lesson page styling classes
+.infobox {
+  border: 3px solid $galactic-gray;
+}
+
+.quickPrep{
+  //remove margin for ol
+  ol{
+    margin-bottom: 0;
+  }
+}
 
 // bootstrap overrides
 .btn {
@@ -469,7 +483,7 @@ ol li {
   border-style: none !important;
 }
 
-.center-absolutely{
+.center-absolutely {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -583,4 +597,3 @@ img {
     }
   }
 }
-

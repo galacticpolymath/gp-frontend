@@ -30,11 +30,11 @@ const Preview = ({
       initiallyExpanded={InitiallyExpanded !== false}
       _sectionDots={_sectionDots}
     >
-      <div ref={ref} className='container row mx-auto pb-4 justify-content-center justify-content-sm-start'>
-        <div className="col-12 col-md-8 offset-md-2">
-          <div className='bg-primary-light p-2 p-sm-4 pb-sm-2 fs-5 my-4 fw-light'>
-            <h4 className='text-center text-sm-start'>&quot;Teach it in 15&quot; Quick Prep</h4>
-            <RichText content={QuickPrep} />
+      <div ref={ref} className='container row mx-auto pb-4 justify-content-center'>
+        <div className="col-12 col-md-8 col-lg-12">
+          <div className='infobox rounded-3 p-2 p-sm-4  fs-5 my-4 p-3 fw-light mx-auto'>
+            <h2 className='fw-light text-center'>&#8220;Teach it in 15&#8221;&nbsp; Quick Prep</h2>
+            <RichText content={QuickPrep} className='d-flex justify-content-center quickPrep'  />
           </div>
         </div>
         {Multimedia?.[0] && <LessonsCarousel mediaItems={Multimedia} />}
