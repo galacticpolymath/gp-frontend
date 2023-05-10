@@ -55,8 +55,8 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
                     {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
                         <li className="text-dark fw249" key={index}>
                             {normalTxt}
-                            <span className="text-decoration-underline underline-less-thick">
-                                {underLineTxt}
+                            <span >
+                            <a href='https://creativecommons.org/licenses/by-nc/4.0/'>{underLineTxt}</a>
                             </span>
                         </li>
                     ))}
@@ -108,8 +108,8 @@ const ShareYourKnowledge = ({ lessonsInfo, isMobile }) => {
                             {lessonsInfo.map(({ normalTxt, underLineTxt }, index) => (
                                 <li className="text-dark fw249" key={index}>
                                     {normalTxt}
-                                    <span className="text-decoration-underline underline-less-thick">
-                                        {underLineTxt}
+                                    <span>
+                                        <a href='https://creativecommons.org/licenses/by-nc/4.0/'>{underLineTxt}</a>
                                     </span>
                                 </li>
                             ))}
