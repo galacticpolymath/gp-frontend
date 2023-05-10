@@ -24,9 +24,9 @@ const LessonsPage = ({ lessons }) => {
 
     return willShowLesson;
   });
-
+  
   return (
-    <Layout>
+    <Layout title='Galactic Polymath Lesson Releases' keywords='Galatic Polymath Lessons, Galactic Polymath Learning Tools'>
       <section className="bg-secondary p-4">
         <div className="text-white col-sm-12 col-md-10 col-lg-8 col-xl-7">
           <h1>Free, Interdisciplinary Lessons</h1>

@@ -163,6 +163,7 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
   const layoutProps = { title: `Lesson Title: ${lesson.Title}`, description: lesson?.Section?.overview?.Description ? removeHtmlTags(lesson.Section.overview.Description) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
+  debugger
   const handleBannerImgError = () => {
     setImgBannerSrcOnError(oldLesson.CoverImage.url);
   }
