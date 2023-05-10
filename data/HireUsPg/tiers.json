@@ -2,8 +2,7 @@
     {
         "tierName": "Tier 3: Breaking Ground",
         "description": {
-            "paragraph1": "For clients who already have (or don’t need) supporting videos.",
-            "paragraph2": "We'll craft a learning experience that deepens student curiosity and engagement around your work!"
+            "paragraph1": "For clients who already have (or don’t need) supporting videos."
         },
         "productInfo": {
             "learningExperience": "2 Part",
@@ -23,8 +22,7 @@
     {
         "tierName": "Tier 2: Lasting Impact",
         "description": {
-            "paragraph1": "Scale up your outreach with a multimedia budget.",
-            "paragraph2": "Videos help any teacher anywhere to use your lesson. Includes 3 years of support, updates, and promotion."
+            "paragraph1": "Scale up your outreach with a multimedia budget."
         },
         "productInfo": {
             "learningExperience": "3-4 Part",
@@ -49,8 +47,7 @@
     {
         "tierName": "Tier 1: World Changer",
         "description": {
-            "paragraph1": "Achieve maximum impact through sustained effort!",
-            "paragraph2": "More time and resources mean greater student understanding and deeper curiosity around topics core to your mission!"
+            "paragraph1": "Achieve maximum impact through sustained effort!"
         },
         "productInfo": {
             "learningExperience": "5-7 Part",

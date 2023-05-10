@@ -166,30 +166,30 @@
   }
 }
 
-.hireUsPgInfoCardBody {
-  @media (min-width: 768px) {
-    padding: 0;
-  }
+// .hireUsPgInfoCardBody {
+//   @media (min-width: 768px) {
+//     padding: 0;
+//   }
 
-  @media (max-width: 768px) and (min-width: 576px) {
-    h3 {
-      padding-right: 2px;
-    }
-  }
+//   @media (max-width: 768px) and (min-width: 576px) {
+//     h3 {
+//       padding-right: 2px;
+//     }
+//   }
 
-  @media (max-width: 576px) {
-    h3 {
-      // font-size: 42px ;
-      text-align: center;
-      padding-left: 8px;
-      padding-right: 8px;
-    }
-  }
+//   @media (max-width: 576px) {
+//     h3 {
+//       // font-size: 42px ;
+//       text-align: center;
+//       padding-left: 8px;
+//       padding-right: 8px;
+//     }
+//   }
 
-  @media (max-width: 768px) {
-    padding: 0;
-  }
-}
+//   @media (max-width: 768px) {
+//     padding: 0;
+//   }
+// }
 
 .whatWillYouGetTxtUnBolded {
   @media (max-width: 576px) {
