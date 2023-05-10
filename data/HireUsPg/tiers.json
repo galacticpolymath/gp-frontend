@@ -2,7 +2,7 @@
     {
         "tierName": "Tier 3: Breaking Ground",
         "description": {
-            "paragraph1": "For clients who already have (or don’t need) supporting videos."
+            "paragraph1": "For clients don’t need supporting multimedia."
         },
         "productInfo": {
             "learningExperience": "2 Part",
@@ -25,7 +25,7 @@
             "paragraph1": "Scale up your outreach with a multimedia budget."
         },
         "productInfo": {
-            "learningExperience": "3-4 Part",
+            "learningExperience": "5 Part",
             "projectSupport": 3,
             "vid": {
                 "basic": 8,
@@ -50,7 +50,7 @@
             "paragraph1": "Achieve maximum impact through sustained effort!"
         },
         "productInfo": {
-            "learningExperience": "5-7 Part",
+            "learningExperience": "7 Part",
             "projectSupport": 3,
             "vid": {
                 "basic": 10,

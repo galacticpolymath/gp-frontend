@@ -54,58 +54,56 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
         window.open(link, "_")
     }
 
-    // ps-md-5 pe-md-5
-    // ms-xl-3 me-xl-3
     return (
-        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pe-lg-3 ps-lg-3 pe-xl-0 ps-xl-0 pt-5 ms-xl-2 me-xl-2 me-md-0 me-xl-2 pt-md-1'} ps-lg-3 pe-lg-3  mt-5 pb-5 ps-sm-5 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles ${index !== 0 ? '' : ''}`}>
+        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pe-lg-3 ps-lg-3 pe-xl-0 ps-xl-0 pt-5 ms-xl-2 me-xl-2 me-md-0 me-xl-2 pt-md-1'} ps-lg-3 pe-lg-3  mt-5 pb-5 ps-sm-3 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles ${index !== 0 ? '' : ''}`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'tierCardBodyAndHeader noBorder'}`}>
                 <section className="imgSectionTier pt-4">
                     {/* <Img src={img} alt={`${tierName}_img`} className="tierImg" height={120} /> */}
-                    <div className="position-relative ms-5" style={{ height: "120px", width: "120px" }}>
+                    <div className="position-relative ms-5" style={{ height: "90px", width: "90px" }}>
                         <Image
                             src={img}
                             alt={`${tierName}_img`}
                             className='teirImg'
                             fill
-                            sizes="120px"
+                            sizes="90px"
                         />
                     </div>
                 </section>
                 <section className="mt-4">
-                    <h4 className="text-dark tierHeaderTag mt-2 fw450 text-sm-start">{tierName.toUpperCase()}</h4>
+                    <h4 className="text-dark tierHeaderTag fw450 text-sm-start">{tierName.toUpperCase()}</h4>
                 </section>
             </Header>
             <Body className={`${isNoBackground ? 'noBackground' : 'tierCardBodyAndHeader'} noBorder pt-0 position-relative tierCardBody d-flex flex-column`}>
                 <section className="tierParagraphSec">
                     <p className="text-dark fst-italic  fw200 text-sm-start">{paragraph1}</p>
-                    <p className="text-dark fst-italic  fw200 mt-3 text-sm-start">{paragraph2}</p>
+                    {/* <p className="text-dark fst-italic  fw200 mt-3 text-sm-start">{paragraph2}</p> */}
                 </section>
                 <section>
                     <div className="tierProductBorder pt-2 pb-2 pt-md-3 pb-md-3">
                         <table className="productInfoTable w-100 noBorder">
                             <tbody>
                                 <tr className="tierTableRow">
-                                    <td className="tierInfoStatus ps-2 ps-sm-0 text-start text-sm-end text-sm-nowrap">{learningExperience}</td>
-                                    <td id="0" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-sm-5 text-sm-start position-relative underline-on-hover">
+                                    <td className="tierInfoStatus ps-0 ps-sm-0 text-sm-end text-sm-nowrap">{learningExperience}</td>
+                                    <td id="0" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-sm-3 text-sm-start position-relative underline-on-hover">
                                         GP Learning Experience
                                         <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" />
                                     </td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className="w-25 tierInfoStatus ps-2 ps-sm-0 text-start text-sm-end text-sm-nowrap ">{projectSupport}</td>
-                                    <td id="1" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-sm-5 text-sm-start position-relative underline-on-hover">Years of Project Support <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
+                                    <td className="w-20 tierInfoStatus ps-0 ps-sm-0 text-start text-sm-end text-sm-nowrap ">{projectSupport}</td>
+                                    <td id="1" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-sm-3 text-sm-start position-relative underline-on-hover">Years of Project Support <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className={`w-25 tierInfoStatus ps-2 ps-sm-0 text-start text-sm-end text-sm-nowrap   ${basic ? '' : 'op-5'}`}>{basic ? `${basic} min` : <HiOutlineX />}</td>
-                                    <td id="2" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-5 text-sm-start position-relative underline-on-hover ${basic ? '' : 'op-5'}`}>Basic Video <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
+                                    <td className={`w-20 tierInfoStatus ps-0 ps-sm-0 text-start text-sm-end text-sm-nowrap   ${basic ? '' : 'op-5'}`}>{basic ? `${basic} min` : <HiOutlineX />}</td>
+                                    <td id="2" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-3 text-sm-start position-relative underline-on-hover ${basic ? '' : 'op-5'}`}>Basic Video <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className={`w-25 tierInfoStatus ps-2 ps-sm-0 text-start text-sm-end text-sm-nowrap   ${complex ? '' : 'op-5'}`}>{complex ? `${complex} min` : <HiOutlineX />}</td>
-                                    <td id="3" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-5 text-sm-start position-relative underline-on-hover ${complex ? '' : 'op-5'}`}>Complex Video <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
+                                    <td className={`w-20 tierInfoStatus ps-0 ps-sm-0 text-start text-sm-end text-sm-nowrap   ${complex ? '' : 'op-5'}`}>{complex ? `${complex} min` : <HiOutlineX />}</td>
+                                    <td id="3" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-3 text-sm-start position-relative underline-on-hover ${complex ? '' : 'op-5'}`}>Complex Video <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                                 <tr className="tierTableRow">
-                                    <td className={`w-25 tierInfoStatus ps-2 ps-sm-0 text-start text-sm-end text-sm-nowrap   ${isMajorExtension ? '' : 'op-5'}`}>{isMajorExtension ? <GoCheck /> : <HiOutlineX />}</td>
-                                    <td id="4" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-5 text-sm-start position-relative underline-on-hover ${isMajorExtension ? '' : 'op-5'}`}>Major extension in Year 3 <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
+                                    <td className={`w-20 tierInfoStatus ps-0 ps-sm-0 text-start text-sm-end text-sm-nowrap   ${isMajorExtension ? '' : 'op-5'}`}>{isMajorExtension ? <GoCheck /> : <HiOutlineX />}</td>
+                                    <td id="4" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-sm-3 text-sm-start position-relative underline-on-hover ${isMajorExtension ? '' : 'op-5'}`}>Major extension in Year 3 <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
                                 </tr>
                             </tbody>
                         </table>
