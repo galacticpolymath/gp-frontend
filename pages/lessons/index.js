@@ -26,7 +26,7 @@ const LessonsPage = ({ lessons }) => {
   });
   
   return (
-    <Layout title='Galactic Polymath Lesson Releases' keywords='Galatic Polymath Lessons, Galactic Polymath Learning Tools'>
+    <Layout title='Galactic Polymath Lesson Releases' description='We strive to create mind-expanding learning experiences that a non-specialist can teach in any G5-12 classroom with 15 minutes of prep time!' imgSrc='https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png'  imgAlt='Galactic_Polymath_Logo_Lessons_Page' keywords='Galatic Polymath Lessons, Galactic Polymath Learning Tools'>
       <section className="bg-secondary p-4">
         <div className="text-white col-sm-12 col-md-10 col-lg-8 col-xl-7">
           <h1>Free, Interdisciplinary Lessons</h1>
