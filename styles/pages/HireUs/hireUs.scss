@@ -804,24 +804,6 @@
   }
 }
 
-@media (max-width: 991px) {
-  .mattsAward:not(:first-child) {
-    margin-top: 50px;
-
-    @media (max-width: 768px) and (min-width: 576px) {
-      margin-top: 0px;
-    }
-  }
-
-  .mattsAward {
-    > section:first-child {
-      margin-top: 10px;
-      > a span {
-        text-decoration-thickness: 0.5px;
-      }
-    }
-  }
-}
 
 .looped-video-sec {
   @media (max-width: 576px) {

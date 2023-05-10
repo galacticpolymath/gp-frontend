@@ -49,6 +49,8 @@ body {
 a {
   color: $hydrogen-blue;
   font-weight: bolder;
+  text-decoration: none;
+
   //automatic exceptions for badge & nav-links for certain effects
   &:hover:not(.badge) {
     &:not(.nav-link, .btn) {
@@ -68,7 +70,7 @@ a {
 
   //add no-link-decoration to avoid hover effects and stuff
   &.no-link-decoration {
-    text-decoration: none;
+
     color: inherit;
     font-weight: inherit;
 
