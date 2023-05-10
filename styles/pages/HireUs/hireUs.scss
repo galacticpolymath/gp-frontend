@@ -794,16 +794,6 @@
   }
 }
 
-.btnContainerWhenShouldIReach {
-  > div {
-    > div:last-of-type {
-      span {
-        font-size: $bntFontSize;
-      }
-    }
-  }
-}
-
 
 .looped-video-sec {
   @media (max-width: 576px) {

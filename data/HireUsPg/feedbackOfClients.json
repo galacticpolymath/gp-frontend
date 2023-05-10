@@ -11,7 +11,7 @@
         "person": "Dr. Matthew Cowan",
         "location": "University of Canterbury, New Zealand",
         "institution": "Department of Engineering",
-        "cssClass": "longClientReview"
+        "cssClass": "shortTxtClientReview"
     },
     {
         "feedback": "I loved the collaboration with GP! It was a wonderful experience to have a skilled team help translate my science into a classroom lesson.",
@@ -19,7 +19,7 @@
         "location": "University of Missouri",
         "institution": "Department of Biological Sciences",
         "cssClass": "longClientReview",
-        "uniqueCssClass": "johanaReviewStyles"
+        "uniqueCssClass": "shortTxtClientReview"
     },
     {
         "feedback": "Such productive and satisfying work with Galactic Polymath! Matt is a former teacher that knows how to magnify the broader impacts of an NSF grant!",
