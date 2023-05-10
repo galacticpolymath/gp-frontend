@@ -55,9 +55,9 @@ const HireUsPage = () => {
                   <ClientFundingSec isMobile />
                   <ClientFundingSec />
                   <WhenShouldIReachOutSec />
-                  <section className="d-flex mt-8">
+                  <section className="d-flex mt-5 h-100">
                     <CardContainer
-                      headingTxt="What our clients says: "
+                      headingTxt="What our clients say: "
                       _userInputs={feedbackOfClients}
                       backgroundImgSrc={WhatOurClientsSayBackground.src}
                       headerContainerClassNamesDynamic="cardHeadingSec"
@@ -66,7 +66,7 @@ const HireUsPage = () => {
                     />
                   </section>
                   <WhoMakesTheLessonsSec />
-                  <section className="d-flex mt-8">
+                  <section className="d-flex mt-5">
                     <CardContainer
                       headingTxt="Dynamic teams translate any body of knowledge"
                       dynamicCssClasses=' dynamicTeamsSec'
