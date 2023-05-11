@@ -118,17 +118,14 @@ export default function Home() {
                   See this lesson
                 </Link>
               </div>
-              <div className='col-0 col-md-4'/>
+              <div className='col-0 col-md-4' />
             </div>
           </div>
 
-          <div className="col-12 col-lg-10 offset-lg-1 px-0 py-3 mt-4 d-flex flex-column justify-content d-sm-block align-items-center">
-            <h4 className="text-center text-sm-start">We want to empower students with <em>agency</em> and <em>critical thinking</em>.</h4>
-            <p className="text-center text-sm-start">
-              Our lessons can be <em><strong>taught in any subject classroom!</strong></em> We align to learning standards in ELA, math, social studies and science to provide deeper understanding and longer retention.
-            </p>
-            <p className="text-center text-sm-start">
-              We build lessons around <em><strong>real research, data, and stories</strong></em> from diverse STEM experts.
+          <div className="col-12 col-lg-10 offset-lg-1 px-0 py-3 my-5">
+            <div className="display-4">We want to empower students with <em>agency</em> and <em>critical thinking</em>.</div>
+            <p className="fs-3 pt-3">
+              Our lessons are centered on cutting edge research and connected to real careers!
             </p>
 
           </div>
@@ -207,6 +204,13 @@ export default function Home() {
             </div>
           </section>
         </div>
+      </div>
+      <div className="col-12 col-lg-10 offset-lg-1 px-0 py-3 my-5">
+        <div className="display-4">The Real World doesn't respect subject boundaries. <em>Our lessons don't either!</em></div>
+        <p className='fs-3 pt-3'>
+           We craft learning narratives that students will remember. We make it clear how abstract learning standards in ELA, math, social studies and science connect to give students methods for approaching complex problems.
+        </p>
+
       </div>
 
       <div className="bg-light-gray">
