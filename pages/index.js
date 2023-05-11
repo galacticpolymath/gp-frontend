@@ -164,7 +164,7 @@ export default function Home() {
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
             <h5 className='mb-3 text-height-1 fw-bold'>
               4. We evaluate &#x21ba;<span className="visually-hidden">,</span><br />
-              <span className="fw-light fs-5">We gather measures of impact as we improve lessons over time.</span>
+              <span className="fw-light fs-5">We gather measures of impact for clients as we improve lessons over time.</span>
             </h5>
           </div>
         </div>
@@ -248,7 +248,7 @@ export default function Home() {
                 <ul className="teacherAndClientsUl pt-2">
                   <li>Magnify the impact of your research and outreach efforts</li>
                   <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <strong>there are also many avenues for collaboration!</strong></li>
+                  <li>If you love GP, but don&apos;t have the funds to hire us, <Link passHref href="about/#get_involved"> there are also many avenues for collaboration!</Link></li>
                 </ul>
                 <div className="d-flex justify-content-center">
                   <Link href="/hire-us" className='btn btn-primary'>
