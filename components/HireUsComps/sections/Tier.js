@@ -124,7 +124,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                                 </div>
                                 <section className="mt-1">
                                     <a href={link} target="_blank" className="fs-6 fst-italic ">
-                                        <span >&#8220;{txt}&#8221;</span>
+                                        <span>&#8220;{txt}&#8221;</span>
                                     </a>
                                 </section>
                             </section>
@@ -134,8 +134,8 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                         </div>
                     </div>
                 </section>
-            </Body >
-        </Card >
+            </Body>
+        </Card>
     )
 }
 

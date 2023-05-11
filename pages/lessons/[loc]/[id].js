@@ -181,11 +181,11 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
               {lastSubRelease && (
-                <Link passHref href="#versions"  style={{color: 'black'}}>
-                <p>
-                  Version {lastSubRelease.version}{' '}
-                  (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-                </p>
+                <Link passHref href="#versions" style={{ color: 'black' }}>
+                  <p>
+                    Version {lastSubRelease.version}{' '}
+                    (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
+                  </p>
                 </Link>
               )}
               <LocDropdown
