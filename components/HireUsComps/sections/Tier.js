@@ -58,7 +58,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
         <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pe-lg-3 ps-lg-3 pe-xl-0 ps-xl-0 pt-5 ms-xl-2 me-xl-2 me-md-0 me-xl-2 pt-md-1'} ps-lg-3 pe-lg-3  mt-5 pb-5 px-xs-1 ps-md-0 pe-md-0  ${index !== 0 ? '' : ''}`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'noBackground noBorder'}`}>
                 <section className="col d-grid justify-content-center pt-4">
-                    
+
                     <div className="position-relative mb-2 mx-auto" style={{ height: "90px", width: "90px" }}>
                         <Image
                             src={img}
@@ -72,7 +72,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                 </section>
             </Header>
             <Body className={`${isNoBackground ? 'noBackground' : ''} noBorder pt-0 position-relative tierCardBody d-flex flex-column`}>
-                    <p className="text-dark  text-center">{paragraph1}</p>
+                <p className="text-dark  text-center">{paragraph1}</p>
                 <section>
                     <div className="tierProductBorder py-1 py-lg-3">
                         <table className="productInfoTable w-100 noBorder">
@@ -107,29 +107,33 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                         </table>
                     </div>
                 </section>
-                <section className="mt-2">
-                    <div className="text-dark fst-italic fs-big text-sm-start ">Example Product: </div>
-                    <section className="productSec">
-                        <div className="position-relative pointer">
-                            <Image
-                                src={productImg}
-                                width={1500}
-                                height={450}
-                                alt={`${tierName}_ProductImg`}
-                                onClick={handleImgClick}
-                                style={{ width: "100%", height: "auto", objectFit: 'contain' }}
-                            />
+                <section className="mt-2 d-grid container-fluid">
+                    <div className="row justify-content-center ">
+                        <div className="col-12 col-md-6 col-lg-12">
+                            <div className="text-dark fst-italic fs-big text-sm-start ">Example Product: </div>
+                            <section className="productSec ">
+                                <div className="position-relative pointer">
+                                    <Image
+                                        src={productImg}
+                                        width={1500}
+                                        height={450}
+                                        alt={`${tierName}_ProductImg`}
+                                        onClick={handleImgClick}
+                                        style={{ width: "100%", maxWidth: "500px", height: "auto", objectFit: 'contain' }}
+                                    />
+                                </div>
+                                <section className="mt-1">
+                                    <a href={link} target="_blank" className="fs-6 fst-italic ">
+                                        <span >&#8220;{txt}&#8221;</span>
+                                    </a>
+                                </section>
+                            </section>
+                            <div className="pt-3 text-dark fst-italic  text-sm-start">
+                                <span>Starting At: ${low}</span>
+                            </div>
                         </div>
-                        <section className="mt-1 text-sm-start">
-                            <a href={link} target="_blank" className=" fst-italic fw200 underline-less-thick">
-                                <span className='fs-6'>&#8220;{txt}&#8221;</span>
-                            </a>
-                        </section>
-                    </section>
+                    </div>
                 </section>
-                <h4 className="pt-3 text-dark fst-italic  text-sm-start">
-                    <span>Starting At: ${low}</span>
-                </h4>
             </Body >
         </Card >
     )

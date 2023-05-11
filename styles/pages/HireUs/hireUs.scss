@@ -14,7 +14,6 @@
 @import "./hireUsComps/ownerSec.scss";
 @import "./hireUsComps/whatYouWillGetSec.scss";
 @import "./hireUsComps/scientistSec.scss";
-@import "./hireUsComps/howMuchDoesItCostSec.scss";
 
 .subTxtHeadingDesktop {
   @media (min-width: 768px) {
@@ -734,32 +733,32 @@
   }
 }
 
-.howMuchDoesItCostSec {
-  @media (min-width: 768px) {
-    padding-top: 20px;
-  }
+// .howMuchDoesItCostSec {
+//   @media (min-width: 768px) {
+//     padding-top: 20px;
+//   }
 
-  > section:nth-child(2) {
-    span {
-      line-height: 20px;
-      width: 100%;
-    }
-  }
-  > section:nth-child(2) {
-    span {
-      width: 100%;
-    }
-  }
-  > section:nth-child(2) {
-    > span {
-      @media (max-width: 576px) {
-        line-height: 20px;
-        padding-left: 8px;
-        padding-right: 8px;
-      }
-    }
-  }
-}
+//   > section:nth-child(2) {
+//     span {
+//       line-height: 20px;
+//       width: 100%;
+//     }
+//   }
+//   > section:nth-child(2) {
+//     span {
+//       width: 100%;
+//     }
+//   }
+//   > section:nth-child(2) {
+//     > span {
+//       @media (max-width: 576px) {
+//         line-height: 20px;
+//         padding-left: 8px;
+//         padding-right: 8px;
+//       }
+//     }
+//   }
+// }
 
 @media (max-width: 576px) {
   .shareYourKnowledgeImgContainer > img {
