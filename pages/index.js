@@ -142,37 +142,30 @@ export default function Home() {
         <div className="row text-center text-sm-start text-lg-center pt-lg-5">
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
             <h5 className='mb-3 text-height-1 fw-bold'>
-              1. Clients hire us;<br />
+              1. Clients hire us &#x2192;<br />
               <span className="fw-light fs-5">
                 <span className="visually-hidden">&mdash;</span>
-                researchers, nonprofits, &amp; companies pay
+                We make outreach easier for researchers, nonprofits, &amp; companies.
               </span>
             </h5>
-            <p>Government-funded researchers and organizations that want to support research impacts on society hire us to make a body of knowledge available to the public.</p>
           </div>
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
             <h5 className='mb-3 text-height-1 fw-bold'>
-              2. We translate<br />
-              <span className="fw-light fs-5">research into lessons</span>
+              2. We translate &#x2192;<br />
+              <span className="fw-light fs-5">We weave real STEM research &amp; data into free, interdisciplinary lessons</span>
             </h5>
-            <p>
-              Our team of science communicators, educators, and artists work directly with subject experts to translate our clients&apos; area of focus into free lessons for grades 5-12.{' '}
-              <span className='highlight'>Our goal is for every lesson to be ready to teach in any subject classroom by a non-expert with 15 min. of prep time.</span>
-            </p>
           </div>
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
             <h5 className='mb-3 text-height-1 fw-bold'>
-              3. We publish<br />
-              <span className="fw-light fs-5">free lessons for everyone</span>
+              3. We publish &#x2192;<br />
+              <span className="fw-light fs-5">We release our lessons worldwide with an <em>open-access</em> license.</span>
             </h5>
-            <p>Working closely with educators and districts in our growing network, lessons are tested and taught in classrooms. Equal access to lessons means more of the public can connect with the body of knowledge our clients care about.</p>
           </div>
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
             <h5 className='mb-3 text-height-1 fw-bold'>
-              4. We improve,<span className="visually-hidden">,</span><br />
-              <span className="fw-light fs-5">evaluate, revise, repeat</span>
+              4. We evaluate &#x21ba;<span className="visually-hidden">,</span><br />
+              <span className="fw-light fs-5">We gather measures of impact as we improve lessons over time.</span>
             </h5>
-            <p>All of our lessons are continuously evaluated, updated, and revised—meaning they are always up-to-date and working to make the jobs of teaching and outreach easier!</p>
           </div>
         </div>
       </div>
