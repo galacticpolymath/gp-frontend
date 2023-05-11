@@ -68,54 +68,49 @@ export default function Home() {
       </div>
 
       <div className="bg-light-gray py-3 py-sm-5 border">
-        <div className="container mx-auto row align-items-center d-flex d-sm-block justify-content-sm-start justify-content-center flex-column">
-          <h2 className="fw-light fs-1 text-center text-sm-start text-lg-center p-3 p-lg-4">
+        <div className="container mx-auto row align-items-center justify-content-center">
+          <h2 className="fw-light fs-1 text-center text-sm-start text-lg-center p-3 p-lg-4 mb-5">
             Think <strong>bigger</strong>.<br />{' '}
             Learn everything.
           </h2>
+          <div className=' container bg-white  rounded-3 justify-content-center py-5 px-4'>
+            <div className='row justify-content-center gy-5'>
+              <div className='col-12 offset-md-1 col-md-7'>
+                <Link href={newReleasePath} className=' no-link-decoration object-fit-contain w-auto'>
+                  <div className="position-relative mx-auto">
 
-          <div className='bg-white p-4 row align-items-center rounded-3 d-flex d-sm-flex flex-column flex-sm-row'>
-            <div className='col-sm-9 text-center'>
-
-              <div className="position-relative newReleaseImg  mright-auto p-0">
-                <Link href={newReleasePath} className='no-link-decoration'>
-                  <div className="d-flex justify-content-start align-items-stretch">
-                    <div className='badge bg-secondary fs-6  text-center p-absolute ' style={{ zIndex: 5, marginTop: '-5px', marginLeft: '-10px' }}>
+                    <Image
+                      priority
+                      src={NewReleaseImage.src}
+                      height={1000}
+                      width={1500}
+                      sizes="60vw"
+                      className='lessonsPgShadow rounded-4 h-auto'
+                      style={{ objectFit: 'contain' }}
+                      alt="Electric Crystals: A tour of crystal symmetry through comics"
+                    />
+                    <div className='badge bg-secondary fs-6 text-center' style={{ zIndex: 15, position: 'absolute', top: '-10px', left: '-20px' }}>
                       New release!
                     </div>
-                  </div>
-                  <Image
-                    priority
-                    src={NewReleaseImage.src}
-                    fill
-                    sizes="100%"
-                    className='lessonsPgShadow rounded-4 w-auto mb-0'
-                    style={{ objectFit: 'contain', objectPosition: '0% 0%' }}
-                    alt="Electric Crystals: A tour of crystal symmetry through comics"
-                  />
-                  <div className='m-auto d-flex'>
-                    fds
+
                   </div>
                 </Link>
               </div>
-            </div>
-            <div className='col-12 col-sm-3 text-sm-center d-flex justify-content-center mt-2 mt-sm-0 align-items-center'>
-              <section className="d-flex mt-1 flex-column justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch">
-                <div className="d-flex justify-content-center align-items-center mt-3">
-                  <h5 className='fw-light'>Sponsor:</h5>
-                </div>
+              <div className='col-12 col-md-2 d-grid justify-content-center align-content-center mx-auto'>
+                <h5 className='fw-light text-center'>Sponsor:</h5>
                 <a href="https://www.nsf.gov/">
                   <div className="position-relative nsfImgContainer">
                     <Image
                       src={NSFImage.src}
                       fill
+                      className='h-auto'
                       style={{ objectFit: 'contain' }}
-                      sizes="175px"
+                      // sizes="175px"
                       alt="National Science Foundation"
                     />
                   </div>
                 </a>
-              </section>
+              </div>
             </div>
           </div>
 
