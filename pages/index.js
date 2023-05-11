@@ -122,10 +122,10 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="col-12 col-lg-10 offset-lg-1 px-0 py-3 my-5">
+          <div className="col-12 col-lg-10 offset-lg-1 px-4 py-3 my-5">
             <div className="display-4">We want to empower students with <em>agency</em> and <em>critical thinking</em>.</div>
             <p className="fs-3 pt-3">
-              Our lessons are centered on cutting edge research and connected to real careers!
+              Our lessons help build 21st Century Skills and foster lifelong curiosity.
             </p>
 
           </div>
@@ -133,10 +133,10 @@ export default function Home() {
       </div>
 
       <div className="container mx-auto py-5">
-        <h2 className='text-center text-sm-start text-lg-center'>
+        <div className='text-center text-sm-start text-lg-center display-4'>
           What We Do<br />
           <span className='fs-4 fw-light'>(And how we make it free for teachers)</span>
-        </h2>
+        </div>
         <div className="row text-center text-sm-start text-lg-center pt-lg-5">
           <div className='col-12 col-lg-6 col-xl-3 py-3'>
             <h5 className='mb-3 text-height-1 fw-bold'>
@@ -205,57 +205,60 @@ export default function Home() {
           </section>
         </div>
       </div>
-      <div className="col-12 col-lg-10 offset-lg-1 px-0 py-3 my-5">
+      <div className="col-12 col-lg-10 offset-lg-1 px-4 py-3 my-5">
         <div className="display-4">The Real World doesn't respect subject boundaries. <em>Our lessons don't either!</em></div>
         <p className='fs-3 pt-3'>
-           We craft learning narratives that students will remember. We make it clear how abstract learning standards in ELA, math, social studies and science connect to give students methods for approaching complex problems.
+          We craft learning narratives that students will remember. We make it clear how abstract learning standards in ELA, math, social studies and science connect to give students methods for approaching complex problems.
         </p>
 
       </div>
 
       <div className="bg-light-gray">
         <div className='bg-secondary-light'>
-          <div className='container p-3 p-lg-5 mx-auto text-center d-none d-lg-block'>
-            <p className='fs-4'>Real Research + Real Stories + Real Data + Real Careers =</p>
+          <div className='container p-3 p-lg-5 mx-auto text-center d-grid'>
+            <p className='fs-4'>Real Research&nbsp;+ Real&nbsp;Stories&nbsp;+ Real&nbsp;Data&nbsp;+ Real&nbsp;Careers&nbsp;=</p>
             <p className='fs-3'>Real Learning</p>
-          </div>
-          <div className='py-3 border mx-auto d-block d-lg-none'>
-            <p className='w-100 text-center mb-0'>Real Research + Real Stories + Real Data + Real Careers</p>
-            <p className='w-100 text-center mb-0 mt-0'>=</p>
-            <p className='w-100 text-center mb-0'>Real Learning</p>
           </div>
         </div>
 
         <div className='bg-light-gray py-4'>
-          <div className='container p-3 p-lg-5 mx-auto row justify-content-center align-items-center'>
-            <div className='col-12 mb-4'>
-              <h3 className='col-lg-8 col-xl-6 offset-lg-2 offset-xl-3 text-center fw-light fs-2 mb-3'>Benefits of connecting classrooms to the world of Academia</h3>
+          <div className='row my-5 justify-content-center'>
+            <div className='col-10'>
+            <h3 className='mt-5 display-5'>
+              Benefits of connecting classrooms to the real world with GP:
+            </h3>
             </div>
-            <div className='col-12 col-md-10 col-lg-6 mb-4 mb-lg-0 d-flex justify-content-center align-items-center'>
-              <div style={{ minWidth: 265 }} className='bg-white rounded-3 px-3 py-4 d-flex flex-column justify-content-center align-items-center teacherAndClientsIsland'>
-                <h4 className="text-center text-sm-start w-100">For Teachers</h4>
-                <ul className="teacherAndClientsUl pt-2">
+          </div>
+
+          {/* For Teachers and Clients boxes container */}
+          <div className='container my-5'>
+            <div className='row g-3 gx-3'>
+              <div className='d-grid col-6 justify-content-center bg-white rounded-3 p-4'>
+
+                <h2 className="text-start ">For Teachers</h2>
+                <ul className=" fs-4">
                   <li>Free (open-access), high-quality lessons</li>
-                  <li>Regularly updated based on your feedback</li>
-                  <li>Differentiated for grades 5-6, 7-8 & 9-12</li>
-                  <li>Adaptable for different time lengths, extension activities, etc.</li>
+                  <li>Improved based on <em>your feedback</em></li>
+                  <li>Fully editable to meet the needs of your students</li>
                 </ul>
-                <div className="d-flex justify-content-center">
+                <div className="d-grid justify-content-center align-content-end">
                   <Link href="/lessons" className='btn btn-primary'>
                     Get lessons
                   </Link>
                 </div>
+
               </div>
-            </div>
-            <div className='col-12 col-md-10 col-lg-6 d-flex justify-content-center align-items-center'>
-              <div style={{ minWidth: 265 }} className='bg-white rounded-3 d-flex flex-column justify-content-center align-items-center px-3 py-4 teacherAndClientsIsland'>
-                <h4 className="text-center text-sm-start w-100">For Clients</h4>
-                <ul className="teacherAndClientsUl pt-2">
-                  <li>Magnify the impact of your research and outreach efforts</li>
-                  <li>Get detailed impact metrics to report to funders</li>
-                  <li>If you love GP, but don&apos;t have the funds to hire us, <Link passHref href="about/#get_involved"> there are also many avenues for collaboration!</Link></li>
-                </ul>
-                <div className="d-flex justify-content-center">
+              <div className='d-grid col-6 justify-content-center bg-white rounded-3  p-4'>
+
+                <h2 className="text-start ">For Clients</h2>
+                <div className='align-content-start'>
+                  <ul className=" fs-4">
+                    {/* <li>Magnify the impact of your research and outreach efforts</li>
+                    <li>Get detailed impact metrics to report to funders</li> */}
+                    <li>If you love GP, but don&apos;t have the funds to hire us, <Link passHref href="about/#get_involved"> there are also many avenues for collaboration!</Link></li>
+                  </ul>
+                </div>
+                <div className="d-grid justify-content-center align-content-end">
                   <Link href="/hire-us" className='btn btn-primary'>
                     Hire Us
                   </Link>
@@ -264,6 +267,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <div className='py-3' />
       </div>
     </Layout>
   );
