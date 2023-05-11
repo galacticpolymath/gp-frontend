@@ -14,7 +14,6 @@
 @import "./hireUsComps/ownerSec.scss";
 @import "./hireUsComps/whatYouWillGetSec.scss";
 @import "./hireUsComps/scientistSec.scss";
-@import "./hireUsComps/howMuchDoesItCostSec.scss";
 
 .subTxtHeadingDesktop {
   @media (min-width: 768px) {
@@ -166,30 +165,30 @@
   }
 }
 
-.hireUsPgInfoCardBody {
-  @media (min-width: 768px) {
-    padding: 0;
-  }
+// .hireUsPgInfoCardBody {
+//   @media (min-width: 768px) {
+//     padding: 0;
+//   }
 
-  @media (max-width: 768px) and (min-width: 576px) {
-    h3 {
-      padding-right: 2px;
-    }
-  }
+//   @media (max-width: 768px) and (min-width: 576px) {
+//     h3 {
+//       padding-right: 2px;
+//     }
+//   }
 
-  @media (max-width: 576px) {
-    h3 {
-      // font-size: 42px ;
-      text-align: center;
-      padding-left: 8px;
-      padding-right: 8px;
-    }
-  }
+//   @media (max-width: 576px) {
+//     h3 {
+//       // font-size: 42px ;
+//       text-align: center;
+//       padding-left: 8px;
+//       padding-right: 8px;
+//     }
+//   }
 
-  @media (max-width: 768px) {
-    padding: 0;
-  }
-}
+//   @media (max-width: 768px) {
+//     padding: 0;
+//   }
+// }
 
 .whatWillYouGetTxtUnBolded {
   @media (max-width: 576px) {
@@ -734,32 +733,32 @@
   }
 }
 
-.howMuchDoesItCostSec {
-  @media (min-width: 768px) {
-    padding-top: 20px;
-  }
+// .howMuchDoesItCostSec {
+//   @media (min-width: 768px) {
+//     padding-top: 20px;
+//   }
 
-  > section:nth-child(2) {
-    span {
-      line-height: 20px;
-      width: 100%;
-    }
-  }
-  > section:nth-child(2) {
-    span {
-      width: 100%;
-    }
-  }
-  > section:nth-child(2) {
-    > span {
-      @media (max-width: 576px) {
-        line-height: 20px;
-        padding-left: 8px;
-        padding-right: 8px;
-      }
-    }
-  }
-}
+//   > section:nth-child(2) {
+//     span {
+//       line-height: 20px;
+//       width: 100%;
+//     }
+//   }
+//   > section:nth-child(2) {
+//     span {
+//       width: 100%;
+//     }
+//   }
+//   > section:nth-child(2) {
+//     > span {
+//       @media (max-width: 576px) {
+//         line-height: 20px;
+//         padding-left: 8px;
+//         padding-right: 8px;
+//       }
+//     }
+//   }
+// }
 
 @media (max-width: 576px) {
   .shareYourKnowledgeImgContainer > img {
@@ -794,34 +793,6 @@
   }
 }
 
-.btnContainerWhenShouldIReach {
-  > div {
-    > div:last-of-type {
-      span {
-        font-size: $bntFontSize;
-      }
-    }
-  }
-}
-
-@media (max-width: 991px) {
-  .mattsAward:not(:first-child) {
-    margin-top: 50px;
-
-    @media (max-width: 768px) and (min-width: 576px) {
-      margin-top: 0px;
-    }
-  }
-
-  .mattsAward {
-    > section:first-child {
-      margin-top: 10px;
-      > a span {
-        text-decoration-thickness: 0.5px;
-      }
-    }
-  }
-}
 
 .looped-video-sec {
   @media (max-width: 576px) {

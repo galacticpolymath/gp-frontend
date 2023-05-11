@@ -2,8 +2,7 @@
     {
         "tierName": "Tier 3: Breaking Ground",
         "description": {
-            "paragraph1": "Our most affordable package for clients who already have (or don’t need) videos to help non-specialists teach the lesson.",
-            "paragraph2": "We will carefully craft a lesson that not only achieves your outreach learning goals, but leaves students wanting to know more about topics that are key to your mission!"
+            "paragraph1": "For clients who don’t need supporting multimedia."
         },
         "productInfo": {
             "learningExperience": "2 Part",
@@ -23,11 +22,10 @@
     {
         "tierName": "Tier 2: Lasting Impact",
         "description": {
-            "paragraph1": "Scale up your outreach with a significant multimedia budget. We will produce highly engaging explainer videos combining “basic” and “complex” sequences that replace the “expert in the room.”",
-            "paragraph2": "Videos help any teacher anywhere to use your lesson. Includes 3 years of support, updates, and promotion."
+            "paragraph1": "Scale up your outreach with a multimedia budget."
         },
         "productInfo": {
-            "learningExperience": "3-4 Part",
+            "learningExperience": "5 Part",
             "projectSupport": 3,
             "vid": {
                 "basic": 8,
@@ -49,11 +47,10 @@
     {
         "tierName": "Tier 1: World Changer",
         "description": {
-            "paragraph1": "Achieve maximum impact through sustained effort! A slightly larger scope for the initial lesson release, combined with more project support, and a major lesson extension in Year 3 incorporating your latest work. ",
-            "paragraph2": "This means greater student understanding and deeper curiosity around topics core to your mission!"
+            "paragraph1": "Achieve maximum impact through sustained effort!"
         },
         "productInfo": {
-            "learningExperience": "5-7 Part",
+            "learningExperience": "7 Part",
             "projectSupport": 3,
             "vid": {
                 "basic": 10,
@@ -67,7 +64,7 @@
             }
         },
         "estimatedPrice": {
-            "low": "50,000",
+            "low": "45,000",
             "high": "70,000"
         },
         "img": "/imgs/tierIcons/pretty-world-changer.png"

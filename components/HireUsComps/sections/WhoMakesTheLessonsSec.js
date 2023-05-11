@@ -29,7 +29,7 @@ import mattsAwards from '../../../data/HireUsPg/mattsAwards.json'
 const WhoMakesTheLessonsSec = () => {
 
     return (
-        <section className="mt-5 ps-sm-5 pe-sm-5 d-flex flex-column ownerInfoSec">
+        <section className="mt-5 ps-sm-5 pe-sm-5 d-flex flex-column ">
             <section>
                 <h3 className="noMargin d-block d-md-none">Who makes the</h3>
                 <h3 className="noMargin d-block d-md-none">lessons?</h3>
@@ -41,21 +41,21 @@ const WhoMakesTheLessonsSec = () => {
                 <span className="text-dark text-center text-md-start pe-1 fst-italic fw249 d-inline d-sm-none d-md-inline">The GP Team is led by our founder, Matt Wilkins, PhD.</span>
             </section>
             <section className="d-flex flex-column flex-lg-row mattsAwardParentSec">
-                <section className="mt-4 mb-4 mt-sm-5 mt-md-5 d-block d-lg-none">
+                <section className="mt-4 mb-4 mt-sm-5 mt-md-5 d-block d-lg-none fs-5">
                     <PicAndDescriptionSec
-                        text="Matt is a scientist, teacher at the middle school to college level, and science communicator, who has won awards for his work: "
+                        text="Matt is an award-winning scientist and science communicator who has taught students from grade 3 to grad school."
                         imgPath="/imgs/profilePics/matt_wilkins_profile3_sq_xs.jpg"
                         parentSecStyles="ownerSection secWithHumanPic"
                     />
                 </section>
-                <section className="d-none pt-lg-4 d-lg-block">
+                <section className="d-none pt-lg-4 d-lg-block fs-5">
                     <PicAndDescriptionSec
-                        text="Matt is an award-winning scientist, science communicator, and teacher at the middle school to college level."
+                        text="Matt is an award-winning scientist and science communicator who has taught students from grade 3 to grad school."
                         imgPath="/imgs/profilePics/matt_wilkins_profile3_sq_xs.jpg"
                         parentSecStyles="ownerSection secWithHumanPic"
                     />
                 </section>
-                <section className="pt-md-2 pt-lg-4 mattsAwardsSec">
+                <section className="pt-md-2 pt-lg-4 mattsAwardsSec fs-6">
                     {mattsAwards.map((award, index) => {
                         const { alt, src, txt, link } = award;
                         return (
