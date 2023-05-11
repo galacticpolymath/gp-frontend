@@ -55,8 +55,8 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
     }
 
     return (
-        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pe-lg-3 ps-lg-3 pe-xl-0 ps-xl-0 pt-5 ms-xl-2 me-xl-2 me-md-0 me-xl-2 pt-md-1'} ps-lg-3 pe-lg-3  mt-5 pb-5 ps-sm-3 pe-sm-5 ps-md-0 pe-md-0 tierDefaultStyles ${index !== 0 ? '' : ''}`}>
-            <Header className={`${isNoBackground ? 'noBackground noBorder' : ' noBorder'}`}>
+        <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pe-lg-3 ps-lg-3 pe-xl-0 ps-xl-0 pt-5 ms-xl-2 me-xl-2 me-md-0 me-xl-2 pt-md-1'} ps-lg-3 pe-lg-3  mt-5 pb-5 px-xs-1 ps-md-0 pe-md-0  ${index !== 0 ? '' : ''}`}>
+            <Header className={`${isNoBackground ? 'noBackground noBorder' : 'noBackground noBorder'}`}>
                 <section className="col d-grid justify-content-center pt-4">
                     
                     <div className="position-relative mb-2 mx-auto" style={{ height: "90px", width: "90px" }}>
@@ -68,7 +68,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                             sizes="90px"
                         />
                     </div>
-                    <h4 className="text-dark fw450 text-center">{tierName.toUpperCase()}</h4>
+                    <h5 className="text-dark fw450 text-center mb-0">{tierName.toUpperCase()}</h5>
                 </section>
             </Header>
             <Body className={`${isNoBackground ? 'noBackground' : ''} noBorder pt-0 position-relative tierCardBody d-flex flex-column`}>
@@ -80,8 +80,8 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                                 <div className="col">
                                     <tr className="tierTableRow">
                                         <td className="tierInfoStatus ps-0 ps-sm-0 text-sm-end text-sm-nowrap">{learningExperience}</td>
-                                        <td id="0" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-sm-3 text-sm-start position-relative underline-on-hover">
-                                            GP Learning Experience
+                                        <td id="0" onClick={handleTierFeatureTxtClick} className="fst-italic fw200 ps-3 position-relative underline-on-hover">
+                                            Learning Experience
                                             <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" />
                                         </td>
                                     </tr>
@@ -99,7 +99,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                                     </tr>
                                     <tr className="tierDetails">
                                         <td className={`w-20 tierInfoStatus ps-0 ps-sm-0 text-end text-sm-nowrap   ${isMajorExtension ? '' : 'op-5'}`}>{isMajorExtension ? <GoCheck /> : <HiOutlineX />}</td>
-                                        <td id="4" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-3 text-sm-start position-relative underline-on-hover ${isMajorExtension ? '' : 'op-5'}`}>Major extension <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
+                                        <td id="4" onClick={handleTierFeatureTxtClick} className={`fst-italic fw200 ps-3 text-sm-start position-relative underline-on-hover ${isMajorExtension ? '' : 'op-5'}`}>Major Extension <AiOutlineQuestionCircle style={{ marginLeft: ".4rem" }} className="position-absolute questionMarkIcon" /></td>
                                     </tr>
                                 </div>
                             </tbody>
@@ -110,19 +110,19 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                 <section className="mt-2">
                     <div className="text-dark fst-italic fs-big text-sm-start ">Example Product: </div>
                     <section className="productSec">
-                        <div className={`imgProductContainer position-relative pointer ${tierName}_style`} style={{ height: 170 }}>
+                        <div className="position-relative pointer">
                             <Image
                                 src={productImg}
-                                fill
+                                width={1500}
+                                height={450}
                                 alt={`${tierName}_ProductImg`}
                                 onClick={handleImgClick}
-                                style={{ objectFit: 'contain' }}
-                                sizes="(max-width: 575px) 490px, (max-width: 767px) 567px, (max-width: 991px) 504px, 24vw"
+                                style={{ width: "100%", height: "auto", objectFit: 'contain' }}
                             />
                         </div>
                         <section className="mt-1 text-sm-start">
                             <a href={link} target="_blank" className=" fst-italic fw200 underline-less-thick">
-                                &#8220;{txt}&#8221;
+                                <span className='fs-6'>&#8220;{txt}&#8221;</span>
                             </a>
                         </section>
                     </section>
