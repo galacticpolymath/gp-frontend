@@ -17,16 +17,21 @@ const Hero = ({
   return (
     <div className={`${isStylesHereOn ? styles.hero : ''} ${className} position-relative`}>
       {(imgSrc && !isImgToTheSide) && (
-        <Image src={imgSrc} alt="Hero_Image_Galactic_Polymath"
+        <Image
+          src={imgSrc} alt="Hero_Image_Galactic_Polymath"
           fill
           priority
-          style={{ objectFit: 'cover', zIndex: -1 }} />)}
+          style={{ objectFit: 'cover', zIndex: -1 }}
+        />
+)}
       {(imgSrc && isImgToTheSide) && (
         <div style={imgContainerStyle ?? {}} className='position-relative mb-2 me-md-3 me-lg-5'>
-          <Image src={imgSrc} alt="Hero_Image_Galactic_Polymath"
+          <Image
+            src={imgSrc} alt="Hero_Image_Galactic_Polymath"
             fill
             // sizes="(max-width: 575px) 270px, (max-width: 767px) 767px, (max-width: 991px) 480px, (max-width: 1199px) 584px, 705px" 
-            priority style={{ objectFit: 'contain', height: "100%", width: "100%" }} />
+            priority style={{ objectFit: 'contain', height: '100%', width: '100%' }}
+          />
         </div>
       )}
       <div style={childrenContainerStyle ?? {}} className={`container row ${childrenContainerClassName ?? 'mx-auto'} align-items-start`}>
