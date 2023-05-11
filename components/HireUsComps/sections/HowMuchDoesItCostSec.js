@@ -45,7 +45,7 @@ const HowMuchDoesItCostSec = ({ setTiersInfoForModalArr }) => (
                 )
             })}
         </section>
-        <section className="d-none d-md-flex d-xl-none flex-column justify-content-center align-items-center cardsCentralizedSec">
+        <section className="d-none d-md-flex d-xl-none flex-column justify-content-center align-items-center ">
             {tiers.map((tier, index) => {
                 return (
                     <Tier
