@@ -75,7 +75,7 @@ export default function Home() {
           </h2>
           <div className=' container bg-white  rounded-3 justify-content-center py-5 px-4'>
             <div className='row justify-content-center gy-5'>
-              <div className='col-12 offset-md-1 col-md-7'>
+              <div className='col-12 offset-0 offset-md-1 col-md-7 col-lg-6'>
                 <Link href={newReleasePath} className=' no-link-decoration object-fit-contain w-auto'>
                   <div className="position-relative mx-auto">
 
@@ -96,7 +96,7 @@ export default function Home() {
                   </div>
                 </Link>
               </div>
-              <div className='col-12 col-md-2 d-grid justify-content-center align-content-center mx-auto'>
+              <div className='col-12 col-md-2 col-lg-1 d-grid justify-content-center align-content-center mx-auto'>
                 <h5 className='fw-light text-center'>Sponsor:</h5>
                 <a href="https://www.nsf.gov/">
                   <div className="position-relative nsfImgContainer">
@@ -112,6 +112,14 @@ export default function Home() {
                 </a>
               </div>
             </div>
+            <div className='row mt-5 '>
+              <div className='col-12 col-md-8 justify-content-center d-flex'>
+                <Link href={newReleasePath} className='btn btn-primary '>
+                  See this lesson
+                </Link>
+              </div>
+              <div className='col-0 col-md-4'/>
+            </div>
           </div>
 
           <div className="col-12 col-lg-10 offset-lg-1 px-0 py-3 mt-4 d-flex flex-column justify-content d-sm-block align-items-center">
@@ -122,9 +130,7 @@ export default function Home() {
             <p className="text-center text-sm-start">
               We build lessons around <em><strong>real research, data, and stories</strong></em> from diverse STEM experts.
             </p>
-            <Link href={newReleasePath} className='btn btn-primary'>
-              See this lesson
-            </Link>
+
           </div>
         </div>
       </div>
