@@ -206,7 +206,7 @@ export default function Home() {
         </div>
       </div>
       <div className="col-12 col-lg-10 offset-lg-1 px-4 py-3 my-5">
-        <div className="display-4">The Real World doesn't respect subject boundaries. <em>Our lessons don't either!</em></div>
+        <div className="display-4">The Real World doesn&apos;t respect subject boundaries. <em>Our lessons don&apos;t either!</em></div>
         <p className='fs-3 pt-3'>
           We craft learning narratives that students will remember. We make it clear how abstract learning standards in ELA, math, social studies and science connect to give students methods for approaching complex problems.
         </p>
@@ -224,9 +224,9 @@ export default function Home() {
         <div className='bg-light-gray py-4'>
           <div className='row my-5 justify-content-center'>
             <div className='col-10'>
-            <h3 className='mt-5 display-5'>
-              Benefits of connecting classrooms to the real world with GP:
-            </h3>
+              <h3 className='mt-5 display-5'>
+                Benefits of connecting classrooms to the real world with GP:
+              </h3>
             </div>
           </div>
 
@@ -260,7 +260,7 @@ export default function Home() {
                   <ul className=" fs-4">
                     <li>Scale up your outreach, with less work!</li>
                     <li>Get detailed impact metrics to report to funders.</li>
-                    <li>If can't hire us, <Link passHref href="about/#get_involved"> there are still many ways to collaborate!</Link></li>
+                    <li>If can&apos;t hire us, <Link passHref href="about/#get_involved"> there are still many ways to collaborate!</Link></li>
                   </ul>
                 </div>
                 <div className="d-grid justify-content-center ">
