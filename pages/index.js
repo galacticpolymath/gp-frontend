@@ -232,34 +232,39 @@ export default function Home() {
 
           {/* For Teachers and Clients boxes container */}
           <div className='container my-5'>
-            <div className='row g-3 gx-3'>
-              <div className='d-grid col-6 justify-content-center bg-white rounded-3 p-4'>
+            <div className='row g-5 justify-content-center align-content-start mx-1'>
 
-                <h2 className="text-start ">For Teachers</h2>
-                <ul className=" fs-4">
-                  <li>Free (open-access), high-quality lessons</li>
-                  <li>Improved based on <em>your feedback</em></li>
-                  <li>Fully editable to meet the needs of your students</li>
+              {/* Teachers box */}
+              <div className='d-grid col-12 col-md-5 bg-white rounded-3 p-4 me-md-5'>
+                {/* <div className='d-grid '> */}
+                <h2 className="d-block">For Teachers</h2>
+                <ul className="fs-4 align-self-start">
+                  <li>Get free, high-quality lessons!</li>
+                  <li>Have your voice heard by a company that cares.</li>
+                  <li>Remix our materials to meet the needs of your students.</li>
                 </ul>
-                <div className="d-grid justify-content-center align-content-end">
-                  <Link href="/lessons" className='btn btn-primary'>
+                <div className="d-grid justify-content-center mt-3">
+                  <Link href="/lessons" className='btn btn-primary align-self-end'>
                     Get lessons
                   </Link>
                 </div>
+                {/* </div> */}
 
               </div>
-              <div className='d-grid col-6 justify-content-center bg-white rounded-3  p-4'>
 
+              {/* Clients box */}
+              <div className='d-grid col-12 col-md-5 justify-content-center bg-white rounded-3  p-4'>
+              
                 <h2 className="text-start ">For Clients</h2>
-                <div className='align-content-start'>
+                <div className=' d-block'>
                   <ul className=" fs-4">
-                    {/* <li>Magnify the impact of your research and outreach efforts</li>
-                    <li>Get detailed impact metrics to report to funders</li> */}
-                    <li>If you love GP, but don&apos;t have the funds to hire us, <Link passHref href="about/#get_involved"> there are also many avenues for collaboration!</Link></li>
+                    <li>Scale up your outreach, with less work!</li>
+                    <li>Get detailed impact metrics to report to funders.</li>
+                    <li>If can't hire us, <Link passHref href="about/#get_involved"> there are still many ways to collaborate!</Link></li>
                   </ul>
                 </div>
-                <div className="d-grid justify-content-center align-content-end">
-                  <Link href="/hire-us" className='btn btn-primary'>
+                <div className="d-grid justify-content-center ">
+                  <Link href="/hire-us" className='btn btn-primary mt-3'>
                     Hire Us
                   </Link>
                 </div>
