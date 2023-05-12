@@ -206,7 +206,7 @@ export default function Home() {
         </div>
       </div>
       <div className="col-12 col-lg-10 offset-lg-1 px-4 py-3 my-5">
-        <div className="display-4">The Real World doesn&apos;t respect subject boundaries. <em>Our lessons don&apos;t either!</em></div>
+        <div className="display-4">The Real World doesn&apos;t fit neatly into subject boundaries. <em>Our lessons don&apos;t either!</em></div>
         <p className='fs-3 pt-3'>
           We craft learning narratives that students will remember. We make it clear how abstract learning standards in ELA, math, social studies and science connect to give students methods for approaching complex problems.
         </p>
