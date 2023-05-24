@@ -3,8 +3,9 @@
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
+import React from 'react';
 import Layout from '../../components/Layout';
-import JobVizIcon from '../../components/JobViz/JobVizIcon'
+import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import LessonCard from '../../components/LessonsPg/LessonCard';
 
 const LessonsPage = ({ lessons }) => {
@@ -22,9 +23,15 @@ const LessonsPage = ({ lessons }) => {
 
     return willShowLesson;
   });
-  
+
   return (
-    <Layout title='Galactic Polymath Lesson Releases' description='We strive to create mind-expanding learning experiences that a non-specialist can teach in any G5-12 classroom with 15 minutes of prep time!' imgSrc='https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png'  imgAlt='Galactic_Polymath_Logo_Lessons_Page' keywords='Galatic Polymath Lessons, Galactic Polymath Learning Tools'>
+    <Layout
+      title='Galactic Polymath Lesson Releases'
+      description='We strive to create mind-expanding learning experiences that a non-specialist can teach in any G5-12 classroom with 15 minutes of prep time!'
+      imgSrc='https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png'
+      imgAlt='Galactic_Polymath_Logo_Lessons_Page'
+      keywords='Galatic Polymath Lessons, Galactic Polymath Learning Tools'
+    >
       <section className="bg-secondary p-4">
         <div className="text-white col-sm-12 col-md-10 col-lg-8 col-xl-7">
           <h1>Free, Interdisciplinary Lessons</h1>
@@ -53,18 +60,19 @@ const LessonsPage = ({ lessons }) => {
                   </section>
                 </section>
                 <section className="w-100 d-flex flex-column ps-sm-3 mt-2 mt-sm-0">
-
                 </section>
               </div>
             </section>
           </section>
         </section>
         <section className="lessonsSection pt-1">
-          <section className="">
+          <section>
             <h4 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h4>
           </section>
           <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-            {publishedLessons.map(lesson => <LessonCard lesson={lesson} />)}
+            {publishedLessons.map((lesson) => (
+              <LessonCard key={lesson.id} lesson={lesson} />
+            ))}
           </div>
         </section>
       </div>
@@ -73,7 +81,7 @@ const LessonsPage = ({ lessons }) => {
 };
 
 export async function getStaticProps() {
-  // put this in a try catch block and handle errors 
+  // put this in a try catch block and handle errors
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   let lessons = await res.json();
   lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
