@@ -19,7 +19,9 @@ const LessonsPage = ({ lessons }) => {
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
     const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
 
-    willShowLesson && uniqueIDs.push(id);
+    if(willShowLesson){
+      uniqueIDs.push(id);
+    }
 
     return willShowLesson;
   });
