@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-const MILISECONDS_IN_A_MONTH = 2592000000;
+const MILISECONDS_IN_A_MONTH = 2_592_000_000;
 
 const LessonCard = ({ lesson }) => {
   const { locale, id, CoverImage, Subtitle, Title, Section, ReleaseDate } = lesson;
