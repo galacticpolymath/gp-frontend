@@ -14,7 +14,7 @@ const LessonCard = ({ lesson }) => {
       className='w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
     >
       <div className="position-relative">
-        {CoverImage && CoverImage.url && (
+        {(CoverImage && CoverImage.url) && (
           <Image
             src={CoverImage.url}
             alt={Subtitle}
@@ -49,7 +49,6 @@ const LessonCard = ({ lesson }) => {
       <div className='pt-2 ps-sm-3 d-grid'>
         <h3 className='w-light text-black mb-0'>{Title}</h3>
         <p className='text-black'>{Subtitle}</p>
-        {/* d-flex flex-column d-sm-block */}
         <section className="d-flex flex-wrap gap-1 align-self-end">
           <span className={`badge me-1 lessonSubject bg-${Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
             {Section.overview.TargetSubject}
