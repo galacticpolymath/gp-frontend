@@ -3,6 +3,7 @@ $enable-cssgrid: true;
 @import "colors";
 
 @import '../styles/globalVars.scss';
+@import '../pages/_colors.scss';
 
 $primary: $hydrogen-blue;
 $secondary: $burst-purple;
@@ -46,17 +47,39 @@ body {
 }
 
 a {
-  color: $atomic-blue;
+  color: $hydrogen-blue;
+  font-weight: bolder;
   text-decoration: none;
 
-  &:hover {
-    color: $atomic-blue-dark;
+  //automatic exceptions for badge & nav-links for certain effects
+  &:hover:not(.badge) {
+    &:not(.nav-link, .btn) {
+      color: lighten($hydrogen-blue, 8%);
+    }
+
+    text-decoration: underline;
   }
+
+
+  //add no-link-decoration to avoid hover effects and stuff
+  &.no-link-decoration {
+
+    color: inherit;
+    font-weight: inherit;
+
+    &:hover {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+
+
 }
 
 a>span {
   vertical-align: middle;
 }
+
 
 strong {
   font-weight: 700;
@@ -91,8 +114,13 @@ li {
   box-sizing: border-box;
 }
 
+//for removing hover effects of <a> tags
 .no-hover-color-change:hover {
   color: inherit;
+}
+
+.no-hover-underline:hover {
+  text-decoration: none;
 }
 
 html {
@@ -210,16 +238,32 @@ ol li {
 
 // TODO: what are the other possible TargetSubject values? (see lessons page badges)
 
+
+// lesson page styling classes
+.infobox {
+  border: 3px solid $galactic-gray;
+}
+
+.quickPrep {
+
+  //remove margin for ol
+  ol {
+    margin-bottom: 0;
+  }
+}
+
 // bootstrap overrides
 .btn {
   text-transform: uppercase;
+  color: $white;
 }
 
 .btn-primary {
   color: $white;
 
   &:active,
-  &:focus {
+  &:focus,
+  &:hover {
     color: $white;
   }
 }
@@ -252,7 +296,7 @@ ol li {
     &:active,
     &:focus {
       color: $white;
-      background-color: $primary;
+      background-color: lighten($primary, 15%);
     }
   }
 
@@ -264,7 +308,7 @@ ol li {
     &:hover,
     &:active,
     &:focus {
-      background-color: $secondary;
+      background-color: lighten($secondary, 25%);
       color: $white;
     }
   }
@@ -469,7 +513,7 @@ ol li {
   border-style: none !important;
 }
 
-.center-absolutely{
+.center-absolutely {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -583,4 +627,3 @@ img {
     }
   }
 }
-

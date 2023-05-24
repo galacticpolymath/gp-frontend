@@ -14,88 +14,79 @@ $desktopFontSizeTierStatus: 24px;
   }
 }
 
-.tierHeaderTag {
-  font-size: $tierHeadingFontSize;
-  @media (min-width: 1300px) {
-  }
+// @media (min-width: 768px) {
+//   .tierDefaultStyles {
+//     @media (min-width: 1200px) {
+//       padding-bottom: 100px;
+//       max-width: 520px;
+//     }
+//   }
 
-  @media (min-width: 1400px) {
-    white-space: nowrap;
-  }
-}
+//   @media (min-width: 1200px) {
+//     .tierDefaultStyles:first-child,
+//     .tierDefaultStyles:nth-child(2),
+//     .tierDefaultStyles:last-child {
+//       width: 45%;
+//       width: 45%;
+//       max-width: 520px;
+//     }
+//   }
 
-@media (min-width: 768px) {
-  .tierDefaultStyles {
-    @media (min-width: 1200px) {
-      padding-bottom: 100px;
-      max-width: 520px;
-    }
-  }
+//   .tierDefaultStyles:nth-last-child(-n + 2) {
+//     // margin-left: 20px;
 
-  @media (min-width: 1200px) {
-    .tierDefaultStyles:first-child,
-    .tierDefaultStyles:nth-child(2),
-    .tierDefaultStyles:last-child {
-      width: 45%;
-      width: 45%;
-      max-width: 520px;
-    }
-  }
+//     @media (min-width: 1200px) and (max-width: 1300px) {
+//       // margin-left: 40px;
+//     }
+//   }
+// }
 
-  .tierDefaultStyles:nth-last-child(-n + 2) {
-    // margin-left: 20px;
+// .tierImg {
+//   @media (max-width: 575px) {
+//     min-width: 80px;
+//   }
 
-    @media (min-width: 1200px) and (max-width: 1300px) {
-      // margin-left: 40px;
-    }
-  }
-}
+//   width: 140px;
+//   height: 140px;
+//   @media (min-width: 768px) {
+//     width: 120px;
+//     height: 120px;
+//   }
+// }
 
-.tierImg {
-  @media (max-width: 575px) {
-    min-width: 80px;
-  }
+// .tierTableRow {
+//   @media (min-width: 768px) {
+//     @media (min-width: 1440px) {
+//       height: 10px;
+//       white-space: nowrap;
 
-  width: 140px;
-  height: 140px;
-  @media (min-width: 768px) {
-    width: 120px;
-    height: 120px;
-  }
-}
+//       td:last-child {
+//         white-space: nowrap;
+//       }
+//     }
 
-.tierTableRow {
-  @media (min-width: 768px) {
-    @media (min-width: 1440px) {
-      height: 10px;
-      white-space: nowrap;
+//     height: 60px;
 
-      td:last-child {
-        white-space: nowrap;
-      }
-    }
+//     @media (min-width: 1200px) {
+//       height: 70px;
+//     }
 
-    height: 60px;
+//     line-height: 27px;
+//     overflow: hidden;
+//     td:last-child {
+//       padding-left: 10px;
+//     }
+//   }
+// }
 
-    @media (min-width: 1200px) {
-      height: 70px;
-    }
+// .tierTableRow:not(:first-child) {
+//   td {
+//     @media (max-width: 767px) {
+//       padding-top: 20px;
+//     }
+//   }
+// }
 
-    line-height: 27px;
-    overflow: hidden;
-    td:last-child {
-      padding-left: 10px;
-    }
-  }
-}
-
-.tierTableRow:not(:first-child) {
-  td {
-    @media (max-width: 767px) {
-      padding-top: 20px;
-    }
-  }
-}
 
 .tierCard,
 .tierCardBodyAndHeader {
@@ -109,6 +100,9 @@ $desktopFontSizeTierStatus: 24px;
 }
 
 .tierInfoStatus {
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 0;
   @media (min-width: 768px) {
     white-space: nowrap;
   }
@@ -245,17 +239,3 @@ $desktopFontSizeTierStatus: 24px;
   }
 }
 
-.tierDefaultStyles p {
-  @media (min-width: 768px) {
-    line-height: 28px;
-  }
-}
-
-@media (min-width: 768px) {
-  .exampleProductTxt,
-  .tierDefaultStyles p,
-  .tierDefaultStyles td,
-  .tierDefaultStyles a {
-    font-size: $spanDesktopFontSize;
-  }
-}

@@ -105,18 +105,3 @@
 
 
 
-.johanaReviewStyles{
-  @media(max-width: 576px){
-    transform: translateY(50px);
-  }
-
-  @media(min-width: 576px) and (max-width: 768px){
-    transform: translate(10px, 40px);
-    // border: solid pink;
-  }
-
-  @media(min-width: 992px) and (max-width: 1199px){
-    transform: translateY(40px);
-  }
-}
-

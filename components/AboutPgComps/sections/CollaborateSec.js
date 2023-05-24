@@ -22,7 +22,7 @@ const CollaborateSec = () => {
     }
 
     return (
-        <section className='container-fluid d-flex flex-column pb-5'>
+        <section id="get_involved" className='container-fluid d-flex flex-column pb-5'>
             <section className='row d-flex flex-column justify-content-center align-items-center'>
                 <section className='col-12 d-flex justify-content-center align-items-center flex-column'>
                     <h3 className='fs-4 mb-0 mb-sm-3 d-flex d-sm-block text-uppercase text-center flex-column fw-light position-relative'>

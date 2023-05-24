@@ -6,21 +6,7 @@
     }
 }
 
-.scientistHeadingTxt {
-  font-style: italic !important;
-  @media (min-width: 768px) {
-    color: #000000 !important;
-    font-size: $h3CustomFontSize;
-  }
 
-  @media (max-width: 767px) {
-    font-size: $h3CustomFontSize;
-  }
-
-  @media (max-width: 575px) {
-    line-height: 32px !important;
-  }
-}
 
 .scientistSec {
     @media (min-width: 768px) {

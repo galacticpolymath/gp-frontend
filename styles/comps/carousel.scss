@@ -37,6 +37,7 @@ $feedbackTxtFontSizeDesktop: 22px;
 .autoCarouselContainerCard {
   width: 85%;
   border-radius: 1.3em;
+  
 
   @media (min-width: 1200px) {
     max-width: 1224px;
@@ -84,32 +85,34 @@ $feedbackTxtFontSizeDesktop: 22px;
 }
 
 .feedbackTxt {
+  display: flex;
+  align-content: center;
   white-space: normal;
-  margin: 0 auto;
+  margin: auto 3rem;
   display: block;
   line-height: 22px;
   font-weight: 249;
   height: fit-content;
+  font-size: 1.15rem
+  // @media (min-width: 768px) and (max-width: 991px) {
+  //   line-height: 23px;  }
 
-  @media (min-width: 768px) and (max-width: 991px) {
-    line-height: 23px;  }
+  // @media (max-width: 768px) {
+  //   width: 400px;
+  // }
 
-  @media (max-width: 768px) {
-    width: 400px;
-  }
+  // @media (min-width: 1200px) {
+  //   padding-left: 10px;
+  //   padding-right: 10px;
+  // }
 
-  @media (min-width: 1200px) {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
+  // font-size: $feedbackTxtFontSizeDesktop;
 
-  font-size: $feedbackTxtFontSizeDesktop;
-
-  @media (max-width: 576px) {
-    width: fit-content;
-    padding: 0px 5px 0px 5px;
-    font-size: 1.15rem;
-  }
+  // @media (max-width: 576px) {
+  //   width: fit-content;
+  //   padding: 0px 5px 0px 5px;
+  //   font-size: 1.15rem;
+  // }
 }
 
 .navBtnSec {
@@ -723,23 +726,6 @@ $feedbackTxtFontSizeDesktop: 22px;
   }
 }
 
-.clientReview {
-  @media (min-width: 992px) {
-    > section {
-      > section:last-of-type {
-        bottom: -43px;
-      }
-    }
-  }
-
-  @media (min-width: 1200px) {
-    > section {
-      > section:last-of-type {
-        bottom: -43px;
-      }
-    }
-  }
-}
 
 .grantReviewerBulletPtsSec {
   @media (min-width: 768px) {
@@ -754,9 +740,6 @@ $feedbackTxtFontSizeDesktop: 22px;
   }
 }
 
-.clientReview.shortTxtContent {
-  height: 100%;
-}
 
 .feedbackInfoSec.nonStudentInfoSec {
   @media (min-width: 1300px) {
@@ -1039,6 +1022,7 @@ $feedbackTxtFontSizeDesktop: 22px;
 .quoteInfoTxts {
   font-size: $spanFontSizeSmall;
   transform: translateX(-10px);
+  height: auto;
 
   @media (min-width: 576px) and (max-width: 768px) {
     span > span:not(:last-child) {
@@ -1099,36 +1083,36 @@ $feedbackTxtFontSizeDesktop: 22px;
   }
 }
 
-.quoteInfoSec {
-  bottom: -10px;
-  right: 15px;
+// .quoteInfoSec {
+//   bottom: -10px;
+//   right: 15px;
 
-  @media (max-width: 768px) and (min-width: 576px) {
-    bottom: 70px;
-    right: 24px;
+//   @media (max-width: 768px) and (min-width: 576px) {
+//     bottom: 70px;
+//     right: 24px;
 
-    @media (min-width: 576px) {
-      bottom: 20px;
-    }
-  }
+//     @media (min-width: 576px) {
+//       bottom: 20px;
+//     }
+//   }
 
-  @media (max-width: 576px) {
-    line-height: 16px;
-    transform: translateY(20px);
-  }
+//   @media (max-width: 576px) {
+//     line-height: 16px;
+//     transform: translateY(20px);
+//   }
 
-  > section {
-    > span {
-      font-size: $spanFontSizeSmall;
-    }
+//   > section {
+//     > span {
+//       font-size: $spanFontSizeSmall;
+//     }
 
-    > span:first-child {
-      @media (min-width: 576px) and (max-width: 768px) {
-        font-size: 22px;
-      }
-    }
-  }
-}
+//     > span:first-child {
+//       @media (min-width: 576px) and (max-width: 768px) {
+//         font-size: 22px;
+//       }
+//     }
+//   }
+// }
 
 .bulletPtsTeachersAndStudents {
   bottom: 0px;
