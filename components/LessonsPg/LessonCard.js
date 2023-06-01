@@ -7,7 +7,6 @@ const LessonCard = ({ lesson }) => {
   const { locale, id, CoverImage, Subtitle, Title, Section, ReleaseDate } = lesson;
   const isNew = (new Date() - new Date(ReleaseDate)) < MILISECONDS_IN_A_MONTH;
 
-
   return (
     <Link
       key={locale + id}
