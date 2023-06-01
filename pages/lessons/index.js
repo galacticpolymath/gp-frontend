@@ -7,6 +7,7 @@ import React from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import LessonCard from '../../components/LessonsPg/LessonCard';
+import { useEffect } from 'react';
 
 const LessonsPage = ({ lessons }) => {
 
@@ -25,6 +26,23 @@ const LessonsPage = ({ lessons }) => {
 
     return willShowLesson;
   });
+
+  useEffect(() => {
+    fetch('/api/lessons')
+    .then(res => {
+      if(res){
+        console.log('API is live!');
+        return res.json()
+      }
+      console.error('API is not live!');
+    })
+    .then(data => {
+      console.log('data from the server: ', data)
+    })
+    .catch(error => {
+      console.error("Something went wrong. Error message: ", error)
+    })
+  }, [])
 
   return (
     <Layout
@@ -84,6 +102,7 @@ const LessonsPage = ({ lessons }) => {
 
 export async function getStaticProps() {
   // put this in a try catch block and handle errors
+  // get the lesssons from the database in this fn
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   let lessons = await res.json();
   lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
