@@ -40,7 +40,7 @@ const LessonsPage = ({ lessons }) => {
           <p>We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
         </div>
       </section>
-      <div className="">
+      <div>
         <section className="mb-5 pt-2">
           <section className="headerSecLessonsPg">
             <h4 className="mt-3 ms-sm-4 text-muted text-center text-sm-start">
