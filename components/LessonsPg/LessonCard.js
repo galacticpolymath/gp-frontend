@@ -48,7 +48,7 @@ const LessonCard = ({ lesson }) => {
       </div>
       <div className='pt-2 ps-sm-3 d-grid'>
         <h3 className='w-light text-black mb-0'>{Title}</h3>
-        <p className='text-black'>{Subtitle}</p>
+        <p className='text-black no-link-decoration'>{Subtitle}</p>
         <section className="d-flex flex-wrap gap-1 align-self-end">
           <span className={`badge me-1 lessonSubject bg-${Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
             {Section.overview.TargetSubject}
