@@ -33,6 +33,7 @@ const LessonsPage = ({ lessons }) => {
       imgSrc='https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png'
       imgAlt='Galactic_Polymath_Logo_Lessons_Page'
       keywords='Galatic Polymath Lessons, Galactic Polymath Learning Tools'
+      className='lessons-pg-container'
     >
       <section className="bg-secondary p-4">
         <div className="text-white col-sm-12 col-md-10 col-lg-8 col-xl-7">
