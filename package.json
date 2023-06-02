@@ -10,6 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.15",
+    "@apollo/server": "^4.7.1",
     "@fortawesome/fontawesome-free": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@popperjs/core": "^2.11.6",
@@ -20,6 +22,7 @@
     "d3": "^7.8.2",
     "date-fns": "^2.29.3",
     "font-awesome": "^4.7.0",
+    "graphql": "^16.6.0",
     "latest-version": "^7.0.0",
     "lodash.throttle": "^4.1.1",
     "moment": "^2.29.4",
