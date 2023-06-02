@@ -28,7 +28,13 @@ const HireUsPage = () => {
 
   return (
     <>
-      <Layout description="Galactic PolyMath Hire Us Page." keywords="Hire us, Galactic PolyMath">
+      <Layout
+        description="Let us help you achieve easier, classroom-ready outreach. We will translate your work into mind-opening FREE lessons for grades 5+."
+        keywords="Hire us, Galactic PolyMath"
+        imgSrc='https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png'
+        imgAlt='Galactic_Polymath_Logo_Hire_Us_Page'
+        title="Galactic Polymath | Hire Us"
+      >
         <div className="w-100 hireUsPg d-flex flex-column justify-content-center align-items-center">
           <div className="container-fluid noPadding noMargin w-100 hireUsPgWrapper">
             <IntroSecHireUs />

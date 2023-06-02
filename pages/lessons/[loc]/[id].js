@@ -28,10 +28,9 @@ const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent'
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
-  if (!versionSection) {
-    return null;
-  }
 
+  if (!versionSection) return null;
+  
   const lastRelease = versionSection.Data[versionSection?.Data?.length - 1].sub_releases;
   const lastSubRelease = lastRelease[lastRelease?.length - 1];
   return lastSubRelease;
@@ -162,7 +161,7 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
   const [imgSponsorSrcOnError, setImgSponsorSrcOnError] = useState(null);
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: `Lesson Title: ${lesson.Title}`, description: lesson?.Section?.overview?.Description ? removeHtmlTags(lesson.Section.overview.Description) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
+  const layoutProps = { title: `Lesson Title: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
   const handleBannerImgError = () => {
     setImgBannerSrcOnError(oldLesson.CoverImage.url);

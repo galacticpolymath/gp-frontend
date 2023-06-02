@@ -3,11 +3,10 @@
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import Link from 'next/link';
-import Image from 'next/image';
+import React from 'react';
 import Layout from '../../components/Layout';
-import JobVizIcon from '../../components/JobViz/JobVizIcon'
-import { lessonsUrl } from '../../apiGlobalVals';
+import JobVizIcon from '../../components/JobViz/JobVizIcon';
+import LessonCard from '../../components/LessonsPg/LessonCard';
 
 const LessonsPage = ({ lessons }) => {
 
@@ -20,13 +19,21 @@ const LessonsPage = ({ lessons }) => {
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
     const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
 
-    willShowLesson && uniqueIDs.push(id);
+    if(willShowLesson){
+      uniqueIDs.push(id);
+    }
 
     return willShowLesson;
   });
 
   return (
-    <Layout>
+    <Layout
+      title='Galactic Polymath Lesson Releases'
+      description='We strive to create mind-expanding learning experiences that a non-specialist can teach in any G5-12 classroom with 15 minutes of prep time!'
+      imgSrc='https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png'
+      imgAlt='Galactic_Polymath_Logo_Lessons_Page'
+      keywords='Galatic Polymath Lessons, Galactic Polymath Learning Tools'
+    >
       <section className="bg-secondary p-4">
         <div className="text-white col-sm-12 col-md-10 col-lg-8 col-xl-7">
           <h1>Free, Interdisciplinary Lessons</h1>
@@ -55,62 +62,19 @@ const LessonsPage = ({ lessons }) => {
                   </section>
                 </section>
                 <section className="w-100 d-flex flex-column ps-sm-3 mt-2 mt-sm-0">
-
                 </section>
               </div>
             </section>
           </section>
         </section>
         <section className="lessonsSection pt-1">
-          <section className="">
+          <section>
             <h4 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h4>
           </section>
           <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-            {publishedLessons
-              .map((lesson) => {
-                return (
-                  <Link
-                    key={lesson.locale + lesson.id}
-                    href={`/lessons/${lesson.locale}/${lesson.id}`}
-                    className='w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow no-link-decoration'
-                  >
-
-                    <div className="position-relative overflow-hidden ">
-                      {lesson.CoverImage && lesson.CoverImage.url && (
-                        <Image
-                          src={lesson.CoverImage.url}
-                          alt={lesson.Subtitle}
-                          width={15}
-                          height={4.5}
-                          sizes="100vw"
-                          className="px-1 pt-1"
-                          style={{
-                            width: "100%",
-                            height: "auto",
-                          }}
-                          priority
-                        />
-                      )}
-                    </div>
-                    <div className='pt-2 ps-sm-3 d-grid'>
-                      <h3 className='w-light text-black mb-0'>{lesson.Title}</h3>
-                      <p className='text-black'>{lesson.Subtitle}</p>
-                      {/* d-flex flex-column d-sm-block */}
-                      <section className="d-flex flex-wrap gap-1 align-self-end">
-                        <span className={`badge me-1 lessonSubject bg-${lesson.Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
-                          {lesson.Section.overview.TargetSubject}
-                        </span>
-                        <span style={{ whiteSpace: 'normal' }} className="badge rounded-pill bg-gray ml-3">
-                          {`${lesson.Section.overview.GradesOrYears}: ${lesson.Section.overview.ForGrades}`}
-                        </span>
-                      </section>
-                    </div>
-
-                  </Link>
-                )
-              }
-
-              )}
+            {publishedLessons.map((lesson) => (
+              <LessonCard key={lesson.id} lesson={lesson} />
+            ))}
           </div>
         </section>
       </div>
@@ -119,10 +83,11 @@ const LessonsPage = ({ lessons }) => {
 };
 
 export async function getStaticProps() {
+  // put this in a try catch block and handle errors
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
-  // const res = await fetch('https://gp-catalog.vercel.app/index.json');
-
-  const lessons = await res.json();
+  let lessons = await res.json();
+  lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
+  lessons.sort((lessonA, lessonB) => new Date(lessonB.ReleaseDate) - new Date(lessonA.ReleaseDate));
 
   return { props: { lessons } };
 }

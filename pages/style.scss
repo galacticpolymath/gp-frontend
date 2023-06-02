@@ -47,12 +47,14 @@ body {
 }
 
 a {
+
   color: $hydrogen-blue;
-  font-weight: bolder;
   text-decoration: none;
+  font-weight: bolder;
+
 
   //automatic exceptions for badge & nav-links for certain effects
-  &:hover:not(.badge) {
+  &:hover:not(.badge, .no-link-decoration, .cardsOnLessonPg) {
     &:not(.nav-link, .btn) {
       color: lighten($hydrogen-blue, 8%);
     }
@@ -61,23 +63,31 @@ a {
   }
 
 
-  //add no-link-decoration to avoid hover effects and stuff
-  &.no-link-decoration {
-
-    color: inherit;
-    font-weight: inherit;
-
-    &:hover {
-      color: inherit;
-      text-decoration: none;
-    }
-  }
-
-
 }
 
 a>span {
   vertical-align: middle;
+}
+
+//add no-link-decoration to avoid hover effects and stuff
+.no-link-decoration {
+
+  color: initial;
+  font-weight: initial;
+
+  &:hover {
+    color: initial;
+    text-decoration: none;
+  }
+}
+
+//for removing hover effects of <a> tags
+.no-hover-color-change:hover {
+  color: inherit;
+}
+
+.no-hover-underline:hover {
+  text-decoration: none;
 }
 
 
@@ -114,14 +124,6 @@ li {
   box-sizing: border-box;
 }
 
-//for removing hover effects of <a> tags
-.no-hover-color-change:hover {
-  color: inherit;
-}
-
-.no-hover-underline:hover {
-  text-decoration: none;
-}
 
 html {
   height: 100%;
