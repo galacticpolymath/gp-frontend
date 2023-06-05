@@ -28,7 +28,7 @@ const LessonsPage = ({ lessons }) => {
   });
 
   useEffect(() => {
-    fetch('/api/lessons')
+    fetch('/api/insert-lesson')
     .then(res => {
       if(res){
         console.log('API is live!');

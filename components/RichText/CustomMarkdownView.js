@@ -5,10 +5,6 @@ import React from 'react';
 import MarkdownView from 'react-showdown';
 import Link from 'next/link';
 
-// WHAT IS HAPPENING:
-//BUG: when the user clicks on a link, the page scroll to the target section does not occur 
-
-// WHAT I WANT: when the user clicks on a link, have the page scroll to occur. 
 
 const components = {
   AnchorLink({ href, ...props }) {
