@@ -5,7 +5,7 @@ if (process && (process.env.NODE_ENV === 'development')) {
 }
 
 const apiInfo = {
-    domain: isOnDev ? 'http://localhost:3000' : 'https://www.galacticpolymath.com',
+    mainRoute: 'http://localhost:3000/api',
     insertLessonRoute: 'insert-lesson'
 }
 

@@ -1,12 +1,15 @@
-const apiInfo = require('../apiData')
-const axios = require('axios')
-const { domain, insertLessonRoute } = apiInfo;
+const apiInfo = require('../apiData');
 
+const { mainRoute, insertLessonRoute } = apiInfo;
 
 async function insertLesson(reqBody){
     try {
-        const url = `${domain}/${insertLessonRoute}`
-        return await axios.post(url, reqBody)
+        const url = `${mainRoute}/${insertLessonRoute}`;
+        const response = await fetch(url, { method: 'POST', body: reqBody })
+        const data = await response.json()
+
+        
+        return { status: response.status, data: data };
     } catch(error){
         console.error('An error has occurred when inserting a new lesson: ', error)
     }
