@@ -1,13 +1,14 @@
 import { insertLesson } from '../../backend/services/lessonsServices'
 
+// GOAL A: insert the test lesson into the database 
+
+// GOAL B: before inserting the test lesson into the database, provide a schema validation for each lesson 
+
 export default function handler(request, response) {
-    console.log('Hey there, request has been received.')
-    console.log('request?.body: ', request?.body.lesson)
     const bodyParsed = JSON.parse(request.body)
-    console.log('bodyParsed: ', bodyParsed)
 
     if((request.method === 'POST') && request?.body){
-        const { wasSuccessful, errMsg } = insertLesson(request.body.lesson)
+        const result = insertLesson(request.body.lesson)
 
         if(wasSuccessful){
             return response.status(200).json({ msg: `'${request.body.lesson.title}' was inserted into the database.` })
