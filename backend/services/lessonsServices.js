@@ -1,4 +1,4 @@
-import { connectToMongodb } from "../db-connection/connection"
+import { connectToMongodb } from "../utils/connection"
 
 async function insertLesson(lesson){
     const wasSuccessful = await connectToMongodb();
