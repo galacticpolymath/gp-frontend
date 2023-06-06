@@ -1,3 +1,4 @@
+import { connect } from 'mongoose'
 import { connectToMongodb } from '../../backend/db-connection/connection'
 import { insertLesson } from '../../backend/services/lessonsServices'
 
@@ -5,18 +6,18 @@ import { insertLesson } from '../../backend/services/lessonsServices'
 
 // GOAL B: before inserting the test lesson into the database, provide a schema validation for each lesson 
 
-connectToMongodb()
-    .then(result => {
-        console.log('Successfully connected to the mongoDB: ', result)
-    }).catch(error => {
-        console.error('Failed to connect to mongoDB. Error message: ', error)
-    })
-
-
-export default function handler(request, response) {
+export default async function handler(request, response) {
     try {
+        const result = await connectToMongodb();
+        
+        if(result){
+
+        }
+        
 
     } catch (error) {
-
+        console.error('An error has occurred: ', error)
     }
+
+    response.status(200).json({ msg: 'This is route is live at "/api/insert-lesson."' })
 }
