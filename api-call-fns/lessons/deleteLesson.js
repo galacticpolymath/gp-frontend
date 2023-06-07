@@ -7,7 +7,6 @@ async function deleteLesson(lessonId) {
         const url = `${mainRoute}/${deleteLessonRoute}/${lessonId}`;
         const response = await fetch(url, { method: 'DELETE' })
         const data = await response?.json() ?? {};
-        console.log('data: ', data)
 
         return { status: response.status };
     } catch (error) {
