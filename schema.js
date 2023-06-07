@@ -15,7 +15,7 @@ const LessonSchema = new Schema({
     MediumTitle: String,
     lang: String,
     lng: String,
-    locale: String,
+    locale: { type: String, required: true },
     TemplateVer: String,
     galacticPubsVer: String,
     isTestRepo: Boolean,
