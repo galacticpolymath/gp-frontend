@@ -2,12 +2,9 @@
 const { insertLesson } = require('../../api-call-fns/lessons/insertLesson.js')
 const { deleteLesson } = require('../../api-call-fns/lessons/deleteLesson.js')
 
-
-
 describe("Insert test lesson.", () => {
-
     it('Lesson should be inserted into the mongodb database.', async () => {
-        const lesson = { _id: 700, Title: 'This is a test.' } ;
+        const lesson = { _id: 700, Title: 'This is a test.' };
         const response = await insertLesson(lesson)
         const isObj = (typeof response === 'object') && (response !== null)
 
@@ -19,15 +16,14 @@ describe("Insert test lesson.", () => {
     });
 }, 25_000);
 
-// afterAll(async () => {
-//     // will delete lesson after 10 seconds
-//     console.log('Deleting lesson from database in 10 seconds.')
+afterAll(async () => {
+    console.log('Deleting lesson from database in 10 seconds.')
 
-//     await new Promise(res => setTimeout(res, 10000));
+    await new Promise(res => setTimeout(res, 10_000));
 
-//     await deleteLesson(700)
+    await deleteLesson(700)
 
-//     console.log('Lesson deleted from database.')
-// }, 15_000)
+    console.log('Lesson deleted from database.')
+}, 15_000)
 
 

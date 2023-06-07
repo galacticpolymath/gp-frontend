@@ -1,4 +1,4 @@
-import { Lessons } from '../models/lesson.js'
+import { Lessons } from '../models/lesson'
 
 async function insertLesson(lesson) {
     try {

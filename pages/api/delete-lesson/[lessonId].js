@@ -2,7 +2,6 @@ import { deleteLesson } from '../../../backend/services/lessonsServices'
 import { connectToMongodb } from '../../../backend/utils/connection';
 
 export default async function handler(request, response) {
-    
     if (request.method !== 'DELETE') {
         return response.status(404).json({ msg: "This route only accepts POST requests." })
     }
@@ -15,7 +14,9 @@ export default async function handler(request, response) {
         return response.status(404).json({ msg: "Must provide a lesson id." })
     }
 
-    if(parseInt(lessonId) === NaN) {
+    const lessonIdParsed = parseInt(lessonId)
+
+    if(lessonIdParsed === NaN) {
         console.error("Lesson id must be a number.")
 
         return response.status(404).json({ msg: "Lesson id must be a number." })
@@ -27,7 +28,7 @@ export default async function handler(request, response) {
         
         console.log('Connected to mongodb.')
 
-        const { status, msg } = await deleteLesson(parseInt(lessonId))
+        const { status, msg } = await deleteLesson(lessonIdParsed)
 
         return response.status(status).json({ msg: msg })
     } catch (error) {

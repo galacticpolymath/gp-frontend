@@ -6,11 +6,13 @@ async function deleteLesson(lessonId) {
     try {
         const url = `${mainRoute}/${deleteLessonRoute}/${lessonId}`;
         const response = await fetch(url, { method: 'DELETE' })
-        const data = await response?.json() ?? {};
+        const data = await response.json()
 
-        return { status: response.status };
-    } catch (error) {
-        console.error('An error has occurred when deleting a lesson: ', error)
+        return data;
+    } catch(error){
+        const errMsg = `Failed to delete lesson from the database. Error message: "${error}"`;
+
+        return {  msg: errMsg };
     }
 }
 
