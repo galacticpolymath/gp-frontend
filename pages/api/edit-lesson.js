@@ -1,6 +1,3 @@
-
-
-
-export default function handler(request, response){
+export default function handler(){
 
 }

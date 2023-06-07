@@ -1,11 +1,11 @@
-let isOnDev = false;
+const dotenv = require('dotenv')
 
-if (process && (process.env.NODE_ENV === 'development')) {
-    isOnDev = true;
-}
+dotenv.config()
+
+let isOnDevOrTest = process && ((process.env.NODE_ENV === 'development') || (process.env.NODE_ENV === 'test'));
 
 const apiInfo = {
-    mainRoute: 'http://localhost:3000/api',
+    mainRoute: isOnDevOrTest ? 'http://localhost:3000/api' : '',
     insertLessonRoute: 'insert-lesson',
     deleteLessonRoute: 'delete-lesson'
 }

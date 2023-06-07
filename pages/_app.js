@@ -18,9 +18,7 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap');
   }, []);
-
   
-
   return (
     <>
       <GoogleAnalytics gaMeasurementId='G-8B58Y7HD3T' trackPageViews />

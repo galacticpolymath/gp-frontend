@@ -2,7 +2,7 @@ const { apiInfo, generateHeaders } = require('../apiData');
 
 const { mainRoute, insertLessonRoute } = apiInfo;
 
-async function insertLesson(reqBody) {
+const insertLesson = async reqBody => {
     try {
         const url = `${mainRoute}/${insertLessonRoute}`;
         const headers = generateHeaders()

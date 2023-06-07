@@ -17,7 +17,7 @@ describe("Insert test lesson.", () => {
 }, 25_000);
 
 afterAll(async () => {
-    console.log('Deleting lesson from database in 10 seconds.')
+    console.log('If the expectations in the test all pass, then the lesson can be viewed in the DB. It will be deleted after 10 seconds.')
 
     await new Promise(res => setTimeout(res, 10_000));
 

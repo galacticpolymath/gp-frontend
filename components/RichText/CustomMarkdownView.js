@@ -5,7 +5,6 @@ import React from 'react';
 import MarkdownView from 'react-showdown';
 import Link from 'next/link';
 
-
 const components = {
   AnchorLink({ href, ...props }) {
     return (

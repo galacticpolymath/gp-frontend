@@ -1,6 +1,6 @@
 import { Lessons } from '../models/lesson'
 
-async function insertLesson(lesson) {
+const insertLesson = async lesson => {
     try {
         const newLesson = new Lessons({ ...lesson })
         const saveResult = await newLesson.save()
@@ -17,7 +17,7 @@ async function insertLesson(lesson) {
     }
 }
 
-async function deleteLesson(lessonId) {
+const deleteLesson = async lessonId =>  {
     try {
         await Lessons.findByIdAndDelete(lessonId)
 

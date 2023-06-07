@@ -7,7 +7,6 @@ import React from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import LessonCard from '../../components/LessonsPg/LessonCard';
-import { useEffect } from 'react';
 
 const LessonsPage = ({ lessons }) => {
 
@@ -20,29 +19,12 @@ const LessonsPage = ({ lessons }) => {
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
     const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
 
-    if(willShowLesson){
+    if (willShowLesson) {
       uniqueIDs.push(id);
     }
 
     return willShowLesson;
   });
-
-  useEffect(() => {
-    fetch('/api/insert-lesson')
-    .then(res => {
-      if(res){
-        console.log('API is live!');
-        return res.json()
-      }
-      console.error('API is not live!');
-    })
-    .then(data => {
-      console.log('data from the server: ', data)
-    })
-    .catch(error => {
-      console.error("Something went wrong. Error message: ", error)
-    })
-  }, [])
 
   return (
     <Layout
