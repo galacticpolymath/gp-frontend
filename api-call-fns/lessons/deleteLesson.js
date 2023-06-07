@@ -6,8 +6,6 @@ dotenv.config()
 
 // FOR TESTING PURPOSES AS OF 06/06/2023
 const deleteLesson = async lessonId => {
-    console.log('proccess.env.NODE_ENV: ', process?.env?.NODE_ENV)
-
     try {
         const url = `${mainRoute}/${deleteLessonRoute}/${lessonId}`;
         const response = await fetch(url, { method: 'DELETE' })
