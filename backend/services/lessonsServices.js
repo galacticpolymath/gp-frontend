@@ -1,25 +1,31 @@
-import { Lesson } from '../models/lesson'
+import { Lessons } from '../models/lesson.js'
 
 async function insertLesson(lesson) {
     try {
-        const newLesson = new Lesson({ ...lesson })
-        await newLesson.save()
+        const newLesson = new Lessons({ ...lesson })
+        const saveResult = await newLesson.save()
 
-        return { status: 200, msg: 'Lesson was successfully saved into the database!' }
+        saveResult.validateSync()
+
+        return { status: 200, msg: `Lesson '${lesson.Title}' was successfully saved into the database!` }
     } catch (error) {
-        console.error('An error has occurred. Cannot insert lesson into the database. Error message: ', error)
+        const errMsg = `Failed to save lesson into the database. Error message: ${error}`
 
-        return { status: 500, msg: `Failed to save lesson into the database. Error message: ${error}` }
+        console.error(errMsg)
+
+        return { status: 500, msg: errMsg }
     }
 }
 
 async function deleteLesson(lessonId) {
     try {
-        await Lesson.findByIdAndDelete(lessonId)
+        await Lessons.findByIdAndDelete(lessonId)
+
+        console.log(`Lesson with id ${lessonId} was successfully deleted from the database!`)
 
         return { status: 200, msg: 'Lesson was successfully deleted from the database!' }
     } catch (error) {
-        return { status: 500, msg: `Failed to delete lesson from the database. Error message: ${error}` }
+        return { status: 500, msg: `Failed to delete lesson from the database. Error message: "${error}"` }
     }
 }
 

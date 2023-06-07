@@ -1,16 +1,16 @@
-const apiInfo = require('../apiData');
+const { apiInfo, generateHeaders } = require('../apiData');
 
 const { mainRoute, insertLessonRoute } = apiInfo;
 
-async function insertLesson(reqBody){
+async function insertLesson(reqBody) {
     try {
         const url = `${mainRoute}/${insertLessonRoute}`;
-        const response = await fetch(url, { method: 'POST', body: reqBody })
-        const data = await response.json()
+        const headers = generateHeaders()
+        const response = await fetch(url, { method: 'POST', body: JSON.stringify(reqBody), headers: headers })
+        const { msg } = await response.json() ?? {}
 
-        
-        return { status: response.status, data: data };
-    } catch(error){
+        return { status: response.status, msg: msg };
+    } catch (error) {
         console.error('An error has occurred when inserting a new lesson: ', error)
     }
 }

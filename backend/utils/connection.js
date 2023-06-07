@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 
 export async function connectToMongodb() {
-    const connectionStr = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0.tynope2.mongodb.net/?retryWrites=true&w=majority`
+    const { MONGODB_PASSWORD, MONGODB_USER, MONGODB_DB_NAME } = process.env;
+    const connectionStr = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster0.tynope2.mongodb.net/${MONGODB_DB_NAME}`
     
-    return mongoose.connect(connectionStr);
+    return mongoose.connect(connectionStr, { retryWrites: true });
 }

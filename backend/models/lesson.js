@@ -1,11 +1,18 @@
 import Mongoose from 'mongoose';
+
 const { Schema } = Mongoose;
-
+const requiredNumberVal = {
+    type: Number,
+    required: true,
+};
+const requiredStringVal = {
+    type: String,
+    required: true,
+};
 const lessonSchema = new Schema({
-    id: Number,
-    Title: String,
+    _id: requiredNumberVal,
+    Title: requiredStringVal
 });
+const Lessons = Mongoose.model('lessons', lessonSchema);
 
-const Lesson = Mongoose.model('lesson', lessonSchema);
-
-export { Lesson }
+export { Lessons }

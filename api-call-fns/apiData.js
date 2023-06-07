@@ -6,9 +6,17 @@ if (process && (process.env.NODE_ENV === 'development')) {
 
 const apiInfo = {
     mainRoute: 'http://localhost:3000/api',
-    insertLessonRoute: 'insert-lesson'
+    insertLessonRoute: 'insert-lesson',
+    deleteLessonRoute: 'delete-lesson'
+}
+
+function generateHeaders() {
+    return {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+    }
 }
 
 Object.freeze(apiInfo)
 
-module.exports = apiInfo
+module.exports = { apiInfo, generateHeaders }
