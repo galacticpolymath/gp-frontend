@@ -1,4 +1,4 @@
-import { Lessons } from '../models/lesson'
+import Lessons from '../models/lesson'
 
 const insertLesson = async lesson => {
     try {
@@ -17,7 +17,7 @@ const insertLesson = async lesson => {
     }
 }
 
-const deleteLesson = async lessonId =>  {
+const deleteLesson = async lessonId => {
     try {
         await Lessons.findByIdAndDelete(lessonId)
 

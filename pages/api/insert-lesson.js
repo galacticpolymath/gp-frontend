@@ -2,6 +2,7 @@ import { connectToMongodb } from '../../backend/utils/connection';
 import { insertLesson } from '../../backend/services/lessonsServices';
 
 export default async function handler(request, response) {
+  
   if (request.method !== 'POST') {
     return response.status(404).json({ msg: 'This route only accepts POST requests.' });
   }

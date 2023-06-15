@@ -61,4 +61,4 @@ if (!Lessons) {
     Lessons = model('Lessons', LessonSchema);
 }
 
-export { Lessons } 
+export default Lessons; 

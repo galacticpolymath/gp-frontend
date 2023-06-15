@@ -53,7 +53,8 @@
     "react-showdown": "^2.3.1",
     "reactstrap": "^9.1.6",
     "sharp": "^0.31.3",
-    "swr": "^2.0.4"
+    "swr": "^2.0.4",
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "cypress": "^12.7.0",
