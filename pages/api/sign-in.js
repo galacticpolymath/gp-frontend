@@ -17,8 +17,6 @@ export default async function handler(request, response) {
         await connectToMongodb();
         const { status, msg, data: userRoles } = await userLogin(email, password);
 
-        console.log(userRoles)
-
         if(status === 401){
             return response.status(status).json({ msg });
         }

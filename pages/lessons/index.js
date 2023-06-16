@@ -85,6 +85,8 @@ const LessonsPage = ({ lessons }) => {
 export async function getStaticProps() {
   // put this in a try catch block and handle errors
   // get the lesssons from the database in this fn
+  // const lessonsRes = await fetch('localhost:3000/api/get-lessons');
+  // console.log('lessonsRes: ', lessonsRes)
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   let lessons = await res.json();
   lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);

@@ -18,14 +18,7 @@ if (!models.users) {
     })
     User = new Schema({
         // the _id will be the user's email address
-        _id: {
-            type: String,
-            unique: true,
-            validate: {
-                validator: validator.isEmail,
-                message: 'Invalid email address.'
-            }
-        },
+        _id: String,
         password: String,
         roles: [RoleSchema]
     }, { _id: false })

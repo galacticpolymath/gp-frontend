@@ -15,42 +15,40 @@ async function userLogin(email, passwordAttempt) {
         const keyBuffer = Buffer.from(actualPasswordHashed, 'hex');
         const isCredentialsValid = timingSafeEqual(hashedBuffer, keyBuffer);
 
-        if(isCredentialsValid){
+        if (!isCredentialsValid) {
             throw new Error('Invalid credentials.');
         }
 
         const userDocAsObj = user.toObject();
-        
-        console.log('userDocAsObj: ', userDocAsObj);
-        
-        return { isCredentialsValid: isCredentialsValid, msg: isCredentialsValid ? 'User logged in.' : 'Invalid credentials.', data: { roles: user.toObject().roles  } };
+
+        return { isCredentialsValid: isCredentialsValid, msg: isCredentialsValid ? 'User logged in.' : 'Invalid credentials.', data: userDocAsObj?.roles || [] };
     } catch (error) {
         console.error('An error has occurred in logging the user in: ', error);
 
-        return { status: 4, isCredentialsValid: false, msg: 'An error has occurred in logging the user in.' }
+        return { status: 401, isCredentialsValid: false, msg: 'An error has occurred in logging the user in.' }
     }
 }
 
 function createJwt(user) {
     const privateKey = process.env.JWT_PRIVATE_KEY
     const _jwt = jwt.sign(user, privateKey, { algorithm: 'HS256', expiresIn: 86_400_000 });
-    
+
     return _jwt;
 }
 
 function verifyJwtToken(token) {
-    try{
-        const payloadDecoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY, { algorithms: ['HS256']}); 
+    try {
+        const payloadDecoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY, { algorithms: ['HS256'] });
 
         return { data: payloadDecoded, msg: 'Token is valid.' };
-    } catch(error){
+    } catch (error) {
         console.error('The token is invalid: ', error)
 
-        return { status: 401, msg: 'Token is invalid.'  }
+        return { status: 401, msg: 'Token is invalid.' }
     }
 }
 
-function getDoesUserHaveASpecificRole(userRoles, targetRole){
+function getDoesUserHaveASpecificRole(userRoles, targetRole) {
     return userRoles.map(({ role }) => role).includes(targetRole)
 }
 

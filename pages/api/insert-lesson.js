@@ -1,4 +1,5 @@
 import { getDoesUserHaveASpecificRole, verifyJwtToken } from '../../backend/services/authServices';
+import { insertLesson } from '../../backend/services/lessonsServices';
 import { connectToMongodb } from '../../backend/utils/connection';
 
 export default async function handler(request, response) {
@@ -18,8 +19,6 @@ export default async function handler(request, response) {
   if(msg === 'Token is invalid.'){
     return response.status(status).json({ msg: msg });
   }
-
-  console.log('user: ', user);
 
   const canUserWriteToDb = getDoesUserHaveASpecificRole(user.roles, 'readWrite');
   

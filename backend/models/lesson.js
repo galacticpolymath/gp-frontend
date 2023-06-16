@@ -62,7 +62,7 @@ if (!Lessons) {
     //     Section: Schema.Types.Mixed,
     // });
     
-    Lessons = model('Lessons', LessonSchema);
+    Lessons = model('lessons', LessonSchema);
 }
 
 export default Lessons; 
