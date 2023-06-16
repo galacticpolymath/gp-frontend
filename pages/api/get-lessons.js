@@ -1,7 +1,7 @@
 import { connectToMongodb } from '../../backend/utils/connection';
 
 export default async function handler(request, response) {
-  if (request.method !== 'POST') {
+  if (request.method !== 'GET') {
     return response.status(404).json({ msg: 'This route only accepts POST requests.' });
   }
 
