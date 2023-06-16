@@ -15,7 +15,11 @@ async function userLogin(email, passwordAttempt) {
         const keyBuffer = Buffer.from(actualPasswordHashed, 'hex');
         const isCredentialsValid = timingSafeEqual(hashedBuffer, keyBuffer);
 
-        return { isCredentialsValid: isCredentialsValid, msg: isCredentialsValid ? 'User logged in.' : 'Invalid credentials.', data: user.toObject() };
+        if(isCredentialsValid){
+            throw new Error('Invalid credentials.');
+        }
+        
+        return { isCredentialsValid: isCredentialsValid, msg: isCredentialsValid ? 'User logged in.' : 'Invalid credentials.', data: { roles: user.toObject().roles  } };
     } catch (error) {
         console.error('An error has occurred in logging the user in: ', error);
 
@@ -31,7 +35,19 @@ function createJwt(user) {
 }
 
 function verifyJwtToken(token) {
+    try{
+        const payloadDecoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY, { algorithms: ['HS256']}); 
 
+        return { data: payloadDecoded, msg: 'Token is valid.' };
+    } catch(error){
+        console.error('The token is invalid: ', error)
+
+        return { status: 401, msg: 'Token is invalid.'  }
+    }
 }
 
-export { userLogin, createJwt }
+function getDoesUserHaveASpecificRole(userRoles, targetRole){
+    return userRoles.map(({ role }) => role).includes(targetRole)
+}
+
+export { userLogin, createJwt, verifyJwtToken, getDoesUserHaveASpecificRole }

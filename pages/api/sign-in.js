@@ -15,13 +15,13 @@ export default async function handler(request, response) {
 
     try {
         await connectToMongodb();
-        const { status, msg, data: user } = await userLogin(email, password);
+        const { status, msg, data: userRoles } = await userLogin(email, password);
 
         if(status === 401){
             return response.status(status).json({ msg });
         }
 
-        const jwt = createJwt(user);
+        const jwt = createJwt({ roles: userRoles, email: email });
 
         return response.status(200).json({ jwt: jwt });
     } catch (error) {
