@@ -19,6 +19,8 @@ export default async function handler(request, response) {
     return response.status(status).json({ msg: msg });
   }
 
+  console.log('user: ', user);
+
   const canUserWriteToDb = getDoesUserHaveASpecificRole(user.roles, 'readWrite');
   
   if(!canUserWriteToDb){

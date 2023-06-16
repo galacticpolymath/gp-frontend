@@ -18,6 +18,10 @@ async function userLogin(email, passwordAttempt) {
         if(isCredentialsValid){
             throw new Error('Invalid credentials.');
         }
+
+        const userDocAsObj = user.toObject();
+        
+        console.log('userDocAsObj: ', userDocAsObj);
         
         return { isCredentialsValid: isCredentialsValid, msg: isCredentialsValid ? 'User logged in.' : 'Invalid credentials.', data: { roles: user.toObject().roles  } };
     } catch (error) {

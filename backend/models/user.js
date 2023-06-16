@@ -28,7 +28,7 @@ if (!models.users) {
         },
         password: String,
         roles: [RoleSchema]
-    })
+    }, { _id: false })
     User = model('users', User);
 }
 
