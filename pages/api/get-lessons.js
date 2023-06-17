@@ -8,6 +8,8 @@ export default async function handler(request, response) {
   try {
     await connectToMongodb();
 
+    console.log('Environment variables are working. Connected to MongoDB.')
+
     return response.status(200).json({ msg: 'Lessons are retrieved.', lessons: [] });
   } catch (error) {
 

@@ -42,7 +42,7 @@ const LessonsPage = ({ lessons }) => {
   useEffect(() => {
     getLessons()
       .then(data => {
-        console.log("data: ", data)
+        console.log("Environment variables is working : ", data)
       })
       .catch(error => {
         console.error('An error has occurred: ', error)
