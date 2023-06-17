@@ -8,7 +8,7 @@ export default async function handler(request, response) {
   try {
     await connectToMongodb();
 
-    return response.status(200).json({ msg: "Lessons are retrieved.", lessons: [] });
+    return response.status(200).json({ msg: 'Lessons are retrieved.', lessons: [] });
   } catch (error) {
 
     return response.status(500).json({ msg: `Failed to get the lessons from the database. Error message: ${error}` });

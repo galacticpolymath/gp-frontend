@@ -14,7 +14,7 @@ export default async function handler(request, response) {
   }
 
   const token = headers.authorization.split(' ')[1];
-  const { status, data: user, msg } = verifyJwtToken(token)
+  const { status, data: user, msg } = verifyJwtToken(token);
 
   if(msg === 'Token is invalid.'){
     return response.status(status).json({ msg: msg });
