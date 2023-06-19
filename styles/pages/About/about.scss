@@ -23,12 +23,9 @@ $txtShadow: 0px 0px 4px #470d29;
   font-size: calc(11px + 1vw);
 }
 
-.about-hero {
-  // background-color: $aboutHeroColor;
-  
+.about-hero {  
   @media(min-width: 768px){
     height: 550px;
-    // height: 480px;
   }
 
   > div:last-child {
