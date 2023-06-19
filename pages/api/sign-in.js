@@ -24,7 +24,6 @@ export default async function handler(request, response) {
 
     return response.status(200).json({ jwt });
   } catch (error) {
-    console.error('An error has occurred in the sign-in route: ', error);
 
     return response.status(500).json({ msg: 'Could not get user from the database.' });
   }
