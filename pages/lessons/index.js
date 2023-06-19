@@ -7,6 +7,7 @@ import React from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import LessonCard from '../../components/LessonsPg/LessonCard';
+import { useEffect } from 'react';
 
 const LessonsPage = ({ lessons }) => {
 
@@ -19,12 +20,34 @@ const LessonsPage = ({ lessons }) => {
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
     const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
 
-    if(willShowLesson){
+    if (willShowLesson) {
       uniqueIDs.push(id);
     }
 
     return willShowLesson;
   });
+
+  const getLessons = async () => {
+    try {
+      const url = `${window.location.origin}/api/get-lessons`;
+      console.log('url: ', url)
+      const lessonsRes = await fetch(url);
+
+      return lessonsRes.json()
+    } catch (error) {
+      console.error('An error has occurred: ', error)
+    }
+  }
+
+  useEffect(() => {
+    getLessons()
+      .then(data => {
+        console.log("Environment variables is working : ", data)
+      })
+      .catch(error => {
+        console.error('An error has occurred: ', error)
+      })
+  }, [])
 
   return (
     <Layout
@@ -85,6 +108,7 @@ const LessonsPage = ({ lessons }) => {
 
 export async function getStaticProps() {
   // put this in a try catch block and handle errors
+  // get the lesssons from the database in this fn
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   let lessons = await res.json();
   lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
