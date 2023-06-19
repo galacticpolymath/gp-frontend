@@ -23,13 +23,12 @@ const Hero = ({
           priority
           style={{ objectFit: 'cover', zIndex: -1 }}
         />
-)}
+      )}
       {(imgSrc && isImgToTheSide) && (
         <div style={imgContainerStyle ?? {}} className='position-relative mb-2 me-md-3 me-lg-5'>
           <Image
             src={imgSrc} alt="Hero_Image_Galactic_Polymath"
             fill
-            // sizes="(max-width: 575px) 270px, (max-width: 767px) 767px, (max-width: 991px) 480px, (max-width: 1199px) 584px, 705px" 
             priority style={{ objectFit: 'contain', height: '100%', width: '100%' }}
           />
         </div>

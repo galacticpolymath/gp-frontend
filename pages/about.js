@@ -43,10 +43,10 @@ const AlumniBtn = props => {
 const AboutPage = () => (
   <Layout>
     <Hero
-      imgSrc='/imgs/about/about_hero.png'
+      imgSrc='/imgs/about/about_hero2.png'
       isImgToTheSide
       childrenContainerStyle={{ maxWidth: '705px' }}
-      imgContainerStyle={{ maxWidth: '718px' }}
+      imgContainerStyle={{ maxWidth: '718px', width: '100%', height: '100%' }}
       childrenContainerClassName='mx-auto mx-xl-0'
       className='about-hero d-flex pt-4 pb-4 pt-md-0 pb-md-0 flex-column-reverse flex-md-row-reverse justify-content-xl-center align-items-xl-center'
       isStylesHereOn={false}
@@ -54,7 +54,6 @@ const AboutPage = () => (
       <h1 className={styles.shadow}>About GP</h1>
       <p className={styles.shadow}>Galactic Polymath (GP) is an education studio. We help scientists, nonprofits, and sustainable companies achieve outreach at scale by translating complex, cutting-edge research into mind-blowing lessons for grades 5+.</p>
     </Hero>
-
     <div className="bg-light-gray p-3 p-md-4 p-lg-5">
       <div className='bg-white rounded container mx-auto align-items-center gap-3'>
         <div className='text-center p-5 pb-3'>
