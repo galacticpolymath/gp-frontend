@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const MILISECONDS_IN_A_MONTH = 2_592_000_000;
 
@@ -11,7 +11,7 @@ const LessonCard = ({ lesson }) => {
     <Link
       key={locale + id}
       href={`/lessons/${locale}/${id}`}
-      className='w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
+      className='w-100 pointer disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
     >
       <div className="position-relative">
         {(CoverImage && CoverImage.url) && (
@@ -47,13 +47,13 @@ const LessonCard = ({ lesson }) => {
         )}
       </div>
       <div className='pt-2 ps-sm-3 d-grid'>
-        <h3 className='w-light text-black mb-0'>{Title}</h3>
-        <p className='text-black no-link-decoration'>{Subtitle}</p>
+        <h3 style={{ textDecoration: 'none' }} className='w-light text-black mb-0 no-underline-on-hover'>{Title}</h3>
+        <p style={{ fontWeight: 400, textDecoration: 'none' }} className='text-black no-underline-on-hover'>{Subtitle}</p>
         <section className="d-flex flex-wrap gap-1 align-self-end">
-          <span className={`badge me-1 lessonSubject bg-${Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
+          <span className={`badge me-1 lessonSubject no-underline-on-hover bg-${Section.overview.TargetSubject.toLowerCase().replace(/\s/g, ' ')}`}>
             {Section.overview.TargetSubject}
           </span>
-          <span style={{ whiteSpace: 'normal' }} className="badge rounded-pill bg-gray ml-3">
+          <span style={{ whiteSpace: 'normal' }} className="no-underline-on-hover badge rounded-pill bg-gray ml-3">
             {`${Section.overview.GradesOrYears}: ${Section.overview.ForGrades}`}
           </span>
         </section>

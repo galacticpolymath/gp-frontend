@@ -7,6 +7,7 @@ import React from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import LessonCard from '../../components/LessonsPg/LessonCard';
+import { useEffect } from 'react';
 
 const LessonsPage = ({ lessons }) => {
 
@@ -19,12 +20,34 @@ const LessonsPage = ({ lessons }) => {
   const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
     const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
 
-    if(willShowLesson){
+    if (willShowLesson) {
       uniqueIDs.push(id);
     }
 
     return willShowLesson;
   });
+
+  const getLessons = async () => {
+    try {
+      const url = `${window.location.origin}/api/get-lessons`;
+      console.log('url: ', url)
+      const lessonsRes = await fetch(url);
+
+      return lessonsRes.json()
+    } catch (error) {
+      console.error('An error has occurred: ', error)
+    }
+  }
+
+  useEffect(() => {
+    getLessons()
+      .then(data => {
+        console.log("Environment variables is working : ", data)
+      })
+      .catch(error => {
+        console.error('An error has occurred: ', error)
+      })
+  }, [])
 
   return (
     <Layout
@@ -33,6 +56,7 @@ const LessonsPage = ({ lessons }) => {
       imgSrc='https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png'
       imgAlt='Galactic_Polymath_Logo_Lessons_Page'
       keywords='Galatic Polymath Lessons, Galactic Polymath Learning Tools'
+      className='lessons-pg-container'
     >
       <section className="bg-secondary p-4">
         <div className="text-white col-sm-12 col-md-10 col-lg-8 col-xl-7">
@@ -40,7 +64,7 @@ const LessonsPage = ({ lessons }) => {
           <p>We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
         </div>
       </section>
-      <div className="">
+      <div>
         <section className="mb-5 pt-2">
           <section className="headerSecLessonsPg">
             <h4 className="mt-3 ms-sm-4 text-muted text-center text-sm-start">
@@ -84,6 +108,7 @@ const LessonsPage = ({ lessons }) => {
 
 export async function getStaticProps() {
   // put this in a try catch block and handle errors
+  // get the lesssons from the database in this fn
   const res = await fetch('https://catalog.galacticpolymath.com/index.json');
   let lessons = await res.json();
   lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
