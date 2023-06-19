@@ -44,7 +44,7 @@ const AboutPage = () => (
   <Layout>
     <Hero
       imgSrc='/imgs/about/about_hero.png'
-      childrenContainerStyle={{ maxWidth: "80vw" }}
+      childrenContainerStyle={{ maxWidth: '80vw' }}
       imgContainerStyle={{ maxWidth: '718px', width: '100%', height: '100%' }}
       childrenContainerClassName='mx-auto mx-xl-0'
       className='about-hero d-flex pt-5 pb-5 pt-md-0 pb-md-0 flex-column-reverse flex-md-row-reverse justify-content-xl-center align-items-xl-center'
