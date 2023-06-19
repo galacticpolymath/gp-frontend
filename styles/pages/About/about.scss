@@ -19,12 +19,16 @@ $txtShadow: 0px 0px 4px #470d29;
   transition-duration: 0.3s;
 }
 
-.about-hero {
-  background-color: $aboutHeroColor;
-  height: 550px;
+.sub-heading-about-pg{
+  font-size: calc(11px + 1vw);
+}
 
-  @media(max-width: 575px){
-    height: 480px;
+.about-hero {
+  // background-color: $aboutHeroColor;
+  
+  @media(min-width: 768px){
+    height: 550px;
+    // height: 480px;
   }
 
   > div:last-child {

@@ -28,7 +28,6 @@ const Hero = ({
         <div style={imgContainerStyle ?? {}} className='position-relative mb-2 me-md-3 me-lg-5'>
           <Image
             src={imgSrc} alt="Hero_Image_Galactic_Polymath"
-            fill
             priority style={{ objectFit: 'contain', height: '100%', width: '100%' }}
           />
         </div>
