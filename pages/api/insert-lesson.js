@@ -26,6 +26,8 @@ export default async function handler(request, response) {
     return response.status(403).json({ msg: 'The user is not allowed to write to the database.' });
   }
 
+  response.redirect()
+
   try {
     await connectToMongodb();
     const { status, msg } = await insertLesson(request.body);
