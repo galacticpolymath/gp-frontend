@@ -1,4 +1,4 @@
-import { getDoesUserHaveASpecificRole, verifyJwtToken } from '../../backend/services/authServices';
+import { getDoesUserHaveASpecificRole, verifyIdToken, verifyJwtToken } from '../../backend/services/authServices';
 import { insertLesson } from '../../backend/services/lessonsServices';
 import { connectToMongodb } from '../../backend/utils/connection';
 
@@ -9,20 +9,21 @@ export default async function handler(request, response) {
     return response.status(404).json({ msg: 'This route only accepts POST requests.' });
   }
 
-  if(headers.authorization === undefined){
+  const token = headers?.authorization?.split('Bearer')?.at(-1)?.trim()
+
+  if (!token) {
     return response.status(401).json({ msg: 'The authorization header is missing.' });
   }
 
-  const token = headers.authorization.split(' ')[1];
-  const { status, data: user, msg } = verifyJwtToken(token);
+  const { status, data: loginTicket, msg } = verifyIdToken(token);
 
-  if(msg === 'Token is invalid.'){
+  if (status === 500) {
     return response.status(status).json({ msg: msg });
   }
 
-  const canUserWriteToDb = getDoesUserHaveASpecificRole(user.roles, 'readWrite');
-  
-  if(!canUserWriteToDb){
+  const canUserWriteToDb = getDoesUserHaveASpecificRole(loginTicket.getPayload().email, 'readWrite');
+
+  if (!canUserWriteToDb) {
     return response.status(403).json({ msg: 'The user is not allowed to write to the database.' });
   }
 
