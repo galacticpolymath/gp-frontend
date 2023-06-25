@@ -9,7 +9,7 @@ async function verifyIdToken(token) {
     try{
         const loginTicket = await oauth2Client.verifyIdToken({
             idToken: token,
-            audience: AUTH_CLIENT_ID,
+            audience: AUTH_CLIENT_ID
         })
 
         return { status: 200, data: loginTicket }
