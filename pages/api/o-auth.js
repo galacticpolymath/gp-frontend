@@ -19,6 +19,11 @@ export default async function handler(request, response) {
     });
     console.log("url: ", url)
 
+    const client = new google.auth.OAuth2().verifyIdToken({
+        idToken: Token,
+        audience: AUTH_CLIENT_ID,
+    })
+
 
 
     return response.redirect(url)
