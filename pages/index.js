@@ -24,7 +24,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    console.log('router.query: ', router.query.code)
+    console.log('router.query: ', router.query)
   })
 
   return (
