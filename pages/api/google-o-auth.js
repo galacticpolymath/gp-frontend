@@ -1,6 +1,7 @@
-import { connectToMongodb } from '../../backend/utils/connection';
-import { createJwt, userLogin } from '../../backend/services/authServices';
 import { google } from 'googleapis';
+
+// GOAL:get the domain of where the request came from.
+// use request.get('origin') to get the domain of where the request came from.
 
 export default async function handler(_, response) {
     const { AUTH_CLIENT_ID, AUTH_CLIENT_SECRET, AUTH_REDIRECT_URI } = process.env;

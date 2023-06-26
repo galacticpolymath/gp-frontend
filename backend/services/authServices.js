@@ -1,6 +1,5 @@
 import axios from "axios";
 import Users from "../models/user";
-import axios from 'axios'
 import { google } from "googleapis";
 import { externalApiInfo } from "../globalVals/externalApis";
 
