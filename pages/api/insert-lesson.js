@@ -3,7 +3,7 @@ import { insertLesson } from '../../backend/services/lessonsServices';
 import { connectToMongodb } from '../../backend/utils/connection';
 
 export default async function handler(request, response) {
-  const { method, headers } = request;
+  const { method, headers, body } = request;
 
   if (method !== 'POST') {
     return response.status(404).json({ msg: 'This route only accepts POST requests.' });
@@ -30,7 +30,7 @@ export default async function handler(request, response) {
 
   try {
     await connectToMongodb();
-    const { status, msg } = await insertLesson(request.body);
+    const { status, msg } = await insertLesson(body);
 
     return response.status(status).json({ msg: msg });
   } catch (error) {

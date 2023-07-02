@@ -1,11 +1,11 @@
 import axios from "axios";
 import Users from "../models/user";
-import { google } from "googleapis";
+import { google, GoogleApis } from "googleapis";
 import { externalApiInfo } from "../globalVals/externalApis";
 
 async function verifyIdToken(code) {
     const oauth2Client = new google.auth.OAuth2()
-
+    
     try {
         const reqBody = {
             code: code,
@@ -16,11 +16,11 @@ async function verifyIdToken(code) {
         }
         const response = await axios.post(externalApiInfo.oauthGoogleApisUrl, reqBody)
 
-        if(response.status !== 200) {
+        if (response.status !== 200) {
             throw new Error('An error has occurred in trying to get the access token.')
         }
 
-        if(response.data.id_token === undefined) {
+        if (response.data.id_token === undefined) {
             throw new Error('An error has occurred in trying to get the access token. The id_token is undefined.')
         }
 
