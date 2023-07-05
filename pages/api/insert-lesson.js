@@ -15,13 +15,15 @@ export default async function handler(request, response) {
     return response.status(401).json({ msg: 'The authorization header is missing.' });
   }
 
-  const { status, data: loginTicket, msg } = verifyIdToken(token);
+  const { status, data: loginTicket, msg } = await verifyIdToken(token);
 
-  if (status === 500) {
+  console.log("loginTicket.email: ", loginTicket.email)
+
+  if (status === 500 || !loginTicket) {
     return response.status(status).json({ msg: msg });
   }
 
-  const canUserWriteToDb = getDoesUserHaveASpecificRole(loginTicket.getPayload().email, 'readWrite');
+  const canUserWriteToDb = getDoesUserHaveASpecificRole(loginTicket.email, 'readWrite');
 
   if (!canUserWriteToDb) {
     return response.status(403).json({ msg: 'The user is not allowed to write to the database.' });

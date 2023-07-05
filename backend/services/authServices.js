@@ -3,35 +3,19 @@ import Users from "../models/user";
 import { google, GoogleApis } from "googleapis";
 import { externalApiInfo } from "../globalVals/externalApis";
 
-async function verifyIdToken(code) {
+async function verifyIdToken(token) {
     const oauth2Client = new google.auth.OAuth2()
-    
+
     try {
-        const reqBody = {
-            code: code,
-            client_id: process.env.AUTH_CLIENT_ID,
-            client_secret: process.env.AUTH_CLIENT_SECRET,
-            redirect_uri: process.env.AUTH_REDIRECT_URI,
-            grant_type: 'authorization_code'
-        }
-        const response = await axios.post(externalApiInfo.oauthGoogleApisUrl, reqBody)
-
-        if (response.status !== 200) {
-            throw new Error('An error has occurred in trying to get the access token.')
-        }
-
-        if (response.data.id_token === undefined) {
-            throw new Error('An error has occurred in trying to get the access token. The id_token is undefined.')
-        }
-
         const loginTicket = await oauth2Client.verifyIdToken({
-            idToken: response.data.id_token,
-            audience: AUTH_CLIENT_ID
+            idToken: token,
+            audience: process.env.AUTH_CLIENT_ID
         })
+        const payload = loginTicket.getPayload()
 
-        console.log('loginTicket: ', loginTicket)
+        console.log('payload: ', payload)
 
-        return { status: 200, data: loginTicket }
+        return { status: 200, data: payload }
     } catch (error) {
         const verificationErrorMsg = `An error has occurred in trying to verify the token: ${error}`
 
@@ -42,9 +26,11 @@ async function verifyIdToken(code) {
 }
 
 function getDoesUserHaveASpecificRole(email, targetRole) {
-    const targetUser = Users.findOne({ email: email }).lean()
+    const targetUser = Users.findOne({ _id: email }).lean()
 
-    return targetUser.roles.map(({ role }) => role).includes(targetRole)
+    console.log('targetUser: ', targetUser)
+
+    return targetUser ? targetUser.roles.map(({ role }) => role).includes(targetRole) : false
 }
 
 
