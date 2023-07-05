@@ -29,6 +29,8 @@ async function verifyIdToken(code) {
             audience: AUTH_CLIENT_ID
         })
 
+        console.log('loginTicket: ', loginTicket)
+
         return { status: 200, data: loginTicket }
     } catch (error) {
         const verificationErrorMsg = `An error has occurred in trying to verify the token: ${error}`
