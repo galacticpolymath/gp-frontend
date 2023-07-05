@@ -1,23 +1,15 @@
-import { google } from 'googleapis';
+import { generateRedirectUrl } from '../../apiServices/googleOAuth/googleOAuth';
 
 
 export default async function handler(request, response) {
-    // determine where the request originated from in order to get the appropriate redirect uri
-    const { AUTH_CLIENT_ID, AUTH_CLIENT_SECRET, AUTH_REDIRECT_URI } = process.env;
-    const oauth2Client = new google.auth.OAuth2(
-        AUTH_CLIENT_ID,
-        AUTH_CLIENT_SECRET,
-        AUTH_REDIRECT_URI
-    );
-    const SCOPES = [
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email',
-    ];
-    const url = oauth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: SCOPES,
-    });
+    try {
+        // validate if the request came from a valid origin
+        const url = generateRedirectUrl();
 
-    // The url will be sent to the client side in a json body.
-    return response.redirect(url)
+        return response.status(200).json({ redirectUrl: url })
+    } catch(error){
+        const errMsg = `An error has occurred in generate the redirect url of google o-auth: ${error}`
+
+        return response.status(500).json({ msg: errMsg })
+    }
 }
