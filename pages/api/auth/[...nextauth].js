@@ -9,10 +9,26 @@ export const authOptions = {
 
         }),
     ],
+    session: {
+        strategy: "jwt"
+    },
     callbacks: {
         async jwt({ token, user, account, profile, isNewUser }) {
-            return token
-        }
+            console.log("jwt token: ", token)
+
+            if (account?.accessToken) {
+                token.accessToken = account.accessToken;
+            }
+
+
+            return token;
+        },
+        async session({ session, token, user }) {
+            // Send properties to the client, like an access_token from a provider.
+            console.log("session token: ", token)
+            session.accessToken = token.accessToken
+            return session
+          }
     }
 }
 

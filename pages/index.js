@@ -11,8 +11,10 @@ import NSFImage from '../assets/img/nsf.png';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react'
 
 export default function Home() {
+  const data = useSession()
   const router = useRouter()
   const newReleasePath = '/lessons/en-US/6';
   const layoutProps = {
@@ -24,7 +26,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    console.log('router.query: ', router.query)
+    console.log('data: ', data)
   })
 
   return (
