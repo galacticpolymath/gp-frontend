@@ -6,7 +6,6 @@ export const authOptions = {
         GoogleProvider({
             clientId: process.env.AUTH_CLIENT_ID,
             clientSecret: process.env.AUTH_CLIENT_SECRET,
-
         }),
     ],
     authorizationUrl:
@@ -24,19 +23,18 @@ export const authOptions = {
     },
     callbacks: {
         async jwt({ token, user, account, profile, isNewUser }) {
-            console.log("jwt token: ", token)
 
-            if (account?.accessToken) {
-                token.accessToken = account.accessToken;
-            }
-
+            if (account) {
+                token.accessToken = account.access_token
+              }
+          
 
             return token;
         },
         async session({ session, token, user }) {
-            // Send properties to the client, like an access_token from a provider.
-            console.log("session token: ", token)
-            session.accessToken = token.accessToken
+            // send the access token to the client side, after the uesr is authenticated by using the 
+            // the useSession hook on the client side
+            session.accessToken = token.accessToken;
             return session
         }
     }

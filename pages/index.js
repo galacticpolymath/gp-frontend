@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import { useSession, getSession } from 'next-auth/react'
 
 export default function Home() {
+  const { data } = useSession();
   const newReleasePath = '/lessons/en-US/6';
   const layoutProps = {
     title: 'Galactic Polymath - Home Page',
@@ -22,6 +23,13 @@ export default function Home() {
     imgSrc: 'https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png',
     keywords: 'Galactic Polymath, Galactic, Polymath, education, studio, education studio, education studio for kids, education studio for children, education studio for teens, education studio for teenagers, education studio for young adults, education studio for young people, education studio for youth, education studio for adolescents, education studio for parents, education studio for teachers, education studio for counselors, education studio for schools, education studio for school districts.',
   };
+
+  useEffect(() => {
+    console.log('data: ', data )
+    const { accessToken } = data ?? {};
+
+    console.log('accessToken: ', accessToken)
+  })
 
   return (
     <Layout {...layoutProps}>
@@ -256,7 +264,7 @@ export default function Home() {
 
               {/* Clients box */}
               <div className='d-grid col-12 col-md-5 justify-content-center bg-white rounded-3  p-4'>
-              
+
                 <h2 className="text-start ">For Clients</h2>
                 <div className=' d-block'>
                   <ul className=" fs-4">
