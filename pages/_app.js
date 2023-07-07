@@ -4,6 +4,7 @@ import { ModalProvider } from '../providers/ModalProvider';
 import { LessonsCarouselProvider } from '../providers/LessonsCarouselProvider';
 import ModalsContainer from '../ModalsContainer';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
+import { SessionProvider } from 'next-auth/react';
 import './style.scss';
 import '../styles/pages/HireUs/hireUs.scss';
 import '../styles/pages/Lessons/lessons.scss';
@@ -14,20 +15,22 @@ import '../styles/pages/home.scss';
 import '../styles/pages/About/about.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap');
   }, []);
-  
+
   return (
     <>
       <GoogleAnalytics gaMeasurementId='G-8B58Y7HD3T' trackPageViews />
-      <LessonsCarouselProvider>
-        <ModalProvider>
-          <Component {...pageProps} />
-          <ModalsContainer />
-        </ModalProvider>
-      </LessonsCarouselProvider>
+      <SessionProvider session={session}>
+        <LessonsCarouselProvider>
+          <ModalProvider>
+            <Component {...pageProps} />
+            <ModalsContainer />
+          </ModalProvider>
+        </LessonsCarouselProvider>
+      </SessionProvider>
     </>
   );
 }

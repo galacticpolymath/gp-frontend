@@ -9,8 +9,18 @@ export const authOptions = {
 
         }),
     ],
+    authorizationUrl:
+        'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code',
+    scope:
+        'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/youtube.readonly',
+    secret: process.env.AUTH_CLIENT_SECRET,
     session: {
-        strategy: "jwt"
+        strategy: "jwt",
+    },
+    jwt: {
+        secret: process.env.NEXTAUTH_SECRET,
+        maxAge: 60 * 60 * 24 * 30,
+        encryption: true,
     },
     callbacks: {
         async jwt({ token, user, account, profile, isNewUser }) {
@@ -28,7 +38,7 @@ export const authOptions = {
             console.log("session token: ", token)
             session.accessToken = token.accessToken
             return session
-          }
+        }
     }
 }
 
