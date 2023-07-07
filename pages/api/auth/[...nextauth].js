@@ -16,18 +16,14 @@ export const authOptions = {
     session: {
         strategy: "jwt",
     },
-    jwt: {
-        secret: process.env.NEXTAUTH_SECRET,
-        maxAge: 60 * 60 * 24 * 30,
-        encryption: true,
-    },
+    jwt: {},
     callbacks: {
         async jwt({ token, user, account, profile, isNewUser }) {
 
             if (account) {
                 token.accessToken = account.access_token
-              }
-          
+            }
+
 
             return token;
         },

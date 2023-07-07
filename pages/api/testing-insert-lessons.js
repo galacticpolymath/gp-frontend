@@ -1,11 +1,10 @@
-import { getToken, decode } from "next-auth/jwt"
-
+import { decode } from "next-auth/jwt";
+import { getSession } from "next-auth/react";
 
 export default async function handler(req, res) {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = await decode({ token: token, secret: process.env.NEXTAUTH_SECRET });
+    const session = await decode({ req: req, secret: process.env.NEXTAUTH_SECRET })
 
-    console.log("decoded: ", decoded)
+    console.log("session: ", session)
 
     return res.status(200).json({ message: "test!" })
 }
