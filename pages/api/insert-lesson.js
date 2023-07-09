@@ -11,7 +11,6 @@ export default async function handler(request, response) {
 
   const authorizationResult = await getIsReqAuthorizedResult(request);
 
-  console.log('authorizationResult: ', authorizationResult)
 
   // MAIN GOAL: insert the lesson into the database after the jwt is validated
 

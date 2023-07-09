@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import jwt from "jsonwebtoken"
 import User from "../../../backend/models/user"
+import { connectToMongodb } from "../../../backend/utils/connection"
 
 export const authOptions = {
     providers: [
@@ -21,29 +22,38 @@ export const authOptions = {
         secret: process.env.NEXTAUTH_SECRET,
         maxAge: 60 * 60 * 24 * 30, // 30 days
         encode: async ({ secret, token }) => {
-            const user = await User.findById(token.email).lean();
-            let allowedRoles = ["user"];
+            try {
+                await connectToMongodb();
+                const { email, name } = token
+                const user = await User.findOne({ _id: email }).lean();
+                let allowedRoles = ["user"];
 
-            if (user) {
-                allowedRoles = [...new Set(...allowedRoles, ...user.roles.map(({ role }) => role))]
-            }
-
-            const jwtClaims = {
-                "sub": token.email,
-                "name": token.name,
-                "email": token.email,
-                "iat": Date.now() / 1000,
-                "exp": Math.floor(Date.now() / 1000) + (24 * 60 * 60),
-                "https://hasura.io/jwt/claims": {
-                    "x-hasura-allowed-roles": allowedRoles,
-                    "x-hasura-default-role": "user",
-                    "x-hasura-role": "user",
-                    "x-hasura-user-id": token.email,
+                if (user) {
+                    allowedRoles = [...allowedRoles, ...user.roles.map(({ role }) => role)]
+                    allowedRoles = [...new Set(allowedRoles)];
                 }
-            };
-            const encodedToken = jwt.sign(jwtClaims, secret, { algorithm: 'HS256' });
 
-            return encodedToken;
+                const jwtClaims = {
+                    "sub": email,
+                    "name": name,
+                    "email": email,
+                    "iat": Date.now() / 1000,
+                    "exp": Math.floor(Date.now() / 1000) + (24 * 60 * 60),
+                    "claims": {
+                        "allowedRoles": allowedRoles,
+                        "defaultRole": "user",
+                        "role": allowedRoles.find(role => role === 'dbAdmin') ?? "user",
+                        "userId": email,
+                    }
+                };
+                const encodedToken = jwt.sign(jwtClaims, secret, { algorithm: 'HS256' });
+
+                return encodedToken;
+            } catch (error) {
+                console.error('An error has occurred while encoding the jwt token: ', error)
+
+                throw new Error("Unable to generate JWT.");
+            }
         },
         decode: async ({ secret, token }) => {
             const decodedToken = jwt.verify(token, secret, { algorithms: ['HS256'] });
