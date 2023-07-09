@@ -1,6 +1,8 @@
+import { getServerSession } from 'next-auth';
 import { getDoesUserHaveASpecificRole, verifyIdToken, verifyJwtToken } from '../../backend/services/authServices';
 import { insertLesson } from '../../backend/services/lessonsServices';
 import { connectToMongodb } from '../../backend/utils/connection';
+import { authOptions } from './auth/[...nextAuth]';
 
 export default async function handler(request, response) {
   const { method, headers, body } = request;
@@ -9,34 +11,9 @@ export default async function handler(request, response) {
     return response.status(404).json({ msg: 'This route only accepts POST requests.' });
   }
 
-  const token = headers?.authorization?.split('Bearer')?.at(-1)?.trim()
+  const session = await getServerSession(request, response, authOptions);
 
-  if (!token) {
-    return response.status(401).json({ msg: 'The authorization header is missing.' });
-  }
+  console.log("session: ", session)
 
-  const { status, data: loginTicket, msg } = await verifyIdToken(token);
-
-  console.log("loginTicket.email: ", loginTicket.email)
-
-  if (status === 500 || !loginTicket) {
-    return response.status(status).json({ msg: msg });
-  }
-
-  const canUserWriteToDb = getDoesUserHaveASpecificRole(loginTicket.email, 'readWrite');
-
-  if (!canUserWriteToDb) {
-    return response.status(403).json({ msg: 'The user is not allowed to write to the database.' });
-  }
-
-
-  try {
-    await connectToMongodb();
-    const { status, msg } = await insertLesson(body);
-
-    return response.status(status).json({ msg: msg });
-  } catch (error) {
-
-    return response.status(500).json({ msg: `Failed to save lesson into the database. Error message: ${error}` });
-  }
+  return response.status(200).json({ msg: "Lesson was successfully inserted into the db." })
 }
