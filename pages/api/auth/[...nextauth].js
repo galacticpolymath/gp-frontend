@@ -20,6 +20,13 @@ export const authOptions = {
         secret: process.env.NEXTAUTH_SECRET,
         maxAge: 60 * 60 * 24 * 30, // 30 days
         encode: async ({ secret, token }) => {
+            // get the user's roles from the database, if the user exists.
+            // else, if add the default roles for the user to the token
+            // BRAIN DUMP NOTES:
+            // get the user from the database 
+            // get their roles 
+            // put their roles into the x-hasura-allowed-roles array
+
             const jwtClaims = {
                 "sub": token.email,
                 "name": token.name,

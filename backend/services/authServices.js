@@ -18,7 +18,7 @@ const validateJwtToken = async (token) => {
 }
 
 const getIsReqAuthorizedResult = request => {
-    const token = request.headers.authorization.split(" ")[1].trim();
+    const token = request?.headers?.authorization.split(" ")[1].trim();
 
     return validateJwtToken(token);
 }
