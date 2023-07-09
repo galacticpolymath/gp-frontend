@@ -1,38 +1,26 @@
-import axios from "axios";
-import Users from "../models/user";
-import { google, GoogleApis } from "googleapis";
-import { externalApiInfo } from "../globalVals/externalApis";
+import jwt from "jsonwebtoken";
+import { authOptions } from "../../pages/api/auth/[...nextAuth]";
 
-async function verifyIdToken(token) {
-    const oauth2Client = new google.auth.OAuth2()
-
+const validateJwtToken = async (token) => {
     try {
-        const loginTicket = await oauth2Client.verifyIdToken({
-            idToken: token,
-            audience: process.env.AUTH_CLIENT_ID
-        })
-        const payload = loginTicket.getPayload()
+        const userCredentials = await authOptions.jwt.decode({ secret: process.env.NEXTAUTH_SECRET, token: token });
 
-        console.log('payload: ', payload)
+        if (!userCredentials) {
+            throw new Error('User credentials could not be verified.')
+        }
 
-        return { status: 200, data: payload }
+        return { wasSuccessful: true, userCredentials }
     } catch (error) {
-        const verificationErrorMsg = `An error has occurred in trying to verify the token: ${error}`
+        console.error('An error has occurred in validating jwt: ', error)
 
-        console.error(verificationErrorMsg)
-
-        return { status: 500, msg: verificationErrorMsg }
+        return { wasSuccessful: false, errorMsg: `An error has occurred in validating jwt. Error message: ${error}.` }
     }
 }
 
-function getDoesUserHaveASpecificRole(email, targetRole) {
-    const targetUser = Users.findOne({ _id: email }).lean()
+const getIsReqAuthorizedResult = request => {
+    const token = request.headers.authorization.split(" ")[1].trim();
 
-    console.log('targetUser: ', targetUser)
-
-    return targetUser ? targetUser.roles.map(({ role }) => role).includes(targetRole) : false
+    return validateJwtToken(token);
 }
 
-
-
-export { verifyIdToken, getDoesUserHaveASpecificRole }
+export { validateJwtToken, getIsReqAuthorizedResult }

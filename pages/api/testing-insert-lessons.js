@@ -1,11 +1,9 @@
-import { decode } from "next-auth/jwt";
-import { getSession } from "next-auth/react";
-import jwt from "jsonwebtoken";
+import { getIsReqAuthorizedResult } from "../../backend/services/authServices";
 
-export default async function handler(req, res) {
-    const token = req.headers.authorization.split(" ")[1].trim()
-    const decodedToken = jwt.decode(token);
+export default async function handler(request, response) {
+    const authorizationResult = await getIsReqAuthorizedResult(request);
 
+    console.log('authorizationResult: ', authorizationResult)
 
-    return res.status(200).json({ message: "test!" })
+    return response.status(200).json({ message: "test!" })
 }
