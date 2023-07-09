@@ -1,6 +1,7 @@
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import jwt from "jsonwebtoken"
+import User from "../../../backend/models/user"
 
 export const authOptions = {
     providers: [
@@ -20,12 +21,12 @@ export const authOptions = {
         secret: process.env.NEXTAUTH_SECRET,
         maxAge: 60 * 60 * 24 * 30, // 30 days
         encode: async ({ secret, token }) => {
-            // get the user's roles from the database, if the user exists.
-            // else, if add the default roles for the user to the token
-            // BRAIN DUMP NOTES:
-            // get the user from the database 
-            // get their roles 
-            // put their roles into the x-hasura-allowed-roles array
+            const user = await User.findById(token.email).lean();
+            let allowedRoles = ["user"];
+
+            if (user) {
+                allowedRoles = [...new Set(...allowedRoles, ...user.roles.map(({ role }) => role))]
+            }
 
             const jwtClaims = {
                 "sub": token.email,
@@ -34,7 +35,7 @@ export const authOptions = {
                 "iat": Date.now() / 1000,
                 "exp": Math.floor(Date.now() / 1000) + (24 * 60 * 60),
                 "https://hasura.io/jwt/claims": {
-                    "x-hasura-allowed-roles": ["user"],
+                    "x-hasura-allowed-roles": allowedRoles,
                     "x-hasura-default-role": "user",
                     "x-hasura-role": "user",
                     "x-hasura-user-id": token.email,
@@ -52,7 +53,7 @@ export const authOptions = {
     callbacks: {
         async jwt({ token, user, account, profile, isNewUser }) {
             const isUserSignedIn = !!user;
-            
+
             if (isUserSignedIn) {
                 token.id = user.id.toString();
             }
