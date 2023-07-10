@@ -13,14 +13,35 @@ const validateJwtToken = async (token) => {
     } catch (error) {
         console.error('An error has occurred in validating jwt: ', error)
 
-        return { wasSuccessful: false, errorMsg: `An error has occurred in validating jwt. Error message: ${error}.` }
+        return { wasSuccessful: false, msg: `An error has occurred in validating jwt. Error message: ${error}.` }
     }
 }
 
-const getIsReqAuthorizedResult = request => {
-    const token = request?.headers?.authorization.split(" ")[1].trim();
+const getIsReqAuthorizedResult = async (request, role = "user") => {
+    try {
+        const token = request?.headers?.authorization.split(" ")[1].trim();
+        const validateJwtTokenResult = await validateJwtToken(token);
 
-    return validateJwtToken(token);
+        if (!validateJwtTokenResult.wasSuccessful || !validateJwtTokenResult?.userCredentials) {
+            throw new Error(validateJwtTokenResult.msg);
+        }
+
+        console.log("validateJwtTokenResult.userCredentials: ", validateJwtTokenResult.userCredentials)
+
+        const roles = validateJwtTokenResult.userCredentials.claims.allowedRoles;
+        const hasUserRole = roles.find(role => role === 'user');
+        const hasTargetRole = (role !== "user") ? roles.find(role => role === role) : hasUserRole;
+
+        if (hasUserRole && hasTargetRole) {
+            return { isReqAuthorized: true, msg: "User is authorized to access this service." }
+        }
+
+        throw new Error("User is not authorized to access this service.");
+    } catch (error) {
+        const errMsg = `An error has occurred in authorizing the request. Error message: ${error}.`
+
+        return { isReqAuthorized: true, msg: errMsg }
+    }
 }
 
 export { validateJwtToken, getIsReqAuthorizedResult }

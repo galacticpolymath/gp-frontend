@@ -1,4 +1,5 @@
 import { getIsReqAuthorizedResult } from "../../backend/services/authServices";
+import { insertLesson } from "../../backend/services/lessonsServices";
 
 export default async function handler(request, response) {
   if (request.method !== 'POST') {
@@ -9,18 +10,25 @@ export default async function handler(request, response) {
     return response.status(401).json({ msg: 'You are not authorized to access this route.' });
   }
 
-  const authorizationResult = await getIsReqAuthorizedResult(request);
+  const authorizationResult = await getIsReqAuthorizedResult(request, "dbAdmin");
 
+  if (!authorizationResult?.isReqAuthorized || !authorizationResult) {
+    console.log(authorizationResult?.msg ?? "You are not authorized to access this service.")
+    return response.status(401).json({ msg: authorizationResult?.msg ?? "You are not authorized to access this service." });
+  }
 
-  // MAIN GOAL: insert the lesson into the database after the jwt is validated
+  if (!Object.keys(request.body).length) {
+    console.log('The request body is empty.')
+    return response.status(400).json({ msg: "The request body is empty." });
+  }
 
-  // GOAL #2: validate the jwt token
+  console.log('Inserting lesson into the db.')
 
-  // GOAL #3: get the jwt from the headers of the request
+  let lesson = request.body;
+  console.log('lesson _id type: ')
+  console.log(typeof lesson._id)
 
+  const lessonInsertationResult = await insertLesson(request.body);
 
-
-
-
-  return response.status(200).json({ msg: "Lesson was successfully inserted into the db." })
+  return response.status(lessonInsertationResult.status).json({ msg: lessonInsertationResult.msg })
 }

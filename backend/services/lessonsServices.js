@@ -1,7 +1,9 @@
 import Lessons from '../models/lesson'
+import { connectToMongodb } from '../utils/connection'
 
 const insertLesson = async lesson => {
     try {
+        await connectToMongodb();
         const newLesson = new Lessons({ ...lesson })
         const saveResult = await newLesson.save()
 
@@ -16,6 +18,7 @@ const insertLesson = async lesson => {
         return { status: 500, msg: errMsg }
     }
 }
+
 
 const deleteLesson = async lessonId => {
     try {
