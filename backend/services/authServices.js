@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { authOptions } from "../../pages/api/auth/[...nextAuth]";
+import { authOptions } from "../../pages/api/auth/[...nextauth";
 
 const validateJwtToken = async (token) => {
     try {
