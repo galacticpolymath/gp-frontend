@@ -50,8 +50,6 @@ export const authOptions = {
 
         return encodedToken;
       } catch (error) {
-        console.error('An error has occurred while encoding the jwt token: ', error);
-
         throw new Error('Unable to generate JWT.');
       }
     },
