@@ -13,20 +13,12 @@ export default async function handler(request, response) {
   const authorizationResult = await getIsReqAuthorizedResult(request, "dbAdmin");
 
   if (!authorizationResult?.isReqAuthorized || !authorizationResult) {
-    console.log(authorizationResult?.msg ?? "You are not authorized to access this service.")
     return response.status(401).json({ msg: authorizationResult?.msg ?? "You are not authorized to access this service." });
   }
 
-  if (!Object.keys(request.body).length) {
-    console.log('The request body is empty.')
+  if (!Object.keys(request?.body)?.length) {
     return response.status(400).json({ msg: "The request body is empty." });
   }
-
-  console.log('Inserting lesson into the db.')
-
-  let lesson = request.body;
-  console.log('lesson _id type: ')
-  console.log(typeof lesson._id)
 
   const lessonInsertationResult = await insertLesson(request.body);
 
