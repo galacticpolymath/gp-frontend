@@ -1,8 +1,7 @@
-import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import jwt from 'jsonwebtoken';
-import Users from '../../../backend/models/user';
-import { connectToMongodb } from '../../../backend/utils/connection';
+import Users from '../models/user';
+import { connectToMongodb } from '../utils/connection';
 
 export const authOptions = {
   providers: [
@@ -82,5 +81,3 @@ export const authOptions = {
     },
   },
 };
-
-export default NextAuth(authOptions);
