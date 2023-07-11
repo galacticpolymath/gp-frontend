@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import Users from '../models/user';
 import { connectToMongodb } from '../utils/connection';
 
+
 export const authOptions = {
   providers: [
     GoogleProvider({
