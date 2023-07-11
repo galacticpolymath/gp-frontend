@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import Users from '../models/user';
 import { connectToMongodb } from '../utils/connection';
 
-
 export const authOptions = {
   providers: [
     GoogleProvider({
@@ -11,16 +10,13 @@ export const authOptions = {
       clientSecret: process.env.AUTH_CLIENT_SECRET,
     }),
   ],
-  authorizationUrl:
-    'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code',
-  scope:
-    'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/youtube.readonly',
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
   },
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
-    maxAge: 60 * 60 * 24 * 30, // 30 days
+    maxAge: 60 * 60 * 24 * 30,
     encode: async ({ secret, token }) => {
       try {
         await connectToMongodb();
@@ -37,8 +33,8 @@ export const authOptions = {
           sub: email,
           name,
           email,
-          iat: Date.now() / 1000,
-          exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
+          iat: Date.now() / 1000, // issued at time
+          exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24 hours
           claims: {
             allowedRoles,
             defaultRole: 'user',
