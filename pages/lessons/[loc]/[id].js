@@ -266,10 +266,8 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  const res = await fetch(lessonsUrl)
-  const oldLessonRes = await fetch(oldLessonsUrl);
-  const oldLessons = await oldLessonRes.json();
-  const lessons = await res.json();
+  const [newLessonsResponse, oldLessonResponse] = await Promise.all([fetch(lessonsUrl), fetch(oldLessonsUrl)]);
+  const [oldLessons, lessons] =  await Promise.all([oldLessonResponse.json(), newLessonsResponse.json()])
   const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const oldLesson = oldLessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
