@@ -43,15 +43,15 @@ const AuthResultPg = () => {
     );
   }
 
-  const { token, user } = session.data;
-  const isMatt = user.name === 'Matt Wilkins';
+  const { email, name } = session.data.user;
+  const isMatt = (name === 'Matt Wilkins') || (name === 'Matthew Wilkins');
 
   return (
     <Layout>
       <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container">
         <h1>Authenticated as: </h1>
-        <p>Name: {user.name}</p>
-        <p>Email: {user.email}</p>
+        <p>Name: {name}</p>
+        <p>Email: {email}</p>
         <p
           style={{
             maxWidth: '475px',
