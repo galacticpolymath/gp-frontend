@@ -63,7 +63,7 @@ const AuthResultPg = () => {
             borderBottom: '1px solid grey',
           }}
         >
-          JWT: {token}
+          You have been successfully authenticated!
         </p>
         <Link href="/">
           {isMatt ? 'Go back to the main page or check the console.' : 'Go back to the main page.'}
