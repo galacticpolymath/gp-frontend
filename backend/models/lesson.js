@@ -5,7 +5,7 @@ let Lessons = models.lessons;
 
 if (!Lessons) {
     const LessonSchema = new Schema({
-        id: { type: Number, required: true },
+        _id: { type: Number, required: true },
         UniqueID: String,
         ShortTitle: String,
         PublicationStatus: String,
@@ -56,7 +56,7 @@ if (!Lessons) {
             url: String
         },
         Section: Schema.Types.Mixed,
-    });
+    }, { _id: false });
     
     Lessons = model('lessons', LessonSchema);
 }

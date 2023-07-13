@@ -12,7 +12,6 @@ import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 
 export default function Home() {
   const newReleasePath = '/lessons/en-US/6';
-
   const layoutProps = {
     title: 'Galactic Polymath - Home Page',
     description: 'We are an education studio. We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for everyone.',
@@ -208,7 +207,7 @@ export default function Home() {
       <div className="col-12 col-lg-10 offset-lg-1 px-4 py-3 my-5">
         <div className="display-4">The Real World doesn&apos;t fit neatly into subject boundaries. <em>Our lessons don&apos;t either!</em></div>
         <p className='fs-3 pt-3'>
-          We craft learning narratives that students will remember. We make it clear how abstract learning standards in ELA, math, social studies and science connect to give students methods for approaching complex problems.
+          We craft learning narratives that students will remember. We make it clear how abstract learning standards in language arts, math, social studies and science connect to give students methods for approaching complex problems.
         </p>
 
       </div>
@@ -254,7 +253,7 @@ export default function Home() {
 
               {/* Clients box */}
               <div className='d-grid col-12 col-md-5 justify-content-center bg-white rounded-3  p-4'>
-              
+
                 <h2 className="text-start ">For Clients</h2>
                 <div className=' d-block'>
                   <ul className=" fs-4">
