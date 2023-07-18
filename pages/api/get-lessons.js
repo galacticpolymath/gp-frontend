@@ -8,6 +8,8 @@ export default async function handler(request, response) {
   try {
     await connectToMongodb();
 
+    // GOAL: get the lessons by their ids
+
     return response.status(200).json({ msg: 'Lessons are retrieved.', lessons: [] });
   } catch (error) {
 
