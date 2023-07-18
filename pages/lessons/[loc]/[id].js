@@ -45,6 +45,11 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 }
 
 const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
+  useEffect(() => {
+    console.log("lesson: ", lesson)
+  })
+
+
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
   const router = useRouter()
@@ -280,6 +285,8 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     ...lesson.Section.procedure.Data,
     ...lesson.Section['teaching-materials'].Data,
   };
+
+  console.log("lesson: ", lesson)
 
   return { props: { lesson, availLocs, oldLesson } };
 };

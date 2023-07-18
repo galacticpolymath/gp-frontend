@@ -1,0 +1,2041 @@
+{
+    "id": 5,
+    "UniqueID": "lesson_4_locale_1",
+    "ShortTitle": "ILikeThat",
+    "PublicationStatus": "Live",
+    "Language": "English",
+    "Country": "United States",
+    "DefaultLanguage": "English",
+    "DefaultCountry": "United States",
+    "LastUpdated": "2023-05-06 17:13:08",
+    "FirstPublicationDate": "2022-07-11 21:10:05",
+    "MediumTitle": "'I Like That!' |Science| G5-9 (en-US)",
+    "lang": "en",
+    "lng": "eng",
+    "locale": "en-US",
+    "DefaultLocale": "en-US",
+    "TemplateVer": "0.5.0",
+    "galacticPubsVer": "0.9.6",
+    "URL": "https://galacticpolymath.com/lessons/5",
+    "GPCatalogURL": "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/LESSON.json",
+    "GPCatalogPath": "https://catalog.galacticpolymath.com/lessons/ILikeThat_en-US/LESSON.json",
+    "GitHubPath": "git@github.com:galacticpolymath/ILikeThat_en-US.git",
+    "GdriveHome": "GP-LIVE",
+    "GdriveDirName": "ILikeThat_en-US",
+    "GdriveTeachMatPath": "GalacticPolymath/'I Like That!' |Science| G5-9 (en-US)",
+    "GdriveTeachMatID": null,
+    "GdrivePublicID": "1UXpy8XV17eKX5qZ4ALEeGc9IEt1IEuIf",
+    "GdriveDirID": "1Nxy1V4pf21NhElAUdqVZpdinqCPi1oh3",
+    "GdriveMetaID": "1eC6wRn9rqFLLmsV_SKf3TSxSRnKDJf17",
+    "GdriveTeachItID": "1jOcsVcKAaJXS5A4eBgQNlZSgZjgVTT-8EXhxFOLWV0Q",
+    "GdriveStandardsID": "1AxbtC1diwlp-NZVrkFmtZzDYNq63pRyy0pwx9v35I1o",
+    "GdrivePublishedID": "1qORPugrPSBLwCew3wSEwzmmbVjTnkKOJ",
+    "GdriveDirURL": "https://drive.google.com/drive/folders/1Nxy1V4pf21NhElAUdqVZpdinqCPi1oh3",
+    "RebuildAllMaterials": false,
+    "ReleaseDate": "2022-10-31",
+    "Title": "I Like That!",
+    "Subtitle": "How perception, emotion, and cognition shape our preferences",
+    "SponsorName": [
+        "NSF",
+        "Tamra Mendelson Lab",
+        "University of Maryland–Baltimore County"
+    ],
+    "SponsoredBy": "- The National Science Foundation\n- [Dr. Tamra Mendelson's Lab](https://www.mendelsonlab.net/) in the Department of Biological Sciences at the University of Maryland, Baltimore County",
+    "SponsorLogo": [
+        "assets/_banners_logos_etc/NSF_4-Color_bitmap_Logo@0.25x.png",
+        "assets/_banners_logos_etc/UMBC-vertical-logo-RGB-195x300.png"
+    ],
+    "LessonBanner": "assets/_banners_logos_etc/banner-100.jpg",
+    "TargetSubject": "Science",
+    "LessonEnvir": "Classroom",
+    "ForGrades": "5-9",
+    "GradesOrYears": "Grades",
+    "SponsorImage": {
+        "url": [
+            "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/NSF_4-Color_bitmap_Logo@0.25x.png",
+            "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/UMBC-vertical-logo-RGB-195x300.png"
+        ]
+    },
+    "CoverImage": {
+        "url": "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/banner-100.jpg"
+    },
+    "Section": {
+        "overview": {
+            "__component": "lesson-plan.overview",
+            "LearningSummary": "Students will conduct experiments and analyze real scientific data as they *learn about themselves*. They'll learn how our eyes and brains interact to determine what we like and dislike, and apply this knowledge to fish research and the art of character design.",
+            "EstLessonTime": "3 parts x 60-80 min",
+            "GradesOrYears": "Grades",
+            "ForGrades": "5-9",
+            "TargetSubject": "Science",
+            "Text": "#### Driving Question(s):\n1. What makes humans and other animals perceive something as beautiful?\n2. How does the way our brain processes visual input from our eyes affect how we perceive and interact with the world?\n\n#### Essential Question(s):\nHow can science help deepen our understanding of the Arts, Humanities, and ourselves?\n#### Hook(s):\nWarm-up puzzles, fun student-driven experiments, and original artwork are woven into this data-centered lesson.",
+            "Tags": [
+                {
+                    "Value": "animal behavior"
+                },
+                {
+                    "Value": "the senses"
+                },
+                {
+                    "Value": "vision"
+                },
+                {
+                    "Value": "fish"
+                },
+                {
+                    "Value": "art"
+                },
+                {
+                    "Value": "histogram"
+                },
+                {
+                    "Value": "boxplot"
+                },
+                {
+                    "Value": "data literacy"
+                }
+            ],
+            "SteamEpaulette": {
+                "url": "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/GP-Learning-Epaulette.png"
+            },
+            "SteamEpaulette_vert": {
+                "url": "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/GP-Learning-Epaulette_vert.png"
+            },
+            "Description": "This lesson equips students with a simple framework for understanding how inputs from our senses are processed in the brain to determine what we like vs. dislike and how we behave. Though the lesson focuses on vision, the framework applies to all the senses. \n\nIn Part 1, students begin by ranking 10 images based on their arbitrary preferences. They then conduct an experiment (taking turns as a \"scientist\" and \"subject\") to try and understand *why* they ranked things the way they did. This is lesson both involves authentic, novel, science, but should also grow students' curiosity and understanding of their own decision-making.\n\nPart 2 builds on the framework introduced in Part 1 in the context of a real study on fish <AnchorLink href=\"#background\"> see Background </AnchorLink>. Students will analyze box plots (a type of graph similar to bar plots) to test whether female darters prefer a model fish painted a color that is most stimulating to the sensory cells in their eyes (i.e cones in their retinas). Students will reflect on how basic research on fish applies to humans.\n\nPart 3 perfectly blends art, math, and science by testing whether creatures that have proportions outside the range of humans makes them inherently creepy or cute. For this lesson, we created an original set of creature designs that have scaled dimensions which students will use to collect data and calculate proportions. They will then conclude whether having certain proportions (e.g. a large ratio of leg-to-torso-length) far above or below the range of humans makes a creature inherently creepy or cute.\n\nCollectively, this lesson should leave students with a nuanced understanding of how human (and other animal) brains process different sensory stimuli to affect preferences and behavior. It's a great starting-off point for deepening interest and engagement for independent projects."
+        },
+        "preview": {
+            "__component": "lesson-plan.lesson-preview",
+            "SectionTitle": "Lesson Preview",
+            "QuickPrep": "1. Check out lesson multimedia below\n2. Look over <AnchorLink href=\"#teaching_materials\"> Teaching Materials </AnchorLink>\n3. Teach it and <AnchorLink href=\"#feedback\"> let us know what you think! </AnchorLink>",
+            "Multimedia": [
+                {
+                    "order": "0",
+                    "type": "video",
+                    "forPart": null,
+                    "title": "Trailer: I Like That!",
+                    "description": null,
+                    "lessonRelevance": "Trailer giving an overview of what this lesson entails.",
+                    "by": "Galactic Polymath",
+                    "byLink": "https://www.youtube.com/channel/UCfyBNvN3CH4uWmwOCQVhmhg/featured",
+                    "mainLink": "https://www.youtube.com/embed/QnoVSKx4G1c",
+                    "otherLink": null
+                },
+                {
+                    "order": "1",
+                    "type": "video",
+                    "forPart": "1",
+                    "title": "I Like That! How our eyes and brains interact to determine what we like and dislike",
+                    "description": "This video explores how things we see (visual stimuli) affect emotional states and interact with our memories and higher order thinking (cognition) to produce preferences and behavior. This basic framework is adapted from human and animal behavior research. We use this framework throughout the middle school-targeted lesson below. In the lesson, students perform an experiment to understand their own preferences and dive into research on fish, exploring how sensitivity to different frequencies of light affects mate preferences. We dive into this topic in detail in our second video supporting this lesson.",
+                    "lessonRelevance": "This video sets up key vocabulary and concepts we will use throughout this lesson. It sets up activities that will have students trying to understand how emotion, memory, and higher-order connections explain their own preferences for certain images.",
+                    "by": "Galactic Polymath",
+                    "byLink": "https://www.youtube.com/channel/UCfyBNvN3CH4uWmwOCQVhmhg/featured",
+                    "mainLink": "https://www.youtube.com/embed/mw8OoXGIsj8",
+                    "otherLink": null
+                },
+                {
+                    "order": "2",
+                    "type": "pdf",
+                    "forPart": "1",
+                    "title": "Images for Part 1 Experiment",
+                    "description": null,
+                    "lessonRelevance": "Students will rank these images based on their arbitrary preferences. They will then conduct an experiment to try to understand why they ranked things as they did.",
+                    "by": "Galactic Polymath",
+                    "byLink": "https://www.youtube.com/channel/UCfyBNvN3CH4uWmwOCQVhmhg/featured",
+                    "mainLink": "https://docs.google.com/presentation/d/1b5pBKdYlMukFkCQjwposyRHdL3QMrq3-tgskbRXGkgo/preview?rm=minimal",
+                    "otherLink": null
+                },
+                {
+                    "order": "3",
+                    "type": "video",
+                    "forPart": "2",
+                    "title": "How we see color - Colm Kelleher",
+                    "description": null,
+                    "lessonRelevance": "For Part 2, this video gives a nice explanation of what color is: different wavelengths of light reflected from objects and detected by our eyes and brain.",
+                    "by": "TedEd",
+                    "byLink": "https://www.youtube.com/teded",
+                    "mainLink": "https://www.youtube.com/embed/l8_fZPHasdo",
+                    "otherLink": null
+                },
+                {
+                    "order": "4",
+                    "type": "video",
+                    "forPart": "2",
+                    "title": "The Science of Color Perception",
+                    "description": null,
+                    "lessonRelevance": "For Part 2, this neat video adds a bit more detail about color perception. (Only a short clip is embedded in presentation 2). We carried the \"cones\" characters into our original video (next in the playlist).",
+                    "by": "Calder Ruhl Hansen",
+                    "byLink": "https://www.youtube.com/c/CalderRuhlHansen",
+                    "mainLink": "https://www.youtube.com/embed/poL7nDmqjmk",
+                    "otherLink": null
+                },
+                {
+                    "order": "5",
+                    "type": "video",
+                    "forPart": "2",
+                    "title": "How do we know what a fish likes? (And can we predict it?)",
+                    "description": null,
+                    "lessonRelevance": "Supports Part 2 activities analyzing real scientific data to follow in the footsteps of Drs. Tamra Mendelson and Tory Williams. Explains basics of how color vision works, contrasted against freshwater fish called darters which are used in the research covered here.",
+                    "by": "Galactic Polymath",
+                    "byLink": "https://www.youtube.com/channel/UCfyBNvN3CH4uWmwOCQVhmhg/featured",
+                    "mainLink": "https://www.youtube.com/embed/PGmPIHPX9eQ",
+                    "otherLink": null
+                },
+                {
+                    "order": "6",
+                    "type": "pdf",
+                    "forPart": "3",
+                    "title": "Creature Stats Character Sheets",
+                    "description": null,
+                    "lessonRelevance": "In Part 3, students apply what they've learned about visual processing in the brain to artworks. They will use these original character sheet designs to calculate proportions and test whether being outside the range of human variation makes a character inherently creepy or cute.",
+                    "by": "Galactic Polymath",
+                    "byLink": "https://www.youtube.com/channel/UCfyBNvN3CH4uWmwOCQVhmhg/featured",
+                    "mainLink": "https://drive.google.com/file/d/1578pmIB8HS0n2XTgOI-fIPN_-LL4p1FR/preview?rm=minimal",
+                    "otherLink": null
+                },
+                {
+                    "order": "7",
+                    "type": "video",
+                    "forPart": "2",
+                    "title": "Darter facts: the colorful little fish | Animal Fact Files",
+                    "description": null,
+                    "lessonRelevance": "More Details on Darters (for Part 2). Supplement–not included in any lesson materials.",
+                    "by": "Animal Fact Files",
+                    "byLink": "https://www.youtube.com/c/AnimalFactFiles",
+                    "mainLink": "https://www.youtube.com/embed/JnD1d4pIxO4",
+                    "otherLink": null
+                }
+            ],
+            "InitiallyExpanded": true
+        },
+        "teaching-materials": {
+            "__component": "teaching-resources.teaching-resources",
+            "SectionTitle": "Teaching Materials",
+            "Data": {
+                "lessonPreface": "Part 1 will likely take ~80 min with a typical group of middle schoolers, while we expect Parts 2-3 could be done in an hour. With older or more advanced students, each part may go more quickly.",
+                "lessonDur": "3 x ~65 min",
+                "classroom": {
+                    "gradeVariantNotes": [
+                        {
+                            "part": "1",
+                            "partGradeVarNotes": null
+                        },
+                        {
+                            "part": "2",
+                            "partGradeVarNotes": null
+                        },
+                        {
+                            "part": "3",
+                            "partGradeVarNotes": null
+                        }
+                    ],
+                    "resources": [
+                        {
+                            "grades": "Grades 5-9",
+                            "gradePrefix": "G5-9",
+                            "links": {
+                                "linkText": "Browse & Download All G5-9 Materials",
+                                "url": "https://drive.google.com/drive/folders/1XyEXtt0bTp4TdivARtQz3A-YADlq15wf"
+                            },
+                            "parts": [
+                                {
+                                    "part": "1",
+                                    "title": "Why Do I Like That?",
+                                    "tags": [
+                                        null
+                                    ],
+                                    "preface": "Students conduct an experiment on themselves. They rank images and attempt to understand *why* they preferred some images over others.",
+                                    "itemList": [
+                                        {
+                                            "itemTitle": "Presentation (Part 1)",
+                                            "itemDescription": "Need: WiFi, Computer, Projector, Sound",
+                                            "itemCat": "presentation",
+                                            "links": [
+                                                {
+                                                    "linkText": "Present Now",
+                                                    "url": "https://docs.google.com/presentation/d/13hjWf-5C9WeNBINcE08Ml18a5gZCFsJtNQProJ5Lgb8/present"
+                                                },
+                                                {
+                                                    "linkText": "Copy/Edit in Google Docs",
+                                                    "url": "https://docs.google.com/presentation/d/13hjWf-5C9WeNBINcE08Ml18a5gZCFsJtNQProJ5Lgb8/template/preview"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "itemTitle": "Image Handout for Student Experiment (Part 1)",
+                                            "itemDescription": "Print Class Set for Each Group (Pair of Students)",
+                                            "itemCat": "presentation",
+                                            "links": [
+                                                {
+                                                    "linkText": "PDF",
+                                                    "url": "https://docs.google.com/presentation/d/1WeO_tE_o9G7CsOdbIBkdf8gfTE0ZcF-_E8EAv39DFSE/export/pdf"
+                                                },
+                                                {
+                                                    "linkText": "Copy/Edit in Google Docs",
+                                                    "url": "https://docs.google.com/presentation/d/1WeO_tE_o9G7CsOdbIBkdf8gfTE0ZcF-_E8EAv39DFSE/template/preview"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "itemTitle": "Student Worksheet (Part 1)",
+                                            "itemDescription": "Print 1 Per Student",
+                                            "itemCat": "document",
+                                            "links": [
+                                                {
+                                                    "linkText": "PDF",
+                                                    "url": "https://docs.google.com/document/d/1LvkjEULRdYK1mHPyhtm_ZKQMayjMIXo7I0qqZ5PAdGg/export?format=pdf"
+                                                },
+                                                {
+                                                    "linkText": "Copy/Edit in Google Docs",
+                                                    "url": "https://docs.google.com/document/d/1LvkjEULRdYK1mHPyhtm_ZKQMayjMIXo7I0qqZ5PAdGg/template/preview"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "itemTitle": "Teacher Worksheet (Part 1)",
+                                            "itemDescription": "Print 1",
+                                            "itemCat": "document",
+                                            "links": [
+                                                {
+                                                    "linkText": "PDF",
+                                                    "url": "https://docs.google.com/document/d/1t1IJs_crq_gf8Gg3t7TwmkKlZJ8mIoK7FJi198sEmpM/export?format=pdf"
+                                                },
+                                                {
+                                                    "linkText": "Copy/Edit in Google Docs",
+                                                    "url": "https://docs.google.com/document/d/1t1IJs_crq_gf8Gg3t7TwmkKlZJ8mIoK7FJi198sEmpM/template/preview"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "part": "2",
+                                    "title": "The Perception of Beauty",
+                                    "tags": [
+                                        null
+                                    ],
+                                    "preface": "Students analyze real data to determine if fish mating preferences are explained by sensitivity to certain colors.",
+                                    "itemList": [
+                                        {
+                                            "itemTitle": "Presentation (Part 2)",
+                                            "itemDescription": "Need: WiFi, Computer, Projector, Sound",
+                                            "itemCat": "presentation",
+                                            "links": [
+                                                {
+                                                    "linkText": "Present Now",
+                                                    "url": "https://docs.google.com/presentation/d/1frxP_t6AMaJz8CwYFkp5fKxkPntZ3UZNyTHdfQJe9h4/present"
+                                                },
+                                                {
+                                                    "linkText": "Copy/Edit in Google Docs",
+                                                    "url": "https://docs.google.com/presentation/d/1frxP_t6AMaJz8CwYFkp5fKxkPntZ3UZNyTHdfQJe9h4/template/preview"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "itemTitle": "Teacher Worksheet (Part 2)",
+                                            "itemDescription": "Print 1",
+                                            "itemCat": "document",
+                                            "links": [
+                                                {
+                                                    "linkText": "PDF",
+                                                    "url": "https://docs.google.com/document/d/1ONVxdx8PZnC4d7BdKHF2rudWuygQZYFDynjIFin0nA4/export?format=pdf"
+                                                },
+                                                {
+                                                    "linkText": "Copy/Edit in Google Docs",
+                                                    "url": "https://docs.google.com/document/d/1ONVxdx8PZnC4d7BdKHF2rudWuygQZYFDynjIFin0nA4/template/preview"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "itemTitle": "Student Worksheet (Part 2)",
+                                            "itemDescription": "Print 1 Per Student",
+                                            "itemCat": "document",
+                                            "links": [
+                                                {
+                                                    "linkText": "PDF",
+                                                    "url": "https://docs.google.com/document/d/13-H6mPouTG9y8ul-FG8f8_cAjnD9FaMGoGMiO-4OO4w/export?format=pdf"
+                                                },
+                                                {
+                                                    "linkText": "Copy/Edit in Google Docs",
+                                                    "url": "https://docs.google.com/document/d/13-H6mPouTG9y8ul-FG8f8_cAjnD9FaMGoGMiO-4OO4w/template/preview"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "part": "3",
+                                    "title": "Creature Stats",
+                                    "tags": [
+                                        null
+                                    ],
+                                    "preface": "Students collect data from original artworks to test whether being outside the range of human variation makes a drawing creepy or cute.",
+                                    "itemList": [
+                                        {
+                                            "itemTitle": "Presentation (Part 3)",
+                                            "itemDescription": "Need: WiFi, Computer, Projector, Sound",
+                                            "itemCat": "presentation",
+                                            "links": [
+                                                {
+                                                    "linkText": "Present Now",
+                                                    "url": "https://docs.google.com/presentation/d/1HkmdAMXFc75AiahjsIYWZKh7Ug-xs7FxM2Cdw6Z1jSg/present"
+                                                },
+                                                {
+                                                    "linkText": "Copy/Edit in Google Docs",
+                                                    "url": "https://docs.google.com/presentation/d/1HkmdAMXFc75AiahjsIYWZKh7Ug-xs7FxM2Cdw6Z1jSg/template/preview"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "itemTitle": "Student Worksheet (Part 3)",
+                                            "itemDescription": "Print 1 Per Student",
+                                            "itemCat": "document",
+                                            "links": [
+                                                {
+                                                    "linkText": "PDF",
+                                                    "url": "https://docs.google.com/document/d/1XChGl-UF1lH-mGCr4Vu3to3nr5mNje7q5VNJUWW4pQI/export?format=pdf"
+                                                },
+                                                {
+                                                    "linkText": "Copy/Edit in Google Docs",
+                                                    "url": "https://docs.google.com/document/d/1XChGl-UF1lH-mGCr4Vu3to3nr5mNje7q5VNJUWW4pQI/template/preview"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "itemTitle": "Teacher Worksheet (Part 3)",
+                                            "itemDescription": "Print 1",
+                                            "itemCat": "document",
+                                            "links": [
+                                                {
+                                                    "linkText": "PDF",
+                                                    "url": "https://docs.google.com/document/d/1XZhoUHxKM3DmrCh95ZmG-oJz7KRhBLyG16rVp6Q9b4M/export?format=pdf"
+                                                },
+                                                {
+                                                    "linkText": "Copy/Edit in Google Docs",
+                                                    "url": "https://docs.google.com/document/d/1XZhoUHxKM3DmrCh95ZmG-oJz7KRhBLyG16rVp6Q9b4M/template/preview"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "itemTitle": "Creature Stats Character Sheets Handout (Part 3)",
+                                            "itemDescription": "Print Class Set for Stations or 1 per Student",
+                                            "itemCat": "pdf",
+                                            "links": [
+                                                {
+                                                    "linkText": "PDF",
+                                                    "url": "https://drive.google.com/file/d/1bpMTOcpuZYoRmY2IlTMuYyjVKWTj3YPc"
+                                                },
+                                                {
+                                                    "linkText": "Copy/Edit in Google Docs",
+                                                    "url": "https://drive.google.com/file/d/1bpMTOcpuZYoRmY2IlTMuYyjVKWTj3YPc"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "parts": [
+                    {
+                        "partNum": 1,
+                        "partTitle": "Why Do I Like That?",
+                        "partDur": 60,
+                        "partPreface": "Students conduct an experiment on themselves. They rank images and attempt to understand *why* they preferred some images over others.",
+                        "partPrep": {
+                            "PrepTitle": "Prep",
+                            "PrepDur": 15,
+                            "PrepQuickDescription": "Print out: \n- a class set of visual stimulus handouts (1 for each pair of students).\n- a worksheet for each student\n- a teacher handout",
+                            "PrepDetails": "You might ask a student volunteer cut out the visual stimulus cards.",
+                            "PrepVariantNotes": null,
+                            "PrepTeachingTips": null
+                        },
+                        "chunks": [
+                            {
+                                "chunkTitle": "Getting Started",
+                                "chunkStart": 0,
+                                "chunkDur": 5,
+                                "steps": [
+                                    {
+                                        "Step": 1,
+                                        "StepTitle": "Puzzle Warm-Up",
+                                        "StepQuickDescription": "What question are we investigating?",
+                                        "StepDetails": "Students interpret a series of images (rebus puzzle) to determine the focus of this lesson. Their answers are recorded on the \"I Like That\" Part 1 worksheet.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    },
+                                    {
+                                        "Step": 2,
+                                        "StepTitle": "Scientific Method",
+                                        "StepQuickDescription": "Quick refresher of the scientific method",
+                                        "StepDetails": "This lesson is a real experiment and the results are specific to each class that completes it. This is exactly what scientists face in their own labs when they ask questions that don't have answers yet. Because this requires students to have a solid understanding of the Scientific Method, the first part of the lesson is a recap of each step in that process.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Observation",
+                                "chunkStart": 5,
+                                "chunkDur": 10,
+                                "steps": [
+                                    {
+                                        "Step": 3,
+                                        "StepTitle": "Ranking Images",
+                                        "StepQuickDescription": "The Image Cards present a set of ten images to the students which they must rank from favorite (#1) to least favorite (#10) on their worksheet (Qs 1-10).",
+                                        "StepDetails": "Students have five minutes to complete this activity. Their observations form the basis for the next part of the scientific method. Students need either digital or printed copies of Images A - J (Image Cards) as well as the \"I Like That\" Part 1 Worksheet.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": "Try to save the Image Cards and laminate them or put them in protective sleeves if you plan to teach the lesson multiple times."
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Question",
+                                "chunkStart": 15,
+                                "chunkDur": 10,
+                                "steps": [
+                                    {
+                                        "Step": 4,
+                                        "StepTitle": "Watch Video 1",
+                                        "StepQuickDescription": "The next step after collecting observations is questioning why they are the way they are.",
+                                        "StepDetails": "By talking about visual stimuli, students understand why they ranked the 10 images the way they did. [▶ I Like That! How our eyes and brains interact to determine what we like and dislike](https://www.youtube.com/watch?v=mw8OoXGIsj8) explores how the eyes and brain interact to result in our visual preferences.",
+                                        "Vocab": "- **stimulus:** something that causes an organ or tissue (like your brain) to react (plural is stimuli)",
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    },
+                                    {
+                                        "Step": 5,
+                                        "StepTitle": "Check In",
+                                        "StepQuickDescription": "Students next consider how Cognition, Perception, and Emotion of visual stimuli influenced their observations.",
+                                        "StepDetails": "After watching the video and learning more about the Cognition, Perception, and Emotion triad, students answer Questions 11-15 on their worksheets.",
+                                        "Vocab": "- **cognition:** how well you understand what you're perceiving\n- **perception:** our ability to see, hear, or become aware of a stimulus through our senses\n- **emotion:** a positive or negative feelings brought about by chemicals released in the brain\n- **preference:** whether you like or dislike something which is influenced by a combination of cognition, perception, and emotions",
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Hypothesis",
+                                "chunkStart": 25,
+                                "chunkDur": 10,
+                                "steps": [
+                                    {
+                                        "Step": 6,
+                                        "StepTitle": "Developing Hypotheses",
+                                        "StepQuickDescription": "The next step in the scientific method is to develop a hypothesis that can be tested which gets at the \"Why.\"",
+                                        "StepDetails": "The class tests the hypothesis that cognition and emotion determine how the images were ranked.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    },
+                                    {
+                                        "Step": 7,
+                                        "StepTitle": "Setting Up Experiments",
+                                        "StepQuickDescription": "To determine whether the hypothesis can be rejected or accepted with confidence, the group sets up an experiment.",
+                                        "StepDetails": "The experiment must try to isolate two of the three effects (Cognition and Emotion) and measure how much each contributes to preference.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    },
+                                    {
+                                        "Step": 8,
+                                        "StepTitle": "Think - Pair",
+                                        "StepQuickDescription": null,
+                                        "StepDetails": "Using descriptive numerical scales, students discuss in pairs (or small groups) how they would rate their top-ranked images based on Emotion and Cognition.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": "Throughout the lesson, you will occasionally see *Think - Ink - Pair - Share*, or some combination thereof, on the presentation slides. The words not grayed out are the goals for that activity. *Think* means a student considers a question or challenge on their own, *Ink* indicates they should be writing their thoughts or answers down, *Pair* asks that once they have completed Think and/or Ink, students pair up (or get in small groups) and talk about the question or activity. Lastly, *Share* is when the class comes together and talks about the question or activity as a group."
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Prediction",
+                                "chunkStart": 35,
+                                "chunkDur": 10,
+                                "steps": [
+                                    {
+                                        "Step": 9,
+                                        "StepTitle": "Creating Predictions",
+                                        "StepQuickDescription": "Think - Ink - Pair",
+                                        "StepDetails": "Students learn how to develop predictions related to their hypothesis and experimental design by looking at example data. They have two minutes to think about the example presented to them and decide which responses they would predict. Students then discuss their answers in pairs or small groups.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    },
+                                    {
+                                        "Step": 10,
+                                        "StepTitle": "Adopting a prediction.",
+                                        "StepQuickDescription": null,
+                                        "StepDetails": "Once the class understands how to formulate a prediction, for the purposes of this study they adopt the following Prediction (P1): Top ranked images will have high cognitive and emotional scores.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Experiment",
+                                "chunkStart": 45,
+                                "chunkDur": 20,
+                                "steps": [
+                                    {
+                                        "Step": 11,
+                                        "StepTitle": "Collecting Data",
+                                        "StepQuickDescription": "Working in pairs, students trade off being the \"scientist\" and \"test-subject.\"",
+                                        "StepDetails": "The student acting as the \"scientist\" shows the \"test subject\" one image at a time and asks questions using the Cognitive and Emotion Score scales to collect data. Each pair has 10 minutes to complete the experiment, then they switch roles and repeat the process. The scientist should record the test subject's data on the test subject's worksheet (page 4).",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Results",
+                                "chunkStart": 65,
+                                "chunkDur": 10,
+                                "steps": [
+                                    {
+                                        "Step": 12,
+                                        "StepTitle": "Plotting Data",
+                                        "StepQuickDescription": "Using the data from the experiment, students plot their results on graphs.",
+                                        "StepDetails": "Students plot their data to make similar graphs as the ones used in the example data to practice making predictions. These graphs plot Emotion vs. Cognitive scores for the top and bottom five scores.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Conclusions",
+                                "chunkStart": 75,
+                                "chunkDur": 5,
+                                "steps": [
+                                    {
+                                        "Step": 13,
+                                        "StepTitle": "Discussing the Results",
+                                        "StepQuickDescription": "Based on the class's data, what can be concluded about how cognition and emotion affect how images are ranked?",
+                                        "StepDetails": "Students answer questions 9 - 15 on their worksheets. The class can also discuss as a group the results, why they may have ended up with the results that were observed, and how the experimental design may have affected any outcomes.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            }
+                        ],
+                        "partExt": null
+                    },
+                    {
+                        "partNum": 2,
+                        "partTitle": "The Perception of Beauty",
+                        "partDur": 60,
+                        "partPreface": "Students analyze real data to determine if fish mating preferences are explained by sensitivity to certain colors.",
+                        "partPrep": {
+                            "PrepTitle": null,
+                            "PrepDur": null,
+                            "PrepQuickDescription": null,
+                            "PrepDetails": null,
+                            "PrepVariantNotes": null,
+                            "PrepTeachingTips": null
+                        },
+                        "chunks": [
+                            {
+                                "chunkTitle": "Warm-Up",
+                                "chunkStart": 0,
+                                "chunkDur": 5,
+                                "steps": [
+                                    {
+                                        "Step": 1,
+                                        "StepTitle": "Polymath Puzzle #2",
+                                        "StepQuickDescription": "How many ladybugs are there?",
+                                        "StepDetails": "Students see a set of squares and are tasked with counting how many ladybugs they see. This activity was developed by experimental psychologist, Akiyoshi Kitaoka, who studies visual illusions.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    },
+                                    {
+                                        "Step": 2,
+                                        "StepTitle": "Part 1 Review",
+                                        "StepQuickDescription": "What patterns could be observed?",
+                                        "StepDetails": "Students recall their data from Part 1 from the image ranking experiment and whether about whether they noticed any patterns.",
+                                        "Vocab": "- **aesthetics:** a set of principles concerned with the nature and appreciation of beauty, especially in art.",
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "The Science of Perception",
+                                "chunkStart": 5,
+                                "chunkDur": 15,
+                                "steps": [
+                                    {
+                                        "Step": 3,
+                                        "StepTitle": "How does the human eye work?",
+                                        "StepQuickDescription": null,
+                                        "StepDetails": "The perception of beauty is often influenced by colors which is perceived using our eyes. Students learn more about how this process works in the interface between the eyes and brain.",
+                                        "Vocab": "- **perception:** the ability to see, hear, and become aware of something through the senses.",
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Preferences in the Animal Kingdom",
+                                "chunkStart": 20,
+                                "chunkDur": 20,
+                                "steps": [
+                                    {
+                                        "Step": 4,
+                                        "StepTitle": "Studying visual signals in fish",
+                                        "StepQuickDescription": "An introduction to Dr. Mendelson's work with Darters.",
+                                        "StepDetails": "Darters are great model organisms to study evolutionary changes in animal communication over time.",
+                                        "Vocab": "- **model organism:** a non-human species used to study some biological phenomena or process to provide insight into how the phenomena or process works in other species.",
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    },
+                                    {
+                                        "Step": 5,
+                                        "StepTitle": "What a fish likes",
+                                        "StepQuickDescription": null,
+                                        "StepDetails": "Students watch [▶ How do we know what a fish likes? (And can we predict it?)](https://www.youtube.com/watch?v=PGmPIHPX9eQ) which explains more about Dr. Mendelson's work on how fish preference is studied scientifically.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Analysis",
+                                "chunkStart": 40,
+                                "chunkDur": 5,
+                                "steps": [
+                                    {
+                                        "Step": 6,
+                                        "StepTitle": "Box Plots",
+                                        "StepQuickDescription": "Think - Ink - Pair - Share",
+                                        "StepDetails": "Using actual data from Dr. Mendelson's studies, students consider how visual stimuli and fish perception interact to influence fish preferences (Q3 in the worksheet). They then learn about box plots and how they are used in data analysis.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Conclusions",
+                                "chunkStart": 45,
+                                "chunkDur": 15,
+                                "steps": [
+                                    {
+                                        "Step": 7,
+                                        "StepTitle": "Independent Work",
+                                        "StepQuickDescription": "Students reflect on their findings. This work can be done in class or for homework.",
+                                        "StepDetails": null,
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": "The beginning of Part 3 will include time to discuss take-homes from the analysis. Specifically, which is more important--cognition or emotion--for explaining students' ranked preferences for images?"
+                                    }
+                                ]
+                            }
+                        ],
+                        "partExt": null
+                    },
+                    {
+                        "partNum": 3,
+                        "partTitle": "Creature Stats",
+                        "partDur": null,
+                        "partPreface": "Students collect data from original artworks to test whether being outside the range of human variation makes a drawing creepy or cute.",
+                        "partPrep": {
+                            "PrepTitle": null,
+                            "PrepDur": null,
+                            "PrepQuickDescription": null,
+                            "PrepDetails": null,
+                            "PrepVariantNotes": null,
+                            "PrepTeachingTips": null
+                        },
+                        "chunks": [
+                            {
+                                "chunkTitle": "Warm-Up",
+                                "chunkStart": 0,
+                                "chunkDur": 5,
+                                "steps": [
+                                    {
+                                        "Step": 1,
+                                        "StepTitle": "Cute vs. Creepy",
+                                        "StepQuickDescription": "Quick write-up about how to define cute vs. creepy.",
+                                        "StepDetails": "Students write briefly about how they might define something as being cute and creepy. They then look at a line-up of characters and write about which one they find the cutest vs. creepiest and why.",
+                                        "Vocab": "- **phenotype:** physical appearance",
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Typicality",
+                                "chunkStart": 5,
+                                "chunkDur": 10,
+                                "steps": [
+                                    {
+                                        "Step": 2,
+                                        "StepTitle": "Perception and preference affecting familiarity",
+                                        "StepQuickDescription": "What do we mean when something is called \"typical\"?",
+                                        "StepDetails": "After learning about what typicality means, students apply it to how it can influence preference through our different sensory systems.",
+                                        "Vocab": "- **typicality:** within certain limits of what is typical, or occurs most often",
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    },
+                                    {
+                                        "Step": 3,
+                                        "StepTitle": "How does \"atypicality\" influence our preferences?",
+                                        "StepQuickDescription": null,
+                                        "StepDetails": "While \"typical\" things often reflect what we prefer, on the other hand atypical things can cause us to feel repulsed or uneasy. Students use animated characters to dig deeper into this.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    },
+                                    {
+                                        "Step": 4,
+                                        "StepTitle": "Form a prediction",
+                                        "StepQuickDescription": null,
+                                        "StepDetails": "Students answer Q1-3 on their worksheet to form a prediction about how we percieve what is cute vs. creepy.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Creature Stats",
+                                "chunkStart": 15,
+                                "chunkDur": 15,
+                                "steps": [
+                                    {
+                                        "Step": 5,
+                                        "StepTitle": "Typical and Exaggerated Human Proportions",
+                                        "StepQuickDescription": "Evaluate the characters",
+                                        "StepDetails": "There are seven illustrated characters which have several different measurements for different parts of their bodies. Students use these to calculate different proportions, or ratios, between different body parts, such as eye height to eye width, by finishing Table 1 in the worksheet (Qs4-15). Lastly students mark the ratios on a pre-made histogram (Q16).",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": "Try to save the Creature Stats Character Sheets and laminate them or put them in protective sleeves if you plan to teach the lesson multiple times to save on printed paper."
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "How to read this graph?",
+                                "chunkStart": 30,
+                                "chunkDur": 15,
+                                "steps": [
+                                    {
+                                        "Step": 6,
+                                        "StepTitle": "Histograms",
+                                        "StepQuickDescription": "What is a histogram?",
+                                        "StepDetails": "Students go through an example of what a histogram is and how to interpret the data to draw conclusions.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    },
+                                    {
+                                        "Step": 7,
+                                        "StepTitle": "Dot Plots",
+                                        "StepQuickDescription": "Understanding the data",
+                                        "StepDetails": "Dot plots use similar data to histograms, but make display the data in a way that's a little easier to understand. Students practice looking at example dot plots and analyzing them for information.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            },
+                            {
+                                "chunkTitle": "Results & Conclusions",
+                                "chunkStart": 45,
+                                "chunkDur": 15,
+                                "steps": [
+                                    {
+                                        "Step": 8,
+                                        "StepTitle": "Data Analysis",
+                                        "StepQuickDescription": "Drawing conclusions about cute vs. creepy.",
+                                        "StepDetails": "Using the histogram data from Creature Stats, students draw final conclusions about how something could be labeled as cute or creepy based on ratios.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    },
+                                    {
+                                        "Step": 9,
+                                        "StepTitle": "Discussion",
+                                        "StepQuickDescription": "Do the data support the predictions?",
+                                        "StepDetails": "Students refer back to their predictions and discuss whether the data they collected and analyzed support them.",
+                                        "Vocab": null,
+                                        "VariantNotes": null,
+                                        "TeachingTips": null
+                                    }
+                                ]
+                            }
+                        ],
+                        "partExt": null
+                    }
+                ],
+                "gatheredVocab": [
+                    {
+                        "term": "stimulus",
+                        "definition": "something that causes an organ or tissue (like your brain) to react (plural is stimuli)"
+                    },
+                    {
+                        "term": "cognition",
+                        "definition": "how well you understand what you're perceiving"
+                    },
+                    {
+                        "term": "perception",
+                        "definition": "our ability to see, hear, or become aware of a stimulus through our senses"
+                    },
+                    {
+                        "term": "emotion",
+                        "definition": "a positive or negative feelings brought about by chemicals released in the brain"
+                    },
+                    {
+                        "term": "preference",
+                        "definition": "whether you like or dislike something which is influenced by a combination of cognition, perception, and emotions"
+                    },
+                    {
+                        "term": "aesthetics",
+                        "definition": "a set of principles concerned with the nature and appreciation of beauty, especially in art."
+                    },
+                    {
+                        "term": "model organism",
+                        "definition": "a non-human species used to study some biological phenomena or process to provide insight into how the phenomena or process works in other species."
+                    },
+                    {
+                        "term": "phenotype",
+                        "definition": "physical appearance"
+                    },
+                    {
+                        "term": "typicality",
+                        "definition": "within certain limits of what is typical, or occurs most often"
+                    }
+                ]
+            }
+        },
+        "extensions": {
+            "__component": "lesson-plan.collapsible-text-section",
+            "SectionTitle": "Extensions",
+            "Content": "- Have students do independent research on how our sensory sensitivities can bias our decision making. Here are some readings for inspiration:\n    - [*Yale News* | With hot coffee, we see a warm heart, Yale researchers find](https://news.yale.edu/2008/10/23/hot-coffee-we-see-warm-heart-yale-researchers-find)\n    - [*Neuroscience News* | Pitch of Candidate’s Voice Can Influence Election Outcomes](https://neurosciencenews.com/political-psychology-vocal-tone-2398/)\n- Have your students read the scientific paper that Part 2 is based around (<AnchorLink href=\"#background\"> see Background </AnchorLink>), and have them grapple with how the version they experienced in class compares to the complexity of the paper. The goal could be to have them try to extract as much meaning from the paper as possible, while not becoming too frustrated.",
+            "InitiallyExpanded": true
+        },
+        "background": {
+            "__component": "lesson-plan.collapsible-text-section",
+            "SectionTitle": "Background",
+            "Content": "#### Connection to Research\n In this three-part lesson, students will follow in the footsteps of scientists (analyzing real, published data), but also conduct their own novel experiments. Overall, our hope is that students will recognize that science and data are everywhere and give us insight into ourselves.  \n#### Research Background\n Parts 1 and 3, students will run their own experiments, testing novel hypotheses related to their own preferences. For these activities, we developed a conceptual framework that is woven into all lesson parts. This framework is explained in our video [▶ I Like That! How our eyes and brains interact to determine what we like and dislike](https://www.youtube.com/watch?v=mw8OoXGIsj8). We want students to understand in general terms how our brains perceive things detected by our senses, and then incorporate prior experience and emotional responses to form preferences that affect their behavior. This is based on research in humans and other animals. Though human \"emotions\" can be very complex, many animals from primates to bees show a range of positive <-> negative responses to stimuli that can be interpreted as emotions. If students are interested in learning more about emotions in animals, here are some excellent scientific articles targeted at young readers:\n- [*Frontiers for Young Minds* | Animal Emotions–Do Animals Feel as We Do?](https://kids.frontiersin.org/articles/10.3389/frym.2021.622811)\n- [*Frontiers for Young Minds* | Your Smile Caught My Eye: Why Do Emotional Things Catch and Hold Our Attention?](https://kids.frontiersin.org/articles/10.3389/frym.2022.781748)\n\nIn Part 2, students will learn about how our eyes detect and process different colors (i.e. different wavelengths of light). They learn key background from [▶ How we see color - Colm Kelleher](https://www.youtube.com/watch?v=l8_fZPHasdo) and [▶ The Science of Color Perception](https://www.youtube.com/watch?v=poL7nDmqjmk). \n\nIn our original video: [▶ How do we know what a fish likes? (And can we predict it?)](https://www.youtube.com/watch?v=PGmPIHPX9eQ), Drs. Tamra Mendelson and Tory Williams talk about their work on darters, a fascinating and beautiful group of fish native to North America (see supplementary vid: [▶ Darter facts: the colorful little fish | Animal Fact Files](https://www.youtube.com/watch?v=JnD1d4pIxO4)). \n\nIn the scientific study students will learn about, the researchers tested whether female darters were most attracted to colors that were most stimulating to the sensory cells in their eyes (i.e. cones found in the retina). Students will follow in the scientist's footsteps, first making predictions and then analyzing their authentic data. The video and presentation will guide students through interpreting graphs of sensitivity curves to make their predictions. \n\nBasically, there were two models of male fish used to test female preferences. They were colored \"red\" and \"orange\" to mimic extremes of natural variation. Looking at the graph below, the place where the 2 sensitivity curves overlap is the light wavelength that should be most stimulating to females' eyes. That is, light that has a wavelength of about 550nm should maximize activation of both the medium and long wavelength cone cells in the retina. The question is: do females prefer a model with an average reflectance closest to this wavelength? \n\n![Sensitivity curves for darters. A dashed line shows medium wavelength cone sensitivity, peaking around 580nm, while a solid line shows long wavelength cone sensitivity peaking around 580nm. The curves overlap at 550nm. Arrows point to orange model fish, showing the peak reflectances of the orange model fish at 570nm and the red model at 584 nm](https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/darter_vis_sensitivity_curve.png)\n\nThe video and presentation guide students through interpreting this graph—to predict that females should prefer the orange model. Our video explains the experimental setup, but here it is briefly: Individual wild-caught females were put in the middle of a tank which had two tanks on either side of it. Model fish simulating extremes of natural variation in male colors were placed on either side of the female tank. An observer recorded what proportion of time females spent associating with the \"red\" versus the \"orange\" male model. Students will observe the patterns in the data and determine that females had a strong preference for the orange model. They will then draw conclusions about why this research matters more broadly and hopefully begin to wonder--how are our daily decisions affected by our sensitivity to different stimuli? This could be a great jumping-off point for independent research/PBLs. <AnchorLink href=\"#extensions\"> See Extensions </AnchorLink>\n\n![Cover of journal article](https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/paper.png)\n[Link to Journal Article](https://academic.oup.com/beheco/article/24/6/1407/190166)\n",
+            "InitiallyExpanded": true
+        },
+        "standards-header": {
+            "__component": "lesson-plan.section-heading",
+            "SectionTitle": "Learning Standards"
+        },
+        "learning-chart": {
+            "__component": "lesson-plan.learning-chart",
+            "Title": "About the GP Learning Chart",
+            "Description": "This Galactic Polymath Learning Chart illustrates the areas of knowledge covered. This lesson targets Science, but it helps teach national learning standards in 4 subjects: \n- [Common Core Math](http://www.corestandards.org/Math/); [Common Core ELA](http://www.corestandards.org/ELA-Literacy/); [Next Generation Science (NGSS)](https://www.nextgenscience.org/); and [College, Career, and Civic Life (C3) Social Studies Standards](https://www.socialstudies.org/standards/c3).\nIn total, there are 58 standards across US grade band(s): 5-6, 7-8, 9-12.",
+            "Footnote": "",
+            "Badge": {
+                "url": "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/GP-Learning-Chart.png"
+            }
+        },
+        "standards": {
+            "__component": "lesson-plan.standards",
+            "LearningObj": "1. Interpret a concept map of how our perception of beauty results from interactions between our brain, sensory systems, and the environment.\n2. Follow the scientific method to conduct a study and test how much our own inherent emotional response and memories affect preferences for visual stimuli.\n3. Interpret histograms, boxplots, and other data visuals to draw conclusions about a data set.\n4. Apply a framework for how our brains process visual signals to artworks.",
+            "Data": [
+                {
+                    "subject": "Math",
+                    "target": true,
+                    "sets": [
+                        {
+                            "slug": "CCM",
+                            "name": "Common Core Math",
+                            "dimensions": [
+                                {
+                                    "slug": "NSO&AR",
+                                    "name": "Number Systems, Operations & Abstract Representation",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "3"
+                                            ],
+                                            "codes": "5.NBT.A.4",
+                                            "grades": "5",
+                                            "statements": "Use place value understanding to round decimals to any place.",
+                                            "alignmentNotes": "- In Part 3, students will calculate proportions of different character's body proportions (e.g. arm-length / torso-length) and round to the nearest hundredth.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "3"
+                                            ],
+                                            "codes": "5.NBT.B.7",
+                                            "grades": "5",
+                                            "statements": "Add, subtract, multiply, and divide decimals to hundredths, using concrete models or drawings and strategies based on place value, properties of operations, and/or the relationship between addition and subtraction; relate the strategy to a written method and explain the reasoning used.",
+                                            "alignmentNotes": "- In Part 3, students will calculate proportions of different character's body proportions (e.g. arm-length / torso-length) and round to the nearest hundredth.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "3"
+                                            ],
+                                            "codes": "5.NF.B.7b",
+                                            "grades": "5",
+                                            "statements": "Interpret division of a whole number by a unit fraction, and compute such quotients. *For example, create a story context for 4 &divide; (1/5), and use a visual fraction model to show the quotient. Use the relationship between multiplication and division to explain that 4 &divide; (1/5) = 20 because 20 &times; (1/5) = 4*.",
+                                            "alignmentNotes": "- In Part 3, students will create ratios from character sheets to calculate proportions of different character's body proportions (e.g. arm-length / torso-length) and round to the nearest hundredth.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1"
+                                            ],
+                                            "codes": "6.NS.C.8",
+                                            "grades": "6",
+                                            "statements": "Solve real-world and mathematical problems by graphing points in all four quadrants of the coordinate plane. Include use of coordinates and absolute value to find distances between points with the same first coordinate or the same second coordinate.",
+                                            "alignmentNotes": "- In part 1, students plot their top and bottom ranked images into a graph.",
+                                            "subcat": null
+                                        }
+                                    ]
+                                },
+                                {
+                                    "slug": "MDP&S",
+                                    "name": "Measurement, Data, Probability & Statistics",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "3"
+                                            ],
+                                            "codes": "6.SP.A.2",
+                                            "grades": "6",
+                                            "statements": "Understand that a set of data collected to answer a statistical question has a distribution which can be described by its center, spread, and overall shape.",
+                                            "alignmentNotes": "- In part 3, students work with histograms and box plots that show the spread and distribution of data points.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "3"
+                                            ],
+                                            "codes": "6.SP.A.3",
+                                            "grades": "6",
+                                            "statements": "Recognize that a measure of center for a numerical data set summarizes all of its values with a single number, while a measure of variation describes how its values vary with a single number.",
+                                            "alignmentNotes": "- In part 3, students are given histograms that show the variabilty in human proportions and asked to plot the proportion values for different creatures to notice any deviations.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "6.SP.B.4",
+                                            "grades": "6",
+                                            "statements": "Display numerical data in plots on a number line, including dot plots, histograms, and box plots.",
+                                            "alignmentNotes": "- In parts 2 and 3, students interact with box plots and histograms respectively.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "3"
+                                            ],
+                                            "codes": "6.SP.B.5c",
+                                            "grades": "6",
+                                            "statements": "Giving quantitative measures of center (median and/or mean) and variability (interquartile range and/or mean absolute deviation), as well as describing any overall pattern and any striking deviations from the overall pattern with reference to the context in which the data were gathered.",
+                                            "alignmentNotes": "- In part 3, students are given histograms that show the variabilty in human proportions and asked to plot the proportion values for different creatures to notice any deviations.",
+                                            "subcat": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "subject": "ELA",
+                    "target": true,
+                    "sets": [
+                        {
+                            "slug": "CCELA",
+                            "name": "Common Core ELA",
+                            "dimensions": [
+                                {
+                                    "slug": "R",
+                                    "name": "Reading",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "3"
+                                            ],
+                                            "codes": "RST.6-8.3",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Follow precisely a multistep procedure when carrying out experiments, taking measurements, or performing technical tasks.",
+                                            "alignmentNotes": "- In parts 1 & 3, students follow a procedure to conduct the experiment with their classmates and collect data.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1"
+                                            ],
+                                            "codes": "RST.6-8.7",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Integrate quantitative or technical information expressed in words in a text with a version of that information expressed visually (e.g., in a flowchart, diagram, model, graph, or table).",
+                                            "alignmentNotes": "- In part 1, students convert their emotional and cognitive responses into numerical scores that they enter into a data table and analyze.",
+                                            "subcat": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "subject": "Science",
+                    "target": true,
+                    "sets": [
+                        {
+                            "slug": "NGSS",
+                            "name": "NGSS",
+                            "dimensions": [
+                                {
+                                    "slug": "SEP",
+                                    "name": "Science & Engineering Practices",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "1"
+                                            ],
+                                            "codes": "AQDP-M1",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Ask questions that arise from careful observation of phenomena, models, or unexpected results, to clarify and/or seek additional information.",
+                                            "alignmentNotes": "- In part 1, students investigate the researcher's concept map through experimentation.",
+                                            "subcat": "Ask Questions & Define Problems"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "ARG-M3",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Construct, use, and/or present an oral and written argument supported by empirical evidence and scientific reasoning to support or refute an explanation or a model for a phenomenon or a solution to a problem.",
+                                            "alignmentNotes": "- Throughout all 3 parts of the lesson, students are given multiple opportunities to think-pair-share, have structured classroom discussions, and work with groups to gain understanding.",
+                                            "subcat": "Engaging in Argument from Evidence"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1"
+                                            ],
+                                            "codes": "CEDS-M2",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Construct an explanation using models or representations.",
+                                            "alignmentNotes": "- In part 1, students are asked to explain the concept map via an example in their own lives.",
+                                            "subcat": "Constructing Explanations & Designing Solutions"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "CEDS-M4",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Apply scientific ideas, principles, and/or evidence to construct, revise and/or use an explanation for real-world phenomena, examples, or events.",
+                                            "alignmentNotes": "- Throughout the lesson, students follow the scientific method to deepen their understanding of how perception, cognition, and emotion affect our preferences and decision making.",
+                                            "subcat": "Constructing Explanations & Designing Solutions"
+                                        },
+                                        {
+                                            "parts": [
+                                                "3"
+                                            ],
+                                            "codes": "DATA-M5",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Apply concepts of statistics and probability (including mean, median, mode, and variability) to analyze and characterize data, using digital tools when feasible.",
+                                            "alignmentNotes": "- In Part 3, students will create ratios from character sheets to calculate proportions of different character's body proportions (e.g. arm-length / torso-length) and round to the nearest hundredth.",
+                                            "subcat": "Analyzing Data"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1"
+                                            ],
+                                            "codes": "INV-M2",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Conduct an investigation and/or evaluate and/or revise the experimental design to produce data to serve as the basis for evidence that meet the goals of the investigation.",
+                                            "alignmentNotes": "- In part 1, students investigate the researcher's concept map through experimentation and data collection. In part 3, they conduct a separate investigation into what is 'creepy' vs 'cute' based on comparing character design dimensions to the range of natural human variation.",
+                                            "subcat": "Planning & Carrying out Investigations"
+                                        },
+                                        {
+                                            "parts": [
+                                                "3"
+                                            ],
+                                            "codes": "MATH-M2",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Use mathematical representations to describe and/or support scientific conclusions and design solutions.",
+                                            "alignmentNotes": "- In Part 3, students will create ratios from character sheets to calculate proportions of different character's body proportions (e.g. arm-length / torso-length) and round to the nearest hundredth.",
+                                            "subcat": "Using Mathematics & Computational Thinking"
+                                        },
+                                        {
+                                            "parts": [
+                                                "3"
+                                            ],
+                                            "codes": "MATH-M4",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Apply mathematical concepts and/or processes (such as ratio, rate, percent, basic operations, and simple algebra) to scientific and engineering questions and problems.",
+                                            "alignmentNotes": "- In Part 3, students will create ratios from character sheets to calculate proportions of different character's body proportions (e.g. arm-length / torso-length).",
+                                            "subcat": "Using Mathematics & Computational Thinking"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1"
+                                            ],
+                                            "codes": "MOD-M3",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Use and/or develop a model of simple systems with uncertain and less predictable factors.",
+                                            "alignmentNotes": "- In part 1, students are asked to explain the concept map via an example in their own lives.",
+                                            "subcat": "Developing & Using Models"
+                                        },
+                                        {
+                                            "parts": [
+                                                "2"
+                                            ],
+                                            "codes": "AQDP-H2",
+                                            "grades": [
+                                                "9",
+                                                "10",
+                                                "11",
+                                                "12"
+                                            ],
+                                            "statements": "Ask questions that arise from examining models or a theory, to clarify and/or seek additional information and relationships.",
+                                            "alignmentNotes": "- Students will be encouraged to ask questions and share understanding as they develop an understanding of a conceptual model (concept map) of visual processing in the brain.",
+                                            "subcat": "Ask Questions & Define Problems"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1"
+                                            ],
+                                            "codes": "INFO-H5",
+                                            "grades": [
+                                                "9",
+                                                "10",
+                                                "11",
+                                                "12"
+                                            ],
+                                            "statements": "Communicate scientific and/or technical information or ideas (e.g. about phenomena and/or the process of development and the design and performance of a proposed process or system) in multiple formats (including orally, graphically, textually, and mathematically).",
+                                            "alignmentNotes": "- In Part 1, students will conduct an experiment to understand their own visual preferences and generate graphs of the classroom data. They will then interpret these findings to test a hypothesis. In Part 2, students similarly analyze a real scientific figure. In Part 3, they again collect data, this time based on anatomical ratios in character design sheets. In all cases, there are opportunities for students to share their ideas, observations and reflections.",
+                                            "subcat": "Obtaining, Evaluating, & Communicating Information"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "slug": "DCI",
+                                    "name": "Disciplinary Core ideas",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "2"
+                                            ],
+                                            "codes": "LS1.A-M2",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Within cells, special structures are responsible for particular functions, and the cell membrane forms the boundary that controls what enters and leaves the cell.",
+                                            "alignmentNotes": "- Part 2 focuses on specialization of cones in the eyes of humans and fish (darters) to detect different wavelengths of light.",
+                                            "subcat": "Structure & Function"
+                                        },
+                                        {
+                                            "parts": [
+                                                "2"
+                                            ],
+                                            "codes": "LS1.D-M1",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Each sense receptor responds to different inputs (electromagnetic, mechanical, chemical), transmitting them as signals that travel along nerve cells to the brain. The signals are then processed in the brain, resulting in immediate behaviors or memories.",
+                                            "alignmentNotes": "- Visual perception of color is the focus of Part 2. Students will gain a quite detailed understanding of how color is perceived, how visual sensitivity can directly affect preference, and over all parts, how perception, cognition, and emotion, affect preferences and behavior.",
+                                            "subcat": "Information Processing"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2"
+                                            ],
+                                            "codes": "LS1.A-H1",
+                                            "grades": [
+                                                "9",
+                                                "10",
+                                                "11",
+                                                "12"
+                                            ],
+                                            "statements": "Systems of specialized cells within organisms help them perform the essential functions of life.",
+                                            "alignmentNotes": "- In Parts 1 and 2, students will gain a deeper understanding of how visual sensing of color and patterns affect what we can actually perceive, and how perception is affected by our emotions and cognition (memory and higher order thinking) to drive our preferences. This will involve a good amount of background about how we perceive color (i.e. that color refers to different wavelengths of light that are detected by cones in the retina).",
+                                            "subcat": "Structure & Function"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "slug": "CCC",
+                                    "name": "Cross-Cutting Concepts",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "PAT-M4",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Graphs, charts, and images can be used to identify patterns in data.",
+                                            "alignmentNotes": "- In Part 1, students will generate predictions based on graphs, and create their own graphs based on collected data to test their predictions.\n- In Part 2, students will interpret a table and a box plot graph (similar to a bar plot) to test a scientific hypothesis, retracing a published scientific paper.\n- In Part 3, students will plot points on a number line and compare to a histogram showing the range of human variation.",
+                                            "subcat": "Patterns"
+                                        },
+                                        {
+                                            "parts": [
+                                                "2"
+                                            ],
+                                            "codes": "SF-M1",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Complex and microscopic structures and systems can be visualized, modeled, and used to describe how their function depends on the shapes, composition, and relationships among its parts, therefore complex natural structures/systems can be analyzed to determine how they function.",
+                                            "alignmentNotes": "- In part 2, students learn how the function of the cells of the eye affect preception.",
+                                            "subcat": "Structure & Function"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "SYS-M2",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Models can be used to represent systems and their interactions–such as inputs, processes and outputs–and energy and matter flows within systems.",
+                                            "alignmentNotes": "- Throughout all 3 parts of the lessons, students use terms *perception*, *cognition* and *emotion* to explain the concept map.",
+                                            "subcat": "Systems & Systems Models"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "SYS-H3",
+                                            "grades": [
+                                                "9",
+                                                "10",
+                                                "11",
+                                                "12"
+                                            ],
+                                            "statements": "Models (e.g., physical, mathematical, computer models) can be used to simulate systems and interactions–including energy, matter, and information flows– within and between systems at different scales.",
+                                            "alignmentNotes": "- Throughout all parts of the lesson, students will keep returning to a conceptual framework (concept map) of visual processing in the brain. With each Part, they will gain new insights and understanding about how the eyes (visual sensory systems) interact to affect *perception*, *cognition*, and *emotion,* and how these in turn affect preferences in humans, fish, and other animals.",
+                                            "subcat": "Systems & Systems Models"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "subject": "Math",
+                    "target": false,
+                    "sets": [
+                        {
+                            "slug": "CCM",
+                            "name": "Common Core Math",
+                            "dimensions": [
+                                {
+                                    "slug": "NSO&AR",
+                                    "name": "Number Systems, Operations & Abstract Representation",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "7.NS.A.3",
+                                            "grades": "7",
+                                            "statements": "Solve real-world and mathematical problems involving the four operations with rational numbers.",
+                                            "alignmentNotes": "- In all 3 parts, students will analyze real data (collected by themselves through novel experiments or from published research). This will involve calculation of proportions, adding up results, and higher-order data interpretation.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "3"
+                                            ],
+                                            "codes": "7.RP.A.2",
+                                            "grades": "7",
+                                            "statements": "Recognize and represent proportional relationships between quantities.",
+                                            "alignmentNotes": "- In Part 3, students will calculate proportions of different character's body proportions (e.g. arm-length / torso-length) and round to the nearest hundredth.",
+                                            "subcat": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "subject": "ELA",
+                    "target": false,
+                    "sets": [
+                        {
+                            "slug": "CCELA",
+                            "name": "Common Core ELA",
+                            "dimensions": [
+                                {
+                                    "slug": "LS&L",
+                                    "name": "Language, Speaking & Listening",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "L.7.6",
+                                            "grades": "7",
+                                            "statements": "Acquire and use accurately grade-appropriate general academic and domain-specific words and phrases; gather vocabulary knowledge when considering a word or phrase important to comprehension or expression.",
+                                            "alignmentNotes": "- Throughout all parts of the lesson, students will keep returning to a conceptual framework (concept map) of visual processing in the brain. With each Part, they will gain new insights and understanding about how the eyes (visual sensory systems) interact to affect *perception*, *cognition*, and *emotion,* and how these in turn affect preferences in humans, fish, and other animals.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1"
+                                            ],
+                                            "codes": "CCRA.L.6",
+                                            "grades": [
+                                                "1",
+                                                "2",
+                                                "3",
+                                                "4",
+                                                "5",
+                                                "6",
+                                                "7",
+                                                "8",
+                                                "9",
+                                                "10",
+                                                "11",
+                                                "12"
+                                            ],
+                                            "statements": "Acquire and use accurately a range of general academic and domain-specific words and phrases sufficient for reading, writing, speaking, and listening at the college and career readiness level; demonstrate independence in gathering vocabulary knowledge when encountering an unknown term important to comprehension or expression.",
+                                            "alignmentNotes": "- In this lesson, students will acquire and use several new vocabulary terms  (e.g. *cognition*, *perception*, *cones*, etc.). The terms are explained in context through readings and videos and students are given opportunities to incorporate the new terms into exercises and discussion.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "SL.6.1",
+                                            "grades": "6",
+                                            "statements": "Engage effectively in a range of collaborative discussions (one-on-one, in groups, and teacher-led) with diverse partners on grade 6 topics, texts, and issues, building on others' ideas and expressing their own clearly.",
+                                            "alignmentNotes": "- Throughout all 3 parts of the lesson, students are given multiple opportunities to think-pair-share, have structured classroom discussions, and work with groups to gain understanding.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "SL.7.1",
+                                            "grades": "7",
+                                            "statements": "Engage effectively in a range of collaborative discussions (one-on-one, in groups, and teacher-led) with diverse partners on grade 7 topics, texts, and issues, building on others' ideas and expressing their own clearly.",
+                                            "alignmentNotes": "- Students will interpret and integrate information from videos, handouts, classroom discussions, and group activities.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "SL.7.2",
+                                            "grades": "7",
+                                            "statements": "Analyze the main ideas and supporting details presented in diverse media and formats (e.g., visually, quantitatively, orally) and explain how the ideas clarify a topic, text, or issue under study.",
+                                            "alignmentNotes": "- Students will interpret and integrate information from videos, handouts, classroom discussions, and group activities.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "SL.8.1",
+                                            "grades": "8",
+                                            "statements": "Engage effectively in a range of collaborative discussions (one-on-one, in groups, and teacher-led) with diverse partners on grade 8 topics, texts, and issues, building on others' ideas and expressing their own clearly.",
+                                            "alignmentNotes": "- Throughout all 3 parts of the lesson, students are given multiple opportunities to think-pair-share, have structured classroom discussions, and work with groups to gain understanding.",
+                                            "subcat": null
+                                        }
+                                    ]
+                                },
+                                {
+                                    "slug": "R",
+                                    "name": "Reading",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2"
+                                            ],
+                                            "codes": "CCRA.R.7",
+                                            "grades": [
+                                                "1",
+                                                "2",
+                                                "3",
+                                                "4",
+                                                "5",
+                                                "6",
+                                                "7",
+                                                "8",
+                                                "9",
+                                                "10",
+                                                "11",
+                                                "12"
+                                            ],
+                                            "statements": "Integrate and evaluate content presented in diverse media and formats, including visually and quantitatively, as well as in words.",
+                                            "alignmentNotes": "- In Parts 1 and 2, students will interpret data collected by their classmates and real scientists (respectively), presented in tables and graphs. They will analyze and reflect on their findings.",
+                                            "subcat": null
+                                        }
+                                    ]
+                                },
+                                {
+                                    "slug": "W",
+                                    "name": "Writing",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2"
+                                            ],
+                                            "codes": "CCRA.W.9",
+                                            "grades": [
+                                                "1",
+                                                "2",
+                                                "3",
+                                                "4",
+                                                "5",
+                                                "6",
+                                                "7",
+                                                "8",
+                                                "9",
+                                                "10",
+                                                "11",
+                                                "12"
+                                            ],
+                                            "statements": "Draw evidence from literary or informational texts to support analysis, reflection, and research.",
+                                            "alignmentNotes": "- In Parts 1 and 2, students will interpret data collected by their classmates and real scientists (respectively), presented in tables and graphs. They will analyze and reflect on their findings.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "3"
+                                            ],
+                                            "codes": "W.5.2d",
+                                            "grades": "5",
+                                            "statements": "Use precise language and domain-specific vocabulary to inform about or explain the topic.",
+                                            "alignmentNotes": "- Throughout all 3 parts of the lessons, students use terms *perception*, *cognition* and *emotion* to explain the concept map.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "W.6.2d",
+                                            "grades": "6",
+                                            "statements": "Use precise language and domain-specific vocabulary to inform about or explain the topic.",
+                                            "alignmentNotes": "- Throughout all 3 parts of the lessons, students use terms *perception*, *cognition* and *emotion* to explain the concept map.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2"
+                                            ],
+                                            "codes": "W.6.9",
+                                            "grades": "6",
+                                            "statements": "Draw evidence from literary or informational texts to support analysis, reflection, and research.",
+                                            "alignmentNotes": "- In Parts 1 and 2, students will interpret data collected by their classmates and real scientists (respectively), presented in tables and graphs. They will analyze and reflect on their findings.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1"
+                                            ],
+                                            "codes": "WHST.6-8.1a",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Introduce claim(s) about a topic or issue, acknowledge and distinguish the claim(s) from alternate or opposing claims, and organize the reasons and evidence logically.",
+                                            "alignmentNotes": "- In part 1, students convert their emotional and cognitive responses into numerical scores that they enter into a data table and analyze.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "2"
+                                            ],
+                                            "codes": "WHST.6-8.1b",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Support claim(s) with logical reasoning and relevant, accurate data and evidence that demonstrate an understanding of the topic or text, using credible sources.",
+                                            "alignmentNotes": "- In part 2, students view representative data from the scientists' research and view videos of the scientists explaining the research to explain the results.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "W.7.1",
+                                            "grades": "7",
+                                            "statements": "Write arguments to support claims with clear reasons and relevant evidence.",
+                                            "alignmentNotes": "- In the worksheet of all 3 parts, students will draw conclusions and support claims with data.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "W.7.9",
+                                            "grades": "7",
+                                            "statements": "Draw evidence from literary or informational texts to support analysis, reflection, and research.",
+                                            "alignmentNotes": "- Students will interpret and integrate information from videos, handouts, classroom discussions, and group activities.",
+                                            "subcat": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "subject": "Science",
+                    "target": false,
+                    "sets": [
+                        {
+                            "slug": "NGSS",
+                            "name": "NGSS",
+                            "dimensions": [
+                                {
+                                    "slug": "SEP",
+                                    "name": "Science & Engineering Practices",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "AQDP-M2",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Ask questions to identify and/or clarify evidence and/or the premise(s) of an argument.",
+                                            "alignmentNotes": "- Throughout the lesson, students are encouraged to ask questions about themselves: why do I like x or y, but not z? They also interrogate the model of visual processing in the brain as they learn how perception, cognition, and emotion affect preferences in humans and fish, in different contexts.",
+                                            "subcat": "Ask Questions & Define Problems"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "AQDP-M4",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Ask questions to clarify and/or refine a model, an explanation, or an engineering problem.",
+                                            "alignmentNotes": "- Throughout, students will build on and refine their understanding of a conceptual model for visual processing in the brain.",
+                                            "subcat": "Ask Questions & Define Problems"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "AQDP-M5",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Ask questions that require sufficient and appropriate empirical evidence to answer.",
+                                            "alignmentNotes": "- In all 3 parts, students will ask questions, make hypotheses and/or predictions, and test the predictions with real data.",
+                                            "subcat": "Ask Questions & Define Problems"
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "AQDP-M6",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Ask questions that can be investigated within the scope of the classroom, outdoor environment, and museums and other public facilities with available resources and, when appropriate, frame a hypothesis based on observations and scientific principles.",
+                                            "alignmentNotes": "- In all 3 parts, students will ask questions, make hypotheses and/or predictions, and test the predictions with real data.",
+                                            "subcat": "Ask Questions & Define Problems"
+                                        },
+                                        {
+                                            "parts": [
+                                                "2"
+                                            ],
+                                            "codes": "DATA-M2",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Use graphical displays (e.g., maps, charts, graphs, and/or tables) of large data sets to identify temporal and spatial relationships.",
+                                            "alignmentNotes": "- In Part 2, students will analyze a box plot to test whether female darters (fish) spent more time near one of two experimental model fish. (See Background)",
+                                            "subcat": "Analyzing Data"
+                                        },
+                                        {
+                                            "parts": [],
+                                            "codes": "INFO-H1",
+                                            "grades": [
+                                                "9",
+                                                "10",
+                                                "11",
+                                                "12"
+                                            ],
+                                            "statements": "Critically read scientific literature adapted for classroom use to determine the central ideas or conclusions and/or to obtain scientific and/or technical information to summarize complex evidence, concepts, processes, or information presented in a text by paraphrasing them in simpler but still accurate terms.",
+                                            "alignmentNotes": "- Extension: See links in the Extensions and Background sections for scientific articles that you can read and analyze with your class after you have taught the lesson.",
+                                            "subcat": "Obtaining, Evaluating, & Communicating Information"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "slug": "DCI",
+                                    "name": "Disciplinary Core ideas",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "2"
+                                            ],
+                                            "codes": "LS1.A-M3",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "In multicellular organisms, the body is a system of multiple interacting subsystems. These subsystems are groups of cells that work together to form tissues and organs that are specialized for particular body functions.",
+                                            "alignmentNotes": "- We do not go into detail about body systems and subsystems, though this is an implicit take-home.",
+                                            "subcat": "Structure & Function"
+                                        },
+                                        {
+                                            "parts": [
+                                                "2"
+                                            ],
+                                            "codes": "PS4.A-M1",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "A simple wave has a repeating pattern with a specific wavelength, frequency, and amplitude.",
+                                            "alignmentNotes": "- Though the terms *frequency* and *amplitude* are not introduced, the we refer to different *wavelengths* of light throughout Part 2 in particular. This is explained in one of the videos in Part 2.",
+                                            "subcat": "Wave Properties"
+                                        },
+                                        {
+                                            "parts": [
+                                                "2"
+                                            ],
+                                            "codes": "PS4.B-M1",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "When light shines on an object, it is reflected, absorbed, or transmitted through the object, depending on the object’s material and the frequency (color) of the light.",
+                                            "alignmentNotes": "- In Part 2, multiple connected videos explain how reflected light is perceived by the eye as different colors, depending on the degree certain wavelengths of light excite different cone cells in the retina.",
+                                            "subcat": "Electromagnetic Radiation"
+                                        },
+                                        {
+                                            "parts": [
+                                                "2"
+                                            ],
+                                            "codes": "PS4.B-M3",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "A wave model of light is useful for explaining brightness, color, and the frequency-dependent bending of light at a surface between media.",
+                                            "alignmentNotes": "- In Part 2, students get a crash course in color and color perception in humans and fish.",
+                                            "subcat": "Electromagnetic Radiation"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "slug": "CCC",
+                                    "name": "Cross-Cutting Concepts",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "2"
+                                            ],
+                                            "codes": "SYS-M1",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Systems may interact with other systems; they may have sub-systems and be a part of larger complex systems.",
+                                            "alignmentNotes": "- Through the conceptual framework of visual signal processing, students will become very familiar with the connections between the eyes and different aspects of neural processing (though we don't go into the specific parts of the brain, which is a bit beyond the scope of this lesson).",
+                                            "subcat": "Systems & Systems Models"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "subject": "Social Studies",
+                    "target": false,
+                    "sets": [
+                        {
+                            "slug": "C3",
+                            "name": "C3",
+                            "dimensions": [
+                                {
+                                    "slug": "ESCCTA",
+                                    "name": "Evaluating Sources, Communicating Conclusions & Taking Action",
+                                    "standardsGroup": [
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "D4.2.6-8",
+                                            "grades": [
+                                                "6",
+                                                "7",
+                                                "8"
+                                            ],
+                                            "statements": "Construct explanations using reasoning, correct sequence, examples, and details with relevant information and data, while acknowledging the strengths and weaknesses of the explanations.",
+                                            "alignmentNotes": "- At the end of each Part, students will reflect on the experiments and analyses they conducted. This will involve recognizing the strength or limitations of the evidence based on the data at hand.",
+                                            "subcat": null
+                                        },
+                                        {
+                                            "parts": [
+                                                "1",
+                                                "2",
+                                                "3"
+                                            ],
+                                            "codes": "D4.2.9-12",
+                                            "grades": [
+                                                "9",
+                                                "10",
+                                                "11",
+                                                "12"
+                                            ],
+                                            "statements": "Construct explanations using sound reasoning, correct sequence (linear or non-linear), examples, and details with significant and pertinent information and data, while acknowledging the strengths and weaknesses of the explanation given its purpose (e.g., cause and effect, chronological, procedural, technical).",
+                                            "alignmentNotes": "- At the end of each Part, students will reflect on the experiments and analyses they conducted. This will involve recognizing the strength or limitations of the evidence based on the data at hand.",
+                                            "subcat": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "feedback": {
+            "__component": "lesson-plan.collapsible-text-section",
+            "SectionTitle": "Feedback",
+            "Content": "### Please let us know how it went with your class! \n#### We want to know what you (and/or your students) think!\nShare your feedback in < 5 min with these forms:\n- [For teachers](https://forms.gle/HY1sFxZUH7uG6JqP8)\n- [For students](https://forms.gle/gwkRYvvZY6Sp2dQb9)\n",
+            "InitiallyExpanded": true
+        },
+        "credits": {
+            "__component": "lesson-plan.collapsible-text-section",
+            "SectionTitle": "Credits",
+            "Content": "#### Lesson Authors:\n- [Matt Wilkins, PhD](https://www.mattwilkinsbio.com)\n- [Madelyn Leembruggen](https://scholar.harvard.edu/madelynleembruggen)\n- [Letimicia Fears, PhD](https://instagram.com/Letimistry101)\n\n#### Animation and Storyboarding\n[Aarati Asundi, PhD](https://www.sykommer.com/about-us)\n\n#### Education Consultant:\n[Sarah Grasty, MS](https://www.linkedin.com/in/sarah-grasty-988676b0/)\n\n#### Sponsor and Producer\n[Tamra Mendelson, PhD](https://www.mendelsonlab.net/)\n\nPlease [sign up for our mailing list](https://galacticpolymath.us8.list-manage.com/subscribe?u=42413c3d307f9b69fd5d5319e&id=33924ebd91) to hear what’s coming up next!",
+            "InitiallyExpanded": true
+        },
+        "acknowledgments": {
+            "__component": "lesson-plan.acknowledgments",
+            "SectionTitle": "Acknowledgments",
+            "Data": [
+                {
+                    "role": "Scientific Advisory",
+                    "def": "(Helped devise conceptual framework & lesson structure)",
+                    "records": [
+                        {
+                            "name": "Julien Renoult, PhD",
+                            "url": "https://www.eevcom-montpellier.com/julien-renoult.html",
+                            "title": "Tenure CNRS Research Scientist",
+                            "affiliation": "Center for Evolutionary & Functional Ecology",
+                            "location": "Montpellier, France"
+                        }
+                    ]
+                },
+                {
+                    "role": "Featured Scientist",
+                    "def": "(In [▶ How do we know what a fish likes? (And can we predict it?)](https://www.youtube.com/watch?v=PGmPIHPX9eQ))",
+                    "records": [
+                        {
+                            "name": "Tory Williams, PhD",
+                            "url": "https://education.umbc.edu/tory-h-williams/",
+                            "title": "Research Associate",
+                            "affiliation": "Department of Education",
+                            "location": "University of Maryland, Baltimore County"
+                        }
+                    ]
+                },
+                {
+                    "role": "Data Provider",
+                    "def": "(For Part 2: The Perception of Beauty)",
+                    "records": [
+                        {
+                            "name": "Jenny Gumm, PhD",
+                            "url": "https://www.gummlab.org/",
+                            "title": "Fish Biologist & Facility Manager,",
+                            "affiliation": "Ash Meadows Fish Conservation Facility",
+                            "location": null
+                        }
+                    ]
+                },
+                {
+                    "role": "Beta Tester",
+                    "def": "(Ran the lesson in class and recommended changes)",
+                    "records": [
+                        {
+                            "name": "Kenton Wesby, EdD",
+                            "url": "https://twitter.com/kwesby73",
+                            "title": "STEAM Teacher (grades 6-8)",
+                            "affiliation": "Isaac Litton Middle School",
+                            "location": "Nashville, TN"
+                        }
+                    ]
+                }
+            ]
+        },
+        "versions": {
+            "__component": "lesson-plan.versions",
+            "SectionTitle": "Version Notes",
+            "Data": [
+                {
+                    "major_release": "Beta",
+                    "sub_releases": [
+                        {
+                            "version": "0.1.0",
+                            "date": "9/29/2022",
+                            "summary": "Initial lesson build!",
+                            "notes": null,
+                            "acknowledgments": null
+                        }
+                    ]
+                },
+                {
+                    "major_release": "1",
+                    "sub_releases": [
+                        {
+                            "version": "1.0.0",
+                            "date": "11/7/2022",
+                            "summary": "First public release",
+                            "notes": "Streamlined presentations and worksheets based on classroom feedback",
+                            "acknowledgments": "Thanks to Dr. Wesby for beta testing the lesson!"
+                        },
+                        {
+                            "version": "1.1.0",
+                            "date": "11/17/2022",
+                            "summary": "Various fixes to procedure and minor text elements",
+                            "notes": null,
+                            "acknowledgments": null
+                        },
+                        {
+                            "version": "1.2.0",
+                            "date": "4/27/2023",
+                            "summary": "Rebuilt for 2023 site relaunch",
+                            "notes": "Improved teaching-materials structure and naming conventions",
+                            "acknowledgments": null
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
