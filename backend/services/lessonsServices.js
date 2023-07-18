@@ -22,7 +22,9 @@ const insertLesson = async lesson => {
 
 const deleteLesson = async lessonId => {
     try {
-        await Lessons.findByIdAndDelete(lessonId)
+        console.log("Deleting lesson with the following id: ", lessonId)
+        
+        await Lessons.deleteOne({ _id: lessonId })
 
         console.log(`Lesson with id ${lessonId} was successfully deleted from the database!`)
 

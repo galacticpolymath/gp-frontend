@@ -30,7 +30,7 @@ if (!Lessons) {
         GdriveDirName: String,
         GdriveTeachMatPath: String,
         GdriveTeachMatID: String,
-        GdrivePublicID: Number,
+        GdrivePublicID: String,
         GdriveDirID: String,
         GdriveMetaID: String,
         GdriveTeachItID: String,

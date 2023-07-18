@@ -14,7 +14,7 @@ const insertLesson = async (reqBody, jwt) => {
             throw new Error('Failed to insert lesson into the database. Status code: ' + response.status)
         }
 
-        return { status: response.status, msg: msg };
+        return { status: response.status, msg: response?.data?.msg };
     } catch (error) {
         console.error('An error has occurred when inserting a new lesson: ', error)
 
