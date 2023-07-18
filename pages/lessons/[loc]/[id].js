@@ -255,6 +255,8 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
   );
 };
 
+// should use the axios library to make the get request.
+
 export const getStaticPaths = async () => {
   const res = await fetch(lessonsUrl);  
   const lessons = await res.json();
@@ -267,7 +269,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
   const [newLessonsResponse, oldLessonResponse] = await Promise.all([fetch(lessonsUrl), fetch(oldLessonsUrl)]);
-  const [oldLessons, lessons] =  await Promise.all([oldLessonResponse.json(), newLessonsResponse.json()])
+  const [oldLessons, lessons] = await Promise.all([oldLessonResponse.json(), newLessonsResponse.json()])
   const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const oldLesson = oldLessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
