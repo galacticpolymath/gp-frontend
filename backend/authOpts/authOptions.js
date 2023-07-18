@@ -20,6 +20,7 @@ export const authOptions = {
     encode: async ({ secret, token }) => {
       try {
         await connectToMongodb();
+        
         const { email, name } = token;
         const user = await Users.findOne({ _id: email }).lean();
         let allowedRoles = ['user'];
