@@ -14,19 +14,15 @@ export default async function handler(request, response) {
   
   const { lessonId } = request.query;
   if (!lessonId) {
-    console.log('No lesson id was provided.')
     return response.status(404).json({ msg: 'Must provide a lesson id.' });
   }
 
   const lessonIdParsed = parseInt(lessonId);
   if (isNaN(lessonIdParsed)) {
-    console.log('Lesson id is not a number.')
     return response.status(404).json({ msg: 'Lesson id must be a number.' });
   }
 
   try {
-    console.log("Inserting lesson into the database.")
-
     await connectToMongodb();
 
     const { status, msg } = await deleteLesson(lessonIdParsed);
