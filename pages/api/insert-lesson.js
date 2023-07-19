@@ -13,7 +13,7 @@ export default async function handler(request, response) {
   const authorizationResult = await getIsReqAuthorizedResult(request, 'dbAdmin');
 
   if (!authorizationResult?.isReqAuthorized || !authorizationResult) {
-    return response.status(401).json({ msg: authorizationResult?.msg ?? 'You are not authorized to access this service.' });
+    return response.status(403).json({ msg: authorizationResult?.msg ?? 'You are not authorized to access this service.' });
   }
 
   if (!Object.keys(request?.body)?.length) {

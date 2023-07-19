@@ -3,16 +3,15 @@ const { insertLesson } = require('../../apiServices/lessons/insertLesson');
 const lesson5Testing = require('../data/lesson5Testing.json');
 const dotenv = require('dotenv');
 
-
-async function asyncLog(...args) {
-  const str = args.join(" ");
-  console.log(str)
+async function asyncLog(val) {
+  console.log(val);
 }
 
 describe("Inserting a lesson into the db.", () => {
   it('A lesson should be inserted into the database.', async () => {
     dotenv.config();
 
+    // For now, manually insert the jwt int the .env file to begin testing.
     const lessonInsertionResult = await insertLesson(lesson5Testing, process.env.TESTING_JWT)
 
     expect(lessonInsertionResult.status).toBe(200);
@@ -31,6 +30,12 @@ describe("Inserting a lesson into the db.", () => {
 
     const lessonDeletionResult = await deleteLesson(lesson5Testing._id, process.env.TESTING_JWT) 
 
-    asyncLog(lessonDeletionResult)
+    if(lessonDeletionResult.wasSuccessful){
+      asyncLog("Successfully deleted the lesson from the database.")
+      asyncLog(lessonDeletionResult.data)
+      return;
+    }
+
+    asyncLog("Failed to delete the lesson from the database.")
   }, 2000 * 10)
 });

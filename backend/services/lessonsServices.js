@@ -21,8 +21,10 @@ const insertLesson = async lesson => {
 }
 
 const deleteLesson = async lessonId => {
+    console.log("Deleting lesson with the following id: ", lessonId);
+
     try {
-        console.log("Deleting lesson with the following id: ", lessonId)
+        await connectToMongodb();
         
         await Lessons.deleteOne({ _id: lessonId })
 
@@ -30,6 +32,7 @@ const deleteLesson = async lessonId => {
 
         return { status: 200, msg: 'Lesson was successfully deleted from the database!' }
     } catch (error) {
+        
         return { status: 500, msg: `Failed to delete lesson from the database. Error message: "${error}"` }
     }
 }

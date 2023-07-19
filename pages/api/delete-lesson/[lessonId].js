@@ -1,11 +1,11 @@
 import { getIsReqAuthorizedResult } from '../../../backend/services/authServices';
 import { deleteLesson } from '../../../backend/services/lessonsServices';
-import { connectToMongodb } from '../../../backend/utils/connection';
 
 export default async function handler(request, response) {
   if (request.method !== 'DELETE') {
-    return response.status(404).json({ msg: 'This route only accepts POST requests.' });
+    return response.status(404).json({ msg: 'This route only accepts DELETE requests.' });
   }
+
   const authorizationResult = await getIsReqAuthorizedResult(request, 'dbAdmin');
 
   if (!authorizationResult?.isReqAuthorized || !authorizationResult) {
@@ -23,8 +23,6 @@ export default async function handler(request, response) {
   }
 
   try {
-    await connectToMongodb();
-
     const { status, msg } = await deleteLesson(lessonIdParsed);
 
     return response.status(status).json({ msg });
