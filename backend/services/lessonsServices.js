@@ -1,9 +1,12 @@
 import Lessons from '../models/lesson'
+import { connectToMongodb } from '../utils/connection'
 
 const insertLesson = async lesson => {
     try {
-        const newLesson = new Lessons({ ...lesson })
-        const saveResult = await newLesson.save()
+        await connectToMongodb();
+
+        const newLesson = new Lessons({ ...lesson });
+        const saveResult = await newLesson.save();
 
         saveResult.validateSync()
 

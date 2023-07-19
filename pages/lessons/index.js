@@ -27,28 +27,6 @@ const LessonsPage = ({ lessons }) => {
     return willShowLesson;
   });
 
-  const getLessons = async () => {
-    try {
-      const url = `${window.location.origin}/api/get-lessons`;
-      console.log('url: ', url)
-      const lessonsRes = await fetch(url);
-
-      return lessonsRes.json()
-    } catch (error) {
-      console.error('An error has occurred: ', error)
-    }
-  }
-
-  useEffect(() => {
-    getLessons()
-      .then(data => {
-        console.log("Environment variables is working : ", data)
-      })
-      .catch(error => {
-        console.error('An error has occurred: ', error)
-      })
-  }, [])
-
   return (
     <Layout
       title='Galactic Polymath Lesson Releases'

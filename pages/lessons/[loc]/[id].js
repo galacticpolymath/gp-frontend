@@ -161,7 +161,7 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
   const [imgSponsorSrcOnError, setImgSponsorSrcOnError] = useState(null);
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: `Lesson Title: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
+  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
   const handleBannerImgError = () => {
     setImgBannerSrcOnError(oldLesson.CoverImage.url);
@@ -255,6 +255,8 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
   );
 };
 
+// should use the axios library to make the get request.
+
 export const getStaticPaths = async () => {
   const res = await fetch(lessonsUrl);  
   const lessons = await res.json();
@@ -266,10 +268,8 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  const res = await fetch(lessonsUrl)
-  const oldLessonRes = await fetch(oldLessonsUrl);
-  const oldLessons = await oldLessonRes.json();
-  const lessons = await res.json();
+  const [newLessonsResponse, oldLessonResponse] = await Promise.all([fetch(lessonsUrl), fetch(oldLessonsUrl)]);
+  const [oldLessons, lessons] = await Promise.all([oldLessonResponse.json(), newLessonsResponse.json()])
   const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const oldLesson = oldLessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);

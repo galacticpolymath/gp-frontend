@@ -1,55 +1,47 @@
-import Users from "../models/user";
-import { scryptSync, timingSafeEqual } from 'crypto'
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import { authOptions } from "../authOpts/authOptions";
 
-async function userLogin(email, passwordAttempt) {
+const validateJwtToken = async (token) => {
     try {
-        const user = await Users.findOne({ _id: email });
+        const userCredentials = await authOptions.jwt.decode({ secret: process.env.NEXTAUTH_SECRET, token: token });
 
-        if (!user || !user.password) {
-            return { isCredentialsValid: false, msg: 'User not found.' }
+        if (!userCredentials) {
+            throw new Error('User credentials could not be verified.')
         }
 
-        const [salt, actualPasswordHashed] = user.password.split(':');
-        const hashedBuffer = scryptSync(passwordAttempt, salt, 64);
-        const keyBuffer = Buffer.from(actualPasswordHashed, 'hex');
-        const isCredentialsValid = timingSafeEqual(hashedBuffer, keyBuffer);
-
-        if (!isCredentialsValid) {
-            throw new Error('Invalid credentials.');
-        }
-
-        const userDocAsObj = user.toObject();
-
-        return { isCredentialsValid: isCredentialsValid, msg: isCredentialsValid ? 'User logged in.' : 'Invalid credentials.', data: userDocAsObj?.roles || [] };
+        return { wasSuccessful: true, userCredentials }
     } catch (error) {
-        console.error('An error has occurred in logging the user in: ', error);
+        console.error('An error has occurred in validating jwt: ', error)
 
-        return { status: 401, isCredentialsValid: false, msg: 'An error has occurred in logging the user in.' }
+        return { wasSuccessful: false, msg: `An error has occurred in validating jwt. Error message: ${error}.` }
     }
 }
 
-function createJwt(user) {
-    const privateKey = process.env.JWT_PRIVATE_KEY
-    const _jwt = jwt.sign(user, privateKey, { algorithm: 'HS256', expiresIn: 86_400_000 });
-
-    return _jwt;
-}
-
-function verifyJwtToken(token) {
+const getIsReqAuthorizedResult = async (request, role = "user") => {
     try {
-        const payloadDecoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY, { algorithms: ['HS256'] });
+        const token = request?.headers?.authorization.split(" ")[1].trim();
+        const validateJwtTokenResult = await validateJwtToken(token);
 
-        return { data: payloadDecoded, msg: 'Token is valid.' };
+        if (!validateJwtTokenResult.wasSuccessful || !validateJwtTokenResult?.userCredentials) {
+            throw new Error(validateJwtTokenResult.msg);
+        }
+
+        console.log("validateJwtTokenResult.userCredentials: ", validateJwtTokenResult.userCredentials)
+
+        const roles = validateJwtTokenResult.userCredentials.claims.allowedRoles;
+        const hasUserRole = roles.find(role => role === 'user');
+        const hasTargetRole = (role !== "user") ? roles.find(role => role === role) : hasUserRole;
+
+        if (hasUserRole && hasTargetRole) {
+            return { isReqAuthorized: true, msg: "User is authorized to access this service." }
+        }
+
+        throw new Error("User is not authorized to access this service.");
     } catch (error) {
-        console.error('The token is invalid: ', error)
+        const errMsg = `An error has occurred in authorizing the request. Error message: ${error}.`
 
-        return { status: 401, msg: 'Token is invalid.' }
+        return { isReqAuthorized: true, msg: errMsg }
     }
 }
 
-function getDoesUserHaveASpecificRole(userRoles, targetRole) {
-    return userRoles.map(({ role }) => role).includes(targetRole)
-}
-
-export { userLogin, createJwt, verifyJwtToken, getDoesUserHaveASpecificRole }
+export { validateJwtToken, getIsReqAuthorizedResult }

@@ -1,38 +1,26 @@
-import { getDoesUserHaveASpecificRole, verifyJwtToken } from '../../backend/services/authServices';
+import { getIsReqAuthorizedResult } from '../../backend/services/authServices';
 import { insertLesson } from '../../backend/services/lessonsServices';
-import { connectToMongodb } from '../../backend/utils/connection';
 
 export default async function handler(request, response) {
-  const { method, headers } = request;
-
-  if (method !== 'POST') {
+  if (request.method !== 'POST') {
     return response.status(404).json({ msg: 'This route only accepts POST requests.' });
   }
 
-  if(headers.authorization === undefined){
-    return response.status(401).json({ msg: 'The authorization header is missing.' });
+  if (!request?.headers?.authorization) {
+    return response.status(401).json({ msg: 'You are not authorized to access this route.' });
   }
 
-  const token = headers.authorization.split(' ')[1];
-  const { status, data: user, msg } = verifyJwtToken(token);
+  const authorizationResult = await getIsReqAuthorizedResult(request, 'dbAdmin');
 
-  if(msg === 'Token is invalid.'){
-    return response.status(status).json({ msg: msg });
+  if (!authorizationResult?.isReqAuthorized || !authorizationResult) {
+    return response.status(401).json({ msg: authorizationResult?.msg ?? 'You are not authorized to access this service.' });
   }
 
-  const canUserWriteToDb = getDoesUserHaveASpecificRole(user.roles, 'readWrite');
-  
-  if(!canUserWriteToDb){
-    return response.status(403).json({ msg: 'The user is not allowed to write to the database.' });
+  if (!Object.keys(request?.body)?.length) {
+    return response.status(400).json({ msg: 'The request body is empty.' });
   }
 
-  try {
-    await connectToMongodb();
-    const { status, msg } = await insertLesson(request.body);
+  const lessonInsertationResult = await insertLesson(request.body);
 
-    return response.status(status).json({ msg: msg });
-  } catch (error) {
-
-    return response.status(500).json({ msg: `Failed to save lesson into the database. Error message: ${error}` });
-  }
+  return response.status(lessonInsertationResult.status).json({ msg: lessonInsertationResult.msg });
 }
