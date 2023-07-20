@@ -1,0 +1,8 @@
+{
+    "rewrites" :[
+        {"source": "/apps/","destination": "https://gp-frontend-lake.vercel.app/lessons"},
+        {"source": "/apps/swimming-in-the-dark","destination": "https://into-the-dark.vercel.app"},
+        {"source": "/", "destination": "https://gp-frontend-lake.vercel.app"},
+        {"source": "/:match*", "destination": "https://gp-frontend-lake.vercel.app/:match*"}
+    ]
+}

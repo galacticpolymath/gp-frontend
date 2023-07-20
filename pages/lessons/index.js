@@ -39,6 +39,7 @@ const LessonsPage = ({ lessons }) => {
       <section className="bg-secondary p-4">
         <div className="text-white col-sm-12 col-md-10 col-lg-8 col-xl-7">
           <h1>Free, Interdisciplinary Lessons</h1>
+          <a src="apps/swimming-in-the-dark">Swimming in the dark app</a>
           <p>We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
         </div>
       </section>
