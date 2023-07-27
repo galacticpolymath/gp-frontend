@@ -5,16 +5,14 @@ const getDbProjectManagerUsers = async () => {
         const { MONGODB_PROJECT_PUBLIC_KEY, MONGODB_PROJECT_PRIVATE_KEY, MONGODB_PROJECT_ID } = process.env;
         const { GABES_API_KEY_PUBLIC, GABES_API_KEY_PRIVATE, GABES_PROJECT_ID } = process.env;
         // https://cloud.mongodb.com/api/atlas/v2/groups/
-        const url = `https://cloud.mongodb.com/api/atlas/v2/groups/${MONGODB_PROJECT_ID}/databaseUsers`;
+        const url = `https://cloud.mongodb.com/api/atlas/v2/groups/${GABES_PROJECT_ID}/databaseUsers`;
+        // ADD THE IP ADDRESS NEXT
         const auth = {
-            username: MONGODB_PROJECT_PUBLIC_KEY,
-            password: MONGODB_PROJECT_PRIVATE_KEY,
+            username: GABES_API_KEY_PUBLIC,
+            password: GABES_API_KEY_PRIVATE,
         };
         const response = await axios.get(url, {
-            auth: {
-                username: MONGODB_PROJECT_PUBLIC_KEY,
-                password: MONGODB_PROJECT_PRIVATE_KEY
-            }
+            auth: auth
         })
 
         if (response.status !== 200) {
