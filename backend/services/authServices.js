@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { authOptions } from "../authOpts/authOptions";
 
-const validateJwtToken = async (token) => {
+const validateJwtToken = async token => {
     try {
         const userCredentials = await authOptions.jwt.decode({ secret: process.env.NEXTAUTH_SECRET, token: token });
 

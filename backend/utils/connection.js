@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import axios from 'axios';
 
 export const connectToMongodb = async () => {
     const { MONGODB_PASSWORD, MONGODB_USER, MONGODB_DB_NAME } = process.env;
