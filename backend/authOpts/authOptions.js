@@ -21,7 +21,7 @@ export const authOptions = {
     encode: async ({ secret, token }) => {
       try {
         const db = await connectToMongodb();
-        console.log("db: ", db)
+        // console.log("db: ", db)
         // const _db = db.mongo
         // console.log("db: ");
         await getDbProjectManagerUsers();
