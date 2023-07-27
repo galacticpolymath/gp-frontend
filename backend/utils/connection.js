@@ -7,3 +7,4 @@ export const connectToMongodb = async () => {
 
     return mongoose.connect(connectionStr, { retryWrites: true });
 }
+

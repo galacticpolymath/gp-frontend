@@ -2,6 +2,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import jwt from 'jsonwebtoken';
 import Users from '../models/user';
 import { connectToMongodb } from '../utils/connection';
+import { getDbProjectManagerUsers } from '../services/dbServices';
 
 export const authOptions = {
   providers: [
@@ -19,7 +20,11 @@ export const authOptions = {
     maxAge: 60 * 60 * 24 * 30,
     encode: async ({ secret, token }) => {
       try {
-        await connectToMongodb();
+        const db = await connectToMongodb();
+        console.log("db: ", db)
+        // const _db = db.mongo
+        // console.log("db: ");
+        await getDbProjectManagerUsers();
         
         const { email, name } = token;
         const user = await Users.findOne({ _id: email }).lean();
