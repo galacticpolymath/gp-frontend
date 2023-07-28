@@ -4,6 +4,8 @@
 
 .env
 
+google-cloud.json
+
 # dependencies
 /node_modules
 /.pnp
