@@ -20,23 +20,9 @@ export const authOptions = {
     maxAge: 60 * 60 * 24 * 30,
     encode: async ({ secret, token }) => {
       try {
-        await connectToMongodb();
-
         const { email, name } = token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
-
-        if(!canUserWriteToDb){
-          console.error('The user has failed authentication.')
-        }
-        
-        const user = await Users.findOne({ _id: email }).lean();
-        let allowedRoles = ['user'];
-
-        if (user) {
-          allowedRoles = [...allowedRoles, ...user.roles.map(({ role }) => role)];
-          allowedRoles = [...new Set(allowedRoles)];
-        }
-
+        let allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
         const jwtClaims = {
           sub: email,
           name,
@@ -46,13 +32,11 @@ export const authOptions = {
           claims: {
             allowedRoles,
             defaultRole: 'user',
-            role: allowedRoles.find((role) => role === 'dbAdmin') ?? 'user',
+            role: allowedRoles.find(role => role === 'dbAdmin') ?? 'user',
             userId: email,
           },
         };
         const encodedToken = jwt.sign(jwtClaims, secret, { algorithm: 'HS256' });
-
-        console.log('jwt was created!')
 
         return encodedToken;
       } catch (error) {
