@@ -2,7 +2,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import jwt from 'jsonwebtoken';
 import Users from '../models/user';
 import { connectToMongodb } from '../utils/connection';
-import { getDbProjectManagerUsers } from '../services/dbServices';
+import { getCanUserWriteToDb } from '../services/googleServices';
 
 export const authOptions = {
   providers: [
@@ -20,13 +20,15 @@ export const authOptions = {
     maxAge: 60 * 60 * 24 * 30,
     encode: async ({ secret, token }) => {
       try {
-        const db = await connectToMongodb();
-        // console.log("db: ", db)
-        // const _db = db.mongo
-        // console.log("db: ");
-        await getDbProjectManagerUsers();
-        
+        await connectToMongodb();
+
         const { email, name } = token;
+        const canUserWriteToDb = await getCanUserWriteToDb(email);
+
+        if(!canUserWriteToDb){
+          console.error('The user has failed authentication.')
+        }
+        
         const user = await Users.findOne({ _id: email }).lean();
         let allowedRoles = ['user'];
 
@@ -49,6 +51,8 @@ export const authOptions = {
           },
         };
         const encodedToken = jwt.sign(jwtClaims, secret, { algorithm: 'HS256' });
+
+        console.log('jwt was created!')
 
         return encodedToken;
       } catch (error) {
