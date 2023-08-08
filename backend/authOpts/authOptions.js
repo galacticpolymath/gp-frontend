@@ -1,6 +1,7 @@
 import GoogleProvider from 'next-auth/providers/google';
 import jwt from 'jsonwebtoken';
 import { getCanUserWriteToDb } from '../services/googleServices';
+import getDbProjectManagerUsers from '../services/dbAuthService';
 
 export const authOptions = {
   providers: [
@@ -19,6 +20,7 @@ export const authOptions = {
     encode: async ({ secret, token }) => {
       try {
         const { email, name } = token;
+        await getDbProjectManagerUsers()
         const canUserWriteToDb = await getCanUserWriteToDb(email);
         let allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
         const jwtClaims = {
