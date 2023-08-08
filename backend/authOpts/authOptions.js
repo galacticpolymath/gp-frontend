@@ -20,7 +20,7 @@ export const authOptions = {
       try {
         const { email, name } = token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
-        let allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
+        const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
         const jwtClaims = {
           sub: email,
           name,
