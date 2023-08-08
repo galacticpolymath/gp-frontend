@@ -1,22 +1,26 @@
 import urllib from 'urllib';
 
-const getDbProjectManagerUsers = async _ => {
+const getCanUserWriteToDb = async clientEmail => {
     try {
         const { GABES_DB_PROJECT_ID, GABES_DB_PASSWORD, GABES_DB_USERNAME } = process.env;
-        // const url = `https://cloud.mongodb.com/api/atlas/v2/groups/${GABES_DB_PROJECT_ID}/users`
-        const url = `https://cloud.mongodb.com/api/atlas/v2/groups/${GABES_DB_PROJECT_ID}/databaseUsers`
-        const options = {
-            method: "GET",
-            rejectUnauthorized: false,
-            digestAuth: `${GABES_DB_USERNAME}:${GABES_DB_PASSWORD}`,
-        };
-        const response = await urllib.request(url, { digestAuth: `${GABES_DB_USERNAME}:${GABES_DB_PASSWORD}`, method: 'GET' })
+        const url = `https://cloud.mongodb.com/api/atlas/v1.0/groups/${GABES_DB_PROJECT_ID}/users`
+        const options = { digestAuth: `${GABES_DB_USERNAME}:${GABES_DB_PASSWORD}` };
+        const response = await urllib.request(url, options);
 
-        console.log('response ', response)
-        console.log('response statusText: ', response.status)
+        if (response.status !== 200) {
+            throw new Error('Failed to get the emails from the db project manager users.');
+        };
+
+        let data = response?.data?.toString();
+        data = JSON.parse(data);
+        const canUserWriteToDb = !!data?.results?.find(({ emailAddress }) => emailAddress === clientEmail);
+
+        return canUserWriteToDb;
     } catch (error) {
-        console.error('An error has occurred getting the project managers users from the db: ', error);
+        console.error('An error has occurred getting the project managers users from the db. The user cannot write to the db. Error message: ', error);
+
+        return false;
     }
 }
 
-export default getDbProjectManagerUsers;
+export default getCanUserWriteToDb;

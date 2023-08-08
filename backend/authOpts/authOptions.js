@@ -1,7 +1,6 @@
 import GoogleProvider from 'next-auth/providers/google';
 import jwt from 'jsonwebtoken';
-import { getCanUserWriteToDb } from '../services/googleServices';
-import getDbProjectManagerUsers from '../services/dbAuthService';
+import getCanUserWriteToDb from '../services/dbAuthService';
 
 export const authOptions = {
   providers: [
@@ -20,8 +19,9 @@ export const authOptions = {
     encode: async ({ secret, token }) => {
       try {
         const { email, name } = token;
-        await getDbProjectManagerUsers()
+        console.log('email: ', email)
         const canUserWriteToDb = await getCanUserWriteToDb(email);
+        console.log('canUserWriteToDb: ', canUserWriteToDb)
         let allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
         const jwtClaims = {
           sub: email,
@@ -40,7 +40,7 @@ export const authOptions = {
 
         return encodedToken;
       } catch (error) {
-        throw new Error('Unable to generate JWT.');
+        throw new Error('Unable to generate JWT. Error message: ', error);
       }
     },
     decode: async ({ secret, token }) => {
