@@ -1,7 +1,5 @@
 import GoogleProvider from 'next-auth/providers/google';
 import jwt from 'jsonwebtoken';
-import Users from '../models/user';
-import { connectToMongodb } from '../utils/connection';
 import { getCanUserWriteToDb } from '../services/googleServices';
 
 export const authOptions = {
