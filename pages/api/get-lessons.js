@@ -6,9 +6,7 @@ export default async function handler(request, response) {
   }
 
   try {
-    const connection = await connectToMongodb();
-
-    console.log('connection: ', connection)
+    await connectToMongodb();
 
     return response.status(200).json({ msg: 'Lessons are retrieved.', lessons: [] });
   } catch (error) {
