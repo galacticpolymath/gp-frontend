@@ -2,9 +2,9 @@ import urllib from 'urllib';
 
 const getCanUserWriteToDb = async clientEmail => {
     try {
-        const { GABES_DB_PROJECT_ID, GABES_DB_PASSWORD, GABES_DB_USERNAME } = process.env;
-        const url = `https://cloud.mongodb.com/api/atlas/v1.0/groups/${GABES_DB_PROJECT_ID}/users`
-        const options = { digestAuth: `${GABES_DB_USERNAME}:${GABES_DB_PASSWORD}` };
+        const { MONGODB_PROJECT_ID, MONGODB_PROJECT_PRIVATE_KEY, MONGODB_PROJECT_PUBLIC_KEY } = process.env;
+        const url = `https://cloud.mongodb.com/api/atlas/v1.0/groups/${MONGODB_PROJECT_ID}/users`
+        const options = { digestAuth: `${MONGODB_PROJECT_PUBLIC_KEY}:${MONGODB_PROJECT_PRIVATE_KEY}` };
         const response = await urllib.request(url, options);
 
         if (response.status !== 200) {

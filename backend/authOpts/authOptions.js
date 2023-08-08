@@ -19,9 +19,7 @@ export const authOptions = {
     encode: async ({ secret, token }) => {
       try {
         const { email, name } = token;
-        console.log('email: ', email)
         const canUserWriteToDb = await getCanUserWriteToDb(email);
-        console.log('canUserWriteToDb: ', canUserWriteToDb)
         let allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
         const jwtClaims = {
           sub: email,
