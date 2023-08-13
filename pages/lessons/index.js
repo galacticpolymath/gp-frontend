@@ -7,9 +7,15 @@ import React from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import LessonCard from '../../components/LessonsPg/LessonCard';
+import Lessons from '../../backend/models/lesson.js'
+import moment from 'moment/moment';
 import { useEffect } from 'react';
 
 const LessonsPage = ({ lessons }) => {
+
+  useEffect(() => {
+    console.log('lessons: ', lessons)
+  })
 
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
@@ -17,11 +23,11 @@ const LessonsPage = ({ lessons }) => {
 
   const uniqueIDs = [];
 
-  const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
-    const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
+  const publishedLessons = lessons.filter(({ PublicationStatus, _id }) => {
+    const willShowLesson = !uniqueIDs.includes(_id) && (PublicationStatus === 'Live');
 
     if (willShowLesson) {
-      uniqueIDs.push(id);
+      uniqueIDs.push(_id);
     }
 
     return willShowLesson;
@@ -84,15 +90,41 @@ const LessonsPage = ({ lessons }) => {
   );
 };
 
-export async function getStaticProps() {
-  // put this in a try catch block and handle errors
-  // get the lesssons from the database in this fn
-  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
-  let lessons = await res.json();
-  lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
-  lessons.sort((lessonA, lessonB) => new Date(lessonB.ReleaseDate) - new Date(lessonA.ReleaseDate));
+const PROJECTED_FIELDS = [
+  'CoverImage',
+  'SubTitle',
+  'Title',
+  'Section.overview.TargetSubject',
+  'Section.overview.GradesOrYears',
+  'Section.overview.ForGrades',
+  'ReleaseDate',
+  'locale',
+  'id',
+  'PublicationStatus',
+]
 
-  return { props: { lessons } };
+export async function getStaticProps() {
+  try {
+    let lessons = await Lessons.find({}, PROJECTED_FIELDS).sort({ ReleaseDate: -1 }).lean();
+    lessons = lessons.map(lesson => ({
+      ...lesson,
+      ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD')
+    }))
+    // console.log('lessonsInDB?.[0]?.ReleaseDate: ', lessonsInDB?.[0]?.ReleaseDate)
+    // const res = await fetch('https://catalog.galacticpolymath.com/index.json');
+    // let lessons = await res.json();
+    lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
+    console.log('lessons: ', lessons)
+    // lessons.sort((lessonA, lessonB) => new Date(lessonB.ReleaseDate) - new Date(lessonA.ReleaseDate));
+
+    // console.log('lessons?.[0]?.ReleaseDate: ', lessons?.[0]?.ReleaseDate)
+
+    return { props: { lessons } };
+  } catch (error) {
+    console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
+
+    return { props: { lessons: [] } };
+  }
 }
 
 export default LessonsPage;
