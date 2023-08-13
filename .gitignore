@@ -6,6 +6,8 @@
 
 google-cloud.json
 
+tasks.taskpaper
+
 # dependencies
 /node_modules
 /.pnp
