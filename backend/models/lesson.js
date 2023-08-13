@@ -46,7 +46,8 @@ if (!Lessons) {
         SponsorLogo: [String],
         LessonBanner: String,
         TargetSubject: String,
-        LessonEnvir: String,
+        // NOTES: can be string or a string array
+        LessonEnvir: Schema.Types.Mixed,
         ForGrades: String,
         GradesOrYears: String,
         SponsorImage: {
