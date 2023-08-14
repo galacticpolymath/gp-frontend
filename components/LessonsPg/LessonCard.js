@@ -4,13 +4,12 @@ import Link from 'next/link';
 const MILISECONDS_IN_A_MONTH = 2_592_000_000;
 
 const LessonCard = ({ lesson }) => {
-  const { locale, id, CoverImage, Subtitle, Title, Section, ReleaseDate } = lesson;
+  const { locale, numId, CoverImage, Subtitle, Title, Section, ReleaseDate } = lesson;
   const isNew = (new Date() - new Date(ReleaseDate)) < MILISECONDS_IN_A_MONTH;
 
   return (
     <Link
-      key={locale + id}
-      href={`/lessons/${locale}/${id}`}
+      href={`/lessons/${locale}/${numId}`}
       className='w-100 pointer disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
     >
       <div className="position-relative">

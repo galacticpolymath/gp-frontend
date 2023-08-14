@@ -29,11 +29,11 @@ const LessonsPage = ({ lessons }) => {
 
   const uniqueIDs = [];
 
-  const publishedLessons = lessons.filter(({ PublicationStatus, _id }) => {
-    const willShowLesson = !uniqueIDs.includes(_id) && (PublicationStatus === 'Live');
+  const publishedLessons = lessons.filter(({ PublicationStatus, numId }) => {
+    const willShowLesson = !uniqueIDs.includes(numId) && (PublicationStatus === 'Live');
 
     if (willShowLesson) {
-      uniqueIDs.push(_id);
+      uniqueIDs.push(numId);
     }
 
     return willShowLesson;
@@ -86,9 +86,7 @@ const LessonsPage = ({ lessons }) => {
             <h4 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h4>
           </section>
           <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-            {publishedLessons.map((lesson) => (
-              <LessonCard key={lesson._id} lesson={lesson} />
-            ))}
+            {publishedLessons.map((lesson) => <LessonCard key={lesson._id} lesson={lesson} />)}
           </div>
         </section>
       </div>
@@ -106,6 +104,7 @@ const PROJECTED_LESSONS_FIELDS = [
   'ReleaseDate',
   'locale',
   '_id',
+  'numId',
   'PublicationStatus',
 ]
 
@@ -113,10 +112,13 @@ const PROJECTED_LESSONS_FIELDS = [
 
 export async function getStaticProps() {
   try {
-    const res = await fetch('https://gp-catalog.vercel.app/index.json');
-    let lessons = await res.json();
-    lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
-    lessons.sort((lessonA, lessonB) => new Date(lessonB.ReleaseDate) - new Date(lessonA.ReleaseDate));
+    await connectToMongodb();
+
+    let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
+    lessons = lessons.map(lesson => ({
+      ...lesson,
+      ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD')
+    }));
 
     return { props: { lessons: lessons } };
   } catch (error) {
