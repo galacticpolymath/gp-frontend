@@ -5,8 +5,8 @@ let Lessons = models?.lessons;
 
 if (!Lessons) {
     const LessonSchema = new Schema({
-        _id: { type: Number, required: true },
-        UniqueID: String,
+        _id: { type: String, required: true },
+        numId: { type: Number, required: true },
         ShortTitle: String,
         PublicationStatus: String,
         Language: String,
