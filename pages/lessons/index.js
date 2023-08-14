@@ -113,7 +113,7 @@ export async function getStaticProps() {
     // console.log('lessonsInDB?.[0]?.ReleaseDate: ', lessonsInDB?.[0]?.ReleaseDate)
     // const res = await fetch('https://catalog.galacticpolymath.com/index.json');
     // let lessons = await res.json();
-    lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
+    // lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
     console.log('lessons: ', lessons)
     // lessons.sort((lessonA, lessonB) => new Date(lessonB.ReleaseDate) - new Date(lessonA.ReleaseDate));
 
