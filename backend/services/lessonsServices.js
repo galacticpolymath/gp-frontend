@@ -10,7 +10,9 @@ const insertLesson = async lesson => {
 
         saveResult.validateSync()
 
-        return { status: 200, msg: `Lesson '${lesson.Title}' was successfully saved into the database!` }
+        const { Title, _id } = lesson;
+
+        return { status: 200, msg: `Lesson '${Title}' (${_id}) was successfully saved into the database!` }
     } catch (error) {
         const errMsg = `Failed to save lesson into the database. Error message: ${error}`
 
