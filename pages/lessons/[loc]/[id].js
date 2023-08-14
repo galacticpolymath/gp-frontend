@@ -44,7 +44,7 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
   return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
 }
 
-const LessonDetails = ({ lesson, availLocs, oldLesson, lessons }) => {
+const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
   const router = useRouter()
@@ -150,13 +150,6 @@ const LessonDetails = ({ lesson, availLocs, oldLesson, lessons }) => {
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
   const layoutProps = { title: `Lesson Plan: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
-  const handleBannerImgError = () => {
-    setImgBannerSrcOnError(oldLesson.CoverImage.url);
-  }
-
-  const handleImgSponsorSrcOnError = () => {
-    setImgSponsorSrcOnError(oldLesson.SponsorImage.url);
-  }
 
   useEffect(() => {
     if (willGoToTargetSection) {
@@ -199,13 +192,12 @@ const LessonDetails = ({ lesson, availLocs, oldLesson, lessons }) => {
             {(lesson.CoverImage && lesson.CoverImage.url) && (
               <div className='w-100 position-relative mt-2 mb-2'>
                 <Image
-                  src={imgBannerSrcOnError ?? lesson.CoverImage.url}
+                  src={lesson.CoverImage.url}
                   alt={lesson.Subtitle}
                   width={1500}
                   height={450}
                   priority
                   style={{ width: "100%", height: "auto", objectFit: 'contain' }}
-                  onError={handleBannerImgError}
                 />
               </div>
             )}
@@ -222,13 +214,12 @@ const LessonDetails = ({ lesson, availLocs, oldLesson, lessons }) => {
                 {lesson.SponsorImage && lesson.SponsorImage.url && (
                   <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
                     <Image
-                      src={Array.isArray(lesson.SponsorImage.url) ? (imgSponsorSrcOnError ?? lesson.SponsorImage.url[0]) : (imgSponsorSrcOnError ?? lesson.SponsorImage.url)}
+                      src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                       alt={lesson.Subtitle}
                       className='sponsorImg'
                       sizes="225px"
                       fill
                       style={{ width: "100%", objectFit: 'contain' }}
-                      onError={handleImgSponsorSrcOnError}
                     />
                   </div>
                 )}

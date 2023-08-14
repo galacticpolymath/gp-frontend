@@ -14,16 +14,10 @@ const LearningChart = ({
   Badge,
   _sectionDots,
   SectionTitle,
-  oldLessonImgUrlsObj,
 }) => {
   const ref = useRef();
-  const [backUpImgUrl, setBackUpImgUrl] = useState(null);
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
-
-  const handleImgError = () => {
-    setBackUpImgUrl(oldLessonImgUrlsObj.Badge);
-  };
 
   return (
     <div
@@ -42,7 +36,6 @@ const LearningChart = ({
             height: 'auto',
           }}
           alt="Learning Standards Chart"
-          onError={handleImgError}
         />
       </div>
       <Accordion
