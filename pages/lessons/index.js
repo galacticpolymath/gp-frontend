@@ -22,13 +22,18 @@ const LessonsPage = ({ lessons }) => {
     window.location.href = '/job-viz';
   };
 
+  // GOAL: change the uniqueIDs to uniqueNumIds
+  // BRAIN DUMP:
+  // put all of the num ids into the array below
+  // if the num _id is already in the array, then don't show the lesson
+
   const uniqueIDs = [];
 
-  const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
-    const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
+  const publishedLessons = lessons.filter(({ PublicationStatus, _id }) => {
+    const willShowLesson = !uniqueIDs.includes(_id) && (PublicationStatus === 'Live');
 
     if (willShowLesson) {
-      uniqueIDs.push(id);
+      uniqueIDs.push(_id);
     }
 
     return willShowLesson;

@@ -270,12 +270,11 @@ export const getStaticPaths = async () => {
 // get the id of the specific lesson that the user is on and use it get the target lesson from the database 
 // within getStaticProps, get the lesson that the user is viewing by retrieving the id in the params of the url
 // using the id, retrieve the lesson from the database
+// query the lessons by the numId of the lesson and loc of the lesson
 
 
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  // GOAL: send the lesson down to the client side
-  // the lesson is retrieved from the database via its id
   const [newLessonsResponse, oldLessonResponse] = await Promise.all([fetch(lessonsUrl), fetch(oldLessonsUrl)]);
   const [oldLessons, lessons] = await Promise.all([oldLessonResponse.json(), newLessonsResponse.json()])
   const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
