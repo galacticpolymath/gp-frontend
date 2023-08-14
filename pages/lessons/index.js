@@ -24,11 +24,11 @@ const LessonsPage = ({ lessons }) => {
 
   const uniqueIDs = [];
 
-  const publishedLessons = lessons.filter(({ PublicationStatus, _id }) => {
-    const willShowLesson = !uniqueIDs.includes(_id) && (PublicationStatus === 'Live');
+  const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
+    const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
 
     if (willShowLesson) {
-      uniqueIDs.push(_id);
+      uniqueIDs.push(id);
     }
 
     return willShowLesson;
@@ -104,16 +104,15 @@ const PROJECTED_LESSONS_FIELDS = [
   'PublicationStatus',
 ]
 
+
+
 export async function getStaticProps() {
   try {
-    await connectToMongodb();
+    const res = await fetch('https://gp-catalog.vercel.app/index.json');
+    let lessons = await res.json();
+    lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
+    lessons.sort((lessonA, lessonB) => new Date(lessonB.ReleaseDate) - new Date(lessonA.ReleaseDate));
 
-    let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
-    lessons = lessons.map(lesson => ({
-      ...lesson,
-      ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD')
-    }));
-   
     return { props: { lessons: lessons } };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
