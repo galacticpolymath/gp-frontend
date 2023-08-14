@@ -1,7 +1,7 @@
 import Mongoose from 'mongoose';
 const { Schema, models, model } = Mongoose;
 
-let Lessons = models.lessons;
+let Lessons = models?.lessons;
 
 if (!Lessons) {
     const LessonSchema = new Schema({

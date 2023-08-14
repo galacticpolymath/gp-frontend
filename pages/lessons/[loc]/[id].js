@@ -45,10 +45,6 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 }
 
 const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
-  useEffect(() => {
-    console.log("lesson: ", lesson)
-  })
-
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
   const router = useRouter()
@@ -125,13 +121,6 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
     }
   }
 
-  useEffect(() => {
-    if (willGoToTargetSection) {
-      scrollSectionIntoView(sectionDots.clickedSectionId)
-      setWillGoToTargetSection(false)
-    }
-  }, [willGoToTargetSection])
-
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
     const viewPortWidth = getViewportWidth()
@@ -154,12 +143,6 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
 
   const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
-  useEffect(() => {
-    document.body.addEventListener('click', handleDocumentClick);
-
-    return () => document.body.removeEventListener('click', handleDocumentClick);
-  }, [])
-
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [imgBannerSrcOnError, setImgBannerSrcOnError] = useState(null);
   const [imgSponsorSrcOnError, setImgSponsorSrcOnError] = useState(null);
@@ -174,6 +157,19 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
   const handleImgSponsorSrcOnError = () => {
     setImgSponsorSrcOnError(oldLesson.SponsorImage.url);
   }
+
+  useEffect(() => {
+    if (willGoToTargetSection) {
+      scrollSectionIntoView(sectionDots.clickedSectionId)
+      setWillGoToTargetSection(false)
+    }
+  }, [willGoToTargetSection])
+
+  useEffect(() => {
+    document.body.addEventListener('click', handleDocumentClick);
+
+    return () => document.body.removeEventListener('click', handleDocumentClick);
+  }, [])
 
   return (
     <Layout {...layoutProps}>
