@@ -30,7 +30,7 @@ const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
 
   if (!versionSection) return null;
-  
+
   const lastRelease = versionSection.Data[versionSection?.Data?.length - 1].sub_releases;
   const lastSubRelease = lastRelease[lastRelease?.length - 1];
   return lastSubRelease;
@@ -44,7 +44,7 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
   return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
 }
 
-const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
+const LessonDetails = ({ lesson, availLocs, oldLesson, lessons }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
   const router = useRouter()
@@ -166,6 +166,7 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
   }, [willGoToTargetSection])
 
   useEffect(() => {
+    console.log('lessons: ', lessons)
     document.body.addEventListener('click', handleDocumentClick);
 
     return () => document.body.removeEventListener('click', handleDocumentClick);
@@ -256,7 +257,7 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
 };
 
 export const getStaticPaths = async () => {
-  const res = await fetch(lessonsUrl);  
+  const res = await fetch(lessonsUrl);
   const lessons = await res.json();
   const paths = lessons.map(lesson => ({
     params: { id: `${lesson.id}`, loc: `${lesson.locale}` },
@@ -265,25 +266,23 @@ export const getStaticPaths = async () => {
   return { paths, fallback: false };
 };
 
+// BRAIN DUMP NOTES: 
+// get the id of the specific lesson that the user is on and use it get the target lesson from the database 
+// within getStaticProps, get the lesson that the user is viewing by retrieving the id in the params of the url
+// using the id, retrieve the lesson from the database
+
+
+
 export const getStaticProps = async ({ params: { id, loc } }) => {
+  // GOAL: send the lesson down to the client side
+  // the lesson is retrieved from the database via its id
   const [newLessonsResponse, oldLessonResponse] = await Promise.all([fetch(lessonsUrl), fetch(oldLessonsUrl)]);
   const [oldLessons, lessons] = await Promise.all([oldLessonResponse.json(), newLessonsResponse.json()])
   const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const oldLesson = oldLessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
   const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
 
-  if (!lesson?.Section?.procedure?.Data) {
-    return oldLesson ? { props: { lesson, availLocs, oldLesson } } : { props: { lesson, availLocs } };
-  }
-
-  lesson.Section['teaching-materials'].Data = {
-    ...lesson.Section.procedure.Data,
-    ...lesson.Section['teaching-materials'].Data,
-  };
-
-  console.log("lesson: ", lesson)
-
-  return { props: { lesson, availLocs, oldLesson } };
+  return { props: { lesson, availLocs, oldLesson, lessons } };
 };
 
 export default LessonDetails;
