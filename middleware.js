@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getIsReqAuthorizedResult } from "./backend/services/authServices";
 
 export async function middleware(request) {
+    console.log('hey there: ', request)
     const { nextUrl, method, headers } = request;
 
     if ((nextUrl.pathname == "/api/insert-lesson") && (method !== 'POST')) {

@@ -2,21 +2,7 @@ import { getIsReqAuthorizedResult } from '../../backend/services/authServices';
 import { insertLesson } from '../../backend/services/lessonsServices';
 
 export default async function handler(request, response) {
-  if (request.method !== 'POST') {
-    return response.status(404).json({ msg: 'This route only accepts POST requests.' });
-  }
-
-  if (!request?.headers?.authorization) {
-    return response.status(401).json({ msg: 'You are not authorized to access this route.' });
-  }
-
-  const authorizationResult = await getIsReqAuthorizedResult(request, 'dbAdmin');
-
-  if (!authorizationResult?.isReqAuthorized) {
-    return response.status(403).json({ msg: authorizationResult?.msg ?? 'You are not authorized to access this service.' });
-  }
-
-  if (!Object.keys(request?.body)?.length) {
+  if (!request?.body || !Object.keys(request?.body)?.length) {
     return response.status(400).json({ msg: 'The request body is empty.' });
   }
 
