@@ -30,6 +30,7 @@
     "googleapis": "^118.0.0",
     "graphql": "^16.6.0",
     "jest": "^29.5.0",
+    "jose": "^4.14.4",
     "jsonwebtoken": "^9.0.1",
     "latest-version": "^7.0.0",
     "lodash.throttle": "^4.1.1",
