@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { getIsReqAuthorizedResult } from "./backend/services/authServices";
 
-export default async function middleware(request) {
-    console.log('request: ', request)
-    console.log('nextUrl: ', nextUrl)
+export async function middleware(request) {
     const { nextUrl, method, headers } = request;
 
     if ((nextUrl.pathname == "/api/insert-lesson") && (method !== 'POST')) {
@@ -30,3 +28,7 @@ export default async function middleware(request) {
 
     return new NextResponse("Invalid request parameters or body.", { status: 404 })
 }
+
+export const config = {
+    matcher: ['/api/insert-lesson', '/api/delete-lesson/:id'],
+  }
