@@ -22,6 +22,8 @@ import { useRouter } from 'next/router';
 import useScrollHandler from '../../../customHooks/useScrollHandler';
 import { lessonsUrl, oldLessonsUrl } from '../../../apiGlobalVals';
 import Link from 'next/link';
+import Lessons from '../../../backend/models/lesson';
+import { connectToMongodb } from '../../../backend/utils/connection';
 
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
@@ -144,8 +146,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
   const [wasDotClicked, setWasDotClicked] = useState(false)
-  const [imgBannerSrcOnError, setImgBannerSrcOnError] = useState(null);
-  const [imgSponsorSrcOnError, setImgSponsorSrcOnError] = useState(null);
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
   const layoutProps = { title: `Lesson Plan: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
@@ -159,7 +159,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }, [willGoToTargetSection])
 
   useEffect(() => {
-    console.log('lessons: ', lessons)
     document.body.addEventListener('click', handleDocumentClick);
 
     return () => document.body.removeEventListener('click', handleDocumentClick);
@@ -184,7 +183,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
               <LocDropdown
                 availLocs={availLocs}
                 loc={lesson.locale}
-                id={lesson.id}
+                id={lesson.numId}
               />
             </div>
             <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
@@ -238,7 +237,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
               _sectionDots={[sectionDots, setSectionDots]}
               _wasDotClicked={[wasDotClicked, setWasDotClicked]}
               _isScrollListenerOn={[isScrollListenerOn, setIsScrollListenerOn]}
-              oldLesson={oldLesson}
             />
           ))}
         </div>
@@ -248,31 +246,35 @@ const LessonDetails = ({ lesson, availLocs }) => {
 };
 
 export const getStaticPaths = async () => {
-  const res = await fetch(lessonsUrl);
-  const lessons = await res.json();
-  const paths = lessons.map(lesson => ({
-    params: { id: `${lesson.id}`, loc: `${lesson.locale}` },
-  }));
+  try {
+    await connectToMongodb()
 
-  return { paths, fallback: false };
+    const lessons = await Lessons.find({}, { numId: 1, locale: 1, _id: 0 }).lean()
+
+    return {
+      paths: lessons.map(({ numId, locale }) => ({
+        params: { id: `${numId}`, loc: `${locale}` },
+      })),
+      fallback: false
+    };
+  } catch (error) {
+    console.error('An error has occurred in getting the available paths for the selected lesson page. Error message: ', error)
+  }
 };
 
-// BRAIN DUMP NOTES: 
-// get the id of the specific lesson that the user is on and use it get the target lesson from the database 
-// within getStaticProps, get the lesson that the user is viewing by retrieving the id in the params of the url
-// using the id, retrieve the lesson from the database
-// query the lessons by the numId of the lesson and loc of the lesson
-
-
-
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  const [newLessonsResponse, oldLessonResponse] = await Promise.all([fetch(lessonsUrl), fetch(oldLessonsUrl)]);
-  const [oldLessons, lessons] = await Promise.all([oldLessonResponse.json(), newLessonsResponse.json()])
-  const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
-  const oldLesson = oldLessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
-  const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
+  await connectToMongodb()
+  
+  const targetLessons = await Lessons.find({ numId: id }, { __v: 0 })
+  const targetLessonLocales = targetLessons.map(({ locale }) => locale)
+  const targetLesson = targetLessons.find(({ numId, locale }) => ((numId === parseInt(id)) && (locale === loc)))
 
-  return { props: { lesson, availLocs, oldLesson, lessons } };
+  return {
+    props: {
+      lesson: JSON.parse(JSON.stringify(targetLesson)),
+      availLocs: targetLessonLocales
+    }
+  };
 };
 
 export default LessonDetails;

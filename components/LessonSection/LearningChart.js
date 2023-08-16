@@ -27,7 +27,7 @@ const LearningChart = ({
     >
       <div className="chartContainer position-relative w-100">
         <Image
-          src={backUpImgUrl ?? Badge.url}
+          src={Badge.url}
           width={1400}
           height={900}
           style={{

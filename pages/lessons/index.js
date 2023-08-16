@@ -108,8 +108,6 @@ const PROJECTED_LESSONS_FIELDS = [
   'PublicationStatus',
 ]
 
-
-
 export async function getStaticProps() {
   try {
     await connectToMongodb();
