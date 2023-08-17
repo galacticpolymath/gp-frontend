@@ -1,15 +1,10 @@
-/* eslint-disable no-console */
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
-
-// GOAL: pass the object that contains the old lesson data for the current lesson 
-
-// get where the Overview comp is rendered 
 
 const Overview = ({
   index,

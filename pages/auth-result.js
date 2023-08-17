@@ -43,8 +43,6 @@ const AuthResultPg = () => {
     );
   }
 
-  console.log('session: ', session)
-
   return (
     <Layout>
       <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container">

@@ -9,26 +9,15 @@ import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import LessonCard from '../../components/LessonsPg/LessonCard';
 import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
-import { useEffect } from 'react';
 import { connectToMongodb } from '../../backend/utils/connection';
 
 const LessonsPage = ({ lessons }) => {
-
-  useEffect(() => {
-    console.log('lessons: ', lessons)
-  })
 
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
   };
 
-  // GOAL: change the uniqueIDs to uniqueNumIds
-  // BRAIN DUMP:
-  // put all of the num ids into the array below
-  // if the num _id is already in the array, then don't show the lesson
-
   const uniqueIDs = [];
-
   const publishedLessons = lessons.filter(({ PublicationStatus, numId }) => {
     const willShowLesson = !uniqueIDs.includes(numId) && (PublicationStatus === 'Live');
 
@@ -115,7 +104,7 @@ export async function getStaticProps() {
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
     lessons = lessons.map(lesson => ({
       ...lesson,
-      ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD')
+      ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
     }));
 
     return { props: { lessons: lessons } };

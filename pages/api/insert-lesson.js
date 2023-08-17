@@ -1,4 +1,3 @@
-import { getIsReqAuthorizedResult } from '../../backend/services/authServices';
 import { insertLesson } from '../../backend/services/lessonsServices';
 
 export default async function handler(request, response) {

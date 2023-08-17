@@ -20,7 +20,6 @@ import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavD
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
 import useScrollHandler from '../../../customHooks/useScrollHandler';
-import { lessonsUrl, oldLessonsUrl } from '../../../apiGlobalVals';
 import Link from 'next/link';
 import Lessons from '../../../backend/models/lesson';
 import { connectToMongodb } from '../../../backend/utils/connection';
@@ -150,7 +149,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
   const layoutProps = { title: `Lesson Plan: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
-
   useEffect(() => {
     if (willGoToTargetSection) {
       scrollSectionIntoView(sectionDots.clickedSectionId)
@@ -255,7 +253,7 @@ export const getStaticPaths = async () => {
       paths: lessons.map(({ numId, locale }) => ({
         params: { id: `${numId}`, loc: `${locale}` },
       })),
-      fallback: false
+      fallback: false,
     };
   } catch (error) {
     console.error('An error has occurred in getting the available paths for the selected lesson page. Error message: ', error)
@@ -272,8 +270,8 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   return {
     props: {
       lesson: JSON.parse(JSON.stringify(targetLesson)),
-      availLocs: targetLessonLocales
-    }
+      availLocs: targetLessonLocales,
+    },
   };
 };
 
