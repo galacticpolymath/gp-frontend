@@ -1,6 +1,35 @@
 import GoogleProvider from 'next-auth/providers/google';
 import jwt from 'jsonwebtoken';
 import getCanUserWriteToDb from '../services/dbAuthService';
+import { SignJWT, jwtVerify } from 'jose'
+
+const getTokenVerificationResult = async token => {
+    try {
+
+        const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
+
+        console.log('payload: ', payload)
+        // run some checks on the returned payload, perhaps you expect some specific values
+        
+        // if its all good, return it, or perhaps just return a boolean
+        return { wasSuccessful: true, userCredentials: payload };
+    } catch(error){
+
+        return { wasSuccessful: false, msg: `An error has occurred in validating jwt. Error message: ${error}.` };
+    }
+}
+
+export const signJwt = async (payload, secret) => {
+  const issueAtTime = Date.now() / 1000 // issued at time
+  const expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60 // 24 hours
+
+  return new SignJWT({ payload: payload })
+    .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
+    .setExpirationTime(expirationTime)
+    .setIssuedAt(issueAtTime)
+    .setNotBefore(issueAtTime)
+    .sign(new TextEncoder().encode(secret));
+}
 
 export const authOptions = {
   providers: [
@@ -34,7 +63,11 @@ export const authOptions = {
             userId: email,
           },
         };
-        const encodedToken = jwt.sign(jwtClaims, secret, { algorithm: 'HS256' });
+        const encodedToken = await signJwt({ email, roles: allowedRoles, name }, secret);
+        console.log('encodedToken: ', encodedToken)
+        const decodedToken = await jwtVerify(encodedToken, new TextEncoder().encode(secret));
+
+        console.log('decodedToken: ', decodedToken)
 
         return encodedToken;
       } catch (error) {
