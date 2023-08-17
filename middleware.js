@@ -1,21 +1,20 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from 'jose'
 
-export const getTokenVerificationResult = async token => {
+
+const getTokenPayload = async token => {
     try {
-
-        const { payload } = await jwtVerify(token, process.env.NEXTAUTH_SECRET);
-
-        console.log('payload: ', payload)
-        // run some checks on the returned payload, perhaps you expect some specific values
+        const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
         
-        // if its all good, return it, or perhaps just return a boolean
-        return { wasSuccessful: true, userCredentials: payload };
+        return payload;
     } catch(error){
+        console.error('An error has occurred in validating jwt. Error message: ', error)
 
-        return { wasSuccessful: false, msg: `An error has occurred in validating jwt. Error message: ${error}.` };
+        return null;
     }
 }
+
+const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
 
 export async function middleware(request) {
     const { nextUrl, method, headers } = request;
@@ -31,22 +30,16 @@ export async function middleware(request) {
 
     if ((nextUrl.pathname == "/api/insert-lesson") && (method === 'POST') && authorizationStr) {
         const token = authorizationStr.split(" ")[1].trim();
-        console.log('token: ', token)
-        const result = await getTokenVerificationResult(token);
+        const payload = await getTokenPayload(token);
+        console.log('payload: ', payload)
+        const isUserDbAdmin = getDoesUserHaveSpecifiedRole(payload.roles, 'dbAdmin');
+        console.log('isUserDbAdmin: ', isUserDbAdmin)
+        
+        if (!isUserDbAdmin) {
+            return new NextResponse("You are not authorized to access this service.", { status: 403 })
+        }
 
-        console.log('result: ', result)
-
-        // const authorizationResult = await getIsReqAuthorizedResult(request, 'dbAdmin');
-
-        // if (!authorizationResult?.isReqAuthorized) {
-        //     return new NextResponse("You are not authorized to access this service.", { status: 403 })
-        // }
-
-        // if (!Object.keys(request?.body)?.length) {
-        // }
-        return new NextResponse("The request body is empty.", { status: 400 })
-
-        // return NextResponse.next();
+        return NextResponse.next();
     }
 
     return new NextResponse("Invalid request parameters or body.", { status: 404 })

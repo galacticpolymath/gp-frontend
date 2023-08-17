@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import { authOptions } from "../authOpts/authOptions";
 
 const validateJwtToken = async token => {

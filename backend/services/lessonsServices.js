@@ -5,10 +5,10 @@ const insertLesson = async lesson => {
     try {
         await connectToMongodb();
 
-        const newLesson = new Lessons({ ...lesson });
-        const saveResult = await newLesson.save();
+        const newLesson = new Lessons(lesson);
+        // const saveResult = await newLesson.save();
 
-        saveResult.validateSync()
+        // saveResult.validateSync()
 
         const { Title, _id } = lesson;
 
