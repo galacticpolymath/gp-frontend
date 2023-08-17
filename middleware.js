@@ -1,19 +1,6 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from 'jose'
 
-
-const getTokenPayload = async token => {
-    try {
-        const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
-        
-        return payload;
-    } catch(error){
-        console.error('An error has occurred in validating jwt. Error message: ', error)
-
-        return null;
-    }
-}
-
 const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
 
 export async function middleware(request) {
@@ -30,11 +17,15 @@ export async function middleware(request) {
 
     if ((nextUrl.pathname == "/api/insert-lesson") && (method === 'POST') && authorizationStr) {
         const token = authorizationStr.split(" ")[1].trim();
-        const payload = await getTokenPayload(token);
-        console.log('payload: ', payload)
+        const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
+
+        if (!payload) {
+            return new NextResponse("You are not authorized to access this service.", { status: 403 })
+        }
+
         const isUserDbAdmin = getDoesUserHaveSpecifiedRole(payload.roles, 'dbAdmin');
         console.log('isUserDbAdmin: ', isUserDbAdmin)
-        
+
         if (!isUserDbAdmin) {
             return new NextResponse("You are not authorized to access this service.", { status: 403 })
         }
@@ -47,4 +38,4 @@ export async function middleware(request) {
 
 export const config = {
     matcher: ['/api/insert-lesson', '/api/delete-lesson/:id'],
-  }
+}

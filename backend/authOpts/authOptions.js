@@ -31,7 +31,6 @@ export const authOptions = {
     maxAge: 60 * 60 * 24 * 30,
     encode: async ({ secret, token }) => {
       try {
-        console.log('token, hey there: ', token)
         const { email, name } = token?.payload ?? token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
         const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
@@ -58,10 +57,8 @@ export const authOptions = {
       return Promise.resolve(token);
     },
     async session({ session, token }) {
-      console.log('token: ', token)
       const { email, roles, name } = token.payload;
       const encodedToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET);
-      console.log('encodedToken: ', encodedToken)
       session.id = token.id;
       session.token = encodedToken;
 
