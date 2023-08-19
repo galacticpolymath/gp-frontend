@@ -260,10 +260,11 @@ export const getStaticPaths = async () => {
   }
 };
 
+
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  await connectToMongodb()
-  
-  const targetLessons = await Lessons.find({ numId: id }, { __v: 0 })
+  await connectToMongodb();
+
+  const targetLessons = await Lessons.find({ numId: id }, { __v: 0 }).lean();
   const targetLessonLocales = targetLessons.map(({ locale }) => locale)
   const targetLesson = targetLessons.find(({ numId, locale }) => ((numId === parseInt(id)) && (locale === loc)))
 

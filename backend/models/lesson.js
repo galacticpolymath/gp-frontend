@@ -3,6 +3,8 @@ const { Schema, models, model } = Mongoose;
 
 let Lessons = models?.lessons;
 
+// fields that have dates as the value: ReleaseDate, LastUpdated, FirstPublicationDate
+
 if (!Lessons) {
     const LessonSchema = new Schema({
         _id: { type: String, required: true },
