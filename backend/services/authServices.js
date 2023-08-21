@@ -1,7 +1,6 @@
-import jwt from "jsonwebtoken";
 import { authOptions } from "../authOpts/authOptions";
 
-const validateJwtToken = async (token) => {
+const validateJwtToken = async token => {
     try {
         const userCredentials = await authOptions.jwt.decode({ secret: process.env.NEXTAUTH_SECRET, token: token });
 
@@ -29,8 +28,13 @@ const getIsReqAuthorizedResult = async (request, role = "user") => {
         console.log("validateJwtTokenResult.userCredentials: ", validateJwtTokenResult.userCredentials)
 
         const roles = validateJwtTokenResult.userCredentials.claims.allowedRoles;
-        const hasUserRole = roles.find(role => role === 'user');
-        const hasTargetRole = (role !== "user") ? roles.find(role => role === role) : hasUserRole;
+        const hasUserRole = !!roles.find(_role => _role === 'user');
+        console.log('role input: ', role)
+        const hasTargetRole = (role !== "user") ? !!roles.find(_role => _role === role) : hasUserRole;
+
+        console.log('hasTargetRole: ', hasTargetRole)
+
+        console.log('hasUserRole: ', hasUserRole)
 
         if (hasUserRole && hasTargetRole) {
             return { isReqAuthorized: true, msg: "User is authorized to access this service." }
@@ -38,9 +42,11 @@ const getIsReqAuthorizedResult = async (request, role = "user") => {
 
         throw new Error("User is not authorized to access this service.");
     } catch (error) {
-        const errMsg = `An error has occurred in authorizing the request. Error message: ${error}.`
+        const errMsg = `An error has occurred in authorizing the request. Error message: ${error}`
 
-        return { isReqAuthorized: true, msg: errMsg }
+        console.error('Error message: ', errMsg)
+
+        return { isReqAuthorized: false, msg: errMsg }
     }
 }
 

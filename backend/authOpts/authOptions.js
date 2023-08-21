@@ -1,7 +1,19 @@
 import GoogleProvider from 'next-auth/providers/google';
-import jwt from 'jsonwebtoken';
-import Users from '../models/user';
-import { connectToMongodb } from '../utils/connection';
+import getCanUserWriteToDb from '../services/dbAuthService';
+import { SignJWT, jwtVerify } from 'jose'
+
+
+const signJwt = async (payload, secret) => {
+  const issueAtTime = Date.now() / 1000 // issued at time
+  const expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60 // 24 hours
+
+  return new SignJWT({ ...payload })
+    .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
+    .setExpirationTime(expirationTime)
+    .setIssuedAt(issueAtTime)
+    .setNotBefore(issueAtTime)
+    .sign(new TextEncoder().encode(secret));
+}
 
 export const authOptions = {
   providers: [
@@ -19,39 +31,18 @@ export const authOptions = {
     maxAge: 60 * 60 * 24 * 30,
     encode: async ({ secret, token }) => {
       try {
-        await connectToMongodb();
-        
-        const { email, name } = token;
-        const user = await Users.findOne({ _id: email }).lean();
-        let allowedRoles = ['user'];
-
-        if (user) {
-          allowedRoles = [...allowedRoles, ...user.roles.map(({ role }) => role)];
-          allowedRoles = [...new Set(allowedRoles)];
-        }
-
-        const jwtClaims = {
-          sub: email,
-          name,
-          email,
-          iat: Date.now() / 1000, // issued at time
-          exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24 hours
-          claims: {
-            allowedRoles,
-            defaultRole: 'user',
-            role: allowedRoles.find((role) => role === 'dbAdmin') ?? 'user',
-            userId: email,
-          },
-        };
-        const encodedToken = jwt.sign(jwtClaims, secret, { algorithm: 'HS256' });
+        const { email, name } = token?.payload ?? token;
+        const canUserWriteToDb = await getCanUserWriteToDb(email);
+        const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
+        const encodedToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret);
 
         return encodedToken;
       } catch (error) {
-        throw new Error('Unable to generate JWT.');
+        throw new Error('Unable to generate JWT. Error message: ', error);
       }
     },
     decode: async ({ secret, token }) => {
-      const decodedToken = jwt.verify(token, secret, { algorithms: ['HS256'] });
+      const decodedToken = await jwtVerify(token, new TextEncoder().encode(secret));
       return decodedToken;
     },
   },
@@ -66,7 +57,8 @@ export const authOptions = {
       return Promise.resolve(token);
     },
     async session({ session, token }) {
-      const encodedToken = jwt.sign(token, process.env.NEXTAUTH_SECRET, { algorithm: 'HS256' });
+      const { email, roles, name } = token.payload;
+      const encodedToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET);
       session.id = token.id;
       session.token = encodedToken;
 

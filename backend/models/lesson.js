@@ -1,12 +1,14 @@
 import Mongoose from 'mongoose';
 const { Schema, models, model } = Mongoose;
 
-let Lessons = models.lessons;
+let Lessons = models?.lessons;
+
+// fields that have dates as the value: ReleaseDate, LastUpdated, FirstPublicationDate
 
 if (!Lessons) {
     const LessonSchema = new Schema({
-        _id: { type: Number, required: true },
-        UniqueID: String,
+        _id: { type: String, required: true },
+        numId: { type: Number, required: true },
         ShortTitle: String,
         PublicationStatus: String,
         Language: String,
@@ -30,7 +32,7 @@ if (!Lessons) {
         GdriveDirName: String,
         GdriveTeachMatPath: String,
         GdriveTeachMatID: String,
-        GdrivePublicID: Number,
+        GdrivePublicID: String,
         GdriveDirID: String,
         GdriveMetaID: String,
         GdriveTeachItID: String,
@@ -46,7 +48,8 @@ if (!Lessons) {
         SponsorLogo: [String],
         LessonBanner: String,
         TargetSubject: String,
-        LessonEnvir: String,
+        // NOTES: can be string or a string array
+        LessonEnvir: Schema.Types.Mixed,
         ForGrades: String,
         GradesOrYears: String,
         SponsorImage: {

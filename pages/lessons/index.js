@@ -7,7 +7,9 @@ import React from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import LessonCard from '../../components/LessonsPg/LessonCard';
-import { useEffect } from 'react';
+import Lessons from '../../backend/models/lesson.js'
+import moment from 'moment/moment';
+import { connectToMongodb } from '../../backend/utils/connection';
 
 const LessonsPage = ({ lessons }) => {
 
@@ -16,12 +18,11 @@ const LessonsPage = ({ lessons }) => {
   };
 
   const uniqueIDs = [];
-
-  const publishedLessons = lessons.filter(({ PublicationStatus, id }) => {
-    const willShowLesson = !uniqueIDs.includes(id) && (PublicationStatus === 'Live');
+  const publishedLessons = lessons.filter(({ PublicationStatus, numId }) => {
+    const willShowLesson = !uniqueIDs.includes(numId) && (PublicationStatus === 'Live');
 
     if (willShowLesson) {
-      uniqueIDs.push(id);
+      uniqueIDs.push(numId);
     }
 
     return willShowLesson;
@@ -74,9 +75,7 @@ const LessonsPage = ({ lessons }) => {
             <h4 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h4>
           </section>
           <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-            {publishedLessons.map((lesson) => (
-              <LessonCard key={lesson.id} lesson={lesson} />
-            ))}
+            {publishedLessons.map((lesson) => <LessonCard key={lesson._id} lesson={lesson} />)}
           </div>
         </section>
       </div>
@@ -84,15 +83,36 @@ const LessonsPage = ({ lessons }) => {
   );
 };
 
-export async function getStaticProps() {
-  // put this in a try catch block and handle errors
-  // get the lesssons from the database in this fn
-  const res = await fetch('https://catalog.galacticpolymath.com/index.json');
-  let lessons = await res.json();
-  lessons = lessons.filter(({ isTestRepo }) => !isTestRepo);
-  lessons.sort((lessonA, lessonB) => new Date(lessonB.ReleaseDate) - new Date(lessonA.ReleaseDate));
+const PROJECTED_LESSONS_FIELDS = [
+  'CoverImage',
+  'Subtitle',
+  'Title',
+  'Section.overview.TargetSubject',
+  'Section.overview.GradesOrYears',
+  'Section.overview.ForGrades',
+  'ReleaseDate',
+  'locale',
+  '_id',
+  'numId',
+  'PublicationStatus',
+]
 
-  return { props: { lessons } };
+export async function getStaticProps() {
+  try {
+    await connectToMongodb();
+
+    let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
+    lessons = lessons.map(lesson => ({
+      ...lesson,
+      ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
+    }));
+
+    return { props: { lessons: lessons } };
+  } catch (error) {
+    console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
+
+    return { props: { lessons: [] } };
+  }
 }
 
 export default LessonsPage;

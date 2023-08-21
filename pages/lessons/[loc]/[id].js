@@ -20,8 +20,9 @@ import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavD
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
 import useScrollHandler from '../../../customHooks/useScrollHandler';
-import { lessonsUrl, oldLessonsUrl } from '../../../apiGlobalVals';
 import Link from 'next/link';
+import Lessons from '../../../backend/models/lesson';
+import { connectToMongodb } from '../../../backend/utils/connection';
 
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
@@ -30,7 +31,7 @@ const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
 
   if (!versionSection) return null;
-  
+
   const lastRelease = versionSection.Data[versionSection?.Data?.length - 1].sub_releases;
   const lastSubRelease = lastRelease[lastRelease?.length - 1];
   return lastSubRelease;
@@ -44,7 +45,7 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
   return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
 }
 
-const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
+const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
   const router = useRouter()
@@ -121,13 +122,6 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
     }
   }
 
-  useEffect(() => {
-    if (willGoToTargetSection) {
-      scrollSectionIntoView(sectionDots.clickedSectionId)
-      setWillGoToTargetSection(false)
-    }
-  }, [willGoToTargetSection])
-
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
     const viewPortWidth = getViewportWidth()
@@ -150,26 +144,23 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
 
   const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
+  const [wasDotClicked, setWasDotClicked] = useState(false)
+  const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
+  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
+  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
+
+  useEffect(() => {
+    if (willGoToTargetSection) {
+      scrollSectionIntoView(sectionDots.clickedSectionId)
+      setWillGoToTargetSection(false)
+    }
+  }, [willGoToTargetSection])
+
   useEffect(() => {
     document.body.addEventListener('click', handleDocumentClick);
 
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
-
-  const [wasDotClicked, setWasDotClicked] = useState(false)
-  const [imgBannerSrcOnError, setImgBannerSrcOnError] = useState(null);
-  const [imgSponsorSrcOnError, setImgSponsorSrcOnError] = useState(null);
-  const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
-  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
-
-  const handleBannerImgError = () => {
-    setImgBannerSrcOnError(oldLesson.CoverImage.url);
-  }
-
-  const handleImgSponsorSrcOnError = () => {
-    setImgSponsorSrcOnError(oldLesson.SponsorImage.url);
-  }
 
   return (
     <Layout {...layoutProps}>
@@ -190,7 +181,7 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
               <LocDropdown
                 availLocs={availLocs}
                 loc={lesson.locale}
-                id={lesson.id}
+                id={lesson.numId}
               />
             </div>
             <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
@@ -198,13 +189,12 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
             {(lesson.CoverImage && lesson.CoverImage.url) && (
               <div className='w-100 position-relative mt-2 mb-2'>
                 <Image
-                  src={imgBannerSrcOnError ?? lesson.CoverImage.url}
+                  src={lesson.CoverImage.url}
                   alt={lesson.Subtitle}
                   width={1500}
                   height={450}
                   priority
                   style={{ width: "100%", height: "auto", objectFit: 'contain' }}
-                  onError={handleBannerImgError}
                 />
               </div>
             )}
@@ -221,13 +211,12 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
                 {lesson.SponsorImage && lesson.SponsorImage.url && (
                   <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
                     <Image
-                      src={Array.isArray(lesson.SponsorImage.url) ? (imgSponsorSrcOnError ?? lesson.SponsorImage.url[0]) : (imgSponsorSrcOnError ?? lesson.SponsorImage.url)}
+                      src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
                       alt={lesson.Subtitle}
                       className='sponsorImg'
                       sizes="225px"
                       fill
                       style={{ width: "100%", objectFit: 'contain' }}
-                      onError={handleImgSponsorSrcOnError}
                     />
                   </div>
                 )}
@@ -246,7 +235,6 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
               _sectionDots={[sectionDots, setSectionDots]}
               _wasDotClicked={[wasDotClicked, setWasDotClicked]}
               _isScrollListenerOn={[isScrollListenerOn, setIsScrollListenerOn]}
-              oldLesson={oldLesson}
             />
           ))}
         </div>
@@ -258,32 +246,35 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
 // should use the axios library to make the get request.
 
 export const getStaticPaths = async () => {
-  const res = await fetch(lessonsUrl);  
-  const lessons = await res.json();
-  const paths = lessons.map(lesson => ({
-    params: { id: `${lesson.id}`, loc: `${lesson.locale}` },
-  }));
+  try {
+    await connectToMongodb()
 
-  return { paths, fallback: false };
+    const lessons = await Lessons.find({}, { numId: 1, locale: 1, _id: 0 }).lean()
+
+    return {
+      paths: lessons.map(({ numId, locale }) => ({
+        params: { id: `${numId}`, loc: `${locale}` },
+      })),
+      fallback: false,
+    };
+  } catch (error) {
+    console.error('An error has occurred in getting the available paths for the selected lesson page. Error message: ', error)
+  }
 };
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  const [newLessonsResponse, oldLessonResponse] = await Promise.all([fetch(lessonsUrl), fetch(oldLessonsUrl)]);
-  const [oldLessons, lessons] = await Promise.all([oldLessonResponse.json(), newLessonsResponse.json()])
-  const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
-  const oldLesson = oldLessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
-  const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
+  await connectToMongodb();
 
-  if (!lesson?.Section?.procedure?.Data) {
-    return oldLesson ? { props: { lesson, availLocs, oldLesson } } : { props: { lesson, availLocs } };
-  }
+  const targetLessons = await Lessons.find({ numId: id }, { __v: 0 }).lean();
+  const targetLessonLocales = targetLessons.map(({ locale }) => locale)
+  const targetLesson = targetLessons.find(({ numId, locale }) => ((numId === parseInt(id)) && (locale === loc)))
 
-  lesson.Section['teaching-materials'].Data = {
-    ...lesson.Section.procedure.Data,
-    ...lesson.Section['teaching-materials'].Data,
+  return {
+    props: {
+      lesson: JSON.parse(JSON.stringify(targetLesson)),
+      availLocs: targetLessonLocales,
+    },
   };
-
-  return { props: { lesson, availLocs, oldLesson } };
 };
 
 export default LessonDetails;
