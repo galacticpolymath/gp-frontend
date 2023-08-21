@@ -5,8 +5,8 @@ import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
 
-const LESSON_PART_BTN_COLOR = '#2C83C3'
-const TEST_TILE_IMG_URL = 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png?v=1530129081'
+const LESSON_PART_BTN_COLOR = '#2C83C3';
+const TEST_TILE_IMG_URL = 'https://gp-catalog.vercel.app/lessons/FemalesSing_en-US/sponsor_logo_41be63750b.png';
 
 const LessonPart = ({
   partNum,
@@ -20,8 +20,7 @@ const LessonPart = ({
   const has0Key = resources?.[0]?.parts ? '0' in resources[0].parts : false;
   const partsIndexNum = has0Key ? (partNum - 1) : partNum;
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
-  console.log('resources?.[0]?.parts?.[partsIndexNum]: ', resources?.[0]?.parts?.[partsIndexNum])
-  const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile ?? null;
+  const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile ?? TEST_TILE_IMG_URL;
   let tags = resources?.[0]?.parts?.[partsIndexNum]?.tags ?? null;
 
   if (tags?.length && Array.isArray(tags)) {
@@ -55,25 +54,28 @@ const LessonPart = ({
       <>
         <ol className='mt-3'>
           {!!linkResources?.length && linkResources.map(item => {
+            const { itemTitle, itemDescription, links } = item;
+            const _links = links ? (Array.isArray(links) ? links : [links]) : null;
+
             return (
-              <li key={item.itemTitle} className='mb-0'>
-                <strong><RichText content={item.itemTitle} /></strong>
+              <li key={itemTitle} className='mb-0'>
+                <strong><RichText content={itemTitle} /></strong>
                 <div className='fst-italic mb-2' style={{ color: '#353637' }}>
                   <RichText
-                    content={item.itemDescription}
+                    content={itemDescription}
                     className='mb-5'
                     css={{ color: 'red' }}
                   />
                 </div>
                 <ul>
-                  {item.links && (Array.isArray(item.links) ? item.links : [item.links]).map((link, i) => (
-                    <li key={i}>
+                  {!!_links && _links.map(({ url, linkText }, index) => (
+                    <li key={index}>
                       <a
-                        href={link.url}
+                        href={url}
                         target='_blank'
                         rel='noopener noreferrer'
                       >
-                        {link.linkText}
+                        {linkText}
                       </a>
                     </li>
                   ))}
