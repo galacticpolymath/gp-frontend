@@ -10,6 +10,7 @@ import { useContext, useState, useRef } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
+
 const getObjVals = obj => {
   const keys = Object.keys(obj);
   let vals = [];

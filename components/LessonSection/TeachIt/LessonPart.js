@@ -15,7 +15,8 @@ const LessonPart = ({
   const isOnAssessments = partTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
   const has0Key = resources?.[0]?.parts ? '0' in resources[0].parts : false;
-  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[has0Key ? (partNum - 1) : partNum]?.itemList || []);  
+  const partsIndexNum = has0Key ? (partNum - 1) : partNum;
+  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);  
 
   return (
     <Accordion
@@ -23,7 +24,7 @@ const LessonPart = ({
       key={partNum}
       id={`part_${partNum}`}
       button={(
-        <div className='p-2'>
+        <div className='p-2 bg-white'>
           <h3 className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
           <div><RichText content={partPreface} /></div>
         </div>
@@ -38,7 +39,7 @@ const LessonPart = ({
                 <div className='fst-italic mb-2' style={{ color:'#353637' }}>
                   <RichText
                     content={item.itemDescription}
-                    className='mb-n5'
+                    className='mb-5'
                     css={{ color: 'red' }}
                   />
                 </div>
