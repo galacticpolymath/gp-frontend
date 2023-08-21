@@ -5,7 +5,7 @@ import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
 
-const LESSON_PART_H3_COLOR = '#2C83C3'
+const LESSON_PART_BTN_COLOR = '#2C83C3'
 
 const LessonPart = ({
   partNum,
@@ -20,7 +20,11 @@ const LessonPart = ({
   const partsIndexNum = has0Key ? (partNum - 1) : partNum;
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
   let tags = resources?.[0]?.parts?.[partsIndexNum]?.tags ?? null;
-  tags = (tags?.length && tags.some(tag => Array.isArray(tag))) ? tags.flat() : tags 
+
+  if (tags?.length && Array.isArray(tags)) {
+    tags = tags.flat()
+    tags = tags?.length > 3 ? tags.slice(0, 3) : tags
+  }
 
   return (
     <Accordion
@@ -29,8 +33,19 @@ const LessonPart = ({
       id={`part_${partNum}`}
       button={(
         <div className='p-2 bg-white'>
-          <h3 style={{ color: LESSON_PART_H3_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
+          <h3 style={{ color: LESSON_PART_BTN_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
           <div><RichText content={partPreface} /></div>
+          {tags?.length && (
+            <div className='mt-2'>
+              {tags.map((tag, index) => (
+                <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}`, marginLeft: (index !== 0) ? '10px' : '0px'  }} className={`rounded-pill badge bg-white p-2 my-1`}>
+                  <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }} >
+                    {tag}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     >
@@ -40,7 +55,7 @@ const LessonPart = ({
             return (
               <li key={item.itemTitle} className='mb-0'>
                 <strong><RichText content={item.itemTitle} /></strong>
-                <div className='fst-italic mb-2' style={{ color:'#353637' }}>
+                <div className='fst-italic mb-2' style={{ color: '#353637' }}>
                   <RichText
                     content={item.itemDescription}
                     className='mb-5'
