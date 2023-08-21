@@ -6,6 +6,7 @@ import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3'
+const TEST_TILE_IMG_URL = 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png?v=1530129081'
 
 const LessonPart = ({
   partNum,
@@ -19,6 +20,8 @@ const LessonPart = ({
   const has0Key = resources?.[0]?.parts ? '0' in resources[0].parts : false;
   const partsIndexNum = has0Key ? (partNum - 1) : partNum;
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
+  console.log('resources?.[0]?.parts?.[partsIndexNum]: ', resources?.[0]?.parts?.[partsIndexNum])
+  const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile ?? null;
   let tags = resources?.[0]?.parts?.[partsIndexNum]?.tags ?? null;
 
   if (tags?.length && Array.isArray(tags)) {
@@ -36,9 +39,9 @@ const LessonPart = ({
           <h3 style={{ color: LESSON_PART_BTN_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
           <div><RichText content={partPreface} /></div>
           {tags?.length && (
-            <div className='mt-2'>
+            <div className='mt-2 tagPillContainer d-flex justify-content-between flex-wrap'>
               {tags.map((tag, index) => (
-                <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}`, marginLeft: (index !== 0) ? '10px' : '0px'  }} className={`rounded-pill badge bg-white p-2 my-1`}>
+                <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }} className={`rounded-pill badge bg-white p-2 my-1`}>
                   <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }} >
                     {tag}
                   </span>

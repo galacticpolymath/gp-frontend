@@ -162,6 +162,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, [])
 
+  console.log('lesson.SponsorImage.url: ', lesson.SponsorImage.url)
+
   return (
     <Layout {...layoutProps}>
       <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} setIsScrollListenerOn={setIsScrollListenerOn} isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked} />
