@@ -5,6 +5,8 @@ import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
 
+const LESSON_PART_H3_COLOR = '#2C83C3'
+
 const LessonPart = ({
   partNum,
   partTitle,
@@ -16,16 +18,18 @@ const LessonPart = ({
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
   const has0Key = resources?.[0]?.parts ? '0' in resources[0].parts : false;
   const partsIndexNum = has0Key ? (partNum - 1) : partNum;
-  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);  
+  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
+  
+  console.log('resources: ', resources)
 
   return (
     <Accordion
-      buttonClassName='w-100 text-start border border-dark'
+      buttonClassName='w-100 text-start border bg-white'
       key={partNum}
       id={`part_${partNum}`}
       button={(
         <div className='p-2 bg-white'>
-          <h3 className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
+          <h3 style={{ color: LESSON_PART_H3_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
           <div><RichText content={partPreface} /></div>
         </div>
       )}
