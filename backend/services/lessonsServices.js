@@ -39,4 +39,35 @@ const deleteLesson = async lessonId => {
     }
 }
 
-export { insertLesson, deleteLesson }
+// can get the lesson based on the following:
+// by the _id of the lesson
+// by the numId of the lesson
+// both above values
+// none of the above values, in that case, get all of the lessons from the db
+
+const retrieveLessonsResultObj = async (_id, numId, projectionObj = {}) => {
+    try {
+        let query = {};
+        
+        if(_id){
+            query._id = _id;
+        }
+        
+        if(numId){
+            query.numId = parseInt(numId);
+        }
+        
+        const lessons = await Lessons.find(query, projectionObj).lean();
+
+        return { wasSuccessful: true, data: lessons }
+    } catch (error) {
+        const errMsg = `Failed to get the lesson from the database. Error message: ${error}.`;
+
+        console.error(errMsg)
+
+        return { wasSuccessful: false, msg: errMsg  }
+    }
+
+}
+
+export { insertLesson, deleteLesson, retrieveLessonsResultObj }
