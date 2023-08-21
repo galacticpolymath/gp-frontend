@@ -22,6 +22,8 @@ export default async function handler(request, response) {
       throw new Error("The 'numId' must be a number.");
     }
 
+    console.log('projections: ', projections)
+
     if ((projections !== undefined) && !getIsObj(projections)) {
       throw new Error("The 'projections' query param must be an object.");
     }
