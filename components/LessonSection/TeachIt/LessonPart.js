@@ -19,8 +19,8 @@ const LessonPart = ({
   const has0Key = resources?.[0]?.parts ? '0' in resources[0].parts : false;
   const partsIndexNum = has0Key ? (partNum - 1) : partNum;
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
-  
-  console.log('resources: ', resources)
+  let tags = resources?.[0]?.parts?.[partsIndexNum]?.tags ?? null;
+  tags = (tags?.length && tags.some(tag => Array.isArray(tag))) ? tags.flat() : tags 
 
   return (
     <Accordion
