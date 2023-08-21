@@ -14,14 +14,17 @@ const LessonSlide = ({
 }) => {
   return (
     <div className='autoCarouselItem onLessonsPg mb-1 rounded p-1 justify-content-center align-items-center '>
-      <div className='bg-white px-1 pt-2 pb-0 rounded'>
+      <div className='px-1 pt-2 pb-0 rounded w-100'>
         <div
           className='px-1 justify-content-center d-flex'
-          style={{ position: "relative", border: "1px solid lightgray", height: "50vh", objectFit: "contain" }}
+          style={{ position: "relative", border: "1px solid lightgray", height: "50vh", width: "100%", objectFit: "contain" }}
         >
           {getMediaComponent({ type, mainLink })}
         </div>
-        <div className={`${styles.SlideBody} mt-2 text-wrap lessonSlideBody px-1 px-md-3`}>
+        <div
+          className={`${styles.SlideBody} mt-2 text-wrap lessonSlideBody px-1 px-md-3`}
+          style={{ width: "100%" }}
+        >
           {forPart && (
             <div className='badge badge-pill bg-primary-light mb-1' style={{ color: 'gray' }}>for Part {forPart}</div>
           )}
