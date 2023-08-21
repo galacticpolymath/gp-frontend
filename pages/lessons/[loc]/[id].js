@@ -260,7 +260,6 @@ export const getStaticPaths = async () => {
   }
 };
 
-
 export const getStaticProps = async ({ params: { id, loc } }) => {
   await connectToMongodb();
 
