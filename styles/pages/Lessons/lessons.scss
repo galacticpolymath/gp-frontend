@@ -233,16 +233,8 @@ $toolTipColor: #f0f4ff;
 // w-45 w-md-50 w-lg-25
 
 .tagPillContainer {
-  width: 45%;
   min-width: 150px;
-
-  @media(min-width: 768px) {
-    width: 50%;
-  }
-
-  @media(min-width: 992px) {
-    width: 25%;
-  }
+  gap: 20px;
 }
 
 .lessonSecsNavDotsListContainer {

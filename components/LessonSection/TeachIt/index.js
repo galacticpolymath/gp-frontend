@@ -43,7 +43,8 @@ const TeachIt = ({
   // getting assessments part 
   let { title, itemList } = Data.classroom.resources[0]?.parts ?? {};
   const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
-  const parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
+  let parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
+  parts = parts.map((part, index) => ({ ...part, partNum: index + 1 }))
   const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);

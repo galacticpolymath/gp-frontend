@@ -62,18 +62,18 @@ const LessonPart = ({
       }}
       button={(
         <div onClick={handleOnClick} className='p-2 bg-white d-flex'>
-          <div className={`d-flex flex-column justify-content-between ${lessonTileUrl ? 'w-75' : 'w-100'}`} >
+          <div className={`d-flex flex-column ${lessonTileUrl ? 'w-75' : 'w-100'}`} >
             <h3 style={{ color: LESSON_PART_BTN_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
             <div><RichText content={partPreface} /></div>
             {tags?.length && (
-              <div style={{ top: 10 }} className='mt-2 tagPillContainer w-50 d-flex flex-wrap'>
-                {tags.map((tag, index) => (
-                  <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }} className={`rounded-pill badge bg-white p-2 my-1 ${index !== 0 ? 'ms-3' : 'ms-0'}`}>
-                    <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }} >
-                      {tag}
-                    </span>
-                  </div>
-                ))}
+              <div style={{ top: 10 }} className='mt-2 d-flex w-75 tagPillContainer flex-wrap'>
+                  {tags.map((tag, index) => (
+                    <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }} className='rounded-pill badge bg-white p-2 my-1'>
+                      <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }} >
+                        {tag}
+                      </span>
+                    </div>
+                  ))}
               </div>
             )}
           </div>
@@ -94,7 +94,7 @@ const LessonPart = ({
         </div>
       )}
     >
-      <div>
+      <div className='px-3'>
         <ol className='mt-3'>
           {!!linkResources?.length && linkResources.map(item => {
             const { itemTitle, itemDescription, links } = item;
