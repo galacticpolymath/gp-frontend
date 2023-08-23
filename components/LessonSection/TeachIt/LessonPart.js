@@ -1,12 +1,16 @@
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-console */
+import Image from 'next/image';
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
+import { useState } from 'react';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 const TEST_TILE_IMG_URL = 'https://gp-catalog.vercel.app/lessons/FemalesSing_en-US/sponsor_logo_41be63750b.png';
+
+// determine how many parts are there in the lesson
 
 const LessonPart = ({
   partNum,
@@ -14,44 +18,83 @@ const LessonPart = ({
   partPreface,
   chunks = [],
   resources,
+  totalPartsNum,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const isOnAssessments = partTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
-  const has0Key = resources?.[0]?.parts ? '0' in resources[0].parts : false;
+  const has0Key = resources?.[0]?.parts ? ('0' in resources[0].parts) : false;
   const partsIndexNum = has0Key ? (partNum - 1) : partNum;
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
-  const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile ?? TEST_TILE_IMG_URL;
+  // const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile ?? TEST_TILE_IMG_URL;
+  const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile;
   let tags = resources?.[0]?.parts?.[partsIndexNum]?.tags ?? null;
+
+  const handleOnClick = () => {
+    setIsExpanded(!isExpanded);
+  }
 
   if (tags?.length && Array.isArray(tags)) {
     tags = tags.flat()
     tags = tags?.length > 3 ? tags.slice(0, 3) : tags
   }
 
+  let borderBottomObj = {}
+  const _borderTop = isExpanded ? 'solid 2.5px #C1D9ED' : 'solid 2.5px rgb(222, 226, 230)'
+
+  console.log('partNum: ', partNum)
+  console.log('totalPartsNum: ', totalPartsNum)
+
+  if (partNum === totalPartsNum) {
+    borderBottomObj.borderBottom = isExpanded ? 'solid 2.5px #C1D9ED' : 'solid 2.5px rgb(222, 226, 230)'
+  }
+
   return (
     <Accordion
-      buttonClassName='w-100 text-start border bg-white'
+      buttonClassName={`w-100 text-start bg-white border-0`}
       key={partNum}
       id={`part_${partNum}`}
+      style={{
+        borderLeft: isExpanded ? 'solid 2.5px #C1D9ED' : 'solid 2.5px rgb(222, 226, 230)',
+        borderRight: isExpanded ? 'solid 2.5px #C1D9ED' : 'solid 2.5px rgb(222, 226, 230)',
+        borderTop: _borderTop,
+        ...borderBottomObj
+      }}
       button={(
-        <div className='p-2 bg-white'>
-          <h3 style={{ color: LESSON_PART_BTN_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
-          <div><RichText content={partPreface} /></div>
-          {tags?.length && (
-            <div className='mt-2 tagPillContainer d-flex justify-content-between flex-wrap'>
-              {tags.map((tag, index) => (
-                <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }} className={`rounded-pill badge bg-white p-2 my-1`}>
-                  <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }} >
-                    {tag}
-                  </span>
-                </div>
-              ))}
+        <div onClick={handleOnClick} className='p-2 bg-white d-flex'>
+          <div className={`d-flex flex-column justify-content-between ${lessonTileUrl ? 'w-75' : 'w-100'}`} >
+            <h3 style={{ color: LESSON_PART_BTN_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
+            <div><RichText content={partPreface} /></div>
+            {tags?.length && (
+              <div style={{ top: 10 }} className='mt-2 tagPillContainer w-50 d-flex flex-wrap'>
+                {tags.map((tag, index) => (
+                  <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }} className={`rounded-pill badge bg-white p-2 my-1 ${index !== 0 ? 'ms-3' : 'ms-0'}`}>
+                    <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }} >
+                      {tag}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          {lessonTileUrl &&
+            <div className='w-25 d-flex justify-content-center align-items-center'>
+              <div style={{ width: 200, height: 200 }} className="position-relative">
+                <Image
+                  src={lessonTileUrl}
+                  alt="lesson_tile"
+                  fill
+                  style={{ objectFit: 'contain' }}
+                  sizes="130px"
+                  className="rounded"
+                />
+              </div>
             </div>
-          )}
+          }
         </div>
       )}
     >
-      <>
+      <div>
         <ol className='mt-3'>
           {!!linkResources?.length && linkResources.map(item => {
             const { itemTitle, itemDescription, links } = item;
@@ -99,7 +142,7 @@ const LessonPart = ({
             ))}
           </>
         }
-      </>
+      </div>
     </Accordion>
   );
 };
