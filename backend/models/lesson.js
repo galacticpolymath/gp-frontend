@@ -8,7 +8,7 @@ let Lessons = models?.lessons;
 if (!Lessons) {
     const LessonSchema = new Schema({
         _id: { type: String, required: true },
-        numId: { type: Number, required: true },
+        numID: { type: Number, required: true },
         ShortTitle: String,
         PublicationStatus: String,
         Language: String,

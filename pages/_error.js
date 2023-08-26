@@ -24,7 +24,7 @@ export const getServerSideProps = async (context) => {
     const res = await fetch('https://gp-catalog.vercel.app/index.json');
     const lessons = await res.json();
     const lessonId = context.resolvedUrl.match(REGEX)[0];
-    const targetLesson = lessons.find(({ numId }) => numId === parseInt(lessonId));
+    const targetLesson = lessons.find(({ numID }) => numID === parseInt(lessonId));
 
     if (!targetLesson) {
       return {

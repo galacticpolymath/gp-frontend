@@ -28,15 +28,19 @@ const LessonPart = ({
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
   // const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile ?? TEST_TILE_IMG_URL;
   const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile;
-  let tags = resources?.[0]?.parts?.[partsIndexNum]?.tags ?? null;
+  let allTags = resources?.[0]?.parts?.[partsIndexNum]?.tags ?? null;
+  let previewTags = null;
+  let restOfTags = null;
 
   const handleOnClick = () => {
     setIsExpanded(!isExpanded);
   }
 
-  if (tags?.length && Array.isArray(tags)) {
-    tags = tags.flat()
-    tags = tags?.length > 3 ? tags.slice(0, 3) : tags
+  if (allTags?.length && Array.isArray(allTags)) {
+    allTags = allTags.flat()
+    allTags = [...allTags, allTags[0]]
+    previewTags = (allTags?.length > 3) ? allTags.slice(0, 3) : allTags
+    restOfTags = (allTags?.length > 3) ? allTags.slice(3) : allTags
   }
 
   let borderBottomObj = {}
@@ -54,6 +58,7 @@ const LessonPart = ({
       buttonClassName={`w-100 text-start bg-white border-0`}
       key={partNum}
       id={`part_${partNum}`}
+      accordionChildrenClasses='px-3 w-100'
       style={{
         borderLeft: isExpanded ? 'solid 2.5px #C1D9ED' : 'solid 2.5px rgb(222, 226, 230)',
         borderRight: isExpanded ? 'solid 2.5px #C1D9ED' : 'solid 2.5px rgb(222, 226, 230)',
@@ -65,15 +70,15 @@ const LessonPart = ({
           <div className={`d-flex flex-column ${lessonTileUrl ? 'w-75' : 'w-100'}`} >
             <h3 style={{ color: LESSON_PART_BTN_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
             <div><RichText content={partPreface} /></div>
-            {tags?.length && (
+            {previewTags?.length && (
               <div style={{ top: 10 }} className='mt-2 d-flex w-75 tagPillContainer flex-wrap'>
-                  {tags.map((tag, index) => (
-                    <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }} className='rounded-pill badge bg-white p-2 my-1'>
-                      <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }} >
-                        {tag}
-                      </span>
-                    </div>
-                  ))}
+                {previewTags.map((tag, index) => (
+                  <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }} className='rounded-pill badge bg-white p-2 my-1'>
+                    <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }} >
+                      {tag}
+                    </span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -94,12 +99,21 @@ const LessonPart = ({
         </div>
       )}
     >
-      <div className='px-3'>
+      {restOfTags?.length && (
+        <div style={{ top: 10 }} className=''>
+          {restOfTags.map((tag, index) => (
+            <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }} className='rounded-pill badge bg-white p-2 my-1'>
+              <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }} >
+                {tag}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
         <ol className='mt-3'>
           {!!linkResources?.length && linkResources.map(item => {
             const { itemTitle, itemDescription, links } = item;
             const _links = links ? (Array.isArray(links) ? links : [links]) : null;
-
             return (
               <li key={itemTitle} className='mb-0'>
                 <strong><RichText content={itemTitle} /></strong>
@@ -142,7 +156,6 @@ const LessonPart = ({
             ))}
           </>
         }
-      </div>
     </Accordion>
   );
 };

@@ -41,11 +41,11 @@ const deleteLesson = async lessonId => {
 
 // can get the lesson based on the following:
 // by the _id of the lesson
-// by the numId of the lesson
+// by the numID of the lesson
 // both above values
 // none of the above values, in that case, get all of the lessons from the db
 
-const retrieveLessonsResultObj = async (_id, numId, projectionObj = {}) => {
+const retrieveLessonsResultObj = async (_id, numID, projectionObj = {}) => {
     try {
         let query = {};
         
@@ -53,8 +53,8 @@ const retrieveLessonsResultObj = async (_id, numId, projectionObj = {}) => {
             query._id = _id;
         }
         
-        if(numId){
-            query.numId = parseInt(numId);
+        if(numID){
+            query.numID = parseInt(numID);
         }
         
         const lessons = await Lessons.find(query, projectionObj).lean();

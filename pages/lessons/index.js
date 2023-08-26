@@ -18,11 +18,11 @@ const LessonsPage = ({ lessons }) => {
   };
 
   const uniqueIDs = [];
-  const publishedLessons = lessons.filter(({ PublicationStatus, numId }) => {
-    const willShowLesson = !uniqueIDs.includes(numId) && (PublicationStatus === 'Live');
+  const publishedLessons = lessons.filter(({ PublicationStatus, numID }) => {
+    const willShowLesson = !uniqueIDs.includes(numID) && (PublicationStatus === 'Live');
 
     if (willShowLesson) {
-      uniqueIDs.push(numId);
+      uniqueIDs.push(numID);
     }
 
     return willShowLesson;
@@ -93,7 +93,7 @@ const PROJECTED_LESSONS_FIELDS = [
   'ReleaseDate',
   'locale',
   '_id',
-  'numId',
+  'numID',
   'PublicationStatus',
 ]
 
