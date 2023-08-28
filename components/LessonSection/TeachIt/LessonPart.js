@@ -26,6 +26,7 @@ const LessonPart = ({
   const isOnAssessments = partTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
   const has0Key = resources?.[0]?.parts ? ('0' in resources[0].parts) : false;
+  console.log('resources?.[0]?.parts: ', resources?.[0]?.parts)
   const partsIndexNum = has0Key ? (partNum - 1) : partNum;
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
   // const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile ?? TEST_TILE_IMG_URL;
@@ -33,17 +34,6 @@ const LessonPart = ({
   let allTags = resources?.[0]?.parts?.[partsIndexNum]?.tags ?? null;
   let previewTags = null;
   let restOfTags = null;
-
-  // if isExpanded is false, then set the state of lessonPartNumToHighlightBorderBottom to be -1
-  // if isExpanded is true, then set the state of lessonPartNumToHighlightBorderBottom to the previous lesson part pertaining to the lesson part that was clicked. 
-
-
-  // BRAIN DUMP:
-  // get the lesson part number that comes before the lesson part that was clicked
-  // add it to the state array of _numsOflessonPartsToHiglightLightBorderBottom
-  // for the comp of _numsOflessonPartsToHiglightLightBorderBottom, if the state changes, check if the lesson partNum is in the array of numsOflessonPartsToHiglightLightBorderBottom
-  // if so, then highlight the border bottom
-  // if the part num is not in the array, then don't highlight the border bottom
 
   const handleOnClick = () => {
     const previousLessonPartNum = partNum - 1;
@@ -56,13 +46,6 @@ const LessonPart = ({
     })
     setIsExpanded(!isExpanded);
   }
-
-  // BUG: 
-  // WHAT IS HAPPENING: 
-  // when the user the opens up lesson, there is spacing between the border bottom of the opened lesson and the lesson part that comes after it
-
-  // WHAT I WANT:
-  // if there is a lesson part that comes after that lesson part that is opened, then the border top should be 'none'
 
   if (allTags?.length && Array.isArray(allTags)) {
     allTags = allTags.flat().filter(tag => tag)
@@ -152,6 +135,7 @@ const LessonPart = ({
           const { itemTitle, itemDescription, links } = item;
           const _links = links ? (Array.isArray(links) ? links : [links]) : null;
           return (
+            // put the leaning objectie for the lesson part here
             <li key={itemTitle} className='mb-0'>
               <strong><RichText content={itemTitle} /></strong>
               <div className='fst-italic mb-2' style={{ color: '#353637' }}>
