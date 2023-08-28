@@ -18,14 +18,14 @@ export default async function handler(request, response) {
       throw new CustomError('This route only accepts GET requests.', 404);
     }
 
-    let { _id, numId, projections } = query;
+    let { _id, numID, projections } = query;
 
     if (_id && (typeof _id !== 'string')) {
       throw new CustomError("The '_id' query param must be a string.", 400);
     }
 
-    if (numId && isNaN(parseInt(numId))) {
-      throw new CustomError("The 'numId' must be a number.", 400);
+    if (numID && isNaN(parseInt(numID))) {
+      throw new CustomError("The 'numID' must be a number.", 400);
     }
 
     projections = (typeof projections === 'string') ? JSON.parse(projections) : projections;
@@ -36,7 +36,7 @@ export default async function handler(request, response) {
 
     await connectToMongodb();
 
-    const { wasSuccessful, data, msg } = (projections ? await retrieveLessonsResultObj(_id, numId, projections) : await retrieveLessonsResultObj(_id, numId)) ?? {};
+    const { wasSuccessful, data, msg } = (projections ? await retrieveLessonsResultObj(_id, numID, projections) : await retrieveLessonsResultObj(_id, numID)) ?? {};
 
     if (!wasSuccessful && msg) {
       throw new CustomError(msg, 500);

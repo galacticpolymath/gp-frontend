@@ -181,7 +181,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
               <LocDropdown
                 availLocs={availLocs}
                 loc={lesson.locale}
-                id={lesson.numId}
+                id={lesson.numID}
               />
             </div>
             <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
@@ -247,11 +247,11 @@ export const getStaticPaths = async () => {
   try {
     await connectToMongodb()
 
-    const lessons = await Lessons.find({}, { numId: 1, locale: 1, _id: 0 }).lean()
+    const lessons = await Lessons.find({}, { numID: 1, locale: 1, _id: 0 }).lean()
 
     return {
-      paths: lessons.map(({ numId, locale }) => ({
-        params: { id: `${numId}`, loc: `${locale}` },
+      paths: lessons.map(({ numID, locale }) => ({
+        params: { id: `${numID}`, loc: `${locale}` },
       })),
       fallback: false,
     };
@@ -263,9 +263,9 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params: { id, loc } }) => {
   await connectToMongodb();
 
-  const targetLessons = await Lessons.find({ numId: id }, { __v: 0 }).lean();
+  const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
   const targetLessonLocales = targetLessons.map(({ locale }) => locale)
-  const targetLesson = targetLessons.find(({ numId, locale }) => ((numId === parseInt(id)) && (locale === loc)))
+  const targetLesson = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
 
   return {
     props: {
