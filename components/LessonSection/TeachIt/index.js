@@ -31,6 +31,7 @@ const TeachIt = ({
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
+  const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = useState([])
   const environments = ['classroom', 'remote']
     .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   const gradeVariations = getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources;
@@ -153,12 +154,12 @@ const TeachIt = ({
 
         <div className='container ps-0 pe-1 px-md-2  pb-4'>
           {parts.map((part, index) => {
-            console.log('parts: ', parts)
             return (
               <LessonPart
                 key={`${index}_part`}
                 resources={resources}
                 totalPartsNum={parts.length}
+                _numsOfLessonPartsThatAreExpanded={[numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded]}
                 {...part}
               />
             );
