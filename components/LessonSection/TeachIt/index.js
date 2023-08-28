@@ -8,6 +8,7 @@ import LessonPart from './LessonPart';
 import { ModalContext } from '../../../providers/ModalProvider';
 import { useContext, useState, useRef } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
+import RichText from '../../RichText';
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
 
@@ -71,14 +72,14 @@ const TeachIt = ({
         <div className='container-fluid mt-4'>
           {Data.lessonDur && (
             <div className='row'>
-              <div className='col-12 bg-light-gray py-3 p-3 align-items-center'>
-                <div className='fs-5 mb-2'>
-
-                  <i className="bi-alarm fs-4 me-2"></i>
-                  {Data.lessonDur}
-
+              <div className='row mx-auto pb-4 justify-content-center'>
+                <div className='infobox rounded-3 p-2 p-sm-4 fs-5 my-4 p-3 fw-light w-auto'>
+                  <h2 className='fw-light d-flex align-items-center'>
+                    <i className="bi-alarm fs-4 me-2" />
+                    {Data.lessonDur}
+                  </h2>
+                  {Data.lessonPreface && <RichText content={Data.lessonPreface} className='d-flex justify-content-center quickPrep' />}
                 </div>
-                <p className='mb-0'>{Data.lessonPreface && (Data.lessonPreface)}</p>
               </div>
             </div>
           )}
