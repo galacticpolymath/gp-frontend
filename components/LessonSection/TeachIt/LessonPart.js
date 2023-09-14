@@ -26,7 +26,6 @@ const LessonPart = ({
   const isOnAssessments = partTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
   const has0Key = resources?.[0]?.parts ? ('0' in resources[0].parts) : false;
-  console.log('resources?.[0]?.parts: ', resources?.[0]?.parts)
   const partsIndexNum = has0Key ? (partNum - 1) : partNum;
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
   // const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile ?? TEST_TILE_IMG_URL;

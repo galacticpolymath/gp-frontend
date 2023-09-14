@@ -208,7 +208,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
                 <RichText content={lesson.SponsoredBy} />
               </div>
               <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
-                {lesson.SponsorImage && lesson.SponsorImage.url && (
+                {(lesson.SponsorImage && lesson.SponsorImage.url) && (
                   <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
                     <Image
                       src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}

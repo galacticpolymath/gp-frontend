@@ -4,7 +4,7 @@ let isConnectedToDb = false;
 
 export const connectToMongodb = async () => {    
     if (isConnectedToDb) {
-        console.log('Already connected to DB');
+        console.log('Already connected to DB.');
         return;
     }
 

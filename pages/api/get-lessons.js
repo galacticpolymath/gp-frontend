@@ -18,6 +18,10 @@ export default async function handler(request, response) {
       throw new CustomError('This route only accepts GET requests.', 404);
     }
 
+    if(!query){
+      throw new CustomError("'query' is not defined.", 404);
+    }    
+
     let { _id, numID, projections } = query;
 
     if (_id && (typeof _id !== 'string')) {
