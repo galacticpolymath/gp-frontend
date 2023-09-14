@@ -38,7 +38,7 @@ const LessonPart = ({
                 <div className='fst-italic mb-2' style={{ color:'#353637' }}>
                   <RichText
                     content={item.itemDescription}
-                    className='mb-n5'
+                    className='mb-5'
                     css={{ color: 'red' }}
                   />
                 </div>
