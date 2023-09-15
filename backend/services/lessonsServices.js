@@ -66,34 +66,20 @@ const retrieveLessonsResultObj = async (keysAndValsForDbQueryObj, projectionObj 
     }
 }
 
-const updateLesson = async (keysAndValsForDbQueryObj, keysAndUpdatedValsArr) => {
+const updateLesson = async (keysAndValsForDbQueryObj, updatedLessonsKeysAndValsObj) => {
     try {
         const filterObj = createObjFromArr(keysAndValsForDbQueryObj, true);
         // an example of lesson being updated: 
         // section.participants[0].name = "John Doe"
-        const updatedLessonsKeysAndValsObj = Object.fromEntries(keysAndUpdatedValsArr);
-
         await Lessons.updateMany(filterObj, { $set: updatedLessonsKeysAndValsObj });
 
-        const projectionForRetrieveLessonsResultObj = Object.fromEntries(keysAndUpdatedValsArr)
-            .map(keyAndVal => ([keyAndVal[0], 1]))
-            .reduce((projectionForRetrieveLessonsResultObj, fieldAndWillProjectNumArr) => {
-                const [fieldName, projectionNum] = fieldAndWillProjectNumArr;
-                projectionForRetrieveLessonsResultObj[fieldName] = projectionNum;
-                
-                return projectionForRetrieveLessonsResultObj;
-            }, {})
-        const { data: lessons } = await retrieveLessonsResultObj(filterObj, projectionForRetrieveLessonsResultObj)
-
-        return {
-            updatedLessonsResults: lessons,
-        }
+        return { wasSuccessful: true }
     } catch (error) {
         const errMsg = `Failed to get the lesson from the database. Error message: ${error}.`;
 
         console.error(errMsg)
 
-        return { wasSuccessful: false, msg: errMsg }
+        return { errMsg: errMsg }
     }
 }
 
