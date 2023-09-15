@@ -4,13 +4,20 @@ import { jwtVerify } from 'jose'
 const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
 const VALIDS_METHODS = ['POST']
 
-const authorizeReq = async (authorizationStr) => {
+// may use this function to check for non-related admin routes
+const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin) => {
     const token = authorizationStr.split(" ")[1].trim();
     const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
 
-    if(!payload) {
-        return new NextResponse("You are not authorized to access this service.", { status: 403 })
+    if (!payload) {
+        return { isAuthorize: false, errResponse: new NextResponse("You are not authorized to access this service.", { status: 403 }) }
     }
+
+    if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(payload.roles, 'dbAdmin')) {
+        return { isAuthorize: false, errResponse: new NextResponse("You are not authorized to access this service.", { status: 403 }) }
+    }
+
+    return { isAuthorize: true }
 }
 
 
@@ -31,27 +38,14 @@ export async function middleware(request) {
         return new NextResponse("No pathName was provided.", { status: 400 })
     }
 
-    if ((nextUrl.pathname == "/api/update-lessons") && (method === 'PUT') && authorizationStr) {
+    if (
+        ((nextUrl.pathname == "/api/update-lessons") && (method === 'PUT') && authorizationStr) ||
+        ((nextUrl.pathname == "/api/insert-lesson") && (method === 'POST') && authorizationStr)
+    ) {
+        const { errResponse } = await getAuthorizeReqResult(authorizationStr, true);
 
-    }
-
-
-    // check fo the following in the request: 
-    // if the payload is present in the request
-    // if the user is a dbAdmin 
-
-    if ((nextUrl.pathname == "/api/insert-lesson") && (method === 'POST') && authorizationStr) {
-        const token = authorizationStr.split(" ")[1].trim();
-        const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
-
-        if (!payload) {
-            return new NextResponse("You are not authorized to access this service.", { status: 403 })
-        }
-
-        const isUserDbAdmin = getDoesUserHaveSpecifiedRole(payload.roles, 'dbAdmin');
-
-        if (!isUserDbAdmin) {
-            return new NextResponse("You are not authorized to access this service.", { status: 403 })
+        if (errResponse) {
+            return errResponse;
         }
 
         return NextResponse.next();
