@@ -44,14 +44,14 @@ const deleteLesson = async lessonId => {
 // - the fields that will be updated: "key of the value that will be updated" : "the updated value"
 // - use $set to update the given field. 
 
-const updateLesson = async (filterObj, updatedValsAndKeysArr) => {
+const updateLesson = async (filterObj, objKeysAndUpdatedValsArr) => {
     try {
-        const updatedLessonsKeysAndValsObj = Object.fromEntries(updatedValsAndKeysArr);
+        const updatedLessonsKeysAndValsObj = Object.fromEntries(objKeysAndUpdatedValsArr);
 
         await Lessons.updateMany(filterObj, { $set: updatedLessonsKeysAndValsObj });
 
         return {
-            msg: `The following fields were updated: ${updatedValsAndKeysArr.map(({ key }) => key).join(" ")}`,
+            msg: `The following fields were updated: ${objKeysAndUpdatedValsArr.map(({ key }) => key).join(" ")}`,
             wasSuccessful: true
         }
     } catch (error) {
