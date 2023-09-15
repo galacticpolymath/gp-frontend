@@ -44,16 +44,19 @@ const deleteLesson = async lessonId => {
 // - the fields that will be updated: "key of the value that will be updated" : "the updated value"
 // - use $set to update the given field. 
 
-const updateLesson = async (filterObj, objKeysAndUpdatedValsArr) => {
+const createObjFromArr = (keysAndValsForQueryObj, isDbQueryObj) => keysAndValsForQueryObj.reduce((filterObj, keyAndVal) => {
+    const [key, val] = keyAndVal
+    filterObj[key] = (isDbQueryObj && Array.isArray(val)) ? { $in: val } : val
+
+    return filterObj
+}, {});
+
+const retrieveLessonsResultObj = async (keysAndValsForDbQueryObj, projectionObj = {}) => {
     try {
-        const updatedLessonsKeysAndValsObj = Object.fromEntries(objKeysAndUpdatedValsArr);
+        const filterObj = createObjFromArr(keysAndValsForDbQueryObj, true)
+        const lessons = await Lessons.find(filterObj, projectionObj).lean();
 
-        await Lessons.updateMany(filterObj, { $set: updatedLessonsKeysAndValsObj });
-
-        return {
-            msg: `The following fields were updated: ${objKeysAndUpdatedValsArr.map(({ key }) => key).join(" ")}`,
-            wasSuccessful: true
-        }
+        return { wasSuccessful: true, data: lessons }
     } catch (error) {
         const errMsg = `Failed to get the lesson from the database. Error message: ${error}.`;
 
@@ -63,21 +66,28 @@ const updateLesson = async (filterObj, objKeysAndUpdatedValsArr) => {
     }
 }
 
-const retrieveLessonsResultObj = async (_id, numID, projectionObj = {}) => {
+const updateLesson = async (keysAndValsForDbQueryObj, keysAndUpdatedValsArr) => {
     try {
-        let query = {};
+        const filterObj = createObjFromArr(keysAndValsForDbQueryObj, true);
+        // an example of lesson being updated: 
+        // section.participants[0].name = "John Doe"
+        const updatedLessonsKeysAndValsObj = Object.fromEntries(keysAndUpdatedValsArr);
 
-        if (_id) {
-            query._id = _id;
+        await Lessons.updateMany(filterObj, { $set: updatedLessonsKeysAndValsObj });
+
+        const projectionForRetrieveLessonsResultObj = Object.fromEntries(keysAndUpdatedValsArr)
+            .map(keyAndVal => ([keyAndVal[0], 1]))
+            .reduce((projectionForRetrieveLessonsResultObj, fieldAndWillProjectNumArr) => {
+                const [fieldName, projectionNum] = fieldAndWillProjectNumArr;
+                projectionForRetrieveLessonsResultObj[fieldName] = projectionNum;
+                
+                return projectionForRetrieveLessonsResultObj;
+            }, {})
+        const { data: lessons } = await retrieveLessonsResultObj(filterObj, projectionForRetrieveLessonsResultObj)
+
+        return {
+            updatedLessonsResults: lessons,
         }
-
-        if (numID) {
-            query.numID = parseInt(numID);
-        }
-
-        const lessons = await Lessons.find(query, projectionObj).lean();
-
-        return { wasSuccessful: true, data: lessons }
     } catch (error) {
         const errMsg = `Failed to get the lesson from the database. Error message: ${error}.`;
 

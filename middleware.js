@@ -55,5 +55,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-    matcher: ['/api/insert-lesson', '/api/delete-lesson/:id', 'api/update-lesson'],
+    matcher: ['/api/insert-lesson', '/api/delete-lesson/:id', '/api/update-lessons'],
 }
