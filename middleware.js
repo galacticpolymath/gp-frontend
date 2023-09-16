@@ -51,7 +51,7 @@ export async function middleware(request) {
         return NextResponse.next();
     }
 
-    return new NextResponse("Invalid request parameters or body.", { status: 400 })
+    return new NextResponse("Invalid request parameters, body, or method.", { status: 400 })
 }
 
 export const config = {

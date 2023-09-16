@@ -23,8 +23,6 @@ const insertLesson = async lesson => {
 }
 
 const deleteLesson = async lessonId => {
-    console.log("Deleting lesson with the following id: ", lessonId);
-
     try {
         await connectToMongodb();
 
@@ -39,21 +37,38 @@ const deleteLesson = async lessonId => {
     }
 }
 
-// GOAL: query the database for the lesson that needs to be updated. Receive the following from the client:
-// - the filter object that will be used to update the given lesson
-// - the fields that will be updated: "key of the value that will be updated" : "the updated value"
-// - use $set to update the given field. 
-
-const createObjFromArr = (keysAndValsForQueryObj, isDbQueryObj) => keysAndValsForQueryObj.reduce((filterObj, keyAndVal) => {
-    const [key, val] = keyAndVal
-    filterObj[key] = (isDbQueryObj && Array.isArray(val)) ? { $in: val } : val
-
-    return filterObj
-}, {});
-
-const retrieveLessonsResultObj = async (keysAndValsForDbQueryObj, projectionObj = {}) => {
+const createFilterObj = keysAndValsForQueryArr => {
     try {
-        const filterObj = createObjFromArr(keysAndValsForDbQueryObj, true)
+        const areFilterValuesValid = keysAndValsForQueryArr.every(([, filterVal]) => Array.isArray(filterVal));
+
+        if (!areFilterValuesValid) {
+            throw new Error("The value for the querying must be an array. Example: { numId: [1,2,3,4] }")
+        }
+
+        return {
+            filterObj: keysAndValsForQueryArr.reduce((filterObj, keyAndVal) => {
+                try {
+                    const [key, val] = keyAndVal
+
+                    filterObj[key] = { $in: (key === 'numID') ? val.map(lessonNumIdStr => parseInt(lessonNumIdStr)) : val };
+
+                    return filterObj;
+                } catch (error) {
+
+                    return { errMsg: error.message }
+                }
+
+            }, {})
+        };
+    } catch (error) {
+        return {
+            errMsg: error.message
+        }
+    }
+}
+
+const retrieveLessonsResultObj = async (filterObj, projectionObj = {}) => {
+    try {
         const lessons = await Lessons.find(filterObj, projectionObj).lean();
 
         return { wasSuccessful: true, data: lessons }
@@ -62,13 +77,12 @@ const retrieveLessonsResultObj = async (keysAndValsForDbQueryObj, projectionObj 
 
         console.error(errMsg)
 
-        return { wasSuccessful: false, msg: errMsg }
+        return { wasSuccessful: false, errMsg: errMsg }
     }
 }
 
-const updateLesson = async (keysAndValsForDbQueryObj, updatedLessonsKeysAndValsObj) => {
+const updateLesson = async (filterObj = {}, updatedLessonsKeysAndValsObj) => {
     try {
-        const filterObj = createObjFromArr(keysAndValsForDbQueryObj, true);
         // an example of lesson being updated: 
         // section.participants[0].name = "John Doe"
         await Lessons.updateMany(filterObj, { $set: updatedLessonsKeysAndValsObj });
@@ -87,5 +101,6 @@ export {
     insertLesson,
     deleteLesson,
     retrieveLessonsResultObj,
-    updateLesson
+    updateLesson,
+    createFilterObj
 }

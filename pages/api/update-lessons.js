@@ -1,39 +1,60 @@
-import { updateLesson } from "../../backend/services/lessonsServices";
+import { createFilterObj, retrieveLessonsResultObj, updateLesson } from "../../backend/services/lessonsServices";
+import { connectToMongodb } from "../../backend/utils/connection";
+
+// example of the filterObj: 
+// { numId: [1,2,3,4] }
+
+class CustomError {
+    constructor(message, code) {
+      this.message = message;
+      this.code = code;
+    }
+  }
 
 export default async function handler(request, response) {
     try {
-        const { filterObj, keysAndUpdatedValsArr } = request.body;
+        let { filterObj, keysAndUpdatedValsObj } = request.body;
 
-        if (!keysAndUpdatedValsArr) {
-            return response.status(400).json({ msg: "The field 'keysAndUpdatedValsArr' must be present." });
+        if (filterObj && ((typeof filterObj !== 'object') || ((typeof filterObj === 'object') && (filterObj === null)))) {
+            throw new CustomError("The value for 'filterObj' field must be an object.", 400);
         }
 
-        if (!Array.isArray(areObjKeysAndUpdatedValsArrValid)) {
-            return response.status(400).json({ msg: "The field 'keysAndUpdatedValsArr' must be an array." });
+        if (!keysAndUpdatedValsObj) {
+            throw new CustomError("'keysAndUpdatedValsObj' is required.", 400);
         }
 
-        const areObjKeysAndUpdatedValsArrValid = keysAndUpdatedValsArr.every(keyAndVal => {
-            if (!keyAndVal ||
-                (((typeof keyAndVal === 'object') && (keyAndVal !== null)) && (!("key" in keyAndVal) || !("value" in keyAndVal)))
-            ) {
-                return false;
+        if (
+            !keysAndUpdatedValsObj ||
+            (typeof keysAndUpdatedValsObj !== 'object') ||
+            ((typeof keysAndUpdatedValsObj === 'object') && ((keysAndUpdatedValsObj === null) || Array.isArray(keysAndUpdatedValsObj)))
+        ) {
+            throw new CustomError("The field 'keysAndUpdatedValsObj' must be an object of all of updated values and their corresponding lesson keys.", 400);
+        }
+
+        let filterObjForDbQuery = {};
+        filterObj = filterObj ? JSON.parse(JSON.stringify(filterObj)) : null;
+        keysAndUpdatedValsObj = JSON.parse(JSON.stringify(keysAndUpdatedValsObj));
+
+
+        if(filterObj){   
+            const { filterObj: _filterObjForUpdatedLessonServiceResult, errMsg: createFilterObjErrMsg } = createFilterObj(Object.entries(filterObj));
+            
+            if (createFilterObjErrMsg) {
+                throw new CustomError(createFilterObjErrMsg, 400);
             }
 
-            return true;
-        })
-
-        if (!areObjKeysAndUpdatedValsArrValid) {
-            return response.status(400).json({ msg: "At least one object in 'keysAndUpdatedValsArr' array is invalid. Must have 'key' and 'value' field." });
+            filterObjForDbQuery = _filterObjForUpdatedLessonServiceResult
         }
 
-        const updatedLessonsKeysAndValsObj = Object.fromEntries(keysAndUpdatedValsArr);
-        const { errMsg } = await updateLesson(filterObj, updatedLessonsKeysAndValsObj);
+        await connectToMongodb();
 
-        if (errMsg) {
-            return response.status(500).json({ msg: errMsg });
+        const { errMsg: updateLessonErrMsg } = await updateLesson(filterObjForDbQuery, keysAndUpdatedValsObj);
+
+        if (updateLessonErrMsg) {
+            throw new CustomError(updateLessonErrMsg, 400);
         }
 
-        const projectionForRetrieveUpdatedLessonsResultObj = Object.fromEntries(keysAndUpdatedValsArr)
+        const projectionForRetrieveUpdatedLessonsResultObj = Object.entries(keysAndUpdatedValsObj)
             .map(keyAndVal => ([keyAndVal[0], 1]))
             .reduce((projectionForRetrieveUpdatedLessonsResultObj, fieldAndProjectionNum) => {
                 const [fieldName, projectionNum] = fieldAndProjectionNum;
@@ -41,13 +62,18 @@ export default async function handler(request, response) {
 
                 return projectionForRetrieveUpdatedLessonsResultObj;
             }, {});
-        const { data: lessons } = await retrieveLessonsResultObj(filterObj, projectionForRetrieveUpdatedLessonsResultObj)
+        const { data: lessons, errMsg: retrieveLessonsResultObjErrorMsg } = await retrieveLessonsResultObj(filterObjForDbQuery, projectionForRetrieveUpdatedLessonsResultObj)
+
+        if(retrieveLessonsResultObjErrorMsg){
+            throw new CustomError(retrieveLessonsResultObjErrorMsg, 500)
+        }
 
         return response.status(200).json({ updatedLessonsResults: lessons });
     } catch (error) {
-        const errMsg = `Something went wrong in updating the target lesson(s). Error message: ${error}`
-        console.error(errMsg)
+        const { code, message } = error
+        console.log('error message: ', message)
 
-        return response.status(500).json({ msg: errMsg });
+        return response.status(code).json({ msg: message });
     }
 }
+
