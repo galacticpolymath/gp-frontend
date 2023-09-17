@@ -6,10 +6,10 @@ import { connectToMongodb } from "../../backend/utils/connection";
 
 class CustomError {
     constructor(message, code) {
-      this.message = message;
-      this.code = code;
+        this.message = message;
+        this.code = code;
     }
-  }
+}
 
 export default async function handler(request, response) {
     try {
@@ -36,9 +36,9 @@ export default async function handler(request, response) {
         keysAndUpdatedValsObj = JSON.parse(JSON.stringify(keysAndUpdatedValsObj));
 
 
-        if(filterObj){   
+        if (filterObj) {
             const { filterObj: _filterObjForUpdatedLessonServiceResult, errMsg: createFilterObjErrMsg } = createFilterObj(Object.entries(filterObj));
-            
+
             if (createFilterObjErrMsg) {
                 throw new CustomError(createFilterObjErrMsg, 400);
             }
@@ -64,11 +64,20 @@ export default async function handler(request, response) {
             }, {});
         const { data: lessons, errMsg: retrieveLessonsResultObjErrorMsg } = await retrieveLessonsResultObj(filterObjForDbQuery, projectionForRetrieveUpdatedLessonsResultObj)
 
-        if(retrieveLessonsResultObjErrorMsg){
+        if (retrieveLessonsResultObjErrorMsg) {
             throw new CustomError(retrieveLessonsResultObjErrorMsg, 500)
         }
 
-        return response.status(200).json({ updatedLessonsResults: lessons });
+        const updatedLessonsResults = lessons.map(lesson => {
+            const { _id, ...restOfLessonKeyValPairs } = lesson;
+
+            return {
+                _id: _id,
+                updatedFieldsObj: Object.keys(restOfLessonKeyValPairs)?.length ? restOfLessonKeyValPairs : null
+            }
+        })
+
+        return response.status(200).json({ updatedLessonsResults: updatedLessonsResults });
     } catch (error) {
         const { code, message } = error
         console.log('error message: ', message)
