@@ -5,25 +5,17 @@ import { CustomError } from '../../backend/utils/errors';
 export default async function handler(request, response) {
   try {
     const { filterObj, keysAndUpdatedValsObj } = request.body;
-    
+
     if (filterObj && (typeof filterObj !== 'object' || (typeof filterObj === 'object' && filterObj === null))) {
-      throw new CustomError("The value for 'filterObj' field must be an object.",400,);
+      throw new CustomError("The value for 'filterObj' field must be an object.", 400);
     }
 
         if (!keysAndUpdatedValsObj) {
             throw new CustomError("'keysAndUpdatedValsObj' is required.", 400);
         }
 
-        if (
-            !keysAndUpdatedValsObj ||
-            typeof keysAndUpdatedValsObj !== 'object' ||
-            (typeof keysAndUpdatedValsObj === 'object' &&
-                (keysAndUpdatedValsObj === null || Array.isArray(keysAndUpdatedValsObj)))
-        ) {
-            throw new CustomError(
-                "The field 'keysAndUpdatedValsObj' must be an object of all of updated values and their corresponding lesson keys.",
-                400,
-            );
+        if (!keysAndUpdatedValsObj || (typeof keysAndUpdatedValsObj !== 'object') || ((typeof keysAndUpdatedValsObj === 'object') && ((keysAndUpdatedValsObj === null) || Array.isArray(keysAndUpdatedValsObj)))) {
+            throw new CustomError("The field 'keysAndUpdatedValsObj' must be an object of all of updated values and their corresponding lesson keys.", 400);
         }
 
         let filterObjForDbQuery = {};
