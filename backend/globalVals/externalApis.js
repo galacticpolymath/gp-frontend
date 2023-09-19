@@ -1,7 +1,7 @@
 const externalApiInfo = {
-    oauthGoogleApisUrl: 'https://oauth2.googleapis.com/token'
-}
+  oauthGoogleApisUrl: 'https://oauth2.googleapis.com/token',
+};
 
-Object.freeze(externalApiInfo)
+Object.freeze(externalApiInfo);
 
-export { externalApiInfo }
+export { externalApiInfo };

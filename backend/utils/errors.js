@@ -1,8 +1,8 @@
 class CustomError {
-    constructor(message, code) {
-        this.message = message;
-        this.code = code;
-    }
+  constructor(message, code) {
+    this.message = message;
+    this.code = code;
+  }
 }
 
-export { CustomError }
+export { CustomError };

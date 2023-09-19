@@ -1,11 +1,10 @@
 import GoogleProvider from 'next-auth/providers/google';
 import getCanUserWriteToDb from '../services/dbAuthService';
-import { SignJWT, jwtVerify } from 'jose'
-
+import { SignJWT, jwtVerify } from 'jose';
 
 const signJwt = async (payload, secret) => {
-  const issueAtTime = Date.now() / 1000 // issued at time
-  const expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60 // 24 hours
+  const issueAtTime = Date.now() / 1000; // issued at time
+  const expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60; // 24 hours
 
   return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
@@ -13,7 +12,7 @@ const signJwt = async (payload, secret) => {
     .setIssuedAt(issueAtTime)
     .setNotBefore(issueAtTime)
     .sign(new TextEncoder().encode(secret));
-}
+};
 
 export const authOptions = {
   providers: [
