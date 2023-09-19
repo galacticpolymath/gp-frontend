@@ -13,21 +13,20 @@ const TEST_TILE_IMG_URL = 'https://gp-catalog.vercel.app/lessons/FemalesSing_en-
 // determine how many parts are there in the lesson
 
 const LessonPart = ({
-  partNum,
-  partTitle,
-  partPreface,
+  lsnNum,
+  lsnTitle,
+  lsnPreface,
   chunks = [],
   resources,
-  totalPartsNum,
   _numsOfLessonPartsThatAreExpanded
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
-  const isOnAssessments = partTitle === 'Assessments';
+  const isOnAssessments = lsnTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
   const has0Key = resources?.[0]?.parts ? ('0' in resources[0].parts) : false;
   console.log('resources?.[0]?.parts: ', resources?.[0]?.parts)
-  const partsIndexNum = has0Key ? (partNum - 1) : partNum;
+  const partsIndexNum = has0Key ? (lsnNum - 1) : lsnNum;
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
   // const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile ?? TEST_TILE_IMG_URL;
   const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile;
@@ -36,7 +35,7 @@ const LessonPart = ({
   let restOfTags = null;
 
   const handleOnClick = () => {
-    const previousLessonPartNum = partNum - 1;
+    const previousLessonPartNum = lsnNum - 1;
     setNumsOfLessonPartsThatAreExpanded(prevState => {
       if (!isExpanded) {
         return previousLessonPartNum ? [...prevState, previousLessonPartNum] : prevState;
@@ -67,15 +66,15 @@ const LessonPart = ({
   const highlighlightedBorderColor = 'solid 2.5px #3987C5'; 
   let _borderTop = 'none'
 
-  if (isExpanded && (partNum === 1)) {
+  if (isExpanded && (lsnNum === 1)) {
     _borderTop = highlighlightedBorderColor
   }
 
-  if (!isExpanded && (partNum === 1)) {
+  if (!isExpanded && (lsnNum === 1)) {
     _borderTop = defaultBorderColor
   }
 
-  const _borderBottom = (numsOfLessonPartsThatAreExpanded.find(num => num === partNum) || isExpanded) ? highlighlightedBorderColor : defaultBorderColor
+  const _borderBottom = (numsOfLessonPartsThatAreExpanded.find(num => num === lsnNum) || isExpanded) ? highlighlightedBorderColor : defaultBorderColor
   const accordionStyle = {
     borderLeft: isExpanded ? highlighlightedBorderColor : defaultBorderColor,
     borderRight: isExpanded ? highlighlightedBorderColor : defaultBorderColor,
@@ -86,15 +85,15 @@ const LessonPart = ({
   return (
     <Accordion
       buttonClassName={`w-100 text-start bg-white border-0`}
-      key={partNum}
-      id={`part_${partNum}`}
+      key={lsnNum}
+      id={`part_${lsnNum}`}
       accordionChildrenClasses='px-3 w-100'
       style={accordionStyle}
       button={(
         <div onClick={handleOnClick} className='p-2 bg-white d-flex'>
           <div className={`d-flex flex-column ${lessonTileUrl ? 'w-75' : 'w-100'}`} >
-            <h3 style={{ color: LESSON_PART_BTN_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${partNum}: ${partTitle}`}</h3>
-            <div><RichText content={partPreface} /></div>
+            <h3 style={{ color: LESSON_PART_BTN_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${lsnNum}: ${lsnTitle}`}</h3>
+            <div><RichText content={lsnPreface} /></div>
             {!!previewTags?.length && (
               <div style={{ top: 10 }} className='mt-2 d-flex w-75 tagPillContainer flex-wrap'>
                 {previewTags.map((tag, index) => (
@@ -176,7 +175,7 @@ const LessonPart = ({
               key={i}
               chunkNum={i}
               durList={durList}
-              partInfo={resources?.parts?.[partNum - 1]}
+              partInfo={resources?.parts?.[lsnNum - 1]}
               {...chunk}
             />
           ))}
@@ -187,9 +186,9 @@ const LessonPart = ({
 };
 
 LessonPart.propTypes = {
-  partNum: PropTypes.number,
-  partTitle: PropTypes.string,
-  partPreface: PropTypes.string,
+  lsnNum: PropTypes.number,
+  lsnTitle: PropTypes.string,
+  lsnPreface: PropTypes.string,
   chunks: PropTypes.array,
   resources: PropTypes.oneOfType([
     PropTypes.array, PropTypes.object,
