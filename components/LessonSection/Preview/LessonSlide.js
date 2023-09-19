@@ -5,7 +5,7 @@ import styles from './index.module.scss';
 
 const LessonSlide = ({
   type,
-  forPart,
+  forLsn,
   title,
   lessonRelevance,
   by,
@@ -25,8 +25,8 @@ const LessonSlide = ({
           className={`${styles.SlideBody} mt-2 text-wrap lessonSlideBody px-1 px-md-3`}
           style={{ width: "100%" }}
         >
-          {forPart && (
-            <div className='badge badge-pill bg-primary-light mb-1' style={{ color: 'gray' }}>for Part {forPart}</div>
+          {forLsn && (
+            <div className='badge badge-pill bg-primary-light mb-1' style={{ color: 'gray' }}>for Part {forLsn}</div>
           )}
           <h6 className='m-0 mb-1 fw-bolder fst-italic'>{title}</h6>
           <div className="lessonRelevanceTxt mb-2 me-3">{lessonRelevance}</div>

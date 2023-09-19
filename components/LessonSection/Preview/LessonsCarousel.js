@@ -91,7 +91,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                         style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
                     >
                         {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => {
-                            return <LessonSlide key={index} forPart={lessonDocument.forLsn ?? lessonDocument.forPart} {...lessonDocument} />
+                            return <LessonSlide key={index} forLsn={lessonDocument.forLsn ?? lessonDocument.forPart} {...lessonDocument} />
                         })}
                     </div>
                 </section>

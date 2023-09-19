@@ -157,14 +157,26 @@ const TeachIt = ({
 
         <div className='container ps-0 pe-1 px-md-2  pb-4'>
           {parts.map((part, index) => {
-            console.log('part: ', part)
+            const {
+              lsnNum,
+              lsnTitle,
+              lsnPreface,
+              partNum,
+              partTitle,
+              chunks,
+              partPreface,
+            } = part;
+
             return (
               <LessonPart
                 key={`${index}_part`}
                 resources={resources}
                 totalPartsNum={parts.length}
                 _numsOfLessonPartsThatAreExpanded={[numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded]}
-                {...part}
+                lsnNum={lsnNum ?? partNum}
+                lsnTitle={lsnTitle ?? partTitle}
+                lsnPreface={lsnPreface ?? partPreface}
+                chunks={chunks}
               />
             );
           })}
