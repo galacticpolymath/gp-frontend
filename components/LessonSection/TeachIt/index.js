@@ -43,9 +43,11 @@ const TeachIt = ({
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
   // getting assessments part 
-  let { title, itemList } = Data.classroom.resources[0]?.parts ?? {};
+  const lessonsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
+  let { title, itemList } = Data.classroom.resources[0]?.[lessonsFieldName] ?? {};
   const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
-  let parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
+  const dataPartsFieldName = ('parts' in Data) ? 'parts' : 'lesson';
+  let parts = assessmentPart ? [...Data[dataPartsFieldName], assessmentPart] : Data[dataPartsFieldName];
   parts = parts.map((part, index) => ({ ...part, partNum: index + 1 }))
   const ref = useRef();
 
