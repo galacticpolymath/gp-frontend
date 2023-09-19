@@ -10,27 +10,37 @@ import { useState } from 'react';
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 const TEST_TILE_IMG_URL = 'https://gp-catalog.vercel.app/lessons/FemalesSing_en-US/sponsor_logo_41be63750b.png';
 
-// determine how many parts are there in the lesson
 
 const LessonPart = ({
+  // lsnNum
   partNum,
+  // lsnTitle
   partTitle,
+  // lsnPreface
   partPreface,
   chunks = [],
   resources,
-  totalPartsNum,
   _numsOfLessonPartsThatAreExpanded
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
   const isOnAssessments = partTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
-  const has0Key = resources?.[0]?.parts ? ('0' in resources[0].parts) : false;
+  const lessonsFieldName = resources?.[0]?.parts ? 'parts' : 'lessons';
+
+  // if parts exists, then check if the 0 key exist.
+  let has0Key = false;
+
+  if(lessonsFieldName === 'parts'){
+    has0Key = '0' in resources[0].parts
+  }
+  
+  
   const partsIndexNum = has0Key ? (partNum - 1) : partNum;
-  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
+  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.[lessonsFieldName]?.[partsIndexNum]?.itemList || []);
   // const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile ?? TEST_TILE_IMG_URL;
-  const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile;
-  let allTags = resources?.[0]?.parts?.[partsIndexNum]?.tags ?? null;
+  const lessonTileUrl = resources?.[0]?.[lessonsFieldName]?.[partsIndexNum]?.lessonTile;
+  let allTags = resources?.[0]?.[lessonsFieldName]?.[partsIndexNum]?.tags ?? null;
   let previewTags = null;
   let restOfTags = null;
 
@@ -175,7 +185,7 @@ const LessonPart = ({
               key={i}
               chunkNum={i}
               durList={durList}
-              partInfo={resources?.parts?.[partNum - 1]}
+              partInfo={resources?.[lessonsFieldName]?.[partNum - 1]}
               {...chunk}
             />
           ))}
