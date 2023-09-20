@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 const TEST_TILE_IMG_URL = 'https://gp-catalog.vercel.app/lessons/FemalesSing_en-US/sponsor_logo_41be63750b.png';
@@ -24,13 +24,17 @@ const LessonPart = ({
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
   const isOnAssessments = lsnTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
-  const has0Key = resources?.[0]?.parts ? ('0' in resources[0].parts) : false;
-  console.log('resources?.[0]?.parts: ', resources?.[0]?.parts)
+  const partsFieldName = ('parts' in resources?.[0]) ? 'parts' : 'lessons';
+  let has0Key = false;
+
+  if (partsFieldName === 'parts') {
+    has0Key = '0' in resources[0].parts;
+  }
+
   const partsIndexNum = has0Key ? (lsnNum - 1) : lsnNum;
-  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.parts?.[partsIndexNum]?.itemList || []);
-  // const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile ?? TEST_TILE_IMG_URL;
-  const lessonTileUrl = resources?.[0]?.parts?.[partsIndexNum]?.lessonTile;
-  let allTags = resources?.[0]?.parts?.[partsIndexNum]?.tags ?? null;
+  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.itemList || []);
+  const lessonTileUrl = resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.lessonTile;
+  let allTags = resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.tags ?? null;
   let previewTags = null;
   let restOfTags = null;
 
@@ -63,7 +67,7 @@ const LessonPart = ({
 
 
   const defaultBorderColor = 'solid 2.5px rgb(222, 226, 230)';
-  const highlighlightedBorderColor = 'solid 2.5px #3987C5'; 
+  const highlighlightedBorderColor = 'solid 2.5px #3987C5';
   let _borderTop = 'none'
 
   if (isExpanded && (lsnNum === 1)) {
@@ -175,7 +179,7 @@ const LessonPart = ({
               key={i}
               chunkNum={i}
               durList={durList}
-              partInfo={resources?.parts?.[lsnNum - 1]}
+              partInfo={resources?.[partsFieldName]?.[lsnNum - 1]}
               {...chunk}
             />
           ))}
@@ -195,4 +199,4 @@ LessonPart.propTypes = {
   ]),
 };
 
-export default LessonPart;
+export default memo(LessonPart);
