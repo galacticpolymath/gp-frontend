@@ -13,7 +13,7 @@ export default async function handler(request, response) {
       throw new CustomError('This route only accepts GET requests.', 404);
     }
 
-    let { _id, numID, projections } = query;
+    let { filterObj, projectionObj } = query;
 
     if (_id && (typeof _id !== 'string')) {
       throw new CustomError("The '_id' query param must be a string.", 400);
