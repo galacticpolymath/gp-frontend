@@ -9,6 +9,7 @@ module.exports = {
       'catalog.galacticpolymath.com',
       'gp-catalog.vercel.app',
       'i3.ytimg.com',
+      'storage.googleapis.com'
     ],
   }
 };

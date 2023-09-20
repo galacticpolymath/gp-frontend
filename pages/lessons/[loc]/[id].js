@@ -145,11 +145,11 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
-  
+
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
   const lessonBannerUrl = lesson?.CoverImage?.url ?? lesson.LessonBanner
-  const sponsorLogoImgUrl = lesson?.SponsorImage?.url ?? lesson.SponsorLogo
+  const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
   const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
@@ -161,8 +161,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }, [willGoToTargetSection])
 
   useEffect(() => {
-    console.log('lessonBannerUrl: ', lessonBannerUrl);
-    console.log('lesson.CoverImage: ', lesson.CoverImage)
     document.body.addEventListener('click', handleDocumentClick);
 
     return () => document.body.removeEventListener('click', handleDocumentClick);
@@ -170,7 +168,12 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   return (
     <Layout {...layoutProps}>
-      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} setIsScrollListenerOn={setIsScrollListenerOn} isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked} />
+      <LessonsSecsNavDots
+        _sectionDots={[sectionDots, setSectionDots]}
+        setWillGoToTargetSection={setWillGoToTargetSection}
+        setIsScrollListenerOn={setIsScrollListenerOn}
+        isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked}
+      />
       <ShareWidget {...shareWidgetFixedProps} />
       <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
         <div id="lessonTitleSecId" className="d-flex justify-content-center SectionHeading lessonTitleId">

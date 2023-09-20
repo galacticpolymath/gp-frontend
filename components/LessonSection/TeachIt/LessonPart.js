@@ -10,7 +10,6 @@ import { memo, useState } from 'react';
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 const TEST_TILE_IMG_URL = 'https://gp-catalog.vercel.app/lessons/FemalesSing_en-US/sponsor_logo_41be63750b.png';
 
-// determine how many parts are there in the lesson
 
 const LessonPart = ({
   lsnNum,
@@ -140,6 +139,7 @@ const LessonPart = ({
       )}
       <ol className='mt-3'>
         {!!linkResources?.length && linkResources.map(item => {
+          console.log('item.learningObj: ', item.learningObj)
           const { itemTitle, itemDescription, links } = item;
           const _links = links ? (Array.isArray(links) ? links : [links]) : null;
           return (
