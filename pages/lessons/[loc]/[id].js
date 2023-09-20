@@ -243,6 +243,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
   );
 };
 
+// should use the axios library to make the get request.
+
 export const getStaticPaths = async () => {
   try {
     await connectToMongodb()
