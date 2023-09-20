@@ -15,6 +15,7 @@ const LessonPart = ({
   lsnNum,
   lsnTitle,
   lsnPreface,
+  learningObj,
   chunks = [],
   resources,
   _numsOfLessonPartsThatAreExpanded
@@ -30,7 +31,7 @@ const LessonPart = ({
     has0Key = '0' in resources[0].parts;
   }
 
-  const partsIndexNum = has0Key ? (lsnNum - 1) : lsnNum;
+  const partsIndexNum = has0Key ? (lsnNum - 1) : (partsFieldName === 'lessons') ? (lsnNum - 1) : lsnNum;
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.itemList || []);
   const lessonTileUrl = resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.lessonTile;
   let allTags = resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.tags ?? null;

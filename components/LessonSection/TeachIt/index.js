@@ -44,6 +44,8 @@ const TeachIt = ({
   resources = getIsValObj(resources) ? [resources] : resources;
   // getting assessments part 
   const partsFieldName = 'parts' in Data.classroom.resources[0] ? 'parts' : 'lessons';
+  console.log('Data.classroom.resources: ', Data.classroom.resources)
+  console.log('partsFieldName: ', partsFieldName)
   const dataPartsFieldName = 'parts' in Data ? 'parts' : 'lesson'
   let { title, itemList } = Data.classroom.resources[0]?.[partsFieldName] ?? {};
   const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
@@ -157,7 +159,7 @@ const TeachIt = ({
 
         <div className='container ps-0 pe-1 px-md-2  pb-4'>
           {parts.map((part, index) => {
-            console.log('part, hey there: ', part)
+            console.log('part yo there: ', part)
             const {
               lsnNum,
               partNum,
@@ -165,7 +167,8 @@ const TeachIt = ({
               partTitle,
               lsnPreface,
               partPreface,
-              chunks
+              chunks,
+              learningObj
             } = part;
 
             return (
@@ -177,6 +180,7 @@ const TeachIt = ({
                 lsnTitle={lsnTitle ?? partTitle}
                 lsnPreface={lsnPreface ?? partPreface}
                 chunks={chunks}
+                learningObj={learningObj}
               />
             );
           })}

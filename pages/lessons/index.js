@@ -10,16 +10,19 @@ import LessonCard from '../../components/LessonsPg/LessonCard';
 import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
 import { connectToMongodb } from '../../backend/utils/connection';
+import axios from 'axios';
+import { lessonsUrl } from '../../apiGlobalVals';
 
 const LessonsPage = ({ lessons }) => {
-
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
   };
 
   const uniqueIDs = [];
+  console.log('lessons: ', lessons)
   const publishedLessons = lessons.filter(({ PublicationStatus, numID }) => {
-    const willShowLesson = !uniqueIDs.includes(numID) && (PublicationStatus === 'Live');
+    // const willShowLesson = !uniqueIDs.includes(numID) && (PublicationStatus === 'Live');
+    const willShowLesson = !uniqueIDs.includes(numID);
 
     if (willShowLesson) {
       uniqueIDs.push(numID);
@@ -27,6 +30,7 @@ const LessonsPage = ({ lessons }) => {
 
     return willShowLesson;
   });
+  
 
   return (
     <Layout
@@ -102,6 +106,7 @@ export async function getStaticProps() {
     await connectToMongodb();
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
+    console.log('lessons: ', lessons.length)
     lessons = lessons.map(lesson => ({
       ...lesson,
       ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),

@@ -46,6 +46,7 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 }
 
 const LessonDetails = ({ lesson, availLocs }) => {
+  console.log('lesson: ', lesson)
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
   const router = useRouter()
