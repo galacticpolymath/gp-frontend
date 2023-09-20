@@ -1,14 +1,9 @@
 import { retrieveLessonsResultObj } from '../../backend/services/lessonsServices';
 import { connectToMongodb } from '../../backend/utils/connection';
+import { CustomError } from '../../backend/utils/errors';
 
 const getIsObj = val => (val !== null) && (typeof val === 'object') && (Array.isArray(val) === false);
 
-class CustomError {
-  constructor(message, code) {
-    this.message = message;
-    this.code = code;
-  }
-}
 
 export default async function handler(request, response) {
   try {
