@@ -78,6 +78,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
+  // move the helper function outside of the component
   const getSectionDotsDefaultVal = () => {
     const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
@@ -144,10 +145,13 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
+  
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
-  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
+  const lessonBannerUrl = lesson?.CoverImage?.url ?? lesson.LessonBanner
+  const sponsorLogoImgUrl = lesson?.SponsorImage?.url ?? lesson.SponsorLogo
+  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
+  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
   useEffect(() => {
     if (willGoToTargetSection) {
@@ -157,6 +161,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
   }, [willGoToTargetSection])
 
   useEffect(() => {
+    console.log('lessonBannerUrl: ', lessonBannerUrl);
+    console.log('lesson.CoverImage: ', lesson.CoverImage)
     document.body.addEventListener('click', handleDocumentClick);
 
     return () => document.body.removeEventListener('click', handleDocumentClick);
@@ -186,10 +192,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
             </div>
             <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
             <h4 className='fw-light'>{lesson.Subtitle}</h4>
-            {(lesson.CoverImage && lesson.CoverImage.url) && (
+            {lessonBannerUrl && (
               <div className='w-100 position-relative mt-2 mb-2'>
                 <Image
-                  src={lesson.CoverImage.url}
+                  src={lessonBannerUrl}
                   alt={lesson.Subtitle}
                   width={1500}
                   height={450}
@@ -200,7 +206,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
             )}
             <div className='d-flex d-md-none'>
               <label className='d-flex justify-content-center align-items-center'>Share: </label>
-              {isOnProduction ? <ShareWidget pinterestMedia={lesson.CoverImage.url} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lesson.CoverImage.url} />}
+              {isOnProduction ? <ShareWidget pinterestMedia={lessonBannerUrl} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lessonBannerUrl} />}
             </div>
             <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
               <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
@@ -208,10 +214,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
                 <RichText content={lesson.SponsoredBy} />
               </div>
               <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
-                {(lesson.SponsorImage && lesson.SponsorImage.url) && (
+                {sponsorLogoImgUrl && (
                   <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
                     <Image
-                      src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
+                      src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
                       alt={lesson.Subtitle}
                       className='sponsorImg'
                       sizes="225px"

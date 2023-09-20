@@ -5,7 +5,7 @@ export default async function handler(request, response) {
     return response.status(400).json({ msg: 'The request body is empty.' });
   }
 
-  const lessonInsertationResult = await insertLesson(request.body);
+  const { status, msg } = await insertLesson(request.body);
 
-  return response.status(lessonInsertationResult.status).json({ msg: lessonInsertationResult.msg });
+  return response.status(status).json({ msg: msg });
 }
