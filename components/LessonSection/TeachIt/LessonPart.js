@@ -16,6 +16,8 @@ const LessonPart = ({
   lsnTitle,
   lsnPreface,
   learningObj,
+  lessonTileUrl,
+  partsFieldName,
   chunks = [],
   resources,
   _numsOfLessonPartsThatAreExpanded
@@ -24,7 +26,6 @@ const LessonPart = ({
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
   const isOnAssessments = lsnTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
-  const partsFieldName = ('parts' in resources?.[0]) ? 'parts' : 'lessons';
   let has0Key = false;
 
   if (partsFieldName === 'parts') {
@@ -33,7 +34,6 @@ const LessonPart = ({
 
   const partsIndexNum = has0Key ? (lsnNum - 1) : (partsFieldName === 'lessons') ? (lsnNum - 1) : lsnNum;
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.itemList || []);
-  const lessonTileUrl = resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.lessonTile;
   let allTags = resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.tags ?? null;
   let previewTags = null;
   let restOfTags = null;
@@ -112,7 +112,7 @@ const LessonPart = ({
           </div>
           {lessonTileUrl &&
             <div className='w-25 d-flex justify-content-center align-items-center'>
-              <div style={{ width: 200, height: 200 }} className="position-relative">
+              <div style={{ width: 125, height: 125 }} className="position-relative">
                 <Image
                   src={lessonTileUrl}
                   alt="lesson_tile"

@@ -44,8 +44,6 @@ const TeachIt = ({
   resources = getIsValObj(resources) ? [resources] : resources;
   // getting assessments part 
   const partsFieldName = 'parts' in Data.classroom.resources[0] ? 'parts' : 'lessons';
-  console.log('Data.classroom.resources: ', Data.classroom.resources)
-  console.log('partsFieldName: ', partsFieldName)
   const dataPartsFieldName = 'parts' in Data ? 'parts' : 'lesson'
   let { title, itemList } = Data.classroom.resources[0]?.[partsFieldName] ?? {};
   const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
@@ -63,6 +61,7 @@ const TeachIt = ({
     setSelectedGradeResources(selectedGrade.links);
     setSelectedGrade(selectedGrade);
   };
+
 
   return (
     <CollapsibleLessonSection
@@ -160,7 +159,14 @@ const TeachIt = ({
         <div className='container ps-0 pe-1 px-md-2  pb-4'>
           {parts.map((part, index) => {
             console.log('part yo there: ', part)
-            const {
+            // BUG: 
+            // WHAT IS HAPPENING:
+            // the object that is being retrieved does not have the lesson tile url
+            // if the array that contains all of the objects is coming from an array that has that is the updated version of the lesson, then get the lessons from the updated version
+            // if new lessons updated, then get the updated version of the lessons from resources
+            
+            // GOAL: check if the lessons sections are the updated version of the lessons
+            let {
               lsnNum,
               partNum,
               lsnTitle,
@@ -168,8 +174,15 @@ const TeachIt = ({
               lsnPreface,
               partPreface,
               chunks,
-              learningObj
+              learningObj,
+              lessonTile
             } = part;
+
+            if(partsFieldName === 'lessons'){
+              const { title, tile } = resources[0][partsFieldName][index];
+              lsnTitle = title;
+              lessonTile = tile;
+            }
 
             return (
               <LessonPart
@@ -181,6 +194,8 @@ const TeachIt = ({
                 lsnPreface={lsnPreface ?? partPreface}
                 chunks={chunks}
                 learningObj={learningObj}
+                partsFieldName={partsFieldName}
+                lessonTileUrl={lessonTile}
               />
             );
           })}
