@@ -67,7 +67,7 @@ const createFilterObj = keysAndValsForQueryArr => {
   }
 };
 
-const retrieveLessonsResultObj = async (filterObj, projectionObj = {}) => {
+const retrieveLessons = async (filterObj = {}, projectionObj = {}) => {
   try {
     const lessons = await Lessons.find(filterObj, projectionObj).lean();
 
@@ -75,7 +75,7 @@ const retrieveLessonsResultObj = async (filterObj, projectionObj = {}) => {
   } catch (error) {
     const errMsg = `Failed to get the lesson from the database. Error message: ${error}.`;
 
-    console.error(errMsg);
+    console.error("errMsg in the `retrieveLessons` function: ", errMsg);
 
     return { wasSuccessful: false, errMsg: errMsg };
   }
@@ -89,7 +89,7 @@ const updateLesson = async (filterObj = {}, updatedLessonsKeysAndValsObj) => {
 
     return { wasSuccessful: true };
   } catch (error) {
-    const errMsg = `Failed to get the lesson from the database. Error message: ${error}.`;
+    const errMsg = `Failed to update the target lesson. Error message: ${error}.`;
 
     console.error(errMsg);
 
@@ -100,7 +100,7 @@ const updateLesson = async (filterObj = {}, updatedLessonsKeysAndValsObj) => {
 export {
   insertLesson,
   deleteLesson,
-  retrieveLessonsResultObj,
+  retrieveLessons,
   updateLesson,
   createFilterObj,
 };
