@@ -1,6 +1,7 @@
 import GoogleProvider from 'next-auth/providers/google';
 import getCanUserWriteToDb from '../services/dbAuthService';
 import { SignJWT, jwtVerify } from 'jose';
+import { nanoid } from 'nanoid';
 
 const signJwt = async (payload, secret) => {
   const issueAtTime = Date.now() / 1000; // issued at time
@@ -10,7 +11,7 @@ const signJwt = async (payload, secret) => {
     .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
     .setExpirationTime(expirationTime)
     .setIssuedAt(issueAtTime)
-    .setNotBefore(issueAtTime)
+    .setJti(nanoid())
     .sign(new TextEncoder().encode(secret));
 };
 
@@ -29,6 +30,7 @@ export const authOptions = {
     secret: process.env.NEXTAUTH_SECRET,
     maxAge: 60 * 60 * 24 * 30,
     encode: async ({ secret, token }) => {
+      console.log('encode function is being implemented: ', token)
       try {
         const { email, name } = token?.payload ?? token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
@@ -41,12 +43,14 @@ export const authOptions = {
       }
     },
     decode: async ({ secret, token }) => {
+      console.log('decode function is being implemented: ', token)
       const decodedToken = await jwtVerify(token, new TextEncoder().encode(secret));
       return decodedToken;
     },
   },
   callbacks: {
     async jwt({ token, user }) {
+      console.log('jwt function is being implemented: ', token)
       const isUserSignedIn = !!user;
 
       if (isUserSignedIn) {
@@ -56,6 +60,7 @@ export const authOptions = {
       return Promise.resolve(token);
     },
     async session({ session, token }) {
+      console.log('session function is being implemented: ', session)
       const { email, roles, name } = token.payload;
       const encodedToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET);
       session.id = token.id;

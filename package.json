@@ -36,6 +36,7 @@
     "lodash.throttle": "^4.1.1",
     "moment": "^2.29.4",
     "mongoose": "^7.2.2",
+    "nanoid": "^5.0.1",
     "next": "^13.4.9",
     "next-auth": "^4.22.1",
     "nextjs-google-analytics": "^2.3.3",
