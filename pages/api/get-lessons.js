@@ -10,7 +10,6 @@ export default async function handler(request, response) {
       throw new CustomError('This route only accepts GET requests.', 404);
     }
 
-    console.log('query: ', query);
     let { filterObj, projectionsObj } = query ?? {};
 
     projectionsObj = (typeof projectionsObj === 'string') ? JSON.parse(projectionsObj) : projectionsObj;
@@ -40,7 +39,6 @@ export default async function handler(request, response) {
 
     return response.status(200).json({ lessons: data });
   } catch (error) {
-    console.log('error: ', error);
     const { code, message } = error;
 
     return response.status(code ?? 500).json({ msg: `Error message: ${message ?? 'An error has occurred on the server.'}` });

@@ -46,6 +46,8 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 }
 
 const LessonDetails = ({ lesson, availLocs }) => {
+  const { CoverImage, LessonBanner } = lesson;
+  const LessonBannerImgUrl = CoverImage?.url ?? LessonBanner 
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
   const router = useRouter()
@@ -146,8 +148,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
-  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
+  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: LessonBannerImgUrl } : { isOnSide: true, pinterestMedia: LessonBannerImgUrl, developmentUrl: `${lesson.URL}/` }
+  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: LessonBannerImgUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
   useEffect(() => {
     if (willGoToTargetSection) {
@@ -186,10 +188,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
             </div>
             <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
             <h4 className='fw-light'>{lesson.Subtitle}</h4>
-            {(lesson.CoverImage && lesson.CoverImage.url) && (
+            {(LessonBannerImgUrl) && (
               <div className='w-100 position-relative mt-2 mb-2'>
                 <Image
-                  src={lesson.CoverImage.url}
+                  src={LessonBannerImgUrl}
                   alt={lesson.Subtitle}
                   width={1500}
                   height={450}
@@ -200,7 +202,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
             )}
             <div className='d-flex d-md-none'>
               <label className='d-flex justify-content-center align-items-center'>Share: </label>
-              {isOnProduction ? <ShareWidget pinterestMedia={lesson.CoverImage.url} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lesson.CoverImage.url} />}
+              {isOnProduction ? <ShareWidget pinterestMedia={LessonBannerImgUrl} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={LessonBannerImgUrl} />}
             </div>
             <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
               <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">

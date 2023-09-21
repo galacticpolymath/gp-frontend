@@ -150,7 +150,7 @@ const TeachIt = ({
         )}
 
         <div className='container ps-0 pe-1 px-md-2  pb-4'>
-          {parts.map((part, index) => {
+          {parts && parts.map((part, index) => {
             return (
               <LessonPart
                 key={`${index}_part`}
