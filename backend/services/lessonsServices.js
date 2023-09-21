@@ -75,7 +75,7 @@ const retrieveLessons = async (filterObj = {}, projectionObj = {}) => {
   } catch (error) {
     const errMsg = `Failed to get the lesson from the database. Error message: ${error}.`;
 
-    console.error("errMsg in the `retrieveLessons` function: ", errMsg);
+    console.error('errMsg in the `retrieveLessons` function: ', errMsg);
 
     return { wasSuccessful: false, errMsg: errMsg };
   }

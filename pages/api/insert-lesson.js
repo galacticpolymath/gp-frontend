@@ -21,6 +21,6 @@ export default async function handler(request, response) {
   } catch (error) {
     const { code, message } = error;
 
-    return response.status(code ?? 500).json({ msg: message ?? "Failed to insert lesson into the db." });
+    return response.status(code ?? 500).json({ msg: message ?? 'Failed to insert lesson into the db.' });
   }
 }
