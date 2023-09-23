@@ -1,17 +1,19 @@
 import JwtModel from "../../backend/models/Jwt";
+import getCanUserWriteToDb from "../../backend/services/dbAuthService";
 import { connectToMongodb } from "../../backend/utils/connection";
+import { CustomError } from "../../backend/utils/errors";
 
 export default async function handler(request, response) {
     try {
-        if (request.method !== 'POST') {
-            return response.status(404).json({ msg: 'This route only accepts POST requests.' });
-        }
+        const canUserWriteToDb = await getCanUserWriteToDb(request.body.email);
 
-        if (!("email" in request.body)) {
-            return response.status(400).json({ msg: 'Must provide an email in the body of the request.' });
+        if(!canUserWriteToDb){
+            throw new CustomError('You are not authorized to access this service.', 403)
         }
 
         await connectToMongodb();
+
+        console.log('getting jwtDoc...')
 
         const jwtDoc = await JwtModel.findOne({ _id: request.body.email }).lean();
 
@@ -20,6 +22,8 @@ export default async function handler(request, response) {
                 msg: 'There is no jwtToken for this email. You may have received it already or the jwt storage has expired.'
             });
         };
+
+        await JwtModel.deleteOne({ _id: request.body.email })
 
         return response.status(200).json({ jwt: jwtDoc.jwt });
     } catch (error) {
