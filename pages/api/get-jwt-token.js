@@ -1,39 +1,30 @@
-import { getCache } from "../../backend/utils/cache";
+import JwtModel from "../../backend/models/Jwt";
+import { connectToMongodb } from "../../backend/utils/connection";
 
 export default async function handler(request, response) {
+    try {
+        if (request.method !== 'POST') {
+            return response.status(404).json({ msg: 'This route only accepts POST requests.' });
+        }
 
-    if (request.method !== 'POST') {
-        return response.status(404).json({ msg: 'This route only accepts POST requests.' });
+        if (!("email" in request.body)) {
+            return response.status(400).json({ msg: 'Must provide an email in the body of the request.' });
+        }
+
+        await connectToMongodb();
+
+        const jwtDoc = await JwtModel.findOne({ _id: request.body.email }).lean();
+
+        if (!jwtDoc) {
+            return response.status(404).json({
+                msg: 'There is no jwtToken for this email. You may have received it already or the jwt storage has expired.'
+            });
+        };
+
+        return response.status(200).json({ jwt: jwtDoc.jwt });
+    } catch (error) {
+        console.error('error message, get jwt token: ', error)
+
+        return response.status(500).json({ msg: 'Internal server error.' });
     }
-
-    const cache = getCache()
-
-    console.log('cache keys: ', cache.keys())
-
-    // console.log('cache: ', cache.keys())
-
-    // const cache = getCache();
-    // console.log('getting jwt, current cache: ', cache.keys())
-    // const jwtTokensMap = cache.get('jwtTokensMap');
-
-    // if (!jwtTokensMap) {
-    //     return response.status(400).json({ msg: 'There are no jwtTokens in the cache.' });
-    // }
-
-    // if (!request?.body?.email || (typeof request?.body?.email !== 'string')) {
-    //     return response.status(400).json({ msg: "Either you didn't provided an email or the data type for the email is wrong." })
-    // }
-
-    // const userJwtToken = jwtTokensMap.get(request?.body?.email); 
-
-    // if(!userJwtToken){
-    //     return response.status(400).json({ msg: 'There is no jwtToken for this email. You may have received it already.' });
-    // }
-
-    // jwtTokensMap.delete(request.body.email);
-
-    // cache.set('jwtTokensMap', jwtTokensMap)
-    
-    // return response.status(200).json({ jwt: userJwtToken });
-    return response.status(200).json({ msg: "hey there." });
 }

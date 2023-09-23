@@ -21,7 +21,7 @@ const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin)
 };
 
 export async function middleware(request) {
-  const { nextUrl, method, headers } = request;
+  const { nextUrl, method, headers, body } = request;
 
   if (!headers) {
     return new NextResponse('No headers were present in the request.', { status: 400 });

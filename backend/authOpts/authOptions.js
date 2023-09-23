@@ -3,6 +3,8 @@ import getCanUserWriteToDb from '../services/dbAuthService';
 import { SignJWT, jwtVerify } from 'jose';
 import { nanoid } from 'nanoid';
 import { getCache } from '../utils/cache';
+import JwtModel from '../models/Jwt';
+import { connectToMongodb } from '../utils/connection';
 
 const signJwt = async (payload, secret) => {
   const issueAtTime = Date.now() / 1000; // issued at time
@@ -31,17 +33,17 @@ export const authOptions = {
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
     maxAge: 60 * 60 * 24 * 30,
-    encode: async encodedArgs => {
+    encode: async ({ secret, token }) => {
       try {
-
-        const { secret, token } = encodedArgs
         const { email, name } = token?.payload ?? token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
         const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
         const encodedToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret);
 
         if (!token?.payload) {
-          
+          await connectToMongodb();
+          const jwt = new JwtModel({ _id: email, jwt: encodedToken });
+          jwt.save();
         }
 
         return encodedToken;
