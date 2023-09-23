@@ -1,9 +1,17 @@
 import NodeCache from "node-cache";
 
-const cache = (() => {
-    const _cache = new NodeCache();
-    console.log('cache initalized.')
-    return _cache;
-})();
+let currentCache = null;
 
-export { cache };
+export const getCache = () => {
+    if(currentCache){
+        console.log('Cache was already created.')
+        return currentCache;
+    }
+
+    console.log('cache has not been instantiated.')
+
+    currentCache = new NodeCache();
+
+    return currentCache;
+};
+

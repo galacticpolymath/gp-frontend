@@ -1,5 +1,4 @@
-import { cache } from "../../backend/utils/cache";
-
+import { getCache } from "../../backend/utils/cache";
 
 export default async function handler(request, response) {
 
@@ -7,27 +6,34 @@ export default async function handler(request, response) {
         return response.status(404).json({ msg: 'This route only accepts POST requests.' });
     }
 
-    const { email } = request.body;
-    console.log('email: ', email)
-    const jwtTokensMap = cache.get('jwtTokensMap');
+    const cache = getCache()
 
-    if (!jwtTokensMap) {
-        return response.status(400).json({ msg: 'There are no jwtTokens in the cache.' });
-    }
+    console.log('cache keys: ', cache.keys())
 
-    if (!email || (typeof email !== 'string')) {
-        return response.status(400).json({ msg: "Either you didn't provided an email or the data type for the email is wrong." })
-    }
+    // console.log('cache: ', cache.keys())
 
-    const userJwtToken = jwtTokensMap.get(email); 
+    // const cache = getCache();
+    // console.log('getting jwt, current cache: ', cache.keys())
+    // const jwtTokensMap = cache.get('jwtTokensMap');
 
-    if(!userJwtToken){
-        return response.status(400).json({ msg: 'There is no jwtToken for this email. You may have received it already.' });
-    }
+    // if (!jwtTokensMap) {
+    //     return response.status(400).json({ msg: 'There are no jwtTokens in the cache.' });
+    // }
 
-    jwtTokensMap.delete(email);
+    // if (!request?.body?.email || (typeof request?.body?.email !== 'string')) {
+    //     return response.status(400).json({ msg: "Either you didn't provided an email or the data type for the email is wrong." })
+    // }
 
-    cache.set('jwtTokensMap', jwtTokensMap)
+    // const userJwtToken = jwtTokensMap.get(request?.body?.email); 
+
+    // if(!userJwtToken){
+    //     return response.status(400).json({ msg: 'There is no jwtToken for this email. You may have received it already.' });
+    // }
+
+    // jwtTokensMap.delete(request.body.email);
+
+    // cache.set('jwtTokensMap', jwtTokensMap)
     
-    return response.status(200).json({ jwt: userJwtToken });
+    // return response.status(200).json({ jwt: userJwtToken });
+    return response.status(200).json({ msg: "hey there." });
 }
