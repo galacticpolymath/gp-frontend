@@ -2,7 +2,6 @@ import GoogleProvider from 'next-auth/providers/google';
 import getCanUserWriteToDb from '../services/dbAuthService';
 import { SignJWT, jwtVerify } from 'jose';
 import { nanoid } from 'nanoid';
-import { getCache } from '../utils/cache';
 import JwtModel from '../models/Jwt';
 import { connectToMongodb } from '../utils/connection';
 
