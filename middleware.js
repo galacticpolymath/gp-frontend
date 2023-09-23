@@ -29,6 +29,11 @@ export async function middleware(request) {
 
   const authorizationStr = headers.get('authorization');
 
+  if((nextUrl.pathname == '/api/get-jwt-token') && (method === 'POST')) {
+    const data = await request.json();
+    console.log('data from request: ', data)
+  }
+
   if (!authorizationStr) {
     return new NextResponse('No authorization header was provided.', { status: 400 });
   }
@@ -54,5 +59,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/api/insert-lesson', '/api/delete-lesson/:id', '/api/update-lessons'],
+  matcher: ['/api/insert-lesson', '/api/delete-lesson/:id', '/api/update-lessons', '/api/get-jwt-token'],
 };
