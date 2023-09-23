@@ -2,6 +2,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import getCanUserWriteToDb from '../services/dbAuthService';
 import { SignJWT, jwtVerify } from 'jose';
 import { nanoid } from 'nanoid';
+import { cache } from '../utils/cache';
 
 const signJwt = async (payload, secret) => {
   const issueAtTime = Date.now() / 1000; // issued at time
@@ -22,7 +23,7 @@ export const authOptions = {
       clientSecret: process.env.AUTH_CLIENT_SECRET,
     }),
   ],
-  
+
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
@@ -30,12 +31,22 @@ export const authOptions = {
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
     maxAge: 60 * 60 * 24 * 30,
-    encode: async ({ secret, token }) => {
+    encode: async encodedArgs => {
       try {
+
+        const { secret, token } = encodedArgs
         const { email, name } = token?.payload ?? token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
         const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
         const encodedToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret);
+
+        if (!token?.payload) {          
+          let jwtTokensMap = cache.get('jwtTokensMap') ?? new Map();
+          jwtTokensMap.set(email, encodedToken);
+          cache.set('jwtTokensMap', jwtTokensMap, 1_000 * 30)
+          jwtTokensMap = cache.get('jwtTokensMap')
+          console.log('jwtTokensMap: ', jwtTokensMap)
+        }
 
         return encodedToken;
       } catch (error) {
