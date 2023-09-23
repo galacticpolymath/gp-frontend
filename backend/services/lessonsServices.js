@@ -42,14 +42,13 @@ const createFilterObj = keysAndValsForQueryArr => {
     const areFilterValuesValid = keysAndValsForQueryArr.every(([, filterVal]) => Array.isArray(filterVal));
 
     if (!areFilterValuesValid) {
-      throw new Error('The value for the querying must be an array. Example: { numId: [1,2,3,4] }');
+      throw new Error('The value for the querying must be an array. Example: { numID: [1,2,3,4] }');
     }
 
     return {
       filterObj: keysAndValsForQueryArr.reduce((filterObj, keyAndVal) => {
         try {
           const [key, val] = keyAndVal;
-
           filterObj[key] = { $in: (key === 'numID') ? val.map(lessonNumIdStr => parseInt(lessonNumIdStr)) : val };
 
           return filterObj;
