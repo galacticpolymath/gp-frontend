@@ -29,7 +29,7 @@ export async function middleware(request) {
       return new NextResponse('No headers were present in the request.', { status: 400 });
     }
 
-    console.log('getting jwt token...')
+    console.log('getting jwt token...');
 
     const authorizationStr = headers.get('authorization');
     const { email } = await request.json() ?? {};
@@ -66,7 +66,7 @@ export async function middleware(request) {
 
     return new NextResponse('Invalid request parameters, body, or method.', { status: 400 });
   } catch (error) {
-    const errMsg = `An error has occurred in the middleware: ${error}`
+    const errMsg = `An error has occurred in the middleware: ${error}`;
 
     return new NextResponse(errMsg, { status: 400 });
 
