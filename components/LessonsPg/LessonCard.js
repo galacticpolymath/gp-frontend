@@ -4,8 +4,10 @@ import Link from 'next/link';
 const MILISECONDS_IN_A_MONTH = 2_592_000_000;
 
 const LessonCard = ({ lesson }) => {
-  const { _id, locale, numID, CoverImage, Subtitle, Title, Section, ReleaseDate } = lesson;
+  const { _id, locale, numID, CoverImage, Subtitle, Title, Section, ReleaseDate, LessonBanner } = lesson;
   const isNew = (new Date() - new Date(ReleaseDate)) < MILISECONDS_IN_A_MONTH;
+
+  console.log('LessonBanner: ', LessonBanner)
 
   return (
     <Link
@@ -29,6 +31,21 @@ const LessonCard = ({ lesson }) => {
             priority
           />
         )}
+        {LessonBanner && !(CoverImage && CoverImage.url) &&
+          <Image
+            src={LessonBanner}
+            alt={Subtitle}
+            width={15}
+            height={4.5}
+            sizes='100vw'
+            className='px-1 pt-1'
+            style={{
+              width: '100%',
+              height: 'auto',
+            }}
+            priority
+          />
+        }
         {isNew && (
           <div
             style={{

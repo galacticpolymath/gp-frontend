@@ -23,15 +23,14 @@ const LessonsPage = ({ lessons }) => {
   const publishedLessons = lessons.filter(({ PublicationStatus, numID }) => {
     // const willShowLesson = !uniqueIDs.includes(numID) && (PublicationStatus === 'Live');
     const willShowLesson = !uniqueIDs.includes(numID);
-
+    
     if (willShowLesson) {
       uniqueIDs.push(numID);
     }
-
+    
     return willShowLesson;
   });
   
-
   return (
     <Layout
       title='Galactic Polymath Lesson Releases'
@@ -99,6 +98,7 @@ const PROJECTED_LESSONS_FIELDS = [
   '_id',
   'numID',
   'PublicationStatus',
+  'LessonBanner'
 ]
 
 export async function getStaticProps() {
@@ -106,7 +106,6 @@ export async function getStaticProps() {
     await connectToMongodb();
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
-    console.log('lessons: ', lessons.length)
     lessons = lessons.map(lesson => ({
       ...lesson,
       ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),

@@ -43,13 +43,16 @@ const TeachIt = ({
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
   // getting assessments part 
-  const partsFieldName = 'parts' in Data.classroom.resources[0] ? 'parts' : 'lessons';
-  const dataPartsFieldName = 'parts' in Data ? 'parts' : 'lesson'
+  const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
+  const dataPartsFieldName = ('parts' in Data) ? 'parts' : 'lesson'
   let { title, itemList } = Data.classroom.resources[0]?.[partsFieldName] ?? {};
   const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
   let parts = assessmentPart ? [...Data?.[dataPartsFieldName], assessmentPart] : Data[dataPartsFieldName];
   parts = parts.map((part, index) => ({ ...part, partNum: index + 1 }))
   const ref = useRef();
+
+  console.log('parts: ', parts)
+  // console.log('resources hey there: ', resources);
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
@@ -183,6 +186,8 @@ const TeachIt = ({
               lsnTitle = title;
               lessonTile = tile;
             }
+
+            console.log('part: ', part)
 
             return (
               <LessonPart
