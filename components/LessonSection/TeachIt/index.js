@@ -51,9 +51,6 @@ const TeachIt = ({
   parts = parts.map((part, index) => ({ ...part, partNum: index + 1 }))
   const ref = useRef();
 
-  console.log('parts: ', parts)
-  // console.log('resources hey there: ', resources);
-
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   const handleIconClick = () => {
@@ -186,8 +183,6 @@ const TeachIt = ({
               lsnTitle = title;
               lessonTile = tile;
             }
-
-            console.log('part: ', part)
 
             return (
               <LessonPart

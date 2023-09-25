@@ -96,7 +96,15 @@ const LessonPart = ({
       button={(
         <div onClick={handleOnClick} className='p-2 bg-white d-flex'>
           <div className={`d-flex flex-column ${lessonTileUrl ? 'w-75' : 'w-100'}`} >
-            <h3 style={{ color: LESSON_PART_BTN_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${lsnNum}: ${lsnTitle}`}</h3>
+            <div className='d-flex align-items-center'>
+              <div className='d-flex align-items-center pb-1'>
+                <i style={{ color: '#DEE2E6' }} className="fs-3 bi-chevron-down"></i>
+                <i className="fs-3 bi-chevron-up"></i>
+              </div>
+              <div className='d-flex align-items-center'>
+                <h3 style={{ color: LESSON_PART_BTN_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${lsnNum}: ${lsnTitle}`}</h3>
+              </div>
+            </div>
             <div><RichText content={lsnPreface} /></div>
             {!!previewTags?.length && (
               <div style={{ top: 10 }} className='mt-2 d-flex w-75 tagPillContainer flex-wrap'>
