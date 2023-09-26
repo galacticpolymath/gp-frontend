@@ -9,7 +9,7 @@ const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin)
   const token = authorizationStr.split(' ')[1].trim();
   const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
 
-  console.log('payload: ', payload)
+  console.log('payload: ', payload);
 
   if (!payload) {
     return { isAuthorize: false, errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 }) };
@@ -31,12 +31,9 @@ export async function middleware(request) {
       return new NextResponse('No headers were present in the request.', { status: 400 });
     }
 
-    console.log('getting jwt token...');
-
     const authorizationStr = headers.get('authorization');
     const isGettingJwtToken = (nextUrl.pathname == '/api/get-jwt-token') && (method === 'POST');
     let email = null;
-    console.log('isGettingJwtToken: ', isGettingJwtToken)
 
     if(isGettingJwtToken){
       const reqData = await request.json();
@@ -64,11 +61,9 @@ export async function middleware(request) {
       ((nextUrl.pathname == '/api/insert-lesson') && (method === 'POST') && authorizationStr) ||
       ((nextUrl.pathname == '/api/delete-lesson') && (method === 'DELETE') && authorizationStr) 
     ) {
-      const { errResponse, isAuthorize } = await getAuthorizeReqResult(authorizationStr, true);
+      const { errResponse } = await getAuthorizeReqResult(authorizationStr, true);
 
-      console.log('isAuthorize: ', isAuthorize)
       if (errResponse) {
-        console.log('An error has occurred.')
         return errResponse;
       }
 

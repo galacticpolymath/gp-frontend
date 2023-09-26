@@ -25,7 +25,6 @@ export default async function handler(request, response) {
 
     return response.status(200).json({ jwt: jwtDoc.jwt });
   } catch (error) {
-    console.error('error message, get jwt token: ', error);
 
     return response.status(500).json({ msg: 'Internal server error.' });
   }

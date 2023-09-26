@@ -22,7 +22,7 @@ const getIsReqAuthorizedResult = async (request, role = 'user') => {
     const validateJwtTokenResult = await validateJwtToken(token);
 
     if (!validateJwtTokenResult.wasSuccessful || !validateJwtTokenResult?.userCredentials) {
-      console.error('Not successful, jwt is invalid.')
+      console.error('Not successful, jwt is invalid.');
       throw new Error(validateJwtTokenResult.msg);
     }
 
