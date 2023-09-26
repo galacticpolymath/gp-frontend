@@ -2,17 +2,18 @@ import { getIsReqAuthorizedResult } from '../../../backend/services/authServices
 import { deleteLesson } from '../../../backend/services/lessonsServices';
 
 export default async function handler(request, response) {
-  if (request.method !== 'DELETE') {
-    return response.status(404).json({ msg: 'This route only accepts DELETE requests.' });
-  }
+  console.log('hey there bacon...')
 
   const authorizationResult = await getIsReqAuthorizedResult(request, 'dbAdmin');
+
+  console.log('authorizationResult: ', authorizationResult)
 
   if (!authorizationResult?.isReqAuthorized) {
     return response.status(401).json({ msg: authorizationResult?.msg ?? 'You are not authorized to access this service.' });
   }
   
   const { lessonId } = request.query;
+  
   if (!lessonId) {
     return response.status(404).json({ msg: 'Must provide a lesson id.' });
   }

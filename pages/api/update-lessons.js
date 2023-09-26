@@ -9,9 +9,9 @@ export default async function handler(request, response) {
     if (filterObj && ((typeof filterObj !== 'object') || ((typeof filterObj === 'object') && (filterObj === null)))) {
       throw new CustomError("The value for 'filterObj' field must be an object.", 400);
     }
-  
+
     if (!keysAndUpdatedValsObj || (typeof keysAndUpdatedValsObj !== 'object') || ((typeof keysAndUpdatedValsObj === 'object') && ((keysAndUpdatedValsObj === null) || Array.isArray(keysAndUpdatedValsObj)))) {
-      throw new CustomError("The field 'keysAndUpdatedValsObj' must be an object of all of updated values and their corresponding lesson keys.", 400);
+      throw new CustomError("The field 'keysAndUpdatedValsObj' must be an object of all of the updated values and their corresponding lesson keys.", 400);
     }
 
     let filterObjForDbQuery = {};
@@ -24,7 +24,7 @@ export default async function handler(request, response) {
         errMsg: createFilterObjErrMsg,
       } = createFilterObj(Object.entries(parsedFilterObj));
 
-    if (createFilterObjErrMsg) {
+      if (createFilterObjErrMsg) {
         throw new CustomError(createFilterObjErrMsg, 400);
       }
 

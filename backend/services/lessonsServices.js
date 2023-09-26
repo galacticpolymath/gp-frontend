@@ -30,7 +30,7 @@ const deleteLesson = async lessonId => {
 
     console.log(`Lesson with id ${lessonId} was successfully deleted from the database!`);
 
-    return { status: 200, msg: 'Lesson was successfully deleted from the database!' };
+    return { status: 200, msg: `Lesson ${lessonId} was successfully deleted from the database!` };
   } catch (error) {
 
     return { status: 500, msg: `Failed to delete lesson from the database. Error message: "${error}"` };
