@@ -32,6 +32,7 @@ export async function middleware(request) {
     console.log('getting jwt token...');
 
     const authorizationStr = headers.get('authorization');
+    console.log('is json in request: ', "json" in request)
     const { email } = await request.json() ?? {};
     const isGettingJwtToken = (nextUrl.pathname == '/api/get-jwt-token') && (method === 'POST');
 

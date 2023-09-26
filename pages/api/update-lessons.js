@@ -24,7 +24,7 @@ export default async function handler(request, response) {
         errMsg: createFilterObjErrMsg,
       } = createFilterObj(Object.entries(parsedFilterObj));
 
-      if (createFilterObjErrMsg) {
+    if (createFilterObjErrMsg) {
         throw new CustomError(createFilterObjErrMsg, 400);
       }
 
