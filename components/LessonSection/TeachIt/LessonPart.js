@@ -147,47 +147,54 @@ const LessonPart = ({
         </div>
       )}
       {learningObjectives &&
-        <ol className='mt-3'>
-          <h3>Learning Objectives</h3>
-          {learningObjectives.map(objectiveStr => (
-            <li>
-              {objectiveStr}
-            </li>
-          ))}
-        </ol>
+        <div className="mt-3">
+          <h3 className='fw-bold'>Learning Objectives</h3>
+          <h5>Students will able to...</h5>
+          <ol className='mt-3'>
+            {learningObjectives.map(objectiveStr => (
+              <li>
+                {objectiveStr}
+              </li>
+            ))}
+          </ol>
+        </div>
       }
-      <ol className='mt-3'>
-        {!!linkResources?.length && linkResources.map(item => {
-          const { itemTitle, itemDescription, links } = item;
-          const _links = links ? (Array.isArray(links) ? links : [links]) : null;
-          return (
-            // put the leaning objectie for the lesson part here
-            <li key={itemTitle} className='mb-0'>
-              <strong><RichText content={itemTitle} /></strong>
-              <div className='fst-italic mb-2' style={{ color: '#353637' }}>
-                <RichText
-                  content={itemDescription}
-                  className='mb-5'
-                  css={{ color: 'red' }}
-                />
-              </div>
-              <ul>
-                {!!_links && _links.map(({ url, linkText }, index) => (
-                  <li key={index}>
-                    <a
-                      href={url}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                    >
-                      {linkText}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          );
-        })}
-      </ol>
+
+      <div>
+        <h3 className="mt-3">Materials for Grades</h3>
+        <ol className='mt-3'>
+          {!!linkResources?.length && linkResources.map(item => {
+            const { itemTitle, itemDescription, links } = item;
+            const _links = links ? (Array.isArray(links) ? links : [links]) : null;
+            return (
+              // put the leaning objectie for the lesson part here
+              <li key={itemTitle} className='mb-0'>
+                <strong><RichText content={itemTitle} /></strong>
+                <div className='fst-italic mb-2' style={{ color: '#353637' }}>
+                  <RichText
+                    content={itemDescription}
+                    className='mb-5'
+                    css={{ color: 'red' }}
+                  />
+                </div>
+                <ul>
+                  {!!_links && _links.map(({ url, linkText }, index) => (
+                    <li key={index}>
+                      <a
+                        href={url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                      >
+                        {linkText}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
 
       {(!isOnAssessments && durList && chunks) &&
         <>

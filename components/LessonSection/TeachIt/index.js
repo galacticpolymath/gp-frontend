@@ -177,6 +177,7 @@ const TeachIt = ({
               learningObj,
               lessonTile
             } = part;
+            // GOAL: get the grades that the lesson is designed for and pass in for the child component of LessonPart
 
             if(partsFieldName === 'lessons'){
               const { title, tile } = resources[0][partsFieldName][index];
