@@ -8,7 +8,7 @@ export default async function handler(request, response) {
       (request?.body?.lesson && (typeof request?.body?.lesson === 'object') && !Object.keys(request?.body?.lesson)?.length) || 
       (typeof request?.body?.lesson !== 'object')
     ) {
-      return response.status(400).json({ msg: 'The request body is empty or the wrong data type.' });
+      return response.status(400).json({ msg: 'The `request.body.lesson` is empty or the wrong data type.' });
     }
 
     const { status, msg } = await insertLesson(request.body.lesson);
