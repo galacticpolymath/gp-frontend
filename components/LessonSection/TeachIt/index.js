@@ -184,6 +184,8 @@ const TeachIt = ({
               lessonTile = tile;
             }
 
+            console.log('learningObj: ', learningObj)
+
             return (
               <LessonPart
                 key={`${index}_part`}
