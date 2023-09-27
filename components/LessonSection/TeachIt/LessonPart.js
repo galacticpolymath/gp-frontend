@@ -15,7 +15,7 @@ const LessonPart = ({
   lsnNum,
   lsnTitle,
   lsnPreface,
-  learningObj,
+  learningObjectives,
   lessonTileUrl,
   partsFieldName,
   chunks = [],
@@ -146,9 +146,18 @@ const LessonPart = ({
           ))}
         </div>
       )}
+      {learningObjectives &&
+        <ol className='mt-3'>
+          <h3>Learning Objectives</h3>
+          {learningObjectives.map(objectiveStr => (
+            <li>
+              {objectiveStr}
+            </li>
+          ))}
+        </ol>
+      }
       <ol className='mt-3'>
         {!!linkResources?.length && linkResources.map(item => {
-          console.log('item.learningObj: ', item.learningObj)
           const { itemTitle, itemDescription, links } = item;
           const _links = links ? (Array.isArray(links) ? links : [links]) : null;
           return (

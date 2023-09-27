@@ -25,7 +25,7 @@ const LessonsPage = ({ lessons }) => {
     
     if (willShowLesson) {
       uniqueIDs.push(numID);
-    }
+    };
     
     return willShowLesson;
   });

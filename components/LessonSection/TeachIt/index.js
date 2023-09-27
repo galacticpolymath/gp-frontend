@@ -184,7 +184,6 @@ const TeachIt = ({
               lessonTile = tile;
             }
 
-            console.log('learningObj: ', learningObj)
 
             return (
               <LessonPart
@@ -195,7 +194,7 @@ const TeachIt = ({
                 lsnTitle={lsnTitle ?? partTitle}
                 lsnPreface={lsnPreface ?? partPreface}
                 chunks={chunks}
-                learningObj={learningObj}
+                learningObjectives={learningObj}
                 partsFieldName={partsFieldName}
                 lessonTileUrl={lessonTile}
               />
