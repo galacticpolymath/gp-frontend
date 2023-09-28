@@ -72,7 +72,7 @@ const LessonSection = ({ index, section, _sectionDots, oldLesson, ForGrades }) =
   let compProps = { ...section, _sectionDots };
 
   if (TeachIt.name === 'TeachIt') {
-    compProps.ForGrades = ForGrades
+    compProps.ForGrades = ForGrades;
   }
 
   if (oldLesson && NAMES_OF_SECS_WITH_PICS.includes(Component.name)) {

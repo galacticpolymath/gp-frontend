@@ -38,7 +38,7 @@ export default function ChunkGraph({ durList, chunkNum }) {
     const endGap = 15;
     // total minutes
     const minutes = durList.reduce((a, b) => a + b, 0);
-    console.log('minutes: ', minutes)
+    console.log('minutes: ', minutes);
     const gap = 1;
     const barSpacing = (width - endGap * 2) / minutes - gap;
     // array of ints 0:minutes

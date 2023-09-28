@@ -7,8 +7,6 @@ const LessonCard = ({ lesson }) => {
   const { _id, locale, numID, CoverImage, Subtitle, Title, Section, ReleaseDate, LessonBanner } = lesson;
   const isNew = (new Date() - new Date(ReleaseDate)) < MILISECONDS_IN_A_MONTH;
 
-  console.log('LessonBanner: ', LessonBanner)
-
   return (
     <Link
       key={_id}
@@ -31,7 +29,7 @@ const LessonCard = ({ lesson }) => {
             priority
           />
         )}
-        {LessonBanner && !(CoverImage && CoverImage.url) &&
+        {LessonBanner && !(CoverImage && CoverImage.url) && (
           <Image
             src={LessonBanner}
             alt={Subtitle}
@@ -45,7 +43,7 @@ const LessonCard = ({ lesson }) => {
             }}
             priority
           />
-        }
+        )}
         {isNew && (
           <div
             style={{

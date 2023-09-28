@@ -8,19 +8,16 @@ import RichText from '../../RichText';
 import { memo, useState } from 'react';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
-const TEST_TILE_IMG_URL = 'https://gp-catalog.vercel.app/lessons/FemalesSing_en-US/sponsor_logo_41be63750b.png';
-const ASSESSMENT_TITLES = ['Assessment (STUDENT)', 'Assessment (TEACHER)']
 const DUMMY_TXTS_GOING_FURTHER = [
   {
-    headerTxt: "Read the scientific papers.",
-    bodyTxt: "Have students grapple with the scientific papers text and have a reading groupd discussion."
+    headerTxt: 'Read the scientific papers.',
+    bodyTxt: 'Have students grapple with the scientific papers text and have a reading groupd discussion.',
   },
   {
-    headerTxt: "Play with the data",
-    bodyTxt: "Have students fit lines to the data to recapitulate the scientists' findings."
-  }
-]
-
+    headerTxt: 'Play with the data',
+    bodyTxt: "Have students fit lines to the data to recapitulate the scientists' findings.",
+  },
+];
 
 const LessonPart = ({
   lsnNum,
@@ -33,7 +30,7 @@ const LessonPart = ({
   chunks = [],
   resources,
   ForGrades,
-  _numsOfLessonPartsThatAreExpanded
+  _numsOfLessonPartsThatAreExpanded,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
@@ -59,57 +56,56 @@ const LessonPart = ({
       }
 
       return prevState.filter(num => num !== previousLessonPartNum);
-    })
+    });
     setIsExpanded(!isExpanded);
-  }
+  };
 
-  console.log('allTags: ', allTags)
+  console.log('allTags: ', allTags);
 
   if (allTags?.length && Array.isArray(allTags)) {
-    allTags = allTags.flat().filter(tag => !!tag)
+    allTags = allTags.flat().filter(tag => !!tag);
 
-    console.log('allTags after filter: ', allTags)
+    console.log('allTags after filter: ', allTags);
 
     // FOR TESTINGS PURPOSES, BELOW
     // allTags = allTags.length ? [...allTags, allTags[0]] : allTags;
     // FOR TESTIING PURPOSES, ABOVE
 
-    previewTags = (allTags?.length > 3) ? allTags.slice(0, 3) : allTags
-    restOfTags = (allTags?.length > 3) ? allTags.slice(3) : []
+    previewTags = (allTags?.length > 3) ? allTags.slice(0, 3) : allTags;
+    restOfTags = (allTags?.length > 3) ? allTags.slice(3) : [];
   }
 
-
   const defaultBorderColor = 'solid 2.5px rgb(222, 226, 230)';
-  const highlightedBorderColor = '#3987C5'
+  const highlightedBorderColor = '#3987C5';
   const highlighlightedBorder = `solid 2.5px ${highlightedBorderColor}`;
-  let _borderTop = 'none'
+  let _borderTop = 'none';
 
   if (isExpanded && (lsnNum === 1)) {
-    _borderTop = highlighlightedBorder
+    _borderTop = highlighlightedBorder;
   }
 
   if (!isExpanded && (lsnNum === 1)) {
-    _borderTop = defaultBorderColor
+    _borderTop = defaultBorderColor;
   }
 
-  const _borderBottom = (numsOfLessonPartsThatAreExpanded.find(num => num === lsnNum) || isExpanded) ? highlighlightedBorder : defaultBorderColor
+  const _borderBottom = (numsOfLessonPartsThatAreExpanded.find(num => num === lsnNum) || isExpanded) ? highlighlightedBorder : defaultBorderColor;
   const accordionStyle = {
     borderLeft: isExpanded ? highlighlightedBorder : defaultBorderColor,
     borderRight: isExpanded ? highlighlightedBorder : defaultBorderColor,
     borderTop: _borderTop,
-    borderBottom: _borderBottom
-  }
+    borderBottom: _borderBottom,
+  };
 
   return (
     <Accordion
-      buttonClassName={`w-100 text-start bg-white border-0`}
+      buttonClassName="w-100 text-start bg-white border-0"
       key={lsnNum}
       id={`part_${lsnNum}`}
       accordionChildrenClasses='px-3 w-100 pb-4'
       style={accordionStyle}
       button={(
         <div onClick={handleOnClick} className='p-2 bg-white d-flex'>
-          <div className={`d-flex flex-column ${lessonTileUrl ? 'w-75' : 'w-100'}`} >
+          <div className={`d-flex flex-column ${lessonTileUrl ? 'w-75' : 'w-100'}`}>
             <div className='d-flex align-items-center'>
               <div className='d-flex align-items-center align-items-center'>
                 <div
@@ -139,8 +135,12 @@ const LessonPart = ({
             {!!previewTags?.length && (
               <div style={{ top: 10 }} className='mt-2 d-flex w-75 tagPillContainer flex-wrap'>
                 {previewTags.map((tag, index) => (
-                  <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }} className='rounded-pill badge bg-white p-2 my-1'>
-                    <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }} >
+                  <div
+                    key={index}
+                    style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
+                    className='rounded-pill badge bg-white p-2 my-1'
+                  >
+                    <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }}>
                       {tag}
                     </span>
                   </div>
@@ -168,8 +168,12 @@ const LessonPart = ({
       {!!restOfTags?.length && (
         <div style={{ top: 10 }} className=''>
           {restOfTags.map((tag, index) => (
-            <div key={index} style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }} className='rounded-pill badge bg-white p-2 my-1'>
-              <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }} >
+            <div
+              key={index}
+              style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
+              className='rounded-pill badge bg-white p-2 my-1'
+            >
+              <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }}>
                 {tag}
               </span>
             </div>
@@ -181,8 +185,8 @@ const LessonPart = ({
           <h3 className='fw-bold'>Learning Objectives</h3>
           <h5>Students will able to...</h5>
           <ol className='mt-3'>
-            {learningObjectives.map(objectiveStr => (
-              <li>
+            {learningObjectives.map((objectiveStr, index) => (
+              <li key={index}>
                 {objectiveStr}
               </li>
             ))}
@@ -247,13 +251,13 @@ const LessonPart = ({
             <RichText content="Ideas and resources for deepening learning on this topic." />
           </div>
           <ol className='mt-2'>
-            {DUMMY_TXTS_GOING_FURTHER.map(({ headerTxt, bodyTxt }) => {
+            {DUMMY_TXTS_GOING_FURTHER.map(({ headerTxt, bodyTxt }, index) => {
               return (
-                <li style={{ color: "#4397D5" }}>
-                  <h6 style={{ color: "#4397D5" }} className='fw-bold'>{headerTxt}</h6>
+                <li key={index} style={{ color: '#4397D5' }}>
+                  <h6 style={{ color: '#4397D5' }} className='fw-bold'>{headerTxt}</h6>
                   <p className='text-dark'>{bodyTxt}</p>
                 </li>
-              )
+              );
             })}
           </ol>
         </div>

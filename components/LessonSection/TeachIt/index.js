@@ -29,11 +29,11 @@ const TeachIt = ({
   SectionTitle,
   Data,
   _sectionDots,
-  ForGrades
+  ForGrades,
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
-  const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = useState([])
+  const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = useState([]);
   const environments = ['classroom', 'remote']
     .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   const gradeVariations = getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources;
@@ -44,13 +44,13 @@ const TeachIt = ({
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
   // getting assessments part 
-  console.log('Data.classroom.resources[0]: ', Data.classroom.resources[0])
+  console.log('Data.classroom.resources[0]: ', Data.classroom.resources[0]);
   const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
-  const dataPartsFieldName = ('parts' in Data) ? 'parts' : 'lesson'
+  const dataPartsFieldName = ('parts' in Data) ? 'parts' : 'lesson';
   let { title, itemList } = Data.classroom.resources[0]?.[partsFieldName] ?? {};
   const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
-  let parts = assessmentPart ? [...Data?.[dataPartsFieldName], assessmentPart] : Data[dataPartsFieldName];
-  parts = parts.map((part, index) => ({ ...part, partNum: index + 1 }))
+  let parts = (assessmentPart && (((typeof Data === 'object') && (Data !== null) && (Data !== undefined)) && (dataPartsFieldName in Data))) ? [...Data?.[dataPartsFieldName], assessmentPart] : Data?.[dataPartsFieldName];
+  parts = parts.map((part, index) => ({ ...part, partNum: index + 1 }));
   const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
@@ -65,8 +65,8 @@ const TeachIt = ({
   };
 
   useEffect(() => {
-    console.log('parts:, hey there meng: ', parts)
-  })
+    console.log('parts:, hey there meng: ', parts);
+  });
 
   return (
     <CollapsibleLessonSection
@@ -173,14 +173,14 @@ const TeachIt = ({
               chunks,
               learningObj,
               lessonTile,
-              lsnExtension
+              lsnExtension,
             } = part;
-            let secondTitle = null
+            let secondTitle = null;
 
             if (partsFieldName === 'lessons') {
               const { tile, title } = resources?.[0]?.[partsFieldName]?.[index] ?? {};
               lessonTile = tile;
-              secondTitle = (lsnTitle  === 'Procedure not documented yet') ? title : null;
+              secondTitle = (lsnTitle === 'Procedure not documented yet') ? title : null;
             }
 
             return (

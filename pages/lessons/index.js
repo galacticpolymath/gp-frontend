@@ -23,7 +23,7 @@ const LessonsPage = ({ lessons }) => {
     
     if (willShowLesson) {
       uniqueIDs.push(numID);
-    };
+    }
     
     return willShowLesson;
   });
@@ -95,7 +95,7 @@ const PROJECTED_LESSONS_FIELDS = [
   '_id',
   'numID',
   'PublicationStatus',
-  'LessonBanner'
+  'LessonBanner',
 ]
 
 export async function getStaticProps() {
