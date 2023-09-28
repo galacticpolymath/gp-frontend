@@ -9,12 +9,24 @@ import { memo, useState } from 'react';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 const TEST_TILE_IMG_URL = 'https://gp-catalog.vercel.app/lessons/FemalesSing_en-US/sponsor_logo_41be63750b.png';
+const ASSESSMENT_TITLES = ['Assessment (STUDENT)', 'Assessment (TEACHER)']
+const DUMMY_TXTS_GOING_FURTHER = [
+  {
+    headerTxt: "Read the scientific papers.",
+    bodyTxt: "Have students grapple with the scientific papers text and have a reading groupd discussion."
+  },
+  {
+    headerTxt: "Play with the data",
+    bodyTxt: "Have students fit lines to the data to recapitulate the scientists' findings."
+  }
+]
 
 
 const LessonPart = ({
   lsnNum,
   lsnTitle,
   lsnPreface,
+  lsnExtension,
   learningObjectives,
   lessonTileUrl,
   partsFieldName,
@@ -93,7 +105,7 @@ const LessonPart = ({
       buttonClassName={`w-100 text-start bg-white border-0`}
       key={lsnNum}
       id={`part_${lsnNum}`}
-      accordionChildrenClasses='px-3 w-100'
+      accordionChildrenClasses='px-3 w-100 pb-4'
       style={accordionStyle}
       button={(
         <div onClick={handleOnClick} className='p-2 bg-white d-flex'>
@@ -227,6 +239,24 @@ const LessonPart = ({
             />
           ))}
         </>
+      }
+      {!lsnExtension &&
+        <div>
+          <div>
+            <h3 className='fw-bold'>Going Further</h3>
+            <RichText content="Ideas and resources for deepening learning on this topic." />
+          </div>
+          <ol className='mt-2'>
+            {DUMMY_TXTS_GOING_FURTHER.map(({ headerTxt, bodyTxt }) => {
+              return (
+                <li style={{ color: "#4397D5" }}>
+                  <h6 style={{ color: "#4397D5" }} className='fw-bold'>{headerTxt}</h6>
+                  <p className='text-dark'>{bodyTxt}</p>
+                </li>
+              )
+            })}
+          </ol>
+        </div>
       }
     </Accordion>
   );

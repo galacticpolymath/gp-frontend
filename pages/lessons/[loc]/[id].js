@@ -48,7 +48,7 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 const LessonDetails = ({ lesson, availLocs }) => {
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
-  const router = useRouter()
+  const router = useRouter();
   let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
   sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
   sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)

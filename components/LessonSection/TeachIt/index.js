@@ -6,7 +6,7 @@ import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
 import { ModalContext } from '../../../providers/ModalProvider';
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 import RichText from '../../RichText';
 
@@ -44,6 +44,7 @@ const TeachIt = ({
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
   // getting assessments part 
+  console.log('Data.classroom.resources[0]: ', Data.classroom.resources[0])
   const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
   const dataPartsFieldName = ('parts' in Data) ? 'parts' : 'lesson'
   let { title, itemList } = Data.classroom.resources[0]?.[partsFieldName] ?? {};
@@ -63,6 +64,9 @@ const TeachIt = ({
     setSelectedGrade(selectedGrade);
   };
 
+  useEffect(() => {
+    console.log('parts:, hey there meng: ', parts)
+  })
 
   return (
     <CollapsibleLessonSection
@@ -168,13 +172,15 @@ const TeachIt = ({
               partPreface,
               chunks,
               learningObj,
-              lessonTile
+              lessonTile,
+              lsnExtension
             } = part;
+            let secondTitle = null
 
             if (partsFieldName === 'lessons') {
-              const { title, tile } = resources[0][partsFieldName][index];
-              lsnTitle = title;
+              const { tile, title } = resources?.[0]?.[partsFieldName]?.[index] ?? {};
               lessonTile = tile;
+              secondTitle = (lsnTitle  === 'Procedure not documented yet') ? title : null;
             }
 
             return (
@@ -183,8 +189,9 @@ const TeachIt = ({
                 resources={resources}
                 _numsOfLessonPartsThatAreExpanded={[numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded]}
                 lsnNum={lsnNum ?? partNum}
-                lsnTitle={lsnTitle ?? partTitle}
+                lsnTitle={secondTitle ?? (lsnTitle ?? partTitle)}
                 lsnPreface={lsnPreface ?? partPreface}
+                lsnExtension={lsnExtension}
                 chunks={chunks}
                 ForGrades={ForGrades}
                 learningObjectives={learningObj}

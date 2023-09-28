@@ -1,6 +1,7 @@
 import ChunkGraph from './ChunkGraph';
 import LessonStep from './LessonStep';
 import RichText from '../../RichText';
+
 const Chunk = ({
   chunkTitle,
   steps = [],
