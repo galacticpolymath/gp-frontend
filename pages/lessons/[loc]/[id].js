@@ -67,8 +67,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
   let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
   sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
   sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
-  const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
-    // can be -1 if the section is not found
+  let _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
     const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
 
     if (index === 0) {
@@ -89,7 +88,44 @@ const LessonDetails = ({ lesson, availLocs }) => {
       ...section,
       SectionTitle: sectionTitle,
     }
-  });
+  })
+  const lessonPlansHeading = _sections.findIndex(({ __component }) => __component === 'lesson-plan.section-heading')
+  const isLearningChartPresent = _sections.find(({ Title }) => Title === "About the GP Learning Chart")
+
+  if ((lessonPlansHeading !== -1) && !(_sections?.[lessonPlansHeading + 1]?.Title === "About the GP Learning Chart") && isLearningChartPresent) {
+    const sortedSecs = structuredClone(_sections).sort(({ SectionTitle: SectionTitleA }, { SectionTitle: SectionTitleB }) => {
+      const SectionA = SectionTitleA.toUpperCase();
+      const SectionB = SectionTitleB.toUpperCase();
+      if (SectionA < SectionB) {
+        return -1;
+      }
+      if (SectionA > SectionB) {
+        return 1;
+      }
+
+      return 0;
+    })
+    const firstLearningStandardsSecIndex = sortedSecs.findIndex(({ __component }) => __component === 'lesson-plan.section-heading')
+    const isLearningChartAtNextIndexOfSortedSecs = sortedSecs[firstLearningStandardsSecIndex + 1]?.Title === "About the GP Learning Chart";
+
+    if (!isLearningChartAtNextIndexOfSortedSecs) {
+      const lessonPlansStandardsIndex = sortedSecs.findIndex(({ __component }) => __component === 'lesson-plan.standards')
+      const lessonPlansStandardsObj = structuredClone(sortedSecs[lessonPlansStandardsIndex]);
+      const learningChartSectionIndex = sortedSecs.findIndex(({ Title }) => Title === "About the GP Learning Chart");
+      const learningChartSection = structuredClone(sortedSecs[learningChartSectionIndex]);
+      _sections = sortedSecs.map((section, index) => {
+        if (index === lessonPlansStandardsIndex) {
+          return learningChartSection;
+        }
+
+        if(index === learningChartSectionIndex){
+          return lessonPlansStandardsObj;
+        }
+
+        return section;
+      })
+    }
+  }
 
   const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
@@ -267,8 +303,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   );
 };
 
-// should use the axios library to make the get request.
-
 export const getStaticPaths = async () => {
   try {
     await connectToMongodb()
@@ -290,17 +324,12 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
     await connectToMongodb();
 
-
-
-    // GOAL: get image of the old lessons chart for the previous lesson. 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
     let targetLesson = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
     const { data: oldLessons } = await axios.get(lessonsUrl) ?? {}
     const oldTargetLesson = oldLessons?.length ? oldLessons.find(({ id: oldLessonId, locale }) => (oldLessonId.toString() === id) && (locale === loc)) : null;
     const learningChart = oldTargetLesson?.Section?.['learning-chart']
-
-    console.log('learningChart: ', learningChart)
 
     if (!('learning-chart' in targetLesson?.Section) && learningChart) {
       targetLesson = {
