@@ -26,8 +26,11 @@ import { connectToMongodb } from '../../../backend/utils/connection';
 import axios from 'axios';
 import { lessonsUrl } from '../../../apiGlobalVals';
 
-const isOnProduction = process.env.NODE_ENV === 'production';
+const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
+const SECTION_HEADING_LESSON_PLAN_COMP_NAME = 'lesson-plan.section-heading';
+const LEARNING_CHART_TITLE = "About the GP Learning Chart"
+const SECTION_STANDARDS_LESSON_PLAN_COMP_NAME = 'lesson-plan.standards'
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
@@ -89,10 +92,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
       SectionTitle: sectionTitle,
     }
   })
-  const lessonPlansHeading = _sections.findIndex(({ __component }) => __component === 'lesson-plan.section-heading')
-  const isLearningChartPresent = _sections.find(({ Title }) => Title === "About the GP Learning Chart")
+  const lessonPlansHeading = _sections.findIndex(({ __component }) => __component === SECTION_HEADING_LESSON_PLAN_COMP_NAME)
+  const isLearningChartPresent = _sections.find(({ Title }) => Title === LEARNING_CHART_TITLE)
 
-  if ((lessonPlansHeading !== -1) && !(_sections?.[lessonPlansHeading + 1]?.Title === "About the GP Learning Chart") && isLearningChartPresent) {
+  if ((lessonPlansHeading !== -1) && !(_sections?.[lessonPlansHeading + 1]?.Title === LEARNING_CHART_TITLE) && isLearningChartPresent) {
     const sortedSecs = structuredClone(_sections).sort(({ SectionTitle: SectionTitleA }, { SectionTitle: SectionTitleB }) => {
       const SectionA = SectionTitleA.toUpperCase();
       const SectionB = SectionTitleB.toUpperCase();
@@ -105,20 +108,20 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
       return 0;
     })
-    const firstLearningStandardsSecIndex = sortedSecs.findIndex(({ __component }) => __component === 'lesson-plan.section-heading')
-    const isLearningChartAtNextIndexOfSortedSecs = sortedSecs[firstLearningStandardsSecIndex + 1]?.Title === "About the GP Learning Chart";
+    const firstLearningStandardsSecIndex = sortedSecs.findIndex(({ __component }) => __component === SECTION_HEADING_LESSON_PLAN_COMP_NAME)
+    const isLearningChartAtNextIndexOfSortedSecs = sortedSecs[firstLearningStandardsSecIndex + 1]?.Title === LEARNING_CHART_TITLE;
 
     if (!isLearningChartAtNextIndexOfSortedSecs) {
-      const lessonPlansStandardsIndex = sortedSecs.findIndex(({ __component }) => __component === 'lesson-plan.standards')
+      const lessonPlansStandardsIndex = sortedSecs.findIndex(({ __component }) => __component === SECTION_STANDARDS_LESSON_PLAN_COMP_NAME)
       const lessonPlansStandardsObj = structuredClone(sortedSecs[lessonPlansStandardsIndex]);
-      const learningChartSectionIndex = sortedSecs.findIndex(({ Title }) => Title === "About the GP Learning Chart");
+      const learningChartSectionIndex = sortedSecs.findIndex(({ Title }) => Title === LEARNING_CHART_TITLE);
       const learningChartSection = structuredClone(sortedSecs[learningChartSectionIndex]);
       _sections = sortedSecs.map((section, index) => {
         if (index === lessonPlansStandardsIndex) {
           return learningChartSection;
         }
 
-        if(index === learningChartSectionIndex){
+        if (index === learningChartSectionIndex) {
           return lessonPlansStandardsObj;
         }
 
@@ -129,7 +132,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
-  // move the helper function outside of the component
   const getSectionDotsDefaultVal = () => {
     const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
@@ -199,7 +201,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
   const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
-  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
+  const shareWidgetFixedProps = IS_ON_PROD ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
   const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
   useEffect(() => {
@@ -258,7 +260,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
             )}
             <div className='d-flex d-md-none'>
               <label className='d-flex justify-content-center align-items-center'>Share: </label>
-              {isOnProduction ? <ShareWidget pinterestMedia={lessonBannerUrl} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lessonBannerUrl} />}
+              {IS_ON_PROD ? <ShareWidget pinterestMedia={lessonBannerUrl} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lessonBannerUrl} />}
             </div>
             <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
               <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">

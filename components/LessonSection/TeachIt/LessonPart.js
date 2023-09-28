@@ -9,16 +9,8 @@ import { memo, useState } from 'react';
 import Link from 'next/link';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
-const DUMMY_TXTS_GOING_FURTHER = [
-  {
-    headerTxt: 'Read the scientific papers.',
-    bodyTxt: 'Have students grapple with the scientific papers text and have a reading groupd discussion.',
-  },
-  {
-    headerTxt: 'Play with the data',
-    bodyTxt: "Have students fit lines to the data to recapitulate the scientists' findings.",
-  },
-];
+
+// GOAL: make the lesson tile in the header of the lesson part. 
 
 const LessonPart = ({
   lsnNum,
