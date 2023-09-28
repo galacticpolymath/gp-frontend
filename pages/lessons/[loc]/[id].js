@@ -23,6 +23,8 @@ import useScrollHandler from '../../../customHooks/useScrollHandler';
 import Link from 'next/link';
 import Lessons from '../../../backend/models/lesson';
 import { connectToMongodb } from '../../../backend/utils/connection';
+import axios from 'axios';
+import { lessonsUrl } from '../../../apiGlobalVals';
 
 const isOnProduction = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
@@ -46,9 +48,8 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 }
 
 const LessonDetails = ({ lesson, availLocs }) => {
-  console.log('lesson: ', lesson)
   const { CoverImage, LessonBanner } = lesson;
-  const LessonBannerImgUrl = CoverImage?.url ?? LessonBanner 
+  const lessonBannerUrl = CoverImage?.url ?? LessonBanner
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
   const router = useRouter();
@@ -146,14 +147,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }
 
-  // GOAL: get the grades that lesson is focused on
-  // check the lesson object that was received from the backend.
-
   const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
-  const lessonBannerUrl = lesson?.CoverImage?.url ?? lesson.LessonBanner
   const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
   const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
   const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
@@ -279,18 +276,30 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  await connectToMongodb();
+  try {
+    await connectToMongodb();
+    const { data: oldLessons } = await axios.get(lessonsUrl) ?? {}
+    const oldTargetLesson = oldLessons?.length ? oldLessons.find(({_id}) => _id === id) : null;
+    const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
+    const targetLessonLocales = targetLessons.map(({ locale }) => locale)
+    const targetLesson = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
 
-  const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
-  const targetLessonLocales = targetLessons.map(({ locale }) => locale)
-  const targetLesson = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
+    return {
+      props: {
+        lesson: JSON.parse(JSON.stringify(targetLesson)),
+        availLocs: targetLessonLocales,
+      },
+    };
+  } catch (error) {
+    console.error('Faild to get lesson. Error message: ', error)
 
-  return {
-    props: {
-      lesson: JSON.parse(JSON.stringify(targetLesson)),
-      availLocs: targetLessonLocales,
-    },
-  };
+    return {
+      props: {
+        lesson: {},
+        availLocs: [],
+      }
+    }
+  }
 };
 
 export default LessonDetails;

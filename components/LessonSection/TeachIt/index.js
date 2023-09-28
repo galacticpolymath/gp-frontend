@@ -62,10 +62,6 @@ const TeachIt = ({
     setSelectedGrade(selectedGrade);
   };
 
-  useEffect(() => {
-    console.log('parts:, hey there meng: ', parts);
-  });
-
   return (
     <CollapsibleLessonSection
       index={index}
