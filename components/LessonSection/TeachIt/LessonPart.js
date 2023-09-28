@@ -6,6 +6,7 @@ import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
 import { memo, useState } from 'react';
+import Link from 'next/link';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 const DUMMY_TXTS_GOING_FURTHER = [
@@ -23,7 +24,7 @@ const LessonPart = ({
   lsnNum,
   lsnTitle,
   lsnPreface,
-  lsnExtension,
+  lsnExt,
   learningObjectives,
   lessonTileUrl,
   partsFieldName,
@@ -235,18 +236,22 @@ const LessonPart = ({
           ))}
         </>
       }
-      {!lsnExtension &&
+      {!!lsnExt?.length &&
         <div>
           <div>
             <h3 className='fw-bold'>Going Further</h3>
             <RichText content="Ideas and resources for deepening learning on this topic." />
           </div>
           <ol className='mt-2'>
-            {DUMMY_TXTS_GOING_FURTHER.map(({ headerTxt, bodyTxt }, index) => {
+            {lsnExt.map(({ itemTitle, itemDescription, item, itemLink }) => {
               return (
-                <li key={index} style={{ color: '#4397D5' }}>
-                  <h6 style={{ color: '#4397D5' }} className='fw-bold'>{headerTxt}</h6>
-                  <p className='text-dark'>{bodyTxt}</p>
+                <li key={item} style={{ color: '#4397D5' }}>
+                  <h6 style={{ color: '#4397D5' }} className='fw-bold'>
+                    <Link href={itemLink} target='_blank'>
+                      {itemTitle}
+                    </Link>
+                  </h6>
+                  <p className='text-dark'>{itemDescription}</p>
                 </li>
               );
             })}
@@ -261,6 +266,7 @@ LessonPart.propTypes = {
   lsnNum: PropTypes.number,
   lsnTitle: PropTypes.string,
   lsnPreface: PropTypes.string,
+  lsnExt: PropTypes.arrayOf(PropTypes.string),
   chunks: PropTypes.array,
   resources: PropTypes.oneOfType([
     PropTypes.array, PropTypes.object,

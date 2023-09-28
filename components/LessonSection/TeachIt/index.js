@@ -172,7 +172,7 @@ const TeachIt = ({
               chunks,
               learningObj,
               lessonTile,
-              lsnExtension,
+              lsnExt,
             } = part;
             let secondTitle = null;
 
@@ -190,7 +190,7 @@ const TeachIt = ({
                 lsnNum={lsnNum ?? partNum}
                 lsnTitle={secondTitle ?? (lsnTitle ?? partTitle)}
                 lsnPreface={lsnPreface ?? partPreface}
-                lsnExtension={lsnExtension}
+                lsnExt={lsnExt}
                 chunks={chunks}
                 ForGrades={ForGrades}
                 learningObjectives={learningObj}
