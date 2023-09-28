@@ -46,7 +46,6 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 }
 
 const LessonDetails = ({ lesson, availLocs }) => {
-  console.log('lesson: ', lesson)
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
   const router = useRouter()
@@ -144,8 +143,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }
 
-  const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
+  // GOAL: get the grades that lesson is focused on
+  // check the lesson object that was received from the backend.
 
+  const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
@@ -241,12 +242,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
             <ParentLessonSection
               key={index}
               section={section}
+              ForGrades={lesson.ForGrades}
               index={index}
               _sectionDots={[sectionDots, setSectionDots]}
               _wasDotClicked={[wasDotClicked, setWasDotClicked]}
               _isScrollListenerOn={[isScrollListenerOn, setIsScrollListenerOn]}
             />
-          ))}
+          )
+          )}
         </div>
       </div>
     </Layout>

@@ -29,6 +29,7 @@ const TeachIt = ({
   SectionTitle,
   Data,
   _sectionDots,
+  ForGrades
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
@@ -158,14 +159,6 @@ const TeachIt = ({
 
         <div className='container ps-0 pe-1 px-md-2  pb-4'>
           {parts.map((part, index) => {
-            console.log('part yo there: ', part)
-            // BUG: 
-            // WHAT IS HAPPENING:
-            // the object that is being retrieved does not have the lesson tile url
-            // if the array that contains all of the objects is coming from an array that has that is the updated version of the lesson, then get the lessons from the updated version
-            // if new lessons updated, then get the updated version of the lessons from resources
-            
-            // GOAL: check if the lessons sections are the updated version of the lessons
             let {
               lsnNum,
               partNum,
@@ -177,14 +170,12 @@ const TeachIt = ({
               learningObj,
               lessonTile
             } = part;
-            // GOAL: get the grades that the lesson is designed for and pass in for the child component of LessonPart
 
-            if(partsFieldName === 'lessons'){
+            if (partsFieldName === 'lessons') {
               const { title, tile } = resources[0][partsFieldName][index];
               lsnTitle = title;
               lessonTile = tile;
             }
-
 
             return (
               <LessonPart
@@ -195,6 +186,7 @@ const TeachIt = ({
                 lsnTitle={lsnTitle ?? partTitle}
                 lsnPreface={lsnPreface ?? partPreface}
                 chunks={chunks}
+                ForGrades={ForGrades}
                 learningObjectives={learningObj}
                 partsFieldName={partsFieldName}
                 lessonTileUrl={lessonTile}

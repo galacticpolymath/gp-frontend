@@ -67,9 +67,13 @@ const SECTIONS_WITH_PICS = [
 ];
 const NAMES_OF_SECS_WITH_PICS = SECTIONS_WITH_PICS.map(section => section.name);
 
-const LessonSection = ({ index, section, _sectionDots, oldLesson }) => {
+const LessonSection = ({ index, section, _sectionDots, oldLesson, ForGrades }) => {
   const Component = sectionTypeMap[section.__component];
-  const compProps = { ...section, _sectionDots };
+  let compProps = { ...section, _sectionDots };
+
+  if (TeachIt.name === 'TeachIt') {
+    compProps.ForGrades = ForGrades
+  }
 
   if (oldLesson && NAMES_OF_SECS_WITH_PICS.includes(Component.name)) {
     const compName = SECTIONS_WITH_PICS.find(sectionWithPics => sectionWithPics.name === Component.name).sectionCompName;

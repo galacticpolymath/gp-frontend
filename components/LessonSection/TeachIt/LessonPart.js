@@ -20,6 +20,7 @@ const LessonPart = ({
   partsFieldName,
   chunks = [],
   resources,
+  ForGrades,
   _numsOfLessonPartsThatAreExpanded
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -67,21 +68,22 @@ const LessonPart = ({
 
 
   const defaultBorderColor = 'solid 2.5px rgb(222, 226, 230)';
-  const highlighlightedBorderColor = 'solid 2.5px #3987C5';
+  const highlightedBorderColor = '#3987C5'
+  const highlighlightedBorder = `solid 2.5px ${highlightedBorderColor}`;
   let _borderTop = 'none'
 
   if (isExpanded && (lsnNum === 1)) {
-    _borderTop = highlighlightedBorderColor
+    _borderTop = highlighlightedBorder
   }
 
   if (!isExpanded && (lsnNum === 1)) {
     _borderTop = defaultBorderColor
   }
 
-  const _borderBottom = (numsOfLessonPartsThatAreExpanded.find(num => num === lsnNum) || isExpanded) ? highlighlightedBorderColor : defaultBorderColor
+  const _borderBottom = (numsOfLessonPartsThatAreExpanded.find(num => num === lsnNum) || isExpanded) ? highlighlightedBorder : defaultBorderColor
   const accordionStyle = {
-    borderLeft: isExpanded ? highlighlightedBorderColor : defaultBorderColor,
-    borderRight: isExpanded ? highlighlightedBorderColor : defaultBorderColor,
+    borderLeft: isExpanded ? highlighlightedBorder : defaultBorderColor,
+    borderRight: isExpanded ? highlighlightedBorder : defaultBorderColor,
     borderTop: _borderTop,
     borderBottom: _borderBottom
   }
@@ -97,12 +99,28 @@ const LessonPart = ({
         <div onClick={handleOnClick} className='p-2 bg-white d-flex'>
           <div className={`d-flex flex-column ${lessonTileUrl ? 'w-75' : 'w-100'}`} >
             <div className='d-flex align-items-center'>
-              <div className='d-flex align-items-center pb-1'>
-                <i style={{ color: '#DEE2E6' }} className="fs-3 bi-chevron-down"></i>
-                <i className="fs-3 bi-chevron-up"></i>
+              <div className='d-flex align-items-center align-items-center'>
+                <div
+                  className="rounded d-flex justify-content-center align-items-center"
+                  style={{ width: 35, height: 35, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
+                >
+                  <i
+                    style={{ color: '#DEE2E6' }}
+                    className="fs-4 bi-chevron-down"
+                  />
+                  <i
+                    style={{ color: highlightedBorderColor }}
+                    className="fs-4 bi-chevron-up"
+                  />
+                </div>
               </div>
-              <div className='d-flex align-items-center'>
-                <h3 style={{ color: LESSON_PART_BTN_COLOR }} className='fs-6 fw-semibold'>{isOnAssessments ? 'Assessments' : `Part ${lsnNum}: ${lsnTitle}`}</h3>
+              <div className='d-flex align-items-center ms-2 mt-3 pb-2'>
+                <h3
+                  style={{ color: LESSON_PART_BTN_COLOR }}
+                  className='fs-6 fw-semibold'
+                >
+                  {isOnAssessments ? 'Assessments' : `Part ${lsnNum}: ${lsnTitle}`}
+                </h3>
               </div>
             </div>
             <div><RichText content={lsnPreface} /></div>
@@ -160,14 +178,14 @@ const LessonPart = ({
         </div>
       }
 
-      <div>
-        <h3 className="mt-3">Materials for Grades</h3>
+      <div className='mt-4'>
+        <h3 className="fw-bold">Materials for Grades {ForGrades}</h3>
         <ol className='mt-3'>
           {!!linkResources?.length && linkResources.map(item => {
             const { itemTitle, itemDescription, links } = item;
             const _links = links ? (Array.isArray(links) ? links : [links]) : null;
+
             return (
-              // put the leaning objectie for the lesson part here
               <li key={itemTitle} className='mb-0'>
                 <strong><RichText content={itemTitle} /></strong>
                 <div className='fst-italic mb-2' style={{ color: '#353637' }}>
