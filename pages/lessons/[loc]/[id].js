@@ -46,6 +46,7 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 }
 
 const LessonDetails = ({ lesson, availLocs }) => {
+  console.log('lesson: ', lesson)
   const { CoverImage, LessonBanner } = lesson;
   const LessonBannerImgUrl = CoverImage?.url ?? LessonBanner 
   const lastSubRelease = getLatestSubRelease(lesson.Section);

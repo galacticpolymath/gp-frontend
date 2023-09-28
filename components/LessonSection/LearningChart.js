@@ -5,7 +5,6 @@ import RichText from '../RichText';
 import Image from 'next/image';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 import { useRef } from 'react';
-import { useState } from 'react';
 
 const LearningChart = ({
   Title,
