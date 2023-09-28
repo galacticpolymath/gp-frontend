@@ -43,13 +43,11 @@ const TeachIt = ({
   const [selectedGradeResources, setSelectedGradeResources] = useState(allResources?.[0]?.links);
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
-  // getting assessments part 
-  console.log('Data.classroom.resources[0]: ', Data.classroom.resources[0]);
   const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
   const dataPartsFieldName = ('parts' in Data) ? 'parts' : 'lesson';
   let { title, itemList } = Data.classroom.resources[0]?.[partsFieldName] ?? {};
   const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
-  let parts = (assessmentPart && (((typeof Data === 'object') && (Data !== null) && (Data !== undefined)) && (dataPartsFieldName in Data))) ? [...Data?.[dataPartsFieldName], assessmentPart] : Data?.[dataPartsFieldName];
+  let parts = (assessmentPart && (dataPartsFieldName in Data)) ? [...Data[dataPartsFieldName], assessmentPart] : Data?.[dataPartsFieldName];
   parts = parts.map((part, index) => ({ ...part, partNum: index + 1 }));
   const ref = useRef();
 

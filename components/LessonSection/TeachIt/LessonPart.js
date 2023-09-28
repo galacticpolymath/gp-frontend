@@ -60,17 +60,8 @@ const LessonPart = ({
     setIsExpanded(!isExpanded);
   };
 
-  console.log('allTags: ', allTags);
-
   if (allTags?.length && Array.isArray(allTags)) {
     allTags = allTags.flat().filter(tag => !!tag);
-
-    console.log('allTags after filter: ', allTags);
-
-    // FOR TESTINGS PURPOSES, BELOW
-    // allTags = allTags.length ? [...allTags, allTags[0]] : allTags;
-    // FOR TESTIING PURPOSES, ABOVE
-
     previewTags = (allTags?.length > 3) ? allTags.slice(0, 3) : allTags;
     restOfTags = (allTags?.length > 3) ? allTags.slice(3) : [];
   }
