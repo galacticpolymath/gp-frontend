@@ -6,10 +6,12 @@ import { AiOutlineQuestionCircle } from "react-icons/ai";
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
 import { ModalContext } from '../../../providers/ModalProvider';
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
+import RichText from '../../RichText';
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
+
 const getObjVals = obj => {
   const keys = Object.keys(obj);
   let vals = [];
@@ -27,9 +29,11 @@ const TeachIt = ({
   SectionTitle,
   Data,
   _sectionDots,
+  ForGrades
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
+  const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = useState([])
   const environments = ['classroom', 'remote']
     .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   const gradeVariations = getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources;
@@ -40,9 +44,13 @@ const TeachIt = ({
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
   // getting assessments part 
-  let { title, itemList } = Data.classroom.resources[0]?.parts ?? {};
+  console.log('Data.classroom.resources[0]: ', Data.classroom.resources[0])
+  const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
+  const dataPartsFieldName = ('parts' in Data) ? 'parts' : 'lesson'
+  let { title, itemList } = Data.classroom.resources[0]?.[partsFieldName] ?? {};
   const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
-  const parts = assessmentPart ? [...Data.parts, assessmentPart] : Data.parts;
+  let parts = assessmentPart ? [...Data?.[dataPartsFieldName], assessmentPart] : Data[dataPartsFieldName];
+  parts = parts.map((part, index) => ({ ...part, partNum: index + 1 }))
   const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
@@ -56,6 +64,10 @@ const TeachIt = ({
     setSelectedGrade(selectedGrade);
   };
 
+  useEffect(() => {
+    console.log('parts:, hey there meng: ', parts)
+  })
+
   return (
     <CollapsibleLessonSection
       index={index}
@@ -68,14 +80,14 @@ const TeachIt = ({
         <div className='container-fluid mt-4'>
           {Data.lessonDur && (
             <div className='row'>
-              <div className='col-12 bg-light-gray py-3 p-3 align-items-center'>
-                <div className='fs-5 mb-2'>
-
-                  <i className="bi-alarm fs-4 me-2"></i>
-                  {Data.lessonDur}
-
+              <div className='row mx-auto pb-4 justify-content-center'>
+                <div className='infobox rounded-3 p-2 p-sm-4 fs-5 my-4 p-3 fw-light w-auto'>
+                  <h2 className='fw-light d-flex align-items-center'>
+                    <i className="bi-alarm fs-4 me-2" />
+                    {Data.lessonDur}
+                  </h2>
+                  {Data.lessonPreface && <RichText content={Data.lessonPreface} className='d-flex justify-content-center quickPrep' />}
                 </div>
-                <p className='mb-0'>{Data.lessonPreface && (Data.lessonPreface)}</p>
               </div>
             </div>
           )}
@@ -150,12 +162,41 @@ const TeachIt = ({
         )}
 
         <div className='container ps-0 pe-1 px-md-2  pb-4'>
-          {parts && parts.map((part, index) => {
+          {parts.map((part, index) => {
+            let {
+              lsnNum,
+              partNum,
+              lsnTitle,
+              partTitle,
+              lsnPreface,
+              partPreface,
+              chunks,
+              learningObj,
+              lessonTile,
+              lsnExtension
+            } = part;
+            let secondTitle = null
+
+            if (partsFieldName === 'lessons') {
+              const { tile, title } = resources?.[0]?.[partsFieldName]?.[index] ?? {};
+              lessonTile = tile;
+              secondTitle = (lsnTitle  === 'Procedure not documented yet') ? title : null;
+            }
+
             return (
               <LessonPart
                 key={`${index}_part`}
                 resources={resources}
-                {...part}
+                _numsOfLessonPartsThatAreExpanded={[numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded]}
+                lsnNum={lsnNum ?? partNum}
+                lsnTitle={secondTitle ?? (lsnTitle ?? partTitle)}
+                lsnPreface={lsnPreface ?? partPreface}
+                lsnExtension={lsnExtension}
+                chunks={chunks}
+                ForGrades={ForGrades}
+                learningObjectives={learningObj}
+                partsFieldName={partsFieldName}
+                lessonTileUrl={lessonTile}
               />
             );
           })}

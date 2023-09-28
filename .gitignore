@@ -10,6 +10,8 @@ tasks.taskpaper
 
 testReq.js
 
+testingFile.json
+
 # dependencies
 /node_modules
 /.pnp

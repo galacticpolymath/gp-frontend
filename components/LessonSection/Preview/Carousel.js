@@ -16,14 +16,7 @@ import { useContext, useEffect, useState } from 'react';
 import RenderArrowNext from './RenderArrowNext';
 import { LessonsCarouselContext } from '../../../providers/LessonsCarouselProvider';
 
-// how do I access the current picture/file that is being displayed on the ui? 
-
-
-
-
-const Carousel = ({
-  items,
-}) => {
+const Carousel = ({ items }) => {
   const { _lessonItemsIndex } = useContext(LessonsCarouselContext);
   const [lessonItemsIndex, setLessonsItemsIndex] = _lessonItemsIndex;
   const renderItemObj = items[lessonItemsIndex];

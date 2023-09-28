@@ -20,10 +20,9 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { useMemo, useState } from 'react';
-import styles from './index.module.scss';
+import { useState } from 'react';
 import LessonSlide from './LessonSlide';
-import { customControls, getVideoThumb } from './utils';
+import { getVideoThumb } from './utils';
 import Image from 'next/image';
 import { useEffect } from 'react';
 import Dot from '../NavDots/Dot';
@@ -91,7 +90,9 @@ const LessonsCarousel = ({ mediaItems }) => {
                         className="autoCarouselSlider"
                         style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
                     >
-                        {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => <LessonSlide key={index} {...lessonDocument} />)}
+                        {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => {
+                            return <LessonSlide key={index} forLsn={lessonDocument.forLsn ?? lessonDocument.forPart} {...lessonDocument} />
+                        })}
                     </div>
                 </section>
             </section>

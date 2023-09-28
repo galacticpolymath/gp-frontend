@@ -12,22 +12,22 @@ import moment from 'moment/moment';
 import { connectToMongodb } from '../../backend/utils/connection';
 
 const LessonsPage = ({ lessons }) => {
-
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
   };
 
   const uniqueIDs = [];
   const publishedLessons = lessons.filter(({ PublicationStatus, numID }) => {
-    const willShowLesson = !uniqueIDs.includes(numID) && (PublicationStatus === 'Live');
-
+    // const willShowLesson = !uniqueIDs.includes(numID) && (PublicationStatus === 'Live');
+    const willShowLesson = !uniqueIDs.includes(numID);
+    
     if (willShowLesson) {
       uniqueIDs.push(numID);
-    }
-
+    };
+    
     return willShowLesson;
   });
-
+  
   return (
     <Layout
       title='Galactic Polymath Lesson Releases'
@@ -95,6 +95,7 @@ const PROJECTED_LESSONS_FIELDS = [
   '_id',
   'numID',
   'PublicationStatus',
+  'LessonBanner'
 ]
 
 export async function getStaticProps() {

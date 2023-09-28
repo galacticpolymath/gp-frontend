@@ -1,15 +1,9 @@
 import RenderArrowNext from './RenderArrowNext';
 
-/* eslint-disable no-console */
-// const handleOnScroll = () => {};
-
 export const getMediaComponent = ({ type, mainLink }) => {
   if (type === 'video') {
     return (
       <iframe
-        // width="560"
-        // // height="315"
-        // height="100%"
         src={mainLink}
         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
         title="YouTube video player"

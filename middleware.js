@@ -2,14 +2,11 @@ import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
 const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
-const VALIDS_METHODS = ['POST'];
 
 // may use this function to check for non-related admin routes
 const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin) => {
   const token = authorizationStr.split(' ')[1].trim();
   const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
-
-  console.log('payload: ', payload);
 
   if (!payload) {
     return { isAuthorize: false, errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 }) };

@@ -25,6 +25,7 @@ const Accordion = ({
   button,
   style = {},
   willUseGetId = true,
+  accordionChildrenClasses = {},
   highlighted,
 }) => {
   const contentId = useRef();
@@ -55,7 +56,7 @@ const Accordion = ({
       </div>
       <div
         id={`content_${willUseGetId ? contentId?.current : id}`}
-        className={`collapse ${initiallyExpanded ? 'show' : ''}`}
+        className={`collapse ${accordionChildrenClasses ?? ''} ${initiallyExpanded ? 'show' : ''}`}
         aria-labelledby={`${id}_content`}
         data-bs-parent="#accordionExample"
       >

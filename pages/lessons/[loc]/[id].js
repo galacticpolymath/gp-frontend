@@ -50,7 +50,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const LessonBannerImgUrl = CoverImage?.url ?? LessonBanner 
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
-  const router = useRouter()
+  const router = useRouter();
   let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
   sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
   sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
@@ -80,6 +80,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
+  // move the helper function outside of the component
   const getSectionDotsDefaultVal = () => {
     const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
@@ -144,12 +145,17 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }
 
+  // GOAL: get the grades that lesson is focused on
+  // check the lesson object that was received from the backend.
+
   const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
-  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: LessonBannerImgUrl } : { isOnSide: true, pinterestMedia: LessonBannerImgUrl, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: LessonBannerImgUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
+  const lessonBannerUrl = lesson?.CoverImage?.url ?? lesson.LessonBanner
+  const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
+  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
+  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
   useEffect(() => {
     if (willGoToTargetSection) {
@@ -166,7 +172,12 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   return (
     <Layout {...layoutProps}>
-      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} setIsScrollListenerOn={setIsScrollListenerOn} isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked} />
+      <LessonsSecsNavDots
+        _sectionDots={[sectionDots, setSectionDots]}
+        setWillGoToTargetSection={setWillGoToTargetSection}
+        setIsScrollListenerOn={setIsScrollListenerOn}
+        isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked}
+      />
       <ShareWidget {...shareWidgetFixedProps} />
       <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
         <div id="lessonTitleSecId" className="d-flex justify-content-center SectionHeading lessonTitleId">
@@ -188,10 +199,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
             </div>
             <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
             <h4 className='fw-light'>{lesson.Subtitle}</h4>
-            {(LessonBannerImgUrl) && (
+            {lessonBannerUrl && (
               <div className='w-100 position-relative mt-2 mb-2'>
                 <Image
-                  src={LessonBannerImgUrl}
+                  src={lessonBannerUrl}
                   alt={lesson.Subtitle}
                   width={1500}
                   height={450}
@@ -202,7 +213,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
             )}
             <div className='d-flex d-md-none'>
               <label className='d-flex justify-content-center align-items-center'>Share: </label>
-              {isOnProduction ? <ShareWidget pinterestMedia={LessonBannerImgUrl} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={LessonBannerImgUrl} />}
+              {isOnProduction ? <ShareWidget pinterestMedia={lessonBannerUrl} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lessonBannerUrl} />}
             </div>
             <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
               <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
@@ -210,10 +221,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
                 <RichText content={lesson.SponsoredBy} />
               </div>
               <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
-                {lesson.SponsorImage && lesson.SponsorImage.url && (
+                {sponsorLogoImgUrl && (
                   <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
                     <Image
-                      src={Array.isArray(lesson.SponsorImage.url) ? lesson.SponsorImage.url[0] : lesson.SponsorImage.url}
+                      src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
                       alt={lesson.Subtitle}
                       className='sponsorImg'
                       sizes="225px"
@@ -233,12 +244,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
             <ParentLessonSection
               key={index}
               section={section}
+              ForGrades={lesson.ForGrades}
               index={index}
               _sectionDots={[sectionDots, setSectionDots]}
               _wasDotClicked={[wasDotClicked, setWasDotClicked]}
               _isScrollListenerOn={[isScrollListenerOn, setIsScrollListenerOn]}
             />
-          ))}
+          )
+          )}
         </div>
       </div>
     </Layout>
