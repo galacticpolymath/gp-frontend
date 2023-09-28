@@ -75,29 +75,29 @@ const LessonSection = ({ index, section, _sectionDots, oldLesson, ForGrades }) =
     compProps.ForGrades = ForGrades;
   }
 
-  if (oldLesson && NAMES_OF_SECS_WITH_PICS.includes(Component.name)) {
-    const compName = SECTIONS_WITH_PICS.find(sectionWithPics => sectionWithPics.name === Component.name).sectionCompName;
-    const targetSection = oldLesson.Section[compName.toLowerCase()];
-    let oldLessonImgUrlsObj = null;
-    const { targetFields } = SECTIONS_WITH_PICS.find(sectionWithPics => sectionWithPics.name === Component.name);
+  // if (oldLesson && NAMES_OF_SECS_WITH_PICS.includes(Component.name)) {
+  //   const compName = SECTIONS_WITH_PICS.find(sectionWithPics => sectionWithPics.name === Component.name).sectionCompName;
+  //   const targetSection = oldLesson.Section[compName.toLowerCase()];
+  //   let oldLessonImgUrlsObj = null;
+  //   const { targetFields } = SECTIONS_WITH_PICS.find(sectionWithPics => sectionWithPics.name === Component.name);
 
-    targetFields.forEach(targetField => {
-      if (!targetSection[targetField]) {
-        console.error('No field with back-up image.');
-        return;
-      }
+  //   targetFields.forEach(targetField => {
+  //     if (!targetSection[targetField]) {
+  //       console.error('No field with back-up image.');
+  //       return;
+  //     }
 
-      if (!oldLessonImgUrlsObj) {
-        oldLessonImgUrlsObj = {};
-      }
+  //     if (!oldLessonImgUrlsObj) {
+  //       oldLessonImgUrlsObj = {};
+  //     }
 
-      oldLessonImgUrlsObj[targetField] = targetSection[targetField]?.url;
-    });
+  //     oldLessonImgUrlsObj[targetField] = targetSection[targetField]?.url;
+  //   });
 
-    if (oldLessonImgUrlsObj) {
-      compProps.oldLessonImgUrlsObj = oldLessonImgUrlsObj;
-    }
-  }
+  //   if (oldLessonImgUrlsObj) {
+  //     compProps.oldLessonImgUrlsObj = oldLessonImgUrlsObj;
+  //   }
+  // }
 
   const parentId = `${section.SectionTitle}-parent-${index}`;
 

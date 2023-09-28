@@ -48,11 +48,22 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 }
 
 const LessonDetails = ({ lesson, availLocs }) => {
+  console.log('lesson: ', lesson)
+  const router = useRouter();
+
+  if (!lesson && typeof window === "undefined") {
+    return null;
+  }
+
+  if (!lesson) {
+    router.replace('/error');
+    return null;
+  }
+
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
   const lastSubRelease = getLatestSubRelease(lesson.Section);
   const { ref } = useInView({ threshold: 0.2 });
-  const router = useRouter();
   let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
   sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
   sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
@@ -278,11 +289,28 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
     await connectToMongodb();
-    const { data: oldLessons } = await axios.get(lessonsUrl) ?? {}
-    const oldTargetLesson = oldLessons?.length ? oldLessons.find(({_id}) => _id === id) : null;
+
+
+
+    // GOAL: get image of the old lessons chart for the previous lesson. 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
-    const targetLesson = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
+    let targetLesson = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
+    const { data: oldLessons } = await axios.get(lessonsUrl) ?? {}
+    const oldTargetLesson = oldLessons?.length ? oldLessons.find(({ id: oldLessonId, locale }) => (oldLessonId.toString() === id) && (locale === loc)) : null;
+    const learningChart = oldTargetLesson?.Section?.['learning-chart']
+
+    console.log('learningChart: ', learningChart)
+
+    if (!('learning-chart' in targetLesson?.Section) && learningChart) {
+      targetLesson = {
+        ...targetLesson,
+        Section: {
+          ...targetLesson?.Section,
+          ['learning-chart']: learningChart
+        }
+      }
+    }
 
     return {
       props: {
@@ -295,8 +323,8 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
     return {
       props: {
-        lesson: {},
-        availLocs: [],
+        lesson: null,
+        availLocs: null,
       }
     }
   }
