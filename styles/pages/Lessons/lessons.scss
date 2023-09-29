@@ -235,6 +235,19 @@ $toolTipColor: #f0f4ff;
 .tagPillContainer {
   min-width: 150px;
   gap: 20px;
+  width: 75%;
+
+  @media(max-width: 575px) {
+    width: 100%;
+  }
+}
+
+.arrow-down-lesson-part-container {
+  @media(max-width: 575px) {
+    position: absolute;
+    right: 0;
+    height: 100%;
+  }
 }
 
 .lessonSecsNavDotsListContainer {

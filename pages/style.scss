@@ -238,9 +238,6 @@ ol li {
   background-color: $social-studies-hl;
 }
 
-// TODO: what are the other possible TargetSubject values? (see lessons page badges)
-
-
 // lesson page styling classes
 .infobox {
   border: 3px solid $galactic-gray;
@@ -498,6 +495,7 @@ ol li {
     width: 50%
   }
 }
+
 .w-45 {
   width: 45%;
 }
@@ -508,15 +506,28 @@ ol li {
   }
 }
 
+
 .w-md-75 {
   @media(min-width: 992px) {
     width: 75% !important;
   }
 }
 
+.w-sm-100 {
+  @media(min-width: 576px) {
+    width: 100% !important;
+  }
+}
+
 .w-md-25 {
   @media(min-width: 992px) {
     width: 25%
+  }
+}
+
+.w-max-sm-100 {
+  @media(max-width: 576px) {
+    width: 100%;
   }
 }
 

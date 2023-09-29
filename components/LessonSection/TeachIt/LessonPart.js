@@ -43,6 +43,7 @@ const LessonPart = ({
 
   const handleOnClick = () => {
     const previousLessonPartNum = lsnNum - 1;
+
     setNumsOfLessonPartsThatAreExpanded(prevState => {
       if (!isExpanded) {
         return previousLessonPartNum ? [...prevState, previousLessonPartNum] : prevState;
@@ -88,10 +89,30 @@ const LessonPart = ({
       accordionChildrenClasses='px-3 w-100 pb-4'
       style={accordionStyle}
       button={(
-        <div onClick={handleOnClick} className='p-2 bg-white d-flex'>
-          <div className={`d-flex flex-column ${lessonTileUrl ? 'w-75' : 'w-100'}`}>
-            <div className='d-flex align-items-center'>
-              <div className='d-flex align-items-center align-items-center'>
+        <div onClick={handleOnClick} className='p-2 w-100 bg-white d-flex'>
+          <div className='d-flex flex-column w-100'>
+            <div className='d-flex justify-content-between w-100 position-relative'>
+              <div className='d-flex w-100 align-items-center ms-sm-2 mt-3 pb-2'>
+                <h3
+                  style={{ color: LESSON_PART_BTN_COLOR }}
+                  className='fs-6 fw-semibold text-center px-5 px-sm-0 w-max-sm-100'
+                >
+                  {isOnAssessments ? 'Assessments' : `Part ${lsnNum}: ${lsnTitle}`}
+                </h3>
+              </div>
+              <div className='d-flex align-items-center arrow-down-lesson-part-container'>
+                {lessonTileUrl &&
+                  <div style={{ width: 145, height: 145 }} className="d-none d-sm-block position-relative me-4">
+                    <Image
+                      src={lessonTileUrl}
+                      alt="lesson_tile"
+                      fill
+                      style={{ objectFit: 'contain' }}
+                      sizes="130px"
+                      className="rounded"
+                    />
+                  </div>
+                }
                 <div
                   className="rounded d-flex justify-content-center align-items-center"
                   style={{ width: 35, height: 35, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
@@ -106,18 +127,24 @@ const LessonPart = ({
                   />
                 </div>
               </div>
-              <div className='d-flex align-items-center ms-2 mt-3 pb-2'>
-                <h3
-                  style={{ color: LESSON_PART_BTN_COLOR }}
-                  className='fs-6 fw-semibold'
-                >
-                  {isOnAssessments ? 'Assessments' : `Part ${lsnNum}: ${lsnTitle}`}
-                </h3>
-              </div>
             </div>
-            <div><RichText content={lsnPreface} /></div>
+            <div className="d-flex justify-content-center align-items-center d-sm-none">
+              {lessonTileUrl &&
+                <div style={{ width: 145, height: 145 }} className="position-relative me-sm-4">
+                  <Image
+                    src={lessonTileUrl}
+                    alt="lesson_tile"
+                    fill
+                    style={{ objectFit: 'contain' }}
+                    sizes="130px"
+                    className="rounded"
+                  />
+                </div>
+              }
+            </div>
+            <div className='mt-4 mb-2'><RichText className='text-center text-sm-start' content={lsnPreface} /></div>
             {!!previewTags?.length && (
-              <div style={{ top: 10 }} className='mt-2 d-flex w-75 tagPillContainer flex-wrap'>
+              <div style={{ top: 10 }} className='mt-2 d-flex justify-content-center justify-content-sm-start tagPillContainer flex-wrap'>
                 {previewTags.map((tag, index) => (
                   <div
                     key={index}
@@ -132,25 +159,11 @@ const LessonPart = ({
               </div>
             )}
           </div>
-          {lessonTileUrl &&
-            <div className='w-25 d-flex justify-content-center align-items-center'>
-              <div style={{ width: 125, height: 125 }} className="position-relative">
-                <Image
-                  src={lessonTileUrl}
-                  alt="lesson_tile"
-                  fill
-                  style={{ objectFit: 'contain' }}
-                  sizes="130px"
-                  className="rounded"
-                />
-              </div>
-            </div>
-          }
         </div>
       )}
     >
       {!!restOfTags?.length && (
-        <div style={{ top: 10 }} className=''>
+        <div>
           {restOfTags.map((tag, index) => (
             <div
               key={index}
@@ -191,7 +204,6 @@ const LessonPart = ({
                 <div className='fst-italic mb-2' style={{ color: '#353637' }}>
                   <RichText
                     content={itemDescription}
-                    className='mb-5'
                     css={{ color: 'red' }}
                   />
                 </div>
