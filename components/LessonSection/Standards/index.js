@@ -2,15 +2,11 @@
 import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
-
 import Accordion from '../../Accordion';
-import RichText from '../../RichText';
-
 import Subject from './Subject';
 
 const Standards = ({
   Data,
-  LearningObj,
   _sectionDots,
   SectionTitle,
 }) => {
@@ -19,20 +15,6 @@ const Standards = ({
 
   return (
     <div ref={ref} className='container mb-4'>
-      <Accordion
-        id="learningObj"
-        initiallyExpanded
-        buttonClassName='w-100 text-start mb-2'
-        button={(
-          <div className='d-flex justify-content-between align-items-center'>
-            <h3 className='fs-5 mb-0'>Learning Objectives</h3>
-            <i className="fs-4 bi-chevron-down"></i>
-            <i className="fs-4 bi-chevron-up"></i>
-          </div>
-        )}
-      >
-        <RichText content={LearningObj} />
-      </Accordion>
       <Accordion
         id="standards"
         initiallyExpanded

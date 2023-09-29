@@ -79,6 +79,7 @@ const LessonPart = ({
     borderRight: isExpanded ? highlighlightedBorder : defaultBorderColor,
     borderTop: _borderTop,
     borderBottom: _borderBottom,
+    // boxShadow: isExpanded ? '0 0 0 0.25rem rgba(13,110,253,.25)' : 'none'
   };
 
   return (
@@ -89,15 +90,18 @@ const LessonPart = ({
       accordionChildrenClasses='px-3 w-100 pb-4'
       style={accordionStyle}
       button={(
-        <div onClick={handleOnClick} className='p-2 w-100 bg-white d-flex'>
+        <div
+          onClick={handleOnClick}
+          className='p-2 w-100 bg-white d-flex'
+        >
           <div className='d-flex flex-column w-100'>
             <div className='d-flex justify-content-between w-100 position-relative'>
               <div className='d-flex w-100 align-items-center ms-sm-2 mt-3 pb-2'>
                 <h3
                   style={{ color: LESSON_PART_BTN_COLOR }}
-                  className='fs-6 fw-semibold text-center px-5 px-sm-0 w-max-sm-100'
+                  className='fs-6 fw-semibold text-center d-flex justify-content-center align-items-center d-sm-block justify-content-sm-start align-items-sm-center px-5 px-sm-0 w-max-sm-100'
                 >
-                  {isOnAssessments ? 'Assessments' : `Part ${lsnNum}: ${lsnTitle}`}
+                  {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
                 </h3>
               </div>
               <div className='d-flex align-items-center arrow-down-lesson-part-container'>

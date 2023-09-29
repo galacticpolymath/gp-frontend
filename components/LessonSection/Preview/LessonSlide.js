@@ -26,7 +26,7 @@ const LessonSlide = ({
           style={{ width: "100%" }}
         >
           {forLsn && (
-            <div className='badge badge-pill bg-primary-light mb-1' style={{ color: 'gray' }}>for Part {forLsn}</div>
+            <div className='badge badge-pill bg-primary-light mb-1' style={{ color: 'gray' }}>For Lesson {forLsn}</div>
           )}
           <h6 className='m-0 mb-1 fw-bolder fst-italic'>{title}</h6>
           <div className="lessonRelevanceTxt mb-2 me-3">{lessonRelevance}</div>

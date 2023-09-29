@@ -157,7 +157,6 @@ const TeachIt = ({
 
         <div className='container ps-0 pe-1 px-md-2 pb-4'>
           {parts.map((part, index) => {
-            console.log('part.lsnExt: ', part.lsnExt)
             let {
               lsnNum,
               partNum,
