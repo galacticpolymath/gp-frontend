@@ -183,8 +183,8 @@ const LessonPart = ({
       )}
       {learningObjectives &&
         <div className="mt-3">
-          <h3 className='fw-bold'>Learning Objectives</h3>
-          <h5>Students will able to...</h5>
+          <h5 className='fw-bold'>Learning Objectives</h5>
+          <p className='fw-semibold'>Students will able to...</p>
           <ol className='mt-3'>
             {learningObjectives.map((objectiveStr, index) => (
               <li key={index}>
@@ -196,7 +196,7 @@ const LessonPart = ({
       }
 
       <div className='mt-4'>
-        <h3 className="fw-bold">Materials for Grades {ForGrades}</h3>
+        <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
         <ol className='mt-3'>
           {!!linkResources?.length && linkResources.map(item => {
             const { itemTitle, itemDescription, links } = item;
@@ -232,7 +232,7 @@ const LessonPart = ({
 
       {(!isOnAssessments && durList && chunks) &&
         <>
-          <h4>Steps &amp; Flow</h4>
+          <h5>Steps &amp; Flow</h5>
           {chunks.map((chunk, i) => (
             <LessonChunk
               key={i}
@@ -247,7 +247,7 @@ const LessonPart = ({
       {!!lsnExt?.length &&
         <div>
           <div>
-            <h3 className='fw-bold'>Going Further</h3>
+            <h5 className='fw-bold'>Going Further</h5>
             <RichText content="Ideas and resources for deepening learning on this topic." />
           </div>
           <ol className='mt-2'>

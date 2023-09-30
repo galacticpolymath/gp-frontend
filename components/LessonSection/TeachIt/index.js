@@ -76,10 +76,10 @@ const TeachIt = ({
             <div className='row'>
               <div className='row mx-auto pb-4 justify-content-center'>
                 <div className='infobox rounded-3 p-2 p-sm-4 fs-5 my-4 p-3 fw-light w-auto'>
-                  <h2 className='fw-light d-flex align-items-center'>
-                    <i className="bi-alarm fs-4 me-2" />
+                  <h3 className='fs-5'>
+                    <i className="bi-alarm fs-5 me-2" />
                     {Data.lessonDur}
-                  </h2>
+                  </h3>
                   {Data.lessonPreface && <RichText content={Data.lessonPreface} className='d-flex justify-content-center quickPrep' />}
                 </div>
               </div>
