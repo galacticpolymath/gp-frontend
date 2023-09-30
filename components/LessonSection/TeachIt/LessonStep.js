@@ -28,7 +28,8 @@ const LessonStep = ({
         <div
           style={{ width: "31px", height: '29px' }}
           className="badge bg-primary d-flex justify-content-left align-items-center"
-        >{Step}
+        >
+          {Step}
         </div>
         <h6 className='m-0'>
           <RichText content={StepTitle} />

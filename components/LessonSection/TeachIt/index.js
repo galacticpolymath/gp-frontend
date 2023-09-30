@@ -43,6 +43,7 @@ const TeachIt = ({
   const [selectedGradeResources, setSelectedGradeResources] = useState(allResources?.[0]?.links);
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
+  console.log('resoures: ', resources)
   const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
   const dataPartsFieldName = ('parts' in Data) ? 'parts' : 'lesson';
   let { title, itemList } = Data.classroom.resources[0]?.[partsFieldName] ?? {};
@@ -50,6 +51,10 @@ const TeachIt = ({
   let parts = (assessmentPart && (dataPartsFieldName in Data)) ? [...Data[dataPartsFieldName], assessmentPart] : Data?.[dataPartsFieldName];
   parts = parts.map((part, index) => ({ ...part, partNum: index + 1 }));
   const ref = useRef();
+
+  useEffect(() => {
+    console.log('parts: ', parts)
+  })
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 

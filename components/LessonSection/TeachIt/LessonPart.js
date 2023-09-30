@@ -35,11 +35,14 @@ const LessonPart = ({
     has0Key = '0' in resources[0].parts;
   }
 
-  const partsIndexNum = has0Key ? (lsnNum - 1) : (partsFieldName === 'lessons') ? (lsnNum - 1) : lsnNum;
+  console.log('resources?.[0]: ', resources?.[0])
+  console.log('lsnNum: ', lsnNum)
+  const partsIndexNum = has0Key ? (lsnNum - 1) : lsnNum;
   const linkResources = isOnAssessments ? chunks : (resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.itemList || []);
   let allTags = resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.tags ?? null;
   let previewTags = null;
   let restOfTags = null;
+
 
   const handleOnClick = () => {
     const previousLessonPartNum = lsnNum - 1;
