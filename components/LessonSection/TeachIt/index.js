@@ -47,7 +47,6 @@ const TeachIt = ({
   let { title, itemList } = Data.classroom.resources[0]?.[partsFieldName] ?? {};
   const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
   let parts = Data.classroom.resources[0]?.[partsFieldName];
-  parts = parts.map((part, index) => ({ ...part, partNum: index + 1 }));
   const ref = useRef();
 
   useEffect(() => {
@@ -161,8 +160,7 @@ const TeachIt = ({
         <div className='container ps-0 pe-1 px-md-2 pb-4'>
           {parts.map((part, index) => {
             let {
-              lsnNum,
-              partNum,
+              lsn,
               lsnTitle,
               partTitle,
               title,
@@ -174,7 +172,6 @@ const TeachIt = ({
               lessonTile,
               lsnExt,
             } = part;
-            console.log('')
             let secondTitle = null;
 
             if (partsFieldName === 'lessons') {
@@ -188,7 +185,7 @@ const TeachIt = ({
                 key={`${index}_part`}
                 resources={resources}
                 _numsOfLessonPartsThatAreExpanded={[numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded]}
-                lsnNum={lsnNum ?? partNum}
+                lsnNum={lsn}
                 lsnTitle={secondTitle ?? ((lsnTitle ?? partTitle) ?? title)}
                 lsnPreface={(lsnPreface ?? partPreface) ?? preface}
                 lsnExt={lsnExt}

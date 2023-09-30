@@ -7,6 +7,7 @@ import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
 import { memo, useState } from 'react';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 
@@ -35,11 +36,9 @@ const LessonPart = ({
     has0Key = '0' in resources[0].parts;
   }
 
-  console.log('resources?.[0]: ', resources?.[0])
-  console.log("Object.values(resources?.[0]?.[partsFieldName]): ", Object.values(resources?.[0]?.[partsFieldName])); 
   // const partsIndexNum = has0Key ? (lsnNum - 1) : lsnNum;
   const targetLessonsResources = resources?.[0]?.[partsFieldName] ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => lsnNum.toString() === lsn.toString()) ?? {} : {};
-  let { itemList: linkResources, tags: allTags } = targetLessonsResources
+  let { itemList: linkResources, tags: allTags } = targetLessonsResources;
   // let allTags = resources?.[0]?.[partsFieldName] ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsnNum: _lsnNum }) => lsnNum === _lsnNum) : [] 
   // let allTags = resources?.[0]?.[partsFieldName]?.[lsnNum]?.tags ?? null;
   let previewTags = null;
@@ -47,7 +46,9 @@ const LessonPart = ({
 
 
   const handleOnClick = () => {
-    const previousLessonPartNum = lsnNum - 1;
+    console.log('resources?.[0]?.[partsFieldName]?.length: ', resources?.[0]?.[partsFieldName]?.length)
+    const previousLessonPartNum = lsnNum === 'last' ? (resources?.[0]?.[partsFieldName]?.length - 1) : (lsnNum - 1);
+    // console.log("previousLessonPartNum: ", previousLessonPartNum)
 
     setNumsOfLessonPartsThatAreExpanded(prevState => {
       if (!isExpanded) {
@@ -58,6 +59,12 @@ const LessonPart = ({
     });
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => {
+    console.log('numsOfLessonPartsThatAreExpanded: ', numsOfLessonPartsThatAreExpanded)
+    console.log('lsnNum: ', lsnNum)
+    console.log('resources?.[0]?.[partsFieldName]: ', resources?.[0]?.[partsFieldName])
+  })
 
   if (allTags?.length && Array.isArray(allTags)) {
     allTags = allTags.flat().filter(tag => !!tag);
@@ -70,15 +77,15 @@ const LessonPart = ({
   const highlighlightedBorder = `solid 2.5px ${highlightedBorderColor}`;
   let _borderTop = 'none';
 
-  if (isExpanded && (lsnNum === 1)) {
+  if (isExpanded && (lsnNum == 1)) {
     _borderTop = highlighlightedBorder;
   }
 
-  if (!isExpanded && (lsnNum === 1)) {
+  if (!isExpanded && (lsnNum == 1)) {
     _borderTop = defaultBorderColor;
   }
 
-  const _borderBottom = (numsOfLessonPartsThatAreExpanded.find(num => num === lsnNum) || isExpanded) ? highlighlightedBorder : defaultBorderColor;
+  const _borderBottom = (numsOfLessonPartsThatAreExpanded.find(num => num == lsnNum) || isExpanded) ? highlighlightedBorder : defaultBorderColor;
   const accordionStyle = {
     borderLeft: isExpanded ? highlighlightedBorder : defaultBorderColor,
     borderRight: isExpanded ? highlighlightedBorder : defaultBorderColor,
@@ -121,18 +128,20 @@ const LessonPart = ({
                     />
                   </div>
                 }
-                <div
-                  className="rounded d-flex justify-content-center align-items-center"
-                  style={{ width: 35, height: 35, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
-                >
-                  <i
-                    style={{ color: '#DEE2E6' }}
-                    className="fs-4 bi-chevron-down"
-                  />
-                  <i
-                    style={{ color: highlightedBorderColor }}
-                    className="fs-4 bi-chevron-up"
-                  />
+                <div className="h-100">
+                  <div
+                    className="rounded d-flex justify-content-center align-items-center"
+                    style={{ width: 35, height: 35, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
+                  >
+                    <i
+                      style={{ color: '#DEE2E6' }}
+                      className="fs-4 bi-chevron-down"
+                    />
+                    <i
+                      style={{ color: highlightedBorderColor }}
+                      className="fs-4 bi-chevron-up"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
