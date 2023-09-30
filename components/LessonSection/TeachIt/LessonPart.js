@@ -36,10 +36,10 @@ const LessonPart = ({
   }
 
   console.log('resources?.[0]: ', resources?.[0])
-  console.log('lsnNum: ', lsnNum)
-  const partsIndexNum = has0Key ? (lsnNum - 1) : lsnNum;
-  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.itemList || []);
-  let allTags = resources?.[0]?.[partsFieldName]?.[partsIndexNum]?.tags ?? null;
+  console.log("resources?.[0]?.[partsFieldName]: ", resources?.[0]?.[partsFieldName]); 
+  // const partsIndexNum = has0Key ? (lsnNum - 1) : lsnNum;
+  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.[partsFieldName]?.[lsnNum]?.itemList || []);
+  let allTags = resources?.[0]?.[partsFieldName]?.[lsnNum]?.tags ?? null;
   let previewTags = null;
   let restOfTags = null;
 
