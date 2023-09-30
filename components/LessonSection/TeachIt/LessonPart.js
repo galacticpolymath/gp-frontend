@@ -36,10 +36,12 @@ const LessonPart = ({
   }
 
   console.log('resources?.[0]: ', resources?.[0])
-  console.log("resources?.[0]?.[partsFieldName]: ", resources?.[0]?.[partsFieldName]); 
+  console.log("Object.values(resources?.[0]?.[partsFieldName]): ", Object.values(resources?.[0]?.[partsFieldName])); 
   // const partsIndexNum = has0Key ? (lsnNum - 1) : lsnNum;
-  const linkResources = isOnAssessments ? chunks : (resources?.[0]?.[partsFieldName]?.[lsnNum]?.itemList || []);
-  let allTags = resources?.[0]?.[partsFieldName]?.[lsnNum]?.tags ?? null;
+  const targetLessonsResources = resources?.[0]?.[partsFieldName] ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => lsnNum.toString() === lsn.toString()) ?? {} : {};
+  let { itemList: linkResources, tags: allTags } = targetLessonsResources
+  // let allTags = resources?.[0]?.[partsFieldName] ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsnNum: _lsnNum }) => lsnNum === _lsnNum) : [] 
+  // let allTags = resources?.[0]?.[partsFieldName]?.[lsnNum]?.tags ?? null;
   let previewTags = null;
   let restOfTags = null;
 
