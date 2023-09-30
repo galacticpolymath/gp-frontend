@@ -174,6 +174,7 @@ const TeachIt = ({
               lessonTile,
               lsnExt,
             } = part;
+            console.log('')
             let secondTitle = null;
 
             if (partsFieldName === 'lessons') {
