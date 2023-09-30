@@ -44,12 +44,9 @@ const TeachIt = ({
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
   const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
-  const dataPartsFieldName = ('parts' in Data) ? 'parts' : 'lesson';
-  console.log('Data.classroom.resources[0]?.[partsFieldName]: ', Data.classroom.resources[0]?.[partsFieldName])
   let { title, itemList } = Data.classroom.resources[0]?.[partsFieldName] ?? {};
   const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
-  let parts = (assessmentPart && (dataPartsFieldName in Data)) ? [...Data[dataPartsFieldName], assessmentPart] : Data?.[dataPartsFieldName];
-  console.log('parts: ', parts)
+  let parts = Data.classroom.resources[0]?.[partsFieldName];
   parts = parts.map((part, index) => ({ ...part, partNum: index + 1 }));
   const ref = useRef();
 
@@ -168,8 +165,10 @@ const TeachIt = ({
               partNum,
               lsnTitle,
               partTitle,
+              title,
               lsnPreface,
               partPreface,
+              preface,
               chunks,
               learningObj,
               lessonTile,
@@ -189,8 +188,8 @@ const TeachIt = ({
                 resources={resources}
                 _numsOfLessonPartsThatAreExpanded={[numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded]}
                 lsnNum={lsnNum ?? partNum}
-                lsnTitle={secondTitle ?? (lsnTitle ?? partTitle)}
-                lsnPreface={lsnPreface ?? partPreface}
+                lsnTitle={secondTitle ?? ((lsnTitle ?? partTitle) ?? title)}
+                lsnPreface={(lsnPreface ?? partPreface) ?? preface}
                 lsnExt={lsnExt}
                 chunks={chunks}
                 ForGrades={ForGrades}
