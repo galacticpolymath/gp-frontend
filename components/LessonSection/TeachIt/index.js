@@ -48,19 +48,9 @@ const TeachIt = ({
   // console.log('Data.classroom.resources[0]: ', Data.classroom.resources[0])
   let parts = Data.classroom.resources[0]?.[partsFieldName];
 
+  console.log("dataLesson: ", dataLesson)
   console.log("parts: ", parts)
   console.log("Data.classroom.resources[0]?.[partsFieldName]: ", Data.classroom.resources[0]?.[partsFieldName])
-
-
-
-  // brain dump notes:
-  // if there are no assessments in dataLesson, then check if there is an assessment object in the array that is stored in Data.classroom.resources[0]?.[partsFieldName]
-  // CASE: there is no assessment object stroed in Data.classroom.resources[0]?.[partsFieldName]
-  // using the nullish operator, return null 
-  // there is no assessment object in the array that is stored in Data.classroom.resources[0]?.[partsFieldName]
-  // check if there is an assessment object stored in the array of Data.classroom.resources[0]?.[partsFieldName]
-  // declare a variable called assessments, this will store the assesment object
-  // const assementPartObj = 
 
 
   if((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && parts?.length){
@@ -71,13 +61,9 @@ const TeachIt = ({
   if((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && !parts?.length && dataLesson){
     const { itemList, lsn, preface, tile, title } = Data.classroom.resources[0]?.[partsFieldName];
     const lastPart = { itemList, lsn, preface, tile, title }
-    parts = [...dataLesson, lastPart]
-    console.log('parts hello there: ', parts)
+    parts = [...parts, lastPart]
   }
-
-
   
-
   const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
@@ -185,7 +171,7 @@ const TeachIt = ({
         )}
 
         <div className='container ps-0 pe-1 px-md-2 pb-4'>
-          {parts.map((part, index) => {
+          {parts.map((part, index, self) => {
             let {
               lsn,
               lsnNum,              
@@ -221,8 +207,16 @@ const TeachIt = ({
               chunks = _chunks;
             }
 
+            if(!lsnExt && (typeof dataLesson === 'object') && (dataLesson !== null)){
+              const { lsnExt: lsnExtBackup } = Object.values(dataLesson).find(({ lsnNum: lsnNumDataLesson }) => {
+                return (lsnNumDataLesson && ((lsn == lsnNumDataLesson) || (lsnNum == lsnNumDataLesson)))
+              }) ?? {};
+              lsnExt = lsnExtBackup;  
+            }
+
             return (
               <LessonPart
+                partsArr={self}
                 key={`${index}_part`}
                 resources={resources}
                 _numsOfLessonPartsThatAreExpanded={[numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded]}

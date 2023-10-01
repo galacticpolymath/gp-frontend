@@ -19,6 +19,7 @@ const LessonPart = ({
   learningObjectives,
   lessonTileUrl,
   partsFieldName,
+  partsArr,
   chunks = [],
   resources,
   ForGrades,
@@ -28,27 +29,25 @@ const LessonPart = ({
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
   const isOnAssessments = lsnTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
-  let has0Key = false;
+  let _itemList = itemList;
 
   if (partsFieldName === 'parts') {
     has0Key = '0' in resources[0].parts;
   }
 
-  console.log('resources?.[0]?.[partsFieldName]: ', resources?.[0]?.[partsFieldName])
-  console.log("Object.values(resources?.[0]?.[partsFieldName]): ", Object.values(resources?.[0]?.[partsFieldName]))
 
   const targetLessonsResources = resources?.[0]?.[partsFieldName] ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => {
     if (lsn) {
       return lsnNum.toString() === lsn.toString()
     }
   }) ?? {} : {};
-  console.log('targetLessonsResources: ', targetLessonsResources)
-  let { tags: allTags } = targetLessonsResources;
+  let { tags: allTags, itemList: linkResources } = targetLessonsResources;
+  _itemList = _itemList ?? linkResources;
   let previewTags = null;
   let restOfTags = null;
 
   const handleOnClick = () => {
-    const previousLessonPartNum = lsnNum === 'last' ? (resources?.[0]?.[partsFieldName]?.length - 1) : (lsnNum - 1);
+    const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
 
     setNumsOfLessonPartsThatAreExpanded(prevState => {
       if (!isExpanded) {
@@ -205,7 +204,7 @@ const LessonPart = ({
       <div className='mt-4'>
         <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
         <ol className='mt-3'>
-          {!!itemList?.length && itemList.map(item => {
+          {!!_itemList?.length && _itemList.map(item => {
             const { itemTitle, itemDescription, links } = item;
             const _links = links ? (Array.isArray(links) ? links : [links]) : null;
 
