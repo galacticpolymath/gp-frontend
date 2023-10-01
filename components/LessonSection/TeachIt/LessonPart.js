@@ -34,9 +34,16 @@ const LessonPart = ({
   }
 
   console.log('resources?.[0]?.[partsFieldName]: ', resources?.[0]?.[partsFieldName])
+  console.log("Object.values(resources?.[0]?.[partsFieldName]): ", Object.values(resources?.[0]?.[partsFieldName]))
 
-  const targetLessonsResources = resources?.[0]?.[partsFieldName] ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => lsnNum.toString() === lsn.toString()) ?? {} : {};
+  const targetLessonsResources = resources?.[0]?.[partsFieldName] ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => {
+    if (lsn) {
+      return lsnNum.toString() === lsn.toString()
+    }
+  }) ?? {} : {};
+  console.log('targetLessonsResources: ', targetLessonsResources)
   let { itemList: linkResources, tags: allTags } = targetLessonsResources;
+  console.log('linkResources: ', linkResources)
   let previewTags = null;
   let restOfTags = null;
 

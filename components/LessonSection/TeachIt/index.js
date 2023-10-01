@@ -45,13 +45,23 @@ const TeachIt = ({
   resources = getIsValObj(resources) ? [resources] : resources;
   const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
   const dataLesson = Data.lesson;
-  console.log('Data.classroom.resources[0]: ', Data.classroom.resources[0])
-  let parts = Data.classroom.resources[0]?.[partsFieldName] ?? dataLesson;
+  // console.log('Data.classroom.resources[0]: ', Data.classroom.resources[0])
+  let parts = Data.classroom.resources[0]?.[partsFieldName];
 
-  console.log('Data.classroom.resources[0]?.[partsFieldName]: ', Data.classroom.resources[0]?.[partsFieldName])
-  console.log('dataLesson: ', dataLesson)
+  console.log("parts: ", parts)
+  console.log("Data.classroom.resources[0]?.[partsFieldName]: ", Data.classroom.resources[0]?.[partsFieldName])
 
-  // GOAL: when dataLesson does not have anything 
+
+
+  // brain dump notes:
+  // if there are no assessments in dataLesson, then check if there is an assessment object in the array that is stored in Data.classroom.resources[0]?.[partsFieldName]
+  // CASE: there is no assessment object stroed in Data.classroom.resources[0]?.[partsFieldName]
+  // using the nullish operator, return null 
+  // there is no assessment object in the array that is stored in Data.classroom.resources[0]?.[partsFieldName]
+  // check if there is an assessment object stored in the array of Data.classroom.resources[0]?.[partsFieldName]
+  // declare a variable called assessments, this will store the assesment object
+  // const assementPartObj = 
+
 
   if((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && parts?.length){
     const { itemList, lsn, preface, tile, title } = Data.classroom.resources[0]?.[partsFieldName];
@@ -62,7 +72,7 @@ const TeachIt = ({
     const { itemList, lsn, preface, tile, title } = Data.classroom.resources[0]?.[partsFieldName];
     const lastPart = { itemList, lsn, preface, tile, title }
     parts = [...dataLesson, lastPart]
-    console.log('parts: ', parts)
+    console.log('parts hello there: ', parts)
   }
 
 
@@ -205,7 +215,7 @@ const TeachIt = ({
               learningObj = _learningObj;
             }
 
-            if(!chunks && (lsn !== 'last') && dataLesson.find(({ lsnNum }) => lsnNum == lsn)){
+            if(!chunks && (lsn !== 'last') && targetLessonInDataLesson){
               const { chunks: _chunks } = targetLessonInDataLesson;
               chunks = _chunks;
             }
