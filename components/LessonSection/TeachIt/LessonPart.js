@@ -15,6 +15,7 @@ const LessonPart = ({
   lsnTitle,
   lsnPreface,
   lsnExt,
+  itemList,
   learningObjectives,
   lessonTileUrl,
   partsFieldName,
@@ -42,8 +43,7 @@ const LessonPart = ({
     }
   }) ?? {} : {};
   console.log('targetLessonsResources: ', targetLessonsResources)
-  let { itemList: linkResources, tags: allTags } = targetLessonsResources;
-  console.log('linkResources: ', linkResources)
+  let { tags: allTags } = targetLessonsResources;
   let previewTags = null;
   let restOfTags = null;
 
@@ -205,7 +205,7 @@ const LessonPart = ({
       <div className='mt-4'>
         <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
         <ol className='mt-3'>
-          {!!linkResources?.length && linkResources.map(item => {
+          {!!itemList?.length && itemList.map(item => {
             const { itemTitle, itemDescription, links } = item;
             const _links = links ? (Array.isArray(links) ? links : [links]) : null;
 

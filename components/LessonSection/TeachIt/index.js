@@ -197,6 +197,7 @@ const TeachIt = ({
               preface,
               chunks,
               learningObj,
+              itemList,
               lessonTile,
               lsnExt,
             } = part;
@@ -234,6 +235,7 @@ const TeachIt = ({
                 learningObjectives={learningObj}
                 partsFieldName={partsFieldName}
                 lessonTileUrl={lessonTile}
+                itemList={itemList}
               />
             );
           })}
