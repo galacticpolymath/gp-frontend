@@ -45,25 +45,19 @@ const TeachIt = ({
   resources = getIsValObj(resources) ? [resources] : resources;
   const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
   const dataLesson = Data.lesson;
-  // console.log('Data.classroom.resources[0]: ', Data.classroom.resources[0])
   let parts = Data.classroom.resources[0]?.[partsFieldName];
 
-  console.log("dataLesson: ", dataLesson)
-  console.log("parts: ", parts)
-  console.log("Data.classroom.resources[0]?.[partsFieldName]: ", Data.classroom.resources[0]?.[partsFieldName])
-
-
-  if((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && parts?.length){
+  if ((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && parts?.length) {
     const { itemList, lsn, preface, tile, title } = Data.classroom.resources[0]?.[partsFieldName];
     parts = [...parts, { itemList, lsn, preface, tile, title }]
   }
 
-  if((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && !parts?.length && dataLesson){
-    const { itemList, lsn, preface, tile, title } = Data.classroom.resources[0]?.[partsFieldName];
+  if ((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && (typeof parts === 'object') && (parts !== null)) {
+    const { itemList, lsn, preface, tile, title, ...restOfLessonParts } = parts;
     const lastPart = { itemList, lsn, preface, tile, title }
-    parts = [...parts, lastPart]
+    parts = [...Object.values(restOfLessonParts), lastPart]
   }
-  
+
   const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
@@ -174,7 +168,7 @@ const TeachIt = ({
           {parts.map((part, index, self) => {
             let {
               lsn,
-              lsnNum,              
+              lsnNum,
               lsnTitle,
               partTitle,
               title,
@@ -202,16 +196,16 @@ const TeachIt = ({
               learningObj = _learningObj;
             }
 
-            if(!chunks && (lsn !== 'last') && targetLessonInDataLesson){
+            if (!chunks && (lsn !== 'last') && targetLessonInDataLesson) {
               const { chunks: _chunks } = targetLessonInDataLesson;
               chunks = _chunks;
             }
 
-            if(!lsnExt && (typeof dataLesson === 'object') && (dataLesson !== null)){
+            if (!lsnExt && (typeof dataLesson === 'object') && (dataLesson !== null)) {
               const { lsnExt: lsnExtBackup } = Object.values(dataLesson).find(({ lsnNum: lsnNumDataLesson }) => {
                 return (lsnNumDataLesson && ((lsn == lsnNumDataLesson) || (lsnNum == lsnNumDataLesson)))
               }) ?? {};
-              lsnExt = lsnExtBackup;  
+              lsnExt = lsnExtBackup;
             }
 
             return (
