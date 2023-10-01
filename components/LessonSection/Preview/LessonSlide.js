@@ -2,6 +2,7 @@
 /* eslint-disable quotes */
 import { getMediaComponent } from './utils';
 import styles from './index.module.scss';
+import RichText from '../../RichText';
 
 const LessonSlide = ({
   type,
@@ -29,7 +30,7 @@ const LessonSlide = ({
             <div className='badge badge-pill bg-primary-light mb-1' style={{ color: 'gray' }}>For Lesson {forLsn}</div>
           )}
           <h6 className='m-0 mb-1 fw-bolder fst-italic'>{title}</h6>
-          <div className="lessonRelevanceTxt mb-2 me-3">{lessonRelevance}</div>
+          <RichText className='lessonRelevanceTxt mb-2 me-3' content={lessonRelevance} />
           <span className=" d-block d-sm-inline w-100">by{' '}
             <a
               href={byLink}

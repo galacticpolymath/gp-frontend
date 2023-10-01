@@ -194,7 +194,7 @@ const LessonPart = ({
           <ol className='mt-3'>
             {learningObjectives.map((objectiveStr, index) => (
               <li key={index}>
-                {objectiveStr}
+                <RichText content={objectiveStr} />
               </li>
             ))}
           </ol>
