@@ -44,14 +44,31 @@ const TeachIt = ({
   let resources = allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix);
   resources = getIsValObj(resources) ? [resources] : resources;
   const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
-  let { title, itemList } = Data.classroom.resources[0]?.[partsFieldName] ?? {};
-  const assessmentPart = (title === 'Assessments') ? { chunks: itemList, partTitle: title } : null;
-  let parts = Data.classroom.resources[0]?.[partsFieldName];
-  const ref = useRef();
+  const dataLesson = Data.lesson;
+  console.log('Data.classroom.resources[0]: ', Data.classroom.resources[0])
+  let parts = Data.classroom.resources[0]?.[partsFieldName] ?? dataLesson;
 
-  useEffect(() => {
+  console.log('Data.classroom.resources[0]?.[partsFieldName]: ', Data.classroom.resources[0]?.[partsFieldName])
+  console.log('dataLesson: ', dataLesson)
+
+  // GOAL: when dataLesson does not have anything 
+
+  if((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && parts?.length){
+    const { itemList, lsn, preface, tile, title } = Data.classroom.resources[0]?.[partsFieldName];
+    parts = [...parts, { itemList, lsn, preface, tile, title }]
+  }
+
+  if((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && !parts?.length && dataLesson){
+    const { itemList, lsn, preface, tile, title } = Data.classroom.resources[0]?.[partsFieldName];
+    const lastPart = { itemList, lsn, preface, tile, title }
+    parts = [...dataLesson, lastPart]
     console.log('parts: ', parts)
-  })
+  }
+
+
+  
+
+  const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
@@ -161,6 +178,7 @@ const TeachIt = ({
           {parts.map((part, index) => {
             let {
               lsn,
+              lsnNum,              
               lsnTitle,
               partTitle,
               title,
@@ -180,12 +198,24 @@ const TeachIt = ({
               secondTitle = (lsnTitle === 'Procedure not documented yet') ? title : null;
             }
 
+            const targetLessonInDataLesson = dataLesson.find(({ lsnNum }) => lsnNum == lsn);
+
+            if (!learningObj && (lsn !== 'last') && targetLessonInDataLesson?.learningObj) {
+              const { learningObj: _learningObj } = targetLessonInDataLesson;
+              learningObj = _learningObj;
+            }
+
+            if(!chunks && (lsn !== 'last') && dataLesson.find(({ lsnNum }) => lsnNum == lsn)){
+              const { chunks: _chunks } = targetLessonInDataLesson;
+              chunks = _chunks;
+            }
+
             return (
               <LessonPart
                 key={`${index}_part`}
                 resources={resources}
                 _numsOfLessonPartsThatAreExpanded={[numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded]}
-                lsnNum={lsn}
+                lsnNum={lsn ?? lsnNum}
                 lsnTitle={secondTitle ?? ((lsnTitle ?? partTitle) ?? title)}
                 lsnPreface={(lsnPreface ?? partPreface) ?? preface}
                 lsnExt={lsnExt}

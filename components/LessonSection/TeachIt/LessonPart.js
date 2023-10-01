@@ -7,11 +7,8 @@ import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
 import { memo, useState } from 'react';
 import Link from 'next/link';
-import { useEffect } from 'react';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
-
-// GOAL: make the lesson tile in the header of the lesson part. 
 
 const LessonPart = ({
   lsnNum,
@@ -36,19 +33,15 @@ const LessonPart = ({
     has0Key = '0' in resources[0].parts;
   }
 
-  // const partsIndexNum = has0Key ? (lsnNum - 1) : lsnNum;
+  console.log('resources?.[0]?.[partsFieldName]: ', resources?.[0]?.[partsFieldName])
+
   const targetLessonsResources = resources?.[0]?.[partsFieldName] ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => lsnNum.toString() === lsn.toString()) ?? {} : {};
   let { itemList: linkResources, tags: allTags } = targetLessonsResources;
-  // let allTags = resources?.[0]?.[partsFieldName] ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsnNum: _lsnNum }) => lsnNum === _lsnNum) : [] 
-  // let allTags = resources?.[0]?.[partsFieldName]?.[lsnNum]?.tags ?? null;
   let previewTags = null;
   let restOfTags = null;
 
-
   const handleOnClick = () => {
-    console.log('resources?.[0]?.[partsFieldName]?.length: ', resources?.[0]?.[partsFieldName]?.length)
     const previousLessonPartNum = lsnNum === 'last' ? (resources?.[0]?.[partsFieldName]?.length - 1) : (lsnNum - 1);
-    // console.log("previousLessonPartNum: ", previousLessonPartNum)
 
     setNumsOfLessonPartsThatAreExpanded(prevState => {
       if (!isExpanded) {
@@ -59,12 +52,6 @@ const LessonPart = ({
     });
     setIsExpanded(!isExpanded);
   };
-
-  useEffect(() => {
-    console.log('numsOfLessonPartsThatAreExpanded: ', numsOfLessonPartsThatAreExpanded)
-    console.log('lsnNum: ', lsnNum)
-    console.log('resources?.[0]?.[partsFieldName]: ', resources?.[0]?.[partsFieldName])
-  })
 
   if (allTags?.length && Array.isArray(allTags)) {
     allTags = allTags.flat().filter(tag => !!tag);
