@@ -35,10 +35,9 @@ const LessonPart = ({
     has0Key = '0' in resources[0].parts;
   }
 
-
   const targetLessonsResources = resources?.[0]?.[partsFieldName] ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => {
     if (lsn) {
-      return lsnNum.toString() === lsn.toString()
+      return lsnNum.toString() === lsn.toString();
     }
   }) ?? {} : {};
   let { tags: allTags, itemList: linkResources } = targetLessonsResources;

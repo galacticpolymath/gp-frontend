@@ -15,7 +15,7 @@ const LearningChart = ({
   SectionTitle,
 }) => {
   const ref = useRef();
-  console.log('Badge: ', Badge.url)
+  console.log('Badge: ', Badge.url);
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   return (

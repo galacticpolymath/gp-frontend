@@ -49,13 +49,13 @@ const TeachIt = ({
 
   if ((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && parts?.length) {
     const { itemList, lsn, preface, tile, title } = Data.classroom.resources[0]?.[partsFieldName];
-    parts = [...parts, { itemList, lsn, preface, tile, title }]
+    parts = [...parts, { itemList, lsn, preface, tile, title }];
   }
 
   if ((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && (typeof parts === 'object') && (parts !== null)) {
     const { itemList, lsn, preface, tile, title, ...restOfLessonParts } = parts;
-    const lastPart = { itemList, lsn, preface, tile, title }
-    parts = [...Object.values(restOfLessonParts), lastPart]
+    const lastPart = { itemList, lsn, preface, tile, title };
+    parts = [...Object.values(restOfLessonParts), lastPart];
   }
 
   const ref = useRef();
@@ -203,7 +203,7 @@ const TeachIt = ({
 
             if (!lsnExt && (typeof dataLesson === 'object') && (dataLesson !== null)) {
               const { lsnExt: lsnExtBackup } = Object.values(dataLesson).find(({ lsnNum: lsnNumDataLesson }) => {
-                return (lsnNumDataLesson && ((lsn == lsnNumDataLesson) || (lsnNum == lsnNumDataLesson)))
+                return (lsnNumDataLesson && ((lsn == lsnNumDataLesson) || (lsnNum == lsnNumDataLesson)));
               }) ?? {};
               lsnExt = lsnExtBackup;
             }

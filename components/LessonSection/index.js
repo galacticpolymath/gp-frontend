@@ -68,8 +68,6 @@ const LessonSection = ({ index, section, _sectionDots, oldLesson, ForGrades }) =
     compProps.ForGrades = ForGrades;
   }
 
-
-
   const parentId = `${section.SectionTitle}-parent-${index}`;
 
   return Component ? (

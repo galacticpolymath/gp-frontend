@@ -51,9 +51,9 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 }
 
 const LessonDetails = ({ lesson, availLocs }) => {
-  console.log('lesson: ', lesson)
   const router = useRouter();
-
+  const { ref } = useInView({ threshold: 0.2 });
+  
   if (!lesson && typeof window === "undefined") {
     return null;
   }
@@ -66,7 +66,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
   const lastSubRelease = getLatestSubRelease(lesson.Section);
-  const { ref } = useInView({ threshold: 0.2 });
   let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
   sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
   sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
@@ -338,8 +337,8 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         ...targetLesson,
         Section: {
           ...targetLesson?.Section,
-          ['learning-chart']: learningChart
-        }
+          ['learning-chart']: learningChart,
+        },
       }
     }
 
@@ -356,7 +355,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       props: {
         lesson: null,
         availLocs: null,
-      }
+      },
     }
   }
 };
