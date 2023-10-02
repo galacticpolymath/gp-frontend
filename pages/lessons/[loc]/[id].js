@@ -98,7 +98,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots);
 
-  const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0,  window.innerWidth || 0);
+  const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
   const scrollSectionIntoView = sectionId => {
     const targetSection = document.getElementById(sectionId);
@@ -328,7 +328,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
     await connectToMongodb();
-    
+
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
     let targetLesson = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
