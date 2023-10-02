@@ -50,10 +50,99 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
   return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
 }
 
+const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
+
+const getSectionDotsDefaultVal = (lessonSection, sectionComps) => {
+  const _sections = Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
+  let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
+  startingSectionVals = startingSectionVals.filter(section => {
+    if (((section?.__component === 'lesson-plan.overview') && !section?.SectionTitle)) {
+      return true
+    }
+
+    return !!section?.SectionTitle
+  })
+
+  return startingSectionVals.map((section, index) => {
+    const { SectionTitle, __component } = section
+    const sectionTitleForDot = (__component === 'lesson-plan.overview') ? 'Overview' : `${SectionTitle}`;
+    let _sectionTitle = getSectionTitle(sectionComps, SectionTitle);
+    _sectionTitle = (_sectionTitle !== -1) ? _sectionTitle : '1. Overview';
+    let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
+    sectionId = (index === 0) ? 'lessonTitleId' : sectionId
+
+    return {
+      isInView: index === 0,
+      sectionTitleForDot: sectionTitleForDot,
+      sectionId: sectionId,
+      willShowTitle: false,
+      sectionDotId: `sectionDot-${sectionId}`,
+      SectionTitle: index === 0 ? '0. Title' : _sectionTitle,
+    }
+  })
+}
+
 const LessonDetails = ({ lesson, availLocs }) => {
   const router = useRouter();
   const { ref } = useInView({ threshold: 0.2 });
-  
+  let sectionComps = null;
+
+  if (lesson) {
+    sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
+    sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
+    sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
+  }
+
+  const [sectionDots, setSectionDots] = useState({ dots: sectionComps ? getSectionDotsDefaultVal(lesson.Section, sectionComps) : {}, clickedSectionId: null });
+  const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
+  const [wasDotClicked, setWasDotClicked] = useState(false)
+  const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots);
+
+  const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0,  window.innerWidth || 0);
+
+  const scrollSectionIntoView = sectionId => {
+    const targetSection = document.getElementById(sectionId);
+    let url = router.asPath;
+
+    if (targetSection) {
+      (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
+      targetSection.scrollIntoView({ behavior: 'smooth', block: (sectionId === "lessonTitleId") ? 'center' : 'start' });
+    }
+  }
+
+  const handleDocumentClick = event => {
+    const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
+    const viewPortWidth = getViewportWidth()
+
+    if (!wasANavDotElementClicked && (viewPortWidth <= 767)) {
+      setSectionDots(sectionDots => {
+
+        return {
+          ...sectionDots,
+          dots: sectionDots?.dots.map(sectionDot => {
+            return {
+              ...sectionDot,
+              willShowTitle: false,
+            };
+          }),
+        }
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (willGoToTargetSection) {
+      scrollSectionIntoView(sectionDots.clickedSectionId)
+      setWillGoToTargetSection(false)
+    }
+  }, [willGoToTargetSection])
+
+  useEffect(() => {
+    document.body.addEventListener('click', handleDocumentClick);
+
+    return () => document.body.removeEventListener('click', handleDocumentClick);
+  }, []);
+
   if (!lesson && typeof window === "undefined") {
     return null;
   }
@@ -66,9 +155,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
   const lastSubRelease = getLatestSubRelease(lesson.Section);
-  let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
-  sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-  sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
   let _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
     const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
 
@@ -91,9 +177,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
       SectionTitle: sectionTitle,
     }
   })
-  const lessonPlansHeading = _sections.findIndex(({ __component }) => __component === SECTION_HEADING_LESSON_PLAN_COMP_NAME)
-  const isLearningChartPresent = _sections.find(({ Title }) => Title === LEARNING_CHART_TITLE)
 
+  const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
+  const shareWidgetFixedProps = IS_ON_PROD ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
+  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
+  const lessonPlansHeading = _sections.findIndex(({ __component }) => __component === SECTION_HEADING_LESSON_PLAN_COMP_NAME)
+  const isLearningChartPresent = !!_sections.find(({ Title }) => Title === LEARNING_CHART_TITLE)
+
+  // when the lesson chart is not in the right position in its array, implement the below
   if ((lessonPlansHeading !== -1) && !(_sections?.[lessonPlansHeading + 1]?.Title === LEARNING_CHART_TITLE) && isLearningChartPresent) {
     const sortedSecs = structuredClone(_sections).sort(({ SectionTitle: SectionTitleA }, { SectionTitle: SectionTitleB }) => {
       const SectionA = SectionTitleA.toUpperCase();
@@ -128,93 +219,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
       })
     }
   }
-
-  const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-
-  const getSectionDotsDefaultVal = () => {
-    const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
-    let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
-    startingSectionVals = startingSectionVals.filter(section => {
-      if (((section?.__component === 'lesson-plan.overview') && !section?.SectionTitle)) {
-        return true
-      }
-
-      return !!section?.SectionTitle
-    })
-
-    return startingSectionVals.map((section, index) => {
-      const { SectionTitle, __component } = section
-      const sectionTitleForDot = (__component === 'lesson-plan.overview') ? 'Overview' : `${SectionTitle}`;
-      let _sectionTitle = getSectionTitle(sectionComps, SectionTitle);
-      _sectionTitle = (_sectionTitle !== -1) ? _sectionTitle : '1. Overview';
-      let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-      sectionId = (index === 0) ? 'lessonTitleId' : sectionId
-
-      return {
-        isInView: index === 0,
-        sectionTitleForDot: sectionTitleForDot,
-        sectionId: sectionId,
-        willShowTitle: false,
-        sectionDotId: `sectionDot-${sectionId}`,
-        SectionTitle: index === 0 ? '0. Title' : _sectionTitle,
-      }
-    })
-  }
-
-  const _sectionDots = useMemo(() => getSectionDotsDefaultVal(), [])
-  const [sectionDots, setSectionDots] = useState({ dots: _sectionDots, clickedSectionId: null })
-  const [willGoToTargetSection, setWillGoToTargetSection] = useState(false)
-
-  const scrollSectionIntoView = sectionId => {
-    const targetSection = document.getElementById(sectionId);
-    let url = router.asPath;
-
-    if (targetSection) {
-      (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
-      targetSection.scrollIntoView({ behavior: 'smooth', block: (sectionId === "lessonTitleId") ? 'center' : 'start' });
-    }
-  }
-
-  const handleDocumentClick = event => {
-    const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
-    const viewPortWidth = getViewportWidth()
-
-    if (!wasANavDotElementClicked && (viewPortWidth <= 767)) {
-      setSectionDots(sectionDots => {
-
-        return {
-          ...sectionDots,
-          dots: sectionDots?.dots.map(sectionDot => {
-            return {
-              ...sectionDot,
-              willShowTitle: false,
-            };
-          }),
-        }
-      })
-    }
-  }
-
-  const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
-
-  const [wasDotClicked, setWasDotClicked] = useState(false)
-  const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
-  const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
-  const shareWidgetFixedProps = IS_ON_PROD ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
-
-  useEffect(() => {
-    if (willGoToTargetSection) {
-      scrollSectionIntoView(sectionDots.clickedSectionId)
-      setWillGoToTargetSection(false)
-    }
-  }, [willGoToTargetSection])
-
-  useEffect(() => {
-    document.body.addEventListener('click', handleDocumentClick);
-
-    return () => document.body.removeEventListener('click', handleDocumentClick);
-  }, [])
 
   return (
     <Layout {...layoutProps}>
@@ -324,7 +328,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
     await connectToMongodb();
-
+    
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
     let targetLesson = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
@@ -332,7 +336,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     const oldTargetLesson = oldLessons?.length ? oldLessons.find(({ id: oldLessonId, locale }) => (oldLessonId.toString() === id) && (locale === loc)) : null;
     const learningChart = oldTargetLesson?.Section?.['learning-chart']
 
-    if (!('learning-chart' in targetLesson?.Section) && learningChart) {
+    if (targetLesson?.Section?.['learning-chart'] && learningChart) {
       targetLesson = {
         ...targetLesson,
         Section: {

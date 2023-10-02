@@ -30,11 +30,6 @@ const LessonPart = ({
   const isOnAssessments = lsnTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
   let _itemList = itemList;
-
-  if (partsFieldName === 'parts') {
-    has0Key = '0' in resources[0].parts;
-  }
-
   const targetLessonsResources = resources?.[0]?.[partsFieldName] ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => {
     if (lsn) {
       return lsnNum.toString() === lsn.toString();

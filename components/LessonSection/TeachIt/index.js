@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import PropTypes from 'prop-types';
 import { AiOutlineQuestionCircle } from "react-icons/ai";
+import { ModalContext } from '../../../providers/ModalProvider';
+import { useContext, useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
-import { ModalContext } from '../../../providers/ModalProvider';
-import { useContext, useState, useRef, useEffect } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 import RichText from '../../RichText';
 
@@ -47,8 +47,8 @@ const TeachIt = ({
   const dataLesson = Data.lesson;
   let parts = Data.classroom.resources[0]?.[partsFieldName];
 
-  if ((Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments") && parts?.length) {
-    const { itemList, lsn, preface, tile, title } = Data.classroom.resources[0]?.[partsFieldName];
+  if ((((parts !== undefined) || (parts !== null)) && (parts?.title === "Assessments")) && parts?.length) {
+    const { itemList, lsn, preface, tile, title } = parts;
     parts = [...parts, { itemList, lsn, preface, tile, title }];
   }
 
