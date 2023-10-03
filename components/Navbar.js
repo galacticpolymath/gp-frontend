@@ -31,8 +31,8 @@ export default function Navbar() {
           />
 
         </Link>
-          {/* filler */}
-        <div style={{ color:'white'}} className='flex-grow-1 white'/>
+        {/* filler */}
+        <div style={{ color:'white' }} className='flex-grow-1 white' />
 
         <button
           className='navbar-toggler m-2'
@@ -43,7 +43,7 @@ export default function Navbar() {
           aria-expanded='false'
           aria-label='Toggle navigation'
         >
-          <span className='navbar-toggler-icon' ></span>
+          <span className='navbar-toggler-icon'></span>
         </button>
         <div>
           <div className='collapse navbar-collapse ' id='navbarSupportedContent'>
