@@ -334,7 +334,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     let targetLesson = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
     const { data: oldLessons } = await axios.get(lessonsUrl) ?? {}
     const oldTargetLesson = oldLessons?.length ? oldLessons.find(({ id: oldLessonId, locale }) => (oldLessonId.toString() === id) && (locale === loc)) : null;
-    const learningChart = oldTargetLesson?.Section?.['learning-chart']
+    const learningChart = oldTargetLesson?.Section?.['learning-chart'];
 
     if (!targetLesson?.Section?.['learning-chart'] && learningChart) {
       targetLesson = {
