@@ -164,7 +164,7 @@ const TeachIt = ({
           </div>
         )}
 
-        <div className='container ps-0 pe-1 px-md-2 pb-4'>
+        <div className='container lessonsPartContainer px-0 pe-sm-1 px-md-2 pb-4'>
           {parts.map((part, index, self) => {
             let {
               lsn,

@@ -232,9 +232,10 @@ $toolTipColor: #f0f4ff;
 
 // w-45 w-md-50 w-lg-25
 
+
 .tagPillContainer {
   min-width: 150px;
-  gap: 20px;
+  gap: 10px;
   width: 75%;
 
   @media(max-width: 575px) {
@@ -242,12 +243,14 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+
+.lessonsPartContainer{
+  width: 100%;
+}
+
 .arrow-down-lesson-part-container {
   @media(max-width: 575px) {
-    position: absolute;
-    right: 0;
     height: 100%;
-    border: solid pink;
   }
 }
 
