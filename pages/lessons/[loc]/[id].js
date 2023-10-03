@@ -87,8 +87,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const { ref } = useInView({ threshold: 0.2 });
   let sectionComps = null;
 
-  console.log('lesson: ', lesson)
-
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
@@ -185,8 +183,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
   const lessonPlansHeading = _sections.findIndex(({ __component }) => __component === SECTION_HEADING_LESSON_PLAN_COMP_NAME)
   const isLearningChartPresent = !!_sections.find(({ Title }) => Title === LEARNING_CHART_TITLE)
-
-  console.log('isLearningChartPresent: ', isLearningChartPresent)
 
   // when the lesson chart is not in the right position in its array, implement the below
   if ((lessonPlansHeading !== -1) && !(_sections?.[lessonPlansHeading + 1]?.Title === LEARNING_CHART_TITLE) && isLearningChartPresent) {
