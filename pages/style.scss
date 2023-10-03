@@ -506,6 +506,10 @@ ol li {
   }
 }
 
+.img-optimize {
+  image-rendering: -webkit-optimize-contrast;
+}
+
 
 .w-md-75 {
   @media(min-width: 992px) {

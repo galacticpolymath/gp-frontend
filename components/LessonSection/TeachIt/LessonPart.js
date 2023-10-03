@@ -56,7 +56,7 @@ const LessonPart = ({
   if (allTags?.length && Array.isArray(allTags)) {
     allTags = allTags.flat().filter(tag => !!tag);
     previewTags = (allTags?.length > 3) ? allTags.slice(0, 3) : allTags;
-    restOfTags = (allTags?.length > 3) ? allTags.slice(3) : [];
+    restOfTags = (allTags?.length > 3) ? allTags.slice(3) : previewTags;
   }
 
   const defaultBorderColor = 'solid 2.5px rgb(222, 226, 230)';
@@ -90,7 +90,7 @@ const LessonPart = ({
       button={(
         <div
           onClick={handleOnClick}
-          className='px-3 py-3 w-100 bg-white d-flex'
+          className='px-3 pt-3 pb-2 w-100 bg-white d-flex'
         >
           <div className='d-flex flex-column w-100'>
             <div className='d-flex justify-content-between w-100 position-relative'>
@@ -119,15 +119,17 @@ const LessonPart = ({
                   </div>
                 </div>
                 {lessonTileUrl &&
-                  <div style={{ width: 150, height: 150 }} className="d-flex my-3 my-lg-0 d-lg-none position-relative">
-                    <Image
-                      src={lessonTileUrl}
-                      alt="lesson_tile"
-                      fill
-                      style={{ objectFit: 'contain' }}
-                      sizes="130px"
-                      className="rounded"
-                    />
+                  <div className='w-100 d-flex justify-content-start align-items-stretch flex-column'>
+                    <div style={{ width: 150, height: 150 }} className="d-flex my-3 my-lg-0 d-lg-none position-relative">
+                      <Image
+                        src={lessonTileUrl}
+                        alt="lesson_tile"
+                        fill
+                        style={{ objectFit: 'contain' }}
+                        sizes="130px"
+                        className="rounded img-optimize"
+                      />
+                    </div>
                   </div>
                 }
                 <div className='d-flex mt-2'>
@@ -138,7 +140,7 @@ const LessonPart = ({
                 </div>
                 {!!previewTags?.length && (
                   <div
-                    className='mt-3 mt-lg-4 d-flex tagPillContainer flex-wrap'
+                    className='d-flex tagPillContainer flex-wrap'
                   >
                     {previewTags.map((tag, index) => (
                       <div
@@ -156,14 +158,14 @@ const LessonPart = ({
               </div>
               <div className='d-none arrow-down-lesson-part-container d-lg-flex'>
                 {lessonTileUrl &&
-                  <div style={{ width: 175, height: 175 }} className="d-none d-lg-block position-relative me-4">
+                  <div style={{ width: 150, height: 150 }} className="d-none d-lg-block position-relative me-4">
                     <Image
                       src={lessonTileUrl}
                       alt="lesson_tile"
                       fill
                       style={{ objectFit: 'contain' }}
                       sizes="130px"
-                      className="rounded"
+                      className="rounded img-optimize"
                     />
                   </div>
                 }
@@ -190,7 +192,7 @@ const LessonPart = ({
     >
       <div className='p-0'>
         {!!restOfTags?.length && (
-          <div className='d-flex mt-0 mt-md-2 justify-content-sm-start tagPillContainer flex-wrap'>
+          <div className='d-flex mt-0 mt-md-1 justify-content-sm-start tagPillContainer flex-wrap'>
             {restOfTags.map((tag, index) => (
               <div
                 key={index}
