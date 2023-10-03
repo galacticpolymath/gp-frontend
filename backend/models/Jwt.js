@@ -1,6 +1,3 @@
-// _id: the id of the user
-// jwt: the jwt
-// set the expiration to 30 seconds
 import Mongoose from 'mongoose';
 
 const { Schema, models, model } = Mongoose;

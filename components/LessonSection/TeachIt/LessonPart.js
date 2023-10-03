@@ -94,10 +94,10 @@ const LessonPart = ({
         >
           <div className='d-flex flex-column w-100'>
             <div className='d-flex justify-content-between w-100 position-relative'>
-              <div className='d-flex w-100 align-items-stretch ms-sm-2 mt-3 pb-2'>
+              <div className='d-flex w-100 justify-content-start align-items-stretch ms-sm-2 mt-3 pb-2'>
                 <h3
                   style={{ color: LESSON_PART_BTN_COLOR }}
-                  className='fs-6 fw-semibold text-center d-flex justify-content-center align-items-center d-sm-block justify-content-sm-start align-items-sm-stretch px-5 px-sm-0 w-max-sm-100'
+                  className='fs-6 fw-semibold px-5 px-sm-0 w-max-sm-100'
                 >
                   {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
                 </h3>
@@ -134,7 +134,10 @@ const LessonPart = ({
             </div>
             <div className="d-flex justify-content-center align-items-center d-sm-none">
               {lessonTileUrl &&
-                <div style={{ width: 145, height: 145 }} className="position-relative me-sm-4">
+                <div
+                  style={{ width: 145, height: 145 }}
+                  className="position-relative me-sm-4"
+                >
                   <Image
                     src={lessonTileUrl}
                     alt="lesson_tile"
@@ -146,9 +149,19 @@ const LessonPart = ({
                 </div>
               }
             </div>
-            <div className='mt-4 mb-2'><RichText className='text-center text-sm-start' content={lsnPreface} /></div>
+            <div
+              className='mt-4 mb-2'
+            >
+              <RichText
+                className='text-center text-sm-start'
+                content={lsnPreface}
+              />
+            </div>
             {!!previewTags?.length && (
-              <div style={{ top: 10 }} className='mt-2 d-flex justify-content-center justify-content-sm-start tagPillContainer flex-wrap'>
+              <div
+                style={{ top: 10 }}
+                className='mt-2 d-flex justify-content-center justify-content-sm-start tagPillContainer flex-wrap'
+              >
                 {previewTags.map((tag, index) => (
                   <div
                     key={index}
