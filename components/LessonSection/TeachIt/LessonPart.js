@@ -56,7 +56,7 @@ const LessonPart = ({
   if (allTags?.length && Array.isArray(allTags)) {
     allTags = allTags.flat().filter(tag => !!tag);
     previewTags = (allTags?.length > 3) ? allTags.slice(0, 3) : allTags;
-    restOfTags = (allTags?.length > 3) ? allTags.slice(3) : previewTags;
+    restOfTags = (allTags?.length > 3) ? allTags.slice(3) : [];
   }
 
   const defaultBorderColor = 'solid 2.5px rgb(222, 226, 230)';
