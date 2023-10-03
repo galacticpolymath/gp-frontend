@@ -97,7 +97,7 @@ const LessonPart = ({
               <div className='d-flex w-100 justify-content-start align-items-stretch ms-sm-2 mt-3 pb-2'>
                 <h3
                   style={{ color: LESSON_PART_BTN_COLOR }}
-                  className='fs-6 fw-semibold px-5 px-sm-0 w-max-sm-100'
+                  className='fs-5 fw-bold text-left px-5 px-sm-0 w-max-sm-100'
                 >
                   {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
                 </h3>
