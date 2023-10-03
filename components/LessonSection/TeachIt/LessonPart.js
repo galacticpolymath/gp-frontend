@@ -156,7 +156,7 @@ const LessonPart = ({
               </div>
               <div className='d-none arrow-down-lesson-part-container d-lg-flex'>
                 {lessonTileUrl &&
-                  <div style={{ width: 175, height: 175 }} className="d-none d-lg-block position-relative me-4">
+                  <div style={{ width: 150, height: 150 }} className="d-none d-lg-block position-relative me-4">
                     <Image
                       src={lessonTileUrl}
                       alt="lesson_tile"

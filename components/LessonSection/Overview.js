@@ -166,7 +166,7 @@ Overview.propTypes = {
   EstLessonTime: PropTypes.string,
   ForGrades: PropTypes.string,
   TargetSubject: PropTypes.string,
-  SteamEpaulette: PropTypes.object,
+  SteamEpaulette: PropTypes.string,
   Text: PropTypes.string,
   Tags: PropTypes.array,
 };
