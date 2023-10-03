@@ -94,17 +94,18 @@ const LessonPart = ({
         >
           <div className='d-flex flex-column w-100'>
             <div className='d-flex justify-content-between w-100 position-relative'>
-              <div className='d-flex w-100 justify-content-start align-items-stretch ms-sm-2 mt-3 pb-2'>
+              <div className='d-flex flex-column w-100 justify-content-start align-items-stretch ms-sm-2 mt-3 pb-2'>
                 <h3
                   style={{ color: LESSON_PART_BTN_COLOR }}
                   className='fs-5 fw-bold text-left px-5 px-sm-0 w-max-sm-100'
                 >
                   {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
                 </h3>
+                
               </div>
               <div className='d-flex align-items-center arrow-down-lesson-part-container'>
                 {lessonTileUrl &&
-                  <div style={{ width: 145, height: 145 }} className="d-none d-sm-block position-relative me-4">
+                  <div style={{ width: 200, height: 200 }} className="d-none d-sm-block position-relative me-4">
                     <Image
                       src={lessonTileUrl}
                       alt="lesson_tile"
