@@ -243,6 +243,14 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.selectedLessonPg,
+#lessonTitleSec{
+  max-width: $maxWidthLessonPgSections;
+  // border: solid pink;
+}
+
+
+
 
 .lessonsPartContainer{
   width: 100%;

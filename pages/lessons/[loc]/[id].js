@@ -230,7 +230,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       />
       <ShareWidget {...shareWidgetFixedProps} />
       <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
-        <div id="lessonTitleSecId" className="d-flex justify-content-center SectionHeading lessonTitleId">
+        <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
               {lastSubRelease && (
@@ -288,7 +288,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
           </div>
         </div>
       </div>
-      <div className="container d-flex justify-content-center selectedLessonPg pt-4 pb-4 px-1 px-sm-4">
+      {/* px-1 px-sm-4 */}
+      <div className="px-1 px-sm-4 container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
         <div className="col-11 col-md-10 p-0">
           {_sections.map((section, index) => (
             <ParentLessonSection
