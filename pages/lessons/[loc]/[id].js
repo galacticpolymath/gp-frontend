@@ -288,7 +288,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
           </div>
         </div>
       </div>
-      {/* px-1 px-sm-4 */}
       <div className="px-1 px-sm-4 container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
         <div className="col-11 col-md-10 p-0">
           {_sections.map((section, index) => (

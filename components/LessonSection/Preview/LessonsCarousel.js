@@ -78,7 +78,12 @@ const LessonsCarousel = ({ mediaItems }) => {
     useEffect(() => {
         setWillApplyStyles(true);
     }, [])
-    
+
+    console.log('mediaItems: ', mediaItems)
+
+    // NOTES: 
+    // find if the apps being show for the animal collective lesson
+
     return (
         <div className='shadow rounded p-0 display-flex flex-column justify-content-center autoCarouselContainer '>
             <section className='row'>

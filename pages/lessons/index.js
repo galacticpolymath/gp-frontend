@@ -11,7 +11,7 @@ import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
 import { connectToMongodb } from '../../backend/utils/connection';
 
-const LessonsPage = ({ lessons }) => {
+const LessonsPage = ({ lessons, didErrorOccur }) => {
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
   };
@@ -20,14 +20,14 @@ const LessonsPage = ({ lessons }) => {
   const publishedLessons = lessons.filter(({ PublicationStatus, numID }) => {
     const willShowLesson = !uniqueIDs.includes(numID) && (PublicationStatus === 'Live');
     // const willShowLesson = !uniqueIDs.includes(numID);
-    
+
     if (willShowLesson) {
       uniqueIDs.push(numID);
     }
-    
+
     return willShowLesson;
   });
-  
+
   return (
     <Layout
       title='Galactic Polymath Lesson Releases'
@@ -74,9 +74,15 @@ const LessonsPage = ({ lessons }) => {
           <section>
             <h4 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h4>
           </section>
-          <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-            {publishedLessons.map((lesson) => <LessonCard key={lesson._id} lesson={lesson} />)}
-          </div>
+          {!!publishedLessons?.length &&
+            <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
+              {publishedLessons.map((lesson) => <LessonCard key={lesson._id} lesson={lesson} />)}
+            </div>
+          }
+          {(!publishedLessons?.length && didErrorOccur) &&
+            <div className='px-4 pb-4'>
+            <p className='text-center text-sm-start'>An error has occurred. Couldn't retrieve lessons. Please try again.</p>
+          </div>}
         </section>
       </div>
     </Layout>
@@ -112,7 +118,7 @@ export async function getStaticProps() {
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 
-    return { props: { lessons: [] } };
+    return { props: { lessons: [], didErrorOccur: true } };
   }
 }
 

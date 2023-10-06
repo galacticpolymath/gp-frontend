@@ -4,17 +4,6 @@
 
 .env
 
-google-cloud.json
-
-tasks.taskpaper
-
-testReq.js
-
-testFile.json
-testingFile2.json
-
-testingFile.json
-
 # dependencies
 /node_modules
 /.pnp
