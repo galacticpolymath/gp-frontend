@@ -89,13 +89,13 @@ const Overview = ({
             </div>
           </div>
 
-          {SteamEpaulette?.url && (
+          {(SteamEpaulette && SteamEpaulette_vert) && (
             <Link passHref href="#learning_standards">
               <div className='position-relative'>
                 <div className="d-none d-sm-grid">
                   Subject breakdown by standard alignments:
                   <Image
-                    src={SteamEpaulette.url}
+                    src={SteamEpaulette}
                     alt="Subject breakdown by standard alignments"
                     priority
                     height={160}
@@ -107,10 +107,9 @@ const Overview = ({
                     }}
                   />
                 </div>
-
                 <div className="d-sm-flex d-sm-none  row justify-content-start pb-2">
                   <Image
-                    src={SteamEpaulette_vert.url}
+                    src={SteamEpaulette_vert}
                     alt="Subject breakdown by standard alignments"
                     priority
                     height={1320}

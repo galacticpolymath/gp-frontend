@@ -14,6 +14,7 @@ const LearningChart = ({
   _sectionDots,
   SectionTitle,
 }) => {
+
   const ref = useRef();
   
   useLessonElementInView(_sectionDots, SectionTitle, ref);
@@ -26,7 +27,7 @@ const LearningChart = ({
     >
       <div className="chartContainer position-relative w-100">
         <Image
-          src={Badge.url}
+          src={Badge}
           width={1400}
           height={900}
           style={{

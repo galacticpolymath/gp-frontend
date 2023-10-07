@@ -60,7 +60,7 @@ export const sectionTypeMap = {
   [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleRichTextSection,
   [SECTIONS.PREVIEW]: Preview,
 };
-const LessonSection = ({ index, section, _sectionDots, oldLesson, ForGrades }) => {
+const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
   const Component = sectionTypeMap[section.__component];
   let compProps = { ...section, _sectionDots };
 
