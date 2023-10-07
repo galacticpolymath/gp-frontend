@@ -246,11 +246,20 @@ $toolTipColor: #f0f4ff;
 .selectedLessonPg,
 #lessonTitleSec{
   max-width: $maxWidthLessonPgSections;
-  // border: solid pink;
 }
 
+.mediaItemContainer{
+  position: relative;
+  border: 1px solid lightgray;
+  height: 35vh;
+  width: 100%;
+  object-fit: contain;
+  max-height: 470px;
 
-
+  @media(min-width: 992px){
+    height: 60vh;
+  }
+}
 
 .lessonsPartContainer{
   width: 100%;

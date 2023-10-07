@@ -32,9 +32,8 @@ export const getMediaComponent = ({ type, mainLink, webAppPreviewImg }) => {
       >
           <Image
             src={webAppPreviewImg}
-            style={{width: '100%', height: '100%' }}
             fill
-            className='lesson-media'
+            className='lesson-media position-absolute top-0 start-0 h-100 w-100'
           />
       </Link>
     );

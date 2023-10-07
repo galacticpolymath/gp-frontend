@@ -75,13 +75,13 @@ const LessonsCarousel = ({ mediaItems }) => {
 
     return (
         <div className='shadow rounded p-0 display-flex flex-column justify-content-center autoCarouselContainer '>
-            <section className='row'>
+            <section className='row mt-0'>
                 <section
                     style={{ height: 'fit-content' }}
-                    className=" col-12"
+                    className="col-12 mt-0"
                 >
                     <div
-                        className="autoCarouselSlider"
+                        className="autoCarouselSlider mt-0"
                         style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
                     >
                         {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => {
@@ -101,7 +101,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                 </button>
                 <button
                     onClick={handleNextBtnClick}
-                    className={`noBtnStyles ms-2 p-0 ${((mediaItems?.length - 1) === currentIndex) ? 'btn-disabled' : ''}`}
+                    className={`noBtnStyles p-0 ${((mediaItems?.length - 1) === currentIndex) ? 'btn-disabled' : ''}`}
                     disabled={(mediaItems?.length - 1) === currentIndex}>
                     <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
                 </button>
