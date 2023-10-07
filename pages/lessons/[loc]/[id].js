@@ -23,8 +23,7 @@ import useScrollHandler from '../../../customHooks/useScrollHandler';
 import Link from 'next/link';
 import Lessons from '../../../backend/models/lesson';
 import { connectToMongodb } from '../../../backend/utils/connection';
-import axios from 'axios';
-import { lessonsUrl } from '../../../apiGlobalVals';
+import { getLinkPreview } from "link-preview-js";
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
@@ -86,6 +85,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const router = useRouter();
   const { ref } = useInView({ threshold: 0.2 });
   let sectionComps = null;
+
+  console.log('lesson: ', lesson)
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
@@ -181,44 +182,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
   const shareWidgetFixedProps = IS_ON_PROD ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
   const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
-  const lessonPlansHeading = _sections.findIndex(({ __component }) => __component === SECTION_HEADING_LESSON_PLAN_COMP_NAME)
-  const isLearningChartPresent = !!_sections.find(({ Title }) => Title === LEARNING_CHART_TITLE)
-
-  // when the lesson chart is not in the right position in its array, implement the below
-  if ((lessonPlansHeading !== -1) && !(_sections?.[lessonPlansHeading + 1]?.Title === LEARNING_CHART_TITLE) && isLearningChartPresent) {
-    const sortedSecs = structuredClone(_sections).sort(({ SectionTitle: SectionTitleA }, { SectionTitle: SectionTitleB }) => {
-      const SectionA = SectionTitleA.toUpperCase();
-      const SectionB = SectionTitleB.toUpperCase();
-      if (SectionA < SectionB) {
-        return -1;
-      }
-      if (SectionA > SectionB) {
-        return 1;
-      }
-
-      return 0;
-    })
-    const firstLearningStandardsSecIndex = sortedSecs.findIndex(({ __component }) => __component === SECTION_HEADING_LESSON_PLAN_COMP_NAME)
-    const isLearningChartAtNextIndexOfSortedSecs = sortedSecs[firstLearningStandardsSecIndex + 1]?.Title === LEARNING_CHART_TITLE;
-
-    if (!isLearningChartAtNextIndexOfSortedSecs) {
-      const lessonPlansStandardsIndex = sortedSecs.findIndex(({ __component }) => __component === SECTION_STANDARDS_LESSON_PLAN_COMP_NAME)
-      const lessonPlansStandardsObj = structuredClone(sortedSecs[lessonPlansStandardsIndex]);
-      const learningChartSectionIndex = sortedSecs.findIndex(({ Title }) => Title === LEARNING_CHART_TITLE);
-      const learningChartSection = structuredClone(sortedSecs[learningChartSectionIndex]);
-      _sections = sortedSecs.map((section, index) => {
-        if (index === lessonPlansStandardsIndex) {
-          return learningChartSection;
-        }
-
-        if (index === learningChartSectionIndex) {
-          return lessonPlansStandardsObj;
-        }
-
-        return section;
-      })
-    }
-  }
 
   return (
     <Layout {...layoutProps}>
@@ -310,7 +273,12 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
 export const getStaticPaths = async () => {
   try {
-    await connectToMongodb()
+    await connectToMongodb();
+
+    // GOAL: for the media items to display onto the UI, for each one, check if any of them are web-apps
+    // if so, then get the image preview for the web-app based on their url
+
+    // GOAL: get the array that contains the web-apps
 
     const lessons = await Lessons.find({}, { numID: 1, locale: 1, _id: 0 }).lean()
 
@@ -331,24 +299,39 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
-    let targetLesson = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
-    const { data: oldLessons } = await axios.get(lessonsUrl) ?? {}
-    const oldTargetLesson = oldLessons?.length ? oldLessons.find(({ id: oldLessonId, locale }) => (oldLessonId.toString() === id) && (locale === loc)) : null;
-    const learningChart = oldTargetLesson?.Section?.['learning-chart'];
+    let lessonToDisplayOntoUi = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
+    const multiMediaArr = lessonToDisplayOntoUi?.Section?.preview?.Multimedia;
 
-    if (!targetLesson?.Section?.['learning-chart'] && learningChart) {
-      targetLesson = {
-        ...targetLesson,
+    if (multiMediaArr?.length && multiMediaArr.some(({ type }) => type === 'web-app')) {
+      let multiMediaArrUpdated = []
+
+      for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
+        let multiMediaItem = multiMediaArr[numIteration]
+
+        if (multiMediaItem.type === 'web-app') {
+          const linkPreviewObj = await getLinkPreview(multiMediaItem.mainLink)
+          multiMediaItem = { ...multiMediaItem, webAppPreviewImg: linkPreviewObj?.images?.[0] }
+        }
+
+        multiMediaArrUpdated.push(multiMediaItem)
+      }
+
+      lessonToDisplayOntoUi = {
+        ...lessonToDisplayOntoUi,
         Section: {
-          ...targetLesson?.Section,
-          ['learning-chart']: learningChart,
-        },
+          ...lessonToDisplayOntoUi?.Section,
+          preview: {
+            ...lessonToDisplayOntoUi?.Section?.preview,
+            Multimedia: multiMediaArrUpdated
+          }
+        }
       }
     }
 
+
     return {
       props: {
-        lesson: JSON.parse(JSON.stringify(targetLesson)),
+        lesson: JSON.parse(JSON.stringify(lessonToDisplayOntoUi)),
         availLocs: targetLessonLocales,
       },
     };

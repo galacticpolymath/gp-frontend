@@ -9,7 +9,9 @@ module.exports = {
       'catalog.galacticpolymath.com',
       'gp-catalog.vercel.app',
       'i3.ytimg.com',
-      'storage.googleapis.com'
+      'storage.googleapis.com',
+      'into-the-dark.vercel.app',
+      'echo-galactic-polymath.vercel.app'
     ],
   }
 };

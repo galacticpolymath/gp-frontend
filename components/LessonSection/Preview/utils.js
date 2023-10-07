@@ -1,6 +1,6 @@
 import RenderArrowNext from './RenderArrowNext';
 
-export const getMediaComponent = ({ type, mainLink }) => {
+export const getMediaComponent = ({ type, mainLink, webAppPreviewImg }) => {
   if (type === 'video') {
     return (
       <iframe
@@ -22,6 +22,16 @@ export const getMediaComponent = ({ type, mainLink }) => {
         className='pdf-media'
       />
     );
+  } else if ((type === 'web-app') && webAppPreviewImg){
+    return (
+      <iframe
+        src={webAppPreviewImg}
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+        title="YouTube video player"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        className='pdf-media'
+      />
+    );
   }
 };
 
@@ -39,7 +49,7 @@ export const getVideoThumb = link => {
 
 const renderThumbs = items => {
   return items.map(({ props: { mainLink, type, title } }, i) => {
-    if (type === 'video') {
+    if ((type === 'video') || (type === 'web-app')) {
       return (
         <img
           key={i}

@@ -8,7 +8,6 @@ import RichText from '../../../components/RichText';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
-import Carousel from './Carousel';
 import LessonsCarousel from './LessonsCarousel';
 
 const Preview = ({
