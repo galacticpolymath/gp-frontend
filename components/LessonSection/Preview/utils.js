@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import RenderArrowNext from './RenderArrowNext';
 
 export const getMediaComponent = ({ type, mainLink, webAppPreviewImg }) => {
@@ -24,7 +25,7 @@ export const getMediaComponent = ({ type, mainLink, webAppPreviewImg }) => {
     );
   } else if ((type === 'web-app') && webAppPreviewImg){
     return (
-      <iframe
+      <Image
         src={webAppPreviewImg}
         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
         title="YouTube video player"
@@ -49,7 +50,7 @@ export const getVideoThumb = link => {
 
 const renderThumbs = items => {
   return items.map(({ props: { mainLink, type, title } }, i) => {
-    if ((type === 'video') || (type === 'web-app')) {
+    if (type === 'video') {
       return (
         <img
           key={i}
@@ -62,9 +63,7 @@ const renderThumbs = items => {
         <i
           key={i}
           className="bi-filetype-pdf fs-2"
-        >
-
-        </i>
+        />
       );
     }
   });
