@@ -3,14 +3,9 @@
 import { getMediaComponent } from './utils';
 import styles from './index.module.scss';
 import RichText from '../../RichText';
+import { FiExternalLink } from 'react-icons/fi'
+import Link from 'next/link';
 
-// NOTES: 
-// 1) get the image preview for the given web-app 
-// -get the image preview on the server
-
-
-
-// 2) create a new conditional render for the getMediaComponent when the item is a web-app 
 
 const LessonSlide = ({
   type,
@@ -28,6 +23,21 @@ const LessonSlide = ({
         className='px-1 mediaItemContainer'
       >
         {getMediaComponent({ type, mainLink, webAppPreviewImg })}
+        {type === "web-app" && (
+          <Link
+            href={mainLink}
+            target='_blank'
+            style={{
+              bottom: "30px",
+              left: 0,
+              fontWeight: 499
+            }}
+            className='position-absolute text-white d-flex justify-content-evenly px-2 py-1 align-items-center bg-dark d-flex'
+          >
+            <p className='text-white mb-0 d-flex justify-content-center h-100 openAppTxt'>Open app</p>
+            <FiExternalLink size={25} fontWeight={499} color='white' className='ms-2' />
+          </Link>
+        )}
       </div>
       <div
         className={`${styles.SlideBody} mt-2 text-wrap lessonSlideBody px-1 px-md-3`}
