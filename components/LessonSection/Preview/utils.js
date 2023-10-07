@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import RenderArrowNext from './RenderArrowNext';
+import Link from 'next/link';
 
 export const getMediaComponent = ({ type, mainLink, webAppPreviewImg }) => {
   if (type === 'video') {
@@ -18,20 +19,24 @@ export const getMediaComponent = ({ type, mainLink, webAppPreviewImg }) => {
         src={mainLink}
         width="200"
         height="500"
-        style={{ zIndex: 11100,position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+        style={{ zIndex: 11100, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
         allow="autoplay"
         className='pdf-media'
       />
     );
-  } else if ((type === 'web-app') && webAppPreviewImg){
+  } else if ((type === 'web-app') && webAppPreviewImg) {
     return (
-      <Image
-        src={webAppPreviewImg}
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-        title="YouTube video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        className='pdf-media'
-      />
+      <Link
+        href={mainLink}
+        target='_blank'
+      >
+          <Image
+            src={webAppPreviewImg}
+            style={{width: '100%', height: '100%' }}
+            fill
+            className='lesson-media'
+          />
+      </Link>
     );
   }
 };

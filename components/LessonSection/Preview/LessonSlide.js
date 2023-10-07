@@ -24,9 +24,10 @@ const LessonSlide = ({
 }) => (
   <div className='autoCarouselItem onLessonsPg mb-1 rounded p-1 justify-content-center align-items-center '>
     <div className='px-1 pt-2 pb-0 rounded w-100'>
+    {/* border: "1px solid lightgray" */}
       <div
-        className='px-1 justify-content-center d-flex'
-        style={{ position: "relative", border: "1px solid lightgray", height: "50vh", width: "100%", objectFit: "contain" }}
+        className='px-1 justify-content-center d-flex border mediaItemContainer'
+        style={{ position: "relative", border: "1px solid lightgray",  height: "65vh", width: "100%", objectFit: "contain" , maxHeight: "470px" }}
       >
         {getMediaComponent({ type, mainLink, webAppPreviewImg })}
       </div>
