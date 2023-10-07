@@ -30,11 +30,11 @@ export const getMediaComponent = ({ type, mainLink, webAppPreviewImg }) => {
         href={mainLink}
         target='_blank'
       >
-          <Image
-            src={webAppPreviewImg}
-            fill
-            className='lesson-media position-absolute top-0 start-0 h-100 w-100'
-          />
+        <Image
+          src={webAppPreviewImg}
+          fill
+          className='lesson-media position-absolute top-0 start-0 h-100 w-100'
+        />
       </Link>
     );
   }

@@ -3,9 +3,8 @@
 import { getMediaComponent } from './utils';
 import styles from './index.module.scss';
 import RichText from '../../RichText';
-import { FiExternalLink } from 'react-icons/fi'
+import { FiExternalLink } from 'react-icons/fi';
 import Link from 'next/link';
-
 
 const LessonSlide = ({
   type,
@@ -15,7 +14,7 @@ const LessonSlide = ({
   by,
   byLink,
   mainLink,
-  webAppPreviewImg
+  webAppPreviewImg,
 }) => (
   <div className='autoCarouselItem onLessonsPg mb-1 rounded p-1 justify-content-center align-items-center '>
     <div className='px-1 pb-0 rounded w-100'>
@@ -30,12 +29,17 @@ const LessonSlide = ({
             style={{
               bottom: "30px",
               left: 0,
-              fontWeight: 499
+              fontWeight: 499,
             }}
             className='position-absolute text-white d-flex justify-content-evenly px-2 py-1 align-items-center bg-dark d-flex'
           >
             <p className='text-white mb-0 d-flex justify-content-center h-100 openAppTxt'>Open app</p>
-            <FiExternalLink size={25} fontWeight={499} color='white' className='ms-2' />
+            <FiExternalLink
+              size={25}
+              fontWeight={499}
+              color='white'
+              className='ms-2'
+            />
           </Link>
         )}
       </div>

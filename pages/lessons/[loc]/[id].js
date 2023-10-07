@@ -86,8 +86,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const { ref } = useInView({ threshold: 0.2 });
   let sectionComps = null;
 
-  console.log('lesson: ', lesson)
-
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
@@ -322,12 +320,11 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           ...lessonToDisplayOntoUi?.Section,
           preview: {
             ...lessonToDisplayOntoUi?.Section?.preview,
-            Multimedia: multiMediaArrUpdated
-          }
-        }
+            Multimedia: multiMediaArrUpdated,
+          },
+        },
       }
     }
-
 
     return {
       props: {

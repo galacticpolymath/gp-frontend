@@ -9,7 +9,6 @@ const insertLesson = async (reqBody, jwt) => {
     const response = await axios.post(url, reqBody, { headers: headers });
 
     if(response.status !== 200){
-      console.log('Error message: ', response?.data);
       throw new Error(`Failed to insert lesson into the database. Status code: ${response.status}`);
     }
 
