@@ -86,7 +86,7 @@ export default function Home() {
                       sizes="60vw"
                       className='lessonsPgShadow rounded-4 h-auto'
                       style={{ objectFit: 'contain' }}
-                      alt="Electric Crystals: A tour of crystal symmetry through comics"
+                      alt="Newest release card"
                     />
                     <div className='badge bg-secondary fs-6 text-center' style={{ zIndex: 15, position: 'absolute', top: '-10px', left: '-20px' }}>
                       New release!
@@ -98,7 +98,7 @@ export default function Home() {
               <div className='col-12 col-md-2 col-lg-1 d-grid justify-content-center align-content-center mx-auto'>
                 <h5 className='fw-light text-center'>Sponsor:</h5>
                 <a href="https://www.nsf.gov/">
-                  <div className="position-relative nsfImgContainer">
+                  <div className="position-relative nsfImgContainer mx-auto">
                     <Image
                       src={NSFImage.src}
                       fill
@@ -109,6 +109,10 @@ export default function Home() {
                     />
                   </div>
                 </a>
+                <div className='my-3'>
+                  <h5 className='fw-light '> Dr. Albert Kao's Lab at UMass Boston</h5>
+                </div>
+                
               </div>
             </div>
             <div className='row mt-5 '>
