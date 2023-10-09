@@ -61,6 +61,7 @@
       justify-content: center;
       > div {
         width: 75%;
+        max-width: 1080px;
         @media(max-width: 767px){
           width: 100% ;
           button{

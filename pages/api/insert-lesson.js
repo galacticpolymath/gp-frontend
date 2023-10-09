@@ -1,26 +1,26 @@
-import { getIsReqAuthorizedResult } from '../../backend/services/authServices';
 import { insertLesson } from '../../backend/services/lessonsServices';
+import { CustomError } from '../../backend/utils/errors';
 
 export default async function handler(request, response) {
-  if (request.method !== 'POST') {
-    return response.status(404).json({ msg: 'This route only accepts POST requests.' });
+  try {
+    if (
+      !request?.body?.lesson ||
+      (request?.body?.lesson && (typeof request?.body?.lesson === 'object') && !Object.keys(request?.body?.lesson)?.length) || 
+      (typeof request?.body?.lesson !== 'object')
+    ) {
+      return response.status(400).json({ msg: 'The `request.body.lesson` is empty or the wrong data type.' });
+    }
+
+    const { status, msg } = await insertLesson(request.body.lesson);
+
+    if (status !== 200) {
+      throw new CustomError(msg, status);
+    }
+
+    return response.status(status).json({ msg: msg });
+  } catch (error) {
+    const { code, message } = error;
+
+    return response.status(code ?? 500).json({ msg: message ?? 'Failed to insert lesson into the db.' });
   }
-
-  if (!request?.headers?.authorization) {
-    return response.status(401).json({ msg: 'You are not authorized to access this route.' });
-  }
-
-  const authorizationResult = await getIsReqAuthorizedResult(request, 'dbAdmin');
-
-  if (!authorizationResult?.isReqAuthorized || !authorizationResult) {
-    return response.status(401).json({ msg: authorizationResult?.msg ?? 'You are not authorized to access this service.' });
-  }
-
-  if (!Object.keys(request?.body)?.length) {
-    return response.status(400).json({ msg: 'The request body is empty.' });
-  }
-
-  const lessonInsertationResult = await insertLesson(request.body);
-
-  return response.status(lessonInsertationResult.status).json({ msg: lessonInsertationResult.msg });
 }

@@ -43,15 +43,9 @@ const AuthResultPg = () => {
     );
   }
 
-  const { email, name } = session.data.user;
-  const isMatt = (name === 'Matt Wilkins') || (name === 'Matthew Wilkins');
-
   return (
     <Layout>
       <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container">
-        <h1>Authenticated as: </h1>
-        <p>Name: {name}</p>
-        <p>Email: {email}</p>
         <p
           style={{
             maxWidth: '475px',
@@ -66,7 +60,7 @@ const AuthResultPg = () => {
           You have been successfully authenticated!
         </p>
         <Link href="/">
-          {isMatt ? 'Go back to the main page or check the console.' : 'Go back to the main page.'}
+          Go back to the main page.
         </Link>
       </div>
     </Layout>

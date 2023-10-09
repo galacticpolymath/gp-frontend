@@ -20,17 +20,22 @@ import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavD
 import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
 import useScrollHandler from '../../../customHooks/useScrollHandler';
-import { lessonsUrl, oldLessonsUrl } from '../../../apiGlobalVals';
 import Link from 'next/link';
+import Lessons from '../../../backend/models/lesson';
+import { connectToMongodb } from '../../../backend/utils/connection';
+import { getLinkPreview } from "link-preview-js";
 
-const isOnProduction = process.env.NODE_ENV === 'production';
+const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
+const SECTION_HEADING_LESSON_PLAN_COMP_NAME = 'lesson-plan.section-heading';
+const LEARNING_CHART_TITLE = "About the GP Learning Chart"
+const SECTION_STANDARDS_LESSON_PLAN_COMP_NAME = 'lesson-plan.standards'
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
 
   if (!versionSection) return null;
-  
+
   const lastRelease = versionSection.Data[versionSection?.Data?.length - 1].sub_releases;
   const lastSubRelease = lastRelease[lastRelease?.length - 1];
   return lastSubRelease;
@@ -44,72 +49,55 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
   return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
 }
 
-const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
-  const lastSubRelease = getLatestSubRelease(lesson.Section);
-  const { ref } = useInView({ threshold: 0.2 });
-  const router = useRouter()
-  let sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
-  sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-  sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
-  const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
-    // can be -1 if the section is not found
-    const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
+const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
-    if (index === 0) {
-      return {
-        ...section,
-        SectionTitle: `${index + 1}. Overview`,
-      }
+const getSectionDotsDefaultVal = (lessonSection, sectionComps) => {
+  const _sections = Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
+  let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
+  startingSectionVals = startingSectionVals.filter(section => {
+    if (((section?.__component === 'lesson-plan.overview') && !section?.SectionTitle)) {
+      return true
     }
 
-    if (sectionTitle === -1) {
-      return {
-        ...section,
-        SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
-      }
-    }
+    return !!section?.SectionTitle
+  })
+
+  return startingSectionVals.map((section, index) => {
+    const { SectionTitle, __component } = section
+    const sectionTitleForDot = (__component === 'lesson-plan.overview') ? 'Overview' : `${SectionTitle}`;
+    let _sectionTitle = getSectionTitle(sectionComps, SectionTitle);
+    _sectionTitle = (_sectionTitle !== -1) ? _sectionTitle : '1. Overview';
+    let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
+    sectionId = (index === 0) ? 'lessonTitleId' : sectionId
 
     return {
-      ...section,
-      SectionTitle: sectionTitle,
+      isInView: index === 0,
+      sectionTitleForDot: sectionTitleForDot,
+      sectionId: sectionId,
+      willShowTitle: false,
+      sectionDotId: `sectionDot-${sectionId}`,
+      SectionTitle: index === 0 ? '0. Title' : _sectionTitle,
     }
-  });
+  })
+}
 
-  const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+const LessonDetails = ({ lesson, availLocs }) => {
+  const router = useRouter();
+  const { ref } = useInView({ threshold: 0.2 });
+  let sectionComps = null;
 
-  const getSectionDotsDefaultVal = () => {
-    const _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
-    let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
-    startingSectionVals = startingSectionVals.filter(section => {
-      if (((section?.__component === 'lesson-plan.overview') && !section?.SectionTitle)) {
-        return true
-      }
-
-      return !!section?.SectionTitle
-    })
-
-    return startingSectionVals.map((section, index) => {
-      const { SectionTitle, __component } = section
-      const sectionTitleForDot = (__component === 'lesson-plan.overview') ? 'Overview' : `${SectionTitle}`;
-      let _sectionTitle = getSectionTitle(sectionComps, SectionTitle);
-      _sectionTitle = (_sectionTitle !== -1) ? _sectionTitle : '1. Overview';
-      let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-      sectionId = (index === 0) ? 'lessonTitleId' : sectionId
-
-      return {
-        isInView: index === 0,
-        sectionTitleForDot: sectionTitleForDot,
-        sectionId: sectionId,
-        willShowTitle: false,
-        sectionDotId: `sectionDot-${sectionId}`,
-        SectionTitle: index === 0 ? '0. Title' : _sectionTitle,
-      }
-    })
+  if (lesson) {
+    sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
+    sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
+    sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
   }
 
-  const _sectionDots = useMemo(() => getSectionDotsDefaultVal(), [])
-  const [sectionDots, setSectionDots] = useState({ dots: _sectionDots, clickedSectionId: null })
-  const [willGoToTargetSection, setWillGoToTargetSection] = useState(false)
+  const [sectionDots, setSectionDots] = useState({ dots: sectionComps ? getSectionDotsDefaultVal(lesson.Section, sectionComps) : {}, clickedSectionId: null });
+  const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
+  const [wasDotClicked, setWasDotClicked] = useState(false)
+  const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots);
+
+  const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
   const scrollSectionIntoView = sectionId => {
     const targetSection = document.getElementById(sectionId);
@@ -120,13 +108,6 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
       targetSection.scrollIntoView({ behavior: 'smooth', block: (sectionId === "lessonTitleId") ? 'center' : 'start' });
     }
   }
-
-  useEffect(() => {
-    if (willGoToTargetSection) {
-      scrollSectionIntoView(sectionDots.clickedSectionId)
-      setWillGoToTargetSection(false)
-    }
-  }, [willGoToTargetSection])
 
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
@@ -148,35 +129,69 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
     }
   }
 
-  const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
+  useEffect(() => {
+    if (willGoToTargetSection) {
+      scrollSectionIntoView(sectionDots.clickedSectionId)
+      setWillGoToTargetSection(false)
+    }
+  }, [willGoToTargetSection])
 
   useEffect(() => {
     document.body.addEventListener('click', handleDocumentClick);
 
     return () => document.body.removeEventListener('click', handleDocumentClick);
-  }, [])
+  }, []);
 
-  const [wasDotClicked, setWasDotClicked] = useState(false)
-  const [imgBannerSrcOnError, setImgBannerSrcOnError] = useState(null);
-  const [imgSponsorSrcOnError, setImgSponsorSrcOnError] = useState(null);
-  const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots)
-  const shareWidgetFixedProps = isOnProduction ? { isOnSide: true, pinterestMedia: lesson.CoverImage.url } : { isOnSide: true, pinterestMedia: lesson.CoverImage.url, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lesson.CoverImage.url, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
-
-  const handleBannerImgError = () => {
-    setImgBannerSrcOnError(oldLesson.CoverImage.url);
+  if (!lesson && typeof window === "undefined") {
+    return null;
   }
 
-  const handleImgSponsorSrcOnError = () => {
-    setImgSponsorSrcOnError(oldLesson.SponsorImage.url);
+  if (!lesson) {
+    router.replace('/error');
+    return null;
   }
+
+  const { CoverImage, LessonBanner } = lesson;
+  const lessonBannerUrl = CoverImage?.url ?? LessonBanner
+  const lastSubRelease = getLatestSubRelease(lesson.Section);
+  let _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
+    const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
+
+    if (index === 0) {
+      return {
+        ...section,
+        SectionTitle: `${index + 1}. Overview`,
+      }
+    }
+
+    if (sectionTitle === -1) {
+      return {
+        ...section,
+        SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
+      }
+    }
+
+    return {
+      ...section,
+      SectionTitle: sectionTitle,
+    }
+  })
+
+  const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
+  const shareWidgetFixedProps = IS_ON_PROD ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
+  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
 
   return (
     <Layout {...layoutProps}>
-      <LessonsSecsNavDots _sectionDots={[sectionDots, setSectionDots]} setWillGoToTargetSection={setWillGoToTargetSection} setIsScrollListenerOn={setIsScrollListenerOn} isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked} />
+      <LessonsSecsNavDots
+        _sectionDots={[sectionDots, setSectionDots]}
+        setWillGoToTargetSection={setWillGoToTargetSection}
+        setIsScrollListenerOn={setIsScrollListenerOn}
+        isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked}
+      />
       <ShareWidget {...shareWidgetFixedProps} />
       <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
-        <div id="lessonTitleSecId" className="d-flex justify-content-center SectionHeading lessonTitleId">
+        <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
               {lastSubRelease && (
@@ -190,27 +205,26 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
               <LocDropdown
                 availLocs={availLocs}
                 loc={lesson.locale}
-                id={lesson.id}
+                id={lesson.numID}
               />
             </div>
             <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
             <h4 className='fw-light'>{lesson.Subtitle}</h4>
-            {(lesson.CoverImage && lesson.CoverImage.url) && (
+            {lessonBannerUrl && (
               <div className='w-100 position-relative mt-2 mb-2'>
                 <Image
-                  src={imgBannerSrcOnError ?? lesson.CoverImage.url}
+                  src={lessonBannerUrl}
                   alt={lesson.Subtitle}
                   width={1500}
                   height={450}
                   priority
                   style={{ width: "100%", height: "auto", objectFit: 'contain' }}
-                  onError={handleBannerImgError}
                 />
               </div>
             )}
             <div className='d-flex d-md-none'>
               <label className='d-flex justify-content-center align-items-center'>Share: </label>
-              {isOnProduction ? <ShareWidget pinterestMedia={lesson.CoverImage.url} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lesson.CoverImage.url} />}
+              {IS_ON_PROD ? <ShareWidget pinterestMedia={lessonBannerUrl} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lessonBannerUrl} />}
             </div>
             <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
               <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
@@ -218,16 +232,15 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
                 <RichText content={lesson.SponsoredBy} />
               </div>
               <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
-                {lesson.SponsorImage && lesson.SponsorImage.url && (
+                {sponsorLogoImgUrl && (
                   <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
                     <Image
-                      src={Array.isArray(lesson.SponsorImage.url) ? (imgSponsorSrcOnError ?? lesson.SponsorImage.url[0]) : (imgSponsorSrcOnError ?? lesson.SponsorImage.url)}
+                      src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
                       alt={lesson.Subtitle}
                       className='sponsorImg'
                       sizes="225px"
                       fill
                       style={{ width: "100%", objectFit: 'contain' }}
-                      onError={handleImgSponsorSrcOnError}
                     />
                   </div>
                 )}
@@ -236,54 +249,99 @@ const LessonDetails = ({ lesson, availLocs, oldLesson }) => {
           </div>
         </div>
       </div>
-      <div className="container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
+      <div className="px-1 px-sm-4 container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
         <div className="col-11 col-md-10 p-0">
           {_sections.map((section, index) => (
             <ParentLessonSection
               key={index}
               section={section}
+              ForGrades={lesson.ForGrades}
               index={index}
               _sectionDots={[sectionDots, setSectionDots]}
               _wasDotClicked={[wasDotClicked, setWasDotClicked]}
               _isScrollListenerOn={[isScrollListenerOn, setIsScrollListenerOn]}
-              oldLesson={oldLesson}
             />
-          ))}
+          )
+          )}
         </div>
       </div>
     </Layout>
   );
 };
 
-// should use the axios library to make the get request.
-
 export const getStaticPaths = async () => {
-  const res = await fetch(lessonsUrl);  
-  const lessons = await res.json();
-  const paths = lessons.map(lesson => ({
-    params: { id: `${lesson.id}`, loc: `${lesson.locale}` },
-  }));
+  try {
+    await connectToMongodb();
 
-  return { paths, fallback: false };
+    // GOAL: for the media items to display onto the UI, for each one, check if any of them are web-apps
+    // if so, then get the image preview for the web-app based on their url
+
+    // GOAL: get the array that contains the web-apps
+
+    const lessons = await Lessons.find({}, { numID: 1, locale: 1, _id: 0 }).lean()
+
+    return {
+      paths: lessons.map(({ numID, locale }) => ({
+        params: { id: `${numID}`, loc: `${locale}` },
+      })),
+      fallback: false,
+    };
+  } catch (error) {
+    console.error('An error has occurred in getting the available paths for the selected lesson page. Error message: ', error)
+  }
 };
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
-  const [newLessonsResponse, oldLessonResponse] = await Promise.all([fetch(lessonsUrl), fetch(oldLessonsUrl)]);
-  const [oldLessons, lessons] = await Promise.all([oldLessonResponse.json(), newLessonsResponse.json()])
-  const lesson = lessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
-  const oldLesson = oldLessons.find(lesson => `${lesson.id}` === `${id}` && `${lesson.locale}` === loc);
-  const availLocs = lessons.filter(lesson => `${lesson.id}` === `${id}`).map((lesson) => lesson.locale);
+  try {
+    await connectToMongodb();
 
-  if (!lesson?.Section?.procedure?.Data) {
-    return oldLesson ? { props: { lesson, availLocs, oldLesson } } : { props: { lesson, availLocs } };
+    const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
+    const targetLessonLocales = targetLessons.map(({ locale }) => locale)
+    let lessonToDisplayOntoUi = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
+    const multiMediaArr = lessonToDisplayOntoUi?.Section?.preview?.Multimedia;
+
+    if (multiMediaArr?.length && multiMediaArr.some(({ type }) => type === 'web-app')) {
+      let multiMediaArrUpdated = []
+
+      for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
+        let multiMediaItem = multiMediaArr[numIteration]
+
+        if (multiMediaItem.type === 'web-app') {
+          const linkPreviewObj = await getLinkPreview(multiMediaItem.mainLink)
+          multiMediaItem = { ...multiMediaItem, webAppPreviewImg: linkPreviewObj?.images?.[0] }
+        }
+
+        multiMediaArrUpdated.push(multiMediaItem)
+      }
+
+      lessonToDisplayOntoUi = {
+        ...lessonToDisplayOntoUi,
+        Section: {
+          ...lessonToDisplayOntoUi?.Section,
+          preview: {
+            ...lessonToDisplayOntoUi?.Section?.preview,
+            Multimedia: multiMediaArrUpdated,
+          },
+        },
+      }
+    }
+
+    return {
+      props: {
+        lesson: JSON.parse(JSON.stringify(lessonToDisplayOntoUi)),
+        availLocs: targetLessonLocales,
+      },
+    };
+  } catch (error) {
+    console.error('Faild to get lesson. Error message: ', error)
+
+    return {
+      props: {
+        lesson: null,
+        availLocs: null,
+      },
+    }
   }
-
-  lesson.Section['teaching-materials'].Data = {
-    ...lesson.Section.procedure.Data,
-    ...lesson.Section['teaching-materials'].Data,
-  };
-
-  return { props: { lesson, availLocs, oldLesson } };
 };
 
 export default LessonDetails;

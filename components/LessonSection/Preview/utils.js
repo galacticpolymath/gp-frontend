@@ -1,15 +1,11 @@
+import Image from 'next/image';
 import RenderArrowNext from './RenderArrowNext';
+import Link from 'next/link';
 
-/* eslint-disable no-console */
-// const handleOnScroll = () => {};
-
-export const getMediaComponent = ({ type, mainLink }) => {
+export const getMediaComponent = ({ type, mainLink, webAppPreviewImg }) => {
   if (type === 'video') {
     return (
       <iframe
-        // width="560"
-        // // height="315"
-        // height="100%"
         src={mainLink}
         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
         title="YouTube video player"
@@ -23,10 +19,23 @@ export const getMediaComponent = ({ type, mainLink }) => {
         src={mainLink}
         width="200"
         height="500"
-        style={{ zIndex: 11100,position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+        style={{ zIndex: 11100, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
         allow="autoplay"
         className='pdf-media'
       />
+    );
+  } else if ((type === 'web-app') && webAppPreviewImg) {
+    return (
+      <Link
+        href={mainLink}
+        target='_blank'
+      >
+        <Image
+          src={webAppPreviewImg}
+          fill
+          className='lesson-media position-absolute top-0 start-0 h-100 w-100'
+        />
+      </Link>
     );
   }
 };
@@ -58,9 +67,7 @@ const renderThumbs = items => {
         <i
           key={i}
           className="bi-filetype-pdf fs-2"
-        >
-
-        </i>
+        />
       );
     }
   });

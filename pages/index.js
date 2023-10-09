@@ -6,12 +6,12 @@ import Hero from '../components/Hero';
 import styles from './index.module.css';
 import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
-import NewReleaseImage from '../assets/img/new_release.jpg';
 import NSFImage from '../assets/img/nsf.png';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 
 export default function Home() {
-  const newReleasePath = '/lessons/en-US/6';
+  const newReleasePath = '/lessons/en-US/7';
+  const NewReleaseImage_src = 'https://storage.googleapis.com/gp-cloud/lessons/AnimalCollective_en-US/card.png';
   const layoutProps = {
     title: 'Galactic Polymath - Home Page',
     description: 'We are an education studio. We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for everyone.',
@@ -80,13 +80,13 @@ export default function Home() {
 
                     <Image
                       priority
-                      src={NewReleaseImage.src}
+                      src={NewReleaseImage_src}
                       height={1000}
                       width={1500}
                       sizes="60vw"
                       className='lessonsPgShadow rounded-4 h-auto'
                       style={{ objectFit: 'contain' }}
-                      alt="Electric Crystals: A tour of crystal symmetry through comics"
+                      alt="Newest release card"
                     />
                     <div className='badge bg-secondary fs-6 text-center' style={{ zIndex: 15, position: 'absolute', top: '-10px', left: '-20px' }}>
                       New release!
@@ -98,7 +98,7 @@ export default function Home() {
               <div className='col-12 col-md-2 col-lg-1 d-grid justify-content-center align-content-center mx-auto'>
                 <h5 className='fw-light text-center'>Sponsor:</h5>
                 <a href="https://www.nsf.gov/">
-                  <div className="position-relative nsfImgContainer">
+                  <div className="position-relative nsfImgContainer mx-auto">
                     <Image
                       src={NSFImage.src}
                       fill
@@ -109,6 +109,10 @@ export default function Home() {
                     />
                   </div>
                 </a>
+                <div className='my-3'>
+                  <h5 className='fw-light '> Dr. Albert Kao's Lab at UMass Boston</h5>
+                </div>
+                
               </div>
             </div>
             <div className='row mt-5 '>

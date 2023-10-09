@@ -4,13 +4,13 @@ import Link from 'next/link';
 const MILISECONDS_IN_A_MONTH = 2_592_000_000;
 
 const LessonCard = ({ lesson }) => {
-  const { locale, id, CoverImage, Subtitle, Title, Section, ReleaseDate } = lesson;
+  const { _id, locale, numID, CoverImage, Subtitle, Title, Section, ReleaseDate, LessonBanner } = lesson;
   const isNew = (new Date() - new Date(ReleaseDate)) < MILISECONDS_IN_A_MONTH;
 
   return (
     <Link
-      key={locale + id}
-      href={`/lessons/${locale}/${id}`}
+      key={_id}
+      href={`/lessons/${locale}/${numID}`}
       className='w-100 pointer disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
     >
       <div className="position-relative">
@@ -21,7 +21,22 @@ const LessonCard = ({ lesson }) => {
             width={15}
             height={4.5}
             sizes='100vw'
-            className='px-1 pt-1'
+            className='p-0'
+            style={{
+              width: '100%',
+              height: 'auto',
+            }}
+            priority
+          />
+        )}
+        {LessonBanner && !(CoverImage && CoverImage.url) && (
+          <Image
+            src={LessonBanner}
+            alt={Subtitle}
+            width={15}
+            height={4.5}
+            sizes='100vw'
+            className='p-0'
             style={{
               width: '100%',
               height: 'auto',

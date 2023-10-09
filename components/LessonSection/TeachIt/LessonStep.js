@@ -19,25 +19,26 @@ const LessonStep = ({
     <div className='mt-4 ms-sm-1 d-grid  align-items-center'>
       <div className='d-none d-sm-flex align-items-center gap-2 fs-5 mb-3'>
         <div className="badge bg-primary">{Step}</div>
-        <h4 className='m-1'>
+        <h6 className='m-1'>
           <RichText content={StepTitle} />
-        </h4>
+        </h6>
       </div>
       {/* Mobile Step Header*/}
       <div className='d-flex d-sm-none gap-2 fs-5 mb-1 ml-2 w-100'>
         <div
           style={{ width: "31px", height: '29px' }}
           className="badge bg-primary d-flex justify-content-left align-items-center"
-        >{Step}
+        >
+          {Step}
         </div>
-        <h4 className='m-0 '>
+        <h6 className='m-0'>
           <RichText content={StepTitle} />
-        </h4>
+        </h6>
       </div>
       {/* Same Step Detail formatting */}
       <div className='ms-xs-0 ms-sm-4 ps-xs-0 ps-sm-3 pe-1'>
         <div className='lead mb-2 ps-0'>
-          <RichText content={StepQuickDescription} />
+          <RichText className='fs-6' content={StepQuickDescription} />
         </div>
         {/* Partial border */}
         <div className='d-block w-90 border-bottom'></div>

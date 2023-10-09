@@ -8,9 +8,9 @@ export default function Navbar() {
   const router = useRouter();
 
   return (
-    // <div style={{ height: '70px' }}>
-    <nav className='navbar sticky-top w-100 navbar-expand-lg navbar-dark bg-dark'>
-      <div className='container'>
+    
+    <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-dark  py-0'>
+      <div className='w-100 container'>
         <Link
           href="/"
           passHref
@@ -18,20 +18,24 @@ export default function Navbar() {
         >
 
           <Image
+            className='object-fit-contain'
             alt="Galactic Polymath"
             src={Logo}
-            height={35}
-            width={300}
+            height={68}
+            width={841}
             style={{
-              maxWidth: '70vw',
+              maxHeight: '25px',
               width: 'auto',
               height: 'auto',
             }}
           />
 
         </Link>
+        {/* filler */}
+        <div style={{ color:'white' }} className='flex-grow-1 white' />
+
         <button
-          className='navbar-toggler'
+          className='navbar-toggler m-2'
           type='button'
           data-bs-toggle='collapse'
           data-bs-target='#navbarSupportedContent'
@@ -42,9 +46,9 @@ export default function Navbar() {
           <span className='navbar-toggler-icon'></span>
         </button>
         <div>
-          <div className='collapse navbar-collapse' id='navbarSupportedContent'>
-            <ul className='navbar-nav me-auto mb-2 mb-lg-0 fs-5 text-uppercase'>
-              <li className='nav-item'>
+          <div className='collapse navbar-collapse ' id='navbarSupportedContent'>
+            <ul className='navbar-nav fs-5 text-uppercase '>
+              <li className='nav-item my-auto'>
                 <Link
                   href='/'
                   className={`nav-link ${router.pathname === '/' ? 'fw-bold active' : 'fw-light'}`}
@@ -58,7 +62,7 @@ export default function Navbar() {
                 ['/hire-us', 'Hire Us'],
                 ['/about', 'About'],
               ].map(([url, title]) => (
-                <li key={url} className='nav-item'>
+                <li key={url} className='nav-item my-auto'>
                   <Link
                     href={url}
                     className={`nav-link ${router.pathname.includes(url) ? 'fw-bold active' : 'fw-light'}`}

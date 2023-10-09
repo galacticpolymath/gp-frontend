@@ -20,18 +20,15 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { useMemo, useState } from 'react';
-import styles from './index.module.scss';
+import { useState } from 'react';
 import LessonSlide from './LessonSlide';
-import { customControls, getVideoThumb } from './utils';
+import { getVideoThumb } from './utils';
 import Image from 'next/image';
-import { useEffect } from 'react';
 import Dot from '../NavDots/Dot';
 
 
 const LessonsCarousel = ({ mediaItems }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [willApplyStyles, setWillApplyStyles] = useState(false);
     const mediaItemsSorted = mediaItems ? mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((item, index) => ({ ...item, isVisible: index === 0 })) : []
     const [controlDots, setControlDots] = useState(mediaItemsSorted);
 
@@ -46,7 +43,7 @@ const LessonsCarousel = ({ mediaItems }) => {
 
                 return { ...item, isVisible: false }
             })
-        })
+        });
     }
 
     const handlePrevBtnClick = () => {
@@ -60,7 +57,7 @@ const LessonsCarousel = ({ mediaItems }) => {
 
                 return { ...item, isVisible: false }
             })
-        })
+        });
     }
 
     const handleDotOrThumbNailClick = selectedItemIndex => {
@@ -73,25 +70,23 @@ const LessonsCarousel = ({ mediaItems }) => {
 
                 return { ...item, isVisible: false }
             })
-        })
+        });
     }
 
-    useEffect(() => {
-        setWillApplyStyles(true);
-    }, [])
-    
     return (
         <div className='shadow rounded p-0 display-flex flex-column justify-content-center autoCarouselContainer '>
-            <section className='row'>
+            <section className='row mt-0'>
                 <section
                     style={{ height: 'fit-content' }}
-                    className=" col-12"
+                    className="col-12 mt-0"
                 >
                     <div
-                        className="autoCarouselSlider"
+                        className="autoCarouselSlider mt-0"
                         style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
                     >
-                        {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => <LessonSlide key={index} {...lessonDocument} />)}
+                        {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => {
+                            return <LessonSlide key={index} forLsn={lessonDocument.forLsn ?? lessonDocument.forPart} {...lessonDocument} />
+                        })}
                     </div>
                 </section>
             </section>
@@ -106,7 +101,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                 </button>
                 <button
                     onClick={handleNextBtnClick}
-                    className={`noBtnStyles ms-2 p-0 ${((mediaItems?.length - 1) === currentIndex) ? 'btn-disabled' : ''}`}
+                    className={`noBtnStyles p-0 ${((mediaItems?.length - 1) === currentIndex) ? 'btn-disabled' : ''}`}
                     disabled={(mediaItems?.length - 1) === currentIndex}>
                     <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
                 </button>
@@ -114,7 +109,12 @@ const LessonsCarousel = ({ mediaItems }) => {
             <section className="mt-1">
                 <ul className='ps-0 mb-0 d-flex flex-wrap justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
                     {controlDots?.length && controlDots.map((item, index) => {
-                        const { type, title, mainLink, isVisible } = item;
+                        const { type, title, mainLink, isVisible, webAppPreviewImg } = item;
+                        let src;
+
+                        if((type === 'video') || ((type === 'web-app') && webAppPreviewImg)){
+                            src = webAppPreviewImg ?? getVideoThumb(mainLink)
+                        }
 
                         return (
                             <li
@@ -124,10 +124,10 @@ const LessonsCarousel = ({ mediaItems }) => {
                                 onClick={() => handleDotOrThumbNailClick(index)}
                                 className={`d-inline-block me-sm-2 p-sm-2 justify-content-center align-items-center position-relative thumbnailLi ${isVisible ? 'itemVisible' : 'itemNotVisible'}`} >
                                 <div className='w-100 h-100 d-none d-sm-block'>
-                                    {(type === 'video') ?
+                                    {(type === 'video') || ((type === 'web-app') && webAppPreviewImg) ?
                                         <div className="position-relative w-100 h-100">
                                             <Image
-                                                src={getVideoThumb(mainLink)}
+                                                src={src}
                                                 alt={title}
                                                 fill
                                                 sizes="62px"
