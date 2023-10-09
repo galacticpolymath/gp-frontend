@@ -6,12 +6,12 @@ import Hero from '../components/Hero';
 import styles from './index.module.css';
 import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
-import NewReleaseImage from '../assets/img/new_release.jpg';
 import NSFImage from '../assets/img/nsf.png';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 
 export default function Home() {
-  const newReleasePath = '/lessons/en-US/6';
+  const newReleasePath = '/lessons/en-US/7';
+  const NewReleaseImage_src='https://storage.googleapis.com/gp-cloud/lessons/AnimalCollective_en-US/card.png';
   const layoutProps = {
     title: 'Galactic Polymath - Home Page',
     description: 'We are an education studio. We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for everyone.',
@@ -74,13 +74,13 @@ export default function Home() {
           </h2>
           <div className=' container bg-white  rounded-3 justify-content-center py-5 px-4'>
             <div className='row justify-content-center gy-5'>
-              <div className='col-12 offset-0 offset-md-1 col-md-7 col-lg-6'>
+              <div className='col-12 offset-0 offset-md-1 col-md-7 col-lg-6' >
                 <Link href={newReleasePath} className=' no-link-decoration object-fit-contain w-auto'>
                   <div className="position-relative mx-auto">
 
                     <Image
                       priority
-                      src={NewReleaseImage.src}
+                      src={NewReleaseImage_src}
                       height={1000}
                       width={1500}
                       sizes="60vw"
