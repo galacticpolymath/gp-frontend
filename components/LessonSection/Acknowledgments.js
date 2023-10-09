@@ -1,7 +1,6 @@
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
-
 const Acknowledgments = ({
   SectionTitle,
   Data = [],
@@ -33,7 +32,7 @@ const Acknowledgments = ({
                   </a>
                   |&nbsp;{title}
                   {affiliation && <span className='pe-1'>, {affiliation} </span>}
-                <span className='d-inline-block'><i className="bi bi-geo-alt"/><em>{location}</em></span>
+                  <span className='d-inline-block'><i className="bi bi-geo-alt" /><em>{location}</em></span>
                 </li>
               </ul>
             ))}

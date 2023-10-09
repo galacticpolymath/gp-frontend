@@ -11,7 +11,7 @@ import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 
 export default function Home() {
   const newReleasePath = '/lessons/en-US/7';
-  const NewReleaseImage_src='https://storage.googleapis.com/gp-cloud/lessons/AnimalCollective_en-US/card.png';
+  const NewReleaseImage_src = 'https://storage.googleapis.com/gp-cloud/lessons/AnimalCollective_en-US/card.png';
   const layoutProps = {
     title: 'Galactic Polymath - Home Page',
     description: 'We are an education studio. We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for everyone.',
@@ -74,7 +74,7 @@ export default function Home() {
           </h2>
           <div className=' container bg-white  rounded-3 justify-content-center py-5 px-4'>
             <div className='row justify-content-center gy-5'>
-              <div className='col-12 offset-0 offset-md-1 col-md-7 col-lg-6' >
+              <div className='col-12 offset-0 offset-md-1 col-md-7 col-lg-6'>
                 <Link href={newReleasePath} className=' no-link-decoration object-fit-contain w-auto'>
                   <div className="position-relative mx-auto">
 
