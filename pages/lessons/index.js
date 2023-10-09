@@ -72,7 +72,7 @@ const LessonsPage = ({ lessons, didErrorOccur }) => {
           </section>
         </section>
         <section className="lessonsSection pt-1">
-          <div className='ms-sm-4 text-muted  mb-2 mb-sm-4 text-left mt-4 mx-4'>
+          <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
             <h4 className="">Galactic Polymath Mini-Unit Releases</h4>
             <p className='mb-0' > Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
             <p><em>And they're all free!</em></p>
