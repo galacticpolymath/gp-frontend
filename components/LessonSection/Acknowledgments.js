@@ -18,23 +18,23 @@ const Acknowledgments = ({
       <div className='container mx-auto my-4'>
         {Data.map(({ role, def, records = [] }, i) => (
           <div key={i} className='mb-3'>
-            <h4>{role}</h4>
-            <RichText content={def} />
+            <h6 className='fw-bolder'>{role}</h6>
+            <RichText className=' text-black-87' content={def} />
             {records.map(({ name, url, title, affiliation, location }) => (
-              <div key={name}>
-                <h5 className='mt-3 fw-normal fs-5'>
+              <ul key={name}>
+                <li className='mt-3 fw-normal inline-block'>
                   <a
                     href={url}
                     rel="noopener noreferrer"
                     target="_blank"
                   >
-                    {name}
+                    {name}&nbsp;
                   </a>
-                </h5>
-                <h6 className='fs-6'>{title}</h6>
-                {affiliation && <div>{affiliation}</div>}
-                <div>{location}</div>
-              </div>
+                  |&nbsp;{title}
+                  {affiliation && <span className='pe-1'>, {affiliation} </span>}
+                  <span className='d-inline-block'><i className="bi bi-geo-alt" /><em>{location}</em></span>
+                </li>
+              </ul>
             ))}
           </div>
         ))}

@@ -21,7 +21,7 @@ const LessonCard = ({ lesson }) => {
             width={15}
             height={4.5}
             sizes='100vw'
-            className='px-1 pt-1'
+            className='p-0'
             style={{
               width: '100%',
               height: 'auto',
@@ -36,7 +36,7 @@ const LessonCard = ({ lesson }) => {
             width={15}
             height={4.5}
             sizes='100vw'
-            className='px-1 pt-1'
+            className='p-0'
             style={{
               width: '100%',
               height: 'auto',
