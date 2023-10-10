@@ -110,7 +110,7 @@ export default function Home() {
                   </div>
                 </a>
                 <div className='my-3'>
-                  <h5 className='fw-light '> Dr. Albert Kao's Lab at UMass Boston</h5>
+                  <h5 className='fw-light '> Dr. Albert Kao&apos;s Lab at UMass Boston</h5>
                 </div>
                 
               </div>
