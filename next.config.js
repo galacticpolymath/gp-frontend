@@ -4,6 +4,7 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
+  swcMinify: true,
   images: {
     domains: [
       'catalog.galacticpolymath.com',
@@ -13,5 +14,15 @@ module.exports = {
       'into-the-dark.vercel.app',
       'echo-galactic-polymath.vercel.app'
     ],
+  },
+  async redirects() {
+    return [
+      {
+        permanent: true,
+        source: '/lessons/:lessonId',
+        destination: '/lessons/en-US/:lessonId'
+      },
+    ]
   }
 };
+
