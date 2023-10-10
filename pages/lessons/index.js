@@ -74,14 +74,14 @@ const LessonsPage = ({ lessons, didErrorOccur }) => {
           <section>
             <h4 className="ms-sm-4 text-center text-sm-start mt-4 mb-2 mb-sm-4 text-muted">Galactic Polymath Lesson Releases</h4>
           </section>
-          {!!publishedLessons?.length && (
+          {(publishedLessons?.length && !didErrorOccur) && (
             <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
               {publishedLessons.map((lesson) => <LessonCard key={lesson._id} lesson={lesson} />)}
             </div>
           )}
-          {(!publishedLessons?.length && didErrorOccur) && (
+          {(!publishedLessons?.length || didErrorOccur) && (
             <div className='px-4 pb-4'>
-              <p className='text-center text-sm-start'>An error has occurred. Couldn't retrieve lessons. Please try again.</p>
+              <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
             </div>
           )}
         </section>

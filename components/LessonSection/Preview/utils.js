@@ -2,7 +2,7 @@ import Image from 'next/image';
 import RenderArrowNext from './RenderArrowNext';
 import Link from 'next/link';
 
-export const getMediaComponent = ({ type, mainLink, webAppPreviewImg }) => {
+export const getMediaComponent = ({ type, mainLink, webAppPreviewImg, webAppImgAlt }) => {
   if (type === 'video') {
     return (
       <iframe
@@ -32,6 +32,7 @@ export const getMediaComponent = ({ type, mainLink, webAppPreviewImg }) => {
       >
         <Image
           src={webAppPreviewImg}
+          alt={webAppImgAlt}
           fill
           className='lesson-media position-absolute top-0 start-0 h-100 w-100'
         />

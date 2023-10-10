@@ -35,7 +35,7 @@ const getLatestSubRelease = (sections) => {
 
   const lastRelease = versionSection.Data[versionSection?.Data?.length - 1].sub_releases;
   const lastSubRelease = lastRelease[lastRelease?.length - 1];
-  
+
   return lastSubRelease;
 };
 
@@ -284,14 +284,12 @@ export const getStaticPaths = async () => {
   }
 };
 
-async function getLinkPreviewObj(url){
+async function getLinkPreviewObj(url) {
   try {
-      const linkPreviewObj = await getLinkPreview(url);
+    const linkPreviewObj = await getLinkPreview(url);
 
-      console.log('linkPreviewObj: ', linkPreviewObj)
-
-      return linkPreviewObj;
-  } catch(error){
+    return linkPreviewObj;
+  } catch (error) {
     const errMsg = `An error has occurred in getting the link preview for given url. Error message: ${error}.`;
     console.error(errMsg);
 
@@ -315,8 +313,17 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         let multiMediaItem = multiMediaArr[numIteration]
 
         if (multiMediaItem.type === 'web-app') {
-          const linkPreviewObj = await getLinkPreviewObj(multiMediaItem.mainLink)
-          multiMediaItem = { ...multiMediaItem, webAppPreviewImg: linkPreviewObj?.images?.[0] }
+          const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem.mainLink)
+
+          if (errMsg && !images?.length) {
+            console.error('Faild to get the image preview of web app. Error message: ', errMsg)
+          }
+
+          multiMediaItem = {
+            ...multiMediaItem,
+            webAppPreviewImg: (errMsg || !images?.length) ? null : images[0],
+            webAppImgAlt: (errMsg || !images?.length) ? null : `${title}'s preview image`,
+          }
         }
 
         multiMediaArrUpdated.push(multiMediaItem)
