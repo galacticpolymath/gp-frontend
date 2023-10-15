@@ -10,19 +10,19 @@
 /* eslint-disable no-console */
 import { format } from 'date-fns';
 import Image from 'next/image';
-import Layout from '../../../components/Layout';
-import RichText from '../../../components/RichText';
-import LocDropdown from '../../../components/LocDropdown';
+import Layout from '../../../../components/Layout';
+import RichText from '../../../../components/RichText';
+import LocDropdown from '../../../../components/LocDropdown';
 import { useEffect, useState } from 'react';
-import ParentLessonSection from '../../../components/LessonSection/ParentLessonSection';
+import ParentLessonSection from '../../../../components/LessonSection/ParentLessonSection';
 import { useInView } from 'react-intersection-observer';
-import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
-import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
+import LessonsSecsNavDots from '../../../../components/LessonSection/LessonSecsNavDots';
+import ShareWidget from '../../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
-import useScrollHandler from '../../../customHooks/useScrollHandler';
+import useScrollHandler from '../../../../customHooks/useScrollHandler';
 import Link from 'next/link';
-import Lessons from '../../../backend/models/lesson';
-import { connectToMongodb } from '../../../backend/utils/connection';
+import Lessons from '../../../../backend/models/lesson';
+import { connectToMongodb } from '../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
