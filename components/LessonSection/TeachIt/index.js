@@ -45,6 +45,7 @@ const TeachIt = ({
   resources = getIsValObj(resources) ? [resources] : resources;
   const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
   const dataLesson = Data.lesson;
+  console.log('partsFieldName: ', partsFieldName)
   let parts = Data.classroom.resources[0]?.[partsFieldName];
 
   if ((((parts !== undefined) || (parts !== null)) && (parts?.title === "Assessments")) && parts?.length) {
@@ -57,6 +58,8 @@ const TeachIt = ({
     const lastPart = { itemList, lsn, preface, tile, title };
     parts = [...Object.values(restOfLessonParts), lastPart];
   }
+
+  console.log('yo there: ', parts)
 
   const ref = useRef();
 

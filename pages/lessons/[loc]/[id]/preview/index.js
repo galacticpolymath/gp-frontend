@@ -21,6 +21,7 @@ import { connectToMongodb } from '../../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
 import { useInView } from 'react-intersection-observer';
 import GistCard from '../../../../../components/LessonSection/GistCard';
+import LessonPartBtn from '../../../../../components/LessonSection/TeachIt/LessonPartBtn';
 
 const getLatestSubRelease = (sections) => {
     const versionSection = sections.versions;
@@ -45,7 +46,7 @@ const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
 
 
-// <div className="px-1 px-sm-4 container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
+// <div className="px-5 px-5m-4 container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
 // <div className="col-11 col-md-10 p-0">
 // </div>
 // </div>
@@ -121,17 +122,18 @@ const LessonDetails = ({ lesson, availLocs }) => {
     const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
     const layoutProps = {
         title: `Mini-Unit: ${lesson.Title}`,
-
         description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image`
     }
-    const lessonTitleProps = {}
-    // container d-flex py-4
-    // container d-flex py-4
-    // container d-flex p-0
+    let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
+
+    if (lessonParts?.length) {
+        lessonParts = lessonParts.filter(({ lsn }) => lsn !== 'last');
+    }
+
     return (
         <Layout {...layoutProps}>
-            <div style={{ maxWidth: 'none' }} className="container w-100 d-flex p-0 m-0">
-                <div className="d-flex col-8">
+            <div style={{ maxWidth: 'none' }} className="container w-100 d-flex py-0 m-0 ps-2">
+                <div className="d-flex col-9">
                     <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
                         </div>
@@ -160,22 +162,28 @@ const LessonDetails = ({ lesson, availLocs }) => {
                         />
                     </div>
                 </div>
-                <div className='col-4 d-flex flex-column justify-content-center align-items-center position-relative'>
+                <div className='col-3 d-flex flex-column justify-content-center align-items-center position-relative'>
                     <div className="pb-5 mb-5">
                         <div className="w-100 d-flex flex-column justify-content-center align-items-center">
                             <h5 className="w-100 text-center mb-3">Sponsored by: </h5>
-                            {sponsorLogoImgUrl && (
-                                <div style={{ height: 105, width: 105 }} className='position-relative d-flex justify-content-center align-items-center'>
-                                    <Image
-                                        src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
-                                        alt={lesson.Subtitle}
-                                        className='sponsorImg position-absolute'
-                                        sizes="225px"
-                                        fill
-                                        style={{ width: "100%", objectFit: 'contain', top: "-50%", left: "-50%", }}
-                                    />
-                                </div>
-                            )}
+                            <div className="w-100 d-flex justify-content-center align-items-center">
+                                {sponsorLogoImgUrl && (
+                                    <div style={{ height: 130, width: 130 }} className='position-relative d-flex justify-content-center align-items-center'>
+                                        <Image
+                                            src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
+                                            alt={lesson.Subtitle}
+                                            className='position-absolute'
+                                            sizes="225px"
+                                            fill
+                                            style={{
+                                                objectFit: 'contain',
+                                                width: '100%',
+                                                height: "100%"
+                                            }}
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                         <div className="mt-3 w-100 d-flex justify-content-center align-items-center">
                             <div className="w-75">
@@ -184,6 +192,52 @@ const LessonDetails = ({ lesson, availLocs }) => {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div
+                className="px-2"
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gap: '.5rem',
+                }}
+            >
+                {lessonParts.map(lessonPart => {
+                    console.log('lessonPart: ', lessonPart)
+                    let {
+                        lsn,
+                        lsnNum,
+                        lsnTitle,
+                        partTitle,
+                        title,
+                        lsnPreface,
+                        partPreface,
+                        preface,
+                        chunks,
+                        learningObj,
+                        itemList,
+                        lessonTile,
+                        tile,
+                        lsnExt,
+                        tags,
+                    } = lessonPart;
+
+                    tags = Array.isArray(tags[0]) ? tags[0] : tags;
+
+                    return (
+                        <LessonPartBtn
+                            isLessonPreview
+                            lsnNum={lsn}
+                            lsnTitle={title}
+                            lsnPreface={preface}
+                            lessonTileUrl={tile}
+                            previewTags={tags}
+                            lessonPartTxtContainerClassName='d-flex flex-column justify-content-between w-100 align-items-stretch mt-0'
+                            imgContainerDimensionObj={{ width: 100, height: 100 }}
+                            parentDivProps={{ className: 'pt-3 pb-2 w-100 bg-white d-flex flex-row' }}
+                            tileImgAndLessonInfoContainerClassName='d-flex justify-content-between w-100 position-relative flex-row-reverse'
+                        />
+                    )
+                })}
             </div>
         </Layout>
     );
