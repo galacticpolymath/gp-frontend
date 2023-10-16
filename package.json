@@ -57,6 +57,7 @@
     "react-is-visible": "^1.2.0",
     "react-parallax": "^3.5.1",
     "react-player": "^2.11.2",
+    "react-qr-code": "^2.0.12",
     "react-responsive-carousel": "^3.2.23",
     "react-scroll-parallax": "^3.3.2",
     "react-share": "^4.4.1",

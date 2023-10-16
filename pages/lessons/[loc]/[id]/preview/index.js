@@ -22,6 +22,17 @@ import { getLinkPreview } from "link-preview-js";
 import { useInView } from 'react-intersection-observer';
 import GistCard from '../../../../../components/LessonSection/GistCard';
 import LessonPartBtn from '../../../../../components/LessonSection/TeachIt/LessonPartBtn';
+import { FiExternalLink } from 'react-icons/fi';
+import QRCode from "react-qr-code";
+
+// let QRBarCode;
+// try {
+//     QRBarCode = require("react-qr-barcode-scanner");
+//     console.log('QRBarCode: ', QRBarCode)
+
+// } catch(error){
+//     console.log('error: ', error)
+// }   
 
 const getLatestSubRelease = (sections) => {
     const versionSection = sections.versions;
@@ -132,8 +143,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
     return (
         <Layout {...layoutProps}>
-            <div style={{ maxWidth: 'none' }} className="container w-100 d-flex py-0 m-0 ps-2">
-                <div className="d-flex col-9">
+            <div style={{ maxWidth: 'none' }} className="container w-100 d-flex py-0 m-0 ps-2 pe-0">
+                <div className="d-flex col-8">
                     <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
                         </div>
@@ -162,8 +173,31 @@ const LessonDetails = ({ lesson, availLocs }) => {
                         />
                     </div>
                 </div>
-                <div className='col-3 d-flex flex-column justify-content-center align-items-center position-relative'>
-                    <div className="pb-5 mb-5">
+                <div className='col-4 d-flex flex-column justify-content-center align-items-center position-relative'>
+                    <div style={{ top: 0, right: 0, borderBottomLeftRadius: "30px", backgroundColor: '#E1E2E3', width: "90%" }} className="ps-2 position-absolute d-flex qrCodeImgAndTxtContainer">
+                        <section style={{ bottom: "40px" }} className='w-50 d-flex justify-content-center align-items-center flex-column'>
+                            <div className='mt-3 mt-lg-0 w-100 d-flex justify-content-center align-items-center'>
+                                <FiExternalLink
+                                    size={25}
+                                    style={{
+                                        transform: 'scale(1.5)',
+                                    }}
+                                    color='black'
+                                    className='ms-2'
+                                />
+                            </div>
+                            <p style={{ lineHeight: "25px" }} className='mt-1 mt-lg-2 text-center px-1 px-lg-4'>Click or Scan for Access.</p>
+                        </section>
+                        <section className='w-50 p-2 d-flex justify-content-start align-items-stretch'>
+                            <div className='position-relative d-flex justify-content-center align-items-center w-100'>
+                                <QRCode
+                                    value='hey'
+                                    className='qrCodeContainer position-absolute'
+                                />
+                            </div>
+                        </section>
+                    </div>
+                    <div>
                         <div className="w-100 d-flex flex-column justify-content-center align-items-center">
                             <h5 className="w-100 text-center mb-3">Sponsored by: </h5>
                             <div className="w-100 d-flex justify-content-center align-items-center">
