@@ -99,9 +99,18 @@ const LessonDetails = ({ lesson, availLocs }) => {
         <Layout {...layoutProps}>
             <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
                 <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
+                    {/* display flex parent container */}
+                    {/* container */}
+                        {/* the title of the lesson */}
+                        {/* the gist card */}
+                    {/* end of continer */}
+                    {/* container */}
+                        {/* put the sponsor logo and txt here */}
+                    {/* end of container */}
+                    {/* end of parent container */}
                     <div className="col-11 col-md-10">
                         <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
-                            {lastSubRelease && (
+                            {/* {lastSubRelease && (
                                 <Link passHref href="#versions" style={{ color: 'black' }}>
                                     <p>
                                         Version {lastSubRelease.version}{' '}
@@ -113,7 +122,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
                                 availLocs={availLocs}
                                 loc={lesson.locale}
                                 id={lesson.numID}
-                            />
+                            /> */}
                         </div>
                         <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
                         <h4 className='fw-light'>{lesson.Subtitle}</h4>
@@ -129,9 +138,11 @@ const LessonDetails = ({ lesson, availLocs }) => {
                                 />
                             </div>
                         )}
-                        <div className='d-flex d-md-none'>
+                        {/* <div className='d-flex d-md-none'>
                             <label className='d-flex justify-content-center align-items-center'>Share: </label>
-                        </div>
+                        </div> */}
+
+                        {/* put the Gist Card here */}
                         <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
                             <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
                                 <h5>Sponsored by:</h5>
@@ -139,7 +150,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
                             </div>
                             <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
                                 {sponsorLogoImgUrl && (
-                                    <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
+                                    <div style={{ height: "180px" }} classNpame='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
                                         <Image
                                             src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
                                             alt={lesson.Subtitle}
@@ -157,18 +168,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
             </div>
             <div className="px-1 px-sm-4 container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
                 <div className="col-11 col-md-10 p-0">
-                    {_sections.map((section, index) => (
-                        <ParentLessonSection
-                            key={index}
-                            section={section}
-                            ForGrades={lesson.ForGrades}
-                            index={index}
-                            _sectionDots={[[], () => { }]}
-                            _wasDotClicked={[false, () => { }]}
-                            _isScrollListenerOn={[false, () => { }]}
-                        />
-                    )
-                    )}
+                    {/* display the lesson parts here */}
                 </div>
             </div>
         </Layout>
