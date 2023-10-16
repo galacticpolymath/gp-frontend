@@ -20,6 +20,7 @@ import Lessons from '../../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
 import { useInView } from 'react-intersection-observer';
+import GistCard from '../../../../../components/LessonSection/GistCard';
 
 const getLatestSubRelease = (sections) => {
     const versionSection = sections.versions;
@@ -42,7 +43,36 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 
 const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
+
+
+// <div className="px-1 px-sm-4 container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
+// <div className="col-11 col-md-10 p-0">
+// </div>
+// </div>
+
+/* <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
+                            <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
+                                <h5>Sponsored by:</h5>
+                                <RichText content={lesson.SponsoredBy} />
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
+                                {sponsorLogoImgUrl && (
+                                    <div style={{ height: "180px" }} classNpame='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
+                                        <Image
+                                            src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
+                                            alt={lesson.Subtitle}
+                                            className='sponsorImg'
+                                            sizes="225px"
+                                            fill
+                                            style={{ width: "100%", objectFit: 'contain' }}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div> */
+
 const LessonDetails = ({ lesson, availLocs }) => {
+    console.log("lesson: ", lesson);
     const router = useRouter();
     const { ref } = useInView({ threshold: 0.2 });
     let sectionComps = null;
@@ -91,38 +121,19 @@ const LessonDetails = ({ lesson, availLocs }) => {
     const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
     const layoutProps = {
         title: `Mini-Unit: ${lesson.Title}`,
+
         description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image`
     }
     const lessonTitleProps = {}
-
+    // container d-flex py-4
+    // container d-flex py-4
+    // container d-flex p-0
     return (
         <Layout {...layoutProps}>
-            <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
-                <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
-                    {/* display flex parent container */}
-                    {/* container */}
-                        {/* the title of the lesson */}
-                        {/* the gist card */}
-                    {/* end of continer */}
-                    {/* container */}
-                        {/* put the sponsor logo and txt here */}
-                    {/* end of container */}
-                    {/* end of parent container */}
-                    <div className="col-11 col-md-10">
+            <div style={{ maxWidth: 'none' }} className="container w-100 d-flex p-0 m-0">
+                <div className="d-flex col-8">
+                    <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
-                            {/* {lastSubRelease && (
-                                <Link passHref href="#versions" style={{ color: 'black' }}>
-                                    <p>
-                                        Version {lastSubRelease.version}{' '}
-                                        (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-                                    </p>
-                                </Link>
-                            )}
-                            <LocDropdown
-                                availLocs={availLocs}
-                                loc={lesson.locale}
-                                id={lesson.numID}
-                            /> */}
                         </div>
                         <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
                         <h4 className='fw-light'>{lesson.Subtitle}</h4>
@@ -138,37 +149,40 @@ const LessonDetails = ({ lesson, availLocs }) => {
                                 />
                             </div>
                         )}
-                        {/* <div className='d-flex d-md-none'>
-                            <label className='d-flex justify-content-center align-items-center'>Share: </label>
-                        </div> */}
-
-                        {/* put the Gist Card here */}
-                        <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
-                            <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
-                                <h5>Sponsored by:</h5>
+                        <GistCard
+                            isOnPreview
+                            EstLessonTime={lesson.EstLessonTime}
+                            ForGrades={lesson.ForGrades}
+                            LearningSummary={lesson?.Section?.overview?.LearningSummary}
+                            TargetSubject={lesson.TargetSubject}
+                            SteamEpaulette={lesson?.Section?.overview?.SteamEpaulette}
+                            SteamEpaulette_vert={lesson?.Section?.overview?.SteamEpaulette_vert}
+                        />
+                    </div>
+                </div>
+                <div className='col-4 d-flex flex-column justify-content-center align-items-center position-relative'>
+                    <div className="pb-5 mb-5">
+                        <div className="w-100 d-flex flex-column justify-content-center align-items-center">
+                            <h5 className="w-100 text-center mb-3">Sponsored by: </h5>
+                            {sponsorLogoImgUrl && (
+                                <div style={{ height: 105, width: 105 }} className='position-relative d-flex justify-content-center align-items-center'>
+                                    <Image
+                                        src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
+                                        alt={lesson.Subtitle}
+                                        className='sponsorImg position-absolute'
+                                        sizes="225px"
+                                        fill
+                                        style={{ width: "100%", objectFit: 'contain', top: "-50%", left: "-50%", }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                        <div className="mt-3 w-100 d-flex justify-content-center align-items-center">
+                            <div className="w-75">
                                 <RichText content={lesson.SponsoredBy} />
-                            </div>
-                            <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
-                                {sponsorLogoImgUrl && (
-                                    <div style={{ height: "180px" }} classNpame='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
-                                        <Image
-                                            src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
-                                            alt={lesson.Subtitle}
-                                            className='sponsorImg'
-                                            sizes="225px"
-                                            fill
-                                            style={{ width: "100%", objectFit: 'contain' }}
-                                        />
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div className="px-1 px-sm-4 container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
-                <div className="col-11 col-md-10 p-0">
-                    {/* display the lesson parts here */}
                 </div>
             </div>
         </Layout>

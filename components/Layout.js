@@ -26,9 +26,10 @@ export default function Layout({
   imgAlt,
   url,
   type = 'article',
+  style = {},
 }) {
   return (
-    <div className={`${montserrat.className} ${className}`}>
+    <div style={style} className={`${montserrat.className} ${className}`}>
       <Head>
         <title>{title}</title>
         <meta property="og:title" content={title} />
