@@ -64,15 +64,16 @@ const LessonPartBtn = ({
                                 </div>
                             </div>
                         } */}
-                        <div className='d-flex mt-2'>
+                        <div className='d-flex'>
                             <RichText
                                 className='text-start'
                                 content={lsnPreface}
                             />
                         </div>
+                        {/* <div style={{ height: "50px" }} className="border" /> */}
                         {!!previewTags?.length && (
                             <div
-                                className='d-flex tagPillContainer flex-wrap'
+                                className='d-flex tagPillContainer flex-wrap mt-2'
                             >
                                 {previewTags.map((tag, index) => (
                                     <div

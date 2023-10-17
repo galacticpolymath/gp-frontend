@@ -83,7 +83,7 @@ const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
                             </div>
                         </div> */
 
-const LessonDetails = ({ lesson, availLocs }) => {
+const LessonDetails = ({ lesson }) => {
     console.log("lesson: ", lesson);
     const router = useRouter();
     const { ref } = useInView({ threshold: 0.2 });
@@ -106,29 +106,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
     const { CoverImage, LessonBanner } = lesson;
     const lessonBannerUrl = CoverImage?.url ?? LessonBanner
-    const lastSubRelease = getLatestSubRelease(lesson.Section);
-    let _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
-        const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
-
-        if (index === 0) {
-            return {
-                ...section,
-                SectionTitle: `${index + 1}. Overview`,
-            }
-        }
-
-        if (sectionTitle === -1) {
-            return {
-                ...section,
-                SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
-            }
-        }
-
-        return {
-            ...section,
-            SectionTitle: sectionTitle,
-        }
-    })
 
     const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
     const layoutProps = {
@@ -142,7 +119,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
 
     return (
-        <Layout {...layoutProps}>
+        <div>
             <div style={{ maxWidth: 'none' }} className="container w-100 d-flex py-0 m-0 ps-2 pe-0">
                 <div className="d-flex col-8">
                     <div>
@@ -233,6 +210,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
                     display: 'grid',
                     gridTemplateColumns: 'repeat(2, 1fr)',
                     gap: '.5rem',
+                    gridAutoColumns: 'column'
                 }}
             >
                 {lessonParts.map(lessonPart => {
@@ -265,15 +243,15 @@ const LessonDetails = ({ lesson, availLocs }) => {
                             lsnPreface={preface}
                             lessonTileUrl={tile}
                             previewTags={tags}
-                            lessonPartTxtContainerClassName='d-flex flex-column justify-content-between w-100 align-items-stretch mt-0'
+                            lessonPartTxtContainerClassName='d-flex position-relative flex-column justify-content-between w-100 align-items-stretch mt-0'
                             imgContainerDimensionObj={{ width: 100, height: 100 }}
                             parentDivProps={{ className: 'pt-3 pb-2 w-100 bg-white d-flex flex-row' }}
-                            tileImgAndLessonInfoContainerClassName='d-flex justify-content-between w-100 position-relative flex-row-reverse'
+                            tileImgAndLessonInfoContainerClassName='d-flex h-100 justify-content-between w-100 position-relative flex-row-reverse'
                         />
                     )
                 })}
             </div>
-        </Layout>
+        </div>
     );
 };
 
