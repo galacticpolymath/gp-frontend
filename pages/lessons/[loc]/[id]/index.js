@@ -10,26 +10,23 @@
 /* eslint-disable no-console */
 import { format } from 'date-fns';
 import Image from 'next/image';
-import Layout from '../../../components/Layout';
-import RichText from '../../../components/RichText';
-import LocDropdown from '../../../components/LocDropdown';
-import { useEffect, useMemo, useState } from 'react';
-import ParentLessonSection from '../../../components/LessonSection/ParentLessonSection';
+import Layout from '../../../../components/Layout';
+import RichText from '../../../../components/RichText';
+import LocDropdown from '../../../../components/LocDropdown';
+import { useEffect, useState } from 'react';
+import ParentLessonSection from '../../../../components/LessonSection/ParentLessonSection';
 import { useInView } from 'react-intersection-observer';
-import LessonsSecsNavDots from '../../../components/LessonSection/LessonSecsNavDots';
-import ShareWidget from '../../../components/AboutPgComps/ShareWidget';
+import LessonsSecsNavDots from '../../../../components/LessonSection/LessonSecsNavDots';
+import ShareWidget from '../../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
-import useScrollHandler from '../../../customHooks/useScrollHandler';
+import useScrollHandler from '../../../../customHooks/useScrollHandler';
 import Link from 'next/link';
-import Lessons from '../../../backend/models/lesson';
-import { connectToMongodb } from '../../../backend/utils/connection';
+import Lessons from '../../../../backend/models/lesson';
+import { connectToMongodb } from '../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
-const SECTION_HEADING_LESSON_PLAN_COMP_NAME = 'lesson-plan.section-heading';
-const LEARNING_CHART_TITLE = "About the GP Learning Chart"
-const SECTION_STANDARDS_LESSON_PLAN_COMP_NAME = 'lesson-plan.standards'
 
 const getLatestSubRelease = (sections) => {
   const versionSection = sections.versions;
@@ -38,6 +35,7 @@ const getLatestSubRelease = (sections) => {
 
   const lastRelease = versionSection.Data[versionSection?.Data?.length - 1].sub_releases;
   const lastSubRelease = lastRelease[lastRelease?.length - 1];
+
   return lastSubRelease;
 };
 
@@ -273,11 +271,6 @@ export const getStaticPaths = async () => {
   try {
     await connectToMongodb();
 
-    // GOAL: for the media items to display onto the UI, for each one, check if any of them are web-apps
-    // if so, then get the image preview for the web-app based on their url
-
-    // GOAL: get the array that contains the web-apps
-
     const lessons = await Lessons.find({}, { numID: 1, locale: 1, _id: 0 }).lean()
 
     return {
@@ -290,6 +283,19 @@ export const getStaticPaths = async () => {
     console.error('An error has occurred in getting the available paths for the selected lesson page. Error message: ', error)
   }
 };
+
+async function getLinkPreviewObj(url) {
+  try {
+    const linkPreviewObj = await getLinkPreview(url);
+
+    return linkPreviewObj;
+  } catch (error) {
+    const errMsg = `An error has occurred in getting the link preview for given url. Error message: ${error}.`;
+    console.error(errMsg);
+
+    return { errMsg }
+  }
+}
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
@@ -307,8 +313,17 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         let multiMediaItem = multiMediaArr[numIteration]
 
         if (multiMediaItem.type === 'web-app') {
-          const linkPreviewObj = await getLinkPreview(multiMediaItem.mainLink)
-          multiMediaItem = { ...multiMediaItem, webAppPreviewImg: linkPreviewObj?.images?.[0] }
+          const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem.mainLink)
+
+          if (errMsg && !images?.length) {
+            console.error('Faild to get the image preview of web app. Error message: ', errMsg)
+          }
+
+          multiMediaItem = {
+            ...multiMediaItem,
+            webAppPreviewImg: (errMsg || !images?.length) ? null : images[0],
+            webAppImgAlt: (errMsg || !images?.length) ? null : `${title}'s preview image`,
+          }
         }
 
         multiMediaArrUpdated.push(multiMediaItem)

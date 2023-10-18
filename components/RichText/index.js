@@ -5,7 +5,7 @@ import CustomMarkdownView from './CustomMarkdownView';
 import styles from './index.module.scss';
 
 const RichText = ({ content, className = '' }) => {
-  
+
   if (!content) {
     return null;
   }

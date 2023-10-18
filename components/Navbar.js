@@ -7,8 +7,7 @@ import Logo from '../assets/img/galactic_polymath_white.png';
 export default function Navbar() {
   const router = useRouter();
 
-  return (
-    
+  return ( 
     <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-dark  py-0'>
       <div className='w-100 container'>
         <Link
@@ -33,7 +32,6 @@ export default function Navbar() {
         </Link>
         {/* filler */}
         <div style={{ color:'white' }} className='flex-grow-1 white' />
-
         <button
           className='navbar-toggler m-2'
           type='button'

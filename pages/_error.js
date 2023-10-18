@@ -17,33 +17,4 @@ const ErrorPg = () => (
   </Layout>
 );
 
-export const getServerSideProps = async (context) => {
-  const REGEX = /\d+$/;
-
-  if (REGEX.test(context.resolvedUrl)) {
-    const res = await fetch('https://gp-catalog.vercel.app/index.json');
-    const lessons = await res.json();
-    const lessonId = context.resolvedUrl.match(REGEX)[0];
-    const targetLesson = lessons.find(({ numID }) => numID === parseInt(lessonId));
-
-    if (!targetLesson) {
-      return {
-        props: {},
-      }
-    }
-
-    if (!targetLesson) return { props: {} }
-
-    return {
-      redirect: {
-        destination: `/lessons/${targetLesson.DefaultLocale}/${targetLesson.id}`,
-        permanent: true,
-      },
-      props: {},
-    }
-  }
-
-  return { props: {} }
-};
-
 export default ErrorPg;

@@ -75,7 +75,7 @@ const LessonsPage = ({ lessons, didErrorOccur }) => {
             <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
               <h4 className="">Galactic Polymath Mini-Unit Releases</h4>
               <p className='mb-0'> Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
-              <p><em>And they're all free!</em></p>
+              <p><em>And they&apos;re all free!</em></p>
             </div>
             {!!publishedLessons?.length && (
               <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
@@ -84,7 +84,7 @@ const LessonsPage = ({ lessons, didErrorOccur }) => {
             )}
             {(!publishedLessons?.length && didErrorOccur) && (
               <div className='px-4 pb-4'>
-                <p className='text-center text-sm-start'>An error has occurred. Couldn't retrieve lessons. Please try again.</p>
+                <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
               </div>
             )}
           </section>
