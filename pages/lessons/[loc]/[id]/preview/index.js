@@ -174,8 +174,9 @@ const LessonDetails = ({ lesson }) => {
               </div>
             </section>
           </div>
-          
-          <div className="w-100 d-flex flex-column px-1">
+          {/* Spacer for */}
+          <div style={{ height: "180px" }} className="w-75" />
+          <div className="w-90 d-flex flex-column px-1 ">
               
             <div className="d-flex w-100 flex-column">
               <div className='w-100'>
@@ -208,7 +209,7 @@ const LessonDetails = ({ lesson }) => {
                 className="w-100 mt-3"
                   >
                 <div
-                  className="d-flex justify-content-center align-items-center"
+                  className="d-flex justify-content-center align-items-center "
                     >
                   <RichText content={lesson.SponsoredBy} className={`${isLesson4 ? 'text-center' : ''}`} />
                 </div>
