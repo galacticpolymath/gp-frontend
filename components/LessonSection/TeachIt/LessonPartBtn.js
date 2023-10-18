@@ -18,6 +18,7 @@ const LessonPartBtn = ({
     isLessonPreview,
     tileImgAndLessonInfoContainerClassName,
     lessonPartTxtContainerClassName,
+    prefaceClassName,
     imgContainerDimensionObj = { width: 150, height: 150 }
 }) => {
     return (
@@ -66,7 +67,7 @@ const LessonPartBtn = ({
                         } */}
                         <div className='d-flex'>
                             <RichText
-                                className='text-start'
+                                className={prefaceClassName}
                                 content={lsnPreface}
                             />
                         </div>

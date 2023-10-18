@@ -41,6 +41,11 @@
   grid-column-start: 7 !important;
 }
 
+.prefaceTxtLessonPreview{
+  line-height: 20px;
+  color: #2C83C3
+}
+
 .carouselSelectedLessons{
   @media(max-width: 575px){
     padding-right: 0px !important;

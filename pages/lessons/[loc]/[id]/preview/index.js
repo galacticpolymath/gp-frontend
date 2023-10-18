@@ -10,84 +10,32 @@
 /* eslint-disable no-console */
 import { format } from 'date-fns';
 import Image from 'next/image';
-import Layout from '../../../../../components/Layout';
 import RichText from '../../../../../components/RichText';
-import LocDropdown from '../../../../../components/LocDropdown';
-import ParentLessonSection from '../../../../../components/LessonSection/ParentLessonSection';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Lessons from '../../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
-import { useInView } from 'react-intersection-observer';
 import GistCard from '../../../../../components/LessonSection/GistCard';
 import LessonPartBtn from '../../../../../components/LessonSection/TeachIt/LessonPartBtn';
 import { FiExternalLink } from 'react-icons/fi';
 import QRCode from "react-qr-code";
+import { getLatestSubRelease } from '../../../../../helperFns/getLatestSubRelease';
+import Logo from '../../../../../assets/img/galactic_polymath_white.png';
+import { useState, useEffect } from 'react';
 
-// let QRBarCode;
-// try {
-//     QRBarCode = require("react-qr-barcode-scanner");
-//     console.log('QRBarCode: ', QRBarCode)
-
-// } catch(error){
-//     console.log('error: ', error)
-// }   
-
-const getLatestSubRelease = (sections) => {
-    const versionSection = sections.versions;
-
-    if (!versionSection) return null;
-
-    const lastRelease = versionSection.Data[versionSection?.Data?.length - 1].sub_releases;
-    const lastSubRelease = lastRelease[lastRelease?.length - 1];
-
-    return lastSubRelease;
-};
-
-const getSectionTitle = (sectionComps, sectionTitle) => {
-    const targetSectionTitleIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === sectionTitle);
-
-    if (targetSectionTitleIndex === -1) return -1;
-
-    return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
-}
-
-const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
-
-
-
-// <div className="px-5 px-5m-4 container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
-// <div className="col-11 col-md-10 p-0">
-// </div>
-// </div>
-
-/* <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
-                            <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
-                                <h5>Sponsored by:</h5>
-                                <RichText content={lesson.SponsoredBy} />
-                            </div>
-                            <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
-                                {sponsorLogoImgUrl && (
-                                    <div style={{ height: "180px" }} classNpame='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
-                                        <Image
-                                            src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
-                                            alt={lesson.Subtitle}
-                                            className='sponsorImg'
-                                            sizes="225px"
-                                            fill
-                                            style={{ width: "100%", objectFit: 'contain' }}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        </div> */
 
 const LessonDetails = ({ lesson }) => {
     console.log("lesson: ", lesson);
+    const latestSubRelease = getLatestSubRelease(lesson?.Section)
     const router = useRouter();
-    const { ref } = useInView({ threshold: 0.2 });
+    const [lessonPgUrl, setLessonPgUrl] = useState('');
     let sectionComps = null;
+
+    useEffect(() => {
+        const _lessonPgUrl = `${(typeof window !== 'undefined') && window.location.origin}${router.asPath.split('/').filter(path => path !== 'preview').join('/')}`
+        setLessonPgUrl(_lessonPgUrl)
+    }, [])
 
     if (lesson) {
         sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
@@ -106,26 +54,38 @@ const LessonDetails = ({ lesson }) => {
 
     const { CoverImage, LessonBanner } = lesson;
     const lessonBannerUrl = CoverImage?.url ?? LessonBanner
-
     const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
-    const layoutProps = {
-        title: `Mini-Unit: ${lesson.Title}`,
-        description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image`
-    }
     let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
 
     if (lessonParts?.length) {
         lessonParts = lessonParts.filter(({ lsn }) => lsn !== 'last');
     }
 
+
     return (
         <div>
-            <div style={{ maxWidth: 'none' }} className="container w-100 d-flex py-0 m-0 ps-2 pe-0">
+            <div style={{ backgroundColor: '#252525', height: '100px' }} className='w-100 d-flex justify-content-center align-items-center'>
+                <Image
+                    className='object-fit-contain'
+                    alt="Galactic Polymath"
+                    src={Logo}
+                    height={68}
+                    width={841}
+                    style={{
+                        maxHeight: '25px',
+                        width: 'auto',
+                        height: 'auto',
+                    }}
+                />
+            </div>
+            <div style={{ maxWidth: 'none' }} className="container w-100 d-flex py-0 m-0 pe-0">
                 <div className="d-flex col-8">
                     <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
-                        </div>
-                        <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
+                        <p style={{ fontWeight: 'lighter' }}>
+                            Version {latestSubRelease.version}{' '}
+                            (Updated {format(new Date(latestSubRelease.date), 'MMM d, yyyy')})
+                        </p>
+                        <h1 id="lessonTitleId" className="mt-3">{lesson.Title}</h1>
                         <h4 className='fw-light'>{lesson.Subtitle}</h4>
                         {lessonBannerUrl && (
                             <div className='w-100 position-relative mt-2 mb-2'>
@@ -151,9 +111,14 @@ const LessonDetails = ({ lesson }) => {
                     </div>
                 </div>
                 <div className='col-4 d-flex flex-column justify-content-center align-items-center position-relative'>
-                    <div style={{ top: 0, right: 0, borderBottomLeftRadius: "30px", backgroundColor: '#E1E2E3', width: "90%" }} className="ps-2 position-absolute d-flex qrCodeImgAndTxtContainer">
-                        <section style={{ bottom: "40px" }} className='w-50 d-flex justify-content-center align-items-center flex-column'>
-                            <div className='mt-3 mt-lg-0 w-100 d-flex justify-content-center align-items-center'>
+                    <div
+                        style={{ top: 0, right: 0, borderBottomLeftRadius: "30px", backgroundColor: '#E1E2E3', width: "80%" }}
+                        className="ps-1 position-absolute d-flex qrCodeImgAndTxtContainer"
+                    >
+                        <section style={{ bottom: "40px" }} className='w-50 me-3 me-lg-0 d-flex justify-content-center align-items-center flex-column'>
+                            <div
+                                className='mt-3 mt-lg-0 w-100 d-flex justify-content-center align-items-center'
+                            >
                                 <FiExternalLink
                                     size={25}
                                     style={{
@@ -163,95 +128,120 @@ const LessonDetails = ({ lesson }) => {
                                     className='ms-2'
                                 />
                             </div>
-                            <p style={{ lineHeight: "25px" }} className='mt-1 mt-lg-2 text-center px-1 px-lg-4'>Click or Scan for Access.</p>
+                            <Link
+                                href={lessonPgUrl}
+                                target='_blank'
+                                style={{ lineHeight: "20px", fontSize: "18px", fontWeight: 400 }}
+                                className='mt-1 text-black mt-lg-2 text-center px-2 px-lg-4'
+                            >
+                                Click or Scan for Access.
+                            </Link>
                         </section>
-                        <section className='w-50 p-2 d-flex justify-content-start align-items-stretch'>
-                            <div className='position-relative d-flex justify-content-center align-items-center w-100'>
+                        <section className='w-50 d-flex p-2 border'>
+                            <div className='position-relative d-flex w-100 flex-column'>
                                 <QRCode
+                                    style={{
+                                        height: "120%",
+                                        minHeight: "130px",
+                                        maxHeight: "150px",
+                                        width: "120%",
+                                        maxWidth: "150px",
+                                        minWidth: "70px",
+                                        right: ".5px"
+                                    }}
                                     value='hey'
-                                    className='qrCodeContainer position-absolute'
+                                    className='position-absolute'
                                 />
                             </div>
                         </section>
                     </div>
-                    <div>
-                        <div className="w-100 d-flex flex-column justify-content-center align-items-center">
-                            <h5 className="w-100 text-center mb-3">Sponsored by: </h5>
-                            <div className="w-100 d-flex justify-content-center align-items-center">
-                                {sponsorLogoImgUrl && (
-                                    <div style={{ height: 130, width: 130 }} className='position-relative d-flex justify-content-center align-items-center'>
-                                        <Image
-                                            src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
-                                            alt={lesson.Subtitle}
-                                            className='position-absolute'
-                                            sizes="225px"
-                                            fill
-                                            style={{
-                                                objectFit: 'contain',
-                                                width: '100%',
-                                                height: "100%"
-                                            }}
-                                        />
+                    <div style={{ height: "170px" }} className="w-75" />
+                    <div className='w-100 me-5'>
+                        <div className="w-100 d-flex flex-column justify-content-end">
+                            <div className="w-100 d-flex justify-content-end">
+                                <div className="w-50 d-flex justify-content-end flex-column">
+                                    <div className='w-100'>
+                                        <h5 className="text-center">
+                                            Sponsored by:
+                                        </h5>
                                     </div>
-                                )}
-                            </div>
-                        </div>
-                        <div className="mt-3 w-100 d-flex justify-content-center align-items-center">
-                            <div className="w-75">
-                                <RichText content={lesson.SponsoredBy} />
+                                    {sponsorLogoImgUrl && (
+                                        <div className='w-100 d-flex justify-content-center align-items-center'>
+                                            <div
+                                                style={{ height: 130, width: 130 }}
+                                                className='position-relative'
+                                            >
+                                                <Image
+                                                    src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
+                                                    alt={lesson.Subtitle}
+                                                    className='position-absolute'
+                                                    sizes="225px"
+                                                    fill
+                                                    style={{
+                                                        objectFit: 'contain',
+                                                        width: '100%',
+                                                        height: "100%"
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div
+                                        className="w-100"
+                                    >
+                                        <div
+                                            className="d-flex justify-content-center"
+                                        >
+                                            <RichText content={lesson.SponsoredBy} />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div
-                className="px-2"
+                className='mt-4 pb-5'
                 style={{
                     display: 'grid',
+                    gridAutoFlow: 'column',
+                    gap: "10px",
                     gridTemplateColumns: 'repeat(2, 1fr)',
-                    gap: '.5rem',
-                    gridAutoColumns: 'column'
+                    gridTemplateRows: 'repeat(3, auto)'
                 }}
             >
-                {lessonParts.map(lessonPart => {
-                    console.log('lessonPart: ', lessonPart)
-                    let {
-                        lsn,
-                        lsnNum,
-                        lsnTitle,
-                        partTitle,
-                        title,
-                        lsnPreface,
-                        partPreface,
-                        preface,
-                        chunks,
-                        learningObj,
-                        itemList,
-                        lessonTile,
-                        tile,
-                        lsnExt,
-                        tags,
-                    } = lessonPart;
+                {
+                    lessonParts.map(lessonPart => {
+                        let {
+                            lsn,
+                            title,
+                            preface,
+                            tile,
+                            tags,
+                        } = lessonPart;
 
-                    tags = Array.isArray(tags[0]) ? tags[0] : tags;
+                        tags = Array.isArray(tags[0]) ? tags[0] : tags;
 
-                    return (
-                        <LessonPartBtn
-                            isLessonPreview
-                            lsnNum={lsn}
-                            lsnTitle={title}
-                            lsnPreface={preface}
-                            lessonTileUrl={tile}
-                            previewTags={tags}
-                            lessonPartTxtContainerClassName='d-flex position-relative flex-column justify-content-between w-100 align-items-stretch mt-0'
-                            imgContainerDimensionObj={{ width: 100, height: 100 }}
-                            parentDivProps={{ className: 'pt-3 pb-2 w-100 bg-white d-flex flex-row' }}
-                            tileImgAndLessonInfoContainerClassName='d-flex h-100 justify-content-between w-100 position-relative flex-row-reverse'
-                        />
-                    )
-                })}
+                        return (
+                            <LessonPartBtn
+                                isLessonPreview
+                                prefaceClassName='text-start prefaceTxtLessonPreview'
+                                lsnNum={lsn}
+                                lsnTitle={title}
+                                lsnPreface={preface}
+                                lessonTileUrl={tile}
+                                previewTags={tags}
+                                lessonPartTxtContainerClassName='d-flex position-relative flex-column justify-content-between w-100 align-items-stretch mt-0'
+                                imgContainerDimensionObj={{ width: 100, height: 100 }}
+                                parentDivProps={{ className: 'pt-3 pb-2 w-100 bg-white d-flex flex-row' }}
+                                tileImgAndLessonInfoContainerClassName='d-flex h-100 justify-content-between w-100 position-relative flex-row-reverse'
+                            />
+                        )
+                    })
+                }
             </div>
-        </div>
+        </div >
     );
 };
 
@@ -304,7 +294,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
                     const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem.mainLink)
 
                     if (errMsg && !images?.length) {
-                        console.error('Faild to get the image preview of web app. Error message: ', errMsg)
+                        console.error('Failed to get the image preview of web app. Error message: ', errMsg)
                     }
 
                     multiMediaItem = {
