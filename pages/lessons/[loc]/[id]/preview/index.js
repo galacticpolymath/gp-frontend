@@ -52,7 +52,7 @@ const LessonDetails = ({ lesson }) => {
   }
 
   const { CoverImage, LessonBanner } = lesson;
-  const lessonBannerUrl = CoverImage?.url ?? LessonBanner
+  const lessonBannerUrl = CoverImage?.url ?? LessonBanner;
   const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
   let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
 
@@ -76,7 +76,7 @@ const LessonDetails = ({ lesson }) => {
 
   return (
     <div>
-      <div style={{ backgroundColor: '#252525', height: '100px' }} className='w-100 d-flex justify-content-center align-items-center'>
+      <div style={{ backgroundColor: '#252525' }} className='w-100 d-flex justify-content-center align-items-center py-2'>
         <Image
           className='object-fit-contain'
           alt="Galactic Polymath"
@@ -84,20 +84,21 @@ const LessonDetails = ({ lesson }) => {
           height={68}
           width={841}
           style={{
-            maxHeight: '25px',
+            maxHeight: '30px',
             width: 'auto',
             height: 'auto',
           }}
+
         />
       </div>
-      <div style={{ maxWidth: 'none' }} className="container w-100 d-flex py-0 m-0 pe-0 ps-0">
-        <div className="d-flex col-8">
+      <div style={{ maxWidth: 'none' }} className="container w-100 d-flex py-0 m-0 px-0">
+        <div className="d-flex col-8 ps-2 mt-1">
           <div>
-            <p style={{ fontWeight: 'lighter' }}>
+            <p style={{ fontWeight: 'lighter' }} className='mb-2'>
               Version {latestSubRelease.version}{' '}
               (Updated {format(new Date(latestSubRelease.date), 'MMM d, yyyy')})
             </p>
-            <h1 id="lessonTitleId" className="mt-3">{lesson.Title}</h1>
+            <h1 id="lessonTitleId" className="mt-0 mb-1">{lesson.Title}</h1>
             <h4 className='fw-light'>{lesson.Subtitle}</h4>
             {lessonBannerUrl && (
               <div className='w-100 position-relative mt-2 mb-2'>
@@ -128,29 +129,34 @@ const LessonDetails = ({ lesson }) => {
             className="ps-1 position-absolute d-flex qrCodeImgAndTxtContainer"
           >
             <section style={{ bottom: "40px" }} className='w-50 me-3 me-lg-0 d-flex justify-content-center align-items-center flex-column'>
-              <div
-                className='mt-3 mt-lg-0 w-100 d-flex justify-content-center align-items-center'
-              >
-                <FiExternalLink
-                  size={25}
-                  style={{
-                    transform: 'scale(1.5)',
-                  }}
-                  color='black'
-                  className='ms-2'
-                />
-              </div>
               <Link
                 href={lessonPgUrl}
                 target='_blank'
                 style={{ lineHeight: "20px", fontSize: "18px", fontWeight: 400 }}
                 className='mt-1 text-black mt-lg-2 text-center px-2 px-lg-4'
               >
+                <div
+                  className='mb-2  w-100 d-flex justify-content-center align-items-center'
+                >
+
+                  <FiExternalLink
+                    size={25}
+                    style={{
+                      transform: 'scale(1.5)',
+                    }}
+                    color='black'
+                    className='ms-2'
+                  />
+                </div>
+
                 Click or Scan for Access.
+
               </Link>
+
             </section>
             <section className='w-50 d-flex p-2 border'>
               <div className='position-relative d-flex w-100 flex-column'>
+
                 <QRCode
                   style={{
                     height: "120%",
@@ -161,17 +167,18 @@ const LessonDetails = ({ lesson }) => {
                     minWidth: "70px",
                     right: ".5px",
                   }}
-                  value='hey'
+                  value={lesson.URL}
                   className='position-absolute'
                 />
+
               </div>
             </section>
           </div>
-          <div style={{ height: "180px" }} className="w-75" />
-          <div className='w-100 me-5'>
-            <div className="w-100 d-flex flex-column justify-content-end">
-              <div className="w-100 d-flex justify-content-end">
-                <div className="w-50 d-flex justify-content-end flex-column">
+          
+          
+            <div className="w-100 d-flex flex-column px-1">
+              
+                <div className="d-flex w-100 flex-column">
                   <div className='w-100'>
                     <h5 className="text-center">
                       Sponsored by:
@@ -208,13 +215,13 @@ const LessonDetails = ({ lesson }) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              
             </div>
-          </div>
+         
         </div>
       </div>
       <div
-        className='mt-4 pb-5'
+        className='mt-4 pb-0 px-1'
         style={{
           display: 'grid',
           gridAutoFlow: 'column',
