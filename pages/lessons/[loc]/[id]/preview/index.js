@@ -26,9 +26,9 @@ import { useState, useEffect } from 'react';
 
 
 const LessonDetails = ({ lesson }) => {
-    console.log("lesson: ", lesson);
     const latestSubRelease = getLatestSubRelease(lesson?.Section)
     const router = useRouter();
+    const isLesson4 = router.query.id === '4';
     const [lessonPgUrl, setLessonPgUrl] = useState('');
     let sectionComps = null;
 
@@ -57,10 +57,19 @@ const LessonDetails = ({ lesson }) => {
     const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
     let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
 
+    if (!lesson || !lessonParts) {
+        router.replace('/error');
+        return null;
+    }
+
+    if (typeof lessonParts === 'object' && lessonParts !== null && !Array.isArray(lessonParts)) {
+        const _lessonParts = Object.entries(lessonParts).filter(([key,]) => !Number.isNaN(parseInt(key)));
+        lessonParts = _lessonParts.map(([, lessonPart]) => lessonPart);
+    }
+
     if (lessonParts?.length) {
         lessonParts = lessonParts.filter(({ lsn }) => lsn !== 'last');
     }
-
 
     return (
         <div>
@@ -78,7 +87,7 @@ const LessonDetails = ({ lesson }) => {
                     }}
                 />
             </div>
-            <div style={{ maxWidth: 'none' }} className="container w-100 d-flex py-0 m-0 pe-0">
+            <div style={{ maxWidth: 'none' }} className="container w-100 d-flex py-0 m-0 pe-0 ps-0">
                 <div className="d-flex col-8">
                     <div>
                         <p style={{ fontWeight: 'lighter' }}>
@@ -101,7 +110,7 @@ const LessonDetails = ({ lesson }) => {
                         )}
                         <GistCard
                             isOnPreview
-                            EstLessonTime={lesson.EstLessonTime}
+                            EstLessonTime={lesson?.Section?.overview?.EstLessonTime}
                             ForGrades={lesson.ForGrades}
                             LearningSummary={lesson?.Section?.overview?.LearningSummary}
                             TargetSubject={lesson.TargetSubject}
@@ -155,7 +164,7 @@ const LessonDetails = ({ lesson }) => {
                             </div>
                         </section>
                     </div>
-                    <div style={{ height: "170px" }} className="w-75" />
+                    <div style={{ height: "180px" }} className="w-75" />
                     <div className='w-100 me-5'>
                         <div className="w-100 d-flex flex-column justify-content-end">
                             <div className="w-100 d-flex justify-content-end">
@@ -187,12 +196,12 @@ const LessonDetails = ({ lesson }) => {
                                         </div>
                                     )}
                                     <div
-                                        className="w-100"
+                                        className="w-100 mt-3"
                                     >
                                         <div
-                                            className="d-flex justify-content-center"
+                                            className="d-flex justify-content-center align-items-center"
                                         >
-                                            <RichText content={lesson.SponsoredBy} />
+                                            <RichText content={lesson.SponsoredBy} className={`${isLesson4 ? 'text-center' : ''}`} />
                                         </div>
                                     </div>
                                 </div>
@@ -220,18 +229,19 @@ const LessonDetails = ({ lesson }) => {
                             tile,
                             tags,
                         } = lessonPart;
-
-                        tags = Array.isArray(tags[0]) ? tags[0] : tags;
+                        tags = (tags?.length && Array.isArray(tags[0])) ? tags[0] : tags;
+                        tags = tags?.length ? tags.filter(tag => tag) : [];
+                        const previewTagsProp = tags.length ? { previewTags: tags } : {};
 
                         return (
                             <LessonPartBtn
+                                {...previewTagsProp}
                                 isLessonPreview
                                 prefaceClassName='text-start prefaceTxtLessonPreview'
                                 lsnNum={lsn}
                                 lsnTitle={title}
                                 lsnPreface={preface}
                                 lessonTileUrl={tile}
-                                previewTags={tags}
                                 lessonPartTxtContainerClassName='d-flex position-relative flex-column justify-content-between w-100 align-items-stretch mt-0'
                                 imgContainerDimensionObj={{ width: 100, height: 100 }}
                                 parentDivProps={{ className: 'pt-3 pb-2 w-100 bg-white d-flex flex-row' }}
