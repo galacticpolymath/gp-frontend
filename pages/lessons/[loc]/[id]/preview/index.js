@@ -31,10 +31,10 @@ const LessonDetails = ({ lesson }) => {
   const [lessonPgUrl, setLessonPgUrl] = useState('');
   let sectionComps = null;
 
-  useEffect(() => {
-    const _lessonPgUrl = `${(typeof window !== 'undefined') && window.location.origin}${router.asPath.split('/').filter(path => path !== 'preview').join('/')}`
-    setLessonPgUrl(_lessonPgUrl)
-  }, [])
+  // useEffect(() => {
+  //   const _lessonPgUrl = `${(typeof window !== 'undefined') && window.location.origin}${router.asPath.split('/').filter(path => path !== 'preview').join('/')}`
+  //   setLessonPgUrl(_lessonPgUrl)
+  // }, [])
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
@@ -130,7 +130,7 @@ const LessonDetails = ({ lesson }) => {
           >
             <section style={{ bottom: "40px" }} className='w-50 me-3 me-lg-0 d-flex justify-content-center align-items-center flex-column'>
               <Link
-                href={lessonPgUrl}
+                href={lesson.URL}
                 target='_blank'
                 style={{ lineHeight: "20px", fontSize: "18px", fontWeight: 400 }}
                 className='mt-1 text-black mt-lg-2 text-center px-2 px-lg-4'
