@@ -175,48 +175,47 @@ const LessonDetails = ({ lesson }) => {
             </section>
           </div>
           
-          
-            <div className="w-100 d-flex flex-column px-1">
+          <div className="w-100 d-flex flex-column px-1">
               
-                <div className="d-flex w-100 flex-column">
-                  <div className='w-100'>
-                    <h5 className="text-center">
-                      Sponsored by:
-                    </h5>
-                  </div>
-                  {sponsorLogoImgUrl && (
-                    <div className='w-100 d-flex justify-content-center align-items-center'>
-                      <div
-                        style={{ height: 130, width: 130 }}
-                        className='position-relative'
-                      >
-                        <Image
-                          src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
-                          alt={lesson.Subtitle}
-                          className='position-absolute'
-                          sizes="225px"
-                          fill
-                          style={{
-                            objectFit: 'contain',
-                            width: '100%',
-                            height: "100%",
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
+            <div className="d-flex w-100 flex-column">
+              <div className='w-100'>
+                <h5 className="text-center">
+                  Sponsored by:
+                </h5>
+              </div>
+              {sponsorLogoImgUrl && (
+                <div className='w-100 d-flex justify-content-center align-items-center'>
                   <div
-                    className="w-100 mt-3"
-                  >
-                    <div
-                      className="d-flex justify-content-center align-items-center"
-                    >
-                      <RichText content={lesson.SponsoredBy} className={`${isLesson4 ? 'text-center' : ''}`} />
-                    </div>
+                    style={{ height: 130, width: 130 }}
+                    className='position-relative'
+                      >
+                    <Image
+                      src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
+                      alt={lesson.Subtitle}
+                      className='position-absolute'
+                      sizes="225px"
+                      fill
+                      style={{
+                        objectFit: 'contain',
+                        width: '100%',
+                        height: "100%",
+                      }}
+                        />
                   </div>
                 </div>
-              
+              )}
+              <div
+                className="w-100 mt-3"
+                  >
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                    >
+                  <RichText content={lesson.SponsoredBy} className={`${isLesson4 ? 'text-center' : ''}`} />
+                </div>
+              </div>
             </div>
+              
+          </div>
          
         </div>
       </div>
