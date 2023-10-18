@@ -23,7 +23,7 @@ const LessonPartBtn = ({
 }) => {
   return (
     <div {...parentDivProps}>
-      <div className='d-flex flex-column w-100'>
+      <div className='d-flex me-2'>
         <div className={tileImgAndLessonInfoContainerClassName}>
           <div
             className={lessonPartTxtContainerClassName}
@@ -67,7 +67,7 @@ const LessonPartBtn = ({
                                 </div>
                             </div>
                         } */}
-            <div className='d-flex'>
+            <div className='d-flex '>
               <RichText
                 className={prefaceClassName}
                 content={lsnPreface}
@@ -76,7 +76,7 @@ const LessonPartBtn = ({
             {/* <div style={{ height: "50px" }} className="border" /> */}
             {!!previewTags?.length && (
               <div
-                className='d-flex tagPillContainer flex-wrap mt-2'
+                className='d-flex tagPillContainer flex-wrap mt-2 w-100'
               >
                 {previewTags.map((tag, index) => (
                   <div
