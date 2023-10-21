@@ -42,7 +42,7 @@ const LessonDetails = ({ lesson }) => {
     sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
   }
 
-  if (!lesson && typeof window === "undefined") {
+  if (!lesson && (typeof window === "undefined")) {
     return null;
   }
 

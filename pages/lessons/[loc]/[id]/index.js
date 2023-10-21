@@ -355,6 +355,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         lesson: null,
         availLocs: null,
       },
+      revalidate: 30,
     }
   }
 };
