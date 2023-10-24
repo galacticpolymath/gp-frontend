@@ -29,8 +29,9 @@ const StandardsGroup = ({
   alignmentNotes,
   statements,
 }) => {
-  // if grades is an array, convert it into a string
   const _grades = Array.isArray(grades) ? grades.join(',') : grades;
+
+  console.log("hey there: ", alignmentNotes)
 
   return (
     <div className='border-bottom border-gray'>
