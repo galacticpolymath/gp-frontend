@@ -2,8 +2,7 @@
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import RichText from '../../RichText';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const formatGrades = (grades) => {
   if (!grades) {
@@ -26,37 +25,37 @@ export const formatAlignmentNotes = (text) => {
 
 const CopyableTxt = ({ children }) => {
   const [isModalOn, setIsModalOn] = useState(false);
-  const [modalTxt, setModalTxt] = useState("Copy text.")
-  const [coordinates, setCoordinates] = useState({ x: 0, y: 0 })
+  const [modalTxt, setModalTxt] = useState('Copy text.');
+  const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
 
   const handleOnClick = event => {
     if (event.target.innerHTML) {
       navigator.clipboard.writeText(event.target.innerHTML);
-      setModalTxt("Text copied ✅!")
-    };
-  }
+      setModalTxt('Text copied ✅!');
+    }
+  };
 
-  const handleOnMouseEnter = _ => {
+  const handleOnMouseEnter = () => {
     setIsModalOn(true);
-  }
+  };
 
-  const handleOnMouseLeave = _ => {
+  const handleOnMouseLeave = () => {
     setIsModalOn(false);
-    setModalTxt("Copy text.")
-  }
+    setModalTxt('Copy text.');
+  };
 
   const handleOnMouseMove = event => {
     const { clientX, clientY } = event;
-    setCoordinates({ x: clientX, y: clientY })
-  }
+    setCoordinates({ x: clientX, y: clientY });
+  };
 
   useEffect(() => {
     document.addEventListener('mousemove', handleOnMouseMove);
 
     return () => {
-      document.removeEventListener('click', handleOnMouseMove)
-    }
-  }, [])
+      document.removeEventListener('click', handleOnMouseMove);
+    };
+  }, []);
 
   return (
     <div
@@ -70,18 +69,18 @@ const CopyableTxt = ({ children }) => {
           className='position-fixed rounded p-0 m-0'
           style={{
             position: 'fixed',
-            width: "110px",
+            width: '110px',
             left: `${coordinates.x + 10}px`,
             top: `${coordinates.y + (-20)}px`,
             backgroundColor: '#212529',
-            textAlign: 'center'
+            textAlign: 'center',
           }}
         >
           <span
             className='text-white w-100 h-100 d-inline-flex justify-content-center align-items-center p-0 m-0'
             style={{
               fontSize: 12,
-              transform: "translateY(-2px)"
+              transform: 'translateY(-2px)',
             }}
           >
             {modalTxt}
@@ -90,8 +89,8 @@ const CopyableTxt = ({ children }) => {
       )}
       {children}
     </div>
-  )
-}
+  );
+};
 
 const StandardsGroup = ({
   id,
