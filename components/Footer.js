@@ -1,5 +1,29 @@
+import Image from "next/image";
+import svg from '../assets/img/tpt.svg'
+import Link from "next/link";
+
 /* eslint-disable react/jsx-max-props-per-line */
-const SOCIAL_MEDIA_ITEMS = [{ link: 'https://twitter.com/galacticPM', icon: 'bi bi-twitter' }, { link: 'https://www.youtube.com/channel/UCfyBNvN3CH4uWmwOCQVhmhg', icon: 'bi bi-youtube', color: 'red' }];
+const SOCIAL_MEDIA_ITEMS = [
+  {
+    link: 'https://twitter.com/galacticPM',
+    icon: <i className='bi bi-twitter' />
+  },
+  {
+    link: 'https://www.linkedin.com/company/galactic-polymath/',
+    icon: <i className='bi bi-linkedin' />,
+  },
+  {
+    link: 'https://www.youtube.com/channel/UCfyBNvN3CH4uWmwOCQVhmhg',
+    icon: <i className='bi bi-youtube' />,
+    color: 'red'
+  },
+  {
+    link: 'https://www.teacherspayteachers.com/Store/Galactic-Polymath',
+    icon: <Image style={{ maxHeight: "50px" }} src={svg} />
+  }
+];
+
+
 
 export default function Footer() {
 
@@ -9,16 +33,19 @@ export default function Footer() {
         <div className="col-12 col-lg-5">
           <h4 className="fs-5">Galactic Polymath</h4>
           <p>We translate current research into creative interdisciplinary lessons for grades 5+ that are <em>free for everyone.</em></p>
-          <div className="d-flex">
+          <div className="d-flex gap-1" >
             {SOCIAL_MEDIA_ITEMS.map(({ link, icon, color }, index) => (
-              <a
-                key={index}
-                style={{ fontSize: '21px', color: color ?? '#2D83C3', width: 40, height: 40 }}
-                className={`linkHover rounded-circle d-flex justify-content-center align-items-center ${(index !== 0) ? 'ms-1' : ''}`}
-                href={link}
-              >
-                <i className={icon} />
-              </a>
+              <div className='linkHover rounded-circle p-1'>
+                <Link
+                  key={index}
+                  style={{ fontSize: '21px', color: color ?? '#2D83C3', width: 40, height: 40 }}
+                  className={`d-flex justify-content-center align-items-center`}
+                  href={link}
+                  target="_blank"
+                >
+                  {icon}
+                </Link>
+              </div>
             ))}
           </div>
         </div>
