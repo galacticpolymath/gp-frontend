@@ -15,9 +15,7 @@ const formatGrades = (grades) => {
     return `Grade: ${parsedGrades[0]}`;
   }
 
-  return (
-    `Grades: ${parsedGrades[0]}-${parsedGrades[parsedGrades.length - 1]}`
-  );
+  return `Grades: ${parsedGrades[0]}-${parsedGrades[parsedGrades.length - 1]}`;
 };
 export const formatAlignmentNotes = (text) => {
   return text.replace(/•/g, '-').replace(/\^2/g, '²');
