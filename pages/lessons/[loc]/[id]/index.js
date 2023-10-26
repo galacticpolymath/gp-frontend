@@ -346,6 +346,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         lesson: JSON.parse(JSON.stringify(lessonToDisplayOntoUi)),
         availLocs: targetLessonLocales,
       },
+      revalidate: 30,
     };
   } catch (error) {
     console.error('Faild to get lesson. Error message: ', error)
@@ -355,6 +356,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         lesson: null,
         availLocs: null,
       },
+      revalidate: 30,
     }
   }
 };

@@ -35,6 +35,8 @@ const components = {
   },
 };
 
+// GOAL: make the text clickable, change the appearance of the arrow when the user hovers over the text
+
 const CustomMarkdownView = ({
   markdown,
   ...passThruProps
