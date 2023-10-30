@@ -28,9 +28,8 @@ const Accordion = ({
   accordionChildrenClasses = '',
   dataBsToggle = { 'data-bs-toggle': 'collapse' },
   highlighted,
-  setContentId
+  setContentId,
 }) => {
-  console.log('what is up: ', initiallyExpanded);
   const contentId = useRef();
 
   useEffect(() => {

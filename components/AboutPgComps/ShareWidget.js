@@ -83,7 +83,7 @@ const ShareWidget = ({ pinterestMedia, isOnSide, developmentUrl }) => {
                         style={{
                             background: "#7F7F7F",
                             border: 'none',
-                            width: 32, height: 32
+                            width: 32, height: 32,
                         }}
                         className='d-flex justify-content-center align-items-center rounded-circle'
                     >

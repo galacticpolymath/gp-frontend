@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import RichText from '../../RichText';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import CopyableTxt from '../../CopyableTxt';
 
 const formatGrades = (grades) => {
@@ -34,14 +34,14 @@ const StandardsGroup = ({
   const handleClickToCopyTxt = event => {
     event.stopPropagation();
     navigator.clipboard.writeText(event.target.innerHTML);
-  }
+  };
 
-  const [contentId, setContentId] = useState("");
-  const [isAccordionContentDisplayed, setIsAccordionContentDisplayed] = useState(false)
+  const [contentId, setContentId] = useState('');
+  const [isAccordionContentDisplayed, setIsAccordionContentDisplayed] = useState(false);
 
   const handleOnClick = () => {
     setIsAccordionContentDisplayed(prevState => !prevState);
-  }
+  };
 
   return (
     <div className='border-bottom border-gray'>
