@@ -30,22 +30,48 @@ const StandardsGroup = ({
   statements,
 }) => {
   const _grades = Array.isArray(grades) ? grades.join(',') : grades;
+
   const handleClickToCopyTxt = event => {
     event.stopPropagation();
     navigator.clipboard.writeText(event.target.innerHTML);
+  }
+
+  const [contentId, setContentId] = useState("");
+  const [isAccordionContentDisplayed, setIsAccordionContentDisplayed] = useState(false)
+
+  const handleOnClick = () => {
+    setIsAccordionContentDisplayed(prevState => !prevState);
   }
 
   return (
     <div className='border-bottom border-gray'>
       <Accordion
         id={id}
-        buttonClassName='w-100 text-start bg-white border-0 p-3 pb-1'
+        dataBsToggle={{}}
+        setContentId={setContentId}
+        buttonClassName='w-100 text-start bg-white border-0 p-3 pb-1 default-cursor'
         button={(
           <div>
             <h6 className='text-muted mb-2 w-100 d-flex justify-content-between'>
               {formatGrades(_grades)}
-              <i className="fs-5 bi-chevron-down"></i>
-              <i className="fs-5 bi-chevron-up"></i>
+              <div
+                role='button'
+                onClick={handleOnClick}
+                data-bs-toggle='collapse'
+                data-bs-target={`#content_${contentId}`}
+                style={{ width: 50, height: 50 }}
+              >
+                <i
+                  color="#7A8489"
+                  style={{ display: isAccordionContentDisplayed ? 'none' : 'block' }}
+                  className="fs-5 bi-chevron-down"
+                />
+                <i
+                  color="#7A8489"
+                  style={{ display: isAccordionContentDisplayed ? 'block' : 'none' }}
+                  className="fs-5 bi-chevron-up"
+                />
+              </div>
             </h6>
             {[].concat(codes).map((code, i) => (
               <div className='mb-0' key={i}>
@@ -56,8 +82,10 @@ const StandardsGroup = ({
                     <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
                   </p>
                 </CopyableTxt>
-                <div className='text-muted text-center'>
-                  <i className="bi bi-three-dots"></i>
+                <div
+                  className='text-muted text-center'
+                >
+                  <i className={`bi bi-three-dots ${isAccordionContentDisplayed ? 'invisible' : 'visible'}`} />
                 </div>
               </div>
             ))}
