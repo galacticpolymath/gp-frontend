@@ -5,8 +5,8 @@ const CopyableTxt = ({ children, implementLogicOnClick, copyTxtIndicator = 'Copy
     const [modalTxt, setModalTxt] = useState(copyTxtIndicator);
     const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
 
-    const handleOnClick = () => {
-        implementLogicOnClick()
+    const handleOnClick = event => {
+        implementLogicOnClick(event)
         setModalTxt(txtCopiedIndicator);
     };
 

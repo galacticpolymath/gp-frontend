@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 import { useEffect, useState } from 'react';
+import CopyableTxt from '../../CopyableTxt';
 
 const formatGrades = (grades) => {
   if (!grades) {
@@ -21,75 +22,6 @@ export const formatAlignmentNotes = (text) => {
   return text.replace(/•/g, '-').replace(/\^2/g, '²');
 };
 
-const CopyableTxt = ({ children }) => {
-  const [isModalOn, setIsModalOn] = useState(false);
-  const [modalTxt, setModalTxt] = useState('Copy text.');
-  const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
-
-  const handleOnClick = event => {
-    if (event.target.innerHTML) {
-      navigator.clipboard.writeText(event.target.innerHTML);
-      setModalTxt('Text copied ✅!');
-    }
-  };
-
-  const handleOnMouseEnter = () => {
-    setIsModalOn(true);
-  };
-
-  const handleOnMouseLeave = () => {
-    setIsModalOn(false);
-    setModalTxt('Copy text.');
-  };
-
-  const handleOnMouseMove = event => {
-    const { clientX, clientY } = event;
-    setCoordinates({ x: clientX, y: clientY });
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousemove', handleOnMouseMove);
-
-    return () => {
-      document.removeEventListener('click', handleOnMouseMove);
-    };
-  }, []);
-
-  return (
-    <div
-      className='pointer'
-      onMouseEnter={handleOnMouseEnter}
-      onMouseLeave={handleOnMouseLeave}
-      onClick={handleOnClick}
-    >
-      {isModalOn && (
-        <div
-          className='position-fixed rounded p-0 m-0'
-          style={{
-            position: 'fixed',
-            width: '110px',
-            left: `${coordinates.x + 10}px`,
-            top: `${coordinates.y + (-20)}px`,
-            backgroundColor: '#212529',
-            textAlign: 'center',
-          }}
-        >
-          <span
-            className='text-white w-100 h-100 d-inline-flex justify-content-center align-items-center p-0 m-0'
-            style={{
-              fontSize: 12,
-              transform: 'translateY(-2px)',
-            }}
-          >
-            {modalTxt}
-          </span>
-        </div>
-      )}
-      {children}
-    </div>
-  );
-};
-
 const StandardsGroup = ({
   id,
   codes,
@@ -98,6 +30,10 @@ const StandardsGroup = ({
   statements,
 }) => {
   const _grades = Array.isArray(grades) ? grades.join(',') : grades;
+  const handleClickToCopyTxt = event => {
+    event.stopPropagation();
+    navigator.clipboard.writeText(event.target.innerHTML);
+  }
 
   return (
     <div className='border-bottom border-gray'>
@@ -113,7 +49,13 @@ const StandardsGroup = ({
             </h6>
             {[].concat(codes).map((code, i) => (
               <div className='mb-0' key={i}>
-                <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
+                <CopyableTxt
+                  implementLogicOnClick={handleClickToCopyTxt}
+                >
+                  <p>
+                    <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
+                  </p>
+                </CopyableTxt>
                 <div className='text-muted text-center'>
                   <i className="bi bi-three-dots"></i>
                 </div>
@@ -124,7 +66,9 @@ const StandardsGroup = ({
       >
         <div className='p-3 ps-4 pb-1 bg-light-gray'>
           <h6>How does the lesson align to this standard?</h6>
-          <CopyableTxt>
+          <CopyableTxt
+            implementLogicOnClick={handleClickToCopyTxt}
+          >
             <RichText content={formatAlignmentNotes(alignmentNotes)} />
           </CopyableTxt>
         </div>
