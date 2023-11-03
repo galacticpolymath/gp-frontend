@@ -25,17 +25,22 @@ const Accordion = ({
   button,
   style = {},
   willUseGetId = true,
-  accordionChildrenClasses = {},
+  accordionChildrenClasses = '',
+  dataBsToggle = { 'data-bs-toggle': 'collapse' },
   highlighted,
+  setContentId,
 }) => {
   const contentId = useRef();
-  
+
   useEffect(() => {
     if (!contentId.current && willUseGetId) {
       contentId.current = getId();
+      if(setContentId){
+        setContentId(contentId.current);
+      }
     }
-  },[]);
-
+  }, []);
+  
   return (
     <div style={style} className={className}>
       <div className={`accordion-header lessonsPgSec ${highlighted ? 'highlighted' : ''}`} id={`heading_${id}`}>
@@ -44,7 +49,7 @@ const Accordion = ({
             <button
               className={`${initiallyExpanded ? '' : 'collapsed'} ${buttonClassName}`}
               type="button"
-              data-bs-toggle="collapse"
+              {...dataBsToggle}
               data-bs-target={`#content_${willUseGetId ? contentId?.current : id}`}
               aria-expanded="true"
               aria-controls="collapseOne"
@@ -56,7 +61,7 @@ const Accordion = ({
       </div>
       <div
         id={`content_${willUseGetId ? contentId?.current : id}`}
-        className={`collapse ${accordionChildrenClasses ?? ''} ${initiallyExpanded ? 'show' : ''}`}
+        className={`collapse ${accordionChildrenClasses || ''} ${initiallyExpanded ? 'show' : ''}`}
         aria-labelledby={`${id}_content`}
         data-bs-parent="#accordionExample"
       >

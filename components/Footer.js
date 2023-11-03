@@ -4,22 +4,30 @@ import Link from 'next/link';
 
 /* eslint-disable react/jsx-max-props-per-line */
 const SOCIAL_MEDIA_ITEMS = [
-  {
-    link: 'https://twitter.com/galacticPM',
-    icon: <i className='bi bi-twitter' />,
-  },
+ 
   {
     link: 'https://www.linkedin.com/company/galactic-polymath/',
     icon: <i className='bi bi-linkedin' />,
+    color: 'white',
   },
   {
     link: 'https://www.youtube.com/channel/UCfyBNvN3CH4uWmwOCQVhmhg',
     icon: <i className='bi bi-youtube' />,
-    color: 'red',
+    color: 'white',
+  },
+  {
+    link: 'https://www.pinterest.com/galacticpolymath/',
+    icon: <i className='bi bi-pinterest' />,
+    color: 'white',
+  },
+  {
+    link: 'https://twitter.com/galacticPM',
+    icon: <i className='bi bi-twitter' />,
+    color: 'white',
   },
   {
     link: 'https://www.teacherspayteachers.com/Store/Galactic-Polymath',
-    icon: <Image style={{ maxHeight: '50px' }} src={svg} />,
+    icon: <Image src={svg} alt='teachers pay teachers Galactic Polymath link' />,
   },
 ];
 
