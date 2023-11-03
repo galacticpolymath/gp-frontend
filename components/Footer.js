@@ -8,7 +8,7 @@ const SOCIAL_MEDIA_ITEMS = [
   {
     link: 'https://www.linkedin.com/company/galactic-polymath/',
     icon: <i className='bi bi-linkedin' />,
-    color: 'white'
+    color: 'white',
   },
   {
     link: 'https://www.youtube.com/channel/UCfyBNvN3CH4uWmwOCQVhmhg',
@@ -18,12 +18,12 @@ const SOCIAL_MEDIA_ITEMS = [
   {
     link: 'https://www.pinterest.com/galacticpolymath/',
     icon: <i className='bi bi-pinterest' />,
-    color: 'white'
+    color: 'white',
   },
   {
     link: 'https://twitter.com/galacticPM',
     icon: <i className='bi bi-twitter' />,
-    color: 'white'
+    color: 'white',
   },
   {
     link: 'https://www.teacherspayteachers.com/Store/Galactic-Polymath',
