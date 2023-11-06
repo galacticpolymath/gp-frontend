@@ -24,6 +24,7 @@ import Link from 'next/link';
 import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
+import useGetWindow from '../../../../customHooks/useGetWindow';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
@@ -82,6 +83,8 @@ const getSectionDotsDefaultVal = (lessonSection, sectionComps) => {
 const LessonDetails = ({ lesson, availLocs }) => {
   const router = useRouter();
   const { ref } = useInView({ threshold: 0.2 });
+  const windowObj = useGetWindow();
+  console.log('windowObj: ', windowObj)
   let sectionComps = null;
 
   if (lesson) {
@@ -193,7 +196,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
               {lastSubRelease && (
-                <Link passHref href="#versions" style={{ color: 'black' }}>
+                <Link href={`${windowObj.origin}/${windowObj.pathname}#versions`} style={{ color: 'black' }}>
                   <p>
                     Version {lastSubRelease.version}{' '}
                     (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})

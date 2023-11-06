@@ -95,8 +95,6 @@ const LessonPart = ({
     borderBottom: _borderBottom,
   };
 
-  console.log("yo there meng: ", _accordionId)
-
   return (
     <Accordion
       buttonClassName="w-100 text-start bg-white border-0 p-0"

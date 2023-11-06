@@ -22,12 +22,18 @@ import { FiExternalLink } from 'react-icons/fi';
 import QRCode from "react-qr-code";
 import { getLatestSubRelease } from '../../../../../helperFns/getLatestSubRelease';
 import Logo from '../../../../../assets/img/galactic_polymath_white.png';
+import { useState, useEffect } from 'react';
 
 const LessonPreview = ({ lesson }) => {
   const latestSubRelease = getLatestSubRelease(lesson?.Section)
   const router = useRouter();
+  const [linkUrlDomain, setLinkUrlDomain] = useState('')
   const isLesson4 = router.query.id === '4';
   let sectionComps = null;
+
+  useEffect(() => {
+    setLinkUrlDomain(window.location.origin)
+  }, []);
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
@@ -44,15 +50,6 @@ const LessonPreview = ({ lesson }) => {
     return null;
   };
 
-  let lessonPartLink = ''
-
-  if (typeof window !== 'undefined') {
-    console.log('window.location: ', window.location.origin)
-    lessonPartLink = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}`
-  }
-
-  // GOAL: get the url of the lesson preview without the '/preview' path
-
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner;
   const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
@@ -67,7 +64,7 @@ const LessonPreview = ({ lesson }) => {
     return null;
   }
 
-  if (typeof lessonParts === 'object' && lessonParts !== null && !Array.isArray(lessonParts)) {
+  if ((typeof lessonParts === 'object') && (lessonParts !== null) && !Array.isArray(lessonParts)) {
     const _lessonParts = Object.entries(lessonParts).filter(([key]) => !Number.isNaN(parseInt(key)));
     lessonParts = _lessonParts.map(([, lessonPart]) => lessonPart);
   }
@@ -244,7 +241,7 @@ const LessonPreview = ({ lesson }) => {
             tags = (tags?.length && Array.isArray(tags[0])) ? tags[0] : tags;
             tags = tags?.length ? tags.filter(tag => tag) : [];
             const previewTagsProp = tags.length ? { previewTags: tags } : {};
-            console.log('sup there meng: ', `${lessonPartLink}#lesson_part_${lsn}`)
+
             return (
               <LessonPartBtn
                 {...previewTagsProp}
@@ -253,7 +250,7 @@ const LessonPreview = ({ lesson }) => {
                   className='fs-5 fw-bold px-sm-0'
                 >
                   <Link
-                    href={`${lessonPartLink}#lesson_part_${lsn}`}
+                    href={`${linkUrlDomain}/lessons/${router.query.loc}/${router.query.id}#lesson_part_${lsn}`}
                     target='_blank'
                     style={{ fontWeight: 700 }}
                   >

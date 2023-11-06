@@ -25,14 +25,6 @@ const LessonPartBtn = ({
     {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
   </h3>
 }) => {
-  let lessonPartLink = ''
-
-  if (isLessonPreview && (typeof window !== 'undefined')) {
-    lessonPartLink = window.location.href.split("/").filter((_, index, self) => (self.length - 1) !== index).join("/")
-    console.log("lessonPartLink: ", lessonPartLink)
-    // const urlSplitted = 
-  }
-
   return (
     <div {...parentDivProps}>
       <div className='d-flex me-2'>
@@ -85,7 +77,6 @@ const LessonPartBtn = ({
               </div>
             )}
           </div>
-          {/* 'd-none arrow-down-lesson-part-container d-lg-flex' */}
           <div className='arrow-down-lesson-part-container d-flex'>
             {lessonTileUrl && (
               <div style={imgContainerDimensionObj} className="d-block position-relative me-3 me-lg-4">
