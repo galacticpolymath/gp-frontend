@@ -7,6 +7,8 @@ const Versions = ({
   _sectionDots,
   isAvailLocsMoreThan1,
 }) => {
+  console.log("SectionTitle: ", SectionTitle)
+
   return Data && (
     <CollapsibleLessonSection
       accordionId={SectionTitle}
