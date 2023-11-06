@@ -47,13 +47,9 @@ const LessonPreview = ({ lesson }) => {
   let lessonPartLink = ''
 
   if (typeof window !== 'undefined') {
-    lessonPartLink = `${window.location.href
-      .split("/")
-      .filter((_, index, self) => (self.length - 1) !== index)
-      .join("/")}`;
+    console.log('window.location: ', window.location.origin)
+    lessonPartLink = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}`
   }
-
-  console.log("lessonPartLink: ", lessonPartLink);
 
   // GOAL: get the url of the lesson preview without the '/preview' path
 
