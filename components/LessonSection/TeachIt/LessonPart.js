@@ -7,6 +7,8 @@ import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
 import { memo, useState } from 'react';
 import Link from 'next/link';
+import CopyableTxt from '../../CopyableTxt';
+import { useRouter } from 'next/router';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 
@@ -25,6 +27,7 @@ const LessonPart = ({
   ForGrades,
   _numsOfLessonPartsThatAreExpanded,
 }) => {
+  const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
   const isOnAssessments = lsnTitle === 'Assessments';
@@ -39,6 +42,18 @@ const LessonPart = ({
   _itemList = _itemList ?? linkResources;
   let previewTags = null;
   let restOfTags = null;
+  const _accordionId = `part_${lsnNum}`;
+
+  const handleClipBoardIconClick = () => {
+    let url = window.location.href;
+    const currentSectionInView = router.asPath.split("#").at(-1);
+
+    if (!(currentSectionInView === _accordionId)) {
+      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${_accordionId}`
+    }
+
+    navigator.clipboard.writeText(url);
+  }
 
   const handleOnClick = () => {
     const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
@@ -84,7 +99,7 @@ const LessonPart = ({
     <Accordion
       buttonClassName="w-100 text-start bg-white border-0 p-0"
       key={lsnNum}
-      id={`part_${lsnNum}`}
+      id={_accordionId}
       accordionChildrenClasses='px-3 pb-2 w-100'
       style={accordionStyle}
       button={(
@@ -182,6 +197,16 @@ const LessonPart = ({
                       style={{ color: highlightedBorderColor }}
                       className="fs-4 bi-chevron-up"
                     />
+                  </div>
+                  <div className='d-flex justify-content-center align-items-center' style={{ transform: 'translateY(10px)' }}>
+                    <CopyableTxt
+                      additiveYCoord={-20}
+                      copyTxtIndicator='Copy lesson link.'
+                      txtCopiedIndicator='Lesson link copied ✅!'
+                      implementLogicOnClick={handleClipBoardIconClick}
+                    >
+                      <i className="bi bi-clipboard" style={{ fontSize: "27px", color: '#A2A2A2' }} />
+                    </CopyableTxt>
                   </div>
                 </div>
               </div>
