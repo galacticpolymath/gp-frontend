@@ -22,19 +22,12 @@ import { FiExternalLink } from 'react-icons/fi';
 import QRCode from "react-qr-code";
 import { getLatestSubRelease } from '../../../../../helperFns/getLatestSubRelease';
 import Logo from '../../../../../assets/img/galactic_polymath_white.png';
-import { useState, useEffect } from 'react';
 
-const LessonDetails = ({ lesson }) => {
+const LessonPreview = ({ lesson }) => {
   const latestSubRelease = getLatestSubRelease(lesson?.Section)
   const router = useRouter();
   const isLesson4 = router.query.id === '4';
-  const [lessonPgUrl, setLessonPgUrl] = useState('');
   let sectionComps = null;
-
-  // useEffect(() => {
-  //   const _lessonPgUrl = `${(typeof window !== 'undefined') && window.location.origin}${router.asPath.split('/').filter(path => path !== 'preview').join('/')}`
-  //   setLessonPgUrl(_lessonPgUrl)
-  // }, [])
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
@@ -49,7 +42,20 @@ const LessonDetails = ({ lesson }) => {
   if (!lesson) {
     router.replace('/error');
     return null;
+  };
+
+  let lessonPartLink = ''
+
+  if (typeof window !== 'undefined') {
+    lessonPartLink = `${window.location.href
+      .split("/")
+      .filter((_, index, self) => (self.length - 1) !== index)
+      .join("/")}`;
   }
+
+  console.log("lessonPartLink: ", lessonPartLink);
+
+  // GOAL: get the url of the lesson preview without the '/preview' path
 
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner;
@@ -177,7 +183,7 @@ const LessonDetails = ({ lesson }) => {
           {/* Spacer for */}
           <div style={{ height: "180px" }} className="w-75" />
           <div className="w-90 d-flex flex-column px-1 ">
-              
+
             <div className="d-flex w-100 flex-column">
               <div className='w-100'>
                 <h5 className="text-center">
@@ -189,7 +195,7 @@ const LessonDetails = ({ lesson }) => {
                   <div
                     style={{ height: 130, width: 130 }}
                     className='position-relative'
-                      >
+                  >
                     <Image
                       src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
                       alt={lesson.Subtitle}
@@ -201,23 +207,23 @@ const LessonDetails = ({ lesson }) => {
                         width: '100%',
                         height: "100%",
                       }}
-                        />
+                    />
                   </div>
                 </div>
               )}
               <div
                 className="w-100 mt-3"
-                  >
+              >
                 <div
                   className="d-flex justify-content-center align-items-center "
-                    >
+                >
                   <RichText content={lesson.SponsoredBy} className={`${isLesson4 ? 'text-center' : ''}`} />
                 </div>
               </div>
             </div>
-              
+
           </div>
-         
+
         </div>
       </div>
       <div
@@ -242,10 +248,22 @@ const LessonDetails = ({ lesson }) => {
             tags = (tags?.length && Array.isArray(tags[0])) ? tags[0] : tags;
             tags = tags?.length ? tags.filter(tag => tag) : [];
             const previewTagsProp = tags.length ? { previewTags: tags } : {};
-
+            console.log('sup there meng: ', `${lessonPartLink}#lesson_part_${lsn}`)
             return (
               <LessonPartBtn
                 {...previewTagsProp}
+                h3={<h3
+                  style={{ color: '#2C83C3' }}
+                  className='fs-5 fw-bold px-sm-0'
+                >
+                  <Link
+                    href={`${lessonPartLink}#lesson_part_${lsn}`}
+                    target='_blank'
+                    style={{ fontWeight: 700 }}
+                  >
+                    {`Lesson ${lsn}: ${title}`}
+                  </Link>
+                </h3>}
                 key={index}
                 isLessonPreview
                 prefaceClassName='text-start prefaceTxtLessonPreview'
@@ -358,4 +376,4 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   }
 };
 
-export default LessonDetails;
+export default LessonPreview;
