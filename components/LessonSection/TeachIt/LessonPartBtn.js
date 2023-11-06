@@ -1,10 +1,9 @@
 import Image from 'next/image';
 import RichText from '../../RichText';
+import Link from 'next/link';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 
-// 'd-flex justify-content-between w-100 position-relative'
-// 'd-flex flex-column justify-content-between w-100 align-items-stretch mt-0 pe-sm-3'
 const LessonPartBtn = ({
   parentDivProps,
   lsnNum,
@@ -21,6 +20,14 @@ const LessonPartBtn = ({
   prefaceClassName,
   imgContainerDimensionObj = { width: 150, height: 150 },
 }) => {
+  let lessonPartLink = ''
+
+  if (isLessonPreview && (typeof window !== undefined)) {
+    lessonPartLink = window.location.href.split("/").filter((_, index, self) => (self.length - 1) !== index).join("/")
+    console.log("lessonPartLink: ", lessonPartLink)
+    // const urlSplitted = 
+  }
+
   return (
     <div {...parentDivProps}>
       <div className='d-flex me-2'>
@@ -31,11 +38,14 @@ const LessonPartBtn = ({
             <div
               className='lessonPartHeaderContainer d-flex position-relative justify-content-between'
             >
+
               <h3
                 style={{ color: LESSON_PART_BTN_COLOR }}
-                className='fs-5 fw-bold text-left px-sm-0'
+                className='fs-5 fw-bold px-sm-0'
               >
-                {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
+                <Link href={lessonPartLink} className="no-link-decoration w-100 h-100">
+                  {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
+                </Link>
               </h3>
               {!isLessonPreview && (
                 <div

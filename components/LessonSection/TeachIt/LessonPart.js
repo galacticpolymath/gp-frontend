@@ -49,7 +49,7 @@ const LessonPart = ({
     const currentSectionInView = router.asPath.split("#").at(-1);
 
     if (!(currentSectionInView === _accordionId)) {
-      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${_accordionId}`
+      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#lesson_${_accordionId}`
     }
 
     navigator.clipboard.writeText(url);
@@ -95,6 +95,8 @@ const LessonPart = ({
     borderBottom: _borderBottom,
   };
 
+  console.log("yo there meng: ", _accordionId)
+
   return (
     <Accordion
       buttonClassName="w-100 text-start bg-white border-0 p-0"
@@ -105,8 +107,17 @@ const LessonPart = ({
       button={(
         <div
           onClick={handleOnClick}
-          className='px-3 pt-3 pb-2 w-100 bg-white d-flex'
+          className='px-3 position-relative pt-3 pb-2 w-100 bg-white d-flex'
         >
+          <div
+            style={{
+              height: "10px",
+              width: "100%",
+              top: "-70%"
+            }}
+            className="position-absolute"
+            id={`lesson_${_accordionId}`}
+          />
           <div className='d-flex flex-column w-100'>
             <div className='d-flex justify-content-between w-100 position-relative'>
               <div
@@ -198,12 +209,18 @@ const LessonPart = ({
                       className="fs-4 bi-chevron-up"
                     />
                   </div>
-                  <div className='d-flex justify-content-center align-items-center' style={{ transform: 'translateY(10px)' }}>
+                  <div className='d-flex justify-content-center align-items-center mt-3'>
                     <CopyableTxt
                       additiveYCoord={-20}
-                      copyTxtIndicator='Copy lesson link.'
+                      copyTxtIndicator='Link to this lesson.'
                       txtCopiedIndicator='Lesson link copied ✅!'
                       implementLogicOnClick={handleClipBoardIconClick}
+                      copyTxtModalDefaultStyleObj={{
+                        position: 'fixed',
+                        width: '150px',
+                        backgroundColor: '#212529',
+                        textAlign: 'center',
+                      }}
                     >
                       <i className="bi bi-clipboard" style={{ fontSize: "27px", color: '#A2A2A2' }} />
                     </CopyableTxt>

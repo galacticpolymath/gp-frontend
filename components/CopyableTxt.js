@@ -5,7 +5,7 @@ const CopyableTxt = ({
   implementLogicOnClick,
   copyTxtIndicator = 'Copy text',
   txtCopiedIndicator = 'Text copied ✅!',
-  copyTxtDefaultStyleObj = {
+  copyTxtModalDefaultStyleObj = {
     position: 'fixed',
     width: '110px',
     backgroundColor: '#212529',
@@ -23,7 +23,11 @@ const CopyableTxt = ({
   const [isModalOn, setIsModalOn] = useState(false);
   const [modalTxt, setModalTxt] = useState(copyTxtIndicator);
   const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
-  let copyTxtModalStylesObj = { ...copyTxtDefaultStyleObj, top: `${coordinates.y + additiveYCoord}px`, left: `${coordinates.x + additiveXCoord}px` };
+  let copyTxtModalStylesObj = {
+    ...copyTxtModalDefaultStyleObj,
+    top: `${coordinates.y + additiveYCoord}px`,
+    left: `${coordinates.x + additiveXCoord}px`
+  };
 
   const handleOnClick = event => {
     implementLogicOnClick(event);

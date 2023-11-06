@@ -60,7 +60,7 @@ const CollapsibleLessonSection = ({
             implementLogicOnClick={copyLessonUrlWithAnchorTag}
             copyTxtIndicator='Copy link.'
             txtCopiedIndicator='Link copied ✅!'
-            copyTxtDefaultStyleObj={{
+            copyTxtModalDefaultStyleObj={{
               position: 'fixed',
               width: '130px',
               backgroundColor: '#212529',

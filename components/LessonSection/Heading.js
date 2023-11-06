@@ -39,7 +39,7 @@ const Heading = ({ SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) => {
                 implementLogicOnClick={copyLessonUrlWithAnchorTag}
                 copyTxtIndicator='Copy link.'
                 txtCopiedIndicator='Link copied ✅!'
-                copyTxtDefaultStyleObj={{
+                copyTxtModalDefaultStyleObj={{
                   position: 'fixed',
                   width: '130px',
                   height: "30px",
