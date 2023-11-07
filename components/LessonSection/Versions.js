@@ -16,7 +16,7 @@ const Versions = ({
       _sectionDots={_sectionDots}
       isAvailLocsMoreThan1={isAvailLocsMoreThan1}
     >
-      <div className='container mx-auto my-4'>
+      <div id='versions-container' className='container mx-auto my-4'>
         {Data.map(({ major_release, sub_releases = [] }, i) => (
           <div key={i}>
             <h4>Major Release {major_release}</h4>

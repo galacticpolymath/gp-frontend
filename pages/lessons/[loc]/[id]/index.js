@@ -110,6 +110,19 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }
 
+  useEffect(() => {
+    console.log('router: ', router)
+  }, []);
+
+  const handleBtnClick = () => {
+    if (!document.getElementById('versions-container')?.offsetParent) {
+      const headingVersionsElement = document.getElementById('heading_versions');
+      headingVersionsElement.querySelector('button').click();
+    }
+
+    window.location.href = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#9._version_notes`
+  }
+
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
     const viewPortWidth = getViewportWidth()
@@ -196,7 +209,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
               {lastSubRelease && (
-                <button className='underline-on-hover no-btn-styles' style={{ color: 'black' }}>
+                <button onClick={handleBtnClick} className='underline-on-hover no-btn-styles' style={{ color: 'black' }}>
                   <span style={{ fontWeight: 'bolder' }}>
                     Version {lastSubRelease.version}{' '}
                     (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
