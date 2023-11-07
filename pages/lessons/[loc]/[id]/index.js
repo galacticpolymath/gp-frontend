@@ -139,7 +139,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   useEffect(() => {
     document.body.addEventListener('click', handleDocumentClick);
-
+    
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, []);
 
@@ -196,7 +196,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
               {lastSubRelease && (
-                <Link href={`${windowObj.origin}/${windowObj.pathname}#versions`} style={{ color: 'black' }}>
+                <Link href={`${windowObj.origin}/${windowObj.pathname}#heading_versions`} style={{ color: 'black' }}>
                   <p>
                     Version {lastSubRelease.version}{' '}
                     (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
