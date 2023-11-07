@@ -139,7 +139,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   useEffect(() => {
     document.body.addEventListener('click', handleDocumentClick);
-    
+
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, []);
 
@@ -196,12 +196,12 @@ const LessonDetails = ({ lesson, availLocs }) => {
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
               {lastSubRelease && (
-                <Link href={`${windowObj.origin}/${windowObj.pathname}#heading_versions`} style={{ color: 'black' }}>
-                  <p>
+                <button className='underline-on-hover no-btn-styles' style={{ color: 'black' }}>
+                  <span style={{ fontWeight: 'bolder' }}>
                     Version {lastSubRelease.version}{' '}
                     (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-                  </p>
-                </Link>
+                  </span>
+                </button>
               )}
               <LocDropdown
                 availLocs={availLocs}
