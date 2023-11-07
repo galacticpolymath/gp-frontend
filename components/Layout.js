@@ -19,17 +19,17 @@ const montserrat = Montserrat({
 export default function Layout({
   title,
   keywords,
-  className,
   description,
   children,
   imgSrc,
   imgAlt,
   url,
+  className = '',
   type = 'article',
   style = {},
 }) {
   return (
-    <div style={style} className={`${montserrat.className} ${className}`}>
+    <div className={`${montserrat.className} ${className}`}>
       <Head>
         <title>{title}</title>
         <meta property="og:title" content={title} />
