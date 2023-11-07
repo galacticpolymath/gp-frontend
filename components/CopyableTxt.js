@@ -11,7 +11,7 @@ const CopyableTxt = ({
     backgroundColor: '#212529',
     textAlign: 'center',
   },
-  additiveYCoord = 0,
+  additiveYCoord = -20,
   additiveXCoord = 0,
   modalClassNameStr = 'position-fixed rounded p-0 m-0',
   txtClassName = 'text-white w-100 h-100 d-inline-flex justify-content-center align-items-center p-0 m-0',
