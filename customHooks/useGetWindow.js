@@ -7,10 +7,12 @@ const useGetWindow = () => {
     const [appWindow, setAppWindow] = useState({});
 
     useEffect(() => {
-        setAppWindow({
+        const appWindow = {
             ...router,
             ...window.location
-        });
+        };
+        console.group('appWindow: ', appWindow)
+        setAppWindow(appWindow);
     }, []);
 
     return appWindow;

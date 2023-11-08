@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
@@ -6,15 +7,17 @@ const Versions = ({
   Data = [],
   _sectionDots,
   isAvailLocsMoreThan1,
+  isInitiallyExpanded = true
 }) => {
-  console.log("SectionTitle: ", SectionTitle)
-
+  
   return Data && (
     <CollapsibleLessonSection
       accordionId="versions"
       SectionTitle={SectionTitle}
       _sectionDots={_sectionDots}
       isAvailLocsMoreThan1={isAvailLocsMoreThan1}
+      initiallyExpanded={isInitiallyExpanded}
+      scrollToTranslateVal='translateY(-90px)'
     >
       <div id='versions-container' className='container mx-auto my-4'>
         {Data.map(({ major_release, sub_releases = [] }, i) => (

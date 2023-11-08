@@ -9,6 +9,7 @@ import { memo, useState } from 'react';
 import Link from 'next/link';
 import CopyableTxt from '../../CopyableTxt';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 
@@ -53,7 +54,25 @@ const LessonPart = ({
     }
 
     navigator.clipboard.writeText(url);
-  }
+  };
+
+
+  useEffect(() => {
+    const lessonPartIdInUrl = window.location.href.split("#").at(-1);
+
+    if (lessonPartIdInUrl === `lesson_${_accordionId}`) {
+      const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
+
+      setNumsOfLessonPartsThatAreExpanded(prevState => {
+        if (!isExpanded) {
+          return previousLessonPartNum ? [...prevState, previousLessonPartNum] : prevState;
+        }
+
+        return prevState.filter(num => num !== previousLessonPartNum);
+      });
+      setIsExpanded(true);
+    };
+  }, [])
 
   const handleOnClick = () => {
     const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
@@ -102,6 +121,7 @@ const LessonPart = ({
       id={_accordionId}
       accordionChildrenClasses='px-3 pb-2 w-100'
       style={accordionStyle}
+      initiallyExpanded={isExpanded}
       button={(
         <div
           onClick={handleOnClick}
@@ -111,7 +131,7 @@ const LessonPart = ({
             style={{
               height: "10px",
               width: "100%",
-              top: "-70%"
+              top: "-50%"
             }}
             className="position-absolute"
             id={`lesson_${_accordionId}`}
@@ -220,7 +240,7 @@ const LessonPart = ({
                         textAlign: 'center',
                       }}
                     >
-                      <i className="bi bi-clipboard" style={{ fontSize: "27px", color: '#A2A2A2' }} />
+                      <i className="bi bi-clipboard" style={{ fontSize: "30px", color: '#A2A2A2' }} />
                     </CopyableTxt>
                   </div>
                 </div>

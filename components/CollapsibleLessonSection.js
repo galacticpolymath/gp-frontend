@@ -20,6 +20,7 @@ const CollapsibleLessonSection = ({
   _sectionDots,
   isAvailLocsMoreThan1,
   highlighted = false,
+  scrollToTranslateVal = 'translateY(-150px)'
 }) => {
   const ref = useRef();
   const router = useRouter();
@@ -32,7 +33,7 @@ const CollapsibleLessonSection = ({
     const currentSectionInView = router.asPath.split("#").at(-1);
 
     if (!(currentSectionInView === _accordionId)) {
-      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${_accordionId}`
+      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${h2Id}`
     }
 
     navigator.clipboard.writeText(url);
@@ -71,8 +72,8 @@ const CollapsibleLessonSection = ({
           >
             <i className="bi bi-clipboard ms-4" style={{ fontSize: "25px" }} />
           </CopyableTxt>
-          <div id={h2Id} style={{ height: 30, width: 30, transform: 'translateY(-150px)' }} className='position-absolute' />
-          <div id={_h2Id} style={{ height: 30, width: 30, transform: 'translateY(-150px)' }} className='position-absolute' />
+          <div id={h2Id} style={{ height: 30, width: 30, transform: scrollToTranslateVal }} className='position-absolute' />
+          <div id={_h2Id} style={{ height: 30, width: 30, transform: scrollToTranslateVal }} className='position-absolute' />
         </div>
       )}
     >
