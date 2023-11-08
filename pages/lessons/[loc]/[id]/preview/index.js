@@ -48,7 +48,7 @@ const LessonPreview = ({ lesson }) => {
   if (!lesson) {
     router.replace('/error');
     return null;
-  };
+  }
 
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner;

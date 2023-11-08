@@ -18,12 +18,14 @@ const LessonPartBtn = ({
   lessonPartTxtContainerClassName,
   prefaceClassName,
   imgContainerDimensionObj = { width: 150, height: 150 },
-  h3 = <h3
-    style={{ color: LESSON_PART_BTN_COLOR }}
-    className='fs-5 fw-bold px-sm-0'
-  >
-    {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
-  </h3>
+  h3 = (
+    <h3
+      style={{ color: LESSON_PART_BTN_COLOR }}
+      className='fs-5 fw-bold px-sm-0'
+    >
+      {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
+    </h3>
+  ),
 }) => {
   return (
     <div {...parentDivProps}>

@@ -3,9 +3,6 @@
 /* eslint-disable comma-dangle */
 /** @type {import('next').NextConfig} */
 module.exports = {
-  experimental: {
-    scrollRestoration: true,
-  },
   reactStrictMode: true,
   swcMinify: true,
   images: {

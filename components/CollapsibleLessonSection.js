@@ -20,7 +20,7 @@ const CollapsibleLessonSection = ({
   _sectionDots,
   isAvailLocsMoreThan1,
   highlighted = false,
-  scrollToTranslateVal = 'translateY(-150px)'
+  scrollToTranslateVal = 'translateY(-150px)',
 }) => {
   const ref = useRef();
   const router = useRouter();
@@ -33,7 +33,7 @@ const CollapsibleLessonSection = ({
     const currentSectionInView = router.asPath.split("#").at(-1);
 
     if (!(currentSectionInView === _accordionId)) {
-      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${h2Id}`
+      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${h2Id}`;
     }
 
     navigator.clipboard.writeText(url);

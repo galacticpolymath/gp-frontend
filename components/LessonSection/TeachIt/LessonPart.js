@@ -47,18 +47,17 @@ const LessonPart = ({
 
   const handleClipBoardIconClick = () => {
     let url = window.location.href;
-    const currentSectionInView = router.asPath.split("#").at(-1);
+    const currentSectionInView = router.asPath.split('#').at(-1);
 
     if (!(currentSectionInView === _accordionId)) {
-      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#lesson_${_accordionId}`
+      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#lesson_${_accordionId}`;
     }
 
     navigator.clipboard.writeText(url);
   };
 
-
   useEffect(() => {
-    const lessonPartIdInUrl = window.location.href.split("#").at(-1);
+    const lessonPartIdInUrl = window.location.href.split('#').at(-1);
 
     if (lessonPartIdInUrl === `lesson_${_accordionId}`) {
       const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
@@ -71,8 +70,8 @@ const LessonPart = ({
         return prevState.filter(num => num !== previousLessonPartNum);
       });
       setIsExpanded(true);
-    };
-  }, [])
+    }
+  }, []);
 
   const handleOnClick = () => {
     const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
@@ -129,9 +128,9 @@ const LessonPart = ({
         >
           <div
             style={{
-              height: "10px",
-              width: "100%",
-              top: "-50%"
+              height: '10px',
+              width: '100%',
+              top: '-50%',
             }}
             className="position-absolute"
             id={`lesson_${_accordionId}`}
@@ -240,7 +239,7 @@ const LessonPart = ({
                         textAlign: 'center',
                       }}
                     >
-                      <i className="bi bi-clipboard" style={{ fontSize: "30px", color: '#A2A2A2' }} />
+                      <i className="bi bi-clipboard" style={{ fontSize: '30px', color: '#A2A2A2' }} />
                     </CopyableTxt>
                   </div>
                 </div>

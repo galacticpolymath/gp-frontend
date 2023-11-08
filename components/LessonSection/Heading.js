@@ -17,11 +17,11 @@ const Heading = ({ SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) => {
     const currentSectionInView = router.asPath.split("#").at(-1);
 
     if (!(currentSectionInView === h2Id)) {
-      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${h2Id}`
+      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${h2Id}`;
     }
 
     navigator.clipboard.writeText(url);
-  }
+  };
 
   return (
     <div
@@ -47,7 +47,7 @@ const Heading = ({ SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                   backgroundColor: '#212529',
-                  textAlign: 'center'
+                  textAlign: 'center',
                 }}
                 additiveYCoord={-20}
                 txtStyleObj={{ fontSize: 12 }}

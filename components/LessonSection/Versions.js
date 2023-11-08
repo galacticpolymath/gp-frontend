@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
@@ -7,7 +6,7 @@ const Versions = ({
   Data = [],
   _sectionDots,
   isAvailLocsMoreThan1,
-  isInitiallyExpanded = true
+  isInitiallyExpanded = true,
 }) => {
   
   return Data && (

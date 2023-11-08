@@ -35,7 +35,7 @@ const StandardsGroup = ({
 
   useEffect(() => {
     setIsOnClient(true);
-  }, [])
+  }, []);
 
   const handleClickToCopyTxt = event => {
     event.stopPropagation();
@@ -97,7 +97,7 @@ const StandardsGroup = ({
                       data-bs-target={`#content_${contentId}`}
                     >
                       {isAccordionContentDisplayed ?
-                        <i style={{ fontSize: "24px" }} className="opacity-100 bi bi-x" />
+                        <i style={{ fontSize: '24px' }} className="opacity-100 bi bi-x" />
                         :
                         <i className='opacity-100 bi bi-three-dots' />
                       }

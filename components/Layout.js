@@ -29,7 +29,7 @@ export default function Layout({
   style = {},
 }) {
   return (
-    <div className={`${montserrat.className} ${className}`}>
+    <div style={style} className={`${montserrat.className} ${className}`}>
       <Head>
         <title>{title}</title>
         <meta property="og:title" content={title} />

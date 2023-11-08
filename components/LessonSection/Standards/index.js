@@ -4,7 +4,6 @@ import { useRef } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 import Accordion from '../../Accordion';
 import Subject from './Subject';
-import CopyableTxt from '../../CopyableTxt';
 
 const Standards = ({
   Data,

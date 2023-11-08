@@ -24,7 +24,6 @@ import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
 
-
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
@@ -116,7 +115,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
     window.location.href = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#9._version_notes`
   }
 
-
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
     const viewPortWidth = getViewportWidth()
@@ -190,7 +188,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
     title: `Mini-Unit: ${lesson.Title}`,
     description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`,
     imgSrc: lessonBannerUrl, url: lesson.URL,
-    imgAlt: `${lesson.Title} cover image`
+    imgAlt: `${lesson.Title} cover image`,
   };
 
   return (

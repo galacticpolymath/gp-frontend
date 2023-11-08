@@ -18,7 +18,7 @@ const CopyableTxt = ({
   txtStyleObj = {
     fontSize: 12,
     transform: 'translateY(-2px)',
-  }
+  },
 }) => {
   const [isModalOn, setIsModalOn] = useState(false);
   const [modalTxt, setModalTxt] = useState(copyTxtIndicator);
@@ -26,7 +26,7 @@ const CopyableTxt = ({
   let copyTxtModalStylesObj = {
     ...copyTxtModalDefaultStyleObj,
     top: `${coordinates.y + additiveYCoord}px`,
-    left: `${coordinates.x + additiveXCoord}px`
+    left: `${coordinates.x + additiveXCoord}px`,
   };
 
   const handleOnClick = event => {
