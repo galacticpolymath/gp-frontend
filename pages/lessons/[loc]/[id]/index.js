@@ -20,7 +20,6 @@ import LessonsSecsNavDots from '../../../../components/LessonSection/LessonSecsN
 import ShareWidget from '../../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
 import useScrollHandler from '../../../../customHooks/useScrollHandler';
-import Link from 'next/link';
 import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
@@ -107,13 +106,21 @@ const LessonDetails = ({ lesson, availLocs }) => {
     }
   }
 
+  const handleBtnClick = () => {
+    if (!document.getElementById('versions-container')?.offsetParent) {
+      const headingVersionsElement = document.getElementById('heading_versions');
+      headingVersionsElement.querySelector('button').click();
+    }
+
+    window.location.href = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#9._version_notes`
+  }
+
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
     const viewPortWidth = getViewportWidth()
 
     if (!wasANavDotElementClicked && (viewPortWidth <= 767)) {
       setSectionDots(sectionDots => {
-
         return {
           ...sectionDots,
           dots: sectionDots?.dots.map(sectionDot => {
@@ -177,7 +184,12 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
   const shareWidgetFixedProps = IS_ON_PROD ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
-  const layoutProps = { title: `Mini-Unit: ${lesson.Title}`, description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`, imgSrc: lessonBannerUrl, url: lesson.URL, imgAlt: `${lesson.Title} cover image` }
+  const layoutProps = {
+    title: `Mini-Unit: ${lesson.Title}`,
+    description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`,
+    imgSrc: lessonBannerUrl, url: lesson.URL,
+    imgAlt: `${lesson.Title} cover image`,
+  };
 
   return (
     <Layout {...layoutProps}>
@@ -193,12 +205,12 @@ const LessonDetails = ({ lesson, availLocs }) => {
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
               {lastSubRelease && (
-                <Link passHref href="#versions" style={{ color: 'black' }}>
-                  <p>
+                <button onClick={handleBtnClick} className='underline-on-hover no-btn-styles' style={{ color: 'black' }}>
+                  <span style={{ fontWeight: 'bolder' }}>
                     Version {lastSubRelease.version}{' '}
                     (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-                  </p>
-                </Link>
+                  </span>
+                </button>
               )}
               <LocDropdown
                 availLocs={availLocs}

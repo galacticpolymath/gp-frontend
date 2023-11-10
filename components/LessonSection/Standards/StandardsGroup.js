@@ -4,6 +4,7 @@ import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 import { useState } from 'react';
 import CopyableTxt from '../../CopyableTxt';
+import { useEffect } from 'react';
 
 const formatGrades = (grades) => {
   if (!grades) {
@@ -30,6 +31,11 @@ const StandardsGroup = ({
   statements,
 }) => {
   const _grades = Array.isArray(grades) ? grades.join(',') : grades;
+  const [isOnClient, setIsOnClient] = useState(false);
+
+  useEffect(() => {
+    setIsOnClient(true);
+  }, []);
 
   const handleClickToCopyTxt = event => {
     event.stopPropagation();
@@ -82,11 +88,23 @@ const StandardsGroup = ({
                     <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
                   </p>
                 </CopyableTxt>
-                <div
-                  className='text-muted text-center'
-                >
-                  <i className={`bi bi-three-dots ${isAccordionContentDisplayed ? 'invisible' : 'visible'}`} />
-                </div>
+                {isOnClient && (
+                  <div className='w-100 d-flex justify-content-center align-items-center'>
+                    <button
+                      className='no-btn-styles'
+                      onClick={handleOnClick}
+                      data-bs-toggle='collapse'
+                      data-bs-target={`#content_${contentId}`}
+                    >
+                      {isAccordionContentDisplayed ?
+                        <i style={{ fontSize: '24px' }} className="opacity-100 bi bi-x" />
+                        :
+                        <i className='opacity-100 bi bi-three-dots' />
+                      }
+                    </button>
+                  </div>
+                )
+                }
               </div>
             ))}
           </div>

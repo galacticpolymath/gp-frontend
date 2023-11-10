@@ -27,7 +27,7 @@ const SOCIAL_MEDIA_ITEMS = [
   },
   {
     link: 'https://www.teacherspayteachers.com/Store/Galactic-Polymath',
-    icon: <Image src={svg} alt='teachers pay teachers Galactic Polymath link' />,
+    icon: <Image src={svg} style={{ height: 'fit-content' }} alt='teachers pay teachers Galactic Polymath link' />,
   },
 ];
 

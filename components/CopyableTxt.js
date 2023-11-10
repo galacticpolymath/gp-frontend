@@ -1,9 +1,33 @@
 import { useEffect, useState } from 'react';
 
-const CopyableTxt = ({ children, implementLogicOnClick, copyTxtIndicator = 'Copy text', txtCopiedIndicator = 'Text copied ✅!' }) => {
+const CopyableTxt = ({
+  children,
+  implementLogicOnClick,
+  copyTxtIndicator = 'Copy text',
+  txtCopiedIndicator = 'Text copied ✅!',
+  copyTxtModalDefaultStyleObj = {
+    position: 'fixed',
+    width: '110px',
+    backgroundColor: '#212529',
+    textAlign: 'center',
+  },
+  additiveYCoord = -20,
+  additiveXCoord = 0,
+  modalClassNameStr = 'position-fixed rounded p-0 m-0',
+  txtClassName = 'text-white w-100 h-100 d-inline-flex justify-content-center align-items-center p-0 m-0',
+  txtStyleObj = {
+    fontSize: 12,
+    transform: 'translateY(-2px)',
+  },
+}) => {
   const [isModalOn, setIsModalOn] = useState(false);
   const [modalTxt, setModalTxt] = useState(copyTxtIndicator);
   const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
+  let copyTxtModalStylesObj = {
+    ...copyTxtModalDefaultStyleObj,
+    top: `${coordinates.y + additiveYCoord}px`,
+    left: `${coordinates.x + additiveXCoord}px`,
+  };
 
   const handleOnClick = event => {
     implementLogicOnClick(event);
@@ -41,22 +65,12 @@ const CopyableTxt = ({ children, implementLogicOnClick, copyTxtIndicator = 'Copy
     >
       {isModalOn && (
         <div
-          className='position-fixed rounded p-0 m-0'
-          style={{
-            position: 'fixed',
-            width: '110px',
-            left: `${coordinates.x + 10}px`,
-            top: `${coordinates.y + (-20)}px`,
-            backgroundColor: '#212529',
-            textAlign: 'center',
-          }}
+          className={modalClassNameStr}
+          style={copyTxtModalStylesObj}
         >
           <span
-            className='text-white w-100 h-100 d-inline-flex justify-content-center align-items-center p-0 m-0'
-            style={{
-              fontSize: 12,
-              transform: 'translateY(-2px)',
-            }}
+            className={txtClassName}
+            style={txtStyleObj}
           >
             {modalTxt}
           </span>

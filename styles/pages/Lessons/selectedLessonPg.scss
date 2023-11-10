@@ -10,6 +10,7 @@
     > div {
       padding: .85rem 1.75rem;
       width: 75%;
+      max-width: 1080px;
       @media(max-width: 767px){
         width: 100%;
       }

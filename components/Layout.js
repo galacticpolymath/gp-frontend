@@ -19,12 +19,12 @@ const montserrat = Montserrat({
 export default function Layout({
   title,
   keywords,
-  className,
   description,
   children,
   imgSrc,
   imgAlt,
   url,
+  className = '',
   type = 'article',
   style = {},
 }) {
