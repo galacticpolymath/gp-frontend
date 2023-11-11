@@ -24,6 +24,13 @@ import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
 
+// GOAL: merge the title section with the lesson section 
+
+// GOAL: change the number of dots to 9
+
+// brain dump notes: 
+// the lesson dots will be 9 
+
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
@@ -78,10 +85,39 @@ const getSectionDotsDefaultVal = (lessonSection, sectionComps) => {
   })
 }
 
+const getLessonSections = (lessonSection, sectionComps) => {
+  return Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
+    const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
+
+    if (index === 0) {
+      return {
+        ...section,
+        SectionTitle: `${index + 1}. Overview`,
+      }
+    }
+
+    if (sectionTitle === -1) {
+      return {
+        ...section,
+        SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
+      }
+    }
+
+    return {
+      ...section,
+      SectionTitle: sectionTitle,
+    }
+  })
+}
+
 const LessonDetails = ({ lesson, availLocs }) => {
   const router = useRouter();
   const { ref } = useInView({ threshold: 0.2 });
   let sectionComps = null;
+
+  useEffect(() => {
+    console.log("lesson: ", lesson)
+  })
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
@@ -89,7 +125,10 @@ const LessonDetails = ({ lesson, availLocs }) => {
     sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
   }
 
-  const [sectionDots, setSectionDots] = useState({ dots: sectionComps ? getSectionDotsDefaultVal(lesson.Section, sectionComps) : {}, clickedSectionId: null });
+  const [sectionDots, setSectionDots] = useState({
+    dots: sectionComps ? getSectionDotsDefaultVal(lesson.Section, sectionComps) : {},
+    clickedSectionId: null
+  });
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots);
@@ -159,35 +198,14 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
   const lastSubRelease = getLatestSubRelease(lesson.Section);
-  let _sections = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
-    const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
-
-    if (index === 0) {
-      return {
-        ...section,
-        SectionTitle: `${index + 1}. Overview`,
-      }
-    }
-
-    if (sectionTitle === -1) {
-      return {
-        ...section,
-        SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
-      }
-    }
-
-    return {
-      ...section,
-      SectionTitle: sectionTitle,
-    }
-  })
-
+  let _sections = getLessonSections(lesson.Section, sectionComps);
   const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
   const shareWidgetFixedProps = IS_ON_PROD ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
   const layoutProps = {
     title: `Mini-Unit: ${lesson.Title}`,
     description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`,
-    imgSrc: lessonBannerUrl, url: lesson.URL,
+    imgSrc: lessonBannerUrl,
+    url: lesson.URL,
     imgAlt: `${lesson.Title} cover image`,
   };
 
@@ -197,7 +215,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
         _sectionDots={[sectionDots, setSectionDots]}
         setWillGoToTargetSection={setWillGoToTargetSection}
         setIsScrollListenerOn={setIsScrollListenerOn}
-        isScrollListenerOn={isScrollListenerOn} setWasDotClicked={setWasDotClicked}
+        isScrollListenerOn={isScrollListenerOn}
+        setWasDotClicked={setWasDotClicked}
       />
       <ShareWidget {...shareWidgetFixedProps} />
       <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
@@ -328,7 +347,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem.mainLink)
 
           if (errMsg && !images?.length) {
-            console.error('Faild to get the image preview of web app. Error message: ', errMsg)
+            console.error('Failed to get the image preview of web app. Error message: ', errMsg)
           }
 
           multiMediaItem = {
@@ -341,12 +360,41 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         multiMediaArrUpdated.push(multiMediaItem)
       }
 
+      // GOAL: get the versions from the section object 
+
+      const {
+        CoverImage, 
+        LessonBanner,
+        locale,
+        numID,
+        Subtitle,
+        SponsoredBy,
+        Title,
+        Section,
+        preview,
+        SponsorImage,
+        SponsorLogo
+      } = lessonToDisplayOntoUi ?? {};
+      let sponsorLogoImgUrl = SponsorImage?.url?.length ? SponsorImage?.url : SponsorLogo;
+      sponsorLogoImgUrl = Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl; 
       lessonToDisplayOntoUi = {
         ...lessonToDisplayOntoUi,
         Section: {
-          ...lessonToDisplayOntoUi?.Section,
+          ...Section,
+          overview: {
+            ...Section.overview,
+            SponsoredBy,
+            Subtitle,
+            numID,
+            locale,
+            sponsorLogoImgUrl,
+            lessonBannerUrl: CoverImage ?? LessonBanner,
+            availLocs: targetLessonLocales,
+            lessonTitle: Title,
+            versions: Section.versions.Data 
+          },
           preview: {
-            ...lessonToDisplayOntoUi?.Section?.preview,
+            ...preview,
             Multimedia: multiMediaArrUpdated,
           },
         },

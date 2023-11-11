@@ -5,6 +5,9 @@ import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
+import { format } from 'date-fns';
+
+
 
 const Overview = ({
   index,
@@ -19,11 +22,13 @@ const Overview = ({
   Tags,
   _sectionDots,
   SectionTitle,
+  __component,
+  ...titleProps
 }) => {
   const ref = useRef();
-
+  
   useLessonElementInView(_sectionDots, SectionTitle, ref);
-
+  
   return (
     <CollapsibleLessonSection
       className="Overview"
@@ -33,8 +38,10 @@ const Overview = ({
       _sectionDots={_sectionDots}
     >
       <div ref={ref} className='container mb-4'>
+        {/* put the lesson title here */}
         <div className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center">
           {LearningSummary && (
+            // put the GistCard here
             <div className="g-col-12 bg-white p-3 rounded-3 mt-2 text-start  align-items-center">
               <Image
                 src="/imgs/gp_logo_gradient_transBG.png"
