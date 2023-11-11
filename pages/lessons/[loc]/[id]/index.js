@@ -379,7 +379,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         SponsoredBy,
         Title,
         Section,
-        preview,
         SponsorImage,
         SponsorLogo
       } = lessonToDisplayOntoUi ?? {};
@@ -402,7 +401,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             versions: Section.versions.Data 
           },
           preview: {
-            ...preview,
+            ...Section?.preview,
             Multimedia: multiMediaArrUpdated,
           },
         },
