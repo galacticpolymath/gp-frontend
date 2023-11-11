@@ -62,6 +62,9 @@ export const sectionTypeMap = {
 };
 const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
   const Component = sectionTypeMap[section.__component];
+  if (!Component) {
+    console.log("section.__component: ", section.__component)
+  }
   let compProps = { ...section, _sectionDots };
 
   if (TeachIt.name === 'TeachIt') {

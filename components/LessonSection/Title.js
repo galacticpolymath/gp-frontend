@@ -4,6 +4,7 @@ import ShareWidget from "../AboutPgComps/ShareWidget";
 import RichText from "../RichText";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import LocDropdown from "../LocDropdown";
 
 
 const getLatestSubRelease = versions => {

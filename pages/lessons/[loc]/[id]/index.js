@@ -57,7 +57,7 @@ const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
 const getSectionDotsDefaultVal = (lessonSection, sectionComps) => {
   const _sections = Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
-  let startingSectionVals = [{ sectionId: 'title', isInView: true, SectionTitle: 'Title' }, ..._sections]
+  let startingSectionVals = [..._sections]
   startingSectionVals = startingSectionVals.filter(section => {
     if (((section?.__component === 'lesson-plan.overview') && !section?.SectionTitle)) {
       return true
@@ -108,7 +108,15 @@ const getLessonSections = (lessonSection, sectionComps) => {
       SectionTitle: sectionTitle,
     }
   })
-}
+};
+
+// BUG: 
+// WHAT IS HAPPENING: 
+// the lesson standards are not showing up onto the UI. 
+// WHAT I WANT: display the lesson standards onto the UI.
+
+// Actionable steps:
+// check the server functions if there are manipulations dones to the section object.
 
 const LessonDetails = ({ lesson, availLocs }) => {
   const router = useRouter();
@@ -198,7 +206,9 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
   const lastSubRelease = getLatestSubRelease(lesson.Section);
+  console.log("from the server: ", lesson.Section)
   let _sections = getLessonSections(lesson.Section, sectionComps);
+  console.log("_sections: ", _sections)
   const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
   const shareWidgetFixedProps = IS_ON_PROD ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
   const layoutProps = {
@@ -219,7 +229,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
         setWasDotClicked={setWasDotClicked}
       />
       <ShareWidget {...shareWidgetFixedProps} />
-      <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
+      {/* <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
         <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
           <div className="col-11 col-md-10">
             <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
@@ -277,8 +287,8 @@ const LessonDetails = ({ lesson, availLocs }) => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="px-1 px-sm-4 container d-flex justify-content-center selectedLessonPg pt-4 pb-4">
+      </div> */}
+      <div className="px-1 px-sm-4 pt-0 container d-flex justify-content-center selectedLessonPg pb-4">
         <div className="col-11 col-md-10 p-0">
           {_sections.map((section, index) => (
             <ParentLessonSection
@@ -359,8 +369,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
         multiMediaArrUpdated.push(multiMediaItem)
       }
-
-      // GOAL: get the versions from the section object 
 
       const {
         CoverImage, 
