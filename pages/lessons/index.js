@@ -28,6 +28,28 @@ const LessonsPage = ({ lessons, didErrorOccur }) => {
     return willShowLesson;
   });
 
+   // GOAL 1: display the number of lessons that a unit has in the unit section.
+  // HOW TO: 
+  // GOAL: filter out all of the lessons that are not hidden 
+
+  // GOAL 2: get the array that will contain all of the lessons
+  // show the following for each lesson (what will be contained for each lesson object): 
+  // -tags (Data.classroom.resources[0].lessons)
+  // -title (Data.classroom.resources[0].lessons)
+  // -lsnNum (in order to go to that specific lesson on the target unit) (Data.classroom.resources[0].lessons)
+  // -lesson duration (lsnDur) (from Data.lesson)
+  // -the tile for the lesson (Data.classroom.resources[0].lessons)
+  // -preface (Data.classroom.resources[0].lessons)
+  // -the target subject of lesson (from the root of the lesson object .TargetSubject)
+  // -the title of the unit (from the root of the object .Title)
+
+  // GOAL 3: display the lessons onto the ui on the lessons page
+  // check responsiveness: 
+  // below 575pxs 
+  
+
+  // GOAL: for each unit, get LsnStatuses and filter out all of the lessons that are not equal to Hidden
+
   return (
     <Layout
       title='Galactic Polymath Mini-Unit Releases'
@@ -107,6 +129,8 @@ const PROJECTED_LESSONS_FIELDS = [
   'numID',
   'PublicationStatus',
   'LessonBanner',
+  'teaching-materials',
+  'LsnStatuses'
 ]
 
 export async function getStaticProps() {
@@ -114,6 +138,41 @@ export async function getStaticProps() {
     await connectToMongodb();
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
+
+    // NOTES:
+    // pass the following props: 
+    // individualLessons
+    // create an empty array, for each individual lesson, check for the following:
+    // if the lesson is not hidden
+    // if not hidden, then push the lesson into the empty array
+    // after going through all of the individual lessons sort the items that are stored in the array
+
+    // GOAL A: go through each unit and get the number of lessons that can be displayed onto the UI.
+    // the individualLessons array is updated with all of the individualLessons that can be displayed onto the UI
+    // the displayable lesson is pushed into the individualLessons array
+    // the displayableLesson object is created with the following fields (if not noted, then value came from the lesson at index 0 of resources): 
+    // title
+    // tags 
+    // lsnNum
+    // lsnDur (from Data.lesson)
+    // tile for the lesson
+    // preface 
+    // target subject (root of the lesson object)
+    // the title of the unit (root of the lesson object) 
+    // the lessons from Data.lesson is retrieved by using lsn as the conditional for the find method
+    // the lessons from Data.resources is retrieved by using the lsn as the conditional for the find method 
+    // proceed with the above 
+    // the lsnStatus is not hidden
+    // using for-of-loop, if the lsnStatus is not hidden, then proceed with the above 
+    // for each lesson, go through LsnStatuses, each value will be called lsnStatus
+    // iterate lessons array returned from the mongoose query 
+    
+
+
+
+    // GOAL B: sort the individualLessons (if any) by the sort_by_date
+    
+
     lessons = lessons.map(lesson => ({
       ...lesson,
       ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
