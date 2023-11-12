@@ -135,7 +135,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const [sectionDots, setSectionDots] = useState({
     dots: sectionComps ? getSectionDotsDefaultVal(lesson.Section, sectionComps) : {},
-    clickedSectionId: null
+    clickedSectionId: null,
   });
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
   const [wasDotClicked, setWasDotClicked] = useState(false)
@@ -229,65 +229,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
         setWasDotClicked={setWasDotClicked}
       />
       <ShareWidget {...shareWidgetFixedProps} />
-      {/* <div id="lessonTitleSec" className="container d-flex justify-content-center pt-4 pb-4">
-        <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
-          <div className="col-11 col-md-10">
-            <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
-              {lastSubRelease && (
-                <button onClick={handleBtnClick} className='underline-on-hover no-btn-styles' style={{ color: 'black' }}>
-                  <span style={{ fontWeight: 'bolder' }}>
-                    Version {lastSubRelease.version}{' '}
-                    (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-                  </span>
-                </button>
-              )}
-              <LocDropdown
-                availLocs={availLocs}
-                loc={lesson.locale}
-                id={lesson.numID}
-              />
-            </div>
-            <h1 id="lessonTitleId" ref={ref} className="mt-2">{lesson.Title}</h1>
-            <h4 className='fw-light'>{lesson.Subtitle}</h4>
-            {lessonBannerUrl && (
-              <div className='w-100 position-relative mt-2 mb-2'>
-                <Image
-                  src={lessonBannerUrl}
-                  alt={lesson.Subtitle}
-                  width={1500}
-                  height={450}
-                  priority
-                  style={{ width: "100%", height: "auto", objectFit: 'contain' }}
-                />
-              </div>
-            )}
-            <div className='d-flex d-md-none'>
-              <label className='d-flex justify-content-center align-items-center'>Share: </label>
-              {IS_ON_PROD ? <ShareWidget pinterestMedia={lessonBannerUrl} /> : <ShareWidget developmentUrl={`${lesson.URL}/`} pinterestMedia={lessonBannerUrl} />}
-            </div>
-            <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
-              <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
-                <h5>Sponsored by:</h5>
-                <RichText content={lesson.SponsoredBy} />
-              </div>
-              <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
-                {sponsorLogoImgUrl && (
-                  <div style={{ height: "180px" }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
-                    <Image
-                      src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
-                      alt={lesson.Subtitle}
-                      className='sponsorImg'
-                      sizes="225px"
-                      fill
-                      style={{ width: "100%", objectFit: 'contain' }}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
       <div className="px-1 px-sm-4 pt-0 container d-flex justify-content-center selectedLessonPg pb-4">
         <div className="col-11 col-md-10 p-0">
           {_sections.map((section, index) => (
@@ -380,8 +321,9 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         Title,
         Section,
         SponsorImage,
-        SponsorLogo
+        SponsorLogo,
       } = lessonToDisplayOntoUi ?? {};
+      console.log("what is up there: ", LessonBanner)
       let sponsorLogoImgUrl = SponsorImage?.url?.length ? SponsorImage?.url : SponsorLogo;
       sponsorLogoImgUrl = Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl; 
       lessonToDisplayOntoUi = {
@@ -398,7 +340,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             lessonBannerUrl: CoverImage ?? LessonBanner,
             availLocs: targetLessonLocales,
             lessonTitle: Title,
-            versions: Section.versions.Data 
+            versions: Section.versions.Data, 
           },
           preview: {
             ...Section?.preview,

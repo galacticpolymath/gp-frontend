@@ -5,10 +5,7 @@ import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
-import { format } from 'date-fns';
 import Title from './Title';
-
-
 
 const Overview = ({
   index,
@@ -26,6 +23,8 @@ const Overview = ({
   __component,
   ...titleProps
 }) => {
+  console.log("titleProps: ", titleProps)
+  console.log(__component);
   const ref = useRef();
   
   useLessonElementInView(_sectionDots, SectionTitle, ref);

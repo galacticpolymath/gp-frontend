@@ -28,7 +28,7 @@ const LessonsPage = ({ lessons, didErrorOccur }) => {
     return willShowLesson;
   });
 
-   // GOAL 1: display the number of lessons that a unit has in the unit section.
+  // GOAL 1: display the number of lessons that a unit has in the unit section.
   // HOW TO: 
   // GOAL: filter out all of the lessons that are not hidden 
 
@@ -46,7 +46,6 @@ const LessonsPage = ({ lessons, didErrorOccur }) => {
   // GOAL 3: display the lessons onto the ui on the lessons page
   // check responsiveness: 
   // below 575pxs 
-  
 
   // GOAL: for each unit, get LsnStatuses and filter out all of the lessons that are not equal to Hidden
 
@@ -130,7 +129,7 @@ const PROJECTED_LESSONS_FIELDS = [
   'PublicationStatus',
   'LessonBanner',
   'teaching-materials',
-  'LsnStatuses'
+  'LsnStatuses',
 ]
 
 export async function getStaticProps() {
@@ -166,12 +165,8 @@ export async function getStaticProps() {
     // using for-of-loop, if the lsnStatus is not hidden, then proceed with the above 
     // for each lesson, go through LsnStatuses, each value will be called lsnStatus
     // iterate lessons array returned from the mongoose query 
-    
-
-
 
     // GOAL B: sort the individualLessons (if any) by the sort_by_date
-    
 
     lessons = lessons.map(lesson => ({
       ...lesson,
