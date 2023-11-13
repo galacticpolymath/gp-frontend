@@ -338,13 +338,13 @@ const LessonPart = ({
             <ol className='mt-2'>
               {lsnExt.map(({ itemTitle, itemDescription, item, itemLink }) => {
                 return (
-                  <li key={item} style={{ color: '#4397D5' }}>
-                    <h6 style={{ color: '#4397D5' }} className='fw-bold'>
+                  <li key={item} className='fw-bold' style={{ color: '#4397D5' }}>
+                    <h6 style={{ color: '#4397D5' }}>
                       <Link href={itemLink} target='_blank'>
                         {itemTitle}
                       </Link>
                     </h6>
-                    <p className='text-dark'>{itemDescription}</p>
+                    <p className='fw-normal text-dark'>{itemDescription}</p>
                   </li>
                 );
               })}
