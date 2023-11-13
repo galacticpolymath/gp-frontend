@@ -17,38 +17,40 @@ const LessonStep = ({
   return (
     // Desktop Step Header
     <div className='mt-3 ms-sm-1 d-grid  align-items-center'>
-      <div className='d-none d-sm-flex align-items-center gap-2 fs-5 mb-3'>
-        <div className="badge bg-primary">{Step}</div>
-        <h6 className='m-1'>
-          <RichText content={StepTitle} />
+      <div className='d-none d-sm-flex align-items-center gap-2 fs-5 mb-1'>
+        
+      <h6 className='m-0 d-inline-block fw-bold'>
+          <span className='d-inline me-1' >{Step+"."}</span>
+          <RichText className='d-inline-block' content={StepTitle} />
         </h6>
       </div>
       {/* Mobile Step Header*/}
       <div className='d-flex d-sm-none gap-2 fs-5 mb-1 ml-2 w-100'>
-        <div
-          style={{ width: "31px", height: '29px' }}
-          className="badge bg-primary d-flex justify-content-left align-items-center"
+        {/* <div
+          className="d-flex justify-content-left align-items-center"
         >
-          {Step}
-        </div>
-        <h6 className='m-0'>
-          <RichText content={StepTitle} />
+          {Step+"."}
+        </div> */}
+        <h6 className='m-0 d-inline-block fw-bold'>
+          <span className='d-inline me-1' >{Step+"."}</span>
+          <RichText className='d-inline-block' content={StepTitle} />
         </h6>
       </div>
+      <div className='d-col col-12 col-lg-8'>
       {/* Same Step Detail formatting */}
-      <div className='ms-xs-0 ms-sm-4 ps-xs-0 ps-sm-3 pe-1'>
-        <div className='lead mb-2 ps-0'>
-          <RichText className='fs-6' content={StepQuickDescription} />
+      <div className='ms-xs-0 ps-xs-0 ps-sm-3'>
+        <div className='mb-2 ps-0'>
+          <RichText className='fs-6 ' content={StepQuickDescription} />
         </div>
         {/* Partial border */}
         <div className='d-block w-90 border-bottom'></div>
-        <div className='p-2 ps-0 mb-3 mt-2'>
+        <div className='p-2 ps-0 mb-3 mt-2 fw-light'>
           <RichText content={StepDetails} />
         </div>
         {Vocab && (
-          <div className="bg-white vocab p-3 pb-1 mb-4 ms-xs-sm-0 ms-sm-4 border border-gray shadow-sm rounded">
-            <h6>Vocab</h6>
-            <RichText content={Vocab} className="vocabTxt" />
+          <div className="bg-white vocab px-2 py-2 mb-2 border border-gray shadow-sm rounded">
+            {/* <h6>Vocab</h6> */}
+            <RichText className='m-0 p-0' content={Vocab} className="vocabTxt" />
           </div>
         )}
         {VariantNotes && (
@@ -71,6 +73,7 @@ const LessonStep = ({
             </div>
           </div>
         )}
+      </div>
       </div>
     </div>
   );

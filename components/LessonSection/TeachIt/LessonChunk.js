@@ -18,7 +18,7 @@ const Chunk = ({
             <RichText className='d-inline-block' content={chunkDur+ ' min: ' +chunkTitle} />
           </span>
         </h6>
-        <div className='d-col col-12 col-md-8 col-lg-7'>
+        <div className='d-col col-12 col-lg-7'>
         <ChunkGraph className='mt-0' durList={durList} chunkNum={chunkNum} />
         </div>
       {/* </div> */}
