@@ -49,7 +49,7 @@ const Title = ({
             {lastSubRelease && (
               <button
                 onClick={handleBtnClick}
-                className='underline-on-hover no-btn-styles'
+                className='underline-on-hover no-btn-styles d-flex'
                 style={{ color: 'black' }}
               >
                 <span style={{ fontWeight: 'bolder' }}>
