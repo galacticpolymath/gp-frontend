@@ -267,8 +267,12 @@ const LessonPart = ({
         )}
         {learningObjectives &&
           <div className="mt-4">
-            <h5 className='fw-bold'>Learning Objectives</h5>
-            <p className='fw-semibold mb-0'>Students will able to...</p>
+            <div className='d-flex align-items-start'>
+            <h5 className='fw-bold'>
+            <i class="bi bi-emoji-sunglasses me-2"></i>
+              Learning Objectives</h5>
+              </div>
+            <p className='lead mb-0'>Students will able to...</p>
             <ol className='mt-0'>
               {learningObjectives.map((objectiveStr, index) => (
                 <li key={index}>
@@ -280,7 +284,10 @@ const LessonPart = ({
         }
 
         <div className='mt-4'>
+          <div className='d-flex align-items-start'>
+          <i class="bi bi-ui-checks-grid me-2 fw-bolder"></i>
           <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
+          </div>
           <ol className='mt-2'>
             {!!_itemList?.length && _itemList.map(item => {
               const { itemTitle, itemDescription, links } = item;
@@ -316,7 +323,10 @@ const LessonPart = ({
 
         {(!isOnAssessments && durList && chunks) &&
           <>
-            <h5 className= 'fw-bold mb-1 mb-lg-3'>Steps &amp; Flow </h5>
+            <h5 className= 'd-flex align-items-start fw-bold mb-3'>
+            <i class="bi bi-stars me-2"></i>
+              Steps &amp; Flow 
+            </h5>
             {chunks.map((chunk, i) => (
               <LessonChunk
                 key={i}
@@ -332,9 +342,13 @@ const LessonPart = ({
         {!!lsnExt?.length &&
           <div>
             <div>
-              <h5 className='fw-bold'>Going Further</h5>
-              <RichText content="Ideas and resources for deepening learning on this topic." />
-            </div>
+              <div className='d-flex align-items-start'>
+              <h5 className='fw-bold'>
+              <i class="bi bi-rocket-takeoff me-2"></i>
+              Going Further</h5>
+              </div>
+              <RichText className='lead' content="Ideas and resources for deepening learning on this topic." />
+              </div>
             <ol className='mt-2'>
               {lsnExt.map(({ itemTitle, itemDescription, item, itemLink }) => {
                 return (
