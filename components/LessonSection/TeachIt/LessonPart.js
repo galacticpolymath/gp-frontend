@@ -268,8 +268,8 @@ const LessonPart = ({
         {learningObjectives &&
           <div className="mt-4">
             <h5 className='fw-bold'>Learning Objectives</h5>
-            <p className='fw-semibold'>Students will able to...</p>
-            <ol className='mt-3'>
+            <p className='fw-semibold mb-0'>Students will able to...</p>
+            <ol className='mt-0'>
               {learningObjectives.map((objectiveStr, index) => (
                 <li key={index}>
                   <RichText content={objectiveStr} />
@@ -281,15 +281,15 @@ const LessonPart = ({
 
         <div className='mt-4'>
           <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
-          <ol className='mt-3'>
+          <ol className='mt-2'>
             {!!_itemList?.length && _itemList.map(item => {
               const { itemTitle, itemDescription, links } = item;
               const _links = links ? (Array.isArray(links) ? links : [links]) : null;
 
               return (
-                <li key={itemTitle} className='mb-0'>
+                <li key={itemTitle} className='mt-2 mb-0'>
                   <strong><RichText content={itemTitle} /></strong>
-                  <div className='fst-italic mb-2' style={{ color: '#353637' }}>
+                  <div className='fst-italic mb-1' style={{ color: '#353637' }}>
                     <RichText
                       content={itemDescription}
                       css={{ color: 'red' }}
@@ -297,7 +297,7 @@ const LessonPart = ({
                   </div>
                   <ul>
                     {!!_links && _links.map(({ url, linkText }, index) => (
-                      <li key={index}>
+                      <li className='mb-0' key={index}>
                         <a
                           href={url}
                           target='_blank'
@@ -316,7 +316,7 @@ const LessonPart = ({
 
         {(!isOnAssessments && durList && chunks) &&
           <>
-            <h5>Steps &amp; Flow</h5>
+            <h5 className= "fw-bold">Steps &amp; Flow</h5>
             {chunks.map((chunk, i) => (
               <LessonChunk
                 key={i}
