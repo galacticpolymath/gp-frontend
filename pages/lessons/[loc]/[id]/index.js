@@ -295,7 +295,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       lessonBannerUrl: lessonToDisplayOntoUi.CoverImage ?? lessonToDisplayOntoUi.LessonBanner,
       availLocs: targetLessonLocales,
       lessonTitle: lessonToDisplayOntoUi.Title,
-      versions: lessonToDisplayOntoUi.Section.versions.Data
+      versions: lessonToDisplayOntoUi.Section.versions.Data,
     };
     lessonToDisplayOntoUi = {
       ...lessonToDisplayOntoUi,
@@ -303,11 +303,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         ...lessonToDisplayOntoUi.Section,
         overview: {
           ...lessonToDisplayOntoUi.Section.overview,
-          ...titleProperties
-        }
-      }
+          ...titleProperties,
+        },
+      },
     }
-
 
     if (multiMediaArr?.length && multiMediaArr.some(({ type }) => type === 'web-app')) {
       let multiMediaArrUpdated = []
@@ -342,7 +341,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           },
         },
       }
-    };
+    }
 
     return {
       props: {

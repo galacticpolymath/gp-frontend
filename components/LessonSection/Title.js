@@ -58,13 +58,13 @@ const Title = ({
                 </span>
               </button>
             )}
-            {availLocs &&
+            {availLocs && (
               <LocDropdown
                 availLocs={availLocs}
                 loc={locale}
                 id={numID}
               />
-            }
+            )}
           </div>
           <h1 id="lessonTitleId" className="mt-2">{lessonTitle}</h1>
           <h4 className='fw-light'>{Subtitle}</h4>

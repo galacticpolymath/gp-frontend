@@ -23,7 +23,6 @@ const Overview = ({
   __component,
   ...titleProps
 }) => {
-  console.log("titleProps: ", titleProps)
   console.log(__component);
   const ref = useRef();
   
