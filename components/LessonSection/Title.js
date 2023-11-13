@@ -52,7 +52,7 @@ const Title = ({
                 className='underline-on-hover no-btn-styles d-flex'
                 style={{ color: 'black' }}
               >
-                <span style={{ fontWeight: 'bolder' }}>
+                <span style={{ fontWeight: 'lighter' }}>
                   Version {lastSubRelease.version}{' '}
                   (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
                 </span>
