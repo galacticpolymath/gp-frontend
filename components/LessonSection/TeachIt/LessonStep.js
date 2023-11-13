@@ -43,10 +43,14 @@ const LessonStep = ({
           <RichText className='fs-6 ' content={StepQuickDescription} />
         </div>
         {/* Partial border */}
-        <div className='d-block w-90 border-bottom'></div>
-        <div className='p-2 ps-0 mb-3 mt-2 fw-light'>
-          <RichText content={StepDetails} />
+        {StepDetails &&  (
+          <div className='ps-1 border-left'>
+            <div className='d-flex align-items-start my-3 gap-2'>
+              <i class="bi bi-tools" ></i>
+              <RichText  content={StepDetails} />
+            </div>
         </div>
+        )}
         {Vocab && (
           <div className="bg-white vocab px-2 py-2 mb-2 border border-gray shadow-sm rounded">
             {/* <h6>Vocab</h6> */}
