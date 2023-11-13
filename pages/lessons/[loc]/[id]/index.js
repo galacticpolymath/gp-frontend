@@ -351,7 +351,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       revalidate: 30,
     };
   } catch (error) {
-    console.error('Faild to get lesson. Error message: ', error)
+    console.error('Failed to get lesson. Error message: ', error)
 
     return {
       props: {
