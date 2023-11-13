@@ -110,14 +110,6 @@ const getLessonSections = (lessonSection, sectionComps) => {
   })
 };
 
-// BUG: 
-// WHAT IS HAPPENING: 
-// the lesson standards are not showing up onto the UI. 
-// WHAT I WANT: display the lesson standards onto the UI.
-
-// Actionable steps:
-// check the server functions if there are manipulations dones to the section object.
-
 const LessonDetails = ({ lesson, availLocs }) => {
   const router = useRouter();
   const { ref } = useInView({ threshold: 0.2 });
@@ -206,7 +198,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
   const lastSubRelease = getLatestSubRelease(lesson.Section);
-  console.log("from the server: ", lesson.Section)
+  console.log("from the server: ", lesson)
   let _sections = getLessonSections(lesson.Section, sectionComps);
   console.log("_sections: ", _sections)
   const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
@@ -284,9 +276,38 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     await connectToMongodb();
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
-    const targetLessonLocales = targetLessons.map(({ locale }) => locale)
     let lessonToDisplayOntoUi = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
+
+    if (!lessonToDisplayOntoUi || (typeof lessonToDisplayOntoUi !== 'object')) {
+      throw new Error("Lesson is not found.")
+    }
+
+    const targetLessonLocales = targetLessons.map(({ locale }) => locale)
     const multiMediaArr = lessonToDisplayOntoUi?.Section?.preview?.Multimedia;
+    let sponsorLogoImgUrl = lessonToDisplayOntoUi.SponsorImage?.url?.length ? lessonToDisplayOntoUi.SponsorImage?.url : lessonToDisplayOntoUi.SponsorLogo;
+    sponsorLogoImgUrl = Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl;
+    const titleProperties = {
+      SponsoredBy: lessonToDisplayOntoUi.SponsoredBy,
+      Subtitle: lessonToDisplayOntoUi.Subtitle,
+      numID: lessonToDisplayOntoUi.numID,
+      locale: lessonToDisplayOntoUi.locale,
+      sponsorLogoImgUrl: lessonToDisplayOntoUi.sponsorLogoImgUrl,
+      lessonBannerUrl: lessonToDisplayOntoUi.CoverImage ?? lessonToDisplayOntoUi.LessonBanner,
+      availLocs: targetLessonLocales,
+      lessonTitle: lessonToDisplayOntoUi.Title,
+      versions: lessonToDisplayOntoUi.Section.versions.Data
+    };
+    lessonToDisplayOntoUi = {
+      ...lessonToDisplayOntoUi,
+      Section: {
+        ...lessonToDisplayOntoUi.Section,
+        overview: {
+          ...lessonToDisplayOntoUi.Section.overview,
+          ...titleProperties
+        }
+      }
+    }
+
 
     if (multiMediaArr?.length && multiMediaArr.some(({ type }) => type === 'web-app')) {
       let multiMediaArrUpdated = []
@@ -311,44 +332,21 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         multiMediaArrUpdated.push(multiMediaItem)
       }
 
-      const {
-        CoverImage, 
-        LessonBanner,
-        locale,
-        numID,
-        Subtitle,
-        SponsoredBy,
-        Title,
-        Section,
-        SponsorImage,
-        SponsorLogo,
-      } = lessonToDisplayOntoUi ?? {};
-      console.log("what is up there: ", LessonBanner)
-      let sponsorLogoImgUrl = SponsorImage?.url?.length ? SponsorImage?.url : SponsorLogo;
-      sponsorLogoImgUrl = Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl; 
       lessonToDisplayOntoUi = {
         ...lessonToDisplayOntoUi,
         Section: {
-          ...Section,
-          overview: {
-            ...Section.overview,
-            SponsoredBy,
-            Subtitle,
-            numID,
-            locale,
-            sponsorLogoImgUrl,
-            lessonBannerUrl: CoverImage ?? LessonBanner,
-            availLocs: targetLessonLocales,
-            lessonTitle: Title,
-            versions: Section.versions.Data, 
-          },
+          ...lessonToDisplayOntoUi.Section,
           preview: {
-            ...Section?.preview,
+            ...lessonToDisplayOntoUi?.Section?.preview,
             Multimedia: multiMediaArrUpdated,
           },
         },
       }
-    }
+    };
+
+    console.log("lessonToDisplayOntoUi: ", lessonToDisplayOntoUi)
+
+
 
     return {
       props: {
