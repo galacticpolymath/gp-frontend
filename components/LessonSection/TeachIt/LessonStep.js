@@ -16,7 +16,7 @@ const LessonStep = ({
 
   return (
     // Desktop Step Header
-    <div className='mt-4 ms-sm-1 d-grid  align-items-center'>
+    <div className='mt-3 ms-sm-1 d-grid  align-items-center'>
       <div className='d-none d-sm-flex align-items-center gap-2 fs-5 mb-3'>
         <div className="badge bg-primary">{Step}</div>
         <h6 className='m-1'>

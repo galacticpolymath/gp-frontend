@@ -316,11 +316,12 @@ const LessonPart = ({
 
         {(!isOnAssessments && durList && chunks) &&
           <>
-            <h5 className= "fw-bold">Steps &amp; Flow</h5>
+            <h5 className= 'fw-bold mb-1 mb-lg-3'>Steps &amp; Flow </h5>
             {chunks.map((chunk, i) => (
               <LessonChunk
                 key={i}
                 chunkNum={i}
+                chunkDur={durList[i]}
                 durList={durList}
                 partInfo={resources?.[partsFieldName]?.[lsnNum - 1]}
                 {...chunk}

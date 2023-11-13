@@ -149,7 +149,7 @@ export default function ChunkGraph({ durList, chunkNum }) {
       .attr('x', anchorPoint[0] + 2 + gap / 2)
       .attr('y', plotDisplace + 17)
       .attr('style', 'fill:rgb(50,132,193);font-weight:bold;')
-      .text(`${currentDuration} min.`)
+      // .text(`${currentDuration} min.`)
       .attr('text-anchor', 'middle')
       .attr('font-family', '"Montserrat", "Helvetica", "Arial", sans-serif')
       .attr('class','chunkGraphTimeLabel');
