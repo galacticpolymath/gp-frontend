@@ -266,7 +266,7 @@ const LessonPart = ({
           </div>
         )}
         {learningObjectives &&
-          <div className="mt-4">
+          <div className="mt-4 d-col col-12 col-lg-8">
             <div className='d-flex align-items-start'>
             <h5 className='fw-bold'>
             <i class="bi bi-emoji-sunglasses me-2"></i>
@@ -322,7 +322,7 @@ const LessonPart = ({
         </div>
 
         {(!isOnAssessments && durList && chunks) &&
-          <>
+          <div className='mt-4'>
             <h5 className= 'd-flex align-items-start fw-bold mb-3'>
             <i class="bi bi-stars me-2"></i>
               Steps &amp; Flow 
@@ -337,12 +337,12 @@ const LessonPart = ({
                 {...chunk}
               />
             ))}
-          </>
+          </div>
         }
         {!!lsnExt?.length &&
-          <div>
+          <div className='d-col col-12 col-lg-9'>
             <div>
-              <div className='d-flex align-items-start'>
+              <div className='d-flex align-items-start '>
               <h5 className='fw-bold'>
               <i class="bi bi-rocket-takeoff me-2"></i>
               Going Further</h5>
@@ -353,12 +353,13 @@ const LessonPart = ({
               {lsnExt.map(({ itemTitle, itemDescription, item, itemLink }) => {
                 return (
                   <li key={item} className='fw-bold' style={{ color: '#4397D5' }}>
-                    <h6 style={{ color: '#4397D5' }}>
+                    <h6 className='mb-1'>
                       <Link href={itemLink} target='_blank'>
                         {itemTitle}
                       </Link>
                     </h6>
-                    <p className='fw-normal text-dark'>{itemDescription}</p>
+                    <RichText className='fw-normal text-dark' content={itemDescription}>
+                    </RichText>
                   </li>
                 );
               })}
