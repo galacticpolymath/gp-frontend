@@ -44,7 +44,7 @@ const Title = ({
   return (
     <div className="container d-flex justify-content-center pt-4 pb-4">
       <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
-        <div className="col-11 col-md-10">
+        <div className="col-11 col-md-12">
           <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
             {lastSubRelease && (
               <button
