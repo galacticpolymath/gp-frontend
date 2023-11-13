@@ -291,7 +291,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       Subtitle: lessonToDisplayOntoUi.Subtitle,
       numID: lessonToDisplayOntoUi.numID,
       locale: lessonToDisplayOntoUi.locale,
-      sponsorLogoImgUrl: lessonToDisplayOntoUi.sponsorLogoImgUrl,
+      sponsorLogoImgUrl: sponsorLogoImgUrl,
       lessonBannerUrl: lessonToDisplayOntoUi.CoverImage ?? lessonToDisplayOntoUi.LessonBanner,
       availLocs: targetLessonLocales,
       lessonTitle: lessonToDisplayOntoUi.Title,
@@ -343,10 +343,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         },
       }
     };
-
-    console.log("lessonToDisplayOntoUi: ", lessonToDisplayOntoUi)
-
-
 
     return {
       props: {
