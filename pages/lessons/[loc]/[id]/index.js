@@ -221,7 +221,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
         setWasDotClicked={setWasDotClicked}
       />
       <ShareWidget {...shareWidgetFixedProps} />
-      <div className="col-12 col-lg-10 px-2 px-sm-4 pt-0 container justify-content-center pb-4">
+      <div className="col-12 col-lg-10 px-3 px-sm-4 pt-0 container justify-content-center pb-4">
         <div className="p-0">
           {_sections.map((section, index) => (
             <ParentLessonSection
