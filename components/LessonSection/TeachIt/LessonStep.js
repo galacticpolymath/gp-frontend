@@ -50,7 +50,7 @@ const LessonStep = ({
         {Vocab && (
           <div className="bg-white vocab px-2 py-2 mb-2 border border-gray shadow-sm rounded">
             {/* <h6>Vocab</h6> */}
-            <RichText className='m-0 p-0' content={Vocab} className="vocabTxt" />
+            <RichText className='m-0 p-0 vocabTxt' content={Vocab} />
           </div>
         )}
         {VariantNotes && (

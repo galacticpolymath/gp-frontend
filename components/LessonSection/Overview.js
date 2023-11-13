@@ -36,7 +36,7 @@ const Overview = ({
       initiallyExpanded
       _sectionDots={_sectionDots}
     >
-      <div ref={ref} className='container mb-4'>
+      <div ref={ref} className='container mb-4 px-0'>
         <Title {...titleProps} />
         <div className="bg-light-gray px-4 py-2 rounded-3 text-center">
           {LearningSummary && (

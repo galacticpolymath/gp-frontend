@@ -42,9 +42,9 @@ const Title = ({
   const lastSubRelease = useMemo(() => getLatestSubRelease(versions), []);
 
   return (
-    <div className="container d-flex justify-content-center pt-4 pb-4">
+    <div className="container d-flex justify-content-center pt-4 pb-4 px-0">
       <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
-        <div className="col-11 col-md-12">
+        <div className="col-12">
           <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
             {lastSubRelease && (
               <button
@@ -69,7 +69,7 @@ const Title = ({
           <h1 id="lessonTitleId" className="mt-2">{lessonTitle}</h1>
           <h4 className='fw-light'>{Subtitle}</h4>
           {lessonBannerUrl && (
-            <div className='w-100 position-relative mt-2 mb-2'>
+            <div className='w-100 position-relative my-2 mx-0'>
               <Image
                 src={lessonBannerUrl}
                 alt={Subtitle}
@@ -85,7 +85,7 @@ const Title = ({
               <h5>Sponsored by:</h5>
               <RichText content={SponsoredBy} />
             </div>
-            <div className="col-6 col-sm-4 col-md-4 col-lg-3 m-auto d-grid">
+            <div className="col-6 col-sm-1 col-md-4 col-lg-3 m-auto d-grid">
               {sponsorLogoImgUrl && (
                 <div style={{ height: '180px' }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
                   <Image
