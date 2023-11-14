@@ -16,11 +16,11 @@ export default async function handler(request, response) {
     filterObj = (typeof filterObj === 'string') ? JSON.parse(filterObj) : filterObj;
 
     if(projectionsObj && ((typeof projectionsObj !== 'object') && (projectionsObj === null) || Array.isArray(projectionsObj) || (typeof projectionsObj !== 'object'))){
-      throw new CustomError('`projectionsObj` must be an object and cannot be an array.' , 400);
+      throw new CustomError('`projectionsObj` must be an non-array object.' , 400);
     }
 
     if(filterObj && ((typeof filterObj !== 'object') && (filterObj === null) || Array.isArray(filterObj) || (typeof filterObj !== 'object'))){
-      throw new CustomError('`filterObj` must be an object and cannot be an array.', 400);
+      throw new CustomError('`filterObj` must be an non-array object.', 400);
     }
 
     const filterObjCreationResult = (filterObj && Object.keys(filterObj).length) ? createFilterObj(Object.entries(filterObj)) : {};

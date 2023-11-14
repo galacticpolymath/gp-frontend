@@ -11,7 +11,9 @@ import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
 import { connectToMongodb } from '../../backend/utils/connection';
 
-const LessonsPage = ({ lessons, didErrorOccur }) => {
+const LessonsPage = ({ lessons, didErrorOccur, lessonsParts }) => {
+  console.log("hey there, lessonsParts: ", lessonsParts)
+
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
   };
@@ -159,21 +161,49 @@ export async function getStaticProps() {
     // target subject (root of the lesson object)
     // the title of the unit (root of the lesson object) 
     // the lessons from Data.lesson is retrieved by using lsn as the conditional for the find method
-    // the lessons from Data.resources is retrieved by using the lsn as the conditional for the find method 
+    // the lessons from Data.resources is retrieved by using the lsn as the conditional for the find method that will be invoked for the 
+    // individual lessons for the unit
+    // get the array that will contain the individual lessons for the unit
     // proceed with the above 
     // the lsnStatus is not hidden
     // using for-of-loop, if the lsnStatus is not hidden, then proceed with the above 
     // for each lesson, go through LsnStatuses, each value will be called lsnStatus
-    // iterate lessons array returned from the mongoose query 
+    // iterate lessons array returned from the mongoose query using the for-of loop 
+
 
     // GOAL B: sort the individualLessons (if any) by the sort_by_date
 
+
+    // GOAL C: for each unit, get the number of lessons that are available.
+    let lessonsParts = [];
+
+    for (let lesson of lessons) {
+      if (!lesson?.LsnStatuses?.length) {
+        continue;
+      }
+
+      let partsOfLesson = lesson?.Section?.['teaching-materials']?.Data?.lesson;
+
+      for (let lsnStatus of lessons) {
+        if (lsnStatus.status !== 'Live') {
+          continue;
+        }
+
+        const lessonPart = partsOfLesson.find(({ lsnNum }) => lsnNum == lsnStatus.lsn);
+
+        lessonsParts.push(lessonPart);
+      }
+    }
+
+
+    // NOTES: 
+    // Get all of the lessons of the unit. 
     lessons = lessons.map(lesson => ({
       ...lesson,
       ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
     }));
 
-    return { props: { lessons: lessons } };
+    return { props: { lessons: lessons, lessonsParts } };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 

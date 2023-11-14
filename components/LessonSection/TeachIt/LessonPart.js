@@ -384,7 +384,10 @@ const LessonPart = ({
                       style={{ color: '#4397D5' }}
                     >
                       <h6 className='mb-1'>
-                        <Link href={itemLink} target='_blank'>
+                        <Link
+                          href={itemLink}
+                          target='_blank'
+                        >
                           {itemTitle}
                         </Link>
                       </h6>
