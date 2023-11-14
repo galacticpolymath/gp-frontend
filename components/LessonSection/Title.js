@@ -42,10 +42,10 @@ const Title = ({
   const lastSubRelease = useMemo(() => getLatestSubRelease(versions), []);
 
   return (
-    <div className="container d-flex justify-content-center pt- pb-4 px-0">
+    <div className="container d-flex justify-content-center pt-4 pb-4 px-0">
       <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
         <div className="col-12">
-          <div className="d-flex justify-content-between">
+          <div  className="d-flex justify-content-between">
             {lastSubRelease && (
               <button
                 onClick={handleBtnClick}
@@ -60,7 +60,7 @@ const Title = ({
             )}
             {availLocs && (
               <LocDropdown
-                availLocs={availLocs}
+              availLocs={availLocs}
                 loc={locale}
                 id={numID}
               />
@@ -87,7 +87,7 @@ const Title = ({
             </div>
             <div className="col-6 col-sm-1 col-md-4 col-lg-3 m-auto d-grid">
               {sponsorLogoImgUrl && (
-                <div style={{ height: '180px' }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
+                <div style={{ height: '120px' }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
                   <Image
                     src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
                     alt={Subtitle}
