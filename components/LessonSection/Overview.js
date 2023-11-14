@@ -27,6 +27,8 @@ const Overview = ({
   const ref = useRef();
   
   useLessonElementInView(_sectionDots, SectionTitle, ref);
+
+  // comment
   
   return (
     <CollapsibleLessonSection
