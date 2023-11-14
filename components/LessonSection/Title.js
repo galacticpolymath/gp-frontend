@@ -45,14 +45,14 @@ const Title = ({
     <div className="container d-flex justify-content-center pt-4 pb-4 px-0">
       <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
         <div className="col-12">
-          <div style={{ display: 'flex', justifyContent: 'space-between' }} className="flex-column flex-sm-row">
+          <div  className="d-flex justify-content-between">
             {lastSubRelease && (
               <button
                 onClick={handleBtnClick}
                 className='underline-on-hover no-btn-styles d-flex'
                 style={{ color: 'black' }}
               >
-                <span style={{ fontWeight: 'lighter' }}>
+                <span className='fw-lighter justify-items-left'>
                   Version {lastSubRelease.version}{' '}
                   (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
                 </span>
@@ -60,14 +60,14 @@ const Title = ({
             )}
             {availLocs && (
               <LocDropdown
-                availLocs={availLocs}
+              availLocs={availLocs}
                 loc={locale}
                 id={numID}
               />
             )}
           </div>
-          <h1 id="lessonTitleId" className="mt-2">{lessonTitle}</h1>
-          <h4 className='fw-light'>{Subtitle}</h4>
+          <h1 id="lessonTitleId" className="mt-2 fs-3 fs-md-larger mb-1">{lessonTitle}</h1>
+          <h4 className='fw-light fs-6'>{Subtitle}</h4>
           {lessonBannerUrl && (
             <div className='w-100 position-relative my-2 mx-0'>
               <Image

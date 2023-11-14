@@ -222,7 +222,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
       />
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="col-12 col-lg-10 ps-3  container justify-content-center">
-        <div className="p-0 pe-3">
+        <div className="p-3 ">
           {_sections.map((section, index) => (
             <ParentLessonSection
               key={index}
