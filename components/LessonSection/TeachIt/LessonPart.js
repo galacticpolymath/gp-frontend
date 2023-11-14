@@ -95,7 +95,7 @@ const LessonPart = ({
   const defaultBorderColor = 'solid 2.5px rgb(222, 226, 230)';
   const highlightedBorderColor = '#3987C5';
   const highlighlightedBorder = `solid 2.5px ${highlightedBorderColor}`;
-  const highlightedGlow= 'inset 0px 0px 20px 0px rgba(44,131,195,0.25)';
+  const highlightedGlow = 'inset 0px 0px 20px 0px rgba(44,131,195,0.25)';
   let _borderTop = 'none';
 
   if (isExpanded && (lsnNum == 1)) {
@@ -112,7 +112,7 @@ const LessonPart = ({
     borderRight: isExpanded ? highlighlightedBorder : defaultBorderColor,
     borderTop: _borderTop,
     borderBottom: _borderBottom,
-    boxShadow: isExpanded ? highlightedGlow : 'none'
+    boxShadow: isExpanded ? highlightedGlow : 'none',
   };
 
   return (

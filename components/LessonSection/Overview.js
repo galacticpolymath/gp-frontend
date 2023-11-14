@@ -58,7 +58,7 @@ const Overview = ({
           )}
           <div className="grid gap-3 py-3 justify-content-center">
             <div className='g-col-12 g-col-md-4 bg-white p-3 rounded-3'>
-              <span >
+              <span>
                 <i className="fs-3 mb-2 bi-book-half me-2"></i>
                 <h5 className='d-inline-block' id='selectedLessonTitle'>Target Subject: </h5>
               </span>
@@ -78,7 +78,7 @@ const Overview = ({
                 <div>{EstLessonTime}</div>
               </span>
             </div>
-            </div>
+          </div>
 
           {(SteamEpaulette && SteamEpaulette_vert) && (
             <Link passHref href="#learning_standards">

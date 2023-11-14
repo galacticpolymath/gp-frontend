@@ -45,7 +45,7 @@ const Title = ({
     <div className="container d-flex justify-content-center pt- pb-4 px-0">
       <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
         <div className="col-12">
-          <div  className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between">
             {lastSubRelease && (
               <button
                 onClick={handleBtnClick}
@@ -60,7 +60,7 @@ const Title = ({
             )}
             {availLocs && (
               <LocDropdown
-              availLocs={availLocs}
+                availLocs={availLocs}
                 loc={locale}
                 id={numID}
               />
