@@ -24,6 +24,7 @@ const Accordion = ({
   initiallyExpanded = false,
   button,
   style = {},
+  btnStyle = {},
   willUseGetId = true,
   accordionChildrenClasses = '',
   dataBsToggle = { 'data-bs-toggle': 'collapse' },
@@ -49,6 +50,7 @@ const Accordion = ({
             <button
               className={` ${initiallyExpanded ? '' : 'collapsed'} ${buttonClassName}`}
               type="button"
+              style={btnStyle}
               {...dataBsToggle}
               data-bs-target={`#content_${willUseGetId ? contentId?.current : id}`}
               aria-expanded="true"
