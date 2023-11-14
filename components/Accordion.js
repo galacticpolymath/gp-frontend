@@ -43,7 +43,7 @@ const Accordion = ({
   
   return (
     <div style={style} className={className}>
-      <div className={`accordion-header lessonsPgSec ${highlighted ? 'highlighted' : ''}`} id={`heading_${id}`}>
+      <div className={`accordion-header ${highlighted ? 'highlighted' : ''}`} id={`heading_${id}`}>
         <div>
           <div>
             <button
