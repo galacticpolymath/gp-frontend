@@ -56,50 +56,29 @@ const Overview = ({
               </div>
             </div>
           )}
-          <div className="grid mx-auto gap-3 py-3 justify-content-center justify-content-sm-start">
-            <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3'>
-              <span>
+          <div className="grid gap-3 py-3 justify-content-center">
+            <div className='g-col-12 g-col-md-4 bg-white p-3 rounded-3'>
+              <span >
                 <i className="fs-3 mb-2 bi-book-half me-2"></i>
                 <h5 className='d-inline-block' id='selectedLessonTitle'>Target Subject: </h5>
               </span>
               <div>{TargetSubject}</div>
             </div>
-            <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3 '>
+            <div className='g-col-12 g-col-md-4 bg-white p-3 rounded-3 '>
               <span>
                 <i className="fs-3 mb-2 me-2 bi-person-circle"></i>
                 <h5 className='d-inline-block'>Grades: </h5>
               </span>
               <div>{ForGrades}</div>
             </div>
-            <div className='d-none d-sm-grid g-col g-col-sm-4 bg-white pt-sm-3 pe-sm-4 pb-sm-3 ps-sm-2 p-md-3 rounded-3'>
+            <div className='g-col-12 g-col-md-4 bg-white p-3 rounded-3'>
               <span>
                 <i className="fs-3 mb-2 me-2 bi-alarm"></i>
                 <h5 className='d-inline-block'>Estimated Time: </h5>
                 <div>{EstLessonTime}</div>
               </span>
             </div>
-            <div className='d-sm-none g-col-12 align-items-center justify-content-center'>
-              <div className='d-grid bg-white rounded-3 col-12 p-3'>
-                <i className="fs-3 mb-2 d-block bi-book-half"></i>
-                <h5>Target Subject: </h5>
-                <span>{TargetSubject}</span>
-              </div>
             </div>
-            <div className='d-sm-none g-col-12 align-items-center justify-content-center'>
-              <div className='d-grid bg-white rounded-3 col-12 p-3'>
-                <i className="fs-3 mb-2 d-block bi-person-circle"></i>
-                <h5>Grades: </h5>
-                <span>{ForGrades}</span>
-              </div>
-            </div>
-            <div className='d-sm-none g-col-12 align-items-center justify-content-center'>
-              <div className='d-grid bg-white rounded-3 col-12 p-3'>
-                <i className="fs-3 mb-2 d-block bi-alarm"></i>
-                <h5>Estimated Time: </h5>
-                <span>{EstLessonTime}</span>
-              </div>
-            </div>
-          </div>
 
           {(SteamEpaulette && SteamEpaulette_vert) && (
             <Link passHref href="#learning_standards">
@@ -133,7 +112,7 @@ const Overview = ({
                     }}
                     className='col p-0 d-flex align-self-end'
                   />
-                  <div className="col text-start align-content-center mt-3">
+                  <div className="col text-start align-content-left mt-3 mx-auto ps-0">
                     <i className="bi bi-arrow-90deg-left fs-2 mb-0 d-flex "></i>
                     <div
                       className="rounded p-1 mt-0 d-flex"

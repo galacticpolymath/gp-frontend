@@ -42,7 +42,7 @@ const Title = ({
   const lastSubRelease = useMemo(() => getLatestSubRelease(versions), []);
 
   return (
-    <div className="container d-flex justify-content-center pt-4 pb-4 px-0">
+    <div className="container d-flex justify-content-center pt- pb-4 px-0">
       <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
         <div className="col-12">
           <div  className="d-flex justify-content-between">
