@@ -94,7 +94,8 @@ const LessonPart = ({
 
 
   const handleAccordionBtnOnClick = event => {
-    // if (!checkIfElementClickedWasClipboard(event.target.parentElement)) { 
+    console.log("event: ", event)
+    if (!checkIfElementClickedWasClipboard(event.target.parentElement)) { 
       const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
       
       setNumsOfLessonPartsThatAreExpanded(prevState => {
@@ -105,7 +106,7 @@ const LessonPart = ({
         return prevState.filter(num => num !== previousLessonPartNum);
       });
       setIsExpanded(!isExpanded);
-    // }
+    }
   };
 
   if (allTags?.length && Array.isArray(allTags)) {
@@ -164,9 +165,10 @@ const LessonPart = ({
         buttonClassName={`w-100 text-start border-0 p-0 ${isExpanded ? '' : 'bg-white'}`}
         key={lsnNum}
         btnStyle={isExpanded ? { background: 'none' } : {}}
-        id={_accordionId}
+        // id={_accordionId}
         accordionChildrenClasses='px-3 pb-2 w-100'
         style={accordionStyle}
+        dataBsToggle={{}}
         initiallyExpanded={isExpanded}
         button={(
           <div
