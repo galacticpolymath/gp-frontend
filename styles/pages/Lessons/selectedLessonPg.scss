@@ -9,7 +9,7 @@
     justify-content: center;
     > div {
       padding: .85rem 1.75rem;
-      width: 75%;
+      width: 90%;
       max-width: 1080px;
       @media(max-width: 767px){
         width: 100%;
@@ -66,7 +66,7 @@
       align-items: center;
       justify-content: center;
       > div {
-        width: 75%;
+        width: 90%;
         max-width: 1920px;
         @media(max-width: 767px){
           width: 100% ;

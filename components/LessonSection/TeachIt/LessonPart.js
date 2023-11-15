@@ -135,6 +135,7 @@ const LessonPart = ({
     transitionProperty: 'all'
   };
 
+
   return (
     <div style={accordionStyleAccordionWrapper}>
       <Accordion

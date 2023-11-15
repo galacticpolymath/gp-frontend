@@ -121,17 +121,14 @@ const PROJECTED_LESSONS_FIELDS = [
   'CoverImage',
   'Subtitle',
   'Title',
-  'Section.overview.TargetSubject',
-  'Section.overview.GradesOrYears',
-  'Section.overview.ForGrades',
+  'Section',
   'ReleaseDate',
   'locale',
   '_id',
   'numID',
   'PublicationStatus',
   'LessonBanner',
-  'teaching-materials',
-  // 'LsnStatuses',
+  'LsnStatuses',
 ]
 
 export async function getStaticProps() {
@@ -177,31 +174,43 @@ export async function getStaticProps() {
     // GOAL C: for each unit, get the number of lessons that are available.
     let lessonsParts = [];
 
-    // for (let lesson of lessons) {
-    //   if (!lesson?.LsnStatuses?.length) {
-    //     continue;
-    //   }
+    for (let lesson of lessons) {
+      console.log("lesson.LsnStatuses: ", lesson.LsnStatuses)
+      // if all LsnStatuses are false, then continue the loop
+      if (!lesson?.LsnStatuses?.length) {
+        continue;
+      }
 
-    //   let partsOfLesson = lesson?.Section?.['teaching-materials']?.Data?.lesson;
+      let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
 
-    //   for (let lsnStatus of lessons) {
-    //     if (lsnStatus.status !== 'Live') {
-    //       continue;
-    //     }
+      console.log("hey there, lessonParts: ", lessonParts)
 
-    //     const lessonPart = partsOfLesson.find(({ lsnNum }) => lsnNum == lsnStatus.lsn);
+      if (lessonParts?.length) {
+        for (let lsnStatus of lesson.LsnStatuses) {
+          if (lsnStatus.status !== 'Live') {
+            continue;
+          }
+          const lessonPart = lessonParts.find(({ lsnNum }) => lsnNum === lsnStatus.lsn);
 
-    //     lessonsParts.push(lessonPart);
-    //   }
-    // }
+          console.log("lessonPart yo meng: ", lessonPart)
 
+          if(lessonPart){
+            lessonsParts.push(lessonPart);
+          }
+        }
+      }
+    }
 
-    // NOTES: 
-    // Get all of the lessons of the unit. 
-    lessons = lessons.map(lesson => ({
-      ...lesson,
-      ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
-    }));
+    lessons = lessons.map(lesson => {
+      const lessonObj = {
+        ...lesson,
+        ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
+      };
+
+      delete lessonObj.LsnStatuses
+
+      return lessonObj
+    });
 
     return { props: { lessons: lessons, lessonsParts } };
   } catch (error) {

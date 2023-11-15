@@ -306,7 +306,7 @@ $toolTipColor: #f0f4ff;
   z-index: 1000;
 
   @media (max-width: 575px) {
-    right: 35px;
+    right: 25px;
   }
 }
 
@@ -373,18 +373,6 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.sponsorImg {
-  min-width: 210px;
-  min-height: 180px;
-
-  @media(max-width: 575px) {
-    max-width: 225px;
-    // to override Image component's default css values
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-  }
-}
 
 // teachIt section
 .downloadTipIcon {

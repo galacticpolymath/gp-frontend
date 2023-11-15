@@ -42,10 +42,10 @@ const Title = ({
   const lastSubRelease = useMemo(() => getLatestSubRelease(versions), []);
 
   return (
-    <div className="container d-flex justify-content-center pt-4 pb-4 px-0">
+    <div className="container d-flex justify-content-center pt-4 px-0">
       <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
         <div className="col-12">
-          <div  className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between">
             {lastSubRelease && (
               <button
                 onClick={handleBtnClick}
@@ -60,7 +60,7 @@ const Title = ({
             )}
             {availLocs && (
               <LocDropdown
-              availLocs={availLocs}
+                availLocs={availLocs}
                 loc={locale}
                 id={numID}
               />
@@ -80,21 +80,18 @@ const Title = ({
               />
             </div>
           )}
-          <div className='row mt-4 d-flex flex-column flex-sm-row align-content-center'>
-            <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid">
+          <div className='row my-0 py-0 '>
+            <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid align-content-center">
               <h5>Sponsored by:</h5>
               <RichText content={SponsoredBy} />
             </div>
-            <div className="col-6 col-sm-1 col-md-4 col-lg-3 m-auto d-grid">
+            <div className="col-5 col-sm-1 col-md-3 col-lg-3 m-auto d-grid">
               {sponsorLogoImgUrl && (
-                <div style={{ height: '180px' }} className='position-relative sponsorImgContainer d-sm-block d-flex justify-content-center align-items-center w-100'>
-                  <Image
+                <div className='d-sm-block d-flex justify-content-center align-items-center'>
+                  <img
                     src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
                     alt={Subtitle}
-                    className='sponsorImg'
-                    sizes="225px"
-                    fill
-                    style={{ width: '100%', objectFit: 'contain' }}
+                    className='p-3 p-lg-4 '                    
                   />
                 </div>
               )}
