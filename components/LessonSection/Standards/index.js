@@ -14,7 +14,7 @@ const Standards = ({
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   return (
-    <div ref={ref} className='container mb-4'>
+    <div ref={ref} className='container mb-4 px-0'>
       <Accordion
         id="standards"
         initiallyExpanded

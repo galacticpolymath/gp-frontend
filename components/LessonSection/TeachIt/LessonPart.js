@@ -45,6 +45,8 @@ const LessonPart = ({
   let restOfTags = null;
   const _accordionId = `part_${lsnNum}`;
 
+  // GOAL: when the user clicks on the copy to clipboard icon, don't open the accordion for the respective lesson part
+
   const handleClipBoardIconClick = () => {
     let url = window.location.href;
     const currentSectionInView = router.asPath.split('#').at(-1);
@@ -73,17 +75,35 @@ const LessonPart = ({
     }
   }, []);
 
-  const handleOnClick = () => {
-    const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
+  const checkIfElementClickedWasClipboard = parentElement => {
+    if (parentElement.nodeName.toLowerCase() === 'body') {
+      console.log("Clip board icon wasn't clicked...");
+      return false;
+    }
 
-    setNumsOfLessonPartsThatAreExpanded(prevState => {
-      if (!isExpanded) {
-        return previousLessonPartNum ? [...prevState, previousLessonPartNum] : prevState;
-      }
+    if (parentElement.id === 'clipboardIconWrapper') {
+      console.log('clip board icon was clicked...');
+      return true;
+    }
 
-      return prevState.filter(num => num !== previousLessonPartNum);
-    });
-    setIsExpanded(!isExpanded);
+    return checkIfElementClickedWasClipboard(parentElement.parentElement);
+  };
+
+  const handleAccordionBtnOnClick = event => {
+    console.log('event: ', event);
+
+    if (!checkIfElementClickedWasClipboard(event.target)) {
+      const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
+
+      setNumsOfLessonPartsThatAreExpanded(prevState => {
+        if (!isExpanded) {
+          return previousLessonPartNum ? [...prevState, previousLessonPartNum] : prevState;
+        }
+
+        return prevState.filter(num => num !== previousLessonPartNum);
+      });
+      setIsExpanded(!isExpanded);
+    }
   };
 
   if (allTags?.length && Array.isArray(allTags)) {
@@ -92,78 +112,141 @@ const LessonPart = ({
     restOfTags = (allTags?.length > 3) ? allTags.slice(3) : [];
   }
 
-  const defaultBorderColor = 'solid 2.5px rgb(222, 226, 230)';
+  const defaultBorder = 'solid 2.5px rgb(222, 226, 230)';
   const highlightedBorderColor = '#3987C5';
-  const highlighlightedBorder = `solid 2.5px ${highlightedBorderColor}`;
+  const highlightedBorder = `solid 2.5px ${highlightedBorderColor}`;
+  const highlightedGlow = 'inset 0px 0px 20px 0px rgba(44,131,195,0.25)';
   let _borderTop = 'none';
 
   if (isExpanded && (lsnNum == 1)) {
-    _borderTop = highlighlightedBorder;
+    _borderTop = 'none';
   }
 
   if (!isExpanded && (lsnNum == 1)) {
-    _borderTop = defaultBorderColor;
+    _borderTop = defaultBorder;
   }
 
-  const _borderBottom = (numsOfLessonPartsThatAreExpanded.find(num => num == lsnNum) || isExpanded) ? highlighlightedBorder : defaultBorderColor;
+  const _borderBottom = (numsOfLessonPartsThatAreExpanded.find(num => num == lsnNum) || isExpanded) ? 'none' : defaultBorder;
   const accordionStyle = {
-    borderLeft: isExpanded ? highlighlightedBorder : defaultBorderColor,
-    borderRight: isExpanded ? highlighlightedBorder : defaultBorderColor,
+    borderLeft: isExpanded ? 'none' : defaultBorder,
+    borderRight: isExpanded ? 'none' : defaultBorder,
     borderTop: _borderTop,
     borderBottom: _borderBottom,
+    boxShadow: isExpanded ? highlightedGlow : 'none',
+  };
+
+  let _borderTopAccordionWrapper = 'none';
+
+  if (isExpanded && (lsnNum == 1)) {
+    _borderTopAccordionWrapper = highlightedBorder;
+  }
+
+  if (!isExpanded && (lsnNum == 1)) {
+    _borderTopAccordionWrapper = 'none';
+  }
+
+  const _borderBottomAccordionWrapper = (numsOfLessonPartsThatAreExpanded.find(num => num == lsnNum) || isExpanded) ? highlightedBorder : 'none';
+  const accordionStyleAccordionWrapper = {
+    borderLeft: isExpanded ? highlightedBorder : 'none',
+    borderRight: isExpanded ? highlightedBorder : 'none',
+    borderTop: _borderTopAccordionWrapper,
+    borderBottom: _borderBottomAccordionWrapper,
+    boxShadow: isExpanded ? highlightedGlow : 'none',
+    transitionProperty: 'all',
   };
 
   return (
-    <Accordion
-      buttonClassName="w-100 text-start bg-white border-0 p-0"
-      key={lsnNum}
-      id={_accordionId}
-      accordionChildrenClasses='px-3 pb-2 w-100'
-      style={accordionStyle}
-      initiallyExpanded={isExpanded}
-      button={(
-        <div
-          onClick={handleOnClick}
-          className='px-3 position-relative pt-3 pb-2 w-100 bg-white d-flex'
-        >
+    <div style={accordionStyleAccordionWrapper}>
+      <Accordion
+        buttonClassName={`w-100 text-start border-0 p-0 ${isExpanded ? '' : 'bg-white'}`}
+        key={lsnNum}
+        btnStyle={isExpanded ? { background: 'none' } : {}}
+        id={_accordionId}
+        accordionChildrenClasses='px-3 pb-2 w-100'
+        style={accordionStyle}
+        dataBsToggle={{}}
+        initiallyExpanded={isExpanded}
+        button={(
           <div
-            style={{
-              height: '10px',
-              width: '100%',
-              top: '-50%',
-            }}
-            className="position-absolute"
-            id={`lesson_${_accordionId}`}
-          />
-          <div className='d-flex flex-column w-100'>
-            <div className='d-flex justify-content-between w-100 position-relative'>
-              <div
-                className='d-flex flex-column justify-content-between w-100 align-items-stretch mt-0 pe-sm-3'
-              >
-                <div className='lessonPartHeaderContainer d-flex position-relative justify-content-between'>
-                  <h3
-                    style={{ color: LESSON_PART_BTN_COLOR }}
-                    className='fs-5 fw-bold text-left px-sm-0'
-                  >
-                    {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
-                  </h3>
-                  <div
-                    className="rounded d-flex d-lg-none positive-absolute justify-content-center align-items-center"
-                    style={{ width: 30, height: 30, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
-                  >
-                    <i
-                      style={{ color: '#DEE2E6' }}
-                      className="fs-4 bi-chevron-down"
-                    />
-                    <i
-                      style={{ color: highlightedBorderColor }}
-                      className="fs-4 bi-chevron-up"
+            onClick={handleAccordionBtnOnClick}
+            className='px-3 position-relative pt-3 pb-2 w-100 d-flex'
+          >
+            <div
+              style={{
+                height: '10px',
+                width: '100%',
+                top: '-50%',
+              }}
+              className="position-absolute"
+              id={`lesson_${_accordionId}`}
+            />
+            <div className='d-flex flex-column w-100'>
+              <div className='d-flex justify-content-between w-100 position-relative'>
+                <div
+                  className='d-flex flex-column justify-content-between w-100 align-items-stretch mt-0 pe-sm-3'
+                >
+                  <div className='lessonPartHeaderContainer d-flex position-relative justify-content-between'>
+                    <h3
+                      style={{ color: LESSON_PART_BTN_COLOR }}
+                      className='fs-5 fw-bold text-left px-sm-0'
+                    >
+                      {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
+                    </h3>
+                    <div
+                      className="rounded d-flex d-lg-none positive-absolute justify-content-center align-items-center"
+                      style={{ width: 30, height: 30, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
+                    >
+                      <i
+                        style={{ color: '#DEE2E6' }}
+                        className="fs-4 bi-chevron-down"
+                      />
+                      <i
+                        style={{ color: highlightedBorderColor }}
+                        className="fs-4 bi-chevron-up"
+                      />
+                    </div>
+                  </div>
+                  {lessonTileUrl &&
+                    <div className='w-100 d-flex justify-content-start align-items-stretch flex-column'>
+                      <div style={{ width: 150, height: 150 }} className="d-flex my-3 my-lg-0 d-lg-none position-relative">
+                        <Image
+                          src={lessonTileUrl}
+                          alt="lesson_tile"
+                          fill
+                          style={{ objectFit: 'contain' }}
+                          sizes="130px"
+                          className="rounded img-optimize"
+                        />
+                      </div>
+                    </div>
+                  }
+                  <div className='d-flex mt-2'>
+                    <RichText
+                      className='text-start'
+                      content={lsnPreface}
                     />
                   </div>
+                  {!!previewTags?.length && (
+                    <div
+                      className='d-flex tagPillContainer flex-wrap'
+                    >
+                      {previewTags.map((tag, index) => (
+                        <div
+                          key={index}
+                          style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
+                          className='rounded-pill badge bg-white p-2 mt-2'
+                        >
+                          <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }}>
+                            {tag}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                {lessonTileUrl &&
-                  <div className='w-100 d-flex justify-content-start align-items-stretch flex-column'>
-                    <div style={{ width: 150, height: 150 }} className="d-flex my-3 my-lg-0 d-lg-none position-relative">
+                <div className='d-none arrow-down-lesson-part-container d-lg-flex'>
+                  {lessonTileUrl &&
+                    <div style={{ width: 150, height: 150 }} className="d-none d-lg-block position-relative me-4">
                       <Image
                         src={lessonTileUrl}
                         alt="lesson_tile"
@@ -173,185 +256,177 @@ const LessonPart = ({
                         className="rounded img-optimize"
                       />
                     </div>
-                  </div>
-                }
-                <div className='d-flex mt-2'>
-                  <RichText
-                    className='text-start'
-                    content={lsnPreface}
-                  />
-                </div>
-                {!!previewTags?.length && (
-                  <div
-                    className='d-flex tagPillContainer flex-wrap'
-                  >
-                    {previewTags.map((tag, index) => (
-                      <div
-                        key={index}
-                        style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
-                        className='rounded-pill badge bg-white p-2 mt-2'
-                      >
-                        <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }}>
-                          {tag}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className='d-none arrow-down-lesson-part-container d-lg-flex'>
-                {lessonTileUrl &&
-                  <div style={{ width: 150, height: 150 }} className="d-none d-lg-block position-relative me-4">
-                    <Image
-                      src={lessonTileUrl}
-                      alt="lesson_tile"
-                      fill
-                      style={{ objectFit: 'contain' }}
-                      sizes="130px"
-                      className="rounded img-optimize"
-                    />
-                  </div>
-                }
-                <div className="h-100 d-none d-sm-block">
-                  <div
-                    className="rounded d-flex justify-content-center align-items-center"
-                    style={{ width: 35, height: 35, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
-                  >
-                    <i
-                      style={{ color: '#DEE2E6' }}
-                      className="fs-4 bi-chevron-down"
-                    />
-                    <i
-                      style={{ color: highlightedBorderColor }}
-                      className="fs-4 bi-chevron-up"
-                    />
-                  </div>
-                  <div className='d-flex justify-content-center align-items-center mt-3'>
-                    <CopyableTxt
-                      additiveYCoord={-20}
-                      copyTxtIndicator='Link to this lesson.'
-                      txtCopiedIndicator='Lesson link copied ✅!'
-                      implementLogicOnClick={handleClipBoardIconClick}
-                      copyTxtModalDefaultStyleObj={{
-                        position: 'fixed',
-                        width: '150px',
-                        backgroundColor: '#212529',
-                        textAlign: 'center',
-                      }}
+                  }
+                  <div className="h-100 d-none d-sm-block">
+                    <div
+                      className="rounded d-flex justify-content-center align-items-center"
+                      style={{ width: 35, height: 35, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
                     >
-                      <i className="bi bi-clipboard" style={{ fontSize: '30px', color: '#A2A2A2' }} />
-                    </CopyableTxt>
+                      <i
+                        style={{ color: '#DEE2E6' }}
+                        className="fs-4 bi-chevron-down"
+                      />
+                      <i
+                        style={{ color: highlightedBorderColor }}
+                        className="fs-4 bi-chevron-up"
+                      />
+                    </div>
+                    <div
+                      id='clipboardIconWrapper'
+                      className='d-flex justify-content-center align-items-center mt-3'
+                    >
+                      <CopyableTxt
+                        additiveYCoord={-20}
+                        copyTxtIndicator='Link to this lesson.'
+                        txtCopiedIndicator='Lesson link copied ✅!'
+                        implementLogicOnClick={handleClipBoardIconClick}
+                        copyTxtModalDefaultStyleObj={{
+                          position: 'fixed',
+                          width: '150px',
+                          backgroundColor: '#212529',
+                          textAlign: 'center',
+                        }}
+                        pointerContainerStyle={{ zIndex: 1 }}
+                      >
+                        <i className="bi bi-clipboard" style={{ fontSize: '30px', color: '#A2A2A2' }} />
+                      </CopyableTxt>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-    >
-      <div className='p-0'>
-        {!!restOfTags?.length && (
-          <div className='d-flex mt-0 mt-md-1 justify-content-sm-start tagPillContainer flex-wrap'>
-            {restOfTags.map((tag, index) => (
-              <div
-                key={index}
-                style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
-                className='rounded-pill badge bg-white p-2'
-              >
-                <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }}>
-                  {tag}
-                </span>
-              </div>
-            ))}
           </div>
         )}
-        {learningObjectives &&
-          <div className="mt-4">
-            <h5 className='fw-bold'>Learning Objectives</h5>
-            <p className='fw-semibold'>Students will able to...</p>
-            <ol className='mt-3'>
-              {learningObjectives.map((objectiveStr, index) => (
-                <li key={index}>
-                  <RichText content={objectiveStr} />
-                </li>
+      >
+        <div className='p-0'>
+          {!!restOfTags?.length && (
+            <div className='d-flex mt-0 mt-md-1 justify-content-sm-start tagPillContainer flex-wrap'>
+              {restOfTags.map((tag, index) => (
+                <div
+                  key={index}
+                  style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
+                  className='rounded-pill badge bg-white p-2'
+                >
+                  <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }}>
+                    {tag}
+                  </span>
+                </div>
               ))}
-            </ol>
-          </div>
-        }
+            </div>
+          )}
+          {learningObjectives &&
+            <div className="mt-4 d-col col-12 col-lg-8">
+              <div className='d-flex align-items-start'>
+                <h5 className='fw-bold'>
+                  <i className="bi bi-emoji-sunglasses me-2"></i>
+                  Learning Objectives
+                </h5>
+              </div>
+              <p className='lead mb-0'>Students will able to...</p>
+              <ol className='mt-0'>
+                {learningObjectives.map((objectiveStr, index) => (
+                  <li key={index}>
+                    <RichText content={objectiveStr} />
+                  </li>
+                ))}
+              </ol>
+            </div>
+          }
 
-        <div className='mt-4'>
-          <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
-          <ol className='mt-3'>
-            {!!_itemList?.length && _itemList.map(item => {
-              const { itemTitle, itemDescription, links } = item;
-              const _links = links ? (Array.isArray(links) ? links : [links]) : null;
-
-              return (
-                <li key={itemTitle} className='mb-0'>
-                  <strong><RichText content={itemTitle} /></strong>
-                  <div className='fst-italic mb-2' style={{ color: '#353637' }}>
-                    <RichText
-                      content={itemDescription}
-                      css={{ color: 'red' }}
-                    />
-                  </div>
-                  <ul>
-                    {!!_links && _links.map(({ url, linkText }, index) => (
-                      <li key={index}>
-                        <a
-                          href={url}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                        >
-                          {linkText}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-
-        {(!isOnAssessments && durList && chunks) &&
-          <>
-            <h5>Steps &amp; Flow</h5>
-            {chunks.map((chunk, i) => (
-              <LessonChunk
-                key={i}
-                chunkNum={i}
-                durList={durList}
-                partInfo={resources?.[partsFieldName]?.[lsnNum - 1]}
-                {...chunk}
-              />
-            ))}
-          </>
-        }
-        {!!lsnExt?.length &&
-          <div>
-            <div>
-              <h5 className='fw-bold'>Going Further</h5>
-              <RichText content="Ideas and resources for deepening learning on this topic." />
+          <div className='mt-4'>
+            <div className='d-flex align-items-start'>
+              <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
+              <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
             </div>
             <ol className='mt-2'>
-              {lsnExt.map(({ itemTitle, itemDescription, item, itemLink }) => {
+              {!!_itemList?.length && _itemList.map(item => {
+                const { itemTitle, itemDescription, links } = item;
+                const _links = links ? (Array.isArray(links) ? links : [links]) : null;
+
                 return (
-                  <li key={item} style={{ color: '#4397D5' }}>
-                    <h6 style={{ color: '#4397D5' }} className='fw-bold'>
-                      <Link href={itemLink} target='_blank'>
-                        {itemTitle}
-                      </Link>
-                    </h6>
-                    <p className='text-dark'>{itemDescription}</p>
+                  <li key={itemTitle} className='mt-2 mb-0'>
+                    <strong><RichText content={itemTitle} /></strong>
+                    <div className='fst-italic mb-1' style={{ color: '#353637' }}>
+                      <RichText
+                        content={itemDescription}
+                        css={{ color: 'red' }}
+                      />
+                    </div>
+                    <ul>
+                      {!!_links && _links.map(({ url, linkText }, index) => (
+                        <li className='mb-0' key={index}>
+                          <a
+                            href={url}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                          >
+                            {linkText}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
                   </li>
                 );
               })}
             </ol>
           </div>
-        }
-      </div>
-    </Accordion>
+
+          {(!isOnAssessments && durList && chunks) &&
+            <div className='mt-4'>
+              <h5 className='d-flex align-items-start fw-bold mb-3'>
+                <i className="bi bi-stars me-2"></i>
+                Steps &amp; Flow
+              </h5>
+              {chunks.map((chunk, i) => (
+                <LessonChunk
+                  key={i}
+                  chunkNum={i}
+                  chunkDur={durList[i]}
+                  durList={durList}
+                  partInfo={resources?.[partsFieldName]?.[lsnNum - 1]}
+                  {...chunk}
+                />
+              ))}
+            </div>
+          }
+          {!!lsnExt?.length &&
+            <div className='d-col col-12 col-lg-9'>
+              <div>
+                <div className='d-flex align-items-start '>
+                  <h5 className='fw-bold'>
+                    <i className="bi bi-rocket-takeoff me-2"></i>
+                    Going Further
+                  </h5>
+                </div>
+                <RichText className='lead' content="Ideas and resources for deepening learning on this topic." />
+              </div>
+              <ol className='mt-2'>
+                {lsnExt.map(({ itemTitle, itemDescription, item, itemLink }) => {
+                  return (
+                    <li
+                      key={item}
+                      className='fw-bold'
+                      style={{ color: '#4397D5' }}
+                    >
+                      <h6 className='mb-1'>
+                        <Link
+                          href={itemLink}
+                          target='_blank'
+                        >
+                          {itemTitle}
+                        </Link>
+                      </h6>
+                      <RichText className='fw-normal text-dark' content={itemDescription}>
+                      </RichText>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          }
+        </div>
+      </Accordion>
+    </div>
   );
 };
 

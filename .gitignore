@@ -4,6 +4,8 @@
 
 .env
 
+getLessons.js
+
 # dependencies
 /node_modules
 /.pnp

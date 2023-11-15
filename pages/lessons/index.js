@@ -11,7 +11,8 @@ import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
 import { connectToMongodb } from '../../backend/utils/connection';
 
-const LessonsPage = ({ lessons, didErrorOccur }) => {
+const LessonsPage = ({ lessons, didErrorOccur, lessonsParts }) => {
+
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
   };
@@ -19,7 +20,6 @@ const LessonsPage = ({ lessons, didErrorOccur }) => {
   const uniqueIDs = [];
   const publishedLessons = lessons.filter(({ PublicationStatus, numID }) => {
     const willShowLesson = !uniqueIDs.includes(numID) && (PublicationStatus === 'Live');
-    // const willShowLesson = !uniqueIDs.includes(numID);
 
     if (willShowLesson) {
       uniqueIDs.push(numID);
@@ -35,7 +35,7 @@ const LessonsPage = ({ lessons, didErrorOccur }) => {
       imgSrc='https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png'
       imgAlt='Galactic_Polymath_Logo_Lessons_Page'
       keywords='Galatic Polymath Lessons, Galactic Polymath Learning Tools'
-      className='lessons-pg-container '
+      className='lessons-pg-container'
     >
       <section className="bg-secondary p-4">
         <div className="text-white container">
@@ -98,15 +98,16 @@ const PROJECTED_LESSONS_FIELDS = [
   'CoverImage',
   'Subtitle',
   'Title',
-  'Section.overview.TargetSubject',
-  'Section.overview.GradesOrYears',
-  'Section.overview.ForGrades',
+  'Section',
   'ReleaseDate',
   'locale',
   '_id',
   'numID',
   'PublicationStatus',
   'LessonBanner',
+  'LsnStatuses',
+  'Subject',
+  'ForGrades',
 ]
 
 export async function getStaticProps() {
@@ -114,12 +115,68 @@ export async function getStaticProps() {
     await connectToMongodb();
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
-    lessons = lessons.map(lesson => ({
-      ...lesson,
-      ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
-    }));
+    let lessonsParts = [];
 
-    return { props: { lessons: lessons } };
+    for (let lesson of lessons) {
+      if (!lesson?.LsnStatuses?.length) {
+        continue;
+      }
+
+      let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
+      let lessonPartsFromClassRoomObj = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
+
+      if (lessonParts?.length) {
+        for (let lsnStatus of lesson.LsnStatuses) {
+          if (lsnStatus.status !== 'Live') {
+            continue;
+          }
+          const lessonPart = lessonParts.find(({ lsnNum }) => lsnNum === lsnStatus.lsn);
+          const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
+          
+          if(lessonPart){
+            // GET THE following FROM EACH LESSON: 
+            // the lesson title 
+            // the lesson tile
+            // the description of the lesson 
+            // the tags 
+            // grades 
+            // lesson duration
+            
+            // the lesson unit title
+            // the lesson subject
+            // lesson grades
+            // const lessonPartForUI = {
+            //   tile: lessonPartFromClassroomObj.tile, 
+            //   tags: lessonPartFromClassroomObj.tags, 
+            //   lessonPart: lessonPart.lsnTitle,
+            //   dur: lessonPart.lsnDur,
+            //   preface: lessonPart.lsnPreface,
+            //   lessonPartNum: lessonPart.lsnNum,
+            //   lessonTitle: lesson.Title,
+            //   subject: lesson.TargetSubject,
+            //   grades: lesson.ForGrades,
+            // };
+
+            // console.log("lessonPartForUI: ", lessonPartForUI)
+
+            // lessonsParts.push(lessonPartForUI);
+          }
+        }
+      }
+    }
+
+    lessons = lessons.map(lesson => {
+      const lessonObj = {
+        ...lesson,
+        ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
+      };
+
+      delete lessonObj.LsnStatuses
+
+      return lessonObj
+    });
+
+    return { props: { lessons: lessons, lessonsParts } };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 
