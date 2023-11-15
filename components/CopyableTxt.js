@@ -59,6 +59,7 @@ const CopyableTxt = ({
   return (
     <div
       className='pointer'
+      style={{ zIndex: 1000 }}
       onMouseEnter={handleOnMouseEnter}
       onMouseLeave={handleOnMouseLeave}
       onClick={handleOnClick}

@@ -83,7 +83,7 @@ const LessonPart = ({
       return false;
     }
 
-    if (parentElement.id === 'copyableTxtWrapper') {
+    if (parentElement.id === 'clipboardIconWrapper') {
       console.log('clip board icon was clicked...')
       return true;
     };
@@ -94,10 +94,11 @@ const LessonPart = ({
 
 
   const handleAccordionBtnOnClick = event => {
-    console.log("event: ", event)
-    if (!checkIfElementClickedWasClipboard(event.target.parentElement)) { 
+    console.log("event: ", event);
+
+    if (!checkIfElementClickedWasClipboard(event.target)) {
       const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
-      
+
       setNumsOfLessonPartsThatAreExpanded(prevState => {
         if (!isExpanded) {
           return previousLessonPartNum ? [...prevState, previousLessonPartNum] : prevState;
@@ -165,7 +166,7 @@ const LessonPart = ({
         buttonClassName={`w-100 text-start border-0 p-0 ${isExpanded ? '' : 'bg-white'}`}
         key={lsnNum}
         btnStyle={isExpanded ? { background: 'none' } : {}}
-        // id={_accordionId}
+        id={_accordionId}
         accordionChildrenClasses='px-3 pb-2 w-100'
         style={accordionStyle}
         dataBsToggle={{}}
@@ -275,7 +276,10 @@ const LessonPart = ({
                         className="fs-4 bi-chevron-up"
                       />
                     </div>
-                    <div className='d-flex justify-content-center align-items-center mt-3'>
+                    <div
+                      id='clipboardIconWrapper'
+                      className='d-flex justify-content-center align-items-center mt-3'
+                    >
                       <CopyableTxt
                         additiveYCoord={-20}
                         copyTxtIndicator='Link to this lesson.'
