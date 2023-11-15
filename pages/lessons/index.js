@@ -131,7 +131,7 @@ const PROJECTED_LESSONS_FIELDS = [
   'PublicationStatus',
   'LessonBanner',
   'teaching-materials',
-  'LsnStatuses',
+  // 'LsnStatuses',
 ]
 
 export async function getStaticProps() {
@@ -177,23 +177,23 @@ export async function getStaticProps() {
     // GOAL C: for each unit, get the number of lessons that are available.
     let lessonsParts = [];
 
-    for (let lesson of lessons) {
-      if (!lesson?.LsnStatuses?.length) {
-        continue;
-      }
+    // for (let lesson of lessons) {
+    //   if (!lesson?.LsnStatuses?.length) {
+    //     continue;
+    //   }
 
-      let partsOfLesson = lesson?.Section?.['teaching-materials']?.Data?.lesson;
+    //   let partsOfLesson = lesson?.Section?.['teaching-materials']?.Data?.lesson;
 
-      for (let lsnStatus of lessons) {
-        if (lsnStatus.status !== 'Live') {
-          continue;
-        }
+    //   for (let lsnStatus of lessons) {
+    //     if (lsnStatus.status !== 'Live') {
+    //       continue;
+    //     }
 
-        const lessonPart = partsOfLesson.find(({ lsnNum }) => lsnNum == lsnStatus.lsn);
+    //     const lessonPart = partsOfLesson.find(({ lsnNum }) => lsnNum == lsnStatus.lsn);
 
-        lessonsParts.push(lessonPart);
-      }
-    }
+    //     lessonsParts.push(lessonPart);
+    //   }
+    // }
 
 
     // NOTES: 
