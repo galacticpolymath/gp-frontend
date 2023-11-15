@@ -30,6 +30,7 @@ const LessonPart = ({
 }) => {
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isHoveringOverClipboardIcon, setIsHoveringOverClipboardIcon] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
   const isOnAssessments = lsnTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
@@ -45,6 +46,8 @@ const LessonPart = ({
   let restOfTags = null;
   const _accordionId = `part_${lsnNum}`;
 
+  // GOAL: when the user clicks on the copy to clipboard icon, don't open the accordion for the respective lesson part
+
   const handleClipBoardIconClick = () => {
     let url = window.location.href;
     const currentSectionInView = router.asPath.split('#').at(-1);
@@ -55,6 +58,7 @@ const LessonPart = ({
 
     navigator.clipboard.writeText(url);
   };
+
 
   useEffect(() => {
     const lessonPartIdInUrl = window.location.href.split('#').at(-1);
@@ -73,17 +77,35 @@ const LessonPart = ({
     }
   }, []);
 
-  const handleOnClick = () => {
-    const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
+  const checkIfElementClickedWasClipboard = parentElement => {
+    if (parentElement.nodeName.toLowerCase() === 'body') {
+      console.log("Clip board icon wasn't clicked...")
+      return false;
+    }
 
-    setNumsOfLessonPartsThatAreExpanded(prevState => {
-      if (!isExpanded) {
-        return previousLessonPartNum ? [...prevState, previousLessonPartNum] : prevState;
-      }
+    if (parentElement.id === 'copyableTxtWrapper') {
+      console.log('clip board icon was clicked...')
+      return true;
+    };
 
-      return prevState.filter(num => num !== previousLessonPartNum);
-    });
-    setIsExpanded(!isExpanded);
+    return checkIfElementClickedWasClipboard(parentElement.parentElement);
+  }
+
+
+
+  const handleAccordionBtnOnClick = event => {
+    // if (!checkIfElementClickedWasClipboard(event.target.parentElement)) { 
+      const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
+      
+      setNumsOfLessonPartsThatAreExpanded(prevState => {
+        if (!isExpanded) {
+          return previousLessonPartNum ? [...prevState, previousLessonPartNum] : prevState;
+        }
+
+        return prevState.filter(num => num !== previousLessonPartNum);
+      });
+      setIsExpanded(!isExpanded);
+    // }
   };
 
   if (allTags?.length && Array.isArray(allTags)) {
@@ -148,7 +170,7 @@ const LessonPart = ({
         initiallyExpanded={isExpanded}
         button={(
           <div
-            onClick={handleOnClick}
+            onClick={handleAccordionBtnOnClick}
             className='px-3 position-relative pt-3 pb-2 w-100 d-flex'
           >
             <div
