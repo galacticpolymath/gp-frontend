@@ -30,7 +30,6 @@ const LessonPart = ({
 }) => {
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isHoveringOverClipboardIcon, setIsHoveringOverClipboardIcon] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
   const isOnAssessments = lsnTitle === 'Assessments';
   const durList = isOnAssessments ? null : (chunks && chunks.map(({ chunkDur }) => chunkDur));
@@ -59,7 +58,6 @@ const LessonPart = ({
     navigator.clipboard.writeText(url);
   };
 
-
   useEffect(() => {
     const lessonPartIdInUrl = window.location.href.split('#').at(-1);
 
@@ -79,22 +77,20 @@ const LessonPart = ({
 
   const checkIfElementClickedWasClipboard = parentElement => {
     if (parentElement.nodeName.toLowerCase() === 'body') {
-      console.log("Clip board icon wasn't clicked...")
+      console.log("Clip board icon wasn't clicked...");
       return false;
     }
 
     if (parentElement.id === 'clipboardIconWrapper') {
-      console.log('clip board icon was clicked...')
+      console.log('clip board icon was clicked...');
       return true;
-    };
+    }
 
     return checkIfElementClickedWasClipboard(parentElement.parentElement);
-  }
-
-
+  };
 
   const handleAccordionBtnOnClick = event => {
-    console.log("event: ", event);
+    console.log('event: ', event);
 
     if (!checkIfElementClickedWasClipboard(event.target)) {
       const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
@@ -136,7 +132,7 @@ const LessonPart = ({
     borderRight: isExpanded ? 'none' : defaultBorder,
     borderTop: _borderTop,
     borderBottom: _borderBottom,
-    boxShadow: isExpanded ? highlightedGlow : 'none'
+    boxShadow: isExpanded ? highlightedGlow : 'none',
   };
 
   let _borderTopAccordionWrapper = 'none';
@@ -156,9 +152,8 @@ const LessonPart = ({
     borderTop: _borderTopAccordionWrapper,
     borderBottom: _borderBottomAccordionWrapper,
     boxShadow: isExpanded ? highlightedGlow : 'none',
-    transitionProperty: 'all'
+    transitionProperty: 'all',
   };
-
 
   return (
     <div style={accordionStyleAccordionWrapper}>
@@ -291,6 +286,7 @@ const LessonPart = ({
                           backgroundColor: '#212529',
                           textAlign: 'center',
                         }}
+                        pointerContainerStyle={{ zIndex: 1 }}
                       >
                         <i className="bi bi-clipboard" style={{ fontSize: '30px', color: '#A2A2A2' }} />
                       </CopyableTxt>

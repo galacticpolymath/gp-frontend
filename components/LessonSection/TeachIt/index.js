@@ -46,7 +46,6 @@ const TeachIt = ({
   const partsFieldName = ('parts' in Data.classroom.resources[0]) ? 'parts' : 'lessons';
   const dataLesson = Data.lesson;
   let parts = Data.classroom.resources[0]?.[partsFieldName];
-  console.log("dataLesson: ", dataLesson);
 
   if ((((parts !== undefined) || (parts !== null)) && (parts?.title === "Assessments")) && parts?.length) {
     const { itemList, lsn, preface, tile, title } = parts;

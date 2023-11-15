@@ -8,14 +8,9 @@
 /* eslint-disable semi */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
-import { format } from 'date-fns';
-import Image from 'next/image';
 import Layout from '../../../../components/Layout';
-import RichText from '../../../../components/RichText';
-import LocDropdown from '../../../../components/LocDropdown';
 import { useEffect, useState } from 'react';
 import ParentLessonSection from '../../../../components/LessonSection/ParentLessonSection';
-import { useInView } from 'react-intersection-observer';
 import LessonsSecsNavDots from '../../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../../components/AboutPgComps/ShareWidget';
 import { useRouter } from 'next/router';
@@ -24,26 +19,8 @@ import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
 
-// GOAL: merge the title section with the lesson section 
-
-// GOAL: change the number of dots to 9
-
-// brain dump notes: 
-// the lesson dots will be 9 
-
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
-
-const getLatestSubRelease = (sections) => {
-  const versionSection = sections.versions;
-
-  if (!versionSection) return null;
-
-  const lastRelease = versionSection.Data[versionSection?.Data?.length - 1].sub_releases;
-  const lastSubRelease = lastRelease[lastRelease?.length - 1];
-
-  return lastSubRelease;
-};
 
 const getSectionTitle = (sectionComps, sectionTitle) => {
   const targetSectionTitleIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === sectionTitle);
@@ -110,14 +87,9 @@ const getLessonSections = (lessonSection, sectionComps) => {
   })
 };
 
-const LessonDetails = ({ lesson, availLocs }) => {
+const LessonDetails = ({ lesson }) => {
   const router = useRouter();
-  const { ref } = useInView({ threshold: 0.2 });
   let sectionComps = null;
-
-  useEffect(() => {
-    console.log("lesson: ", lesson)
-  })
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
@@ -143,15 +115,6 @@ const LessonDetails = ({ lesson, availLocs }) => {
       (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
       targetSection.scrollIntoView({ behavior: 'smooth', block: (sectionId === "lessonTitleId") ? 'center' : 'start' });
     }
-  }
-
-  const handleBtnClick = () => {
-    if (!document.getElementById('versions-container')?.offsetParent) {
-      const headingVersionsElement = document.getElementById('heading_versions');
-      headingVersionsElement.querySelector('button').click();
-    }
-
-    window.location.href = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#9._version_notes`
   }
 
   const handleDocumentClick = event => {
@@ -197,11 +160,7 @@ const LessonDetails = ({ lesson, availLocs }) => {
 
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
-  const lastSubRelease = getLatestSubRelease(lesson.Section);
-  console.log("from the server: ", lesson)
   let _sections = getLessonSections(lesson.Section, sectionComps);
-  console.log("_sections: ", _sections)
-  const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
   const shareWidgetFixedProps = IS_ON_PROD ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
   const layoutProps = {
     title: `Mini-Unit: ${lesson.Title}`,

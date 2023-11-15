@@ -19,6 +19,7 @@ const CopyableTxt = ({
     fontSize: 12,
     transform: 'translateY(-2px)',
   },
+  pointerContainerStyle = {},
 }) => {
   const [isModalOn, setIsModalOn] = useState(false);
   const [modalTxt, setModalTxt] = useState(copyTxtIndicator);
@@ -59,7 +60,7 @@ const CopyableTxt = ({
   return (
     <div
       className='pointer'
-      style={{ zIndex: 1000 }}
+      style={pointerContainerStyle}
       onMouseEnter={handleOnMouseEnter}
       onMouseLeave={handleOnMouseLeave}
       onClick={handleOnClick}

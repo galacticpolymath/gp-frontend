@@ -22,20 +22,12 @@ const getIsReqAuthorizedResult = async (request, role = 'user') => {
     const validateJwtTokenResult = await validateJwtToken(token);
 
     if (!validateJwtTokenResult.wasSuccessful || !validateJwtTokenResult?.userCredentials) {
-      console.error('Not successful, jwt is invalid.');
       throw new Error(validateJwtTokenResult.msg);
     }
 
-    console.log('validateJwtTokenResult.userCredentials: ', validateJwtTokenResult.userCredentials);
-
     const roles = validateJwtTokenResult.userCredentials.claims.allowedRoles;
     const hasUserRole = !!roles.find(_role => _role === 'user');
-    console.log('role input: ', role);
     const hasTargetRole = (role !== 'user') ? !!roles.find(_role => _role === role) : hasUserRole;
-
-    console.log('hasTargetRole: ', hasTargetRole);
-
-    console.log('hasUserRole: ', hasUserRole);
 
     if (hasUserRole && hasTargetRole) {
       return { isReqAuthorized: true, msg: 'User is authorized to access this service.' };

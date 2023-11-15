@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
-import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
@@ -23,11 +22,11 @@ const Overview = ({
   __component,
   ...titleProps
 }) => {
+  console.log(index);
   console.log(__component);
   const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
-
 
   return (
     <div ref={ref} className='container mb-4 px-0'>
