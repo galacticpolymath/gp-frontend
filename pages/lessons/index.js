@@ -12,6 +12,7 @@ import moment from 'moment/moment';
 import { connectToMongodb } from '../../backend/utils/connection';
 
 const LessonsPage = ({ lessons, didErrorOccur, lessonsParts }) => {
+  console.log("lessonsParts: ", lessonsParts)
 
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
@@ -43,7 +44,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonsParts }) => {
           <p className='col-sm-12 col-md-10 col-lg-8 col-xl-7 '>We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
         </div>
       </section>
-      <div>
+      <section>
         <div className='container'>
           <section className="mb-5 pt-2">
             <section className="headerSecLessonsPg">
@@ -89,7 +90,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonsParts }) => {
             )}
           </section>
         </div>
-      </div>
+      </section>
     </Layout>
   );
 };
@@ -106,7 +107,7 @@ const PROJECTED_LESSONS_FIELDS = [
   'PublicationStatus',
   'LessonBanner',
   'LsnStatuses',
-  'Subject',
+  'TargetSubject',
   'ForGrades',
 ]
 
@@ -132,34 +133,29 @@ export async function getStaticProps() {
           }
           const lessonPart = lessonParts.find(({ lsnNum }) => lsnNum === lsnStatus.lsn);
           const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
-          
-          if(lessonPart){
-            // GET THE following FROM EACH LESSON: 
-            // the lesson title 
-            // the lesson tile
-            // the description of the lesson 
-            // the tags 
-            // grades 
-            // lesson duration
-            
-            // the lesson unit title
-            // the lesson subject
-            // lesson grades
-            // const lessonPartForUI = {
-            //   tile: lessonPartFromClassroomObj.tile, 
-            //   tags: lessonPartFromClassroomObj.tags, 
-            //   lessonPart: lessonPart.lsnTitle,
-            //   dur: lessonPart.lsnDur,
-            //   preface: lessonPart.lsnPreface,
-            //   lessonPartNum: lessonPart.lsnNum,
-            //   lessonTitle: lesson.Title,
-            //   subject: lesson.TargetSubject,
-            //   grades: lesson.ForGrades,
-            // };
 
-            // console.log("lessonPartForUI: ", lessonPartForUI)
+          // Invoke a pagination?
+          // IDEAS: 
+          // -add a pagination for the lessons? 
+          // -add a search?
 
-            // lessonsParts.push(lessonPartForUI);
+          // NOTES:
+          // invoke a pagination only when the user is on the lessons page
+          // only show ten lessons at a time? 
+          // add a search filter for the lessons
+
+          if (lessonPart) {
+            lessonsParts.push({
+              tile: lessonPartFromClassroomObj.tile ?? 'https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png',
+              tags: lessonPartFromClassroomObj.tags,
+              lessonPart: lessonPart.lsnTitle,
+              dur: lessonPart.lsnDur,
+              preface: lessonPart.lsnPreface,
+              lessonPartNum: lessonPart.lsnNum,
+              lessonTitle: lesson.Title,
+              subject: lesson.TargetSubject,
+              grades: lesson.ForGrades,
+            });
           }
         }
       }
@@ -175,6 +171,8 @@ export async function getStaticProps() {
 
       return lessonObj
     });
+
+    console.log("lessonsParts: ", lessonsParts)
 
     return { props: { lessons: lessons, lessonsParts } };
   } catch (error) {
