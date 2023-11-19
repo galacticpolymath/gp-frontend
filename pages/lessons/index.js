@@ -10,6 +10,7 @@ import LessonCard from '../../components/LessonsPg/LessonCard';
 import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
 import { connectToMongodb } from '../../backend/utils/connection';
+import IndividualLesson from '../../components/LessonsPg/IndividualLesson.js';
 
 const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
   console.log("lessonsParts: ", lessonParts)
@@ -100,7 +101,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
             </div>
             {!!lessonParts?.length && (
               <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-                {publishedLessons.map((lesson) => <LessonCard key={lesson._id} lesson={lesson} />)}
+                {lessonParts.map(lesson => <IndividualLesson lesson={lesson} />)}
               </div>
             )}
             {(!publishedLessons?.length && didErrorOccur) && (
@@ -136,7 +137,7 @@ export async function getStaticProps() {
     await connectToMongodb();
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
-    let lessonsParts = [];
+    let lessonPartsForUI = [];
 
     for (let lesson of lessons) {
       if (!lesson?.LsnStatuses?.length) {
@@ -165,10 +166,10 @@ export async function getStaticProps() {
           // add a search filter for the lessons
 
           if (lessonPart) {
-            lessonsParts.push({
+            lessonPartsForUI.push({
               tile: lessonPartFromClassroomObj.tile ?? 'https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png',
               tags: lessonPartFromClassroomObj.tags,
-              lessonPart: lessonPart.lsnTitle,
+              lessonPartTitle: lessonPart.lsnTitle,
               dur: lessonPart.lsnDur,
               preface: lessonPart.lsnPreface,
               lessonPartNum: lessonPart.lsnNum,
@@ -192,9 +193,9 @@ export async function getStaticProps() {
       return lessonObj
     });
 
-    console.log("lessonsParts: ", lessonsParts)
+    console.log("lessonPartsForUI: ", lessonPartsForUI)
 
-    return { props: { lessons: lessons, lessonsParts } };
+    return { props: { lessons: lessons, lessonParts: lessonPartsForUI } };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 
