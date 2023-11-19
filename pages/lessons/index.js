@@ -11,8 +11,8 @@ import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
 import { connectToMongodb } from '../../backend/utils/connection';
 
-const LessonsPage = ({ lessons, didErrorOccur, lessonsParts }) => {
-  console.log("lessonsParts: ", lessonsParts)
+const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
+  console.log("lessonsParts: ", lessonParts)
 
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
@@ -79,6 +79,26 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonsParts }) => {
               <p><em>And they&apos;re all free!</em></p>
             </div>
             {!!publishedLessons?.length && (
+              <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
+                {publishedLessons.map((lesson) => <LessonCard key={lesson._id} lesson={lesson} />)}
+              </div>
+            )}
+            {(!publishedLessons?.length && didErrorOccur) && (
+              <div className='px-4 pb-4'>
+                <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
+              </div>
+            )}
+          </section>
+        </div>
+      </section>
+      <section>
+        <div className='container'>
+          <section className="lessonsSection pt-1">
+            <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
+              <h4 className="">Galactic Polymath Individual Lessons</h4>
+              <p className='mb-0'>Free lessons to engage students in current research, real world problems, and interdisciplinary thinking.</p>
+            </div>
+            {!!lessonParts?.length && (
               <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                 {publishedLessons.map((lesson) => <LessonCard key={lesson._id} lesson={lesson} />)}
               </div>
