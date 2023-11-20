@@ -130,6 +130,7 @@ const PROJECTED_LESSONS_FIELDS = [
   'LsnStatuses',
   'TargetSubject',
   'ForGrades',
+  'GradesOrYears'
 ]
 
 export async function getStaticProps() {
@@ -176,6 +177,7 @@ export async function getStaticProps() {
               lessonTitle: lesson.Title,
               subject: lesson.TargetSubject,
               grades: lesson.ForGrades,
+              gradesOrYears: lesson.GradesOrYears
             });
           }
         }
