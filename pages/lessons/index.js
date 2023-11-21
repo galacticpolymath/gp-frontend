@@ -167,9 +167,11 @@ export async function getStaticProps() {
           // add a search filter for the lessons
 
           if (lessonPart) {
+            let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0]) ? lessonPartFromClassroomObj?.tags.flat() : lessonPartFromClassroomObj?.tags
+            tags = tags.filter(tag => tag);
             lessonPartsForUI.push({
+              tags,
               tile: lessonPartFromClassroomObj.tile ?? 'https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png',
-              tags: lessonPartFromClassroomObj.tags,
               lessonPartTitle: lessonPart.lsnTitle,
               dur: lessonPart.lsnDur,
               preface: lessonPart.lsnPreface,
