@@ -13,7 +13,8 @@ import { connectToMongodb } from '../../backend/utils/connection';
 import IndividualLesson from '../../components/LessonsPg/IndividualLesson.js';
 
 const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
-  console.log("lessonsParts: ", lessonParts)
+  console.log("lessonsParts: ", lessonParts);
+  console.log("lessons hey there: ", lessons)
 
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
@@ -150,23 +151,14 @@ export async function getStaticProps() {
 
       if (lessonParts?.length) {
         for (let lsnStatus of lesson.LsnStatuses) {
+
           if (lsnStatus.status !== 'Live') {
             continue;
           }
           const lessonPart = lessonParts.find(({ lsnNum }) => lsnNum === lsnStatus.lsn);
-          const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
-
-          // Invoke a pagination?
-          // IDEAS: 
-          // -add a pagination for the lessons? 
-          // -add a search?
-
-          // NOTES:
-          // invoke a pagination only when the user is on the lessons page
-          // only show ten lessons at a time? 
-          // add a search filter for the lessons
 
           if (lessonPart) {
+            const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
             let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0]) ? lessonPartFromClassroomObj?.tags.flat() : lessonPartFromClassroomObj?.tags
             tags = tags.filter(tag => tag);
             lessonPartsForUI.push({
@@ -181,14 +173,17 @@ export async function getStaticProps() {
               grades: lesson.ForGrades,
               gradesOrYears: lesson.GradesOrYears
             });
+
           }
         }
       }
     }
 
     lessons = lessons.map(lesson => {
+      const individualLessonsNum = lesson?.LsnStatuses?.length ? lesson.LsnStatuses.filter(({ status }) => status !== 'Hidden')?.length : 0;
       const lessonObj = {
         ...lesson,
+        individualLessonsNum,
         ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
       };
 
@@ -197,9 +192,26 @@ export async function getStaticProps() {
       return lessonObj
     });
 
-    console.log("lessonPartsForUI: ", lessonPartsForUI)
+    let lessonParts = structuredClone(lessonPartsForUI);
 
-    return { props: { lessons: lessons, lessonParts: lessonPartsForUI } };
+    if (lessonParts?.length) {
+      lessonParts = lessonParts.sort(({ sort_by_date: sortByDateLessonA }, { sort_by_date: sortByDateLessonB }) => {
+        let _sortByDateLessonA = new Date(sortByDateLessonA);
+        let _sortByDateLessonB = new Date(sortByDateLessonB);
+
+        if (_sortByDateLessonA > _sortByDateLessonB) {
+          return -1;
+        }
+
+        if (_sortByDateLessonA < _sortByDateLessonB) {
+          return 1;
+        }
+
+        return 0;
+      })
+    }
+
+    return { props: { lessons: lessons, lessonParts: lessonParts } };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 

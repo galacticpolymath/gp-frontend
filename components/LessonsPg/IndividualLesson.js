@@ -37,6 +37,16 @@ const IndividualLesson = ({ lesson }) => {
           <span style={{ whiteSpace: 'normal' }} className="no-underline-on-hover badge rounded-pill bg-gray">
             {`${lesson.gradesOrYears}: ${lesson.grades}`}
           </span>
+          {lesson.dur &&
+            <span className='d-inline-flex no-underline-on-hover badge rounded-pill bg-gray'>
+              <div className='h-100 w-50'>
+                <i style={{ fontSize: "16px" }} className="mb-2 me-2 bi-alarm" />
+              </div>
+              <div className='h-100 d-flex justify-content-center align-items-center'>
+                {lesson.dur} min
+              </div>
+            </span>
+          }
         </section>
         {!!tags?.length &&
           <section className='mt-1 d-flex tagPillContainer flex-wrap mt-2'>
