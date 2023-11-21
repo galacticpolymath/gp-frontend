@@ -6,11 +6,17 @@ $borderThickness: 1px;
 $borderColor: darkgray;
 $toolTipColor: #f0f4ff;
 
+.individualLessonImgSec {
+  @media(min-width: 577px) {
+    height: 100px;
+  }
+}
+
 .lessonsSection {
   border-top: solid $borderThickness $borderColor;
 
   >div {
-    @media (max-width: 575px) {
+    @media (max-width: 576px) {
       display: flex !important;
       flex-direction: column;
     }
@@ -265,10 +271,10 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.qrCodeImgAndTxtContainer{
+.qrCodeImgAndTxtContainer {
   height: 185px;
 
-  @media(max-width: 991px){
+  @media(max-width: 991px) {
     height: 170px
   }
 }

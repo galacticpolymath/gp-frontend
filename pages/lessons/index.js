@@ -41,7 +41,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
     >
       <section className="bg-secondary p-4">
         <div className="text-white container">
-          <h1>Free, Interdisciplinary Lessons</h1>
+          <h1 className='responseiveH1'>Free, Interdisciplinary Lessons</h1>
           <p className='col-sm-12 col-md-10 col-lg-8 col-xl-7 '>We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
         </div>
       </section>
@@ -100,7 +100,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
               <p className='mb-0'>Free lessons to engage students in current research, real world problems, and interdisciplinary thinking.</p>
             </div>
             {!!lessonParts?.length && (
-              <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
+              <div className='mx-auto grid justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch pb-1 px-2 p-sm-4 gap-3 pt-3 pb-5'>
                 {lessonParts.map(lesson => <IndividualLesson lesson={lesson} />)}
               </div>
             )}

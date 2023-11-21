@@ -26,6 +26,14 @@ $font-size-root: 18px;
 @import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
 
 
+.responseiveH1 {
+  font-size: 27px;
+
+  @media(min-width: 577px) {
+    font-size: calc(1.375rem + 1.5vw)
+  }
+}
+
 html,
 body {
   padding: 0;
@@ -34,10 +42,12 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   font-size: 18px;
   scroll-behavior: smooth;
-};
+}
+
+;
 
 
-.text-transform-default{
+.text-transform-default {
   text-transform: none;
 }
 
@@ -52,7 +62,7 @@ body {
   text-underline-offset: 4px !important;
 }
 
-.default-cursor{
+.default-cursor {
   cursor: auto !important;
 }
 
