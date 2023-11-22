@@ -127,6 +127,7 @@ $toolTipColor: #f0f4ff;
 
 .jobVizCareer {
   @media (min-width: 768px) {
+    // not media query
     width: 575px;
   }
 
@@ -311,8 +312,8 @@ $toolTipColor: #f0f4ff;
   right: 20px;
   z-index: 1000;
 
-  @media (max-width: 575px) {
-    right: 25px;
+  @media (max-width: 768px) {
+    right: 6px;
   }
 }
 

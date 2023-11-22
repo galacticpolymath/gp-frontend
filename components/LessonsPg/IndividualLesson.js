@@ -13,12 +13,12 @@ const IndividualLesson = ({ lesson }) => {
       linkClassName='individualLessonsWrapper pointer py-2 py-sm-0 disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-5 mx-auto d-sm-grid p-2 p-lg-2 rounded-3 lessonsPgShadow cardsOnLessonPg bg-white'
     >
       <section className='individualLessonImgSec d-flex flex-grow-1 justify-content-between w-100'>
-        <section style={{ width: '70%', }} className='d-flex justify-content-end flex-column pe-1'>
+        <section style={{ width: '70%' }} className='d-flex justify-content-end flex-column pe-1'>
           <h6
             style={{
               textDecoration: 'none',
               height: 'fit-content', 
-              fontWeight: 700
+              fontWeight: 700,
             }}
             className='mt-2 mt-sm-0 w-100 w-light text-black mb-0 no-underline-on-hover'
           >

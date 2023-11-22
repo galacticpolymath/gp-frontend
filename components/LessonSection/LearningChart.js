@@ -14,8 +14,6 @@ const LearningChart = ({
   _sectionDots,
   SectionTitle,
 }) => {
-  console.log('Title: ', Title);
-  console.log('SectionTitle yo there: ', SectionTitle);
   const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
