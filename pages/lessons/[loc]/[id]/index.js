@@ -164,13 +164,13 @@ const LessonDetails = ({ lesson }) => {
   const shareWidgetFixedProps = IS_ON_PROD ?
     {
       pinterestMedia: lessonBannerUrl,
-      shareWidgetStyle: { borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', boxShadow: '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)', top: 150, width: "60px" }
+      shareWidgetStyle: { borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', boxShadow: '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)', top: 150, width: "60px" },
     }
     :
     {
       pinterestMedia: lessonBannerUrl,
       developmentUrl: `${lesson.URL}/`,
-      shareWidgetStyle: { borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', boxShadow: '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)', top: 150, width: "60px" }
+      shareWidgetStyle: { borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', boxShadow: '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)', top: 150, width: "60px" },
     }
   const layoutProps = {
     title: `Mini-Unit: ${lesson.Title}`,
@@ -178,7 +178,7 @@ const LessonDetails = ({ lesson }) => {
     imgSrc: lessonBannerUrl,
     url: lesson.URL,
     imgAlt: `${lesson.Title} cover image`,
-    className: 'overflow-hidden'
+    className: 'overflow-hidden',
   };
 
   return (

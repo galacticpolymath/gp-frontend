@@ -14,16 +14,16 @@ export const connectToMongodb = async () => {
     const dbName = MONGODB_DB_PROD_NAME ?? MONGODB_DB_NAME;
     
     if(MONGODB_DB_PROD_NAME){
-      console.log(chalk.red('YOU ARE ON PRODUCTION.'))
+      console.log(chalk.red('YOU ARE ON PRODUCTION.'));
     }
 
     const connectionStr = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster0.tynope2.mongodb.net/${dbName}`;
-    console.log("connectionStr: ", connectionStr)
+    console.log('connectionStr: ', connectionStr);
     const connectionState = await mongoose.connect(connectionStr, { retryWrites: true });
 
     isConnectedToDb = connectionState.connections[0].readyState === 1;
 
-    console.log("isConnectedToDb: ", isConnectedToDb)
+    console.log('isConnectedToDb: ', isConnectedToDb);
 
     return { wasSuccessful: isConnectedToDb };
   } catch (error) {

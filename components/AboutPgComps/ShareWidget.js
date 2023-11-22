@@ -30,7 +30,7 @@ const ShareWidget = ({
     pinterestMedia,
     developmentUrl,
     shareWidgetStyle = {},
-    widgetParentCss = 'share-widget gap-2 d-none d-md-flex position-fixed flex-column bg-white py-2 shadow start-0'
+    widgetParentCss = 'share-widget gap-2 d-none d-md-flex position-fixed flex-column bg-white py-2 shadow start-0',
 }) => {
     const url = isOnProduction ? ((typeof window !== 'undefined') && window?.location?.href) : developmentUrl;
 

@@ -27,7 +27,7 @@ const Title = ({
   versions,
   lessonBannerUrl,
   sponsorLogoImgUrl,
-  lessonUrl
+  lessonUrl,
 }) => {
   const router = useRouter();
 
@@ -85,19 +85,20 @@ const Title = ({
           <div className='d-flex d-md-none'>
             <label className='d-flex justify-content-center align-items-center'>Share: </label>
             {process.env.NODE_ENV === 'production'
-              ?
-              <ShareWidget
-                pinterestMedia={lessonBannerUrl}
-                widgetParentCss='share-widget d-flex d-md-none flex-row bg-transparent'
-              />
-              :
-              <ShareWidget
-                developmentUrl={`${lessonUrl}/`}
-                pinterestMedia={lessonBannerUrl}
-                shareWidgetStyle={{ maxWidth: "300px" }}
-                widgetParentCss='share-widget d-flex my-2 d-md-none flex-row gap-2 ps-1 w-100 bg-transparent'
-              />
-            }
+              ? (
+                <ShareWidget
+                  pinterestMedia={lessonBannerUrl}
+                  widgetParentCss='share-widget d-flex d-md-none flex-row bg-transparent'
+                />
+              )
+              : (
+                <ShareWidget
+                  developmentUrl={`${lessonUrl}/`}
+                  pinterestMedia={lessonBannerUrl}
+                  shareWidgetStyle={{ maxWidth: '300px' }}
+                  widgetParentCss='share-widget d-flex my-2 d-md-none flex-row gap-2 ps-1 w-100 bg-transparent'
+                />
+              )}
           </div>
           <div className='row my-0 py-0 '>
             <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid align-content-center">

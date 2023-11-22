@@ -15,7 +15,7 @@ const LessonCard = ({ lesson }) => {
     Section,
     ReleaseDate,
     LessonBanner,
-    individualLessonsNum
+    individualLessonsNum,
   } = lesson;
   const isNew = (new Date() - new Date(ReleaseDate)) < MILISECONDS_IN_A_MONTH;
 

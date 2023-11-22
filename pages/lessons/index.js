@@ -13,8 +13,6 @@ import { connectToMongodb } from '../../backend/utils/connection';
 import IndividualLesson from '../../components/LessonsPg/IndividualLesson.js';
 
 const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
-  console.log("lessonsParts: ", lessonParts);
-  console.log("lessons hey there: ", lessons)
 
   const handleJobVizCardClick = () => {
     window.location.href = '/job-viz';
@@ -102,7 +100,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
             </div>
             {!!lessonParts?.length && (
               <div className='mx-auto grid justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch pb-1 px-2 p-sm-4 gap-3 pt-3 pb-5'>
-                {lessonParts.map(lesson => <IndividualLesson lesson={lesson} />)}
+                {lessonParts.map((lesson, index) => <IndividualLesson key={index} lesson={lesson} />)}
               </div>
             )}
             {(!publishedLessons?.length && didErrorOccur) && (
@@ -131,7 +129,7 @@ const PROJECTED_LESSONS_FIELDS = [
   'LsnStatuses',
   'TargetSubject',
   'ForGrades',
-  'GradesOrYears'
+  'GradesOrYears',
 ]
 
 export async function getStaticProps() {
@@ -171,7 +169,7 @@ export async function getStaticProps() {
               lessonTitle: lesson.Title,
               subject: lesson.TargetSubject,
               grades: lesson.ForGrades,
-              gradesOrYears: lesson.GradesOrYears
+              gradesOrYears: lesson.GradesOrYears,
             });
 
           }
