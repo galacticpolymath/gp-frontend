@@ -168,6 +168,7 @@ const LessonDetails = ({ lesson }) => {
     imgSrc: lessonBannerUrl,
     url: lesson.URL,
     imgAlt: `${lesson.Title} cover image`,
+    className: 'overflow-hidden'
   };
 
   return (
@@ -180,7 +181,7 @@ const LessonDetails = ({ lesson }) => {
         setWasDotClicked={setWasDotClicked}
       />
       <ShareWidget {...shareWidgetFixedProps} />
-      <div className="col-12 col-lg-10 px-3 container justify-content-center">
+      <div className="col-12 col-lg-10 px-3 container">
         <div className="p-3 pt-0">
           {_sections.map((section, index) => (
             <ParentLessonSection
