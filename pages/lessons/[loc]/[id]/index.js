@@ -161,6 +161,7 @@ const LessonDetails = ({ lesson }) => {
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
   let _sections = getLessonSections(lesson.Section, sectionComps);
+  console.log("_sections: ", _sections)
   const shareWidgetFixedProps = IS_ON_PROD ?
     {
       pinterestMedia: lessonBannerUrl,
