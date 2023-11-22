@@ -4,6 +4,7 @@ import RichText from '../RichText';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import LocDropdown from '../LocDropdown';
+import ShareWidget from '../AboutPgComps/ShareWidget';
 
 const getLatestSubRelease = versions => {
   if (!versions || !Array.isArray(versions)) {
@@ -26,6 +27,7 @@ const Title = ({
   versions,
   lessonBannerUrl,
   sponsorLogoImgUrl,
+  lessonUrl
 }) => {
   const router = useRouter();
 
@@ -80,6 +82,14 @@ const Title = ({
               />
             </div>
           )}
+          <div className='d-flex d-md-none'>
+            <label className='d-flex justify-content-center align-items-center'>Share: </label>
+            {process.env.NODE_ENV === 'production'
+              ?
+              <ShareWidget pinterestMedia={lessonBannerUrl} />
+              :
+              <ShareWidget developmentUrl={`${lessonUrl}/`} pinterestMedia={lessonBannerUrl} />}
+          </div>
           <div className='row my-0 py-0 '>
             <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid align-content-center">
               <h5>Sponsored by:</h5>
@@ -91,7 +101,7 @@ const Title = ({
                   <img
                     src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
                     alt={Subtitle}
-                    className='p-3 p-lg-4 '                    
+                    className='p-3 p-lg-4 '
                   />
                 </div>
               )}
