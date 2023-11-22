@@ -39,11 +39,13 @@ const components = {
 
 const CustomMarkdownView = ({
   markdown,
+  style = {},
   ...passThruProps
 }) => {
   return (
     <MarkdownView
       {...passThruProps}
+      style={style}
       markdown={markdown}
       components={{ ...components }}
     />

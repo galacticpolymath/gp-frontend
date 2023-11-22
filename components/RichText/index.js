@@ -4,7 +4,7 @@ import CustomMarkdownView from './CustomMarkdownView';
 
 import styles from './index.module.scss';
 
-const RichText = ({ content, className = '' }) => {
+const RichText = ({ content, className = '', style = {} }) => {
 
   if (!content) {
     return null;
@@ -13,6 +13,7 @@ const RichText = ({ content, className = '' }) => {
   return (
     <CustomMarkdownView
       className={`${styles.RichText} ${className}`}
+      style={style}
       markdown={content}
     />
   );
