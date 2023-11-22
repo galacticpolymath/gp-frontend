@@ -37,7 +37,7 @@ export default async function handler(request, response) {
       throw new CustomError(errMsg, 500);
     }
 
-    return response.status(200).json({ lessons: data });
+    return response.status(200).json({ lessons: data, environment: process.env.NEXT_PUBLIC_VERCEL_ENV });
   } catch (error) {
     const { code, message } = error;
 

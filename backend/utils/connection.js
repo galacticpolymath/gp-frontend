@@ -18,7 +18,6 @@ export const connectToMongodb = async () => {
     }
 
     const connectionStr = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster0.tynope2.mongodb.net/${dbName}`;
-    console.log('connectionStr: ', connectionStr);
     const connectionState = await mongoose.connect(connectionStr, { retryWrites: true });
 
     isConnectedToDb = connectionState.connections[0].readyState === 1;

@@ -91,6 +91,8 @@ const LessonDetails = ({ lesson }) => {
   const router = useRouter();
   let sectionComps = null;
 
+  console.log("process.env: ", process.env.NEXT_PUBLIC_VERCEL_ENV)
+
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
