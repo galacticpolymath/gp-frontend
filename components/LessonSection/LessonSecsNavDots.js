@@ -168,7 +168,7 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
             <ul
                 onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}
                 className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100'
-                style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
+                style={{ transform: 'translate3d(0px, 0px, 0px)', transitionDuration: '3500ms', transition: 'all .15s ease-in' }}>
                 {sectionDots.dots.map((section, index) => (
                     <LiNavDot
                         key={index}
