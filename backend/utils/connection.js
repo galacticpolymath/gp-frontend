@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import chalk from 'chalk';
 
 let isConnectedToDb = false;
 
@@ -10,11 +9,11 @@ export const connectToMongodb = async () => {
       return;
     }
 
-    const { MONGODB_PASSWORD, MONGODB_USER, MONGODB_DB_NAME, MONGODB_DB_PROD_NAME } = process.env;
-    const dbName = MONGODB_DB_PROD_NAME ?? MONGODB_DB_NAME;
-    
-    if(MONGODB_DB_PROD_NAME){
-      console.log(chalk.red('YOU ARE ON PRODUCTION.'));
+    const { MONGODB_PASSWORD, MONGODB_USER, MONGODB_DB_NAME, MONGODB_DB_PROD } = process.env;
+    let dbName = MONGODB_DB_NAME;
+
+    if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production') {
+      dbName = MONGODB_DB_PROD;
     }
 
     const connectionStr = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster0.tynope2.mongodb.net/${dbName}`;
@@ -27,7 +26,7 @@ export const connectToMongodb = async () => {
     return { wasSuccessful: isConnectedToDb };
   } catch (error) {
     console.error('Failed to connect to the db. Error message: ', error);
-    
+
     return { wasSuccessful: false };
   }
 };
