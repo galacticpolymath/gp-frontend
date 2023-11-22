@@ -161,7 +161,17 @@ const LessonDetails = ({ lesson }) => {
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
   let _sections = getLessonSections(lesson.Section, sectionComps);
-  const shareWidgetFixedProps = IS_ON_PROD ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
+  const shareWidgetFixedProps = IS_ON_PROD ?
+    {
+      pinterestMedia: lessonBannerUrl,
+      shareWidgetStyle: { borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', boxShadow: '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)', top: 150, width: "60px" }
+    }
+    :
+    {
+      pinterestMedia: lessonBannerUrl,
+      developmentUrl: `${lesson.URL}/`,
+      shareWidgetStyle: { borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', boxShadow: '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)', top: 150, width: "60px" }
+    }
   const layoutProps = {
     title: `Mini-Unit: ${lesson.Title}`,
     description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`,
