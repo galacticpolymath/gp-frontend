@@ -100,7 +100,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
             </div>
             {!!lessonParts?.length && (
               <div className='mx-auto grid justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch pb-1 px-2 p-sm-4 gap-3 pt-3 pb-5'>
-                {lessonParts.map((lesson, index) => <IndividualLesson key={index} lesson={lesson} />)}
+                {lessonParts.map((lesson, index) => <IndividualLesson key={index} lesson={{ ...lesson, _id: index }} />)}
               </div>
             )}
             {(!publishedLessons?.length && didErrorOccur) && (
@@ -161,6 +161,7 @@ export async function getStaticProps() {
             tags = tags.filter(tag => tag);
             lessonPartsForUI.push({
               tags,
+              lessonPartPath: `/lessons/${lesson.locale}/${lesson.numID}#lesson_part_${lessonPart.lsnNum}`,
               tile: lessonPartFromClassroomObj.tile ?? 'https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png',
               lessonPartTitle: lessonPart.lsnTitle,
               dur: lessonPart.lsnDur,

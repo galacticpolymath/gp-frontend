@@ -2,10 +2,12 @@ import Image from 'next/image';
 import LessonCardWrapper from './LessonCardWrapper';
 
 const IndividualLesson = ({ lesson }) => {
-  const { lessonPartTitle, tags } = lesson;
+  const { lessonPartTitle, tags, _id, lessonPartPath } = lesson;
 
   return (
     <LessonCardWrapper
+      _id={_id}
+      href={lessonPartPath}
       style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', minWidth: '240px' }}
       linkClassName='individualLessonsWrapper pointer py-2 py-sm-0 disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-5 mx-auto d-sm-grid p-2 p-lg-2 rounded-3 lessonsPgShadow cardsOnLessonPg bg-white'
     >

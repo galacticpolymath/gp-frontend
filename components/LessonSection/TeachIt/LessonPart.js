@@ -45,8 +45,6 @@ const LessonPart = ({
   let restOfTags = null;
   const _accordionId = `part_${lsnNum}`;
 
-  // GOAL: when the user clicks on the copy to clipboard icon, don't open the accordion for the respective lesson part
-
   const handleClipBoardIconClick = () => {
     let url = window.location.href;
     const currentSectionInView = router.asPath.split('#').at(-1);
