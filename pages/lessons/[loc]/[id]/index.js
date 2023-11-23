@@ -9,7 +9,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import Layout from '../../../../components/Layout';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ParentLessonSection from '../../../../components/LessonSection/ParentLessonSection';
 import LessonsSecsNavDots from '../../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../../components/AboutPgComps/ShareWidget';
@@ -25,7 +25,7 @@ const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent'
 const getSectionTitle = (sectionComps, sectionTitle) => {
   const targetSectionTitleIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === sectionTitle);
 
-  if (targetSectionTitleIndex === -1) return -1;
+  if (targetSectionTitleIndex === -1) return null;
 
   return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
 }
@@ -47,7 +47,7 @@ const getSectionDotsDefaultVal = (lessonSection, sectionComps) => {
     const { SectionTitle, __component } = section
     const sectionTitleForDot = (__component === 'lesson-plan.overview') ? 'Overview' : `${SectionTitle}`;
     let _sectionTitle = getSectionTitle(sectionComps, SectionTitle);
-    _sectionTitle = (_sectionTitle !== -1) ? _sectionTitle : '1. Overview';
+    _sectionTitle = _sectionTitle ?? '1. Overview';
     let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
     sectionId = (index === 0) ? 'lessonTitleId' : sectionId
 
@@ -63,7 +63,7 @@ const getSectionDotsDefaultVal = (lessonSection, sectionComps) => {
 }
 
 const getLessonSections = (lessonSection, sectionComps) => {
-  return Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
+  return Object.values(lessonSection).filter(({ SectionTitle }, index) => SectionTitle !== 'Procedure').map((section, index) => {
     const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
 
     if (index === 0) {
@@ -73,7 +73,7 @@ const getLessonSections = (lessonSection, sectionComps) => {
       }
     }
 
-    if (sectionTitle === -1) {
+    if (!sectionTitle) {
       return {
         ...section,
         SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
@@ -90,6 +90,8 @@ const getLessonSections = (lessonSection, sectionComps) => {
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
   let sectionComps = null;
+
+  console.log("lesson.Section: ", lesson.Section)
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
@@ -160,7 +162,13 @@ const LessonDetails = ({ lesson }) => {
 
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
-  let _sections = getLessonSections(lesson.Section, sectionComps);
+  let _sections = useMemo(() => getLessonSections(lesson.Section, sectionComps), []);
+
+  // GOAL: there should be one object that will contain the lesson section
+
+  // actionable steps: 
+  // log _sections 
+  console.log("_sections: ", _sections);
   const shareWidgetFixedProps = IS_ON_PROD ?
     {
       pinterestMedia: lessonBannerUrl,
