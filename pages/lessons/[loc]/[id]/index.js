@@ -32,8 +32,6 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 
 const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
-// REFACTOR GOALS: 
-// pass _sections dynamically to the function
 const getSectionDotsDefaultVal = (lessonSection, sectionComps, lessonStandardsIndexesToFilterOut) => {
   const _sections = Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index))
   let startingSectionVals = [..._sections]
@@ -64,53 +62,88 @@ const getSectionDotsDefaultVal = (lessonSection, sectionComps, lessonStandardsIn
   })
 }
 
+// NOTES: 
+// if database is changed to match the what is being displayed onto the dom, then create the below function in such way that it break anything when the 
+// change occurrs
+
 const getLessonSections = (lessonSection, sectionComps, lessonStandardsIndexesToFilterOut) => {
-  // GOAL: filter out all of the objects that are part of the lesson standards section 
-  // all objects that are part of the lesson standards section has been filtered out 
-  // the object has been filtered out 
-  // the index object is either n, n + 1, or n + 2.
-  // if the index of the object is either n, n + 1, or n + 2, then filter out the object 
-  // filter through all of the lessons 
-  // index of the object that contais '5. Learning Standards' as the SectionTitle has been found
-  // get the index of the object that contains 5. Learning Standards as the SectionTitle
+  return Object.values(lessonSection)
+    .filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
+    .filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index))
+    .map((section, index) => {
+      const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
 
-  // GOAL: put the component for lesson standards after background 
-  return Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index)).map((section, index) => {
-    const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
+      if (index === 0) {
+        return {
+          ...section,
+          SectionTitle: `${index + 1}. Overview`,
+        }
+      }
 
-    if (index === 0) {
+      if (!sectionTitle) {
+        return {
+          ...section,
+          SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
+        }
+      }
+
       return {
         ...section,
-        SectionTitle: `${index + 1}. Overview`,
+        SectionTitle: sectionTitle,
       }
-    }
-
-    if (!sectionTitle) {
-      return {
-        ...section,
-        SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
-      }
-    }
-
-    return {
-      ...section,
-      SectionTitle: sectionTitle,
-    }
-  })
+    })
 };
 
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
   let sectionComps = null;
-  const lessonSectionObjVals = Object.values(lesson.Section);
-  const learningStandardsSecTitleIndex = lessonSectionObjVals.findIndex(({ SectionTitle }) => SectionTitle === 'Learning Standards');
+  const lessonSectionObjEntries = Object.entries(lesson.Section);
+  const isTheLessonSectionInOneObj = lessonSectionObjEntries.find(([sectionName,]) => sectionName === 'learning-chart') === undefined;
+  const learningStandardsSecTitleIndex = isTheLessonSectionInOneObj ? -1 : lessonSectionObjEntries.findIndex(([_, { SectionTitle }]) => SectionTitle === 'Learning Standards');
   const lessonStandardsIndexesToFilterOut = (learningStandardsSecTitleIndex === -1) ? [] : [learningStandardsSecTitleIndex, learningStandardsSecTitleIndex + 1, learningStandardsSecTitleIndex + 2];
+  let lessonStandardsObj = null;
+  
+  if (!isTheLessonSectionInOneObj) {
+    const lessonStandards = lessonStandardsIndexesToFilterOut.map(indexOfLessonStandard => lessonSectionObjEntries[indexOfLessonStandard][1]);
+    lessonStandardsObj = lessonStandards
+      .map(lessonStandards => {
+        delete lessonStandards.__component;
+
+        return lessonStandards;
+      })
+      .reduce((lessonStandardObj, lessonStandardsAccumulatedObj) => {
+        let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
+
+        if (!lessonStandardsAccumulatedObj.Badge) {
+          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Badge: lessonStandardObj.Badge }
+        };
+
+        if (!lessonStandardsAccumulatedObj.Title) {
+          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, GraphTitle: lessonStandardObj.Title };
+        };
+
+        if (!lessonStandardsAccumulatedObj.SectionTitle) {
+          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, SectionTitle: lessonStandardObj.SectionTitle };
+        }
+
+        if (!lessonStandardsAccumulatedObj.Footnote && lessonStandardObj.Footnote) {
+          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Footnote: lessonStandardObj.Footnote };
+        }
+
+        if (!lessonStandardsAccumulatedObj.Description) {
+          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Description: lessonStandardObj.Description };
+        }
+
+        return _lessonStandardsAccumulated;
+      }, {});
+      lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards' }
+  };
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-    sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
-  }
+    sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle);
+  };
 
   const [sectionDots, setSectionDots] = useState({
     dots: sectionComps ? getSectionDotsDefaultVal(lesson.Section, sectionComps, lessonStandardsIndexesToFilterOut) : {},
@@ -175,6 +208,11 @@ const LessonDetails = ({ lesson }) => {
 
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
+
+  // NOTES: 
+  // get the three objects that are part of the lesson standards
+  // put them into one object
+  // have the component be StandardsCollapsible
   let _sections = useMemo(() => getLessonSections(lesson.Section, sectionComps, lessonStandardsIndexesToFilterOut), []);
   const shareWidgetFixedProps = IS_ON_PROD ?
     {

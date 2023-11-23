@@ -18,8 +18,10 @@ export const SECTIONS = {
   HEADING: 'lesson-plan.section-heading',
   TEXT_BLOCK: 'lesson-plan.text-block',
 
-  // deprecated
+  // deprecated components:
   PROCEDURE: 'lesson-plan.procedure',
+
+  // end of depracted components
 
   TEACH_IT: 'teaching-resources.teaching-resources',
   LEARNING_CHART: 'lesson-plan.learning-chart',

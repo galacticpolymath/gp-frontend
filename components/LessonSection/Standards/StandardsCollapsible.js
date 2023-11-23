@@ -6,6 +6,11 @@ const StandardsCollapsible = ({
   index,
   SectionTitle,
   _sectionDots,
+  Badge,
+  Data,
+  Description,
+  GraphTitle,
+  SectionTitle
 }) => {
   const ref = useRef();
 
