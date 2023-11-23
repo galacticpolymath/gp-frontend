@@ -34,6 +34,7 @@ const StandardsCollapsible = ({
       initiallyExpanded
       _sectionDots={_sectionDots}
     >
+      
     </CollapsibleLessonSection>
   );
 };
