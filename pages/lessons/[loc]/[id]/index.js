@@ -32,8 +32,10 @@ const getSectionTitle = (sectionComps, sectionTitle) => {
 
 const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
-const getSectionDotsDefaultVal = (lessonSection, sectionComps) => {
-  const _sections = Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
+// REFACTOR GOALS: 
+// pass _sections dynamically to the function
+const getSectionDotsDefaultVal = (lessonSection, sectionComps, lessonStandardsIndexesToFilterOut) => {
+  const _sections = Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index))
   let startingSectionVals = [..._sections]
   startingSectionVals = startingSectionVals.filter(section => {
     if (((section?.__component === 'lesson-plan.overview') && !section?.SectionTitle)) {
@@ -62,8 +64,18 @@ const getSectionDotsDefaultVal = (lessonSection, sectionComps) => {
   })
 }
 
-const getLessonSections = (lessonSection, sectionComps) => {
-  return Object.values(lessonSection).filter(({ SectionTitle }, index) => SectionTitle !== 'Procedure').map((section, index) => {
+const getLessonSections = (lessonSection, sectionComps, lessonStandardsIndexesToFilterOut) => {
+  // GOAL: filter out all of the objects that are part of the lesson standards section 
+  // all objects that are part of the lesson standards section has been filtered out 
+  // the object has been filtered out 
+  // the index object is either n, n + 1, or n + 2.
+  // if the index of the object is either n, n + 1, or n + 2, then filter out the object 
+  // filter through all of the lessons 
+  // index of the object that contais '5. Learning Standards' as the SectionTitle has been found
+  // get the index of the object that contains 5. Learning Standards as the SectionTitle
+
+  // GOAL: put the component for lesson standards after background 
+  return Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index)).map((section, index) => {
     const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
 
     if (index === 0) {
@@ -90,8 +102,9 @@ const getLessonSections = (lessonSection, sectionComps) => {
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
   let sectionComps = null;
-
-  console.log("lesson.Section: ", lesson.Section)
+  const lessonSectionObjVals = Object.values(lesson.Section);
+  const learningStandardsSecTitleIndex = lessonSectionObjVals.findIndex(({ SectionTitle }) => SectionTitle === 'Learning Standards');
+  const lessonStandardsIndexesToFilterOut = (learningStandardsSecTitleIndex === -1) ? [] : [learningStandardsSecTitleIndex, learningStandardsSecTitleIndex + 1, learningStandardsSecTitleIndex + 2];
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
@@ -100,7 +113,7 @@ const LessonDetails = ({ lesson }) => {
   }
 
   const [sectionDots, setSectionDots] = useState({
-    dots: sectionComps ? getSectionDotsDefaultVal(lesson.Section, sectionComps) : {},
+    dots: sectionComps ? getSectionDotsDefaultVal(lesson.Section, sectionComps, lessonStandardsIndexesToFilterOut) : {},
     clickedSectionId: null,
   });
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
@@ -162,13 +175,7 @@ const LessonDetails = ({ lesson }) => {
 
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
-  let _sections = useMemo(() => getLessonSections(lesson.Section, sectionComps), []);
-
-  // GOAL: there should be one object that will contain the lesson section
-
-  // actionable steps: 
-  // log _sections 
-  console.log("_sections: ", _sections);
+  let _sections = useMemo(() => getLessonSections(lesson.Section, sectionComps, lessonStandardsIndexesToFilterOut), []);
   const shareWidgetFixedProps = IS_ON_PROD ?
     {
       pinterestMedia: lessonBannerUrl,
