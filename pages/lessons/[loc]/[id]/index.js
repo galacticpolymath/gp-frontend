@@ -66,7 +66,15 @@ const getSectionDotsDefaultVal = (lessonSection, sectionComps, lessonStandardsIn
 // if database is changed to match the what is being displayed onto the dom, then create the below function in such way that it break anything when the 
 // change occurrs
 
+
+// NOTES: 
+// don't rely on the lessonSection (lesson.Section) AT ALL. 
+
+
 const getLessonSections = (lessonSection, sectionComps, lessonStandardsIndexesToFilterOut) => {
+  console.log("Object.values(lessonSection) yo there sup: ", Object.values(lessonSection)
+  .filter(({ SectionTitle }) => SectionTitle !== 'Procedure'))
+  console.log("sectionComps: ", sectionComps)
   return Object.values(lessonSection)
     .filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     .filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index))
