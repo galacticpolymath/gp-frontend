@@ -102,7 +102,7 @@ const LessonDetails = ({ lesson }) => {
   const learningStandardsSecTitleIndex = isTheLessonSectionInOneObj ? -1 : lessonSectionObjEntries.findIndex(([_, { SectionTitle }]) => SectionTitle === 'Learning Standards');
   const lessonStandardsIndexesToFilterOut = (learningStandardsSecTitleIndex === -1) ? [] : [learningStandardsSecTitleIndex, learningStandardsSecTitleIndex + 1, learningStandardsSecTitleIndex + 2];
   let lessonStandardsObj = null;
-  
+
   if (!isTheLessonSectionInOneObj) {
     const lessonStandards = lessonStandardsIndexesToFilterOut.map(indexOfLessonStandard => lessonSectionObjEntries[indexOfLessonStandard][1]);
     lessonStandardsObj = lessonStandards
@@ -119,7 +119,7 @@ const LessonDetails = ({ lesson }) => {
         };
 
         if (!lessonStandardsAccumulatedObj.Title) {
-          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, GraphTitle: lessonStandardObj.Title };
+          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Title: lessonStandardObj.Title };
         };
 
         if (!lessonStandardsAccumulatedObj.SectionTitle) {
@@ -136,7 +136,7 @@ const LessonDetails = ({ lesson }) => {
 
         return _lessonStandardsAccumulated;
       }, {});
-      lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards' }
+    lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards' }
   };
 
   if (lesson) {
