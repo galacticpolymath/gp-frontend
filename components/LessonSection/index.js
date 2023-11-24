@@ -15,16 +15,16 @@ import Preview from './Preview';
 
 export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
-  HEADING: 'lesson-plan.section-heading',
   TEXT_BLOCK: 'lesson-plan.text-block',
-
+  
   // deprecated components:
   PROCEDURE: 'lesson-plan.procedure',
+  LEARNING_CHART: 'lesson-plan.learning-chart',
+  HEADING: 'lesson-plan.section-heading',
 
   // end of depracted components
 
   TEACH_IT: 'teaching-resources.teaching-resources',
-  LEARNING_CHART: 'lesson-plan.learning-chart',
   STANDARDS: 'lesson-plan.standards',
   ACKNOWLEDGMENTS: 'lesson-plan.acknowledgments',
   VERSIONS: 'lesson-plan.versions',

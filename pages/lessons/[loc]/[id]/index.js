@@ -97,17 +97,24 @@ const getLessonSections = (lessonSection, sectionComps, lessonStandardsIndexesTo
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
   let sectionComps = null;
+  console.log("lesson.Section: ", Object.values(lesson.Section))
   const lessonSectionObjEntries = Object.entries(lesson.Section);
   const isTheLessonSectionInOneObj = lessonSectionObjEntries.find(([sectionName,]) => sectionName === 'learning-chart') === undefined;
   const learningStandardsSecTitleIndex = isTheLessonSectionInOneObj ? -1 : lessonSectionObjEntries.findIndex(([_, { SectionTitle }]) => SectionTitle === 'Learning Standards');
   const lessonStandardsIndexesToFilterOut = (learningStandardsSecTitleIndex === -1) ? [] : [learningStandardsSecTitleIndex, learningStandardsSecTitleIndex + 1, learningStandardsSecTitleIndex + 2];
-  let lessonStandardsObj = null;
+
+  if (lesson) {
+    sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
+    sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
+    sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle);
+  };
 
   if (!isTheLessonSectionInOneObj) {
     const lessonStandards = lessonStandardsIndexesToFilterOut.map(indexOfLessonStandard => lessonSectionObjEntries[indexOfLessonStandard][1]);
-    lessonStandardsObj = lessonStandards
+    let lessonStandardsObj = lessonStandards
       .map(lessonStandards => {
-        delete lessonStandards.__component;
+        console.log("lessonStandards hey there: ", lessonStandards)
+        // delete lessonStandards.__component;
 
         return lessonStandards;
       })
@@ -137,13 +144,13 @@ const LessonDetails = ({ lesson }) => {
         return _lessonStandardsAccumulated;
       }, {});
     lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards' }
+    const backgroundSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
+    console.log("backgroundSectionIndex: ", backgroundSectionIndex)
+    // sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
   };
 
-  if (lesson) {
-    sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
-    sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-    sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle);
-  };
+
+
 
   const [sectionDots, setSectionDots] = useState({
     dots: sectionComps ? getSectionDotsDefaultVal(lesson.Section, sectionComps, lessonStandardsIndexesToFilterOut) : {},

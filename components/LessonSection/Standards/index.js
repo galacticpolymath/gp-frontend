@@ -11,6 +11,7 @@ const Standards = ({
   SectionTitle,
 }) => {
   const ref = useRef();
+  
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   return (

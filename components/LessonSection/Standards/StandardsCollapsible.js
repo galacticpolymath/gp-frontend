@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
+import LearningChart from '../LearningChart';
+import Standards from '.';
 
 const StandardsCollapsible = ({
   index,
@@ -9,36 +11,30 @@ const StandardsCollapsible = ({
   Badge,
   Data,
   Description,
-  GraphTitle,
+  Title,
+  Footnote = ""
 }) => {
   const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
-
-  // For the LearningChart, must have the following props: 
-    
-  // Known props for LearningChart:
-  // _sectionDots 
-  // SectionTitle
-
-  // Not known props for LearningCharts: 
-  // Title
-  // Description
-  // Footnote
-  // Badge
-
+  
   return (
-  // must have the following: 
-  // the lesson section heading (achieved via the arguments for the CollaspibleLessonSection)
-  // the learning chart (will be the child for CollaspibleLessonSection)
-  // the learning standards (will be the child for CollaspibleLessonSection)
     <CollapsibleLessonSection
       index={index}
       SectionTitle={SectionTitle}
       initiallyExpanded
       _sectionDots={_sectionDots}
+      className='lessonsStandardsSec text-left bg-primary-light mb-4'
     >
-      
+      <div ref={ref}>
+        <LearningChart
+          Badge={Badge}
+          Footnote={Footnote}
+          Description={Description}
+          Title={Title}
+        />
+        <Standards Data={Data} />
+      </div>
     </CollapsibleLessonSection>
   );
 };
