@@ -100,14 +100,17 @@ const LessonDetails = ({ lesson }) => {
   console.log("lesson.Section: ", Object.values(lesson.Section))
   const lessonSectionObjEntries = Object.entries(lesson.Section);
   const isTheLessonSectionInOneObj = lessonSectionObjEntries.find(([sectionName,]) => sectionName === 'learning-chart') === undefined;
+  console.log("isTheLessonSectionInOneObj: ", isTheLessonSectionInOneObj)
   const learningStandardsSecTitleIndex = isTheLessonSectionInOneObj ? -1 : lessonSectionObjEntries.findIndex(([_, { SectionTitle }]) => SectionTitle === 'Learning Standards');
   const lessonStandardsIndexesToFilterOut = (learningStandardsSecTitleIndex === -1) ? [] : [learningStandardsSecTitleIndex, learningStandardsSecTitleIndex + 1, learningStandardsSecTitleIndex + 2];
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-    sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle);
+    // sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle);
+    console.log("sectionComps yo there: ", sectionComps)
   };
+
 
   if (!isTheLessonSectionInOneObj) {
     const lessonStandards = lessonStandardsIndexesToFilterOut.map(indexOfLessonStandard => lessonSectionObjEntries[indexOfLessonStandard][1]);
@@ -143,11 +146,13 @@ const LessonDetails = ({ lesson }) => {
 
         return _lessonStandardsAccumulated;
       }, {});
-    lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards' }
+    lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards', InitiallyExpanded: true };
+    sectionComps = sectionComps.filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index));
     const backgroundSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
-    console.log("backgroundSectionIndex: ", backgroundSectionIndex)
-    // sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
+    sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
   };
+
+  console.log("sectionComps what is up: ", sectionComps);
 
 
 

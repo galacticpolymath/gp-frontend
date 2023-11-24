@@ -12,6 +12,7 @@ import Acknowledgments from './Acknowledgments';
 import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
 import Preview from './Preview';
+import StandardsCollapsible from './Standards/StandardsCollapsible.js';
 
 export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
@@ -56,7 +57,7 @@ export const sectionTypeMap = {
 
   [SECTIONS.TEACH_IT]: TeachIt,
   [SECTIONS.LEARNING_CHART]: LearningChart,
-  [SECTIONS.STANDARDS]: Standards,
+  [SECTIONS.STANDARDS]: StandardsCollapsible,
   [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
   [SECTIONS.VERSIONS]: Versions,
   [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleRichTextSection,
@@ -64,6 +65,10 @@ export const sectionTypeMap = {
 };
 const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
   const Component = sectionTypeMap[section.__component];
+  if(section.__component === 'lesson-plan.standards'){
+      console.log("section Java: ", section)
+  }
+
   let compProps = { ...section, _sectionDots };
 
   if (TeachIt.name === 'TeachIt') {
