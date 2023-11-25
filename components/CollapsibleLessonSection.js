@@ -47,7 +47,7 @@ const CollapsibleLessonSection = ({
       buttonClassName={`btn ${highlighted ? '' : 'btn-primary-light'} w-100 text-left`}
       highlighted={highlighted}
       button={(
-        <div className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} container position-relative mx-auto text-black d-flex justify-content-between align-items-center py-1`}>
+        <div className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} container position-relative text-black d-flex justify-content-between align-items-center py-1`}>
           <h2
             ref={ref}
             className='m-0'
@@ -55,23 +55,26 @@ const CollapsibleLessonSection = ({
           >
             {SectionTitle}
           </h2>
-          <i className="fs-3 bi-chevron-down" style={{ fontSize: "25px" }} />
-          <i className="fs-3 bi-chevron-up" style={{ fontSize: "25px" }} />
-          <CopyableTxt
-            implementLogicOnClick={copyLessonUrlWithAnchorTag}
-            copyTxtIndicator='Copy link.'
-            txtCopiedIndicator='Link copied ✅!'
-            copyTxtModalDefaultStyleObj={{
-              position: 'fixed',
-              width: '130px',
-              backgroundColor: '#212529',
-              textAlign: 'center',
-            }}
-            txtClassName='text-white w-100 h-100 d-inline-flex justify-content-center align-items-center p-0 m-0 text-transform-default'
-            additiveYCoord={-20}
-          >
-            <i className="bi bi-clipboard ms-4" style={{ fontSize: "25px" }} />
-          </CopyableTxt>
+          <div className='d-flex'>
+            <i className="fs-3 bi-chevron-down" style={{ fontSize: "25px" }} />
+            <i className="fs-3 bi-chevron-up" style={{ fontSize: "25px" }} />
+            <CopyableTxt
+              implementLogicOnClick={copyLessonUrlWithAnchorTag}
+              copyTxtIndicator='Copy link.'
+              txtCopiedIndicator='Link copied ✅!'
+              copyTxtModalDefaultStyleObj={{
+                position: 'fixed',
+                width: '130px',
+                backgroundColor: '#212529',
+                textAlign: 'center',
+              }}
+              parentClassName='pointer d-flex justify-content-center align-items-center'
+              txtClassName='text-white w-100 h-100 d-inline-flex justify-content-center align-items-center p-0 m-0 text-transform-default'
+              additiveYCoord={-20}
+            >
+              <i className="bi bi-clipboard ms-2 ms-sm-4" style={{ fontSize: "25px" }} />
+            </CopyableTxt>
+          </div>
           <div id={h2Id} style={{ height: 30, width: 30, transform: scrollToTranslateVal }} className='position-absolute' />
           <div id={_h2Id} style={{ height: 30, width: 30, transform: scrollToTranslateVal }} className='position-absolute' />
         </div>
