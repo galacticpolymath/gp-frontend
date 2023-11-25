@@ -17,13 +17,13 @@ import StandardsCollapsible from './Standards/StandardsCollapsible.js';
 export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
   TEXT_BLOCK: 'lesson-plan.text-block',
-  
+
   // deprecated components:
   PROCEDURE: 'lesson-plan.procedure',
+
+  // No longer sections: 
   LEARNING_CHART: 'lesson-plan.learning-chart',
   HEADING: 'lesson-plan.section-heading',
-
-  // end of depracted components
 
   TEACH_IT: 'teaching-resources.teaching-resources',
   STANDARDS: 'lesson-plan.standards',
@@ -65,8 +65,8 @@ export const sectionTypeMap = {
 };
 const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
   const Component = sectionTypeMap[section.__component];
-  if(section.__component === 'lesson-plan.standards'){
-      console.log("section Java: ", section)
+  if (section.__component === 'lesson-plan.standards') {
+    console.log("section Java: ", section)
   }
 
   let compProps = { ...section, _sectionDots };

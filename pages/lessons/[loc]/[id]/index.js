@@ -22,58 +22,26 @@ import { getLinkPreview } from "link-preview-js";
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
-const getSectionTitle = (sectionComps, sectionTitle) => {
-  const targetSectionTitleIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === sectionTitle);
-
-  if (targetSectionTitleIndex === -1) return null;
-
-  return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
-}
-
 const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
-const getSectionDotsDefaultVal = (lessonSection, sectionComps, lessonStandardsIndexesToFilterOut) => {
-  const _sections = Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index))
-  let startingSectionVals = [..._sections]
-  startingSectionVals = startingSectionVals.filter(section => {
-    if (((section?.__component === 'lesson-plan.overview') && !section?.SectionTitle)) {
-      return true
-    }
+const getSectionDotsDefaultVal = sectionComps => sectionComps.map((section, index) => {
+  const _sectionTitle = `${index + 1}. ${section.SectionTitle}`;
+  let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
+  sectionId = (index === 0) ? 'lessonTitleId' : sectionId
 
-    return !!section?.SectionTitle
-  })
-
-  return startingSectionVals.map((section, index) => {
-    const { SectionTitle, __component } = section
-    const sectionTitleForDot = (__component === 'lesson-plan.overview') ? 'Overview' : `${SectionTitle}`;
-    let _sectionTitle = getSectionTitle(sectionComps, SectionTitle);
-    _sectionTitle = _sectionTitle ?? '1. Overview';
-    let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-    sectionId = (index === 0) ? 'lessonTitleId' : sectionId
-
-    return {
-      isInView: index === 0,
-      sectionTitleForDot: sectionTitleForDot,
-      sectionId: sectionId,
-      willShowTitle: false,
-      sectionDotId: `sectionDot-${sectionId}`,
-      SectionTitle: index === 0 ? '0. Title' : _sectionTitle,
-    }
-  })
-}
-
-// NOTES: 
-// if database is changed to match the what is being displayed onto the dom, then create the below function in such way that it break anything when the 
-// change occurrs
-
-
-// NOTES: 
-// don't rely on the lessonSection (lesson.Section) AT ALL. 
+  return {
+    isInView: index === 0,
+    sectionTitleForDot: section.SectionTitle,
+    sectionId: sectionId,
+    willShowTitle: false,
+    sectionDotId: `sectionDot-${sectionId}`,
+  }
+})
 
 
 const getLessonSections = sectionComps => {
   console.log("sectionComps: ", sectionComps)
-  console.log("yo there meng: ", sectionComps.filter(({SectionTitle})=> !SectionTitle))
+  console.log("yo there meng: ", sectionComps.filter(({ SectionTitle }) => !SectionTitle))
   return sectionComps.map((section, index) => ({
     ...section,
     SectionTitle: `${index + 1}. ${section.SectionTitle}`,
@@ -93,7 +61,6 @@ const LessonDetails = ({ lesson }) => {
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-    // sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle);
     console.log("sectionComps yo there: ", sectionComps)
   };
 
@@ -103,7 +70,7 @@ const LessonDetails = ({ lesson }) => {
     let lessonStandardsObj = lessonStandards
       .map(lessonStandards => {
         console.log("lessonStandards hey there: ", lessonStandards)
-        // delete lessonStandards.__component;
+        delete lessonStandards.__component;
 
         return lessonStandards;
       })
@@ -138,13 +105,8 @@ const LessonDetails = ({ lesson }) => {
     sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
   };
 
-  console.log("sectionComps what is up: ", sectionComps);
-
-
-
-
   const [sectionDots, setSectionDots] = useState({
-    dots: sectionComps ? getSectionDotsDefaultVal(lesson.Section, sectionComps, lessonStandardsIndexesToFilterOut) : {},
+    dots: getSectionDotsDefaultVal(sectionComps),
     clickedSectionId: null,
   });
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);

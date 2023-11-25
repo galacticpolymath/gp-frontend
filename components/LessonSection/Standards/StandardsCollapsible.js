@@ -24,7 +24,7 @@ const StandardsCollapsible = ({
       SectionTitle={SectionTitle}
       initiallyExpanded
       _sectionDots={_sectionDots}
-      className='text-left mb-4'
+      className='text-left'
     >
       <div ref={ref}>
         <LearningChart
