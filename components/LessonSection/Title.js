@@ -38,7 +38,7 @@ const Title = ({
     }
 
     // change the verions notes section id, delete the number nine
-    window.location.href = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#9._version_notes`;
+    window.location.href = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#version-notes`;
   };
 
   const lastSubRelease = useMemo(() => getLatestSubRelease(versions), []);

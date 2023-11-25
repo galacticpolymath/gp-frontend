@@ -39,29 +39,22 @@ const getSectionDotsDefaultVal = sectionComps => sectionComps.map((section, inde
 })
 
 
-const getLessonSections = sectionComps => {
-  console.log("sectionComps: ", sectionComps)
-  console.log("yo there meng: ", sectionComps.filter(({ SectionTitle }) => !SectionTitle))
-  return sectionComps.map((section, index) => ({
-    ...section,
-    SectionTitle: `${index + 1}. ${section.SectionTitle}`,
-  }))
-};
+const getLessonSections = sectionComps => sectionComps.map((section, index) => ({
+  ...section,
+  SectionTitle: `${index + 1}. ${section.SectionTitle}`,
+}));
 
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
   let sectionComps = null;
-  console.log("lesson.Section: ", Object.values(lesson.Section))
   const lessonSectionObjEntries = Object.entries(lesson.Section);
   const isTheLessonSectionInOneObj = lessonSectionObjEntries.find(([sectionName,]) => sectionName === 'learning-chart') === undefined;
-  console.log("isTheLessonSectionInOneObj: ", isTheLessonSectionInOneObj)
   const learningStandardsSecTitleIndex = isTheLessonSectionInOneObj ? -1 : lessonSectionObjEntries.findIndex(([_, { SectionTitle }]) => SectionTitle === 'Learning Standards');
   const lessonStandardsIndexesToFilterOut = (learningStandardsSecTitleIndex === -1) ? [] : [learningStandardsSecTitleIndex, learningStandardsSecTitleIndex + 1, learningStandardsSecTitleIndex + 2];
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-    console.log("sectionComps yo there: ", sectionComps)
   };
 
 

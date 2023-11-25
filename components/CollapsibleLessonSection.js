@@ -28,6 +28,10 @@ const CollapsibleLessonSection = ({
   const _h2Id = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
   const _accordionId = (accordionId || SectionTitle).replace(/[\s!]/gi, '_').toLowerCase();
 
+  console.log("_accordionId: ", _accordionId);
+  console.log("_h2Id: ", _h2Id);
+  console.log("h2Id: ", h2Id)
+
   const copyLessonUrlWithAnchorTag = () => {
     let url = window.location.href;
     const currentSectionInView = router.asPath.split("#").at(-1);
