@@ -71,35 +71,13 @@ const getSectionDotsDefaultVal = (lessonSection, sectionComps, lessonStandardsIn
 // don't rely on the lessonSection (lesson.Section) AT ALL. 
 
 
-const getLessonSections = (lessonSection, sectionComps, lessonStandardsIndexesToFilterOut) => {
-  console.log("Object.values(lessonSection) yo there sup: ", Object.values(lessonSection)
-  .filter(({ SectionTitle }) => SectionTitle !== 'Procedure'))
+const getLessonSections = sectionComps => {
   console.log("sectionComps: ", sectionComps)
-  return Object.values(lessonSection)
-    .filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
-    .filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index))
-    .map((section, index) => {
-      const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
-
-      if (index === 0) {
-        return {
-          ...section,
-          SectionTitle: `${index + 1}. Overview`,
-        }
-      }
-
-      if (!sectionTitle) {
-        return {
-          ...section,
-          SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
-        }
-      }
-
-      return {
-        ...section,
-        SectionTitle: sectionTitle,
-      }
-    })
+  console.log("yo there meng: ", sectionComps.filter(({SectionTitle})=> !SectionTitle))
+  return sectionComps.map((section, index) => ({
+    ...section,
+    SectionTitle: `${index + 1}. ${section.SectionTitle}`,
+  }))
 };
 
 const LessonDetails = ({ lesson }) => {
@@ -233,7 +211,7 @@ const LessonDetails = ({ lesson }) => {
   // get the three objects that are part of the lesson standards
   // put them into one object
   // have the component be StandardsCollapsible
-  let _sections = useMemo(() => getLessonSections(lesson.Section, sectionComps, lessonStandardsIndexesToFilterOut), []);
+  let _sections = useMemo(() => getLessonSections(sectionComps), []);
   const shareWidgetFixedProps = IS_ON_PROD ?
     {
       pinterestMedia: lessonBannerUrl,

@@ -17,14 +17,14 @@ const StandardsCollapsible = ({
   const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
-  
+
   return (
     <CollapsibleLessonSection
       index={index}
       SectionTitle={SectionTitle}
       initiallyExpanded
       _sectionDots={_sectionDots}
-      className='lessonsStandardsSec text-left bg-primary-light mb-4'
+      className='text-left mb-4'
     >
       <div ref={ref}>
         <LearningChart

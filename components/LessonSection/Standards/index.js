@@ -7,12 +7,8 @@ import Subject from './Subject';
 
 const Standards = ({
   Data,
-  _sectionDots,
-  SectionTitle,
 }) => {
   const ref = useRef();
-  
-  useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   return (
     <div ref={ref} className='container mb-4 px-0'>
