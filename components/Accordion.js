@@ -16,6 +16,7 @@ const getId = () => {
 /**
  * An unstyled collapsible panel with internal open/close state.
  */
+
 const Accordion = ({
   id,
   className = '',
@@ -27,12 +28,14 @@ const Accordion = ({
   btnStyle = {},
   willUseGetId = true,
   accordionChildrenClasses = '',
-  dataBsToggle = { 'data-bs-toggle': 'collapse' },
-  handleOnClick = () => { },
   highlighted,
   setContentId,
+  _accordionContentId,
+  dataBsToggle = { 'data-bs-toggle': 'collapse' },
+  handleOnClick = () => { },
 }) => {
   const contentId = useRef();
+  const accordionContentId = (_accordionContentId === undefined) ? (willUseGetId ? contentId?.current : id) : _accordionContentId;
 
   useEffect(() => {
     if (!contentId.current && willUseGetId) {
@@ -64,7 +67,7 @@ const Accordion = ({
         </div>
       </div>
       <div
-        id={`content_${willUseGetId ? contentId?.current : id}` }
+        id={`content_${accordionContentId}`}
         className={`collapse ${accordionChildrenClasses || ''} ${initiallyExpanded ? 'show' : ''}`}
         aria-labelledby={`${id}_content`}
         data-bs-parent="#accordionExample"
