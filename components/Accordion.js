@@ -30,12 +30,11 @@ const Accordion = ({
   accordionChildrenClasses = '',
   highlighted,
   setContentId,
-  _accordionContentId,
   dataBsToggle = { 'data-bs-toggle': 'collapse' },
   handleOnClick = () => { },
+  ariaExpanded = 'true'
 }) => {
   const contentId = useRef();
-  const accordionContentId = (_accordionContentId === undefined) ? (willUseGetId ? contentId?.current : id) : _accordionContentId;
 
   useEffect(() => {
     if (!contentId.current && willUseGetId) {
@@ -57,7 +56,7 @@ const Accordion = ({
               style={btnStyle}
               {...dataBsToggle}
               data-bs-target={`#content_${willUseGetId ? contentId?.current : id}`}
-              aria-expanded="true"
+              aria-expanded={ariaExpanded}
               aria-controls="collapseOne"
               onClick={handleOnClick}
             >
@@ -67,7 +66,7 @@ const Accordion = ({
         </div>
       </div>
       <div
-        id={`content_${accordionContentId}`}
+        id={`content_${willUseGetId ? contentId?.current : id}`}
         className={`collapse ${accordionChildrenClasses || ''} ${initiallyExpanded ? 'show' : ''}`}
         aria-labelledby={`${id}_content`}
         data-bs-parent="#accordionExample"

@@ -2,12 +2,13 @@
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-max-props-per-line */
 import PropTypes from 'prop-types';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import useLessonElementInView from '../customHooks/useLessonElementInView';
 import Accordion from './Accordion';
 import CopyableTxt from './CopyableTxt';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { Collapse } from 'react-bootstrap'
 
 /**
  * A styled collapsible section of the Lesson Plan.
@@ -27,6 +28,7 @@ const CollapsibleLessonSection = ({
 }) => {
   const ref = useRef();
   const router = useRouter();
+  const [isAccordionContentOpen, setIsAccordionContentOpen] = useState(true);
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref, isAvailLocsMoreThan1);
   const _h2Id = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
   const _accordionId = (accordionId || SectionTitle).replace(/[\s!]/gi, '_').toLowerCase();
@@ -42,16 +44,6 @@ const CollapsibleLessonSection = ({
     navigator.clipboard.writeText(url);
   };
 
-  // GOAL: don't toggle the accordion when the user clicks on the clipboard icon
-
-  // the user clicks on the clipboard icon
-  // GOAL: don't open the accordion
-  // the accordion is not opened
-  // the state of dataBsToggle is set with the following: {}
-  // the user clicks on the clipboard
-  // check if the user clicks on the clipboard
-  // there is a click event for the button for the accordion
-
   const checkIfElementClickedWasClipboard = parentElement => {
     if (parentElement.nodeName.toLowerCase() === 'body') {
       console.log("Clip board icon wasn't clicked...");
@@ -66,20 +58,17 @@ const CollapsibleLessonSection = ({
     return checkIfElementClickedWasClipboard(parentElement.parentElement);
   };
 
-  const [dataBsToggle, setDataBsToggle] = useState({ 'data-bs-toggle': 'collapse' })
+  const handleAccordionBtnClick = event => {
+    const wasClipboardIconClicked = checkIfElementClickedWasClipboard(event.target);
 
-  // GOAL: if the clipboard icons was clicked, then don't the accordion 
-
-  // NOTES:
-  // actionable steps:
-  // check if the function that checks if the clipboard icon was clicked is working 
-  // create a onClick handler, when the button is clicked, have the following to occur: 
-  // check what element was clicked
-  // if the element was the clipboard icon, then don't open the accordion
+    if (wasClipboardIconClicked) {
+      return;
+    }
 
 
-  // WHAT I WANT: 
-  // when the user clicks on the clip board for the lesson section header, don't open the accordion
+    setIsAccordionContentOpen(isAccordionContentOpen => !isAccordionContentOpen)
+  }
+
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}
@@ -87,9 +76,13 @@ const CollapsibleLessonSection = ({
       className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} ${className} collapsibleLessonSection`}
       buttonClassName={`btn ${highlighted ? '' : 'btn-primary-light'} w-100 text-left`}
       highlighted={highlighted}
-      dataBsToggle={dataBsToggle}
+      dataBsToggle={{}}
+      ariaExpanded={isAccordionContentOpen}
+      handleOnClick={handleAccordionBtnClick}
       button={(
-        <div id='wrapper' className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} container position-relative text-black d-flex justify-content-between align-items-center py-1`}>
+        <div
+          className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} container position-relative text-black d-flex justify-content-between align-items-center py-1`}
+        >
           <h2
             ref={ref}
             className='m-0'
@@ -98,8 +91,11 @@ const CollapsibleLessonSection = ({
             {SectionTitle}
           </h2>
           <div className='d-flex'>
-            <i className="fs-3 bi-chevron-down" style={{ fontSize: "25px" }} />
-            <i className="fs-3 bi-chevron-up" style={{ fontSize: "25px" }} />
+            {isAccordionContentOpen ?
+              <i className="fs-3 bi-chevron-up" style={{ fontSize: "25px", display: 'block' }} />
+              :
+              <i className="fs-3 bi-chevron-down" style={{ fontSize: "25px", display: 'block' }} />
+            }
             <div id='clipboardIconWrapper' className='ms-2 ms-sm-4 d-flex justify-content-center align-items-center'>
               <CopyableTxt
                 implementLogicOnClick={copyLessonUrlWithAnchorTag}
@@ -124,7 +120,9 @@ const CollapsibleLessonSection = ({
         </div>
       )}
     >
-      {children}
+      <Collapse in={isAccordionContentOpen}>
+        {children}
+      </Collapse>
     </Accordion>
   );
 };
