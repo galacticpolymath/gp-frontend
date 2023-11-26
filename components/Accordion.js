@@ -64,7 +64,7 @@ const Accordion = ({
         </div>
       </div>
       <div
-        id={`content_${willUseGetId ? contentId?.current : id}`}
+        id={`content_${willUseGetId ? contentId?.current : id}` }
         className={`collapse ${accordionChildrenClasses || ''} ${initiallyExpanded ? 'show' : ''}`}
         aria-labelledby={`${id}_content`}
         data-bs-parent="#accordionExample"
