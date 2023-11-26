@@ -62,7 +62,6 @@ const LessonDetails = ({ lesson }) => {
     const lessonStandards = lessonStandardsIndexesToFilterOut.map(indexOfLessonStandard => lessonSectionObjEntries[indexOfLessonStandard][1]);
     let lessonStandardsObj = lessonStandards
       .map(lessonStandards => {
-        console.log("lessonStandards hey there: ", lessonStandards)
         delete lessonStandards.__component;
 
         return lessonStandards;
@@ -162,10 +161,6 @@ const LessonDetails = ({ lesson }) => {
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
 
-  // NOTES: 
-  // get the three objects that are part of the lesson standards
-  // put them into one object
-  // have the component be StandardsCollapsible
   let _sections = useMemo(() => getLessonSections(sectionComps), []);
   const shareWidgetFixedProps = IS_ON_PROD ?
     {

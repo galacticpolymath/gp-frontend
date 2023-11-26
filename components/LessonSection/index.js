@@ -30,7 +30,7 @@ export const SECTIONS = {
   ACKNOWLEDGMENTS: 'lesson-plan.acknowledgments',
   VERSIONS: 'lesson-plan.versions',
   COLLAPSIBLE_TEXT: 'lesson-plan.collapsible-text-section',
-  PREVIEW: 'lesson-plan.lesson-preview',
+  PREVIEW: 'lesson-plan.unit-preview',
 };
 
 export const NUMBERED_SECTIONS = [
@@ -65,10 +65,6 @@ export const sectionTypeMap = {
 };
 const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
   const Component = sectionTypeMap[section.__component];
-  if (section.__component === 'lesson-plan.standards') {
-    console.log("section Java: ", section)
-  }
-
   let compProps = { ...section, _sectionDots };
 
   if (TeachIt.name === 'TeachIt') {
