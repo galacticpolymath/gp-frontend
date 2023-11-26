@@ -24,7 +24,7 @@ const CollapsibleLessonSection = ({
   _sectionDots,
   isAvailLocsMoreThan1,
   highlighted = false,
-  scrollToTranslateVal = 'translateY(-150px)',
+  scrollToTranslateVal = 'translateY(-45px)',
 }) => {
   const ref = useRef();
   const router = useRouter();
@@ -38,7 +38,7 @@ const CollapsibleLessonSection = ({
     const currentSectionInView = router.asPath.split("#").at(-1);
 
     if (!(currentSectionInView === _accordionId)) {
-      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${h2Id}`;
+      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${_h2Id}`;
     }
 
     navigator.clipboard.writeText(url);
@@ -99,17 +99,18 @@ const CollapsibleLessonSection = ({
             <div id='clipboardIconWrapper' className='ms-2 ms-sm-4 d-flex justify-content-center align-items-center'>
               <CopyableTxt
                 implementLogicOnClick={copyLessonUrlWithAnchorTag}
-                copyTxtIndicator='Copy link.'
+                copyTxtIndicator='Copy link to section.'
                 txtCopiedIndicator='Link copied ✅!'
                 copyTxtModalDefaultStyleObj={{
                   position: 'fixed',
-                  width: '130px',
+                  width: '140px',
                   backgroundColor: '#212529',
                   textAlign: 'center',
                 }}
+                modalClassNameStr='position-fixed rounded p-0 m-0'
                 parentClassName='pointer d-flex justify-content-center align-items-center'
                 txtClassName='text-white w-100 h-100 d-inline-flex justify-content-center align-items-center p-0 m-0 text-transform-default'
-                additiveYCoord={-20}
+                additiveYCoord={-25}
               >
                 <i className="bi bi-clipboard" style={{ fontSize: "25px" }} />
               </CopyableTxt>

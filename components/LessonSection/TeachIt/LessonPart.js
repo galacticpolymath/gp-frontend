@@ -274,7 +274,7 @@ const LessonPart = ({
                     >
                       <CopyableTxt
                         additiveYCoord={-20}
-                        copyTxtIndicator='Link to this lesson.'
+                        copyTxtIndicator='Copy link to lesson.'
                         txtCopiedIndicator='Lesson link copied ✅!'
                         implementLogicOnClick={handleClipBoardIconClick}
                         copyTxtModalDefaultStyleObj={{
