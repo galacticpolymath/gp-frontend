@@ -28,6 +28,7 @@ const Accordion = ({
   willUseGetId = true,
   accordionChildrenClasses = '',
   dataBsToggle = { 'data-bs-toggle': 'collapse' },
+  handleOnClick = () => { },
   highlighted,
   setContentId,
 }) => {
@@ -36,12 +37,12 @@ const Accordion = ({
   useEffect(() => {
     if (!contentId.current && willUseGetId) {
       contentId.current = getId();
-      if(setContentId){
+      if (setContentId) {
         setContentId(contentId.current);
       }
     }
   }, []);
-  
+
   return (
     <div style={style} className={className}>
       <div className={`accordion-header lessonsPgSec ${highlighted ? 'highlighted' : ''}`} id={`heading_${id}`}>
@@ -55,6 +56,7 @@ const Accordion = ({
               data-bs-target={`#content_${willUseGetId ? contentId?.current : id}`}
               aria-expanded="true"
               aria-controls="collapseOne"
+              onClick={handleOnClick}
             >
               {button}
             </button>

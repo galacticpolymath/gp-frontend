@@ -88,8 +88,6 @@ const LessonPart = ({
   };
 
   const handleAccordionBtnOnClick = event => {
-    console.log('event: ', event);
-
     if (!checkIfElementClickedWasClipboard(event.target)) {
       const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
 
@@ -100,6 +98,7 @@ const LessonPart = ({
 
         return prevState.filter(num => num !== previousLessonPartNum);
       });
+      
       setIsExpanded(!isExpanded);
     }
   };
