@@ -31,6 +31,7 @@ export const SECTIONS = {
   VERSIONS: 'lesson-plan.versions',
   COLLAPSIBLE_TEXT: 'lesson-plan.collapsible-text-section',
   PREVIEW: 'lesson-plan.unit-preview',
+  LESSON_PREVIEW_FORMER: 'lesson-plan.lesson-preview',
 };
 
 export const NUMBERED_SECTIONS = [
@@ -62,6 +63,7 @@ export const sectionTypeMap = {
   [SECTIONS.VERSIONS]: Versions,
   [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleRichTextSection,
   [SECTIONS.PREVIEW]: Preview,
+  [SECTIONS.LESSON_PREVIEW_FORMER]: Preview,
 };
 const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
   const Component = sectionTypeMap[section.__component];

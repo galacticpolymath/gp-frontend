@@ -12,7 +12,7 @@ const StandardsCollapsible = ({
   Data,
   Description,
   Title,
-  Footnote = ""
+  Footnote = '',
 }) => {
   const ref = useRef();
 

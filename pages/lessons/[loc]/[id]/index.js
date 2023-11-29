@@ -38,25 +38,26 @@ const getSectionDotsDefaultVal = sectionComps => sectionComps.map((section, inde
   }
 })
 
-
 const getLessonSections = sectionComps => sectionComps.map((section, index) => ({
   ...section,
   SectionTitle: `${index + 1}. ${section.SectionTitle}`,
 }));
 
+// GOAL: check the lesson preview name for the Animal Collective lesson
+
 const LessonDetails = ({ lesson }) => {
+  console.log("lesson Section: ", lesson.Section)
   const router = useRouter();
   let sectionComps = null;
   const lessonSectionObjEntries = Object.entries(lesson.Section);
-  const isTheLessonSectionInOneObj = lessonSectionObjEntries.find(([sectionName,]) => sectionName === 'learning-chart') === undefined;
+  const isTheLessonSectionInOneObj = lessonSectionObjEntries.find(([sectionName]) => sectionName === 'learning-chart') === undefined;
   const learningStandardsSecTitleIndex = isTheLessonSectionInOneObj ? -1 : lessonSectionObjEntries.findIndex(([_, { SectionTitle }]) => SectionTitle === 'Learning Standards');
   const lessonStandardsIndexesToFilterOut = (learningStandardsSecTitleIndex === -1) ? [] : [learningStandardsSecTitleIndex, learningStandardsSecTitleIndex + 1, learningStandardsSecTitleIndex + 2];
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-  };
-
+  }
 
   if (!isTheLessonSectionInOneObj) {
     const lessonStandards = lessonStandardsIndexesToFilterOut.map(indexOfLessonStandard => lessonSectionObjEntries[indexOfLessonStandard][1]);
@@ -69,15 +70,15 @@ const LessonDetails = ({ lesson }) => {
       .reduce((lessonStandardObj, lessonStandardsAccumulatedObj) => {
         let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
 
-        if (!lessonStandardsAccumulatedObj.Badge) {
+        if (!lessonStandardsAccumulatedObj.Badge && lessonStandardObj.Badge) {
           _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Badge: lessonStandardObj.Badge }
-        };
+        }
 
-        if (!lessonStandardsAccumulatedObj.Title) {
+        if (!lessonStandardsAccumulatedObj.Title && lessonStandardObj.Title) {
           _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Title: lessonStandardObj.Title };
-        };
+        }
 
-        if (!lessonStandardsAccumulatedObj.SectionTitle) {
+        if (!lessonStandardsAccumulatedObj.SectionTitle && lessonStandardObj.SectionTitle) {
           _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, SectionTitle: lessonStandardObj.SectionTitle };
         }
 
@@ -85,7 +86,7 @@ const LessonDetails = ({ lesson }) => {
           _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Footnote: lessonStandardObj.Footnote };
         }
 
-        if (!lessonStandardsAccumulatedObj.Description) {
+        if (!lessonStandardsAccumulatedObj.Description && lessonStandardObj.Description) {
           _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Description: lessonStandardObj.Description };
         }
 
@@ -95,7 +96,7 @@ const LessonDetails = ({ lesson }) => {
     sectionComps = sectionComps.filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index));
     const backgroundSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
     sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
-  };
+  }
 
   const [sectionDots, setSectionDots] = useState({
     dots: getSectionDotsDefaultVal(sectionComps),
@@ -149,6 +150,8 @@ const LessonDetails = ({ lesson }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, []);
 
+  let _sections = useMemo(() => getLessonSections(sectionComps), []);
+
   if (!lesson && typeof window === "undefined") {
     return null;
   }
@@ -160,8 +163,6 @@ const LessonDetails = ({ lesson }) => {
 
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
-
-  let _sections = useMemo(() => getLessonSections(sectionComps), []);
   const shareWidgetFixedProps = IS_ON_PROD ?
     {
       pinterestMedia: lessonBannerUrl,

@@ -195,7 +195,7 @@ const LessonPart = ({
                         style={{
                           width: 30,
                           height: 30,
-                          border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}`
+                          border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}`,
                         }}
                       >
                         <i

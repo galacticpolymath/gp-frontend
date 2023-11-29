@@ -8,12 +8,11 @@ import Accordion from './Accordion';
 import CopyableTxt from './CopyableTxt';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { Collapse } from 'react-bootstrap'
+import { Collapse } from 'react-bootstrap';
 
 /**
  * A styled collapsible section of the Lesson Plan.
  */
-
 
 const CollapsibleLessonSection = ({
   SectionTitle = '',
@@ -65,9 +64,8 @@ const CollapsibleLessonSection = ({
       return;
     }
 
-
-    setIsAccordionContentOpen(isAccordionContentOpen => !isAccordionContentOpen)
-  }
+    setIsAccordionContentOpen(isAccordionContentOpen => !isAccordionContentOpen);
+  };
 
   return (
     <Accordion

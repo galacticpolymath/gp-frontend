@@ -32,7 +32,7 @@ const Accordion = ({
   setContentId,
   dataBsToggle = { 'data-bs-toggle': 'collapse' },
   handleOnClick = () => { },
-  ariaExpanded = 'true'
+  ariaExpanded = 'true',
 }) => {
   const contentId = useRef();
 

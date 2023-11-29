@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import { useRef } from 'react';
-import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 import Accordion from '../../Accordion';
 import Subject from './Subject';
 
