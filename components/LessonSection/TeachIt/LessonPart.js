@@ -98,7 +98,7 @@ const LessonPart = ({
 
         return prevState.filter(num => num !== previousLessonPartNum);
       });
-      
+
       setIsExpanded(!isExpanded);
     }
   };
@@ -191,7 +191,11 @@ const LessonPart = ({
                     </h3>
                     <div
                       className="rounded d-flex d-lg-none positive-absolute justify-content-center align-items-center"
-                      style={{ width: 30, height: 30, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
+                      style={{
+                        width: 30,
+                        height: 30,
+                        border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}`
+                      }}
                     >
                       <i
                         style={{ color: '#DEE2E6' }}
