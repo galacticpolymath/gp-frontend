@@ -19,7 +19,7 @@ const PreviouslySelectedJobCategory = ({ index, isBrick, jobCategory }) => {
 
     const handleBtnClick = () => {
         if(jobCategory.categoryName === "Job Categories"){
-            router.push({ pathname: '/job-viz' }, null, { scroll: false })
+            router.push({ pathname: '/jobviz' }, null, { scroll: false })
             return;
         }
         

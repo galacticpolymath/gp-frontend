@@ -8,7 +8,7 @@ import { SessionProvider } from 'next-auth/react';
 import './style.scss';
 import '../styles/pages/HireUs/hireUs.scss';
 import '../styles/pages/Lessons/lessons.scss';
-import '../styles/pages/JobViz/job-viz-page.scss';
+import '../styles/pages/JobViz/jobviz-page.scss';
 import '../styles/icons/icons.scss';
 import '../styles/comps/carousel.scss';
 import '../styles/pages/home.scss';
