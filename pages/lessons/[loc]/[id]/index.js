@@ -27,7 +27,6 @@ const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 const getSectionDotsDefaultVal = sectionComps => sectionComps.map((section, index) => {
   const _sectionTitle = `${index + 1}. ${section.SectionTitle}`;
   let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-  sectionId = (index === 0) ? 'lessonTitleId' : sectionId
 
   return {
     isInView: index === 0,
@@ -43,13 +42,12 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
   SectionTitle: `${index + 1}. ${section.SectionTitle}`,
 }));
 
-// GOAL: check the lesson preview name for the Animal Collective lesson
 
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
   let sectionComps = null;
-  const lessonSectionObjEntries = lesson.Section ? Object.entries(lesson.Section) : [];
-  const isTheLessonSectionInOneObj = lessonSectionObjEntries.find(([sectionName]) => sectionName === 'learning-chart') === undefined;
+  const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
+  const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonSectionObjEntries.find(([sectionName]) => sectionName === 'learning-chart') === undefined : false;
   const learningStandardsSecTitleIndex = isTheLessonSectionInOneObj ? -1 : lessonSectionObjEntries.findIndex(([_, { SectionTitle }]) => SectionTitle === 'Learning Standards');
   const lessonStandardsIndexesToFilterOut = (learningStandardsSecTitleIndex === -1) ? [] : [learningStandardsSecTitleIndex, learningStandardsSecTitleIndex + 1, learningStandardsSecTitleIndex + 2];
 
@@ -58,7 +56,7 @@ const LessonDetails = ({ lesson }) => {
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
   }
 
-  if (!isTheLessonSectionInOneObj) {
+  if (lesson && !isTheLessonSectionInOneObj) {
     const lessonStandards = lessonStandardsIndexesToFilterOut.map(indexOfLessonStandard => lessonSectionObjEntries[indexOfLessonStandard][1]);
     let lessonStandardsObj = lessonStandards
       .map(lessonStandards => {
@@ -97,8 +95,10 @@ const LessonDetails = ({ lesson }) => {
     sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
   }
 
+  const _dots = sectionComps ? getSectionDotsDefaultVal(sectionComps) : [];
+  console.log("_dots: ", _dots)
   const [sectionDots, setSectionDots] = useState({
-    dots: getSectionDotsDefaultVal(sectionComps),
+    dots: _dots,
     clickedSectionId: null,
   });
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
@@ -149,13 +149,13 @@ const LessonDetails = ({ lesson }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, []);
 
-  let _sections = useMemo(() => getLessonSections(sectionComps), []);
+  let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
 
   if (!lesson && typeof window === "undefined") {
     return null;
   }
 
-  if (!lesson) {
+  if (!lesson || !_sections?.length) {
     router.replace('/error');
     return null;
   }

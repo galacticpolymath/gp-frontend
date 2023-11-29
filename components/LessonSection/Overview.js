@@ -29,7 +29,7 @@ const Overview = ({
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   return (
-    <div ref={ref} className='container mb-4 px-0'>
+    <div ref={ref} className='SectionHeading container mb-4 px-0'>
       <Title {...titleProps} />
       <div className="bg-light-gray px-4 py-2 rounded-3 text-center">
         {LearningSummary && (

@@ -45,7 +45,7 @@ const Title = ({
 
   return (
     <div className="container d-flex justify-content-center pt-4 px-0">
-      <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
+      <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center lessonTitleId">
         <div className="col-12">
           <div className="d-flex justify-content-between">
             {lastSubRelease && (
