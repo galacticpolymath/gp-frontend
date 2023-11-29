@@ -65,7 +65,7 @@ const IndividualLesson = ({ lesson }) => {
           )}
         </section>
         {!!tags?.length && (
-          <section className='mt-1 d-flex tagPillContainer flex-wrap mt-2'>
+          <section className='mt-1 d-flex tagPillContainer w-auto flex-wrap mt-2'>
             {tags.map((tag, index) => (
               <div
                 key={index}
