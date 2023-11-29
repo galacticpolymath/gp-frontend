@@ -15,7 +15,7 @@ import IndividualLesson from '../../components/LessonsPg/IndividualLesson.js';
 const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
 
   const handleJobVizCardClick = () => {
-    window.location.href = '/job-viz';
+    window.location.href = '/jobviz';
   };
 
   const uniqueIDs = [];
