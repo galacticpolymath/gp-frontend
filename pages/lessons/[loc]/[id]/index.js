@@ -42,7 +42,6 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
   SectionTitle: `${index + 1}. ${section.SectionTitle}`,
 }));
 
-
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
   let sectionComps = null;
@@ -96,7 +95,6 @@ const LessonDetails = ({ lesson }) => {
   }
 
   const _dots = sectionComps ? getSectionDotsDefaultVal(sectionComps) : [];
-  console.log("_dots: ", _dots)
   const [sectionDots, setSectionDots] = useState({
     dots: _dots,
     clickedSectionId: null,
@@ -278,8 +276,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         },
       },
     }
+    const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
+    const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => type === 'web-app') : false;
 
-    if (multiMediaArr?.length && multiMediaArr.some(({ type }) => type === 'web-app')) {
+    if (isThereAWebApp) {
       let multiMediaArrUpdated = []
 
       for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {

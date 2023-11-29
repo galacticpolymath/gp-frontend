@@ -104,6 +104,7 @@ const CollapsibleLessonSection = ({
                   width: '140px',
                   backgroundColor: '#212529',
                   textAlign: 'center',
+                  zIndex: 100000
                 }}
                 modalClassNameStr='position-fixed rounded p-0 m-0'
                 parentClassName='pointer d-flex justify-content-center align-items-center'
