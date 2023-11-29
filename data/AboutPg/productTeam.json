@@ -42,5 +42,21 @@
                 "icon": "bi bi-youtube"
             }
         ]
+    },
+    {
+        "name": "Stephanie Rapciak, M.A.",
+        "description": "A scientist, entrepreneur, and storyteller. From biology to climate change, she loves learning about the latest scientific research and sharing it with the world.",
+        "position": "CURRICULUM DEVELOPER & WORKSHOP FACILITATOR",
+        "imgSrc": "/imgs/profilePics/rapciak.png",
+        "links": [
+            {
+                "link":"https://www.instagram.com/stephanierapciak/",
+                "icon": "bi bi-linkedin"
+            },
+            {
+                "link": "https://www.instagram.com/stephanierapciak/",
+                "icon": "bi bi-instagram"
+            }
+        ]
     }
 ]
