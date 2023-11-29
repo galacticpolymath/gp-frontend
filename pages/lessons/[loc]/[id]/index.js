@@ -46,10 +46,9 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
 // GOAL: check the lesson preview name for the Animal Collective lesson
 
 const LessonDetails = ({ lesson }) => {
-  console.log("lesson Section: ", lesson.Section)
   const router = useRouter();
   let sectionComps = null;
-  const lessonSectionObjEntries = Object.entries(lesson.Section);
+  const lessonSectionObjEntries = lesson.Section ? Object.entries(lesson.Section) : [];
   const isTheLessonSectionInOneObj = lessonSectionObjEntries.find(([sectionName]) => sectionName === 'learning-chart') === undefined;
   const learningStandardsSecTitleIndex = isTheLessonSectionInOneObj ? -1 : lessonSectionObjEntries.findIndex(([_, { SectionTitle }]) => SectionTitle === 'Learning Standards');
   const lessonStandardsIndexesToFilterOut = (learningStandardsSecTitleIndex === -1) ? [] : [learningStandardsSecTitleIndex, learningStandardsSecTitleIndex + 1, learningStandardsSecTitleIndex + 2];
