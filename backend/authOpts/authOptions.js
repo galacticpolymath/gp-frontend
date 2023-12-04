@@ -4,17 +4,12 @@ import { SignJWT, jwtVerify } from 'jose';
 import { nanoid } from 'nanoid';
 import JwtModel from '../models/Jwt';
 import { connectToMongodb } from '../utils/connection';
+import { getServerSession } from 'next-auth'
 
 const signJwt = async (payload, secret) => {
   const issueAtTime = Date.now() / 1000; // issued at time
   const expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60; // 24 hours
-  const jwt = new SignJWT({ ...payload })
-    .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
-    .setExpirationTime(expirationTime)
-    .setIssuedAt(issueAtTime)
-    .setJti(nanoid())
-    .sign(new TextEncoder().encode(secret));
-
+  
   return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
     .setExpirationTime(expirationTime)
