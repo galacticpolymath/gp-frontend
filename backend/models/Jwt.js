@@ -6,7 +6,8 @@ let JwtModel = models?.jwt;
 if (!JwtModel) {
   JwtModel = new Schema({
     _id: String,
-    jwt: String,
+    refresh: String,
+    access: String,
     expireAt: {
       type: Date,
       default: Date.now(),
