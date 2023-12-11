@@ -38,13 +38,12 @@ export const authOptions = {
         const { email, name } = token?.payload ?? token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
         const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
-        const refreshToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, Math.floor((Math.floor(Date.now() / 1000) + 24 * 60 * 60) / 2));
-        const accessToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret);
+        const refreshToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, "1 day");
+        const accessToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, "12hr");
 
         if (!token?.payload) {
           await connectToMongodb();
           const jwt = new JwtModel({ _id: email, access: accessToken, refresh: refreshToken });
-          jwt.save();
         }
 
         return accessToken;
@@ -69,8 +68,8 @@ export const authOptions = {
     },
     async session({ session, token }) {
       const { email, roles, name } = token.payload;
-      const accessToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, );
-      const refreshToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, );
+      const accessToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, "12hours");
+      const refreshToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, "1 day");
       session.id = token.id;
       session.token = accessToken;
       session.refresh = refreshToken;

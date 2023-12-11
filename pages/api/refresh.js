@@ -4,10 +4,14 @@ import { signJwt } from '../../backend/utils/auth';
 
 
 export default async function handler(request, response) {
+    if (request.method !== "POST") {
+        return response.status(404).json({ msg: "Invalid request method. Must be a 'POST' request." })
+    }
+
     const refreshToken = request.body.refreshToken;
 
     if (!refreshToken) {
-        return response.status(401).send('Access Denied. No refresh token provided.');
+        return response.status(401).json({ mgs: 'Access Denied. No refresh token provided.' });
     }
 
     try {

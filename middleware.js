@@ -9,11 +9,17 @@ const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin)
   const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
 
   if (!payload) {
-    return { isAuthorize: false, errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 }) };
+    return {
+      isAuthorize: false,
+      errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 })
+    };
   }
 
   if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(payload.roles, 'dbAdmin')) {
-    return { isAuthorize: false, errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 }) };
+    return {
+      isAuthorize: false,
+      errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 })
+    };
   }
 
   return { isAuthorize: true };
@@ -32,10 +38,10 @@ export async function middleware(request) {
     const isGettingJwtToken = (nextUrl.pathname == '/api/get-jwt-token') && (method === 'POST');
     let email = null;
 
-    if(isGettingJwtToken){
+    if (isGettingJwtToken) {
       const reqData = await request.json();
       email = reqData?.email;
-    } 
+    }
 
     if (isGettingJwtToken && (!email || (typeof email !== 'string'))) {
       return new NextResponse('Email was either not provided or a invalid data type. Must be a string.', { status: 400 });
@@ -56,7 +62,7 @@ export async function middleware(request) {
     if (
       ((nextUrl.pathname == '/api/update-lessons') && (method === 'PUT') && authorizationStr) ||
       ((nextUrl.pathname == '/api/insert-lesson') && (method === 'POST') && authorizationStr) ||
-      ((nextUrl.pathname == '/api/delete-lesson') && (method === 'DELETE') && authorizationStr) 
+      ((nextUrl.pathname == '/api/delete-lesson') && (method === 'DELETE') && authorizationStr)
     ) {
       const { errResponse } = await getAuthorizeReqResult(authorizationStr, true);
 
