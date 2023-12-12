@@ -8,6 +8,8 @@ import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
 import NSFImage from '../assets/img/nsf.png';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
+import sponsors from '../data/HireUsPg/clientFundingSourcesPics.json';
+import Marquee from 'react-marquee-slider';
 
 export default function Home() {
   const newReleasePath = '/lessons/en-US/7';
@@ -19,6 +21,21 @@ export default function Home() {
     imgSrc: 'https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png',
     keywords: 'Galactic Polymath, Galactic, Polymath, education, studio, education studio, education studio for kids, education studio for children, education studio for teens, education studio for teenagers, education studio for young adults, education studio for young people, education studio for youth, education studio for adolescents, education studio for parents, education studio for teachers, education studio for counselors, education studio for schools, education studio for school districts.',
   };
+  const _sponsors = [...sponsors].map((sponsorObj, index) => {
+    if (index === 3) {
+      return {
+        ...sponsorObj,
+        width: 280,
+        height: 200
+      }
+    }
+
+    return {
+      ...sponsorObj,
+      width: 150,
+      height: 150
+    }
+  })
 
   return (
     <Layout {...layoutProps}>
@@ -112,7 +129,7 @@ export default function Home() {
                 <div className='my-3'>
                   <h5 className='fw-light '> Dr. Albert Kao&apos;s Lab at UMass Boston</h5>
                 </div>
-                
+
               </div>
             </div>
             <div className='row mt-5 '>
@@ -169,6 +186,32 @@ export default function Home() {
             </h5>
           </div>
         </div>
+        <div className='w-100 mt-5' style={{ height: 250 }}>
+          <h6 className="mb-3">
+            Made open access by these funding organizations and research institutions:
+          </h6>
+          <Marquee velocity={45}>
+            {_sponsors.map((sponsorObj, index) => {
+              const _style = (index === 3) ? { width: sponsorObj.width, height: sponsorObj.height, transform: 'translateY(25px)' } : { width: sponsorObj.width, height: sponsorObj.height };
+
+              return (
+                <div key={index} className='h-100 d-flex justify-content-center align-items-center'>
+                  <div
+                    style={_style}
+                    className="me-5 position-relative"
+                  >
+                    <Image
+                      alt={sponsorObj.alt}
+                      src={sponsorObj.path}
+                      fill
+                    />
+                  </div>
+                </div>
+              )
+            }
+            )}
+          </Marquee>
+        </div>
       </div>
 
       <div className="bg-primary-light">
@@ -186,9 +229,7 @@ export default function Home() {
               </a>
               <br />
               <Link href="/lessons/en-US/1" className='btn btn-secondary'>
-
                 Check out the lesson
-
               </Link>
             </div>
           </section>
@@ -213,7 +254,6 @@ export default function Home() {
         <p className='fs-3 pt-3'>
           We craft learning narratives that students will remember. We make it clear how abstract learning standards in language arts, math, social studies and science connect to give students methods for approaching complex problems.
         </p>
-
       </div>
 
       <div className="bg-light-gray">
