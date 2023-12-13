@@ -8,8 +8,30 @@ import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
 import NSFImage from '../assets/img/nsf.png';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
+import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boosting-students-data-literacy.jpg';
 import sponsors from '../data/HireUsPg/clientFundingSourcesPics.json';
 import Marquee from 'react-marquee-slider';
+import CarouselContainer from '../components/CarouselContainer';
+import LessonsCarousel from '../components/LessonSection/Preview/LessonsCarousel';
+import CarouselItem from '../components/CarouselItem';
+
+const papers = [
+  {
+    imgSrc: ScientificAmericanImage.src,
+    articleLink: "https://www.scientificamerican.com/article/why-it-took-so-long-to-appreciate-female-birds-songs/",
+    lessonLink: "/lessons/en-US/1",
+    h4Txt: "Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>."
+  },
+  {
+    imgSrc: EdutopiaBoostingStudentsDataLiteracyImg.src,
+    articleLink: "https://www.edutopia.org/article/boosting-students-data-literacy/",
+    lessonLink: "/lessons/en-US/5#lesson_part_2",
+    h4Txt: ""
+  }
+
+]
+
+const parser = typeof window === 'undefined' ? null : new DOMParser();
 
 export default function Home() {
   const newReleasePath = '/lessons/en-US/7';
@@ -215,39 +237,15 @@ export default function Home() {
       </div>
 
       <div className="bg-primary-light">
-        <div className="container d-flex flex-column-reverse flex-lg-row-reverse mx-auto py-5 align-items-center">
-          <section className="row w-100 w-md-75 mt-3 mt-lg-0">
-            <div className="col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-sm-block">
-              <h4 className="mb-4 text-center text-sm-start">Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>.</h4>
-              <a
-                className='btn btn-primary mb-2'
-                href="https://www.scientificamerican.com/article/why-it-took-so-long-to-appreciate-female-birds-songs/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Read the article
-              </a>
-              <br />
-              <Link href="/lessons/en-US/1" className='btn btn-secondary'>
-                Check out the lesson
-              </Link>
-            </div>
-          </section>
-          <section className="row w-100 w-md-75">
-            <div className="col-12 d-flex justify-content-center align-items-center d-sm-block">
-              <div className="position-relative ps-0 w-100 scientificAmericanImgContainer">
-                <Image
-                  fill
-                  sizes="100%"
-                  src={ScientificAmericanImage.src}
-                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-                  style={{ objectFit: 'contain' }}
-                  priority
-                />
-              </div>
-            </div>
-          </section>
-        </div>
+        <CarouselContainer>
+          {papers.map((paper, index) => {
+            return (
+              <CarouselItem>
+                {index} hey there
+              </CarouselItem>
+            )
+          })}
+        </CarouselContainer>
       </div>
       <div className="col-12 col-lg-10 offset-lg-1 px-4 py-3 my-5">
         <div className="display-4">The Real World doesn&apos;t fit neatly into subject boundaries. <em>Our lessons don&apos;t either!</em></div>
