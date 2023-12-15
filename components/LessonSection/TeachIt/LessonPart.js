@@ -341,7 +341,7 @@ const LessonPart = ({
               ))}
             </div>
           )}
-          {learningObjectives &&
+          {Array.isArray(learningObjectives) &&
             <div className="mt-4 d-col col-12 col-lg-8">
               <div className='d-flex align-items-start'>
                 <h5 className='fw-bold'>
@@ -359,7 +359,22 @@ const LessonPart = ({
               </ol>
             </div>
           }
-
+          {(typeof learningObjectives === 'string') && (
+            <div className="mt-4 d-col col-12 col-lg-8">
+              <div className='d-flex align-items-start'>
+                <h5 className='fw-bold'>
+                  <i className="bi bi-emoji-sunglasses me-2"></i>
+                  Learning Objectives
+                </h5>
+              </div>
+              <p className='lead mb-0'>Students will able to...</p>
+              <ol className='mt-0'>
+                <li>
+                  <RichText content={learningObjectives} />
+                </li>
+              </ol>
+            </div>
+          )}
           <div className='mt-4'>
             <div className='d-flex align-items-start'>
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
