@@ -245,7 +245,6 @@ export default function Home() {
               >
                 <div className="d-flex h-100">
                   <section className="w-50 d-flex justify-content-center align-items-center">
-                    {/* put the image here */}
                     <div style={{ width: 350, height: 350 }} className='position-relative'>
                       <Image
                         fill
@@ -254,9 +253,26 @@ export default function Home() {
                       />
                     </div>
                   </section>
-                  <section>
-                    {/* put the text here */}
-                    {/* put the buttons here */}
+                  <section className="w-50 d-flex justify-content-center align-items-center">
+                    <div className="col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-sm-block">
+                      <h4
+                        style={{ whiteSpace: 'initial' }}
+                        dangerouslySetInnerHTML={{ __html: paper.h4Txt }}
+                      />
+
+                      <a
+                        className='btn btn-primary mb-2'
+                        href={paper.articleLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Read the article
+                      </a>
+                      <br />
+                      <Link href={paper.lessonLink} className='btn btn-secondary'>
+                        Check out the lesson
+                      </Link>
+                    </div>
                   </section>
                 </div>
               </CarouselItem>
