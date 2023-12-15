@@ -17,12 +17,14 @@ import CarouselItem from '../components/CarouselItem';
 const papers = [
   {
     imgSrc: ScientificAmericanImage.src,
+    imgAlt: 'Scientific American Paper',
     articleLink: 'https://www.scientificamerican.com/article/why-it-took-so-long-to-appreciate-female-birds-songs/',
     lessonLink: '/lessons/en-US/1',
     h4Txt: 'Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>.',
   },
   {
     imgSrc: EdutopiaBoostingStudentsDataLiteracyImg.src,
+    imgAlt: 'Edutopia Paper GP',
     articleLink: 'https://www.edutopia.org/article/boosting-students-data-literacy/',
     lessonLink: '/lessons/en-US/5#lesson_part_2',
     h4Txt: '',
@@ -249,6 +251,7 @@ export default function Home() {
                       <Image
                         fill
                         src={paper.imgSrc}
+                        alt={paper.imgAlt}
                         className='w-100 h-100 position-absolute'
                       />
                     </div>
