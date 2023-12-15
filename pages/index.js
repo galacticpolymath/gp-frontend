@@ -12,24 +12,23 @@ import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boos
 import sponsors from '../data/HireUsPg/clientFundingSourcesPics.json';
 import Marquee from 'react-marquee-slider';
 import CarouselContainer from '../components/CarouselContainer';
+import CarouselItem from '../components/CarouselItem';
 
 const papers = [
   {
     imgSrc: ScientificAmericanImage.src,
-    articleLink: "https://www.scientificamerican.com/article/why-it-took-so-long-to-appreciate-female-birds-songs/",
-    lessonLink: "/lessons/en-US/1",
-    h4Txt: "Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>."
+    articleLink: 'https://www.scientificamerican.com/article/why-it-took-so-long-to-appreciate-female-birds-songs/',
+    lessonLink: '/lessons/en-US/1',
+    h4Txt: 'Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>.',
   },
   {
     imgSrc: EdutopiaBoostingStudentsDataLiteracyImg.src,
-    articleLink: "https://www.edutopia.org/article/boosting-students-data-literacy/",
-    lessonLink: "/lessons/en-US/5#lesson_part_2",
-    h4Txt: ""
-  }
+    articleLink: 'https://www.edutopia.org/article/boosting-students-data-literacy/',
+    lessonLink: '/lessons/en-US/5#lesson_part_2',
+    h4Txt: '',
+  },
 
-]
-
-const parser = typeof window === 'undefined' ? null : new DOMParser();
+];
 
 export default function Home() {
   const newReleasePath = '/lessons/en-US/7';
@@ -46,16 +45,16 @@ export default function Home() {
       return {
         ...sponsorObj,
         width: 280,
-        height: 200
-      }
+        height: 200,
+      };
     }
 
     return {
       ...sponsorObj,
       width: 150,
-      height: 150
-    }
-  })
+      height: 150,
+    };
+  });
 
   return (
     <Layout {...layoutProps}>
@@ -227,7 +226,7 @@ export default function Home() {
                     />
                   </div>
                 </div>
-              )
+              );
             }
             )}
           </Marquee>
@@ -236,42 +235,65 @@ export default function Home() {
 
       <div className="bg-primary-light">
         <CarouselContainer>
-          {papers.map(paper => {
+          {papers.map((paper, index) => {
             return (
-              <div className="container d-flex flex-column-reverse flex-lg-row-reverse mx-auto py-5 align-items-center">
-                <section className="row w-100 w-md-75 mt-3 mt-lg-0">
-                  <div className="col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-sm-block">
-                    <h4 className="mb-4 text-center text-sm-start" dangerouslySetInnerHTML={{ __html: paper.h4Txt  }} />
-                    <a
-                      className='btn btn-primary mb-2'
-                      href={paper.articleLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Read the article
-                    </a>
-                    <br />
-                    <Link href={paper.lessonLink} className='btn btn-secondary'>
-                      Check out the lesson
-                    </Link>
-                  </div>
-                </section>
-                <section className="row w-100 w-md-75">
-                  <div className="col-12 d-flex justify-content-center align-items-center d-sm-block">
-                    <div className="position-relative ps-0 w-100 scientificAmericanImgContainer">
+              <CarouselItem
+                key={index}
+                parentStyles='d-flex justify-content-center align-items-center'
+                secondChildDivClassName='px-1 pb-0 rounded w-100'
+                thirdChildDivClassName='px-1 mediaItemContainer border-0'
+              >
+                <div className="d-flex h-100">
+                  <section className="w-50 d-flex justify-content-center align-items-center">
+                    {/* put the image here */}
+                    <div style={{ width: 350, height: 350 }} className='position-relative'>
                       <Image
                         fill
-                        sizes="100%"
                         src={paper.imgSrc}
-                        alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-                        style={{ objectFit: 'contain' }}
-                        priority
+                        className='w-100 h-100 position-absolute'
                       />
                     </div>
-                  </div>
-                </section>
-              </div>
-            )
+                  </section>
+                  <section>
+                    {/* put the text here */}
+                    {/* put the buttons here */}
+                  </section>
+                </div>
+              </CarouselItem>
+              // <div className="container d-flex flex-column-reverse flex-lg-row-reverse mx-auto py-5 align-items-center">
+              //   <section className="row w-100 w-md-75 mt-3 mt-lg-0">
+              //     <div className="col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-sm-block">
+              //       <h4 className="mb-4 text-center text-sm-start" dangerouslySetInnerHTML={{ __html: paper.h4Txt  }} />
+              //       <a
+              //         className='btn btn-primary mb-2'
+              //         href={paper.articleLink}
+              //         target="_blank"
+              //         rel="noopener noreferrer"
+              //       >
+              //         Read the article
+              //       </a>
+              //       <br />
+              //       <Link href={paper.lessonLink} className='btn btn-secondary'>
+              //         Check out the lesson
+              //       </Link>
+              //     </div>
+              //   </section>
+              //   <section className="row w-100 w-md-75">
+              //     <div className="col-12 d-flex justify-content-center align-items-center d-sm-block">
+              //       <div className="position-relative ps-0 w-100 scientificAmericanImgContainer">
+              //         <Image
+              //           fill
+              //           sizes="100%"
+              //           src={paper.imgSrc}
+              //           alt="Why We Didn't Know that Female Birds Sing, Scientific American."
+              //           style={{ objectFit: 'contain' }}
+              //           priority
+              //         />
+              //       </div>
+              //     </div>
+              //   </section>
+              // </div>
+            );
           })}
         </CarouselContainer>
       </div>

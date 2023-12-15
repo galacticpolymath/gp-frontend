@@ -11,14 +11,14 @@ const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin)
   if (!payload) {
     return {
       isAuthorize: false,
-      errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 })
+      errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 }),
     };
   }
 
   if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(payload.roles, 'dbAdmin')) {
     return {
       isAuthorize: false,
-      errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 })
+      errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 }),
     };
   }
 

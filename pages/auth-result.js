@@ -7,7 +7,7 @@ const AuthResultPg = () => {
   const session = useSession();
   const [wasRendered, setWasRendered] = useState(false);
 
-  console.log("session: ", session)
+  console.log('session: ', session);
 
   useEffect(() => {
     setTimeout(() => {

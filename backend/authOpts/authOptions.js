@@ -4,7 +4,7 @@ import { SignJWT, jwtVerify } from 'jose';
 import { nanoid } from 'nanoid';
 import JwtModel from '../models/Jwt';
 import { connectToMongodb } from '../utils/connection';
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth';
 
 // expirationTime = 24 hours by default 
 const signJwt = async ({ email, roles, name }, secret, expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60) => {
@@ -38,8 +38,8 @@ export const authOptions = {
         const { email, name } = token?.payload ?? token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
         const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
-        const refreshToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, "1 day");
-        const accessToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, "12hr");
+        const refreshToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, '1 day');
+        const accessToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, '12hr');
 
         if (!token?.payload) {
           await connectToMongodb();
@@ -68,8 +68,8 @@ export const authOptions = {
     },
     async session({ session, token }) {
       const { email, roles, name } = token.payload;
-      const accessToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, "12hours");
-      const refreshToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, "1 day");
+      const accessToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '12hours');
+      const refreshToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '1 day');
       session.id = token.id;
       session.token = accessToken;
       session.refresh = refreshToken;
