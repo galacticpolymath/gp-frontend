@@ -44,6 +44,7 @@ export const authOptions = {
         if (!token?.payload) {
           await connectToMongodb();
           const jwt = new JwtModel({ _id: email, access: accessToken, refresh: refreshToken });
+          jwt.save();
         }
 
         return accessToken;
