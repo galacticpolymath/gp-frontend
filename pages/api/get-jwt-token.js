@@ -5,9 +5,13 @@ import { CustomError } from '../../backend/utils/errors';
 
 export default async function handler(request, response) {
   try {
+    if (request.method !== 'POST') {
+      throw new CustomError("Invalid request method. Must be a 'POST'.");
+    }
+
     const canUserWriteToDb = await getCanUserWriteToDb(request.body.email);
 
-    if(!canUserWriteToDb){
+    if (!canUserWriteToDb) {
       throw new CustomError('You are not authorized to access this service.', 403);
     }
 
@@ -23,7 +27,7 @@ export default async function handler(request, response) {
 
     await JwtModel.deleteOne({ _id: request.body.email });
 
-    return response.status(200).json({ jwt: jwtDoc.jwt });
+    return response.status(200).json({ access: jwtDoc.access, refresh: jwtDoc.refresh });
   } catch (error) {
 
     return response.status(500).json({ msg: 'Internal server error.' });

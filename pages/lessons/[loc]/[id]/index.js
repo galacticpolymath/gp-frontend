@@ -275,7 +275,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           ...titleProperties,
         },
       },
-    }
+    };
     const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
     const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => type === 'web-app') : false;
 
