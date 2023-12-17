@@ -45,7 +45,6 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
 
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
-  let sectionComps = null;
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
   let lessonStandardsSections = lessonSectionObjEntries.filter(([sectionName], index) => {
@@ -57,13 +56,11 @@ const LessonDetails = ({ lesson }) => {
     return false;
   });
   const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonStandardsSections.length === 1 : false;
+  let sectionComps = lesson.Section ? Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure') : null;
 
-  console.log("lesson.Section hey there: ", lesson.Section)
-
-  if (lesson && !isTheLessonSectionInOneObj) {
-    sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
+  if (sectionComps?.length) {
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-  }
+  };
 
   if (lesson && !isTheLessonSectionInOneObj && lessonStandardsSections?.length) {
     lessonStandardsSections = structuredClone(lessonStandardsSections.map(([, lessonStandardsObj]) => lessonStandardsObj));
