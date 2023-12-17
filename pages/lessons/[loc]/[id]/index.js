@@ -42,7 +42,6 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
   SectionTitle: `${index + 1}. ${section.SectionTitle}`,
 }));
 
-
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
@@ -51,7 +50,7 @@ const LessonDetails = ({ lesson }) => {
     if (sectionName.includes('standards') || sectionName === 'learning-chart') {
       lessonStandardsIndexesToFilterOut.push(index);
       return true;
-    };
+    }
 
     return false;
   });
@@ -60,7 +59,7 @@ const LessonDetails = ({ lesson }) => {
 
   if (sectionComps?.length) {
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-  };
+  }
 
   if (lesson && !isTheLessonSectionInOneObj && lessonStandardsSections?.length) {
     lessonStandardsSections = structuredClone(lessonStandardsSections.map(([, lessonStandardsObj]) => lessonStandardsObj));
@@ -99,7 +98,7 @@ const LessonDetails = ({ lesson }) => {
     sectionComps = sectionComps.filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index));
     const backgroundSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
     sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
-  };
+  }
 
   const _dots = sectionComps ? getSectionDotsDefaultVal(sectionComps) : [];
   const [sectionDots, setSectionDots] = useState({
