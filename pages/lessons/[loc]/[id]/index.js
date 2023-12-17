@@ -43,10 +43,13 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
 }));
 
 const LessonDetails = ({ lesson }) => {
+  console.log("lesson hey there: ", lesson.Section)
   const router = useRouter();
   let sectionComps = null;
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
+  console.log("lessonSectionObjEntries: ", lessonSectionObjEntries.filter(([sectionName]) => sectionName.includes('standards')).length)
   const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonSectionObjEntries.find(([sectionName]) => sectionName === 'learning-chart') === undefined : false;
+  console.log("isTheLessonSectionInOneObj: ", isTheLessonSectionInOneObj)
   const learningStandardsSecTitleIndex = isTheLessonSectionInOneObj ? -1 : lessonSectionObjEntries.findIndex(([_, { SectionTitle }]) => SectionTitle === 'Learning Standards');
   const lessonStandardsIndexesToFilterOut = (learningStandardsSecTitleIndex === -1) ? [] : [learningStandardsSecTitleIndex, learningStandardsSecTitleIndex + 1, learningStandardsSecTitleIndex + 2];
 
