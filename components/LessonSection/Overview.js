@@ -25,11 +25,13 @@ const Overview = ({
   console.log(index);
   console.log(__component);
   const ref = useRef();
-
-  useLessonElementInView(_sectionDots, SectionTitle, ref);
+  const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
+  const _h2Id = SectionTitle.toLowerCase().replace(/[0-9.]/g, "").trim().replace(/ /g, "-");
 
   return (
-    <div ref={ref} className='SectionHeading container mb-4 px-0'>
+    <div ref={ref} className='SectionHeading container mb-4 px-0 position-relative'>
+      <div id={h2Id} style={{ height: 30, width: 30, transform: 'translateY(-45px)' }} className='position-absolute' />
+      <div id={_h2Id} style={{ height: 30, width: 30, transform: 'translateY(-45px)' }} className='position-absolute' />
       <Title {...titleProps} />
       <div className="bg-light-gray px-4 py-2 rounded-3 text-center">
         {LearningSummary && (

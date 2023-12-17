@@ -72,6 +72,8 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
     let timerForHandleDotClick;
 
     const handleDotClick = sectionId => {
+        console.log("sectionId yo there meng: ", sectionId);
+
         clearTimeout(timerForHandleDotClick)
         timerForHandleDotClick = setTimeout(() => {
             setSectionDots(sectionDots => ({
@@ -111,24 +113,27 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
     let timerForGoToSectionFn;
 
     const goToSection = sectionId => {
+        console.log("yo there meng: ", sectionId)
         clearTimeout(timerForGoToSectionFn)
         timerForGoToSectionFn = setTimeout(() => {
-            setSectionDots(sectionDots => ({
-                clickedSectionId: sectionId,
-                dots: sectionDots.dots.map(dot => {
-                    if (dot.sectionDotId === `sectionDot-${sectionId}`) {
+            setSectionDots(sectionDots => {
+                return {
+                    clickedSectionId: sectionId,
+                    dots: sectionDots.dots.map(dot => {
+                        if (dot.sectionDotId === `sectionDot-${sectionId}`) {
+                            return {
+                                ...dot,
+                                isInView: true,
+                            }
+                        }
+
                         return {
                             ...dot,
-                            isInView: true,
+                            isInView: false,
                         }
-                    }
-
-                    return {
-                        ...dot,
-                        isInView: false,
-                    }
-                }),
-            }))
+                    }),
+                }
+            })
             setIsScrollListenerOn(true)
         }, 950)
         setIsScrollListenerOn(false)

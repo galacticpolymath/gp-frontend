@@ -37,7 +37,6 @@ const Title = ({
       headingVersionsElement.querySelector('button').click();
     }
 
-    // change the verions notes section id, delete the number nine
     window.location.href = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#version-notes`;
   };
 

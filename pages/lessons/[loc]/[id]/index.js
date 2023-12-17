@@ -42,25 +42,32 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
   SectionTitle: `${index + 1}. ${section.SectionTitle}`,
 }));
 
+
 const LessonDetails = ({ lesson }) => {
-  console.log("lesson hey there: ", lesson.Section)
   const router = useRouter();
   let sectionComps = null;
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
-  console.log("lessonSectionObjEntries: ", lessonSectionObjEntries.filter(([sectionName]) => sectionName.includes('standards')).length)
-  const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonSectionObjEntries.find(([sectionName]) => sectionName === 'learning-chart') === undefined : false;
-  console.log("isTheLessonSectionInOneObj: ", isTheLessonSectionInOneObj)
-  const learningStandardsSecTitleIndex = isTheLessonSectionInOneObj ? -1 : lessonSectionObjEntries.findIndex(([_, { SectionTitle }]) => SectionTitle === 'Learning Standards');
-  const lessonStandardsIndexesToFilterOut = (learningStandardsSecTitleIndex === -1) ? [] : [learningStandardsSecTitleIndex, learningStandardsSecTitleIndex + 1, learningStandardsSecTitleIndex + 2];
+  let lessonStandardsIndexesToFilterOut = [];
+  let lessonStandardsSections = lessonSectionObjEntries.filter(([sectionName], index) => {
+    if (sectionName.includes('standards') || sectionName === 'learning-chart') {
+      lessonStandardsIndexesToFilterOut.push(index);
+      return true;
+    };
 
-  if (lesson) {
+    return false;
+  });
+  const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonStandardsSections.length === 1 : false;
+
+  console.log("lesson.Section hey there: ", lesson.Section)
+
+  if (lesson && !isTheLessonSectionInOneObj) {
     sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
   }
 
-  if (lesson && !isTheLessonSectionInOneObj) {
-    const lessonStandards = lessonStandardsIndexesToFilterOut.map(indexOfLessonStandard => lessonSectionObjEntries[indexOfLessonStandard][1]);
-    let lessonStandardsObj = lessonStandards
+  if (lesson && !isTheLessonSectionInOneObj && lessonStandardsSections?.length) {
+    lessonStandardsSections = structuredClone(lessonStandardsSections.map(([, lessonStandardsObj]) => lessonStandardsObj));
+    let lessonStandardsObj = lessonStandardsSections
       .map(lessonStandards => {
         delete lessonStandards.__component;
 
@@ -95,7 +102,7 @@ const LessonDetails = ({ lesson }) => {
     sectionComps = sectionComps.filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index));
     const backgroundSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
     sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
-  }
+  };
 
   const _dots = sectionComps ? getSectionDotsDefaultVal(sectionComps) : [];
   const [sectionDots, setSectionDots] = useState({
