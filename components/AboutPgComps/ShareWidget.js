@@ -80,9 +80,15 @@ const ShareWidget = ({
                 className='d-flex justify-content-center align-items-center'
             >
                 <CopyableTxt
-                    copyTxtIndicator="Copy link."
+                    copyTxtIndicator="Copy link to lesson."
                     txtCopiedIndicator="Link copied ✅!"
                     implementLogicOnClick={handleCopyLinkBtnClick}
+                    copyTxtModalDefaultStyleObj={{
+                        position: 'fixed',
+                        width: '128px',
+                        backgroundColor: '#212529',
+                        textAlign: 'center',
+                    }}
                 >
                     <button
                         style={{
