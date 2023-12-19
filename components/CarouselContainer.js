@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
 import Button from './General/Button';
 
+
 const CarouselContainer = ({
   children,
   parentStylesClassName = 'p-0 display-flex flex-column autoCarouselContainer',
+  defaultArrowSize = 60
 
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,7 +29,7 @@ const CarouselContainer = ({
           classNameStr='no-btn-styles'
           handleOnClick={handleLeftArrowBtnClick}
         >
-          <AiOutlineArrowLeft size={80} />
+          <AiOutlineArrowLeft size={defaultArrowSize} />
         </Button>
       </div>
       <div
@@ -38,7 +40,7 @@ const CarouselContainer = ({
           classNameStr='no-btn-styles'
           handleOnClick={handleRightArrowBtnClick}
         >
-          <AiOutlineArrowRight size={80} />
+          <AiOutlineArrowRight size={defaultArrowSize} />
         </Button>
       </div>
         <section className='row mt-0'>
@@ -54,6 +56,7 @@ const CarouselContainer = ({
             </div>
           </section>
         </section>
+        
     </div>
   );
 };

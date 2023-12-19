@@ -27,7 +27,7 @@ const papers = [
     imgAlt: 'Edutopia Paper GP',
     articleLink: 'https://www.edutopia.org/article/boosting-students-data-literacy/',
     lessonLink: '/lessons/en-US/5#lesson_part_2',
-    h4Txt: '',
+    h4Txt: 'Our data literacy strategy used in several lessons featured in <em>Edutopia</em>.',
   },
 
 ];
