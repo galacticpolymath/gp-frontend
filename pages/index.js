@@ -234,9 +234,10 @@ export default function Home() {
           </Marquee>
         </div>
       </div>
-
       <div className="bg-primary-light">
-        <CarouselContainer>
+        <CarouselContainer
+          parentStylesClassName="p-0 d-flex flex-column autoCarouselContainer position-relative"
+        >
           {papers.map((paper, index) => {
             return (
               <CarouselItem

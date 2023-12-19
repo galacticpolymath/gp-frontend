@@ -26,7 +26,7 @@ const IndividualLesson = ({ lesson }) => {
           </h6>
         </section>
         <section className='d-flex justify-content-end flex-column'>
-          <div style={{ width: 90, height: 90 }} className="position-relative">
+          <div style={{ height: 90, width: 90 }} className="position-relative">
             <Image
               src={lesson.tile}
               alt="lesson_tile"
