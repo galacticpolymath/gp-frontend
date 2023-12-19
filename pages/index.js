@@ -236,7 +236,7 @@ export default function Home() {
       </div>
       <div className="bg-primary-light">
         <CarouselContainer
-          parentStylesClassName="p-0 d-flex flex-column autoCarouselContainer position-relative"
+          parentStylesClassName="px-0 py-3 d-flex flex-column autoCarouselContainer position-relative"
         >
           {papers.map((paper, index) => {
             return (
