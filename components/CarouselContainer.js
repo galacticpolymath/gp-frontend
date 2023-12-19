@@ -1,25 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useEffect, useRef, useState } from 'react';
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
 import Button from './General/Button';
-import { useMemo } from 'react';
-
-// BRAIN DUMP NOTES:
-// when the user clicks on a dot, take the user to that specific 
-// element on the carousel, 
-// have each dot be a number
-// when it is clicked, update the currentIndex state
-// each dot is render onto the UI, the Dot component
-// is used to render the dot
-// when a dot is clicked, update the currentIndex state with that dot's number? 
-// how many dots should be rendered? 
-// should be based on the length of the children
-// get the length of the children 
-// create an array that contains nulls
-// map the array onto the dom using the Dot component
-// for each render, get their corresponding index
-// pass it as a prop for the Dot component 
-// for the handleOnClick function, get the corresponding index
-// and update currentIndex state 
 
 const DefaultDot = ({
   handleOnClick,
@@ -38,33 +19,67 @@ const DefaultDot = ({
   )
 }
 
-
 const CarouselContainer = ({
   children,
   parentStylesClassName = 'p-0 display-flex flex-column autoCarouselContainer',
   defaultArrowSize = 60,
-  CustomDots = null
-
+  CustomDots = null,
+  handleCustomRightArrowBtnClick,
+  handleCustomLeftArrowBtnClick
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [wasTimerPaused, setWasTimerPaused] = useState(false);
+  const timeoutCarouselScrollRef = useRef(null);
+  const timeoutCarouselPauseRef = useRef(null);
+
   const dots = useMemo(() => {
     if (!CustomDots) {
       return new Array(children.length).fill();
     };
   }, []);
 
+  const resetTimeout = () => {
+    if (timeoutCarouselScrollRef.current) {
+      clearTimeout(timeoutCarouselScrollRef.current);
+    }
+  }
+
+  const pauseAutoScroll = () => {
+    clearTimeout(timeoutCarouselPauseRef.current)
+    resetTimeout();
+    setWasTimerPaused(true);
+    timeoutCarouselPauseRef.current = setTimeout(() => {
+      setWasTimerPaused(false);
+    }, 5000);
+  }
+
+  const getUpdatedCurrentIndexStateNum = currentIndex => (currentIndex === (children.length - 1)) ? 0 : currentIndex + 1;
+
   const handleRightArrowBtnClick = () => {
-    setCurrentIndex(prevState => prevState + 1);
+    pauseAutoScroll();
+    setCurrentIndex(getUpdatedCurrentIndexStateNum);
   };
 
   const handleLeftArrowBtnClick = () => {
-    setCurrentIndex(prevState => prevState - 1);
+    pauseAutoScroll();
+    setCurrentIndex(getUpdatedCurrentIndexStateNum);
   };
 
-  const handleDotClick = index => () => {
-    setCurrentIndex(index);
-  }
 
+  const handleDotClick = index => () => {
+    pauseAutoScroll();
+    setCurrentIndex(index);
+  };
+
+  useEffect(() => {
+    if (!wasTimerPaused) {
+      resetTimeout();
+      timeoutCarouselScrollRef.current = setTimeout(
+        () => setCurrentIndex(getUpdatedCurrentIndexStateNum),
+        3000
+      );
+    }
+  }, [currentIndex, wasTimerPaused])
 
   return (
     <div className={parentStylesClassName}>
@@ -74,7 +89,7 @@ const CarouselContainer = ({
       >
         <Button
           classNameStr='no-btn-styles'
-          handleOnClick={handleLeftArrowBtnClick}
+          handleOnClick={handleCustomLeftArrowBtnClick ?? handleLeftArrowBtnClick}
         >
           <AiOutlineArrowLeft size={defaultArrowSize} />
         </Button>
@@ -85,7 +100,7 @@ const CarouselContainer = ({
       >
         <Button
           classNameStr='no-btn-styles'
-          handleOnClick={handleRightArrowBtnClick}
+          handleOnClick={handleCustomRightArrowBtnClick ?? handleRightArrowBtnClick}
         >
           <AiOutlineArrowRight size={defaultArrowSize} />
         </Button>
