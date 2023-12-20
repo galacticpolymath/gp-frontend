@@ -19,6 +19,7 @@ const IndividualLesson = ({ lesson }) => {
               textDecoration: 'none',
               height: 'fit-content', 
               fontWeight: 700,
+              fontSize: 21
             }}
             className='mt-2 mt-sm-0 w-100 w-light text-black mb-0 no-underline-on-hover'
           >

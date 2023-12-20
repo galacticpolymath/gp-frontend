@@ -280,39 +280,6 @@ export default function Home() {
                   </section>
                 </div>
               </CarouselItem>
-              // <div className="container d-flex flex-column-reverse flex-lg-row-reverse mx-auto py-5 align-items-center">
-              //   <section className="row w-100 w-md-75 mt-3 mt-lg-0">
-              //     <div className="col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-sm-block">
-              //       <h4 className="mb-4 text-center text-sm-start" dangerouslySetInnerHTML={{ __html: paper.h4Txt  }} />
-              //       <a
-              //         className='btn btn-primary mb-2'
-              //         href={paper.articleLink}
-              //         target="_blank"
-              //         rel="noopener noreferrer"
-              //       >
-              //         Read the article
-              //       </a>
-              //       <br />
-              //       <Link href={paper.lessonLink} className='btn btn-secondary'>
-              //         Check out the lesson
-              //       </Link>
-              //     </div>
-              //   </section>
-              //   <section className="row w-100 w-md-75">
-              //     <div className="col-12 d-flex justify-content-center align-items-center d-sm-block">
-              //       <div className="position-relative ps-0 w-100 scientificAmericanImgContainer">
-              //         <Image
-              //           fill
-              //           sizes="100%"
-              //           src={paper.imgSrc}
-              //           alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-              //           style={{ objectFit: 'contain' }}
-              //           priority
-              //         />
-              //       </div>
-              //     </div>
-              //   </section>
-              // </div>
             );
           })}
         </CarouselContainer>

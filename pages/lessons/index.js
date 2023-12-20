@@ -11,6 +11,9 @@ import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
 import { connectToMongodb } from '../../backend/utils/connection';
 import IndividualLesson from '../../components/LessonsPg/IndividualLesson.js';
+import Sponsors from '../../components/Sponsors.js';
+import UnitIconSvg from '../../assets/img/gp-unit-icon.svg'
+import Image from 'next/image';
 
 const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
 
@@ -41,7 +44,17 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
       <section className="bg-secondary p-4">
         <div className="text-white container">
           <h1 className='responseiveH1'>Free, Interdisciplinary Lessons</h1>
-          <p className='col-sm-12 col-md-10 col-lg-8 col-xl-7 '>We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
+          <p className='col-sm-12 col-md-10 col-lg-8 col-xl-7'>
+            We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!
+          </p>
+        </div>
+      </section>
+      <section className='w-100 my-5 my-md-3'>
+        <div className="container">
+          <h4 className="ms-sm-4 text-muted mb-2 mb-sm-4 text-left mt-4 mx-4">
+            Made open access by these funding organizations and research institutions:
+          </h4>
+          <Sponsors />
         </div>
       </section>
       <section>
