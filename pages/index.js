@@ -13,6 +13,7 @@ import sponsors from '../data/HireUsPg/clientFundingSourcesPics.json';
 import Marquee from 'react-marquee-slider';
 import CarouselContainer from '../components/CarouselContainer';
 import CarouselItem from '../components/CarouselItem';
+import GpEquation from "../assets/img/gpEquation.png";
 
 const papers = [
   {
@@ -292,11 +293,14 @@ export default function Home() {
       </div>
 
       <div className="bg-light-gray">
-        <div className='bg-secondary-light'>
-          <div className='container p-3 p-lg-5 mx-auto text-center d-grid'>
-            <p className='fs-4'>Real Research&nbsp;+ Real&nbsp;Stories&nbsp;+ Real&nbsp;Data&nbsp;+ Real&nbsp;Careers&nbsp;=</p>
-            <p className='fs-3'>Real Learning</p>
-          </div>
+        <div style={{ height: 300 }} className='w-100 position-relative'>
+          <Image  
+            fill
+            className="w-100 h-100"
+            src={GpEquation}
+            style={{ objectFit: 'contain' }}
+            alt="Galactic_Polymath_Equation"
+          />
         </div>
 
         <div className='bg-light-gray py-4'>
