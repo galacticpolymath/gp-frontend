@@ -17,17 +17,16 @@ export default async function handler(request, response) {
     const decoded = await jwtVerify(refreshToken, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
 
     if (!decoded) {
-      throw new CustomError('Invalid refresh token.', 400);
+      throw new CustomError('Invalid refresh token. Your refresh token may have expired.', 400);
     }
 
     const accessToken = await signJwt(decoded, process.env.NEXTAUTH_SECRET, Math.floor((Math.floor(Date.now() / 1000) + 24 * 60 * 60) / 2));
 
     response.status(200).json({ accessToken });
   } catch (error) {
-    console.error('Error object: ', error);
     const { message, code } = error;
 
-    return response.status(code ?? 500).json({ msg: message ?? error });
+    return response.status(code ?? 500).json({ msg: message ?? `An error has occurred on the server. Error message: ${error}` });
   }
 
 }

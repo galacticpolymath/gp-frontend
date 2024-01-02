@@ -293,7 +293,7 @@ export default function Home() {
       </div>
 
       <div className="bg-light-gray">
-        <div style={{ height: 300 }} className='w-100 position-relative'>
+        <div style={{ height: 300 }} className='w-100 position-relative bg-secondary-light'>
           <Image  
             fill
             className="w-100 h-100"

@@ -9,7 +9,7 @@ const _sponsors = [...sponsors].map((sponsorObj, index) => {
             width: 280,
             height: 200,
         };
-    }
+    };
 
     return {
         ...sponsorObj,

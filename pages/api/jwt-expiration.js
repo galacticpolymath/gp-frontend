@@ -30,6 +30,6 @@ export default async function handler(request, response) {
   } catch (error){
     const { message, status } = error;
 
-    response.status(status ?? 500).json({ msg: message ?? 'Your jwt has expired.' });
+    response.status(status ?? 500).json({ msg: message ?? `An error has occurred in checking the status of your jwt access token. Error message: ${error}.` });
   }
 }
