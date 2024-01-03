@@ -161,7 +161,6 @@ const LessonPart = ({
         accordionChildrenClasses='px-3 pb-2 w-100'
         style={accordionStyle}
         dataBsToggle={{}}
-        
         initiallyExpanded={isExpanded}
         button={(
           <div
