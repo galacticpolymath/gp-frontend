@@ -246,6 +246,13 @@ async function getLinkPreviewObj(url) {
   }
 }
 
+const getImgs = htmlPgStr => {
+  const imgTags = htmlPgStr.match(/<img[^>]+>/g);
+
+  return imgTags;
+};
+
+
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
     await connectToMongodb();
@@ -283,16 +290,25 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       },
     };
     const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
-    const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => type === 'web-app') : false;
+    const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
 
     if (isThereAWebApp) {
-      let multiMediaArrUpdated = []
+      let multiMediaArrUpdated = [];
 
       for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
         let multiMediaItem = multiMediaArr[numIteration]
 
+        if ((multiMediaItem.type === 'video') && multiMediaItem.mainLink.includes("drive.google")) {
+          const videoId = multiMediaItem.mainLink.split("/").at(-2);
+          multiMediaItem = {
+            ...multiMediaItem,
+            webAppPreviewImg: `https://drive.google.com/thumbnail?id=${videoId}`,
+            webAppImgAlt: `'${multiMediaItem.title}' video`
+          }
+        }
+
         if (multiMediaItem.type === 'web-app') {
-          const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem.mainLink)
+          const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem.mainLink);
 
           if (errMsg && !images?.length) {
             console.error('Failed to get the image preview of web app. Error message: ', errMsg)
