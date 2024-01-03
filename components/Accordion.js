@@ -54,7 +54,7 @@ const Accordion = ({
         <div>
           <div>
             <button
-              className={` ${initiallyExpanded ? '' : 'collapsed'} ${buttonClassName}`}
+              className={`${initiallyExpanded ? '' : 'collapsed'} ${buttonClassName}`}
               type="button"
               style={btnStyle}
               {...dataBsToggle}

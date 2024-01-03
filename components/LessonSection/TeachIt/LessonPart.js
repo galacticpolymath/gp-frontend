@@ -148,8 +148,7 @@ const LessonPart = ({
     borderRight: isExpanded ? highlightedBorder : 'none',
     borderTop: _borderTopAccordionWrapper,
     borderBottom: _borderBottomAccordionWrapper,
-    boxShadow: isExpanded ? highlightedGlow : 'none',
-    transitionProperty: 'all',
+    boxShadow: isExpanded ? highlightedGlow : 'none',    
   };
 
   return (
@@ -162,6 +161,7 @@ const LessonPart = ({
         accordionChildrenClasses='px-3 pb-2 w-100'
         style={accordionStyle}
         dataBsToggle={{}}
+        
         initiallyExpanded={isExpanded}
         button={(
           <div

@@ -120,7 +120,7 @@ const CollapsibleLessonSection = ({
         </div>
       )}
     >
-      <Collapse  in={isAccordionContentOpen}>
+      <Collapse in={isAccordionContentOpen}>
         {children}
       </Collapse>
     </Accordion>
