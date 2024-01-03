@@ -315,7 +315,10 @@ const LessonPart = ({
                         }}
                         pointerContainerStyle={{ zIndex: 1 }}
                       >
-                        <i className="bi bi-clipboard" style={{ fontSize: '30px', color: '#A2A2A2' }} />
+                        <i
+                          className="bi bi-clipboard"
+                          style={{ fontSize: '30px', color: '#A2A2A2' }}
+                        />
                       </CopyableTxt>
                     </div>
                   </div>
@@ -325,7 +328,7 @@ const LessonPart = ({
           </div>
         )}
       >
-        <div className='p-0'>
+        <div className='p-0 lessonPartContent'>
           {!!restOfTags?.length && (
             <div className='d-flex mt-0 mt-md-1 justify-content-sm-start tagPillContainer flex-wrap'>
               {restOfTags.map((tag, index) => (

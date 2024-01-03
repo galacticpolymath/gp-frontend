@@ -12,6 +12,7 @@ import moment from 'moment/moment';
 import { connectToMongodb } from '../../backend/utils/connection';
 import IndividualLesson from '../../components/LessonsPg/IndividualLesson.js';
 import Sponsors from '../../components/Sponsors.js';
+import GpLessonSvg from '../../assets/img/gp-lesson-icon.svg'
 import UnitIconSvg from '../../assets/img/gp-unit-icon.svg'
 import Image from 'next/image';
 
@@ -51,7 +52,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
       </section>
       <section className='w-100 my-5 my-md-3'>
         <div className="container">
-          <h4 className="ms-sm-4 text-muted mb-2 mb-sm-4 text-left mt-4 mx-4">
+          <h4 className="ms-sm-4 text-muted mb-2 mb-sm-4 text-left mt-4 mx-4 pe-lg-5">
             Made open access by these funding organizations and research institutions:
           </h4>
           <Sponsors />
@@ -87,8 +88,11 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
           </section>
           <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
-              <h4 className="">Galactic Polymath Mini-Unit Releases</h4>
-              <p className='mb-0'> Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
+              <div className="d-flex">
+                <Image src={UnitIconSvg} style={{ height: 'fit-content' }} alt='GP Unit Icon' />
+                <h4 className="d-flex justify-content-center align-items-center">Galactic Polymath Mini-Unit Releases</h4>
+              </div>
+              <p className='mt-2 mb-0'> Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
               <p><em>And they&apos;re all free!</em></p>
             </div>
             {!!publishedLessons?.length && (
@@ -108,8 +112,11 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
         <div className='container'>
           <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
-              <h4 className="">Galactic Polymath Individual Lessons</h4>
-              <p className='mb-0'>Free lessons to engage students in current research, real world problems, and interdisciplinary thinking.</p>
+              <div className="d-flex">
+                <Image src={GpLessonSvg} style={{ height: 'fit-content' }} alt='GP Unit Icon' />
+                <h4 className="d-flex justify-content-center align-items-center">Galactic Polymath Individual Lessons</h4>
+              </div>
+              <p className='mt-2 mb-0'>Free lessons to engage students in current research, real world problems, and interdisciplinary thinking.</p>
             </div>
             {!!lessonParts?.length && (
               <div className='mx-auto grid justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch pb-1 px-2 p-sm-4 gap-3 pt-3 pb-5'>
@@ -156,6 +163,8 @@ export async function getStaticProps() {
       if (!lesson?.LsnStatuses?.length) {
         continue;
       }
+
+      // if the lesson is the reflection part of the lesso
 
       let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
       let lessonPartsFromClassRoomObj = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;

@@ -14,6 +14,7 @@ import Marquee from 'react-marquee-slider';
 import CarouselContainer from '../components/CarouselContainer';
 import CarouselItem from '../components/CarouselItem';
 import GpEquation from "../assets/img/gpEquation.png";
+import SponsorsMarquee from '../components/Sponsors';
 
 const papers = [
   {
@@ -212,27 +213,9 @@ export default function Home() {
           <h6 className="mb-3">
             Made open access by these funding organizations and research institutions:
           </h6>
-          <Marquee velocity={45}>
-            {_sponsors.map((sponsorObj, index) => {
-              const _style = (index === 3) ? { width: sponsorObj.width, height: sponsorObj.height, transform: 'translateY(25px)' } : { width: sponsorObj.width, height: sponsorObj.height };
-
-              return (
-                <div key={index} className='h-100 d-flex justify-content-center align-items-center'>
-                  <div
-                    style={_style}
-                    className="me-5 position-relative"
-                  >
-                    <Image
-                      alt={sponsorObj.alt}
-                      src={sponsorObj.path}
-                      fill
-                    />
-                  </div>
-                </div>
-              );
-            }
-            )}
-          </Marquee>
+          <div className="mt-5">
+            <SponsorsMarquee />
+          </div>
         </div>
       </div>
       <div className="bg-primary-light">
@@ -294,7 +277,7 @@ export default function Home() {
 
       <div className="bg-light-gray">
         <div style={{ height: 300 }} className='w-100 position-relative bg-secondary-light'>
-          <Image  
+          <Image
             fill
             className="w-100 h-100"
             src={GpEquation}

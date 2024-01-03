@@ -6,10 +6,18 @@ const _sponsors = [...sponsors].map((sponsorObj, index) => {
     if (index === 3) {
         return {
             ...sponsorObj,
-            width: 280,
-            height: 200,
+            width: 291,
+            height: 150,
         };
     };
+
+    if (index === 4) {
+        return {
+            ...sponsorObj,
+            width: 95,
+            height: 150,
+        };
+    }
 
     return {
         ...sponsorObj,
@@ -18,17 +26,17 @@ const _sponsors = [...sponsors].map((sponsorObj, index) => {
     };
 });
 
-const SponsorsMarquee = () => {
+const SponsorsMarquee = ({ velocityNum = 45 }) => {
     return (
-        <Marquee velocity={45}>
+        <Marquee velocity={velocityNum} >
             {_sponsors.map((sponsorObj, index) => {
-                const _style = (index === 3) ? { width: sponsorObj.width, height: sponsorObj.height, transform: 'translateY(25px)' } : { width: sponsorObj.width, height: sponsorObj.height };
+                let _style = (index === 3) ? { width: sponsorObj.width, height: sponsorObj.height } : { width: sponsorObj.width, height: sponsorObj.height };
 
                 return (
-                    <div key={index} className='h-100 d-flex justify-content-center align-items-center'>
+                    <div key={index} className='d-flex justify-content-center align-items-center'>
                         <div
-                            style={_style}
-                            className="me-5 position-relative"
+                            style={{ ..._style }}
+                            className="position-relative me-5"
                         >
                             <Image
                                 alt={sponsorObj.alt}

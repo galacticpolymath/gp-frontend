@@ -246,13 +246,6 @@ async function getLinkPreviewObj(url) {
   }
 }
 
-const getImgs = htmlPgStr => {
-  const imgTags = htmlPgStr.match(/<img[^>]+>/g);
-
-  return imgTags;
-};
-
-
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
     await connectToMongodb();
@@ -298,7 +291,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
         let multiMediaItem = multiMediaArr[numIteration]
 
-        if ((multiMediaItem.type === 'video') && multiMediaItem.mainLink.includes("drive.google")) {
+        if ((multiMediaItem.type === 'video') && multiMediaItem?.mainLink?.includes("drive.google")) {
           const videoId = multiMediaItem.mainLink.split("/").at(-2);
           multiMediaItem = {
             ...multiMediaItem,
