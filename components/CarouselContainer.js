@@ -4,10 +4,10 @@ import Button from './General/Button';
 
 const DefaultDot = ({
   handleOnClick,
-  backgroundColor = "transparent",
+  backgroundColor = 'transparent',
   style = {
-    width: "10px",
-    height: "10px"
+    width: '10px',
+    height: '10px',
   },
 }) => {
   return (
@@ -16,8 +16,8 @@ const DefaultDot = ({
       style={{ ...style, backgroundColor }}
       className="sectionNavDot pointer"
     />
-  )
-}
+  );
+};
 
 const CarouselContainer = ({
   children,
@@ -25,7 +25,7 @@ const CarouselContainer = ({
   defaultArrowSize = 60,
   CustomDots = null,
   handleCustomRightArrowBtnClick,
-  handleCustomLeftArrowBtnClick
+  handleCustomLeftArrowBtnClick,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [wasTimerPaused, setWasTimerPaused] = useState(false);
@@ -35,23 +35,23 @@ const CarouselContainer = ({
   const dots = useMemo(() => {
     if (!CustomDots) {
       return new Array(children.length).fill();
-    };
+    }
   }, []);
 
   const resetTimeout = () => {
     if (timeoutCarouselScrollRef.current) {
       clearTimeout(timeoutCarouselScrollRef.current);
     }
-  }
+  };
 
   const pauseAutoScroll = () => {
-    clearTimeout(timeoutCarouselPauseRef.current)
+    clearTimeout(timeoutCarouselPauseRef.current);
     resetTimeout();
     setWasTimerPaused(true);
     timeoutCarouselPauseRef.current = setTimeout(() => {
       setWasTimerPaused(false);
     }, 5000);
-  }
+  };
 
   const getUpdatedCurrentIndexStateNum = currentIndex => (currentIndex === (children.length - 1)) ? 0 : currentIndex + 1;
 
@@ -64,7 +64,6 @@ const CarouselContainer = ({
     pauseAutoScroll();
     setCurrentIndex(getUpdatedCurrentIndexStateNum);
   };
-
 
   const handleDotClick = index => () => {
     pauseAutoScroll();
@@ -79,7 +78,7 @@ const CarouselContainer = ({
         3000
       );
     }
-  }, [currentIndex, wasTimerPaused])
+  }, [currentIndex, wasTimerPaused]);
 
   return (
     <div className={parentStylesClassName}>
@@ -126,8 +125,8 @@ const CarouselContainer = ({
               <DefaultDot
                 key={index}
                 handleOnClick={handleDotClick(index)}
-                style={{ width: "20px", height: "20px" }}
-                backgroundColor={(currentIndex === index) ? "#3283C3" : "transparent"}
+                style={{ width: '20px', height: '20px' }}
+                backgroundColor={(currentIndex === index) ? '#3283C3' : 'transparent'}
               />
             ))
           )

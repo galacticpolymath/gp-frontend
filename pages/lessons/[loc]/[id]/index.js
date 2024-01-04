@@ -296,7 +296,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           multiMediaItem = {
             ...multiMediaItem,
             webAppPreviewImg: `https://drive.google.com/thumbnail?id=${videoId}`,
-            webAppImgAlt: `'${multiMediaItem.title}' video`
+            webAppImgAlt: `'${multiMediaItem.title}' video`,
           }
         }
 

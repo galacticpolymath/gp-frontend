@@ -41,7 +41,7 @@ const CarouselContainer = ({
     dynamicCssClasses,
     customCardStyles,
     _customBulletPtsSecCss,
-    _autoCarouselContainerStyles
+    _autoCarouselContainerStyles,
 }) => {
     const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
