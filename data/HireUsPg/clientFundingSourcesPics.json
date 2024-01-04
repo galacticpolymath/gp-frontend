@@ -1,6 +1,6 @@
 [
     {
-        "path":"/imgs/clientAssets/Cant_logo.png",
+        "path":"https://storage.googleapis.com/gp-cloud/lessons/ColorfulSolns_en-US/canterbury_logo.jpg",
         "alt": "University_Canterbury"
     },
     {
@@ -18,5 +18,9 @@
     {
         "path":"/imgs/clientAssets/UMBC-vertical-logo-RGB-195x300.png",
         "alt": "University_Maryland_Baltimore_County"
+    },
+    {
+        "path": "https://storage.googleapis.com/gp-cloud/lessons/Photonics_en-US/Iowa_logo_blackBG.png",
+        "alt": "University_Of_Iowa"
     }
 ]

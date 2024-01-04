@@ -12,7 +12,8 @@ module.exports = {
       'i3.ytimg.com',
       'storage.googleapis.com',
       'into-the-dark.vercel.app',
-      'echo-galactic-polymath.vercel.app'
+      'echo-galactic-polymath.vercel.app',
+      'drive.google.com'
     ],
   },
   async redirects() {

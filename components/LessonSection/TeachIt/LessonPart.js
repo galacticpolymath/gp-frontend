@@ -45,8 +45,6 @@ const LessonPart = ({
   let restOfTags = null;
   const _accordionId = `part_${lsnNum}`;
 
-  // GOAL: when the user clicks on the copy to clipboard icon, don't open the accordion for the respective lesson part
-
   const handleClipBoardIconClick = () => {
     let url = window.location.href;
     const currentSectionInView = router.asPath.split('#').at(-1);
@@ -90,8 +88,6 @@ const LessonPart = ({
   };
 
   const handleAccordionBtnOnClick = event => {
-    console.log('event: ', event);
-
     if (!checkIfElementClickedWasClipboard(event.target)) {
       const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
 
@@ -102,6 +98,7 @@ const LessonPart = ({
 
         return prevState.filter(num => num !== previousLessonPartNum);
       });
+
       setIsExpanded(!isExpanded);
     }
   };
@@ -151,8 +148,7 @@ const LessonPart = ({
     borderRight: isExpanded ? highlightedBorder : 'none',
     borderTop: _borderTopAccordionWrapper,
     borderBottom: _borderBottomAccordionWrapper,
-    boxShadow: isExpanded ? highlightedGlow : 'none',
-    transitionProperty: 'all',
+    boxShadow: isExpanded ? highlightedGlow : 'none',    
   };
 
   return (
@@ -188,22 +184,52 @@ const LessonPart = ({
                   <div className='lessonPartHeaderContainer d-flex position-relative justify-content-between'>
                     <h3
                       style={{ color: LESSON_PART_BTN_COLOR }}
-                      className='fs-5 fw-bold text-left px-sm-0'
+                      className='fs-5 fw-bold text-left px-md-0 pe-1'
                     >
                       {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
                     </h3>
-                    <div
-                      className="rounded d-flex d-lg-none positive-absolute justify-content-center align-items-center"
-                      style={{ width: 30, height: 30, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
-                    >
-                      <i
-                        style={{ color: '#DEE2E6' }}
-                        className="fs-4 bi-chevron-down"
-                      />
-                      <i
-                        style={{ color: highlightedBorderColor }}
-                        className="fs-4 bi-chevron-up"
-                      />
+                    <div className='d-flex align-items-center flex-column'>
+                      <div
+                        className="rounded d-flex d-lg-none justify-content-center align-items-center"
+                        style={{
+                          width: 30,
+                          height: 30,
+                          border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}`,
+                        }}
+                      >
+                        <i
+                          style={{ color: '#DEE2E6' }}
+                          className="fs-4 bi-chevron-down"
+                        />
+                        <i
+                          style={{ color: highlightedBorderColor }}
+                          className="fs-4 bi-chevron-up"
+                        />
+                      </div>
+                      <div
+                        id='clipboardIconWrapper'
+                        className='d-flex d-lg-none justify-content-center align-items-center'
+                      >
+                        <CopyableTxt
+                          additiveYCoord={-20}
+                          copyTxtIndicator='Copy link to lesson.'
+                          txtCopiedIndicator='Lesson link copied ✅!'
+                          implementLogicOnClick={handleClipBoardIconClick}
+                          parentClassName='pointer d-flex'
+                          copyTxtModalDefaultStyleObj={{
+                            position: 'fixed',
+                            width: '150px',
+                            backgroundColor: '#212529',
+                            textAlign: 'center',
+                          }}
+                          pointerContainerStyle={{ zIndex: 1 }}
+                        >
+                          <i
+                            className="bi bi-clipboard"
+                            style={{ fontSize: '30px', color: '#A2A2A2' }}
+                          />
+                        </CopyableTxt>
+                      </div>
                     </div>
                   </div>
                   {lessonTileUrl &&
@@ -277,7 +303,7 @@ const LessonPart = ({
                     >
                       <CopyableTxt
                         additiveYCoord={-20}
-                        copyTxtIndicator='Link to this lesson.'
+                        copyTxtIndicator='Copy link to lesson.'
                         txtCopiedIndicator='Lesson link copied ✅!'
                         implementLogicOnClick={handleClipBoardIconClick}
                         copyTxtModalDefaultStyleObj={{
@@ -288,7 +314,10 @@ const LessonPart = ({
                         }}
                         pointerContainerStyle={{ zIndex: 1 }}
                       >
-                        <i className="bi bi-clipboard" style={{ fontSize: '30px', color: '#A2A2A2' }} />
+                        <i
+                          className="bi bi-clipboard"
+                          style={{ fontSize: '30px', color: '#A2A2A2' }}
+                        />
                       </CopyableTxt>
                     </div>
                   </div>
@@ -298,7 +327,7 @@ const LessonPart = ({
           </div>
         )}
       >
-        <div className='p-0'>
+        <div className='p-0 lessonPartContent'>
           {!!restOfTags?.length && (
             <div className='d-flex mt-0 mt-md-1 justify-content-sm-start tagPillContainer flex-wrap'>
               {restOfTags.map((tag, index) => (
@@ -314,7 +343,7 @@ const LessonPart = ({
               ))}
             </div>
           )}
-          {learningObjectives &&
+          {Array.isArray(learningObjectives) &&
             <div className="mt-4 d-col col-12 col-lg-8">
               <div className='d-flex align-items-start'>
                 <h5 className='fw-bold'>
@@ -332,7 +361,22 @@ const LessonPart = ({
               </ol>
             </div>
           }
-
+          {(typeof learningObjectives === 'string') && (
+            <div className="mt-4 d-col col-12 col-lg-8">
+              <div className='d-flex align-items-start'>
+                <h5 className='fw-bold'>
+                  <i className="bi bi-emoji-sunglasses me-2"></i>
+                  Learning Objectives
+                </h5>
+              </div>
+              <p className='lead mb-0'>Students will able to...</p>
+              <ol className='mt-0'>
+                <li>
+                  <RichText content={learningObjectives} />
+                </li>
+              </ol>
+            </div>
+          )}
           <div className='mt-4'>
             <div className='d-flex align-items-start'>
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>

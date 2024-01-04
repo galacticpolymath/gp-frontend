@@ -31,9 +31,9 @@ const SearchResult = ({ result, forceUpdateParentComp, index, _searchInput, setS
         const currentPath = router.pathname
         const paths = getPathsOfSearchResult(jobCategory);
 
-        router.push({ pathname: `/job-viz${paths}` }, null, { scroll: false })
+        router.push({ pathname: `/jobviz${paths}` }, null, { scroll: false })
 
-        if (currentPath !== "/job-viz") {
+        if (currentPath !== "/jobviz") {
             forceUpdateParentComp()
         }
 

@@ -9,7 +9,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import Layout from '../../../../components/Layout';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ParentLessonSection from '../../../../components/LessonSection/ParentLessonSection';
 import LessonsSecsNavDots from '../../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../../components/AboutPgComps/ShareWidget';
@@ -22,83 +22,87 @@ import { getLinkPreview } from "link-preview-js";
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
-const getSectionTitle = (sectionComps, sectionTitle) => {
-  const targetSectionTitleIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === sectionTitle);
-
-  if (targetSectionTitleIndex === -1) return -1;
-
-  return `${targetSectionTitleIndex + 1}. ${sectionTitle}`
-}
-
 const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
-const getSectionDotsDefaultVal = (lessonSection, sectionComps) => {
-  const _sections = Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
-  let startingSectionVals = [..._sections]
-  startingSectionVals = startingSectionVals.filter(section => {
-    if (((section?.__component === 'lesson-plan.overview') && !section?.SectionTitle)) {
-      return true
-    }
+const getSectionDotsDefaultVal = sectionComps => sectionComps.map((section, index) => {
+  const _sectionTitle = `${index + 1}. ${section.SectionTitle}`;
+  let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
 
-    return !!section?.SectionTitle
-  })
+  return {
+    isInView: index === 0,
+    sectionTitleForDot: section.SectionTitle,
+    sectionId: sectionId,
+    willShowTitle: false,
+    sectionDotId: `sectionDot-${sectionId}`,
+  }
+})
 
-  return startingSectionVals.map((section, index) => {
-    const { SectionTitle, __component } = section
-    const sectionTitleForDot = (__component === 'lesson-plan.overview') ? 'Overview' : `${SectionTitle}`;
-    let _sectionTitle = getSectionTitle(sectionComps, SectionTitle);
-    _sectionTitle = (_sectionTitle !== -1) ? _sectionTitle : '1. Overview';
-    let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-    sectionId = (index === 0) ? 'lessonTitleId' : sectionId
-
-    return {
-      isInView: index === 0,
-      sectionTitleForDot: sectionTitleForDot,
-      sectionId: sectionId,
-      willShowTitle: false,
-      sectionDotId: `sectionDot-${sectionId}`,
-      SectionTitle: index === 0 ? '0. Title' : _sectionTitle,
-    }
-  })
-}
-
-const getLessonSections = (lessonSection, sectionComps) => {
-  return Object.values(lessonSection).filter(({ SectionTitle }) => SectionTitle !== 'Procedure').map((section, index) => {
-    const sectionTitle = getSectionTitle(sectionComps, section.SectionTitle);
-
-    if (index === 0) {
-      return {
-        ...section,
-        SectionTitle: `${index + 1}. Overview`,
-      }
-    }
-
-    if (sectionTitle === -1) {
-      return {
-        ...section,
-        SectionTitle: getSectionTitle(sectionComps, 'Learning Standards'),
-      }
-    }
-
-    return {
-      ...section,
-      SectionTitle: sectionTitle,
-    }
-  })
-};
+const getLessonSections = sectionComps => sectionComps.map((section, index) => ({
+  ...section,
+  SectionTitle: `${index + 1}. ${section.SectionTitle}`,
+}));
 
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
-  let sectionComps = null;
+  const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
+  let lessonStandardsIndexesToFilterOut = [];
+  let lessonStandardsSections = lessonSectionObjEntries.filter(([sectionName], index) => {
+    if (sectionName.includes('standards') || sectionName === 'learning-chart') {
+      lessonStandardsIndexesToFilterOut.push(index);
+      return true;
+    }
 
-  if (lesson) {
-    sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
+    return false;
+  });
+  const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonStandardsSections.length === 1 : false;
+  let sectionComps = lesson.Section ? Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure') : null;
+
+  if (sectionComps?.length) {
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-    sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
   }
 
+  if (lesson && !isTheLessonSectionInOneObj && lessonStandardsSections?.length) {
+    lessonStandardsSections = structuredClone(lessonStandardsSections.map(([, lessonStandardsObj]) => lessonStandardsObj));
+    let lessonStandardsObj = lessonStandardsSections
+      .map(lessonStandards => {
+        delete lessonStandards.__component;
+
+        return lessonStandards;
+      })
+      .reduce((lessonStandardObj, lessonStandardsAccumulatedObj) => {
+        let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
+
+        if (!lessonStandardsAccumulatedObj.Badge && lessonStandardObj.Badge) {
+          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Badge: lessonStandardObj.Badge }
+        }
+
+        if (!lessonStandardsAccumulatedObj.Title && lessonStandardObj.Title) {
+          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Title: lessonStandardObj.Title };
+        }
+
+        if (!lessonStandardsAccumulatedObj.SectionTitle && lessonStandardObj.SectionTitle) {
+          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, SectionTitle: lessonStandardObj.SectionTitle };
+        }
+
+        if (!lessonStandardsAccumulatedObj.Footnote && lessonStandardObj.Footnote) {
+          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Footnote: lessonStandardObj.Footnote };
+        }
+
+        if (!lessonStandardsAccumulatedObj.Description && lessonStandardObj.Description) {
+          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Description: lessonStandardObj.Description };
+        }
+
+        return _lessonStandardsAccumulated;
+      }, {});
+    lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards', InitiallyExpanded: true };
+    sectionComps = sectionComps.filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index));
+    const backgroundSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
+    sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
+  }
+
+  const _dots = sectionComps ? getSectionDotsDefaultVal(sectionComps) : [];
   const [sectionDots, setSectionDots] = useState({
-    dots: sectionComps ? getSectionDotsDefaultVal(lesson.Section, sectionComps) : {},
+    dots: _dots,
     clickedSectionId: null,
   });
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
@@ -149,25 +153,37 @@ const LessonDetails = ({ lesson }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, []);
 
+  let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
+
   if (!lesson && typeof window === "undefined") {
     return null;
   }
 
-  if (!lesson) {
+  if (!lesson || !_sections?.length) {
     router.replace('/error');
     return null;
   }
 
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner
-  let _sections = getLessonSections(lesson.Section, sectionComps);
-  const shareWidgetFixedProps = IS_ON_PROD ? { isOnSide: true, pinterestMedia: lessonBannerUrl } : { isOnSide: true, pinterestMedia: lessonBannerUrl, developmentUrl: `${lesson.URL}/` }
+  const shareWidgetFixedProps = IS_ON_PROD ?
+    {
+      pinterestMedia: lessonBannerUrl,
+      shareWidgetStyle: { borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', boxShadow: '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)', top: 150, width: "60px" },
+    }
+    :
+    {
+      pinterestMedia: lessonBannerUrl,
+      developmentUrl: `${lesson.URL}/`,
+      shareWidgetStyle: { borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', boxShadow: '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)', top: 150, width: "60px" },
+    }
   const layoutProps = {
     title: `Mini-Unit: ${lesson.Title}`,
     description: lesson?.Section?.overview?.LearningSummary ? removeHtmlTags(lesson.Section.overview.LearningSummary) : `Description for ${lesson.Title}.`,
     imgSrc: lessonBannerUrl,
     url: lesson.URL,
     imgAlt: `${lesson.Title} cover image`,
+    className: 'overflow-hidden',
   };
 
   return (
@@ -180,7 +196,7 @@ const LessonDetails = ({ lesson }) => {
         setWasDotClicked={setWasDotClicked}
       />
       <ShareWidget {...shareWidgetFixedProps} />
-      <div className="col-12 col-lg-10 px-3 container justify-content-center">
+      <div className="col-12 col-lg-10 px-3 container">
         <div className="p-3 pt-0">
           {_sections.map((section, index) => (
             <ParentLessonSection
@@ -265,16 +281,27 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           ...titleProperties,
         },
       },
-    }
+    };
+    const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
+    const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
 
-    if (multiMediaArr?.length && multiMediaArr.some(({ type }) => type === 'web-app')) {
-      let multiMediaArrUpdated = []
+    if (isThereAWebApp) {
+      let multiMediaArrUpdated = [];
 
       for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
         let multiMediaItem = multiMediaArr[numIteration]
 
+        if ((multiMediaItem.type === 'video') && multiMediaItem?.mainLink?.includes("drive.google")) {
+          const videoId = multiMediaItem.mainLink.split("/").at(-2);
+          multiMediaItem = {
+            ...multiMediaItem,
+            webAppPreviewImg: `https://drive.google.com/thumbnail?id=${videoId}`,
+            webAppImgAlt: `'${multiMediaItem.title}' video`,
+          }
+        }
+
         if (multiMediaItem.type === 'web-app') {
-          const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem.mainLink)
+          const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem.mainLink);
 
           if (errMsg && !images?.length) {
             console.error('Failed to get the image preview of web app. Error message: ', errMsg)

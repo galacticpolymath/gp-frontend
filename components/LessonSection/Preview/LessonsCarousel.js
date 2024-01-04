@@ -74,7 +74,8 @@ const LessonsCarousel = ({ mediaItems }) => {
     }
 
     return (
-        <div className='shadow rounded p-0 display-flex flex-column justify-content-center autoCarouselContainer '>
+        // put the parent div into its own component
+        <div className='shadow rounded p-0 display-flex flex-column justify-content-center autoCarouselContainer'>
             <section className='row mt-0'>
                 <section
                     style={{ height: 'fit-content' }}

@@ -4,6 +4,7 @@ import RichText from '../RichText';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import LocDropdown from '../LocDropdown';
+import ShareWidget from '../AboutPgComps/ShareWidget';
 
 const getLatestSubRelease = versions => {
   if (!versions || !Array.isArray(versions)) {
@@ -26,6 +27,7 @@ const Title = ({
   versions,
   lessonBannerUrl,
   sponsorLogoImgUrl,
+  lessonUrl,
 }) => {
   const router = useRouter();
 
@@ -35,15 +37,14 @@ const Title = ({
       headingVersionsElement.querySelector('button').click();
     }
 
-    // change the verions notes section id, delete the number nine
-    window.location.href = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#9._version_notes`;
+    window.location.href = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#version-notes`;
   };
 
   const lastSubRelease = useMemo(() => getLatestSubRelease(versions), []);
 
   return (
     <div className="container d-flex justify-content-center pt-4 px-0">
-      <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center SectionHeading lessonTitleId">
+      <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center lessonTitleId">
         <div className="col-12">
           <div className="d-flex justify-content-between">
             {lastSubRelease && (
@@ -80,6 +81,24 @@ const Title = ({
               />
             </div>
           )}
+          <div className='d-flex d-md-none'>
+            <label className='d-flex justify-content-center align-items-center'>Share: </label>
+            {process.env.NODE_ENV === 'production'
+              ? (
+                <ShareWidget
+                  pinterestMedia={lessonBannerUrl}
+                  widgetParentCss='share-widget d-flex d-md-none flex-row bg-transparent'
+                />
+              )
+              : (
+                <ShareWidget
+                  developmentUrl={`${lessonUrl}/`}
+                  pinterestMedia={lessonBannerUrl}
+                  shareWidgetStyle={{ maxWidth: '300px' }}
+                  widgetParentCss='share-widget d-flex my-2 d-md-none flex-row gap-2 ps-1 w-100 bg-transparent'
+                />
+              )}
+          </div>
           <div className='row my-0 py-0 '>
             <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid align-content-center">
               <h5>Sponsored by:</h5>
@@ -91,7 +110,7 @@ const Title = ({
                   <img
                     src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
                     alt={Subtitle}
-                    className='p-3 p-lg-4 '                    
+                    className='p-3 p-lg-4 '
                   />
                 </div>
               )}

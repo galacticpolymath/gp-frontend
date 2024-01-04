@@ -45,7 +45,7 @@ const useScrollHandler = setSectionDots => {
       }
 
       const percent = getPercentageSeen(elem);
-      const _percentageInViewPort = (percent === 100) || (percent === 0) ? 0 : percent;
+      const _percentageInViewPort = ((percent === 100) || (percent === 0)) ? 0 : percent;
       return { percentageInViewPort: _percentageInViewPort, elemId: elem.id, sectionDotId: `sectionDot-${liNavDotId}` };
     });
 
@@ -53,7 +53,10 @@ const useScrollHandler = setSectionDots => {
     const elemsThatAreInView = viewPortPercentOfElems.filter(({ elemId }) => elemId);
     const elemTakingUpMostOfViewport = elemsThatAreInView.reduce((prev, curr) => (prev.percentageInViewPort > curr.percentageInViewPort) ? prev : curr);
 
+    console.log('elemsThatAreInView: ', elemsThatAreInView);
+
     setSectionDots(sectionDots => {
+      console.log('sectionDots.dots yo there: ', sectionDots.dots);
       return {
         ...sectionDots,
         dots: sectionDots.dots.map(dot => {

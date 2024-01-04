@@ -25,7 +25,7 @@ import Logo from '../../../../../assets/img/galactic_polymath_white.png';
 import { useState, useEffect } from 'react';
 
 const LessonPreview = ({ lesson }) => {
-  const latestSubRelease = getLatestSubRelease(lesson?.Section)
+  const latestSubRelease = lesson?.Section ? getLatestSubRelease(lesson?.Section) : {};
   const router = useRouter();
   const [linkUrlDomain, setLinkUrlDomain] = useState('')
   const isLesson4 = router.query.id === '4';
@@ -311,9 +311,20 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
     await connectToMongodb();
 
+    // add projections, get the target fields for the UI. 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
     let lessonToDisplayOntoUi = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
+
+    if (!lessonToDisplayOntoUi || (typeof lessonToDisplayOntoUi !== 'object') || Array.isArray(lessonToDisplayOntoUi) || (lessonToDisplayOntoUi.PublicationStatus !== 'Live')) {
+      return {
+        props: {
+          lesson: null,
+          availLocs: null,
+        },
+      }
+    }
+
     const multiMediaArr = lessonToDisplayOntoUi?.Section?.preview?.Multimedia;
 
     if (multiMediaArr?.length && multiMediaArr.some(({ type }) => type === 'web-app')) {

@@ -16,6 +16,7 @@ const getId = () => {
 /**
  * An unstyled collapsible panel with internal open/close state.
  */
+
 const Accordion = ({
   id,
   className = '',
@@ -27,34 +28,40 @@ const Accordion = ({
   btnStyle = {},
   willUseGetId = true,
   accordionChildrenClasses = '',
-  dataBsToggle = { 'data-bs-toggle': 'collapse' },
   highlighted,
   setContentId,
+  dataBsToggle = { 'data-bs-toggle': 'collapse' },
+  handleOnClick = () => { },
+  ariaExpanded = 'true',
 }) => {
   const contentId = useRef();
 
   useEffect(() => {
     if (!contentId.current && willUseGetId) {
       contentId.current = getId();
-      if(setContentId){
+      if (setContentId) {
         setContentId(contentId.current);
       }
     }
   }, []);
-  
+
   return (
     <div style={style} className={className}>
-      <div className={`accordion-header lessonsPgSec ${highlighted ? 'highlighted' : ''}`} id={`heading_${id}`}>
+      <div
+        className={`accordion-header lessonsPgSec ${highlighted ? 'highlighted' : ''}`}
+        id={`heading_${id}`}
+      >
         <div>
           <div>
             <button
-              className={` ${initiallyExpanded ? '' : 'collapsed'} ${buttonClassName}`}
+              className={`${initiallyExpanded ? '' : 'collapsed'} ${buttonClassName}`}
               type="button"
               style={btnStyle}
               {...dataBsToggle}
               data-bs-target={`#content_${willUseGetId ? contentId?.current : id}`}
-              aria-expanded="true"
+              aria-expanded={ariaExpanded}
               aria-controls="collapseOne"
+              onClick={handleOnClick}
             >
               {button}
             </button>

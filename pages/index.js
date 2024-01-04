@@ -8,6 +8,29 @@ import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
 import NSFImage from '../assets/img/nsf.png';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
+import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boosting-students-data-literacy.jpg';
+import CarouselContainer from '../components/CarouselContainer';
+import CarouselItem from '../components/CarouselItem';
+import GpEquation from '../assets/img/gpEquation.png';
+import SponsorsMarquee from '../components/Sponsors';
+
+const papers = [
+  {
+    imgSrc: ScientificAmericanImage.src,
+    imgAlt: 'Scientific American Paper',
+    articleLink: 'https://www.scientificamerican.com/article/why-it-took-so-long-to-appreciate-female-birds-songs/',
+    lessonLink: '/lessons/en-US/1',
+    h4Txt: 'Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>.',
+  },
+  {
+    imgSrc: EdutopiaBoostingStudentsDataLiteracyImg.src,
+    imgAlt: 'Edutopia Paper GP',
+    articleLink: 'https://www.edutopia.org/article/boosting-students-data-literacy/',
+    lessonLink: '/lessons/en-US/5#lesson_part_2',
+    h4Txt: 'Our data literacy strategy used in several lessons featured in <em>Edutopia</em>.',
+  },
+
+];
 
 export default function Home() {
   const newReleasePath = '/lessons/en-US/7';
@@ -112,7 +135,7 @@ export default function Home() {
                 <div className='my-3'>
                   <h5 className='fw-light '> Dr. Albert Kao&apos;s Lab at UMass Boston</h5>
                 </div>
-                
+
               </div>
             </div>
             <div className='row mt-5 '>
@@ -169,59 +192,81 @@ export default function Home() {
             </h5>
           </div>
         </div>
-      </div>
-
-      <div className="bg-primary-light">
-        <div className="container d-flex flex-column-reverse flex-lg-row-reverse mx-auto py-5 align-items-center">
-          <section className="row w-100 w-md-75 mt-3 mt-lg-0">
-            <div className="col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-sm-block">
-              <h4 className="mb-4 text-center text-sm-start">Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>.</h4>
-              <a
-                className='btn btn-primary mb-2'
-                href="https://www.scientificamerican.com/article/why-it-took-so-long-to-appreciate-female-birds-songs/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Read the article
-              </a>
-              <br />
-              <Link href="/lessons/en-US/1" className='btn btn-secondary'>
-
-                Check out the lesson
-
-              </Link>
-            </div>
-          </section>
-          <section className="row w-100 w-md-75">
-            <div className="col-12 d-flex justify-content-center align-items-center d-sm-block">
-              <div className="position-relative ps-0 w-100 scientificAmericanImgContainer">
-                <Image
-                  fill
-                  sizes="100%"
-                  src={ScientificAmericanImage.src}
-                  alt="Why We Didn't Know that Female Birds Sing, Scientific American."
-                  style={{ objectFit: 'contain' }}
-                  priority
-                />
-              </div>
-            </div>
-          </section>
+        <div className='w-100 mt-5' style={{ height: 250 }}>
+          <h6 className="mb-3">
+            Made open access by these funding organizations and research institutions:
+          </h6>
+          <div className="mt-5">
+            <SponsorsMarquee />
+          </div>
         </div>
+      </div>
+      <div className="bg-primary-light">
+        <CarouselContainer
+          parentStylesClassName="px-0 py-3 d-flex flex-column autoCarouselContainer position-relative"
+        >
+          {papers.map((paper, index) => {
+            return (
+              <CarouselItem
+                key={index}
+                parentStyles='d-flex justify-content-center align-items-center'
+                secondChildDivClassName='px-1 pb-0 rounded w-100'
+                thirdChildDivClassName='px-1 mediaItemContainer border-0'
+              >
+                <div className="d-flex h-100">
+                  <section className="w-50 d-flex justify-content-center align-items-center">
+                    <div style={{ width: 350, height: 350 }} className='position-relative'>
+                      <Image
+                        fill
+                        src={paper.imgSrc}
+                        alt={paper.imgAlt}
+                        className='w-100 h-100 position-absolute'
+                      />
+                    </div>
+                  </section>
+                  <section className="w-50 d-flex justify-content-center align-items-center">
+                    <div className="col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-sm-block">
+                      <h4
+                        style={{ whiteSpace: 'initial' }}
+                        dangerouslySetInnerHTML={{ __html: paper.h4Txt }}
+                      />
+
+                      <a
+                        className='btn btn-primary mb-2'
+                        href={paper.articleLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Read the article
+                      </a>
+                      <br />
+                      <Link href={paper.lessonLink} className='btn btn-secondary'>
+                        Check out the lesson
+                      </Link>
+                    </div>
+                  </section>
+                </div>
+              </CarouselItem>
+            );
+          })}
+        </CarouselContainer>
       </div>
       <div className="col-12 col-lg-10 offset-lg-1 px-4 py-3 my-5">
         <div className="display-4">The Real World doesn&apos;t fit neatly into subject boundaries. <em>Our lessons don&apos;t either!</em></div>
         <p className='fs-3 pt-3'>
           We craft learning narratives that students will remember. We make it clear how abstract learning standards in language arts, math, social studies and science connect to give students methods for approaching complex problems.
         </p>
-
       </div>
 
       <div className="bg-light-gray">
-        <div className='bg-secondary-light'>
-          <div className='container p-3 p-lg-5 mx-auto text-center d-grid'>
-            <p className='fs-4'>Real Research&nbsp;+ Real&nbsp;Stories&nbsp;+ Real&nbsp;Data&nbsp;+ Real&nbsp;Careers&nbsp;=</p>
-            <p className='fs-3'>Real Learning</p>
-          </div>
+        <div style={{ height: 300 }} className='w-100 position-relative bg-secondary-light'>
+          <Image
+            fill
+            className="w-100 h-100"
+            src={GpEquation}
+            style={{ objectFit: 'contain' }}
+            alt="Galactic_Polymath_Equation"
+          />
         </div>
 
         <div className='bg-light-gray py-4'>

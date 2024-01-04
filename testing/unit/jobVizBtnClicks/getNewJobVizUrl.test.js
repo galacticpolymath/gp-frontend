@@ -11,8 +11,8 @@ const testingPathsLevel4Paths = ['4', '17-2070', '120', '128', '135']
 const testingPathsLevel3Paths = ['3', '17-2000', '120', '128']
 const jobCategoryA = jobVizData.find(({ id }) => id === 120)
 const jobCategoryB = jobVizData.find(({ id }) => id === 128)
-const level2UrlCorrectAAndC = "/job-viz/2/17-0000/120"
-const level3UrlCorrectB = "/job-viz/3/17-2000/120/128"
+const level2UrlCorrectAAndC = "/jobviz/2/17-0000/120"
+const level3UrlCorrectB = "/jobviz/3/17-2000/120/128"
 
 test("Getting the new url when the user clicks on the previous job viz data on the chain.", () => {
     testingPathsLevel4Paths.splice(0, 2)

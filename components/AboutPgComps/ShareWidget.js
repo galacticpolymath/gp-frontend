@@ -26,29 +26,32 @@ import CopyableTxt from "../CopyableTxt";
 
 const isOnProduction = process.env.NODE_ENV === 'production';
 
-const ShareWidget = ({ pinterestMedia, isOnSide, developmentUrl }) => {
-    const widgetDynamicCss = isOnSide ? 'd-none d-md-flex position-fixed flex-column bg-white py-2 shadow start-0' : 'd-flex d-md-none flex-row bg-transparent';
+const ShareWidget = ({
+    pinterestMedia,
+    developmentUrl,
+    shareWidgetStyle = {},
+    widgetParentCss = 'share-widget gap-2 d-none d-md-flex position-fixed flex-column bg-white py-2 shadow start-0',
+}) => {
     const url = isOnProduction ? ((typeof window !== 'undefined') && window?.location?.href) : developmentUrl;
-    const shareWidgetStyleOnSide = { borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', boxShadow: '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)', top: 150, width: "60px" }
-    const shareWidgetStyle = isOnSide ? shareWidgetStyleOnSide : {}
 
     const handleCopyLinkBtnClick = () => {
         navigator.clipboard.writeText(window.location.href)
     }
 
     return (
-        <div style={shareWidgetStyle} className={`share-widget gap-2 ${widgetDynamicCss}`}>
+        <div style={shareWidgetStyle} className={widgetParentCss}>
             <FacebookShareButton
                 url={url}
                 quote="Check out this lesson!"
-                className="mx-1"
+                // className="mx-md-1"
                 hashtag={['#learning', "#GalacticPolymath"]}
             >
                 <FacebookIcon size={32} round />
             </FacebookShareButton>
             <TwitterShareButton
                 url={url}
-                className="mx-1"
+                // className="mx-md-1"
+                // style={{ minWidth: "40px" }}
                 title="Check out this lesson!"
                 hashtag={['#learning', "#GalacticPolymath"]}
             >
@@ -56,7 +59,8 @@ const ShareWidget = ({ pinterestMedia, isOnSide, developmentUrl }) => {
             </TwitterShareButton>
             <PinterestShareButton
                 url={url}
-                className="mx-1"
+                // className="mx-md-1"
+                // style={{ minWidth: "40px" }}
                 media={pinterestMedia}
                 description="Check out this lesson!"
             >
@@ -64,20 +68,27 @@ const ShareWidget = ({ pinterestMedia, isOnSide, developmentUrl }) => {
             </PinterestShareButton>
             <EmailShareButton
                 url={url}
-                className="mx-1"
+                // className="mx-md-1"
+                // style={{ minWidth: "40px" }}
                 subject="Check out this lesson!"
                 body="Check out this lesson from Galactic Polymath!"
             >
                 <EmailIcon size={32} round />
             </EmailShareButton>
-
             <div
-                className='w-100 d-flex justify-content-center align-items-center'
+                // style={{ minWidth: '40px' }}
+                className='d-flex justify-content-center align-items-center'
             >
                 <CopyableTxt
-                    copyTxtIndicator="Copy link."
+                    copyTxtIndicator="Copy link to lesson."
                     txtCopiedIndicator="Link copied ✅!"
                     implementLogicOnClick={handleCopyLinkBtnClick}
+                    copyTxtModalDefaultStyleObj={{
+                        position: 'fixed',
+                        width: '128px',
+                        backgroundColor: '#212529',
+                        textAlign: 'center',
+                    }}
                 >
                     <button
                         style={{

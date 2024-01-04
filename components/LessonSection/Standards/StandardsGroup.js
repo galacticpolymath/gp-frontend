@@ -66,6 +66,7 @@ const StandardsGroup = ({
                 data-bs-toggle='collapse'
                 data-bs-target={`#content_${contentId}`}
                 style={{ width: 50, height: 50 }}
+                className="d-flex justify-content-center"
               >
                 <i
                   color="#7A8489"

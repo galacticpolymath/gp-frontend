@@ -49,22 +49,22 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
 
         resetSearch()
 
-        if (asPath == '/job-viz') {
-            router.push({ pathname: `/job-viz/${nextLevelHierarchyNum}/${level}/${currentJobsCategoryId}` }, null, { scroll: false })
+        if (asPath == '/jobviz') {
+            router.push({ pathname: `/jobviz/${nextLevelHierarchyNum}/${level}/${currentJobsCategoryId}` }, null, { scroll: false })
             return;
         }
 
         let jobCategoryIds = [...query[`search-results`]]
         jobCategoryIds.splice(0, 2)
         jobCategoryIds.push(currentJobsCategoryId)
-        const pathUpdated = `/job-viz/${nextLevelHierarchyNum}/${level}/${jobCategoryIds.join('/')}`
+        const pathUpdated = `/jobviz/${nextLevelHierarchyNum}/${level}/${jobCategoryIds.join('/')}`
 
         router.push({ pathname: pathUpdated }, null, { scroll: false })
     }
 
     const handleDetailsBtnClick = (jobToShowInModal) => {
         const jobCategoryIdPaths = getJobCategoryIds(router.query['search-results'], jobToShowInModal.id.toString())
-        const pathUpdated = `/job-viz/${currentHierarchyNum}/${router.query['search-results'][1]}/${jobCategoryIdPaths.join('/')}`
+        const pathUpdated = `/jobviz/${currentHierarchyNum}/${router.query['search-results'][1]}/${jobCategoryIdPaths.join('/')}`
         router.push({ pathname: pathUpdated }, null, { scroll: false })
         setSelectedJob(jobToShowInModal)
     }

@@ -18,7 +18,7 @@ const getNewUrl = (jobCategory, queryParams) => {
 
     _queryParams.splice(spliceStartIndex)
 
-    return `/job-viz/${mainLevel}/${targetLevel}/${_queryParams.join('/')}`;
+    return `/jobviz/${mainLevel}/${targetLevel}/${_queryParams.join('/')}`;
 }
 
 

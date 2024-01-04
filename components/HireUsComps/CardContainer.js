@@ -30,7 +30,19 @@ import { BsCircle, BsCircleFill, BsFillPauseCircleFill, BsFillPlayCircleFill } f
 import SectionWithBackgroundImg from '../SectionWithBackgroundImg';
 import { Parallax } from 'react-parallax';
 
-const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, autoCarouselHeadingTxtClassNames, headerContainerClassNamesDynamic, isCardOnly, dynamicCssClasses, customCardStyles, _customBulletPtsSecCss, _autoCarouselContainerStyles }) => {
+const CarouselContainer = ({
+    headingTxt,
+    _userInputs,
+    backgroundImgSrc,
+    pics,
+    autoCarouselHeadingTxtClassNames,
+    headerContainerClassNamesDynamic,
+    isCardOnly,
+    dynamicCssClasses,
+    customCardStyles,
+    _customBulletPtsSecCss,
+    _autoCarouselContainerStyles,
+}) => {
     const autoCarouselHeadingTxt = `bolder defaultHeadingCarouselStyles text-center ${autoCarouselHeadingTxtClassNames ?? 'headingCarousel'}`;
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
@@ -38,8 +50,6 @@ const CarouselContainer = ({ headingTxt, _userInputs, backgroundImgSrc, pics, au
     let customBulletPtsSecCss = _customBulletPtsSecCss ? `mt-md-0 mb-2 position-absolute ${_customBulletPtsSecCss}` : 'mt-md-0 mb-2 position-absolute'
     let autoCarouselContainerStyles = `autoCarouselContainer ${_autoCarouselContainerStyles}`
     const userInputs = _userInputs?.isTeachersAndStudentsTestimonies ? _userInputs.arr : _userInputs;
-
-
 
     if (customCardStyles) {
         cardStyles += ' ' + customCardStyles

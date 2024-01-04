@@ -15,11 +15,11 @@ export default async function handler(request, response) {
     projectionsObj = (typeof projectionsObj === 'string') ? JSON.parse(projectionsObj) : projectionsObj;
     filterObj = (typeof filterObj === 'string') ? JSON.parse(filterObj) : filterObj;
 
-    if(projectionsObj && ((typeof projectionsObj !== 'object') && (projectionsObj === null) || Array.isArray(projectionsObj) || (typeof projectionsObj !== 'object'))){
-      throw new CustomError('`projectionsObj` must be an non-array object.' , 400);
+    if (projectionsObj && ((typeof projectionsObj !== 'object') && (projectionsObj === null) || Array.isArray(projectionsObj) || (typeof projectionsObj !== 'object'))) {
+      throw new CustomError('`projectionsObj` must be an non-array object.', 400);
     }
 
-    if(filterObj && ((typeof filterObj !== 'object') && (filterObj === null) || Array.isArray(filterObj) || (typeof filterObj !== 'object'))){
+    if (filterObj && ((typeof filterObj !== 'object') && (filterObj === null) || Array.isArray(filterObj) || (typeof filterObj !== 'object'))) {
       throw new CustomError('`filterObj` must be an non-array object.', 400);
     }
 

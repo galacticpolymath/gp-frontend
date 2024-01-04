@@ -3,15 +3,28 @@ import Link from 'next/link';
 
 const MILISECONDS_IN_A_MONTH = 2_592_000_000;
 
+// MAKE COMPONENT EXTENABLE FOR THE IMAGE
 const LessonCard = ({ lesson }) => {
-  const { _id, locale, numID, CoverImage, Subtitle, Title, Section, ReleaseDate, LessonBanner } = lesson;
+  const {
+    _id,
+    locale,
+    numID,
+    CoverImage,
+    Subtitle,
+    Title,
+    Section,
+    ReleaseDate,
+    LessonBanner,
+    individualLessonsNum,
+  } = lesson;
   const isNew = (new Date() - new Date(ReleaseDate)) < MILISECONDS_IN_A_MONTH;
 
   return (
     <Link
       key={_id}
       href={`/lessons/${locale}/${numID}`}
-      className='w-100 pointer disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
+      className='w-100 pointer 
+      disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
     >
       <div className="position-relative">
         {(CoverImage && CoverImage.url) && (
@@ -70,6 +83,9 @@ const LessonCard = ({ lesson }) => {
           </span>
           <span style={{ whiteSpace: 'normal' }} className="no-underline-on-hover badge rounded-pill bg-gray ml-3">
             {`${Section.overview.GradesOrYears}: ${Section.overview.ForGrades}`}
+          </span>
+          <span style={{ whiteSpace: 'normal' }} className="no-underline-on-hover badge rounded-pill bg-gray ml-3">
+            {`${individualLessonsNum} Lessons`}
           </span>
         </section>
       </div>

@@ -10,11 +10,16 @@ import LessonCard from '../../components/LessonsPg/LessonCard';
 import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
 import { connectToMongodb } from '../../backend/utils/connection';
+import IndividualLesson from '../../components/LessonsPg/IndividualLesson.js';
+import Sponsors from '../../components/Sponsors.js';
+import GpLessonSvg from '../../assets/img/gp-lesson-icon.svg'
+import UnitIconSvg from '../../assets/img/gp-unit-icon.svg'
+import Image from 'next/image';
 
-const LessonsPage = ({ lessons, didErrorOccur, lessonsParts }) => {
+const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
 
   const handleJobVizCardClick = () => {
-    window.location.href = '/job-viz';
+    window.location.href = '/jobviz';
   };
 
   const uniqueIDs = [];
@@ -35,15 +40,25 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonsParts }) => {
       imgSrc='https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png'
       imgAlt='Galactic_Polymath_Logo_Lessons_Page'
       keywords='Galatic Polymath Lessons, Galactic Polymath Learning Tools'
-      className='lessons-pg-container'
+      className='lessons-pg-container overflow-hidden'
     >
       <section className="bg-secondary p-4">
         <div className="text-white container">
-          <h1>Free, Interdisciplinary Lessons</h1>
-          <p className='col-sm-12 col-md-10 col-lg-8 col-xl-7 '>We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!</p>
+          <h1 className='responseiveH1'>Free, Interdisciplinary Lessons</h1>
+          <p className='col-sm-12 col-md-10 col-lg-8 col-xl-7'>
+            We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!
+          </p>
         </div>
       </section>
-      <div>
+      <section className='w-100 my-5 my-md-3'>
+        <div className="container">
+          <h4 className="ms-sm-4 text-muted mb-2 mb-sm-4 text-left mt-4 mx-4 pe-lg-5">
+            Made open access by these funding organizations and research institutions:
+          </h4>
+          <Sponsors />
+        </div>
+      </section>
+      <section>
         <div className='container'>
           <section className="mb-5 pt-2">
             <section className="headerSecLessonsPg">
@@ -73,8 +88,11 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonsParts }) => {
           </section>
           <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
-              <h4 className="">Galactic Polymath Mini-Unit Releases</h4>
-              <p className='mb-0'> Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
+              <div className="d-flex">
+                <Image src={UnitIconSvg} style={{ height: 'fit-content' }} alt='GP Unit Icon' />
+                <h4 className="d-flex justify-content-center align-items-center">Galactic Polymath Mini-Unit Releases</h4>
+              </div>
+              <p className='mt-2 mb-0'> Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
               <p><em>And they&apos;re all free!</em></p>
             </div>
             {!!publishedLessons?.length && (
@@ -89,7 +107,30 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonsParts }) => {
             )}
           </section>
         </div>
-      </div>
+      </section>
+      <section>
+        <div className='container'>
+          <section className="lessonsSection pt-1">
+            <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
+              <div className="d-flex">
+                <Image src={GpLessonSvg} style={{ height: 'fit-content' }} alt='GP Unit Icon' />
+                <h4 className="d-flex justify-content-center align-items-center">Galactic Polymath Individual Lessons</h4>
+              </div>
+              <p className='mt-2 mb-0'>Free lessons to engage students in current research, real world problems, and interdisciplinary thinking.</p>
+            </div>
+            {!!lessonParts?.length && (
+              <div className='mx-auto grid justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch pb-1 px-2 p-sm-4 gap-3 pt-3 pb-5'>
+                {lessonParts.map((lesson, index) => <IndividualLesson key={index} lesson={{ ...lesson, _id: index }} />)}
+              </div>
+            )}
+            {(!publishedLessons?.length && didErrorOccur) && (
+              <div className='px-4 pb-4'>
+                <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
+              </div>
+            )}
+          </section>
+        </div>
+      </section>
     </Layout>
   );
 };
@@ -106,8 +147,9 @@ const PROJECTED_LESSONS_FIELDS = [
   'PublicationStatus',
   'LessonBanner',
   'LsnStatuses',
-  'Subject',
+  'TargetSubject',
   'ForGrades',
+  'GradesOrYears',
 ]
 
 export async function getStaticProps() {
@@ -115,59 +157,54 @@ export async function getStaticProps() {
     await connectToMongodb();
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
-    let lessonsParts = [];
+    let lessonPartsForUI = [];
 
     for (let lesson of lessons) {
       if (!lesson?.LsnStatuses?.length) {
         continue;
       }
 
+      // if the lesson is the reflection part of the lesso
+
       let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
       let lessonPartsFromClassRoomObj = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
 
       if (lessonParts?.length) {
         for (let lsnStatus of lesson.LsnStatuses) {
+
           if (lsnStatus.status !== 'Live') {
             continue;
           }
           const lessonPart = lessonParts.find(({ lsnNum }) => lsnNum === lsnStatus.lsn);
-          const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
-          
-          if(lessonPart){
-            // GET THE following FROM EACH LESSON: 
-            // the lesson title 
-            // the lesson tile
-            // the description of the lesson 
-            // the tags 
-            // grades 
-            // lesson duration
-            
-            // the lesson unit title
-            // the lesson subject
-            // lesson grades
-            // const lessonPartForUI = {
-            //   tile: lessonPartFromClassroomObj.tile, 
-            //   tags: lessonPartFromClassroomObj.tags, 
-            //   lessonPart: lessonPart.lsnTitle,
-            //   dur: lessonPart.lsnDur,
-            //   preface: lessonPart.lsnPreface,
-            //   lessonPartNum: lessonPart.lsnNum,
-            //   lessonTitle: lesson.Title,
-            //   subject: lesson.TargetSubject,
-            //   grades: lesson.ForGrades,
-            // };
 
-            // console.log("lessonPartForUI: ", lessonPartForUI)
+          if (lessonPart) {
+            const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
+            let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0]) ? lessonPartFromClassroomObj?.tags.flat() : lessonPartFromClassroomObj?.tags
+            tags = tags.filter(tag => tag);
+            lessonPartsForUI.push({
+              tags,
+              lessonPartPath: `/lessons/${lesson.locale}/${lesson.numID}#lesson_part_${lessonPart.lsnNum}`,
+              tile: lessonPartFromClassroomObj.tile ?? 'https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png',
+              lessonPartTitle: lessonPart.lsnTitle,
+              dur: lessonPart.lsnDur,
+              preface: lessonPart.lsnPreface,
+              lessonPartNum: lessonPart.lsnNum,
+              lessonTitle: lesson.Title,
+              subject: lesson.TargetSubject,
+              grades: lesson.ForGrades,
+              gradesOrYears: lesson.GradesOrYears,
+            });
 
-            // lessonsParts.push(lessonPartForUI);
           }
         }
       }
     }
 
     lessons = lessons.map(lesson => {
+      const individualLessonsNum = lesson?.LsnStatuses?.length ? lesson.LsnStatuses.filter(({ status }) => status !== 'Hidden')?.length : 0;
       const lessonObj = {
         ...lesson,
+        individualLessonsNum,
         ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
       };
 
@@ -176,7 +213,26 @@ export async function getStaticProps() {
       return lessonObj
     });
 
-    return { props: { lessons: lessons, lessonsParts } };
+    let lessonParts = structuredClone(lessonPartsForUI);
+
+    if (lessonParts?.length) {
+      lessonParts = lessonParts.sort(({ sort_by_date: sortByDateLessonA }, { sort_by_date: sortByDateLessonB }) => {
+        let _sortByDateLessonA = new Date(sortByDateLessonA);
+        let _sortByDateLessonB = new Date(sortByDateLessonB);
+
+        if (_sortByDateLessonA > _sortByDateLessonB) {
+          return -1;
+        }
+
+        if (_sortByDateLessonA < _sortByDateLessonB) {
+          return 1;
+        }
+
+        return 0;
+      })
+    }
+
+    return { props: { lessons: lessons, lessonParts: lessonParts } };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 

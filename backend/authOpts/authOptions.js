@@ -4,12 +4,13 @@ import { SignJWT, jwtVerify } from 'jose';
 import { nanoid } from 'nanoid';
 import JwtModel from '../models/Jwt';
 import { connectToMongodb } from '../utils/connection';
+import { getServerSession } from 'next-auth';
 
-const signJwt = async (payload, secret) => {
+// expirationTime = 24 hours by default 
+const signJwt = async ({ email, roles, name }, secret, expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60) => {
   const issueAtTime = Date.now() / 1000; // issued at time
-  const expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60; // 24 hours
-
-  return new SignJWT({ ...payload })
+  
+  return new SignJWT({ email, roles, name })
     .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
     .setExpirationTime(expirationTime)
     .setIssuedAt(issueAtTime)
@@ -37,15 +38,16 @@ export const authOptions = {
         const { email, name } = token?.payload ?? token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
         const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
-        const encodedToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret);
+        const refreshToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, '1 day');
+        const accessToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, '12hr');
 
         if (!token?.payload) {
           await connectToMongodb();
-          const jwt = new JwtModel({ _id: email, jwt: encodedToken });
+          const jwt = new JwtModel({ _id: email, access: accessToken, refresh: refreshToken });
           jwt.save();
         }
 
-        return encodedToken;
+        return accessToken;
       } catch (error) {
         throw new Error('Unable to generate JWT. Error message: ', error);
       }
@@ -67,9 +69,11 @@ export const authOptions = {
     },
     async session({ session, token }) {
       const { email, roles, name } = token.payload;
-      const encodedToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET);
+      const accessToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '12hours');
+      const refreshToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '1 day');
       session.id = token.id;
-      session.token = encodedToken;
+      session.token = accessToken;
+      session.refresh = refreshToken;
 
       return Promise.resolve(session);
     },

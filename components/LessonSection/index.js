@@ -12,22 +12,26 @@ import Acknowledgments from './Acknowledgments';
 import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
 import Preview from './Preview';
+import StandardsCollapsible from './Standards/StandardsCollapsible.js';
 
 export const SECTIONS = {
   OVERVIEW: 'lesson-plan.overview',
-  HEADING: 'lesson-plan.section-heading',
   TEXT_BLOCK: 'lesson-plan.text-block',
 
-  // deprecated
+  // deprecated components:
   PROCEDURE: 'lesson-plan.procedure',
 
-  TEACH_IT: 'teaching-resources.teaching-resources',
+  // No longer sections: 
   LEARNING_CHART: 'lesson-plan.learning-chart',
+  HEADING: 'lesson-plan.section-heading',
+
+  TEACH_IT: 'teaching-resources.teaching-resources',
   STANDARDS: 'lesson-plan.standards',
   ACKNOWLEDGMENTS: 'lesson-plan.acknowledgments',
   VERSIONS: 'lesson-plan.versions',
   COLLAPSIBLE_TEXT: 'lesson-plan.collapsible-text-section',
-  PREVIEW: 'lesson-plan.lesson-preview',
+  PREVIEW: 'lesson-plan.unit-preview',
+  LESSON_PREVIEW_FORMER: 'lesson-plan.lesson-preview',
 };
 
 export const NUMBERED_SECTIONS = [
@@ -54,17 +58,15 @@ export const sectionTypeMap = {
 
   [SECTIONS.TEACH_IT]: TeachIt,
   [SECTIONS.LEARNING_CHART]: LearningChart,
-  [SECTIONS.STANDARDS]: Standards,
+  [SECTIONS.STANDARDS]: StandardsCollapsible,
   [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
   [SECTIONS.VERSIONS]: Versions,
   [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleRichTextSection,
   [SECTIONS.PREVIEW]: Preview,
+  [SECTIONS.LESSON_PREVIEW_FORMER]: Preview,
 };
 const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
   const Component = sectionTypeMap[section.__component];
-  if (!Component) {
-    console.log("section.__component: ", section.__component);
-  }
   let compProps = { ...section, _sectionDots };
 
   if (TeachIt.name === 'TeachIt') {

@@ -72,6 +72,8 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
     let timerForHandleDotClick;
 
     const handleDotClick = sectionId => {
+        console.log("sectionId yo there meng: ", sectionId);
+
         clearTimeout(timerForHandleDotClick)
         timerForHandleDotClick = setTimeout(() => {
             setSectionDots(sectionDots => ({
@@ -111,24 +113,27 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
     let timerForGoToSectionFn;
 
     const goToSection = sectionId => {
+        console.log("yo there meng: ", sectionId)
         clearTimeout(timerForGoToSectionFn)
         timerForGoToSectionFn = setTimeout(() => {
-            setSectionDots(sectionDots => ({
-                clickedSectionId: sectionId,
-                dots: sectionDots.dots.map(dot => {
-                    if (dot.sectionDotId === `sectionDot-${sectionId}`) {
+            setSectionDots(sectionDots => {
+                return {
+                    clickedSectionId: sectionId,
+                    dots: sectionDots.dots.map(dot => {
+                        if (dot.sectionDotId === `sectionDot-${sectionId}`) {
+                            return {
+                                ...dot,
+                                isInView: true,
+                            }
+                        }
+
                         return {
                             ...dot,
-                            isInView: true,
+                            isInView: false,
                         }
-                    }
-
-                    return {
-                        ...dot,
-                        isInView: false,
-                    }
-                }),
-            }))
+                    }),
+                }
+            })
             setIsScrollListenerOn(true)
         }, 950)
         setIsScrollListenerOn(false)
@@ -161,11 +166,14 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
     const liNavDotFns = { goToSection, handleDotClick, setSectionDots }
 
     return (
-        <div style={{ transform: 'translateY(8%)' }} className="position-fixed lessonSecsNavDotsListContainer d-flex">
+        <div
+            style={{ transform: 'translateY(8%)' }}
+            className="position-fixed lessonSecsNavDotsListContainer d-flex"
+        >
             <ul
-onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} 
-            className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100' 
-            style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
+                onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}
+                className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100'
+                style={{ transform: 'translate3d(0px, 0px, 0px)', transitionDuration: '3500ms', transition: 'all .15s ease-in' }}>
                 {sectionDots.dots.map((section, index) => (
                     <LiNavDot
                         key={index}
