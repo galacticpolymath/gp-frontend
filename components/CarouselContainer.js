@@ -26,7 +26,8 @@ const CarouselContainer = ({
   CustomDots = null,
   handleCustomRightArrowBtnClick,
   handleCustomLeftArrowBtnClick,
-  autoCarouselSecClassName = "col-12 mt-0 px-4"
+  autoCarouselSecClassName = "col-12 mt-0 px-4",
+  dotSecClassName = 'd-flex justify-content-center align-items-center'
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [wasTimerPaused, setWasTimerPaused] = useState(false);
@@ -71,15 +72,15 @@ const CarouselContainer = ({
     setCurrentIndex(index);
   };
 
-  // useEffect(() => {
-  //   if (!wasTimerPaused) {
-  //     resetTimeout();
-  //     timeoutCarouselScrollRef.current = setTimeout(
-  //       () => setCurrentIndex(getUpdatedCurrentIndexStateNum),
-  //       3000
-  //     );
-  //   }
-  // }, [currentIndex, wasTimerPaused]);
+  useEffect(() => {
+    if (!wasTimerPaused) {
+      resetTimeout();
+      timeoutCarouselScrollRef.current = setTimeout(
+        () => setCurrentIndex(getUpdatedCurrentIndexStateNum),
+        3000
+      );
+    }
+  }, [currentIndex, wasTimerPaused]);
 
   return (
     <div className={parentStylesClassName}>
@@ -118,7 +119,7 @@ const CarouselContainer = ({
           </div>
         </section>
       </section>
-      <section className='d-flex justify-content-center align-items-center'>
+      <section className={dotSecClassName}>
         {(dots?.length && !CustomDots)
           ?
           (

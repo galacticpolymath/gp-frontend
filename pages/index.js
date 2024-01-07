@@ -203,9 +203,9 @@ export default function Home() {
       </div>
       <div className="bg-primary-light">
         <CarouselContainer
-        // py-4 
-          autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 py-lg-3 autoCarouselSec"
+          autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 autoCarouselSec"
           parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
+          dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-0'
         >
           {papers.map((paper, index) => {
             return (
@@ -227,7 +227,7 @@ export default function Home() {
                     </div>
                   </section>
                   <section className="ps-sm-2 ps-md-0 paperItemSec d-flex justify-content-center align-items-center">
-                    <div className="mt-md-0 mt-2 col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-md-block">
+                    <div className="mt-md-0 mt-2 col-12 ps-lg-3 d-flex flex-column justify-content-center align-items-center d-md-block">
                       <h4
                         style={{ whiteSpace: 'initial' }}
                         className="paper-title text-center text-md-start"
@@ -275,7 +275,7 @@ export default function Home() {
         </div>
 
         <div className='bg-light-gray py-4'>
-          <div className='row my-5 justify-content-center'>
+          <div className='no-x-mobile-margin row my-5 justify-content-center'>
             <div className='col-10'>
               <h3 className='mt-5 display-5'>
                 Benefits of connecting classrooms to the real world with GP:
