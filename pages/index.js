@@ -203,7 +203,8 @@ export default function Home() {
       </div>
       <div className="bg-primary-light">
         <CarouselContainer
-          parentStylesClassName="px-0 py-3 d-flex flex-column autoCarouselContainer position-relative"
+          autoCarouselSecClassName="col-12 mt-0 px-4 px-0 py-4 py-lg-3"
+          parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
         >
           {papers.map((paper, index) => {
             return (
@@ -211,11 +212,11 @@ export default function Home() {
                 key={index}
                 parentStyles='d-flex justify-content-center align-items-center'
                 secondChildDivClassName='px-1 pb-0 rounded w-100'
-                thirdChildDivClassName='px-1 mediaItemContainer border-0'
+                thirdChildDivClassName='px-md-1 papersCarouselItem border-0'
               >
                 <div className="d-flex h-100">
                   <section className="w-50 d-flex justify-content-center align-items-center">
-                    <div style={{ width: 350, height: 350 }} className='position-relative'>
+                    <div className='paperItemImgContainer position-relative'>
                       <Image
                         fill
                         src={paper.imgSrc}
@@ -224,23 +225,27 @@ export default function Home() {
                       />
                     </div>
                   </section>
-                  <section className="w-50 d-flex justify-content-center align-items-center">
+                  <section className="ps-sm-2 ps-md-0 w-50 d-flex justify-content-center align-items-center">
                     <div className="col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-sm-block">
                       <h4
                         style={{ whiteSpace: 'initial' }}
+                        className="paper-title"
                         dangerouslySetInnerHTML={{ __html: paper.h4Txt }}
                       />
 
-                      <a
+                      <Link
                         className='btn btn-primary mb-2'
                         href={paper.articleLink}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         Read the article
-                      </a>
+                      </Link>
                       <br />
-                      <Link href={paper.lessonLink} className='btn btn-secondary'>
+                      <Link
+                        href={paper.lessonLink}
+                        className='btn btn-secondary'
+                      >
                         Check out the lesson
                       </Link>
                     </div>

@@ -1,62 +1,124 @@
-.engineeringImgHomePg{
+.engineeringImgHomePg {
     height: 425px;
 
-    @media(max-width: 575px){
+    @media(max-width: 575px) {
         height: 200px;
     }
 }
 
-.newReleaseImg{
+.newReleaseImg {
     height: 400px;
 
-    @media(min-width: 992px) and (max-width: 1199px){
+    @media(min-width: 992px) and (max-width: 1199px) {
         height: 375px;
     }
 
-    @media(min-width: 768px) and (max-width: 991px){
+    @media(min-width: 768px) and (max-width: 991px) {
         height: 250px;
     }
 
-    @media(max-width: 767px){
+    @media(max-width: 767px) {
         height: 170px;
     }
 }
 
-.nsfImgContainer{
-    height: 175px; 
+.paperItemImgContainer {
+    width: 350px;
+    height: 350px;
+
+    @media(max-width: 992px) {
+        width: 250px;
+        height: 250px;
+    }
+
+    @media(max-width: 768px) {
+        width: 225px;
+        height: 225px;
+    }
+}
+
+.paper-title{
+    min-width: 268px;
+}
+
+.carouselArrowBtn {
+    svg {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+.papersCarouselContainer {
+    margin: 0 auto;
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+    height: 100%;
+
+    @media (min-width: 768px) {
+        max-width: 1000px;
+    }
+}
+
+
+.papersCarouselItem {
+    position: relative;
+    border: 1px solid lightgray;
+    height: 35vh;
+    width: 100%;
+    object-fit: contain;
+    max-height: 470px;
+    padding: 0px 5rem 0px 5rem; 
+
+    a {
+        @media(max-width: 992px) {
+            height: 45px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    ;
+
+    @media(min-width: 992px) {
+        height: 60vh;
+    }
+}
+
+.nsfImgContainer {
+    height: 175px;
     width: 175px;
 
-    @media(min-width: 992px) and (max-width: 1199px){
+    @media(min-width: 992px) and (max-width: 1199px) {
         height: 140px;
         width: 140px;
     }
 
-    @media(min-width: 768px) and (max-width: 991px){
+    @media(min-width: 768px) and (max-width: 991px) {
         height: 105px;
-        width: 105px;  
+        width: 105px;
     }
 
-    @media(min-width: 576px) and (max-width: 767px){
+    @media(min-width: 576px) and (max-width: 767px) {
         height: 90px;
         width: 90px;
     }
 
-    @media(max-width: 575px){
+    @media(max-width: 575px) {
         height: 90px;
         width: 90px;
     }
 }
 
-.scientificAmericanImgContainer{
+.scientificAmericanImgContainer {
     height: 450px;
 
-    @media(min-width: 768px) and (max-width: 991px){
+    @media(min-width: 768px) and (max-width: 991px) {
         height: 480px;
     }
 
-    @media(max-width: 575px){
+    @media(max-width: 575px) {
         height: 240px;
     }
 }
-
-
