@@ -26,8 +26,8 @@ const CarouselContainer = ({
   CustomDots = null,
   handleCustomRightArrowBtnClick,
   handleCustomLeftArrowBtnClick,
-  autoCarouselSecClassName = "col-12 mt-0 px-4",
-  dotSecClassName = 'd-flex justify-content-center align-items-center'
+  autoCarouselSecClassName = 'col-12 mt-0 px-4',
+  dotSecClassName = 'd-flex justify-content-center align-items-center',
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [wasTimerPaused, setWasTimerPaused] = useState(false);
