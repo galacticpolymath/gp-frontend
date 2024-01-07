@@ -107,7 +107,7 @@ const CarouselContainer = ({
       </div>
       <section className='row mt-0'>
         <section
-          style={{ height: 'fit-content' }}
+          // style={{ height: 'fit-content' }}
           className={autoCarouselSecClassName}
         >
           <div

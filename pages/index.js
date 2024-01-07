@@ -95,7 +95,7 @@ export default function Home() {
             Think <strong>bigger</strong>.<br />{' '}
             Learn everything.
           </h2>
-          <div className=' container bg-white  rounded-3 justify-content-center py-5 px-4'>
+          <div className='container bg-white rounded-3 justify-content-center py-5 px-4'>
             <div className='row justify-content-center gy-5'>
               <div className='col-12 offset-0 offset-md-1 col-md-7 col-lg-6'>
                 <Link href={newReleasePath} className=' no-link-decoration object-fit-contain w-auto'>
@@ -203,7 +203,8 @@ export default function Home() {
       </div>
       <div className="bg-primary-light">
         <CarouselContainer
-          autoCarouselSecClassName="col-12 mt-0 px-4 px-0 py-4 py-lg-3"
+        // py-4 
+          autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 py-lg-3 autoCarouselSec"
           parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
         >
           {papers.map((paper, index) => {
@@ -214,8 +215,8 @@ export default function Home() {
                 secondChildDivClassName='px-1 pb-0 rounded w-100'
                 thirdChildDivClassName='px-md-1 papersCarouselItem border-0'
               >
-                <div className="d-flex h-100">
-                  <section className="w-50 d-flex justify-content-center align-items-center">
+                <div className="d-flex flex-column flex-md-row h-100">
+                  <section className="paperItemSec d-flex justify-content-center align-items-center">
                     <div className='paperItemImgContainer position-relative'>
                       <Image
                         fill
@@ -225,14 +226,13 @@ export default function Home() {
                       />
                     </div>
                   </section>
-                  <section className="ps-sm-2 ps-md-0 w-50 d-flex justify-content-center align-items-center">
-                    <div className="col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-sm-block">
+                  <section className="ps-sm-2 ps-md-0 paperItemSec d-flex justify-content-center align-items-center">
+                    <div className="mt-md-0 mt-2 col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-md-block">
                       <h4
                         style={{ whiteSpace: 'initial' }}
-                        className="paper-title"
+                        className="paper-title text-center text-md-start"
                         dangerouslySetInnerHTML={{ __html: paper.h4Txt }}
                       />
-
                       <Link
                         className='btn btn-primary mb-2'
                         href={paper.articleLink}
@@ -241,7 +241,7 @@ export default function Home() {
                       >
                         Read the article
                       </Link>
-                      <br />
+                      <br className="d-none d-md-block" />
                       <Link
                         href={paper.lessonLink}
                         className='btn btn-secondary'
