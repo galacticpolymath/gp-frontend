@@ -20,11 +20,28 @@ import {
     PinterestIcon,
     TwitterShareButton,
     TwitterIcon,
+
 } from "react-share";
-import { FaRegCopy } from 'react-icons/fa'
 import CopyableTxt from "../CopyableTxt";
 
-const isOnProduction = process.env.NODE_ENV === 'production';
+const CopyIcon = ({ color = "white" }) => (
+    <svg
+        style={{ color }}
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        className="bi bi-copy"
+        viewBox="0 0 16 16"
+    >
+        <path
+            fillRule="evenodd"
+            d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"
+        />
+    </svg>
+);
+const IS_ON_PRODUCTION = process.env.NODE_ENV === 'production';
+const BTN_TXT = "Check out this lesson!";
 
 const ShareWidget = ({
     pinterestMedia,
@@ -32,7 +49,7 @@ const ShareWidget = ({
     shareWidgetStyle = {},
     widgetParentCss = 'share-widget gap-2 d-none d-md-flex position-fixed flex-column bg-white py-2 shadow start-0',
 }) => {
-    const url = isOnProduction ? ((typeof window !== 'undefined') && window?.location?.href) : developmentUrl;
+    const url = IS_ON_PRODUCTION ? ((typeof window !== 'undefined') && window?.location?.href) : developmentUrl;
 
     const handleCopyLinkBtnClick = () => {
         navigator.clipboard.writeText(window.location.href)
@@ -42,41 +59,33 @@ const ShareWidget = ({
         <div style={shareWidgetStyle} className={widgetParentCss}>
             <FacebookShareButton
                 url={url}
-                quote="Check out this lesson!"
-                // className="mx-md-1"
+                quote={BTN_TXT}
                 hashtag={['#learning', "#GalacticPolymath"]}
             >
                 <FacebookIcon size={32} round />
             </FacebookShareButton>
             <TwitterShareButton
                 url={url}
-                // className="mx-md-1"
-                // style={{ minWidth: "40px" }}
-                title="Check out this lesson!"
+                title={BTN_TXT}
                 hashtag={['#learning', "#GalacticPolymath"]}
             >
                 <TwitterIcon size={32} round />
             </TwitterShareButton>
             <PinterestShareButton
                 url={url}
-                // className="mx-md-1"
-                // style={{ minWidth: "40px" }}
                 media={pinterestMedia}
-                description="Check out this lesson!"
+                description={BTN_TXT}
             >
                 <PinterestIcon size={32} round />
             </PinterestShareButton>
             <EmailShareButton
                 url={url}
-                // className="mx-md-1"
-                // style={{ minWidth: "40px" }}
-                subject="Check out this lesson!"
+                subject={BTN_TXT}
                 body="Check out this lesson from Galactic Polymath!"
             >
                 <EmailIcon size={32} round />
             </EmailShareButton>
             <div
-                // style={{ minWidth: '40px' }}
                 className='d-flex justify-content-center align-items-center'
             >
                 <CopyableTxt
@@ -98,7 +107,7 @@ const ShareWidget = ({
                         }}
                         className='d-flex justify-content-center align-items-center rounded-circle'
                     >
-                        <FaRegCopy color='white' />
+                        <CopyIcon />
                     </button>
                 </CopyableTxt>
             </div>

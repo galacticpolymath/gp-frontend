@@ -158,9 +158,10 @@ const LessonPart = ({
         key={lsnNum}
         btnStyle={isExpanded ? { background: 'none' } : {}}
         id={_accordionId}
-        accordionChildrenClasses='px-3 pb-2 w-100'
+        accordionChildrenClasses='px-3 pb-2 w-100 accordion-transition'
         style={accordionStyle}
         dataBsToggle={{}}
+        accordionContentStyle={{ display: isExpanded ? 'block' : 'none' }}
         initiallyExpanded={isExpanded}
         button={(
           <div
