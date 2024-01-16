@@ -43,6 +43,7 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
 }));
 
 const LessonDetails = ({ lesson }) => {
+  console.log("lesson, hey there meng: ", lesson);
   const router = useRouter();
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
@@ -154,7 +155,7 @@ const LessonDetails = ({ lesson }) => {
   }, []);
 
   let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
-  console.log("_sections: ", _sections)
+  console.log("_sections what is up there: ", _sections)
 
   if (!lesson && typeof window === "undefined") {
     return null;

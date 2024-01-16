@@ -378,7 +378,7 @@ const LessonPart = ({
               </ol>
             </div>
           )}
-          <div className='mt-4'>
+          <div className='mt-4 pb-1'>
             <div className='d-flex align-items-start'>
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
               <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
@@ -389,61 +389,62 @@ const LessonPart = ({
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
 
                 return (
-                  <li key={itemTitle} className='d-flex mt-4 mb-0'>
-                    <section>
-                      <strong><RichText content={itemTitle} /></strong>
-                      <div className='fst-italic mb-1' style={{ color: '#353637' }}>
-                        <RichText
-                          content={itemDescription}
-                          css={{ color: 'red' }}
-                        />
-                      </div>
-                      <ul style={{ listStyle: 'none' }}>
-                        {!!_links && _links.map(({ url, linkText }, linkIndex) => (
-                          <li className='mb-0 d-flex' key={linkIndex}>
-                            <div className="d-flex justify-content-center align-items-center">
-                              <Link
-                                href={url}
-                                target="_blank"
-                                rel='noopener noreferrer'
-                              >
-                                {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
-                              </Link>
-                            </div>
-                            <div className="d-flex justify-content-center align-items-center ps-2">
-                              <a
-                                href={url}
-                                target='_blank'
-                                rel='noopener noreferrer'
-                              >
-                                {linkText}
-                              </a>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </section>
-                    <section className="ps-4">
-                      <div style={{ width: itemIndex === 0 ? 180 : 90, height: '100%' }} className="position-relative">
-                        <Image
-                          src='https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png'
-                          alt="lesson_tile"
-                          fill
-                          sizes="130px"
-                          className="img-optimize h-100 w-100"
-                          style={{
-                            border: 'solid 2px #C4C4C4',
-                            borderRadius: '.1em',
-                          }}
-                        />
-                      </div>
-                    </section>
+                  <li key={itemTitle} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
+                    <div className="d-flex">
+                      <section>
+                        <strong><RichText content={itemTitle} /></strong>
+                        <div className='fst-italic mb-1' style={{ color: '#353637' }}>
+                          <RichText
+                            content={itemDescription}
+                            css={{ color: 'red' }}
+                          />
+                        </div>
+                        <ul style={{ listStyle: 'none' }}>
+                          {!!_links && _links.map(({ url, linkText }, linkIndex) => (
+                            <li className='mb-0 d-flex' key={linkIndex}>
+                              <div className="d-flex justify-content-center align-items-center">
+                                <Link
+                                  href={url}
+                                  target="_blank"
+                                  rel='noopener noreferrer'
+                                >
+                                  {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
+                                </Link>
+                              </div>
+                              <div className="d-flex justify-content-center align-items-center ps-2">
+                                <a
+                                  href={url}
+                                  target='_blank'
+                                  rel='noopener noreferrer'
+                                >
+                                  {linkText}
+                                </a>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                      <section className="ps-4">
+                        <div style={{ width: itemIndex === 0 ? 180 : 90, height: '100%' }} className="position-relative">
+                          <Image
+                            src='https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png'
+                            alt="lesson_tile"
+                            fill
+                            sizes="130px"
+                            className="img-optimize h-100 w-100"
+                            style={{
+                              border: 'solid 2px #C4C4C4',
+                              borderRadius: '.1em',
+                            }}
+                          />
+                        </div>
+                      </section>
+                    </div>
                   </li>
                 );
               })}
             </ol>
           </div>
-
           {(!isOnAssessments && durList && chunks) &&
             <div className='mt-4'>
               <h5 className='d-flex align-items-start fw-bold mb-3'>
