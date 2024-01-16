@@ -307,7 +307,7 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.arrowIconAndClipboardIconLessonPartContainer{
+.arrowIconAndClipboardIconLessonPartContainer {
   // transform: translateY(-10%);
 }
 
@@ -321,12 +321,15 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+
+.lesson-part-ul {
+  // list-style: none;
+}
+
 .lessonSubject {
   bottom: 8px;
   left: 15px;
   width: fit-content;
-
-  @media (max-width: 575px) {}
 }
 
 .lightbar {

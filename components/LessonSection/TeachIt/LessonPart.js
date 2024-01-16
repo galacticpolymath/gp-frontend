@@ -397,7 +397,7 @@ const LessonPart = ({
                         css={{ color: 'red' }}
                       />
                     </div>
-                    <ul>
+                    <ul className="lesson-part-ul">
                       {!!_links && _links.map(({ url, linkText }, index) => (
                         <li className='mb-0' key={index}>
                           <a
