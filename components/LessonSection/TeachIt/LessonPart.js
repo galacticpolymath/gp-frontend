@@ -148,7 +148,7 @@ const LessonPart = ({
     borderRight: isExpanded ? highlightedBorder : 'none',
     borderTop: _borderTopAccordionWrapper,
     borderBottom: _borderBottomAccordionWrapper,
-    boxShadow: isExpanded ? highlightedGlow : 'none',    
+    boxShadow: isExpanded ? highlightedGlow : 'none',
   };
 
   return (
@@ -384,32 +384,60 @@ const LessonPart = ({
               <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
             </div>
             <ol className='mt-2'>
-              {!!_itemList?.length && _itemList.map(item => {
+              {!!_itemList?.length && _itemList.map((item, itemIndex) => {
                 const { itemTitle, itemDescription, links } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
 
                 return (
-                  <li key={itemTitle} className='mt-2 mb-0'>
-                    <strong><RichText content={itemTitle} /></strong>
-                    <div className='fst-italic mb-1' style={{ color: '#353637' }}>
-                      <RichText
-                        content={itemDescription}
-                        css={{ color: 'red' }}
-                      />
-                    </div>
-                    <ul className="lesson-part-ul">
-                      {!!_links && _links.map(({ url, linkText }, index) => (
-                        <li className='mb-0' key={index}>
-                          <a
-                            href={url}
-                            target='_blank'
-                            rel='noopener noreferrer'
-                          >
-                            {linkText}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
+                  <li key={itemTitle} className='d-flex mt-4 mb-0'>
+                    <section>
+                      <strong><RichText content={itemTitle} /></strong>
+                      <div className='fst-italic mb-1' style={{ color: '#353637' }}>
+                        <RichText
+                          content={itemDescription}
+                          css={{ color: 'red' }}
+                        />
+                      </div>
+                      <ul style={{ listStyle: 'none' }}>
+                        {!!_links && _links.map(({ url, linkText }, linkIndex) => (
+                          <li className='mb-0 d-flex' key={linkIndex}>
+                            <div className="d-flex justify-content-center align-items-center">
+                              <Link
+                                href={url}
+                                target="_blank"
+                                rel='noopener noreferrer'
+                              >
+                                {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
+                              </Link>
+                            </div>
+                            <div className="d-flex justify-content-center align-items-center ps-2">
+                              <a
+                                href={url}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                              >
+                                {linkText}
+                              </a>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                    <section className="ps-4">
+                      <div style={{ width: itemIndex === 0 ? 180 : 90, height: '100%' }} className="position-relative">
+                        <Image
+                          src='https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png'
+                          alt="lesson_tile"
+                          fill
+                          sizes="130px"
+                          className="img-optimize h-100 w-100"
+                          style={{
+                            border: 'solid 2px #C4C4C4',
+                            borderRadius: '.1em',
+                          }}
+                        />
+                      </div>
+                    </section>
                   </li>
                 );
               })}
