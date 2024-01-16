@@ -384,8 +384,9 @@ const LessonPart = ({
               <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
             </div>
             <ol className='mt-2'>
-              {!!_itemList?.length && _itemList.map((item, itemIndex) => {
-                const { itemTitle, itemDescription, links } = item;
+              {!!_itemList?.length && _itemList.map((item, itemIndex, self) => {
+                console.log('self: ', self.length);
+                const { itemTitle, itemDescription, links, filePreviewImgs } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
 
                 return (
@@ -424,21 +425,23 @@ const LessonPart = ({
                           ))}
                         </ul>
                       </section>
-                      <section className="ps-4">
-                        <div style={{ width: itemIndex === 0 ? 180 : 90, height: '100%' }} className="position-relative">
-                          <Image
-                            src='https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png'
-                            alt="lesson_tile"
-                            fill
-                            sizes="130px"
-                            className="img-optimize h-100 w-100"
-                            style={{
-                              border: 'solid 2px #C4C4C4',
-                              borderRadius: '.1em',
-                            }}
-                          />
-                        </div>
-                      </section>
+                      {filePreviewImgs && (
+                        <section className="ps-4">
+                          <div style={{ width: itemIndex === 0 ? 180 : 90, height: '100%' }} className="position-relative">
+                            <Image
+                              src={filePreviewImgs}
+                              alt="lesson_tile"
+                              fill
+                              sizes="130px"
+                              className="img-optimize h-100 w-100"
+                              style={{
+                                border: 'solid 2px #C4C4C4',
+                                borderRadius: '.1em',
+                              }}
+                            />
+                          </div>
+                        </section>
+                      )}
                     </div>
                   </li>
                 );

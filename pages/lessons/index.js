@@ -175,6 +175,7 @@ export async function getStaticProps() {
           if (lsnStatus.status !== 'Live') {
             continue;
           }
+          
           const lessonPart = lessonParts.find(({ lsnNum }) => lsnNum === lsnStatus.lsn);
 
           if (lessonPart) {

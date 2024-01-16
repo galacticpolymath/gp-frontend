@@ -20,6 +20,7 @@ import { connectToMongodb } from '../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
+const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
 const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
@@ -43,7 +44,6 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
 }));
 
 const LessonDetails = ({ lesson }) => {
-  console.log("lesson, hey there meng: ", lesson);
   const router = useRouter();
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
@@ -155,7 +155,6 @@ const LessonDetails = ({ lesson }) => {
   }, []);
 
   let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
-  console.log("_sections what is up there: ", _sections)
 
   if (!lesson && typeof window === "undefined") {
     return null;
@@ -248,6 +247,27 @@ async function getLinkPreviewObj(url) {
   }
 }
 
+const getGoogleDriveFileIdFromUrl = url => {
+  if (typeof url !== "string") {
+    return null;
+  }
+
+  const urlSplitted = url.split("/");
+  const indexOfDInSplittedUrl = urlSplitted.findIndex(str => str === "d");
+
+  if (indexOfDInSplittedUrl === -1) {
+    return null;
+  }
+
+  const id = urlSplitted[indexOfDInSplittedUrl + 1];
+
+  if (!id) {
+    return null;
+  }
+
+  return id;
+}
+
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
     await connectToMongodb();
@@ -259,6 +279,46 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       throw new Error("Lesson is not found.")
     }
 
+    let lessonParts = null;
+
+    if (lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons) {
+      lessonParts = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons.map(lesson => {
+        if (lesson?.itemList?.length) {
+          const itemListUpdated = lesson.itemList.map(itemObj => {
+            if (itemObj?.links?.length) {
+              const linksUpdated = itemObj.links.map(linkObj => {
+                const googleDriveFileId = getGoogleDriveFileIdFromUrl(linkObj.url);
+
+                if (!googleDriveFileId) {
+                  return linkObj
+                }
+
+                return {
+                  ...linkObj,
+                  filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`, 
+                };
+              });
+
+              return {
+                ...itemObj,
+                links: linksUpdated,
+              }
+            }
+
+            return itemObj
+          });
+
+          return {
+            ...lesson,
+            itemList: itemListUpdated,
+          }
+        }
+
+        return lesson;
+      })
+
+      lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[0].lessons = lessonParts;
+    }
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
     const multiMediaArr = lessonToDisplayOntoUi?.Section?.preview?.Multimedia;
     let sponsorLogoImgUrl = lessonToDisplayOntoUi.SponsorImage?.url?.length ? lessonToDisplayOntoUi.SponsorImage?.url : lessonToDisplayOntoUi.SponsorLogo;

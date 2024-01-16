@@ -59,6 +59,8 @@ const TeachIt = ({
     parts = [...Object.values(restOfLessonParts), lastPart];
   }
 
+  console.log("parts, hey there: ", parts);
+
   const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
