@@ -392,7 +392,7 @@ const LessonPart = ({
 
                 return (
                   <li key={itemTitle} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
-                    <div className="d-flex">
+                    <div className="d-flex flex-column flex-md-row">
                       <section>
                         <strong><RichText content={itemTitle} /></strong>
                         <div className='fst-italic mb-1' style={{ color: '#353637' }}>
@@ -401,10 +401,10 @@ const LessonPart = ({
                             css={{ color: 'red' }}
                           />
                         </div>
-                        <ul style={{ listStyle: 'none' }}>
+                        <ul style={{ listStyle: 'none' }} className="links-list">
                           {!!_links && _links.map(({ url, linkText }, linkIndex) => (
                             <li className='mb-0 d-flex' key={linkIndex}>
-                              <div className="d-flex justify-content-center align-items-center">
+                              <div className="d-flex justify-content-center align-items-sm-center">
                                 <Link
                                   href={url}
                                   target="_blank"
@@ -427,14 +427,14 @@ const LessonPart = ({
                         </ul>
                       </section>
                       {filePreviewImg && (
-                        <section className="ps-4">
-                          <div style={{ width: itemIndex === 0 ? 200 : 90, height: '100%' }} className="position-relative">
+                        <section className="pt-3 pt-md-0 ps-sm-5 ps-md-4">
+                          <div className={`position-relative ${itemIndex === 0 ? 'lesson-presentation' : 'lesson-worksheet'}`}>
                             <Image
                               src={filePreviewImg}
                               alt="lesson_tile"
                               fill
                               sizes="130px"
-                              className="img-optimize h-100 w-100"
+                              className='img-optimize h-100 w-100'
                               style={{
                                 border: 'solid 2px #C4C4C4',
                                 borderRadius: '.1em',

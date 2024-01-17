@@ -321,6 +321,34 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.lesson-file-preview-img {
+  height: 100%;
+}
+
+.lesson-presentation {
+  width: 200px;
+  @extend.lesson-file-preview-img;
+
+  @media(max-width: 768px) {
+    height: 168px;
+  }
+}
+
+.links-list{
+  @media(max-width: 577px){
+    padding: 0;
+  }
+}
+
+.lesson-worksheet {
+  width: 90px;
+  @extend.lesson-file-preview-img;
+
+  @media(max-width: 768px) {
+    height: 140px;
+  }
+}
+
 .lessonSubject {
   bottom: 8px;
   left: 15px;
