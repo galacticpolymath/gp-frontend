@@ -28,6 +28,7 @@ const LessonPart = ({
   ForGrades,
   _numsOfLessonPartsThatAreExpanded,
 }) => {
+  console.log('LessonPart ForGrades: ', ForGrades);
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
@@ -150,8 +151,6 @@ const LessonPart = ({
     borderBottom: _borderBottomAccordionWrapper,
     boxShadow: isExpanded ? highlightedGlow : 'none',
   };
-
-  console.log('itemList yo there: ', itemList);
 
   return (
     <div style={accordionStyleAccordionWrapper}>

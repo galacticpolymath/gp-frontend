@@ -7,7 +7,6 @@ import Overview from './Overview';
 import Heading from './Heading.js';
 import TeachIt from './TeachIt';
 import LearningChart from './LearningChart';
-import Standards from './Standards';
 import Acknowledgments from './Acknowledgments';
 import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
