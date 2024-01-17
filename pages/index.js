@@ -11,7 +11,6 @@ import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boosting-students-data-literacy.jpg';
 import CarouselContainer from '../components/CarouselContainer';
 import CarouselItem from '../components/CarouselItem';
-import GpEquation from '../assets/img/gpEquation.png';
 import SponsorsMarquee from '../components/Sponsors';
 
 const papers = [
@@ -264,14 +263,16 @@ export default function Home() {
       </div>
 
       <div className="bg-light-gray">
-        <div style={{ height: 300 }} className='w-100 position-relative bg-secondary-light'>
-          <Image
-            fill
-            className="w-100 h-100"
-            src={GpEquation}
-            style={{ objectFit: 'contain' }}
-            alt="Galactic_Polymath_Equation"
-          />
+        <div className='bg-secondary-light d-flex justify-content-center align-items-center py-sm-4 px-1 px-sm-0'>
+          <div style={{ height: 200 }} className="position-relative gp-equation-img-container">
+            <Image
+              src="/imgs/learning-equation.png"
+              alt="Galactic_Polymath_Equation"
+              className='w-100 gp-equation-img'
+              fill              
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
         </div>
 
         <div className='bg-light-gray py-4'>
