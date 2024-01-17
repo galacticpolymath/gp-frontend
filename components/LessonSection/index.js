@@ -69,8 +69,6 @@ const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
   let compProps = { ...section, _sectionDots };
   const parentId = `${section.SectionTitle}-parent-${index}`;
 
-  console.log("compProps: ", compProps);
-
   if((typeof compProps.SectionTitle === "string") && compProps.SectionTitle.includes("Teaching Materials")){
     compProps = {
       ...compProps,

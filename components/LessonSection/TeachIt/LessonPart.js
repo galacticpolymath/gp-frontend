@@ -28,7 +28,6 @@ const LessonPart = ({
   ForGrades,
   _numsOfLessonPartsThatAreExpanded,
 }) => {
-  console.log('LessonPart ForGrades: ', ForGrades);
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
@@ -438,6 +437,7 @@ const LessonPart = ({
                                 border: 'solid 2px #C4C4C4',
                                 borderRadius: '.1em',
                               }}
+                              
                             />
                           </div>
                         </section>
