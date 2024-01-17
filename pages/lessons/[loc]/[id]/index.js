@@ -198,7 +198,7 @@ const LessonDetails = ({ lesson }) => {
       />
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="col-12 col-lg-10 px-3 container">
-        <div className="p-3 pt-0">
+        <div className="p-sm-3 pt-0">
           {_sections.map((section, index) => (
             <ParentLessonSection
               key={index}

@@ -334,9 +334,19 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.links-list{
-  @media(max-width: 577px){
+.no-padding-on-mobile {
+  @media(max-width: 577px) {
     padding: 0;
+  }
+}
+
+.links-list {
+  @extend.no-padding-on-mobile;
+}
+
+.materials-list {
+  @media(max-width: 577px) {
+    padding-left: 13px;
   }
 }
 

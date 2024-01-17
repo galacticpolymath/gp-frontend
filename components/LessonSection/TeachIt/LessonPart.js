@@ -385,7 +385,7 @@ const LessonPart = ({
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
               <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
             </div>
-            <ol className='mt-2'>
+            <ol className='mt-2 materials-list'>
               {!!_itemList?.length && _itemList.map((item, itemIndex) => {
                 const { itemTitle, itemDescription, links, filePreviewImg } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
