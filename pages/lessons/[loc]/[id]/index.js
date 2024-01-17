@@ -285,27 +285,16 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       lessonParts = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons.map(lesson => {
         if (lesson?.itemList?.length) {
           const itemListUpdated = lesson.itemList.map(itemObj => {
-            if (itemObj?.links?.length) {
-              const linksUpdated = itemObj.links.map(linkObj => {
-                const googleDriveFileId = getGoogleDriveFileIdFromUrl(linkObj.url);
-
-                if (!googleDriveFileId) {
-                  return linkObj
-                }
-
-                return {
-                  ...linkObj,
-                  filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`, 
-                };
-              });
+            if (itemObj?.links?.length && itemObj.links[0]?.url) {
+              const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
 
               return {
                 ...itemObj,
-                links: linksUpdated,
+                filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
               }
             }
 
-            return itemObj
+            return itemObj;
           });
 
           return {

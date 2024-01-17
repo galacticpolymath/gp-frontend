@@ -151,6 +151,8 @@ const LessonPart = ({
     boxShadow: isExpanded ? highlightedGlow : 'none',
   };
 
+  console.log('itemList yo there: ', itemList);
+
   return (
     <div style={accordionStyleAccordionWrapper}>
       <Accordion
@@ -384,9 +386,8 @@ const LessonPart = ({
               <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
             </div>
             <ol className='mt-2'>
-              {!!_itemList?.length && _itemList.map((item, itemIndex, self) => {
-                console.log('self: ', self.length);
-                const { itemTitle, itemDescription, links, filePreviewImgs } = item;
+              {!!_itemList?.length && _itemList.map((item, itemIndex) => {
+                const { itemTitle, itemDescription, links, filePreviewImg } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
 
                 return (
@@ -425,11 +426,11 @@ const LessonPart = ({
                           ))}
                         </ul>
                       </section>
-                      {filePreviewImgs && (
+                      {filePreviewImg && (
                         <section className="ps-4">
-                          <div style={{ width: itemIndex === 0 ? 180 : 90, height: '100%' }} className="position-relative">
+                          <div style={{ width: itemIndex === 0 ? 200 : 90, height: '100%' }} className="position-relative">
                             <Image
-                              src={filePreviewImgs}
+                              src={filePreviewImg}
                               alt="lesson_tile"
                               fill
                               sizes="130px"
