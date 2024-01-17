@@ -68,7 +68,9 @@ const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
   const Component = sectionTypeMap[section.__component];
   let compProps = { ...section, _sectionDots };
 
-  if (TeachIt.name === 'TeachIt') {
+  console.log("Component.name: ", Component.name);
+
+  if (Component.name === 'TeachIt') {
     compProps.ForGrades = ForGrades;
   }
 
