@@ -263,11 +263,11 @@ export default function Home() {
       </div>
       <div className="bg-light-gray">
         <div className='bg-secondary-light d-flex justify-content-center align-items-center py-sm-4 px-1 px-sm-0'>
-          <div style={{ height: 200 }} className="position-relative gp-equation-img-container">
+          <div className="position-relative gp-equation-img-container">
             <Image
               src="/imgs/learning-equation.png"
               alt="Galactic_Polymath_Equation"
-              className='w-100 gp-equation-img'
+              className='w-100 gp-equation-img px-1 px-sm-0'
               fill              
               style={{ objectFit: 'contain' }}
             />

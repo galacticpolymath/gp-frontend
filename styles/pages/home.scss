@@ -30,17 +30,19 @@
     }
 }
 
-.gp-equation-img-container{
+.gp-equation-img-container {
     width: 75%;
+    height: 200px;
 
-    @media(max-width: 577px){
+    @media(max-width: 577px) {
         width: 100%;
+        height: 150px;
     }
 }
 
 .gp-equation-img {
     @media(max-width: 577px) {
-        transform: scale(100%, 119%)
+        transform: scale(103%)
     }
 }
 
