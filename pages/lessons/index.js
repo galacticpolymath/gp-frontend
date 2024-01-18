@@ -16,6 +16,14 @@ import GpLessonSvg from '../../assets/img/gp-lesson-icon.svg'
 import UnitIconSvg from '../../assets/img/gp-unit-icon.svg'
 import Image from 'next/image';
 
+const UnshowableLesson = () => (
+  <div
+    className="w-100 pointer d-flex justify-content-center align-items-center disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 cardsOnLessonPg"
+  >
+    <p style={{ fontWeight: 700 }} className="text-center">Not shown on Lessons page.</p>
+  </div>
+);
+
 const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
 
   const handleJobVizCardClick = () => {
@@ -23,8 +31,8 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
   };
 
   const uniqueIDs = [];
-  const publishedLessons = lessons.filter(({ PublicationStatus, numID }) => {
-    const willShowLesson = !uniqueIDs.includes(numID) && (PublicationStatus === 'Live');
+  const lessonsToShow = lessons.filter(({ numID }) => {
+    const willShowLesson = !uniqueIDs.includes(numID);
 
     if (willShowLesson) {
       uniqueIDs.push(numID);
@@ -95,12 +103,15 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
               <p className='mt-2 mb-0'> Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
               <p><em>And they&apos;re all free!</em></p>
             </div>
-            {!!publishedLessons?.length && (
+            {!!lessonsToShow?.length && (
               <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-                {publishedLessons.map((lesson) => <LessonCard key={lesson._id} lesson={lesson} />)}
+                {lessonsToShow.map((lesson, index) => {
+                  console.log("lesson, hey there: ", lesson.PublicationStatus)
+                  return lesson.PublicationStatus === "Proto" ? <UnshowableLesson key={index} /> : <LessonCard key={lesson._id} lesson={lesson} />
+                })}
               </div>
             )}
-            {(!publishedLessons?.length && didErrorOccur) && (
+            {(!lessonsToShow?.length && didErrorOccur) && (
               <div className='px-4 pb-4'>
                 <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
               </div>
@@ -123,7 +134,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
                 {lessonParts.map((lesson, index) => <IndividualLesson key={index} lesson={{ ...lesson, _id: index }} />)}
               </div>
             )}
-            {(!publishedLessons?.length && didErrorOccur) && (
+            {(!lessonsToShow?.length && didErrorOccur) && (
               <div className='px-4 pb-4'>
                 <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
               </div>
@@ -175,7 +186,7 @@ export async function getStaticProps() {
           if (lsnStatus.status !== 'Live') {
             continue;
           }
-          
+
           const lessonPart = lessonParts.find(({ lsnNum }) => lsnNum === lsnStatus.lsn);
 
           if (lessonPart) {
