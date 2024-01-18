@@ -16,6 +16,24 @@ import GpLessonSvg from '../../assets/img/gp-lesson-icon.svg'
 import UnitIconSvg from '../../assets/img/gp-unit-icon.svg'
 import Image from 'next/image';
 
+const Pill = ({ txt = "Beta", pillColor = "#6B00BA" }) => (
+  <div
+    style={{
+      // width: '85px',
+      border: 'solid 1px white',
+      fontStyle: 'italic',
+      // height: '37.6px',
+      fontSize: '20px',
+      fontWeight: 600,
+      transform: 'translate(10px, -15px)',
+      backgroundColor: pillColor,
+    }}
+    className="position-absolute d-flex justify-content-center align-items-center shadow top-0 end-0 text-white text-center px-2 rounded-3"
+  >
+    {txt}
+  </div>
+)
+
 const UnshowableLesson = () => (
   <div
     className="w-100 pointer d-flex justify-content-center align-items-center disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 cardsOnLessonPg"
@@ -106,8 +124,18 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
             {!!lessonsToShow?.length && (
               <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                 {lessonsToShow.map((lesson, index) => {
-                  console.log("lesson, hey there: ", lesson.PublicationStatus)
-                  return lesson.PublicationStatus === "Proto" ? <UnshowableLesson key={index} /> : <LessonCard key={lesson._id} lesson={lesson} />
+                  console.log("lesson, hey there, Title: ", lesson.Title)
+                  console.log("lesson, hey there: ", lesson)
+                  return (lesson.PublicationStatus === "Proto") ?
+                    <UnshowableLesson key={index} />
+                    :
+                    (
+                      <LessonCard
+                        key={lesson._id}
+                        lesson={lesson}
+                        BetaPillComp={lesson.PublicationStatus === "Beta" ? <Pill /> : null}                        
+                      />
+                    )
                 })}
               </div>
             )}

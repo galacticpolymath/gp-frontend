@@ -1,10 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-const MILISECONDS_IN_A_MONTH = 2_592_000_000;
-
 // MAKE COMPONENT EXTENABLE FOR THE IMAGE
-const LessonCard = ({ lesson }) => {
+const LessonCard = ({ lesson, BetaPillComp }) => {
   const {
     _id,
     locale,
@@ -13,11 +11,9 @@ const LessonCard = ({ lesson }) => {
     Subtitle,
     Title,
     Section,
-    ReleaseDate,
     LessonBanner,
     individualLessonsNum,
   } = lesson;
-  const isNew = (new Date() - new Date(ReleaseDate)) < MILISECONDS_IN_A_MONTH;
 
   return (
     <Link
@@ -57,22 +53,7 @@ const LessonCard = ({ lesson }) => {
             priority
           />
         )}
-        {isNew && (
-          <div
-            style={{
-              width: '85px',
-              border: 'solid 1px white',
-              fontStyle: 'italic',
-              height: '37.6px',
-              fontSize: '25px',
-              fontWeight: 500,
-              transform: 'translate(10px, -15px)',
-            }}
-            className="position-absolute d-flex justify-content-center align-items-center shadow top-0 end-0 bg-primary text-white text-center p-1 rounded-3"
-          >
-            NEW
-          </div>
-        )}
+        {BetaPillComp}
       </div>
       <div className='pt-2 ps-sm-3 d-grid'>
         <h3 style={{ textDecoration: 'none' }} className='w-light text-black mb-0 no-underline-on-hover'>{Title}</h3>
