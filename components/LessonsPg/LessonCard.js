@@ -2,16 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 // MAKE COMPONENT EXTENABLE FOR THE IMAGE
-const LessonCard = ({ lesson, BetaPillComp }) => {
+const LessonCard = ({ lesson, BetaPillComp = null, lessonImgSrc }) => {
   const {
     _id,
     locale,
     numID,
-    CoverImage,
     Subtitle,
     Title,
     Section,
-    LessonBanner,
     individualLessonsNum,
   } = lesson;
 
@@ -23,36 +21,19 @@ const LessonCard = ({ lesson, BetaPillComp }) => {
       disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
     >
       <div className="position-relative">
-        {(CoverImage && CoverImage.url) && (
-          <Image
-            src={CoverImage.url}
-            alt={Subtitle}
-            width={15}
-            height={4.5}
-            sizes='100vw'
-            className='p-0'
-            style={{
-              width: '100%',
-              height: 'auto',
-            }}
-            priority
-          />
-        )}
-        {LessonBanner && !(CoverImage && CoverImage.url) && (
-          <Image
-            src={LessonBanner}
-            alt={Subtitle}
-            width={15}
-            height={4.5}
-            sizes='100vw'
-            className='p-0'
-            style={{
-              width: '100%',
-              height: 'auto',
-            }}
-            priority
-          />
-        )}
+        <Image
+          src={lessonImgSrc}
+          alt={Subtitle}
+          width={15}
+          height={4.5}
+          sizes='100vw'
+          className='p-0'
+          style={{
+            width: '100%',
+            height: 'auto',
+          }}
+          priority
+        />
         {BetaPillComp}
       </div>
       <div className='pt-2 ps-sm-3 d-grid'>

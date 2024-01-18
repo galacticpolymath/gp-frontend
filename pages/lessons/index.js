@@ -16,6 +16,20 @@ import GpLessonSvg from '../../assets/img/gp-lesson-icon.svg'
 import UnitIconSvg from '../../assets/img/gp-unit-icon.svg'
 import Image from 'next/image';
 
+const getLessonImgSrc = lesson => {
+  const { CoverImage, LessonBanner } = lesson;
+
+  if (lesson.PublicationStatus === "Coming Soon") {
+    return "https://storage.googleapis.com/gp-cloud/icons/coming-soon_Banner.png"
+  }
+
+  if (LessonBanner && !(CoverImage && CoverImage.url)) {
+    return LessonBanner;
+  }
+
+  return CoverImage.url
+}
+
 const Pill = ({ txt = "Beta", pillColor = "#6B00BA" }) => (
   <div
     style={{
@@ -124,8 +138,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
             {!!lessonsToShow?.length && (
               <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                 {lessonsToShow.map((lesson, index) => {
-                  console.log("lesson, hey there, Title: ", lesson.Title)
-                  console.log("lesson, hey there: ", lesson)
+
                   return (lesson.PublicationStatus === "Proto") ?
                     <UnshowableLesson key={index} />
                     :
@@ -133,7 +146,8 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
                       <LessonCard
                         key={lesson._id}
                         lesson={lesson}
-                        BetaPillComp={lesson.PublicationStatus === "Beta" ? <Pill /> : null}                        
+                        lessonImgSrc={getLessonImgSrc(lesson)}
+                        BetaPillComp={lesson.PublicationStatus === "Beta" ? <Pill /> : null}
                       />
                     )
                 })}
