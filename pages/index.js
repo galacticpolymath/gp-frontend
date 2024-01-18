@@ -261,7 +261,6 @@ export default function Home() {
           We craft learning narratives that students will remember. We make it clear how abstract learning standards in language arts, math, social studies and science connect to give students methods for approaching complex problems.
         </p>
       </div>
-
       <div className="bg-light-gray">
         <div className='bg-secondary-light d-flex justify-content-center align-items-center py-sm-4 px-1 px-sm-0'>
           <div style={{ height: 200 }} className="position-relative gp-equation-img-container">
