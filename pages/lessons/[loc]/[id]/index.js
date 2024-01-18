@@ -18,6 +18,7 @@ import useScrollHandler from '../../../../customHooks/useScrollHandler';
 import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
+import SendFeedback from '../../../../components/LessonSection/SendFeedback';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
@@ -160,7 +161,7 @@ const LessonDetails = ({ lesson }) => {
     return null;
   }
 
-  if (!lesson || !_sections?.length) {
+  if (!lesson || !_sections?.length || ((typeof window !== "undefined") && lesson.PublicationStatus === "Proto")) {
     router.replace('/error');
     return null;
   }
@@ -189,6 +190,7 @@ const LessonDetails = ({ lesson }) => {
 
   return (
     <Layout {...layoutProps}>
+      {(lesson.PublicationStatus === "Draft") && <SendFeedback />}
       <LessonsSecsNavDots
         _sectionDots={[sectionDots, setSectionDots]}
         setWillGoToTargetSection={setWillGoToTargetSection}
@@ -217,6 +219,19 @@ const LessonDetails = ({ lesson }) => {
   );
 };
 
+async function getLinkPreviewObj(url) {
+  try {
+    const linkPreviewObj = await getLinkPreview(url);
+
+    return linkPreviewObj;
+  } catch (error) {
+    const errMsg = `An error has occurred in getting the link preview for given url. Error message: ${error}.`;
+    console.error(errMsg);
+
+    return { errMsg }
+  }
+}
+
 export const getStaticPaths = async () => {
   try {
     await connectToMongodb();
@@ -233,19 +248,6 @@ export const getStaticPaths = async () => {
     console.error('An error has occurred in getting the available paths for the selected lesson page. Error message: ', error)
   }
 };
-
-async function getLinkPreviewObj(url) {
-  try {
-    const linkPreviewObj = await getLinkPreview(url);
-
-    return linkPreviewObj;
-  } catch (error) {
-    const errMsg = `An error has occurred in getting the link preview for given url. Error message: ${error}.`;
-    console.error(errMsg);
-
-    return { errMsg }
-  }
-}
 
 const getGoogleDriveFileIdFromUrl = url => {
   if (typeof url !== "string") {

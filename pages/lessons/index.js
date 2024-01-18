@@ -33,10 +33,8 @@ const getLessonImgSrc = lesson => {
 const Pill = ({ txt = "Beta", pillColor = "#6B00BA" }) => (
   <div
     style={{
-      // width: '85px',
       border: 'solid 1px white',
       fontStyle: 'italic',
-      // height: '37.6px',
       fontSize: '20px',
       fontWeight: 600,
       transform: 'translate(10px, -15px)',
@@ -138,18 +136,20 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
             {!!lessonsToShow?.length && (
               <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                 {lessonsToShow.map((lesson, index) => {
-
-                  return (lesson.PublicationStatus === "Proto") ?
-                    <UnshowableLesson key={index} />
-                    :
-                    (
-                      <LessonCard
-                        key={lesson._id}
-                        lesson={lesson}
-                        lessonImgSrc={getLessonImgSrc(lesson)}
-                        BetaPillComp={lesson.PublicationStatus === "Beta" ? <Pill /> : null}
-                      />
-                    )
+                  console.log("title: ", lesson.Title);
+                  console.log("status: ", lesson.PublicationStatus)
+                  return (
+                    (lesson.PublicationStatus === "Proto") ?
+                      <UnshowableLesson key={index} />
+                      : (
+                        <LessonCard
+                          key={lesson._id}
+                          lesson={lesson}
+                          lessonImgSrc={getLessonImgSrc(lesson)}
+                          BetaPillComp={(lesson.PublicationStatus === "Beta") || (lesson.PublicationStatus === "Draft") ? <Pill /> : null}
+                        />
+                      )
+                  )
                 })}
               </div>
             )}
