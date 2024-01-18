@@ -340,6 +340,14 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.increase-size-by-2x{
+  transform: scale(175%)
+}
+
+.increase-size-by-3x {
+  transform: scale(275%)
+}
+
 .links-list {
   @extend.no-padding-on-mobile;
 }

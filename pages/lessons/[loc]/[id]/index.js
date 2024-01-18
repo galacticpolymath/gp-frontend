@@ -190,7 +190,7 @@ const LessonDetails = ({ lesson }) => {
 
   return (
     <Layout {...layoutProps}>
-      {(lesson.PublicationStatus === "Draft") && <SendFeedback />}
+      {((lesson.PublicationStatus === "Draft") || (lesson.PublicationStatus === "Proto")) && <SendFeedback />}
       <LessonsSecsNavDots
         _sectionDots={[sectionDots, setSectionDots]}
         setWillGoToTargetSection={setWillGoToTargetSection}
