@@ -14,7 +14,7 @@ import Pill from "../../Pill";
 
 // 'solid 2px #C0BFC1'
 // d-none d-lg-block position-relative me-4
-// d-none d-lg-block position-relative me-4
+// d-flex my-3 my-lg-0 d-lg-none position-relative
 const LessonTile = ({ 
   lessonTileUrl, 
   imgContainerClassNameStr, 
@@ -37,18 +37,18 @@ const LessonTile = ({
   );
 };
 
-const getLessonTile = (lesson, imgContainerClassNameStr, lessonTileUrl) => {
-  // if((lesson && (typeof lesson !== "object")) || !lesson || "PublicationStatus" in lesson){
-  //   return null;
-  // }
+const getLessonTile = (lessonPart, imgContainerClassNameStr, lessonTileUrl) => {
+  if((lessonPart && (typeof lessonPart !== "object")) || !lessonPart || "PublicationStatus" in lessonPart){
+    return null;
+  }
 
-  if(lesson.PublicationStatus === "Beta"){
+  if(lessonPart.PublicationStatus !== "Beta"){
     return( 
       <LessonTile 
         imgStyle={{ objectFit: 'contain' }} 
         lessonTileUrl={lessonTileUrl} 
         imgContainerClassNameStr={imgContainerClassNameStr}
-        Pill={<Pill />} 
+        Pill={<Pill zIndex={10} />} 
       />
     );
   }
@@ -238,8 +238,6 @@ const TeachIt = ({
 
             // get the image tile here and pass it as component. 
 
-            const Tile = getLessonTile(part, ); 
-
             if (partsFieldName === 'lessons') {
               const { tile, title } = resources?.[0]?.[partsFieldName]?.[index] ?? {};
               lessonTile = tile;
@@ -267,6 +265,8 @@ const TeachIt = ({
 
             return (
               <LessonPart
+                lessonTileForDesktop={getLessonTile(part, "d-none d-lg-block position-relative me-4", lessonTile)}
+                lessonTileForMobile={getLessonTile(part, "d-flex my-3 my-lg-0 d-lg-none position-relative", lessonTile)}
                 partsArr={self}
                 key={`${index}_part`}
                 resources={resources}
