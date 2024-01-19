@@ -16,9 +16,9 @@ import { HiOutlineXMark } from "react-icons/hi2";
 import Link from "next/link";
 import Button from "../General/Button";
 
-const CloseBtn = ({ handleOnClick }) => (
-    <Button defaultStyleObj={{ height: "fit-content" }} classNameStr="no-btn-styles" handleOnClick={handleOnClick}>
-        <HiOutlineXMark className="increase-size-by-3x" />
+const CloseBtn = ({ handleOnClick, dynamicStyles = {}, classNameStr = "increase-size-by-3x" }) => (
+    <Button defaultStyleObj={{ ...dynamicStyles, height: "fit-content" }} classNameStr="no-btn-styles" handleOnClick={handleOnClick}>
+        <HiOutlineXMark className={classNameStr} />
     </Button>
 )
 
@@ -51,8 +51,8 @@ const SendFeedback = ({
                 </span>
             </section>
             <section style={{ width: "2.5%" }} className="d-none d-sm-flex pt-3 pt-sm-0 justify-content-sm-center align-items-sm-center">
-                <CloseBtnComp handleOnClick={handleOnClick} />
             </section>
+                <CloseBtnComp classNameStr="" dynamicStyles={{ position: "absolute", top: "-5px", right: "5px", fontSize: "28px" }} handleOnClick={handleOnClick} />
         </div>
   );
 };
