@@ -44,7 +44,10 @@ const SendFeedback = ({
             </section>
             <section className="px-sm-3" style={{ width: "95%" }}>
                 <span>
-                    This unit is under construction. Please send your thoughts to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</Link>! And be sure to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={SIGN_UP_FOR_EMAIL_LINK}>sign up for emails</Link> to get notified when the final version is released.
+                    <i style={{ height: "fit-content" }} className="bi bi-tools d-inline d-sm-none scissor-icon" />
+                    <span className="ps-2 ps-sm-0 send-feedback-txt">    
+                        This unit is under construction. Please send your thoughts to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</Link>! And be sure to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={SIGN_UP_FOR_EMAIL_LINK}>sign up for emails</Link> to get notified when the final version is released.
+                    </span>           
                 </span>
             </section>
             <section style={{ width: "2.5%" }} className="d-none d-sm-flex pt-3 pt-sm-0 justify-content-sm-center align-items-sm-center">
