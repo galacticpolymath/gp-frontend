@@ -50,9 +50,12 @@ const SendFeedback = ({
                     </span>           
                 </span>
             </section>
-            <section style={{ width: "2.5%" }} className="d-none d-sm-flex pt-3 pt-sm-0 justify-content-sm-center align-items-sm-center">
-            </section>
-                <CloseBtnComp classNameStr="" dynamicStyles={{ position: "absolute", top: "-5px", right: "5px", fontSize: "28px" }} handleOnClick={handleOnClick} />
+            {CloseBtnComp && (
+                <section style={{ width: "2.5%" }} className="d-none d-sm-flex pt-3 pt-sm-0 justify-content-sm-center align-items-sm-center">
+                    <CloseBtnComp handleOnClick={handleOnClick} />
+                </section>
+            )}
+            {CloseBtnComp && <CloseBtnComp classNameStr="d-sm-none" dynamicStyles={{ position: "absolute", top: "-5px", right: "5px", fontSize: "28px" }} handleOnClick={handleOnClick} />}
         </div>
   );
 };
