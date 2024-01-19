@@ -9,12 +9,13 @@ import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import LessonCard from '../../components/LessonsPg/LessonCard';
 import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
-import { connectToMongodb } from '../../backend/utils/connection';
 import IndividualLesson from '../../components/LessonsPg/IndividualLesson.js';
 import Sponsors from '../../components/Sponsors.js';
 import GpLessonSvg from '../../assets/img/gp-lesson-icon.svg'
 import UnitIconSvg from '../../assets/img/gp-unit-icon.svg'
 import Image from 'next/image';
+import Pill from '../../components/Pill.js';
+import { connectToMongodb } from '../../backend/utils/connection';
 
 const getLessonImgSrc = lesson => {
   const { CoverImage, LessonBanner } = lesson;
@@ -29,22 +30,6 @@ const getLessonImgSrc = lesson => {
 
   return CoverImage.url
 }
-
-const Pill = ({ txt = "Beta", pillColor = "#6B00BA" }) => (
-  <div
-    style={{
-      border: 'solid 1px white',
-      fontStyle: 'italic',
-      fontSize: '20px',
-      fontWeight: 600,
-      transform: 'translate(10px, -15px)',
-      backgroundColor: pillColor,
-    }}
-    className="position-absolute d-flex justify-content-center align-items-center shadow top-0 end-0 text-white text-center px-2 rounded-3"
-  >
-    {txt}
-  </div>
-)
 
 const UnshowableLesson = () => (
   <div
