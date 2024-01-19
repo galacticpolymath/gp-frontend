@@ -45,6 +45,7 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
 }));
 
 const LessonDetails = ({ lesson }) => {
+  console.log("lesson.LsnStatuses: ", lesson.LsnStatuses)
   const router = useRouter();
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
@@ -156,6 +157,8 @@ const LessonDetails = ({ lesson }) => {
   }, []);
 
   let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
+
+  console.log("_sections, hey there: ", _sections)
 
   if (!lesson && typeof window === "undefined") {
     return null;
@@ -284,6 +287,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     let lessonParts = null;
 
     if (lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons) {
+      // getting the thumbnails for the google drive file handouts for each lesson
       lessonParts = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons.map(lesson => {
         if (lesson?.itemList?.length) {
           const itemListUpdated = lesson.itemList.map(itemObj => {
@@ -310,6 +314,8 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
       lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[0].lessons = lessonParts;
     }
+
+    // GOAL: get the status of each lesson
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
     const multiMediaArr = lessonToDisplayOntoUi?.Section?.preview?.Multimedia;
     let sponsorLogoImgUrl = lessonToDisplayOntoUi.SponsorImage?.url?.length ? lessonToDisplayOntoUi.SponsorImage?.url : lessonToDisplayOntoUi.SponsorLogo;

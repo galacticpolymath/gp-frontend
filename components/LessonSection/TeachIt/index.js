@@ -9,6 +9,58 @@ import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 import RichText from '../../RichText';
+import Image from "next/image";
+import Pill from "../../Pill";
+
+// 'solid 2px #C0BFC1'
+// d-none d-lg-block position-relative me-4
+// d-none d-lg-block position-relative me-4
+const LessonTile = ({ 
+  lessonTileUrl, 
+  imgContainerClassNameStr, 
+  imgStyle = { objectFit: 'contain' },
+  imgContainerStyle = { width: 150, height: 150 },
+  Pill = null,
+}) => {
+  return (
+    <div style={imgContainerStyle} className={imgContainerClassNameStr}>
+      {Pill}
+      <Image
+        src={lessonTileUrl}
+        alt="lesson_tile"
+        fill
+        style={imgStyle}
+        sizes="130px"
+        className="img-optimize rounded w-100 h-100"
+      />
+    </div>
+  );
+};
+
+const getLessonTile = (lesson, imgContainerClassNameStr, lessonTileUrl) => {
+  // if((lesson && (typeof lesson !== "object")) || !lesson || "PublicationStatus" in lesson){
+  //   return null;
+  // }
+
+  if(lesson.PublicationStatus === "Beta"){
+    return( 
+      <LessonTile 
+        imgStyle={{ objectFit: 'contain' }} 
+        lessonTileUrl={lessonTileUrl} 
+        imgContainerClassNameStr={imgContainerClassNameStr}
+        Pill={<Pill />} 
+      />
+    );
+  }
+
+  return( 
+    <LessonTile 
+      imgStyle={{ objectFit: 'contain', border: 'solid 2px #C0BFC1' }} 
+      lessonTileUrl={lessonTileUrl} 
+      imgContainerClassNameStr={imgContainerClassNameStr} 
+    />
+  );
+};
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
 
@@ -39,11 +91,11 @@ const TeachIt = ({
   const gradeVariations = Data[environments[0]]?.resources ? (getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources) : [];
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations?.length ? gradeVariations[0] : {});
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
-  const allResources = Data?.[selectedEnvironment]?.resources ? (getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources) : [];  
+  const allResources = Data?.[selectedEnvironment]?.resources ? (getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources) : [];
   const [selectedGradeResources, setSelectedGradeResources] = useState(allResources?.[0]?.links ?? []);
   let resources = allResources?.length ? allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix) : [];
   resources = getIsValObj(resources) ? [resources] : resources;
-  const isPartsObjPresent = Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object'); 
+  const isPartsObjPresent = Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object');
   const partsFieldName = ((Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object')) && ('parts' in Data.classroom.resources[0])) ? 'parts' : 'lessons';
   const dataLesson = Data.lesson;
   let parts = isPartsObjPresent ? Data.classroom.resources[0]?.[partsFieldName] : [];
@@ -184,6 +236,10 @@ const TeachIt = ({
             } = part;
             let secondTitle = null;
 
+            // get the image tile here and pass it as component. 
+
+            const Tile = getLessonTile(part, ); 
+
             if (partsFieldName === 'lessons') {
               const { tile, title } = resources?.[0]?.[partsFieldName]?.[index] ?? {};
               lessonTile = tile;
@@ -202,7 +258,7 @@ const TeachIt = ({
               chunks = _chunks;
             }
 
-            if (!lsnExt && (typeof dataLesson === 'object') && (dataLesson !== null)) {
+            if (!lsnExt && (dataLesson && (typeof dataLesson === 'object'))) {
               const { lsnExt: lsnExtBackup } = Object.values(dataLesson).find(({ lsnNum: lsnNumDataLesson }) => {
                 return (lsnNumDataLesson && ((lsn == lsnNumDataLesson) || (lsnNum == lsnNumDataLesson)));
               }) ?? {};

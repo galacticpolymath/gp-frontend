@@ -20,13 +20,14 @@ const LessonPart = ({
   lsnExt,
   itemList,
   learningObjectives,
-  lessonTileUrl,
   partsFieldName,
   partsArr,
   chunks = [],
   resources,
   ForGrades,
   _numsOfLessonPartsThatAreExpanded,
+  lessonTileForDesktop = null,
+  lessonTileForMobile = null,
 }) => {
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -233,20 +234,7 @@ const LessonPart = ({
                       </div>
                     </div>
                   </div>
-                  {lessonTileUrl &&
-                    <div className='w-100 d-flex justify-content-start align-items-stretch flex-column'>
-                      <div style={{ width: 150, height: 150 }} className="d-flex my-3 my-lg-0 d-lg-none position-relative">
-                        <Image
-                          src={lessonTileUrl}
-                          alt="lesson_tile"
-                          fill
-                          style={{ objectFit: 'contain' }}
-                          sizes="130px"
-                          className="rounded img-optimize"
-                        />
-                      </div>
-                    </div>
-                  }
+                  {lessonTileForMobile}
                   <div className='d-flex mt-2'>
                     <RichText
                       className='text-start'
@@ -272,18 +260,7 @@ const LessonPart = ({
                   )}
                 </div>
                 <div className='d-none arrow-down-lesson-part-container d-lg-flex'>
-                  {lessonTileUrl &&
-                    <div style={{ width: 150, height: 150 }} className="d-none d-lg-block position-relative me-4">
-                      <Image
-                        src={lessonTileUrl}
-                        alt="lesson_tile"
-                        fill
-                        style={{ objectFit: 'contain' }}
-                        sizes="130px"
-                        className="rounded img-optimize"
-                      />
-                    </div>
-                  }
+                  {lessonTileForDesktop}
                   <div className="h-100 d-none d-sm-block">
                     <div
                       className="rounded d-flex justify-content-center align-items-center"
@@ -437,7 +414,7 @@ const LessonPart = ({
                                 border: 'solid 2px #C4C4C4',
                                 borderRadius: '.1em',
                               }}
-                              
+
                             />
                           </div>
                         </section>
