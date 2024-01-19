@@ -15,9 +15,9 @@ import Pill from "../../Pill";
 // 'solid 2px #C0BFC1'
 // d-none d-lg-block position-relative me-4
 // d-flex my-3 my-lg-0 d-lg-none position-relative
-const LessonTile = ({ 
-  lessonTileUrl, 
-  imgContainerClassNameStr, 
+const LessonTile = ({
+  lessonTileUrl,
+  imgContainerClassNameStr,
   imgStyle = { objectFit: 'contain' },
   imgContainerStyle = { width: 150, height: 150 },
   Pill = null,
@@ -37,27 +37,23 @@ const LessonTile = ({
   );
 };
 
-const getLessonTile = (lessonPart, imgContainerClassNameStr, lessonTileUrl) => {
-  if((lessonPart && (typeof lessonPart !== "object")) || !lessonPart || "PublicationStatus" in lessonPart){
-    return null;
-  }
-
-  if(lessonPart.PublicationStatus !== "Beta"){
-    return( 
-      <LessonTile 
-        imgStyle={{ objectFit: 'contain' }} 
-        lessonTileUrl={lessonTileUrl} 
+const DisplayLessonTile = ({ lessonPart, imgContainerClassNameStr, lessonTileUrl }) => {
+  if (lessonPart.PublicationStatus !== "Beta") {
+    return (
+      <LessonTile
+        imgStyle={{ objectFit: 'contain' }}
+        lessonTileUrl={lessonTileUrl}
         imgContainerClassNameStr={imgContainerClassNameStr}
-        Pill={<Pill zIndex={10} />} 
+        Pill={<Pill zIndex={10} />}
       />
     );
   }
 
-  return( 
-    <LessonTile 
-      imgStyle={{ objectFit: 'contain', border: 'solid 2px #C0BFC1' }} 
-      lessonTileUrl={lessonTileUrl} 
-      imgContainerClassNameStr={imgContainerClassNameStr} 
+  return (
+    <LessonTile
+      imgStyle={{ objectFit: 'contain', border: 'solid 2px #C0BFC1' }}
+      lessonTileUrl={lessonTileUrl}
+      imgContainerClassNameStr={imgContainerClassNameStr}
     />
   );
 };
@@ -263,10 +259,31 @@ const TeachIt = ({
               lsnExt = lsnExtBackup;
             }
 
+            let lessonTilesObj = {};
+
+            console.log("part.PublicationStatus: ", part.PublicationStatus);
+            if (((part && (typeof part === "object")) && !("PublicationStatus" in part)) && (lessonTile && (typeof lessonTile === "string"))) {
+              lessonTilesObj = {
+                lessonTileForDesktop: (
+                  <DisplayLessonTile
+                    lessonPart={part}
+                    imgContainerClassNameStr="d-none d-lg-block position-relative me-4"
+                    lessonTileUrl={lessonTile}
+                  />
+                ),
+                lessonTileForMobile: (
+                  <DisplayLessonTile
+                    lessonPart={part}
+                    imgContainerClassNameStr="d-flex my-3 my-lg-0 d-lg-none position-relative"
+                    lessonTileUrl={lessonTile}
+                  />
+                ),
+              };
+            }
+
             return (
               <LessonPart
-                lessonTileForDesktop={getLessonTile(part, "d-none d-lg-block position-relative me-4", lessonTile)}
-                lessonTileForMobile={getLessonTile(part, "d-flex my-3 my-lg-0 d-lg-none position-relative", lessonTile)}
+                {...lessonTilesObj}
                 partsArr={self}
                 key={`${index}_part`}
                 resources={resources}
