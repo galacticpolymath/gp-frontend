@@ -100,7 +100,7 @@ const StandardsGroup = ({
                       {isAccordionContentDisplayed ?
                         <i style={{ fontSize: '24px' }} className="opacity-100 bi bi-x" />
                         :
-                        <i className='opacity-100 bi bi-three-dots' />
+                        <span className='fs-6'>...?</span>
                       }
                     </button>
                   </div>
