@@ -34,7 +34,7 @@ const Standards = ({
                ...?</span>
             </span>
           </div>
-          <h4 className='fs-5 fw-bold mt-4 mb-1'>Target Standard(s)</h4>
+          <h4 className='fs-5 fw-bold mt-4 mb-1'><i class="bi bi-bullseye me-2"/>Target Standard(s)</h4>
           <div className="mb-3">
             Skills and concepts directly taught or reinforced by this lesson
           </div>
@@ -47,7 +47,7 @@ const Standards = ({
             />
           ))}
 
-          <h4 className='fs-5 fw-bold mt-4 mb-1'>Connected Standard(s)</h4>
+          <h4 className='fs-5 fw-bold mt-4 mb-1'><i class="bi bi-diagram-3-fill me-2"></i>Connected Standard(s)</h4>
           <div className="mb-3">
             Skills and concepts reviewed or hinted at in this lesson (for building upon)
           </div>
