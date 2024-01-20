@@ -65,7 +65,7 @@ const StandardsGroup = ({
                 onClick={handleOnClick}
                 data-bs-toggle='collapse'
                 data-bs-target={`#content_${contentId}`}
-                style={{ width: 50, height: 35 }}
+                style={{ width: 50, height: 20 }}
                 className="d-flex justify-content-center"
               >
                 <i
@@ -81,7 +81,7 @@ const StandardsGroup = ({
               </div>
             </h6>
             {[].concat(codes).map((code, i) => (
-              <div className='mb-0' key={i}>
+              <div className='mb-0 inline-block' key={i}>
                 <CopyableTxt
                   implementLogicOnClick={handleClickToCopyTxt}
                 >
@@ -90,7 +90,7 @@ const StandardsGroup = ({
                   </div>
                 </CopyableTxt>
                 {isOnClient && (
-                  <div className='w-100 py-2 d-flex justify-content-center align-items-center'>
+                  <div className='d-inline-block'>
                     <button
                       className='no-btn-styles w-100'
                       onClick={handleOnClick}
@@ -100,7 +100,7 @@ const StandardsGroup = ({
                       {isAccordionContentDisplayed ?
                         <i style={{ fontSize: '24px' }} className="opacity-100 bi bi-x" />
                         :
-                        <span className='fs-6'>...?</span>
+                        <span className='fs-6 ms-2 bold'>...?</span>
                       }
                     </button>
                   </div>
