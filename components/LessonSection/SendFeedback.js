@@ -27,9 +27,9 @@ const SIGN_UP_FOR_EMAIL_LINK = "https://45216c4d.sibforms.com/serve/MUIEABKhQZtQ
 
 const SendFeedback = ({
   CloseBtnComp = CloseBtn,
-  parentDivStyles = { position: "absolute", backgroundColor: "#EBD0FF", zIndex: 100 },
+  parentDivStyles = { position: "absolute", backgroundColor: "#EBD0FF", zIndex: 100, width: "100vw" },
   txtSectionStyle = { width: "95%" },
-  parentDivClassName = 'w-100 py-2 px-3',
+  parentDivClassName = 'w-100 py-2 px-3 d-flex',
 }) => {
   const [willHide, setWillHide] = useState(false)
 
@@ -40,25 +40,26 @@ const SendFeedback = ({
   return (
         <div
             style={{ ...parentDivStyles, display: willHide ? "none" : "flex" }}
-            className={parentDivClassName}
         >
-            <section style={{ width: "2.5%" }} className="d-none d-sm-flex pt-3 pt-sm-0 justify-content-sm-center align-items-sm-center">
-                <i style={{ height: "fit-content" }} className="bi bi-tools increase-size-by-2x" />           
-            </section>
-            <section className="px-sm-3" style={txtSectionStyle}>
-                <span>
-                    <i style={{ height: "fit-content" }} className="bi bi-tools d-inline d-sm-none scissor-icon" />
-                    <span className="ps-2 ps-sm-0 send-feedback-txt">    
-                        This unit is under construction. Please send your thoughts to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</Link>! And be sure to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={SIGN_UP_FOR_EMAIL_LINK}>sign up for emails</Link> to get notified when the final version is released.
-                    </span>           
-                </span>
-            </section>
-            {CloseBtnComp && (
+            {CloseBtnComp && <CloseBtnComp classNameStr="d-sm-none" dynamicStyles={{ position: "absolute", top: "-5px", left: "5px", fontSize: "28px" }} handleOnClick={handleOnClick} />}
+            <div className={parentDivClassName}>
                 <section style={{ width: "2.5%" }} className="d-none d-sm-flex pt-3 pt-sm-0 justify-content-sm-center align-items-sm-center">
-                    <CloseBtnComp handleOnClick={handleOnClick} />
+                    <i style={{ height: "fit-content" }} className="bi bi-tools increase-size-by-2x" />           
                 </section>
-            )}
-            {CloseBtnComp && <CloseBtnComp classNameStr="d-sm-none" dynamicStyles={{ position: "absolute", top: "-5px", right: "5px", fontSize: "28px" }} handleOnClick={handleOnClick} />}
+                <section className="px-sm-3 pt-4 pt-sm-0" style={txtSectionStyle}>
+                    <div>
+                        <i style={{ height: "fit-content" }} className="bi bi-tools d-inline d-sm-none scissor-icon" />
+                        <span className="ps-2 ps-sm-0 send-feedback-txt">    
+                            This unit is under construction. Please send your thoughts to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</Link>! And be sure to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={SIGN_UP_FOR_EMAIL_LINK}>sign up for emails</Link> to get notified when the final version is released.
+                        </span>           
+                    </div>
+                </section>
+                {CloseBtnComp && (
+                    <section style={{ width: "2.5%" }} className="d-none d-sm-flex pt-3 pt-sm-0 justify-content-sm-center align-items-sm-center">
+                        <CloseBtnComp handleOnClick={handleOnClick} />
+                    </section>
+                )}
+            </div>
         </div>
   );
 };
