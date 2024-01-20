@@ -21,7 +21,7 @@ const Acknowledgments = ({
           <div key={i} className='mb-3'>
             <h6 className='fw-bolder'>{role}</h6>
             <RichText className=' text-black-87' content={def} />
-            {name &&records.map(({ name, url, title, affiliation, location }) => (
+            {name && records.map(({ name, url, title, affiliation, location }) => (
               <ul key={name}>
                 <li className='mt-3 fw-normal inline-block'>
                   <a
