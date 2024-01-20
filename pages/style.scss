@@ -198,6 +198,12 @@ ol li {
   }
 }
 
+.fs-md-med {
+  @media(min-width: 768px) {
+    font-size: 26px !important;
+  }
+}
+
 .fs-large {
   font-size: 28px;
 }
@@ -209,6 +215,15 @@ ol li {
 
 .fs-med {
   font-size: 20px !important;
+}
+
+//standards
+.selected-standard{
+  
+  background-color: rgb(255, 249, 200);
+  -webkit-box-shadow: inset -1px 5px 14px -6px rgba(97,97,97,1);
+  -moz-box-shadow: inset -1px 5px 14px -6px rgba(97,97,97,1);
+  box-shadow: inset -1px 5px 14px -6px rgba(97,97,97,1);
 }
 
 // background color utilities
@@ -262,6 +277,14 @@ ol li {
 
 .bg-socialstudies-light {
   background-color: $social-studies-hl;
+}
+
+.bg-sustainability {
+  background-color: $sustainability;
+}
+
+.bg-sustainability-light {
+  background-color: $sustainability-hl;
 }
 
 // lesson page styling classes

@@ -67,8 +67,8 @@ const Title = ({
               />
             )}
           </div>
-          <h1 id="lessonTitleId" className="mt-2 fs-3 fs-md-larger mb-1">{lessonTitle}</h1>
-          <h4 className='fw-light fs-6'>{Subtitle}</h4>
+          <h1 id="lessonTitleId" className="mt-2 fs-2 fs-md-larger mb-1">{lessonTitle}</h1>
+          <h4 className='fw-light fs-6 fs-md-med mb-2'>{Subtitle}</h4>
           {lessonBannerUrl && (
             <div className='w-100 position-relative my-2 mx-0'>
               <Image
