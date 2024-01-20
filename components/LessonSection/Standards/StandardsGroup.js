@@ -111,7 +111,7 @@ const StandardsGroup = ({
           </div>
         )}
       >
-        <div className='p-3 ps-4 pb-1 bg-light-gray'>
+        <div className='p-2 selected-standard mx-2'>
           <h6>How does the lesson align to this standard?</h6>
           <CopyableTxt
             implementLogicOnClick={handleClickToCopyTxt}
