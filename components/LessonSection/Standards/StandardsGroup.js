@@ -90,9 +90,9 @@ const StandardsGroup = ({
                   </div>
                 </CopyableTxt>
                 {isOnClient && (
-                  <div className='w-100 d-flex justify-content-center align-items-center'>
+                  <div className='w-100 py-2 d-flex justify-content-center align-items-center'>
                     <button
-                      className='no-btn-styles'
+                      className='no-btn-styles w-100'
                       onClick={handleOnClick}
                       data-bs-toggle='collapse'
                       data-bs-target={`#content_${contentId}`}
@@ -111,8 +111,8 @@ const StandardsGroup = ({
           </div>
         )}
       >
-        <div className='p-2 selected-standard mx-2'>
-          <h6 className='my-1 bold'>How does the lesson align to this standard?</h6>
+        <div className='p-3 selected-standard mx-2'>
+          <h6 className='my-1 bold pb-1 mb-1' >How does the lesson address this standard?</h6>
           <CopyableTxt
             implementLogicOnClick={handleClickToCopyTxt}
           >
