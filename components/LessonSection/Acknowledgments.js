@@ -1,7 +1,6 @@
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
 
-let name;
 const Acknowledgments = ({
   SectionTitle,
   Data = [],
@@ -21,9 +20,10 @@ const Acknowledgments = ({
           <div key={i} className='mb-3'>
             <h6 className='fw-bolder'>{role}</h6>
             <RichText className=' text-black-87' content={def} />
-            {name && records.map(({ name, url, title, affiliation, location }) => (
+            {records.map(({ name, url, title, affiliation, location }) => 
+            name &&(
               <ul key={name}>
-                <li className='mt-3 fw-normal inline-block'>
+                <li className='mt-1 fw-normal inline-block'>
                   <a
                     href={url}
                     rel="noopener noreferrer"
@@ -36,6 +36,7 @@ const Acknowledgments = ({
                   <span className='d-inline-block'><i className="bi bi-geo-alt" /><em>{location}</em></span>
                 </li>
               </ul>
+              
             ))}
           </div>
         ))}
