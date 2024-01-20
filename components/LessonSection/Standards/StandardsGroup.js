@@ -112,7 +112,7 @@ const StandardsGroup = ({
         )}
       >
         <div className='p-3 selected-standard mx-2'>
-          <h6 className='my-1 bold pb-1 mb-1' >How does the lesson address this standard?</h6>
+          <h6 className='my-1 bold pb-1 mb-1'>How does the lesson address this standard?</h6>
           <CopyableTxt
             implementLogicOnClick={handleClickToCopyTxt}
           >
