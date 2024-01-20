@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
@@ -11,6 +12,7 @@ import useLessonElementInView from '../../../customHooks/useLessonElementInView'
 import RichText from '../../RichText';
 import Image from "next/image";
 import Pill from "../../Pill";
+import SendFeedback from "../SendFeedback";
 
 // 'solid 2px #C0BFC1'
 // d-none d-lg-block position-relative me-4
@@ -284,6 +286,17 @@ const TeachIt = ({
             return (
               <LessonPart
                 {...lessonTilesObj}
+                FeedbackComp={(part.PublicationStatus !== "Beta") ? (
+                  <SendFeedback
+                    parentDivStyles={{ backgroundColor: '#EBD0FF', zIndex: 100, border: '1px solid #B7B6C2' }}
+                    CloseBtnComp={null}
+                    parentDivClassName='w-100 py-2 px-3'
+                    txtSectionStyle={{ width: '100%' }}
+                  />
+                )
+                  :
+                  null
+                }
                 partsArr={self}
                 key={`${index}_part`}
                 resources={resources}

@@ -27,6 +27,9 @@ const SIGN_UP_FOR_EMAIL_LINK = "https://45216c4d.sibforms.com/serve/MUIEABKhQZtQ
 
 const SendFeedback = ({
   CloseBtnComp = CloseBtn,
+  parentDivStyles = { position: "absolute", backgroundColor: "#EBD0FF", zIndex: 100 },
+  txtSectionStyle = { width: "95%" },
+  parentDivClassName = 'w-100 py-2 px-3',
 }) => {
   const [willHide, setWillHide] = useState(false)
 
@@ -36,13 +39,13 @@ const SendFeedback = ({
 
   return (
         <div
-            style={{ backgroundColor: "#EBD0FF", zIndex: 100 }}
-            className={`w-100 position-absolute py-2 px-3 ${willHide ? "d-none" : "d-flex"}`}
+            style={{ ...parentDivStyles, display: willHide ? "none" : "flex" }}
+            className={parentDivClassName}
         >
             <section style={{ width: "2.5%" }} className="d-none d-sm-flex pt-3 pt-sm-0 justify-content-sm-center align-items-sm-center">
                 <i style={{ height: "fit-content" }} className="bi bi-tools increase-size-by-2x" />           
             </section>
-            <section className="px-sm-3" style={{ width: "95%" }}>
+            <section className="px-sm-3" style={txtSectionStyle}>
                 <span>
                     <i style={{ height: "fit-content" }} className="bi bi-tools d-inline d-sm-none scissor-icon" />
                     <span className="ps-2 ps-sm-0 send-feedback-txt">    
