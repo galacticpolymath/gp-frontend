@@ -42,7 +42,7 @@ const Subject = ({
           }
 
           return (
-            <div className={`bg-${subjectSlug}-light p-2`} key={subjectDimIndex}>
+            <div className={`bg-${subjectSlug}-light p-2  mx-1 `} key={subjectDimIndex}>
               <p className='mb-1 p-1'><strong>Dimension:</strong> {name}</p>
               {standardsGroup.map((group, groupIndex) => (
                 <StandardsGroup
