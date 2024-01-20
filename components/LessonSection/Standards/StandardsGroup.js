@@ -55,17 +55,17 @@ const StandardsGroup = ({
         id={id}
         dataBsToggle={{}}
         setContentId={setContentId}
-        buttonClassName='w-100 text-start bg-white border-0 p-3 pb-1 default-cursor'
+        buttonClassName='w-100 text-start bg-white border-0 p-2 pb-1 default-cursor'
         button={(
           <div>
-            <h6 className='text-muted mb-2 w-100 d-flex justify-content-between'>
+            <h6 className='text-muted w-100 d-flex justify-content-between'>
               {formatGrades(_grades)}
               <div
                 role='button'
                 onClick={handleOnClick}
                 data-bs-toggle='collapse'
                 data-bs-target={`#content_${contentId}`}
-                style={{ width: 50, height: 50 }}
+                style={{ width: 50, height: 35 }}
                 className="d-flex justify-content-center"
               >
                 <i
@@ -85,9 +85,9 @@ const StandardsGroup = ({
                 <CopyableTxt
                   implementLogicOnClick={handleClickToCopyTxt}
                 >
-                  <p>
+                  <div>
                     <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
-                  </p>
+                  </div>
                 </CopyableTxt>
                 {isOnClient && (
                   <div className='w-100 d-flex justify-content-center align-items-center'>
@@ -112,7 +112,7 @@ const StandardsGroup = ({
         )}
       >
         <div className='p-2 selected-standard mx-2'>
-          <h6>How does the lesson align to this standard?</h6>
+          <h6 className='my-1 bold'>How does the lesson align to this standard?</h6>
           <CopyableTxt
             implementLogicOnClick={handleClickToCopyTxt}
           >
