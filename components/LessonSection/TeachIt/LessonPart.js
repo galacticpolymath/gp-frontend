@@ -158,7 +158,7 @@ const LessonPart = ({
       <Accordion
         buttonClassName={`w-100 text-start border-0 p-0 ${isExpanded ? '' : 'bg-white'}`}
         key={lsnNum}
-        btnStyle={isExpanded ? { background: 'none' } : {}}
+        btnStyle={isExpanded ? { background: 'none' } : { }}
         id={_accordionId}
         accordionChildrenClasses='px-3 pb-2 w-100 accordion-transition'
         style={accordionStyle}

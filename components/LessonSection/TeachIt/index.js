@@ -40,7 +40,7 @@ const LessonTile = ({
 };
 
 const DisplayLessonTile = ({ lessonPart, imgContainerClassNameStr, lessonTileUrl }) => {
-  if (lessonPart.PublicationStatus !== "Beta") {
+  if (lessonPart.status === "Beta") {
     return (
       <LessonTile
         imgStyle={{ objectFit: 'contain' }}
@@ -263,8 +263,7 @@ const TeachIt = ({
 
             let lessonTilesObj = {};
 
-            console.log("part.PublicationStatus: ", part.PublicationStatus);
-            if (((part && (typeof part === "object")) && !("PublicationStatus" in part)) && (lessonTile && (typeof lessonTile === "string"))) {
+            if (((part && (typeof part === "object")) && ("status" in part)) && (lessonTile && (typeof lessonTile === "string"))) {
               lessonTilesObj = {
                 lessonTileForDesktop: (
                   <DisplayLessonTile
@@ -286,11 +285,10 @@ const TeachIt = ({
             return (
               <LessonPart
                 {...lessonTilesObj}
-                FeedbackComp={(part.PublicationStatus !== "Beta") ? (
+                FeedbackComp={(part.status === "Beta") ? (
                   <SendFeedback
                     parentDivStyles={{ backgroundColor: '#EBD0FF', zIndex: 100, border: '1px solid #B7B6C2' }}
                     CloseBtnComp={null}
-                    parentDivClassName='w-100 py-2 px-3'
                     txtSectionStyle={{ width: '100%' }}
                   />
                 )

@@ -45,8 +45,6 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
 }));
 
 const LessonDetails = ({ lesson }) => {
-  console.log("lesson, hey there: ", lesson)
-  console.log("lesson.LsnStatuses: ", lesson.LsnStatuses)
   const router = useRouter();
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
@@ -290,6 +288,8 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     if (lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons) {
       // getting the thumbnails for the google drive file handouts for each lesson
       lessonParts = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons.map(lesson => {
+        let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
+
         if (lesson?.itemList?.length) {
           const itemListUpdated = lesson.itemList.map(itemObj => {
             if (itemObj?.links?.length && itemObj.links[0]?.url) {
@@ -304,15 +304,21 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             return itemObj;
           });
 
-          return {
+          lessonObjUpdated = {
             ...lesson,
             itemList: itemListUpdated,
           }
         }
 
-        return lesson;
-      })
+        const lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
 
+        return {
+          ...lessonObjUpdated,
+          status: lsnStatus?.status ?? "Proto",
+        };
+      });
+      
+      lessonParts = lessonParts.filter(lesson => lesson.status !== "Proto");
       lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[0].lessons = lessonParts;
     }
 
