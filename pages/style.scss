@@ -198,6 +198,12 @@ ol li {
   }
 }
 
+.fs-md-med {
+  @media(min-width: 768px) {
+    font-size: 26px !important;
+  }
+}
+
 .fs-large {
   font-size: 28px;
 }
