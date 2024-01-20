@@ -45,6 +45,7 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
 }));
 
 const LessonDetails = ({ lesson }) => {
+  console.log("lesson, hey there: ", lesson)
   console.log("lesson.LsnStatuses: ", lesson.LsnStatuses)
   const router = useRouter();
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
