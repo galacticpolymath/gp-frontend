@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
@@ -12,7 +13,8 @@ import useLessonElementInView from '../../../customHooks/useLessonElementInView'
 import RichText from '../../RichText';
 import Image from "next/image";
 import Pill from "../../Pill";
-import SendFeedback from "../SendFeedback";
+import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
+import Link from "next/link";
 
 // 'solid 2px #C0BFC1'
 // d-none d-lg-block position-relative me-4
@@ -309,6 +311,37 @@ const TeachIt = ({
                 partsFieldName={partsFieldName}
                 lessonTileUrl={lessonTile}
                 itemList={itemList}
+                isAccordionExpandable={part.status !== "Coming Soon"}
+                accordionBtnStyle={(part.status === "Coming Soon") ? { cursor: 'default' } : {}}
+                ComingSoonLessonEmailSignUp={
+                  (part.status === "Coming Soon") ?
+                    <div className="w-100 px-2 my-2">
+                      <SendFeedback
+                        parentDivStyles={{ backgroundColor: '#FFF4E2', zIndex: 100, border: '1px solid #B7B6C2' }}
+                        CloseBtnComp={null}
+                        txtSectionStyle={{ width: '100%', display: 'flex', alignItems: 'center' }}
+                        parentDivClassName='w-100 px-2 d-flex'
+                        IconSectionForTxtDesktop={(
+                          <section style={{ width: '2.5%', marginTop: '1.8px' }} className="h-100 d-none d-sm-flex pt-3 pt-sm-0 justify-content-sm-center align-items-sm-center">
+                            <i style={{ height: 'fit-content', fontSize: '28px' }} className="bi bi-envelope-plus" />
+                          </section>
+                        )}
+                        txt={(
+                          <>
+                            <Link
+                              style={{ wordWrap: 'break-word' }}
+                              className="no-link-decoration text-decoration-underline"
+                              href={SIGN_UP_FOR_EMAIL_LINK}
+                            >
+                              Sign up for emails
+                            </Link> to get early access to this lesson!
+                          </>
+                        )}
+                      />
+                    </div>
+                    :
+                    null
+                }
               />
             );
           })}

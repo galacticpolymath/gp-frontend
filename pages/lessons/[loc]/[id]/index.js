@@ -286,10 +286,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     let lessonParts = null;
 
     if (lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons) {
-      // getting the thumbnails for the google drive file handouts for each lesson
       lessonParts = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons.map(lesson => {
         let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
 
+        // getting the thumbnails for the google drive file handouts for each lesson
         if (lesson?.itemList?.length) {
           const itemListUpdated = lesson.itemList.map(itemObj => {
             if (itemObj?.links?.length && itemObj.links[0]?.url) {
@@ -310,15 +310,26 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           }
         }
 
+        // getting the status for each lesson
         const lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
+
+        if (!lesson.tile && !(lsnStatus === "Coming Soon")) {
+          lessonObjUpdated = {
+            ...lessonObjUpdated,
+            tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
+          }
+        }
 
         return {
           ...lessonObjUpdated,
           status: lsnStatus?.status ?? "Proto",
         };
       });
-      
+
       lessonParts = lessonParts.filter(lesson => lesson.status !== "Proto");
+
+      // check if there is a tile for the value below: 
+      console.log("lessonParts, hey there: ", lessonParts)
       lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[0].lessons = lessonParts;
     }
 
