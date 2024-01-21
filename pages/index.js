@@ -6,7 +6,7 @@ import Hero from '../components/Hero';
 import styles from './index.module.css';
 import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
-import NSFImage from '../assets/img/nsf.png';
+// import NSFImage from '../assets/img/nsf.png';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boosting-students-data-literacy.jpg';
 import CarouselContainer from '../components/CarouselContainer';
@@ -33,8 +33,8 @@ const papers = [
 ];
 
 export default function Home() {
-  const newReleasePath = '/lessons/en-US/7';
-  const NewReleaseImage_src = 'https://storage.googleapis.com/gp-cloud/lessons/AnimalCollective_en-US/card.png';
+  const newReleasePath = '/lessons/en-US/8';
+  const NewReleaseImage_src = 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png';
   const layoutProps = {
     title: 'Galactic Polymath - Home Page',
     description: 'We are an education studio. We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for everyone.',
@@ -118,22 +118,18 @@ export default function Home() {
                   </div>
                 </Link>
               </div>
-              <div className='col-12 col-md-2 col-lg-1 d-grid justify-content-center align-content-center mx-auto'>
+              <div className='col-12 col-md-3 col-lg-3 d-grid justify-items-center align-content-center mx-auto'>
                 <h5 className='fw-light text-center'>Sponsor:</h5>
-                <a href="https://www.nsf.gov/">
-                  <div className="position-relative nsfImgContainer mx-auto">
-                    <Image
-                      src={NSFImage.src}
-                      fill
-                      className='h-auto'
-                      style={{ objectFit: 'contain' }}
-                      // sizes="175px"
-                      alt="National Science Foundation"
-                    />
-                  </div>
-                </a>
+                <div className=" w-80 mx-auto justify-content-center">
+                  <img
+                    src='https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png'
+                    className='w-100'
+                    style={{ maxWidth: '500',objectFit:'contain' }}
+                    alt="John Templeton Foundation"
+                  />
+                </div>
                 <div className='my-3'>
-                  <h5 className='fw-light '> Dr. Albert Kao&apos;s Lab at UMass Boston</h5>
+                  <h5 className='fw-light text-center'> Dr. Emilie Snell-Rood&apos;s Lab at the University of Minnesota</h5>
                 </div>
 
               </div>
