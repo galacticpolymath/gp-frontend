@@ -72,8 +72,6 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
     let timerForHandleDotClick;
 
     const handleDotClick = sectionId => {
-        console.log("sectionId yo there meng: ", sectionId);
-
         clearTimeout(timerForHandleDotClick)
         timerForHandleDotClick = setTimeout(() => {
             setSectionDots(sectionDots => ({
@@ -113,7 +111,6 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
     let timerForGoToSectionFn;
 
     const goToSection = sectionId => {
-        console.log("yo there meng: ", sectionId)
         clearTimeout(timerForGoToSectionFn)
         timerForGoToSectionFn = setTimeout(() => {
             setSectionDots(sectionDots => {

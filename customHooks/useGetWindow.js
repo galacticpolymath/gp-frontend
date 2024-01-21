@@ -11,7 +11,6 @@ const useGetWindow = () => {
       ...router,
       ...window.location,
     };
-    console.group('appWindow: ', appWindow);
     setAppWindow(appWindow);
   }, []);
 

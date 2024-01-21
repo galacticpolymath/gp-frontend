@@ -123,8 +123,6 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
             {!!lessonsToShow?.length && (
               <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                 {lessonsToShow.map((lesson, index) => {
-                  console.log("title: ", lesson.Title);
-                  console.log("status: ", lesson.PublicationStatus)
                   return (
                     (lesson.PublicationStatus === "Proto") ?
                       <UnshowableLesson key={index} />

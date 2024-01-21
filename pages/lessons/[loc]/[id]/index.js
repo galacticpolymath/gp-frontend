@@ -157,8 +157,6 @@ const LessonDetails = ({ lesson }) => {
 
   let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
 
-  console.log("_sections, hey there: ", _sections)
-
   if (!lesson && typeof window === "undefined") {
     return null;
   }
