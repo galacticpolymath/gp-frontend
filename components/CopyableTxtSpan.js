@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const CopyableTxt = ({
+const CopyableTxtSpan = ({
   children,
   implementLogicOnClick,
   copyTxtIndicator = 'Copy text',
@@ -84,4 +84,4 @@ const CopyableTxt = ({
   );
 };
 
-export default CopyableTxt;
+export default CopyableTxtSpan;

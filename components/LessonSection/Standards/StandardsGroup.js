@@ -4,6 +4,7 @@ import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 import { useState } from 'react';
 import CopyableTxt from '../../CopyableTxt';
+import CopyableTxtSpan from '../../CopyableTxtSpan';
 
 const formatGrades = (grades) => {
   if (!grades) {
@@ -43,10 +44,6 @@ const StandardsGroup = ({
     setIsAccordionContentDisplayed(prevState => !prevState);
   };
 
-  console.log('what is up there meng, codes: ', codes);
-  console.log('statements stuff []: ', [].concat(statements));
-  console.log('[].concat(codes: ', [].concat(codes));
-
   return (
     <div className='border-bottom border-gray'>
       <Accordion
@@ -80,23 +77,21 @@ const StandardsGroup = ({
             </h6>
             {[].concat(codes).map((code, i) => (
               <div className='mb-0 inline-block' key={i}>
-                <CopyableTxt
+                <CopyableTxtSpan
                   implementLogicOnClick={handleClickToCopyTxt}
                 >
-                  <div>
-                    <strong>{code}:</strong>
-                    <span className="ms-1">
-                      {[].concat(statements)[i]}
-                    </span>
-                    <span 
-                      role='button'
-                      onClick={handleOnClick}
-                      className='ms-1'
-                    >
-                      ...?
-                    </span>
-                  </div>
-                </CopyableTxt>
+                  <strong>{code}:</strong>{' '}
+                  {[].concat(statements)[i]}
+                </CopyableTxtSpan>
+                <span
+                  role='button'
+                  onClick={handleOnClick}
+                  data-bs-toggle='collapse'
+                  data-bs-target={`#content_${contentId}`}
+                  className='ms-1'
+                >
+                  ...?
+                </span>
               </div>
             ))}
           </div>
