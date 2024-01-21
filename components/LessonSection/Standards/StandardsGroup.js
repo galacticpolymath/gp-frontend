@@ -32,14 +32,13 @@ const StandardsGroup = ({
   statements,
 }) => {
   const _grades = Array.isArray(grades) ? grades.join(',') : grades;
-
-  const handleClickToCopyTxt = event => {
-    event.stopPropagation();
-    navigator.clipboard.writeText(event.target.innerHTML);
-  };
-
   const [contentId, setContentId] = useState('');
   const [isAccordionContentDisplayed, setIsAccordionContentDisplayed] = useState(false);
+
+  const handleClickToCopyTxt = (event, txt) => {
+    event.stopPropagation();
+    navigator.clipboard.writeText(txt);
+  };
 
   const handleOnClick = () => {
     setIsAccordionContentDisplayed(prevState => !prevState);
@@ -76,38 +75,46 @@ const StandardsGroup = ({
                 />
               </div>
             </h6>
-            {[].concat(codes).map((code, i) => (
-              <div className='mb-0 inline-block' key={i}>
-                <CopyableTxtSpan
-                  implementLogicOnClick={handleClickToCopyTxt}
-                >
-                  <strong>{code}:</strong>{' '}
-                  {[].concat(statements)[i]}
-                </CopyableTxtSpan>
-                <span
-                  role='button'
-                  onClick={handleOnClick}
-                  data-bs-toggle='collapse'
-                  data-bs-target={`#content_${contentId}`}
-                  className='ms-1'
-                >
-                  <p style={{ width: 80 }} className='d-inline-block'>
-                    {isAccordionContentDisplayed ?
-                      <i style={{ fontSize: '18px', width: 100 }} className="opacity-100 bi bi-x increase-icon-size" />
-                      :
-                      '...?'
-                    }
-                  </p>
-                </span>
-              </div>
-            ))}
+            {[].concat(codes).map((code, i) => {
+              const statement = [].concat(statements)[i];
+
+              return (
+                <div className='mb-0 inline-block' key={i}>
+                  <CopyableTxtSpan
+                    implementLogicOnClick={event => {
+                      handleClickToCopyTxt(event, statement);
+                    }}
+                  >
+                    <strong>{code}:</strong>{' '}
+                    {statement}
+                  </CopyableTxtSpan>
+                  <span
+                    role='button'
+                    onClick={handleOnClick}
+                    data-bs-toggle='collapse'
+                    data-bs-target={`#content_${contentId}`}
+                    className='ms-1'
+                  >
+                    <p style={{ width: 80 }} className='d-inline-block'>
+                      {isAccordionContentDisplayed ?
+                        <i style={{ fontSize: '18px', width: 100 }} className="opacity-100 bi bi-x increase-icon-size" />
+                        :
+                        '...?'
+                      }
+                    </p>
+                  </span>
+                </div>
+              );
+            })}
           </div>
         )}
       >
         <div className='p-3 selected-standard mx-2'>
           <h6 className='my-1 bold pb-1 mb-1'>How does the lesson address this standard?</h6>
           <CopyableTxt
-            implementLogicOnClick={handleClickToCopyTxt}
+            implementLogicOnClick={event => {
+              handleClickToCopyTxt(event, alignmentNotes);
+            }}
           >
             <RichText content={formatAlignmentNotes(alignmentNotes)} />
           </CopyableTxt>
