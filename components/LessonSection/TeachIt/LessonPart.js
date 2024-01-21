@@ -172,6 +172,7 @@ const LessonPart = ({
         button={(
           <div
             onClick={isAccordionExpandable ? handleAccordionBtnOnClick : () => {}}
+            className="position-relative"
           >
             <div
               style={{
