@@ -6,7 +6,7 @@ import { useState } from 'react';
 import CopyableTxt from '../../CopyableTxt';
 import CopyableTxtSpan from '../../CopyableTxtSpan';
 
-const formatGrades = (grades) => {
+const formatGrades = grades => {
   if (!grades) {
     return '';
   }
@@ -19,6 +19,7 @@ const formatGrades = (grades) => {
 
   return `Grades: ${parsedGrades[0]}-${parsedGrades[parsedGrades.length - 1]}`;
 };
+
 export const formatAlignmentNotes = (text) => {
   return text.replace(/•/g, '-').replace(/\^2/g, '²');
 };
