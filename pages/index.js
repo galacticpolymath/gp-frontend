@@ -120,14 +120,14 @@ export default function Home() {
               </div>
               <div className='col-12 col-md-3 col-lg-3 d-grid justify-items-center align-content-center mx-auto'>
                 <h5 className='fw-light text-center'>Sponsor:</h5>
-                  <div className=" w-80 mx-auto justify-content-center">
-                    <img
-                      src='https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png'
-                      className='w-100'
-                      style={{maxWidth: '500',objectFit:'contain'}}
-                      alt="John Templeton Foundation"
-                    />
-                  </div>
+                <div className=" w-80 mx-auto justify-content-center">
+                  <img
+                    src='https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png'
+                    className='w-100'
+                    style={{ maxWidth: '500',objectFit:'contain' }}
+                    alt="John Templeton Foundation"
+                  />
+                </div>
                 <div className='my-3'>
                   <h5 className='fw-light text-center'> Dr. Emilie Snell-Rood&apos;s Lab at the University of Minnesota</h5>
                 </div>
