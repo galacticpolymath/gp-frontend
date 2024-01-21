@@ -34,6 +34,7 @@ const SendFeedback = ({
   parentDivStyles = { position: "absolute", backgroundColor: "#EBD0FF", zIndex: 100, width: "100vw" },
   txtSectionStyle = { width: "95%" },
   parentDivClassName = 'w-100 py-2 px-3 d-flex',
+  txtSectionClassNameStr = 'px-sm-3 pt-4 pt-sm-0',
   txt = (
     <>
         This unit is under construction. Please send your thoughts to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</Link>! And be sure to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={SIGN_UP_FOR_EMAIL_LINK}>sign up for emails</Link> to get notified when the final version is released.
@@ -59,7 +60,7 @@ const SendFeedback = ({
             {CloseBtnComp && <CloseBtnComp classNameStr="d-sm-none" dynamicStyles={{ position: "absolute", top: "-5px", left: "5px", fontSize: "28px" }} handleOnClick={handleOnClick} />}
             <div className={parentDivClassName}>
                 {IconSectionForTxtDesktop}
-                <section className="px-sm-3 pt-4 pt-sm-0" style={txtSectionStyle}>
+                <section className={txtSectionClassNameStr} style={txtSectionStyle}>
                     <div>
                         {IconForTxtMobile}
                         <span className="ps-2 ps-sm-0 send-feedback-txt">

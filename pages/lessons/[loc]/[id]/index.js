@@ -311,9 +311,9 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         }
 
         // getting the status for each lesson
-        const lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
+        let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
 
-        if (!lesson.tile && !(lsnStatus === "Coming Soon")) {
+        if (!lesson.tile && (lsnStatus.status === "Coming Soon")) {
           lessonObjUpdated = {
             ...lessonObjUpdated,
             tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
@@ -327,13 +327,9 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       });
 
       lessonParts = lessonParts.filter(lesson => lesson.status !== "Proto");
-
-      // check if there is a tile for the value below: 
-      console.log("lessonParts, hey there: ", lessonParts)
       lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[0].lessons = lessonParts;
     }
 
-    // GOAL: get the status of each lesson
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
     const multiMediaArr = lessonToDisplayOntoUi?.Section?.preview?.Multimedia;
     let sponsorLogoImgUrl = lessonToDisplayOntoUi.SponsorImage?.url?.length ? lessonToDisplayOntoUi.SponsorImage?.url : lessonToDisplayOntoUi.SponsorLogo;

@@ -292,6 +292,7 @@ const TeachIt = ({
                     parentDivStyles={{ backgroundColor: '#EBD0FF', zIndex: 100, border: '1px solid #B7B6C2' }}
                     CloseBtnComp={null}
                     txtSectionStyle={{ width: '100%' }}
+                    txtSectionClassNameStr="px-sm-3 pt-1 pt-sm-0"
                   />
                 )
                   :

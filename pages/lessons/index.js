@@ -17,6 +17,8 @@ import Image from 'next/image';
 import Pill from '../../components/Pill.js';
 import { connectToMongodb } from '../../backend/utils/connection';
 
+const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon']
+
 const getLessonImgSrc = lesson => {
   const { CoverImage, LessonBanner } = lesson;
 
@@ -46,8 +48,8 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
   };
 
   const uniqueIDs = [];
-  const lessonsToShow = lessons.filter(({ numID }) => {
-    const willShowLesson = !uniqueIDs.includes(numID);
+  const lessonsToShow = lessons.filter(({ numID, PublicationStatus }) => {
+    const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID);
 
     if (willShowLesson) {
       uniqueIDs.push(numID);
