@@ -6,7 +6,7 @@ import Hero from '../components/Hero';
 import styles from './index.module.css';
 import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
-import NSFImage from '../assets/img/nsf.png';
+// import NSFImage from '../assets/img/nsf.png';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boosting-students-data-literacy.jpg';
 import CarouselContainer from '../components/CarouselContainer';
