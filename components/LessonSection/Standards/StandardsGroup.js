@@ -55,17 +55,17 @@ const StandardsGroup = ({
         id={id}
         dataBsToggle={{}}
         setContentId={setContentId}
-        buttonClassName='w-100 text-start bg-white border-0 p-3 pb-1 default-cursor'
+        buttonClassName='w-100 text-start bg-white border-0 p-2 pb-1 default-cursor'
         button={(
           <div>
-            <h6 className='text-muted mb-2 w-100 d-flex justify-content-between'>
+            <h6 className='text-muted w-100 d-flex justify-content-between'>
               {formatGrades(_grades)}
               <div
                 role='button'
                 onClick={handleOnClick}
                 data-bs-toggle='collapse'
                 data-bs-target={`#content_${contentId}`}
-                style={{ width: 50, height: 50 }}
+                style={{ width: 50, height: 20 }}
                 className="d-flex justify-content-center"
               >
                 <i
@@ -81,18 +81,18 @@ const StandardsGroup = ({
               </div>
             </h6>
             {[].concat(codes).map((code, i) => (
-              <div className='mb-0' key={i}>
+              <div className='mb-0 inline-block' key={i}>
                 <CopyableTxt
                   implementLogicOnClick={handleClickToCopyTxt}
                 >
-                  <p>
+                  <div>
                     <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
-                  </p>
+                  </div>
                 </CopyableTxt>
                 {isOnClient && (
-                  <div className='w-100 d-flex justify-content-center align-items-center'>
+                  <div className='d-inline-block'>
                     <button
-                      className='no-btn-styles'
+                      className='no-btn-styles w-100'
                       onClick={handleOnClick}
                       data-bs-toggle='collapse'
                       data-bs-target={`#content_${contentId}`}
@@ -100,7 +100,7 @@ const StandardsGroup = ({
                       {isAccordionContentDisplayed ?
                         <i style={{ fontSize: '24px' }} className="opacity-100 bi bi-x" />
                         :
-                        <i className='opacity-100 bi bi-three-dots' />
+                        <span className='fs-6 ms-2 bold'>...?</span>
                       }
                     </button>
                   </div>
@@ -111,8 +111,8 @@ const StandardsGroup = ({
           </div>
         )}
       >
-        <div className='p-3 ps-4 pb-1 bg-light-gray'>
-          <h6>How does the lesson align to this standard?</h6>
+        <div className='p-3 selected-standard mx-2'>
+          <h6 className='my-1 bold pb-1 mb-1'>How does the lesson address this standard?</h6>
           <CopyableTxt
             implementLogicOnClick={handleClickToCopyTxt}
           >

@@ -20,22 +20,24 @@ const Acknowledgments = ({
           <div key={i} className='mb-3'>
             <h6 className='fw-bolder'>{role}</h6>
             <RichText className=' text-black-87' content={def} />
-            {records.map(({ name, url, title, affiliation, location }) => (
-              <ul key={name}>
-                <li className='mt-3 fw-normal inline-block'>
-                  <a
-                    href={url}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    {name}&nbsp;
-                  </a>
-                  |&nbsp;{title}
-                  {affiliation && <span className='pe-1'>, {affiliation} </span>}
-                  <span className='d-inline-block'><i className="bi bi-geo-alt" /><em>{location}</em></span>
-                </li>
-              </ul>
-            ))}
+            {records.map(({ name, url, title, affiliation, location }) => 
+              name && (
+                <ul key={name}>
+                  <li className='mt-1 fw-normal inline-block'>
+                    <a
+                      href={url}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {name}&nbsp;
+                    </a>
+                    |&nbsp;{title}
+                    {affiliation && <span className='pe-1'>, {affiliation} </span>}
+                    <span className='d-inline-block'><i className="bi bi-geo-alt" /><em>{location}</em></span>
+                  </li>
+                </ul>
+              
+              ))}
           </div>
         ))}
       </div>
