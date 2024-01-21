@@ -49,6 +49,10 @@ const StandardsGroup = ({
     setIsAccordionContentDisplayed(prevState => !prevState);
   };
 
+  console.log('what is up there meng, codes: ', codes);
+  console.log('statements stuff []: ', [].concat(statements));
+  console.log('[].concat(codes: ', [].concat(codes));
+
   return (
     <div className='border-bottom border-gray'>
       <Accordion
