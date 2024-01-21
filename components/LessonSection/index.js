@@ -7,7 +7,6 @@ import Overview from './Overview';
 import Heading from './Heading.js';
 import TeachIt from './TeachIt';
 import LearningChart from './LearningChart';
-import Standards from './Standards';
 import Acknowledgments from './Acknowledgments';
 import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
@@ -65,15 +64,19 @@ export const sectionTypeMap = {
   [SECTIONS.PREVIEW]: Preview,
   [SECTIONS.LESSON_PREVIEW_FORMER]: Preview,
 };
+
+// GOAL: add the publication status to the title section
 const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
   const Component = sectionTypeMap[section.__component];
   let compProps = { ...section, _sectionDots };
-
-  if (TeachIt.name === 'TeachIt') {
-    compProps.ForGrades = ForGrades;
-  }
-
   const parentId = `${section.SectionTitle}-parent-${index}`;
+
+  if((typeof compProps.SectionTitle === "string") && compProps.SectionTitle.includes("Teaching Materials")){
+    compProps = {
+      ...compProps,
+      ForGrades: ForGrades,
+    };
+  }
 
   return Component ? (
     <div id={parentId} className={`SectionHeading ${section.SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()}`}>

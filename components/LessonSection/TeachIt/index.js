@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
@@ -9,6 +11,56 @@ import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 import RichText from '../../RichText';
+import Image from "next/image";
+import Pill from "../../Pill";
+import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
+import Link from "next/link";
+
+// 'solid 2px #C0BFC1'
+// d-none d-lg-block position-relative me-4
+// d-flex my-3 my-lg-0 d-lg-none position-relative
+const LessonTile = ({
+  lessonTileUrl,
+  imgContainerClassNameStr,
+  imgStyle = { objectFit: 'contain' },
+  imgContainerStyle = { width: 150, height: 150 },
+  Pill = null,
+}) => {
+  return (
+    <div style={imgContainerStyle} className={imgContainerClassNameStr}>
+      {Pill}
+      <Image
+        src={lessonTileUrl}
+        alt="lesson_tile"
+        fill
+        style={imgStyle}
+        sizes="130px"
+        className="img-optimize rounded w-100 h-100"
+      />
+    </div>
+  );
+};
+
+const DisplayLessonTile = ({ lessonPart, imgContainerClassNameStr, lessonTileUrl }) => {
+  if (lessonPart.status === "Beta") {
+    return (
+      <LessonTile
+        imgStyle={{ objectFit: 'contain' }}
+        lessonTileUrl={lessonTileUrl}
+        imgContainerClassNameStr={imgContainerClassNameStr}
+        Pill={<Pill zIndex={10} />}
+      />
+    );
+  }
+
+  return (
+    <LessonTile
+      imgStyle={{ objectFit: 'contain', border: 'solid 2px #C0BFC1' }}
+      lessonTileUrl={lessonTileUrl}
+      imgContainerClassNameStr={imgContainerClassNameStr}
+    />
+  );
+};
 
 const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
 
@@ -39,11 +91,11 @@ const TeachIt = ({
   const gradeVariations = Data[environments[0]]?.resources ? (getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources) : [];
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations?.length ? gradeVariations[0] : {});
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
-  const allResources = Data?.[selectedEnvironment]?.resources ? (getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources) : [];  
+  const allResources = Data?.[selectedEnvironment]?.resources ? (getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources) : [];
   const [selectedGradeResources, setSelectedGradeResources] = useState(allResources?.[0]?.links ?? []);
   let resources = allResources?.length ? allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix) : [];
   resources = getIsValObj(resources) ? [resources] : resources;
-  const isPartsObjPresent = Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object'); 
+  const isPartsObjPresent = Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object');
   const partsFieldName = ((Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object')) && ('parts' in Data.classroom.resources[0])) ? 'parts' : 'lessons';
   const dataLesson = Data.lesson;
   let parts = isPartsObjPresent ? Data.classroom.resources[0]?.[partsFieldName] : [];
@@ -184,6 +236,8 @@ const TeachIt = ({
             } = part;
             let secondTitle = null;
 
+            // get the image tile here and pass it as component. 
+
             if (partsFieldName === 'lessons') {
               const { tile, title } = resources?.[0]?.[partsFieldName]?.[index] ?? {};
               lessonTile = tile;
@@ -202,15 +256,48 @@ const TeachIt = ({
               chunks = _chunks;
             }
 
-            if (!lsnExt && (typeof dataLesson === 'object') && (dataLesson !== null)) {
+            if (!lsnExt && (dataLesson && (typeof dataLesson === 'object'))) {
               const { lsnExt: lsnExtBackup } = Object.values(dataLesson).find(({ lsnNum: lsnNumDataLesson }) => {
                 return (lsnNumDataLesson && ((lsn == lsnNumDataLesson) || (lsnNum == lsnNumDataLesson)));
               }) ?? {};
               lsnExt = lsnExtBackup;
             }
 
+            let lessonTilesObj = {};
+
+            if (((part && (typeof part === "object")) && ("status" in part)) && (lessonTile && (typeof lessonTile === "string"))) {
+              lessonTilesObj = {
+                lessonTileForDesktop: (
+                  <DisplayLessonTile
+                    lessonPart={part}
+                    imgContainerClassNameStr="d-none d-lg-block position-relative me-4"
+                    lessonTileUrl={lessonTile}
+                  />
+                ),
+                lessonTileForMobile: (
+                  <DisplayLessonTile
+                    lessonPart={part}
+                    imgContainerClassNameStr="d-flex my-3 my-lg-0 d-lg-none position-relative"
+                    lessonTileUrl={lessonTile}
+                  />
+                ),
+              };
+            }
+
             return (
               <LessonPart
+                {...lessonTilesObj}
+                FeedbackComp={(part.status === "Beta") ? (
+                  <SendFeedback
+                    parentDivStyles={{ backgroundColor: '#EBD0FF', zIndex: 100, border: '1px solid #B7B6C2' }}
+                    CloseBtnComp={null}
+                    txtSectionStyle={{ width: '100%' }}
+                    txtSectionClassNameStr="px-sm-3 pt-1 pt-sm-0"
+                  />
+                )
+                  :
+                  null
+                }
                 partsArr={self}
                 key={`${index}_part`}
                 resources={resources}
@@ -225,6 +312,37 @@ const TeachIt = ({
                 partsFieldName={partsFieldName}
                 lessonTileUrl={lessonTile}
                 itemList={itemList}
+                isAccordionExpandable={part.status !== "Coming Soon"}
+                accordionBtnStyle={(part.status === "Coming Soon") ? { cursor: 'default' } : {}}
+                ComingSoonLessonEmailSignUp={
+                  (part.status === "Coming Soon") ?
+                    <div className="w-100 px-2 my-2">
+                      <SendFeedback
+                        parentDivStyles={{ backgroundColor: '#FFF4E2', zIndex: 100, border: '1px solid #B7B6C2' }}
+                        CloseBtnComp={null}
+                        txtSectionStyle={{ width: '100%', display: 'flex', alignItems: 'center' }}
+                        parentDivClassName='w-100 px-2 d-flex'
+                        IconSectionForTxtDesktop={(
+                          <section style={{ width: '2.5%', marginTop: '1.8px' }} className="h-100 d-none d-sm-flex pt-3 pt-sm-0 justify-content-sm-center align-items-sm-center">
+                            <i style={{ height: 'fit-content', fontSize: '28px' }} className="bi bi-envelope-plus" />
+                          </section>
+                        )}
+                        txt={(
+                          <>
+                            <Link
+                              style={{ wordWrap: 'break-word' }}
+                              className="no-link-decoration text-decoration-underline"
+                              href={SIGN_UP_FOR_EMAIL_LINK}
+                            >
+                              Sign up for emails
+                            </Link> to get early access to this lesson!
+                          </>
+                        )}
+                      />
+                    </div>
+                    :
+                    null
+                }
               />
             );
           })}

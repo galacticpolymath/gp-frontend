@@ -39,7 +39,7 @@ export default function Footer() {
         <div className="col-12 col-lg-5">
           <h4 className="fs-5">Galactic Polymath</h4>
           <p>We translate current research into creative interdisciplinary lessons for grades 5+ that are <em>free for everyone.</em></p>
-          <div className="d-flex gap-1">
+          <div className="d-flex flex-wrap gap-1">
             {SOCIAL_MEDIA_ITEMS.map(({ link, icon, color }, index) => (
               <div key={index} className='linkHover rounded-circle p-1'>
                 <Link

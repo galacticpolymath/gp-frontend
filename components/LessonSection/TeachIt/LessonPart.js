@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-console */
 import Image from 'next/image';
@@ -20,13 +21,18 @@ const LessonPart = ({
   lsnExt,
   itemList,
   learningObjectives,
-  lessonTileUrl,
   partsFieldName,
   partsArr,
   chunks = [],
   resources,
   ForGrades,
   _numsOfLessonPartsThatAreExpanded,
+  lessonTileForDesktop = null,
+  lessonTileForMobile = null,
+  FeedbackComp = null,
+  ComingSoonLessonEmailSignUp = null,
+  accordionBtnStyle = {},
+  isAccordionExpandable = true,
 }) => {
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -59,7 +65,7 @@ const LessonPart = ({
   useEffect(() => {
     const lessonPartIdInUrl = window.location.href.split('#').at(-1);
 
-    if (lessonPartIdInUrl === `lesson_${_accordionId}`) {
+    if ((lessonPartIdInUrl === `lesson_${_accordionId}`) && !ComingSoonLessonEmailSignUp) {
       const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
 
       setNumsOfLessonPartsThatAreExpanded(prevState => {
@@ -148,7 +154,7 @@ const LessonPart = ({
     borderRight: isExpanded ? highlightedBorder : 'none',
     borderTop: _borderTopAccordionWrapper,
     borderBottom: _borderBottomAccordionWrapper,
-    boxShadow: isExpanded ? highlightedGlow : 'none',    
+    boxShadow: isExpanded ? highlightedGlow : 'none',
   };
 
   return (
@@ -156,16 +162,17 @@ const LessonPart = ({
       <Accordion
         buttonClassName={`w-100 text-start border-0 p-0 ${isExpanded ? '' : 'bg-white'}`}
         key={lsnNum}
-        btnStyle={isExpanded ? { background: 'none' } : {}}
+        btnStyle={isExpanded ? { background: 'none', ...accordionBtnStyle } : { ...accordionBtnStyle }}
         id={_accordionId}
-        accordionChildrenClasses='px-3 pb-2 w-100'
+        accordionChildrenClasses='px-3 pb-2 w-100 accordion-transition'
         style={accordionStyle}
         dataBsToggle={{}}
+        accordionContentStyle={{ display: isExpanded ? 'block' : 'none' }}
         initiallyExpanded={isExpanded}
         button={(
           <div
-            onClick={handleAccordionBtnOnClick}
-            className='px-3 position-relative pt-3 pb-2 w-100 d-flex'
+            onClick={isAccordionExpandable ? handleAccordionBtnOnClick : () => {}}
+            className="position-relative"
           >
             <div
               style={{
@@ -176,26 +183,94 @@ const LessonPart = ({
               className="position-absolute"
               id={`lesson_${_accordionId}`}
             />
-            <div className='d-flex flex-column w-100'>
-              <div className='d-flex justify-content-between w-100 position-relative'>
-                <div
-                  className='d-flex flex-column justify-content-between w-100 align-items-stretch mt-0 pe-sm-3'
-                >
-                  <div className='lessonPartHeaderContainer d-flex position-relative justify-content-between'>
-                    <h3
-                      style={{ color: LESSON_PART_BTN_COLOR }}
-                      className='fs-5 fw-bold text-left px-md-0 pe-1'
-                    >
-                      {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
-                    </h3>
-                    <div className='d-flex align-items-center flex-column'>
+            <div className="position-relative px-3 pt-3 pb-2 w-100 d-flex">
+              <div className='d-flex flex-column w-100'>
+                <div className='d-flex justify-content-between w-100 position-relative'>
+                  <div
+                    className='d-flex flex-column justify-content-between w-100 align-items-stretch mt-0 pe-sm-3'
+                  >
+                    <div className='lessonPartHeaderContainer d-flex position-relative justify-content-between'>
+                      <h3
+                        style={{ color: LESSON_PART_BTN_COLOR }}
+                        className='fs-5 fw-bold text-left px-md-0 pe-1'
+                      >
+                        {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
+                      </h3>
+                      <div className='d-flex align-items-center flex-column'>
+                        <div
+                          className="rounded d-flex d-lg-none justify-content-center align-items-center"
+                          style={{
+                            width: 30,
+                            height: 30,
+                            border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}`,
+                          }}
+                        >
+                          <i
+                            style={{ color: '#DEE2E6' }}
+                            className="fs-4 bi-chevron-down"
+                          />
+                          <i
+                            style={{ color: highlightedBorderColor }}
+                            className="fs-4 bi-chevron-up"
+                          />
+                        </div>
+                        <div
+                          id='clipboardIconWrapper'
+                          className='d-flex d-lg-none justify-content-center align-items-center'
+                        >
+                          <CopyableTxt
+                            additiveYCoord={-20}
+                            copyTxtIndicator='Copy link to lesson.'
+                            txtCopiedIndicator='Lesson link copied ✅!'
+                            implementLogicOnClick={handleClipBoardIconClick}
+                            parentClassName='pointer d-flex'
+                            copyTxtModalDefaultStyleObj={{
+                              position: 'fixed',
+                              width: '150px',
+                              backgroundColor: '#212529',
+                              textAlign: 'center',
+                            }}
+                            pointerContainerStyle={{ zIndex: 1 }}
+                          >
+                            <i
+                              className="bi bi-clipboard"
+                              style={{ fontSize: '30px', color: '#A2A2A2' }}
+                            />
+                          </CopyableTxt>
+                        </div>
+                      </div>
+                    </div>
+                    {lessonTileForMobile}
+                    <div className='d-flex mt-2'>
+                      <RichText
+                        className='text-start'
+                        content={lsnPreface}
+                      />
+                    </div>
+                    {!!previewTags?.length && (
                       <div
-                        className="rounded d-flex d-lg-none justify-content-center align-items-center"
-                        style={{
-                          width: 30,
-                          height: 30,
-                          border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}`,
-                        }}
+                        className='d-flex tagPillContainer flex-wrap'
+                      >
+                        {previewTags.map((tag, index) => (
+                          <div
+                            key={index}
+                            style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
+                            className='rounded-pill badge bg-white p-2 mt-2'
+                          >
+                            <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }}>
+                              {tag}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className='d-none arrow-down-lesson-part-container d-lg-flex'>
+                    {lessonTileForDesktop}
+                    <div className="h-100 d-none d-sm-block">
+                      <div
+                        className="rounded d-flex justify-content-center align-items-center"
+                        style={{ width: 35, height: 35, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
                       >
                         <i
                           style={{ color: '#DEE2E6' }}
@@ -208,14 +283,13 @@ const LessonPart = ({
                       </div>
                       <div
                         id='clipboardIconWrapper'
-                        className='d-flex d-lg-none justify-content-center align-items-center'
+                        className='d-flex justify-content-center align-items-center mt-3'
                       >
                         <CopyableTxt
                           additiveYCoord={-20}
                           copyTxtIndicator='Copy link to lesson.'
                           txtCopiedIndicator='Lesson link copied ✅!'
                           implementLogicOnClick={handleClipBoardIconClick}
-                          parentClassName='pointer d-flex'
                           copyTxtModalDefaultStyleObj={{
                             position: 'fixed',
                             width: '150px',
@@ -232,98 +306,10 @@ const LessonPart = ({
                       </div>
                     </div>
                   </div>
-                  {lessonTileUrl &&
-                    <div className='w-100 d-flex justify-content-start align-items-stretch flex-column'>
-                      <div style={{ width: 150, height: 150 }} className="d-flex my-3 my-lg-0 d-lg-none position-relative">
-                        <Image
-                          src={lessonTileUrl}
-                          alt="lesson_tile"
-                          fill
-                          style={{ objectFit: 'contain' }}
-                          sizes="130px"
-                          className="rounded img-optimize"
-                        />
-                      </div>
-                    </div>
-                  }
-                  <div className='d-flex mt-2'>
-                    <RichText
-                      className='text-start'
-                      content={lsnPreface}
-                    />
-                  </div>
-                  {!!previewTags?.length && (
-                    <div
-                      className='d-flex tagPillContainer flex-wrap'
-                    >
-                      {previewTags.map((tag, index) => (
-                        <div
-                          key={index}
-                          style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
-                          className='rounded-pill badge bg-white p-2 mt-2'
-                        >
-                          <span style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }}>
-                            {tag}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className='d-none arrow-down-lesson-part-container d-lg-flex'>
-                  {lessonTileUrl &&
-                    <div style={{ width: 150, height: 150 }} className="d-none d-lg-block position-relative me-4">
-                      <Image
-                        src={lessonTileUrl}
-                        alt="lesson_tile"
-                        fill
-                        style={{ objectFit: 'contain' }}
-                        sizes="130px"
-                        className="rounded img-optimize"
-                      />
-                    </div>
-                  }
-                  <div className="h-100 d-none d-sm-block">
-                    <div
-                      className="rounded d-flex justify-content-center align-items-center"
-                      style={{ width: 35, height: 35, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
-                    >
-                      <i
-                        style={{ color: '#DEE2E6' }}
-                        className="fs-4 bi-chevron-down"
-                      />
-                      <i
-                        style={{ color: highlightedBorderColor }}
-                        className="fs-4 bi-chevron-up"
-                      />
-                    </div>
-                    <div
-                      id='clipboardIconWrapper'
-                      className='d-flex justify-content-center align-items-center mt-3'
-                    >
-                      <CopyableTxt
-                        additiveYCoord={-20}
-                        copyTxtIndicator='Copy link to lesson.'
-                        txtCopiedIndicator='Lesson link copied ✅!'
-                        implementLogicOnClick={handleClipBoardIconClick}
-                        copyTxtModalDefaultStyleObj={{
-                          position: 'fixed',
-                          width: '150px',
-                          backgroundColor: '#212529',
-                          textAlign: 'center',
-                        }}
-                        pointerContainerStyle={{ zIndex: 1 }}
-                      >
-                        <i
-                          className="bi bi-clipboard"
-                          style={{ fontSize: '30px', color: '#A2A2A2' }}
-                        />
-                      </CopyableTxt>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
+            {ComingSoonLessonEmailSignUp}
           </div>
         )}
       >
@@ -343,6 +329,8 @@ const LessonPart = ({
               ))}
             </div>
           )}
+          {/* put the feedback component here */}
+          {FeedbackComp}
           {Array.isArray(learningObjectives) &&
             <div className="mt-4 d-col col-12 col-lg-8">
               <div className='d-flex align-items-start'>
@@ -377,44 +365,76 @@ const LessonPart = ({
               </ol>
             </div>
           )}
-          <div className='mt-4'>
+          <div className='mt-4 pb-1'>
             <div className='d-flex align-items-start'>
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
               <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
             </div>
-            <ol className='mt-2'>
-              {!!_itemList?.length && _itemList.map(item => {
-                const { itemTitle, itemDescription, links } = item;
+            <ol className='mt-2 materials-list'>
+              {!!_itemList?.length && _itemList.map((item, itemIndex) => {
+                const { itemTitle, itemDescription, links, filePreviewImg } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
 
                 return (
-                  <li key={itemTitle} className='mt-2 mb-0'>
-                    <strong><RichText content={itemTitle} /></strong>
-                    <div className='fst-italic mb-1' style={{ color: '#353637' }}>
-                      <RichText
-                        content={itemDescription}
-                        css={{ color: 'red' }}
-                      />
+                  <li key={itemTitle} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
+                    <div className="d-flex flex-column flex-md-row">
+                      <section>
+                        <strong><RichText content={itemTitle} /></strong>
+                        <div className='fst-italic mb-1' style={{ color: '#353637' }}>
+                          <RichText
+                            content={itemDescription}
+                            css={{ color: 'red' }}
+                          />
+                        </div>
+                        <ul style={{ listStyle: 'none' }} className="links-list">
+                          {!!_links && _links.map(({ url, linkText }, linkIndex) => (
+                            <li className='mb-0 d-flex' key={linkIndex}>
+                              <div className="d-flex justify-content-center align-items-sm-center">
+                                <Link
+                                  href={url}
+                                  target="_blank"
+                                  rel='noopener noreferrer'
+                                >
+                                  {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
+                                </Link>
+                              </div>
+                              <div className="d-flex justify-content-center align-items-center ps-2">
+                                <a
+                                  href={url}
+                                  target='_blank'
+                                  rel='noopener noreferrer'
+                                >
+                                  {linkText}
+                                </a>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                      {filePreviewImg && (
+                        <section className="pt-3 pt-md-0 ps-sm-5 ps-md-4">
+                          <div className={`position-relative ${itemIndex === 0 ? 'lesson-presentation' : 'lesson-worksheet'}`}>
+                            <Image
+                              src={filePreviewImg}
+                              alt="lesson_tile"
+                              fill
+                              sizes="130px"
+                              className='img-optimize h-100 w-100'
+                              style={{
+                                border: 'solid 2px #C4C4C4',
+                                borderRadius: '.1em',
+                              }}
+
+                            />
+                          </div>
+                        </section>
+                      )}
                     </div>
-                    <ul>
-                      {!!_links && _links.map(({ url, linkText }, index) => (
-                        <li className='mb-0' key={index}>
-                          <a
-                            href={url}
-                            target='_blank'
-                            rel='noopener noreferrer'
-                          >
-                            {linkText}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
                   </li>
                 );
               })}
             </ol>
           </div>
-
           {(!isOnAssessments && durList && chunks) &&
             <div className='mt-4'>
               <h5 className='d-flex align-items-start fw-bold mb-3'>

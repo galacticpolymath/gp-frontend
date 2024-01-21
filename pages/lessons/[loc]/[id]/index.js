@@ -18,8 +18,10 @@ import useScrollHandler from '../../../../customHooks/useScrollHandler';
 import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
+import SendFeedback from '../../../../components/LessonSection/SendFeedback';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
+const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
 const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
@@ -159,7 +161,7 @@ const LessonDetails = ({ lesson }) => {
     return null;
   }
 
-  if (!lesson || !_sections?.length) {
+  if (!lesson || !_sections?.length || ((typeof window !== "undefined") && lesson.PublicationStatus === "Proto")) {
     router.replace('/error');
     return null;
   }
@@ -188,6 +190,7 @@ const LessonDetails = ({ lesson }) => {
 
   return (
     <Layout {...layoutProps}>
+      {((lesson.PublicationStatus === "Draft") || (lesson.PublicationStatus === "Proto")) && <SendFeedback />}
       <LessonsSecsNavDots
         _sectionDots={[sectionDots, setSectionDots]}
         setWillGoToTargetSection={setWillGoToTargetSection}
@@ -197,7 +200,7 @@ const LessonDetails = ({ lesson }) => {
       />
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="col-12 col-lg-10 px-3 container">
-        <div className="p-3 pt-0">
+        <div className="p-sm-3 pt-0">
           {_sections.map((section, index) => (
             <ParentLessonSection
               key={index}
@@ -216,6 +219,19 @@ const LessonDetails = ({ lesson }) => {
   );
 };
 
+async function getLinkPreviewObj(url) {
+  try {
+    const linkPreviewObj = await getLinkPreview(url);
+
+    return linkPreviewObj;
+  } catch (error) {
+    const errMsg = `An error has occurred in getting the link preview for given url. Error message: ${error}.`;
+    console.error(errMsg);
+
+    return { errMsg }
+  }
+}
+
 export const getStaticPaths = async () => {
   try {
     await connectToMongodb();
@@ -233,17 +249,25 @@ export const getStaticPaths = async () => {
   }
 };
 
-async function getLinkPreviewObj(url) {
-  try {
-    const linkPreviewObj = await getLinkPreview(url);
-
-    return linkPreviewObj;
-  } catch (error) {
-    const errMsg = `An error has occurred in getting the link preview for given url. Error message: ${error}.`;
-    console.error(errMsg);
-
-    return { errMsg }
+const getGoogleDriveFileIdFromUrl = url => {
+  if (typeof url !== "string") {
+    return null;
   }
+
+  const urlSplitted = url.split("/");
+  const indexOfDInSplittedUrl = urlSplitted.findIndex(str => str === "d");
+
+  if (indexOfDInSplittedUrl === -1) {
+    return null;
+  }
+
+  const id = urlSplitted[indexOfDInSplittedUrl + 1];
+
+  if (!id) {
+    return null;
+  }
+
+  return id;
 }
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
@@ -255,6 +279,53 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
     if (!lessonToDisplayOntoUi || (typeof lessonToDisplayOntoUi !== 'object')) {
       throw new Error("Lesson is not found.")
+    }
+
+    let lessonParts = null;
+
+    if (lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons) {
+      lessonParts = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons.map(lesson => {
+        let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
+
+        // getting the thumbnails for the google drive file handouts for each lesson
+        if (lesson?.itemList?.length) {
+          const itemListUpdated = lesson.itemList.map(itemObj => {
+            if (itemObj?.links?.length && itemObj.links[0]?.url) {
+              const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
+
+              return {
+                ...itemObj,
+                filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
+              }
+            }
+
+            return itemObj;
+          });
+
+          lessonObjUpdated = {
+            ...lesson,
+            itemList: itemListUpdated,
+          }
+        }
+
+        // getting the status for each lesson
+        let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
+
+        if (!lesson.tile && (lsnStatus.status === "Coming Soon")) {
+          lessonObjUpdated = {
+            ...lessonObjUpdated,
+            tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
+          }
+        }
+
+        return {
+          ...lessonObjUpdated,
+          status: lsnStatus?.status ?? "Proto",
+        };
+      });
+
+      lessonParts = lessonParts.filter(lesson => lesson.status !== "Proto");
+      lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[0].lessons = lessonParts;
     }
 
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)

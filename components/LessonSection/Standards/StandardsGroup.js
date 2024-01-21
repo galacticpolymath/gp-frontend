@@ -4,9 +4,9 @@ import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 import { useState } from 'react';
 import CopyableTxt from '../../CopyableTxt';
-import { useEffect } from 'react';
+import CopyableTxtSpan from '../../CopyableTxtSpan';
 
-const formatGrades = (grades) => {
+const formatGrades = grades => {
   if (!grades) {
     return '';
   }
@@ -19,6 +19,7 @@ const formatGrades = (grades) => {
 
   return `Grades: ${parsedGrades[0]}-${parsedGrades[parsedGrades.length - 1]}`;
 };
+
 export const formatAlignmentNotes = (text) => {
   return text.replace(/•/g, '-').replace(/\^2/g, '²');
 };
@@ -31,19 +32,13 @@ const StandardsGroup = ({
   statements,
 }) => {
   const _grades = Array.isArray(grades) ? grades.join(',') : grades;
-  const [isOnClient, setIsOnClient] = useState(false);
-
-  useEffect(() => {
-    setIsOnClient(true);
-  }, []);
-
-  const handleClickToCopyTxt = event => {
-    event.stopPropagation();
-    navigator.clipboard.writeText(event.target.innerHTML);
-  };
-
   const [contentId, setContentId] = useState('');
   const [isAccordionContentDisplayed, setIsAccordionContentDisplayed] = useState(false);
+
+  const handleClickToCopyTxt = (event, txt) => {
+    event.stopPropagation();
+    navigator.clipboard.writeText(txt);
+  };
 
   const handleOnClick = () => {
     setIsAccordionContentDisplayed(prevState => !prevState);
@@ -80,41 +75,46 @@ const StandardsGroup = ({
                 />
               </div>
             </h6>
-            {[].concat(codes).map((code, i) => (
-              <div className='mb-0 inline-block' key={i}>
-                <CopyableTxt
-                  implementLogicOnClick={handleClickToCopyTxt}
-                >
-                  <div>
-                    <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
-                  </div>
-                </CopyableTxt>
-                {isOnClient && (
-                  <div className='d-inline-block'>
-                    <button
-                      className='no-btn-styles w-100'
-                      onClick={handleOnClick}
-                      data-bs-toggle='collapse'
-                      data-bs-target={`#content_${contentId}`}
-                    >
+            {[].concat(codes).map((code, i) => {
+              const statement = [].concat(statements)[i];
+
+              return (
+                <div className='mb-0 inline-block' key={i}>
+                  <CopyableTxtSpan
+                    implementLogicOnClick={event => {
+                      handleClickToCopyTxt(event, statement);
+                    }}
+                  >
+                    <strong>{code}:</strong>{' '}
+                    {statement}
+                  </CopyableTxtSpan>
+                  <span
+                    role='button'
+                    onClick={handleOnClick}
+                    data-bs-toggle='collapse'
+                    data-bs-target={`#content_${contentId}`}
+                    className='ms-1'
+                  >
+                    <p style={{ width: 80 }} className='d-inline-block'>
                       {isAccordionContentDisplayed ?
-                        <i style={{ fontSize: '24px' }} className="opacity-100 bi bi-x" />
+                        <i style={{ fontSize: '18px', width: 100 }} className="opacity-100 bi bi-x increase-icon-size" />
                         :
-                        <span className='fs-6 ms-2 bold'>...?</span>
+                        '...?'
                       }
-                    </button>
-                  </div>
-                )
-                }
-              </div>
-            ))}
+                    </p>
+                  </span>
+                </div>
+              );
+            })}
           </div>
         )}
       >
         <div className='p-3 selected-standard mx-2'>
           <h6 className='my-1 bold pb-1 mb-1'>How does the lesson address this standard?</h6>
           <CopyableTxt
-            implementLogicOnClick={handleClickToCopyTxt}
+            implementLogicOnClick={event => {
+              handleClickToCopyTxt(event, alignmentNotes);
+            }}
           >
             <RichText content={formatAlignmentNotes(alignmentNotes)} />
           </CopyableTxt>

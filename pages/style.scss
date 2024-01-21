@@ -114,6 +114,12 @@ a>span {
   text-decoration: none;
 }
 
+.no-x-mobile-margin{
+  @media(max-width: 576px){
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+}
 
 strong {
   font-weight: 700;

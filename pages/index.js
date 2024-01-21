@@ -11,7 +11,6 @@ import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boosting-students-data-literacy.jpg';
 import CarouselContainer from '../components/CarouselContainer';
 import CarouselItem from '../components/CarouselItem';
-import GpEquation from '../assets/img/gpEquation.png';
 import SponsorsMarquee from '../components/Sponsors';
 
 const papers = [
@@ -95,7 +94,7 @@ export default function Home() {
             Think <strong>bigger</strong>.<br />{' '}
             Learn everything.
           </h2>
-          <div className=' container bg-white  rounded-3 justify-content-center py-5 px-4'>
+          <div className='container bg-white rounded-3 justify-content-center py-5 px-4'>
             <div className='row justify-content-center gy-5'>
               <div className='col-12 offset-0 offset-md-1 col-md-7 col-lg-6'>
                 <Link href={newReleasePath} className=' no-link-decoration object-fit-contain w-auto'>
@@ -199,7 +198,9 @@ export default function Home() {
       </div>
       <div className="bg-primary-light">
         <CarouselContainer
-          parentStylesClassName="px-0 py-3 d-flex flex-column autoCarouselContainer position-relative"
+          autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 autoCarouselSec"
+          parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
+          dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-0'
         >
           {papers.map((paper, index) => {
             return (
@@ -207,11 +208,11 @@ export default function Home() {
                 key={index}
                 parentStyles='d-flex justify-content-center align-items-center'
                 secondChildDivClassName='px-1 pb-0 rounded w-100'
-                thirdChildDivClassName='px-1 mediaItemContainer border-0'
+                thirdChildDivClassName='px-md-1 papersCarouselItem border-0'
               >
-                <div className="d-flex h-100">
-                  <section className="w-50 d-flex justify-content-center align-items-center">
-                    <div style={{ width: 350, height: 350 }} className='position-relative'>
+                <div className="d-flex flex-column flex-md-row h-100">
+                  <section className="paperItemSec d-flex justify-content-center align-items-center">
+                    <div className='paperItemImgContainer position-relative'>
                       <Image
                         fill
                         src={paper.imgSrc}
@@ -220,23 +221,26 @@ export default function Home() {
                       />
                     </div>
                   </section>
-                  <section className="w-50 d-flex justify-content-center align-items-center">
-                    <div className="col-12 ps-lg-5 d-flex flex-column justify-content-center align-items-center d-sm-block">
+                  <section className="ps-sm-2 ps-md-0 paperItemSec d-flex justify-content-center align-items-center">
+                    <div className="mt-md-0 mt-2 col-12 ps-lg-3 d-flex flex-column justify-content-center align-items-center d-md-block">
                       <h4
                         style={{ whiteSpace: 'initial' }}
+                        className="paper-title text-center text-md-start"
                         dangerouslySetInnerHTML={{ __html: paper.h4Txt }}
                       />
-
-                      <a
+                      <Link
                         className='btn btn-primary mb-2'
                         href={paper.articleLink}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         Read the article
-                      </a>
-                      <br />
-                      <Link href={paper.lessonLink} className='btn btn-secondary'>
+                      </Link>
+                      <br className="d-none d-md-block" />
+                      <Link
+                        href={paper.lessonLink}
+                        className='btn btn-secondary'
+                      >
                         Check out the lesson
                       </Link>
                     </div>
@@ -253,20 +257,21 @@ export default function Home() {
           We craft learning narratives that students will remember. We make it clear how abstract learning standards in language arts, math, social studies and science connect to give students methods for approaching complex problems.
         </p>
       </div>
-
       <div className="bg-light-gray">
-        <div style={{ height: 300 }} className='w-100 position-relative bg-secondary-light'>
-          <Image
-            fill
-            className="w-100 h-100"
-            src={GpEquation}
-            style={{ objectFit: 'contain' }}
-            alt="Galactic_Polymath_Equation"
-          />
+        <div className='bg-secondary-light d-flex justify-content-center align-items-center py-sm-4 px-1 px-sm-0'>
+          <div className="position-relative gp-equation-img-container">
+            <Image
+              src="/imgs/learning-equation.png"
+              alt="Galactic_Polymath_Equation"
+              className='w-100 gp-equation-img px-1 px-sm-0'
+              fill              
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
         </div>
 
         <div className='bg-light-gray py-4'>
-          <div className='row my-5 justify-content-center'>
+          <div className='no-x-mobile-margin row my-5 justify-content-center'>
             <div className='col-10'>
               <h3 className='mt-5 display-5'>
                 Benefits of connecting classrooms to the real world with GP:

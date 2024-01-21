@@ -307,7 +307,7 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.arrowIconAndClipboardIconLessonPartContainer{
+.arrowIconAndClipboardIconLessonPartContainer {
   // transform: translateY(-10%);
 }
 
@@ -321,12 +321,70 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.lesson-file-preview-img {
+  height: 100%;
+}
+
+.lesson-presentation {
+  width: 200px;
+  @extend.lesson-file-preview-img;
+
+  @media(max-width: 768px) {
+    height: 168px;
+  }
+}
+
+.no-padding-on-mobile {
+  @media(max-width: 577px) {
+    padding: 0;
+  }
+}
+
+.increase-icon-size::before{
+  transform: scale(165%);
+}
+
+.increase-size-by-2x {
+  transform: scale(175%)
+}
+
+.scissor-icon {
+  font-size: 27px;
+}
+
+.send-feedback-txt{
+  @media(max-width: 577px){
+    line-height: .2px;    
+  }
+}
+
+.increase-size-by-3x {
+  transform: scale(275%)
+}
+
+.links-list {
+  @extend.no-padding-on-mobile;
+}
+
+.materials-list {
+  @media(max-width: 577px) {
+    padding-left: 13px;
+  }
+}
+
+.lesson-worksheet {
+  width: 90px;
+  @extend.lesson-file-preview-img;
+
+  @media(max-width: 768px) {
+    height: 140px;
+  }
+}
+
 .lessonSubject {
   bottom: 8px;
   left: 15px;
   width: fit-content;
-
-  @media (max-width: 575px) {}
 }
 
 .lightbar {

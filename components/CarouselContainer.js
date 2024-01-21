@@ -26,6 +26,8 @@ const CarouselContainer = ({
   CustomDots = null,
   handleCustomRightArrowBtnClick,
   handleCustomLeftArrowBtnClick,
+  autoCarouselSecClassName = 'col-12 mt-0 px-4',
+  dotSecClassName = 'd-flex justify-content-center align-items-center',
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [wasTimerPaused, setWasTimerPaused] = useState(false);
@@ -87,7 +89,7 @@ const CarouselContainer = ({
         className="w-auto h-100 d-flex justify-content-center align-items-center position-absolute start-0"
       >
         <Button
-          classNameStr='no-btn-styles'
+          classNameStr='no-btn-styles carouselArrowBtn'
           handleOnClick={handleCustomLeftArrowBtnClick ?? handleLeftArrowBtnClick}
         >
           <AiOutlineArrowLeft size={defaultArrowSize} />
@@ -98,7 +100,7 @@ const CarouselContainer = ({
         className="w-auto h-100 d-flex justify-content-center align-items-center position-absolute end-0"
       >
         <Button
-          classNameStr='no-btn-styles'
+          classNameStr='no-btn-styles carouselArrowBtn'
           handleOnClick={handleCustomRightArrowBtnClick ?? handleRightArrowBtnClick}
         >
           <AiOutlineArrowRight size={defaultArrowSize} />
@@ -106,8 +108,8 @@ const CarouselContainer = ({
       </div>
       <section className='row mt-0'>
         <section
-          style={{ height: 'fit-content' }}
-          className="col-12 mt-0 px-4"
+          // style={{ height: 'fit-content' }}
+          className={autoCarouselSecClassName}
         >
           <div
             className="autoCarouselSlider mt-0"
@@ -117,7 +119,7 @@ const CarouselContainer = ({
           </div>
         </section>
       </section>
-      <section className='d-flex justify-content-center align-items-center'>
+      <section className={dotSecClassName}>
         {(dots?.length && !CustomDots)
           ?
           (

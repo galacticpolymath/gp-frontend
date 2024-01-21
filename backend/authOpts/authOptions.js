@@ -4,7 +4,6 @@ import { SignJWT, jwtVerify } from 'jose';
 import { nanoid } from 'nanoid';
 import JwtModel from '../models/Jwt';
 import { connectToMongodb } from '../utils/connection';
-import { getServerSession } from 'next-auth';
 
 // expirationTime = 24 hours by default 
 const signJwt = async ({ email, roles, name }, secret, expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60) => {
