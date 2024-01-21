@@ -90,7 +90,13 @@ const StandardsGroup = ({
                   data-bs-target={`#content_${contentId}`}
                   className='ms-1'
                 >
-                  ...?
+                  <p style={{ width: 80 }} className='d-inline-block'>
+                    {isAccordionContentDisplayed ?
+                      <i style={{ fontSize: '18px', width: 100 }} className="opacity-100 bi bi-x increase-icon-size" />
+                      :
+                      '...?'
+                    }
+                  </p>
                 </span>
               </div>
             ))}

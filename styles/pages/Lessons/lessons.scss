@@ -340,6 +340,10 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.increase-icon-size::before{
+  transform: scale(165%);
+}
+
 .increase-size-by-2x {
   transform: scale(175%)
 }
