@@ -4,7 +4,6 @@ import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 import { useState } from 'react';
 import CopyableTxt from '../../CopyableTxt';
-import { useEffect } from 'react';
 
 const formatGrades = (grades) => {
   if (!grades) {
@@ -31,11 +30,6 @@ const StandardsGroup = ({
   statements,
 }) => {
   const _grades = Array.isArray(grades) ? grades.join(',') : grades;
-  const [isOnClient, setIsOnClient] = useState(false);
-
-  useEffect(() => {
-    setIsOnClient(true);
-  }, []);
 
   const handleClickToCopyTxt = event => {
     event.stopPropagation();
@@ -90,26 +84,19 @@ const StandardsGroup = ({
                   implementLogicOnClick={handleClickToCopyTxt}
                 >
                   <div>
-                    <strong>{code}:</strong> {[].concat(statements)[i]}&nbsp;&nbsp;
+                    <strong>{code}:</strong>
+                    <span className="ms-1">
+                      {[].concat(statements)[i]}
+                    </span>
+                    <span 
+                      role='button'
+                      onClick={handleOnClick}
+                      className='ms-1'
+                    >
+                      ...?
+                    </span>
                   </div>
                 </CopyableTxt>
-                {isOnClient && (
-                  <div className='d-inline-block'>
-                    <button
-                      className='no-btn-styles w-100'
-                      onClick={handleOnClick}
-                      data-bs-toggle='collapse'
-                      data-bs-target={`#content_${contentId}`}
-                    >
-                      {isAccordionContentDisplayed ?
-                        <i style={{ fontSize: '24px' }} className="opacity-100 bi bi-x" />
-                        :
-                        <span className='fs-6 ms-2 bold'>...?</span>
-                      }
-                    </button>
-                  </div>
-                )
-                }
               </div>
             ))}
           </div>
