@@ -2,7 +2,7 @@ import Image from 'next/image';
 import LessonCardWrapper from './LessonCardWrapper';
 import RichText from '../RichText';
 
-const IndividualLesson = ({ lesson }) => {
+const IndividualLesson = ({ lesson, Pill = null }) => {
   const { lessonPartTitle, tags, _id, lessonPartPath } = lesson;
 
   return (
@@ -36,6 +36,7 @@ const IndividualLesson = ({ lesson }) => {
               sizes="130px"
               className="img-optimize h-100 w-100"
             />
+            {Pill}
           </div>
         </section>
       </section>

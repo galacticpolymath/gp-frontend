@@ -7,7 +7,8 @@ const Pill = ({
   txt = "Beta", 
   pillColor = "#6B00BA", 
   zIndex = 0, 
-  transformVal = 'translate(10px, -15px)',
+  xCoordinate = 10,
+  yCoordinate = -15,
 }) =>{
   return (
     <div
@@ -16,7 +17,7 @@ const Pill = ({
         fontStyle: 'italic',
         fontSize: '20px',
         fontWeight: 600,
-        transform: transformVal,
+        transform: `translate(${xCoordinate}px, ${yCoordinate}px)`,
         backgroundColor: pillColor,
         zIndex: zIndex,
       }}

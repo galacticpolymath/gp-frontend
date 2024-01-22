@@ -39,6 +39,10 @@ const UnshowableLesson = () => (
   </div>
 );
 
+// GOAL: a lesson will be shown only if they fulfill the following conditions: 
+// -their unit is "live" or "Beta"
+// -if the lesson is a 'Beta' lesson
+
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
 };
@@ -157,7 +161,15 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
             </div>
             {!!lessonParts?.length && (
               <div className='mx-auto grid justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch pb-1 px-2 p-sm-4 gap-3 pt-3 pb-5'>
-                {lessonParts.map((lesson, index) => <IndividualLesson key={index} lesson={{ ...lesson, _id: index }} />)}
+                {lessonParts.map((lesson, index) => {
+                  return (
+                    <IndividualLesson
+                      key={index}
+                      Pill={lesson.status === "Beta" ? <Pill xCoordinate={23} yCoordinate={-19} /> : null}
+                      lesson={{ ...lesson, _id: index }}
+                    />
+                  );
+                })}
               </div>
             )}
             {(!lessonsToShow?.length && didErrorOccur) && (
@@ -189,6 +201,8 @@ const PROJECTED_LESSONS_FIELDS = [
   'GradesOrYears',
 ]
 
+const SHOWABLE_LESSONS_STATUSES = ['Live', 'Beta'];
+
 export async function getStaticProps() {
   try {
     await connectToMongodb();
@@ -197,11 +211,9 @@ export async function getStaticProps() {
     let lessonPartsForUI = [];
 
     for (let lesson of lessons) {
-      if (!lesson?.LsnStatuses?.length) {
+      if (!lesson?.LsnStatuses?.length || !SHOWABLE_LESSONS_STATUSES.includes(lesson.PublicationStatus)) {
         continue;
       }
-
-      // if the lesson is the reflection part of the lesso
 
       let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
       let lessonPartsFromClassRoomObj = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
@@ -209,7 +221,7 @@ export async function getStaticProps() {
       if (lessonParts?.length) {
         for (let lsnStatus of lesson.LsnStatuses) {
 
-          if (lsnStatus.status !== 'Live') {
+          if (!SHOWABLE_LESSONS_STATUSES.includes(lsnStatus.status)) {
             continue;
           }
 
@@ -218,7 +230,7 @@ export async function getStaticProps() {
           if (lessonPart) {
             const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
             let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0]) ? lessonPartFromClassroomObj?.tags.flat() : lessonPartFromClassroomObj?.tags
-            tags = tags.filter(tag => tag);
+            tags = tags?.length ? tags.filter(tag => tag) : tags;
             lessonPartsForUI.push({
               tags,
               lessonPartPath: `/lessons/${lesson.locale}/${lesson.numID}#lesson_part_${lessonPart.lsnNum}`,
@@ -231,6 +243,7 @@ export async function getStaticProps() {
               subject: lesson.TargetSubject,
               grades: lesson.ForGrades,
               gradesOrYears: lesson.GradesOrYears,
+              status: lsnStatus.status,
             });
 
           }
