@@ -5,7 +5,7 @@
 /* eslint-disable quotes */
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import { ModalContext } from '../../../providers/ModalProvider';
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonPart from './LessonPart';
@@ -16,9 +16,6 @@ import Pill from "../../Pill";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import Link from "next/link";
 
-// 'solid 2px #C0BFC1'
-// d-none d-lg-block position-relative me-4
-// d-flex my-3 my-lg-0 d-lg-none position-relative
 const LessonTile = ({
   lessonTileUrl,
   imgContainerClassNameStr,
@@ -86,8 +83,8 @@ const TeachIt = ({
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = useState([]);
-  const environments = ['classroom', 'remote']
-    .filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
+  const [, setSectionDots] = _sectionDots;
+  const environments = ['classroom', 'remote'].filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   const gradeVariations = Data[environments[0]]?.resources ? (getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources) : [];
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations?.length ? gradeVariations[0] : {});
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
@@ -123,6 +120,30 @@ const TeachIt = ({
     setSelectedGradeResources(selectedGrade.links);
     setSelectedGrade(selectedGrade);
   };
+
+  useEffect(() => {
+    const lessonPartPath = window.location.href.split("#").at(-1);
+    const lessonPartNum = lessonPartPath ? parseInt(lessonPartPath.split('_').at(-1)) : null;
+
+    if (lessonPartPath && lessonPartPath.includes('lesson_part_') && (parts.length >= lessonPartNum > 0)) {
+      setSectionDots(sectionDotsObj => ({
+        ...sectionDotsObj,
+        dots: sectionDotsObj.dots.map(dot => {
+          if (dot.sectionTitleForDot === 'Teaching Materials') {
+            return {
+              ...dot,
+              isInView: true,
+            };
+          }
+
+          return {
+            ...dot,
+            isInView: false,
+          };
+        }),
+      }));
+    }
+  }, []);
 
   return (
     <CollapsibleLessonSection
