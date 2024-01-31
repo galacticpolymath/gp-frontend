@@ -315,7 +315,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
     let lessonToDisplayOntoUi = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
-
+    
     if (!lessonToDisplayOntoUi || (typeof lessonToDisplayOntoUi !== 'object') || Array.isArray(lessonToDisplayOntoUi) || (lessonToDisplayOntoUi.PublicationStatus !== 'Live')) {
       return {
         props: {
