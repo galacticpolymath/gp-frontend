@@ -190,7 +190,11 @@ const LessonDetails = ({ lesson }) => {
 
   return (
     <Layout {...layoutProps}>
-      {((lesson.PublicationStatus === "Draft") || (lesson.PublicationStatus === "Proto")) && <SendFeedback />}
+      {(lesson.PublicationStatus === "Beta") && (
+        <SendFeedback
+          parentDivStyles={{ position: 'relative', backgroundColor: "#EBD0FF", zIndex: 100, width: "100vw" }}
+        />
+      )}
       <LessonsSecsNavDots
         _sectionDots={[sectionDots, setSectionDots]}
         setWillGoToTargetSection={setWillGoToTargetSection}
