@@ -63,7 +63,9 @@ export default function Layout({
         <meta name="twitter:domain" content="galacticpolymath.com" />
         <meta name="twitter:url" content={url} />
       </Head>
-      <Navbar />
+      <div style={{ height: "50px" }}>
+        <Navbar />
+      </div>
       {imgSrc && <img src={imgSrc} alt="" style={{ display: 'none' }} />}
       {children}
       <Footer />

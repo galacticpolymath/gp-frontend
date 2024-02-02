@@ -45,6 +45,10 @@ $feedbackTxtFontSizeDesktop: 22px;
 
   @media (max-width: 576px) {
     width: 95%;
+  } 
+
+  @media(min-width: 768px) and (max-width: 992px){
+    min-width: 708px;
   }
 }
 
@@ -411,8 +415,8 @@ $feedbackTxtFontSizeDesktop: 22px;
   }
 
   @media(min-width: 768px) and (max-width: 992px){
-    width: 105px;
-    height: 105px;
+    width: 85px;
+    height: 85px;
   }
 }
 

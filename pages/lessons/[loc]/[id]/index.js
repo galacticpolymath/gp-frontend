@@ -193,6 +193,7 @@ const LessonDetails = ({ lesson }) => {
     <Layout {...layoutProps}>
       {(lesson.PublicationStatus === "Beta") && (
         <SendFeedback
+          closeBtnDynamicStyles={{ position: "absolute", top: "30px", right: "5px", fontSize: "28px" }}
           parentDivStyles={{ position: 'relative', backgroundColor: "#EBD0FF", zIndex: 100, width: "100vw" }}
         />
       )}

@@ -1,21 +1,19 @@
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
-
 import Logo from '../assets/img/galactic_polymath_white.png';
 
 export default function Navbar() {
   const router = useRouter();
 
   return ( 
-    <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-dark  py-0'>
-      <div className='w-100 container'>
+    <nav style={{ zIndex: 1000 }} className='w-100 navbar position-fixed navbar-expand-lg navbar-dark bg-dark  py-0'>
+      <div style={{ zIndex: 10000 }} className='w-100 container'>
         <Link
           href="/"
           passHref
           className='flex-grow-1'
         >
-
           <Image
             className='object-fit-contain'
             alt="Galactic Polymath"
@@ -66,9 +64,7 @@ export default function Navbar() {
                     href={url}
                     className={`nav-link ${router.pathname.includes(url) ? 'fw-bold active' : 'fw-light'}`}
                   >
-
                     {title}
-
                   </Link>
                 </li>
               ))}
