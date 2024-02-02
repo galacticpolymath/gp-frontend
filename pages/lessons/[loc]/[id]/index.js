@@ -45,6 +45,7 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
 }));
 
 const LessonDetails = ({ lesson }) => {
+  console.log("lesson yo there meng: ", lesson)
   const router = useRouter();
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
@@ -328,7 +329,13 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         };
       });
 
-      lessonParts = lessonParts.filter(lesson => lesson.status !== "Proto");
+      lessonParts = lessonParts.filter(lesson => {
+        if(lesson.title === "Assessments"){
+          return true;
+        }
+
+        return lesson.status !== "Proto"
+      });
       lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[0].lessons = lessonParts;
     }
 

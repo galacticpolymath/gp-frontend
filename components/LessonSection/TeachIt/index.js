@@ -97,6 +97,10 @@ const TeachIt = ({
   const dataLesson = Data.lesson;
   let parts = isPartsObjPresent ? Data.classroom.resources[0]?.[partsFieldName] : [];
 
+  console.log("parts, yo there meng: ", parts);
+
+  // GOAL: present the parts onto the UI.
+
   if ((((parts !== undefined) || (parts !== null)) && (parts?.title === "Assessments")) && parts?.length) {
     const { itemList, lsn, preface, tile, title } = parts;
     parts = [...parts, { itemList, lsn, preface, tile, title }];
