@@ -39,17 +39,14 @@ const UnshowableLesson = () => (
   </div>
 );
 
-// GOAL: a lesson will be shown only if they fulfill the following conditions: 
-// -their unit is "live" or "Beta"
-// -if the lesson is a 'Beta' lesson
-
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
 };
 
 const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon'];
 
-const LessonsPage = ({ lessons, didErrorOccur, lessonParts }) => {
+const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
+  console.log("gpVideos: ", gpVideos)
   const uniqueIDs = [];
   const lessonsToShow = lessons.filter(({ numID, PublicationStatus }) => {
     const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID);
@@ -208,6 +205,38 @@ export async function getStaticProps() {
     await connectToMongodb();
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
+
+    if (!lessons?.length) {
+      throw new Error("No lessons were retrieved from the database.");
+    }
+
+    let gpVideos = []
+
+    for (const lesson of lessons) {
+      let lessonMultiMediaArr = [];
+      const { Section, Title } = lesson;
+
+      if (Section?.preview?.Multimedia?.length) {
+        for (const media of Section.preview.Multimedia) {
+
+          if ((media.by === "Galactic Polymath") && (media.type === "video") && ((typeof media.mainLink === 'string') && media.mainLink.includes('youtube'))) {
+            const videoId = media.mainLink.split("/").at(-1)
+
+            lessonMultiMediaArr.push({
+              lessonTitle: Title,
+              videoTitle: media.title,
+              mainLink: media.mainLink,
+              thumbnail: `https://img.youtube.com/vi/${videoId}/0.jpg`,
+            })
+          }
+        }
+      }
+
+      if (lessonMultiMediaArr.length) {
+        gpVideos.push(...lessonMultiMediaArr)
+      }
+    }
+
     let lessonPartsForUI = [];
 
     for (let lesson of lessons) {
@@ -283,7 +312,7 @@ export async function getStaticProps() {
       })
     }
 
-    return { props: { lessons: lessons, lessonParts: lessonParts } };
+    return { props: { lessons: lessons, lessonParts: lessonParts, gpVideos: gpVideos } };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 

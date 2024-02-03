@@ -65,7 +65,6 @@ export const sectionTypeMap = {
   [SECTIONS.LESSON_PREVIEW_FORMER]: Preview,
 };
 
-// GOAL: add the publication status to the title section
 const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
   const Component = sectionTypeMap[section.__component];
   let compProps = { ...section, _sectionDots };

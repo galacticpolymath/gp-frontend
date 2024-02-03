@@ -13,7 +13,6 @@ import { customControls } from './utils';
 
 import styles from './index.module.scss';
 import { useContext, useEffect, useState } from 'react';
-import RenderArrowNext from './RenderArrowNext';
 import { LessonsCarouselContext } from '../../../providers/LessonsCarouselProvider';
 
 const Carousel = ({ items }) => {

@@ -21,28 +21,8 @@ const RenderArrowNext = ({ showNextItem, hasNext }) => {
     const [willChangeUI, setWillChangeUI] = useState(false);
 
     const handleBtnClick = event => {
-        // event.preventDefault();
         setLessonsItemsIndex(lessonsItemsIndex => lessonsItemsIndex + 1);
-        // showNextItem();
-        // setWillChangeUI(true);
-        
     };
-
-    // useEffect(() => {
-    //     // setShowNextItemFn(showNextItem);
-    //     if(willChangeUI) {
-    //         showNextItem();
-    //         setWillChangeUI(false);
-    //     }
-
-    // }, [willChangeUI]);
-
-    // GOAL: when the user clicks on the right arrow button, present the next item in the items array
-    // the next item is presented onto the ui
-    // the current index of the selected item is presented onto the ui
-    // increase the state of itemsIndexNum by one 
-    // the user clicks on the right arrow button  
-    
 
     return (
         <button
