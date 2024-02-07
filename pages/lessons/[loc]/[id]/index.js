@@ -192,6 +192,7 @@ const LessonDetails = ({ lesson }) => {
     <Layout {...layoutProps}>
       {(lesson.PublicationStatus === "Beta") && (
         <SendFeedback
+          closeBtnDynamicStyles={{ position: "absolute", top: "30px", right: "5px", fontSize: "28px" }}
           parentDivStyles={{ position: 'relative', backgroundColor: "#EBD0FF", zIndex: 100, width: "100vw" }}
         />
       )}
@@ -328,7 +329,13 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         };
       });
 
-      lessonParts = lessonParts.filter(lesson => lesson.status !== "Proto");
+      lessonParts = lessonParts.filter(lesson => {
+        if(lesson.title === "Assessments"){
+          return true;
+        }
+
+        return lesson.status !== "Proto"
+      });
       lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[0].lessons = lessonParts;
     }
 

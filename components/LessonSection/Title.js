@@ -46,7 +46,7 @@ const Title = ({
     <div className="container d-flex justify-content-center pt-4 px-0">
       <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center lessonTitleId">
         <div className="col-12">
-          <div className="d-flex justify-content-between">
+          <div className="mt-3 mt-sm-0 d-flex justify-content-between">
             {lastSubRelease && (
               <button
                 onClick={handleBtnClick}

@@ -349,13 +349,8 @@ $toolTipColor: #f0f4ff;
 }
 
 .scissor-icon {
-  font-size: 27px;
-}
-
-.send-feedback-txt{
-  @media(max-width: 577px){
-    line-height: .2px;    
-  }
+  font-size: 23px;
+  transform: translateY(8px)
 }
 
 .increase-size-by-3x {

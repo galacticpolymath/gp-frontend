@@ -34,7 +34,7 @@ const SendFeedback = ({
   parentDivStyles = { position: "absolute", backgroundColor: "#EBD0FF", zIndex: 100, width: "100vw" },
   txtSectionStyle = { width: "95%" },
   parentDivClassName = 'w-100 py-2 px-3 d-flex',
-  txtSectionClassNameStr = 'px-sm-3 pt-4 pt-sm-0',
+  txtSectionClassNameStr = 'px-sm-3 pt-4 pt-sm-2 pt-lg-0',
   txt = (
     <>
         This unit is under construction. Please send your thoughts to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</Link>! And be sure to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={SIGN_UP_FOR_EMAIL_LINK}>sign up for emails</Link> to get notified when the final version is released.
@@ -45,7 +45,8 @@ const SendFeedback = ({
             <i style={{ height: "fit-content" }} className="bi bi-tools increase-size-by-2x" />,
         </section>
   ),
-  IconForTxtMobile = <i style={{ height: "fit-content" }} className="bi bi-tools d-inline d-sm-none scissor-icon" />,
+  closeBtnDynamicStyles = { position: "absolute", top: "4px", left: "5px", fontSize: "28px" },
+  IconForTxtMobile = <i style={{ height: "fit-content" }} className="bi bi-tools d-inline-flex d-sm-none scissor-icon" />,
 }) => {
   const [willHide, setWillHide] = useState(false)
 
@@ -57,7 +58,7 @@ const SendFeedback = ({
         <div
             style={{ ...parentDivStyles, display: willHide ? "none" : "flex" }}
         >
-            {CloseBtnComp && <CloseBtnComp classNameStr="d-sm-none" dynamicStyles={{ position: "absolute", top: "-5px", left: "5px", fontSize: "28px" }} handleOnClick={handleOnClick} />}
+            {CloseBtnComp && <CloseBtnComp classNameStr="d-sm-none" dynamicStyles={closeBtnDynamicStyles} handleOnClick={handleOnClick} />}
             <div className={parentDivClassName}>
                 {IconSectionForTxtDesktop}
                 <section className={txtSectionClassNameStr} style={txtSectionStyle}>
