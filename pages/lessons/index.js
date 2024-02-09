@@ -47,10 +47,11 @@ const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon'];
 
 const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
   console.log("gpVideos: ", gpVideos)
+  console.log("lessonParts, hey there: ", lessonParts)
   const uniqueIDs = [];
   const lessonsToShow = lessons.filter(({ numID, PublicationStatus, ReleaseDate }) => {
     const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID) &&
-    moment(ReleaseDate).format('YYYY-MM-DD') < moment(Date()).format('YYYY-MM-DD');
+      moment(ReleaseDate).format('YYYY-MM-DD') < moment(Date()).format('YYYY-MM-DD');
 
     if (willShowLesson) {
       uniqueIDs.push(numID);
@@ -125,7 +126,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
               <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                 {lessonsToShow.map((lesson, index) => {
                   return (
-                    (lesson.PublicationStatus === "Proto" ) ?
+                    (lesson.PublicationStatus === "Proto") ?
                       <UnshowableLesson key={index} />
                       : (
                         <LessonCard
@@ -201,6 +202,22 @@ const PROJECTED_LESSONS_FIELDS = [
 
 const SHOWABLE_LESSONS_STATUSES = ['Live', 'Beta'];
 
+const getCovertDateStrToDateObj = mmddyyyy => {
+  try {
+    if (typeof mmddyyyy === "string") {
+      throw new Error("Invalid date string. Must be a string.")
+    }
+
+    return new Date(`${mmddyyyy} UTC`).toISOString().split("T")[0];
+  } catch (error) {
+    console.error("An error has occurred in converting date string to a date object: ", error)
+    console.error("Passed in incorrect date string. Receieved: ", mmddyyyy)
+
+    return null
+  }
+
+}
+
 export async function getStaticProps() {
   try {
     await connectToMongodb();
@@ -250,6 +267,7 @@ export async function getStaticProps() {
 
       if (lessonParts?.length) {
         for (let lsnStatus of lesson.LsnStatuses) {
+          console.log("lsnStatus, yo there meng, suppp: ", lsnStatus.unit_release_date)
 
           if (!SHOWABLE_LESSONS_STATUSES.includes(lsnStatus.status)) {
             continue;
@@ -261,8 +279,7 @@ export async function getStaticProps() {
             const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
             let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0]) ? lessonPartFromClassroomObj?.tags.flat() : lessonPartFromClassroomObj?.tags
             tags = tags?.length ? tags.filter(tag => tag) : tags;
-
-            lessonPartsForUI.push({
+            const lessonPartForUI = {
               tags: tags ?? null,
               lessonPartPath: `/lessons/${lesson.locale}/${lesson.numID}#lesson_part_${lessonPart.lsnNum}`,
               tile: lessonPartFromClassroomObj?.tile ?? 'https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png',
@@ -275,8 +292,9 @@ export async function getStaticProps() {
               grades: lesson.ForGrades,
               gradesOrYears: lesson.GradesOrYears,
               status: lsnStatus.status,
-            });
+            }
 
+            lessonPartsForUI.push(lessonPartForUI);
           }
         }
       }
