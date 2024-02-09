@@ -12,6 +12,7 @@ if (!Lessons) {
     updated_date: String,
     new_date: String,
     sort_by_date: String,
+    unit_release_date: String,
   });
   const LessonSchema = new Schema({
     _id: { type: String, required: true },
