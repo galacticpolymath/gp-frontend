@@ -6,7 +6,7 @@ let Lessons = models?.lessons;
 // fields that have dates as the value: ReleaseDate, LastUpdated, FirstPublicationDate
 
 if (!Lessons) {
-  const LsnStatusesSchema = new Schema({
+  const LsnStatusSchema = new Schema({
     lsn: { type: Number, required: true },
     status: String,
     updated_date: String,
@@ -66,7 +66,7 @@ if (!Lessons) {
       url: String,
     },
     Section: Schema.Types.Mixed,
-    LsnStatuses: [LsnStatusesSchema],
+    LsnStatuses: [LsnStatusSchema],
   }, { _id: false });
 
   Lessons = model('lessons', LessonSchema);

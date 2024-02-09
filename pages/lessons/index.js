@@ -46,8 +46,6 @@ const handleJobVizCardClick = () => {
 const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon'];
 
 const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
-  console.log("gpVideos: ", gpVideos)
-  console.log("lessonParts, hey there: ", lessonParts)
   const uniqueIDs = [];
   const lessonsToShow = lessons.filter(({ numID, PublicationStatus, ReleaseDate }) => {
     const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID) &&
