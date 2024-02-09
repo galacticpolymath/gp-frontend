@@ -261,10 +261,11 @@ export async function getStaticProps() {
             const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
             let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0]) ? lessonPartFromClassroomObj?.tags.flat() : lessonPartFromClassroomObj?.tags
             tags = tags?.length ? tags.filter(tag => tag) : tags;
+
             lessonPartsForUI.push({
-              tags,
+              tags: tags ?? null,
               lessonPartPath: `/lessons/${lesson.locale}/${lesson.numID}#lesson_part_${lessonPart.lsnNum}`,
-              tile: lessonPartFromClassroomObj.tile ?? 'https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png',
+              tile: lessonPartFromClassroomObj?.tile ?? 'https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png',
               lessonPartTitle: lessonPart.lsnTitle,
               dur: lessonPart.lsnDur,
               preface: lessonPart.lsnPreface,
