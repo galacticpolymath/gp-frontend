@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable semi */
@@ -15,7 +16,9 @@ import GpLessonSvg from '../../assets/img/gp-lesson-icon.svg'
 import UnitIconSvg from '../../assets/img/gp-unit-icon.svg'
 import Image from 'next/image';
 import Pill from '../../components/Pill.js';
+import VideoCard from "../../components/LessonsPg/VideoCard.js";
 import { connectToMongodb } from '../../backend/utils/connection';
+import { getVideoThumb } from '../../components/LessonSection/Preview/utils.js';
 
 const getLessonImgSrc = lesson => {
   const { CoverImage, LessonBanner } = lesson;
@@ -46,6 +49,7 @@ const handleJobVizCardClick = () => {
 const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon'];
 
 const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
+  console.log("gpVideos, yo there meng: ", gpVideos)
   const uniqueIDs = [];
   const lessonsToShow = lessons.filter(({ numID, PublicationStatus, ReleaseDate }) => {
     const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID) &&
@@ -110,6 +114,22 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
                 </div>
               </section>
             </section>
+          </section>
+          <section className="lessonsSection pt-1">
+            <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
+              <div className="d-flex">
+                <h4 className="d-flex justify-content-center align-items-center">
+                  Galactic Polymath Videos
+                </h4>
+              </div>
+            </div>
+            <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
+              {gpVideos?.length && (
+                gpVideos.map((videoObj, index) => {
+                  return <VideoCard key={index} videoObj={videoObj} />
+                })
+              )}
+            </div>
           </section>
           <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
@@ -236,13 +256,13 @@ export async function getStaticProps() {
         for (const media of Section.preview.Multimedia) {
 
           if ((media.by === "Galactic Polymath") && (media.type === "video") && ((typeof media.mainLink === 'string') && media.mainLink.includes('youtube'))) {
-            const videoId = media.mainLink.split("/").at(-1)
 
             lessonMultiMediaArr.push({
               lessonTitle: Title,
               videoTitle: media.title,
               mainLink: media.mainLink,
-              thumbnail: `https://img.youtube.com/vi/${videoId}/0.jpg`,
+              description: media.description,
+              thumbnail: getVideoThumb(media.mainLink),
             })
           }
         }
@@ -265,7 +285,6 @@ export async function getStaticProps() {
 
       if (lessonParts?.length) {
         for (let lsnStatus of lesson.LsnStatuses) {
-          console.log("lsnStatus, yo there meng, suppp: ", lsnStatus.unit_release_date)
 
           if (!SHOWABLE_LESSONS_STATUSES.includes(lsnStatus.status)) {
             continue;

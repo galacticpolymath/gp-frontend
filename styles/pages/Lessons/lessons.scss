@@ -284,6 +284,11 @@ $toolTipColor: #f0f4ff;
   font-size: .9em;
 }
 
+.vid-card-heading-txt {
+  font-size: 22px;
+  font-weight: 600;
+}
+
 .mediaItemContainer {
   position: relative;
   border: 1px solid lightgray;
@@ -340,7 +345,7 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.increase-icon-size::before{
+.increase-icon-size::before {
   transform: scale(165%);
 }
 

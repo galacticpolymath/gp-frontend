@@ -13,7 +13,8 @@ module.exports = {
       'storage.googleapis.com',
       'into-the-dark.vercel.app',
       'echo-galactic-polymath.vercel.app',
-      'drive.google.com'
+      'drive.google.com',
+      'img.youtube.com'
     ],
   },
   async redirects() {
