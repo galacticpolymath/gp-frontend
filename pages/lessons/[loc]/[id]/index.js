@@ -330,7 +330,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       });
 
       lessonParts = lessonParts.filter(lesson => {
-        if(lesson.title === "Assessments"){
+        if (lesson.title === "Assessments") {
           return true;
         }
 
