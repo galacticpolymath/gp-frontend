@@ -4,35 +4,29 @@
 // import Image from 'next/image';
 import CardTitle from '../LessonsPg/CardTitle';
 import { getMediaComponent } from '../LessonSection/Preview/utils';
+import EllipsisTxt from '../Text/EllipsisTxt';
 
 const VideoCard = ({
     videoObj,
     cardClassName = 'py-3 px-4 w-100 pointer disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid bg-white rounded-3 lessonsPgShadow',
     style = {},
 }) => {
-    // console.log(videoObj.mainLink);
     return (
         <div style={style} className={cardClassName}>
-            <div className="bg-danger">
+            <div>
                 <div
-                    style={{ position: 'relative', height: '155px', objectFit: 'fill' }}
-                    className='px-1 mediaItemContainer'
+                    style={{ position: 'relative', height: '160px' }}
+                    className='px-1 video-iframe-on-card'
                 >
                     {getMediaComponent({ type: 'video', mainLink: videoObj.mainLink })}
                 </div>
-            </div>
-            <div className="w-100">
                 <CardTitle
                     title={videoObj.videoTitle}
-                    className='mt-1 vid-card-heading-txt w-light text-black mb-0 no-underline-on-hover'
+                    className='mt-3 vid-card-heading-txt w-light text-black mb-0 no-underline-on-hover'
                 />
-            </div>
-            <div style={{ width: '100%' }}>
-                <div
-                    className='ellipsize-txt-5'
-                >
+                <EllipsisTxt ellipsisTxtNum={2} style={{ marginTop: '6px' }}>
                     {videoObj?.description}
-                </div>
+                </EllipsisTxt>
             </div>
         </div>
     );

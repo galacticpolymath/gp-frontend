@@ -255,6 +255,8 @@ export async function getStaticProps() {
       if (Section?.preview?.Multimedia?.length) {
         for (const media of Section.preview.Multimedia) {
 
+          console.log("media, yo there meng: ", media)
+
           if ((media.by === "Galactic Polymath") && (media.type === "video") && ((typeof media.mainLink === 'string') && media.mainLink.includes('youtube'))) {
 
             lessonMultiMediaArr.push({

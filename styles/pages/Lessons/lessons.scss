@@ -284,15 +284,23 @@ $toolTipColor: #f0f4ff;
   font-size: .9em;
 }
 
-.ellipsize-txt-5 {
+.ellipsize-txt {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  /* This will set the maximum number of lines to show */
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-wrap: break-word;
   word-break: break-all;
   text-overflow: ellipsis;
+}
+
+.ellipsize-txt-3 {
+  @extend .ellipsize-txt;
+  -webkit-line-clamp: 3;
+}
+
+.ellipsize-txt-2 {
+  @extend .ellipsize-txt;
+  -webkit-line-clamp: 2;
 }
 
 .vid-card-heading-txt {
@@ -311,6 +319,15 @@ $toolTipColor: #f0f4ff;
   @media(min-width: 992px) {
     height: 60vh;
   }
+}
+
+.video-iframe-on-card {
+  position: relative;
+  border: 1px solid lightgray;
+  height: 30vh;
+  width: 100%;
+  object-fit: contain;
+  // max-height: 350px;
 }
 
 .lessonsPartContainer {
