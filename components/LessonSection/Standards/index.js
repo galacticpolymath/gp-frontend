@@ -24,16 +24,17 @@ const Standards = ({
         )}
       >
         <div>
-          <div className='bg-primary-light p-3 mt-1 mb-3 mx-5 text-center'>
+          <div className=' p-1 my-3 ms-2'>
             
             <i className='bi bi-info-circle me-2 fs-4' style={{ verticalAlign: 'middle' }} />
-            To see how the lesson(s) address each standard, click 
+            Click 
             <span className='text-nowrap'>
-              <i className="bi-cursor-fill" style={{ marginRight: '-5px', position: 'relative', zIndex: '3' }} />
-              <span className='px-2 ml-0 d-inline-block' style={{ position: 'relative', zIndex: '2', fontWeight: '600', background: 'white' }}>
+              <i className="bi-cursor-fill " style={{ marginTop:'1em', position: 'absolute', zIndex: '3' }} />
+              <span className='px-2 ms-2 ml-0 d-inline-block selected-standard-highlight' style={{ position: 'relative', zIndex: '2', fontWeight: '600' }}>
                 ...?
               </span>
             </span>
+            below to see how lessons address each standard.
           </div>
           <h4 className='fs-5 fw-bold mt-4 mb-1'><i className="bi bi-bullseye me-2" />Target Standard(s)</h4>
           <div className="mb-3">

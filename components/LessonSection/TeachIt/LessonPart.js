@@ -418,7 +418,7 @@ const LessonPart = ({
                               src={filePreviewImg}
                               alt="lesson_tile"
                               className='h-auto w-auto '
-                              style={{objectFit:"contain"}}
+                              style={{ objectFit:'contain' }}
                             />
                           </div>
                         </section>
