@@ -284,6 +284,17 @@ $toolTipColor: #f0f4ff;
   font-size: .9em;
 }
 
+.ellipsize-txt-5 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  /* This will set the maximum number of lines to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-wrap: break-word;
+  word-break: break-all;
+  text-overflow: ellipsis;
+}
+
 .vid-card-heading-txt {
   font-size: 22px;
   font-weight: 600;
