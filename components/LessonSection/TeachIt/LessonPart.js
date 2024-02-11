@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-console */
-import Image from 'next/image';
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
