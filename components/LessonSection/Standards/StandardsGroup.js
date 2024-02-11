@@ -93,14 +93,16 @@ const StandardsGroup = ({
                     onClick={handleOnClick}
                     data-bs-toggle='collapse'
                     data-bs-target={`#content_${contentId}`}
-                    className='ms-1'
+                    className='ms-2'
                   >
                     <p style={{ width: 80 }} className='d-inline-block'>
                       {isAccordionContentDisplayed ?
-                        <i style={{ fontSize: '18px', width: 100 }} className="opacity-100 bi bi-x increase-icon-size" />
-                        :
-                        '...?'
-                      }
+                        <i style={{ fontSize: '18px', width: 100 }} className="opacity-100 bi bi-x increase-icon-size " />
+                        : (
+                          <span className='selected-standard-highlight'>
+                            ...?
+                          </span>
+                        )}
                     </p>
                   </span>
                 </div>
