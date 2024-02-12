@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
@@ -5,12 +6,21 @@
 import CardTitle from '../LessonsPg/CardTitle';
 import { getMediaComponent } from '../LessonSection/Preview/utils';
 import EllipsisTxt from '../Text/EllipsisTxt';
+import CustomLink from '../CustomLink';
 
 const VideoCard = ({
     videoObj,
-    cardClassName = 'py-3 px-4 w-100 pointer disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid bg-white rounded-3 lessonsPgShadow',
+    cardClassName = 'd-flex flex-column justify-content-between py-3 px-4 position-relative w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid rounded-3 bg-white lessonsPgShadow',
     style = {},
 }) => {
+    // if not part of a lesson for unit, then take the user to the lesson itself
+    let hrefStr = `/lessons/en-US/${videoObj.lessonUnitNumId}`;
+
+    if (videoObj.lessonNum) {
+        // if the there is a lesson number, then add that to the url
+        console.log('videoObj.lessonNum: ', videoObj.lessonNum);
+    }
+
     return (
         <div style={style} className={cardClassName}>
             <div>
@@ -24,10 +34,26 @@ const VideoCard = ({
                     title={videoObj.videoTitle}
                     className='mt-3 vid-card-heading-txt w-light text-black mb-0 no-underline-on-hover'
                 />
-                <EllipsisTxt ellipsisTxtNum={2} style={{ marginTop: '6px' }}>
-                    {videoObj?.description}
-                </EllipsisTxt>
+                {videoObj?.description && (
+                    <EllipsisTxt ellipsisTxtNum={2} style={{ marginTop: '6px' }}>
+                        {videoObj?.description}
+                    </EllipsisTxt>
+                )}
             </div>
+            <CustomLink
+                color='#BFBFBF'
+                className='no-link-decoration mt-3'
+                hrefStr={hrefStr}
+                style={{ lineHeight: '22px' }}
+            >
+                {videoObj.lessonNum ?
+                    <span className="underline-on-hover">
+                        for Lesson {videoObj.lessonNum} of <i>{videoObj.lessonUnitTitle}</i>
+                    </span>
+                    :
+                    <span>part of <i>{videoObj.lessonUnitTitle}</i> unit.</span>
+                }
+            </CustomLink>
         </div>
     );
 };

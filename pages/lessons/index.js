@@ -49,7 +49,6 @@ const handleJobVizCardClick = () => {
 const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon'];
 
 const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
-  console.log("gpVideos, yo there meng: ", gpVideos)
   const uniqueIDs = [];
   const lessonsToShow = lessons.filter(({ numID, PublicationStatus, ReleaseDate }) => {
     const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID) &&
@@ -250,21 +249,19 @@ export async function getStaticProps() {
 
     for (const lesson of lessons) {
       let lessonMultiMediaArr = [];
-      const { Section, Title } = lesson;
+      const { Section, Title, numID } = lesson;
 
       if (Section?.preview?.Multimedia?.length) {
         for (const media of Section.preview.Multimedia) {
-
-          console.log("media, yo there meng: ", media)
-
           if ((media.by === "Galactic Polymath") && (media.type === "video") && ((typeof media.mainLink === 'string') && media.mainLink.includes('youtube'))) {
-
             lessonMultiMediaArr.push({
-              lessonTitle: Title,
+              lessonUnitTitle: Title,
               videoTitle: media.title,
               mainLink: media.mainLink,
               description: media.description,
               thumbnail: getVideoThumb(media.mainLink),
+              lessonUnitNumId: numID,
+              lessonNum: (media.forLsn && Number.isInteger(+media.forLsn)) ? parseInt(media.forLsn) : null,
             })
           }
         }

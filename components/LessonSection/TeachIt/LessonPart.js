@@ -170,7 +170,7 @@ const LessonPart = ({
         initiallyExpanded={isExpanded}
         button={(
           <div
-            onClick={isAccordionExpandable ? handleAccordionBtnOnClick : () => {}}
+            onClick={isAccordionExpandable ? handleAccordionBtnOnClick : () => { }}
             className="position-relative"
           >
             <div
@@ -373,6 +373,7 @@ const LessonPart = ({
               {!!_itemList?.length && _itemList.map((item, itemIndex) => {
                 const { itemTitle, itemDescription, links, filePreviewImg } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
+                console.log('fileImgPreview: ', filePreviewImg);
 
                 return (
                   <li key={itemTitle} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
@@ -416,8 +417,8 @@ const LessonPart = ({
                             <img
                               src={filePreviewImg}
                               alt="lesson_tile"
-                              className='h-auto w-auto '
-                              style={{ objectFit:'contain' }}
+                              className='h-auto w-auto'
+                              style={{ objectFit: 'contain' }}
                             />
                           </div>
                         </section>
