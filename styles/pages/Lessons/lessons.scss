@@ -358,14 +358,7 @@ $toolTipColor: #f0f4ff;
   height: 100%;
 }
 
-.lesson-presentation {
-  width: 200px;
-  @extend.lesson-file-preview-img;
 
-  @media(max-width: 768px) {
-    height: 168px;
-  }
-}
 
 .no-padding-on-mobile {
   @media(max-width: 577px) {

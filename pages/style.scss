@@ -232,6 +232,12 @@ ol li {
   box-shadow: inset -1px 5px 14px -6px rgba(97,97,97,1);
 }
 
+.selected-standard-highlight{
+  color:$info;
+  font-weight: bold;
+  padding: 2px;
+}
+
 // background color utilities
 .bg-light-gray {
   background-color: #eee;
