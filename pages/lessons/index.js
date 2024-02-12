@@ -4,7 +4,7 @@
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import LessonCard from '../../components/LessonsPg/LessonCard';
@@ -19,6 +19,7 @@ import Pill from '../../components/Pill.js';
 import VideoCard from "../../components/LessonsPg/VideoCard.js";
 import { connectToMongodb } from '../../backend/utils/connection';
 import { getVideoThumb } from '../../components/LessonSection/Preview/utils.js';
+import Modal from 'react-bootstrap/Modal';
 
 const getLessonImgSrc = lesson => {
   const { CoverImage, LessonBanner } = lesson;
@@ -49,10 +50,10 @@ const handleJobVizCardClick = () => {
 const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon'];
 
 const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
+  const [selectedVideo, setSelectedVideo] = useState(null)
   const uniqueIDs = [];
   const lessonsToShow = lessons.filter(({ numID, PublicationStatus, ReleaseDate }) => {
-    const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID) &&
-      moment(ReleaseDate).format('YYYY-MM-DD') < moment(Date()).format('YYYY-MM-DD');
+    const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID) && (moment(ReleaseDate).format('YYYY-MM-DD') < moment(Date()).format('YYYY-MM-DD'));
 
     if (willShowLesson) {
       uniqueIDs.push(numID);
@@ -125,7 +126,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
             <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
               {gpVideos?.length && (
                 gpVideos.map((videoObj, index) => {
-                  return <VideoCard key={index} videoObj={videoObj} />
+                  return <VideoCard key={index} videoObj={videoObj} setSelectedVideo={setSelectedVideo} />
                 })
               )}
             </div>
@@ -196,6 +197,14 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
           </section>
         </div>
       </section>
+      <Modal
+        show={!!selectedVideo}
+        onHide={() => {
+          setSelectedVideo(null)
+        }}
+      >
+        hi
+      </Modal>
     </Layout>
   );
 };

@@ -4,31 +4,41 @@
 /* eslint-disable indent */
 // import Image from 'next/image';
 import CardTitle from '../LessonsPg/CardTitle';
-import { getMediaComponent } from '../LessonSection/Preview/utils';
 import EllipsisTxt from '../Text/EllipsisTxt';
 import CustomLink from '../CustomLink';
+import { getMediaComponent as Thumbnail } from '../LessonSection/Preview/utils';
 
 const VideoCard = ({
     videoObj,
+    setSelectedVideo,
     cardClassName = 'd-flex flex-column justify-content-between py-3 px-4 position-relative w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid rounded-3 bg-white lessonsPgShadow',
     style = {},
 }) => {
     // if not part of a lesson for unit, then take the user to the lesson itself
     let hrefStr = `/lessons/en-US/${videoObj.lessonUnitNumId}`;
 
-    if (videoObj.lessonNum) {
-        // if the there is a lesson number, then add that to the url
-        console.log('videoObj.lessonNum: ', videoObj.lessonNum);
-    }
+    const handleOnClick = (videoLink, description) => () => {
+        setSelectedVideo({ videoLink: videoLink, description: description });
+    };
 
     return (
         <div style={style} className={cardClassName}>
             <div>
                 <div
-                    style={{ position: 'relative', height: '160px' }}
-                    className='px-1 video-iframe-on-card'
+                    style={{ height: '160px' }}
+                    className='video-iframe-on-card'
                 >
-                    {getMediaComponent({ type: 'video', mainLink: videoObj.mainLink })}
+                    {/* {getMediaComponent({ type: 'video', mainLink: videoObj.mainLink, handleOnClick: handleOnClick })} */}
+                    <Thumbnail
+                        type="video"
+                        mainLink={videoObj.mainLink}
+                        iframeStyle={{ zIndex: 100, width: '100%', height: '100%', position: 'absolute' }}
+                    />
+                    <div
+                        onClick={handleOnClick(videoObj.mainLink, videoObj?.description)}
+                        style={{ zIndex: 101 }}
+                        className='position-absolute w-100 h-100'
+                    />
                 </div>
                 <CardTitle
                     title={videoObj.videoTitle}
@@ -42,16 +52,16 @@ const VideoCard = ({
             </div>
             <CustomLink
                 color='#BFBFBF'
-                className='no-link-decoration mt-3'
+                className='no-link-decoration mt-3 underline-on-hover'
                 hrefStr={hrefStr}
                 style={{ lineHeight: '22px' }}
             >
                 {videoObj.lessonNum ?
-                    <span className="underline-on-hover">
-                        for Lesson {videoObj.lessonNum} of <i>{videoObj.lessonUnitTitle}</i>
-                    </span>
+                    <>
+                        for Lesson {videoObj.lessonNum} of <em>{videoObj.lessonUnitTitle}</em>.
+                    </>
                     :
-                    <span>part of <i>{videoObj.lessonUnitTitle}</i> unit.</span>
+                    <>part of <i>{videoObj.lessonUnitTitle}</i>.</>
                 }
             </CustomLink>
         </div>

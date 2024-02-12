@@ -104,10 +104,6 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.lessons-pg-container *:hover {
-  text-decoration: none !important;
-}
-
 .no-underline-on-hover:hover {
   text-decoration: none !important;
 }
@@ -324,10 +320,8 @@ $toolTipColor: #f0f4ff;
 .video-iframe-on-card {
   position: relative;
   border: 1px solid lightgray;
-  height: 30vh;
   width: 100%;
   object-fit: contain;
-  // max-height: 350px;
 }
 
 .lessonsPartContainer {
