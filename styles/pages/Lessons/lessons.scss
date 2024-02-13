@@ -317,6 +317,18 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.selected-vid-dialog {
+  width: 100vw;
+  max-width: none;
+  min-height: 100%;
+  max-height: none;
+}
+
+.selected-vid-modal-content {
+  min-height: 100vh;
+  border-radius: 0;
+}
+
 .video-iframe-on-card {
   position: relative;
   border: 1px solid lightgray;

@@ -11,14 +11,16 @@ import { getMediaComponent as Thumbnail } from '../LessonSection/Preview/utils';
 const VideoCard = ({
     videoObj,
     setSelectedVideo,
+    setIsModalShown,
     cardClassName = 'd-flex flex-column justify-content-between py-3 px-4 position-relative w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid rounded-3 bg-white lessonsPgShadow',
     style = {},
 }) => {
     // if not part of a lesson for unit, then take the user to the lesson itself
     let hrefStr = `/lessons/en-US/${videoObj.lessonUnitNumId}`;
 
-    const handleOnClick = (videoLink, description) => () => {
-        setSelectedVideo({ videoLink: videoLink, description: description });
+    const handleOnClick = ({ mainLink, description, videoTitle }) => () => {
+        setSelectedVideo({ link: mainLink, description: description, title: videoTitle });
+        setIsModalShown(true);
     };
 
     return (
@@ -35,7 +37,7 @@ const VideoCard = ({
                         iframeStyle={{ zIndex: 100, width: '100%', height: '100%', position: 'absolute' }}
                     />
                     <div
-                        onClick={handleOnClick(videoObj.mainLink, videoObj?.description)}
+                        onClick={handleOnClick(videoObj)}
                         style={{ zIndex: 101 }}
                         className='position-absolute w-100 h-100'
                     />
