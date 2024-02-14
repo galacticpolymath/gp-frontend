@@ -20,7 +20,7 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LessonSlide from './LessonSlide';
 import { getVideoThumb } from './utils';
 import Image from 'next/image';
@@ -86,15 +86,10 @@ const LessonsCarousel = ({ mediaItems }) => {
                         style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
                     >
                         {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => {
-                            console.log('lessonDocument.type, yo there meng: ', lessonDocument)
-                            const iframeClassName = ((lessonDocument.type === 'video') && lessonDocument.mainLink.includes('drive.google')) ? 'lesson-media google-drive-container' : 'lesson-media';
-
-                            console.log("iframeClassName: ", iframeClassName)
                             return (
                                 <LessonSlide
                                     key={index}
                                     forLsn={lessonDocument.forLsn ?? lessonDocument.forPart}
-                                    iframeClassName={iframeClassName}
                                     {...lessonDocument}
                                 />
                             );

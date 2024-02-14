@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import { getMediaComponent } from './utils';
 import styles from './index.module.scss';
 import RichText from '../../RichText';
-import { FiExternalLink } from 'react-icons/fi';
 import Link from 'next/link';
+import { getMediaComponent } from './utils';
+import { FiExternalLink } from 'react-icons/fi';
 
 const LessonSlide = ({
   type,
@@ -16,13 +16,12 @@ const LessonSlide = ({
   mainLink,
   webAppPreviewImg,
   webAppImgAlt,
-  iframeClassName = 'lesson-media',
 }) => {
   return (
     <div className='autoCarouselItem onLessonsPg mb-1 rounded p-1 justify-content-center align-items-center '>
       <div className='px-1 pb-0 rounded w-100'>
         <div className='px-1 mediaItemContainer'>
-          {getMediaComponent({ type, mainLink, webAppPreviewImg, webAppImgAlt, iframeClassName })}
+          {getMediaComponent({ type, mainLink, webAppPreviewImg, webAppImgAlt })}
           {(type === "web-app") && (
             <Link
               href={mainLink}

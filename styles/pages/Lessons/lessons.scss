@@ -341,6 +341,7 @@ $toolTipColor: #f0f4ff;
 
 .modal-content-sub-wrapper {
   max-width: 1440px;
+  width: 100%;
 }
 
 .modal-content-wrapper {
@@ -348,6 +349,7 @@ $toolTipColor: #f0f4ff;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
 }
 
 .selected-vid-dialog {

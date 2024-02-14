@@ -45,9 +45,7 @@ const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
         >
             <div className='modal-content-wrapper'>
                 <div className='modal-content-sub-wrapper'>
-                    <div
-                        className='position-relative w-100'
-                    >
+                    <div className='position-relative w-100'>
                         <Button
                             handleOnClick={handleOnHide}
                             classNameStr='no-btn-styles'
@@ -72,7 +70,7 @@ const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
                         <div style={{ width: '90%' }}>
                             <h5><i>Description: </i></h5>
                             <p style={{ lineHeight: '23px', wordBreak: 'break-word' }}>
-                                {selectedVideo?.description ?? `Video part of ${selectedVideo?.unitTitle}.`}
+                                {selectedVideo?.description ?? <> Video part of {selectedVideo?.unitTitle?.includes('!') ? selectedVideo?.unitTitle : `${selectedVideo?.unitTitle}.`}</>}
                             </p>
                         </div>
                     </Body>
