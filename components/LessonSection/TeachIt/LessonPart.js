@@ -373,7 +373,6 @@ const LessonPart = ({
               {!!_itemList?.length && _itemList.map((item, itemIndex) => {
                 const { itemTitle, itemDescription, links, filePreviewImg } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
-                console.log('fileImgPreview: ', filePreviewImg);
 
                 return (
                   <li key={itemTitle} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
