@@ -8,8 +8,9 @@ export const getMediaComponent = ({
   webAppPreviewImg,
   webAppImgAlt,
   handleIFrameOnClick = () => { },
-  iframeStyle = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' } }) => {
-  console.log('mainLink, yo there meng: ', mainLink);
+  iframeStyle = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' },
+  iframeClassName = 'lesson-media',
+}) => {
   if (type === 'video') {
     return (
       <iframe
@@ -18,7 +19,7 @@ export const getMediaComponent = ({
         style={iframeStyle}
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        className='lesson-media'
+        className={iframeClassName}
       />
     );
   } else if (type === 'pdf') {

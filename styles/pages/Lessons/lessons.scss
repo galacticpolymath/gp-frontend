@@ -333,6 +333,12 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.google-drive-container {
+  img {
+    object-fit: contain !important;
+  }
+}
+
 .modal-content-sub-wrapper {
   max-width: 1440px;
 }
