@@ -317,6 +317,33 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.selected-vid-container-iframe {
+  height: 400px;
+
+  @media(max-width: 576px) {
+    height: 300px;
+  }
+}
+
+.gp-video-title {
+  width: 90%;
+
+  @media(max-width: 576px) {
+    line-height: 25px;
+  }
+}
+
+.modal-content-sub-wrapper {
+  max-width: 1440px;
+}
+
+.modal-content-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .selected-vid-dialog {
   width: 100vw;
   max-width: none;

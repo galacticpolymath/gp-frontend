@@ -18,8 +18,8 @@ const VideoCard = ({
     // if not part of a lesson for unit, then take the user to the lesson itself
     let hrefStr = `/lessons/en-US/${videoObj.lessonUnitNumId}`;
 
-    const handleOnClick = ({ mainLink, description, videoTitle }) => () => {
-        setSelectedVideo({ link: mainLink, description: description, title: videoTitle });
+    const handleOnClick = ({ mainLink, description, videoTitle, lessonUnitTitle }) => () => {
+        setSelectedVideo({ link: mainLink, description: description, title: videoTitle, unitTitle: lessonUnitTitle });
         setIsModalShown(true);
     };
 
