@@ -18,13 +18,14 @@ const getGpUnitData = async (typeStr, pageNum, urlStr) => {
                 path: 'get-cached-vids',
             },
         ];
-        const path = pathOptions.find(({ type }) => type === typeStr);
+        const pathObj = pathOptions.find(({ type }) => type === typeStr);
 
-        if (!path) {
+        if (!pathObj) {
             throw new Error('Invalid value passed for the `typeStr` parameter. Can only be one of the following: "videos", "lessons", or ""');
         }
 
-        const response = await axios.get(`${urlStr}/${path}`, { params: { pageNum: pageNum } });
+        const finalUrlStr = `${urlStr}/${pathObj.path}`;
+        const response = await axios.get(finalUrlStr, { params: { pageNum: pageNum } });
 
         return { data: response.data.data, isLast: response.data.isLast };
     } catch (error) {
@@ -41,6 +42,7 @@ const GpVideos = ({
     setIsModalShown,
     setSelectedVideo,
 }) => {
+    const [btnTxt, setBtnTxt] = useState('See More');
     const [gpVideosObj, setGpVideosObj] = useState({
         data: startingGpVids,
         isLast: isLast,
@@ -48,23 +50,39 @@ const GpVideos = ({
     });
 
     const handleOnClick = async () => {
-        const gpVideosResponse = await getGpUnitData('videos', gpVideosObj.nextPgNum, `${window.location.origin}/api`);
-        let gpVideosObjUpdated = {
-            ...gpVideosObj,
-            data: [...gpVideosObj.data, ...gpVideosResponse.data],
-        };
+        try {
+            setBtnTxt('Loading...');
 
-        if (gpVideosResponse.isLast) {
-            console.log('Reached the end of specified gp unit data.');
-            gpVideosObjUpdated = {
-                ...gpVideosObjUpdated,
-                isLast: true,
+            const gpVideosResponse = await getGpUnitData('videos', gpVideosObj.nextPgNum, `${window.location.origin}/api`);
+
+            console.log('gpVideosResponse: ', gpVideosResponse);
+
+            if (!gpVideosResponse.data) {
+                throw new Error(`Failed to get the next page of videos from the server. Received: ${gpVideosResponse.data}`);
+            }
+
+            let gpVideosObjUpdated = {
+                ...gpVideosObj,
+                data: [...gpVideosObj.data, ...gpVideosResponse.data],
             };
-            setGpVideosObj(gpVideosObjUpdated);
-            return;
-        }
 
-        setGpVideosObj(state => ({ ...gpVideosObjUpdated, nextPgNum: state.nextPgNum + 1 }));
+            if (gpVideosResponse.isLast) {
+                console.log('Reached the end of specified gp unit data.');
+                gpVideosObjUpdated = {
+                    ...gpVideosObjUpdated,
+                    isLast: true,
+                };
+                setGpVideosObj(gpVideosObjUpdated);
+                setBtnTxt('See More.');
+                return;
+            }
+
+            setGpVideosObj(state => ({ ...gpVideosObjUpdated, nextPgNum: state.nextPgNum + 1 }));
+            setBtnTxt('See More.');
+        } catch (error) {
+            console.error('Failed to get gp unit data from the server. Reason: ', error);
+            setBtnTxt('ERROR! Try again.');
+        }
     };
 
     return (
@@ -91,12 +109,14 @@ const GpVideos = ({
                 )}
             </div>
             {!gpVideosObj.isLast && (
-                <div className='w-100 d-flex justify-content-center align-items-center'>
+                <div className='w-100 d-flex justify-content-center align-items-center pb-3'>
                     <Button
                         handleOnClick={handleOnClick}
-                        classNameStr="text-center w-100"
+                        backgroundColor="#E9EBEE"
+                        fontSize={19}
+                        classNameStr="text-center w-25 rounded no-btn-styles p-3 border"
                     >
-                        See More
+                        {btnTxt}
                     </Button>
                 </div>
             )}

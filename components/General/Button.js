@@ -1,5 +1,6 @@
 const Button = ({
   children,
+  fontSize,
   defaultStyleObj = {},
   classNameStr = '',
   backgroundColor = 'transparent',
@@ -7,6 +8,10 @@ const Button = ({
   ariaLabelStr = 'button',
 }) => {
   const _style = { ...defaultStyleObj, backgroundColor: backgroundColor };
+
+  if (fontSize) {
+    _style.fontSize = fontSize;
+  }
 
   return (
     <button

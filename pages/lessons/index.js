@@ -22,6 +22,7 @@ import { getVideoThumb } from '../../components/LessonSection/Preview/utils.js';
 import SelectedGpVideo from '../../components/LessonsPg/modals/SelectedGpVideo.js';
 import cache from '../../backend/utils/cache.js';
 import { nanoid } from 'nanoid';
+import GpVideos from '../../components/LessonsPg/sections/GpVideos.js';
 
 const getLessonImgSrc = lesson => {
   const { CoverImage, LessonBanner } = lesson;
@@ -131,22 +132,13 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideosObj }) => {
               </section>
             </section>
           </section>
-          <section className="lessonsSection pt-1">
-            <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
-              <div className="d-flex">
-                <h4 className="d-flex justify-content-center align-items-center">
-                  Galactic Polymath Videos
-                </h4>
-              </div>
-            </div>
-            <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-              {gpVideos?.length && (
-                gpVideos.map((videoObj, index) => {
-                  return <VideoCard setIsModalShown={setIsModalShown} key={index} videoObj={videoObj} setSelectedVideo={setSelectedVideo} />
-                })
-              )}
-            </div>
-          </section>
+          <GpVideos
+            isLast={gpVideosObj.isLast}
+            startingGpVids={gpVideosObj.data}
+            nextPgNumStartingVal={gpVideosObj.nextPgNumStartingVal}
+            setIsModalShown={setIsModalShown}
+            setSelectedVideo={setSelectedVideo}
+          />
           <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
               <div className="d-flex">
@@ -356,7 +348,7 @@ export async function getStaticProps() {
     let gpVideosFirstPg = gpVideos?.length ? gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)).slice(0, 6) : [];
     gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
 
-    return { props: { lessons: lessons, lessonParts: lessonParts, gpVideosObj: { data: gpVideosFirstPg, isLast: gpVideos.length < 6 } } };
+    return { props: { lessons: lessons, lessonParts: lessonParts, gpVideosObj: { data: gpVideosFirstPg, isLast: gpVideos.length < 6, nextPgNumStartingVal: 1 } } };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 
