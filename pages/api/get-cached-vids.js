@@ -2,6 +2,7 @@
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable indent */
+import { nanoid } from 'nanoid';
 import { getLessons } from '../../backend/helperFns/lessonsFns';
 import cache from '../../backend/utils/cache';
 import { CustomError } from '../../backend/utils/errors';
@@ -29,6 +30,7 @@ export default async function handler(request, response) {
             }
 
             vids = getGpVids(lessons);
+            vids = vids.length ? vids.map(vid => ({ ...vid, id: nanoid() })) : vids;
             vids = createPaginationArr(vids);
 
             cache.set('videos', vids, 3_600_000 * 12);

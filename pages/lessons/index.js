@@ -21,6 +21,7 @@ import { connectToMongodb } from '../../backend/utils/connection';
 import { getVideoThumb } from '../../components/LessonSection/Preview/utils.js';
 import SelectedGpVideo from '../../components/LessonsPg/modals/SelectedGpVideo.js';
 import cache from '../../backend/utils/cache.js';
+import { nanoid } from 'nanoid';
 
 const getLessonImgSrc = lesson => {
   const { CoverImage, LessonBanner } = lesson;
@@ -50,9 +51,11 @@ const handleJobVizCardClick = () => {
 
 const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon'];
 
-const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
+const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideosObj }) => {
+  console.log("gpVideosObj, yo there meng: ", gpVideosObj.data)
   const [selectedVideo, setSelectedVideo] = useState(null)
   const [isModalShown, setIsModalShown] = useState(false);
+  const [gpVideos, setGpVideos] = useState(gpVideosObj?.data ?? []);
   const uniqueIDs = [];
   const lessonsToShow = lessons.filter(({ numID, PublicationStatus, ReleaseDate }) => {
     const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID) && (moment(ReleaseDate).format('YYYY-MM-DD') < moment(Date()).format('YYYY-MM-DD'));
@@ -246,6 +249,7 @@ export async function getStaticProps() {
 
     let gpVideos = []
 
+    // getting the videos, storing them into the 'gpVideos' array 
     for (const lesson of lessons) {
       let lessonMultiMediaArr = [];
       const { Section, Title, numID, ReleaseDate } = lesson;
@@ -274,6 +278,7 @@ export async function getStaticProps() {
 
     let lessonPartsForUI = [];
 
+    // getting the lessons from each unit, storing them into the lessonPartsForUI array
     for (let lesson of lessons) {
       if (!lesson?.LsnStatuses?.length || !SHOWABLE_LESSONS_STATUSES.includes(lesson.PublicationStatus)) {
         continue;
@@ -348,7 +353,10 @@ export async function getStaticProps() {
       })
     }
 
-    return { props: { lessons: lessons, lessonParts: lessonParts, gpVideos: gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)) } };
+    let gpVideosFirstPg = gpVideos?.length ? gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)).slice(0, 6) : [];
+    gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
+
+    return { props: { lessons: lessons, lessonParts: lessonParts, gpVideosObj: { data: gpVideosFirstPg, isLast: gpVideos.length < 6 } } };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 
