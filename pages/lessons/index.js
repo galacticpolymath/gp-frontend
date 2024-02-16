@@ -4,7 +4,7 @@
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import LessonCard from '../../components/LessonsPg/LessonCard';
@@ -19,8 +19,8 @@ import Pill from '../../components/Pill.js';
 import VideoCard from "../../components/LessonsPg/VideoCard.js";
 import { connectToMongodb } from '../../backend/utils/connection';
 import { getVideoThumb } from '../../components/LessonSection/Preview/utils.js';
-import Modal from 'react-bootstrap/Modal';
 import SelectedGpVideo from '../../components/LessonsPg/modals/SelectedGpVideo.js';
+import cache from '../../backend/utils/cache.js';
 
 const getLessonImgSrc = lesson => {
   const { CoverImage, LessonBanner } = lesson;
@@ -63,6 +63,17 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
 
     return willShowLesson;
   });
+  // GOAL: create the see more button, it will get the next six cards from the backend
+  // 
+
+  // GOAL: for the initial request of all of the cards get only six
+  // only six of the videos are sent to the front-end 
+
+  // NOTES: 
+  // -get the necessary cards to show to the user 
+  // -get amount of the total amount of cards that can be queried  
+  // -if there are only 6 cards that can be shown to the user, get all of the cards 
+  // for the user 
 
   return (
     <Layout
@@ -223,22 +234,6 @@ const PROJECTED_LESSONS_FIELDS = [
 
 const SHOWABLE_LESSONS_STATUSES = ['Live', 'Beta'];
 
-const getCovertDateStrToDateObj = mmddyyyy => {
-  try {
-    if (typeof mmddyyyy === "string") {
-      throw new Error("Invalid date string. Must be a string.")
-    }
-
-    return new Date(`${mmddyyyy} UTC`).toISOString().split("T")[0];
-  } catch (error) {
-    console.error("An error has occurred in converting date string to a date object: ", error)
-    console.error("Passed in incorrect date string. Receieved: ", mmddyyyy)
-
-    return null
-  }
-
-}
-
 export async function getStaticProps() {
   try {
     await connectToMongodb();
@@ -253,13 +248,14 @@ export async function getStaticProps() {
 
     for (const lesson of lessons) {
       let lessonMultiMediaArr = [];
-      const { Section, Title, numID } = lesson;
+      const { Section, Title, numID, ReleaseDate } = lesson;
 
       if (Section?.preview?.Multimedia?.length) {
         for (const media of Section.preview.Multimedia) {
           if ((media.by === "Galactic Polymath") && (media.type === "video") && ((typeof media.mainLink === 'string') && media.mainLink.includes('youtube'))) {
             lessonMultiMediaArr.push({
               lessonUnitTitle: Title,
+              ReleaseDate: JSON.stringify(ReleaseDate),
               videoTitle: media.title,
               mainLink: media.mainLink,
               description: media.description,
@@ -352,7 +348,7 @@ export async function getStaticProps() {
       })
     }
 
-    return { props: { lessons: lessons, lessonParts: lessonParts, gpVideos: gpVideos } };
+    return { props: { lessons: lessons, lessonParts: lessonParts, gpVideos: gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)) } };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 

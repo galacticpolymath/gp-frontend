@@ -25,5 +25,5 @@ module.exports = {
         destination: '/lessons/en-US/:lessonId'
       },
     ]
-  }
+  },
 };
