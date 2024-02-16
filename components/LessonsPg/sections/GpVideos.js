@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 /* eslint-disable no-undef */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VideoCard from "../VideoCard";
 import axios from "axios";
 import Button from "../../General/Button";
@@ -55,11 +55,11 @@ const GpVideos = ({
 
             const gpVideosResponse = await getGpUnitData('videos', gpVideosObj.nextPgNum, `${window.location.origin}/api`);
 
-            console.log('gpVideosResponse: ', gpVideosResponse);
-
-            if (!gpVideosResponse.data) {
+            if (!gpVideosResponse.data?.length) {
                 throw new Error(`Failed to get the next page of videos from the server. Received: ${gpVideosResponse.data}`);
             }
+
+            gpVideosResponse.data[0] = { ...gpVideosResponse.data[0], willScrollIntoView: true };
 
             let gpVideosObjUpdated = {
                 ...gpVideosObj,
@@ -84,6 +84,17 @@ const GpVideos = ({
             setBtnTxt('ERROR! Try again.');
         }
     };
+
+    useEffect(() => {
+        if (gpVideosObj.data.some(vid => vid.willScrollIntoView)) {
+            setTimeout(() => {
+                setGpVideosObj(state => ({
+                    ...state,
+                    data: state.data.map(vid => ({ ...vid, willScrollIntoView: false })),
+                }));
+            }, 400);
+        }
+    }, [gpVideosObj.data]);
 
     return (
         <section className="lessonsSection pt-1">

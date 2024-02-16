@@ -3,10 +3,14 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import { nanoid } from 'nanoid';
-import { getLessons } from '../../backend/helperFns/lessonsFns';
+import { getUnits } from '../../backend/helperFns/lessonsFns';
 import cache from '../../backend/utils/cache';
 import { CustomError } from '../../backend/utils/errors';
 import { createPaginationArr, getGpVids } from '../../globalFns';
+
+const getGetterFn = () => {
+
+}
 
 export default async function handler(request, response) {
     try {
@@ -23,7 +27,7 @@ export default async function handler(request, response) {
         if (!vids?.length) {
             console.log('updating the cache...');
 
-            const lessons = await getLessons();
+            const lessons = await getUnits();
 
             if (!lessons?.length) {
                 throw new CustomError('Failed to get the lessons from the database.', 500)

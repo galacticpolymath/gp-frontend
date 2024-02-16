@@ -7,6 +7,7 @@ import CardTitle from '../LessonsPg/CardTitle';
 import EllipsisTxt from '../Text/EllipsisTxt';
 import CustomLink from '../CustomLink';
 import { getMediaComponent as Thumbnail } from '../LessonSection/Preview/utils';
+import { useEffect, useRef } from 'react';
 
 const VideoCard = ({
     videoObj,
@@ -17,14 +18,25 @@ const VideoCard = ({
 }) => {
     // if not part of a lesson for unit, then take the user to the lesson itself
     let hrefStr = `/lessons/en-US/${videoObj.lessonUnitNumId}`;
+    const videoCardRef = useRef();
 
     const handleOnClick = ({ mainLink, description, videoTitle, lessonUnitTitle }) => () => {
         setSelectedVideo({ link: mainLink, description: description, title: videoTitle, unitTitle: lessonUnitTitle });
         setIsModalShown(true);
     };
 
+    useEffect(() => {
+        if (videoObj.willScrollIntoView) {
+            videoCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, []);
+
     return (
-        <div style={style} className={cardClassName}>
+        <div
+            ref={videoCardRef}
+            style={style}
+            className={cardClassName}
+        >
             <div>
                 <div
                     style={{ height: '160px' }}
