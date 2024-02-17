@@ -20,9 +20,9 @@ import VideoCard from "../../components/LessonsPg/VideoCard.js";
 import { connectToMongodb } from '../../backend/utils/connection';
 import { getVideoThumb } from '../../components/LessonSection/Preview/utils.js';
 import SelectedGpVideo from '../../components/LessonsPg/modals/SelectedGpVideo.js';
-import cache from '../../backend/utils/cache.js';
 import { nanoid } from 'nanoid';
 import GpVideos from '../../components/LessonsPg/sections/GpVideos.js';
+import GpUnits from '../../components/LessonsPg/sections/GpUnits.js';
 
 const getLessonImgSrc = lesson => {
   const { CoverImage, LessonBanner } = lesson;
@@ -138,39 +138,12 @@ const LessonsPage = ({ unitsObj, didErrorOccur, lessonParts, gpVideosObj }) => {
             setIsModalShown={setIsModalShown}
             setSelectedVideo={setSelectedVideo}
           />
-          <section className="lessonsSection pt-1">
-            <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
-              <div className="d-flex">
-                <Image src={UnitIconSvg} style={{ height: 'fit-content' }} alt='GP Unit Icon' />
-                <h4 className="d-flex justify-content-center align-items-center">Galactic Polymath Mini-Unit Releases</h4>
-              </div>
-              <p className='mt-2 mb-0'> Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
-              <p><em>And they&apos;re all free!</em></p>
-            </div>
-            {!!unitsToShow?.length && (
-              <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-                {unitsToShow.map((lesson, index) => {
-                  return (
-                    (lesson.PublicationStatus === "Proto") ?
-                      <UnshowableLesson key={index} />
-                      : (
-                        <LessonCard
-                          key={lesson._id}
-                          lesson={lesson}
-                          lessonImgSrc={getLessonImgSrc(lesson)}
-                          BetaPillComp={(lesson.PublicationStatus === "Beta") || (lesson.PublicationStatus === "Draft") ? <Pill /> : null}
-                        />
-                      )
-                  )
-                })}
-              </div>
-            )}
-            {(!unitsToShow?.length && didErrorOccur) && (
-              <div className='px-4 pb-4'>
-                <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
-              </div>
-            )}
-          </section>
+          <GpUnits
+            isLast={unitsObj.isLast}
+            startingUnitsToShow={unitsObj.data}
+            nextPgNumStartingVal={unitsObj.nextPgNumStartingVal}
+            didErrorOccur={didErrorOccur}
+          />
         </div>
       </section>
       <section>
@@ -347,8 +320,6 @@ export async function getStaticProps() {
 
     let gpVideosFirstPg = gpVideos?.length ? gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)).slice(0, DATA_PER_PG) : [];
     gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
-
-    console.log('firstPgOfUnits, hey there: ', firstPgOfUnits);
 
     return {
       props: {

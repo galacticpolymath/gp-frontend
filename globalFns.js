@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable indent */
 import { getVideoThumb } from './components/LessonSection/Preview/utils';
 import { SHOWABLE_LESSONS_STATUSES } from './globalVars';
@@ -14,6 +15,8 @@ export const createPaginationArr = arr => {
             pgOfDataArr = [];
         }
     });
+
+    console.log('pgsArr: ', pgsArr);
 
     return pgsArr;
 };

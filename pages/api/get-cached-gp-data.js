@@ -31,6 +31,7 @@ export default async function handler(request, response) {
             throw new CustomError("Incorrect request method. Must be a 'GET'.", 405)
         }
 
+        console.log('request.query.pageNum, yo there meng: ', request.query.pageNum)
         if (!request.query.pageNum || (request.query.pageNum && !Number.isInteger(+request.query.pageNum))) {
             throw new CustomError('Missing the `pageNum` parameter. Must be a integer greater than 0.', 400)
         }
@@ -50,19 +51,29 @@ export default async function handler(request, response) {
                 throw new CustomError('Failed to get the units from the database.', 500)
             }
 
+            cache.set('units', units, 3_600_000 * 12);
+
             gpDataArr = getGpData(units);
             gpDataArr = gpDataArr.length ? gpDataArr.map(val => ({ ...val, id: nanoid() })) : gpDataArr;
             gpDataArr = createPaginationArr(gpDataArr);
 
             cache.set(type, gpDataArr, 3_600_000 * 12);
-        } else if (!gpDataArr.length) {
+        } else if (!gpDataArr?.length) {
             const units = await getUnits();
 
             if (!units?.length) {
                 throw new CustomError('Failed to get the units from the database.', 500)
             }
 
-            gpDataArr = createPaginationArr(units);
+            let uniqueUnits = [];
+
+            for (const unit of units) {
+                if (!uniqueUnits.length || !uniqueUnits.some(uniqueUnit => unit.numID === uniqueUnit.numID)) {
+                    uniqueUnits.push(unit);
+                }
+            }
+
+            gpDataArr = createPaginationArr(uniqueUnits);
             cache.set(type, gpDataArr, 3_600_000 * 12);
         }
 
