@@ -23,6 +23,8 @@ import SelectedGpVideo from '../../components/LessonsPg/modals/SelectedGpVideo.j
 import { nanoid } from 'nanoid';
 import GpVideos from '../../components/LessonsPg/sections/GpVideos.js';
 import GpUnits from '../../components/LessonsPg/sections/GpUnits.js';
+import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
+import axios from 'axios';
 
 const getLessonImgSrc = lesson => {
   const { CoverImage, LessonBanner } = lesson;
@@ -52,8 +54,7 @@ const handleJobVizCardClick = () => {
 
 const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon'];
 
-const LessonsPage = ({ unitsObj, didErrorOccur, lessonParts, gpVideosObj }) => {
-  console.log("gpVideosObj, yo there meng: ", gpVideosObj.data)
+const LessonsPage = ({ unitsObj, lessonsObj, gpVideosObj, didErrorOccur }) => {
   const [selectedVideo, setSelectedVideo] = useState(null)
   const [isModalShown, setIsModalShown] = useState(false);
   const uniqueIDs = [];
@@ -146,37 +147,12 @@ const LessonsPage = ({ unitsObj, didErrorOccur, lessonParts, gpVideosObj }) => {
           />
         </div>
       </section>
-      <section>
-        <div className='container'>
-          <section className="lessonsSection pt-1">
-            <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
-              <div className="d-flex">
-                <Image src={GpLessonSvg} style={{ height: 'fit-content' }} alt='GP Unit Icon' />
-                <h4 className="d-flex justify-content-center align-items-center">Galactic Polymath Individual Lessons</h4>
-              </div>
-              <p className='mt-2 mb-0'>Free lessons to engage students in current research, real world problems, and interdisciplinary thinking.</p>
-            </div>
-            {!!lessonParts?.length && (
-              <div className='mx-auto grid justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch pb-1 px-2 p-sm-4 gap-3 pt-3 pb-5'>
-                {lessonParts.map((lesson, index) => {
-                  return (
-                    <IndividualLesson
-                      key={index}
-                      Pill={lesson.status === "Beta" ? <Pill xCoordinate={23} yCoordinate={-19} /> : null}
-                      lesson={{ ...lesson, _id: index }}
-                    />
-                  );
-                })}
-              </div>
-            )}
-            {(!unitsToShow?.length && didErrorOccur) && (
-              <div className='px-4 pb-4'>
-                <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
-              </div>
-            )}
-          </section>
-        </div>
-      </section>
+      <GpLessons
+        isLast={lessonsObj.isLast}
+        startingLessonsToShow={lessonsObj.data}
+        nextPgNumStartingVal={lessonsObj.nextPgNumStartingVal}
+        didErrorOccur={didErrorOccur}
+      />
       <SelectedGpVideo _selectedVideo={[selectedVideo, setSelectedVideo]} _isModalShown={[isModalShown, setIsModalShown]} />
     </Layout>
   );
@@ -299,10 +275,10 @@ export async function getStaticProps() {
       return lessonObj;
     });
     const firstPgOfUnits = lessons.slice(0, DATA_PER_PG);
-    let lessonParts = structuredClone(lessonPartsForUI);
+    let firstPgOfLessons = structuredClone(lessonPartsForUI);
 
-    if (lessonParts?.length) {
-      lessonParts = lessonParts.sort(({ sort_by_date: sortByDateLessonA }, { sort_by_date: sortByDateLessonB }) => {
+    if (firstPgOfLessons?.length) {
+      firstPgOfLessons = firstPgOfLessons.sort(({ sort_by_date: sortByDateLessonA }, { sort_by_date: sortByDateLessonB }) => {
         let _sortByDateLessonA = new Date(sortByDateLessonA);
         let _sortByDateLessonB = new Date(sortByDateLessonB);
 
@@ -315,11 +291,13 @@ export async function getStaticProps() {
         }
 
         return 0;
-      })
+      }).slice(0, DATA_PER_PG);
     }
 
     let gpVideosFirstPg = gpVideos?.length ? gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)).slice(0, DATA_PER_PG) : [];
     gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
+
+    axios.post('http://localhost:3000/api/cache-gp-unit-data', { lessons: lessonPartsForUI })
 
     return {
       props: {
@@ -328,7 +306,11 @@ export async function getStaticProps() {
           isLast: lessons.length < DATA_PER_PG,
           nextPgNumStartingVal: 1,
         },
-        lessonParts: lessonParts,
+        lessonsObj: {
+          data: firstPgOfLessons,
+          isLast: lessonPartsForUI.length < DATA_PER_PG,
+          nextPgNumStartingVal: 1,
+        },
         gpVideosObj: {
           data: gpVideosFirstPg,
           isLast: gpVideos.length < DATA_PER_PG,

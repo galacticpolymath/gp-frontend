@@ -30,8 +30,6 @@ export default async function handler(request, response) {
         if (request.method !== 'GET') {
             throw new CustomError("Incorrect request method. Must be a 'GET'.", 405)
         }
-
-        console.log('request.query.pageNum, yo there meng: ', request.query.pageNum)
         if (!request.query.pageNum || (request.query.pageNum && !Number.isInteger(+request.query.pageNum))) {
             throw new CustomError('Missing the `pageNum` parameter. Must be a integer greater than 0.', 400)
         }

@@ -96,7 +96,7 @@ const GpVideos = ({
             </div>
             <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                 {gpVideosObj.data?.length && (
-                    gpVideosObj.data.map(videoObj => {
+                    (gpVideosObj.data ?? startingGpVids).map(videoObj => {
                         return (
                             <VideoCard
                                 key={videoObj.id}

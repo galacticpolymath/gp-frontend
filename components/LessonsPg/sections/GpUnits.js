@@ -8,6 +8,7 @@ import Pill from '../../Pill';
 import LessonCard from '../LessonCard';
 import SeeMoreBtnSec from './SeeMoreBtnSec';
 import { useGetGpDataStates } from '../../../customHooks/useGetGpDataStates';
+import Image from 'next/image';
 
 const getLessonImgSrc = lesson => {
     const { CoverImage, LessonBanner } = lesson;
@@ -37,14 +38,13 @@ const GpUnits = ({
     nextPgNumStartingVal,
     didErrorOccur,
 }) => {
-    console.log('nextPgNumStartingVal, yo there: ', nextPgNumStartingVal);
     const { handleOnClick, btnTxt, gpDataObj } = useGetGpDataStates(startingUnitsToShow, isLast, nextPgNumStartingVal, 'units');
 
     return (
         <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
                 <div className="d-flex">
-                    <img
+                    <Image
                         src={UnitIconSvg}
                         style={{ height: 'fit-content' }}
                         alt='GP Unit Icon'
@@ -56,7 +56,7 @@ const GpUnits = ({
             </div>
             {!!gpDataObj.data?.length && (
                 <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-                    {gpDataObj.data.map((lesson, index) => {
+                    {(gpDataObj.data ?? startingUnitsToShow).map((lesson, index) => {
                         return (
                             (lesson.PublicationStatus === 'Proto') ?
                                 <UnshowableLesson key={index} />
