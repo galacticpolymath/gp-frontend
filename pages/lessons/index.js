@@ -52,13 +52,12 @@ const handleJobVizCardClick = () => {
 
 const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon'];
 
-const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideosObj }) => {
+const LessonsPage = ({ unitsObj, didErrorOccur, lessonParts, gpVideosObj }) => {
   console.log("gpVideosObj, yo there meng: ", gpVideosObj.data)
   const [selectedVideo, setSelectedVideo] = useState(null)
   const [isModalShown, setIsModalShown] = useState(false);
-  const [gpVideos, setGpVideos] = useState(gpVideosObj?.data ?? []);
   const uniqueIDs = [];
-  const lessonsToShow = lessons.filter(({ numID, PublicationStatus, ReleaseDate }) => {
+  const unitsToShow = unitsObj.data.filter(({ numID, PublicationStatus, ReleaseDate }) => {
     const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID) && (moment(ReleaseDate).format('YYYY-MM-DD') < moment(Date()).format('YYYY-MM-DD'));
 
     if (willShowLesson) {
@@ -148,9 +147,9 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideosObj }) => {
               <p className='mt-2 mb-0'> Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
               <p><em>And they&apos;re all free!</em></p>
             </div>
-            {!!lessonsToShow?.length && (
+            {!!unitsToShow?.length && (
               <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-                {lessonsToShow.map((lesson, index) => {
+                {unitsToShow.map((lesson, index) => {
                   return (
                     (lesson.PublicationStatus === "Proto") ?
                       <UnshowableLesson key={index} />
@@ -166,7 +165,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideosObj }) => {
                 })}
               </div>
             )}
-            {(!lessonsToShow?.length && didErrorOccur) && (
+            {(!unitsToShow?.length && didErrorOccur) && (
               <div className='px-4 pb-4'>
                 <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
               </div>
@@ -197,7 +196,7 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideosObj }) => {
                 })}
               </div>
             )}
-            {(!lessonsToShow?.length && didErrorOccur) && (
+            {(!unitsToShow?.length && didErrorOccur) && (
               <div className='px-4 pb-4'>
                 <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
               </div>
@@ -228,6 +227,7 @@ const PROJECTED_LESSONS_FIELDS = [
 ]
 
 const SHOWABLE_LESSONS_STATUSES = ['Live', 'Beta'];
+const DATA_PER_PG = 6;
 
 export async function getStaticProps() {
   try {
@@ -321,11 +321,11 @@ export async function getStaticProps() {
         ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
       };
 
-      delete lessonObj.LsnStatuses
+      delete lessonObj.LsnStatuses;
 
-      return lessonObj
+      return lessonObj;
     });
-
+    const firstPgOfUnits = lessons.slice(0, DATA_PER_PG);
     let lessonParts = structuredClone(lessonPartsForUI);
 
     if (lessonParts?.length) {
@@ -345,10 +345,26 @@ export async function getStaticProps() {
       })
     }
 
-    let gpVideosFirstPg = gpVideos?.length ? gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)).slice(0, 6) : [];
+    let gpVideosFirstPg = gpVideos?.length ? gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)).slice(0, DATA_PER_PG) : [];
     gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
 
-    return { props: { lessons: lessons, lessonParts: lessonParts, gpVideosObj: { data: gpVideosFirstPg, isLast: gpVideos.length < 6, nextPgNumStartingVal: 1 } } };
+    console.log('firstPgOfUnits, hey there: ', firstPgOfUnits);
+
+    return {
+      props: {
+        unitsObj: {
+          data: firstPgOfUnits,
+          isLast: lessons.length < DATA_PER_PG,
+          nextPgNumStartingVal: 1,
+        },
+        lessonParts: lessonParts,
+        gpVideosObj: {
+          data: gpVideosFirstPg,
+          isLast: gpVideos.length < DATA_PER_PG,
+          nextPgNumStartingVal: 1,
+        },
+      },
+    };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 
