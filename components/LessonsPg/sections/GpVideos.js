@@ -9,27 +9,16 @@ import VideoCard from "../VideoCard";
 import axios from "axios";
 import Button from "../../General/Button";
 
-// typeStr = 'videos' | 'lessons'
+// typeStr = 'videos' | 'lessons' | 'units'
 const getGpUnitData = async (typeStr, pageNum, urlStr) => {
     try {
-        const pathOptions = [
-            {
-                type: 'videos',
-                path: 'get-cached-vids',
-            },
-        ];
-        const pathObj = pathOptions.find(({ type }) => type === typeStr);
-
-        if (!pathObj) {
-            throw new Error('Invalid value passed for the `typeStr` parameter. Can only be one of the following: "videos", "lessons", or ""');
-        }
-
-        const finalUrlStr = `${urlStr}/${pathObj.path}`;
-        const response = await axios.get(finalUrlStr, { params: { pageNum: pageNum } });
+        const response = await axios.get(`${urlStr}/get-cached-gp-data`, { params: { pageNum: pageNum, type: typeStr } });
 
         return { data: response.data.data, isLast: response.data.isLast };
     } catch (error) {
-        console.error(`Failed to get gp unit data. Reason: `, error);
+        const { status, data } = error?.response ?? {};
+        console.error('ERROR STATUS CODE: ', status);
+        console.error(`Failed to get gp unit data. Reason: `, data.msg);
 
         return null;
     }
