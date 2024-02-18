@@ -17,7 +17,7 @@ const IndividualLesson = ({ lesson, Pill = null }) => {
           <h6
             style={{
               textDecoration: 'none',
-              height: 'fit-content', 
+              height: 'fit-content',
               fontWeight: 700,
               fontSize: 21,
             }}

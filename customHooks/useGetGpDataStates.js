@@ -20,7 +20,6 @@ const getGpUnitData = async (typeStr, pageNum, urlStr) => {
 };
 
 export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal, gpDataTypeStr) => {
-    console.log('yo there meng, nextPgNumStartingVal: ', nextPgNumStartingVal);
     const [btnTxt, setBtnTxt] = useState('See More');
     const [gpDataObj, setGpDataObj] = useState({
         data: dataDefaultVal,
@@ -33,6 +32,8 @@ export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal,
             setBtnTxt('Loading...');
             console.log('gpDataObj, yo there meng: ', gpDataObj);
             const gpVideosResponse = await getGpUnitData(gpDataTypeStr, gpDataObj.nextPgNum, `${window.location.origin}/api`);
+
+            console.log('hey there meng, gpVideosResponse: ', gpVideosResponse);
 
             if (!gpVideosResponse?.data?.length) {
                 throw new Error(`Failed to get the next page of videos from the server. Received: ${gpVideosResponse.data}`);

@@ -4,25 +4,9 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 /* eslint-disable no-undef */
-import { useEffect, useState } from "react";
 import VideoCard from "../VideoCard";
-import axios from "axios";
 import Button from "../../General/Button";
-
-// typeStr = 'videos' | 'lessons' | 'units'
-const getGpUnitData = async (typeStr, pageNum, urlStr) => {
-    try {
-        const response = await axios.get(`${urlStr}/get-cached-gp-data`, { params: { pageNum: pageNum, type: typeStr } });
-
-        return { data: response.data.data, isLast: response.data.isLast };
-    } catch (error) {
-        const { status, data } = error?.response ?? {};
-        console.error('ERROR STATUS CODE: ', status);
-        console.error(`Failed to get gp unit data. Reason: `, data.msg);
-
-        return null;
-    }
-};
+import { useGetGpDataStates } from "../../../customHooks/useGetGpDataStates";
 
 const GpVideos = ({
     startingGpVids,
@@ -31,59 +15,7 @@ const GpVideos = ({
     setIsModalShown,
     setSelectedVideo,
 }) => {
-    const [btnTxt, setBtnTxt] = useState('See More');
-    const [gpVideosObj, setGpVideosObj] = useState({
-        data: startingGpVids,
-        isLast: isLast,
-        nextPgNum: nextPgNumStartingVal,
-    });
-
-    const handleOnClick = async () => {
-        try {
-            setBtnTxt('Loading...');
-
-            const gpVideosResponse = await getGpUnitData('videos', gpVideosObj.nextPgNum, `${window.location.origin}/api`);
-
-            if (!gpVideosResponse.data?.length) {
-                throw new Error(`Failed to get the next page of videos from the server. Received: ${gpVideosResponse.data}`);
-            }
-
-            gpVideosResponse.data[0] = { ...gpVideosResponse.data[0], willScrollIntoView: true };
-
-            let gpVideosObjUpdated = {
-                ...gpVideosObj,
-                data: [...gpVideosObj.data, ...gpVideosResponse.data],
-            };
-
-            if (gpVideosResponse.isLast) {
-                console.log('Reached the end of specified gp unit data.');
-                gpVideosObjUpdated = {
-                    ...gpVideosObjUpdated,
-                    isLast: true,
-                };
-                setGpVideosObj(gpVideosObjUpdated);
-                setBtnTxt('See More.');
-                return;
-            }
-
-            setGpVideosObj(state => ({ ...gpVideosObjUpdated, nextPgNum: state.nextPgNum + 1 }));
-            setBtnTxt('See More.');
-        } catch (error) {
-            console.error('Failed to get gp unit data from the server. Reason: ', error);
-            setBtnTxt('ERROR! Try again.');
-        }
-    };
-
-    useEffect(() => {
-        if (gpVideosObj.data.some(vid => vid.willScrollIntoView)) {
-            setTimeout(() => {
-                setGpVideosObj(state => ({
-                    ...state,
-                    data: state.data.map(vid => ({ ...vid, willScrollIntoView: false })),
-                }));
-            }, 400);
-        }
-    }, [gpVideosObj.data]);
+    const { btnTxt, gpDataObj, handleOnClick } = useGetGpDataStates(startingGpVids, isLast, nextPgNumStartingVal, 'videos');
 
     return (
         <section className="lessonsSection pt-1">
@@ -95,8 +27,8 @@ const GpVideos = ({
                 </div>
             </div>
             <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-                {gpVideosObj.data?.length && (
-                    (gpVideosObj.data ?? startingGpVids).map(videoObj => {
+                {gpDataObj.data?.length && (
+                    (gpDataObj.data ?? startingGpVids).map(videoObj => {
                         return (
                             <VideoCard
                                 key={videoObj.id}
@@ -108,7 +40,7 @@ const GpVideos = ({
                     })
                 )}
             </div>
-            {!gpVideosObj.isLast && (
+            {!gpDataObj.isLast && (
                 <div className='w-100 d-flex justify-content-center align-items-center pb-3'>
                     <Button
                         handleOnClick={handleOnClick}

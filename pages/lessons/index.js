@@ -67,17 +67,6 @@ const LessonsPage = ({ unitsObj, lessonsObj, gpVideosObj, didErrorOccur }) => {
 
     return willShowLesson;
   });
-  // GOAL: create the see more button, it will get the next six cards from the backend
-  // 
-
-  // GOAL: for the initial request of all of the cards get only six
-  // only six of the videos are sent to the front-end 
-
-  // NOTES: 
-  // -get the necessary cards to show to the user 
-  // -get amount of the total amount of cards that can be queried  
-  // -if there are only 6 cards that can be shown to the user, get all of the cards 
-  // for the user 
 
   return (
     <Layout
@@ -297,7 +286,8 @@ export async function getStaticProps() {
     let gpVideosFirstPg = gpVideos?.length ? gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)).slice(0, DATA_PER_PG) : [];
     gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
 
-    axios.post('http://localhost:3000/api/cache-gp-unit-data');
+    console.log('yo there meng, getStaticProps...')
+    axios.post('http://localhost:3000/api/cached-gp-data');
 
     return {
       props: {

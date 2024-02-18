@@ -3,25 +3,25 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import { nanoid } from "nanoid";
-import { createPaginationArr, getGpLessons, getGpVids } from "../../globalFns";
-import { getGpDataGetterFn } from "../helperFns/cachedGpDataFns";
+import { createPaginationArr, getGpLessons, getGpVids, getUniqueGpUnits } from "../../globalFns";
+import { getGpDataGetterFn, getIndividualLessonsNumForUnitObj } from "../helperFns/cachedGpDataFns";
 import { getUnits } from "../helperFns/lessonsFns";
 import { CustomError } from "../utils/errors";
 import cache from "../utils/cache";
 
 const GP_DATA_EXPIRATION_TIME_MS = 3_600_000 * 12;
 
-export const cacheGpData = async () => {
+export const cacheGpUnitData = async () => {
     try {
-        const units = await getUnits();
+        let units = await getUnits();
+        units = units.map(getIndividualLessonsNumForUnitObj)
 
         if (!units?.length) {
             throw new CustomError('Failed to get gp units from the db.', 500);
         }
 
-        const lessons = getGpLessons(units);
-        const videos = getGpVids(units);
-
+        const lessons = createPaginationArr(getGpLessons(units));
+        const videos = createPaginationArr(getGpVids(units));
         const wasSuccessful = cache.mset([
             {
                 key: 'lessons',
@@ -30,7 +30,7 @@ export const cacheGpData = async () => {
             },
             {
                 key: 'units',
-                val: units,
+                val: createPaginationArr(getUniqueGpUnits(units)),
                 ttl: GP_DATA_EXPIRATION_TIME_MS,
             },
             {
@@ -53,16 +53,6 @@ export const cacheGpData = async () => {
         return { wasSuccessful: false, errMsg, errorStatusCode: code ?? 500 }
     }
 }
-
-// NOTES:
-// for the cases below, do the following:
-// get the units only once
-// using the units, get the following:
-// lessons and the videos
-// after the lessons and the videos have been received create a pagination for each
-
-// GOAL:
-// get the units, lessons, and videos  
 
 export const getCachedGpData = async request => {
     try {

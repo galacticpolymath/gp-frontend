@@ -16,8 +16,6 @@ export const createPaginationArr = arr => {
         }
     });
 
-    console.log('pgsArr: ', pgsArr);
-
     return pgsArr;
 };
 
@@ -118,4 +116,16 @@ export const getGpLessons = lessons => {
     }
 
     return lessonParts;
+};
+
+export const getUniqueGpUnits = units => {
+    let uniqueUnits = [];
+
+    for (const unit of units) {
+        if (!uniqueUnits.length || !uniqueUnits.some(uniqueUnit => unit.numID === uniqueUnit.numID)) {
+            uniqueUnits.push(unit);
+        }
+    }
+
+    return uniqueUnits;
 };

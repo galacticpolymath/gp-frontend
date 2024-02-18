@@ -4,7 +4,7 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 
-import { cacheGpData, getCachedGpData } from "../../backend/services/cachedGpDataServices";
+import { getCachedGpData, cacheGpUnitData } from "../../backend/services/cachedGpDataServices";
 import { CustomError } from "../../backend/utils/errors";
 
 const VALID_GP_UNIT_TYPES = ['videos', 'units', 'lessons'];
@@ -32,8 +32,7 @@ export default async function handler(request, response) {
 
         // caching gp unit data
         if (request.method === 'POST') {
-            console.log('hey there yo...')
-            const { wasSuccessful, errorStatusCode, errMsg } = await cacheGpData();
+            const { wasSuccessful, errorStatusCode, errMsg } = await cacheGpUnitData();
 
             if (!wasSuccessful) {
                 throw new CustomError(errMsg, errorStatusCode)
