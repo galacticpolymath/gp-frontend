@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useScrollCardIntoView } from '../../customHooks/useScrollCardIntoView';
 
 // MAKE COMPONENT EXTENABLE FOR THE IMAGE
 const LessonCard = ({ lesson, BetaPillComp = null, lessonImgSrc }) => {
@@ -11,7 +12,9 @@ const LessonCard = ({ lesson, BetaPillComp = null, lessonImgSrc }) => {
     Title,
     Section,
     individualLessonsNum,
+    willScrollIntoView,
   } = lesson;
+  const ref = useScrollCardIntoView(willScrollIntoView);
 
   return (
     <Link
@@ -19,6 +22,7 @@ const LessonCard = ({ lesson, BetaPillComp = null, lessonImgSrc }) => {
       href={`/lessons/${locale}/${numID}`}
       className='w-100 pointer 
       disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg'
+      ref={ref}
     >
       <div className="position-relative">
         <Image

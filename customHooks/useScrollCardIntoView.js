@@ -4,11 +4,11 @@
 
 import { useEffect, useRef } from "react";
 
-export const useScrollCardIntoView = cardObj => {
+export const useScrollCardIntoView = willScrollCardIntoView => {
     const cardRef = useRef();
 
     useEffect(() => {
-        if (cardObj.willScrollIntoView) {
+        if (willScrollCardIntoView) {
             cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }, []);

@@ -287,7 +287,11 @@ export async function getStaticProps() {
     gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
 
     console.log('yo there meng, getStaticProps...')
-    axios.post('http://localhost:3000/api/cached-gp-data');
+    axios.post('http://localhost:3000/api/cached-gp-data').then(res => {
+      console.log('res, what is up: ', res)
+    }).catch(error => {
+      console.log('error, yo there: ', error)
+    })
 
     return {
       props: {

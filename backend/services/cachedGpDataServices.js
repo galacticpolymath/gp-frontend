@@ -7,11 +7,10 @@ import { createPaginationArr, getGpLessons, getGpVids, getUniqueGpUnits } from "
 import { getGpDataGetterFn, getIndividualLessonsNumForUnitObj } from "../helperFns/cachedGpDataFns";
 import { getUnits } from "../helperFns/lessonsFns";
 import { CustomError } from "../utils/errors";
-import cache from "../utils/cache";
 
 const GP_DATA_EXPIRATION_TIME_MS = 3_600_000 * 12;
 
-export const cacheGpUnitData = async () => {
+export const cacheGpUnitData = async cache => {
     try {
         let units = await getUnits();
         units = units.map(getIndividualLessonsNumForUnitObj)
@@ -54,20 +53,26 @@ export const cacheGpUnitData = async () => {
     }
 }
 
-export const getCachedGpData = async request => {
+export const getCachedGpData = async (request, cache) => {
     try {
         const { type, pageNum } = request.query;
         const getGpData = getGpDataGetterFn(type)?.fn;
         let gpDataArr = cache.get(type);
 
+        console.log('gpDataArr, yo there: ', gpDataArr)
+
         if (!gpDataArr?.length && (type !== 'units')) {
-            const units = await getUnits();
+            let units = await getUnits();
 
             if (!units?.length) {
                 throw new CustomError('Failed to get the units from the database.', 500)
             }
 
-            cache.set('units', units, GP_DATA_EXPIRATION_TIME_MS);
+            units = getUniqueGpUnits(units)
+
+            if (!cache.get('units')?.length) {
+                cache.set('units', createPaginationArr(units), GP_DATA_EXPIRATION_TIME_MS);
+            }
 
             gpDataArr = getGpData(units);
             gpDataArr = gpDataArr.length ? gpDataArr.map(val => ({ ...val, id: nanoid() })) : gpDataArr;

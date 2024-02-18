@@ -5,12 +5,15 @@
 /* eslint-disable indent */
 
 import { getCachedGpData, cacheGpUnitData } from "../../backend/services/cachedGpDataServices";
+import cache from "../../backend/utils/cache";
 import { CustomError } from "../../backend/utils/errors";
 
 const VALID_GP_UNIT_TYPES = ['videos', 'units', 'lessons'];
 
 export default async function handler(request, response) {
     try {
+        console.log('cache: ', cache)
+        console.log('cache keys: ', cache.keys())
         if ((request.method === 'GET') && (!request.query.pageNum || (request.query.pageNum && !Number.isInteger(+request.query.pageNum)))) {
             throw new CustomError('Missing the `pageNum` parameter. Must be a integer greater than 0.', 400);
         }
@@ -21,7 +24,7 @@ export default async function handler(request, response) {
 
         // getting data from the cache
         if (request.method === 'GET') {
-            const { errMsg, errorStatusCode, data, isLast } = await getCachedGpData(request)
+            const { errMsg, errorStatusCode, data, isLast } = await getCachedGpData(request, cache)
 
             if (errMsg) {
                 throw new CustomError(errMsg, errorStatusCode);
@@ -32,7 +35,7 @@ export default async function handler(request, response) {
 
         // caching gp unit data
         if (request.method === 'POST') {
-            const { wasSuccessful, errorStatusCode, errMsg } = await cacheGpUnitData();
+            const { wasSuccessful, errorStatusCode, errMsg } = await cacheGpUnitData(cache);
 
             if (!wasSuccessful) {
                 throw new CustomError(errMsg, errorStatusCode)

@@ -1,9 +1,11 @@
 import Image from 'next/image';
 import LessonCardWrapper from './LessonCardWrapper';
 import RichText from '../RichText';
+import { useScrollCardIntoView } from '../../customHooks/useScrollCardIntoView';
 
 const IndividualLesson = ({ lesson, Pill = null }) => {
   const { lessonPartTitle, tags, _id, lessonPartPath } = lesson;
+  const lessonCardRef = useScrollCardIntoView(lesson.willScrollIntoView);
 
   return (
     <LessonCardWrapper
@@ -12,7 +14,7 @@ const IndividualLesson = ({ lesson, Pill = null }) => {
       style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', minWidth: '240px' }}
       linkClassName='individualLessonsWrapper pointer py-2 py-sm-0 disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-sm-grid p-2 p-lg-2 rounded-3 lessonsPgShadow cardsOnLessonPg bg-white'
     >
-      <section className='individualLessonImgSec d-flex flex-grow-1 justify-content-between w-100'>
+      <section ref={lessonCardRef} className='individualLessonImgSec d-flex flex-grow-1 justify-content-between w-100'>
         <section style={{ width: '70%' }} className='d-flex justify-content-end flex-column pe-1'>
           <h6
             style={{
