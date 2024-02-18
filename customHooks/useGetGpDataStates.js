@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 // typeStr = 'videos' | 'lessons' | 'units'
 const getGpUnitData = async (typeStr, pageNum, urlStr) => {
     try {
-        const response = await axios.get(`${urlStr}/get-cached-gp-data`, { params: { pageNum: pageNum, type: typeStr } });
+        const response = await axios.get(`${urlStr}/cached-gp-data`, { params: { pageNum: pageNum, type: typeStr } });
 
         return { data: response.data.data, isLast: response.data.isLast };
     } catch (error) {
