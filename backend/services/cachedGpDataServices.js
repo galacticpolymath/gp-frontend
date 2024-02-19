@@ -74,9 +74,6 @@ export const getCachedGpData = async (request, cache) => {
             }
 
             gpDataArr = getGpData(units);
-            console.log(
-                "gpDataArr: ", gpDataArr.length
-            )
             totalItemsNum = gpDataArr.length
             gpDataArr = gpDataArr.length ? gpDataArr.map(val => ({ ...val, id: nanoid() })) : gpDataArr;
             gpDataArr = createPaginationArr(gpDataArr);
@@ -97,6 +94,7 @@ export const getCachedGpData = async (request, cache) => {
                 }
             }
 
+            uniqueUnits = uniqueUnits.map(getIndividualLessonsNumForUnitObj)
             totalItemsNum = uniqueUnits.length
             gpDataArr = createPaginationArr(uniqueUnits);
             cache.set(type, gpDataArr, GP_DATA_EXPIRATION_TIME_MS);
@@ -107,8 +105,6 @@ export const getCachedGpData = async (request, cache) => {
         if (!pageQueriedByClient) {
             throw new CustomError('Failed to get the next page of lessons. `pageNum` index is out of range of the array that contains the videos', 400)
         }
-
-        console.log("totalItemsNum: ", totalItemsNum)
 
         return { data: pageQueriedByClient, isLast: (gpDataArr.length - 1) === +pageNum, totalItemsNum: totalItemsNum };
     } catch (error) {

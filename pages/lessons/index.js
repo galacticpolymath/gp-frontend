@@ -283,9 +283,6 @@ export async function getStaticProps() {
     let gpVideosFirstPg = gpVideos?.length ? gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)).slice(0, DATA_PER_PG) : [];
     gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
 
-    // get the current domain name of the app 
-    axios.post('http://localhost:3000/api/cached-gp-data');
-
     return {
       props: {
         unitsObj: {
