@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
@@ -9,6 +10,7 @@ import LessonCard from '../LessonCard';
 import SeeMoreBtnSec from './SeeMoreBtnSec';
 import { useGetGpDataStates } from '../../../customHooks/useGetGpDataStates';
 import Image from 'next/image';
+import ReactLoading from 'react-loading';
 
 const getLessonImgSrc = lesson => {
     const { CoverImage, LessonBanner } = lesson;
@@ -82,7 +84,22 @@ const GpUnits = ({
                 <SeeMoreBtnSec
                     btnTxt={btnTxt}
                     handleOnClick={handleOnClick}
-                />
+                >
+                    {(btnTxt === 'Loading')
+                        ?
+                        <span style={{ height: 25 }} className='d-inline-flex justify-content-center align-items-center w-100 position-relative'>
+                            <ReactLoading
+                                type='bubbles'
+                                color='#444444'
+                                className='loading-bubbles'
+                            />
+                        </span>
+                        :
+                        <span className='d-inline-flex w-100 h-100 justify-content-center'>
+                            {btnTxt}
+                        </span>
+                    }
+                </SeeMoreBtnSec>
             )}
         </section>
     );

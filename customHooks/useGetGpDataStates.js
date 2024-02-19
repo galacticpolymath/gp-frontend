@@ -11,11 +11,15 @@ const getGpUnitData = async (typeStr, pageNum, urlStr) => {
 
         return { data: response.data.data, isLast: response.data.isLast, totalItemsNum: response.data.totalItemsNum };
     } catch (error) {
+        if (error.code === 'ECONNABORTED') {
+            return { errType: 'timeout' };
+        }
+
         const { status, data } = error?.response ?? {};
         console.error('ERROR STATUS CODE: ', status);
         console.error('Failed to get gp unit data. Reason: ', data.msg);
 
-        return null;
+        return { errType: 'general' };
     }
 };
 
@@ -29,26 +33,29 @@ export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal,
 
     const handleOnClick = async () => {
         try {
-            setBtnTxt('Loading...');
-            console.log('gpDataObj, yo there meng: ', gpDataObj);
+            setBtnTxt('Loading');
             const gpVideosResponse = await getGpUnitData(gpDataTypeStr, gpDataObj.nextPgNum, `${window.location.origin}/api`);
 
-            console.log('hey there meng, gpVideosResponse: ', gpVideosResponse);
+            if (gpVideosResponse.errType === 'timeout') {
+                alert(`Failed to get ${gpDataTypeStr}. Please refesh the page and try again.`);
+                throw new Error('"axios" request error timeout has occurred.');
+            }
+
+            if (gpVideosResponse.errType) {
+                throw new Error('Failed to get the gp unit data.');
+            }
 
             if (!gpVideosResponse?.data?.length) {
                 throw new Error(`Failed to get the next page of videos from the server. Received: ${gpVideosResponse.data}`);
             }
 
             gpVideosResponse.data[0] = { ...gpVideosResponse.data[0], willScrollIntoView: true };
-            console.log('gpVideosResponse, yo there: ', gpVideosResponse);
             const gpDataArr = [...gpDataObj.data, ...gpVideosResponse.data];
             let gpVideosObjUpdated = {
                 ...gpDataObj,
                 totalItemsNum: gpVideosResponse.totalItemsNum,
                 data: gpDataArr,
             };
-
-            console.log('gpVideosObjUpdated: ', gpVideosObjUpdated);
 
             if (gpVideosResponse.isLast) {
                 console.log('Reached the end of specified gp unit data.');
@@ -60,7 +67,6 @@ export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal,
                 setBtnTxt('See More');
                 return;
             }
-            console.log('gpVideosResponse: ', gpVideosResponse);
 
             setGpDataObj(state => ({ ...gpVideosObjUpdated, nextPgNum: state.nextPgNum + 1 }));
             setBtnTxt(`See More (${gpVideosResponse.totalItemsNum - gpDataArr.length})`);

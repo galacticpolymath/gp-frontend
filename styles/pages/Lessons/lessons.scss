@@ -6,6 +6,15 @@ $borderThickness: 1px;
 $borderColor: darkgray;
 $toolTipColor: #f0f4ff;
 
+.loading-bubbles {
+  transform: scale(150%);
+}
+
+.see-more-btn {
+  min-width: 225px;
+  height: 70px;
+}
+
 .individualLessonImgSec {
   @media(min-width: 577px) {
     height: 100px;

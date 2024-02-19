@@ -1,6 +1,7 @@
 const Button = ({
   children,
   fontSize,
+  isDisabled,
   defaultStyleObj = {},
   classNameStr = '',
   backgroundColor = 'transparent',
@@ -15,6 +16,7 @@ const Button = ({
 
   return (
     <button
+      disabled={isDisabled}
       className={classNameStr}
       style={_style}
       onClick={handleOnClick}

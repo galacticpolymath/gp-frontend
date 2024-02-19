@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable quotes */
@@ -5,8 +6,9 @@
 /* eslint-disable indent */
 /* eslint-disable no-undef */
 import VideoCard from "../VideoCard";
-import Button from "../../General/Button";
 import { useGetGpDataStates } from "../../../customHooks/useGetGpDataStates";
+import SeeMoreBtnSec from "./SeeMoreBtnSec";
+import ReactLoading from 'react-loading';
 
 const GpVideos = ({
     startingGpVids,
@@ -42,16 +44,25 @@ const GpVideos = ({
                 )}
             </div>
             {!gpDataObj.isLast && (
-                <div className='w-100 d-flex justify-content-center align-items-center pb-3'>
-                    <Button
-                        handleOnClick={handleOnClick}
-                        backgroundColor="#E9EBEE"
-                        fontSize={19}
-                        classNameStr="text-center w-25 rounded no-btn-styles p-3 border"
-                    >
-                        {btnTxt}
-                    </Button>
-                </div>
+                <SeeMoreBtnSec
+                    btnTxt={btnTxt}
+                    handleOnClick={handleOnClick}
+                >
+                    {(btnTxt === 'Loading')
+                        ?
+                        <span style={{ height: 25 }} className='d-inline-flex justify-content-center align-items-center w-100 position-relative'>
+                            <ReactLoading
+                                type='bubbles'
+                                color='#444444'
+                                className='loading-bubbles'
+                            />
+                        </span>
+                        :
+                        <span className='d-inline-flex w-100 h-100 justify-content-center'>
+                            {btnTxt}
+                        </span>
+                    }
+                </SeeMoreBtnSec>
             )}
         </section>
     );

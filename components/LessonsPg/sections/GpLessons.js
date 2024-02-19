@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
@@ -9,6 +10,7 @@ import IndividualLesson from '../IndividualLesson';
 import Pill from '../../Pill';
 import { useGetGpDataStates } from '../../../customHooks/useGetGpDataStates';
 import SeeMoreBtnSec from './SeeMoreBtnSec';
+import ReactLoading from 'react-loading';
 
 const GpLessons = ({
     didErrorOccur,
@@ -56,7 +58,22 @@ const GpLessons = ({
                         <SeeMoreBtnSec
                             btnTxt={btnTxt}
                             handleOnClick={handleOnClick}
-                        />
+                        >
+                            {(btnTxt === 'Loading')
+                                ?
+                                <span style={{ height: 25 }} className='d-inline-flex justify-content-center align-items-center w-100 position-relative'>
+                                    <ReactLoading
+                                        type='bubbles'
+                                        color='#444444'
+                                        className='loading-bubbles'
+                                    />
+                                </span>
+                                :
+                                <span className='d-inline-flex w-100 h-100 justify-content-center'>
+                                    {btnTxt}
+                                </span>
+                            }
+                        </SeeMoreBtnSec>
                     )}
                 </section>
             </div>
