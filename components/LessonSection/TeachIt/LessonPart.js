@@ -178,6 +178,7 @@ const LessonPart = ({
                 height: '10px',
                 width: '100%',
                 top: '-50%',
+                zIndex: -1,
               }}
               className="position-absolute"
               id={`lesson_${_accordionId}`}
