@@ -15,8 +15,9 @@ const GpLessons = ({
     startingLessonsToShow,
     isLast,
     nextPgNumStartingVal,
+    totalGpLessonsNum,
 }) => {
-    const { handleOnClick, btnTxt, gpDataObj } = useGetGpDataStates(startingLessonsToShow, isLast, nextPgNumStartingVal, 'lessons');
+    const { handleOnClick, btnTxt, gpDataObj } = useGetGpDataStates(startingLessonsToShow, isLast, nextPgNumStartingVal, 'lessons', totalGpLessonsNum);
 
     return (
         <section>

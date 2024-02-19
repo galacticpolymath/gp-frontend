@@ -37,8 +37,9 @@ const GpUnits = ({
     isLast,
     nextPgNumStartingVal,
     didErrorOccur,
+    totalGpUnitsNum,
 }) => {
-    const { handleOnClick, btnTxt, gpDataObj } = useGetGpDataStates(startingUnitsToShow, isLast, nextPgNumStartingVal, 'units');
+    const { handleOnClick, btnTxt, gpDataObj } = useGetGpDataStates(startingUnitsToShow, isLast, nextPgNumStartingVal, 'units', totalGpUnitsNum);
 
     return (
         <section className="lessonsSection pt-1">

@@ -14,8 +14,9 @@ const GpVideos = ({
     nextPgNumStartingVal,
     setIsModalShown,
     setSelectedVideo,
+    totalVidsNum,
 }) => {
-    const { btnTxt, gpDataObj, handleOnClick } = useGetGpDataStates(startingGpVids, isLast, nextPgNumStartingVal, 'videos');
+    const { btnTxt, gpDataObj, handleOnClick } = useGetGpDataStates(startingGpVids, isLast, nextPgNumStartingVal, 'videos', totalVidsNum);
 
     return (
         <section className="lessonsSection pt-1">

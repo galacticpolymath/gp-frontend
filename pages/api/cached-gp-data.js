@@ -24,13 +24,15 @@ export default async function handler(request, response) {
 
         // getting data from the cache
         if (request.method === 'GET') {
-            const { errMsg, errorStatusCode, data, isLast } = await getCachedGpData(request, cache)
+            const { errMsg, errorStatusCode, data, isLast, totalItemsNum } = await getCachedGpData(request, cache)
 
             if (errMsg) {
                 throw new CustomError(errMsg, errorStatusCode);
             }
 
-            return response.json({ data: data, isLast: isLast })
+            console.log('totalItemsNum: ', totalItemsNum)
+
+            return response.json({ data: data, isLast: isLast, totalItemsNum: totalItemsNum ?? null })
         }
 
         // caching gp unit data

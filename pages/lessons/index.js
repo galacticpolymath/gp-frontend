@@ -7,16 +7,9 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
-import LessonCard from '../../components/LessonsPg/LessonCard';
 import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
-import IndividualLesson from '../../components/LessonsPg/IndividualLesson.js';
 import Sponsors from '../../components/Sponsors.js';
-import GpLessonSvg from '../../assets/img/gp-lesson-icon.svg'
-import UnitIconSvg from '../../assets/img/gp-unit-icon.svg'
-import Image from 'next/image';
-import Pill from '../../components/Pill.js';
-import VideoCard from "../../components/LessonsPg/VideoCard.js";
 import { connectToMongodb } from '../../backend/utils/connection';
 import { getVideoThumb } from '../../components/LessonSection/Preview/utils.js';
 import SelectedGpVideo from '../../components/LessonsPg/modals/SelectedGpVideo.js';
@@ -25,6 +18,7 @@ import GpVideos from '../../components/LessonsPg/sections/GpVideos.js';
 import GpUnits from '../../components/LessonsPg/sections/GpUnits.js';
 import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
 import axios from 'axios';
+import { getUniqueGpUnits } from '../../globalFns.js';
 
 const getLessonImgSrc = lesson => {
   const { CoverImage, LessonBanner } = lesson;
@@ -127,12 +121,14 @@ const LessonsPage = ({ unitsObj, lessonsObj, gpVideosObj, didErrorOccur }) => {
             nextPgNumStartingVal={gpVideosObj.nextPgNumStartingVal}
             setIsModalShown={setIsModalShown}
             setSelectedVideo={setSelectedVideo}
+            totalVidsNum={gpVideosObj.totalItemsNum}
           />
           <GpUnits
             isLast={unitsObj.isLast}
             startingUnitsToShow={unitsObj.data}
             nextPgNumStartingVal={unitsObj.nextPgNumStartingVal}
             didErrorOccur={didErrorOccur}
+            totalGpUnitsNum={unitsObj.totalItemsNum}
           />
         </div>
       </section>
@@ -141,6 +137,7 @@ const LessonsPage = ({ unitsObj, lessonsObj, gpVideosObj, didErrorOccur }) => {
         startingLessonsToShow={lessonsObj.data}
         nextPgNumStartingVal={lessonsObj.nextPgNumStartingVal}
         didErrorOccur={didErrorOccur}
+        totalGpLessonsNum={lessonsObj.totalItemsNum}
       />
       <SelectedGpVideo _selectedVideo={[selectedVideo, setSelectedVideo]} _isModalShown={[isModalShown, setIsModalShown]} />
     </Layout>
@@ -286,12 +283,8 @@ export async function getStaticProps() {
     let gpVideosFirstPg = gpVideos?.length ? gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)).slice(0, DATA_PER_PG) : [];
     gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
 
-    console.log('yo there meng, getStaticProps...')
-    axios.post('http://localhost:3000/api/cached-gp-data').then(res => {
-      console.log('res, what is up: ', res)
-    }).catch(error => {
-      console.log('error, yo there: ', error)
-    })
+    // get the current domain name of the app 
+    axios.post('http://localhost:3000/api/cached-gp-data');
 
     return {
       props: {
@@ -299,16 +292,21 @@ export async function getStaticProps() {
           data: firstPgOfUnits,
           isLast: lessons.length < DATA_PER_PG,
           nextPgNumStartingVal: 1,
+          totalItemsNum: getUniqueGpUnits(lessons).length,
         },
         lessonsObj: {
           data: firstPgOfLessons,
           isLast: lessonPartsForUI.length < DATA_PER_PG,
           nextPgNumStartingVal: 1,
+          totalItemsNum: lessonPartsForUI.length,
+
         },
         gpVideosObj: {
           data: gpVideosFirstPg,
           isLast: gpVideos.length < DATA_PER_PG,
           nextPgNumStartingVal: 1,
+          totalItemsNum: gpVideos.length,
+
         },
       },
     };

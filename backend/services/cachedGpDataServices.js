@@ -58,8 +58,7 @@ export const getCachedGpData = async (request, cache) => {
         const { type, pageNum } = request.query;
         const getGpData = getGpDataGetterFn(type)?.fn;
         let gpDataArr = cache.get(type);
-
-        console.log('gpDataArr, yo there: ', gpDataArr)
+        let totalItemsNum = gpDataArr?.length ? gpDataArr.flat().length : null;
 
         if (!gpDataArr?.length && (type !== 'units')) {
             let units = await getUnits();
@@ -75,6 +74,10 @@ export const getCachedGpData = async (request, cache) => {
             }
 
             gpDataArr = getGpData(units);
+            console.log(
+                "gpDataArr: ", gpDataArr.length
+            )
+            totalItemsNum = gpDataArr.length
             gpDataArr = gpDataArr.length ? gpDataArr.map(val => ({ ...val, id: nanoid() })) : gpDataArr;
             gpDataArr = createPaginationArr(gpDataArr);
 
@@ -94,6 +97,7 @@ export const getCachedGpData = async (request, cache) => {
                 }
             }
 
+            totalItemsNum = uniqueUnits.length
             gpDataArr = createPaginationArr(uniqueUnits);
             cache.set(type, gpDataArr, GP_DATA_EXPIRATION_TIME_MS);
         }
@@ -104,7 +108,9 @@ export const getCachedGpData = async (request, cache) => {
             throw new CustomError('Failed to get the next page of lessons. `pageNum` index is out of range of the array that contains the videos', 400)
         }
 
-        return { data: pageQueriedByClient, isLast: (gpDataArr.length - 1) === +pageNum };
+        console.log("totalItemsNum: ", totalItemsNum)
+
+        return { data: pageQueriedByClient, isLast: (gpDataArr.length - 1) === +pageNum, totalItemsNum: totalItemsNum };
     } catch (error) {
         const { message, code } = error;
         console.log('ERROR STATUS CODE: ', code)
