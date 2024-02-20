@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import { nanoid } from "nanoid";
-import { createPaginationArr, getGpLessons, getGpVids, getUniqueGpUnits } from "../../globalFns";
+import { createPaginationArr, getGpLessons, getGpVids, getShowableUnits } from "../../globalFns";
 import { getGpDataGetterFn, getIndividualLessonsNumForUnitObj } from "../helperFns/cachedGpDataFns";
 import { getUnits } from "../helperFns/lessonsFns";
 import { CustomError } from "../utils/errors";
@@ -29,7 +29,7 @@ export const cacheGpUnitData = async cache => {
             },
             {
                 key: 'units',
-                val: createPaginationArr(getUniqueGpUnits(units)),
+                val: createPaginationArr(getShowableUnits(units)),
                 ttl: GP_DATA_EXPIRATION_TIME_MS,
             },
             {
@@ -67,7 +67,7 @@ export const getCachedGpData = async (request, cache) => {
                 throw new CustomError('Failed to get the units from the database.', 500)
             }
 
-            units = getUniqueGpUnits(units)
+            units = getShowableUnits(units)
 
             if (!cache.get('units')?.length) {
                 cache.set('units', createPaginationArr(units), GP_DATA_EXPIRATION_TIME_MS);

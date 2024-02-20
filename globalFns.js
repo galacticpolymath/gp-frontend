@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
+import moment from 'moment';
 import { getVideoThumb } from './components/LessonSection/Preview/utils';
 import { SHOWABLE_LESSONS_STATUSES } from './globalVars';
 
@@ -118,11 +119,13 @@ export const getGpLessons = lessons => {
     return lessonParts;
 };
 
-export const getUniqueGpUnits = units => {
+const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Beta', 'Coming Soon'];
+
+export const getShowableUnits = units => {
     let uniqueUnits = [];
 
     for (const unit of units) {
-        if (!uniqueUnits.length || !uniqueUnits.some(uniqueUnit => unit.numID === uniqueUnit.numID)) {
+        if (STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) && !uniqueUnits.some(uniqueUnit => unit.numID === uniqueUnit.numID) && (moment(unit.ReleaseDate).format('YYYY-MM-DD') < moment(Date()).format('YYYY-MM-DD'))) {
             uniqueUnits.push(unit);
         }
     }

@@ -17,22 +17,13 @@ import { nanoid } from 'nanoid';
 import GpVideos from '../../components/LessonsPg/sections/GpVideos.js';
 import GpUnits from '../../components/LessonsPg/sections/GpUnits.js';
 import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
-import { getUniqueGpUnits } from '../../globalFns.js';
+import { getShowableUnits } from '../../globalFns.js';
 
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
 };
 
-// NOTES: 
-// you are the teacher who has access with gp lessons in the google drive api
-
-// GOAL #1: connect to the google drive api
-
-// GOAL #2: access the gp files on the google drive api
-
-// GOAL #3: get all of the files in the google drive api and download them into a target file
-
-const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon'];
+const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Beta', 'Coming Soon'];
 
 const LessonsPage = ({ unitsObj, lessonsObj, gpVideosObj, didErrorOccur }) => {
   const [selectedVideo, setSelectedVideo] = useState(null)
@@ -190,6 +181,7 @@ export async function getStaticProps() {
     }
 
     let lessonPartsForUI = [];
+    const todaysDate = new Date();
 
     // getting the lessons from each unit, storing them into the lessonPartsForUI array
     for (let lesson of lessons) {
@@ -202,6 +194,11 @@ export async function getStaticProps() {
 
       if (lessonParts?.length) {
         for (let lsnStatus of lesson.LsnStatuses) {
+          const wasLessonReleased = moment(todaysDate).format('YYYY-MM-DD') > moment(lsnStatus.unit_release_date).format('YYYY-MM-DD');
+
+          if (!wasLessonReleased) {
+            continue;
+          }
 
           if (!SHOWABLE_LESSONS_STATUSES.includes(lsnStatus.status)) {
             continue;
@@ -275,7 +272,7 @@ export async function getStaticProps() {
           data: firstPgOfUnits,
           isLast: lessons.length < DATA_PER_PG,
           nextPgNumStartingVal: 1,
-          totalItemsNum: getUniqueGpUnits(lessons).length,
+          totalItemsNum: getShowableUnits(lessons).length,
         },
         lessonsObj: {
           data: firstPgOfLessons,
