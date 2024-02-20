@@ -77,7 +77,6 @@ export const getCachedGpData = async (request, cache) => {
             totalItemsNum = gpDataArr.length
             gpDataArr = gpDataArr.length ? gpDataArr.map(val => ({ ...val, id: nanoid() })) : gpDataArr;
             gpDataArr = createPaginationArr(gpDataArr);
-
             cache.set(type, gpDataArr, GP_DATA_EXPIRATION_TIME_MS);
         } else if (!gpDataArr?.length) {
             const units = await getUnits();

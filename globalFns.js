@@ -29,7 +29,9 @@ export const getGpVids = lessons => {
 
         if (Section?.preview?.Multimedia?.length) {
             for (const media of Section.preview.Multimedia) {
-                if ((media.by === 'Galactic Polymath') && (media.type === 'video') && ((typeof media.mainLink === 'string') && media.mainLink.includes('youtube'))) {
+                const isTargetGpVidPresent = gpVideos.length ? gpVideos.some(({ mainLink: gpVidMainLink }) => gpVidMainLink === media.mainLink) : false;
+
+                if (!isTargetGpVidPresent && (media.by === 'Galactic Polymath') && (media.type === 'video') && ((typeof media.mainLink === 'string') && media.mainLink.includes('youtube'))) {
                     lessonMultiMediaArr.push({
                         ReleaseDate: ReleaseDate,
                         lessonUnitTitle: Title,
@@ -48,6 +50,9 @@ export const getGpVids = lessons => {
             gpVideos.push(...lessonMultiMediaArr);
         }
     }
+    let y = [...new Set(gpVideos.map(({ mainLink }) => mainLink))];
+    console.log('sup there meng, set: ', y);
+    console.log('sup there meng, length: ', y.length);
 
     return gpVideos.sort((videoA, videoB) => videoB.ReleaseDate - videoA.ReleaseDate);
 };
@@ -98,6 +103,7 @@ export const getGpLessons = lessons => {
     }
 
     let lessonParts = structuredClone(lessonPartsForUI);
+    console.log('lessonParts, yo there meng: ', lessonParts.length);
 
     if (lessonParts?.length) {
         lessonParts = lessonParts.sort(({ sort_by_date: sortByDateLessonA }, { sort_by_date: sortByDateLessonB }) => {

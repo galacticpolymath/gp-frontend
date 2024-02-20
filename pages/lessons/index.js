@@ -11,13 +11,12 @@ import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
 import Sponsors from '../../components/Sponsors.js';
 import { connectToMongodb } from '../../backend/utils/connection';
-import { getVideoThumb } from '../../components/LessonSection/Preview/utils.js';
 import SelectedGpVideo from '../../components/LessonsPg/modals/SelectedGpVideo.js';
 import { nanoid } from 'nanoid';
 import GpVideos from '../../components/LessonsPg/sections/GpVideos.js';
 import GpUnits from '../../components/LessonsPg/sections/GpUnits.js';
 import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
-import { getShowableUnits } from '../../globalFns.js';
+import { getGpVids, getShowableUnits } from '../../globalFns.js';
 
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
@@ -151,35 +150,9 @@ export async function getStaticProps() {
       throw new Error("No lessons were retrieved from the database.");
     }
 
-    let gpVideos = []
-
-    // getting the videos, storing them into the 'gpVideos' array 
-    for (const lesson of lessons) {
-      let lessonMultiMediaArr = [];
-      const { Section, Title, numID, ReleaseDate } = lesson;
-
-      if (Section?.preview?.Multimedia?.length) {
-        for (const media of Section.preview.Multimedia) {
-          if ((media.by === "Galactic Polymath") && (media.type === "video") && ((typeof media.mainLink === 'string') && media.mainLink.includes('youtube'))) {
-            lessonMultiMediaArr.push({
-              lessonUnitTitle: Title,
-              ReleaseDate: JSON.stringify(ReleaseDate),
-              videoTitle: media.title,
-              mainLink: media.mainLink,
-              description: media.description,
-              thumbnail: getVideoThumb(media.mainLink),
-              lessonUnitNumId: numID,
-              lessonNum: (media.forLsn && Number.isInteger(+media.forLsn)) ? parseInt(media.forLsn) : null,
-            })
-          }
-        }
-      }
-
-      if (lessonMultiMediaArr.length) {
-        gpVideos.push(...lessonMultiMediaArr)
-      }
-    }
-
+    let gpVideos = getGpVids(lessons);
+    console.log('gpVideos, yo there meng: ', gpVideos)
+    gpVideos = gpVideos.map(vid => vid?.ReleaseDate ? { ...vid, ReleaseDate: JSON.stringify(vid.ReleaseDate) } : vid);
     let lessonPartsForUI = [];
     const todaysDate = new Date();
 
@@ -205,8 +178,9 @@ export async function getStaticProps() {
           }
 
           const lessonPart = lessonParts.find(({ lsnNum }) => lsnNum === lsnStatus.lsn);
+          const isLessonInLessonPartsForUIArr = (lessonPartsForUI.length && lessonPart) ? lessonPartsForUI.some(({ lessonPartTitle }) => lessonPartTitle === lessonPart.lsnTitle) : false;
 
-          if (lessonPart) {
+          if (lessonPart && !isLessonInLessonPartsForUIArr) {
             const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
             let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0]) ? lessonPartFromClassroomObj?.tags.flat() : lessonPartFromClassroomObj?.tags
             tags = tags?.length ? tags.filter(tag => tag) : tags;
@@ -231,7 +205,7 @@ export async function getStaticProps() {
       }
     }
 
-    lessons = lessons.map(lesson => {
+    lessons = getShowableUnits(lessons).map(lesson => {
       const individualLessonsNum = lesson?.LsnStatuses?.length ? lesson.LsnStatuses.filter(({ status }) => status !== 'Hidden')?.length : 0;
       const lessonObj = {
         ...lesson,
@@ -272,7 +246,7 @@ export async function getStaticProps() {
           data: firstPgOfUnits,
           isLast: lessons.length < DATA_PER_PG,
           nextPgNumStartingVal: 1,
-          totalItemsNum: getShowableUnits(lessons).length,
+          totalItemsNum: lessons.length,
         },
         lessonsObj: {
           data: firstPgOfLessons,
