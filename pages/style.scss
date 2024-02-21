@@ -21,9 +21,9 @@ $btn-font-weight: 500;
 
 $font-size-root: 18px;
 
-h4.words{
+h4.words {
   word-wrap: break-word;
-  background-color: 'pink'
+  background-color: 'pink';
 }
 
 @import '../node_modules/bootstrap/scss/bootstrap';
@@ -114,8 +114,8 @@ a>span {
   text-decoration: none;
 }
 
-.no-x-mobile-margin{
-  @media(max-width: 576px){
+.no-x-mobile-margin {
+  @media(max-width: 576px) {
     margin-right: 0px;
     margin-left: 0px;
   }
@@ -224,16 +224,16 @@ ol li {
 }
 
 //standards
-.selected-standard{
-  
+.selected-standard {
+
   background-color: #fff9c8;
-  -webkit-box-shadow: inset -1px 5px 14px -6px rgba(97,97,97,1);
-  -moz-box-shadow: inset -1px 5px 14px -6px rgba(97,97,97,1);
-  box-shadow: inset -1px 5px 14px -6px rgba(97,97,97,1);
+  -webkit-box-shadow: inset -1px 5px 14px -6px rgba(97, 97, 97, 1);
+  -moz-box-shadow: inset -1px 5px 14px -6px rgba(97, 97, 97, 1);
+  box-shadow: inset -1px 5px 14px -6px rgba(97, 97, 97, 1);
 }
 
-.selected-standard-highlight{
-  color:$info;
+.selected-standard-highlight {
+  color: $info;
   font-weight: bold;
   padding: 2px;
 }

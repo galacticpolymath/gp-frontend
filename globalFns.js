@@ -39,8 +39,8 @@ export const getGpVids = lessons => {
                         mainLink: media.mainLink,
                         description: media.description,
                         thumbnail: getVideoThumb(media.mainLink),
-                        lessonUnitNumId: numID,
-                        lessonNum: (media.forLsn && Number.isInteger(+media.forLsn)) ? parseInt(media.forLsn) : null,
+                        unitNumId: numID,
+                        lessonNumId: (media.forLsn && Number.isInteger(+media.forLsn)) ? parseInt(media.forLsn) : null,
                     });
                 }
             }

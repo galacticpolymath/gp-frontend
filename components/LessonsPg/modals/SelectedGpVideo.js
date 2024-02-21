@@ -48,10 +48,9 @@ const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
                     <div className='position-relative w-100'>
                         <Button
                             handleOnClick={handleOnHide}
-                            classNameStr='no-btn-styles'
-                            defaultStyleObj={{ position: 'absolute', right: 7 }}
+                            classNameStr='no-btn-styles close-gp-vid-modal-btn position-absolute'
                         >
-                            <GiCancel color='grey' />
+                            <GiCancel color='grey' className='close-gp-video-modal-icon' />
                         </Button>
                         <div className='d-flex w-100 h-100 flex-column-reverse justify-content-center align-items-center pt-4'>
                             <Title className='gp-video-title'>

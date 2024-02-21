@@ -3,7 +3,7 @@
 /* eslint-disable indent */
 
 const CardTitle = ({
-    title,
+    children: title,
     fontSize,
     style = {},
     className = 'w-light text-black mb-0 no-underline-on-hover',

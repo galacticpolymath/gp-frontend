@@ -8,16 +8,16 @@ import EllipsisTxt from '../Text/EllipsisTxt';
 import CustomLink from '../CustomLink';
 import { getMediaComponent as Thumbnail } from '../LessonSection/Preview/utils';
 import { useEffect, useRef } from 'react';
+import Button from '../General/Button';
 
 const VideoCard = ({
     videoObj,
     setSelectedVideo,
     setIsModalShown,
-    cardClassName = 'd-flex flex-column justify-content-between py-3 px-4 position-relative w-100 pointer g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid rounded-3 bg-white lessonsPgShadow',
+    cardClassName = 'd-flex flex-column justify-content-between py-3 px-4 position-relative w-100 g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid rounded-3 bg-white lessonsPgShadow',
     style = {},
 }) => {
-    // if not part of a lesson for unit, then take the user to the lesson itself
-    let hrefStr = `/lessons/en-US/${videoObj.lessonUnitNumId}`;
+    let href = videoObj.lessonNumId ? `/lessons/en-US/${videoObj.unitNumId}#lesson_part_${videoObj.lessonNumId}` : `/lessons/en-US/${videoObj.unitNumId}`;
     const videoCardRef = useRef();
 
     const handleOnClick = ({ mainLink, description, videoTitle, lessonUnitTitle }) => () => {
@@ -42,7 +42,6 @@ const VideoCard = ({
                     style={{ height: '160px' }}
                     className='video-iframe-on-card'
                 >
-                    {/* {getMediaComponent({ type: 'video', mainLink: videoObj.mainLink, handleOnClick: handleOnClick })} */}
                     <Thumbnail
                         type="video"
                         mainLink={videoObj.mainLink}
@@ -51,31 +50,40 @@ const VideoCard = ({
                     <div
                         onClick={handleOnClick(videoObj)}
                         style={{ zIndex: 101 }}
-                        className='position-absolute w-100 h-100'
+                        className='position-absolute w-100 h-100 pointer'
                     />
                 </div>
-                <CardTitle
-                    title={videoObj.videoTitle}
-                    className='mt-3 vid-card-heading-txt w-light text-black mb-0 no-underline-on-hover'
-                />
+                <Button handleOnClick={handleOnClick(videoObj)} classNameStr='no-btn-styles w-100 d-flex'>
+                    <CardTitle
+                        className='text-start mt-3 vid-card-heading-txt w-light text-black mb-0 no-underline-on-hover'
+                    >
+                        {videoObj.videoTitle}
+                    </CardTitle>
+                </Button>
                 {videoObj?.description && (
-                    <EllipsisTxt ellipsisTxtNum={2} style={{ marginTop: '6px' }}>
-                        {videoObj?.description}
-                    </EllipsisTxt>
+                    <Button handleOnClick={handleOnClick(videoObj)} classNameStr='no-btn-styles w-100 d-flex'>
+                        <EllipsisTxt
+                            className='pointer'
+                            ellipsisTxtNum={2}
+                            style={{ marginTop: '6px' }}
+                        >
+                            {videoObj?.description}
+                        </EllipsisTxt>
+                    </Button>
                 )}
             </div>
             <CustomLink
                 color='#BFBFBF'
                 className='no-link-decoration mt-3 underline-on-hover'
-                hrefStr={hrefStr}
+                hrefStr={href}
                 style={{ lineHeight: '22px' }}
             >
-                {videoObj.lessonNum ?
+                {videoObj.lessonNumId ?
                     <>
-                        for Lesson {videoObj.lessonNum} of <em>{videoObj.lessonUnitTitle}</em>.
+                        for Lesson {videoObj.lessonNumId} of <em>{['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`}</em>
                     </>
                     :
-                    <>part of <i>{videoObj.lessonUnitTitle}</i>.</>
+                    <>part of <em>{['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`}</em></>
                 }
             </CustomLink>
         </div>

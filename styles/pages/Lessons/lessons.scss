@@ -10,6 +10,20 @@ $toolTipColor: #f0f4ff;
   transform: scale(150%);
 }
 
+.close-gp-vid-modal-btn {
+  right: 7px;
+
+  @media(max-width: 575px) {
+    right: 3px;
+  }
+}
+
+.close-gp-video-modal-icon {
+  @media(min-width: 576px) {
+    font-size: 1.3em;
+  }
+}
+
 .see-more-btn {
   min-width: 225px;
   height: 70px;
