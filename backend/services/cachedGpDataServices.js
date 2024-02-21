@@ -70,6 +70,7 @@ export const getCachedGpData = async (request, cache) => {
             units = getShowableUnits(units)
 
             if (!cache.get('units')?.length) {
+                units = units.map(getIndividualLessonsNumForUnitObj)
                 cache.set('units', createPaginationArr(units), GP_DATA_EXPIRATION_TIME_MS);
             }
 

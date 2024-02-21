@@ -3,7 +3,6 @@
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable indent */
-
 import { getCachedGpData, cacheGpUnitData } from "../../backend/services/cachedGpDataServices";
 import cache from "../../backend/utils/cache";
 import { CustomError } from "../../backend/utils/errors";
