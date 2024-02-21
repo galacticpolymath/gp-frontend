@@ -151,7 +151,6 @@ export async function getStaticProps() {
     }
 
     let gpVideos = getGpVids(lessons);
-    console.log('gpVideos, yo there meng: ', gpVideos)
     gpVideos = gpVideos.map(vid => vid?.ReleaseDate ? { ...vid, ReleaseDate: JSON.stringify(vid.ReleaseDate) } : vid);
     let lessonPartsForUI = [];
     const todaysDate = new Date();

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 // typeStr = 'videos' | 'lessons' | 'units'
 const getGpUnitData = async (typeStr, pageNum, urlStr) => {
     try {
-        const response = await axios.get(`${urlStr}/cached-gp-data`, { params: { pageNum: pageNum, type: typeStr }, timeout: 3_000 });
+        const response = await axios.get(`${urlStr}/cached-gp-data`, { params: { pageNum: pageNum, type: typeStr }, timeout: 5_000 });
 
         return { data: response.data.data, isLast: response.data.isLast, totalItemsNum: response.data.totalItemsNum };
     } catch (error) {
@@ -24,7 +24,6 @@ const getGpUnitData = async (typeStr, pageNum, urlStr) => {
 };
 
 export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal, gpDataTypeStr, totalGpDataItems) => {
-    console.log('totalGpDataItems: ', totalGpDataItems);
     const [btnTxt, setBtnTxt] = useState(`See More (${totalGpDataItems - dataDefaultVal.length})`);
     const [gpDataObj, setGpDataObj] = useState({
         data: dataDefaultVal,
@@ -59,7 +58,6 @@ export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal,
             };
 
             if (gpVideosResponse.isLast) {
-                console.log('Reached the end of specified gp unit data.');
                 gpVideosObjUpdated = {
                     ...gpVideosObjUpdated,
                     isLast: true,

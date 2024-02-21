@@ -12,8 +12,6 @@ const VALID_GP_UNIT_TYPES = ['videos', 'units', 'lessons'];
 
 export default async function handler(request, response) {
     try {
-        console.log('cache: ', cache)
-        console.log('cache keys: ', cache.keys())
         if ((request.method === 'GET') && (!request.query.pageNum || (request.query.pageNum && !Number.isInteger(+request.query.pageNum)))) {
             throw new CustomError('Missing the `pageNum` parameter. Must be a integer greater than 0.', 400);
         }
@@ -29,8 +27,6 @@ export default async function handler(request, response) {
             if (errMsg) {
                 throw new CustomError(errMsg, errorStatusCode);
             }
-
-            console.log('totalItemsNum: ', totalItemsNum)
 
             return response.json({ data: data, isLast: isLast, totalItemsNum: totalItemsNum ?? null })
         }

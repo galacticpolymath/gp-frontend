@@ -6,6 +6,8 @@
 
 getLessons.js
 
+googleDriveSecret.json
+
 # dependencies
 /node_modules
 /.pnp
@@ -41,7 +43,6 @@ yarn-error.log*
 
 # vercel
 .vercel
-
 
 cypress
 

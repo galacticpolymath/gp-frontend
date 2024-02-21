@@ -50,9 +50,6 @@ export const getGpVids = lessons => {
             gpVideos.push(...lessonMultiMediaArr);
         }
     }
-    let y = [...new Set(gpVideos.map(({ mainLink }) => mainLink))];
-    console.log('sup there meng, set: ', y);
-    console.log('sup there meng, length: ', y.length);
 
     return gpVideos.sort((videoA, videoB) => videoB.ReleaseDate - videoA.ReleaseDate);
 };
@@ -103,7 +100,6 @@ export const getGpLessons = lessons => {
     }
 
     let lessonParts = structuredClone(lessonPartsForUI);
-    console.log('lessonParts, yo there meng: ', lessonParts.length);
 
     if (lessonParts?.length) {
         lessonParts = lessonParts.sort(({ sort_by_date: sortByDateLessonA }, { sort_by_date: sortByDateLessonB }) => {
