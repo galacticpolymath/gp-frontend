@@ -56,6 +56,7 @@ export const getGpVids = lessons => {
 
 export const getGpLessons = lessons => {
     let lessonPartsForUI = [];
+    const todaysDate = new Date();
 
     for (let lesson of lessons) {
         if (!lesson?.LsnStatuses?.length || !SHOWABLE_LESSONS_STATUSES.includes(lesson.PublicationStatus)) {
@@ -73,8 +74,9 @@ export const getGpLessons = lessons => {
                 }
 
                 const lessonPart = lessonParts.find(({ lsnNum }) => lsnNum === lsnStatus.lsn);
+                const wasLessonReleased = moment(todaysDate).format('YYYY-MM-DD') > moment(lsnStatus.unit_release_date).format('YYYY-MM-DD');
 
-                if (lessonPart) {
+                if (lessonPart && wasLessonReleased) {
                     const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
                     let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0]) ? lessonPartFromClassroomObj?.tags.flat() : lessonPartFromClassroomObj?.tags;
                     tags = tags?.length ? tags.filter(tag => tag) : tags;
@@ -125,9 +127,10 @@ const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Beta', 'Coming Soon'];
 
 export const getShowableUnits = units => {
     let uniqueUnits = [];
+    const todaysDate = new Date();
 
     for (const unit of units) {
-        if (STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) && !uniqueUnits.some(uniqueUnit => unit.numID === uniqueUnit.numID) && (moment(unit.ReleaseDate).format('YYYY-MM-DD') < moment(Date()).format('YYYY-MM-DD'))) {
+        if (STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) && !uniqueUnits.some(uniqueUnit => unit.numID === uniqueUnit.numID) && (moment(unit.ReleaseDate).format('YYYY-MM-DD') < moment(todaysDate).format('YYYY-MM-DD'))) {
             uniqueUnits.push(unit);
         }
     }

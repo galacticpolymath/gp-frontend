@@ -24,7 +24,7 @@ const getGpUnitData = async (typeStr, pageNum, urlStr) => {
 };
 
 export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal, gpDataTypeStr, totalGpDataItems) => {
-    const [btnTxt, setBtnTxt] = useState(`See More (${totalGpDataItems - dataDefaultVal.length})`);
+    const [btnTxt, setBtnTxt] = useState(`Show More (${totalGpDataItems - dataDefaultVal.length})`);
     const [gpDataObj, setGpDataObj] = useState({
         data: dataDefaultVal,
         isLast: isLast,
@@ -63,12 +63,12 @@ export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal,
                     isLast: true,
                 };
                 setGpDataObj(gpVideosObjUpdated);
-                setBtnTxt('See More');
+                setBtnTxt(null);
                 return;
             }
 
             setGpDataObj(state => ({ ...gpVideosObjUpdated, nextPgNum: state.nextPgNum + 1 }));
-            setBtnTxt(`See More (${gpVideosResponse.totalItemsNum - gpDataArr.length})`);
+            setBtnTxt(`Show More (${gpVideosResponse.totalItemsNum - gpDataArr.length})`);
         } catch (error) {
             console.error('Failed to get gp unit data from the server. Reason: ', error);
             setBtnTxt('ERROR! Try again.');
