@@ -20,8 +20,15 @@ const VideoCard = ({
     let href = videoObj.lessonNumId ? `/lessons/en-US/${videoObj.unitNumId}#lesson_part_${videoObj.lessonNumId}` : `/lessons/en-US/${videoObj.unitNumId}`;
     const videoCardRef = useRef();
 
-    const handleOnClick = ({ mainLink, description, videoTitle, lessonUnitTitle }) => () => {
-        setSelectedVideo({ link: mainLink, description: description, title: videoTitle, unitTitle: lessonUnitTitle });
+    const handleOnClick = () => {
+        setSelectedVideo({
+            href,
+            link: videoObj.mainLink,
+            description: videoObj.description,
+            title: videoObj.videoTitle,
+            unitTitle: videoObj.lessonUnitTitle,
+            lessonNumId: videoObj.lessonNumId,
+        });
         setIsModalShown(true);
     };
 
@@ -48,12 +55,12 @@ const VideoCard = ({
                         iframeStyle={{ zIndex: 100, width: '100%', height: '100%', position: 'absolute' }}
                     />
                     <div
-                        onClick={handleOnClick(videoObj)}
+                        onClick={handleOnClick}
                         style={{ zIndex: 101 }}
                         className='position-absolute w-100 h-100 pointer'
                     />
                 </div>
-                <Button handleOnClick={handleOnClick(videoObj)} classNameStr='no-btn-styles w-100 d-flex'>
+                <Button handleOnClick={handleOnClick} classNameStr='no-btn-styles w-100 d-flex'>
                     <CardTitle
                         className='text-start mt-3 vid-card-heading-txt w-light text-black mb-0 no-underline-on-hover'
                     >
@@ -61,9 +68,9 @@ const VideoCard = ({
                     </CardTitle>
                 </Button>
                 {videoObj?.description && (
-                    <Button handleOnClick={handleOnClick(videoObj)} classNameStr='no-btn-styles w-100 d-flex'>
+                    <Button handleOnClick={handleOnClick} classNameStr='no-btn-styles w-100 d-flex'>
                         <EllipsisTxt
-                            className='pointer'
+                            className='pointer text-start'
                             ellipsisTxtNum={2}
                             style={{ marginTop: '6px' }}
                         >
@@ -80,10 +87,10 @@ const VideoCard = ({
             >
                 {videoObj.lessonNumId ?
                     <>
-                        for Lesson {videoObj.lessonNumId} of <em>{['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`}</em>
+                        For Lesson {videoObj.lessonNumId} of <em>{['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`}</em>
                     </>
                     :
-                    <>part of <em>{['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`}</em></>
+                    <>Part of <em>{['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`}</em></>
                 }
             </CustomLink>
         </div>

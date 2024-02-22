@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
@@ -6,6 +7,7 @@ import Button from '../../General/Button';
 import { getMediaComponent as Video } from '../../LessonSection/Preview/utils';
 import { useEffect } from 'react';
 import { GiCancel } from 'react-icons/gi';
+import CustomLink from '../../CustomLink';
 
 const { Body, Title } = Modal;
 
@@ -65,12 +67,27 @@ const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
                             </div>
                         </div>
                     </div>
-                    <Body className='d-flex justify-content-center mt-1 p-0'>
+                    <Body className='d-flex justify-content-center mt-1 pt-0 ps-0 pe-0 pb-3'>
                         <div style={{ width: '90%' }}>
                             <h5><i>Description: </i></h5>
                             <p style={{ lineHeight: '23px', wordBreak: 'break-word' }}>
                                 {selectedVideo?.description ?? <> Video part of {selectedVideo?.unitTitle?.includes('!') ? selectedVideo?.unitTitle : `${selectedVideo?.unitTitle}.`}</>}
                             </p>
+                            <CustomLink
+                                color='#BFBFBF'
+                                className='no-link-decoration mt-3 underline-on-hover'
+                                hrefStr={selectedVideo?.href ?? ''}
+                                style={{ lineHeight: '22px' }}
+                            >
+                                {selectedVideo && (
+                                    selectedVideo.lessonNumId ?
+                                        <>
+                                            For Lesson {selectedVideo.lessonNumId} of <em>{['.', '!'].includes(selectedVideo.unitTitle.split('').at(-1)) ? selectedVideo.unitTitle : `${selectedVideo.unitTitle}.`}</em>
+                                        </>
+                                        :
+                                        <>Part of <em>{['.', '!'].includes(selectedVideo.unitTitle.split('').at(-1)) ? selectedVideo.unitTitle : `${selectedVideo.unitTitle}.`}</em></>
+                                )}
+                            </CustomLink>
                         </div>
                     </Body>
                 </div>

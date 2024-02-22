@@ -37,7 +37,7 @@ export const getGpVids = lessons => {
                         lessonUnitTitle: Title,
                         videoTitle: media.title,
                         mainLink: media.mainLink,
-                        description: media.description,
+                        description: media.description ?? media.lessonRelevance,
                         thumbnail: getVideoThumb(media.mainLink),
                         unitNumId: numID,
                         lessonNumId: (media.forLsn && Number.isInteger(+media.forLsn)) ? parseInt(media.forLsn) : null,

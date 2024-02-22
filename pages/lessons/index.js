@@ -22,21 +22,9 @@ const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
 };
 
-const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Beta', 'Coming Soon'];
-
 const LessonsPage = ({ unitsObj, lessonsObj, gpVideosObj, didErrorOccur }) => {
   const [selectedVideo, setSelectedVideo] = useState(null)
   const [isModalShown, setIsModalShown] = useState(false);
-  const uniqueIDs = [];
-  const unitsToShow = unitsObj.data.filter(({ numID, PublicationStatus, ReleaseDate }) => {
-    const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID) && (moment(ReleaseDate).format('YYYY-MM-DD') < moment(Date()).format('YYYY-MM-DD'));
-
-    if (willShowLesson) {
-      uniqueIDs.push(numID);
-    }
-
-    return willShowLesson;
-  });
 
   return (
     <Layout
