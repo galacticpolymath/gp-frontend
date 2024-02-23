@@ -1,62 +1,30 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
-import LessonCard from '../../components/LessonsPg/LessonCard';
 import Lessons from '../../backend/models/lesson.js'
 import moment from 'moment/moment';
-import IndividualLesson from '../../components/LessonsPg/IndividualLesson.js';
 import Sponsors from '../../components/Sponsors.js';
-import GpLessonSvg from '../../assets/img/gp-lesson-icon.svg'
-import UnitIconSvg from '../../assets/img/gp-unit-icon.svg'
-import Image from 'next/image';
-import Pill from '../../components/Pill.js';
 import { connectToMongodb } from '../../backend/utils/connection';
-
-const getLessonImgSrc = lesson => {
-  const { CoverImage, LessonBanner } = lesson;
-
-  if (lesson.PublicationStatus === "Coming Soon") {
-    return "https://storage.googleapis.com/gp-cloud/icons/coming-soon_Banner.png"
-  }
-
-  if (LessonBanner && !(CoverImage && CoverImage.url)) {
-    return LessonBanner;
-  }
-
-  return CoverImage.url
-}
-
-const UnshowableLesson = () => (
-  <div
-    className="w-100 pointer d-flex justify-content-center align-items-center disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 cardsOnLessonPg"
-  >
-    <p style={{ fontWeight: 700 }} className="text-center">Not shown on Lessons page.</p>
-  </div>
-);
+import SelectedGpVideo from '../../components/LessonsPg/modals/SelectedGpVideo.js';
+import { nanoid } from 'nanoid';
+import GpVideos from '../../components/LessonsPg/sections/GpVideos.js';
+import GpUnits from '../../components/LessonsPg/sections/GpUnits.js';
+import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
+import { getGpVids, getShowableUnits } from '../../globalFns.js';
 
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
 };
 
-const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Proto', 'Beta', 'Coming Soon'];
-
-const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
-  const uniqueIDs = [];
-  const lessonsToShow = lessons.filter(({ numID, PublicationStatus, ReleaseDate }) => {
-    const willShowLesson = STATUSES_OF_SHOWABLE_LESSONS.includes(PublicationStatus) && !uniqueIDs.includes(numID) &&
-      moment(ReleaseDate).format('YYYY-MM-DD') < moment(Date()).format('YYYY-MM-DD');
-
-    if (willShowLesson) {
-      uniqueIDs.push(numID);
-    }
-
-    return willShowLesson;
-  });
+const LessonsPage = ({ unitsObj, lessonsObj, gpVideosObj, didErrorOccur }) => {
+  const [selectedVideo, setSelectedVideo] = useState(null)
+  const [isModalShown, setIsModalShown] = useState(false);
 
   return (
     <Layout
@@ -111,72 +79,31 @@ const LessonsPage = ({ lessons, didErrorOccur, lessonParts, gpVideos }) => {
               </section>
             </section>
           </section>
-          <section className="lessonsSection pt-1">
-            <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
-              <div className="d-flex">
-                <Image src={UnitIconSvg} style={{ height: 'fit-content' }} alt='GP Unit Icon' />
-                <h4 className="d-flex justify-content-center align-items-center">Galactic Polymath Mini-Unit Releases</h4>
-              </div>
-              <p className='mt-2 mb-0'> Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
-              <p><em>And they&apos;re all free!</em></p>
-            </div>
-            {!!lessonsToShow?.length && (
-              <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-                {lessonsToShow.map((lesson, index) => {
-                  return (
-                    (lesson.PublicationStatus === "Proto") ?
-                      <UnshowableLesson key={index} />
-                      : (
-                        <LessonCard
-                          key={lesson._id}
-                          lesson={lesson}
-                          lessonImgSrc={getLessonImgSrc(lesson)}
-                          BetaPillComp={(lesson.PublicationStatus === "Beta") || (lesson.PublicationStatus === "Draft") ? <Pill /> : null}
-                        />
-                      )
-                  )
-                })}
-              </div>
-            )}
-            {(!lessonsToShow?.length && didErrorOccur) && (
-              <div className='px-4 pb-4'>
-                <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
-              </div>
-            )}
-          </section>
+          <GpVideos
+            isLast={gpVideosObj.isLast}
+            startingGpVids={gpVideosObj.data}
+            nextPgNumStartingVal={gpVideosObj.nextPgNumStartingVal}
+            setIsModalShown={setIsModalShown}
+            setSelectedVideo={setSelectedVideo}
+            totalVidsNum={gpVideosObj.totalItemsNum}
+          />
+          <GpUnits
+            isLast={unitsObj.isLast}
+            startingUnitsToShow={unitsObj.data}
+            nextPgNumStartingVal={unitsObj.nextPgNumStartingVal}
+            didErrorOccur={didErrorOccur}
+            totalGpUnitsNum={unitsObj.totalItemsNum}
+          />
         </div>
       </section>
-      <section>
-        <div className='container'>
-          <section className="lessonsSection pt-1">
-            <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
-              <div className="d-flex">
-                <Image src={GpLessonSvg} style={{ height: 'fit-content' }} alt='GP Unit Icon' />
-                <h4 className="d-flex justify-content-center align-items-center">Galactic Polymath Individual Lessons</h4>
-              </div>
-              <p className='mt-2 mb-0'>Free lessons to engage students in current research, real world problems, and interdisciplinary thinking.</p>
-            </div>
-            {!!lessonParts?.length && (
-              <div className='mx-auto grid justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch pb-1 px-2 p-sm-4 gap-3 pt-3 pb-5'>
-                {lessonParts.map((lesson, index) => {
-                  return (
-                    <IndividualLesson
-                      key={index}
-                      Pill={lesson.status === "Beta" ? <Pill xCoordinate={23} yCoordinate={-19} /> : null}
-                      lesson={{ ...lesson, _id: index }}
-                    />
-                  );
-                })}
-              </div>
-            )}
-            {(!lessonsToShow?.length && didErrorOccur) && (
-              <div className='px-4 pb-4'>
-                <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
-              </div>
-            )}
-          </section>
-        </div>
-      </section>
+      <GpLessons
+        isLast={lessonsObj.isLast}
+        startingLessonsToShow={lessonsObj.data}
+        nextPgNumStartingVal={lessonsObj.nextPgNumStartingVal}
+        didErrorOccur={didErrorOccur}
+        totalGpLessonsNum={lessonsObj.totalItemsNum}
+      />
+      <SelectedGpVideo _selectedVideo={[selectedVideo, setSelectedVideo]} _isModalShown={[isModalShown, setIsModalShown]} />
     </Layout>
   );
 };
@@ -199,22 +126,7 @@ const PROJECTED_LESSONS_FIELDS = [
 ]
 
 const SHOWABLE_LESSONS_STATUSES = ['Live', 'Beta'];
-
-const getCovertDateStrToDateObj = mmddyyyy => {
-  try {
-    if (typeof mmddyyyy === "string") {
-      throw new Error("Invalid date string. Must be a string.")
-    }
-
-    return new Date(`${mmddyyyy} UTC`).toISOString().split("T")[0];
-  } catch (error) {
-    console.error("An error has occurred in converting date string to a date object: ", error)
-    console.error("Passed in incorrect date string. Receieved: ", mmddyyyy)
-
-    return null
-  }
-
-}
+const DATA_PER_PG = 6;
 
 export async function getStaticProps() {
   try {
@@ -226,35 +138,12 @@ export async function getStaticProps() {
       throw new Error("No lessons were retrieved from the database.");
     }
 
-    let gpVideos = []
-
-    for (const lesson of lessons) {
-      let lessonMultiMediaArr = [];
-      const { Section, Title } = lesson;
-
-      if (Section?.preview?.Multimedia?.length) {
-        for (const media of Section.preview.Multimedia) {
-
-          if ((media.by === "Galactic Polymath") && (media.type === "video") && ((typeof media.mainLink === 'string') && media.mainLink.includes('youtube'))) {
-            const videoId = media.mainLink.split("/").at(-1)
-
-            lessonMultiMediaArr.push({
-              lessonTitle: Title,
-              videoTitle: media.title,
-              mainLink: media.mainLink,
-              thumbnail: `https://img.youtube.com/vi/${videoId}/0.jpg`,
-            })
-          }
-        }
-      }
-
-      if (lessonMultiMediaArr.length) {
-        gpVideos.push(...lessonMultiMediaArr)
-      }
-    }
-
+    let gpVideos = getGpVids(lessons);
+    gpVideos = gpVideos.map(vid => vid?.ReleaseDate ? { ...vid, ReleaseDate: JSON.stringify(vid.ReleaseDate) } : vid);
     let lessonPartsForUI = [];
+    const todaysDate = new Date();
 
+    // getting the lessons from each unit, storing them into the lessonPartsForUI array
     for (let lesson of lessons) {
       if (!lesson?.LsnStatuses?.length || !SHOWABLE_LESSONS_STATUSES.includes(lesson.PublicationStatus)) {
         continue;
@@ -265,15 +154,20 @@ export async function getStaticProps() {
 
       if (lessonParts?.length) {
         for (let lsnStatus of lesson.LsnStatuses) {
-          console.log("lsnStatus, yo there meng, suppp: ", lsnStatus.unit_release_date)
+          const wasLessonReleased = moment(todaysDate).format('YYYY-MM-DD') > moment(lsnStatus.unit_release_date).format('YYYY-MM-DD');
+
+          if (!wasLessonReleased) {
+            continue;
+          }
 
           if (!SHOWABLE_LESSONS_STATUSES.includes(lsnStatus.status)) {
             continue;
           }
 
           const lessonPart = lessonParts.find(({ lsnNum }) => lsnNum === lsnStatus.lsn);
+          const isLessonInLessonPartsForUIArr = (lessonPartsForUI.length && lessonPart) ? lessonPartsForUI.some(({ lessonPartTitle }) => lessonPartTitle === lessonPart.lsnTitle) : false;
 
-          if (lessonPart) {
+          if (lessonPart && !isLessonInLessonPartsForUIArr) {
             const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(({ lsn }) => lsn == lsnStatus.lsn);
             let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0]) ? lessonPartFromClassroomObj?.tags.flat() : lessonPartFromClassroomObj?.tags
             tags = tags?.length ? tags.filter(tag => tag) : tags;
@@ -298,7 +192,7 @@ export async function getStaticProps() {
       }
     }
 
-    lessons = lessons.map(lesson => {
+    lessons = getShowableUnits(lessons).map(lesson => {
       const individualLessonsNum = lesson?.LsnStatuses?.length ? lesson.LsnStatuses.filter(({ status }) => status !== 'Hidden')?.length : 0;
       const lessonObj = {
         ...lesson,
@@ -306,15 +200,15 @@ export async function getStaticProps() {
         ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
       };
 
-      delete lessonObj.LsnStatuses
+      delete lessonObj.LsnStatuses;
 
-      return lessonObj
+      return lessonObj;
     });
+    const firstPgOfUnits = lessons.slice(0, DATA_PER_PG);
+    let firstPgOfLessons = structuredClone(lessonPartsForUI);
 
-    let lessonParts = structuredClone(lessonPartsForUI);
-
-    if (lessonParts?.length) {
-      lessonParts = lessonParts.sort(({ sort_by_date: sortByDateLessonA }, { sort_by_date: sortByDateLessonB }) => {
+    if (firstPgOfLessons?.length) {
+      firstPgOfLessons = firstPgOfLessons.sort(({ sort_by_date: sortByDateLessonA }, { sort_by_date: sortByDateLessonB }) => {
         let _sortByDateLessonA = new Date(sortByDateLessonA);
         let _sortByDateLessonB = new Date(sortByDateLessonB);
 
@@ -327,10 +221,36 @@ export async function getStaticProps() {
         }
 
         return 0;
-      })
+      }).slice(0, DATA_PER_PG);
     }
 
-    return { props: { lessons: lessons, lessonParts: lessonParts, gpVideos: gpVideos } };
+    let gpVideosFirstPg = gpVideos?.length ? gpVideos.sort((videoA, videoB) => JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)).slice(0, DATA_PER_PG) : [];
+    gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
+
+    return {
+      props: {
+        unitsObj: {
+          data: firstPgOfUnits,
+          isLast: lessons.length < DATA_PER_PG,
+          nextPgNumStartingVal: 1,
+          totalItemsNum: lessons.length,
+        },
+        lessonsObj: {
+          data: firstPgOfLessons,
+          isLast: lessonPartsForUI.length < DATA_PER_PG,
+          nextPgNumStartingVal: 1,
+          totalItemsNum: lessonPartsForUI.length,
+
+        },
+        gpVideosObj: {
+          data: gpVideosFirstPg,
+          isLast: gpVideos.length < DATA_PER_PG,
+          nextPgNumStartingVal: 1,
+          totalItemsNum: gpVideos.length,
+
+        },
+      },
+    };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
 

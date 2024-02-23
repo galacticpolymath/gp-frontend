@@ -15,6 +15,7 @@ import Image from "next/image";
 import Pill from "../../Pill";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import Link from "next/link";
+import Button from "../../General/Button";
 
 const LessonTile = ({
   lessonTileUrl,
@@ -229,10 +230,15 @@ const TeachIt = ({
                 </div>
               </a>
               <div style={{ width: "2rem" }} className='p-0 ms-1 mt-0 d-flex justify-content-center align-items-center'>
-                <AiOutlineQuestionCircle
-                  className="downloadTipIcon"
-                  onClick={handleIconClick}
-                />
+                <Button
+                  classNameStr='no-btn-styles d-flex justify-content-center align-items-center'
+                  handleOnClick={handleIconClick}
+                >
+                  <AiOutlineQuestionCircle
+                    className="downloadTipIcon"
+                    style={{ width: '25px', heigth: '25px', zIndex: -1, pointerEvents: 'none' }}
+                  />
+                </Button>
               </div>
             </div>
           </div>

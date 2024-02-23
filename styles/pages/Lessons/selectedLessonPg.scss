@@ -2,137 +2,146 @@
   width: 100vw;
   margin-left: calc(-1 * ((100vw - 100%) / 2));
   margin-right: calc(-1 * ((100vw - 100%) / 2));
-  > div {
+
+  >div {
     background-color: #e2f0fd;
     display: flex;
     align-items: center;
     justify-content: center;
-    > div {
+
+    >div {
       padding: .85rem 1.75rem;
       width: 90%;
       max-width: 1080px;
-      @media(max-width: 767px){
+
+      @media(max-width: 767px) {
         width: 100%;
       }
     }
   }
 }
 
-.col-start-2{
+.col-start-2 {
   grid-column-start: 2 !important;
 }
 
-.col-start-3{
+.col-start-3 {
   grid-column-start: 3 !important;
 }
 
-.col-start-4{
+.col-start-4 {
   grid-column-start: 4 !important;
 }
 
-.col-start-5{
+.col-start-5 {
   grid-column-start: 5 !important;
 }
 
-.col-start-6{
+.col-start-6 {
   grid-column-start: 6 !important;
 }
 
-.col-start-7{
+.col-start-7 {
   grid-column-start: 7 !important;
 }
 
-.prefaceTxtLessonPreview{
+.prefaceTxtLessonPreview {
   line-height: 20px;
   color: #2C83C3
 }
 
-.carouselSelectedLessons{
-  @media(max-width: 575px){
+.carouselSelectedLessons {
+  @media(max-width: 575px) {
     padding-right: 0px !important;
     padding-left: 0px !important;
-    min-width: 250px; 
+    min-width: 250px;
   }
 }
 
 .collapsibleLessonSection {
-  > div:first-child {
+  >div:first-child {
     width: 100vw;
     margin-left: calc(-1 * ((100vw - 100%) / 2));
     margin-right: calc(-1 * ((100vw - 100%) / 2));
-    > div {
+
+    >div {
       background-color: #e2f0fd;
       display: flex;
       align-items: center;
       justify-content: center;
-      > div {
+
+      >div {
         width: 90%;
         max-width: 1920px;
-        @media(max-width: 767px){
-          width: 100% ;
-          button{
-            > div{
+
+        @media(max-width: 767px) {
+          width: 100%;
+
+          button {
+            >div {
               width: 100% !important;
             }
           }
         }
       }
     }
-    &.highlighted > div {
+
+    &.highlighted>div {
       background-color: hsl(320, 98%, 94%);
     }
   }
 }
 
-.vocabTxt{
-  li::marker{
+.vocabTxt {
+  li::marker {
     color: #CD2A93;
   }
-  ul{
+
+  ul {
     padding-left: 1rem;
-    &:last-child{
+
+    &:last-child {
       margin-bottom: 0;
     }
   }
 }
 
-.downloadTipIcon{
+.downloadTipIcon {
   cursor: pointer;
 }
 
-.downloadInfoModal{
+.downloadInfoModal {
   max-width: 800px !important;
 
-  section{
-    @media(min-width: 768px){
+  section {
+    @media(min-width: 768px) {
       width: 50%;
     }
   }
 }
 
-.downloadInfoModal-txt{
+.downloadInfoModal-txt {
   line-height: 1.2;
-  
-  @media(min-width: 768px){
+
+  @media(min-width: 768px) {
     height: 110px;
   }
 
-  @media(min-width: 1200px){
+  @media(min-width: 1200px) {
     height: 90px;
   }
 }
 
-.thumbs-wrapper{
+.thumbs-wrapper {
   display: flex;
   justify-content: center;
 }
 
-.downloadTipModalHeader{
-  button{
+.downloadTipModalHeader {
+  button {
     font-size: 15px;
     top: 10px;
     right: 10px;
     position: absolute;
   }
 }
-

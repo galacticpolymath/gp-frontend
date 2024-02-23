@@ -170,7 +170,7 @@ const LessonPart = ({
         initiallyExpanded={isExpanded}
         button={(
           <div
-            onClick={isAccordionExpandable ? handleAccordionBtnOnClick : () => {}}
+            onClick={isAccordionExpandable ? handleAccordionBtnOnClick : () => { }}
             className="position-relative"
           >
             <div
@@ -178,6 +178,7 @@ const LessonPart = ({
                 height: '10px',
                 width: '100%',
                 top: '-50%',
+                zIndex: -1,
               }}
               className="position-absolute"
               id={`lesson_${_accordionId}`}
@@ -416,8 +417,8 @@ const LessonPart = ({
                             <img
                               src={filePreviewImg}
                               alt="lesson_tile"
-                              className='h-auto w-auto '
-                              style={{ objectFit:'contain' }}
+                              className='h-auto w-auto'
+                              style={{ objectFit: 'contain' }}
                             />
                           </div>
                         </section>

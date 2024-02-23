@@ -6,6 +6,29 @@ $borderThickness: 1px;
 $borderColor: darkgray;
 $toolTipColor: #f0f4ff;
 
+.loading-bubbles {
+  transform: scale(150%);
+}
+
+.close-gp-vid-modal-btn {
+  right: 7px;
+
+  @media(max-width: 575px) {
+    right: 3px;
+  }
+}
+
+.close-gp-video-modal-icon {
+  @media(min-width: 576px) {
+    font-size: 1.3em;
+  }
+}
+
+.see-more-btn {
+  min-width: 225px;
+  height: 70px;
+}
+
 .individualLessonImgSec {
   @media(min-width: 577px) {
     height: 100px;
@@ -102,10 +125,6 @@ $toolTipColor: #f0f4ff;
       cursor: pointer;
     }
   }
-}
-
-.lessons-pg-container *:hover {
-  text-decoration: none !important;
 }
 
 .no-underline-on-hover:hover {
@@ -284,6 +303,30 @@ $toolTipColor: #f0f4ff;
   font-size: .9em;
 }
 
+.ellipsize-txt {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-wrap: break-word;
+  word-break: break-all;
+  text-overflow: ellipsis;
+}
+
+.ellipsize-txt-3 {
+  @extend .ellipsize-txt;
+  -webkit-line-clamp: 3;
+}
+
+.ellipsize-txt-2 {
+  @extend .ellipsize-txt;
+  -webkit-line-clamp: 2;
+}
+
+.vid-card-heading-txt {
+  font-size: 22px;
+  font-weight: 600;
+}
+
 .mediaItemContainer {
   position: relative;
   border: 1px solid lightgray;
@@ -295,6 +338,60 @@ $toolTipColor: #f0f4ff;
   @media(min-width: 992px) {
     height: 60vh;
   }
+}
+
+.selected-vid-container-iframe {
+  height: 400px;
+
+  @media(max-width: 576px) {
+    height: 300px;
+  }
+}
+
+.gp-video-title {
+  width: 90%;
+
+  @media(max-width: 576px) {
+    line-height: 25px;
+  }
+}
+
+.google-drive-container {
+  img {
+    object-fit: contain !important;
+  }
+}
+
+.modal-content-sub-wrapper {
+  max-width: 1440px;
+  width: 100%;
+}
+
+.modal-content-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.selected-vid-dialog {
+  width: 100vw;
+  max-width: none;
+  min-height: 100%;
+  max-height: none;
+}
+
+.selected-vid-modal-content {
+  min-height: 100vh;
+  border-radius: 0;
+}
+
+.video-iframe-on-card {
+  position: relative;
+  border: 1px solid lightgray;
+  width: 100%;
+  object-fit: contain;
 }
 
 .lessonsPartContainer {
@@ -333,7 +430,7 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.increase-icon-size::before{
+.increase-icon-size::before {
   transform: scale(165%);
 }
 

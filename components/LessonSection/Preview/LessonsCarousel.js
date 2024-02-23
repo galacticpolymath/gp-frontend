@@ -20,7 +20,7 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LessonSlide from './LessonSlide';
 import { getVideoThumb } from './utils';
 import Image from 'next/image';
@@ -86,7 +86,13 @@ const LessonsCarousel = ({ mediaItems }) => {
                         style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
                     >
                         {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => {
-                            return <LessonSlide key={index} forLsn={lessonDocument.forLsn ?? lessonDocument.forPart} {...lessonDocument} />
+                            return (
+                                <LessonSlide
+                                    key={index}
+                                    forLsn={lessonDocument.forLsn ?? lessonDocument.forPart}
+                                    {...lessonDocument}
+                                />
+                            );
                         })}
                     </div>
                 </section>
@@ -113,7 +119,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                         const { type, title, mainLink, isVisible, webAppPreviewImg } = item;
                         let src;
 
-                        if((type === 'video') || ((type === 'web-app') && webAppPreviewImg)){
+                        if ((type === 'video') || ((type === 'web-app') && webAppPreviewImg)) {
                             src = webAppPreviewImg ?? getVideoThumb(mainLink)
                         }
 

@@ -2,15 +2,24 @@ import Image from 'next/image';
 import RenderArrowNext from './RenderArrowNext';
 import Link from 'next/link';
 
-export const getMediaComponent = ({ type, mainLink, webAppPreviewImg, webAppImgAlt }) => {
+export const getMediaComponent = ({
+  type,
+  mainLink,
+  webAppPreviewImg,
+  webAppImgAlt,
+  handleIFrameOnClick = () => { },
+  iframeStyle = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' },
+  iframeClassName = 'lesson-media',
+}) => {
   if (type === 'video') {
     return (
       <iframe
+        onClick={handleIFrameOnClick}
         src={mainLink}
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+        style={iframeStyle}
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        className='lesson-media'
+        className={iframeClassName}
       />
     );
   } else if (type === 'pdf') {

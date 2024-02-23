@@ -147,15 +147,12 @@ const LessonPreview = ({ lesson }) => {
                     className='ms-2'
                   />
                 </div>
-
                 Click or Scan for Access.
-
               </Link>
 
             </section>
             <section className='w-50 d-flex p-2 border'>
               <div className='position-relative d-flex w-100 flex-column'>
-
                 <QRCode
                   style={{
                     height: "120%",
@@ -315,8 +312,8 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
     let lessonToDisplayOntoUi = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
-    
-    if (!lessonToDisplayOntoUi || (typeof lessonToDisplayOntoUi !== 'object') || Array.isArray(lessonToDisplayOntoUi) || (lessonToDisplayOntoUi.PublicationStatus !== 'Live')) {
+
+    if (!lessonToDisplayOntoUi || (typeof lessonToDisplayOntoUi !== 'object') || Array.isArray(lessonToDisplayOntoUi)) {
       return {
         props: {
           lesson: null,

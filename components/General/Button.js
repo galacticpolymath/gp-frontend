@@ -1,5 +1,7 @@
 const Button = ({
   children,
+  fontSize,
+  isDisabled,
   defaultStyleObj = {},
   classNameStr = '',
   backgroundColor = 'transparent',
@@ -8,8 +10,13 @@ const Button = ({
 }) => {
   const _style = { ...defaultStyleObj, backgroundColor: backgroundColor };
 
+  if (fontSize) {
+    _style.fontSize = fontSize;
+  }
+
   return (
     <button
+      disabled={isDisabled}
       className={classNameStr}
       style={_style}
       onClick={handleOnClick}
