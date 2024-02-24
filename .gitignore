@@ -5,7 +5,7 @@
 .env
 
 getLessons.js
-
+credentials.json
 googleDriveSecret.json
 
 # dependencies
