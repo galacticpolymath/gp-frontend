@@ -7,20 +7,11 @@
 /* eslint-disable no-multiple-empty-lines */
 import fs from 'fs';
 import { authenticate } from '@google-cloud/local-auth';
+
 // NOTES:
-// will get tokens after the user has been authenticated with the google drive api
+// GOAL #1: authenticate with google drive api
 
-// GOAL #3: contact the google drive api after authentication
-
-// GOAL #4: list all of the files from google drive. MUST SEE THE GP LESSONS
-
-// GOAL #5: download all of the lessons from the specified unit
-
-// GOAL #1: authorize the user to googleapis
-
-// SUB-GOAL: create the credentials json file
-
-// SUB-GOAL: delete the credentials json file after it was created
+// GOAL #2: get the files from the google drive
 
 const CREDENTIALS_PATH = 'credentials.json';
 const scopes = ['https://www.googleapis.com/auth/drive.readonly'];
@@ -52,17 +43,7 @@ class Credentials {
 
 export default async function handler(request, response) {
     try {
-        const credentials = new Credentials();
 
-        console.log('credentials, yo there meng: ', credentials)
-
-        fs.writeFileSync(CREDENTIALS_PATH, JSON.stringify(credentials))
-
-        const client = await authenticate({
-            scopes: scopes,
-            keyfilePath: CREDENTIALS_PATH
-        })
-        console.log('client: ', client)
 
         return response.json({ msg: 'GP lessons has been downloaded.' });
     } catch (error) {
