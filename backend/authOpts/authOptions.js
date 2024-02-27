@@ -1,21 +1,9 @@
 import GoogleProvider from 'next-auth/providers/google';
 import getCanUserWriteToDb from '../services/dbAuthService';
-import { SignJWT, jwtVerify } from 'jose';
-import { nanoid } from 'nanoid';
+import { jwtVerify } from 'jose';
 import JwtModel from '../models/Jwt';
 import { connectToMongodb } from '../utils/connection';
-
-// expirationTime = 24 hours by default 
-const signJwt = async ({ email, roles, name }, secret, expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60) => {
-  const issueAtTime = Date.now() / 1000; // issued at time
-  
-  return new SignJWT({ email, roles, name })
-    .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
-    .setExpirationTime(expirationTime)
-    .setIssuedAt(issueAtTime)
-    .setJti(nanoid())
-    .sign(new TextEncoder().encode(secret));
-};
+import { signJwt } from '../utils/auth';
 
 export const authOptions = {
   providers: [
