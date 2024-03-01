@@ -137,3 +137,7 @@ export const getShowableUnits = units => {
 
     return uniqueUnits;
 };
+
+export const getIsTypeValid = (val, targetType) => {
+    return typeof val === targetType;
+};
