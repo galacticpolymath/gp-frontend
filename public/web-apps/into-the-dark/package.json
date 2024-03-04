@@ -1,0 +1,44 @@
+{
+  "name": "@explorables/into_the_dark",
+  "title": "Into the Dark",
+  "version": "1.0.2",
+  "type": "module",
+  "license": "CC-BY-4.0",
+  "description": "Collective intelligence - A model for a school of fish that collectively seeks a hideout",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chengp3/into-the-dark.git"
+  },
+  "author": "Pat Cheng",
+  "main": "./src/index.html",
+  "module": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production ",
+    "dev": "webpack serve --static dist/ --mode development",
+    "show": "http-server dist -o"
+  },
+  "keywords": [
+    "complexity",
+    "explorables",
+    "visualization"
+  ],
+  "dependencies": {
+    "d3": "^7.8.5",
+    "d3-simple-slider": "^2.0.0",
+    "d3-widgets": "^1.0.16",
+    "lodash-es": "^4.17.21",
+    "luxon": "^3.3.0"
+  },
+  "devDependencies": {
+    "css-loader": "^6.8.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.5.3",
+    "style-loader": "^3.3.3",
+    "svg-inline-loader": "^0.8.2",
+    "tachyons": "^4.12.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}

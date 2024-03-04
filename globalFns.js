@@ -1,8 +1,10 @@
+/* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import moment from 'moment';
 import { getVideoThumb } from './components/LessonSection/Preview/utils';
 import { SHOWABLE_LESSONS_STATUSES } from './globalVars';
+import { getLinkPreview } from 'link-preview-js';
 
 export const createPaginationArr = arr => {
     let pgsArr = [];
@@ -141,3 +143,16 @@ export const getShowableUnits = units => {
 export const getIsTypeValid = (val, targetType) => {
     return typeof val === targetType;
 };
+
+export const getLinkPreviewObj = async (url) => {
+    try {
+        const linkPreviewObj = await getLinkPreview(url);
+
+        return linkPreviewObj;
+    } catch (error) {
+        const errMsg = `An error has occurred in getting the link preview for given url. Error message: ${error}.`;
+        console.error(errMsg);
+
+        return { errMsg }
+    }
+}

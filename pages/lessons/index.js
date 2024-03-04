@@ -16,15 +16,30 @@ import { nanoid } from 'nanoid';
 import GpVideos from '../../components/LessonsPg/sections/GpVideos.js';
 import GpUnits from '../../components/LessonsPg/sections/GpUnits.js';
 import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
-import { getGpVids, getShowableUnits } from '../../globalFns.js';
+import { getGpVids, getLinkPreviewObj, getShowableUnits } from '../../globalFns.js';
+import SelectedGpWebApp from '../../components/LessonsPg/modals/SelectedGpWebApp.js';
+import GpWebApps from '../../components/LessonsPg/sections/GpWebApps.js';
 
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
 };
 
-const LessonsPage = ({ unitsObj, lessonsObj, gpVideosObj, didErrorOccur }) => {
+const LessonsPage = ({
+  unitsObj,
+  lessonsObj,
+  gpVideosObj,
+  webAppsObj,
+  didErrorOccur,
+}) => {
   const [selectedVideo, setSelectedVideo] = useState(null)
+  const [selectedGpWebApp, setSelectedGpWebApp] = useState(null);
   const [isModalShown, setIsModalShown] = useState(false);
+
+  const handleGpWebAppCardClick = app => () => {
+    const cssClassName = app.title.toLowerCase().includes('echo') ? 'selected-gp-web-app-modal-body-echo' : 'selected-gp-web-app-modal-body'
+    setSelectedGpWebApp({ ...app, cssClassName: cssClassName })
+    setIsModalShown(true)
+  }
 
   return (
     <Layout
@@ -76,34 +91,47 @@ const LessonsPage = ({ unitsObj, lessonsObj, gpVideosObj, didErrorOccur }) => {
                   <section className="w-100 d-flex flex-column ps-sm-3 mt-2 mt-sm-0">
                   </section>
                 </div>
+                {webAppsObj?.data?.length && (
+                  <GpWebApps
+                    webApps={webAppsObj.data}
+                    handleGpWebAppCardClick={handleGpWebAppCardClick}
+                  />
+                )}
               </section>
             </section>
           </section>
           <GpVideos
-            isLast={gpVideosObj.isLast}
-            startingGpVids={gpVideosObj.data}
-            nextPgNumStartingVal={gpVideosObj.nextPgNumStartingVal}
+            isLast={gpVideosObj?.isLast}
+            startingGpVids={gpVideosObj?.data}
+            nextPgNumStartingVal={gpVideosObj?.nextPgNumStartingVal}
             setIsModalShown={setIsModalShown}
             setSelectedVideo={setSelectedVideo}
-            totalVidsNum={gpVideosObj.totalItemsNum}
+            totalVidsNum={gpVideosObj?.totalItemsNum}
           />
           <GpUnits
-            isLast={unitsObj.isLast}
-            startingUnitsToShow={unitsObj.data}
-            nextPgNumStartingVal={unitsObj.nextPgNumStartingVal}
+            isLast={unitsObj?.isLast}
+            startingUnitsToShow={unitsObj?.data}
+            nextPgNumStartingVal={unitsObj?.nextPgNumStartingVal}
             didErrorOccur={didErrorOccur}
-            totalGpUnitsNum={unitsObj.totalItemsNum}
+            totalGpUnitsNum={unitsObj?.totalItemsNum}
           />
         </div>
       </section>
       <GpLessons
-        isLast={lessonsObj.isLast}
-        startingLessonsToShow={lessonsObj.data}
-        nextPgNumStartingVal={lessonsObj.nextPgNumStartingVal}
+        isLast={lessonsObj?.isLast}
+        startingLessonsToShow={lessonsObj?.data}
+        nextPgNumStartingVal={lessonsObj?.nextPgNumStartingVal}
         didErrorOccur={didErrorOccur}
-        totalGpLessonsNum={lessonsObj.totalItemsNum}
+        totalGpLessonsNum={lessonsObj?.totalItemsNum}
       />
-      <SelectedGpVideo _selectedVideo={[selectedVideo, setSelectedVideo]} _isModalShown={[isModalShown, setIsModalShown]} />
+      <SelectedGpVideo
+        _selectedVideo={[selectedVideo, setSelectedVideo]}
+        _isModalShown={[isModalShown, setIsModalShown]}
+      />
+      <SelectedGpWebApp
+        _selectedGpWebApp={[selectedGpWebApp, setSelectedGpWebApp]}
+        _isModalShown={[isModalShown, setIsModalShown]}
+      />
     </Layout>
   );
 };
@@ -123,8 +151,17 @@ const PROJECTED_LESSONS_FIELDS = [
   'TargetSubject',
   'ForGrades',
   'GradesOrYears',
-]
-
+];
+const WEB_APP_PATHS = [
+  {
+    name: 'dark',
+    path: '/web-apps/into-the-dark/dist/index.html',
+  },
+  {
+    name: 'echo',
+    path: '/web-apps/echo/index.html',
+  },
+];
 const SHOWABLE_LESSONS_STATUSES = ['Live', 'Beta'];
 const DATA_PER_PG = 6;
 
@@ -141,12 +178,46 @@ export async function getStaticProps() {
     let gpVideos = getGpVids(lessons);
     gpVideos = gpVideos.map(vid => vid?.ReleaseDate ? { ...vid, ReleaseDate: JSON.stringify(vid.ReleaseDate) } : vid);
     let lessonPartsForUI = [];
+    let webApps = []
     const todaysDate = new Date();
 
     // getting the lessons from each unit, storing them into the lessonPartsForUI array
     for (let lesson of lessons) {
       if (!lesson?.LsnStatuses?.length || !SHOWABLE_LESSONS_STATUSES.includes(lesson.PublicationStatus)) {
         continue;
+      }
+
+      const multiMediaArr = lesson.Section?.preview?.Multimedia
+      const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
+      const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
+
+      if (isThereAWebApp) {
+        for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
+          let multiMediaItem = multiMediaArr[numIteration]
+
+          if (multiMediaItem?.type === 'web-app') {
+            const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem.mainLink);
+
+            if (errMsg && !images?.length) {
+              console.error('Failed to get the image preview of web app. Error message: ', errMsg)
+              continue
+            }
+
+            multiMediaItem = {
+              lessonIdStr: multiMediaItem.forLsn,
+              unitNumID: lesson.numID,
+              webAppLink: multiMediaItem.mainLink,
+              title: multiMediaItem.title,
+              unitTitle: lesson.Title,
+              description: multiMediaItem.lessonRelevance,
+              webAppPreviewImg: (errMsg || !images?.length) ? null : images[0],
+              webAppImgAlt: (errMsg || !images?.length) ? null : `${title}'s preview image`,
+              pathToFile: WEB_APP_PATHS.find(({ name }) => multiMediaItem.title.toLowerCase().includes(name))?.path ?? null,
+            }
+
+            webApps.push(multiMediaItem)
+          }
+        }
       }
 
       let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
@@ -247,7 +318,12 @@ export async function getStaticProps() {
           isLast: gpVideos.length < DATA_PER_PG,
           nextPgNumStartingVal: 1,
           totalItemsNum: gpVideos.length,
-
+        },
+        webAppsObj: {
+          data: webApps,
+          isLast: webApps.length < DATA_PER_PG,
+          nextPgNumStartingVal: 1,
+          totalItemsNum: webApps.length,
         },
       },
     };

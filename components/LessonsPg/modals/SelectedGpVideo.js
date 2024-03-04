@@ -55,7 +55,7 @@ const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
                             <GiCancel color='grey' className='close-gp-video-modal-icon' />
                         </Button>
                         <div className='d-flex w-100 h-100 flex-column-reverse justify-content-center align-items-center pt-4'>
-                            <Title className='gp-video-title'>
+                            <Title className='gp-modal-title'>
                                 {selectedVideo?.title}
                             </Title>
                             <div style={{ width: '90%' }} className='position-relative selected-vid-container-iframe'>

@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 
-const ACCEPTABLE_URL_PROTOCALS = ['https', 'http'];
+const ACCEPTABLE_URL_PROTOCALS = ['https:', 'http:', 'https', 'http'];
 
 export const validateHrefStr = (hrefStr, acceptableUrlProtocals = ACCEPTABLE_URL_PROTOCALS) => {
     try {
@@ -11,6 +11,8 @@ export const validateHrefStr = (hrefStr, acceptableUrlProtocals = ACCEPTABLE_URL
         }
 
         const urlObj = new URL(hrefStr);
+
+        console.log('urlObj, hey there! ', urlObj);
 
         return acceptableUrlProtocals.includes(urlObj.protocol) ? hrefStr : '';
     } catch (error) {
