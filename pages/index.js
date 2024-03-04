@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-max-props-per-line */
 import Link from 'next/link';
 import Image from 'next/image';
@@ -6,7 +7,6 @@ import Hero from '../components/Hero';
 import styles from './index.module.css';
 import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
-// import NSFImage from '../assets/img/nsf.png';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boosting-students-data-literacy.jpg';
 import CarouselContainer from '../components/CarouselContainer';
@@ -63,6 +63,19 @@ export default function Home() {
           </Link>
         </div>
       </Hero>
+      {/* {(typeof window !== 'undefined') &&
+        <Modal
+          show
+          dialogClassName='selected-vid-dialog m-0'
+          contentClassName='selected-vid-modal-content'
+        >
+          <div className='modal-content-wrapper'>
+            <div className='modal-content-sub-wrapper'>
+              <span>hey there</span>
+            </div>
+          </div>
+        </Modal>
+      } */}
       <div className="container d-flex align-items-center mx-auto px-3 py-4 py-lg-5 flex-column flex-lg-row-reverse">
         <div className="position-relative col-12 col-lg-6 engineeringImgHomePg">
           <Image
@@ -123,7 +136,7 @@ export default function Home() {
                   <img
                     src='https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png'
                     className='w-100'
-                    style={{ maxWidth: '500',objectFit:'contain' }}
+                    style={{ maxWidth: '500', objectFit: 'contain' }}
                     alt="John Templeton Foundation"
                   />
                 </div>
@@ -264,7 +277,7 @@ export default function Home() {
               src="/imgs/learning-equation.png"
               alt="Galactic_Polymath_Equation"
               className='w-100 gp-equation-img px-1 px-sm-0'
-              fill              
+              fill
               style={{ objectFit: 'contain' }}
             />
           </div>

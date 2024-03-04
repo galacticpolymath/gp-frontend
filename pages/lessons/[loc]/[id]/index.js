@@ -287,8 +287,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
               const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
               const filePreviewImg = `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`;
 
-              console.log('filePreviewImg, hey there!', filePreviewImg)
-
               return {
                 ...itemObj,
                 filePreviewImg,

@@ -12,8 +12,6 @@ export const validateHrefStr = (hrefStr, acceptableUrlProtocals = ACCEPTABLE_URL
 
         const urlObj = new URL(hrefStr);
 
-        console.log('urlObj, hey there! ', urlObj);
-
         return acceptableUrlProtocals.includes(urlObj.protocol) ? hrefStr : '';
     } catch (error) {
         console.error('An error has occurred in validating the url. Reason: ', error);
