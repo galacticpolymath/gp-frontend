@@ -13,7 +13,7 @@ import Button from '../General/Button';
 const VideoCard = ({
     videoObj,
     setSelectedVideo,
-    setIsModalShown,
+    setIsGpVideoModalShown,
     cardClassName = 'd-flex flex-column justify-content-between py-3 px-4 position-relative w-100 g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid rounded-3 bg-white lessonsPgShadow',
     style = {},
 }) => {
@@ -29,7 +29,7 @@ const VideoCard = ({
             unitTitle: videoObj.lessonUnitTitle,
             lessonNumId: videoObj.lessonNumId,
         });
-        setIsModalShown(true);
+        setIsGpVideoModalShown(true);
     };
 
     useEffect(() => {

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>EchoSim: A simulation of how echo chambers form in social media</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+<meta property="og:title" content="EchoSim Simulation" />
+<meta property="og:description" content="How echo chambers emerge from social media" />
+<meta property="og:url" content="https://echo-galactic-polymath.vercel.app/" />
+<meta property="og:image" content="https://echo-galactic-polymath.vercel.app/img/echoSim_banner.png" />
+<meta property="og:type" content="website" />
+
+<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+<link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic'/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+<link type="text/css" rel="stylesheet" href="css/main.css"/>
+<link type="text/css" rel="stylesheet" href="css/jBox.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.1/canvg.js" integrity="sha512-Qw1+j4vl/AjCqxrx/omDzobdEepDHathD3Z0bwulQSrLlaTtTWhiH3sMSDU4oK2TP2EfyzHgg33gh2zxUAI3EQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<!-- <body> -->
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand"><span class="lang-command">Title</span></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <i id="info-tab" class="fa fa-info-circle"></i>
+                <select id="soflow-l" onChange="languagesselectorListener()">
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Intro Section -->
+    <section id="intro" class="intro-section">
+      <div class="container">
+        <div class="row">
+          <div id="demo-title">
+            <div class="col-sm-12 col-xs-12">
+                <h4><span class="lang-command">Theme</span></h4>
+            </div>
+          </div>
+        </div>
+
+        <div id="demo-box">
+          <div class="row">
+            <div id="prop-container">
+              <h4 style="display: inline;"><u>Proposal</u>: </h4>
+              <h5 style="display: inline;" id="prop-text">"Dogs are the best pets."</h5>
+            </div>
+          </div>
+          <div class="row g-1">
+            <div class="col-sm-4 col-xs-12">
+                <div id="demo-controls">
+                  <div id="para-title">
+                    <button id="default-button"><span class="lang-command">Default</span></button><span class="lang-command">AdvancedParameters</span>
+                  </div>
+                  <div id="para-line"><i class="fa fa-question-circle-o" aria-hidden="true" title="$UnfriendingDiscription"></i> <span class="lang-command">Unfriending</span>:&nbsp;&nbsp;
+                    <select id="soflow-u" style="width: 100px">
+                      <option value="0" selected="selected">$Never</option>
+                      <option value="0.5">$Sometimes</option>
+                      <option value="0.9">$Often</option>
+                    </select>
+                  </div>
+                  <div id="para-line"><i class="fa fa-question-circle-o" aria-hidden="true" title="$ToleranceDiscription"></i> <span class="lang-command">Tolerance</span>:&nbsp;&nbsp;
+                    <select id="soflow-t" style="width: 100px">
+                      <option value="0.2">$Low</option>
+                      <option value="0.4">$Medium</option>
+                      <option value="1.0" selected="selected">$High</option>
+                    </select>
+                  </div>
+                  <div id="para-line"><i class="fa fa-question-circle-o" aria-hidden="true" title="$InfluenceDiscription"></i> <span class="lang-command">Influenceability</span>:&nbsp;&nbsp;
+                    <select id="soflow-i" style="width: 100px">
+                      <option value="0">$Off</option>
+                      <option value="0.2">$Weak</option>
+                      <option value="0.8" selected="selected">$Strong</option>
+                    </select>
+                  </div>                  
+                </div>
+              </div>
+
+            <div class="col-sm-3 col-xs-12">
+                <div id="demo-legend">
+                    <span class="lang-command">Progressive</span><span id="demo-right" class="lang-command">Conservative</span>
+                    <img src="img/RdPrBu.svg" width="100%" height="20" alt="RdPrBu" style="max-width:100%;">
+                    <div id="para-line"></div>
+                    <div id="para-line">
+                      <span class="lang-command">LessPopular</span><span class="symbol small"></span>
+                    </div>
+                    <div id="para-line">
+                      <span class="lang-command">MorePopular</span><span class="symbol large"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-5 col-xs-12">
+              <div id="demo-plot">
+                <div id="plot-title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-question-circle-o" aria-hidden="true" title="$GraphDiscription"></i> <span class="lang-command">GraphTitle</span></div>
+                <div id="demo-epicurves"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-8 col-xs-12">
+              <div id="demo-graph-layout">
+                <!-- <span id="start-text">Click Start button to start!</span> -->
+                <button id="start-button"><span class="lang-command">Start</span></button>
+                <button id="stop-button"><span class="lang-command">Stop</span></button>
+                <button id="reset-button"><span class="lang-command">Reset</span></button>
+                <span id="speed-box"><span class="lang-command">Speed</span>:</ br><input id="speed" type="range" min="0" max = "199" value="100" step="1" /></span>
+                <button id="screenshot-button" style="float: right;"><span class="lang-command">Screenshot</span></button>
+              </div>
+            </div>
+
+            <div class="col-sm-4 col-xs-12">
+              <div id="demo-chatting">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-2 col-sm-12">
+            <div id="copyright">
+              <p><a href="https://www.galacticpolymath.com/"><img src="img/gp_horiz_logo.png" height="26" alt="Galactic Polymath" border="0"></a></p>
+            </div>
+          </div>
+          <div class="col-md-10 col-sm-12">
+            <div id="author" class="text-right">
+              This Simulation Connects to Lesson 5 of our <a href="https://www.galacticpolymath.com/lessons/en-US/7">Animal Collective</a> mini-unit<Br>
+              Based on a simulation by <a href="https://github.com/haoopeng/echo">Hao Peng, et al</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="info">
+      <div id="info-inner">
+        <i id="info-close" class="fa fa-times"></i>
+        <div id="info-inner-inner">
+          <h1 class="lang-command">InfoTitle</h1>
+          <h2 class="lang-command">InfoIntroQ</h2>
+          <p class="lang-command">InfoIntroA</p>
+          <h2 class="lang-command">InfoRepresentQ</h2>
+          <p class="lang-command">InfoRepresentA</p>
+          <h2 class="lang-command">InfoHowQ</h2>
+          <p class="lang-command">InfoHowA</p>
+          <h2 class="lang-command">InfoInstructionsQ</h2>
+          <p class="lang-command">InfoInstructionsA</p>
+        </div>
+      </div>
+    </div>
+
+
+<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="js/jquery.flot.min.js"></script>
+<script type="text/javascript" src="js/jquery.easing.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<!-- put jBox.js below jquery.js -->
+<script type="text/javascript" src="js/jBox.min.js"></script>
+<script type="text/javascript" src="js/d3.v4.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="js/d3-color.v1.min.js"></script>
+<script type="text/javascript" src="js/d3-scale-chromatic.v1.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="js/languageset.js" charset="utf-8"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/language.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    new jBox('Tooltip', {
+      attach: 'i.fa.fa-question-circle-o',
+      theme: 'TooltipDark',
+      width: 350
+    });
+  });
+</script>
+
+</body>
+
+</html>

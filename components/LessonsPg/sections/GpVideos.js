@@ -14,7 +14,7 @@ const GpVideos = ({
     startingGpVids,
     isLast,
     nextPgNumStartingVal,
-    setIsModalShown,
+    setIsGpVideoModalShown,
     setSelectedVideo,
     totalVidsNum,
 }) => {
@@ -35,7 +35,7 @@ const GpVideos = ({
                         return (
                             <VideoCard
                                 key={videoObj.id}
-                                setIsModalShown={setIsModalShown}
+                                setIsGpVideoModalShown={setIsGpVideoModalShown}
                                 videoObj={videoObj}
                                 setSelectedVideo={setSelectedVideo}
                             />

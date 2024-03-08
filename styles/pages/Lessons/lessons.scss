@@ -10,6 +10,22 @@ $toolTipColor: #f0f4ff;
   transform: scale(150%);
 }
 
+.selected-gp-web-app-modal-body {
+  height: 900px;
+
+  @media(max-width: 767px) {
+    height: 1350px;
+  }
+}
+
+.selected-gp-web-app-modal-body-echo {
+  height: 1100px;
+
+  @media(max-width: 767px) {
+    height: 1550px;
+  }
+}
+
 .close-gp-vid-modal-btn {
   right: 7px;
 
