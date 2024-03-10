@@ -11,11 +11,7 @@ $toolTipColor: #f0f4ff;
 }
 
 .selected-gp-web-app-modal-body {
-  height: 900px;
-
-  @media(max-width: 767px) {
-    height: 1350px;
-  }
+  height: 415px
 }
 
 .selected-gp-web-app-modal-body-echo {
@@ -383,12 +379,39 @@ $toolTipColor: #f0f4ff;
   width: 100%;
 }
 
+.modal-content-sub-wrapper-gp-web-app {
+  max-width: 1440px;
+  width: 100%;
+}
+
 .modal-content-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 100%;
+}
+
+.modal-content-wrapper-gp-web-app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.selected-gp-web-app-content {
+  // min-height: 100vh;
+  height: 96vh;
+  width: 90vw;
+  overflow: scroll;
+}
+
+.selected-gp-web-app-dialog {
+  // width: 80vw;
+  max-width: none;
+  min-height: 100%;
+  max-height: none;
 }
 
 .selected-vid-dialog {

@@ -38,6 +38,7 @@ const LessonsPage = ({
 
   const handleGpWebAppCardClick = cardObj => {
     const cssClassName = cardObj.title.toLowerCase().includes('echo') ? 'selected-gp-web-app-modal-body-echo' : 'selected-gp-web-app-modal-body'
+    console.log('cssClassName, hey there! ', cssClassName)
     setSelectedGpWebApp({ ...cardObj, cssClassName: cssClassName })
     setIsWebAppModalShown(true)
   }

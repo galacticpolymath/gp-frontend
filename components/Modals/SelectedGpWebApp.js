@@ -46,12 +46,12 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
     return (
         <Modal
             show={isModalShown}
-            dialogClassName='selected-vid-dialog m-0'
-            contentClassName='selected-vid-modal-content'
+            dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
+            contentClassName='selected-gp-web-app-content'
         >
-            <div className='modal-content-wrapper'>
-                <div className='modal-content-sub-wrapper position-relative'>
-                    <div className='d-flex justify-content-end pe-1' style={{ height: '28px', paddingBottom: '1.8em' }}>
+            <div className='modal-content-wrapper-gp-web-app'>
+                <div className='modal-content-sub-wrapper-gp-web-app position-relative'>
+                    <div className='d-flex justify-content-end pe-1 bg-danger' style={{ height: '28px', paddingBottom: '1.8em' }}>
                         <Button
                             handleOnClick={handleOnHide}
                             classNameStr='no-btn-styles close-gp-vid-modal-btn'

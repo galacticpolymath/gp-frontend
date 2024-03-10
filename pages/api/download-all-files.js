@@ -89,11 +89,17 @@ export default async function handler(request, response) {
             "https://www.googleapis.com/auth/drive"
         ]);
         const drive = google.drive({ version: 'v3', auth: googleAuthJwt });
-        const { data } = await drive.files.list({ includeItemsFromAllDrives: true, supportsTeamDrives: true });
+        const { data } = await drive.files.list({
+            corpora: 'drive',
+            includeItemsFromAllDrives: true,
+            supportsTeamDrives: true,
+        });
 
         if (!data?.files?.length) {
             throw new CustomError('Failed to retrieve fails from google drive.', 500)
         }
+
+        console.log('data.files, yo there! ', data.files)
 
         const targetFiles = data.files.filter(file => fileNames.includes(file.name))
 
