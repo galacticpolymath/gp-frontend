@@ -11,7 +11,11 @@ $toolTipColor: #f0f4ff;
 }
 
 .selected-gp-web-app-modal-body {
-  height: 415px
+  height: 815px;
+
+  @media(max-width: 992px) {
+    height: 1100px;
+  }
 }
 
 .selected-gp-web-app-modal-body-echo {
@@ -402,9 +406,16 @@ $toolTipColor: #f0f4ff;
 
 .selected-gp-web-app-content {
   // min-height: 100vh;
-  height: 96vh;
+  height: 99vh;
   width: 90vw;
-  overflow: scroll;
+  overflow: hidden;
+
+  @media(max-width: 992px) {
+    height: 100vh;
+    width: 100vw;
+    border-radius: 0px;
+    overflow-y: scroll;
+  }
 }
 
 .selected-gp-web-app-dialog {
@@ -595,7 +606,6 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
   height: 10px;
   width: 10px;
   border-radius: 50%;
-  ;
   display: inline-block;
   margin: 0 5px;
   border: 2px solid;

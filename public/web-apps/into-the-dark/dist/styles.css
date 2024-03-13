@@ -7,14 +7,14 @@
 }
 
 #overlay {
-	display: none; 
-	position: fixed; 
-	z-index: 2; 
+	display: none;
+	position: fixed;
+	z-index: 2;
 	left: 0;
 	top: 0;
-	width: 100%; 
+	width: 100%;
 	height: 100%;
-	background-color: rgba(0,0,0,0.5);
+	/* background-color: rgba(0, 0, 0, 0.5); */
 }
 
 .display-panel .border {
@@ -46,7 +46,7 @@
 	stroke: #000;
 	shape-rendering: crispEdges;
 }
-  
+
 #line {
 	fill: none;
 	stroke: steelblue;
@@ -63,13 +63,13 @@ a {
 }
 
 a.active-link {
-    font-weight: bold;
-    text-decoration: underline;
+	font-weight: bold;
+	text-decoration: underline;
 }
 
 #sim {
 	text-align: left;
-	margin-top: 20px;
+	margin-top: 10px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -109,15 +109,17 @@ body {
 }
 
 #modal {
-	position: fixed; 
-	z-index: 3; 
+	position: fixed;
+	z-index: 3;
 	left: 50%;
-    top: 35%;
+	top: 35%;
 	transform: translate(-50%, -30%);
-	overflow: auto; /* Enable scroll if needed */
-	background-color: 'white'; /* Fallback color */
-  }
-  
+	overflow: auto;
+	/* Enable scroll if needed */
+	background-color: 'white';
+	/* Fallback color */
+}
+
 /* Modal Content */
 .modal-content {
 	position: relative;
@@ -126,52 +128,58 @@ body {
 	padding: 20px;
 	border: 1px solid #888;
 	max-width: 600px;
-	box-sizing: border-box; /* So that padding does not add to the size */
+	box-sizing: border-box;
+	/* So that padding does not add to the size */
 }
-  
+
 /* The Close Button */
 .close {
 	color: #aaaaaa;
 	float: right;
 	font-size: 28px;
 	font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
+}
+
+.close:hover,
+.close:focus {
 	color: #000;
 	text-decoration: none;
 	cursor: pointer;
-  }
+}
+
+.info-btn {
+	margin: 6px 0px 6px 0px;
+}
 
 #scoreTable {
-    border-collapse: collapse;
-    width: 100%;
-    font-family: 'Montserrat';
+	border-collapse: collapse;
+	width: 100%;
+	font-family: 'Montserrat';
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 }
 
-#scoreTable th, td {
-    padding: 6px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
+#scoreTable th,
+td {
+	padding: 6px;
+	text-align: center;
+	border-bottom: 1px solid #ddd;
 }
 
 #scoreTable th {
-    background-color: #f2f2f2;
-    color: #333;
+	background-color: #f2f2f2;
+	color: #333;
 	font-size: 18px,
 }
 
 #scoreTable tr:nth-child(even) {
-    background-color: #f2f2f2;
+	background-color: #f2f2f2;
 }
 
 #scoreTable tr:hover {
-    background-color: #ddd;
+	background-color: #ddd;
 }
 
 #nav {
@@ -186,7 +194,7 @@ body {
 	justify-content: space-evenly;
 	align-items: center;
 	/* padding-left: 50px; */
-	margin-top: 15px;
+	/* margin-top: 15px; */
 }
 
 #display {
@@ -249,9 +257,12 @@ body {
 }
 
 #title-text {
-	display: flex;  /* Use flexbox to align items */
-	flex-direction: column;  /* Align items vertically */
-	justify-content: center;  /* Center items vertically */
+	display: flex;
+	/* Use flexbox to align items */
+	flex-direction: column;
+	/* Align items vertically */
+	justify-content: center;
+	/* Center items vertically */
 	width: 100%
 }
 
@@ -306,7 +317,7 @@ body {
 		justify-content: space-evenly;
 		align-items: center;
 		/* padding-left: 50px; */
-		margin-top: 40px;
+		/* margin-top: 40px; */
 	}
 
 	#display {
@@ -314,7 +325,7 @@ body {
 		width: 100%;
 		max-width: 500px;
 	}
-	
+
 	#controls {
 		padding-left: 0px;
 		width: 100%;
@@ -356,9 +367,12 @@ body {
 	}
 
 	#title-text {
-		display: flex;  /* Use flexbox to align items */
-		flex-direction: column;  /* Align items vertically */
-		justify-content: center;  /* Center items vertically */
+		display: flex;
+		/* Use flexbox to align items */
+		flex-direction: column;
+		/* Align items vertically */
+		justify-content: center;
+		/* Center items vertically */
 	}
 
 	#title-text .top {
@@ -387,9 +401,17 @@ body {
 		font-size: 20px;
 	}
 
-	#high { font-size: 16px; }
-	#current { font-size: 16px; }
-	#running-avg { font-size: 16px; }
+	#high {
+		font-size: 16px;
+	}
+
+	#current {
+		font-size: 16px;
+	}
+
+	#running-avg {
+		font-size: 16px;
+	}
 
 	#overhead-text {
 		display: none;
@@ -416,14 +438,14 @@ body {
 		justify-content: space-evenly;
 		align-items: center;
 		/* padding-left: 50px; */
-		margin-top: 40px;
+		/* margin-top: 40px; */
 	}
 
 	#display {
 		padding-left: 0px;
 		width: 500px;
 	}
-	
+
 	#controls {
 		padding-left: 0px;
 		width: 500px;
@@ -431,7 +453,6 @@ body {
 
 	#sim {
 		text-align: left;
-		margin-top: 50px;
 		display: block;
 	}
 
@@ -472,9 +493,12 @@ body {
 
 	#title-text {
 		/*height: 400px;  Set a specific height */
-		display: flex;  /* Use flexbox to align items */
-		flex-direction: column;  /* Align items vertically */
-		justify-content: center;  /* Center items vertically */
+		display: flex;
+		/* Use flexbox to align items */
+		flex-direction: column;
+		/* Align items vertically */
+		justify-content: center;
+		/* Center items vertically */
 		width: auto;
 	}
 

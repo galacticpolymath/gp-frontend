@@ -51,7 +51,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
         >
             <div className='modal-content-wrapper-gp-web-app'>
                 <div className='modal-content-sub-wrapper-gp-web-app position-relative'>
-                    <div className='d-flex justify-content-end pe-1 bg-danger' style={{ height: '28px', paddingBottom: '1.8em' }}>
+                    <div className='d-flex justify-content-end pe-1' style={{ height: '28px', paddingBottom: '1.8em' }}>
                         <Button
                             handleOnClick={handleOnHide}
                             classNameStr='no-btn-styles close-gp-vid-modal-btn'
@@ -68,7 +68,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                             src={selectedGpWebApp?.pathToFile}
                         />
                     </div>
-                    <div
+                    {/* <div
                         style={{ borderTop: 'solid 1.5px rgb(222, 226, 230)' }}
                         className='px-3 px-sm-5 pt-3 d-flex flex-column pb-5 position-relative'
                     >
@@ -93,7 +93,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                                 for Lesson {selectedGpWebApp?.lessonIdStr} of <i>{selectedGpWebApp?.unitTitle}</i>
                             </>
                         </CustomLink>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </Modal>

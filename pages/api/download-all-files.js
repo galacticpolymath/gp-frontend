@@ -56,11 +56,11 @@ class Credentials {
 
 export default async function handler(request, response) {
     try {
-        if (!request.query.fileNames || (typeof request.query.fileNames !== 'string') || ((typeof request.query.fileNames === 'string') && !getIsTypeValid(JSON.parse(request.query.fileNames), 'object'))) {
-            throw new CustomError(`"fileName" field is invalid. Received: ${request.query.fileNames}`, 400);
-        }
+        // if (!request.query.fileNames || (typeof request.query.fileNames !== 'string') || ((typeof request.query.fileNames === 'string') && !getIsTypeValid(JSON.parse(request.query.fileNames), 'object'))) {
+        //     throw new CustomError(`"fileName" field is invalid. Received: ${request.query.fileNames}`, 400);
+        // }
 
-        const fileNames = JSON.parse(request.query.fileNames)
+        // const fileNames = JSON.parse(request.query.fileNames)
         let credentials = new Credentials()
         credentials = JSON.stringify(credentials)
         let credentialsSplitted = credentials.split('')
@@ -89,31 +89,39 @@ export default async function handler(request, response) {
             "https://www.googleapis.com/auth/drive"
         ]);
         const drive = google.drive({ version: 'v3', auth: googleAuthJwt });
-        const { data } = await drive.files.list({
+        const res = await drive.files.list({
             corpora: 'drive',
             includeItemsFromAllDrives: true,
-            supportsTeamDrives: true,
+            supportsAllDrives: true,
+            driveId: process.env.GOOGLE_DRIVE_ID
         });
 
-        if (!data?.files?.length) {
-            throw new CustomError('Failed to retrieve fails from google drive.', 500)
-        }
+        return response.json({
+            data: [...res.data.files]
+        })
 
-        console.log('data.files, yo there! ', data.files)
+        // const { data } = await drive.files.list({
 
-        const targetFiles = data.files.filter(file => fileNames.includes(file.name))
+        // if (!data?.files?.length) {
+        //     throw new CustomError('Failed to retrieve fails from google drive.', 500)
+        // }
 
-        if (!targetFiles?.length) {
-            throw new CustomError("Couldn't retrieve gp lessons from google drive.", 500)
-        }
+        // const folder = data.files.find(({ name }) => name.toLocaleLowerCase().includes('i like'))
+        // // const folders = data.files.filter(({ mimeType }) => mimeType.includes('folder'));
+        // // console.log('folders: ', folders)
 
-        console.log('targetFiles: ', targetFiles)
+        // const targetFiles = data.files.filter(file => fileNames.includes(file.name))
 
-        // GOAL:
-        // copy the lesson, and store it into a new folder called  
+        // if (!targetFiles?.length) {
+        //     throw new CustomError("Couldn't retrieve gp lessons from google drive.", 500)
+        // }
 
 
-        return response.json({ msg: 'GP lessons has been downloaded.' });
+        // // GOAL:
+        // // copy the lesson, and store it into a new folder called  
+
+
+        // return response.json({ msg: 'GP lessons has been downloaded.' });
     } catch (error) {
         console.error('An error has occurred. Error: ', error)
         return response.status(500).json({ msg: `Failed to download GP lessons. Reason: ${error}` });
