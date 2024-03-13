@@ -17,8 +17,8 @@ import GpVideos from '../../components/LessonsPg/sections/GpVideos.js';
 import GpUnits from '../../components/LessonsPg/sections/GpUnits.js';
 import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
 import { getGpVids, getLinkPreviewObj, getShowableUnits } from '../../globalFns.js';
-import WebAppsSection from '../../components/LessonsPg/sections/WebApps.js';
 import SelectedGpWebApp from '../../components/Modals/SelectedGpWebApp.js';
+import GpWebApps from '../../components/LessonsPg/sections/GpWebApps.js';
 
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
@@ -36,10 +36,9 @@ const LessonsPage = ({
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
   const [isWebAppModalShown, setIsWebAppModalShown] = useState(false);
 
-  const handleGpWebAppCardClick = cardObj => {
-    const cssClassName = cardObj.title.toLowerCase().includes('echo') ? 'selected-gp-web-app-modal-body-echo' : 'selected-gp-web-app-modal-body'
-    console.log('cssClassName, hey there! ', cssClassName)
-    setSelectedGpWebApp({ ...cardObj, cssClassName: cssClassName })
+  const handleGpWebAppCardClick = app => () => {
+    const cssClassName = app.title.toLowerCase().includes('echo') ? 'selected-gp-web-app-modal-body-echo' : 'selected-gp-web-app-modal-body'
+    setSelectedGpWebApp({ ...app, cssClassName: cssClassName })
     setIsWebAppModalShown(true)
   }
 
@@ -93,36 +92,38 @@ const LessonsPage = ({
                   <section className="w-100 d-flex flex-column ps-sm-3 mt-2 mt-sm-0">
                   </section>
                 </div>
-                <WebAppsSection
-                  webApps={webAppsObj?.data}
-                  handleGpWebAppCardClick={handleGpWebAppCardClick}
-                />
+                {webAppsObj?.data?.length && (
+                  <GpWebApps
+                    webApps={webAppsObj.data}
+                    handleGpWebAppCardClick={handleGpWebAppCardClick}
+                  />
+                )}
               </section>
             </section>
           </section>
           <GpVideos
-            isLast={gpVideosObj.isLast}
-            startingGpVids={gpVideosObj.data}
-            nextPgNumStartingVal={gpVideosObj.nextPgNumStartingVal}
-            setIsGpVideoModalShown={setIsGpVideoModalShown}
+            isLast={gpVideosObj?.isLast}
+            startingGpVids={gpVideosObj?.data}
+            nextPgNumStartingVal={gpVideosObj?.nextPgNumStartingVal}
+            setIsModalShown={setIsGpVideoModalShown}
             setSelectedVideo={setSelectedVideo}
-            totalVidsNum={gpVideosObj.totalItemsNum}
+            totalVidsNum={gpVideosObj?.totalItemsNum}
           />
           <GpUnits
-            isLast={unitsObj.isLast}
-            startingUnitsToShow={unitsObj.data}
-            nextPgNumStartingVal={unitsObj.nextPgNumStartingVal}
+            isLast={unitsObj?.isLast}
+            startingUnitsToShow={unitsObj?.data}
+            nextPgNumStartingVal={unitsObj?.nextPgNumStartingVal}
             didErrorOccur={didErrorOccur}
-            totalGpUnitsNum={unitsObj.totalItemsNum}
+            totalGpUnitsNum={unitsObj?.totalItemsNum}
           />
         </div>
       </section>
       <GpLessons
-        isLast={lessonsObj.isLast}
-        startingLessonsToShow={lessonsObj.data}
-        nextPgNumStartingVal={lessonsObj.nextPgNumStartingVal}
+        isLast={lessonsObj?.isLast}
+        startingLessonsToShow={lessonsObj?.data}
+        nextPgNumStartingVal={lessonsObj?.nextPgNumStartingVal}
         didErrorOccur={didErrorOccur}
-        totalGpLessonsNum={lessonsObj.totalItemsNum}
+        totalGpLessonsNum={lessonsObj?.totalItemsNum}
       />
       <SelectedGpVideo
         _selectedVideo={[selectedVideo, setSelectedVideo]}
@@ -178,8 +179,8 @@ export async function getStaticProps() {
     let gpVideos = getGpVids(lessons);
     gpVideos = gpVideos.map(vid => vid?.ReleaseDate ? { ...vid, ReleaseDate: JSON.stringify(vid.ReleaseDate) } : vid);
     let lessonPartsForUI = [];
-    const todaysDate = new Date();
     let webApps = []
+    const todaysDate = new Date();
 
     // getting the lessons and web-apps from each unit
     for (let lesson of lessons) {
@@ -187,7 +188,6 @@ export async function getStaticProps() {
         continue;
       }
 
-      // getting the web-apps from each lesson
       const multiMediaArr = lesson.Section?.preview?.Multimedia
       const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
       const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
@@ -221,7 +221,6 @@ export async function getStaticProps() {
         }
       }
 
-      // getting the lessons from each unit, storing them into the lessonPartsForUI array
       let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
       let lessonPartsFromClassRoomObj = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
 
@@ -320,7 +319,6 @@ export async function getStaticProps() {
           isLast: gpVideos.length < DATA_PER_PG,
           nextPgNumStartingVal: 1,
           totalItemsNum: gpVideos.length,
-
         },
         webAppsObj: {
           data: webApps,

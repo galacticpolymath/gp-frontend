@@ -1,3 +1,4 @@
+/* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import moment from 'moment';

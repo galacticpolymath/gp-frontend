@@ -19,6 +19,7 @@ import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import { getLinkPreview } from "link-preview-js";
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
+import { getLinkPreviewObj } from '../../../../globalFns';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
@@ -224,19 +225,6 @@ const LessonDetails = ({ lesson }) => {
   );
 };
 
-async function getLinkPreviewObj(url) {
-  try {
-    const linkPreviewObj = await getLinkPreview(url);
-
-    return linkPreviewObj;
-  } catch (error) {
-    const errMsg = `An error has occurred in getting the link preview for given url. Error message: ${error}.`;
-    console.error(errMsg);
-
-    return { errMsg }
-  }
-}
-
 export const getStaticPaths = async () => {
   try {
     await connectToMongodb();
@@ -297,10 +285,11 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           const itemListUpdated = lesson.itemList.map(itemObj => {
             if (itemObj?.links?.length && itemObj.links[0]?.url) {
               const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
+              const filePreviewImg = `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`;
 
               return {
                 ...itemObj,
-                filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
+                filePreviewImg,
               }
             }
 

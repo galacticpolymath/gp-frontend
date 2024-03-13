@@ -26,4 +26,12 @@ module.exports = {
       },
     ]
   },
+  async rewrites() {
+    return [
+      {
+        source: '/web-app',
+        destination: '/public/web-apps/into-the-dark/src/index.html',
+      },
+    ]
+  }
 };
