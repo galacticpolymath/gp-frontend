@@ -7,10 +7,7 @@
 import UnitIconSvg from '../../../assets/img/gp-unit-icon.svg';
 import Pill from '../../Pill';
 import LessonCard from '../LessonCard';
-import SeeMoreBtnSec from './SeeMoreBtnSec';
-import { useGetGpDataStates } from '../../../customHooks/useGetGpDataStates';
 import Image from 'next/image';
-import ReactLoading from 'react-loading';
 
 const getLessonImgSrc = lesson => {
     const { CoverImage, LessonBanner } = lesson;
@@ -35,14 +32,9 @@ const UnshowableLesson = () => (
 );
 
 const GpUnits = ({
-    startingUnitsToShow,
-    isLast,
-    nextPgNumStartingVal,
+    units,
     didErrorOccur,
-    totalGpUnitsNum,
 }) => {
-    const { handleOnClick, btnTxt, gpDataObj } = useGetGpDataStates(startingUnitsToShow, isLast, nextPgNumStartingVal, 'units', totalGpUnitsNum);
-
     return (
         <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
@@ -57,9 +49,9 @@ const GpUnits = ({
                 <p className='mt-2 mb-0'> Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
                 <p><em>And they&apos;re all free!</em></p>
             </div>
-            {!!gpDataObj.data?.length && (
+            {!!units?.length && (
                 <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-                    {(gpDataObj.data ?? startingUnitsToShow).map((lesson, index) => {
+                    {units.map((lesson, index) => {
                         return (
                             (lesson.PublicationStatus === 'Proto') ?
                                 <UnshowableLesson key={index} />
@@ -75,31 +67,10 @@ const GpUnits = ({
                     })}
                 </div>
             )}
-            {(!gpDataObj.data?.length && didErrorOccur) && (
+            {(didErrorOccur || !units?.length) && (
                 <div className='px-4 pb-4'>
                     <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
                 </div>
-            )}
-            {!gpDataObj.isLast && (
-                <SeeMoreBtnSec
-                    btnTxt={btnTxt}
-                    handleOnClick={handleOnClick}
-                >
-                    {(btnTxt === 'Loading')
-                        ?
-                        <span style={{ height: 25 }} className='d-inline-flex justify-content-center align-items-center w-100 position-relative'>
-                            <ReactLoading
-                                type='bubbles'
-                                color='#444444'
-                                className='loading-bubbles'
-                            />
-                        </span>
-                        :
-                        <span className='d-inline-flex w-100 h-100 justify-content-center'>
-                            {btnTxt}
-                        </span>
-                    }
-                </SeeMoreBtnSec>
             )}
         </section>
     );

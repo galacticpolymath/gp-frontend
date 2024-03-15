@@ -25,7 +25,7 @@ const handleJobVizCardClick = () => {
 };
 
 const LessonsPage = ({
-  unitsObj,
+  units,
   lessonsObj,
   gpVideosObj,
   webAppsObj,
@@ -110,11 +110,8 @@ const LessonsPage = ({
             totalVidsNum={gpVideosObj?.totalItemsNum}
           />
           <GpUnits
-            isLast={unitsObj?.isLast}
-            startingUnitsToShow={unitsObj?.data}
-            nextPgNumStartingVal={unitsObj?.nextPgNumStartingVal}
+            units={units}
             didErrorOccur={didErrorOccur}
-            totalGpUnitsNum={unitsObj?.totalItemsNum}
           />
         </div>
       </section>
@@ -264,7 +261,7 @@ export async function getStaticProps() {
       }
     }
 
-    lessons = getShowableUnits(lessons).map(lesson => {
+    const units = getShowableUnits(lessons).map(lesson => {
       const individualLessonsNum = lesson?.LsnStatuses?.length ? lesson.LsnStatuses.filter(({ status }) => status !== 'Hidden')?.length : 0;
       const lessonObj = {
         ...lesson,
@@ -276,7 +273,7 @@ export async function getStaticProps() {
 
       return lessonObj;
     });
-    const firstPgOfUnits = lessons.slice(0, DATA_PER_PG);
+    console.log('hey there units: ', units)
     let firstPgOfLessons = structuredClone(lessonPartsForUI);
 
     if (firstPgOfLessons?.length) {
@@ -301,12 +298,7 @@ export async function getStaticProps() {
 
     return {
       props: {
-        unitsObj: {
-          data: firstPgOfUnits,
-          isLast: lessons.length < DATA_PER_PG,
-          nextPgNumStartingVal: 1,
-          totalItemsNum: lessons.length,
-        },
+        units: units,
         lessonsObj: {
           data: firstPgOfLessons,
           isLast: lessonPartsForUI.length < DATA_PER_PG,
@@ -333,7 +325,7 @@ export async function getStaticProps() {
 
     return {
       props: {
-        unitsObj: null,
+        units: null,
         lessonsObj: null,
         gpVideosObj: null,
         webAppsObj: null,

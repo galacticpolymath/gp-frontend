@@ -7,7 +7,7 @@ const cspHeader = `
     default-src 'self' https://www.google-analytics.com/;
     script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com/;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png;
+    img-src 'self' blob: data: https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png https://echo-galactic-polymath.vercel.app/img/echoSim_banner.png https://into-the-dark.vercel.app/IntoTheDark_banner.jpg https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png;
     font-src 'self';
     object-src 'none';
     base-uri 'self';
