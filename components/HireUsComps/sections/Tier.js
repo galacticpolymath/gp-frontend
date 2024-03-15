@@ -24,10 +24,12 @@ import { Card } from "react-bootstrap"
 import { HiOutlineX } from "react-icons/hi"
 import { GoCheck } from "react-icons/go"
 import { AiOutlineQuestionCircle } from "react-icons/ai"
+import { useEffect, useState } from 'react'
 
-const { Img, Body, Header } = Card;
+const { Body, Header } = Card;
 
 const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
+    const [didInitialRenderOccur, setDidInitialRenderOccur] = useState(false);
     const { img, tierName, description, productInfo, estimatedPrice } = tier;
     const { low, high } = estimatedPrice;
     const { paragraph1, paragraph2 } = description
@@ -54,6 +56,10 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
         window.open(link, "_")
     }
 
+    useEffect(() => {
+        setDidInitialRenderOccur(true)
+    }, [])
+
     return (
         <Card className={`${isNoBackground ? 'noBackground noBorder' : 'tierCard shadow pe-lg-3 ps-lg-3 pe-xl-0 ps-xl-0 pt-5 ms-xl-2 me-xl-2 me-md-0 me-xl-2 pt-md-1'} ps-lg-3 pe-lg-3  mt-5 pb-5 px-xs-1 ps-md-0 pe-md-0  ${index !== 0 ? '' : ''}`}>
             <Header className={`${isNoBackground ? 'noBackground noBorder' : 'noBackground noBorder'}`}>
@@ -75,7 +81,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                 <p className="text-dark  text-center">{paragraph1}</p>
                 <section>
                     <div className="tierProductBorder py-1 py-lg-3">
-                        <table className="productInfoTable w-100 noBorder">
+                        {didInitialRenderOccur && <table className="productInfoTable w-100 noBorder">
                             <tbody className='d-grid justify-content-center pe-1'>
                                 <div className="col">
                                     <tr className="tierTableRow">
@@ -104,7 +110,7 @@ const Tier = ({ tier, isNoBackground, setTiersInfoForModalArr, index }) => {
                                 </div>
                             </tbody>
 
-                        </table>
+                        </table>}
                     </div>
                 </section>
                 <section className="mt-2 d-grid container-fluid">

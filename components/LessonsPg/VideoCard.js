@@ -38,6 +38,8 @@ const VideoCard = ({
         }
     }, []);
 
+    console.log('videoObj.mainLink, yo there meng! ', videoObj.mainLink);
+
     return (
         <div
             ref={videoCardRef}
