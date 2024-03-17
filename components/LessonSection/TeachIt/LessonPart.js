@@ -46,7 +46,6 @@ const LessonPart = ({
   }) ?? {} : {};
   let { tags: allTags, itemList: linkResources } = targetLessonsResources;
   _itemList = _itemList ?? linkResources;
-  console.log('_itemList: ', _itemList);
   let previewTags = null;
   let restOfTags = null;
   const _accordionId = `part_${lsnNum}`;
