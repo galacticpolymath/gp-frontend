@@ -33,7 +33,6 @@ const LessonPart = ({
   accordionBtnStyle = {},
   isAccordionExpandable = true,
 }) => {
-  console.log('ForGrades: ', ForGrades);
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
@@ -47,6 +46,7 @@ const LessonPart = ({
   }) ?? {} : {};
   let { tags: allTags, itemList: linkResources } = targetLessonsResources;
   _itemList = _itemList ?? linkResources;
+  console.log('_itemList: ', _itemList);
   let previewTags = null;
   let restOfTags = null;
   const _accordionId = `part_${lsnNum}`;

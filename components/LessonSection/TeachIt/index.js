@@ -74,18 +74,28 @@ const TeachIt = ({
   const [, setSectionDots] = _sectionDots;
   const environments = ['classroom', 'remote'].filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   const gradeVariations = Data[environments[0]]?.resources ? (getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources) : [];
+  console.log('gradeVariations, yo there! ', gradeVariations);
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations?.length ? gradeVariations[0] : {});
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
   const allResources = Data?.[selectedEnvironment]?.resources ? (getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources) : [];
   const [selectedGradeResources, setSelectedGradeResources] = useState(allResources?.[0]?.links ?? []);
   let resources = allResources?.length ? allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix) : [];
   resources = getIsValObj(resources) ? [resources] : resources;
-  const areThereMoreThan1Resources = Data?.classroom?.resources.length > 1;
-  // BUG STARTING HERE IF THERE ARE MORE THAN ONE RESOURCE: areThereMoreThan1Resources
-  const isPartsObjPresent = !areThereMoreThan1Resources && Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object');
+  const areThereMoreThan1Resource = Data?.classroom?.resources.length > 1;
+  ForGrades = areThereMoreThan1Resource ? selectedGrade.grades : ForGrades;
+  const isPartsObjPresent = !areThereMoreThan1Resource && Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object');
   const partsFieldName = ((Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object')) && ('parts' in Data.classroom.resources[0])) ? 'parts' : 'lessons';
   const dataLesson = Data.lesson;
-  let parts = isPartsObjPresent ? Data.classroom.resources[0]?.[partsFieldName] : [];
+  let parts = [];
+  const ref = useRef();
+
+  if (isPartsObjPresent && !areThereMoreThan1Resource) {
+    parts = Data.classroom.resources[0]?.[partsFieldName];
+  }
+
+  if (areThereMoreThan1Resource) {
+    parts = selectedGrade.lessons ?? [];
+  }
 
   if ((((parts !== undefined) || (parts !== null)) && (parts?.title === "Assessments")) && parts?.length) {
     const { itemList, lsn, preface, tile, title } = parts;
@@ -97,8 +107,6 @@ const TeachIt = ({
     const lastPart = { itemList, lsn, preface, tile, title };
     parts = [...Object.values(restOfLessonParts), lastPart];
   }
-
-  const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
