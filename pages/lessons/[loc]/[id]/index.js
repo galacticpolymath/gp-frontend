@@ -17,7 +17,6 @@ import { useRouter } from 'next/router';
 import useScrollHandler from '../../../../customHooks/useScrollHandler';
 import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
-import { getLinkPreview } from "link-preview-js";
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
 import { getLinkPreviewObj } from '../../../../globalFns';
 
@@ -158,6 +157,8 @@ const LessonDetails = ({ lesson }) => {
 
   let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
 
+  console.log('_sections, hey there: ', _sections)
+
   if (!lesson && typeof window === "undefined") {
     return null;
   }
@@ -285,11 +286,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           const itemListUpdated = lesson.itemList.map(itemObj => {
             if (itemObj?.links?.length && itemObj.links[0]?.url) {
               const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
-              const filePreviewImg = `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`;
 
               return {
                 ...itemObj,
-                filePreviewImg,
+                filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
               }
             }
 

@@ -156,3 +156,17 @@ export const getLinkPreviewObj = async (url) => {
         return { errMsg };
     }
 };
+
+export const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
+
+export const getObjVals = obj => {
+    const keys = Object.keys(obj);
+    let vals = [];
+
+    keys.forEach(key => {
+        const val = obj[key];
+        vals.push(val);
+    });
+
+    return vals;
+};

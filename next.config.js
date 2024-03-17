@@ -7,14 +7,14 @@ const cspHeader = `
     default-src 'self' https://www.google-analytics.com/;
     script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com/;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png https://echo-galactic-polymath.vercel.app/img/echoSim_banner.png https://into-the-dark.vercel.app/IntoTheDark_banner.jpg https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png;
+    img-src 'self' https://storage.googleapis.com/gp-cloud/lessons/FemalesSing_en-US/study-paper.png https://media.giphy.com/media/xThuWpoG470Q0stGmI/giphy.gif https://bit.ly/gphi5 https://storage.googleapis.com/gp-cloud/lessons/FemalesSing_en-US/sponsor_logo_41be63750b.png https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png https://echo-galactic-polymath.vercel.app/img/echoSim_banner.png https://into-the-dark.vercel.app/IntoTheDark_banner.jpg https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png https://drive.google.com/thumbnail https://drive.google.com/ https://*.lh3.googleusercontent.com/ https://lh3.googleusercontent.com/d/1IfgB7A0h8uuCrMpQ0fMg6Jyk9fsjYdN4FT7zmaeW_qY=s220?authuser=0 https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-2-banner.png https://*.storage.googleapis.com/ https://storage.googleapis.com/gp-cloud/lessons/Photonics_en-US/Folland-Lab_logo.png https://storage.googleapis.com/gp-cloud/lessons/Photonics_en-US/Folland-Lab_logo.png https://storage.googleapis.com/gp-cloud/lessons/Photonics_en-US/photonics-banner.png;
     font-src 'self';
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     block-all-mixed-content;
     upgrade-insecure-requests;
-    frame-src 'self' https://www.youtube.com/ https://m.youtube.com/ https://youtube.com/embed/;
+    frame-src 'self' https://drive.google.com/ https://www.youtube.com/ https://m.youtube.com/ https://youtube.com/embed/ https://docs.google.com/ https://lh3.googleusercontent.com/;
 `
 
 module.exports = {

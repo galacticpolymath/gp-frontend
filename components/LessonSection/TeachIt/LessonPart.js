@@ -33,6 +33,7 @@ const LessonPart = ({
   accordionBtnStyle = {},
   isAccordionExpandable = true,
 }) => {
+  console.log('ForGrades: ', ForGrades);
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;

@@ -273,7 +273,6 @@ export async function getStaticProps() {
 
       return lessonObj;
     });
-    console.log('hey there units: ', units)
     let firstPgOfLessons = structuredClone(lessonPartsForUI);
 
     if (firstPgOfLessons?.length) {
