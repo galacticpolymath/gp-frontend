@@ -105,7 +105,7 @@ const LessonsPage = ({
             isLast={gpVideosObj?.isLast}
             startingGpVids={gpVideosObj?.data}
             nextPgNumStartingVal={gpVideosObj?.nextPgNumStartingVal}
-            setIsModalShown={setIsGpVideoModalShown}
+            setIsGpVideoModalShown={setIsGpVideoModalShown}
             setSelectedVideo={setSelectedVideo}
             totalVidsNum={gpVideosObj?.totalItemsNum}
           />

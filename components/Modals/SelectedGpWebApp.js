@@ -11,6 +11,9 @@ import Modal from 'react-bootstrap/Modal';
 import { GiCancel } from 'react-icons/gi';
 import Button from '../General/Button';
 import { useEffect } from 'react';
+import CustomLink from '../CustomLink';
+
+const { Title } = Modal;
 
 const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
     const [isModalShown, setIsModalShown] = _isModalShown;
@@ -56,7 +59,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                             <GiCancel color='grey' className='close-gp-video-modal-icon' />
                         </Button>
                     </div>
-                    <div
+                    {/* <div
                         className={`w-100 ${selectedGpWebApp?.cssClassName}`}
                     >
                         <iframe
@@ -64,8 +67,8 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                             className='w-100 h-100'
                             src={selectedGpWebApp?.pathToFile}
                         />
-                    </div>
-                    {/* <div
+                    </div> */}
+                    <div
                         style={{ borderTop: 'solid 1.5px rgb(222, 226, 230)' }}
                         className='px-3 px-sm-5 pt-3 d-flex flex-column pb-5 position-relative'
                     >
@@ -90,7 +93,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                                 for Lesson {selectedGpWebApp?.lessonIdStr} of <i>{selectedGpWebApp?.unitTitle}</i>
                             </>
                         </CustomLink>
-                    </div> */}
+                    </div>
                 </div>
             </div>
         </Modal>
