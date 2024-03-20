@@ -10,17 +10,26 @@
 import Modal from 'react-bootstrap/Modal';
 import { GiCancel } from 'react-icons/gi';
 import Button from '../General/Button';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import CustomLink from '../CustomLink';
 
 const { Title } = Modal;
 
 const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
     const [isModalShown, setIsModalShown] = _isModalShown;
+    const [isOverImg, setIsOverImg] = useState(false)
     const [selectedGpWebApp, setSelectedGpWebApp] = _selectedGpWebApp;
 
     const handleOnHide = () => {
         setIsModalShown(false);
+    };
+
+    const handleOnMouseOver = () => {
+        setIsOverImg(true)
+    };
+
+    const handleOnMouseLeave = () => {
+        setIsOverImg(false)
     };
 
     useEffect(() => {
@@ -46,6 +55,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
     return (
         <Modal
             show={isModalShown}
+            onHide={handleOnHide}
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='selected-gp-web-app-content'
         >
@@ -59,15 +69,37 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                             <GiCancel color='grey' className='close-gp-video-modal-icon' />
                         </Button>
                     </div>
-                    {/* <div
-                        className={`w-100 ${selectedGpWebApp?.cssClassName}`}
+                    <div
+                        className='position-relative web-app-img-container w-100'
+                        onMouseOver={handleOnMouseOver}
+                        onMouseLeave={handleOnMouseLeave}
                     >
-                        <iframe
-                            id='web-app-iframe'
-                            className='w-100 h-100'
-                            src={selectedGpWebApp?.pathToFile}
-                        />
-                    </div> */}
+                        <div
+                            className='position-relative h-100'
+                        >
+                            <img
+                                src={selectedGpWebApp?.pathToFile}
+                                alt='Image of GP web-app.'
+                                style={{ objectFit: 'contain' }}
+                                className='h-100 position-absolute'
+                            />
+                            {isOverImg && (
+                                <div className='h-100 w-100 position-relative d-flex justify-content-center align-items-center'>
+                                    <CustomLink
+                                        hrefStr={selectedGpWebApp?.webAppLink}
+                                        className='no-link-decoration w-100 h-100 position-absolute pointer d-flex justify-content-center align-items-center'
+                                        color='white'
+                                        targetLinkStr='_blank'
+                                        fontSize={24}
+                                        style={{ backgroundColor: 'black', opacity: .4 }}
+                                    />
+                                    <span style={{ zIndex: 10 }} className='underline-on-hover text-white click-to-open-txt'>
+                                        Click to open app in new window.
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                     <div
                         style={{ borderTop: 'solid 1.5px rgb(222, 226, 230)' }}
                         className='px-3 px-sm-5 pt-3 d-flex flex-column pb-5 position-relative'
@@ -78,6 +110,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                         <span className='mt-2'>{selectedGpWebApp?.description}</span>
                         <CustomLink
                             hrefStr={selectedGpWebApp?.webAppLink}
+                            style={{ width: 'fit-content' }}
                             className='mt-2 no-link-decoration underline-on-hover'
                             color='#75757D'
                             targetLinkStr='_blank'
@@ -85,6 +118,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                             Open in new window
                         </CustomLink>
                         <CustomLink
+                            style={{ width: 'fit-content' }}
                             hrefStr={`/lessons/en-US/${selectedGpWebApp?.unitNumID}`}
                             className='mt-2 no-link-decoration underline-on-hover'
                             color='#75757D'

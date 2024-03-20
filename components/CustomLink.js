@@ -8,6 +8,7 @@ import { validateHrefStr } from '../helperFns/validateUrl';
 const CustomLink = ({
     hrefStr,
     children,
+    fontSize,
     targetLinkStr = '_self',
     color = '',
     style = {},
@@ -15,6 +16,9 @@ const CustomLink = ({
 }) => {
     if (color) {
         style.color = color;
+    }
+    if (fontSize) {
+        style.fontSize = fontSize;
     }
 
     return (

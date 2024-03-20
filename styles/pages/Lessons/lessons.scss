@@ -364,19 +364,19 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.selected-gp-web-app-modal-body {
-  height: 900px;
+.click-to-open-txt {
+  font-size: 24px;
 
-  @media(max-width: 767px) {
-    height: 1350px;
+  @media(max-width: 576px) {
+    font-size: 18px;
   }
 }
 
-.selected-gp-web-app-modal-body-echo {
-  height: 1100px;
+.web-app-img-container {
+  height: 480px;
 
-  @media(max-width: 767px) {
-    height: 1550px;
+  @media(max-width: 576px) {
+    height: 260px;
   }
 }
 

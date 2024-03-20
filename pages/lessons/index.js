@@ -37,9 +37,9 @@ const LessonsPage = ({
   const [isWebAppModalShown, setIsWebAppModalShown] = useState(false);
 
   const handleGpWebAppCardClick = app => () => {
-    const cssClassName = app.title.toLowerCase().includes('echo') ? 'selected-gp-web-app-modal-body-echo' : 'selected-gp-web-app-modal-body'
-    setSelectedGpWebApp({ ...app, cssClassName: cssClassName })
-    setIsWebAppModalShown(true)
+    console.log('app: ', app)
+    setSelectedGpWebApp(app);
+    setIsWebAppModalShown(true);
   }
 
   return (
@@ -77,19 +77,18 @@ const LessonsPage = ({
             </section>
             <section>
               <section className="mx-auto grid pb-1 p-4 gap-3 pt-3">
+                {/* pointer g-col-12 g-col-sm-10 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg */}
                 <div onClick={handleJobVizCardClick} className="pointer g-col-12 g-col-sm-10 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg">
-                  <section className="d-flex flex-column flex-sm-row w-100">
-                    <section className="imgSec d-flex justify-content-center ">
+                  <section className="d-flex flex-column w-100 h-100">
+                    <section style={{ height: '205px' }} className="imgSec d-flex justify-content-center align-items-center">
                       <JobVizIcon />
                     </section>
                     <section className="d-flex justify-content-center align-items-left flex-column ps-3">
-                      <h4 className='fw-light text-black mb-0 pb-1 text-center text-sm-start mt-1 mt-sm-0'>
+                      <h4 className='fw-light text-black mb-0 pb-1 text-center mt-1 mt-sm-2 my-2'>
                         Jobviz Career Explorer
                       </h4>
-                      <span className="text-black text-left text-sm-start mt-1 mt-sm-0">A starting point for students to explore 1,000 job possibilities</span>
+                      <span className="text-black text-center mt-1 mt-sm-0">A starting point for students to explore 1,000 job possibilities</span>
                     </section>
-                  </section>
-                  <section className="w-100 d-flex flex-column ps-sm-3 mt-2 mt-sm-0">
                   </section>
                 </div>
                 {webAppsObj?.data?.length && (
@@ -153,11 +152,11 @@ const PROJECTED_LESSONS_FIELDS = [
 const WEB_APP_PATHS = [
   {
     name: 'dark',
-    path: '/web-apps/into-the-dark/dist/index.html',
+    path: '/into-the-dark.png',
   },
   {
     name: 'echo',
-    path: '/web-apps/echo/index.html',
+    path: '/echo-sim.png',
   },
 ];
 const SHOWABLE_LESSONS_STATUSES = ['Live', 'Beta'];

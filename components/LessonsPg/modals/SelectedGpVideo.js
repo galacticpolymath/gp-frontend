@@ -42,11 +42,16 @@ const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
     return (
         <Modal
             show={isModalShown}
-            dialogClassName='selected-vid-dialog m-0'
-            contentClassName='selected-vid-modal-content'
+            onHide={handleOnHide}
+            // dialogClassName='selected-vid-dialog m-0'
+            dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
+            // contentClassName='selected-vid-modal-content'
+            contentClassName='selected-gp-web-app-content'
         >
-            <div className='modal-content-wrapper'>
-                <div className='modal-content-sub-wrapper'>
+            {/* <div className='modal-content-wrapper'>
+                <div className='modal-content-sub-wrapper'> */}
+            <div className='modal-content-wrapper-gp-web-app'>
+                <div className='modal-content-sub-wrapper-gp-web-app position-relative'>
                     <div className='position-relative w-100'>
                         <Button
                             handleOnClick={handleOnHide}
