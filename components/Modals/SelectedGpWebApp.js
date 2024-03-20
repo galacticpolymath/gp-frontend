@@ -10,10 +10,7 @@
 import Modal from 'react-bootstrap/Modal';
 import { GiCancel } from 'react-icons/gi';
 import Button from '../General/Button';
-import CustomLink from '../CustomLink';
 import { useEffect } from 'react';
-
-const { Title } = Modal;
 
 const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
     const [isModalShown, setIsModalShown] = _isModalShown;
