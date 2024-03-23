@@ -9,6 +9,8 @@ import CustomLink from '../CustomLink';
 import { getMediaComponent as Thumbnail } from '../LessonSection/Preview/utils';
 import { useEffect, useRef } from 'react';
 import Button from '../General/Button';
+import ForLessonTxtWrapper from './ForLessonTxtWrapper';
+import ForLessonTxt from './ForLessonTxt';
 
 const VideoCard = ({
     videoObj,
@@ -19,6 +21,7 @@ const VideoCard = ({
 }) => {
     let href = videoObj.lessonNumId ? `/lessons/en-US/${videoObj.unitNumId}#lesson_part_${videoObj.lessonNumId}` : `/lessons/en-US/${videoObj.unitNumId}`;
     const videoCardRef = useRef();
+    const unitTitle = ['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`;
 
     const handleOnClick = () => {
         setSelectedVideo({
@@ -86,11 +89,16 @@ const VideoCard = ({
                 style={{ lineHeight: '22px' }}
             >
                 {videoObj.lessonNumId ?
-                    <>
-                        For Lesson {videoObj.lessonNumId} of <em>{['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`}</em>
-                    </>
+                    <ForLessonTxtWrapper>
+                        <ForLessonTxt
+                            lessonNumId={videoObj.lessonNumId}
+                            unitTitle={unitTitle}
+                        />
+                    </ForLessonTxtWrapper>
                     :
-                    <>Part of <em>{['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`}</em></>
+                    <ForLessonTxtWrapper>
+                        <>Part of <em>{unitTitle}</em></>
+                    </ForLessonTxtWrapper>
                 }
             </CustomLink>
         </div>

@@ -12,6 +12,8 @@ import { GiCancel } from 'react-icons/gi';
 import Button from '../General/Button';
 import { useEffect, useState } from 'react';
 import CustomLink from '../CustomLink';
+import ForLessonTxt from '../LessonsPg/ForLessonTxt';
+import ForLessonTxtWrapper from '../LessonsPg/ForLessonTxtWrapper';
 
 const { Title } = Modal;
 
@@ -120,12 +122,15 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                         <CustomLink
                             style={{ width: 'fit-content' }}
                             hrefStr={`/lessons/en-US/${selectedGpWebApp?.unitNumID}`}
-                            className='mt-2 no-link-decoration underline-on-hover'
+                            className='mt-2 no-link-decoration underline-on-hover d-flex'
                             color='#75757D'
                         >
-                            <>
-                                for Lesson {selectedGpWebApp?.lessonIdStr} of <i>{selectedGpWebApp?.unitTitle}</i>
-                            </>
+                            <ForLessonTxtWrapper>
+                                <ForLessonTxt
+                                    lessonNumId={selectedGpWebApp?.lessonIdStr}
+                                    unitTitle={selectedGpWebApp?.unitTitle}
+                                />
+                            </ForLessonTxtWrapper>
                         </CustomLink>
                     </div>
                 </div>

@@ -21,6 +21,10 @@ export const cacheGpUnitData = async cache => {
 
         const lessons = createPaginationArr(getGpLessons(units));
         const videos = createPaginationArr(getGpVids(units));
+        const unitsToCache = createPaginationArr(getShowableUnits(units))
+
+        console.log('unitsToCache, hey there! ', unitsToCache)
+
         const wasSuccessful = cache.mset([
             {
                 key: 'lessons',
@@ -29,7 +33,7 @@ export const cacheGpUnitData = async cache => {
             },
             {
                 key: 'units',
-                val: createPaginationArr(getShowableUnits(units)),
+                val: unitsToCache,
                 ttl: GP_DATA_EXPIRATION_TIME_MS,
             },
             {
@@ -53,11 +57,17 @@ export const cacheGpUnitData = async cache => {
     }
 }
 
-export const getCachedGpData = async (request, cache) => {
+export const getCachedGpData = async ({ type, pageNum }, cache) => {
     try {
-        const { type, pageNum } = request.query;
         const getGpData = getGpDataGetterFn(type)?.fn;
+
+        if (!getGpData) {
+            throw new CustomError('The value for `type` is invalid.', 400)
+        }
+
         let gpDataArr = cache.get(type);
+        console.log('type, yo there meng! ', type)
+        console.log('gpDataArr, hey there! ', gpDataArr)
         let totalItemsNum = gpDataArr?.length ? gpDataArr.flat().length : null;
 
         if (!gpDataArr?.length && (type !== 'units')) {
@@ -81,6 +91,7 @@ export const getCachedGpData = async (request, cache) => {
             cache.set(type, gpDataArr, GP_DATA_EXPIRATION_TIME_MS);
         } else if (!gpDataArr?.length) {
             const units = await getUnits();
+            console.log('units, sup there meng: ', units)
 
             if (!units?.length) {
                 throw new CustomError('Failed to get the units from the database.', 500)
@@ -99,6 +110,8 @@ export const getCachedGpData = async (request, cache) => {
             gpDataArr = createPaginationArr(uniqueUnits);
             cache.set(type, gpDataArr, GP_DATA_EXPIRATION_TIME_MS);
         }
+
+        console.log('gpDataArr, yo there meng! ', gpDataArr)
 
         const pageQueriedByClient = gpDataArr[+pageNum];
 

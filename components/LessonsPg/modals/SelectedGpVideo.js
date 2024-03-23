@@ -8,12 +8,15 @@ import { getMediaComponent as Video } from '../../LessonSection/Preview/utils';
 import { useEffect } from 'react';
 import { GiCancel } from 'react-icons/gi';
 import CustomLink from '../../CustomLink';
+import ForLessonTxt from '../ForLessonTxt';
+import ForLessonTxtWrapper from '../ForLessonTxtWrapper';
 
 const { Body, Title } = Modal;
 
 const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
     const [selectedVideo, setSelectedVideo] = _selectedVideo;
     const [isModalShown, setIsModalShown] = _isModalShown;
+    const unitTitle = ['.', '!'].includes(selectedVideo?.unitTitle?.split('')?.at(-1)) ? selectedVideo?.unitTitle : `${selectedVideo?.unitTitle}.`;
 
     const handleOnHide = () => {
         setIsModalShown(false);
@@ -76,17 +79,22 @@ const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
                             </p>
                             <CustomLink
                                 color='#BFBFBF'
-                                className='no-link-decoration mt-3 underline-on-hover'
+                                className='no-link-decoration mt-3 underline-on-hover d-flex'
                                 hrefStr={selectedVideo?.href ?? ''}
                                 style={{ lineHeight: '22px' }}
                             >
                                 {selectedVideo && (
                                     selectedVideo.lessonNumId ?
-                                        <>
-                                            For Lesson {selectedVideo.lessonNumId} of <em>{['.', '!'].includes(selectedVideo.unitTitle.split('').at(-1)) ? selectedVideo.unitTitle : `${selectedVideo.unitTitle}.`}</em>
-                                        </>
+                                        <ForLessonTxtWrapper>
+                                            <ForLessonTxt
+                                                lessonNumId={selectedVideo.lessonNumId}
+                                                unitTitle={unitTitle}
+                                            />
+                                        </ForLessonTxtWrapper>
                                         :
-                                        <>Part of <em>{['.', '!'].includes(selectedVideo.unitTitle.split('').at(-1)) ? selectedVideo.unitTitle : `${selectedVideo.unitTitle}.`}</em></>
+                                        <ForLessonTxtWrapper>
+                                            <>Part of <em>{unitTitle}</em></>
+                                        </ForLessonTxtWrapper>
                                 )}
                             </CustomLink>
                         </div>
