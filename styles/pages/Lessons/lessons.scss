@@ -421,10 +421,10 @@ $toolTipColor: #f0f4ff;
 }
 
 .selected-gp-web-app-content {
-  // min-height: 100vh;
   height: 99vh;
   width: 90vw;
   overflow: hidden;
+  max-height: 850px;
 
   @media(max-width: 992px) {
     height: 100vh;
@@ -435,7 +435,6 @@ $toolTipColor: #f0f4ff;
 }
 
 .selected-gp-web-app-dialog {
-  // width: 80vw;
   max-width: none;
   min-height: 100%;
   max-height: none;

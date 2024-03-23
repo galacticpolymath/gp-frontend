@@ -60,6 +60,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
             onHide={handleOnHide}
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='selected-gp-web-app-content'
+
         >
             <div className='modal-content-wrapper-gp-web-app'>
                 <div className='modal-content-sub-wrapper-gp-web-app position-relative'>
