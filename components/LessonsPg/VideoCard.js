@@ -81,7 +81,7 @@ const VideoCard = ({
             </div>
             <CustomLink
                 color='#BFBFBF'
-                className='no-link-decoration mt-3 underline-on-hover'
+                className='no-link-decoration mt-3 underline-on-hover d-flex'
                 hrefStr={href}
                 style={{ lineHeight: '22px' }}
             >
