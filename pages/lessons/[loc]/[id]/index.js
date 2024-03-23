@@ -315,7 +315,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
     let lessonParts = null;
     const resources = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources;
-    // console.log("lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources: ", lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources)
 
     if ((resources.length == 1) && resources?.[0]?.lessons) {
       lessonParts = resources[0]?.lessons.map(lesson => {

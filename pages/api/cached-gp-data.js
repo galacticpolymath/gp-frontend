@@ -11,7 +11,6 @@ const VALID_GP_UNIT_TYPES = ['videos', 'units', 'lessons'];
 
 export default async function handler(request, response) {
     try {
-        console.log('request.query.pageNum: ', request.query.pageNum)
         if ((request.method === 'GET') && (!request.query.pageNum || (request.query.pageNum && !Number.isInteger(+request.query.pageNum)))) {
             throw new CustomError('Missing the `pageNum` parameter. Must be a integer greater than 0.', 400);
         }
@@ -39,11 +38,13 @@ export default async function handler(request, response) {
 
         // caching gp unit data
         if (request.method === 'POST') {
-            const { wasSuccessful, errorStatusCode, errMsg } = await cacheGpUnitData(cache);
+            const { wasSuccessful, errorStatusCode, errMsg } = await cacheGpUnitData();
 
             if (!wasSuccessful) {
                 throw new CustomError(errMsg, errorStatusCode)
             }
+
+            console.log('data was cached, wasSuccessful: ', wasSuccessful)
 
             return response.json({ msg: 'Gp unit data was cached.' })
         }

@@ -4,7 +4,7 @@
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import Lessons from '../../backend/models/lesson.js'
@@ -19,6 +19,7 @@ import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
 import { getGpVids, getLinkPreviewObj, getShowableUnits } from '../../globalFns.js';
 import SelectedGpWebApp from '../../components/Modals/SelectedGpWebApp.js';
 import GpWebApps from '../../components/LessonsPg/sections/GpWebApps.js';
+import axios from 'axios';
 
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
@@ -37,7 +38,6 @@ const LessonsPage = ({
   const [isWebAppModalShown, setIsWebAppModalShown] = useState(false);
 
   const handleGpWebAppCardClick = app => () => {
-    console.log('app: ', app)
     setSelectedGpWebApp(app);
     setIsWebAppModalShown(true);
   }
