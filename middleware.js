@@ -83,5 +83,10 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/api/insert-lesson', '/api/delete-lesson/:id', '/api/update-lessons', '/api/get-jwt-token'],
+  matcher: [
+    '/api/insert-lesson',
+    '/api/delete-lesson/:id',
+    '/api/update-lessons',
+    '/api/get-jwt-token'
+  ],
 };

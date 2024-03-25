@@ -12,6 +12,7 @@ const cspHeader = `
     object-src 'none';
     base-uri 'self';
     form-action 'self';
+    connect-src 'self' https://oauth2.googleapis.com/token;
     block-all-mixed-content;
     upgrade-insecure-requests;
     frame-src 'self' https://drive.google.com/ https://www.youtube.com/ https://m.youtube.com/ https://youtube.com/embed/ https://docs.google.com/ https://lh3.googleusercontent.com/;

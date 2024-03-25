@@ -170,3 +170,9 @@ export const getObjVals = obj => {
 
     return vals;
 };
+
+export const getUrlParamVal = (searchParams, paramName) => {
+    const urlSearchParams = new URLSearchParams(searchParams)
+
+    return urlSearchParams.get(paramName)
+}
