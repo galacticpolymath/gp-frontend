@@ -171,8 +171,41 @@ export const getObjVals = obj => {
     return vals;
 };
 
-export const getUrlParamVal = (searchParams, paramName) => {
+const searchParamsDefault = (typeof window === 'undefined') ? null : window.location.search;
+
+export const getUrlParamVal = (searchParams = searchParamsDefault, paramName = '') => {
     const urlSearchParams = new URLSearchParams(searchParams)
 
     return urlSearchParams.get(paramName)
+}
+
+export const createObj = (keysAndValsArr = []) => {
+    if (!keysAndValsArr?.length) {
+        console.error('The array to create the object is empty.')
+        return null;
+    }
+
+    const isKeysAndValsArrValid = keysAndValsArr.every(keyAndVal => {
+        if (!Array.isArray(keyAndVal)) {
+            return false;
+        }
+
+        if (!['symbol', 'string'].includes(typeof keyAndVal[0])) {
+            return false;
+        }
+
+        return true;
+    })
+
+    if (!isKeysAndValsArrValid) {
+        console.error('Each value fo the `keysAndVals` arr must have the following format: [key: string | symbol, value: any]')
+        return null;
+    }
+
+    return keysAndValsArr.reduce((obj, currentKeyAndVal) => {
+        const [key, val] = currentKeyAndVal;
+        obj[key.trim()] = val;
+
+        return obj;
+    }, {})
 }

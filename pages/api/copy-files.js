@@ -11,17 +11,89 @@ import { google } from 'googleapis'
 import fs from 'fs'
 import { CustomError } from '../../backend/utils/errors';
 import { getIsTypeValid } from '../../globalFns';
+import axios from 'axios';
 
 // NOTES:
-// what to do with the json file that contains the keys? 
+// what to do with the json file that contains the keys?
 // create a jwt
 // send requests to the google drive api via the url
 
 
 
-// GOALS: 
+// GOALS:
 // GOAL #1: authenticate with google drive api
 // GOAL #2: get the files from the google drive
+
+async function copyFile(fileId = '', folderId = '', token = '') {
+    try {
+        if (!fileId || !folderId || !token) {
+            const missingFieldName = ['fileId', 'folderId', 'token'].find(fieldName => {
+                if (
+                    ((fieldName === 'fileId') && !fileId) ||
+                    ((fieldName === 'folderId') && !folderId) ||
+                    ((fieldName === 'token') && !token)
+                ) {
+                    return true;
+                }
+            });
+
+            throw new CustomError(`Missing: "${missingFieldName}".`, 400)
+        }
+
+        const response = await axios.post(`https://www.googleapis.com/drive/v3/files/${fileId}/copy`, {
+            parents: [folderId]
+        }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        console.log('response.data: ', response.data)
+
+        if (response.status !== 200) {
+            throw new CustomError('Failed to copy the target file.', 500)
+        }
+
+        return { wasSuccessful: true }
+    } catch (error) {
+        console.error('Failed to copy the target file.')
+
+        const { message, errors } = error?.response?.data?.error ?? {}
+
+        console.log('error message: ', message)
+        console.log('errors: ', errors)
+
+        return { wasSuccessful: false }
+    }
+
+}
+
+async function createGoogleDriveFolder(folderName, accessToken) {
+    try {
+        const folderMetadata = {
+            name: folderName,
+            mimeType: 'application/vnd.google-apps.folder'
+        };
+        const response = await axios.post(
+            'https://www.googleapis.com/drive/v3/files?fields=id',
+            folderMetadata,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+
+        if (response.status !== 200) {
+            throw new CustomError(response.data ?? 'Failed to create a lesson folder.', response.status)
+        }
+
+        return { wasSuccessful: true, folderId: response.data.id }
+    } catch (error) {
+        const errMsg = `Failed to create foler fo the user. Reason: ${error.response.data.error}`
+
+        return { wasSuccessful: false, errMsg: errMsg }
+    }
+}
 
 const CREDENTIALS_PATH = 'credentials2.json';
 const scopes = ['https://www.googleapis.com/auth/drive.readonly'];
@@ -56,11 +128,16 @@ class Credentials {
 
 export default async function handler(request, response) {
     try {
+        if (!request.body.accessToken) {
+            throw new CustomError('access token was not provided.', 400);
+        }
+
         // if (!request.query.fileNames || (typeof request.query.fileNames !== 'string') || ((typeof request.query.fileNames === 'string') && !getIsTypeValid(JSON.parse(request.query.fileNames), 'object'))) {
         //     throw new CustomError(`"fileName" field is invalid. Received: ${request.query.fileNames}`, 400);
         // }
 
         // const fileNames = JSON.parse(request.query.fileNames)
+
         let credentials = new Credentials()
         credentials = JSON.stringify(credentials)
         let credentialsSplitted = credentials.split('')
@@ -95,6 +172,36 @@ export default async function handler(request, response) {
             supportsAllDrives: true,
             driveId: process.env.GOOGLE_DRIVE_ID
         });
+        // the folder id:
+        // 1FBK6JY1gwu95MPp1MFh-D6ao2URt01sp
+        // copy the below file into the target folder with the id of 1FBK6JY1gwu95MPp1MFh-D6ao2URt01sp
+        const targetFile = await drive.files.get({
+            fileId: '1QV9ZMPG7eFnPVlYrSj3t75W8YBD825feGGRntmll9uc',
+            corpora: 'drive',
+            includeItemsFromAllDrives: true,
+            supportsAllDrives: true,
+        })
+
+        const copyFileResult = await copyFile(
+            '1QV9ZMPG7eFnPVlYrSj3t75W8YBD825feGGRntmll9uc',
+            '1FBK6JY1gwu95MPp1MFh-D6ao2URt01sp',
+            request.body.accessToken
+        );
+
+        console.log('copyFileResult: ', copyFileResult)
+
+        // const folderCreationResult = await createGoogleDriveFolder('More Bio Stuff', request.body.accessToken)
+
+        // console.log('folderCreationResult: ', folderCreationResult)
+
+        // const copyFilesResult = drive.files.copy(
+        //     {
+        //         requestBody: {
+        //             driveId: request.body.driveId
+        //         },
+        //         fileId: request.body.fileId
+        //     }
+        // )
 
         return response.json({
             data: [...res.data.files]
