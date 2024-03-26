@@ -53,10 +53,7 @@ const useScrollHandler = setSectionDots => {
     const elemsThatAreInView = viewPortPercentOfElems.filter(({ elemId }) => elemId);
     const elemTakingUpMostOfViewport = elemsThatAreInView.reduce((prev, curr) => (prev.percentageInViewPort > curr.percentageInViewPort) ? prev : curr);
 
-    console.log('elemsThatAreInView: ', elemsThatAreInView);
-
     setSectionDots(sectionDots => {
-      console.log('sectionDots.dots yo there: ', sectionDots.dots);
       return {
         ...sectionDots,
         dots: sectionDots.dots.map(dot => {

@@ -14,7 +14,7 @@ const GpVideos = ({
     startingGpVids,
     isLast,
     nextPgNumStartingVal,
-    setIsModalShown,
+    setIsGpVideoModalShown,
     setSelectedVideo,
     totalVidsNum,
 }) => {
@@ -30,18 +30,23 @@ const GpVideos = ({
                 </div>
             </div>
             <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
-                {gpDataObj.data?.length && (
+                {gpDataObj.data?.length ? (
                     (gpDataObj.data ?? startingGpVids).map(videoObj => {
                         return (
                             <VideoCard
                                 key={videoObj.id}
-                                setIsModalShown={setIsModalShown}
+                                setIsGpVideoModalShown={setIsGpVideoModalShown}
                                 videoObj={videoObj}
                                 setSelectedVideo={setSelectedVideo}
                             />
                         );
                     })
-                )}
+                )
+                    :
+                    <div className='px-4 pb-4'>
+                        <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve videos. Please try again by refreshing the page.</p>
+                    </div>
+                }
             </div>
             {!gpDataObj.isLast && (
                 <SeeMoreBtnSec

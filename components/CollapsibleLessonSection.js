@@ -23,7 +23,7 @@ const CollapsibleLessonSection = ({
   _sectionDots,
   isAvailLocsMoreThan1,
   highlighted = false,
-  scrollToTranslateVal = 'translateY(-45px)',
+  scrollToTranslateVal = 'translateY(-90px)',
 }) => {
   const ref = useRef();
   const router = useRouter();

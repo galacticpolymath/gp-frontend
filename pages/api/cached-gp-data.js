@@ -21,7 +21,13 @@ export default async function handler(request, response) {
 
         // getting data from the cache
         if (request.method === 'GET') {
-            const { errMsg, errorStatusCode, data, isLast, totalItemsNum } = await getCachedGpData(request, cache)
+            const { errMsg, errorStatusCode, data, isLast, totalItemsNum } = await getCachedGpData(
+                {
+                    type: request.query.type,
+                    pageNum: request.query.pageNum,
+                },
+                cache
+            )
 
             if (errMsg) {
                 throw new CustomError(errMsg, errorStatusCode);
@@ -32,11 +38,13 @@ export default async function handler(request, response) {
 
         // caching gp unit data
         if (request.method === 'POST') {
-            const { wasSuccessful, errorStatusCode, errMsg } = await cacheGpUnitData(cache);
+            const { wasSuccessful, errorStatusCode, errMsg } = await cacheGpUnitData();
 
             if (!wasSuccessful) {
                 throw new CustomError(errMsg, errorStatusCode)
             }
+
+            console.log('data was cached, wasSuccessful: ', wasSuccessful)
 
             return response.json({ msg: 'Gp unit data was cached.' })
         }

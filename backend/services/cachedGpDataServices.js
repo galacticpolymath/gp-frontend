@@ -7,10 +7,11 @@ import { createPaginationArr, getGpLessons, getGpVids, getShowableUnits } from "
 import { getGpDataGetterFn, getIndividualLessonsNumForUnitObj } from "../helperFns/cachedGpDataFns";
 import { getUnits } from "../helperFns/lessonsFns";
 import { CustomError } from "../utils/errors";
+import cache from "../utils/cache";
 
 const GP_DATA_EXPIRATION_TIME_MS = 3_600_000 * 12;
 
-export const cacheGpUnitData = async cache => {
+export const cacheGpUnitData = async () => {
     try {
         let units = await getUnits();
         units = units.map(getIndividualLessonsNumForUnitObj)
@@ -25,11 +26,6 @@ export const cacheGpUnitData = async cache => {
             {
                 key: 'lessons',
                 val: lessons,
-                ttl: GP_DATA_EXPIRATION_TIME_MS,
-            },
-            {
-                key: 'units',
-                val: createPaginationArr(getShowableUnits(units)),
                 ttl: GP_DATA_EXPIRATION_TIME_MS,
             },
             {
@@ -53,14 +49,18 @@ export const cacheGpUnitData = async cache => {
     }
 }
 
-export const getCachedGpData = async (request, cache) => {
+export const getCachedGpData = async ({ type, pageNum }, cache) => {
     try {
-        const { type, pageNum } = request.query;
         const getGpData = getGpDataGetterFn(type)?.fn;
-        let gpDataArr = cache.get(type);
-        let totalItemsNum = gpDataArr?.length ? gpDataArr.flat().length : null;
 
-        if (!gpDataArr?.length && (type !== 'units')) {
+        if (!getGpData) {
+            throw new CustomError('The value for `type` is invalid.', 400)
+        }
+
+        let gpDataArr = cache.get(type);
+        let totalItemsNum = gpDataArr?.length ? gpDataArr?.flat()?.length : null;
+
+        if (!gpDataArr?.length) {
             let units = await getUnits();
 
             if (!units?.length) {
@@ -68,35 +68,10 @@ export const getCachedGpData = async (request, cache) => {
             }
 
             units = getShowableUnits(units)
-
-            if (!cache.get('units')?.length) {
-                units = units.map(getIndividualLessonsNumForUnitObj)
-                cache.set('units', createPaginationArr(units), GP_DATA_EXPIRATION_TIME_MS);
-            }
-
             gpDataArr = getGpData(units);
             totalItemsNum = gpDataArr.length
             gpDataArr = gpDataArr.length ? gpDataArr.map(val => ({ ...val, id: nanoid() })) : gpDataArr;
             gpDataArr = createPaginationArr(gpDataArr);
-            cache.set(type, gpDataArr, GP_DATA_EXPIRATION_TIME_MS);
-        } else if (!gpDataArr?.length) {
-            const units = await getUnits();
-
-            if (!units?.length) {
-                throw new CustomError('Failed to get the units from the database.', 500)
-            }
-
-            let uniqueUnits = [];
-
-            for (const unit of units) {
-                if (!uniqueUnits.length || !uniqueUnits.some(uniqueUnit => unit.numID === uniqueUnit.numID)) {
-                    uniqueUnits.push(unit);
-                }
-            }
-
-            uniqueUnits = uniqueUnits.map(getIndividualLessonsNumForUnitObj)
-            totalItemsNum = uniqueUnits.length
-            gpDataArr = createPaginationArr(uniqueUnits);
             cache.set(type, gpDataArr, GP_DATA_EXPIRATION_TIME_MS);
         }
 

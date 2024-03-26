@@ -16,6 +16,7 @@ import Pill from "../../Pill";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import Link from "next/link";
 import Button from "../../General/Button";
+import { getIsValObj, getObjVals } from "../../../globalFns";
 
 const LessonTile = ({
   lessonTileUrl,
@@ -60,20 +61,6 @@ const DisplayLessonTile = ({ lessonPart, imgContainerClassNameStr, lessonTileUrl
   );
 };
 
-const getIsValObj = val => (typeof val === 'object') && !Array.isArray(val) && (val !== null);
-
-const getObjVals = obj => {
-  const keys = Object.keys(obj);
-  let vals = [];
-
-  keys.forEach(key => {
-    const val = obj[key];
-    vals.push(val);
-  });
-
-  return vals;
-};
-
 const TeachIt = ({
   index,
   SectionTitle,
@@ -93,10 +80,21 @@ const TeachIt = ({
   const [selectedGradeResources, setSelectedGradeResources] = useState(allResources?.[0]?.links ?? []);
   let resources = allResources?.length ? allResources.find(({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix) : [];
   resources = getIsValObj(resources) ? [resources] : resources;
-  const isPartsObjPresent = Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object');
+  const areThereMoreThan1Resource = Data?.classroom?.resources.length > 1;
+  ForGrades = areThereMoreThan1Resource ? selectedGrade.grades : ForGrades;
+  const isPartsObjPresent = !areThereMoreThan1Resource && Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object');
   const partsFieldName = ((Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object')) && ('parts' in Data.classroom.resources[0])) ? 'parts' : 'lessons';
   const dataLesson = Data.lesson;
-  let parts = isPartsObjPresent ? Data.classroom.resources[0]?.[partsFieldName] : [];
+  let parts = [];
+  const ref = useRef();
+
+  if (isPartsObjPresent && !areThereMoreThan1Resource) {
+    parts = Data.classroom.resources[0]?.[partsFieldName];
+  }
+
+  if (areThereMoreThan1Resource) {
+    parts = selectedGrade.lessons ?? [];
+  }
 
   if ((((parts !== undefined) || (parts !== null)) && (parts?.title === "Assessments")) && parts?.length) {
     const { itemList, lsn, preface, tile, title } = parts;
@@ -108,8 +106,6 @@ const TeachIt = ({
     const lastPart = { itemList, lsn, preface, tile, title };
     parts = [...Object.values(restOfLessonParts), lastPart];
   }
-
-  const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
@@ -263,8 +259,6 @@ const TeachIt = ({
             } = part;
             let secondTitle = null;
 
-            // get the image tile here and pass it as component. 
-
             if (partsFieldName === 'lessons') {
               const { tile, title } = resources?.[0]?.[partsFieldName]?.[index] ?? {};
               lessonTile = tile;
@@ -292,7 +286,10 @@ const TeachIt = ({
 
             let lessonTilesObj = {};
 
-            if (((part && (typeof part === "object")) && ("status" in part)) && (lessonTile && (typeof lessonTile === "string"))) {
+            if (
+              ((part && (typeof part === "object")) && ("status" in part)) &&
+              (lessonTile && (typeof lessonTile === "string"))
+            ) {
               lessonTilesObj = {
                 lessonTileForDesktop: (
                   <DisplayLessonTile

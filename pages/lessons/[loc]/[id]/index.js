@@ -17,8 +17,8 @@ import { useRouter } from 'next/router';
 import useScrollHandler from '../../../../customHooks/useScrollHandler';
 import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
-import { getLinkPreview } from "link-preview-js";
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
+import { getLinkPreviewObj } from '../../../../globalFns';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
@@ -224,19 +224,6 @@ const LessonDetails = ({ lesson }) => {
   );
 };
 
-async function getLinkPreviewObj(url) {
-  try {
-    const linkPreviewObj = await getLinkPreview(url);
-
-    return linkPreviewObj;
-  } catch (error) {
-    const errMsg = `An error has occurred in getting the link preview for given url. Error message: ${error}.`;
-    console.error(errMsg);
-
-    return { errMsg }
-  }
-}
-
 export const getStaticPaths = async () => {
   try {
     await connectToMongodb();
@@ -275,6 +262,46 @@ const getGoogleDriveFileIdFromUrl = url => {
   return id;
 }
 
+const updateLessonsWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOntoUi) => {
+  let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
+
+  // getting the thumbnails for the google drive file handouts for each lesson
+  if (lesson?.itemList?.length) {
+    const itemListUpdated = lesson.itemList.map(itemObj => {
+      if (itemObj?.links?.length && itemObj.links[0]?.url) {
+        const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
+
+        return {
+          ...itemObj,
+          filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
+        }
+      }
+
+      return itemObj;
+    });
+
+    lessonObjUpdated = {
+      ...lesson,
+      itemList: itemListUpdated,
+    }
+  }
+
+  // getting the status for each lesson
+  let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
+
+  if (!lesson.tile && (lsnStatus.status === "Coming Soon")) {
+    lessonObjUpdated = {
+      ...lessonObjUpdated,
+      tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
+    }
+  }
+
+  return {
+    ...lessonObjUpdated,
+    status: lsnStatus?.status ?? "Proto",
+  };
+}
+
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
     await connectToMongodb();
@@ -287,9 +314,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     }
 
     let lessonParts = null;
+    const resources = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources;
 
-    if (lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons) {
-      lessonParts = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons.map(lesson => {
+    if ((resources.length == 1) && resources?.[0]?.lessons) {
+      lessonParts = resources[0]?.lessons.map(lesson => {
         let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
 
         // getting the thumbnails for the google drive file handouts for each lesson
@@ -337,6 +365,16 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         return lesson.status !== "Proto"
       });
       lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[0].lessons = lessonParts;
+    } else if ((resources?.length > 1) && resources.every(({ lessons }) => lessons)) {
+      console.log('more than one resource...')
+      lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources = resources.map(resource => {
+        const lessonsUpdated = resource.lessons.map(lesson => updateLessonsWithGoogleDriveFiledPreviewImg(lesson, lessonToDisplayOntoUi))
+
+        return {
+          ...resource,
+          lessons: lessonsUpdated,
+        }
+      });
     }
 
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)

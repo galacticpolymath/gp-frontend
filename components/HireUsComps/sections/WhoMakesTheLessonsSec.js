@@ -58,6 +58,7 @@ const WhoMakesTheLessonsSec = () => {
                 <section className="pt-md-2 pt-lg-4 mattsAwardsSec fs-6">
                     {mattsAwards.map((award, index) => {
                         const { alt, src, txt, link } = award;
+
                         return (
                             <PicAndDescriptionSec
                                 parentSecStyles="picAndDescriptionSecInList mattsAward"

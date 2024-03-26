@@ -4,8 +4,11 @@
 
 .env
 
-getLessons.js
+dummyReq.js
 
+getLessons.js
+credentials.json
+credentials2.json
 googleDriveSecret.json
 
 # dependencies

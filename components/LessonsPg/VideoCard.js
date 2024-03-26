@@ -9,16 +9,19 @@ import CustomLink from '../CustomLink';
 import { getMediaComponent as Thumbnail } from '../LessonSection/Preview/utils';
 import { useEffect, useRef } from 'react';
 import Button from '../General/Button';
+import ForLessonTxtWrapper from './ForLessonTxtWrapper';
+import ForLessonTxt from './ForLessonTxt';
 
 const VideoCard = ({
     videoObj,
     setSelectedVideo,
-    setIsModalShown,
+    setIsGpVideoModalShown,
     cardClassName = 'd-flex flex-column justify-content-between py-3 px-4 position-relative w-100 g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid rounded-3 bg-white lessonsPgShadow',
     style = {},
 }) => {
     let href = videoObj.lessonNumId ? `/lessons/en-US/${videoObj.unitNumId}#lesson_part_${videoObj.lessonNumId}` : `/lessons/en-US/${videoObj.unitNumId}`;
     const videoCardRef = useRef();
+    const unitTitle = ['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`;
 
     const handleOnClick = () => {
         setSelectedVideo({
@@ -29,7 +32,7 @@ const VideoCard = ({
             unitTitle: videoObj.lessonUnitTitle,
             lessonNumId: videoObj.lessonNumId,
         });
-        setIsModalShown(true);
+        setIsGpVideoModalShown(true);
     };
 
     useEffect(() => {
@@ -81,16 +84,21 @@ const VideoCard = ({
             </div>
             <CustomLink
                 color='#BFBFBF'
-                className='no-link-decoration mt-3 underline-on-hover'
+                className='no-link-decoration mt-3 underline-on-hover d-flex'
                 hrefStr={href}
                 style={{ lineHeight: '22px' }}
             >
                 {videoObj.lessonNumId ?
-                    <>
-                        For Lesson {videoObj.lessonNumId} of <em>{['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`}</em>
-                    </>
+                    <ForLessonTxtWrapper>
+                        <ForLessonTxt
+                            lessonNumId={videoObj.lessonNumId}
+                            unitTitle={unitTitle}
+                        />
+                    </ForLessonTxtWrapper>
                     :
-                    <>Part of <em>{['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`}</em></>
+                    <ForLessonTxtWrapper>
+                        <>Part of <em>{unitTitle}</em></>
+                    </ForLessonTxtWrapper>
                 }
             </CustomLink>
         </div>

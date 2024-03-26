@@ -8,12 +8,15 @@ import { getMediaComponent as Video } from '../../LessonSection/Preview/utils';
 import { useEffect } from 'react';
 import { GiCancel } from 'react-icons/gi';
 import CustomLink from '../../CustomLink';
+import ForLessonTxt from '../ForLessonTxt';
+import ForLessonTxtWrapper from '../ForLessonTxtWrapper';
 
 const { Body, Title } = Modal;
 
 const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
     const [selectedVideo, setSelectedVideo] = _selectedVideo;
     const [isModalShown, setIsModalShown] = _isModalShown;
+    const unitTitle = ['.', '!'].includes(selectedVideo?.unitTitle?.split('')?.at(-1)) ? selectedVideo?.unitTitle : `${selectedVideo?.unitTitle}.`;
 
     const handleOnHide = () => {
         setIsModalShown(false);
@@ -42,11 +45,12 @@ const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
     return (
         <Modal
             show={isModalShown}
-            dialogClassName='selected-vid-dialog m-0'
-            contentClassName='selected-vid-modal-content'
+            onHide={handleOnHide}
+            dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
+            contentClassName='selected-gp-web-app-content'
         >
-            <div className='modal-content-wrapper'>
-                <div className='modal-content-sub-wrapper'>
+            <div className='modal-content-wrapper-gp-web-app'>
+                <div className='modal-content-sub-wrapper-gp-web-app position-relative'>
                     <div className='position-relative w-100'>
                         <Button
                             handleOnClick={handleOnHide}
@@ -55,7 +59,7 @@ const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
                             <GiCancel color='grey' className='close-gp-video-modal-icon' />
                         </Button>
                         <div className='d-flex w-100 h-100 flex-column-reverse justify-content-center align-items-center pt-4'>
-                            <Title className='gp-video-title'>
+                            <Title className='gp-modal-title'>
                                 {selectedVideo?.title}
                             </Title>
                             <div style={{ width: '90%' }} className='position-relative selected-vid-container-iframe'>
@@ -75,17 +79,22 @@ const SelectedGpVideo = ({ _selectedVideo, _isModalShown }) => {
                             </p>
                             <CustomLink
                                 color='#BFBFBF'
-                                className='no-link-decoration mt-3 underline-on-hover'
+                                className='no-link-decoration mt-3 underline-on-hover d-flex'
                                 hrefStr={selectedVideo?.href ?? ''}
                                 style={{ lineHeight: '22px' }}
                             >
                                 {selectedVideo && (
                                     selectedVideo.lessonNumId ?
-                                        <>
-                                            For Lesson {selectedVideo.lessonNumId} of <em>{['.', '!'].includes(selectedVideo.unitTitle.split('').at(-1)) ? selectedVideo.unitTitle : `${selectedVideo.unitTitle}.`}</em>
-                                        </>
+                                        <ForLessonTxtWrapper>
+                                            <ForLessonTxt
+                                                lessonNumId={selectedVideo.lessonNumId}
+                                                unitTitle={unitTitle}
+                                            />
+                                        </ForLessonTxtWrapper>
                                         :
-                                        <>Part of <em>{['.', '!'].includes(selectedVideo.unitTitle.split('').at(-1)) ? selectedVideo.unitTitle : `${selectedVideo.unitTitle}.`}</em></>
+                                        <ForLessonTxtWrapper>
+                                            <>Part of <em>{unitTitle}</em></>
+                                        </ForLessonTxtWrapper>
                                 )}
                             </CustomLink>
                         </div>
