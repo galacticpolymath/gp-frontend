@@ -40,17 +40,7 @@ async function copyFile(fileId = '', folderId = '', token = '') {
             throw new CustomError(`Missing: "${missingFieldName}".`, 400)
         }
 
-        const response = await axios.post(`https://www.googleapis.com/drive/v3/files/${fileId}/copy`, {
-            parents: [folderId]
-        }, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-
-        console.log('response.data: ', response.data)
-
-        if (response.status !== 200) {
-            throw new CustomError('Failed to copy the target file.', 500)
-        }
+        const response = google
 
         return { wasSuccessful: true }
     } catch (error) {
@@ -175,20 +165,31 @@ export default async function handler(request, response) {
         // the folder id:
         // 1FBK6JY1gwu95MPp1MFh-D6ao2URt01sp
         // copy the below file into the target folder with the id of 1FBK6JY1gwu95MPp1MFh-D6ao2URt01sp
-        const targetFile = await drive.files.get({
-            fileId: '1QV9ZMPG7eFnPVlYrSj3t75W8YBD825feGGRntmll9uc',
-            corpora: 'drive',
-            includeItemsFromAllDrives: true,
-            supportsAllDrives: true,
-        })
+        const file = await drive.files
+            .get(
+                {
+                    fileId: '1QV9ZMPG7eFnPVlYrSj3t75W8YBD825feGGRntmll9uc',
+                    corpora: 'drive',
+                    includeItemsFromAllDrives: true,
+                    supportsAllDrives: true,
 
-        const copyFileResult = await copyFile(
-            '1QV9ZMPG7eFnPVlYrSj3t75W8YBD825feGGRntmll9uc',
-            '1FBK6JY1gwu95MPp1MFh-D6ao2URt01sp',
-            request.body.accessToken
-        );
+                },
+                {
+                    responseType: 'stream'
+                }
+            )
 
-        console.log('copyFileResult: ', copyFileResult)
+        console.log('file.data, hey there: ', file.data._outBuffer)
+        const fileStream = fs.createWriteStream('doc.pptx')
+
+
+        // const copyFileResult = await copyFile(
+        //     '1QV9ZMPG7eFnPVlYrSj3t75W8YBD825feGGRntmll9uc',
+        //     '1FBK6JY1gwu95MPp1MFh-D6ao2URt01sp',
+        //     request.body.accessToken
+        // );
+
+        // console.log('copyFileResult: ', copyFileResult)
 
         // const folderCreationResult = await createGoogleDriveFolder('More Bio Stuff', request.body.accessToken)
 
