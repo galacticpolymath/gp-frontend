@@ -11,7 +11,7 @@ const cspHeader = `
     font-src 'self';
     object-src 'none';
     base-uri 'self';
-    form-action http://localhost:3000/api/auth/signin/google https://dev.galacticpolymath.com/api/auth/signin/google https://galacticpolymath.com/api/auth/signin/google;
+    form-action 'self' http://localhost:3000/api/auth/signin/google https://dev.galacticpolymath.com/api/auth/signin/google https://galacticpolymath.com/api/auth/signin/google;
     connect-src 'self' https://oauth2.googleapis.com/token;
     block-all-mixed-content;
     upgrade-insecure-requests;
