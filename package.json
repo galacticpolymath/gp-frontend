@@ -34,7 +34,7 @@
     "googleapis": "^118.0.0",
     "graphql": "^16.6.0",
     "jest": "^29.5.0",
-    "jose": "^4.14.4",
+    "jose": "^4.15.5",
     "jsonwebtoken": "^9.0.1",
     "latest-version": "^7.0.0",
     "link-preview-js": "^3.0.5",
