@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import urllib from 'urllib';
 
 const getCanUserWriteToDb = async clientEmail => {
