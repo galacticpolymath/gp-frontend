@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 const AuthResultPg = () => {
   const session = useSession();
-  console.log('session, yo there! ', session);
   const [wasRendered, setWasRendered] = useState(false);
 
   useEffect(() => {
@@ -44,8 +43,6 @@ const AuthResultPg = () => {
       </Layout>
     );
   }
-
-  console.log('session?.data?.token: ', session?.data?.token);
 
   return (
     <Layout>

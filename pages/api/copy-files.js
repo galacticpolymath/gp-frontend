@@ -40,8 +40,6 @@ const listAllUserFiles = async (accessToken, nextPageToken, startingFiles = []) 
         let files = data.files;
         files = startingFiles?.length ? [...startingFiles, ...files] : files
 
-        console.log('files: ', files)
-
         if (status !== 200) {
             throw new CustomError('Failed to get user google drive files.', status)
         }
@@ -84,8 +82,6 @@ async function copyFile(fileId, folderIds, accessToken) {
             }
         )
 
-        console.log('response, sup there meng!!! ', response)
-        console.log('response.data, yo there: ', response.data)
 
         if (response.status !== 200) {
             throw new CustomError("Failed to copy the files into the user's google drive.", response.status)
@@ -93,9 +89,7 @@ async function copyFile(fileId, folderIds, accessToken) {
 
         return { wasSuccessful: true, msg: response.data };
     } catch (error) {
-        console.log('error.response.data.error: ', error.response.data.error)
         const errMsg = `Failed to create folder for the user. Reason: ${error.response.data.error}`;
-        console.log('errMsg: ', errMsg);
 
         return { wasSuccessful: false }
     }

@@ -366,7 +366,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       });
       lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[0].lessons = lessonParts;
     } else if ((resources?.length > 1) && resources.every(({ lessons }) => lessons)) {
-      console.log('more than one resource...')
       lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources = resources.map(resource => {
         const lessonsUpdated = resource.lessons.map(lesson => updateLessonsWithGoogleDriveFiledPreviewImg(lesson, lessonToDisplayOntoUi))
 
