@@ -19,6 +19,7 @@ import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
 import { getLinkPreviewObj } from '../../../../globalFns';
+import { CustomError } from '../../../../backend/utils/errors';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
@@ -57,7 +58,7 @@ const LessonDetails = ({ lesson }) => {
     return false;
   });
   const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonStandardsSections.length === 1 : false;
-  let sectionComps = lesson.Section ? Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure') : null;
+  let sectionComps = lesson?.Section ? Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure') : null;
 
   if (sectionComps?.length) {
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
@@ -316,7 +317,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     let lessonParts = null;
     const resources = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources;
 
-    if ((resources.length == 1) && resources?.[0]?.lessons) {
+    if ((resources?.length == 1) && resources?.[0]?.lessons) {
       lessonParts = resources[0]?.lessons.map(lesson => {
         let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
 
@@ -374,6 +375,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           lessons: lessonsUpdated,
         }
       });
+    }
+
+    if (!lessonParts) {
+      throw new CustomError('Failed to get the lessons of the unit.', 500)
     }
 
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)
