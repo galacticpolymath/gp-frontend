@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { useSession } from 'next-auth/react';
@@ -10,7 +11,7 @@ const AuthResultPg = () => {
   useEffect(() => {
     setTimeout(() => {
       setWasRendered(true);
-    }, 500);
+    }, 1500);
   }, []);
 
   if (!wasRendered) {
@@ -27,7 +28,7 @@ const AuthResultPg = () => {
     return (
       <Layout>
         <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container">
-          <h1>You must be successfully authenticated to view this page.</h1>
+          <h1>This page is for the authentication result with google.</h1>
         </div>
       </Layout>
     );
@@ -37,11 +38,13 @@ const AuthResultPg = () => {
     return (
       <Layout>
         <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container">
-          <h1>Failed to generate token. Please try again.</h1>
+          <h1>Failed to generate token. You may have been authenticated already. Please try again.</h1>
         </div>
       </Layout>
     );
   }
+
+  console.log('session?.data?.token: ', session?.data?.token);
 
   return (
     <Layout>

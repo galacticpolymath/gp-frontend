@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import GoogleProvider from 'next-auth/providers/google';
 import getCanUserWriteToDb from '../services/dbAuthService';
 import { jwtVerify } from 'jose';
@@ -31,6 +32,7 @@ export const authOptions = {
         if (!token?.payload) {
           await connectToMongodb();
           const jwt = new JwtModel({ _id: email, access: accessToken, refresh: refreshToken });
+
           jwt.save();
         }
 

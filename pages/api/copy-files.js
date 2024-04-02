@@ -11,6 +11,7 @@ import { google, drive_v3 } from 'googleapis';
 import fs from 'fs'
 import { CustomError } from '../../backend/utils/errors';
 import axios from 'axios';
+import { FileMetaData, getGpGoogleDriveService, listFilesOfGoogleDriveFolder } from '../../backend/services/googleDriveServices';
 
 const getUserDriveFiles = (accessToken, nextPageToken) => axios.get(
     'https://www.googleapis.com/drive/v3/files',
@@ -40,8 +41,6 @@ const listAllUserFiles = async (accessToken, nextPageToken, startingFiles = []) 
         let files = data.files;
         files = startingFiles?.length ? [...startingFiles, ...files] : files
 
-        console.log('files: ', files)
-
         if (status !== 200) {
             throw new CustomError('Failed to get user google drive files.', status)
         }
@@ -67,7 +66,7 @@ const listAllUserFiles = async (accessToken, nextPageToken, startingFiles = []) 
  * @param{drive_v3.Drive} service google drive service object
  * @return{Promise<{ wasSuccessful: boolean }>} An object contain the results and optional message.
  * */
-async function copyFile(fileId, folderIds, accessToken) {
+const copyFile = async (fileId, folderIds, accessToken) => {
     try {
         const reqBody = folderIds ? { parents: folderIds } : {};
         const response = await axios.post(
@@ -84,8 +83,6 @@ async function copyFile(fileId, folderIds, accessToken) {
             }
         )
 
-        console.log('response, sup there meng!!! ', response)
-        console.log('response.data, yo there: ', response.data)
 
         if (response.status !== 200) {
             throw new CustomError("Failed to copy the files into the user's google drive.", response.status)
@@ -93,9 +90,7 @@ async function copyFile(fileId, folderIds, accessToken) {
 
         return { wasSuccessful: true, msg: response.data };
     } catch (error) {
-        console.log('error.response.data.error: ', error.response.data.error)
         const errMsg = `Failed to create folder for the user. Reason: ${error.response.data.error}`;
-        console.log('errMsg: ', errMsg);
 
         return { wasSuccessful: false }
     }
@@ -108,7 +103,7 @@ async function copyFile(fileId, folderIds, accessToken) {
  * @param{drive_v3.Drive} service google drive service object
  * @return{Promise<list | null>} An array of the permission ids if successful. Otherwise, it will return null.
  * */
-async function shareFile(fileId, service, permissions) {
+const shareFile = async (fileId, service, permissions) => {
     try {
         const permissionIds = [];
 
@@ -141,12 +136,37 @@ async function shareFile(fileId, service, permissions) {
     }
 }
 
-async function createGoogleDriveFolderForUser(folderName, accessToken) {
+const retrieveGoogleDriveFolder = async () => {
+
+}
+
+
+/**
+ * Share the google drive file with a user.
+ * @param{string} driveId The id of the file.
+ * @param{drive_v3.Drive} googleService google drive service object
+ * @return{Promise<[] | null>} An array of the permission ids if successful. Otherwise, it will return null.
+ * */
+const retrieveGoogleFoldersAndFiles = async (
+    gooogleService,
+    queryObj,
+    unitDriveId,
+    startingFilesAndFoldersFromDrive = [],
+    startingfilesAndFoldersFromDriveModified = []
+) => {
+    // NOTES:
+    // get the files from the drive via the id of the google drive 
+    // the files has been retreived 
+    // loop through the files
+    // for each iteration, if the value is a file, then push it into the filesAndFolder array as follows: { fileId, fileName }
+    // if the value is a folder, then 
+
+
+}
+
+const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFolderIds) => {
     try {
-        const folderMetadata = {
-            name: folderName,
-            mimeType: 'application/vnd.google-apps.folder'
-        };
+        const folderMetadata = parentFolderIds ? new FileMetaData(folderName, parentFolderIds) : new FileMetaData(folderName)
         const response = await axios.post(
             'https://www.googleapis.com/drive/v3/files?fields=id',
             folderMetadata,
@@ -207,7 +227,11 @@ export default async function handler(request, response) {
         if (!request.body.accessToken) {
             throw new CustomError('access token was not provided.', 400);
         }
+
         if (!request.body.email) {
+            throw new CustomError('The email  was not provided.', 400);
+        }
+        if (!request.body.unitDriveId) {
             throw new CustomError('The email  was not provided.', 400);
         }
 
@@ -216,42 +240,64 @@ export default async function handler(request, response) {
         // }
 
         // const fileNames = JSON.parse(request.query.fileNames)
-
-        let credentials = new Credentials()
-        credentials = JSON.stringify(credentials)
-        let credentialsSplitted = credentials.split('')
-        let indexesOfValsToDel = []
-
-        for (let index = 0; index < credentialsSplitted.length; index++) {
-            const nextVal = credentialsSplitted[index + 1]
-
-            if (nextVal === undefined) {
-                break
-            }
-
-            const currentVal = credentialsSplitted[index]
-
-            if ((currentVal === '\\') && (nextVal === '\\')) {
-                indexesOfValsToDel.push(index)
-            }
-        }
-
-        credentialsSplitted = credentialsSplitted.filter((_, index) => !indexesOfValsToDel.includes(index));
-        credentials = credentialsSplitted.join('');
-
-        fs.writeFileSync('credentials.json', credentials)
-
-        const googleAuthJwt = getGoogleAuthJwt('credentials.json', [
-            "https://www.googleapis.com/auth/drive"
-        ]);
-        const googleService = google.drive({ version: 'v3', auth: googleAuthJwt });
+        const googleService = getGpGoogleDriveService();
         // make the above into a service
-        const res = await googleService.files.list({
-            corpora: 'drive',
-            includeItemsFromAllDrives: true,
-            supportsAllDrives: true,
-            driveId: process.env.GOOGLE_DRIVE_ID
-        });
+        // how do I get all of the folders for a unit? 
+        // 
+
+        // GOAL: get all of the folders for a unit?
+
+
+        // GOAL: get all of the files for a paritcular unit
+
+        // get the data at the root level of the folder
+        // const res = await googleService.files.list({
+        //     corpora: 'drive',
+        //     includeItemsFromAllDrives: true,
+        //     supportsAllDrives: true,
+        //     driveId: process.env.GOOGLE_DRIVE_ID,
+        //     q: `'${request.body.unitDriveId}' in parents`
+        // });
+        const filesObj = await listFilesOfGoogleDriveFolder(
+            googleService,
+            request.body.unitDriveId,
+            { q: `'${request.body.unitDriveId}' in parents` }
+        );
+
+        console.log('filesObj: ', filesObj)
+
+        // create folder object:
+        // folderName: str
+        // fileIds: an array of file id strings 
+        // subFolders: 
+        // [
+        // { folderName, fileIds, subFolders: { ...(follow the same structure) }  }
+        // ]
+
+
+        // share the files with the user
+        // create breadth first search algorithm
+        // create a recursive function, 
+        // if the item is a folder, then get the id of the folder
+        // using the id of the folder, make another query to get their files
+
+
+
+        // GOAL: copy the file into the target folder
+
+        // NOTES:
+        // create a folder in the user google drive
+        // within it, create the appropiate folders that match with the folders that the user wants to copy
+
+        // get the public id of the unit that the user wants to copy
+        // main folder id for frogs unit: 1Ky0DSDrrtDl0nc0Ct9rKxrLUkzEvLKBQ
+        // classroom materials folder id: 1P5d0lA6XQILhgEkadWzFhFDnAe4c-EvL
+
+        // console.log('res.data: ', res.data)
+
+
+
+
 
         // MAIN GOAL: copy the file into the target user's drive
 
@@ -269,27 +315,24 @@ export default async function handler(request, response) {
         // copy the below file into the target folder with the id of 1FBK6JY1gwu95MPp1MFh-D6ao2URt01sp
         // testing file id: 1QV9ZMPG7eFnPVlYrSj3t75W8YBD825feGGRntmll9uc
 
-
-        const permissions = [
-            {
-                type: 'user',
-                role: 'writer',
-                emailAddress: request.body.email
-            },
-            {
-                type: 'domain',
-                role: 'writer',
-                domain: 'galacticpolymath.com'
-            }
-        ]
-        const permissionIds = await shareFile(
-            '19oynB8Wgv2ustQr6ETYK_O4-5M86ruj6ydZTqx0xNGc',
-            googleService,
-            permissions
-        );
-
-
-        const allUserFiles = await listAllUserFiles(request.body.accessToken);
+        // const permissions = [
+        //     {
+        //         type: 'user',
+        //         role: 'writer',
+        //         emailAddress: request.body.email
+        //     },
+        //     {
+        //         type: 'domain',
+        //         role: 'writer',
+        //         domain: 'galacticpolymath.com'
+        //     }
+        // ]
+        // const permissionIds = await shareFile(
+        //     '19oynB8Wgv2ustQr6ETYK_O4-5M86ruj6ydZTqx0xNGc',
+        //     googleService,
+        //     permissions
+        // );
+        // const allUserFiles = await listAllUserFiles(request.body.accessToken);
 
         // if (!allUserFiles) {
         //     throw new CustomError('Failed to get all of the files of the user', 500)
@@ -328,7 +371,7 @@ export default async function handler(request, response) {
 
 
         return response.json({
-            data: [...res.data.files]
+            data: [...filesObj.data.files]
         });
     } catch (error) {
         console.error('An error has occurred. Error: ', error)

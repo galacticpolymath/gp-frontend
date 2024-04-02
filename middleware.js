@@ -87,6 +87,6 @@ export const config = {
     '/api/insert-lesson',
     '/api/delete-lesson/:id',
     '/api/update-lessons',
-    '/api/get-jwt-token'
+    '/api/get-jwt-token',
   ],
 };

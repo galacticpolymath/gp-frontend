@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { apiInfo, generateHeaders } = require('../apiData');
 const { default: axios } = require('axios');
 const { mainRoute, insertLessonRoute } = apiInfo;
@@ -8,7 +9,7 @@ const insertLesson = async (reqBody, jwt) => {
     const headers = generateHeaders(jwt);
     const response = await axios.post(url, reqBody, { headers: headers });
 
-    if(response.status !== 200){
+    if (response.status !== 200) {
       throw new Error(`Failed to insert lesson into the database. Status code: ${response.status}`);
     }
 
