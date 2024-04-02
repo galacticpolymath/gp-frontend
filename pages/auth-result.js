@@ -44,8 +44,6 @@ const AuthResultPg = () => {
     );
   }
 
-  console.log('session?.data?.token: ', session?.data?.token);
-
   return (
     <Layout>
       <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container">
