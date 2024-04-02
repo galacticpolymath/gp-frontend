@@ -317,46 +317,52 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     let lessonParts = null;
     const resources = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources;
 
-    if ((resources?.length == 1) && resources?.[0]?.lessons) {
-      lessonParts = resources[0]?.lessons.map(lesson => {
-        let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
+    if (resources?.every(resource => resource.lessons)) {
+      lessonParts = []
 
-        // getting the thumbnails for the google drive file handouts for each lesson
-        if (lesson?.itemList?.length) {
-          const itemListUpdated = lesson.itemList.map(itemObj => {
-            if (itemObj?.links?.length && itemObj.links[0]?.url) {
-              const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
+      for (const resource of resources) {
+        const resourceLessons = resource.lessons.map(lesson => {
+          let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
 
-              return {
-                ...itemObj,
-                filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
+          // getting the thumbnails for the google drive file handouts for each lesson
+          if (lesson?.itemList?.length) {
+            const itemListUpdated = lesson.itemList.map(itemObj => {
+              if (itemObj?.links?.length && itemObj.links[0]?.url) {
+                const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
+
+                return {
+                  ...itemObj,
+                  filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
+                }
               }
+
+              return itemObj;
+            });
+
+            lessonObjUpdated = {
+              ...lesson,
+              itemList: itemListUpdated,
             }
-
-            return itemObj;
-          });
-
-          lessonObjUpdated = {
-            ...lesson,
-            itemList: itemListUpdated,
           }
-        }
 
-        // getting the status for each lesson
-        let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
+          // getting the status for each lesson
+          let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
 
-        if (!lesson.tile && (lsnStatus.status === "Coming Soon")) {
-          lessonObjUpdated = {
+          if (!lesson.tile && (lsnStatus.status === "Coming Soon")) {
+            lessonObjUpdated = {
+              ...lessonObjUpdated,
+              tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
+            }
+          }
+
+          return {
             ...lessonObjUpdated,
-            tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
-          }
-        }
+            status: lsnStatus?.status ?? "Proto",
+          };
+        });
 
-        return {
-          ...lessonObjUpdated,
-          status: lsnStatus?.status ?? "Proto",
-        };
-      });
+        lessonParts.push(resourceLessons)
+      }
 
       lessonParts = lessonParts.filter(lesson => {
         if (lesson.title === "Assessments") {
@@ -365,8 +371,11 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
         return lesson.status !== "Proto"
       });
-      lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[0].lessons = lessonParts;
-    } else if ((resources?.length > 1) && resources.every(({ lessons }) => lessons)) {
+
+      lessonParts.forEach((lessonPartsArr, index) => {
+        lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[index].lessons = lessonPartsArr;
+      })
+    } else if ((resources?.length > 1) && resources?.every(({ lessons }) => lessons)) {
       lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources = resources.map(resource => {
         const lessonsUpdated = resource.lessons.map(lesson => updateLessonsWithGoogleDriveFiledPreviewImg(lesson, lessonToDisplayOntoUi))
 
@@ -375,10 +384,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           lessons: lessonsUpdated,
         }
       });
-    }
-
-    if (!lessonParts) {
-      throw new CustomError('Failed to get the lessons of the unit.', 500)
     }
 
     const targetLessonLocales = targetLessons.map(({ locale }) => locale)

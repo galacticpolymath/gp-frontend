@@ -11,7 +11,7 @@ import { google, drive_v3 } from 'googleapis';
 import fs from 'fs'
 import { CustomError } from '../../backend/utils/errors';
 import axios from 'axios';
-import { FileMetaData, getGpGoogleDriveService, listFilesOfGoogleDriveFolder } from '../../backend/services/googleDriveServices';
+import { FileMetaData, generateGoogleAuthJwt, getGpGoogleDriveService, listFilesOfGoogleDriveFolder } from '../../backend/services/googleDriveServices';
 
 const getUserDriveFiles = (accessToken, nextPageToken) => axios.get(
     'https://www.googleapis.com/drive/v3/files',
@@ -157,9 +157,20 @@ const retrieveGoogleFoldersAndFiles = async (
     // NOTES:
     // get the files from the drive via the id of the google drive 
     // the files has been retreived 
-    // loop through the files
-    // for each iteration, if the value is a file, then push it into the filesAndFolder array as follows: { fileId, fileName }
-    // if the value is a folder, then 
+    // 1) loop through the files
+    // 2) for each iteration, if the value is a file, then push it into the filesAndFolder array as follows: { fileId, fileName, parentFoldeName }
+    // 3) if the value is a folder, push the following into filesAndFolders: { folderId, folderName, parentFolderName  } 
+    // 4) if the value is a folder, make a request to get the files for that folder within the getFileOfFolder function
+    // 5) the files for that folder has been received within the getFilesOfFolder function
+    // repeat steps 1 thorugh 5 for all of the values in the filesAndFoldersFromDrive 
+    let filesAndFoldersFromDrive = []
+    let filesAndFoldersFromDriveModified = []
+
+    const getDataFromFolder = () => {
+
+    }
+
+
 
 
 }
@@ -240,7 +251,8 @@ export default async function handler(request, response) {
         // }
 
         // const fileNames = JSON.parse(request.query.fileNames)
-        const googleService = getGpGoogleDriveService();
+        const googleAuthJwt = generateGoogleAuthJwt()
+        const googleService = google.drive({ version: 'v3', auth: googleAuthJwt });
         // make the above into a service
         // how do I get all of the folders for a unit? 
         // 
@@ -264,7 +276,6 @@ export default async function handler(request, response) {
             { q: `'${request.body.unitDriveId}' in parents` }
         );
 
-        console.log('filesObj: ', filesObj)
 
         // create folder object:
         // folderName: str
