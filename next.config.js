@@ -10,8 +10,6 @@ const cspHeader = `
     object-src 'none';
     base-uri 'self';
     connect-src 'self' https://galacticpolymath.com/api/auth/signin/google https://dev.galacticpolymath.com/api/auth/signin/google http://localhost:3000/api/auth/signin/google https://oauth2.googleapis.com/token https://www.google-analytics.com/;
-    block-all-mixed-content;
-    upgrade-insecure-requests;
     frame-src 'self' https://drive.google.com/ https://www.youtube.com/ https://m.youtube.com/ https://youtube.com/embed/ https://docs.google.com/ https://lh3.googleusercontent.com/;
 `
 
@@ -36,14 +34,6 @@ module.exports = {
         permanent: true,
         source: '/lessons/:lessonId',
         destination: '/lessons/en-US/:lessonId'
-      },
-    ]
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/web-app',
-        destination: '/public/web-apps/into-the-dark/src/index.html',
       },
     ]
   },
