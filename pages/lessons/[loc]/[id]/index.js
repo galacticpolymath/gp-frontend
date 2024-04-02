@@ -317,6 +317,8 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     let lessonParts = null;
     const resources = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources;
 
+    console.log('resources, hey there! ', resources)
+
     if ((resources?.length == 1) && resources?.[0]?.lessons) {
       lessonParts = resources[0]?.lessons.map(lesson => {
         let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
@@ -376,6 +378,8 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         }
       });
     }
+
+    console.log('lessonParts: ', lessonParts)
 
     if (!lessonParts) {
       throw new CustomError('Failed to get the lessons of the unit.', 500)

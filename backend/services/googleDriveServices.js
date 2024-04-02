@@ -5,7 +5,6 @@
 /* eslint-disable semi */
 import fs from 'fs'
 import { getGoogleAuthJwt } from '../utils/auth'
-import { google } from 'googleapis'
 
 export class FileMetaData {
     constructor(folderName, parents = [], mimeType = 'application/vnd.google-apps.folder') {
@@ -45,9 +44,9 @@ class Credentials {
 
 /**
  * Create a service object that will access the company's google drive. 
- *  @return{drive_v3.Drive} Returns the google drive service object or null if authentication fails.
+ *  @return{JWT} Returns google auth jwt. Else, null will be returned.
  * */
-export const getGpGoogleDriveService = () => {
+export const generateGoogleAuthJwt = () => {
     try {
         let credentials = new Credentials()
         credentials = JSON.stringify(credentials)
@@ -76,9 +75,8 @@ export const getGpGoogleDriveService = () => {
         const googleAuthJwt = getGoogleAuthJwt('credentials.json', [
             "https://www.googleapis.com/auth/drive"
         ]);
-        const googleService = google.drive({ version: 'v3', auth: googleAuthJwt });
 
-        return googleService
+        return googleAuthJwt
     } catch (error) {
         console.error('Failed to retrieve the google drive service object. Reason: ', error)
 
