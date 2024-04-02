@@ -276,7 +276,6 @@ export default async function handler(request, response) {
             { q: `'${request.body.unitDriveId}' in parents` }
         );
 
-        console.log('filesObj: ', filesObj)
 
         // create folder object:
         // folderName: str
