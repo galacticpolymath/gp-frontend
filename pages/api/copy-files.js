@@ -251,30 +251,94 @@ export default async function handler(request, response) {
         // }
 
         // const fileNames = JSON.parse(request.query.fileNames)
+
         const googleAuthJwt = generateGoogleAuthJwt()
         const googleService = google.drive({ version: 'v3', auth: googleAuthJwt });
-        // make the above into a service
-        // how do I get all of the folders for a unit? 
-        // 
 
-        // GOAL: get all of the folders for a unit?
+        const getTargetFolder = (folderName, folders) => {
+            const targetFolder = folders.find(folder => {
+                const folderEntries = Array.from(folder.entries())
+                const isCorrectFolder = folderEntries.some(entry => entry[0].folderName === folderName)
+
+                return isCorrectFolder
+            });
+
+            return targetFolder
+        }
+        const getGooglDriveFolders = async (folderId) => {
+            try {
+                const response = await googleService.files.list({
+                    corpora: 'drive',
+                    includeItemsFromAllDrives: true,
+                    supportsAllDrives: true,
+                    driveId: process.env.GOOGLE_DRIVE_ID,
+                    q: `'${folderId}' in parents`
+                })
 
 
-        // GOAL: get all of the files for a paritcular unit
+                return response.data.files
+            } catch (error) {
+                console.error('Failed to get the root folders of drive.')
 
-        // get the data at the root level of the folder
-        // const res = await googleService.files.list({
-        //     corpora: 'drive',
-        //     includeItemsFromAllDrives: true,
-        //     supportsAllDrives: true,
-        //     driveId: process.env.GOOGLE_DRIVE_ID,
-        //     q: `'${request.body.unitDriveId}' in parents`
-        // });
-        const filesObj = await listFilesOfGoogleDriveFolder(
-            googleService,
-            request.body.unitDriveId,
-            { q: `'${request.body.unitDriveId}' in parents` }
-        );
+                return null;
+            }
+        }
+
+        const rootDriveFolders = await getGooglDriveFolders(request.body.unitDriveId)
+        const folderPlacementObj = {}
+
+        rootDriveFolders.forEach(folder => {
+            folderPlacementObj[folder.name] = []
+        })
+
+        // GOAL: get all of the folder name for the classroom_grades_11-university folder
+
+        const getGpUnitData = async folders => {
+            for (const folder of folders) {
+                const files = await getGooglDriveFolders(folder.id)
+                folderPlacementObj[folder.name] = files.map(({ id, name, mimeType }) => ({ id, name, mimeType }))
+            }
+            // GOAL: get all of the folders 
+
+        }
+
+        await getGpUnitData(rootDriveFolders)
+
+        console.log('folderPlacementObj: ', folderPlacementObj)
+
+
+
+        // create a folders for in the user's google drive
+        // folder name -> folder name -> folder name -> ... 
+        // make a query to the google drive api 
+        // get the name of the folder 
+        // make another query to the google apis, pass the name of the folder 
+
+
+
+        // GOAL: create a map that will represent the folder structure of the copied unit in the user's google drive
+        // -create a map that will represent the folder structure of the user's google drive for the copied unit
+        // -make a request to the gp drive, get the items at the root level or make a query to the gp drive using the id of the folder
+        // -1)get the folder names 
+        // -2)create an object, call it y, for each of the folder name create the following: {  folderName, folderId: the id from google drive, userFolderId: let it be blank } 
+        // -3)set the property for the folder map as follows: { y: null  }
+        // -since the y is a folder, make a request to the google drive api to get the items of that folder
+        // -repeat steps 
+
+
+        // -after getting all of the folder names within the map, create the folders within the user's google drive
+        // -after each folder creation, update the object with the id of the created folder  
+
+        // if you get a file, then put them into array as follows: { file: { id, name }, parentFolder: { id, name }  }
+        // when copying the file, use the folderId of the created folder
+
+
+
+        // const filesObj = await listFilesOfGoogleDriveFolder(
+        //     googleService,
+        //     request.body.unitDriveId,
+        //     { q: `'${request.body.unitDriveId}' in parents` }
+        // );
 
 
         // create folder object:
@@ -382,7 +446,7 @@ export default async function handler(request, response) {
 
 
         return response.json({
-            data: [...filesObj.data.files]
+            data: "HI"
         });
     } catch (error) {
         console.error('An error has occurred. Error: ', error)
