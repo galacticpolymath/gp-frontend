@@ -96,9 +96,17 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                                         fontSize={24}
                                         style={{ backgroundColor: 'black', opacity: .4 }}
                                     />
-                                    <span style={{ zIndex: 10 }} className='underline-on-hover text-white click-to-open-txt'>
-                                        Click to open app in new window.
-                                    </span>
+                                    <CustomLink
+                                        hrefStr={selectedGpWebApp?.webAppLink}
+                                        style={{ width: 'fit-content', zIndex: 100, textDecorationColor: 'white', color: 'white' }}
+                                        className='mt-2 no-link-decoration txt-underline-on-hover-white'
+                                        color='#75757D'
+                                        targetLinkStr='_blank'
+                                    >
+                                        <span className="text-white" style={{ textDecorationColor: 'white' }}>
+                                            Open in new window
+                                        </span>
+                                    </CustomLink>
                                 </div>
                             )}
                         </div>
