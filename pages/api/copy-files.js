@@ -284,169 +284,56 @@ export default async function handler(request, response) {
             }
         }
 
+
         const rootDriveFolders = await getGooglDriveFolders(request.body.unitDriveId)
-        const folderPlacementObj = {}
+        let unitFolders = [...rootDriveFolders.map(folder => ({ name: folder.name, id: folder.id, mimeType: folder.mimeType, pathToFile: 'root' }))]
+        for (const unitFolder of unitFolders) {
+            if (unitFolder.mimeType.includes("folder") && (unitFolder.pathToFile && (unitFolder.pathToFile !== 'root'))) {
+                const folderDataResponse = await googleService.files.list({
+                    corpora: 'drive',
+                    includeItemsFromAllDrives: true,
+                    supportsAllDrives: true,
+                    driveId: process.env.GOOGLE_DRIVE_ID,
+                    q: `'${unitFolder.id}' in parents`
+                });
+                const folderData = folderDataResponse.data.files.map(file => {
+                    return {
+                        ...file,
+                        name: file.name,
+                        id: file.id,
+                        mimeType: file.mimeType,
+                        pathToFile: `${unitFolder.pathToFile}/${unitFolder.name}`
+                    }
+                })
 
-        rootDriveFolders.forEach(folder => {
-            folderPlacementObj[folder.name] = []
-        })
-
-        // GOAL: get all of the folder name for the classroom_grades_11-university folder
-
-        const getGpUnitData = async folders => {
-            for (const folder of folders) {
-                const files = await getGooglDriveFolders(folder.id)
-                folderPlacementObj[folder.name] = files.map(({ id, name, mimeType }) => ({ id, name, mimeType }))
+                unitFolders.push(...folderData)
+                continue
             }
-            // GOAL: get all of the folders 
 
+            if (unitFolder.mimeType.includes("folder")) {
+                const folderDataResponse = await googleService.files.list({
+                    corpora: 'drive',
+                    includeItemsFromAllDrives: true,
+                    supportsAllDrives: true,
+                    driveId: process.env.GOOGLE_DRIVE_ID,
+                    q: `'${unitFolder.id}' in parents`
+                });
+                const folderData = folderDataResponse.data.files.map(file => {
+                    return {
+                        ...file,
+                        name: file.name,
+                        id: file.id,
+                        mimeType: file.mimeType,
+                        pathToFile: unitFolder.name
+                    }
+                })
+
+                unitFolders.push(...folderData)
+            }
         }
 
-        await getGpUnitData(rootDriveFolders)
-
-        console.log('folderPlacementObj: ', folderPlacementObj)
-
-
-
-        // create a folders for in the user's google drive
-        // folder name -> folder name -> folder name -> ... 
-        // make a query to the google drive api 
-        // get the name of the folder 
-        // make another query to the google apis, pass the name of the folder 
-
-
-
-        // GOAL: create a map that will represent the folder structure of the copied unit in the user's google drive
-        // -create a map that will represent the folder structure of the user's google drive for the copied unit
-        // -make a request to the gp drive, get the items at the root level or make a query to the gp drive using the id of the folder
-        // -1)get the folder names 
-        // -2)create an object, call it y, for each of the folder name create the following: {  folderName, folderId: the id from google drive, userFolderId: let it be blank } 
-        // -3)set the property for the folder map as follows: { y: null  }
-        // -since the y is a folder, make a request to the google drive api to get the items of that folder
-        // -repeat steps 
-
-
-        // -after getting all of the folder names within the map, create the folders within the user's google drive
-        // -after each folder creation, update the object with the id of the created folder  
-
-        // if you get a file, then put them into array as follows: { file: { id, name }, parentFolder: { id, name }  }
-        // when copying the file, use the folderId of the created folder
-
-
-
-        // const filesObj = await listFilesOfGoogleDriveFolder(
-        //     googleService,
-        //     request.body.unitDriveId,
-        //     { q: `'${request.body.unitDriveId}' in parents` }
-        // );
-
-
-        // create folder object:
-        // folderName: str
-        // fileIds: an array of file id strings 
-        // subFolders: 
-        // [
-        // { folderName, fileIds, subFolders: { ...(follow the same structure) }  }
-        // ]
-
-
-        // share the files with the user
-        // create breadth first search algorithm
-        // create a recursive function, 
-        // if the item is a folder, then get the id of the folder
-        // using the id of the folder, make another query to get their files
-
-
-
-        // GOAL: copy the file into the target folder
-
-        // NOTES:
-        // create a folder in the user google drive
-        // within it, create the appropiate folders that match with the folders that the user wants to copy
-
-        // get the public id of the unit that the user wants to copy
-        // main folder id for frogs unit: 1Ky0DSDrrtDl0nc0Ct9rKxrLUkzEvLKBQ
-        // classroom materials folder id: 1P5d0lA6XQILhgEkadWzFhFDnAe4c-EvL
-
-        // console.log('res.data: ', res.data)
-
-
-
-
-
-        // MAIN GOAL: copy the file into the target user's drive
-
-        // GOAL A: share the file to the target user.
-
-        // GOAL B: list all of the files in the user's drive
-
-        // GOAL C: get the target file from the list and copy it
-
-        // SHARE THE FILE WITH THE TARGET USER: 
-        // must send the email to the server
-
-        // the folder id:
-        // 1FBK6JY1gwu95MPp1MFh-D6ao2URt01sp
-        // copy the below file into the target folder with the id of 1FBK6JY1gwu95MPp1MFh-D6ao2URt01sp
-        // testing file id: 1QV9ZMPG7eFnPVlYrSj3t75W8YBD825feGGRntmll9uc
-
-        // const permissions = [
-        //     {
-        //         type: 'user',
-        //         role: 'writer',
-        //         emailAddress: request.body.email
-        //     },
-        //     {
-        //         type: 'domain',
-        //         role: 'writer',
-        //         domain: 'galacticpolymath.com'
-        //     }
-        // ]
-        // const permissionIds = await shareFile(
-        //     '19oynB8Wgv2ustQr6ETYK_O4-5M86ruj6ydZTqx0xNGc',
-        //     googleService,
-        //     permissions
-        // );
-        // const allUserFiles = await listAllUserFiles(request.body.accessToken);
-
-        // if (!allUserFiles) {
-        //     throw new CustomError('Failed to get all of the files of the user', 500)
-        // }
-
-        // const { folderId } = await createGoogleDriveFolderForUser('BioPhysics', request.body.accessToken)
-
-
-        // // console.log('allUserFiles: ', allUserFiles)
-        // // allUserFiles.forEach(({ id }) => typeof id)
-
-        // const sharedTargetFile = allUserFiles.find(({ id }) => id === '19oynB8Wgv2ustQr6ETYK_O4-5M86ruj6ydZTqx0xNGc')
-
-        // console.log('sharedTargetFile, yo there meng! ', sharedTargetFile)
-
-        // const { wasSuccessful } = await copyFile(sharedTargetFile.id, [folderId], request.body.accessToken)
-
-        // console.log('wasSuccessful copying file: ', wasSuccessful)
-
-
-        // the user choose a destination folder to download their folders from
-        // list all of the available folders that the user can choose from to upload their files to
-        // else, create the folder on the server
-        // const googleDriveFolderCreationResult = await createGoogleDriveFolderForUser('Chem', request.body.accessToken)
-
-        // console.log('googleDriveFolderCreationResult: ', googleDriveFolderCreationResult)
-
-        // const copyFileResult = await copyFile('1xLo9wJKUB3kNGWzCMZ1MjUJb1-9ieHFyAMllxerF1Zc', [googleDriveFolderCreationResult.folderId], request.body.accessToken)
-
-        // console.log('copyFileResult: ', copyFileResult);
-
-        // GOAL: copy the file into the user's drive.
-        // list the files
-        // create a folder with the name of the unit
-        // copy those files into the folder
-
-
         return response.json({
-            data: "HI"
+            data: unitFolders
         });
     } catch (error) {
         console.error('An error has occurred. Error: ', error)
