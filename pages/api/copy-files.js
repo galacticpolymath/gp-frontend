@@ -287,6 +287,7 @@ export default async function handler(request, response) {
 
         const rootDriveFolders = await getGooglDriveFolders(request.body.unitDriveId)
         let unitFolders = [...rootDriveFolders.map(folder => ({ name: folder.name, id: folder.id, mimeType: folder.mimeType, pathToFile: 'root' }))]
+
         for (const unitFolder of unitFolders) {
             if (unitFolder.mimeType.includes("folder") && (unitFolder.pathToFile && (unitFolder.pathToFile !== 'root'))) {
                 const folderDataResponse = await googleService.files.list({
@@ -329,8 +330,42 @@ export default async function handler(request, response) {
                 })
 
                 unitFolders.push(...folderData)
+                continue
+            }
+
+            const isFilePresent = unitFolders.some(folder => folder.name === unitFolder.name)
+
+            if (!isFilePresent) {
+                const file = {
+                    ...unitFolder,
+                    name: unitFolder.name,
+                    id: unitFolder.id,
+                    parentFolderId: "",
+                    mimeType: unitFolder.mimeType,
+                    pathToFile: unitFolder.pathToFile ? `${unitFolder.pathToFile}/${unitFolder.name}` : unitFolder.name
+                }
+
+                unitFolders.push(file)
             }
         }
+
+        console.log("unitFolders.length: ", unitFolders.length)
+
+        const userFiles = await googleService.files.list({
+            corpora: 'drive',
+            includeItemsFromAllDrives: true,
+            supportsAllDrives: true,
+            driveId: process.env.GOOGLE_DRIVE_ID
+        })
+
+        console.log('user files: ', userFiles)
+
+        // MAIN GOAL: create the main folder of the unit with all of the subfolders
+        // the sub-folders are created 
+        // get all of the folders in the user's drive
+        // for each value, if the path is nested split the string bh '/
+        // loop through the array
+        // get an array of all of the paths for the folders
 
         return response.json({
             data: unitFolders
