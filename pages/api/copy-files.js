@@ -295,7 +295,52 @@ export default async function handler(request, response) {
                     driveId: process.env.GOOGLE_DRIVE_ID,
                     q: `'${unitFolder.id}' in parents`
                 });
-                const folderData = folderDataResponse.data.files.map(file => {
+                // NOTES:
+                // get all of the folders for a specific unit 
+                // check if there are more than one folder with the same name 
+                // if there is more than one folder with the same name, create a alternative name for the folder
+                // -when creating the folderFilesAndFoldes variable
+
+                // GOAL: check if there are any duplicate folder names for a given folder 
+                // an object has been created, the field name is the name of the folder name and an array of all of its occurrence
+                // using the folder name, filter in all of its occurence, this will be the value
+                // for each folder, let the folder name be field name of the object
+                // reduce y, let the starting value be an object
+                // filter in all of the folders for an array, call it y 
+                const folders = folderDataResponse.data.files.filter(file => file.mimeType.includes('folder'))
+                /** @type {{ [key: string]: any[] } | null} */
+                let foldersOccurrenceObj = null;
+
+                if (folders.length) {
+                    foldersOccurrenceObj = folders.reduce((allFoldersObj, folderA, _, self) => {
+                        const foldersWithTheSameName = self.filter(folderB => folderA.name === folderB.name)
+                        allFoldersObj[folderA.name] = foldersWithTheSameName;
+
+                        return allFoldersObj
+                    }, {})
+
+                    // if a folder has duplicate names, give it a alternative name in order to differentiate it from the rest of the folders
+                    for (const folderNameAndOccurrences of Object.entries(foldersOccurrenceObj)) {
+                        let [folderName, occurrences] = folderNameAndOccurrences;
+
+                        if (occurrences.length === 1) {
+                            continue
+                        }
+
+                        foldersOccurrenceObj[folderName] = occurrences.map((folderOccurrence, index) => ({
+                            ...folderOccurrence,
+                            folderAlternativeName: `${folderOccurrence.name} ${index + 1}`
+                        }))
+                    }
+                }
+
+
+                // check for any duplicate folders
+                // once the duplicate folders has been found, mark the folder as a duplicate under 'alternativeName' field: folder (NUM)
+                // when pushing the files into the unitFolders, for the parent folder id insert the following if the data is a file: 
+                // parentFolderId: the id of the folder
+
+                const folderFilesAndFolders = folderDataResponse.data.files.map(file => {
                     return {
                         ...file,
                         name: file.name,
@@ -306,7 +351,7 @@ export default async function handler(request, response) {
                     }
                 })
 
-                unitFolders.push(...folderData)
+                unitFolders.push(...folderFilesAndFolders)
                 continue
             }
 
@@ -365,7 +410,7 @@ export default async function handler(request, response) {
 
         const folderPaths = [...new Set(unitFolders.filter(folder => folder.pathToFile !== 'root').map(folder => folder.pathToFile))]
         let foldersFailedToCreate = []
-        /** @type {{ id: string, name: string }[]} */
+        /** @type {{ id: string, name: string, pathToFile: string }[]} */
         let createdFolders = []
 
         for (const folderPath of folderPaths) {
@@ -379,14 +424,14 @@ export default async function handler(request, response) {
                 if (!wasSuccessful) {
                     foldersFailedToCreate.push(folderName)
                 } else {
-                    createdFolders.push({ id: folderId, name: folderName })
+                    createdFolders.push({ id: folderId, name: folderName, pathToFile: folderPath })
                 }
 
                 continue
             }
 
             const parentFolder = folderPathSplitted.at(-2)
-            const parentFolderId = createdFolders.find(folder => folder.name === parentFolder)?.id
+            const parentFolderId = createdFolders.find(folder => (folder.name === parentFolder) && (folder.pathToFile === folderPath))?.id
 
             if (!parentFolderId) {
                 foldersFailedToCreate.push(folderName)
@@ -400,7 +445,7 @@ export default async function handler(request, response) {
                 continue
             }
 
-            createdFolders.push({ id: folderId, name: folderName })
+            createdFolders.push({ id: folderId, name: folderName, pathToFile: folderPath })
         }
 
         console.log("createdFolders: ", createdFolders)
