@@ -140,44 +140,37 @@ const retrieveGoogleDriveFolder = async () => {
 
 }
 
-
 /**
- * Share the google drive file with a user.
- * @param{string} driveId The id of the file.
- * @param{drive_v3.Drive} googleService google drive service object
- * @return{Promise<[] | null>} An array of the permission ids if successful. Otherwise, it will return null.
+ * Searches through the user's google drive.
+ * @param{string} accessToken Access token for user's google drive. The client must send this.
+ * @param{string} searchQuery The query for the user's google drive.
+ * @return{Promise<any[] | null>} An array of searched folders and files. Otherwise, it will return null if an error has occurred.
  * */
-const retrieveGoogleFoldersAndFiles = async (
-    gooogleService,
-    queryObj,
-    unitDriveId,
-    startingFilesAndFoldersFromDrive = [],
-    startingfilesAndFoldersFromDriveModified = []
-) => {
-    // NOTES:
-    // get the files from the drive via the id of the google drive 
-    // the files has been retreived 
-    // 1) loop through the files
-    // 2) for each iteration, if the value is a file, then push it into the filesAndFolder array as follows: { fileId, fileName, parentFoldeName }
-    // 3) if the value is a folder, push the following into filesAndFolders: { folderId, folderName, parentFolderName  } 
-    // 4) if the value is a folder, make a request to get the files for that folder within the getFileOfFolder function
-    // 5) the files for that folder has been received within the getFilesOfFolder function
-    // repeat steps 1 thorugh 5 for all of the values in the filesAndFoldersFromDrive 
-    let filesAndFoldersFromDrive = []
-    let filesAndFoldersFromDriveModified = []
+const searchUserGoogleDrive = async (accessToken, searchQuery) => {
+    try {
+        const response = await axios.get('https://www.googleapis.com/drive/v3/files',
+            {
+                params: { q: searchQuery },
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
 
-    const getDataFromFolder = () => {
+        console.log('response.data: ', response.data)
 
+        return [...(response?.data?.files ?? [])]
+    } catch (error) {
+        console.error('Failed to search google drive of user. Reason: ', error)
+
+        return null;
     }
-
-
-
-
 }
 
-const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFolderIds) => {
+const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFolderIds = []) => {
     try {
-        const folderMetadata = parentFolderIds ? new FileMetaData(folderName, parentFolderIds) : new FileMetaData(folderName)
+        const folderMetadata = new FileMetaData(folderName, parentFolderIds);
         const response = await axios.post(
             'https://www.googleapis.com/drive/v3/files?fields=id',
             folderMetadata,
@@ -240,10 +233,15 @@ export default async function handler(request, response) {
         }
 
         if (!request.body.email) {
-            throw new CustomError('The email  was not provided.', 400);
+            throw new CustomError('The email was not provided.', 400);
         }
+
         if (!request.body.unitDriveId) {
-            throw new CustomError('The email  was not provided.', 400);
+            throw new CustomError('The id of the drive was not provided.', 400);
+        }
+
+        if (!request.body.unitName) {
+            throw new CustomError('The the name of the unit was not provided.', 400);
         }
 
         // if (!request.query.fileNames || (typeof request.query.fileNames !== 'string') || ((typeof request.query.fileNames === 'string') && !getIsTypeValid(JSON.parse(request.query.fileNames), 'object'))) {
@@ -302,6 +300,7 @@ export default async function handler(request, response) {
                         ...file,
                         name: file.name,
                         id: file.id,
+                        // get the id of the folder in order to copy the file or folder into the specific folder of the user's drive 
                         mimeType: file.mimeType,
                         pathToFile: `${unitFolder.pathToFile}/${unitFolder.name}`
                     }
@@ -324,6 +323,7 @@ export default async function handler(request, response) {
                         ...file,
                         name: file.name,
                         id: file.id,
+                        // get the id of the folder in the user's google drive in order to copy the file or folder into the specific folder of the user's drive 
                         mimeType: file.mimeType,
                         pathToFile: unitFolder.name
                     }
@@ -340,7 +340,7 @@ export default async function handler(request, response) {
                     ...unitFolder,
                     name: unitFolder.name,
                     id: unitFolder.id,
-                    parentFolderId: "",
+                    // get the id of the folder in order to copy the file or folder into the specific folder of the user's drive 
                     mimeType: unitFolder.mimeType,
                     pathToFile: unitFolder.pathToFile ? `${unitFolder.pathToFile}/${unitFolder.name}` : unitFolder.name
                 }
@@ -349,23 +349,106 @@ export default async function handler(request, response) {
             }
         }
 
-        console.log("unitFolders.length: ", unitFolders.length)
+        const searchGoogleDriveUnitFolders = await searchUserGoogleDrive(request.body.accessToken, `name = "${request.body.unitName} COPY"`)
+        let unitFolderId = searchGoogleDriveUnitFolders?.[0]?.id
 
-        const userFiles = await googleService.files.list({
-            corpora: 'drive',
-            includeItemsFromAllDrives: true,
-            supportsAllDrives: true,
-            driveId: process.env.GOOGLE_DRIVE_ID
-        })
 
-        console.log('user files: ', userFiles)
+        if (!searchGoogleDriveUnitFolders?.length) {
+            const { folderId, errMsg } = await createGoogleDriveFolderForUser(`${request.body.unitName} COPY`, request.body.accessToken)
 
-        // MAIN GOAL: create the main folder of the unit with all of the subfolders
-        // the sub-folders are created 
-        // get all of the folders in the user's drive
-        // for each value, if the path is nested split the string bh '/
+            if (errMsg) {
+                throw new CustomError(errMsg, 500)
+            }
+
+            unitFolderId = folderId
+        }
+
+        const folderPaths = [...new Set(unitFolders.filter(folder => folder.pathToFile !== 'root').map(folder => folder.pathToFile))]
+        let foldersFailedToCreate = []
+        /** @type {{ id: string, name: string }[]} */
+        let createdFolders = []
+
+        for (const folderPath of folderPaths) {
+            const folderPathSplitted = folderPath.split('/')
+            const folderName = folderPathSplitted.at(-1)
+
+            if (folderPathSplitted.length === 1) {
+                // creating the folders at the root of the unit folder
+                const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderName, request.body.accessToken, [unitFolderId])
+
+                if (!wasSuccessful) {
+                    foldersFailedToCreate.push(folderName)
+                } else {
+                    createdFolders.push({ id: folderId, name: folderName })
+                }
+
+                continue
+            }
+
+            const parentFolder = folderPathSplitted.at(-2)
+            const parentFolderId = createdFolders.find(folder => folder.name === parentFolder)?.id
+
+            if (!parentFolderId) {
+                foldersFailedToCreate.push(folderName)
+                continue
+            }
+
+            const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderName, request.body.accessToken, [parentFolderId])
+
+            if (!wasSuccessful) {
+                foldersFailedToCreate.push(folderName)
+                continue
+            }
+
+            createdFolders.push({ id: folderId, name: folderName })
+        }
+
+        console.log("createdFolders: ", createdFolders)
+
+
+        // CASE: the folder path does not have '/' in it.
+        // GOAL: create the folder at the root of the unit folder
+
+        // CASE: the folder does have '/' in it. 
+        // GOAL: create the folder within the parent folder
+        // push the following into folderNamesAndIds array: { name, id }
+        // get the id of the folder
+        // create the folder within the parent folder
+        // query the object, get the id of the folder
+        // the target parent folder object is found in the array that keeps tracks of the folder name and its id
+
+
+
+
+
+
+        // FOR APP:
+        // CASES: the folder that is being copied, there could be duplicate names in the user's google drive
+
+        // CASE: the unit that the user is trying to copy does not exist in the user's google drive
+        // GOAL: create the unit folder in the user's google drive
+
+
+        // MAIN GOAL: create all of the subfolders for the unit
+        // the sub-folders are created
+        // push the folder name and the id of the folder into the folders array
+        // get the id of the folder
+        // the folder has been created
+        // if x is at the root, then create the folder at the root of the unit (get the id of the unit folder in the user's google drive) 
+        // if the folder does not exist, then loop through the folder names splitted, call it y and each iteration of y, x
+        // CHECK IF THE FOLDER ALREADY EXIST IN THE USER'S GOOGLE DRIVE BY USING THE NAME OF THE FOLDER "name = '{the name of the folder}'"
+        // for each value, if the path is nested, split the string by '/'
         // loop through the array
-        // get an array of all of the paths for the folders
+        // get an array of all of the paths for the folders as follows: (the string for 'unitFolderId')[]
+
+        // GOAL: copy all of the files into their folders
+        // the file has been copied into the target folder
+        // get the google id of the target folder
+        // the target folder has been retrieved
+        // using the name of the parent folder find the target folder in the folders array 
+        // the parent folder has been attained
+        // get the last element of the split array, this will be the parent folder
+        // split the path string into an array
 
         return response.json({
             data: unitFolders
