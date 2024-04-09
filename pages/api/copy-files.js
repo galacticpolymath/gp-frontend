@@ -329,7 +329,7 @@ export default async function handler(request, response) {
 
                         foldersOccurrenceObj[folderName] = occurrences.map((folderOccurrence, index) => ({
                             ...folderOccurrence,
-                            folderAlternativeName: `${folderOccurrence.name} ${index + 1}`
+                            alternativeName: `${folderOccurrence.name} ${index + 1}`
                         }))
                     }
                 }
@@ -341,12 +341,26 @@ export default async function handler(request, response) {
                 // parentFolderId: the id of the folder
 
                 const folderFilesAndFolders = folderDataResponse.data.files.map(file => {
+                    if (!file.mimeType.includes('folder') || !foldersOccurrenceObj || !foldersOccurrenceObj?.[file.name] || (foldersOccurrenceObj?.[file.name]?.length === 1)) {
+                        return {
+                            ...file,
+                            name: file.name,
+                            id: file.id,
+                            // get the id of the folder in order to copy the file or folder into the specific folder of the user's drive 
+                            mimeType: file.mimeType,
+                            pathToFile: `${unitFolder.pathToFile}/${unitFolder.name}`
+                        }
+                    }
+
+                    const targetFolderOccurrences = foldersOccurrenceObj[file.name]
+                    const targetFolder = targetFolderOccurrences.find(folder => folder.id === file.id)
+
                     return {
                         ...file,
                         name: file.name,
                         id: file.id,
-                        // get the id of the folder in order to copy the file or folder into the specific folder of the user's drive 
                         mimeType: file.mimeType,
+                        alternativeName: targetFolder.alternativeName,
                         pathToFile: `${unitFolder.pathToFile}/${unitFolder.name}`
                     }
                 })
