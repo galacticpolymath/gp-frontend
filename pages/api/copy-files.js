@@ -468,19 +468,18 @@ export default async function handler(request, response) {
         console.log('unitFolderId: ', unitFolderId)
 
         // const folderPaths = [...new Set(unitFolders.filter(folder => folder.pathToFile !== 'root').map(folder => folder.pathToFile))]
-        let folderPaths = unitFolders.filter(folder => folder.pathToFile !== 'root').map((folder, index) => ({
-            id: index,
-            wasCreated: false,
-            parentFolderAlternativeName: folder.parentFolderAlternativeName,
-            pathToFile: folder.pathToFile,
-            ...(folder.folderAlternativeName ? { folderAlternativeName: folder.folderAlternativeName } : {})
-        }))
+        // let folderPaths = unitFolders.filter(folder => folder.pathToFile !== 'root').map((folder, index) => ({
+        //     id: index,
+        //     wasCreated: false,
+        //     parentFolderAlternativeName: folder.parentFolderAlternativeName,
+        //     pathToFile: folder.pathToFile,
+        //     ...(folder.folderAlternativeName ? { folderAlternativeName: folder.folderAlternativeName } : {})
+        // }))
         let foldersFailedToCreate = [];
         /** @type {{ id: string, name: string, pathToFile: string }[]} */
         let createdFolders = []
-        folderPaths = [...new Set(unitFolders.filter(folder => folder.pathToFile !== 'root').map(folder => folder.pathToFile))]
+        const folderPaths = [...new Set(unitFolders.filter(folder => folder.pathToFile !== 'root').map(folder => folder.pathToFile))]
 
-        console.log('folderPaths: ', folderPaths)
         // create the google folders 
         for (let index = 0; index < folderPaths.length; index++) {
             const folderPath = folderPaths[index]
@@ -519,8 +518,19 @@ export default async function handler(request, response) {
             createdFolders.push({ id: folderId, name: folderName, pathToFile: folderPath })
         }
 
+        // GOAL: share all of the files with the target user
+        // get all files that are not folders
+        // put them into an array 
+        // share those files with the target user
+
+        // GOAL: after sharing the files with the target user, copy those files into the target folder
+        // using the name of the parent folder 
+        // go through each file and get the parent folder name
+        // the file has been shared 
 
 
+
+        console.log('unitFolders: ', unitFolders)
 
 
         // CASE: the folder path does not have '/' in it.
