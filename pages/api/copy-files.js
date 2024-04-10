@@ -467,10 +467,12 @@ export default async function handler(request, response) {
         let createdFolders = []
         const folderPaths = [...new Set(unitFolders.filter(folder => folder.pathToFile !== 'root').map(folder => folder.pathToFile))]
 
+        console.log('folderPaths: ', folderPaths)
+
         console.log('creating the google folders...')
         // create the google folders 
-        for (let index = 0; index < folderPaths.length; index++) {
-            const folderPath = folderPaths[index]
+        // for (let index = 0; index < folderPaths.length; index++) {
+        for (const folderPath of folderPaths) {
             const folderPathSplitted = folderPath.split('/')
             const folderName = folderPathSplitted.at(-1)
 
@@ -506,6 +508,13 @@ export default async function handler(request, response) {
 
         console.log('google folders has been created...')
 
+
+        const files = unitFolders.filter(folder => !folder.mimeType.includes('folder'))
+        let failedFilesToShare = [];
+        let filesThatWereShared = []
+
+        console.log('files: ', files)
+        console.log('will share files shared with the client side user...')
         const permissions = [
             {
                 type: 'user',
@@ -518,24 +527,15 @@ export default async function handler(request, response) {
                 domain: 'galacticpolymath.com'
             }
         ]
-        const files = unitFolders.filter(folder => !folder.mimeType.includes('folder'))
-        let failedFilesToShare = [];
-        let filesThatWereShared = []
 
-        console.log('will share files shared with the client side user...')
-        // share the files in order to copy them into the specified folder
-
-        for (const file in files) {
-            console.log('file.name: ', file.name)
-            console.log('file.id: ', file.id)
-
+        // share the files that are going to be copied
+        for (const file of files) {
             let permissionResults = await shareFile(file.id, googleService, permissions)
 
             if (!permissionResults?.length) {
                 failedFilesToShare.push({ name: file.name, id: file.id })
                 continue
             }
-
 
             filesThatWereShared.push(...permissionResults)
         }
@@ -546,21 +546,33 @@ export default async function handler(request, response) {
         let parentFoldersThatDontExist = []
 
         console.log('will execute copy...')
+
+        // BUG: failing to copy the file into the target folder when there are multiple folders with the same name
+
         //  copy the files into the corresponding folder
         for (const file of files) {
-            // get the parent folder of the file
-            const parentFolderName = file.pathToFile.split("/").at(-1)
-            const parentFolder = createdFolders.find(folder => folder.name === parentFolderName)
+            try {
+                // get the id of the parent folder in order to find it from the createdFolders array
 
-            if (!parentFolder) {
-                console.error(`The parent folder for '${file.name}' file does not exist.`)
-                parentFoldersThatDontExist.push(parentFolder)
-                continue
-            }
+                const parentFolderName = file.pathToFile.split("/").at(-1)
+                // SOURCE OF THE BUG: if there are multiple folders with the same name, then all of the files will be copied into 
+                // -the first occurence of the folder name
+                const parentFolder = createdFolders.find(folder => folder.name === parentFolderName)
 
-            const copyFileResult = await copyFile(file.id, [parentFolder.id], request.body.accessToken)
+                if (!parentFolder) {
+                    console.error(`The parent folder for '${file.name}' file does not exist.`)
+                    parentFoldersThatDontExist.push(parentFolder)
+                    continue
+                }
 
-            if (!copyFileResult.wasSuccessful) {
+                const copyFileResult = await copyFile(file.id, [parentFolder.id], request.body.accessToken)
+
+                if (!copyFileResult.wasSuccessful) {
+                    console.error('FAILED TO COPY THE FILE.')
+                    failedCopiedFiles.push(file.name)
+                }
+            } catch (error) {
+                console.error('Failed to copy file. Reason: ', error)
                 failedCopiedFiles.push(file.name)
             }
         }
