@@ -153,7 +153,11 @@ const LessonDetails = ({ lesson }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, []);
 
+  console.log('sectionComps: ', sectionComps)
+
   let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
+
+  console.log('_sections, yo there! ', _sections)
 
   if (!lesson && typeof window === "undefined") {
     return null;

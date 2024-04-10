@@ -11,12 +11,8 @@ const LearningChart = ({
   Description,
   Footnote,
   Badge,
-  _sectionDots,
-  SectionTitle,
 }) => {
   const ref = useRef();
-
-  // useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   return (
     <div
