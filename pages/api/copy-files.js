@@ -480,13 +480,11 @@ export default async function handler(request, response) {
         let createdFolders = []
         folderPaths = [...new Set(unitFolders.filter(folder => folder.pathToFile !== 'root').map(folder => folder.pathToFile))]
 
-        console.log('creating folders...')
-
+        console.log('folderPaths: ', folderPaths)
         // create the google folders 
         for (let index = 0; index < folderPaths.length; index++) {
             const folderPath = folderPaths[index]
-            const folderAlternativeName = folderPath.folderAlternativeName
-            const folderPathSplitted = folderPath.pathToFile.split('/')
+            const folderPathSplitted = folderPath.split('/')
             const folderName = folderPathSplitted.at(-1)
 
             if (folderPathSplitted.length === 1) {
@@ -495,21 +493,16 @@ export default async function handler(request, response) {
                 if (!wasSuccessful) {
                     foldersFailedToCreate.push(folderName)
                 } else {
-                    createdFolders.push({ id: folderId, name: folderName, pathToFile: folderPath, folderAlternativeName, parentFolderAlternativeName: folderPath.parentFolderAlternativeName })
-                    folderPaths = folderPaths.filter(folder => {
-                        if ((folder.pathToFile === folderPath.pathToFile) && !folder.folderAlternativeName) {
-                            return false;
-                        }
-
-                        return true;
-                    })
+                    createdFolders.push({ id: folderId, name: folderName, pathToFile: folderPath })
                 }
 
                 continue
             }
 
             const parentFolder = folderPathSplitted.at(-2)
-            const parentFolderId = createdFolders.find(folder => (folder.name === parentFolder) && (folder.pathToFile === folderPath))?.id
+            const parentFolderId = createdFolders.find(folder => folder.name === parentFolder)?.id
+
+            console.log('parentFolderId: ', parentFolderId)
 
             if (!parentFolderId) {
                 foldersFailedToCreate.push(folderName)
@@ -523,18 +516,11 @@ export default async function handler(request, response) {
                 continue
             }
 
-            folderPaths = folderPaths.filter(folder => {
-                if ((folder.pathToFile === folderPath.pathToFile) && !folder.folderAlternativeName) {
-                    return false;
-                }
-
-                return true;
-            })
-
-            createdFolders.push({ id: folderId, name: folderName, pathToFile: folderPath, parentFolderAlternativeName: folderPath.parentFolderAlternativeName, folderAlternativeName })
+            createdFolders.push({ id: folderId, name: folderName, pathToFile: folderPath })
         }
 
-        console.log("createdFolders: ", createdFolders)
+
+
 
 
         // CASE: the folder path does not have '/' in it.
