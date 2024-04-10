@@ -101,39 +101,32 @@ const copyFile = async (fileId, folderIds, accessToken) => {
  * @param{string} fileId The id of the file.
  * @param{{ type: string, role: string, emailAddress: string }[]} permissions Permissions for the user to access the file
  * @param{drive_v3.Drive} service google drive service object
- * @return{Promise<list | null>} An array of the permission ids if successful. Otherwise, it will return null.
+ * @return{Promise<any[] | null>} An array of the permission ids if successful. Otherwise, it will return null.
  * */
 const shareFile = async (fileId, service, permissions) => {
-    try {
-        const permissionIds = [];
+    console.log('fileId: ', fileId)
+    let permissionIdsForFile = []
 
-        for (const permission of permissions) {
-            try {
-                const result = await service.permissions.create({
-                    resource: permission,
-                    fileId: fileId,
-                    fields: 'id',
-                    corpora: 'drive',
-                    includeItemsFromAllDrives: true,
-                    supportsAllDrives: true,
-                    driveId: process.env.GOOGLE_DRIVE_ID
-                });
-                permissionIds.push(result.data.id);
+    for (const permission of permissions) {
+        try {
+            const result = await service.permissions.create({
+                resource: permission,
+                fileId: fileId,
+                fields: 'id',
+                corpora: 'drive',
+                includeItemsFromAllDrives: true,
+                supportsAllDrives: true,
+                driveId: process.env.GOOGLE_DRIVE_ID
+            });
+            permissionIdsForFile.push({ fileId: fileId, permissionId: result.data.id });
 
-                console.log(`Inserted permission id: ${result.data.id}`);
-            } catch (err) {
-                console.error('Failed to share the file with the user. Reason: ', err);
-            }
+            console.log(`Inserted permission id: ${result.data.id}`);
+        } catch (err) {
+            console.error(`Failed to share file '${fileId}' with the user. Reason: `, err);
         }
-
-        return permissionIds;
-    } catch (error) {
-        const errMsg = `Failed to share the file with the target user.`
-        console.log('errMsg: ', errMsg)
-        console.log(error.response.data.error)
-
-        return null;
     }
+
+    return permissionIdsForFile?.length ? permissionIdsForFile : null;
 }
 
 const retrieveGoogleDriveFolder = async () => {
@@ -324,12 +317,6 @@ export default async function handler(request, response) {
                     }
                 }
 
-
-                // check for any duplicate folders
-                // once the duplicate folders has been found, mark the folder as a duplicate under 'alternativeName' field: folder (NUM)
-                // when pushing the files into the unitFolders, for the parent folder id insert the following if the data is a file: 
-                // parentFolderId: the id of the folder
-
                 console.log('foldersOccurrenceObj, sup there meng: ', foldersOccurrenceObj)
 
 
@@ -480,6 +467,7 @@ export default async function handler(request, response) {
         let createdFolders = []
         const folderPaths = [...new Set(unitFolders.filter(folder => folder.pathToFile !== 'root').map(folder => folder.pathToFile))]
 
+        console.log('creating the google folders...')
         // create the google folders 
         for (let index = 0; index < folderPaths.length; index++) {
             const folderPath = folderPaths[index]
@@ -501,8 +489,6 @@ export default async function handler(request, response) {
             const parentFolder = folderPathSplitted.at(-2)
             const parentFolderId = createdFolders.find(folder => folder.name === parentFolder)?.id
 
-            console.log('parentFolderId: ', parentFolderId)
-
             if (!parentFolderId) {
                 foldersFailedToCreate.push(folderName)
                 continue
@@ -518,64 +504,71 @@ export default async function handler(request, response) {
             createdFolders.push({ id: folderId, name: folderName, pathToFile: folderPath })
         }
 
-        // GOAL: share all of the files with the target user
-        // get all files that are not folders
-        // put them into an array 
-        // share those files with the target user
+        console.log('google folders has been created...')
 
-        // GOAL: after sharing the files with the target user, copy those files into the target folder
-        // using the name of the parent folder 
-        // go through each file and get the parent folder name
-        // the file has been shared 
+        const permissions = [
+            {
+                type: 'user',
+                role: 'writer',
+                emailAddress: request.body.email
+            },
+            {
+                type: 'domain',
+                role: 'writer',
+                domain: 'galacticpolymath.com'
+            }
+        ]
+        const files = unitFolders.filter(folder => !folder.mimeType.includes('folder'))
+        let failedFilesToShare = [];
+        let filesThatWereShared = []
 
+        console.log('will share files shared with the client side user...')
+        // share the files in order to copy them into the specified folder
 
+        for (const file in files) {
+            console.log('file.name: ', file.name)
+            console.log('file.id: ', file.id)
 
-        console.log('unitFolders: ', unitFolders)
+            let permissionResults = await shareFile(file.id, googleService, permissions)
 
-
-        // CASE: the folder path does not have '/' in it.
-        // GOAL: create the folder at the root of the unit folder
-
-        // CASE: the folder does have '/' in it. 
-        // GOAL: create the folder within the parent folder
-        // push the following into folderNamesAndIds array: { name, id }
-        // get the id of the folder
-        // create the folder within the parent folder
-        // query the object, get the id of the folder
-        // the target parent folder object is found in the array that keeps tracks of the folder name and its id
-
-
-
-
-
-
-        // FOR APP:
-        // CASES: the folder that is being copied, there could be duplicate names in the user's google drive
-
-        // CASE: the unit that the user is trying to copy does not exist in the user's google drive
-        // GOAL: create the unit folder in the user's google drive
+            if (!permissionResults?.length) {
+                failedFilesToShare.push({ name: file.name, id: file.id })
+                continue
+            }
 
 
-        // MAIN GOAL: create all of the subfolders for the unit
-        // the sub-folders are created
-        // push the folder name and the id of the folder into the folders array
-        // get the id of the folder
-        // the folder has been created
-        // if x is at the root, then create the folder at the root of the unit (get the id of the unit folder in the user's google drive) 
-        // if the folder does not exist, then loop through the folder names splitted, call it y and each iteration of y, x
-        // CHECK IF THE FOLDER ALREADY EXIST IN THE USER'S GOOGLE DRIVE BY USING THE NAME OF THE FOLDER "name = '{the name of the folder}'"
-        // for each value, if the path is nested, split the string by '/'
-        // loop through the array
-        // get an array of all of the paths for the folders as follows: (the string for 'unitFolderId')[]
+            filesThatWereShared.push(...permissionResults)
+        }
 
-        // GOAL: copy all of the files into their folders
-        // the file has been copied into the target folder
-        // get the google id of the target folder
-        // the target folder has been retrieved
-        // using the name of the parent folder find the target folder in the folders array 
-        // the parent folder has been attained
-        // get the last element of the split array, this will be the parent folder
-        // split the path string into an array
+        console.log('files has been shared...')
+
+        let failedCopiedFiles = []
+        let parentFoldersThatDontExist = []
+
+        console.log('will execute copy...')
+        //  copy the files into the corresponding folder
+        for (const file of files) {
+            // get the parent folder of the file
+            const parentFolderName = file.pathToFile.split("/").at(-1)
+            const parentFolder = createdFolders.find(folder => folder.name === parentFolderName)
+
+            if (!parentFolder) {
+                console.error(`The parent folder for '${file.name}' file does not exist.`)
+                parentFoldersThatDontExist.push(parentFolder)
+                continue
+            }
+
+            const copyFileResult = await copyFile(file.id, [parentFolder.id], request.body.accessToken)
+
+            if (!copyFileResult.wasSuccessful) {
+                failedCopiedFiles.push(file.name)
+            }
+        }
+
+        console.log('Done copying files...')
+
+        console.log("failedCopiedFiles: ", failedCopiedFiles)
+        console.log("failedFilesToShare: ", failedFilesToShare)
 
         return response.json({
             data: unitFolders
