@@ -99,11 +99,12 @@ const copyFile = async (fileId, folderIds, accessToken) => {
 /**
  * Share the google drive file with a user.
  * @param{string} fileId The id of the file.
+ * @param{string} fileName The name of the file.
  * @param{{ type: string, role: string, emailAddress: string }[]} permissions Permissions for the user to access the file
  * @param{drive_v3.Drive} service google drive service object
  * @return{Promise<any[] | null>} An array of the permission ids if successful. Otherwise, it will return null.
  * */
-const shareFile = async (fileId, service, permissions) => {
+const shareFile = async (fileId, service, permissions, fileName) => {
     console.log('fileId: ', fileId)
     let permissionIdsForFile = []
 
@@ -122,7 +123,7 @@ const shareFile = async (fileId, service, permissions) => {
 
             console.log(`Inserted permission id: ${result.data.id}`);
         } catch (err) {
-            console.error(`Failed to share file '${fileId}' with the user. Reason: `, err);
+            console.error(`Failed to share file '${fileId}' with the name of ${fileName} with the user. Reason: `, err);
         }
     }
 
@@ -277,12 +278,13 @@ export default async function handler(request, response) {
 
 
         const rootDriveFolders = await getGooglDriveFolders(request.body.unitDriveId)
-        let unitFolders = [...rootDriveFolders.map(folder => ({ name: folder.name, id: folder.id, mimeType: folder.mimeType, pathToFile: 'root' }))]
+        /** @type {{ id: string, name: string, pathToFile: string, mimeType: string, parentFolderId?: string, wasCreated?: boolean }[]} */
+        let unitFolders = [...rootDriveFolders.map(folder => ({ name: folder.name, id: folder.id, mimeType: folder.mimeType, pathToFile: '' }))]
 
         for (const unitFolder of unitFolders) {
             const parentFolderAlternativeName = unitFolder.alternativeName
 
-            if (unitFolder.mimeType.includes("folder") && (unitFolder.pathToFile && (unitFolder.pathToFile !== 'root'))) {
+            if (unitFolder.mimeType.includes("folder") && (unitFolder.pathToFile && (unitFolder.pathToFile !== ''))) {
                 const folderDataResponse = await googleService.files.list({
                     corpora: 'drive',
                     includeItemsFromAllDrives: true,
@@ -328,6 +330,7 @@ export default async function handler(request, response) {
                             id: file.id,
                             // get the id of the folder in order to copy the file or folder into the specific folder of the user's drive 
                             mimeType: file.mimeType,
+                            parentFolderId: unitFolder.id,
                             pathToFile: `${unitFolder.pathToFile}/${unitFolder.name}`,
                             parentFolderAlternativeName
                         }
@@ -343,6 +346,7 @@ export default async function handler(request, response) {
                         id: file.id,
                         mimeType: file.mimeType,
                         folderAlternativeName: targetFolder.alternativeName,
+                        parentFolderId: unitFolder.id,
                         pathToFile: `${unitFolder.pathToFile}/${unitFolder.name}`,
                         parentFolderAlternativeName
                     }
@@ -400,6 +404,7 @@ export default async function handler(request, response) {
                             folderAlternativeName: targetFolder.name,
                             mimeType: file.mimeType,
                             pathToFile: unitFolder.name,
+                            parentFolderId: unitFolder.id,
                             parentFolderAlternativeName
                         }
                     }
@@ -409,6 +414,7 @@ export default async function handler(request, response) {
                         name: file.name,
                         id: file.id,
                         mimeType: file.mimeType,
+                        parentFolderId: unitFolder.id,
                         pathToFile: unitFolder.name,
                         parentFolderAlternativeName
 
@@ -427,6 +433,7 @@ export default async function handler(request, response) {
                     id: unitFolder.id,
                     // get the id of the folder in order to copy the file or folder into the specific folder of the user's drive 
                     mimeType: unitFolder.mimeType,
+                    parentFolderId: unitFolder.id,
                     pathToFile: unitFolder.pathToFile ? `${unitFolder.pathToFile}/${unitFolder.name}` : unitFolder.name,
                     parentFolderAlternativeName
                 }
@@ -435,13 +442,11 @@ export default async function handler(request, response) {
             }
         }
 
-        // give the user the ability the name the folder where the files will be copied to. 
+        // give the user the ability the to name the folder where the files will be copied to. 
         const searchGoogleDriveUnitFolders = await searchUserGoogleDrive(request.body.accessToken, `name = "${request.body.unitName} COPY"`)
         let unitFolderId = searchGoogleDriveUnitFolders?.[0]?.id
 
-        console.log('searchGoogleDriveUnitFolders: ', searchGoogleDriveUnitFolders)
-
-        // Create the folder if the folder has not been created yet.
+        // Create the folder that the user wants to copy
         if (!searchGoogleDriveUnitFolders?.length) {
             const { folderId, errMsg } = await createGoogleDriveFolderForUser(`${request.body.unitName} COPY`, request.body.accessToken)
 
@@ -454,56 +459,72 @@ export default async function handler(request, response) {
 
         console.log('unitFolderId: ', unitFolderId)
 
-        // const folderPaths = [...new Set(unitFolders.filter(folder => folder.pathToFile !== 'root').map(folder => folder.pathToFile))]
-        // let folderPaths = unitFolders.filter(folder => folder.pathToFile !== 'root').map((folder, index) => ({
-        //     id: index,
-        //     wasCreated: false,
-        //     parentFolderAlternativeName: folder.parentFolderAlternativeName,
-        //     pathToFile: folder.pathToFile,
-        //     ...(folder.folderAlternativeName ? { folderAlternativeName: folder.folderAlternativeName } : {})
-        // }))
         let foldersFailedToCreate = [];
-        /** @type {{ id: string, name: string, pathToFile: string }[]} */
+        /** @type {{ id: string, name: string, pathToFile: string, parentFolderId: string, gpFolderId: string }[]} */
         let createdFolders = []
-        const folderPaths = [...new Set(unitFolders.filter(folder => folder.pathToFile !== 'root').map(folder => folder.pathToFile))]
+        /** @type {{ fileId: string, pathToFile: string, parentFolderId: string, name: string }[]} */
+        let folderPaths = unitFolders
+            .filter(folder => folder.mimeType.includes('folder'))
+            .map(folder => {
+                return {
+                    name: folder.name,
+                    mimeType: folder.mimeType,
+                    fileId: folder.id,
+                    pathToFile: folder.pathToFile,
+                    parentFolderId: folder.parentFolderId
+                }
+            })
 
-        console.log('folderPaths: ', folderPaths)
+        // CASE: there are multiple folders with the same name 
+        // GOAL: find a way to differentiate the folders from one another. 
 
-        console.log('creating the google folders...')
+        // NOTES:
+        // able to get the folders and the path to the folder 
+
+        console.log('folderPaths, yo there: ', folderPaths)
+
+        console.log('creating sub-folders...')
         // create the google folders 
-        // for (let index = 0; index < folderPaths.length; index++) {
-        for (const folderPath of folderPaths) {
-            const folderPathSplitted = folderPath.split('/')
-            const folderName = folderPathSplitted.at(-1)
-
-            if (folderPathSplitted.length === 1) {
-                const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderName, request.body.accessToken, [unitFolderId])
+        for (const folderToCreate of folderPaths) {
+            if (folderToCreate.pathToFile === '') {
+                const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderToCreate.name, request.body.accessToken, [unitFolderId])
 
                 if (!wasSuccessful) {
-                    foldersFailedToCreate.push(folderName)
+                    foldersFailedToCreate.push(folderToCreate.name)
                 } else {
-                    createdFolders.push({ id: folderId, name: folderName, pathToFile: folderPath })
+                    createdFolders.push({
+                        id: folderId,
+                        gpFolderId: folderToCreate.fileId,
+                        name: folderToCreate.name,
+                        pathToFile: '',
+                        parentFolderId: folderToCreate.parentFolderId
+                    })
                 }
 
                 continue
             }
 
-            const parentFolder = folderPathSplitted.at(-2)
-            const parentFolderId = createdFolders.find(folder => folder.name === parentFolder)?.id
+            const parentFolderId = createdFolders.find(folder => folder.gpFolderId === folderToCreate.parentFolderId)?.id
 
             if (!parentFolderId) {
-                foldersFailedToCreate.push(folderName)
+                foldersFailedToCreate.push(folderToCreate.name)
                 continue
             }
 
-            const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderName, request.body.accessToken, [parentFolderId])
+            const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderToCreate.name, request.body.accessToken, [parentFolderId])
 
             if (!wasSuccessful) {
-                foldersFailedToCreate.push(folderName)
+                foldersFailedToCreate.push(folderToCreate.name)
                 continue
             }
 
-            createdFolders.push({ id: folderId, name: folderName, pathToFile: folderPath })
+            createdFolders.push({
+                id: folderId,
+                gpFolderId: folderToCreate.fileId,
+                name: folderToCreate.name,
+                pathToFile: folderToCreate.pathToFile,
+                parentFolderId: folderToCreate.parentFolderId
+            })
         }
 
         console.log('google folders has been created...')
@@ -513,7 +534,6 @@ export default async function handler(request, response) {
         let failedFilesToShare = [];
         let filesThatWereShared = []
 
-        console.log('files: ', files)
         console.log('will share files shared with the client side user...')
         const permissions = [
             {
@@ -530,7 +550,7 @@ export default async function handler(request, response) {
 
         // share the files that are going to be copied
         for (const file of files) {
-            let permissionResults = await shareFile(file.id, googleService, permissions)
+            let permissionResults = await shareFile(file.id, googleService, permissions, file.name)
 
             if (!permissionResults?.length) {
                 failedFilesToShare.push({ name: file.name, id: file.id })
@@ -553,11 +573,8 @@ export default async function handler(request, response) {
         for (const file of files) {
             try {
                 // get the id of the parent folder in order to find it from the createdFolders array
-
-                const parentFolderName = file.pathToFile.split("/").at(-1)
-                // SOURCE OF THE BUG: if there are multiple folders with the same name, then all of the files will be copied into 
-                // -the first occurence of the folder name
-                const parentFolder = createdFolders.find(folder => folder.name === parentFolderName)
+                const parentFolderName = file.pathToFile.split("/").at(-1);
+                const parentFolder = createdFolders.find(folder => (folder.name === parentFolderName) && (folder.gpFolderId === file.id))
 
                 if (!parentFolder) {
                     console.error(`The parent folder for '${file.name}' file does not exist.`)
@@ -581,6 +598,7 @@ export default async function handler(request, response) {
 
         console.log("failedCopiedFiles: ", failedCopiedFiles)
         console.log("failedFilesToShare: ", failedFilesToShare)
+        console.log('foldersFailedToCreate: ', foldersFailedToCreate)
 
         return response.json({
             data: unitFolders
