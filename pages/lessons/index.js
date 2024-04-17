@@ -19,6 +19,9 @@ import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
 import { getGpVids, getLinkPreviewObj, getShowableUnits } from '../../globalFns.js';
 import SelectedGpWebApp from '../../components/Modals/SelectedGpWebApp.js';
 import GpWebApps from '../../components/LessonsPg/sections/GpWebApps.js';
+import { GiShipWheel } from "react-icons/gi";
+import { FaAppStoreIos } from "react-icons/fa";
+import Button from '../../components/General/Button.js';
 
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
@@ -66,6 +69,67 @@ const LessonsPage = ({
           <Sponsors />
         </div>
       </section>
+      <section className="mb-3 mt-5">
+        <div
+          style={{ backgroundColor: "#F0F4FF", height: "175px" }}
+          className="w-100 border-top border-bottom px-5 py-2"
+        >
+          <h4 className="p-0 mb-0">
+            <span className='h-100'>
+              <GiShipWheel style={{ transform: "translateY(-2px)" }} />
+            </span>
+            <span className='h-100 ms-1'>
+              Navigate To:
+            </span>
+          </h4>
+          <section className="d-flex ps-3 pt-3">
+            <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded">
+              <Button defaultStyleObj={{ background: "none" }} classNameStr='w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                <span>
+                  {/* put icons here */}
+                  <FaAppStoreIos />
+                </span>
+                <span className="fw-bold">
+                  Apps
+                </span>
+              </Button>
+            </div>
+            <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded ms-5">
+              <Button defaultStyleObj={{ background: "none" }} classNameStr='w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                <span>
+                  {/* put icons here */}
+                </span>
+                <span className="fw-bold">
+                  Videos
+                </span>
+              </Button>
+            </div>
+            <div>
+
+            </div>
+            <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded ms-5">
+              <Button defaultStyleObj={{ background: "none" }} classNameStr='w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                <span>
+                  {/* put icons here */}
+                </span>
+                <span className="fw-bold">
+                  Units
+                </span>
+              </Button>
+            </div>
+            <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded ms-5">
+              <Button defaultStyleObj={{ background: "none" }} classNameStr='w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                <span>
+                  {/* put icons here */}
+                </span>
+                <span className="fw-bold">
+                  Lessons
+                </span>
+              </Button>
+            </div>
+          </section>
+        </div>
+      </section>
       <section>
         <div className='container'>
           <section className="mb-5 pt-2">
@@ -76,7 +140,6 @@ const LessonsPage = ({
             </section>
             <section>
               <section className="mx-auto grid pb-1 p-4 gap-3 pt-3">
-                {/* pointer g-col-12 g-col-sm-10 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg */}
                 <div onClick={handleJobVizCardClick} className="pointer g-col-12 g-col-sm-10 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg">
                   <section className="d-flex flex-column w-100 h-100">
                     <section style={{ height: '205px' }} className="imgSec d-flex justify-content-center align-items-center">
