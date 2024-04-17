@@ -73,8 +73,8 @@ const LessonsPage = ({
       </section>
       <section className="mb-3 mt-5">
         <div
-          style={{ backgroundColor: "#F0F4FF", height: "175px" }}
-          className="w-100 border-top border-bottom px-5 py-2"
+          style={{ backgroundColor: "#F0F4FF" }}
+          className="w-100 border-top border-bottom px-2 px-sm-5 py-2 lessons-nav-section-container"
         >
           <h4 className="p-0 mb-0">
             <span className='h-100'>
@@ -84,8 +84,9 @@ const LessonsPage = ({
               Navigate To:
             </span>
           </h4>
-          <section className="d-flex ps-3 pt-3">
-            <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded">
+          <section className="d-flex flex-wrap justify-content-sm-start pt-3 ps-sm-3 pt-sm-3">
+
+            <div className="bg-white nav-section-btn rounded">
               <a href='#gp-apps' style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
                 <span style={{ height: "60%" }} className='d-inline-flex justify-content-center align-items-center'>
                   {/* put icons here */}
@@ -96,7 +97,7 @@ const LessonsPage = ({
                 </span>
               </a>
             </div>
-            <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded ms-5">
+            <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
               <a href="#gp-videos" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
                 <span style={{ height: "60%" }} className="d-inline-flex justify-content-center align-items-center">
                   <i style={{ color: 'red' }} className='bi bi-youtube' />
@@ -108,7 +109,7 @@ const LessonsPage = ({
             </div>
             <div>
             </div>
-            <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded ms-5">
+            <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
               <a href="#gp-units" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
                 <span style={{ height: "60%" }}>
                   <Image
@@ -122,7 +123,7 @@ const LessonsPage = ({
                 </span>
               </a>
             </div>
-            <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded ms-5">
+            <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
               <a href="#gp-lessons" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
                 <span style={{ height: "60%" }}>
                   <Image
