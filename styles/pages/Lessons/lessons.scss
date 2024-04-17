@@ -439,6 +439,10 @@ $toolTipColor: #f0f4ff;
   text-decoration-color: white;
 }
 
+.txt-underline-on-hover:hover {
+  text-decoration: underline;
+}
+
 .selected-gp-web-app-dialog {
   max-width: none;
   min-height: 100%;

@@ -15,7 +15,7 @@ const GpWebApps = ({
                     <div
                         key={index}
                         onClick={handleGpWebAppCardClick(webApp)}
-                        className="pointer g-col-12 g-col-sm-10 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg"
+                        className="pointer g-col-12 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg"
                     >
                         <section className="d-flex flex-column w-100">
                             <div

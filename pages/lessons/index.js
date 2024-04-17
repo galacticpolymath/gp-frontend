@@ -20,8 +20,10 @@ import { getGpVids, getLinkPreviewObj, getShowableUnits } from '../../globalFns.
 import SelectedGpWebApp from '../../components/Modals/SelectedGpWebApp.js';
 import GpWebApps from '../../components/LessonsPg/sections/GpWebApps.js';
 import { GiShipWheel } from "react-icons/gi";
-import { FaAppStoreIos } from "react-icons/fa";
+import LessonSvg from '../../assets/img/gp-lesson-icon.svg';
+import UnitIconSvg from '../../assets/img/gp-unit-icon.svg';
 import Button from '../../components/General/Button.js';
+import Image from 'next/image.js';
 
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
@@ -84,48 +86,55 @@ const LessonsPage = ({
           </h4>
           <section className="d-flex ps-3 pt-3">
             <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded">
-              <Button defaultStyleObj={{ background: "none" }} classNameStr='w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
-                <span>
+              <a href='#gp-apps' style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                <span style={{ height: "60%" }} className='d-inline-flex justify-content-center align-items-center'>
                   {/* put icons here */}
-                  <FaAppStoreIos />
+                  <img src="favicon-32x32.png" alt="Apps_Icon" style={{ objectFit: 'contain' }} />
                 </span>
-                <span className="fw-bold">
+                <span style={{ height: "40%" }} className='d-inline-flex fw-bold'>
                   Apps
                 </span>
-              </Button>
+              </a>
             </div>
             <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded ms-5">
-              <Button defaultStyleObj={{ background: "none" }} classNameStr='w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
-                <span>
-                  {/* put icons here */}
+              <a href="#gp-videos" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                <span style={{ height: "60%" }} className="d-inline-flex justify-content-center align-items-center">
+                  <i style={{ color: 'red' }} className='bi bi-youtube' />
                 </span>
-                <span className="fw-bold">
+                <span style={{ height: "40%" }} className="fw-bold">
                   Videos
                 </span>
-              </Button>
+              </a>
             </div>
             <div>
-
             </div>
             <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded ms-5">
-              <Button defaultStyleObj={{ background: "none" }} classNameStr='w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
-                <span>
-                  {/* put icons here */}
+              <a href="#gp-units" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                <span style={{ height: "60%" }}>
+                  <Image
+                    src={UnitIconSvg}
+                    style={{ height: '50px', width: '50px' }}
+                    alt='GP Unit Icon'
+                  />
                 </span>
-                <span className="fw-bold">
+                <span style={{ height: "40%" }} className="fw-bold">
                   Units
                 </span>
-              </Button>
+              </a>
             </div>
             <div style={{ height: "100px", width: "100px", border: "solid .5px black" }} className="bg-white rounded ms-5">
-              <Button defaultStyleObj={{ background: "none" }} classNameStr='w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
-                <span>
-                  {/* put icons here */}
+              <a href="#gp-lessons" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                <span style={{ height: "60%" }}>
+                  <Image
+                    src={LessonSvg}
+                    style={{ height: '50px', width: '50px' }}
+                    alt='GP Lesson Icon'
+                  />
                 </span>
-                <span className="fw-bold">
+                <span style={{ height: "40%" }} className="fw-bold">
                   Lessons
                 </span>
-              </Button>
+              </a>
             </div>
           </section>
         </div>
@@ -134,13 +143,13 @@ const LessonsPage = ({
         <div className='container'>
           <section className="mb-5 pt-2">
             <section className="headerSecLessonsPg">
-              <h4 className="ms-sm-4 text-muted  mb-2 mb-sm-4 text-left mt-4 mx-4">
+              <h4 id="gp-apps" style={{ scrollMarginTop: "100px" }} className="ms-sm-4 text-muted  mb-2 mb-sm-4 text-left mt-4 mx-4">
                 Galactic Polymath Learning Tools
               </h4>
             </section>
             <section>
               <section className="mx-auto grid pb-1 p-4 gap-3 pt-3">
-                <div onClick={handleJobVizCardClick} className="pointer g-col-12 g-col-sm-10 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg">
+                <div onClick={handleJobVizCardClick} className="pointer g-col-12 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg">
                   <section className="d-flex flex-column w-100 h-100">
                     <section style={{ height: '205px' }} className="imgSec d-flex justify-content-center align-items-center">
                       <JobVizIcon />

@@ -32,7 +32,13 @@ const GpLessons = ({
                                 style={{ height: 'fit-content' }}
                                 alt='GP Unit Icon'
                             />
-                            <h4 className="d-flex justify-content-center align-items-center">Galactic Polymath Individual Lessons</h4>
+                            <h4
+                                className="d-flex justify-content-center align-items-center"
+                                id="gp-lessons"
+                                style={{ scrollMarginTop: "100px" }}
+                            >
+                                Galactic Polymath Individual Lessons
+                            </h4>
                         </div>
                         <p className='mt-2 mb-0'>Free lessons to engage students in current research, real world problems, and interdisciplinary thinking.</p>
                     </div>

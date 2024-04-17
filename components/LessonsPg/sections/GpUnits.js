@@ -44,7 +44,13 @@ const GpUnits = ({
                         style={{ height: 'fit-content' }}
                         alt='GP Unit Icon'
                     />
-                    <h4 className="d-flex justify-content-center align-items-center">Galactic Polymath Mini-Unit Releases</h4>
+                    <h4
+                        id="gp-units"
+                        style={{ scrollMarginTop: "100px" }}
+                        className="d-flex justify-content-center align-items-center"
+                    >
+                        Galactic Polymath Mini-Unit Releases
+                    </h4>
                 </div>
                 <p className='mt-2 mb-0'> Each unit has 2-6 lessons created through 100s of collaborative hours by scientists, teachers, artists, and filmmakers. </p>
                 <p><em>And they&apos;re all free!</em></p>
