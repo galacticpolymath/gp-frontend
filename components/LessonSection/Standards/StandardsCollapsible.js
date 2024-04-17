@@ -27,13 +27,17 @@ const StandardsCollapsible = ({
       className='text-left'
     >
       <div ref={ref}>
-        <LearningChart
-          Badge={Badge}
-          Footnote={Footnote}
-          Description={Description}
-          Title={Title}
-        />
-        <Standards Data={Data} />
+        {Badge && (
+          <LearningChart
+            Badge={Badge}
+            Footnote={Footnote}
+            Description={Description}
+            Title={Title}
+          />
+        )}
+        <div className={Badge ? '' : 'pt-3'}>
+          <Standards Data={Data} />
+        </div>
       </div>
     </CollapsibleLessonSection>
   );

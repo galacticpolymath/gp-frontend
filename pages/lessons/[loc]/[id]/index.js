@@ -18,14 +18,11 @@ import useScrollHandler from '../../../../customHooks/useScrollHandler';
 import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
-import { getLinkPreviewObj } from '../../../../globalFns';
-import { CustomError } from '../../../../backend/utils/errors';
+import { getLinkPreviewObj, removeHtmlTags } from '../../../../globalFns';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
-
-const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
 const getSectionDotsDefaultVal = sectionComps => sectionComps.map((section, index) => {
   const _sectionTitle = `${index + 1}. ${section.SectionTitle}`;

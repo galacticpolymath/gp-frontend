@@ -434,6 +434,11 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.txt-underline-on-hover-white:hover {
+  text-decoration: underline;
+  text-decoration-color: white;
+}
+
 .selected-gp-web-app-dialog {
   max-width: none;
   min-height: 100%;
@@ -469,9 +474,6 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.arrowIconAndClipboardIconLessonPartContainer {
-  // transform: translateY(-10%);
-}
 
 .lessonSecsNavDotsListContainer {
   top: 95px;

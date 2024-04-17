@@ -19,7 +19,6 @@ import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
 import { getGpVids, getLinkPreviewObj, getShowableUnits } from '../../globalFns.js';
 import SelectedGpWebApp from '../../components/Modals/SelectedGpWebApp.js';
 import GpWebApps from '../../components/LessonsPg/sections/GpWebApps.js';
-import axios from 'axios';
 
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';

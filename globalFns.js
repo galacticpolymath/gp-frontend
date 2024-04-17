@@ -209,3 +209,5 @@ export const createObj = (keysAndValsArr = []) => {
         return obj;
     }, {})
 }
+
+export const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
