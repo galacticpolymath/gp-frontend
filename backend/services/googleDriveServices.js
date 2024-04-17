@@ -43,6 +43,30 @@ class Credentials {
 }
 
 /**
+ * Share the google drive file with a user.
+ * @param{string} folderId The id of the file.
+ * @param{drive_v3.Drive} googleService google drive service object
+ * @return{Promise<[] | null>} An array of the permission ids if successful. Otherwise, it will return null.
+ * */
+export const getGooglDriveFolders = async (googleService, folderId) => {
+    try {
+        const response = await googleService.files.list({
+            corpora: 'drive',
+            includeItemsFromAllDrives: true,
+            supportsAllDrives: true,
+            driveId: process.env.GOOGLE_DRIVE_ID,
+            q: `'${folderId}' in parents`
+        })
+
+        return response.data.files
+    } catch (error) {
+        console.error('Failed to get the root folders of drive.')
+
+        return null;
+    }
+}
+
+/**
  * Create a service object that will access the company's google drive. 
  *  @return{JWT} Returns google auth jwt. Else, null will be returned.
  * */
@@ -83,7 +107,6 @@ export const generateGoogleAuthJwt = () => {
         return null;
     }
 }
-// `'${request.body.unitDriveId}' in parents`
 
 /**
  * Share the google drive file with a user.
