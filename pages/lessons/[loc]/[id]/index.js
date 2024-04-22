@@ -97,6 +97,11 @@ const LessonDetails = ({ lesson }) => {
     lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards', InitiallyExpanded: true };
     sectionComps = sectionComps.filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index));
     const backgroundSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
+
+    if (backgroundSectionIndex === -1) {
+      console.error('The background section DOES NOT EXIST!')
+    }
+
     sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
   }
 

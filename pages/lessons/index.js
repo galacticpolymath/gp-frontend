@@ -19,6 +19,11 @@ import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
 import { getGpVids, getLinkPreviewObj, getShowableUnits } from '../../globalFns.js';
 import SelectedGpWebApp from '../../components/Modals/SelectedGpWebApp.js';
 import GpWebApps from '../../components/LessonsPg/sections/GpWebApps.js';
+import { GiShipWheel } from "react-icons/gi";
+import LessonSvg from '../../assets/img/gp-lesson-icon.svg';
+import UnitIconSvg from '../../assets/img/gp-unit-icon.svg';
+import Button from '../../components/General/Button.js';
+import Image from 'next/image.js';
 
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
@@ -66,18 +71,91 @@ const LessonsPage = ({
           <Sponsors />
         </div>
       </section>
+      <section className="mb-3 mt-5">
+        <div
+          style={{ backgroundColor: "#F0F4FF" }}
+          className="w-100 border-top border-bottom px-2 px-sm-5 py-2 lessons-nav-section-container"
+        >
+          <h4 className="p-0 mb-0">
+            <span className='h-100'>
+              <GiShipWheel style={{ transform: "translateY(-2px)" }} />
+            </span>
+            <span className='h-100 ms-1'>
+              Navigate To:
+            </span>
+          </h4>
+          <section className="d-flex flex-wrap justify-content-sm-start pt-3 ps-sm-3 pt-sm-3">
+            <div className="p-1 p-sm-0">
+              <div className="bg-white nav-section-btn rounded">
+                <a href='#gp-apps' style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                  <span style={{ height: "60%" }} className='d-inline-flex justify-content-center align-items-center'>
+                    {/* put icons here */}
+                    <img src="favicon-32x32.png" alt="Apps_Icon" style={{ objectFit: 'contain' }} />
+                  </span>
+                  <span style={{ height: "40%" }} className='d-inline-flex fw-bold'>
+                    Apps
+                  </span>
+                </a>
+              </div>
+            </div>
+            <div className="p-1 p-sm-0">
+              <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
+                <a href="#gp-videos" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                  <span style={{ height: "60%" }} className="d-inline-flex justify-content-center align-items-center">
+                    <i style={{ color: 'red' }} className='bi bi-youtube' />
+                  </span>
+                  <span style={{ height: "40%" }} className="fw-bold">
+                    Videos
+                  </span>
+                </a>
+              </div>
+            </div>
+            <div className="p-1 p-sm-0">
+              <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
+                <a href="#gp-units" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                  <span style={{ height: "60%" }}>
+                    <Image
+                      src={UnitIconSvg}
+                      style={{ height: '50px', width: '50px' }}
+                      alt='GP Unit Icon'
+                    />
+                  </span>
+                  <span style={{ height: "40%" }} className="fw-bold">
+                    Units
+                  </span>
+                </a>
+              </div>
+            </div>
+            <div className="p-1 p-sm-0">
+              <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
+                <a href="#gp-lessons" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                  <span style={{ height: "60%" }}>
+                    <Image
+                      src={LessonSvg}
+                      style={{ height: '50px', width: '50px' }}
+                      alt='GP Lesson Icon'
+                    />
+                  </span>
+                  <span style={{ height: "40%" }} className="fw-bold">
+                    Lessons
+                  </span>
+                </a>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
       <section>
         <div className='container'>
           <section className="mb-5 pt-2">
             <section className="headerSecLessonsPg">
-              <h4 className="ms-sm-4 text-muted  mb-2 mb-sm-4 text-left mt-4 mx-4">
+              <h4 id="gp-apps" style={{ scrollMarginTop: "100px" }} className="ms-sm-4 text-muted  mb-2 mb-sm-4 text-left mt-4 mx-4">
                 Galactic Polymath Learning Tools
               </h4>
             </section>
             <section>
               <section className="mx-auto grid pb-1 p-4 gap-3 pt-3">
-                {/* pointer g-col-12 g-col-sm-10 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg */}
-                <div onClick={handleJobVizCardClick} className="pointer g-col-12 g-col-sm-10 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg">
+                <div onClick={handleJobVizCardClick} className="pointer g-col-12 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg">
                   <section className="d-flex flex-column w-100 h-100">
                     <section style={{ height: '205px' }} className="imgSec d-flex justify-content-center align-items-center">
                       <JobVizIcon />

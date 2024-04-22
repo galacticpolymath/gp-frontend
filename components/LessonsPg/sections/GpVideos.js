@@ -24,7 +24,11 @@ const GpVideos = ({
         <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
                 <div className="d-flex">
-                    <h4 className="d-flex justify-content-center align-items-center">
+                    <h4
+                        id="gp-videos"
+                        style={{ scrollMarginTop: "100px" }}
+                        className="d-flex justify-content-center align-items-center"
+                    >
                         Galactic Polymath Videos
                     </h4>
                 </div>

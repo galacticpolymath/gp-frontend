@@ -439,6 +439,29 @@ $toolTipColor: #f0f4ff;
   text-decoration-color: white;
 }
 
+.nav-section-btn {
+  width: 100px;
+  height: 100px;
+  border: solid .5px black;
+
+  @media(max-width: 577px) {
+    width: 83px;
+    height: 83px;
+  }
+}
+
+.lessons-nav-section-container {
+  height: 175px;
+
+  @media(max-width: 577px) {
+    height: auto;
+  }
+}
+
+.txt-underline-on-hover:hover {
+  text-decoration: underline;
+}
+
 .selected-gp-web-app-dialog {
   max-width: none;
   min-height: 100%;
