@@ -44,7 +44,7 @@ const Title = ({
 
   return (
     <div className="container d-flex justify-content-center pt-4 px-0">
-      <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center lessonTitleId">
+      <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center">
         <div className="col-12">
           <div className="mt-3 mt-sm-0 d-flex justify-content-between">
             {lastSubRelease && (
@@ -99,7 +99,7 @@ const Title = ({
                 />
               )}
           </div>
-          <div className='row my-0 py-0 '>
+          <div className='row my-0 py-0'>
             <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid align-content-center">
               <h5>Sponsored by:</h5>
               <RichText content={SponsoredBy} />

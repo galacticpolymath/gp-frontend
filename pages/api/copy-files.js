@@ -202,7 +202,8 @@ const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFol
 
         return { wasSuccessful: true, folderId: response.data.id }
     } catch (error) {
-        const errMsg = `Failed to create folder fo the user. Reason: ${error.response.data.error}`
+        console.error("Error object: ", error)
+        const errMsg = `Failed to create folder for the user. Reason: ${error.response.data.error}`
         console.log('errMsg: ', errMsg)
 
         return { wasSuccessful: false, errMsg: errMsg }
@@ -399,9 +400,11 @@ export default async function handler(request, response) {
             }
         }
 
-        // give the user the ability the to name the folder where the files will be copied to. 
+        // give the user the ability to name the folder where the files will be copied to. 
         const searchGoogleDriveUnitFolders = await searchUserGoogleDrive(request.body.accessToken, `name = "${request.body.unitName} COPY"`)
         let unitFolderId = searchGoogleDriveUnitFolders?.[0]?.id
+
+        console.log('unitFolderId: ', unitFolderId)
 
         // Create the folder that the user wants to copy
         if (!searchGoogleDriveUnitFolders?.length) {
@@ -493,7 +496,8 @@ export default async function handler(request, response) {
         let shareFilePromises = [];
 
         for (const file of files) {
-            for (const permission in permissions) {
+            for (const permission of permissions) {
+                console.log('permissions yo: ', permission)
                 const shareFilePromise = googleService.permissions.create({
                     resource: permission,
                     fileId: file.id,
@@ -507,10 +511,19 @@ export default async function handler(request, response) {
             }
         }
 
+        console.log('Sharing all files via Promse.allSettled...')
+
         let sharedFilesResults = await Promise.allSettled(shareFilePromises);
+
+        console.log('Files has been shared....')
         let failedShareFiles = sharedFilesResults.filter(sharedFileResult => sharedFileResult.status === "rejected")
 
         if (failedShareFiles.length) {
+            failedShareFiles.forEach(file => {
+                console.log("file.value.data: ", file.value.data)
+                console.log('file.reason: ', file)
+            });
+
             return response.status(500).json({
                 wasCopySuccessful: false,
                 msg: `Failed to share at least one file.`,
@@ -523,7 +536,8 @@ export default async function handler(request, response) {
         /** @type {Promise<AxiosResponse<any, any>>[]} */
         let copiedFilesPromises = [];
 
-        //  copy the files into the corresponding folder
+
+        // copy the files into the corresponding folder
         for (const file of files) {
             const parentFolderId = createdFolders.find(folder => folder.gpFolderId === file.parentFolderId)?.id
 
@@ -535,20 +549,26 @@ export default async function handler(request, response) {
 
             copiedFilesPromises.push(getCopyFilePromise(request.body.accessToken, [parentFolderId], file.id))
         }
+        console.log('executing Promise.allSettled, excuting copying of files...')
 
         const copiedFilesResult = await Promise.allSettled(copiedFilesPromises);
+
+        console.log('copying files has been completed...')
+
         const failedCopiedFiles = copiedFilesResult.filter(copiedFileResult => copiedFileResult.status === 'rejected')
 
         if (failedCopiedFiles.length) {
-            console.log('Failed to copy at least one file.')
+            failedCopiedFiles.forEach(file => {
+                console.log('file: ', file.reason)
+                console.log('file.value.data: ', file.response);
+            })
+
             return response.status(500).json({
                 wasCopySuccessful: false,
                 msg: 'At least one file failed to be shared.',
                 failedSharedFiles: failedCopiedFiles
             });
         }
-
-        console.log('Done copying files...')
 
         return response.json({ wasCopySuccessful: true });
     } catch (error) {
