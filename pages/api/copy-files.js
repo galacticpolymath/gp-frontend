@@ -238,8 +238,6 @@ export default async function handler(request, response) {
             return response.status(500).json({ wasCopySuccessful: false, msg: `Failed to download GP lessons. Either the root drive of the gp folder is empty or the access token is invalid.` });
         }
 
-        console.log('rootDriveFolders, sup dude! ', rootDriveFolders)
-        console.log('yo there!')
         /** @type {{ id: string, name: string, pathToFile: string, mimeType: string, parentFolderId?: string, wasCreated?: boolean }[]} */
         // will hold all of the folders
         let unitFolders = [...rootDriveFolders.map(folder => ({ name: folder.name, id: folder.id, mimeType: folder.mimeType, pathToFile: '' }))]
