@@ -458,6 +458,7 @@ export default async function handler(request, response) {
             }
         ]
 
+        // create a concurrent program, use promise.all
         // share the files that are going to be copied
         for (const file of files) {
             let permissionResults = await shareFile(file.id, googleService, permissions, file.name)
