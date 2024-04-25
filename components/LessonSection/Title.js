@@ -43,44 +43,48 @@ const Title = ({
   const lastSubRelease = useMemo(() => getLatestSubRelease(versions), []);
 
   return (
-    <div className="container d-flex justify-content-center pt-4 px-0">
-      <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center">
-        <div className="col-12">
-          <div className="mt-3 mt-sm-0 d-flex justify-content-between">
-            {lastSubRelease && (
-              <button
-                onClick={handleBtnClick}
-                className='underline-on-hover no-btn-styles d-flex'
-                style={{ color: 'black' }}
-              >
-                <span className='fw-lighter justify-items-left'>
-                  Version {lastSubRelease.version}{' '}
-                  (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-                </span>
-              </button>
-            )}
-            {availLocs && (
-              <LocDropdown
-                availLocs={availLocs}
-                loc={locale}
-                id={numID}
-              />
-            )}
-          </div>
-          <h1 id="lessonTitleId" className="mt-2 fs-2 fs-md-larger mb-1">{lessonTitle}</h1>
-          <h4 className='fw-light fs-6 fs-md-med mb-2'>{Subtitle}</h4>
-          {lessonBannerUrl && (
-            <div className='w-100 position-relative my-2 mx-0'>
-              <Image
-                src={lessonBannerUrl}
-                alt={Subtitle}
-                width={1500}
-                height={450}
-                priority
-                style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
-              />
+    <div className="container d-flex d-xxl-block justify-content-center pt-4 px-0">
+      <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center d-xxl-block">
+        <div className="col-12 d-flex flex-column flex-xxl-row">
+          <div className="col-xxl-7">
+            <div className="mt-3 mt-sm-0 d-flex justify-content-between">
+              {lastSubRelease && (
+                <button
+                  onClick={handleBtnClick}
+                  className='underline-on-hover no-btn-styles d-flex'
+                  style={{ color: 'black' }}
+                >
+                  <span className='fw-lighter justify-items-left'>
+                    Version {lastSubRelease.version}{' '}
+                    (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
+                  </span>
+                </button>
+              )}
+              {availLocs && (
+                <LocDropdown
+                  availLocs={availLocs}
+                  loc={locale}
+                  id={numID}
+                />
+              )}
             </div>
-          )}
+            <div>
+              <h1 id="lessonTitleId" className="mt-2 fs-2 fs-md-larger mb-1">{lessonTitle}</h1>
+              <h4 className='fw-light fs-6 fs-md-med mb-2'>{Subtitle}</h4>
+              {lessonBannerUrl && (
+                <div className='w-100 position-relative my-2 mx-0'>
+                  <Image
+                    src={lessonBannerUrl}
+                    alt={Subtitle}
+                    width={1500}
+                    height={450}
+                    priority
+                    style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
           <div className='d-flex d-md-none'>
             <label className='d-flex justify-content-center align-items-center'>Share: </label>
             {process.env.NODE_ENV === 'production'
@@ -99,18 +103,20 @@ const Title = ({
                 />
               )}
           </div>
-          <div className='row my-0 py-0'>
-            <div className="col-12 col-sm-8 col-md-8 col-lg-9 d-grid align-content-center">
+          <div className="col-xxl-2 d-none d-xxl-block" />
+          <div className='mb-4 mb-md-0 mt-4 mt-md-0 col-xxl-3 row my-0 py-0 col-xxl-4 d-xxl-flex flex-xxl-column-reverse justify-content-xxl-center align-items-xxl-center'>
+            <div className="col-12 col-sm-8 col-md-8 col-lg-9 col-xxl-12 d-grid align-content-center d-xxl-flex flex-xxl-column">
               <h5>Sponsored by:</h5>
-              <RichText content={SponsoredBy} />
+              <RichText className='' content={SponsoredBy} />
             </div>
-            <div className="col-5 col-sm-1 col-md-3 col-lg-3 m-auto d-grid">
+            <div className="col-5 col-sm-4  col-md-3 col-lg-3 col-xxl-12 m-auto d-grid m-xxl-0">
               {sponsorLogoImgUrl && (
-                <div className='d-sm-block d-flex justify-content-center align-items-center'>
+                <div className='d-sm-block d-xxl-flex justify-content-center align-items-center'>
                   <img
                     src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
                     alt={Subtitle}
-                    className='p-3 p-lg-4 '
+                    className='p-sm-3 p-lg-4 sponsor-img'
+                    style={{ objectFit: 'contain' }}
                   />
                 </div>
               )}

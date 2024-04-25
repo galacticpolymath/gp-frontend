@@ -439,6 +439,13 @@ $toolTipColor: #f0f4ff;
   text-decoration-color: white;
 }
 
+.sponsor-img {
+  @media (min-width: 1400px) {
+    max-width: 335px;
+    max-height: 335px;
+  }
+}
+
 .nav-section-btn {
   width: 100px;
   height: 100px;
