@@ -9,8 +9,37 @@ import CarouselContainer from '../CarouselContainer';
 import CarouselItem from '../CarouselItem';
 
 const SPONSORS_TESTING_DATA = [
-
-]
+  {
+    name: {
+      first: 'Tom',
+      middle: '',
+      last: 'Folland',
+      prefix: 'Dr.',
+    },
+    location: {
+      instition: 'University of Iowa',
+      department: 'Department of Industrial Light and Magic',
+      city: 'Iowa City',
+      state: 'IA',
+      country: 'USA',
+    },
+  },
+  {
+    name: {
+      first: 'Tom',
+      middle: '',
+      last: 'Folland',
+      prefix: 'Dr.',
+    },
+    location: {
+      instition: 'University of Iowa',
+      department: 'Department of Industrial Light and Magic',
+      city: 'Iowa City',
+      state: 'IA',
+      country: 'USA',
+    },
+  },
+];
 
 const Overview = ({
   LearningSummary,
@@ -162,12 +191,16 @@ const Overview = ({
               willShowBtns
               rightBtnContainerClassName='w-auto h-100 d-flex d-xxl-none justify-content-center align-items-center position-absolute end-0'
               leftBtnContainerClassName='w-auto h-100 d-flex d-xxl-none justify-content-center align-items-center position-absolute start-0'
-              autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 autoCarouselSec"
+              autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4"
               parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
               dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2'
               dotStyle={{ transform: 'translateY(10px)' }}
             >
-              {[1, 2].map((num, index) => {
+              {SPONSORS_TESTING_DATA.map((sponsor, index) => {
+                const { name, location } = sponsor;
+                const sponsorName = `${name.prefix} ${name.first} ${name.middle} ${name.last}`;
+                const sponsorLocation = `${location.city}, ${location.state}, ${location.country}`;
+
                 return (
                   <CarouselItem
                     key={index}
@@ -175,7 +208,7 @@ const Overview = ({
                     secondChildDivClassName='px-1 pb-0 rounded w-100'
                     thirdChildDivClassName='px-md-1 border-0 sponsor-card'
                   >
-                    <div className='d-flex flex-column d-xxl-block'>
+                    <div className='d-flex flex-column flex-lg-row flex-xxl-column d-xxl-block'>
                       <section className="d-flex justify-content-center align-items-center col-12 col-lg-5 col-xxl-12">
                         <div className='position-relative sponsor-img-container rounded-circle border p-2'>
                           <img
@@ -192,14 +225,13 @@ const Overview = ({
                             feat.
                           </span>
                           <h2 className='fw-bold text-xxl-center'>
-                            Dr. Tom Folland
+                            {sponsorName}
                           </h2>
                         </section>
                         <ul className="px-2 d-none d-xxl-flex flex-column list-unstyled justify-content-xxl-center align-items-xxl-center">
-                          <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>University of Iowa</li>
-                          <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Dept of Industrial</li>
-                          <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Light and Magic</li>
-                          <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Iowa City, IA, USA</li>
+                          <li className='mb-1 text-wrap' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>{location.instition}</li>
+                          <li className='mb-1 text-wrap' style={{ width: '200px', fontSize: '22px', fontWeight: 500, lineHeight: '27px' }}>{location.department}</li>
+                          <li className='mb-1 text-wrap' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>{sponsorLocation}</li>
                         </ul>
                         <section className='d-xxl-none h-100 d-flex flex-column justify-content-center'>
                           <span className='fw-bold'>
@@ -207,13 +239,13 @@ const Overview = ({
                           </span>
                           <section className="d-flex flex-column">
                             <span className='text-wrap'>
-                              <b>Dr. Tom Folland</b> University of Iowa
+                              <b>{sponsorName}</b> {location.instition}
                             </span>
                             <span className='text-wrap'>
-                              Department of Industrial Light and Magic
+                              {location.department}
                             </span>
                             <span className='text-wrap'>
-                              Iowa City, IA, USA
+                              {sponsorLocation}
                             </span>
                           </section>
                         </section>
