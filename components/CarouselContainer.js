@@ -26,8 +26,11 @@ const CarouselContainer = ({
   CustomDots = null,
   handleCustomRightArrowBtnClick,
   handleCustomLeftArrowBtnClick,
+  willShowBtns,
   autoCarouselSecClassName = 'col-12 mt-0 px-4',
   dotSecClassName = 'd-flex justify-content-center align-items-center',
+  intervalTimeMs = 3000,
+  dotStyle = {},
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [wasTimerPaused, setWasTimerPaused] = useState(false);
@@ -77,35 +80,39 @@ const CarouselContainer = ({
       resetTimeout();
       timeoutCarouselScrollRef.current = setTimeout(
         () => setCurrentIndex(getUpdatedCurrentIndexStateNum),
-        3000
+        intervalTimeMs
       );
     }
   }, [currentIndex, wasTimerPaused]);
 
   return (
     <div className={parentStylesClassName}>
-      <div
-        style={{ zIndex: 110 }}
-        className="w-auto h-100 d-flex justify-content-center align-items-center position-absolute start-0"
-      >
-        <Button
-          classNameStr='no-btn-styles carouselArrowBtn'
-          handleOnClick={handleCustomLeftArrowBtnClick ?? handleLeftArrowBtnClick}
+      {willShowBtns && (
+        <div
+          style={{ zIndex: 110 }}
+          className="w-auto h-100 d-flex justify-content-center align-items-center position-absolute start-0"
         >
-          <AiOutlineArrowLeft size={defaultArrowSize} />
-        </Button>
-      </div>
-      <div
-        style={{ zIndex: 110 }}
-        className="w-auto h-100 d-flex justify-content-center align-items-center position-absolute end-0"
-      >
-        <Button
-          classNameStr='no-btn-styles carouselArrowBtn'
-          handleOnClick={handleCustomRightArrowBtnClick ?? handleRightArrowBtnClick}
+          <Button
+            classNameStr='no-btn-styles carouselArrowBtn'
+            handleOnClick={handleCustomLeftArrowBtnClick ?? handleLeftArrowBtnClick}
+          >
+            <AiOutlineArrowLeft size={defaultArrowSize} />
+          </Button>
+        </div>
+      )}
+      {willShowBtns && (
+        <div
+          style={{ zIndex: 110 }}
+          className="w-auto h-100 d-flex justify-content-center align-items-center position-absolute end-0"
         >
-          <AiOutlineArrowRight size={defaultArrowSize} />
-        </Button>
-      </div>
+          <Button
+            classNameStr='no-btn-styles carouselArrowBtn'
+            handleOnClick={handleCustomRightArrowBtnClick ?? handleRightArrowBtnClick}
+          >
+            <AiOutlineArrowRight size={defaultArrowSize} />
+          </Button>
+        </div>
+      )}
       <section className='row mt-0'>
         <section
           // style={{ height: 'fit-content' }}
@@ -119,7 +126,7 @@ const CarouselContainer = ({
           </div>
         </section>
       </section>
-      <section className={dotSecClassName}>
+      <section style={dotStyle} className={dotSecClassName}>
         {(dots?.length && !CustomDots)
           ?
           (

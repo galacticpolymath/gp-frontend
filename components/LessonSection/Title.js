@@ -22,7 +22,7 @@ const Title = ({
   locale,
   numID,
   Subtitle,
-  SponsoredBy,
+  SponsoredBy = '',
   lessonTitle,
   versions,
   lessonBannerUrl,
@@ -30,6 +30,30 @@ const Title = ({
   lessonUrl,
 }) => {
   const router = useRouter();
+  let sponsors = useMemo(() => {
+    let sponsorsLinkTxts = [];
+
+    if (SponsoredBy) {
+      let urls = SponsoredBy.match(/\((.*?)\)/g);
+      urls = urls.length ? urls.map(txt => txt.replace(/\(|\)/g, '')) : urls;
+      let sponsorByTxtArr = SponsoredBy.match(/\[(.*?)\]/g);
+      sponsorByTxtArr = sponsorByTxtArr.length ? sponsorByTxtArr.map(txt => txt.replace(/\[|\]/g, '')) : sponsorByTxtArr;
+
+      for (let index = 0; index < sponsorByTxtArr.length; index++) {
+        let url = urls[index];
+
+        if (!url) {
+          continue;
+        }
+
+        let sponsorByTxt = sponsorByTxtArr[index];
+
+        sponsorsLinkTxts.push(`[${sponsorByTxt}](${url})`);
+      }
+    }
+
+    return sponsorsLinkTxts;
+  }, []);
 
   const handleBtnClick = () => {
     if (!document.getElementById('versions-container')?.offsetParent) {
@@ -107,7 +131,17 @@ const Title = ({
           <div className='mb-4 mb-md-0 mt-4 mt-md-0 col-xxl-3 row my-0 py-0 col-xxl-4 d-xxl-flex flex-xxl-column-reverse justify-content-xxl-center align-items-xxl-center'>
             <div className="col-12 col-sm-8 col-md-8 col-lg-9 col-xxl-12 d-grid align-content-center d-xxl-flex flex-xxl-column">
               <h5>Sponsored by:</h5>
-              <RichText className='' content={SponsoredBy} />
+              <ul>
+                {!!sponsors?.length && (
+                  sponsors.map((sponsor, index) => (
+                    <li key={index}>
+                      <RichText
+                        content={sponsor}
+                      />
+                    </li>
+                  ))
+                )}
+              </ul>
             </div>
             <div className="col-5 col-sm-4  col-md-3 col-lg-3 col-xxl-12 m-auto d-grid m-xxl-0">
               {sponsorLogoImgUrl && (

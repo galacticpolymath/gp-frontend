@@ -5,6 +5,12 @@ import RichText from '../RichText';
 import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 import Title from './Title';
+import CarouselContainer from '../CarouselContainer';
+import CarouselItem from '../CarouselItem';
+
+const SPONSORS_TESTING_DATA = [
+
+]
 
 const Overview = ({
   LearningSummary,
@@ -148,9 +154,56 @@ const Overview = ({
           )}
         </div>
         <div
-          className="d-none d-xxl-block col-xxl-4 bg-danger"
+          className="d-none d-xxl-block col-xxl-4 px-3"
         >
-          {/* hi */}
+          <div style={{ backgroundColor: '#F9FBFF', borderRadius: '2em' }} className="border py-2">
+            <CarouselContainer
+              intervalTimeMs={5000}
+              autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 autoCarouselSec"
+              parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
+              dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2'
+              dotStyle={{ transform: 'translateY(10px)' }}
+            >
+              {[1, 2].map((num, index) => {
+                return (
+                  <CarouselItem
+                    key={index}
+                    parentStyles='d-flex justify-content-center align-items-center'
+                    secondChildDivClassName='px-1 pb-0 rounded w-100'
+                    thirdChildDivClassName='px-md-1 papersCarouselItem border-0'
+                  >
+                    <div>
+                      <section className="d-flex justify-content-center align-items-center">
+                        {/* put the image here */}
+                        <div style={{ width: '215px', height: '215px' }} className='position-relative rounded-circle border p-2'>
+                          <img
+                            src='/imgs/tom_folland.png'
+                            alt='sponsor_testing_img'
+                            style={{ objectFit: 'contain' }}
+                            className='w-100 h-100 rounded-circle border'
+                          />
+                        </div>
+                      </section>
+                      {/* the title of the user here */}
+                      <span className='fw-bold'>
+                        feats
+                      </span>
+                      <h2 className='fw-bold text-center'>
+                        Dr. Tom Folland
+                      </h2>
+                      <ul className="px-2 d-flex flex-column list-unstyled d-flex flex-column justify-content-center align-items-center">
+                        <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>University of Iowa</li>
+                        <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Dept of Industrial</li>
+                        <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Light and Magic</li>
+                        <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Iowa City, IA, USA</li>
+                      </ul>
+                    </div>
+                  </CarouselItem>
+                );
+              })
+              }
+            </CarouselContainer>
+          </div>
         </div>
       </div>
       <RichText className='mt-4' content={Text} />
