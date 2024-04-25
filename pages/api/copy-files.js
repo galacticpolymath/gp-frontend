@@ -461,6 +461,9 @@ export default async function handler(request, response) {
         // create a concurrent program, use promise.all
         // share the files that are going to be copied
         for (const file of files) {
+            // get the promise
+            // push the promise into an array
+            // then promise.all the array
             let permissionResults = await shareFile(file.id, googleService, permissions, file.name)
 
             if (!permissionResults?.length) {
@@ -476,6 +479,7 @@ export default async function handler(request, response) {
         let parentFoldersThatDontExist = []
 
         //  copy the files into the corresponding folder
+        // use promise.all
         for (const file of files) {
             try {
                 // get the id of the parent folder in order to find it from the createdFolders array
