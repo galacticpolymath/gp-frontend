@@ -149,7 +149,7 @@ const Title = ({
                   <img
                     src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
                     alt={Subtitle}
-                    className='p-sm-3 p-lg-4 sponsor-img'
+                    className='p-lg-4 sponsor-img'
                     style={{ objectFit: 'contain' }}
                   />
                 </div>

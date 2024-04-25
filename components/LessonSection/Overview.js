@@ -43,7 +43,7 @@ const Overview = ({
         className='position-absolute'
       />
       <Title {...titleProps} />
-      <div className="d-flex mt-sm-4 mt-md-0 mt-xxl-4 container px-0 mx-0">
+      <div className="d-flex flex-column flex-xxl-row mt-sm-4 mt-md-0 mt-xxl-4 container px-0 mx-0">
         {/* gist card */}
         <div className="col-xxl-9 bg-light-gray px-4 py-2 rounded-3 text-center">
           {LearningSummary && (
@@ -154,7 +154,7 @@ const Overview = ({
           )}
         </div>
         <div
-          className="d-none d-xxl-block col-xxl-4 px-3"
+          className="d-block d-xxl-block col-xxl-4 px-3"
         >
           <div style={{ backgroundColor: '#F9FBFF', borderRadius: '2em' }} className="border py-2">
             <CarouselContainer
