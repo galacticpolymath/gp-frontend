@@ -29,6 +29,8 @@ const CarouselContainer = ({
   willShowBtns,
   autoCarouselSecClassName = 'col-12 mt-0 px-4',
   dotSecClassName = 'd-flex justify-content-center align-items-center',
+  leftBtnContainerClassName = 'w-auto h-100 d-flex justify-content-center align-items-center position-absolute start-0',
+  rightBtnContainerClassName = 'w-auto h-100 d-flex justify-content-center align-items-center position-absolute end-0',
   intervalTimeMs = 3000,
   dotStyle = {},
 }) => {
@@ -90,7 +92,7 @@ const CarouselContainer = ({
       {willShowBtns && (
         <div
           style={{ zIndex: 110 }}
-          className="w-auto h-100 d-flex justify-content-center align-items-center position-absolute start-0"
+          className={leftBtnContainerClassName}
         >
           <Button
             classNameStr='no-btn-styles carouselArrowBtn'
@@ -103,7 +105,7 @@ const CarouselContainer = ({
       {willShowBtns && (
         <div
           style={{ zIndex: 110 }}
-          className="w-auto h-100 d-flex justify-content-center align-items-center position-absolute end-0"
+          className={rightBtnContainerClassName}
         >
           <Button
             classNameStr='no-btn-styles carouselArrowBtn'

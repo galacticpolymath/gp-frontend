@@ -439,6 +439,53 @@ $toolTipColor: #f0f4ff;
   text-decoration-color: white;
 }
 
+.sponsor-img-container {
+  width: 215px;
+  height: 215px;
+
+  @media(max-width: 577px) {
+    width: 175px;
+    height: 175px;
+  }
+}
+
+.sponsor-card {
+  position: relative;
+  border: 1px solid lightgray;
+  width: 100%;
+  object-fit: contain;
+  max-height: 470px;
+  padding: 0px 5rem 0px 5rem;
+
+
+
+  a {
+    @media(max-width: 992px) {
+      height: 45px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media(max-width: 576px) {
+      width: 83%;
+    }
+  }
+
+  ;
+
+  @media(min-width: 1400px) {
+    height: 60vh;
+  }
+
+  @media(max-width: 576px) {
+    height: 35vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
 .sponsor-img {
   @media (min-width: 1400px) {
     max-width: 250px;

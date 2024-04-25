@@ -154,11 +154,14 @@ const Overview = ({
           )}
         </div>
         <div
-          className="d-block d-xxl-block col-xxl-4 px-3"
+          className="d-block d-xxl-block col-xxl-4 px-xxl-3 mt-3 mt-xxl-0"
         >
           <div style={{ backgroundColor: '#F9FBFF', borderRadius: '2em' }} className="border py-2">
             <CarouselContainer
               intervalTimeMs={5000}
+              willShowBtns
+              rightBtnContainerClassName='w-auto h-100 d-flex d-xxl-none justify-content-center align-items-center position-absolute end-0'
+              leftBtnContainerClassName='w-auto h-100 d-flex d-xxl-none justify-content-center align-items-center position-absolute start-0'
               autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 autoCarouselSec"
               parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
               dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2'
@@ -170,12 +173,11 @@ const Overview = ({
                     key={index}
                     parentStyles='d-flex justify-content-center align-items-center'
                     secondChildDivClassName='px-1 pb-0 rounded w-100'
-                    thirdChildDivClassName='px-md-1 papersCarouselItem border-0'
+                    thirdChildDivClassName='px-md-1 border-0 sponsor-card'
                   >
-                    <div>
-                      <section className="d-flex justify-content-center align-items-center">
-                        {/* put the image here */}
-                        <div style={{ width: '215px', height: '215px' }} className='position-relative rounded-circle border p-2'>
+                    <div className='d-flex flex-column d-xxl-block'>
+                      <section className="d-flex justify-content-center align-items-center col-12 col-lg-5 col-xxl-12">
+                        <div className='position-relative sponsor-img-container rounded-circle border p-2'>
                           <img
                             src='/imgs/tom_folland.png'
                             alt='sponsor_testing_img'
@@ -184,19 +186,38 @@ const Overview = ({
                           />
                         </div>
                       </section>
-                      {/* the title of the user here */}
-                      <span className='fw-bold'>
-                        feats
-                      </span>
-                      <h2 className='fw-bold text-center'>
-                        Dr. Tom Folland
-                      </h2>
-                      <ul className="px-2 d-flex flex-column list-unstyled d-flex flex-column justify-content-center align-items-center">
-                        <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>University of Iowa</li>
-                        <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Dept of Industrial</li>
-                        <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Light and Magic</li>
-                        <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Iowa City, IA, USA</li>
-                      </ul>
+                      <section className="col-12 d-flex justify-content-center align-items-center d-xxl-block col-lg-7 col-xxl-12">
+                        <section className="d-none d-xxl-block">
+                          <span className='fw-bold'>
+                            feat.
+                          </span>
+                          <h2 className='fw-bold text-xxl-center'>
+                            Dr. Tom Folland
+                          </h2>
+                        </section>
+                        <ul className="px-2 d-none d-xxl-flex flex-column list-unstyled justify-content-xxl-center align-items-xxl-center">
+                          <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>University of Iowa</li>
+                          <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Dept of Industrial</li>
+                          <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Light and Magic</li>
+                          <li className='mb-1' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>Iowa City, IA, USA</li>
+                        </ul>
+                        <section className='d-xxl-none h-100 d-flex flex-column justify-content-center'>
+                          <span className='fw-bold'>
+                            feat.
+                          </span>
+                          <section className="d-flex flex-column">
+                            <span className='text-wrap'>
+                              <b>Dr. Tom Folland</b> University of Iowa
+                            </span>
+                            <span className='text-wrap'>
+                              Department of Industrial Light and Magic
+                            </span>
+                            <span className='text-wrap'>
+                              Iowa City, IA, USA
+                            </span>
+                          </section>
+                        </section>
+                      </section>
                     </div>
                   </CarouselItem>
                 );
