@@ -25,7 +25,8 @@ module.exports = {
       'into-the-dark.vercel.app',
       'echo-galactic-polymath.vercel.app',
       'drive.google.com',
-      'img.youtube.com'
+      'img.youtube.com',
+      'pacific-h2o.galacticpolymath.com'
     ],
   },
   async redirects() {
