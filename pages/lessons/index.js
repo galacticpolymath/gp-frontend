@@ -72,77 +72,78 @@ const LessonsPage = ({
         </div>
       </section>
       <section className="mb-3 mt-5">
-        <div
-          style={{ backgroundColor: "#F0F4FF" }}
-          className="w-100 border-top border-bottom px-2 px-sm-5 py-2 lessons-nav-section-container"
-        >
-          <h4 className="p-0 mb-0">
-            <span className='h-100'>
-              <GiShipWheel style={{ transform: "translateY(-2px)" }} />
-            </span>
-            <span className='h-100 ms-1'>
-              Navigate To:
-            </span>
-          </h4>
-          <section className="d-flex flex-wrap justify-content-sm-start pt-3 ps-sm-3 pt-sm-3">
-            <div className="p-1 p-sm-0">
-              <div className="bg-white nav-section-btn rounded">
-                <a href='#gp-apps' style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
-                  <span style={{ height: "60%" }} className='d-inline-flex justify-content-center align-items-center'>
-                    {/* put icons here */}
-                    <img src="favicon-32x32.png" alt="Apps_Icon" style={{ objectFit: 'contain' }} />
-                  </span>
-                  <span style={{ height: "40%" }} className='d-inline-flex fw-bold'>
-                    Apps
-                  </span>
-                </a>
+        <div style={{ backgroundColor: "#F0F4FF" }}>
+          <div
+            className="w-100 container border-top border-bottom px-2 px-xxl-0 px-sm-5 py-2 lessons-nav-section-container"
+          >
+            <h4 className="p-0 mb-0">
+              <span className='h-100'>
+                <GiShipWheel style={{ transform: "translateY(-2px)" }} />
+              </span>
+              <span className='h-100 ms-1'>
+                Navigate To:
+              </span>
+            </h4>
+            <section className="d-flex flex-wrap justify-content-sm-start pt-3 ps-sm-3 pt-sm-3">
+              <div className="p-1 p-sm-0">
+                <div className="bg-white nav-section-btn rounded">
+                  <a href='#gp-apps' style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                    <span style={{ height: "60%" }} className='d-inline-flex justify-content-center align-items-center'>
+                      {/* put icons here */}
+                      <img src="favicon-32x32.png" alt="Apps_Icon" style={{ objectFit: 'contain' }} />
+                    </span>
+                    <span style={{ height: "40%" }} className='d-inline-flex fw-bold'>
+                      Apps
+                    </span>
+                  </a>
+                </div>
               </div>
-            </div>
-            <div className="p-1 p-sm-0">
-              <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
-                <a href="#gp-videos" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
-                  <span style={{ height: "60%" }} className="d-inline-flex justify-content-center align-items-center">
-                    <i style={{ color: 'red' }} className='bi bi-youtube' />
-                  </span>
-                  <span style={{ height: "40%" }} className="fw-bold">
-                    Videos
-                  </span>
-                </a>
+              <div className="p-1 p-sm-0">
+                <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
+                  <a href="#gp-videos" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                    <span style={{ height: "60%" }} className="d-inline-flex justify-content-center align-items-center">
+                      <i style={{ color: 'red' }} className='bi bi-youtube' />
+                    </span>
+                    <span style={{ height: "40%" }} className="fw-bold">
+                      Videos
+                    </span>
+                  </a>
+                </div>
               </div>
-            </div>
-            <div className="p-1 p-sm-0">
-              <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
-                <a href="#gp-units" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
-                  <span style={{ height: "60%" }}>
-                    <Image
-                      src={UnitIconSvg}
-                      style={{ height: '50px', width: '50px' }}
-                      alt='GP Unit Icon'
-                    />
-                  </span>
-                  <span style={{ height: "40%" }} className="fw-bold">
-                    Units
-                  </span>
-                </a>
+              <div className="p-1 p-sm-0">
+                <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
+                  <a href="#gp-units" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                    <span style={{ height: "60%" }}>
+                      <Image
+                        src={UnitIconSvg}
+                        style={{ height: '50px', width: '50px' }}
+                        alt='GP Unit Icon'
+                      />
+                    </span>
+                    <span style={{ height: "40%" }} className="fw-bold">
+                      Units
+                    </span>
+                  </a>
+                </div>
               </div>
-            </div>
-            <div className="p-1 p-sm-0">
-              <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
-                <a href="#gp-lessons" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
-                  <span style={{ height: "60%" }}>
-                    <Image
-                      src={LessonSvg}
-                      style={{ height: '50px', width: '50px' }}
-                      alt='GP Lesson Icon'
-                    />
-                  </span>
-                  <span style={{ height: "40%" }} className="fw-bold">
-                    Lessons
-                  </span>
-                </a>
+              <div className="p-1 p-sm-0">
+                <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
+                  <a href="#gp-lessons" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                    <span style={{ height: "60%" }}>
+                      <Image
+                        src={LessonSvg}
+                        style={{ height: '50px', width: '50px' }}
+                        alt='GP Lesson Icon'
+                      />
+                    </span>
+                    <span style={{ height: "40%" }} className="fw-bold">
+                      Lessons
+                    </span>
+                  </a>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
       </section>
       <section>

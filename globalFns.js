@@ -29,7 +29,7 @@ export const getGpVids = lessons => {
         let lessonMultiMediaArr = [];
         const { Section, Title, numID, ReleaseDate } = lesson;
 
-        if (Section?.preview?.Multimedia?.length) {
+        if (Section?.preview?.Multimedia?.length && Section?.preview?.Multimedia.every(multiMediaItem => multiMediaItem !== null)) {
             for (const media of Section.preview.Multimedia) {
                 const isTargetGpVidPresent = gpVideos.length ? gpVideos.some(({ mainLink: gpVidMainLink }) => gpVidMainLink === media.mainLink) : false;
 
