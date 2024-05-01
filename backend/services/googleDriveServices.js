@@ -60,7 +60,7 @@ export const getGooglDriveFolders = async (googleService, folderId) => {
 
         return response.data.files
     } catch (error) {
-        console.error('Failed to get the root folders of drive.')
+        console.error('Failed to get the root folders of drive. Reason: ', error)
 
         return null;
     }
