@@ -84,6 +84,7 @@ const TeachIt = ({
   ForGrades = areThereMoreThan1Resource ? selectedGrade.grades : ForGrades;
   const isPartsObjPresent = !areThereMoreThan1Resource && Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object');
   const partsFieldName = ((Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object')) && ('parts' in Data.classroom.resources[0])) ? 'parts' : 'lessons';
+  console.log('Data.lesson: ', Data.lesson);
   const dataLesson = Data.lesson;
   let parts = [];
   const ref = useRef();
@@ -265,7 +266,11 @@ const TeachIt = ({
               secondTitle = (lsnTitle === 'Procedure not documented yet') ? title : null;
             }
 
-            const targetLessonInDataLesson = dataLesson.find(({ lsnNum }) => lsnNum == lsn);
+            let targetLessonInDataLesson = null;
+
+            if (dataLesson?.length && dataLesson.every(val => val !== null)) {
+              targetLessonInDataLesson = dataLesson.find(({ lsnNum }) => lsnNum == lsn);
+            }
 
             if (!learningObj && (lsn !== 'last') && targetLessonInDataLesson?.learningObj) {
               const { learningObj: _learningObj } = targetLessonInDataLesson;
