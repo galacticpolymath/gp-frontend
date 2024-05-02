@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
@@ -27,7 +28,6 @@ const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin)
 
 export async function middleware(request) {
   try {
-
     const { nextUrl, method, headers } = request;
 
     if (!headers) {

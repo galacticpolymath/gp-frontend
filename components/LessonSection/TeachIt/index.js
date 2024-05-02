@@ -265,7 +265,11 @@ const TeachIt = ({
               secondTitle = (lsnTitle === 'Procedure not documented yet') ? title : null;
             }
 
-            const targetLessonInDataLesson = dataLesson.find(({ lsnNum }) => lsnNum == lsn);
+            let targetLessonInDataLesson = null;
+
+            if (dataLesson?.length && dataLesson.every(val => val !== null)) {
+              targetLessonInDataLesson = dataLesson.find(({ lsnNum }) => lsnNum == lsn);
+            }
 
             if (!learningObj && (lsn !== 'last') && targetLessonInDataLesson?.learningObj) {
               const { learningObj: _learningObj } = targetLessonInDataLesson;
