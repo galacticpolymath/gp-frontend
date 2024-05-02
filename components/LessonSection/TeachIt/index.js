@@ -84,7 +84,6 @@ const TeachIt = ({
   ForGrades = areThereMoreThan1Resource ? selectedGrade.grades : ForGrades;
   const isPartsObjPresent = !areThereMoreThan1Resource && Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object');
   const partsFieldName = ((Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object')) && ('parts' in Data.classroom.resources[0])) ? 'parts' : 'lessons';
-  console.log('Data.lesson: ', Data.lesson);
   const dataLesson = Data.lesson;
   let parts = [];
   const ref = useRef();
