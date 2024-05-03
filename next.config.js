@@ -29,7 +29,6 @@ module.exports = {
       'pacific-h2o.galacticpolymath.com'
     ],
   },
-  // DELETE THIS
   async redirects() {
     return [
       {

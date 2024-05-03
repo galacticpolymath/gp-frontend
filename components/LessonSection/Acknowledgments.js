@@ -4,7 +4,7 @@ import RichText from '../RichText';
 const Acknowledgments = ({
   SectionTitle,
   Data = [],
-  _sectionDots,  
+  _sectionDots,
   isAvailLocsMoreThan1,
 }) => {
   return Data && (
@@ -16,11 +16,11 @@ const Acknowledgments = ({
       isAvailLocsMoreThan1={isAvailLocsMoreThan1}
     >
       <div className='container mx-auto my-4'>
-        {Data.map(({ role, def, records = [] }, i) => (
+        {Data.map(({ role, def = '', records = [] }, i) => (
           <div key={i} className='mb-3'>
             <h6 className='fw-bolder'>{role}</h6>
             <RichText className=' text-black-87' content={def} />
-            {records.map(({ name, url, title, affiliation, location }) => 
+            {!!records.length && records.map(({ name, url, title, affiliation, location }) =>
               name && (
                 <ul key={name}>
                   <li className='mt-1 fw-normal inline-block'>
@@ -36,7 +36,7 @@ const Acknowledgments = ({
                     <span className='d-inline-block'><i className="bi bi-geo-alt" /><em>{location}</em></span>
                   </li>
                 </ul>
-              
+
               ))}
           </div>
         ))}

@@ -152,7 +152,7 @@ const TeachIt = ({
     >
       <div ref={ref}>
         <div className='container-fluid mt-4'>
-          {Data.lessonDur && (
+          {!!Data.lessonDur && (
             <div className='row'>
               <div className='row mx-auto justify-content-center'>
                 <div className='infobox rounded-3 p-2 fs-5 my-2 fw-light w-auto'>
@@ -160,7 +160,7 @@ const TeachIt = ({
                     <i className="bi-alarm fs-5 me-2" />
                     {Data.lessonDur}
                   </h3>
-                  {Data.lessonPreface && <RichText content={Data.lessonPreface} className='d-flex justify-content-center quickPrep' />}
+                  {!!Data.lessonPreface && <RichText content={Data.lessonPreface} className='d-flex justify-content-center quickPrep' />}
                 </div>
               </div>
             </div>
@@ -169,7 +169,7 @@ const TeachIt = ({
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
             <h3 className='fs-5'>Available Grade Bands</h3>
-            {gradeVariations.map((variation, i) => (
+            {!!gradeVariations.length && gradeVariations.map((variation, i) => (
               <label
                 key={i}
                 className='text-capitalize d-block mb-1'
@@ -189,7 +189,7 @@ const TeachIt = ({
           </div>
           <div className="col w-1/2">
             <h3 className='fs-5'>Available Teaching Environments</h3>
-            {environments.map(env => (
+            {!!environments.length && environments.map(env => (
               <label
                 className='text-capitalize d-block mb-1'
                 key={env}
@@ -241,7 +241,7 @@ const TeachIt = ({
         )}
 
         <div className='container lessonsPartContainer px-0 pe-sm-1 px-md-2 pb-4'>
-          {parts.map((part, index, self) => {
+          {(!!parts.length && parts.every(part => part !== null)) && parts.map((part, index, self) => {
             let {
               lsn,
               lsnNum,

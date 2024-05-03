@@ -226,7 +226,7 @@ const PROJECTED_LESSONS_FIELDS = [
   'TargetSubject',
   'ForGrades',
   'GradesOrYears',
-]
+];
 const WEB_APP_PATHS = [
   {
     name: 'dark',
