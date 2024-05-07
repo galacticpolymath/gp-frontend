@@ -1087,37 +1087,6 @@ $feedbackTxtFontSizeDesktop: 22px;
   }
 }
 
-// .quoteInfoSec {
-//   bottom: -10px;
-//   right: 15px;
-
-//   @media (max-width: 768px) and (min-width: 576px) {
-//     bottom: 70px;
-//     right: 24px;
-
-//     @media (min-width: 576px) {
-//       bottom: 20px;
-//     }
-//   }
-
-//   @media (max-width: 576px) {
-//     line-height: 16px;
-//     transform: translateY(20px);
-//   }
-
-//   > section {
-//     > span {
-//       font-size: $spanFontSizeSmall;
-//     }
-
-//     > span:first-child {
-//       @media (min-width: 576px) and (max-width: 768px) {
-//         font-size: 22px;
-//       }
-//     }
-//   }
-// }
-
 .bulletPtsTeachersAndStudents {
   bottom: 0px;
   margin-left: calc(-1 * ((100vw - 100%) / 2));
