@@ -71,27 +71,6 @@ const Title = ({
       <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center d-xxl-block">
         <div className="col-12 d-flex flex-column flex-xxl-row">
           <div className="col-xxl-7">
-            <div className="mt-3 mt-sm-0 d-flex justify-content-between">
-              {lastSubRelease && (
-                <button
-                  onClick={handleBtnClick}
-                  className='underline-on-hover no-btn-styles d-flex'
-                  style={{ color: 'black' }}
-                >
-                  <span className='fw-lighter justify-items-left'>
-                    Version {lastSubRelease.version}{' '}
-                    (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
-                  </span>
-                </button>
-              )}
-              {availLocs && (
-                <LocDropdown
-                  availLocs={availLocs}
-                  loc={locale}
-                  id={numID}
-                />
-              )}
-            </div>
             <div>
               <h1 id="lessonTitleId" className="mt-2 fs-2 fs-md-larger mb-1">{lessonTitle}</h1>
               <h4 className='fw-light fs-6 fs-md-med mb-2'>{Subtitle}</h4>
