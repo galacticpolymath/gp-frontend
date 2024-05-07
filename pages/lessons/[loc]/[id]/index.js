@@ -307,6 +307,8 @@ const updateLessonsWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOnto
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
+    console.log('loc: ', loc);
+
     await connectToMongodb();
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
