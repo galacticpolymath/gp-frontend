@@ -37,17 +37,12 @@ export async function middleware(request) {
       return new NextResponse('No headers were present in the request.', { status: 400 });
     }
 
-    console.log('paths: ', nextUrl?.pathname?.split('/'));
-
-    // no locale in path of the url
     if (
       !nextUrl.href.includes('api') &&
       nextUrl.pathname.includes('lessons') &&
-      (nextUrl?.pathname?.split('/')?.filter(val => val)?.length == 3) &&
+      (nextUrl?.pathname?.split('/')?.filter(val => val)?.length == 2) &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
-      console.log('yo there meng!');
-
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
 
@@ -66,6 +61,38 @@ export async function middleware(request) {
 
       console.log('redirecting the user to the units page...');
       return NextResponse.redirect(`${nextUrl.origin}/lessons/${locale}/${unitNum}`);
+    } else if (
+      !nextUrl.href.includes('api') &&
+      nextUrl.pathname.includes('lessons') &&
+      (nextUrl?.pathname?.split('/')?.filter(val => val)?.length == 3) &&
+      Number.isInteger(getUnitNum(nextUrl.pathname))
+    ) {
+      const receivedLocale = nextUrl.pathname.split('/').at(-2);
+      const unitNum = getUnitNum(nextUrl.pathname);
+      const url = new URL(`${nextUrl.origin}/api/get-lessons`);
+
+      url.searchParams.set('projectionObj', JSON.stringify({ locale: 1 }));
+      url.searchParams.set('filterObj', JSON.stringify({ numID: [unitNum] }));
+
+      const getUnitsRes = await fetch(url);
+      const { msg, lessons } = await getUnitsRes.json() ?? {};
+
+      if (msg || !lessons.length) {
+        console.log("Couldn't get the lessons. Reason: ", msg);
+
+        return NextResponse.redirect(`${nextUrl.origin}/error`);
+      }
+
+      const targetLesson = lessons.find(({ numID, locale }) => (locale === receivedLocale) && numID == unitNum);
+
+      if (targetLesson) {
+        console.log('The unit does exist.');
+        return NextResponse.next();
+      }
+
+      console.log('The unit does not exist.');
+
+      return NextResponse.redirect(`${nextUrl.origin}/lessons/${lessons[0].locale}/${unitNum}`);
     } else if (!nextUrl.href.includes('api') && nextUrl.pathname.includes('lessons')) {
       console.log('Not on a specific unit.');
 
@@ -117,6 +144,10 @@ export async function middleware(request) {
 
     console.error('An error has occurred in the middlware function: ', errMsg);
 
+    if (!request.nextUrl.includes('api')) {
+      return NextResponse.redirect(`${request.nextUrl.origin}/error`);
+    }
+
     return new NextResponse(errMsg, { status: 400 });
 
   }
@@ -128,6 +159,6 @@ export const config = {
     '/api/delete-lesson/:id',
     '/api/update-lessons',
     '/api/get-jwt-token',
-    // '/lessons/:path*',
+    '/lessons/:path*',
   ],
 };

@@ -31,6 +31,8 @@ export default async function handler(request, response) {
 
     await connectToMongodb();
 
+    // cache the results on the server
+
     const { data, errMsg } = await retrieveLessons(filterObj ?? {}, projectionsObj ?? {});
 
     if (errMsg) {
