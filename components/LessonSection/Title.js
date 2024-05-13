@@ -92,7 +92,7 @@ const Title = ({
             )}
           </div>
           <div className="d-flex flex-column flex-xxl-row">
-            <div className="col-xxl-7">
+            <div className="col-xxl-9">
               <div>
                 <h1 id="lessonTitleId" className="mt-2 fs-2 fs-md-larger mb-1">{lessonTitle}</h1>
                 <h4 className='fw-light fs-6 fs-md-med mb-2'>{Subtitle}</h4>
@@ -128,7 +128,7 @@ const Title = ({
                   />
                 )}
             </div>
-            <div className="col-xxl-2 d-none d-xxl-block" />
+            {/* <div className="col-xxl-2 d-none d-xxl-block" /> */}
             <div className='mb-4 mb-md-0 mt-4 mt-md-0 col-xxl-3 row my-0 py-0 col-xxl-4 d-xxl-flex flex-xxl-column-reverse justify-content-xxl-center align-items-xxl-center'>
               <div className="col-12 col-sm-8 col-md-8 col-lg-9 col-xxl-12 d-grid align-content-center d-xxl-flex flex-xxl-column">
                 <h5>Sponsored by:</h5>
