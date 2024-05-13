@@ -37,13 +37,17 @@ export async function middleware(request) {
       return new NextResponse('No headers were present in the request.', { status: 400 });
     }
 
+    console.log('paths: ', nextUrl?.pathname?.split('/'));
+
     // no locale in path of the url
     if (
       !nextUrl.href.includes('api') &&
       nextUrl.pathname.includes('lessons') &&
-      (nextUrl?.pathname?.split('/')?.length == 3) &&
+      (nextUrl?.pathname?.split('/')?.filter(val => val)?.length == 3) &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
+      console.log('yo there meng!');
+
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
 
@@ -52,24 +56,19 @@ export async function middleware(request) {
 
       const getUnitsRes = await fetch(url);
       const { msg, lessons } = await getUnitsRes.json() ?? {};
+      const locale = lessons?.[0].defaultLocale ?? lessons?.[0].locale;
 
-      if (!Array.isArray(lessons) || !lessons?.length || lessons.some(unit => (unit === null) || ((unit !== null) && (typeof unit !== 'object')))) {
+      if (!Array.isArray(lessons) || !lessons?.length || lessons.some(unit => (unit === null) || ((unit !== null) && (typeof unit !== 'object'))) || !locale) {
         console.error('Failed to retrieve the lessons from the db. Reason: ', msg);
 
         return NextResponse.redirect(`${nextUrl.origin}/error`);
       }
 
-      const locale = lessons[0].defaultLocale ?? lessons[0].locale;
-
-      if (!locale) {
-        console.log(`The locale does not exist for lesson ${unitNum}.`);
-
-        return NextResponse.redirect(`${nextUrl.origin}/error`);
-      }
-
+      console.log('redirecting the user to the units page...');
       return NextResponse.redirect(`${nextUrl.origin}/lessons/${locale}/${unitNum}`);
     } else if (!nextUrl.href.includes('api') && nextUrl.pathname.includes('lessons')) {
       console.log('Not on a specific unit.');
+
       return NextResponse.next();
     }
 
@@ -116,6 +115,8 @@ export async function middleware(request) {
   } catch (error) {
     const errMsg = `An error has occurred in the middleware: ${error}`;
 
+    console.error('An error has occurred in the middlware function: ', errMsg);
+
     return new NextResponse(errMsg, { status: 400 });
 
   }
@@ -127,6 +128,6 @@ export const config = {
     '/api/delete-lesson/:id',
     '/api/update-lessons',
     '/api/get-jwt-token',
-    '/lessons/:path*',
+    // '/lessons/:path*',
   ],
 };
