@@ -440,8 +440,8 @@ $toolTipColor: #f0f4ff;
 }
 
 .sponsor-img-container {
-  width: 215px;
-  height: 215px;
+  width: 175px;
+  height: 175px;
 
   @media(max-width: 577px) {
     width: 175px;
@@ -472,12 +472,6 @@ $toolTipColor: #f0f4ff;
     }
   }
 
-  ;
-
-  @media(min-width: 1400px) {
-    height: 60vh;
-  }
-
   @media(max-width: 576px) {
     display: flex;
     justify-content: center;
@@ -487,8 +481,8 @@ $toolTipColor: #f0f4ff;
 
 .sponsor-img {
   @media (min-width: 1400px) {
-    max-width: 250px;
-    max-height: 250px;
+    max-width: 205px;
+    max-height: 205px;
   }
 }
 

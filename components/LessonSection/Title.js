@@ -69,70 +69,93 @@ const Title = ({
   return (
     <div className="container d-flex d-xxl-block justify-content-center pt-4 px-0">
       <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center d-xxl-block">
-        <div className="col-12 d-flex flex-column flex-xxl-row">
-          <div className="col-xxl-7">
-            <div>
-              <h1 id="lessonTitleId" className="mt-2 fs-2 fs-md-larger mb-1">{lessonTitle}</h1>
-              <h4 className='fw-light fs-6 fs-md-med mb-2'>{Subtitle}</h4>
-              {lessonBannerUrl && (
-                <div className='w-100 position-relative my-2 mx-0'>
-                  <Image
-                    src={lessonBannerUrl}
-                    alt={Subtitle}
-                    width={1500}
-                    height={450}
-                    priority
-                    style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
-                  />
-                </div>
-              )}
-            </div>
+        <div className="col-12 d-flex flex-column">
+          <div className="mt-3 mt-sm-0 d-flex justify-content-between">
+            {lastSubRelease && (
+              <button
+                onClick={handleBtnClick}
+                className='underline-on-hover no-btn-styles d-flex'
+                style={{ color: 'black' }}
+              >
+                <span className='fw-lighter justify-items-left'>
+                  Version {lastSubRelease.version}{' '}
+                  (Updated {format(new Date(lastSubRelease.date), 'MMM d, yyyy')})
+                </span>
+              </button>
+            )}
+            {availLocs && (
+              <LocDropdown
+                availLocs={availLocs}
+                loc={locale}
+                id={numID}
+              />
+            )}
           </div>
-          <div className='d-flex d-md-none'>
-            <label className='d-flex justify-content-center align-items-center'>Share: </label>
-            {process.env.NODE_ENV === 'production'
-              ? (
-                <ShareWidget
-                  pinterestMedia={lessonBannerUrl}
-                  widgetParentCss='share-widget d-flex d-md-none flex-row bg-transparent'
-                />
-              )
-              : (
-                <ShareWidget
-                  developmentUrl={`${lessonUrl}/`}
-                  pinterestMedia={lessonBannerUrl}
-                  shareWidgetStyle={{ maxWidth: '300px' }}
-                  widgetParentCss='share-widget d-flex my-2 d-md-none flex-row gap-2 ps-1 w-100 bg-transparent'
-                />
-              )}
-          </div>
-          <div className="col-xxl-2 d-none d-xxl-block" />
-          <div className='mb-4 mb-md-0 mt-4 mt-md-0 col-xxl-3 row my-0 py-0 col-xxl-4 d-xxl-flex flex-xxl-column-reverse justify-content-xxl-center align-items-xxl-center'>
-            <div className="col-12 col-sm-8 col-md-8 col-lg-9 col-xxl-12 d-grid align-content-center d-xxl-flex flex-xxl-column">
-              <h5>Sponsored by:</h5>
-              <ul>
-                {!!sponsors?.length && (
-                  sponsors.map((sponsor, index) => (
-                    <li key={index}>
-                      <RichText
-                        content={sponsor}
-                      />
-                    </li>
-                  ))
+          <div className="d-flex flex-column flex-xxl-row">
+            <div className="col-xxl-7">
+              <div>
+                <h1 id="lessonTitleId" className="mt-2 fs-2 fs-md-larger mb-1">{lessonTitle}</h1>
+                <h4 className='fw-light fs-6 fs-md-med mb-2'>{Subtitle}</h4>
+                {lessonBannerUrl && (
+                  <div className='w-100 position-relative my-2 mx-0'>
+                    <Image
+                      src={lessonBannerUrl}
+                      alt={Subtitle}
+                      width={1500}
+                      height={450}
+                      priority
+                      style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+                    />
+                  </div>
                 )}
-              </ul>
+              </div>
             </div>
-            <div className="col-5 col-sm-4  col-md-3 col-lg-3 col-xxl-12 m-auto d-grid m-xxl-0">
-              {sponsorLogoImgUrl && (
-                <div className='d-sm-block d-xxl-flex justify-content-center align-items-center'>
-                  <img
-                    src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
-                    alt={Subtitle}
-                    className='p-lg-4 sponsor-img'
-                    style={{ objectFit: 'contain' }}
+            <div className='d-flex d-md-none'>
+              <label className='d-flex justify-content-center align-items-center'>Share: </label>
+              {process.env.NODE_ENV === 'production'
+                ? (
+                  <ShareWidget
+                    pinterestMedia={lessonBannerUrl}
+                    widgetParentCss='share-widget d-flex d-md-none flex-row bg-transparent'
                   />
-                </div>
-              )}
+                )
+                : (
+                  <ShareWidget
+                    developmentUrl={`${lessonUrl}/`}
+                    pinterestMedia={lessonBannerUrl}
+                    shareWidgetStyle={{ maxWidth: '300px' }}
+                    widgetParentCss='share-widget d-flex my-2 d-md-none flex-row gap-2 ps-1 w-100 bg-transparent'
+                  />
+                )}
+            </div>
+            <div className="col-xxl-2 d-none d-xxl-block" />
+            <div className='mb-4 mb-md-0 mt-4 mt-md-0 col-xxl-3 row my-0 py-0 col-xxl-4 d-xxl-flex flex-xxl-column-reverse justify-content-xxl-center align-items-xxl-center'>
+              <div className="col-12 col-sm-8 col-md-8 col-lg-9 col-xxl-12 d-grid align-content-center d-xxl-flex flex-xxl-column">
+                <h5>Sponsored by:</h5>
+                <ul>
+                  {!!sponsors?.length && (
+                    sponsors.map((sponsor, index) => (
+                      <li key={index}>
+                        <RichText
+                          content={sponsor}
+                        />
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </div>
+              <div className="col-5 col-sm-4  col-md-3 col-lg-3 col-xxl-12 m-auto d-grid m-xxl-0">
+                {sponsorLogoImgUrl && (
+                  <div className='d-sm-block d-xxl-flex justify-content-center align-items-center'>
+                    <img
+                      src={Array.isArray(sponsorLogoImgUrl) ? sponsorLogoImgUrl[0] : sponsorLogoImgUrl}
+                      alt={Subtitle}
+                      className='p-lg-4 sponsor-img'
+                      style={{ objectFit: 'contain' }}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

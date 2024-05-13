@@ -9,21 +9,21 @@ import CarouselContainer from '../CarouselContainer';
 import CarouselItem from '../CarouselItem';
 
 const SPONSORS_TESTING_DATA = [
-  {
-    name: {
-      first: 'Tom',
-      middle: '',
-      last: 'Folland',
-      prefix: 'Dr.',
-    },
-    location: {
-      instition: 'University of Iowa',
-      department: 'Department of Industrial Light and Magic',
-      city: 'Iowa City',
-      state: 'IA',
-      country: 'USA',
-    },
-  },
+  // {
+  //   name: {
+  //     first: 'Tom',
+  //     middle: '',
+  //     last: 'Folland',
+  //     prefix: 'Dr.',
+  //   },
+  //   location: {
+  //     instition: 'University of Iowa',
+  //     department: 'Department of Industrial Light and Magic',
+  //     city: 'Iowa City',
+  //     state: 'IA',
+  //     country: 'USA',
+  //   },
+  // },
   {
     name: {
       first: 'Tom',
@@ -193,7 +193,7 @@ const Overview = ({
               leftBtnContainerClassName='w-auto h-100 d-flex d-xxl-none justify-content-center align-items-center position-absolute start-0'
               autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4"
               parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
-              dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2'
+              dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-xxl-0'
               dotStyle={{ transform: 'translateY(10px)' }}
             >
               {SPONSORS_TESTING_DATA.map((sponsor, index) => {
@@ -224,14 +224,14 @@ const Overview = ({
                           <span className='fw-bold'>
                             feat.
                           </span>
-                          <h2 className='fw-bold text-xxl-center'>
+                          <h2 className='fw-bold text-xxl-center d-flex justify-content-center align-items-center'>
                             {sponsorName}
                           </h2>
                         </section>
                         <ul className="px-2 d-none d-xxl-flex flex-column list-unstyled justify-content-xxl-center align-items-xxl-center">
-                          <li className='mb-1 text-wrap' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>{location.instition}</li>
-                          <li className='mb-1 text-wrap' style={{ width: '200px', fontSize: '22px', fontWeight: 500, lineHeight: '27px' }}>{location.department}</li>
-                          <li className='mb-1 text-wrap' style={{ width: '200px', fontSize: '22px', fontWeight: 500 }}>{sponsorLocation}</li>
+                          <li className='mb-1 text-wrap w-100 text-xxl-center d-xxl-inline-flex justify-content-center align-items-center' style={{ fontSize: '22px', fontWeight: 500 }}>{location.instition}</li>
+                          <li className='mb-1 text-wrap w-100 text-xxl-center d-xxl-inline-flex justify-content-center align-items-center' style={{ fontSize: '22px', fontWeight: 500, lineHeight: '27px' }}>{location.department}</li>
+                          <li className='mb-1 text-wrap w-100 text-xxl-center d-xxl-inline-flex justify-content-center align-items-center' style={{ fontSize: '22px', fontWeight: 500 }}>{sponsorLocation}</li>
                         </ul>
                         <section className='d-xxl-none h-100 d-flex flex-column justify-content-center'>
                           <span className='fw-bold'>
