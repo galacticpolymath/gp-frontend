@@ -31,6 +31,8 @@ const CarouselContainer = ({
   dotSecClassName = 'd-flex justify-content-center align-items-center',
   leftBtnContainerClassName = 'w-auto h-100 d-flex justify-content-center align-items-center position-absolute start-0',
   rightBtnContainerClassName = 'w-auto h-100 d-flex justify-content-center align-items-center position-absolute end-0',
+  rightBtnClassName = 'no-btn-styles carouselArrowBtn',
+  leftBtnClassName = 'no-btn-styles carouselArrowBtn',
   intervalTimeMs = 3000,
   dotStyle = {},
 }) => {
@@ -95,7 +97,7 @@ const CarouselContainer = ({
           className={leftBtnContainerClassName}
         >
           <Button
-            classNameStr='no-btn-styles carouselArrowBtn'
+            classNameStr={leftBtnClassName}
             handleOnClick={handleCustomLeftArrowBtnClick ?? handleLeftArrowBtnClick}
           >
             <AiOutlineArrowLeft size={defaultArrowSize} />
@@ -108,7 +110,7 @@ const CarouselContainer = ({
           className={rightBtnContainerClassName}
         >
           <Button
-            classNameStr='no-btn-styles carouselArrowBtn'
+            classNameStr={rightBtnClassName}
             handleOnClick={handleCustomRightArrowBtnClick ?? handleRightArrowBtnClick}
           >
             <AiOutlineArrowRight size={defaultArrowSize} />

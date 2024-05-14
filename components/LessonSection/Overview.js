@@ -188,8 +188,10 @@ const Overview = ({
             <CarouselContainer
               intervalTimeMs={5000}
               willShowBtns
-              rightBtnContainerClassName='w-auto h-100 d-flex d-xxl-none justify-content-center align-items-center position-absolute end-0'
-              leftBtnContainerClassName='w-auto h-100 d-flex d-xxl-none justify-content-center align-items-center position-absolute start-0'
+              rightBtnClassName='no-btn-styles'
+              leftBtnClassName='no-btn-styles'
+              rightBtnContainerClassName='features-right-arrow-btn w-auto h-100 d-flex d-xxl-none justify-content-center align-items-center position-absolute end-0'
+              leftBtnContainerClassName='features-left-arrow-btn w-auto h-100 d-flex d-xxl-none justify-content-center align-items-center position-absolute start-0'
               autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4"
               parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
               dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-xxl-0'
@@ -208,7 +210,7 @@ const Overview = ({
                     thirdChildDivClassName='px-md-1 border-0 sponsor-card'
                   >
                     <div className='d-flex flex-column flex-lg-row flex-xxl-column d-xxl-block'>
-                      <section className="d-flex justify-content-center align-items-center col-12 col-lg-5 col-xxl-12">
+                      <section className="d-flex justify-content-center align-items-center col-12 col-lg-6 col-xxl-12">
                         <div className='position-relative sponsor-img-container rounded-circle border p-2'>
                           <img
                             src='/imgs/tom_folland.png'
@@ -218,7 +220,7 @@ const Overview = ({
                           />
                         </div>
                       </section>
-                      <section className="col-12 d-flex justify-content-center align-items-center d-xxl-block col-lg-7 col-xxl-12">
+                      <section className="col-12 d-flex justify-content-center align-items-center d-xxl-block col-lg-6 col-xxl-12">
                         <section className="d-none d-xxl-block">
                           <span className='fw-bold'>
                             feat.
