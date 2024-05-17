@@ -236,11 +236,13 @@ export const getStaticPaths = async () => {
   try {
     await connectToMongodb();
 
-    const lessons = await Lessons.find({}, { numID: 1, locale: 1, _id: 0 }).lean()
+    const lessons = await Lessons.find({}, { numID: 1, defaultLocale: 1, _id: 0, locale: 1 }).lean()
+
+    console.log('yo there meng, lessons.length: ', lessons.length)
 
     return {
       paths: lessons.map(({ numID, locale }) => ({
-        params: { id: `${numID}`, loc: `${locale}` },
+        params: { id: `${numID}`, loc: `${locale ?? ''}` },
       })),
       fallback: false,
     };
@@ -312,8 +314,6 @@ const updateLessonsWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOnto
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
-    console.log('loc: ', loc);
-
     await connectToMongodb();
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
