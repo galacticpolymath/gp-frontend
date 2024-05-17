@@ -69,7 +69,7 @@ const LessonDetails = ({ lesson }) => {
 
         return lessonStandards;
       })
-      // construct the object that hold all of the sections of the unit
+      // construct the object that holds all of the sections of the unit
       .reduce((lessonStandardObj, lessonStandardsAccumulatedObj) => {
         let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
 
@@ -95,6 +95,8 @@ const LessonDetails = ({ lesson }) => {
 
         return _lessonStandardsAccumulated;
       }, {});
+
+    // create the background section 
     lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards', InitiallyExpanded: true };
     sectionComps = sectionComps.filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index));
     const backgroundSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
@@ -160,6 +162,8 @@ const LessonDetails = ({ lesson }) => {
   }, []);
 
   let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
+
+  console.log('_sections: ', _sections);
 
   if (!lesson && typeof window === "undefined") {
     return null;
