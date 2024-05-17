@@ -71,14 +71,14 @@ export async function middleware(request) {
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
 
-      url.searchParams.set('projectionObj', JSON.stringify({ locale: 1 }));
+      url.searchParams.set('projectionObj', JSON.stringify({ locale: 1, DefaultLocale: 1 }));
       url.searchParams.set('filterObj', JSON.stringify({ numID: [unitNum] }));
 
       const getUnitsRes = await fetch(url);
       const { msg, lessons } = await getUnitsRes.json() ?? {};
 
       if (msg || !lessons.length) {
-        console.log("Couldn't get the lessons. Reason: ", msg);
+        console.log(!lessons.length ? 'The unit does not exist.' : `Couldn't get the units. Reason: ${msg}`);
 
         return NextResponse.redirect(`${nextUrl.origin}/error`);
       }
@@ -92,7 +92,7 @@ export async function middleware(request) {
 
       console.log('The unit does not exist.');
 
-      return NextResponse.redirect(`${nextUrl.origin}/lessons/${lessons[0].locale}/${unitNum}`);
+      return NextResponse.redirect(`${nextUrl.origin}/lessons/${lessons[0].DefaultLocale}/${unitNum}`);
     } else if (!nextUrl.href.includes('api') && nextUrl.pathname.includes('lessons')) {
       console.log('Not on a specific unit.');
 
