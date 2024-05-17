@@ -67,7 +67,7 @@ const Title = ({
   const lastSubRelease = useMemo(() => getLatestSubRelease(versions), []);
 
   return (
-    <div className="container d-flex d-xxl-block justify-content-center pt-4 px-0">
+    <div className="container pt-4">
       <div id="lessonTitleSecId" className="d-flex justify-content-center align-items-center d-xxl-block">
         <div className="col-12 d-flex flex-column">
           <div className="mt-3 mt-sm-0 d-flex justify-content-between">
@@ -128,10 +128,10 @@ const Title = ({
                   />
                 )}
             </div>
-            <div className='mb-4 mb-md-0 mt-4 mt-md-0 col-xxl-3 row my-0 py-0 col-xxl-4 d-xxl-flex flex-xxl-column-reverse justify-content-xxl-center align-items-xxl-center'>
-              <div className="col-12 col-sm-8 col-md-8 col-lg-9 col-xxl-12 d-grid align-content-center d-xxl-flex flex-xxl-column">
+            <div className='ms-xxl-3 mb-4 mb-md-0 mt-4 mt-md-0 col-xxl-3 row my-0 py-0 d-xxl-flex flex-xxl-column-reverse justify-content-xxl-center align-items-xxl-center'>
+              <div className="col-12 col-sm-8 col-md-8 col-lg-9 col-xxl-12 d-grid align-content-center d-xxl-flex flex-xxl-column p-0">
                 <h5 className='text-xxl-center'>Sponsored by:</h5>
-                <ul className='d-xxl-flex justify-content-xxl-center align-items-xxl-center'>
+                <ul className='d-xxl-flex justify-content-xxl-center align-items-xxl-center m-xxl-0 p-xxl-0'>
                   {!!sponsors?.length && (
                     sponsors.map((sponsor, index) => (
                       <li key={index}>

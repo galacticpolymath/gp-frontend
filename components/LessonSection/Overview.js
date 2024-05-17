@@ -5,41 +5,6 @@ import RichText from '../RichText';
 import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 import Title from './Title';
-import CarouselContainer from '../CarouselContainer';
-import CarouselItem from '../CarouselItem';
-
-const SPONSORS_TESTING_DATA = [
-  // {
-  //   name: {
-  //     first: 'Tom',
-  //     middle: '',
-  //     last: 'Folland',
-  //     prefix: 'Dr.',
-  //   },
-  //   location: {
-  //     instition: 'University of Iowa',
-  //     department: 'Department of Industrial Light and Magic',
-  //     city: 'Iowa City',
-  //     state: 'IA',
-  //     country: 'USA',
-  //   },
-  // },
-  {
-    name: {
-      first: 'Tom',
-      middle: '',
-      last: 'Folland',
-      prefix: 'Dr.',
-    },
-    location: {
-      instition: 'University of Iowa',
-      department: 'Department of Industrial Light and Magic',
-      city: 'Iowa City',
-      state: 'IA',
-      country: 'USA',
-    },
-  },
-];
 
 const Overview = ({
   LearningSummary,
@@ -73,7 +38,7 @@ const Overview = ({
       />
       <Title {...titleProps} />
       <div className="d-flex flex-column flex-xxl-row mt-sm-4 mt-md-0 mt-xxl-4 container px-0 mx-0">
-        <div className="col-xxl-9 bg-light-gray px-4 py-2 rounded-3 text-center">
+        <div className="col-xxl-12 bg-light-gray px-4 py-2 rounded-3 text-center">
           {LearningSummary && (
             <div className="g-col-12 bg-white p-3 rounded-3 mt-2 text-start  align-items-center">
               <Image
@@ -180,84 +145,6 @@ const Overview = ({
               </div>
             </Link>
           )}
-        </div>
-        <div
-          className="d-block d-xxl-block col-xxl-4 px-xxl-3 mt-3 mt-xxl-0"
-        >
-          <div style={{ backgroundColor: '#F9FBFF', borderRadius: '2em' }} className="border py-2">
-            <CarouselContainer
-              intervalTimeMs={5000}
-              willShowBtns
-              rightBtnClassName='no-btn-styles'
-              leftBtnClassName='no-btn-styles'
-              rightBtnContainerClassName='features-right-arrow-btn w-auto h-100 d-flex d-xxl-none justify-content-center align-items-center position-absolute end-0'
-              leftBtnContainerClassName='features-left-arrow-btn w-auto h-100 d-flex d-xxl-none justify-content-center align-items-center position-absolute start-0'
-              autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4"
-              parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
-              dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-xxl-0'
-              dotStyle={{ transform: 'translateY(10px)' }}
-            >
-              {SPONSORS_TESTING_DATA.map((sponsor, index) => {
-                const { name, location } = sponsor;
-                const sponsorName = `${name.prefix} ${name.first} ${name.middle} ${name.last}`;
-                const sponsorLocation = `${location.city}, ${location.state}, ${location.country}`;
-
-                return (
-                  <CarouselItem
-                    key={index}
-                    parentStyles='d-flex justify-content-center align-items-center'
-                    secondChildDivClassName='px-1 pb-0 rounded w-100'
-                    thirdChildDivClassName='px-md-1 border-0 sponsor-card'
-                  >
-                    <div className='d-flex flex-column flex-lg-row flex-xxl-column d-xxl-block'>
-                      <section className="d-flex justify-content-center align-items-center col-12 col-lg-6 col-xxl-12">
-                        <div className='position-relative sponsor-img-container rounded-circle border p-2'>
-                          <img
-                            src='/imgs/tom_folland.png'
-                            alt='sponsor_testing_img'
-                            style={{ objectFit: 'contain' }}
-                            className='w-100 h-100 rounded-circle border'
-                          />
-                        </div>
-                      </section>
-                      <section className="col-12 d-flex justify-content-center align-items-center d-xxl-block col-lg-6 col-xxl-12">
-                        <section className="d-none d-xxl-block">
-                          <span className='fw-bold'>
-                            feat.
-                          </span>
-                          <h2 className='fw-bold text-xxl-center d-flex justify-content-center align-items-center'>
-                            {sponsorName}
-                          </h2>
-                        </section>
-                        <ul className="px-2 d-none d-xxl-flex flex-column list-unstyled justify-content-xxl-center align-items-xxl-center">
-                          <li className='mb-1 text-wrap w-100 text-xxl-center d-xxl-inline-flex justify-content-center align-items-center' style={{ fontSize: '22px', fontWeight: 500 }}>{location.instition}</li>
-                          <li className='mb-1 text-wrap w-100 text-xxl-center d-xxl-inline-flex justify-content-center align-items-center' style={{ fontSize: '22px', fontWeight: 500, lineHeight: '27px' }}>{location.department}</li>
-                          <li className='mb-1 text-wrap w-100 text-xxl-center d-xxl-inline-flex justify-content-center align-items-center' style={{ fontSize: '22px', fontWeight: 500 }}>{sponsorLocation}</li>
-                        </ul>
-                        <section className='d-xxl-none h-100 d-flex flex-column justify-content-center'>
-                          <span className='fw-bold'>
-                            feat.
-                          </span>
-                          <section className="d-flex flex-column">
-                            <span className='text-wrap'>
-                              <b>{sponsorName}</b> {location.instition}
-                            </span>
-                            <span className='text-wrap'>
-                              {location.department}
-                            </span>
-                            <span className='text-wrap'>
-                              {sponsorLocation}
-                            </span>
-                          </section>
-                        </section>
-                      </section>
-                    </div>
-                  </CarouselItem>
-                );
-              })
-              }
-            </CarouselContainer>
-          </div>
         </div>
       </div>
       <RichText className='mt-4' content={Text} />
