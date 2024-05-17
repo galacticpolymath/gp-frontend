@@ -69,6 +69,7 @@ const LessonDetails = ({ lesson }) => {
 
         return lessonStandards;
       })
+      // construct the object that hold all of the sections of the unit
       .reduce((lessonStandardObj, lessonStandardsAccumulatedObj) => {
         let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
 

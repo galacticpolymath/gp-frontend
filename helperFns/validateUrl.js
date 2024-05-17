@@ -6,7 +6,7 @@ const ACCEPTABLE_URL_PROTOCALS = ['https:', 'http:', 'https', 'http'];
 export const validateHrefStr = (hrefStr, acceptableUrlProtocals = ACCEPTABLE_URL_PROTOCALS) => {
     try {
 
-        if (!hrefStr.includes(':')) {
+        if (!hrefStr?.includes(':')) {
             // a path was passed
             return hrefStr;
         }
