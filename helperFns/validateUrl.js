@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 
-const ACCEPTABLE_URL_PROTOCALS = ['https:', 'http:', 'https', 'http'];
+const ACCEPTABLE_URL_PROTOCALS = ['https:', 'http:', 'https', 'http', 'mailto:'];
 
 export const validateHrefStr = (hrefStr, acceptableUrlProtocals = ACCEPTABLE_URL_PROTOCALS) => {
     try {
