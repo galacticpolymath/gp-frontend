@@ -497,7 +497,6 @@ export default async function handler(request, response) {
 
         for (const file of files) {
             for (const permission of permissions) {
-                console.log('permissions yo: ', permission)
                 const shareFilePromise = googleService.permissions.create({
                     resource: permission,
                     fileId: file.id,
