@@ -37,6 +37,7 @@ export async function middleware(request) {
       return new NextResponse('No headers were present in the request.', { status: 400 });
     }
 
+    // a selected unit without locale
     if (
       !nextUrl.href.includes('api') &&
       nextUrl.pathname.includes('lessons') &&
@@ -46,12 +47,12 @@ export async function middleware(request) {
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
 
-      url.searchParams.set('projectionObj', JSON.stringify({ locale: 1 }));
+      url.searchParams.set('projectionObj', JSON.stringify({ DefaultLocale: 1 }));
       url.searchParams.set('filterObj', JSON.stringify({ numID: [unitNum] }));
 
       const getUnitsRes = await fetch(url);
       const { msg, lessons } = await getUnitsRes.json() ?? {};
-      const locale = lessons?.[0].defaultLocale ?? lessons?.[0].locale;
+      const locale = lessons?.[0]?.DefaultLocale;
 
       if (!Array.isArray(lessons) || !lessons?.length || lessons.some(unit => (unit === null) || ((unit !== null) && (typeof unit !== 'object'))) || !locale) {
         console.error('Failed to retrieve the lessons from the db. Reason: ', msg);
@@ -62,6 +63,7 @@ export async function middleware(request) {
       console.log('redirecting the user to the units page...');
       return NextResponse.redirect(`${nextUrl.origin}/lessons/${locale}/${unitNum}`);
     } else if (
+      // unit with locale value is present in the url
       !nextUrl.href.includes('api') &&
       nextUrl.pathname.includes('lessons') &&
       (nextUrl?.pathname?.split('/')?.filter(val => val)?.length == 3) &&
