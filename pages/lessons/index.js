@@ -63,18 +63,18 @@ const LessonsPage = ({
           </p>
         </div>
       </section>
-      <section className='w-100 my-5 my-md-3'>
+      <section className='w-100 my-4 my-md-3'>
         <div className="container">
-          <h4 className="ms-sm-4 text-muted mb-2 mb-sm-4 text-left mt-4 mx-4 pe-lg-5">
+          <h4 className="text-muted mb-3 mb-sm-5 text-left mt-2 mt-sm-4 pe-lg-5">
             Made open access by these funding organizations and research institutions:
           </h4>
           <Sponsors />
         </div>
       </section>
       <section className="mb-3 mt-5">
-        <div style={{ backgroundColor: "#F0F4FF" }}>
+        <div className='border-top border-bottom' style={{ backgroundColor: "#F0F4FF" }}>
           <div
-            className="w-100 container border-top border-bottom px-2 px-xxl-0 px-sm-5 py-2 lessons-nav-section-container"
+            className="w-100 container px-3 px-xxl-0 px-sm-5 py-2 lessons-nav-section-container"
           >
             <h4 className="p-0 mb-0">
               <span className='h-100'>
@@ -84,34 +84,9 @@ const LessonsPage = ({
                 Navigate To:
               </span>
             </h4>
-            <section className="d-flex flex-wrap justify-content-sm-start pt-3 ps-sm-3 pt-sm-3">
-              <div className="p-1 p-sm-0">
+            <section className="d-flex flex-wrap justify-content-sm-start pt-3 ps-xxl-2">
+              <div className="m-1 m-md-0 mx-md-2 p-1 p-sm-0 d-flex justify-content-center align-items-center">
                 <div className="bg-white nav-section-btn rounded">
-                  <a href='#gp-apps' style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
-                    <span style={{ height: "60%" }} className='d-inline-flex justify-content-center align-items-center'>
-                      {/* put icons here */}
-                      <img src="favicon-32x32.png" alt="Apps_Icon" style={{ objectFit: 'contain' }} />
-                    </span>
-                    <span style={{ height: "40%" }} className='d-inline-flex fw-bold'>
-                      Apps
-                    </span>
-                  </a>
-                </div>
-              </div>
-              <div className="p-1 p-sm-0">
-                <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
-                  <a href="#gp-videos" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
-                    <span style={{ height: "60%" }} className="d-inline-flex justify-content-center align-items-center">
-                      <i style={{ color: 'red' }} className='bi bi-youtube' />
-                    </span>
-                    <span style={{ height: "40%" }} className="fw-bold">
-                      Videos
-                    </span>
-                  </a>
-                </div>
-              </div>
-              <div className="p-1 p-sm-0">
-                <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
                   <a href="#gp-units" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
                     <span style={{ height: "60%" }}>
                       <Image
@@ -126,8 +101,33 @@ const LessonsPage = ({
                   </a>
                 </div>
               </div>
-              <div className="p-1 p-sm-0">
-                <div className="bg-white nav-section-btn rounded ms-sm-2 ms-md-5">
+              <div className="nav-card m-1 m-md-0 mx-md-2 p-1 p-sm-0 d-flex justify-content-center align-items-center">
+                <div className="bg-white nav-section-btn rounded">
+                  <a href='#gp-apps' style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                    <span style={{ height: "60%" }} className='d-inline-flex justify-content-center align-items-center'>
+                      {/* put icons here */}
+                      <img src="favicon-32x32.png" alt="Apps_Icon" style={{ objectFit: 'contain' }} />
+                    </span>
+                    <span style={{ height: "40%" }} className='d-inline-flex fw-bold'>
+                      Apps
+                    </span>
+                  </a>
+                </div>
+              </div>
+              <div className="nav-card m-1 m-md-0 mx-md-2 p-1 p-sm-0 d-flex justify-content-center align-items-center">
+                <div className="bg-white nav-section-btn rounded">
+                  <a href="#gp-videos" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
+                    <span style={{ height: "60%" }} className="d-inline-flex justify-content-center align-items-center">
+                      <i style={{ color: 'red' }} className='bi bi-youtube' />
+                    </span>
+                    <span style={{ height: "40%" }} className="fw-bold">
+                      Videos
+                    </span>
+                  </a>
+                </div>
+              </div>
+              <div className="nav-card m-1 m-md-0 mx-md-2 p-1 p-sm-0 d-flex justify-content-center align-items-center">
+                <div className="bg-white nav-section-btn rounded">
                   <a href="#gp-lessons" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
                     <span style={{ height: "60%" }}>
                       <Image
@@ -148,7 +148,11 @@ const LessonsPage = ({
       </section>
       <section>
         <div className='container'>
-          <section className="mb-5 pt-2">
+          <GpUnits
+            units={units}
+            didErrorOccur={didErrorOccur}
+          />
+          <section className="mb-5 pt-2 lessonsSection lessons-section-border-top">
             <section className="headerSecLessonsPg">
               <h4 id="gp-apps" style={{ scrollMarginTop: "100px" }} className="ms-sm-4 text-muted  mb-2 mb-sm-4 text-left mt-4 mx-4">
                 Galactic Polymath Learning Tools
@@ -156,7 +160,7 @@ const LessonsPage = ({
             </section>
             <section>
               <section className="mx-auto grid pb-1 p-4 gap-3 pt-3">
-                <div onClick={handleJobVizCardClick} className="pointer g-col-12 g-col-md-8 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg">
+                <div onClick={handleJobVizCardClick} className="pointer g-col-12 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg">
                   <section className="d-flex flex-column w-100 h-100">
                     <section style={{ height: '205px' }} className="imgSec d-flex justify-content-center align-items-center">
                       <JobVizIcon />
@@ -185,10 +189,6 @@ const LessonsPage = ({
             setIsGpVideoModalShown={setIsGpVideoModalShown}
             setSelectedVideo={setSelectedVideo}
             totalVidsNum={gpVideosObj?.totalItemsNum}
-          />
-          <GpUnits
-            units={units}
-            didErrorOccur={didErrorOccur}
           />
         </div>
       </section>
