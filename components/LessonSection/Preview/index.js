@@ -30,7 +30,6 @@ const Preview = ({
       _sectionDots={_sectionDots}
     >
       <div ref={ref} className='row mx-auto pb-4 justify-content-center'>
-        <h5 className='fw-light text-center my-5'>Preview of key media in this mini-unit that enhance learning and engagement.</h5>
         {Multimedia?.[0] && <LessonsCarousel mediaItems={Multimedia} />}
       </div>
     </CollapsibleLessonSection>
