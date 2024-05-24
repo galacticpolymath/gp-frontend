@@ -29,7 +29,7 @@ const Preview = ({
       initiallyExpanded={InitiallyExpanded !== false}
       _sectionDots={_sectionDots}
     >
-      <div ref={ref} className='row mx-auto pb-4 justify-content-center'>
+      <div ref={ref} className='row mx-auto pb-4 justify-content-center pt-4'>
         {Multimedia?.[0] && <LessonsCarousel mediaItems={Multimedia} />}
       </div>
     </CollapsibleLessonSection>
