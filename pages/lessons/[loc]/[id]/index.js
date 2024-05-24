@@ -69,6 +69,7 @@ const LessonDetails = ({ lesson }) => {
 
         return lessonStandards;
       })
+      // construct the object that holds all of the sections of the unit
       .reduce((lessonStandardObj, lessonStandardsAccumulatedObj) => {
         let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
 
@@ -94,6 +95,8 @@ const LessonDetails = ({ lesson }) => {
 
         return _lessonStandardsAccumulated;
       }, {});
+
+    // create the background section 
     lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards', InitiallyExpanded: true };
     sectionComps = sectionComps.filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index));
     const backgroundSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
@@ -159,6 +162,8 @@ const LessonDetails = ({ lesson }) => {
   }, []);
 
   let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
+
+  console.log('_sections: ', _sections);
 
   if (!lesson && typeof window === "undefined") {
     return null;
@@ -231,11 +236,11 @@ export const getStaticPaths = async () => {
   try {
     await connectToMongodb();
 
-    const lessons = await Lessons.find({}, { numID: 1, locale: 1, _id: 0 }).lean()
+    const lessons = await Lessons.find({}, { numID: 1, defaultLocale: 1, _id: 0, locale: 1 }).lean()
 
     return {
       paths: lessons.map(({ numID, locale }) => ({
-        params: { id: `${numID}`, loc: `${locale}` },
+        params: { id: `${numID}`, loc: `${locale ?? ''}` },
       })),
       fallback: false,
     };
@@ -310,7 +315,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     await connectToMongodb();
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
-    let lessonToDisplayOntoUi = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)))
+    let lessonToDisplayOntoUi = targetLessons.find(({ numID, locale }) => ((numID === parseInt(id)) && (locale === loc)));
 
     if (!lessonToDisplayOntoUi || (typeof lessonToDisplayOntoUi !== 'object')) {
       throw new Error("Lesson is not found.")

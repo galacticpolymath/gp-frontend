@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
@@ -12,6 +13,7 @@ const Overview = ({
   Description,
   EstLessonTime,
   ForGrades,
+  GradesOrYears,
   TargetSubject,
   SteamEpaulette,
   SteamEpaulette_vert,
@@ -42,7 +44,7 @@ const Overview = ({
       />
       <Title {...titleProps} />
       <div className="bg-light-gray px-4 py-2 rounded-3 text-center">
-        {LearningSummary && (
+        {!!LearningSummary && (
           // put the GistCard here
           <div className="g-col-12 bg-white p-3 rounded-3 mt-2 text-start  align-items-center">
             <Image
@@ -70,7 +72,7 @@ const Overview = ({
           <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3 '>
             <span>
               <i className="fs-3 mb-2 me-2 bi-person-circle"></i>
-              <h5 className='d-inline-block'>Grades: </h5>
+              <h5 className='d-inline-block'>{GradesOrYears}: </h5>
             </span>
             <div>{ForGrades}</div>
           </div>
@@ -154,7 +156,7 @@ const Overview = ({
       <RichText className='mt-4' content={Text} />
 
       <h5 className='mt-4'>Keywords:</h5>
-      {Tags && Tags.map(tag => (
+      {!!Tags?.length && Tags.map(tag => (
         <span
           key={tag.Value}
           className='fs-6 fw-light badge rounded-pill bg-white text-secondary border border-2 border-secondary me-2 mb-2 px-2'
@@ -163,7 +165,7 @@ const Overview = ({
         </span>
       ))}
 
-      {Description && (
+      {!!Description && (
         <>
           <h3 className='mt-3'>Lesson Description</h3>
           <RichText content={Description} />

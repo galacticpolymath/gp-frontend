@@ -21,8 +21,8 @@ const GpVideos = ({
     const { btnTxt, gpDataObj, handleOnClick } = useGetGpDataStates(startingGpVids, isLast, nextPgNumStartingVal, 'videos', totalVidsNum);
 
     return (
-        <section className="lessonsSection pt-1">
-            <div className='ms-sm-4 galactic-black  mb-2 mb-sm-4 text-left mt-4 mx-4'>
+        <section className="lessonsSection lessons-section-border-top pt-1 mb-2">
+            <div className='ms-sm-4 galactic-black mb-2 text-left mt-4 mx-4'>
                 <div className="d-flex">
                     <h4
                         id="gp-videos"

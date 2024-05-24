@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { validateHrefStr } from '../helperFns/validateUrl';
 
 const CustomLink = ({
-    hrefStr,
+    hrefStr = '',
     children,
     fontSize,
     targetLinkStr = '_self',

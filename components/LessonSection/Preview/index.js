@@ -30,11 +30,7 @@ const Preview = ({
       _sectionDots={_sectionDots}
     >
       <div ref={ref} className='row mx-auto pb-4 justify-content-center'>
-        <div className='infobox rounded-3 p-2 p-sm-4 fs-5 my-2 p-3 fw-light w-auto'>
-          <h2 className='fw-light text-center'>&#8220;Teach it in 15&#8221;&nbsp; Quick Prep</h2>
-          <RichText content={QuickPrep} className='d-flex justify-content-center quickPrep' />
-        </div>
-
+        <h5 className='fw-light text-center my-5'>Preview of key media in this mini-unit that enhance learning and engagement.</h5>
         {Multimedia?.[0] && <LessonsCarousel mediaItems={Multimedia} />}
       </div>
     </CollapsibleLessonSection>

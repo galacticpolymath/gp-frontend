@@ -43,7 +43,7 @@ class Credentials {
 }
 
 /**
- * Share the google drive file with a user.
+ * Get the google drive folders.
  * @param{string} folderId The id of the file.
  * @param{drive_v3.Drive} googleService google drive service object
  * @return{Promise<[] | null>} An array of the permission ids if successful. Otherwise, it will return null.

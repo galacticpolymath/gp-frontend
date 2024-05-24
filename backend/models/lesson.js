@@ -32,7 +32,7 @@ if (!Lessons) {
     TemplateVer: String,
     galacticPubsVer: String,
     isTestRepo: Boolean,
-    defaultLocale: String,
+    DefaultLocale: String,
     URL: String,
     GPCatalogURL: String,
     GitHubURL: String,

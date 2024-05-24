@@ -29,16 +29,6 @@ module.exports = {
       'pacific-h2o.galacticpolymath.com'
     ],
   },
-  // DELETE THIS
-  async redirects() {
-    return [
-      {
-        permanent: true,
-        source: '/lessons/:lessonId',
-        destination: '/lessons/en-US/:lessonId'
-      },
-    ]
-  },
   async headers() {
     return [
       {

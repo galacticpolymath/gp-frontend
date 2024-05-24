@@ -7,12 +7,16 @@
 /* eslint-disable semi */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
+import CustomLink from '../components/CustomLink';
 import Layout from '../components/Layout';
 
 const ErrorPg = () => (
   <Layout>
-    <div className="lessonDetailsContainer min-vh-100 pt-3 ps-3">
+    <div className="lessonDetailsContainer min-vh-100 pt-3 ps-3 ps-xxl-5 pt-xxl-3 d-flex flex-column">
       <span>404 page not found 😔.</span>
+      <span className='mt-2'>If this link used to work or you think we should be aware of this issue, please email:
+        <CustomLink hrefStr="mailto:feedback@galacticpolymath.com" className='ms-1 mt-2 text-break'>feedback@galacticpolymath.com</CustomLink>.
+      </span>
     </div>
   </Layout>
 );

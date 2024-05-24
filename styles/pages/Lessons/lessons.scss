@@ -51,10 +51,12 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.lessonsSection {
+.lessons-section-border-top{
   border-top: solid $borderThickness $borderColor;
+}
 
-  >div {
+.lessonsSection {
+  > div {
     @media (max-width: 576px) {
       display: flex !important;
       flex-direction: column;
@@ -444,6 +446,8 @@ $toolTipColor: #f0f4ff;
   height: 100px;
   border: solid .5px black;
 
+
+
   @media(max-width: 577px) {
     width: 83px;
     height: 83px;
@@ -453,7 +457,7 @@ $toolTipColor: #f0f4ff;
 .lessons-nav-section-container {
   height: 175px;
 
-  @media(max-width: 577px) {
+  @media(max-width: 767px) {
     height: auto;
   }
 }

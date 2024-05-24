@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import Lessons from '../models/lesson';
 import { connectToMongodb } from '../utils/connection';
 
