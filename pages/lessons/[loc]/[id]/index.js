@@ -163,8 +163,6 @@ const LessonDetails = ({ lesson }) => {
 
   let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
 
-  console.log('_sections: ', _sections);
-
   if (!lesson && typeof window === "undefined") {
     return null;
   }
@@ -297,7 +295,7 @@ const updateLessonsWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOnto
   // getting the status for each lesson
   let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
 
-  if (!lesson.tile && (lsnStatus.status === "Coming Soon")) {
+  if (!lesson.tile && (lsnStatus?.status === "Coming Soon")) {
     lessonObjUpdated = {
       ...lessonObjUpdated,
       tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
@@ -355,7 +353,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           // getting the status for each lesson
           let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
 
-          if (!lesson.tile && (lsnStatus.status === "Coming Soon")) {
+          if (!lesson.tile && (lsnStatus?.status === "Coming Soon")) {
             lessonObjUpdated = {
               ...lessonObjUpdated,
               tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
@@ -376,7 +374,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           return true;
         }
 
-        return lesson.status !== "Proto"
+        return lesson?.status !== "Proto"
       });
 
       lessonParts.forEach((lessonPartsArr, index) => {
