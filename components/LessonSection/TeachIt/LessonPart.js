@@ -194,7 +194,7 @@ const LessonPart = ({
                         style={{ color: LESSON_PART_BTN_COLOR }}
                         className='fs-5 fw-bold text-left px-md-0 pe-1'
                       >
-                        {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle}`}
+                        {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle ?? ''}`}
                       </h3>
                       <div className='d-flex align-items-center flex-column'>
                         <div
