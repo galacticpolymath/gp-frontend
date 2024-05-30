@@ -12,7 +12,6 @@ const Overview = ({
   Description,
   EstLessonTime,
   ForGrades,
-  GradesOrYears,
   TargetSubject,
   SteamEpaulette,
   SteamEpaulette_vert,
@@ -39,7 +38,7 @@ const Overview = ({
         className='position-absolute'
       />
       <Title {...titleProps} />
-      <div className="d-flex flex-column flex-xxl-row mt-sm-4 mt-md-0 mt-xxl-4 container px-0 mx-0">
+      <div className="d-flex flex-column flex-xxl-row mt-sm-4 mt-md-0 mt-xxl-2 container px-0 mx-0">
         <div className="col-xxl-12 bg-light-gray px-4 py-2 rounded-3 text-center">
           {LearningSummary && (
             <div className="g-col-12 bg-white p-3 rounded-3 mt-2 text-start  align-items-center">
