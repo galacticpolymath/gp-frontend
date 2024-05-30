@@ -265,8 +265,6 @@ export async function getStaticProps() {
       const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
       const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
 
-      console.log('what is up meng...')
-
       if (isThereAWebApp) {
         for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
           let multiMediaItem = multiMediaArr[numIteration]
@@ -278,8 +276,6 @@ export async function getStaticProps() {
               console.error('Failed to get the image preview of web app. Error message: ', errMsg)
               continue
             }
-
-            console.log('hey there meng: ', multiMediaItem)
 
             multiMediaItem = {
               lessonIdStr: multiMediaItem.forLsn,
@@ -300,8 +296,6 @@ export async function getStaticProps() {
 
       let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
       let lessonPartsFromClassRoomObj = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
-
-      console.log("lesson.LsnStatuses, yo there: ", lesson?.LsnStatuses);
 
       if (lessonParts?.length) {
         for (let lsnStatus of lesson.LsnStatuses) {
@@ -342,8 +336,6 @@ export async function getStaticProps() {
         }
       }
     }
-
-    console.log("lessonPartsForUI: ", lessonPartsForUI)
 
     const units = getShowableUnits(lessons).map(lesson => {
       const individualLessonsNum = lesson?.LsnStatuses?.length ? lesson.LsnStatuses.filter(({ status }) => status !== 'Hidden')?.length : 0;
