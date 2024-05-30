@@ -128,7 +128,7 @@ const Title = ({
                   />
                 )}
             </div>
-            <div className='ms-xxl-3 mb-4 mb-md-0 mt-4 mt-md-0 col-xxl-3 row my-0 py-0 d-xxl-flex flex-xxl-column-reverse justify-content-xxl-center align-items-xxl-center'>
+            <div className='ms-xxl-3 mb-4 mb-md-3 mb-lg-0 mt-4 mt-md-0 col-xxl-3 row my-0 py-0 d-xxl-flex flex-xxl-column-reverse justify-content-xxl-center align-items-xxl-center'>
               <div className="col-12 col-sm-8 col-md-8 col-lg-9 col-xxl-12 d-grid align-content-center d-xxl-flex flex-xxl-column p-0">
                 <h5 className='text-xxl-center'>Sponsored by:</h5>
                 <ul className='d-xxl-flex justify-content-xxl-center align-items-xxl-center m-xxl-0 p-xxl-0'>
