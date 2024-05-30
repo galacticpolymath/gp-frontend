@@ -31,9 +31,6 @@ export default async function handler(request, response) {
 
     await connectToMongodb();
 
-    // for the first hit, cache the lessons on the server
-    // check cache if there any lessons, use that as the query
-
     const { data, errMsg } = await retrieveLessons(filterObj ?? {}, projectionsObj ?? {});
 
     if (errMsg) {

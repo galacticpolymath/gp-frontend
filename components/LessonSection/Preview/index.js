@@ -3,10 +3,8 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
-
 import RichText from '../../../components/RichText';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
-
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonsCarousel from './LessonsCarousel';
 
