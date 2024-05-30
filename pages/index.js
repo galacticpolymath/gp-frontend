@@ -63,19 +63,6 @@ export default function Home() {
           </Link>
         </div>
       </Hero>
-      {/* {(typeof window !== 'undefined') &&
-        <Modal
-          show
-          dialogClassName='selected-vid-dialog m-0'
-          contentClassName='selected-vid-modal-content'
-        >
-          <div className='modal-content-wrapper'>
-            <div className='modal-content-sub-wrapper'>
-              <span>hey there</span>
-            </div>
-          </div>
-        </Modal>
-      } */}
       <div className="container d-flex align-items-center mx-auto px-3 py-4 py-lg-5 flex-column flex-lg-row-reverse">
         <div className="position-relative col-12 col-lg-6 engineeringImgHomePg">
           <Image
@@ -100,7 +87,6 @@ export default function Home() {
           <p className='mb-4 text-center text-sm-start text-lg-center'>We are a team of educators, scientists, and artists focused on publishing mind-expanding lessons that are also easy to teach.</p>
         </div>
       </div>
-
       <div className="bg-light-gray py-3 py-sm-5 border">
         <div className="container mx-auto row align-items-center justify-content-center">
           <h2 className="fw-light fs-1 text-center text-sm-start text-lg-center p-3 p-lg-4 mb-5">

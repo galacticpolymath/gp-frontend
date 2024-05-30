@@ -17,6 +17,7 @@ import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import Link from "next/link";
 import Button from "../../General/Button";
 import { getIsValObj, getObjVals } from "../../../globalFns";
+import { UPCOMING_STR } from "../../../globalVars";
 
 const LessonTile = ({
   lessonTileUrl,
@@ -339,10 +340,10 @@ const TeachIt = ({
                 partsFieldName={partsFieldName}
                 lessonTileUrl={lessonTile}
                 itemList={itemList}
-                isAccordionExpandable={part.status !== "Coming Soon"}
-                accordionBtnStyle={(part.status === "Coming Soon") ? { cursor: 'default' } : {}}
+                isAccordionExpandable={part.status !== UPCOMING_STR}
+                accordionBtnStyle={(part.status === UPCOMING_STR) ? { cursor: 'default' } : {}}
                 ComingSoonLessonEmailSignUp={
-                  (part.status === "Coming Soon") ?
+                  (part.status === UPCOMING_STR) ?
                     <div className="w-100 px-2 my-2">
                       <SendFeedback
                         parentDivStyles={{ backgroundColor: '#FFF4E2', zIndex: 100, border: '1px solid #B7B6C2' }}
