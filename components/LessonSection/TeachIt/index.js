@@ -277,8 +277,7 @@ const TeachIt = ({
             }
 
             if (!chunks && (lsn !== 'last') && targetLessonInDataLesson) {
-              const { chunks: _chunks } = targetLessonInDataLesson;
-              chunks = _chunks;
+              chunks = targetLessonInDataLesson.chunks;
             }
 
             if (!lsnExt && (dataLesson && (typeof dataLesson === 'object'))) {

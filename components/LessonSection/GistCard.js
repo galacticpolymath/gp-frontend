@@ -70,14 +70,14 @@ const GistCard = ({
       </div>
       {(SteamEpaulette && SteamEpaulette_vert) && (
         isOnPreview ? (
-          <SubjectBreakDown 
+          <SubjectBreakDown
             SteamEpaulette={SteamEpaulette}
             SteamEpaulette_vert={SteamEpaulette_vert}
           />
         )
           : (
             <Link passHref href="#learning_standards">
-              <SubjectBreakDown 
+              <SubjectBreakDown
                 SteamEpaulette={SteamEpaulette}
                 SteamEpaulette_vert={SteamEpaulette_vert}
               />

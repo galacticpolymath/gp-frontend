@@ -2,8 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
-import { useEffect, useRef } from 'react';
-import RichText from '../../../components/RichText';
+import { useRef } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonsCarousel from './LessonsCarousel';
@@ -13,7 +12,6 @@ const Preview = ({
   SectionTitle,
   InitiallyExpanded,
   Multimedia,
-  QuickPrep,
   _sectionDots,
 }) => {
   const ref = useRef();

@@ -4,7 +4,7 @@
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import Lessons from '../../backend/models/lesson.js'
@@ -22,7 +22,6 @@ import GpWebApps from '../../components/LessonsPg/sections/GpWebApps.js';
 import { GiShipWheel } from "react-icons/gi";
 import LessonSvg from '../../assets/img/gp-lesson-icon.svg';
 import UnitIconSvg from '../../assets/img/gp-unit-icon.svg';
-import Button from '../../components/General/Button.js';
 import Image from 'next/image.js';
 
 const handleJobVizCardClick = () => {
@@ -262,9 +261,11 @@ export async function getStaticProps() {
         continue;
       }
 
-      const multiMediaArr = lesson.Section?.preview?.Multimedia
+      const multiMediaArr = lesson.Section?.preview?.Multimedia;
       const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
       const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
+
+      console.log('what is up meng...')
 
       if (isThereAWebApp) {
         for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
@@ -277,6 +278,8 @@ export async function getStaticProps() {
               console.error('Failed to get the image preview of web app. Error message: ', errMsg)
               continue
             }
+
+            console.log('hey there meng: ', multiMediaItem)
 
             multiMediaItem = {
               lessonIdStr: multiMediaItem.forLsn,
@@ -297,6 +300,8 @@ export async function getStaticProps() {
 
       let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
       let lessonPartsFromClassRoomObj = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
+
+      console.log("lesson.LsnStatuses, yo there: ", lesson?.LsnStatuses);
 
       if (lessonParts?.length) {
         for (let lsnStatus of lesson.LsnStatuses) {
@@ -337,6 +342,8 @@ export async function getStaticProps() {
         }
       }
     }
+
+    console.log("lessonPartsForUI: ", lessonPartsForUI)
 
     const units = getShowableUnits(lessons).map(lesson => {
       const individualLessonsNum = lesson?.LsnStatuses?.length ? lesson.LsnStatuses.filter(({ status }) => status !== 'Hidden')?.length : 0;
