@@ -12,7 +12,7 @@ import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boos
 import CarouselContainer from '../components/CarouselContainer';
 import CarouselItem from '../components/CarouselItem';
 import SponsorsMarquee from '../components/Sponsors';
-import NewRelease from '../components/Home/NewRelease';
+// import NewRelease from '../components/Home/NewRelease';
 
 const papers = [
   {
@@ -100,7 +100,7 @@ export default function Home() {
       </div>
 
       <div className="bg-light-gray py-3 py-sm-5 border">
-        <CarouselContainer
+        {/* <CarouselContainer
           autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 autoCarouselSec"
           parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
           dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-0'
@@ -117,7 +117,24 @@ export default function Home() {
               </CarouselItem>
             );
           })}
-        </CarouselContainer>
+        </CarouselContainer> */}
+        <div className="container mx-auto row align-items-center justify-content-center">
+          <h2 className="fw-light fs-1 text-center text-sm-start text-lg-center p-3 p-lg-4 mb-5">
+            Think <strong>bigger</strong>.<br />{' '}
+            Learn everything.
+          </h2>
+          <div className='container bg-white rounded-3 justify-content-center py-5 px-4'>
+
+          </div>
+
+          <div className="col-12 col-lg-10 offset-lg-1 px-4 py-3 my-5">
+            <div className="display-4">We want to empower students with <em>agency</em> and <em>critical thinking</em>.</div>
+            <p className="fs-3 pt-3">
+              Our lessons help build 21st Century Skills and foster lifelong curiosity.
+            </p>
+
+          </div>
+        </div>
       </div>
 
       <div className="container mx-auto py-5">
