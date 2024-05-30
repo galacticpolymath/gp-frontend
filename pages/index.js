@@ -12,6 +12,7 @@ import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boos
 import CarouselContainer from '../components/CarouselContainer';
 import CarouselItem from '../components/CarouselItem';
 import SponsorsMarquee from '../components/Sponsors';
+import NewRelease from '../components/Home/NewRelease';
 
 const papers = [
   {
@@ -30,10 +31,20 @@ const papers = [
   },
 
 ];
+const releases = [
+  {
+    newReleasePath: '/lessons/en-US/8',
+    sponsorImg: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
+    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
+  },
+  {
+    newReleasePath: '/lessons/en-US/8',
+    sponsorImg: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
+    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
+  },
+];
 
 export default function Home() {
-  const newReleasePath = '/lessons/en-US/8';
-  const NewReleaseImage_src = 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png';
   const layoutProps = {
     title: 'Galactic Polymath - Home Page',
     description: 'We are an education studio. We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for everyone.',
@@ -63,19 +74,6 @@ export default function Home() {
           </Link>
         </div>
       </Hero>
-      {/* {(typeof window !== 'undefined') &&
-        <Modal
-          show
-          dialogClassName='selected-vid-dialog m-0'
-          contentClassName='selected-vid-modal-content'
-        >
-          <div className='modal-content-wrapper'>
-            <div className='modal-content-sub-wrapper'>
-              <span>hey there</span>
-            </div>
-          </div>
-        </Modal>
-      } */}
       <div className="container d-flex align-items-center mx-auto px-3 py-4 py-lg-5 flex-column flex-lg-row-reverse">
         <div className="position-relative col-12 col-lg-6 engineeringImgHomePg">
           <Image
@@ -102,68 +100,24 @@ export default function Home() {
       </div>
 
       <div className="bg-light-gray py-3 py-sm-5 border">
-        <div className="container mx-auto row align-items-center justify-content-center">
-          <h2 className="fw-light fs-1 text-center text-sm-start text-lg-center p-3 p-lg-4 mb-5">
-            Think <strong>bigger</strong>.<br />{' '}
-            Learn everything.
-          </h2>
-          <div className='container bg-white rounded-3 justify-content-center py-5 px-4'>
-            <div className='row justify-content-center gy-5'>
-              <div className='col-12 offset-0 offset-md-1 col-md-7 col-lg-6'>
-                <Link href={newReleasePath} className=' no-link-decoration object-fit-contain w-auto'>
-                  <div className="position-relative mx-auto">
-
-                    <Image
-                      priority
-                      src={NewReleaseImage_src}
-                      height={1000}
-                      width={1500}
-                      sizes="60vw"
-                      className='lessonsPgShadow rounded-4 h-auto'
-                      style={{ objectFit: 'contain' }}
-                      alt="Newest release card"
-                    />
-                    <div className='badge bg-secondary fs-6 text-center' style={{ zIndex: 15, position: 'absolute', top: '-10px', left: '-20px' }}>
-                      New release!
-                    </div>
-
-                  </div>
-                </Link>
-              </div>
-              <div className='col-12 col-md-3 col-lg-3 d-grid justify-items-center align-content-center mx-auto'>
-                <h5 className='fw-light text-center'>Sponsor:</h5>
-                <div className=" w-80 mx-auto justify-content-center">
-                  <img
-                    src='https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png'
-                    className='w-100'
-                    style={{ maxWidth: '500', objectFit: 'contain' }}
-                    alt="John Templeton Foundation"
-                  />
-                </div>
-                <div className='my-3'>
-                  <h5 className='fw-light text-center'> Dr. Emilie Snell-Rood&apos;s Lab at the University of Minnesota</h5>
-                </div>
-
-              </div>
-            </div>
-            <div className='row mt-5 '>
-              <div className='col-12 col-md-8 justify-content-center d-flex'>
-                <Link href={newReleasePath} className='btn btn-primary '>
-                  See this lesson
-                </Link>
-              </div>
-              <div className='col-0 col-md-4' />
-            </div>
-          </div>
-
-          <div className="col-12 col-lg-10 offset-lg-1 px-4 py-3 my-5">
-            <div className="display-4">We want to empower students with <em>agency</em> and <em>critical thinking</em>.</div>
-            <p className="fs-3 pt-3">
-              Our lessons help build 21st Century Skills and foster lifelong curiosity.
-            </p>
-
-          </div>
-        </div>
+        <CarouselContainer
+          autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 autoCarouselSec"
+          parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
+          dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-0'
+        >
+          {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImg }, index) => {
+            return (
+              <CarouselItem
+                key={index}
+                parentStyles='d-flex justify-content-center align-items-center'
+                secondChildDivClassName='px-1 pb-0 rounded w-100'
+                thirdChildDivClassName='px-md-1 papersCarouselItem border-0'
+              >
+                <NewRelease key={index} NewReleaseImage_src={NewReleaseImage_src} newReleasePath={newReleasePath} sponsorImg={sponsorImg} />
+              </CarouselItem>
+            );
+          })}
+        </CarouselContainer>
       </div>
 
       <div className="container mx-auto py-5">
@@ -216,6 +170,7 @@ export default function Home() {
           dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-0'
         >
           {papers.map((paper, index) => {
+            // have the items stream in a horizontal fashion, don't have it revert to the beginning
             return (
               <CarouselItem
                 key={index}
