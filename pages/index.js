@@ -33,12 +33,12 @@ const papers = [
 
 ];
 const releases = [
-  // {
-  //   newReleasePath: '/lessons/en-US/8',
-  //   sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
-  //   sponsorImgAlt: 'gp_sponsor_image',
-  //   NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
-  // },
+  {
+    newReleasePath: '/lessons/en-US/8',
+    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
+    sponsorImgAlt: 'gp_sponsor_image',
+    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
+  },
   {
     newReleasePath: '/lessons/en-US/8',
     sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
@@ -108,26 +108,17 @@ export default function Home() {
             Think <strong>bigger</strong>.<br />{' '}
             Learn everything.
           </h2>
-          <div className='container bg-white rounded-3 justify-content-center py-5 px-4'>
+          <div className='container bg-white rounded-3 justify-content-center py-1 py-lg-5 px-2 px-lg-4'>
             <CarouselContainer
-              autoCarouselSecClassName=""
-              // autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 autoCarouselSec"
-              parentStylesClassName=""
-              // parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
-              dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-0'
+              autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4"
+              parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
+              dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-3'
+              willRotate={false}
             >
               {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImgPath, sponsorImgAlt }, index) => (
-                <CarouselItem
-                  key={index}
-                  parentStyles=''
-                  // parentStyles='d-flex justify-content-center align-items-center'
-                  // secondChildDivClassName='px-1 pb-0 rounded w-100'
-                  secondChildDivClassName=''
-                  // thirdChildDivClassName='px-md-1 papersCarouselItem border-0'
-                  thirdChildDivClassName=''
-                >
+                <div key={index} className='autoCarouselItem'>
                   <NewRelease NewReleaseImage_src={NewReleaseImage_src} newReleasePath={newReleasePath} sponsorImgPath={sponsorImgPath} sponsorImgAlt={sponsorImgAlt} />
-                </CarouselItem>
+                </div>
               ))}
             </CarouselContainer>
           </div>
