@@ -12,6 +12,7 @@ import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boos
 import CarouselContainer from '../components/CarouselContainer';
 import CarouselItem from '../components/CarouselItem';
 import SponsorsMarquee from '../components/Sponsors';
+import NewRelease from '../components/Home/NewRelease';
 // import NewRelease from '../components/Home/NewRelease';
 
 const papers = [
@@ -32,14 +33,16 @@ const papers = [
 
 ];
 const releases = [
+  // {
+  //   newReleasePath: '/lessons/en-US/8',
+  //   sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
+  //   sponsorImgAlt: 'gp_sponsor_image',
+  //   NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
+  // },
   {
     newReleasePath: '/lessons/en-US/8',
-    sponsorImg: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
-    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
-  },
-  {
-    newReleasePath: '/lessons/en-US/8',
-    sponsorImg: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
+    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
+    sponsorImgAlt: 'gp_sponsor_image',
     NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
   },
 ];
@@ -100,31 +103,33 @@ export default function Home() {
       </div>
 
       <div className="bg-light-gray py-3 py-sm-5 border">
-        {/* <CarouselContainer
-          autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 autoCarouselSec"
-          parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
-          dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-0'
-        >
-          {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImg }, index) => {
-            return (
-              <CarouselItem
-                key={index}
-                parentStyles='d-flex justify-content-center align-items-center'
-                secondChildDivClassName='px-1 pb-0 rounded w-100'
-                thirdChildDivClassName='px-md-1 papersCarouselItem border-0'
-              >
-                <NewRelease key={index} NewReleaseImage_src={NewReleaseImage_src} newReleasePath={newReleasePath} sponsorImg={sponsorImg} />
-              </CarouselItem>
-            );
-          })}
-        </CarouselContainer> */}
         <div className="container mx-auto row align-items-center justify-content-center">
           <h2 className="fw-light fs-1 text-center text-sm-start text-lg-center p-3 p-lg-4 mb-5">
             Think <strong>bigger</strong>.<br />{' '}
             Learn everything.
           </h2>
           <div className='container bg-white rounded-3 justify-content-center py-5 px-4'>
-
+            <CarouselContainer
+              autoCarouselSecClassName=""
+              // autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 autoCarouselSec"
+              parentStylesClassName=""
+              // parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
+              dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-0'
+            >
+              {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImgPath, sponsorImgAlt }, index) => (
+                <CarouselItem
+                  key={index}
+                  parentStyles=''
+                  // parentStyles='d-flex justify-content-center align-items-center'
+                  // secondChildDivClassName='px-1 pb-0 rounded w-100'
+                  secondChildDivClassName=''
+                  // thirdChildDivClassName='px-md-1 papersCarouselItem border-0'
+                  thirdChildDivClassName=''
+                >
+                  <NewRelease NewReleaseImage_src={NewReleaseImage_src} newReleasePath={newReleasePath} sponsorImgPath={sponsorImgPath} sponsorImgAlt={sponsorImgAlt} />
+                </CarouselItem>
+              ))}
+            </CarouselContainer>
           </div>
 
           <div className="col-12 col-lg-10 offset-lg-1 px-4 py-3 my-5">
@@ -132,6 +137,7 @@ export default function Home() {
             <p className="fs-3 pt-3">
               Our lessons help build 21st Century Skills and foster lifelong curiosity.
             </p>
+
           </div>
         </div>
       </div>

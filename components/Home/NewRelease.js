@@ -7,7 +7,7 @@ import CustomLink from "../CustomLink";
 const NewRelease = ({ newReleasePath, NewReleaseImage_src, sponsorImgPath, sponsorImgAlt }) => {
     return (
         <>
-            <div className='row justify-content-center gy-5 bg-danger'>
+            <div className='row justify-content-center gy-5'>
                 <div className='col-12 offset-0 offset-md-1 col-md-7 col-lg-6'>
                     <CustomLink href={newReleasePath} className=' no-link-decoration object-fit-contain w-auto'>
                         <div className="position-relative mx-auto">
