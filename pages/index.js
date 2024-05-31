@@ -132,7 +132,6 @@ export default function Home() {
             <p className="fs-3 pt-3">
               Our lessons help build 21st Century Skills and foster lifelong curiosity.
             </p>
-
           </div>
         </div>
       </div>
