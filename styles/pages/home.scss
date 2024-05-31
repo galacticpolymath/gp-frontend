@@ -120,6 +120,22 @@
     }
 }
 
+.see-this-lesson-btn{
+    @media(max-width: 577px){
+        // font-size: clamp();
+        font-size: clamp(14px, 4vw, 22px);;
+    }
+}
+
+.new-release-badge{
+    z-index: 15;
+    top: -10px;
+    left: -20px;
+
+    @media (max-width: 768px) {
+        left:15px;
+    }
+}
 
 .papersCarouselItem {
     position: relative;
