@@ -113,7 +113,6 @@ export default function Home() {
               autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4"
               parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
               dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-3'
-              willRotate={false}
             >
               {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImgPath, sponsorImgAlt }, index) => (
                 <div key={index} className='autoCarouselItem'>
