@@ -34,6 +34,7 @@ const CarouselContainer = ({
   rightBtnClassName = 'no-btn-styles carouselArrowBtn',
   leftBtnClassName = 'no-btn-styles carouselArrowBtn',
   intervalTimeMs = 3000,
+  willRotate = true,
   dotStyle = {},
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -80,7 +81,7 @@ const CarouselContainer = ({
   };
 
   useEffect(() => {
-    if (!wasTimerPaused) {
+    if (!wasTimerPaused && willRotate) {
       resetTimeout();
       timeoutCarouselScrollRef.current = setTimeout(
         () => setCurrentIndex(getUpdatedCurrentIndexStateNum),
@@ -119,7 +120,6 @@ const CarouselContainer = ({
       )}
       <section className='row mt-0'>
         <section
-          // style={{ height: 'fit-content' }}
           className={autoCarouselSecClassName}
         >
           <div
