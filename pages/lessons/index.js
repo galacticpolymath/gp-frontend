@@ -286,7 +286,7 @@ export async function getStaticProps() {
               description: multiMediaItem.lessonRelevance,
               webAppPreviewImg: (errMsg || !images?.length) ? null : images[0],
               webAppImgAlt: (errMsg || !images?.length) ? null : `${title}'s preview image`,
-              pathToFile: WEB_APP_PATHS.find(({ name }) => multiMediaItem.title.toLowerCase().includes(name))?.path ?? null,
+              pathToFile: WEB_APP_PATHS.find(({ name }) => multiMediaItem.title.toLowerCase().includes(name))?.path ?? (images?.length ? images[0] : null),
             }
 
             webApps.push(multiMediaItem)

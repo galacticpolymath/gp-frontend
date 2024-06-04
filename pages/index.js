@@ -28,7 +28,6 @@ const papers = [
     lessonLink: '/lessons/en-US/5#lesson_part_2',
     h4Txt: 'Our data literacy strategy used in several lessons featured in <em>Edutopia</em>.',
   },
-
 ];
 
 export default function Home() {
@@ -98,7 +97,6 @@ export default function Home() {
               <div className='col-12 offset-0 offset-md-1 col-md-7 col-lg-6'>
                 <Link href={newReleasePath} className=' no-link-decoration object-fit-contain w-auto'>
                   <div className="position-relative mx-auto">
-
                     <Image
                       priority
                       src={NewReleaseImage_src}
@@ -112,7 +110,6 @@ export default function Home() {
                     <div className='badge bg-secondary fs-6 text-center' style={{ zIndex: 15, position: 'absolute', top: '-10px', left: '-20px' }}>
                       New release!
                     </div>
-
                   </div>
                 </Link>
               </div>
