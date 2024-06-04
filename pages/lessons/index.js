@@ -265,8 +265,6 @@ export async function getStaticProps() {
       const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
       const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
 
-      console.log('what is up meng...')
-
       if (isThereAWebApp) {
         for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
           let multiMediaItem = multiMediaArr[numIteration]
