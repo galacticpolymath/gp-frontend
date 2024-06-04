@@ -5,8 +5,6 @@
 import CustomLink from "../CustomLink";
 
 const NewRelease = ({ newReleasePath, NewReleaseImage_src, sponsorImgPath, sponsorImgAlt, releaseInfoTxt }) => {
-    console.log('newReleasePath: ', newReleasePath);
-
     return (
         <div className='row justify-content-center'>
             <div className='pt-3 col-12 offset-0 offset-md-1 col-md-7 col-lg-6'>
@@ -15,7 +13,7 @@ const NewRelease = ({ newReleasePath, NewReleaseImage_src, sponsorImgPath, spons
                         <img
                             src={NewReleaseImage_src}
                             sizes="60vw"
-                            className='lessonsPgShadow rounded-4 h-auto'
+                            className='lessonsPgShadow new-release-img rounded-4 h-auto'
                             style={{
                                 objectFit: 'contain',
                             }}
@@ -32,13 +30,13 @@ const NewRelease = ({ newReleasePath, NewReleaseImage_src, sponsorImgPath, spons
                     </CustomLink>
                 </div>
             </div>
-            <div className='col-12 col-md-3 col-lg-3 pt-3'>
+            <div className='col-12 col-md-3 col-lg-5 pt-3'>
                 <h5 className='fw-light text-center'>Sponsor:</h5>
-                <div className=" w-80 mx-auto justify-content-center">
+                <div className="w-80 mx-auto justify-content-center">
                     <img
                         src={sponsorImgPath}
                         className='w-100'
-                        style={{ maxWidth: '500', objectFit: 'contain' }}
+                        style={{ maxWidth: '400px', objectFit: 'contain' }}
                         alt={sponsorImgAlt}
                     />
                 </div>
