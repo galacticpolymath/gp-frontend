@@ -45,7 +45,7 @@ const releases = [
     sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/PacificH2O_en-NZ/canterbury_logo.jpg',
     sponsorImgAlt: 'gp_sponsor_image',
     NewReleaseImage_src: 'https://pacific-h2o.galacticpolymath.com/images/PacificH2O-meta-image.png',
-    releaseInfoTxt: "Dr. Emilie Snell-Rood's Lab at the University of Minnesota",
+    releaseInfoTxt: "The Department of Chemical and Process Engineering at the University of Canterbury",
   },
 ];
 
