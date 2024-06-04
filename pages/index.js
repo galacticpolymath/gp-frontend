@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-max-props-per-line */
 import Link from 'next/link';
@@ -38,12 +39,14 @@ const releases = [
     sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
     sponsorImgAlt: 'gp_sponsor_image',
     NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
+    releaseInfoTxt: "Dr. Emilie Snell-Rood's Lab at the University of Minnesota",
   },
   {
-    newReleasePath: '/lessons/en-US/8',
-    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
+    newReleasePath: '/lessons/en-US/13',
+    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/PacificH2O_en-NZ/canterbury_logo.jpg',
     sponsorImgAlt: 'gp_sponsor_image',
-    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
+    NewReleaseImage_src: 'https://pacific-h2o.galacticpolymath.com/images/PacificH2O-meta-image.png',
+    releaseInfoTxt: "Dr. Emilie Snell-Rood's Lab at the University of Minnesota",
   },
 ];
 
@@ -114,9 +117,9 @@ export default function Home() {
               parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
               dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-3'
             >
-              {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImgPath, sponsorImgAlt }, index) => (
+              {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImgPath, sponsorImgAlt, releaseInfoTxt }, index) => (
                 <div key={index} className='autoCarouselItem'>
-                  <NewRelease NewReleaseImage_src={NewReleaseImage_src} newReleasePath={newReleasePath} sponsorImgPath={sponsorImgPath} sponsorImgAlt={sponsorImgAlt} />
+                  <NewRelease releaseInfoTxt={releaseInfoTxt} NewReleaseImage_src={NewReleaseImage_src} newReleasePath={newReleasePath} sponsorImgPath={sponsorImgPath} sponsorImgAlt={sponsorImgAlt} />
                 </div>
               ))}
             </CarouselContainer>

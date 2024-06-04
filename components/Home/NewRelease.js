@@ -4,11 +4,13 @@
 /* eslint-disable indent */
 import CustomLink from "../CustomLink";
 
-const NewRelease = ({ newReleasePath, NewReleaseImage_src, sponsorImgPath, sponsorImgAlt }) => {
+const NewRelease = ({ newReleasePath, NewReleaseImage_src, sponsorImgPath, sponsorImgAlt, releaseInfoTxt }) => {
+    console.log('newReleasePath: ', newReleasePath);
+
     return (
         <div className='row justify-content-center'>
             <div className='pt-3 col-12 offset-0 offset-md-1 col-md-7 col-lg-6'>
-                <CustomLink href={newReleasePath} className='bg-danger no-link-decoration object-fit-contain w-auto'>
+                <CustomLink hrefStr={newReleasePath} className='bg-danger no-link-decoration object-fit-contain w-auto'>
                     <div className="position-relative mx-auto d-flex justify-content-center align-items-center d-md-block px-3 px-md-0">
                         <img
                             src={NewReleaseImage_src}
@@ -25,7 +27,7 @@ const NewRelease = ({ newReleasePath, NewReleaseImage_src, sponsorImgPath, spons
                     </div>
                 </CustomLink>
                 <div className='d-flex justify-content-center align-items-center mt-3'>
-                    <CustomLink href={newReleasePath} className='btn btn-primary px-2 px-sm-4 px-md-5 px-lg-4 see-this-lesson-btn'>
+                    <CustomLink hrefStr={newReleasePath} className='btn btn-primary px-2 px-sm-4 px-md-5 px-lg-4 see-this-lesson-btn'>
                         See this lesson
                     </CustomLink>
                 </div>
@@ -41,7 +43,7 @@ const NewRelease = ({ newReleasePath, NewReleaseImage_src, sponsorImgPath, spons
                     />
                 </div>
                 <div className='my-3'>
-                    <h5 className='fw-light text-center text-wrap px-3 px-md-0'> Dr. Emilie Snell-Rood&apos;s Lab at the University of Minnesota</h5>
+                    <h5 className='fw-light text-center text-wrap px-3 px-md-0'>{releaseInfoTxt}</h5>
                 </div>
             </div>
         </div>
