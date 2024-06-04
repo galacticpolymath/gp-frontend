@@ -152,10 +152,15 @@ const LessonsPage = ({
             didErrorOccur={didErrorOccur}
           />
           <section className="mb-5 pt-2 lessonsSection lessons-section-border-top">
-            <section className="headerSecLessonsPg">
-              <h4 id="gp-apps" style={{ scrollMarginTop: "100px" }} className="ms-sm-4 text-muted  mb-2 mb-sm-4 text-left mt-4 mx-4">
-                Galactic Polymath Learning Tools
-              </h4>
+            <section className="headerSecLessonsPg d-flex">
+              <section className="d-flex justify-content-center align-items-center">
+                <img src="GP_bubbleLogo300px.png" alt="Apps_Icon" style={{ objectFit: 'contain', width: 100, height: 100 }} />
+              </section>
+              <section className="d-flex justify-content-center align-items-center">
+                <h4 id="gp-apps" style={{ scrollMarginTop: "100px" }} className="text-muted mb-2 mb-sm-0 text-left mx-2">
+                  Galactic Polymath Learning Tools
+                </h4>
+              </section>
             </section>
             <section>
               <section className="mx-auto grid pb-1 p-4 gap-3 pt-3">
