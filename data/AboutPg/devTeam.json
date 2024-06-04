@@ -1,29 +1,5 @@
 [
     {
-        "name": "Kenzie Bottoms",
-        "position": "LEAD DEVELOPER, GP PUBLISHING WORKFLOW",
-        "imgSrc": "/imgs/about/devTeam/Kenzie_Bottoms.webp",
-        "description": "A problem solver who codes, makes art, and roller skates, Kenzie is trying to pay it forward and delighted to work with such kind, talented people in the process.",
-        "links": [
-            {
-                "link": "https://kenzie.ink/",
-                "icon": "bi bi-globe"
-            },
-            {
-                "link":"https://www.linkedin.com/in/castils/",
-                "icon": "bi bi-linkedin"
-            },
-            {
-                "link": "https://twitter.com/kenziebottoms",
-                "icon": "bi bi-twitter"
-            },
-            {
-                "link": "https://github.com/kenziebottoms",
-                "icon": "bi bi-github"
-            }
-        ]
-    },
-    {
         "name": "Gabe Torion",
         "position": "LEAD DEVELOPER, JOBVIZ, HIRE US, GP PUBLISHING WORKFLOW",
         "imgSrc": "/imgs/about/devTeam/Gabe_Torion.jpeg",

@@ -84,7 +84,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                                 src={selectedGpWebApp?.pathToFile}
                                 alt='Image of GP web-app.'
                                 style={{ objectFit: 'contain' }}
-                                className='h-100 position-absolute'
+                                className='h-100 w-100 position-absolute'
                             />
                             {isOverImg && (
                                 <div className='h-100 w-100 position-relative d-flex justify-content-center align-items-center'>
