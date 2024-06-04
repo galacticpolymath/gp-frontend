@@ -237,7 +237,6 @@ const AboutPage = () => (
                 if (alumniA.name.includes(',')) {
                   alumniALastName = alumniA.name.split(',')?.[0]?.split(' ')?.[1] ?? alumniA.name;
                 } else {
-                  console.log(alumniA.name.split(' '));
                   alumniALastName = alumniA.name.split(' ')?.[1] ?? alumniA.name;
                 }
 
@@ -246,9 +245,6 @@ const AboutPage = () => (
                 } else {
                   alumniBLastName = alumniB.name.split(' ')?.[1] ?? alumniB.name;
                 }
-
-                console.log('alumniBLastName: ', alumniBLastName);
-                console.log('alumniALastName: ', alumniALastName);
 
                 return (alumniALastName < alumniBLastName) ? -1 : 1;
               })

@@ -14,7 +14,6 @@ import CarouselContainer from '../components/CarouselContainer';
 import CarouselItem from '../components/CarouselItem';
 import SponsorsMarquee from '../components/Sponsors';
 import NewRelease from '../components/Home/NewRelease';
-// import NewRelease from '../components/Home/NewRelease';
 
 const papers = [
   {
