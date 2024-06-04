@@ -30,7 +30,7 @@ const NewRelease = ({ newReleasePath, NewReleaseImage_src, sponsorImgPath, spons
                     </CustomLink>
                 </div>
             </div>
-            <div className='col-12 col-md-3 col-lg-5 pt-3'>
+            <div className='col-12 col-md-3 col-lg-4'>
                 <h5 className='fw-light text-center'>Sponsor:</h5>
                 <div className="w-80 mx-auto justify-content-center">
                     <img
