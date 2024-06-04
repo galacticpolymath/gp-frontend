@@ -39,6 +39,7 @@ const releases = [
     sponsorImgAlt: 'gp_sponsor_image',
     NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
     releaseInfoTxt: "Dr. Emilie Snell-Rood's Lab at the University of Minnesota",
+    customCss: 'pt-0 pt-md-3 pt-xxl-4',
   },
   {
     newReleasePath: '/lessons/en-US/13',
@@ -46,6 +47,7 @@ const releases = [
     sponsorImgAlt: 'gp_sponsor_image',
     NewReleaseImage_src: 'https://pacific-h2o.galacticpolymath.com/images/PacificH2O-meta-image.png',
     releaseInfoTxt: "The Department of Chemical and Process Engineering at the University of Canterbury",
+    customCss: '',
   },
 ];
 
@@ -114,10 +116,11 @@ export default function Home() {
               autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4"
               parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
               dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-3'
+              intervalTimeMs={4_000}
             >
-              {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImgPath, sponsorImgAlt, releaseInfoTxt }, index) => (
+              {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImgPath, sponsorImgAlt, releaseInfoTxt, customCss }, index) => (
                 <div key={index} className='autoCarouselItem'>
-                  <NewRelease releaseInfoTxt={releaseInfoTxt} NewReleaseImage_src={NewReleaseImage_src} newReleasePath={newReleasePath} sponsorImgPath={sponsorImgPath} sponsorImgAlt={sponsorImgAlt} />
+                  <NewRelease releaseInfoTxt={releaseInfoTxt} NewReleaseImage_src={NewReleaseImage_src} customCss={customCss} newReleasePath={newReleasePath} sponsorImgPath={sponsorImgPath} sponsorImgAlt={sponsorImgAlt} />
                 </div>
               ))}
             </CarouselContainer>

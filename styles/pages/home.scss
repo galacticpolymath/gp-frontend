@@ -90,6 +90,12 @@
     }
 }
 
+.sponsor-img-release{
+    @media (max-width: 577px) {
+        height:150px;
+    }
+}
+
 .carouselArrowBtn {
     @media(max-width: 768px) and (min-width: 577px) {
         svg {
@@ -127,9 +133,9 @@
 }
 
 .new-release-img{
-    @media(max-width: 577px){
-        max-width: 350px;
-    }
+    // @media(max-width: 577px){
+    //     max-width: 350px;
+    // }
 }
 
 .new-release-badge{

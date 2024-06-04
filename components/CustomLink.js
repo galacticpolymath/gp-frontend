@@ -13,8 +13,6 @@ const CustomLink = ({
     style = {},
     className = 'no-link-decoration',
 }) => {
-    console.log('hrefStr: ', hrefStr);
-
     if (color) {
         style.color = color;
     }
