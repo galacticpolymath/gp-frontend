@@ -6,7 +6,6 @@
 const cspHeader = `
     script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com/;
     style-src 'self' 'unsafe-inline';
-    font-src 'self';
     object-src 'none';
     base-uri 'self';
     connect-src 'self' https://galacticpolymath.com/api/auth/signin/google https://dev.galacticpolymath.com/api/auth/signin/google http://localhost:3000/api/auth/signin/google https://oauth2.googleapis.com/token https://www.google-analytics.com/;
