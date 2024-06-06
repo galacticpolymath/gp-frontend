@@ -210,7 +210,7 @@ const LessonDetails = ({ lesson }) => {
         setWasDotClicked={setWasDotClicked}
       />
       <ShareWidget {...shareWidgetFixedProps} />
-      <div className="col-12 col-lg-10 px-3 container">
+      <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container">
         <div className="p-sm-3 pt-0">
           {_sections.map((section, index) => (
             <ParentLessonSection
@@ -295,7 +295,7 @@ const updateLessonsWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOnto
   // getting the status for each lesson
   let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
 
-  if (!lesson.tile && (lsnStatus?.status === "Coming Soon")) {
+  if (!lesson.tile && (lsnStatus?.status === "Upcoming")) {
     lessonObjUpdated = {
       ...lessonObjUpdated,
       tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
@@ -353,7 +353,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           // getting the status for each lesson
           let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
 
-          if (!lesson.tile && (lsnStatus?.status === "Coming Soon")) {
+          if (!lesson.tile && (lsnStatus?.status === "Upcoming")) {
             lessonObjUpdated = {
               ...lessonObjUpdated,
               tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",

@@ -4,7 +4,7 @@
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Layout from '../../components/Layout';
 import JobVizIcon from '../../components/JobViz/JobVizIcon';
 import Lessons from '../../backend/models/lesson.js'
@@ -22,7 +22,6 @@ import GpWebApps from '../../components/LessonsPg/sections/GpWebApps.js';
 import { GiShipWheel } from "react-icons/gi";
 import LessonSvg from '../../assets/img/gp-lesson-icon.svg';
 import UnitIconSvg from '../../assets/img/gp-unit-icon.svg';
-import Button from '../../components/General/Button.js';
 import Image from 'next/image.js';
 
 const handleJobVizCardClick = () => {
@@ -153,10 +152,15 @@ const LessonsPage = ({
             didErrorOccur={didErrorOccur}
           />
           <section className="mb-5 pt-2 lessonsSection lessons-section-border-top">
-            <section className="headerSecLessonsPg">
-              <h4 id="gp-apps" style={{ scrollMarginTop: "100px" }} className="ms-sm-4 text-muted  mb-2 mb-sm-4 text-left mt-4 mx-4">
-                Galactic Polymath Learning Tools
-              </h4>
+            <section className="headerSecLessonsPg d-flex">
+              <section className="d-flex justify-content-center align-items-center">
+                <img src="GP_bubbleLogo300px.png" alt="Apps_Icon" style={{ objectFit: 'contain', width: 100, height: 100 }} />
+              </section>
+              <section className="d-flex justify-content-center align-items-center">
+                <h4 id="gp-apps" style={{ scrollMarginTop: "100px" }} className="text-muted mb-2 mb-sm-0 text-left mx-2">
+                  Galactic Polymath Learning Tools
+                </h4>
+              </section>
             </section>
             <section>
               <section className="mx-auto grid pb-1 p-4 gap-3 pt-3">
@@ -262,7 +266,7 @@ export async function getStaticProps() {
         continue;
       }
 
-      const multiMediaArr = lesson.Section?.preview?.Multimedia
+      const multiMediaArr = lesson.Section?.preview?.Multimedia;
       const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
       const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
 
@@ -287,7 +291,7 @@ export async function getStaticProps() {
               description: multiMediaItem.lessonRelevance,
               webAppPreviewImg: (errMsg || !images?.length) ? null : images[0],
               webAppImgAlt: (errMsg || !images?.length) ? null : `${title}'s preview image`,
-              pathToFile: WEB_APP_PATHS.find(({ name }) => multiMediaItem.title.toLowerCase().includes(name))?.path ?? null,
+              pathToFile: WEB_APP_PATHS.find(({ name }) => multiMediaItem.title.toLowerCase().includes(name))?.path ?? (images?.length ? images[0] : null),
             }
 
             webApps.push(multiMediaItem)

@@ -228,29 +228,48 @@ const AboutPage = () => (
           </div>
         </div>
         <div className='row d-flex justify-content-center align-items-center'>
-          <div className='w-100 w-lg-75'>
-            {alumni.map(({ name, position, description, imgSrc, links }, index) => {
-              const props = { className: 'col-11 col-sm-10 col-lg-6 col-xl-4 ms-lg-3 mt-2', name, position };
+          <div className='w-100 w-lg-75 row justify-content-center align-items-center'>
+            {alumni
+              .sort((alumniA, alumniB) => {
+                let alumniALastName = '';
+                let alumniBLastName = '';
 
-              if (links) {
-                props['links'] = links;
+                if (alumniA.name.includes(',')) {
+                  alumniALastName = alumniA.name.split(',')?.[0]?.split(' ')?.[1] ?? alumniA.name;
+                } else {
+                  alumniALastName = alumniA.name.split(' ')?.[1] ?? alumniA.name;
+                }
+
+                if (alumniB.name.includes(',')) {
+                  alumniBLastName = alumniB.name.split(',')?.[0]?.split(' ')?.[1] ?? alumniB.name;
+                } else {
+                  alumniBLastName = alumniB.name.split(' ')?.[1] ?? alumniB.name;
+                }
+
+                return (alumniALastName < alumniBLastName) ? -1 : 1;
+              })
+              .map(({ name, position, description, imgSrc, links }, index) => {
+                const props = { className: 'col-11 col-sm-10 col-lg-10 col-xl-10 mt-2', name, position };
+
+                if (links) {
+                  props['links'] = links;
+                }
+
+                if (imgSrc) {
+                  props['imgSrc'] = imgSrc;
+                }
+
+                return (
+                  <Accordion key={`${index}_${name}`} accordionChildrenClasses='offset-lg-2' willUseGetId={false} className='w-100 w-md-75' id={`${index}`} buttonClassName='noBtnStyles w-100' button={<AlumniBtn alumniName={name} />}>
+                    <div className='d-lg-block d-flex justify-content-center align-items-center'>
+                      <TeamMemberCard {...props}>
+                        {description}
+                      </TeamMemberCard>
+                    </div>
+                  </Accordion>
+                );
               }
-
-              if (imgSrc) {
-                props['imgSrc'] = imgSrc;
-              }
-
-              return (
-                <Accordion key={`${index}_${name}`} willUseGetId={false} className='w-100 w-md-75' id={`${index}`} buttonClassName='noBtnStyles w-100' button={<AlumniBtn alumniName={name} />}>
-                  <div className='d-lg-block d-flex justify-content-center align-items-center'>
-                    <TeamMemberCard {...props}>
-                      {description}
-                    </TeamMemberCard>
-                  </div>
-                </Accordion>
-              );
-            }
-            )}
+              )}
           </div>
         </div>
       </div>

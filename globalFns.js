@@ -125,7 +125,7 @@ export const getGpLessons = lessons => {
     return lessonParts;
 };
 
-const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Beta', 'Coming Soon'];
+const STATUSES_OF_SHOWABLE_LESSONS = ['Live', 'Beta', 'Upcoming'];
 
 export const getShowableUnits = units => {
     let uniqueUnits = [];

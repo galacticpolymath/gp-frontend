@@ -3,7 +3,6 @@
 /* eslint-disable react/jsx-indent-props */
 
 import Link from 'next/link';
-import { validateHrefStr } from '../helperFns/validateUrl';
 
 const CustomLink = ({
     hrefStr = '',
@@ -24,7 +23,7 @@ const CustomLink = ({
     return (
         <Link
             style={style}
-            href={validateHrefStr(hrefStr)}
+            href={hrefStr}
             target={targetLinkStr}
             rel="noopener noreferrer"
             className={className}

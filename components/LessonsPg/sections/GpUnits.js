@@ -5,6 +5,7 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 import UnitIconSvg from '../../../assets/img/gp-unit-icon.svg';
+import { UNVIEWABLE_LESSON_STR } from '../../../globalVars';
 import Pill from '../../Pill';
 import LessonCard from '../LessonCard';
 import Image from 'next/image';
@@ -12,7 +13,7 @@ import Image from 'next/image';
 const getLessonImgSrc = lesson => {
     const { CoverImage, LessonBanner } = lesson;
 
-    if (lesson.PublicationStatus === "Coming Soon") {
+    if (lesson.PublicationStatus === UNVIEWABLE_LESSON_STR) {
         return "https://storage.googleapis.com/gp-cloud/icons/coming-soon_Banner.png";
     }
 

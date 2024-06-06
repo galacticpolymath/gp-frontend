@@ -14,6 +14,24 @@ if (!Lessons) {
     sort_by_date: String,
     unit_release_date: String,
   });
+  const FeatureNameSchema = new Schema({
+    first: String,
+    middle: String,
+    last: String,
+    prefix: String,
+  });
+  const FeatureLocationSchema = new Schema({
+    instition: String,
+    department: String,
+    city: String,
+    state: String,
+    country: String,
+  });
+  const FeaturingSchema = new Schema({
+    name: FeatureNameSchema,
+    location: FeatureLocationSchema,
+    links: [String],
+  });
   const LessonSchema = new Schema({
     _id: { type: String, required: true },
     numID: { type: Number, required: true },
@@ -25,6 +43,7 @@ if (!Lessons) {
     DefaultCountry: String,
     LastUpdated: { type: Date, default: Date.now },
     FirstPublicationDate: { type: Date, default: Date.now },
+    featuring: [FeaturingSchema],
     MediumTitle: String,
     lang: String,
     lng: String,

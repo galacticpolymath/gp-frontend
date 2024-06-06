@@ -24,10 +24,13 @@ const GpVideos = ({
         <section className="lessonsSection lessons-section-border-top pt-1 mb-2">
             <div className='ms-sm-4 galactic-black mb-2 text-left mt-4 mx-4'>
                 <div className="d-flex">
+                    <span className="d-inline-flex justify-content-center align-items-center">
+                        <i style={{ color: 'red', fontSize: 75 }} className='bi bi-youtube' />
+                    </span>
                     <h4
                         id="gp-videos"
                         style={{ scrollMarginTop: "100px" }}
-                        className="d-flex justify-content-center align-items-center"
+                        className="d-flex justify-content-center align-items-center ms-3"
                     >
                         Galactic Polymath Videos
                     </h4>
