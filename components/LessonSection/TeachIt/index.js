@@ -121,7 +121,7 @@ const TeachIt = ({
 
   useEffect(() => {
     const lessonPartPath = window.location.href.split("#").at(-1);
-    const lessonPartNum = lessonPartPath ? parseInt(lessonPartPath.split('_').at(-1)) : null;
+    const lessonPartNum = lessonPartPath ? Number.parseInt(lessonPartPath.split('_').at(-1)) : null;
 
     if (lessonPartPath && lessonPartPath.includes('lesson_part_') && (parts.length >= lessonPartNum > 0)) {
       setSectionDots(sectionDotsObj => ({

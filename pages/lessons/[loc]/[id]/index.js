@@ -416,9 +416,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         },
       },
     };
+
     const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
     const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
-
+    
     if (isThereAWebApp) {
       let multiMediaArrUpdated = [];
 
@@ -461,6 +462,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           },
         },
       }
+    }
+
+    if(lessonToDisplayOntoUi?.Section?.preview?.Multimedia){
+      // check if the videos has any shorts in them. 
     }
 
     return {
