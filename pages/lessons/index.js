@@ -397,6 +397,7 @@ export async function getStaticProps() {
           totalItemsNum: webApps.length,
         },
       },
+      revalidate: 30,
     };
   } catch (error) {
     console.error('An error has occurred while fetching for lessons. Error message: ', error.message)
@@ -409,6 +410,7 @@ export async function getStaticProps() {
         webAppsObj: null,
         didErrorOccur: true,
       },
+      revalidate: 30,
     };
   }
 }
