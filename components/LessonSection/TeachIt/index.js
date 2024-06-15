@@ -315,6 +315,8 @@ const TeachIt = ({
             return (
               <LessonPart
                 {...lessonTilesObj}
+                key={`${index}_part`}
+                index={index}
                 FeedbackComp={(part.status === "Beta") ? (
                   <SendFeedback
                     parentDivStyles={{ backgroundColor: '#EBD0FF', zIndex: 100, border: '1px solid #B7B6C2' }}
@@ -327,7 +329,6 @@ const TeachIt = ({
                   null
                 }
                 partsArr={self}
-                key={`${index}_part`}
                 resources={resources}
                 _numsOfLessonPartsThatAreExpanded={[numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded]}
                 lsnNum={lsn ?? lsnNum}
