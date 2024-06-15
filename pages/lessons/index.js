@@ -30,12 +30,13 @@ const handleJobVizCardClick = () => {
 
 const LessonsPage = ({
   units,
+  lessons,
   lessonsObj,
   gpVideosObj,
   webAppsObj,
   didErrorOccur,
 }) => {
-  console.log('units: ', units);
+  console.log('lessons: ', lessons);
   const [selectedVideo, setSelectedVideo] = useState(null)
   const [selectedGpWebApp, setSelectedGpWebApp] = useState(null);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
@@ -377,6 +378,7 @@ export async function getStaticProps() {
     gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
     return {
       props: {
+        lessons,
         units,
         lessonsObj: {
           data: firstPgOfLessons,
