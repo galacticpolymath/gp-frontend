@@ -378,7 +378,7 @@ export async function getStaticProps() {
     gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
     return {
       props: {
-        lessons,
+        lessons: JSON.parse(JSON.stringify(lessons)),
         units,
         lessonsObj: {
           data: firstPgOfLessons,
