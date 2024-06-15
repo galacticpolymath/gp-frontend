@@ -194,7 +194,7 @@ const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFol
                     'Content-Type': 'application/json'
                 }
             }
-        )
+        );
 
         if (response.status !== 200) {
             throw new CustomError(response.data ?? 'Failed to create a lesson folder.', response.status)

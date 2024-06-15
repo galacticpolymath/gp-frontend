@@ -16,7 +16,7 @@ import { nanoid } from 'nanoid';
 import GpVideos from '../../components/LessonsPg/sections/GpVideos.js';
 import GpUnits from '../../components/LessonsPg/sections/GpUnits.js';
 import GpLessons from '../../components/LessonsPg/sections/GpLessons.js';
-import { getGpVids, getLinkPreviewObj, getShowableUnits } from '../../globalFns.js';
+import { STATUSES_OF_SHOWABLE_LESSONS, getGpVids, getLinkPreviewObj, getShowableUnits } from '../../globalFns.js';
 import SelectedGpWebApp from '../../components/Modals/SelectedGpWebApp.js';
 import GpWebApps from '../../components/LessonsPg/sections/GpWebApps.js';
 import { GiShipWheel } from "react-icons/gi";
@@ -35,6 +35,7 @@ const LessonsPage = ({
   webAppsObj,
   didErrorOccur,
 }) => {
+  console.log('units: ', units);
   const [selectedVideo, setSelectedVideo] = useState(null)
   const [selectedGpWebApp, setSelectedGpWebApp] = useState(null);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
@@ -241,7 +242,6 @@ const WEB_APP_PATHS = [
     path: '/echo-sim.png',
   },
 ];
-const SHOWABLE_LESSONS_STATUSES = ['Live', 'Beta'];
 const DATA_PER_PG = 6;
 
 export async function getStaticProps() {
@@ -262,7 +262,7 @@ export async function getStaticProps() {
 
     // getting the lessons and web-apps from each unit
     for (let lesson of lessons) {
-      if (!lesson?.LsnStatuses?.length || !SHOWABLE_LESSONS_STATUSES.includes(lesson.PublicationStatus)) {
+      if (!lesson?.LsnStatuses?.length || !STATUSES_OF_SHOWABLE_LESSONS.includes(lesson.PublicationStatus)) {
         continue;
       }
 
@@ -310,7 +310,7 @@ export async function getStaticProps() {
             continue;
           }
 
-          if (!SHOWABLE_LESSONS_STATUSES.includes(lsnStatus.status)) {
+          if (!STATUSES_OF_SHOWABLE_LESSONS.includes(lsnStatus.status)) {
             continue;
           }
 
@@ -377,7 +377,7 @@ export async function getStaticProps() {
     gpVideosFirstPg = gpVideosFirstPg?.length ? gpVideosFirstPg.map(vid => ({ ...vid, id: nanoid() })) : gpVideosFirstPg;
     return {
       props: {
-        units: units,
+        units,
         lessonsObj: {
           data: firstPgOfLessons,
           isLast: lessonPartsForUI.length < DATA_PER_PG,
