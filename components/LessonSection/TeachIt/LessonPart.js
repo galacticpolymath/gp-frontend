@@ -200,13 +200,22 @@ const LessonPart = ({
                       </h3>
                       <div className='d-flex align-items-center flex-column position-relative'>
                         <div
-                          className="rounded d-flex d-lg-none justify-content-center align-items-center"
+                          className="rounded d-flex d-lg-none justify-content-center align-items-center position-relative"
                           style={{
                             width: 30,
                             height: 30,
                             border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}`,
                           }}
                         >
+                          {(index === 0) && (
+                            // when the user scrolls the component into view, then present this code
+                            <div style={{ bottom: '60px', right: '50px' }} className='position-absolute'>
+                              <span style={{ transform: 'translateY(11px)', fontSize: 'clamp(17px, 2vw, 18px)' }} className='p-1 d-block fw-bold text-nowrap'>
+                                CLICK TO SEE MORE!
+                              </span>
+                              <Arrow className='down-arrow jump-infinite-animate' />
+                            </div>
+                          )}
                           <i
                             style={{ color: '#DEE2E6' }}
                             className="fs-4 bi-chevron-down"
@@ -271,9 +280,17 @@ const LessonPart = ({
                     {lessonTileForDesktop}
                     <div className="h-100 d-none d-sm-block">
                       <div
-                        className="rounded d-flex justify-content-center align-items-center"
+                        className="rounded d-flex justify-content-center align-items-center position-relative"
                         style={{ width: 35, height: 35, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
                       >
+                        {(index === 0) && (
+                          <div style={{ bottom: '60px', right: '50px' }} className='position-absolute'>
+                            <span style={{ transform: 'translateY(11px)' }} className='p-1 d-block fw-bold text-nowrap'>
+                              CLICK TO SEE MORE!
+                            </span>
+                            <Arrow className='down-arrow jump-infinite-animate' />
+                          </div>
+                        )}
                         <i
                           style={{ color: '#DEE2E6' }}
                           className="fs-4 bi-chevron-down"
