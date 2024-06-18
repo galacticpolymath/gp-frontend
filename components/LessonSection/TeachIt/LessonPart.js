@@ -26,8 +26,10 @@ const LessonPart = ({
   resources,
   ForGrades,
   _numsOfLessonPartsThatAreExpanded,
+  removeClickToSeeMoreTxt,
   lessonTileForDesktop = null,
   lessonTileForMobile = null,
+  ClickToSeeMoreComp = null,
   FeedbackComp = null,
   ComingSoonLessonEmailSignUp = null,
   accordionBtnStyle = {},
@@ -93,6 +95,10 @@ const LessonPart = ({
   };
 
   const handleAccordionBtnOnClick = event => {
+    if (removeClickToSeeMoreTxt) {
+      removeClickToSeeMoreTxt();
+    }
+
     if (!checkIfElementClickedWasClipboard(event.target)) {
       const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
 
@@ -196,15 +202,16 @@ const LessonPart = ({
                       >
                         {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle ?? ''}`}
                       </h3>
-                      <div className='d-flex align-items-center flex-column'>
+                      <div className='d-flex align-items-center flex-column position-relative'>
                         <div
-                          className="rounded d-flex d-lg-none justify-content-center align-items-center"
+                          className="rounded d-flex d-lg-none justify-content-center align-items-center position-relative"
                           style={{
                             width: 30,
                             height: 30,
                             border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}`,
                           }}
                         >
+                          {ClickToSeeMoreComp}
                           <i
                             style={{ color: '#DEE2E6' }}
                             className="fs-4 bi-chevron-down"
@@ -269,9 +276,10 @@ const LessonPart = ({
                     {lessonTileForDesktop}
                     <div className="h-100 d-none d-sm-block">
                       <div
-                        className="rounded d-flex justify-content-center align-items-center"
+                        className="rounded d-flex justify-content-center align-items-center position-relative"
                         style={{ width: 35, height: 35, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
                       >
+                        {ClickToSeeMoreComp}
                         <i
                           style={{ color: '#DEE2E6' }}
                           className="fs-4 bi-chevron-down"
