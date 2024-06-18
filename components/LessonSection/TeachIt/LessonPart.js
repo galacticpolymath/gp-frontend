@@ -10,12 +10,10 @@ import Link from 'next/link';
 import CopyableTxt from '../../CopyableTxt';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import Arrow from '../../Arrow';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 
 const LessonPart = ({
-  index,
   lsnNum,
   lsnTitle,
   lsnPreface,
@@ -28,8 +26,10 @@ const LessonPart = ({
   resources,
   ForGrades,
   _numsOfLessonPartsThatAreExpanded,
+  removeClickToSeeMoreTxt,
   lessonTileForDesktop = null,
   lessonTileForMobile = null,
+  ClickToSeeMoreComp = null,
   FeedbackComp = null,
   ComingSoonLessonEmailSignUp = null,
   accordionBtnStyle = {},
@@ -95,6 +95,10 @@ const LessonPart = ({
   };
 
   const handleAccordionBtnOnClick = event => {
+    if (removeClickToSeeMoreTxt) {
+      removeClickToSeeMoreTxt();
+    }
+
     if (!checkIfElementClickedWasClipboard(event.target)) {
       const previousLessonPartNum = (lsnNum === 'last') ? (partsArr.length - 1) : (lsnNum - 1);
 
@@ -207,15 +211,7 @@ const LessonPart = ({
                             border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}`,
                           }}
                         >
-                          {(index === 0) && (
-                            // when the user scrolls the component into view, then present this code
-                            <div style={{ bottom: '60px', right: '50px' }} className='position-absolute'>
-                              <span style={{ transform: 'translateY(11px)', fontSize: 'clamp(17px, 2vw, 18px)' }} className='p-1 d-block fw-bold text-nowrap'>
-                                CLICK TO SEE MORE!
-                              </span>
-                              <Arrow className='down-arrow jump-infinite-animate' />
-                            </div>
-                          )}
+                          {ClickToSeeMoreComp}
                           <i
                             style={{ color: '#DEE2E6' }}
                             className="fs-4 bi-chevron-down"
@@ -283,14 +279,7 @@ const LessonPart = ({
                         className="rounded d-flex justify-content-center align-items-center position-relative"
                         style={{ width: 35, height: 35, border: `solid 2.3px ${isExpanded ? highlightedBorderColor : '#DEE2E6'}` }}
                       >
-                        {(index === 0) && (
-                          <div style={{ bottom: '60px', right: '50px' }} className='position-absolute'>
-                            <span style={{ transform: 'translateY(11px)' }} className='p-1 d-block fw-bold text-nowrap'>
-                              CLICK TO SEE MORE!
-                            </span>
-                            <Arrow className='down-arrow jump-infinite-animate' />
-                          </div>
-                        )}
+                        {ClickToSeeMoreComp}
                         <i
                           style={{ color: '#DEE2E6' }}
                           className="fs-4 bi-chevron-down"

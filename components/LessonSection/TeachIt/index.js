@@ -18,6 +18,7 @@ import Link from "next/link";
 import Button from "../../General/Button";
 import { getIsValObj, getObjVals } from "../../../globalFns";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
+import ClickMeArrow from "../../ClickMeArrow";
 
 const LessonTile = ({
   lessonTileUrl,
@@ -71,6 +72,7 @@ const TeachIt = ({
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
+  const [arrowContainer, setArrowContainer] = useState({ wasShown: false, isInView: false });
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = useState([]);
   const [, setSectionDots] = _sectionDots;
   const environments = ['classroom', 'remote'].filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
@@ -112,6 +114,10 @@ const TeachIt = ({
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
+  };
+
+  const removeClickToSeeMoreTxt = () => {
+    setArrowContainer({ wasShown: true, isInView: true, canTakeOffDom: true });
   };
 
   const handleOnChange = selectedGrade => {
@@ -315,8 +321,9 @@ const TeachIt = ({
             return (
               <LessonPart
                 {...lessonTilesObj}
+                removeClickToSeeMoreTxt={removeClickToSeeMoreTxt}
                 key={`${index}_part`}
-                index={index}
+                ClickToSeeMoreComp={index === 0 ? <ClickMeArrow _arrowContainer={[arrowContainer, setArrowContainer]} /> : null}
                 FeedbackComp={(part.status === "Beta") ? (
                   <SendFeedback
                     parentDivStyles={{ backgroundColor: '#EBD0FF', zIndex: 100, border: '1px solid #B7B6C2' }}
