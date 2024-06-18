@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import throttle from 'lodash.throttle';
 import { useState } from 'react';
 
-const getPercentageSeen = element => {
+export const getPercentageSeen = element => {
   // Get the relevant measurements and positions
   const viewportHeight = window.innerHeight;
   const scrollTop = window.scrollY;
