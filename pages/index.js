@@ -38,7 +38,8 @@ const releases = [
     sponsorImgAlt: 'gp_sponsor_image',
     NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
     releaseInfoTxt: "Dr. Emilie Snell-Rood's Lab at the University of Minnesota",
-    customCss: 'pt-0 pt-md-3 pt-xxl-4',
+    customCss: 'col-12 col-md-3 col-lg-4 mt-3 mt-md-0 pt-0 pt-md-3 pt-xxl-4',
+    sponsorImgClassName: 'w-100 sponsor-img-release',
   },
   {
     newReleasePath: '/lessons/en-US/13',
@@ -46,7 +47,17 @@ const releases = [
     sponsorImgAlt: 'gp_sponsor_image',
     NewReleaseImage_src: 'https://pacific-h2o.galacticpolymath.com/images/PacificH2O-meta-image.png',
     releaseInfoTxt: "The Department of Chemical and Process Engineering at the University of Canterbury",
-    customCss: '',
+    customCss: 'col-12 col-md-3 col-lg-4 mt-3 mt-md-0',
+    sponsorImgClassName: 'w-100 sponsor-img-release',
+  },
+  {
+    newReleasePath: '/lessons/en-US/10',
+    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/SciJourneys_en-US/if-then_logo.png',
+    sponsorImgAlt: 'gp_sponsor_image',
+    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/SciJourneys_en-US/SciJourneys-UnitAssets-2-card-(1).png',
+    releaseInfoTxt: "An initiative of Lyda Hill Philanthropies",
+    customCss: 'col-12 col-md-3 col-lg-4 mt-3',
+    sponsorImgClassName: 'w-100 sci-journey-sponsor-img',
   },
 ];
 
@@ -117,9 +128,9 @@ export default function Home() {
               dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-3'
               intervalTimeMs={4_000}
             >
-              {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImgPath, sponsorImgAlt, releaseInfoTxt, customCss }, index) => (
+              {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImgPath, sponsorImgAlt, releaseInfoTxt, customCss, sponsorImgClassName }, index) => (
                 <div key={index} className='autoCarouselItem'>
-                  <NewRelease releaseInfoTxt={releaseInfoTxt} NewReleaseImage_src={NewReleaseImage_src} customCss={customCss} newReleasePath={newReleasePath} sponsorImgPath={sponsorImgPath} sponsorImgAlt={sponsorImgAlt} />
+                  <NewRelease sponsorImgClassName={sponsorImgClassName} releaseInfoTxt={releaseInfoTxt} NewReleaseImage_src={NewReleaseImage_src} customCss={customCss} newReleasePath={newReleasePath} sponsorImgPath={sponsorImgPath} sponsorImgAlt={sponsorImgAlt} />
                 </div>
               ))}
             </CarouselContainer>

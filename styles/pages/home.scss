@@ -92,7 +92,13 @@
 
 .sponsor-img-release{
     @media (max-width: 768px) {
-        height:135px;
+        height:125px;
+    }
+}
+
+.sci-journey-sponsor-img{
+    @media (max-width: 768px) {
+        height:90px;
     }
 }
 
