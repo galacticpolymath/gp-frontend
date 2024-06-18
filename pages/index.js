@@ -56,7 +56,7 @@ const releases = [
     sponsorImgAlt: 'gp_sponsor_image',
     NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/SciJourneys_en-US/SciJourneys-UnitAssets-2-card-(1).png',
     releaseInfoTxt: "An initiative of Lyda Hill Philanthropies",
-    customCss: 'col-12 col-md-3 col-lg-4 mt-3 mt-md-5',
+    customCss: 'col-12 col-md-3 col-lg-4 mt-3',
     sponsorImgClassName: 'w-100 sci-journey-sponsor-img',
   },
 ];
