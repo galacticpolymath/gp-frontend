@@ -19,7 +19,7 @@ const ClickMeArrow = ({ _arrowContainer }) => {
         clearTimeout(timer);
 
         if (inViewport) {
-            setArrowContainer(state => ({ ...state, isInView: true, wasShown: true }));
+            setArrowContainer(state => ({ ...state, isInView: true }));
 
             timer = setTimeout(() => {
                 setArrowContainer(state => ({ ...state, isInView: false }));

@@ -72,7 +72,7 @@ const TeachIt = ({
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
-  const [arrowContainer, setArrowContainer] = useState({ wasShown: false, isInView: false });
+  const [arrowContainer, setArrowContainer] = useState({ isInView: false, canTakeOffDom: false });
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = useState([]);
   const [, setSectionDots] = _sectionDots;
   const environments = ['classroom', 'remote'].filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
@@ -117,7 +117,7 @@ const TeachIt = ({
   };
 
   const removeClickToSeeMoreTxt = () => {
-    setArrowContainer({ wasShown: true, isInView: true, canTakeOffDom: true });
+    setArrowContainer({ isInView: true, canTakeOffDom: true });
   };
 
   const handleOnChange = selectedGrade => {
