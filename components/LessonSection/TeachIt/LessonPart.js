@@ -199,14 +199,6 @@ const LessonPart = ({
                         {isOnAssessments ? 'Assessments' : `Lesson ${lsnNum}: ${lsnTitle ?? ''}`}
                       </h3>
                       <div className='d-flex align-items-center flex-column position-relative'>
-                        {(index === 0) && (
-                          <div style={{ bottom: '60px' }} className='position-relative'>
-                            <span style={{ translate: 'transformY(40px)' }} className='rounded p-1 d-inline-flex fw-bold'>
-                                CLICK TO SEE MORE!
-                            </span>
-                            <Arrow className='down-arrow jump-infinite-animate' />
-                          </div>
-                        )}
                         <div
                           className="rounded d-flex d-lg-none justify-content-center align-items-center"
                           style={{
