@@ -36,7 +36,7 @@ const ClickMeArrow = ({ _arrowContainer }) => {
         <div
             ref={arrowContainerRef}
             id='arrow-container'
-            style={{ bottom: '60px', right: '50px', display: arrowContainer.canTakeOffDom ? 'none' : 'block' }}
+            style={{ zIndex: 1000, bottom: '60px', right: '50px', display: arrowContainer.canTakeOffDom ? 'none' : 'block' }}
             className={`position-absolute ${arrowContainer.isInView ? 'fade-in' : 'fade-out'}`}
         >
             <span style={{ transform: 'translateY(11px)', fontSize: 'clamp(17px, 2vw, 18px)' }} className='p-1 d-block fw-bold text-nowrap'>
