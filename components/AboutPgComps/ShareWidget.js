@@ -24,7 +24,7 @@ import {
 } from "react-share";
 import CopyableTxt from "../CopyableTxt";
 
-const CopyIcon = ({ color = "white" }) => (
+export const CopyIcon = ({ color = "white" }) => (
     <svg
         style={{ color }}
         xmlns="http://www.w3.org/2000/svg"
