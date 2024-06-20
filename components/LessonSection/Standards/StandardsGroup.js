@@ -1,12 +1,12 @@
+/* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 import { useState } from 'react';
 import CopyableTxt from '../../CopyableTxt';
-import CopyableTxtSpan from '../../CopyableTxtSpan';
 
-const CopyIcon = ({ color = "white" }) => (
+const CopyIcon = ({ color = 'white' }) => (
   <svg
     style={{ color }}
     xmlns="http://www.w3.org/2000/svg"
@@ -76,22 +76,19 @@ const StandardsGroup = ({
                 width: '110px',
                 backgroundColor: '#212529',
                 textAlign: 'center',
-                zIndex: 150
+                zIndex: 150,
               }}
-              implementLogicOnClick={event => handleClickToCopyTxt(event, `${codes}: ${alignmentNotes}`)}
+              implementLogicOnClick={event => handleClickToCopyTxt(event, `${codes}: ${statements}`)}
             >
               <div
                 role='button'
                 style={{
-                  background: "#7F7F7F",
+                  background: '#7F7F7F',
                   border: 'none',
                   width: 32, height: 32,
-                  transform: "translateX(5px)"
+                  transform: 'translate(5px, 40px)',
                 }}
-                onClick={event => {
-                  handleClickToCopyTxt(event, alignmentNotes);
-                }}
-                className='end-0 mt-4 d-flex justify-content-center align-items-center rounded-circle position-absolute'
+                className='end-0 d-flex justify-content-center align-items-center rounded-circle position-absolute'
               >
                 <CopyIcon />
               </div>
@@ -123,22 +120,9 @@ const StandardsGroup = ({
                 const statement = [].concat(statements)[i];
 
                 return (
-                  <div style={{ maxWidth: '97%' }} className='mb-0 inline-block' key={i}>
+                  <div style={{ maxWidth: '90%' }} className='mb-0 inline-block' key={i}>
                     <strong>{code}:</strong>{' '}
                     {statement}
-                    <span
-                      className='ms-2'
-                    >
-                      <p style={{ width: 80 }} className='d-inline-block'>
-                        {isAccordionContentDisplayed ?
-                          <i style={{ fontSize: '18px', width: 100 }} className="opacity-100 bi bi-x increase-icon-size " />
-                          : (
-                            <span className='selected-standard-highlight'>
-                              ...?
-                            </span>
-                          )}
-                      </p>
-                    </span>
                   </div>
                 );
               })}
