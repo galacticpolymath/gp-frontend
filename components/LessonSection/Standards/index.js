@@ -25,11 +25,10 @@ const Standards = ({
       >
         <div>
           <div className=' p-1 my-3 ms-2'>
-            
             <i className='bi bi-info-circle me-2 fs-4' style={{ verticalAlign: 'middle' }} />
-            Click 
+            Click
             <span className='text-nowrap'>
-              <i className="bi-cursor-fill " style={{ marginTop:'1em', position: 'absolute', zIndex: '3' }} />
+              <i className="bi-cursor-fill " style={{ marginTop: '1em', position: 'absolute', zIndex: '3' }} />
               <span className='px-2 ms-2 ml-0 d-inline-block selected-standard-highlight' style={{ position: 'relative', zIndex: '2', fontWeight: '600' }}>
                 ...?
               </span>

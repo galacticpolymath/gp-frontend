@@ -347,7 +347,7 @@ const LessonPart = ({
                   Learning Objectives
                 </h5>
               </div>
-              <p className='lead mb-0'>Students will able to...</p>
+              <p className='lead mb-0'>Students will be able to...</p>
               <ol className='mt-0'>
                 {learningObjectives.map((objectiveStr, index) => (
                   <li key={index}>
@@ -365,7 +365,7 @@ const LessonPart = ({
                   Learning Objectives
                 </h5>
               </div>
-              <p className='lead mb-0'>Students will able to...</p>
+              <p className='lead mb-0'>Students will be able to...</p>
               <ol className='mt-0'>
                 <li>
                   <RichText content={learningObjectives} />
