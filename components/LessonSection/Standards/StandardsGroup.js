@@ -52,14 +52,15 @@ const StandardsGroup = ({
         setContentId={setContentId}
         buttonClassName='w-100 text-start bg-white border-0 p-2 pb-1 default-cursor'
         button={(
-          <div>
+          <div
+            role='button'
+            onClick={handleOnClick}
+            data-bs-toggle='collapse'
+            data-bs-target={`#content_${contentId}`}
+          >
             <h6 className='text-muted w-100 d-flex justify-content-between'>
               {formatGrades(_grades)}
               <div
-                role='button'
-                onClick={handleOnClick}
-                data-bs-toggle='collapse'
-                data-bs-target={`#content_${contentId}`}
                 style={{ width: 50, height: 20 }}
                 className="d-flex justify-content-center"
               >
@@ -82,8 +83,15 @@ const StandardsGroup = ({
                 <div className='mb-0 inline-block' key={i}>
                   <CopyableTxtSpan
                     implementLogicOnClick={event => {
-                      handleClickToCopyTxt(event, statement);
+                      handleClickToCopyTxt(event, `${codes}: ${alignmentNotes}`);
                     }}
+                    copyTxtIndicator='Copy Standards Text'
+                    copyTxtModalDefaultStyleObj={{
+                      width: 'auto',
+                      backgroundColor: '#212529',
+                      textAlign: 'center',
+                    }}
+                    modalClassNameStr='position-fixed rounded px-2 m-0'
                   >
                     <strong>{code}:</strong>{' '}
                     {statement}
@@ -115,7 +123,8 @@ const StandardsGroup = ({
           <h6 className='my-1 bold pb-1 mb-1'>How does the lesson address this standard?</h6>
           <CopyableTxt
             implementLogicOnClick={event => {
-              handleClickToCopyTxt(event, alignmentNotes);
+              console.log("alignmentNotes, yo there! ", alignmentNotes)
+              handleClickToCopyTxt(event, `${codes}: ${alignmentNotes}`);
             }}
           >
             <RichText content={formatAlignmentNotes(alignmentNotes)} />

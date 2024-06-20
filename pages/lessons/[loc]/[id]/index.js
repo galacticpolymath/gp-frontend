@@ -43,6 +43,7 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
 }));
 
 const LessonDetails = ({ lesson }) => {
+  console.log("lesson: ", lesson);
   const router = useRouter();
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
@@ -419,7 +420,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
     const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
     const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
-    
+
     if (isThereAWebApp) {
       let multiMediaArrUpdated = [];
 
@@ -464,7 +465,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       }
     }
 
-    if(lessonToDisplayOntoUi?.Section?.preview?.Multimedia){
+    if (lessonToDisplayOntoUi?.Section?.preview?.Multimedia) {
       // check if the videos has any shorts in them. 
     }
 
