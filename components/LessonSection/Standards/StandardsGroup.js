@@ -67,32 +67,9 @@ const StandardsGroup = ({
         id={id}
         dataBsToggle={{}}
         setContentId={setContentId}
-        buttonClassName='w-100 text-start bg-white border-0 p-2 pb-1 default-cursor'
+        buttonClassName='w-100 text-start bg-white border-0 p-2 pb-1 default-cursor pb-3'
         button={(
           <div className='position-relative'>
-            <CopyableTxt
-              copyTxtModalDefaultStyleObj={{
-                position: 'fixed',
-                width: '110px',
-                backgroundColor: '#212529',
-                textAlign: 'center',
-                zIndex: 150,
-              }}
-              implementLogicOnClick={event => handleClickToCopyTxt(event, `${codes}: ${statements}`)}
-            >
-              <div
-                role='button'
-                style={{
-                  background: '#7F7F7F',
-                  border: 'none',
-                  width: 32, height: 32,
-                  transform: 'translate(5px, 40px)',
-                }}
-                className='end-0 d-flex justify-content-center align-items-center rounded-circle position-absolute'
-              >
-                <CopyIcon />
-              </div>
-            </CopyableTxt>
             <div
               role='button'
               onClick={handleOnClick}
@@ -102,7 +79,7 @@ const StandardsGroup = ({
               <h6 className='text-muted w-100 d-flex justify-content-between'>
                 {formatGrades(_grades)}
                 <div
-                  className="d-flex justify-content-center"
+                  className="d-flex justify-content-center flex-column h-100"
                 >
                   <i
                     color="#7A8489"
@@ -116,6 +93,32 @@ const StandardsGroup = ({
                   />
                 </div>
               </h6>
+              <div className='bg-primary w-100 position-relative0'>
+                <CopyableTxt
+                  copyTxtModalDefaultStyleObj={{
+                    position: 'fixed',
+                    width: '110px',
+                    backgroundColor: '#212529',
+                    textAlign: 'center',
+                    zIndex: 150,
+                  }}
+                  implementLogicOnClick={event => handleClickToCopyTxt(event, `${codes}: ${statements}`)}
+                >
+                  <div
+                    role='button'
+                    style={{
+                      background: '#7F7F7F',
+                      border: 'none',
+                      width: 32,
+                      height: 32,
+                      transform: 'translate(10%, 10%)',
+                    }}
+                    className='end-0 d-flex justify-content-center align-items-center rounded-circle position-absolute'
+                  >
+                    <CopyIcon />
+                  </div>
+                </CopyableTxt>
+              </div>
               {[].concat(codes).map((code, i) => {
                 const statement = [].concat(statements)[i];
 
