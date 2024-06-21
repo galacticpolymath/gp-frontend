@@ -17,9 +17,7 @@ const ClickMeArrow = ({ _arrowContainer }) => {
 
     const handleElementVisibility = throttle(() => {
         clearTimeout(timer);
-        console.log('yo there!');
         if (inViewport) {
-            console.log("is visible, indicator text.");
             setArrowContainer(state => ({ ...state, isInView: true, wasShown: true }));
 
             timer = setTimeout(() => {

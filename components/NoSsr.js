@@ -1,8 +1,7 @@
-import dynamic from "next/dynamic"
+import dynamic from 'next/dynamic';
 
 export const ClientRendered = dynamic(() => Promise.resolve(({ children }) => (
-    <>
-        {children}
-    </>
+  <>
+    {children}
+  </>
 )), { ssr: false });
-
