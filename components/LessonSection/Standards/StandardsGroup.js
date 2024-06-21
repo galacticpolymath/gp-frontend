@@ -67,70 +67,71 @@ const StandardsGroup = ({
         id={id}
         dataBsToggle={{}}
         setContentId={setContentId}
-        buttonClassName='w-100 text-start bg-white border-0 p-2 pb-1 default-cursor pb-3'
+        buttonClassName='w-100 text-start bg-white border-0 p-2 pb-1 default-cursor pb-3 position-relative'
         button={(
-          <div className='position-relative'>
-            <div
-              role='button'
-              onClick={handleOnClick}
-              data-bs-toggle='collapse'
-              data-bs-target={`#content_${contentId}`}
+          <>
+            <CopyableTxt
+              copyTxtModalDefaultStyleObj={{
+                position: 'fixed',
+                width: '110px',
+                backgroundColor: '#212529',
+                textAlign: 'center',
+                zIndex: 150,
+              }}
+              implementLogicOnClick={event => handleClickToCopyTxt(event, `${codes}: ${statements}`)}
             >
-              <h6 className='text-muted w-100 d-flex justify-content-between'>
-                {formatGrades(_grades)}
-                <div
-                  className="d-flex justify-content-center flex-column h-100"
-                >
-                  <i
-                    color="#7A8489"
-                    style={{ display: isAccordionContentDisplayed ? 'none' : 'block' }}
-                    className="fs-5 bi-chevron-down"
-                  />
-                  <i
-                    color="#7A8489"
-                    style={{ display: isAccordionContentDisplayed ? 'block' : 'none' }}
-                    className="fs-5 bi-chevron-up"
-                  />
-                </div>
-              </h6>
-              <div className='bg-primary w-100 position-relative0'>
-                <CopyableTxt
-                  copyTxtModalDefaultStyleObj={{
-                    position: 'fixed',
-                    width: '110px',
-                    backgroundColor: '#212529',
-                    textAlign: 'center',
-                    zIndex: 150,
-                  }}
-                  implementLogicOnClick={event => handleClickToCopyTxt(event, `${codes}: ${statements}`)}
-                >
-                  <div
-                    role='button'
-                    style={{
-                      background: '#7F7F7F',
-                      border: 'none',
-                      width: 32,
-                      height: 32,
-                      transform: 'translate(10%, 10%)',
-                    }}
-                    className='end-0 d-flex justify-content-center align-items-center rounded-circle position-absolute'
-                  >
-                    <CopyIcon />
-                  </div>
-                </CopyableTxt>
+              <div
+                role='button'
+                style={{
+                  background: '#7F7F7F',
+                  border: 'none',
+                  width: 32,
+                  height: 32,
+                  right: '5px',
+                  top: '45px',
+                }}
+                className='d-flex justify-content-center align-items-center rounded-circle position-absolute'
+              >
+                <CopyIcon />
               </div>
-              {[].concat(codes).map((code, i) => {
-                const statement = [].concat(statements)[i];
-
-                return (
-                  <div style={{ maxWidth: '90%' }} className='mb-0 inline-block' key={i}>
-                    <strong>{code}:</strong>{' '}
-                    {statement}
+            </CopyableTxt>
+            <div>
+              <div
+                role='button'
+                onClick={handleOnClick}
+                data-bs-toggle='collapse'
+                data-bs-target={`#content_${contentId}`}
+              >
+                <h6 className='text-muted w-100 d-flex justify-content-between'>
+                  {formatGrades(_grades)}
+                  <div
+                    className="d-flex justify-content-center flex-column h-100"
+                  >
+                    <i
+                      color="#7A8489"
+                      style={{ display: isAccordionContentDisplayed ? 'none' : 'block' }}
+                      className="fs-5 bi-chevron-down"
+                    />
+                    <i
+                      color="#7A8489"
+                      style={{ display: isAccordionContentDisplayed ? 'block' : 'none' }}
+                      className="fs-5 bi-chevron-up"
+                    />
                   </div>
-                );
-              })}
+                </h6>
+                {[].concat(codes).map((code, i) => {
+                  const statement = [].concat(statements)[i];
+
+                  return (
+                    <div className='mb-0 inline-block standards-txt-container' key={i}>
+                      <strong>{code}:</strong>{' '}
+                      {statement}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          </>
         )}
       >
         <div className='p-3 selected-standard mx-2'>

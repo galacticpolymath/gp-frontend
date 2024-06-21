@@ -92,6 +92,14 @@ $toolTipColor: #f0f4ff;
   animation: beat 1.5s infinite;
 }
 
+.standards-txt-container{
+  max-width: 90%;
+
+  @media (max-width: 576px) {
+    max-width: 85%;
+  }
+}
+
 
 @keyframes jumpInfinite {
   0% {
