@@ -1,10 +1,27 @@
+/* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 import { useState } from 'react';
 import CopyableTxt from '../../CopyableTxt';
-import CopyableTxtSpan from '../../CopyableTxtSpan';
+
+const CopyIcon = ({ color = 'white' }) => (
+  <svg
+    style={{ color }}
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    fill="currentColor"
+    className="bi bi-copy"
+    viewBox="0 0 16 16"
+  >
+    <path
+      fillRule="evenodd"
+      d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"
+    />
+  </svg>
+);
 
 const formatGrades = grades => {
   if (!grades) {
@@ -50,85 +67,76 @@ const StandardsGroup = ({
         id={id}
         dataBsToggle={{}}
         setContentId={setContentId}
-        buttonClassName='w-100 text-start bg-white border-0 p-2 pb-1 default-cursor'
+        buttonClassName='w-100 text-start bg-white border-0 p-2 pb-1 default-cursor pb-3 position-relative'
         button={(
-          <div
-            role='button'
-            onClick={handleOnClick}
-            data-bs-toggle='collapse'
-            data-bs-target={`#content_${contentId}`}
-          >
-            <h6 className='text-muted w-100 d-flex justify-content-between'>
-              {formatGrades(_grades)}
+          <>
+            <CopyableTxt
+              copyTxtModalDefaultStyleObj={{
+                position: 'fixed',
+                width: '110px',
+                backgroundColor: '#212529',
+                textAlign: 'center',
+                zIndex: 150,
+              }}
+              implementLogicOnClick={event => handleClickToCopyTxt(event, `${codes}: ${statements}`)}
+            >
               <div
-                style={{ width: 50, height: 20 }}
-                className="d-flex justify-content-center"
+                role='button'
+                style={{
+                  background: '#7F7F7F',
+                  border: 'none',
+                  width: 32,
+                  height: 32,
+                  right: '5px',
+                  top: '45px',
+                }}
+                className='d-flex justify-content-center align-items-center rounded-circle position-absolute'
               >
-                <i
-                  color="#7A8489"
-                  style={{ display: isAccordionContentDisplayed ? 'none' : 'block' }}
-                  className="fs-5 bi-chevron-down"
-                />
-                <i
-                  color="#7A8489"
-                  style={{ display: isAccordionContentDisplayed ? 'block' : 'none' }}
-                  className="fs-5 bi-chevron-up"
-                />
+                <CopyIcon />
               </div>
-            </h6>
-            {[].concat(codes).map((code, i) => {
-              const statement = [].concat(statements)[i];
+            </CopyableTxt>
+            <div>
+              <div
+                role='button'
+                onClick={handleOnClick}
+                data-bs-toggle='collapse'
+                data-bs-target={`#content_${contentId}`}
+              >
+                <h6 className='text-muted w-100 d-flex justify-content-between'>
+                  {formatGrades(_grades)}
+                  <div
+                    className="d-flex justify-content-center flex-column h-100"
+                  >
+                    <i
+                      color="#7A8489"
+                      style={{ display: isAccordionContentDisplayed ? 'none' : 'block' }}
+                      className="fs-5 bi-chevron-down"
+                    />
+                    <i
+                      color="#7A8489"
+                      style={{ display: isAccordionContentDisplayed ? 'block' : 'none' }}
+                      className="fs-5 bi-chevron-up"
+                    />
+                  </div>
+                </h6>
+                {[].concat(codes).map((code, i) => {
+                  const statement = [].concat(statements)[i];
 
-              return (
-                <div className='mb-0 inline-block' key={i}>
-                  <CopyableTxtSpan
-                    implementLogicOnClick={event => {
-                      handleClickToCopyTxt(event, `${codes}: ${alignmentNotes}`);
-                    }}
-                    copyTxtIndicator='Copy Standards Text'
-                    copyTxtModalDefaultStyleObj={{
-                      width: 'auto',
-                      backgroundColor: '#212529',
-                      textAlign: 'center',
-                    }}
-                    modalClassNameStr='position-fixed rounded px-2 m-0'
-                  >
-                    <strong>{code}:</strong>{' '}
-                    {statement}
-                  </CopyableTxtSpan>
-                  <span
-                    role='button'
-                    onClick={handleOnClick}
-                    data-bs-toggle='collapse'
-                    data-bs-target={`#content_${contentId}`}
-                    className='ms-2'
-                  >
-                    <p style={{ width: 80 }} className='d-inline-block'>
-                      {isAccordionContentDisplayed ?
-                        <i style={{ fontSize: '18px', width: 100 }} className="opacity-100 bi bi-x increase-icon-size " />
-                        : (
-                          <span className='selected-standard-highlight'>
-                            ...?
-                          </span>
-                        )}
-                    </p>
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+                  return (
+                    <div className='mb-0 inline-block standards-txt-container' key={i}>
+                      <strong>{code}:</strong>{' '}
+                      {statement}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </>
         )}
       >
         <div className='p-3 selected-standard mx-2'>
           <h6 className='my-1 bold pb-1 mb-1'>How does the lesson address this standard?</h6>
-          <CopyableTxt
-            implementLogicOnClick={event => {
-              console.log("alignmentNotes, yo there! ", alignmentNotes)
-              handleClickToCopyTxt(event, `${codes}: ${alignmentNotes}`);
-            }}
-          >
-            <RichText content={formatAlignmentNotes(alignmentNotes)} />
-          </CopyableTxt>
+          <RichText content={formatAlignmentNotes(alignmentNotes)} />
         </div>
       </Accordion>
     </div>

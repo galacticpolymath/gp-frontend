@@ -1,5 +1,4 @@
 import Mongoose from 'mongoose';
-const validator = require('validator');
 const { Schema, models, model } = Mongoose;
 
 let User = models.users;
