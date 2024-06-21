@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 const CopyableTxt = ({
   children,
   implementLogicOnClick,
-  copyTxtIndicator = 'Copy text',
+  copyTxtIndicator = 'Copy text.',
   txtCopiedIndicator = 'Text copied ✅!',
   copyTxtModalDefaultStyleObj = {
     position: 'fixed',
