@@ -5,38 +5,29 @@
 /* eslint-disable react/jsx-indent */
 import { useEffect, useRef } from "react";
 import Arrow from "./Arrow";
-import throttle from "lodash.throttle";
 import { useInViewport } from "react-in-viewport";
 
-const ClickMeArrow = ({ _arrowContainer }) => {
-    const [arrowContainer, setArrowContainer] = _arrowContainer;
+/**
+ * The prop 'customDivStyling' must not include the display field.
+ * */
+const ClickMeArrow = ({ handleElementVisibility, customDivStyling, willTakeOffOfDom, willShowArrow }) => {
     const arrowContainerRef = useRef();
     const { inViewport } = useInViewport(arrowContainerRef);
 
-    let timer = null;
-
-    const handleElementVisibility = throttle(() => {
-        clearTimeout(timer);
-
-        if (inViewport) {
-            setArrowContainer(state => ({ ...state, isInView: true }));
-
-            timer = setTimeout(() => {
-                setArrowContainer(state => ({ ...state, isInView: false }));
-            }, 3500);
-        }
-    }, 100);
-
     useEffect(() => {
-        handleElementVisibility();
+        if (handleElementVisibility) {
+            handleElementVisibility();
+        } else {
+            console.error('Did not pass a "handleElementVisibility" function.');
+        }
     }, [inViewport]);
 
     return (
         <div
             ref={arrowContainerRef}
             id='arrow-container'
-            style={{ zIndex: 1000, bottom: '60px', right: '50px', display: arrowContainer.canTakeOffDom ? 'none' : 'block' }}
-            className={`position-absolute ${arrowContainer.isInView ? 'fade-in' : 'fade-out'}`}
+            style={{ ...customDivStyling, display: willTakeOffOfDom ? 'none' : 'block' }}
+            className={`position-absolute ${willShowArrow ? 'fade-in' : 'fade-out'}`}
         >
             <span style={{ transform: 'translateY(11px)', fontSize: 'clamp(17px, 2vw, 18px)' }} className='p-1 d-block fw-bold text-nowrap'>
                 CLICK TO SEE MORE!

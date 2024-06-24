@@ -14,11 +14,12 @@
 /* eslint-disable no-console */
 import { useRouter } from "next/router";
 import LiNavDot from "./NavDots/LiNavDot";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListenerOn }) => {
     const [sectionDots, setSectionDots] = _sectionDots;
+    const [targetSec, setTargetSec] = useState(null);
+    const [willScrollElemIntoView, setWillScrollElemIntoView] = useState(false);
     const router = useRouter();
 
     const handleMouseEnter = () => {
@@ -49,8 +50,6 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
         });
     };
 
-    const [targetSec, setTargetSec] = useState(null);
-
     const scrollSectionIntoView = sectionId => {
         const targetSection = document.getElementById(sectionId);
         let url = router.asPath;
@@ -68,7 +67,6 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
         }
     }, [targetSec])
 
-    const [willScrollElemIntoView, setWillScrollElemIntoView] = useState(false);
     let timerForHandleDotClick;
 
     const handleDotClick = sectionId => {
@@ -167,6 +165,7 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
             style={{ transform: 'translateY(8%)' }}
             className="position-fixed lessonSecsNavDotsListContainer d-flex"
         >
+            {/* for devices larger than 992px */}
             <ul
                 onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}
                 className='ps-0 d-none d-lg-flex flex-column position-relative justify-content-center align-items-center h-100'
@@ -181,6 +180,7 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
                     />
                 ))}
             </ul>
+            {/* for devices smaller than 991px */}
             <ul className='ps-0 d-flex d-lg-none flex-column position-relative justify-content-center align-items-center h-100' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in' }}>
                 {sectionDots.dots.map((section, index) => (
                     <LiNavDot
