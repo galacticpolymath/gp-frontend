@@ -18,7 +18,7 @@ import Link from "next/link";
 import Button from "../../General/Button";
 import { getIsValObj, getObjVals } from "../../../globalFns";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
-import Arrow from "../../ClickMeArrow";
+import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
 
 const LessonTile = ({
@@ -338,7 +338,15 @@ const TeachIt = ({
                 {...lessonTilesObj}
                 removeClickToSeeMoreTxt={removeClickToSeeMoreTxt}
                 key={`${index}_part`}
-                ClickToSeeMoreComp={index === 0 ? <Arrow handleElementVisibility={handleElementVisibility} /> : null}
+                ClickToSeeMoreComp={index === 0 ?
+                  <ClickMeArrow
+                    handleElementVisibility={handleElementVisibility}
+                    willShowArrow={arrowContainer.isInView}
+                    containerStyle={{ zIndex: 1000, bottom: '60px', right: '50px', display: arrowContainer.isInView ? 'none' : 'block' }}
+                  />
+                  :
+                  null
+                }
                 FeedbackComp={(part.status === "Beta") ? (
                   <SendFeedback
                     parentDivStyles={{ backgroundColor: '#EBD0FF', zIndex: 100, border: '1px solid #B7B6C2' }}

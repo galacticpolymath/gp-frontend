@@ -8,9 +8,15 @@ import Arrow from "./Arrow";
 import { useInViewport } from "react-in-viewport";
 
 /**
- * The prop 'customDivStyling' must not include the display field.
+ * Apart from the display field, the default object for the 'containerStyle' prop is as follows: 
+ * { zIndex: 1000, bottom: '60px', right: '50px', display: showElementConditional ? 'none' : 'block' }
  * */
-const ClickMeArrow = ({ handleElementVisibility, customDivStyling, willTakeOffOfDom, willShowArrow }) => {
+const ClickMeArrow = ({
+    handleElementVisibility,
+    willShowArrow,
+    containerStyle = {},
+    clickToSeeMoreStyle = { transform: 'translateY(11px)', fontSize: 'clamp(17px, 2vw, 18px)' },
+}) => {
     const arrowContainerRef = useRef();
     const { inViewport } = useInViewport(arrowContainerRef);
 
@@ -26,10 +32,10 @@ const ClickMeArrow = ({ handleElementVisibility, customDivStyling, willTakeOffOf
         <div
             ref={arrowContainerRef}
             id='arrow-container'
-            style={{ ...customDivStyling, display: willTakeOffOfDom ? 'none' : 'block' }}
+            style={containerStyle}
             className={`position-absolute ${willShowArrow ? 'fade-in' : 'fade-out'}`}
         >
-            <span style={{ transform: 'translateY(11px)', fontSize: 'clamp(17px, 2vw, 18px)' }} className='p-1 d-block fw-bold text-nowrap'>
+            <span style={clickToSeeMoreStyle} className='p-1 d-block fw-bold text-nowrap'>
                 CLICK TO SEE MORE!
             </span>
             <Arrow className='down-arrow jump-infinite-animate' />
