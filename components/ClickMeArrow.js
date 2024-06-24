@@ -21,8 +21,8 @@ const ClickMeArrow = ({
     const { inViewport } = useInViewport(arrowContainerRef);
 
     useEffect(() => {
-        if (handleElementVisibility) {
-            handleElementVisibility();
+        if (typeof handleElementVisibility === 'function') {
+            handleElementVisibility(inViewport);
         } else {
             console.error('Did not pass a "handleElementVisibility" function.');
         }

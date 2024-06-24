@@ -128,17 +128,17 @@ const TeachIt = ({
 
   let timer;
 
-  const handleElementVisibility = throttle(() => {
+  const handleElementVisibility = inViewPort => (throttle(() => {
     clearTimeout(timer);
 
-    if (arrowContainer.inViewport) {
+    if (inViewPort) {
       setArrowContainer(state => ({ ...state, isInView: true }));
 
       timer = setTimeout(() => {
         setArrowContainer(state => ({ ...state, isInView: false }));
       }, 3500);
     }
-  }, 100);
+  }, 200))();
 
   useEffect(() => {
     const lessonPartPath = window.location.href.split("#").at(-1);
