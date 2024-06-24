@@ -33,7 +33,8 @@ const ClickMeArrow = ({
             ref={arrowContainerRef}
             id='arrow-container'
             style={containerStyle}
-            className={`position-absolute ${willShowArrow ? 'fade-in' : 'fade-out'}`}
+            // className={`position-absolute ${willShowArrow ? 'fade-in' : 'fade-out'}`}
+            className={`position-absolute`}
         >
             <span style={clickToSeeMoreStyle} className='p-1 d-block fw-bold text-nowrap'>
                 CLICK TO SEE MORE!

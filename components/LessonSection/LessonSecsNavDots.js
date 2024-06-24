@@ -15,6 +15,8 @@
 import { useRouter } from "next/router";
 import LiNavDot from "./NavDots/LiNavDot";
 import { useState, useEffect } from "react";
+import ClickMeArrow from "../ClickMeArrow";
+import throttle from "lodash.throttle";
 
 const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListenerOn }) => {
     const [sectionDots, setSectionDots] = _sectionDots;
@@ -160,6 +162,22 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
 
     const liNavDotFns = { goToSection, handleDotClick, setSectionDots }
 
+    const [arrowContainer, setArrowContainer] = useState({ isInView: false, canTakeOffDom: false });
+
+    let timer;
+
+    const handleElementVisibility = inViewPort => (throttle(() => {
+        clearTimeout(timer);
+
+        if (inViewPort) {
+            setArrowContainer(state => ({ ...state, isInView: true }));
+
+            timer = setTimeout(() => {
+                setArrowContainer(state => ({ ...state, isInView: false }));
+            }, 3500);
+        }
+    }, 200))();
+
     return (
         <div
             style={{ transform: 'translateY(8%)' }}
@@ -173,6 +191,16 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
                 {sectionDots.dots.map((section, index) => (
                     <LiNavDot
                         key={index}
+                        EnticementArrow={(index === 0) ?
+                            <ClickMeArrow
+                                handleElementVisibility={handleElementVisibility}
+                                willShowArrow={arrowContainer.isInView}
+                                containerStyle={{ zIndex: 1000, right: '50px', display: arrowContainer.canTakeOffDom ? 'none' : 'block' }}
+                                clickToSeeMoreStyle={{ fontSize: 'clamp(17px, 2vw, 18px)' }}
+                            />
+                            :
+                            null
+                        }
                         fns={liNavDotFns}
                         section={section}
                         index={index}

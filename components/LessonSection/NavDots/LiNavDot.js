@@ -13,13 +13,12 @@
 
 import { useMemo, useState } from "react";
 import { getIconStyles } from "../../../helperFns/getIconStyles";
-import { useEffect } from "react";
 
-const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
+const LiNavDot = ({ section, fns, index, isOnDesktop, EnticementArrow = <></> }) => {
     const { isInView, sectionId, sectionTitleForDot: title, willShowTitle, sectionDotId } = section;
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
     const { goToSection, handleDotClick } = fns;
-    const backgroundColor = isInView ? (sectionId === '3._teaching_materials') ? '#FEEAF8' : '#d5e6f3' : 'white'
+    const backgroundColor = isInView ? ((sectionId === '3._teaching_materials') ? '#FEEAF8' : '#d5e6f3') : 'white'
 
     const handleMouseOverIcon = () => {
         setWillChangeIconColor(true);
@@ -41,6 +40,7 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                     onClick={_ => goToSection(sectionId)}
                     className='d-flex flex-inline justify-content-center align-items-center position-relative sectionNavDotLi'
                 >
+                    {EnticementArrow}
                     <i
                         onMouseOver={handleMouseOverIcon}
                         onMouseLeave={handleMouseLeaveIcon}
