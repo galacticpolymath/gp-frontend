@@ -73,7 +73,7 @@ const TeachIt = ({
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
-  const [arrowContainer, setArrowContainer] = useState({ isInView: false, canTakeOffDom: false });
+  const [arrowContainer, setArrowContainer] = useState({ isInView: true, canTakeOffDom: false });
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = useState([]);
   const [, setSectionDots] = _sectionDots;
   const environments = ['classroom', 'remote'].filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));

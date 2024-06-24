@@ -22,9 +22,20 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
     const [sectionDots, setSectionDots] = _sectionDots;
     const [targetSec, setTargetSec] = useState(null);
     const [willScrollElemIntoView, setWillScrollElemIntoView] = useState(false);
+    const [arrowContainer, setArrowContainer] = useState({ isInView: true, canTakeOffDom: false })
     const router = useRouter();
 
+    useEffect(() => {
+        const overviewSection = sectionDots.dots.find(({ sectionTitleForDot }) => sectionTitleForDot.toLowerCase() === 'overview')
+
+        if (!overviewSection.isInView && arrowContainer.isInView) {
+            setArrowContainer({ isInView: false, canTakeOffDom: false })
+        }
+    }, [sectionDots])
+
     const handleMouseEnter = () => {
+        setArrowContainer({ isInView: false, canTakeOffDom: true });
+
         setSectionDots(sectionDots => {
             return {
                 ...sectionDots,
@@ -161,11 +172,11 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
     }, [willScrollElemIntoView, isScrollListenerOn])
 
     const liNavDotFns = { goToSection, handleDotClick, setSectionDots }
-
-    const [arrowContainer, setArrowContainer] = useState({ isInView: false, canTakeOffDom: false });
-
     let timer;
 
+    // delete the arrow when the following occurs:
+    // -when the user starts scrolling 
+    // -when the user hovers over the dots
     const handleElementVisibility = inViewPort => (throttle(() => {
         clearTimeout(timer);
 
@@ -193,10 +204,11 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
                         key={index}
                         EnticementArrow={(index === 0) ?
                             <ClickMeArrow
+                                arrowTxt="Skip to Section"
                                 handleElementVisibility={handleElementVisibility}
                                 willShowArrow={arrowContainer.isInView}
-                                containerStyle={{ zIndex: 1000, right: '50px', display: arrowContainer.canTakeOffDom ? 'none' : 'block' }}
-                                clickToSeeMoreStyle={{ fontSize: 'clamp(17px, 2vw, 18px)' }}
+                                containerStyle={{ zIndex: 1000, right: "40px", bottom: "65px", display: arrowContainer.canTakeOffDom ? 'none' : 'block' }}
+                                clickToSeeMoreStyle={{ fontSize: 'clamp(17px, 2vw, 18px)', transform: 'translateY(10px)' }}
                             />
                             :
                             null

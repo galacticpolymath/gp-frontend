@@ -3,11 +3,19 @@ import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import Accordion from '../../Accordion';
 import Subject from './Subject';
+import { useArrowContainer } from '../../../customHooks/useArrowContainer';
 
 const Standards = ({
   Data,
 }) => {
   const ref = useRef();
+  const areThereTargetStandards = Data?.some(({ target }) => target);
+  const { _arrowContainer, handleElementVisibility } = useArrowContainer();
+  const [arrowContainer, setArrowContainer] = _arrowContainer;
+
+  const handleSubjectAccordionBtnClick = () => {
+    setArrowContainer({ isInView: false, canTakeOffDom: true });
+  };
 
   return (
     <div ref={ref} className='container mb-4 px-0'>
@@ -23,6 +31,7 @@ const Standards = ({
           </div>
         )}
       >
+        {/* if there are no target standards, then show the arrow for the first section for the connected standars */}
         <div>
           <h4 className='fs-5 fw-bold mt-4 mb-1'><i className="bi bi-bullseye me-2" />Target Standard(s)</h4>
           <div className="mb-3">
@@ -32,6 +41,10 @@ const Standards = ({
             <Subject
               initiallyExpanded
               key={`target-${i}`}
+              areThereTargetStandards={areThereTargetStandards}
+              handleSubjectAccordionBtnClick={arrowContainer.canTakeOffDom ? null : handleSubjectAccordionBtnClick}
+              handleSubjectElementVisibility={handleElementVisibility}
+              arrowContainer={arrowContainer}
               accordionId={`target-${i}`}
               {...subject}
             />
@@ -45,6 +58,10 @@ const Standards = ({
             <Subject
               key={`connected-${i}`}
               accordionId={`connected-${i}`}
+              handleSubjectAccordionBtnClick={arrowContainer.canTakeOffDom ? null : handleSubjectAccordionBtnClick}
+              areThereTargetStandards={areThereTargetStandards}
+              handleSubjectElementVisibility={handleElementVisibility}
+              arrowContainer={arrowContainer}
               {...subject}
             />
           ))}
