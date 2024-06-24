@@ -342,7 +342,7 @@ const TeachIt = ({
                   <ClickMeArrow
                     handleElementVisibility={handleElementVisibility}
                     willShowArrow={arrowContainer.isInView}
-                    containerStyle={{ zIndex: 1000, bottom: '60px', right: '50px', display: arrowContainer.isInView ? 'none' : 'block' }}
+                    containerStyle={{ zIndex: 1000, bottom: '60px', right: '50px', display: arrowContainer.canTakeOffDom ? 'none' : 'block' }}
                   />
                   :
                   null
