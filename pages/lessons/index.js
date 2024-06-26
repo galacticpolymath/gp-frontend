@@ -170,10 +170,10 @@ const LessonsPage = ({
                       <JobVizIcon />
                     </section>
                     <section className="d-flex justify-content-center align-items-left flex-column ps-3">
-                      <h4 className='fw-light text-black mb-0 pb-1 text-center mt-1 mt-sm-2 my-2'>
+                      <h4 className='fw-light text-black mb-0 pb-1 text-left mt-1 mt-sm-2 my-2'>
                         Jobviz Career Explorer
                       </h4>
-                      <span className="text-black text-center mt-1 mt-sm-0">A starting point for students to explore 1,000 job possibilities</span>
+                      <span className="text-black text-left mt-1 mt-sm-0">A starting point for students to explore 1,000 job possibilities</span>
                     </section>
                   </section>
                 </div>

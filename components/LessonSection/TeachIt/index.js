@@ -19,6 +19,7 @@ import Button from "../../General/Button";
 import { getIsValObj, getObjVals } from "../../../globalFns";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import ClickMeArrow from "../../ClickMeArrow";
+import throttle from "lodash.throttle";
 
 const LessonTile = ({
   lessonTileUrl,
@@ -72,7 +73,7 @@ const TeachIt = ({
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
-  const [arrowContainer, setArrowContainer] = useState({ isInView: false, canTakeOffDom: false });
+  const [arrowContainer, setArrowContainer] = useState({ isInView: true, canTakeOffDom: false });
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = useState([]);
   const [, setSectionDots] = _sectionDots;
   const environments = ['classroom', 'remote'].filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
@@ -124,6 +125,20 @@ const TeachIt = ({
     setSelectedGradeResources(selectedGrade.links);
     setSelectedGrade(selectedGrade);
   };
+
+  let timer;
+
+  const handleElementVisibility = inViewPort => (throttle(() => {
+    clearTimeout(timer);
+
+    if (inViewPort) {
+      setArrowContainer(state => ({ ...state, isInView: true }));
+
+      timer = setTimeout(() => {
+        setArrowContainer(state => ({ ...state, isInView: false }));
+      }, 3500);
+    }
+  }, 200))();
 
   useEffect(() => {
     const lessonPartPath = window.location.href.split("#").at(-1);
@@ -323,7 +338,15 @@ const TeachIt = ({
                 {...lessonTilesObj}
                 removeClickToSeeMoreTxt={removeClickToSeeMoreTxt}
                 key={`${index}_part`}
-                ClickToSeeMoreComp={index === 0 ? <ClickMeArrow _arrowContainer={[arrowContainer, setArrowContainer]} /> : null}
+                ClickToSeeMoreComp={index === 0 ?
+                  <ClickMeArrow
+                    handleElementVisibility={handleElementVisibility}
+                    willShowArrow={arrowContainer.isInView}
+                    containerStyle={{ zIndex: 1000, bottom: '60px', right: '50px', display: arrowContainer.canTakeOffDom ? 'none' : 'block' }}
+                  />
+                  :
+                  null
+                }
                 FeedbackComp={(part.status === "Beta") ? (
                   <SendFeedback
                     parentDivStyles={{ backgroundColor: '#EBD0FF', zIndex: 100, border: '1px solid #B7B6C2' }}

@@ -108,6 +108,14 @@ const LessonDetails = ({ lesson }) => {
     sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
   }
 
+  sectionComps = sectionComps.filter(section => {
+    if (("Data" in section) && !section['Data']) {
+      return false;
+    }
+
+    return true;
+  })
+
   const _dots = sectionComps ? getSectionDotsDefaultVal(sectionComps) : [];
   const [sectionDots, setSectionDots] = useState({
     dots: _dots,
@@ -464,8 +472,12 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       }
     }
 
-    if (lessonToDisplayOntoUi?.Section?.preview?.Multimedia) {
-      // check if the videos has any shorts in them. 
+    if (lessonToDisplayOntoUi?.Section?.preview?.Multimedia?.length) {
+      for (const multiMedia of lessonToDisplayOntoUi.Section.preview.Multimedia) {
+        if (multiMedia.mainLink.includes('www.youtube.com/shorts')) {
+          multiMedia.mainLink = multiMedia.mainLink.replace('shorts', 'embed');
+        }
+      }
     }
 
     return {

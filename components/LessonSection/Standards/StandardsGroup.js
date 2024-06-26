@@ -5,6 +5,7 @@ import Accordion from '../../Accordion';
 import RichText from '../../RichText';
 import { useState } from 'react';
 import CopyableTxt from '../../CopyableTxt';
+import ClickMeArrow from '../../ClickMeArrow';
 
 const CopyIcon = ({ color = 'white' }) => (
   <svg
@@ -47,17 +48,22 @@ const StandardsGroup = ({
   grades,
   alignmentNotes,
   statements,
+  willShowArrow,
+  _arrowContainer,
+  handleElementVisibility,
 }) => {
+  const index = id.split('-').at(-1);
   const _grades = Array.isArray(grades) ? grades.join(',') : grades;
   const [contentId, setContentId] = useState('');
   const [isAccordionContentDisplayed, setIsAccordionContentDisplayed] = useState(false);
-
+  const [arrowContainer, setArrowContainer] = _arrowContainer;
   const handleClickToCopyTxt = (event, txt) => {
     event.stopPropagation();
     navigator.clipboard.writeText(txt);
   };
 
   const handleOnClick = () => {
+    setArrowContainer({ isInView: false, canTakeOffDom: true });
     setIsAccordionContentDisplayed(prevState => !prevState);
   };
 
@@ -105,8 +111,19 @@ const StandardsGroup = ({
                 <h6 className='text-muted w-100 d-flex justify-content-between'>
                   {formatGrades(_grades)}
                   <div
-                    className="d-flex justify-content-center flex-column h-100"
+                    className="d-flex justify-content-center flex-column h-100 position-relative"
                   >
+                    {((index == 0) && willShowArrow) ? (
+                      <ClickMeArrow
+                        handleElementVisibility={handleElementVisibility}
+                        willShowArrow={arrowContainer.isInView}
+                        containerStyle={{ zIndex: 1000, bottom: '70px', right: '35px', display: arrowContainer.canTakeOffDom ? 'none' : 'block' }}
+                        arrowTxt='Click for Details'
+                      />
+                    )
+                      :
+                      null
+                    }
                     <i
                       color="#7A8489"
                       style={{ display: isAccordionContentDisplayed ? 'none' : 'block' }}

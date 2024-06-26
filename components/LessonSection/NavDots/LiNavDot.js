@@ -13,13 +13,12 @@
 
 import { useMemo, useState } from "react";
 import { getIconStyles } from "../../../helperFns/getIconStyles";
-import { useEffect } from "react";
 
-const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
+const LiNavDot = ({ section, fns, index, isOnDesktop, EnticementArrow = <></> }) => {
     const { isInView, sectionId, sectionTitleForDot: title, willShowTitle, sectionDotId } = section;
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
     const { goToSection, handleDotClick } = fns;
-    const backgroundColor = isInView ? (sectionId === '3._teaching_materials') ? '#FEEAF8' : '#d5e6f3' : 'white'
+    const backgroundColor = isInView ? ((sectionId === '3._teaching_materials') ? '#FEEAF8' : '#d5e6f3') : 'white'
 
     const handleMouseOverIcon = () => {
         setWillChangeIconColor(true);
@@ -41,13 +40,16 @@ const LiNavDot = ({ section, fns, index, isOnDesktop }) => {
                     onClick={_ => goToSection(sectionId)}
                     className='d-flex flex-inline justify-content-center align-items-center position-relative sectionNavDotLi'
                 >
-                    <i
-                        onMouseOver={handleMouseOverIcon}
-                        onMouseLeave={handleMouseLeaveIcon}
-                        style={iconStyles}
-                        className='sectionNavDot'
-                        id={sectionDotId}
-                    />
+                    <div>
+                        <i
+                            onMouseOver={handleMouseOverIcon}
+                            onMouseLeave={handleMouseLeaveIcon}
+                            style={iconStyles}
+                            className='sectionNavDot'
+                            id={sectionDotId}
+                        />
+                        {EnticementArrow}
+                    </div>
                     <div style={{ zIndex: 1100, opacity: willShowTitle ? 1 : 0, width: 'auto', right: '25px', transition: "all .15s ease-in", pointerEvents: 'none', backgroundColor: backgroundColor, border: '#363636 1px solid', transitionProperty: 'background-color, opacity, border' }} className='p-1 rounded position-absolute d-flex'>
                         <span className='text-nowrap'>{title}</span>
                         <span style={{ width: 55 }} className='d-flex d-md-none justify-content-center align-items-center ps-1 sectionTitleSpan'>
