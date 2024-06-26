@@ -107,7 +107,9 @@ const ShareWidget = ({
                         }}
                         className='d-flex justify-content-center align-items-center rounded-circle'
                     >
-                        <CopyIcon />
+                        <i
+                            className="bi bi-clipboard text-white"
+                        />
                     </button>
                 </CopyableTxt>
             </div>
