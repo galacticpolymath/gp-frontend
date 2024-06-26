@@ -7,10 +7,6 @@ import { useEffect, useRef } from "react";
 import Arrow from "./Arrow";
 import { useInViewport } from "react-in-viewport";
 
-/**
- * Apart from the display field, the default object for the 'containerStyle' prop is as follows: 
- * { zIndex: 1000, bottom: '60px', right: '50px', display: showElementConditional ? 'none' : 'block' }
- * */
 const ClickMeArrow = ({
     handleElementVisibility,
     willShowArrow,
@@ -24,8 +20,6 @@ const ClickMeArrow = ({
     useEffect(() => {
         if (typeof handleElementVisibility === 'function') {
             handleElementVisibility(inViewport);
-        } else {
-            console.error('Did not pass a "handleElementVisibility" function.');
         }
     }, [inViewport]);
 
@@ -35,7 +29,6 @@ const ClickMeArrow = ({
             id='arrow-container'
             style={containerStyle}
             className={`position-absolute ${willShowArrow ? 'fade-in' : 'fade-out'}`}
-        // className={`position-absolute`}
         >
             <span style={clickToSeeMoreStyle} className='p-1 d-block fw-bold text-nowrap'>
                 {arrowTxt}
