@@ -5,6 +5,7 @@
   "scripts": {
     "build": "next build",
     "start": "next dev",
+    "prod": "next start",
     "lint": "eslint .",
     "lint_fix": "eslint --fix --ext .js,.jsx .",
     "test": "jest"
