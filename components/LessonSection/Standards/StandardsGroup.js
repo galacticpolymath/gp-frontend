@@ -108,7 +108,7 @@ const StandardsGroup = ({
                 data-bs-toggle='collapse'
                 data-bs-target={`#content_${contentId}`}
               >
-                <h6 className='text-muted w-100 d-flex justify-content-between'>
+                <h6 className={`text-muted w-100 d-flex ${(Array.isArray(grades) && (grades.length > 0)) ? 'justify-content-between' : 'justify-content-end'}`}>
                   {formatGrades(_grades)}
                   <div
                     className="d-flex justify-content-center flex-column h-100 position-relative"

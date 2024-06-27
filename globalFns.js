@@ -132,9 +132,9 @@ export const getShowableUnits = units => {
     const todaysDate = new Date();
 
     for (const unit of units) {
-        if (STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) && 
-        !uniqueUnits.some(uniqueUnit => unit.numID === uniqueUnit.numID) && 
-        (moment(unit.ReleaseDate).format('YYYY-MM-DD') < moment(todaysDate).format('YYYY-MM-DD'))) {
+        if (STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) &&
+            !uniqueUnits.some(uniqueUnit => unit.numID === uniqueUnit.numID) &&
+            (moment(unit.ReleaseDate).format('YYYY-MM-DD') <= moment(todaysDate).format('YYYY-MM-DD'))) {
             uniqueUnits.push(unit);
         }
     }
