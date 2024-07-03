@@ -32,6 +32,8 @@ const Subject = ({
     subjectSlugIds = new Array(subjectDimensions.length).fill(subjectSlug).map((subjectSlugId, index) => `${subjectSlugId}-${index}`);
   }
 
+  console.log("yo there: ", subjectSlug);
+
   return (
     <Accordion
       id={accordionId}
