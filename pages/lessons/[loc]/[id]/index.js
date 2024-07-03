@@ -277,13 +277,13 @@ const getGoogleDriveFileIdFromUrl = url => {
   return id;
 }
 
-const updateLessonsWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOntoUi) => {
+const updateLessonWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOntoUi) => {
   let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
 
   // getting the thumbnails for the google drive file handouts for each lesson
   if (lesson?.itemList?.length) {
     const itemListUpdated = lesson.itemList.map(itemObj => {
-      if (itemObj?.links?.length && itemObj.links[0]?.url) {
+      if (itemObj?.links?.length && itemObj.links[0]?.url && getGoogleDriveFileIdFromUrl(itemObj.links[0].url)) {
         const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
 
         return {
@@ -341,7 +341,12 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           // getting the thumbnails for the google drive file handouts for each lesson
           if (lesson?.itemList?.length) {
             const itemListUpdated = lesson.itemList.map(itemObj => {
-              if (itemObj?.links?.length && itemObj.links[0]?.url) {
+              itemObj.links = itemObj.links.map(link => ({
+                ...link,
+                url: link.url ? link.url : "",
+              }));
+
+              if (itemObj?.links?.length && itemObj.links[0]?.url && getGoogleDriveFileIdFromUrl(itemObj.links[0].url)) {
                 const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
 
                 return {
@@ -388,10 +393,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
       lessonParts.forEach((lessonPartsArr, index) => {
         lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources[index].lessons = lessonPartsArr;
-      })
+      });
     } else if ((resources?.length > 1) && resources?.every(({ lessons }) => lessons)) {
       lessonToDisplayOntoUi.Section['teaching-materials'].Data.classroom.resources = resources.map(resource => {
-        const lessonsUpdated = resource.lessons.map(lesson => updateLessonsWithGoogleDriveFiledPreviewImg(lesson, lessonToDisplayOntoUi))
+        const lessonsUpdated = resource.lessons.map(lesson => updateLessonWithGoogleDriveFiledPreviewImg(lesson, lessonToDisplayOntoUi))
 
         return {
           ...resource,
@@ -430,11 +435,9 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
 
     if (isThereAWebApp) {
-      let multiMediaArrUpdated = [];
+      const multiMediaArrUpdated = [];
 
-      for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
-        let multiMediaItem = multiMediaArr[numIteration]
-
+      for (let multiMediaItem of multiMediaArr) {
         if ((multiMediaItem.type === 'video') && multiMediaItem?.mainLink?.includes("drive.google")) {
           const videoId = multiMediaItem.mainLink.split("/").at(-2);
           multiMediaItem = {
@@ -442,10 +445,12 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             webAppPreviewImg: `https://drive.google.com/thumbnail?id=${videoId}`,
             webAppImgAlt: `'${multiMediaItem.title}' video`,
           }
+          multiMediaArrUpdated.push(multiMediaItem);
+          continue;
         }
 
-        if (multiMediaItem.type === 'web-app') {
-          const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem.mainLink);
+        if ((multiMediaItem.type === 'web-app') && multiMediaItem?.mainLink) {
+          const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem?.mainLink);
 
           if (errMsg && !images?.length) {
             console.error('Failed to get the image preview of web app. Error message: ', errMsg)
@@ -458,7 +463,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           }
         }
 
-        multiMediaArrUpdated.push(multiMediaItem)
+        multiMediaArrUpdated.push(multiMediaItem);
       }
 
       lessonToDisplayOntoUi = {
@@ -475,7 +480,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
     if (lessonToDisplayOntoUi?.Section?.preview?.Multimedia?.length) {
       for (const multiMedia of lessonToDisplayOntoUi.Section.preview.Multimedia) {
-        if (multiMedia.mainLink.includes('www.youtube.com/shorts')) {
+        if (multiMedia?.mainLink.includes('www.youtube.com/shorts')) {
           multiMedia.mainLink = multiMedia.mainLink.replace('shorts', 'embed');
         }
       }

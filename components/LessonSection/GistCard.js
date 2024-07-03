@@ -12,6 +12,7 @@ const GistCard = ({
   SteamEpaulette_vert,
   isOnPreview,
 }) => {
+
   return (
     <div className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center">
       {LearningSummary && (

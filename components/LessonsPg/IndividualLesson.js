@@ -30,14 +30,16 @@ const IndividualLesson = ({ lesson, Pill = null }) => {
         </section>
         <section className='d-flex justify-content-end flex-column'>
           <div style={{ height: 90, width: 90 }} className="position-relative">
-            <Image
-              src={lesson.tile}
-              alt="lesson_tile"
-              fill
-              style={{ borderRadius: '.2em' }}
-              sizes="130px"
-              className="img-optimize h-100 w-100"
-            />
+            {lesson.tile && (
+              <Image
+                src={lesson.tile}
+                alt="lesson_tile"
+                fill
+                style={{ borderRadius: '.2em' }}
+                sizes="130px"
+                className="img-optimize h-100 w-100"
+              />
+            )}
             {Pill}
           </div>
         </section>

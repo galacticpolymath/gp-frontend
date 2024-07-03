@@ -31,14 +31,16 @@ const LessonTile = ({
   return (
     <div style={imgContainerStyle} className={imgContainerClassNameStr}>
       {Pill}
-      <Image
-        src={lessonTileUrl}
-        alt="lesson_tile"
-        fill
-        style={imgStyle}
-        sizes="130px"
-        className="img-optimize rounded w-100 h-100"
-      />
+      {lessonTileUrl && (
+        <Image
+          src={lessonTileUrl}
+          alt="lesson_tile"
+          fill
+          style={imgStyle}
+          sizes="130px"
+          className="img-optimize rounded w-100 h-100"
+        />
+      )}
     </div>
   );
 };
