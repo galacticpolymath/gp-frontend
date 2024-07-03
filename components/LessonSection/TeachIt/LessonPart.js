@@ -25,6 +25,7 @@ const LessonPart = ({
   chunks = [],
   resources,
   ForGrades,
+  GradesOrYears,
   _numsOfLessonPartsThatAreExpanded,
   removeClickToSeeMoreTxt,
   lessonTileForDesktop = null,
@@ -376,7 +377,7 @@ const LessonPart = ({
           <div className='mt-4 pb-1'>
             <div className='d-flex align-items-start'>
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
-              <h5 className="fw-bold">Materials for Grades {ForGrades}</h5>
+              <h5 className="fw-bold">Materials for {GradesOrYears} {ForGrades}</h5>
             </div>
             <ol className='mt-2 materials-list'>
               {!!_itemList?.length && _itemList.map((item, itemIndex) => {

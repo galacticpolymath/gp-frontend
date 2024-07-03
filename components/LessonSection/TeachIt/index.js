@@ -72,6 +72,7 @@ const TeachIt = ({
   Data,
   _sectionDots,
   ForGrades,
+  GradesOrYears,
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
@@ -192,7 +193,7 @@ const TeachIt = ({
         </div>
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
-            <h3 className='fs-5'>Available Grade Bands</h3>
+            <h3 className='fs-5'>Available {GradesOrYears} Bands</h3>
             {!!gradeVariations.length && gradeVariations.map((variation, i) => (
               <label
                 key={i}
@@ -338,6 +339,7 @@ const TeachIt = ({
             return (
               <LessonPart
                 {...lessonTilesObj}
+                GradesOrYears={GradesOrYears}
                 removeClickToSeeMoreTxt={removeClickToSeeMoreTxt}
                 key={`${index}_part`}
                 ClickToSeeMoreComp={index === 0 ?

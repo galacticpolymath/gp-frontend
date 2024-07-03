@@ -56,10 +56,25 @@ const LessonDetails = ({ lesson }) => {
     return false;
   });
   const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonStandardsSections.length === 1 : false;
-  let sectionComps = lesson?.Section ? Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure') : null;
+  let sectionComps = lesson?.Section ?
+    Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
+    :
+    null;
 
   if (sectionComps?.length) {
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
+    sectionComps = sectionComps.map(section => {
+      if(section?.SectionTitle?.includes("Teaching Materials")){
+        return {
+          ...section,
+          ForGrades: lesson.ForGrades,
+          GradesOrYears: lesson.GradesOrYears,
+        }
+      }
+
+      return section;
+    });
+    console.log("sectionComps: ", sectionComps);
   }
 
   if (lesson && !isTheLessonSectionInOneObj && lessonStandardsSections?.length) {
@@ -170,7 +185,9 @@ const LessonDetails = ({ lesson }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, []);
 
-  let _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
+  const _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
+
+  console.log("_sections: ", _sections)
 
   if (!lesson && typeof window === "undefined") {
     return null;
