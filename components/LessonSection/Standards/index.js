@@ -7,6 +7,7 @@ import { useArrowContainer } from '../../../customHooks/useArrowContainer';
 
 const Standards = ({
   Data,
+  GradesOrYears,
 }) => {
   const ref = useRef();
   const areThereTargetStandards = Data?.some(({ target }) => target);
@@ -40,6 +41,7 @@ const Standards = ({
           {Data.filter(({ target }) => target).map((subject, i) => (
             <Subject
               initiallyExpanded
+              GradesOrYears={GradesOrYears}
               key={`target-${i}`}
               areThereTargetStandards={areThereTargetStandards}
               handleSubjectAccordionBtnClick={arrowContainer.canTakeOffDom ? null : handleSubjectAccordionBtnClick}

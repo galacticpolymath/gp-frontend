@@ -11,6 +11,7 @@ const Subject = ({
   accordionId,
   sets,
   subject,
+  GradesOrYears,
   initiallyExpanded,
   areThereTargetStandards,
   handleSubjectAccordionBtnClick = () => {
@@ -69,6 +70,7 @@ const Subject = ({
               {standardsGroup.map((group, groupIndex) => (
                 <StandardsGroup
                   id={`${subjectSlugIdName}-${groupIndex}`}
+                  GradesOrYears={GradesOrYears}
                   _arrowContainer={_arrowContainerForStandsElementVisibility}
                   handleElementVisibility={handleStandardsElementVisibility}
                   willShowArrow={subjectDimIndex == 0 && index == 0}

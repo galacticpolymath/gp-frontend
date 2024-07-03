@@ -11,6 +11,7 @@ const StandardsCollapsible = ({
   Badge,
   Data,
   Description,
+  GradesOrYears,
   Title,
   Footnote = '',
 }) => {
@@ -36,7 +37,7 @@ const StandardsCollapsible = ({
           />
         )}
         <div className={Badge ? '' : 'pt-3'}>
-          <Standards Data={Data} />
+          <Standards Data={Data} GradesOrYears={GradesOrYears} />
         </div>
       </div>
     </CollapsibleLessonSection>

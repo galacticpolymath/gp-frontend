@@ -17,6 +17,7 @@ const Overview = ({
   SteamEpaulette_vert,
   Text,
   Tags,
+  GradesOrYears,
   _sectionDots,
   SectionTitle,
   ...titleProps
@@ -67,7 +68,7 @@ const Overview = ({
             <div className='d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3 '>
               <span>
                 <i className="fs-3 mb-2 me-2 bi-person-circle"></i>
-                <h5 className='d-inline-block'>Grades: </h5>
+                <h5 className='d-inline-block'>{GradesOrYears}: </h5>
               </span>
               <div>{ForGrades}</div>
             </div>
@@ -88,7 +89,7 @@ const Overview = ({
             <div className='d-sm-none g-col-12 align-items-center justify-content-center'>
               <div className='d-grid bg-white rounded-3 col-12 p-3'>
                 <i className="fs-3 mb-2 d-block bi-person-circle"></i>
-                <h5>Grades: </h5>
+                <h5>{GradesOrYears}: </h5>
                 <span>{ForGrades}</span>
               </div>
             </div>
