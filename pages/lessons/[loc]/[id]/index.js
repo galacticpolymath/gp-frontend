@@ -96,24 +96,12 @@ const LessonDetails = ({ lesson }) => {
       .reduce((lessonStandardObj, lessonStandardsAccumulatedObj) => {
         let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
 
-        if (!lessonStandardsAccumulatedObj.Badge && lessonStandardObj.Badge) {
-          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Badge: lessonStandardObj.Badge }
-        }
-
-        if (!lessonStandardsAccumulatedObj.Title && lessonStandardObj.Title) {
-          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Title: lessonStandardObj.Title };
-        }
-
         if (!lessonStandardsAccumulatedObj.SectionTitle && lessonStandardObj.SectionTitle) {
           _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, SectionTitle: lessonStandardObj.SectionTitle };
         }
 
         if (!lessonStandardsAccumulatedObj.Footnote && lessonStandardObj.Footnote) {
           _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Footnote: lessonStandardObj.Footnote };
-        }
-
-        if (!lessonStandardsAccumulatedObj.Description && lessonStandardObj.Description) {
-          _lessonStandardsAccumulated = { ..._lessonStandardsAccumulated, Description: lessonStandardObj.Description };
         }
 
         return _lessonStandardsAccumulated;
