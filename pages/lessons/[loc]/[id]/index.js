@@ -63,7 +63,6 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 }
 
 const LessonDetails = ({ lesson }) => {
-  console.log("lesson: ", lesson);
   const router = useRouter();
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
@@ -195,8 +194,6 @@ const LessonDetails = ({ lesson }) => {
   }, []);
 
   const _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
-
-  console.log("_sections: ", _sections)
 
   if (!lesson && typeof window === "undefined") {
     return null;

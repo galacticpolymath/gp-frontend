@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import Overview from './Overview';
 import Heading from './Heading.js';
 import TeachIt from './TeachIt';
-import LearningChart from './LearningChart';
 import Acknowledgments from './Acknowledgments';
 import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
@@ -50,13 +49,12 @@ export const NUMBERED_SECTIONS = [
 export const sectionTypeMap = {
   [SECTIONS.OVERVIEW]: Overview,
   [SECTIONS.HEADING]: Heading,
-  // [SECTIONS.TEXT_BLOCK]: TextBlock,
 
   // deprecated
   [SECTIONS.PROCEDURE]: () => <></>,
+  [SECTIONS.LEARNING_CHART]: () => <></>,
 
   [SECTIONS.TEACH_IT]: TeachIt,
-  [SECTIONS.LEARNING_CHART]: LearningChart,
   [SECTIONS.STANDARDS]: StandardsCollapsible,
   [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
   [SECTIONS.VERSIONS]: Versions,
