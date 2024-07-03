@@ -128,7 +128,6 @@ const LessonDetails = ({ lesson }) => {
   })
 
   sectionComps = useMemo(() => addGradesOrYearsProperty(sectionComps, lesson.ForGrades, lesson.GradesOrYears), [])
-  console.log('sectionComps: ', sectionComps)
   const _dots = useMemo(() => sectionComps ? getSectionDotsDefaultVal(sectionComps) : [], [])
   const [sectionDots, setSectionDots] = useState({
     dots: _dots,
