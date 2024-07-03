@@ -24,7 +24,7 @@ const CopyIcon = ({ color = 'white' }) => (
   </svg>
 );
 
-const formatGrades = grades => {
+const formatGrades = (grades, gradesOrYears = 'Grades') => {
   if (!grades) {
     return '';
   }
@@ -32,10 +32,10 @@ const formatGrades = grades => {
   const parsedGrades = (Array.isArray(grades) ? grades : grades.split(',')).map((x) => x.replace(/^0/, ''));
 
   if (parsedGrades.length === 1) {
-    return `Grade: ${parsedGrades[0]}`;
+    return `${gradesOrYears.slice(0, -1)}: ${parsedGrades[0]}`;
   }
 
-  return `Grades: ${parsedGrades[0]}-${parsedGrades[parsedGrades.length - 1]}`;
+  return `${gradesOrYears}: ${parsedGrades[0]}-${parsedGrades[parsedGrades.length - 1]}`;
 };
 
 export const formatAlignmentNotes = (text) => {
@@ -46,6 +46,7 @@ const StandardsGroup = ({
   id,
   codes,
   grades,
+  GradesOrYears,
   alignmentNotes,
   statements,
   willShowArrow,
@@ -108,8 +109,8 @@ const StandardsGroup = ({
                 data-bs-toggle='collapse'
                 data-bs-target={`#content_${contentId}`}
               >
-                <h6 className={`text-muted w-100 d-flex ${(Array.isArray(grades) && (grades.length > 0)) ? 'justify-content-between' : 'justify-content-end'}`}>
-                  {formatGrades(_grades)}
+                <h6 className={`text-muted w-100 d-flex ${(Array.isArray(grades) && (grades.length > 0) || ((typeof grades === 'string') && (grades.length > 0))) ? 'justify-content-between' : 'justify-content-end'}`}>
+                  {formatGrades(_grades, GradesOrYears)}
                   <div
                     className="d-flex justify-content-center flex-column h-100 position-relative"
                   >

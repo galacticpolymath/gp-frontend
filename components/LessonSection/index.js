@@ -65,17 +65,10 @@ export const sectionTypeMap = {
   [SECTIONS.LESSON_PREVIEW_FORMER]: Preview,
 };
 
-const LessonSection = ({ index, section, _sectionDots, ForGrades }) => {
+const LessonSection = ({ index, section, _sectionDots }) => {
   const Component = sectionTypeMap[section.__component];
   let compProps = { ...section, _sectionDots };
   const parentId = `${section.SectionTitle}-parent-${index}`;
-
-  if ((typeof compProps.SectionTitle === "string") && compProps.SectionTitle.includes("Teaching Materials")) {
-    compProps = {
-      ...compProps,
-      ForGrades: ForGrades,
-    };
-  }
 
   return Component ? (
     <div id={parentId} className={`SectionHeading ${section.SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()}`}>

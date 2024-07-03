@@ -11,6 +11,7 @@ const Subject = ({
   accordionId,
   sets,
   subject,
+  GradesOrYears,
   initiallyExpanded,
   areThereTargetStandards,
   handleSubjectAccordionBtnClick = () => {
@@ -31,8 +32,6 @@ const Subject = ({
   if (subjectDimensions.length > 1) {
     subjectSlugIds = new Array(subjectDimensions.length).fill(subjectSlug).map((subjectSlugId, index) => `${subjectSlugId}-${index}`);
   }
-
-  console.log("yo there: ", subjectSlug);
 
   return (
     <Accordion
@@ -71,6 +70,7 @@ const Subject = ({
               {standardsGroup.map((group, groupIndex) => (
                 <StandardsGroup
                   id={`${subjectSlugIdName}-${groupIndex}`}
+                  GradesOrYears={GradesOrYears}
                   _arrowContainer={_arrowContainerForStandsElementVisibility}
                   handleElementVisibility={handleStandardsElementVisibility}
                   willShowArrow={subjectDimIndex == 0 && index == 0}

@@ -41,6 +41,26 @@ const getLessonSections = sectionComps => sectionComps.map((section, index) => (
   ...section,
   SectionTitle: `${index + 1}. ${section.SectionTitle}`,
 }));
+const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
+  return sectionComps.map(section => {
+    if (section?.SectionTitle?.includes("Teaching Materials")) {
+      return {
+        ...section,
+        ForGrades: ForGrades,
+        GradesOrYears: GradesOrYears,
+      }
+    }
+
+    if (['lesson-plan.standards'].includes(section.__component)) {
+      return {
+        ...section,
+        GradesOrYears: GradesOrYears,
+      }
+    }
+
+    return section;
+  });
+}
 
 const LessonDetails = ({ lesson }) => {
   console.log("lesson: ", lesson);
@@ -63,18 +83,6 @@ const LessonDetails = ({ lesson }) => {
 
   if (sectionComps?.length) {
     sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-    sectionComps = sectionComps.map(section => {
-      if(section?.SectionTitle?.includes("Teaching Materials")){
-        return {
-          ...section,
-          ForGrades: lesson.ForGrades,
-          GradesOrYears: lesson.GradesOrYears,
-        }
-      }
-
-      return section;
-    });
-    console.log("sectionComps: ", sectionComps);
   }
 
   if (lesson && !isTheLessonSectionInOneObj && lessonStandardsSections?.length) {
@@ -132,7 +140,8 @@ const LessonDetails = ({ lesson }) => {
     return true;
   })
 
-  const _dots = sectionComps ? getSectionDotsDefaultVal(sectionComps) : [];
+  sectionComps = useMemo(() => addGradesOrYearsProperty(sectionComps, lesson.ForGrades, lesson.GradesOrYears), [])
+  const _dots = useMemo(() => sectionComps ? getSectionDotsDefaultVal(sectionComps) : [], [])
   const [sectionDots, setSectionDots] = useState({
     dots: _dots,
     clickedSectionId: null,
