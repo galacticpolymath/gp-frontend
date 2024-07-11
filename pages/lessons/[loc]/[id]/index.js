@@ -410,67 +410,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           });
         }
 
-        // const resourceLessons = resource.lessons.map(async lesson => {
-
-        //   if (lesson?.itemList?.length) {
-        //     const itemListUpdated = []
-
-        //     for (const itemObj of lesson.itemList) {
-        //       const { links = [], itemCat } = itemObj;
-
-        //       if (itemObj?.links?.length) {
-        //         itemObj.links = links.map(link => ({
-        //           ...link,
-        //           url: link.url ?? "",
-        //         }));
-        //       }
-
-        //       const isWebResource = itemCat === 'web resource'
-        //       const googleDriveFileId = (links?.[0]?.url && !isWebResource) ? getGoogleDriveFileIdFromUrl(links[0].url) : null;
-
-        //       if (googleDriveFileId) {
-        //         itemListUpdated.push({
-        //           ...itemObj,
-        //           filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
-        //         });
-        //         continue;
-        //       }
-
-        //       const webAppPreview = (links?.[0]?.url && !isWebResource) ? await getLinkPreviewObj(links[0].url) : null
-
-        //       if (webAppPreview?.images?.length && (typeof webAppPreview.images[0] === 'string')) {
-        //         itemListUpdated.push({
-        //           ...itemObj,
-        //           filePreviewImg: webAppPreview.images[0],
-        //         });
-        //         continue;
-        //       }
-
-        //       itemListUpdated.push(itemObj);
-        //     }
-
-        //     lessonObjUpdated = {
-        //       ...lesson,
-        //       itemList: itemListUpdated,
-        //     }
-        //   }
-
-        //   // getting the status for each lesson
-        //   let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
-
-        //   if (!lesson.tile && (lsnStatus?.status === "Upcoming")) {
-        //     lessonObjUpdated = {
-        //       ...lessonObjUpdated,
-        //       tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
-        //     }
-        //   }
-
-        //   return {
-        //     ...lessonObjUpdated,
-        //     status: lsnStatus?.status ?? "Proto",
-        //   };
-        // });
-
         lessonParts.push(resourceLessons)
       }
 
