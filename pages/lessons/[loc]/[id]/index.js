@@ -352,33 +352,45 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       lessonParts = []
 
       for (const resource of resources) {
-        const resourceLessons = resource.lessons.map(lesson => {
+        const resourceLessons = resource.lessons.map(async lesson => {
           let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
 
-          // getting the thumbnails for the google drive file handouts for each lesson
           if (lesson?.itemList?.length) {
-            const itemListUpdated = lesson.itemList.map(itemObj => {
-              const { links, itemCat } = itemObj;
-              itemObj.links = links?.length
-                ?
-                links.map(link => ({
+            const itemListUpdated = []
+
+            for (const itemObj of lesson.itemList) {
+              const { links = [], itemCat } = itemObj;
+
+              if (itemObj?.links?.length) {
+                itemObj.links = links.map(link => ({
                   ...link,
-                  url: link.url ? link.url : "",
-                }))
-                :
-                [];
+                  url: link.url ?? "",
+                }));
+              }
+
               const isWebResource = itemCat === 'web resource'
               const googleDriveFileId = (links?.[0]?.url && !isWebResource) ? getGoogleDriveFileIdFromUrl(links[0].url) : null;
 
-              if (isWebResource && googleDriveFileId) {
-                return {
+              if (googleDriveFileId) {
+                itemListUpdated.push({
                   ...itemObj,
                   filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
-                }
+                });
+                continue;
               }
 
-              return itemObj;
-            });
+              const webAppPreview = (links?.[0]?.url && !isWebResource) ? await getLinkPreviewObj(links[0].url) : null
+
+              if (webAppPreview?.images?.length && (typeof webAppPreview.images[0] === 'string')) {
+                itemListUpdated.push({
+                  ...itemObj,
+                  filePreviewImg: webAppPreview.images[0],
+                });
+                continue;
+              }
+
+              itemListUpdated.push(itemObj);
+            }
 
             lessonObjUpdated = {
               ...lesson,
