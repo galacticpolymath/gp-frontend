@@ -154,8 +154,6 @@ export const getLinkPreviewObj = async (url = '') => {
 
         const linkPreviewObj = await getLinkPreview(url);
 
-        console.log('linkPreviewObj: ', linkPreviewObj);
-
         return linkPreviewObj;
     } catch (error) {
         const errMsg = `An error has occurred in getting the link preview for given url. Error message: ${error}.`;

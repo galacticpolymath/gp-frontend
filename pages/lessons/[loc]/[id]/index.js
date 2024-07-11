@@ -131,8 +131,6 @@ const LessonDetails = ({ lesson }) => {
     return addGradesOrYearsProperty(sectionComps, lesson.ForGrades, lesson.GradesOrYears);
   }, [])
 
-  console.log('sectionComps: ', sectionComps);
-
   const _dots = useMemo(() => sectionComps ? getSectionDotsDefaultVal(sectionComps) : [], [])
   const [sectionDots, setSectionDots] = useState({
     dots: _dots,
@@ -299,7 +297,6 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOntoU
   // getting the thumbnails for the google drive file handouts for each lesson
   if (lesson?.itemList?.length) {
     const itemListUpdated = lesson.itemList.map(itemObj => {
-      console.log('itemObj.itemTitle: ', itemObj.itemTitle);
       const googleDriveFileId = itemObj?.links[0]?.url ? getGoogleDriveFileIdFromUrl(itemObj.links[0].url) : null;
 
       if (googleDriveFileId) {
@@ -347,7 +344,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
     let lessonParts = null;
     const resources = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources;
-    console.log("what is up there meng yo...")
     if (resources?.every(resource => resource.lessons)) {
       lessonParts = []
 
@@ -379,10 +375,8 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
                 });
                 continue;
               }
-              console.log('links?.[0]?.url: ', links?.[0]?.url);
-              const webAppPreview = (links?.[0]?.url && isWebResource) ? await getLinkPreviewObj(links[0].url) : null
 
-              console.log('sup there meng: ', webAppPreview.images);
+              const webAppPreview = (links?.[0]?.url && isWebResource) ? await getLinkPreviewObj(links[0].url) : null
 
               if (webAppPreview?.images?.length && (typeof webAppPreview.images[0] === 'string')) {
                 itemListUpdated.push({
@@ -476,8 +470,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         //     status: lsnStatus?.status ?? "Proto",
         //   };
         // });
-
-        console.log('yo there: ', resourceLessons);
 
         lessonParts.push(resourceLessons)
       }
@@ -576,10 +568,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         },
       }
     }
-
-    console.log("lessonToDisplayOntoUi?.Section?.preview?.Multimedia: ",
-      lessonToDisplayOntoUi?.Section?.preview?.Multimedia
-    )
 
     if (lessonToDisplayOntoUi?.Section?.preview?.Multimedia?.length) {
       for (const multiMedia of lessonToDisplayOntoUi.Section.preview.Multimedia) {
