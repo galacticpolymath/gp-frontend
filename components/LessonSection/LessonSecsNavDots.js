@@ -25,14 +25,6 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
     const [arrowContainer, setArrowContainer] = useState({ isInView: true, canTakeOffDom: false })
     const router = useRouter();
 
-    useEffect(() => {
-        const overviewSection = sectionDots.dots.find(({ sectionTitleForDot }) => sectionTitleForDot.toLowerCase() === 'overview')
-
-        if (!overviewSection.isInView && arrowContainer.isInView) {
-            setArrowContainer({ isInView: false, canTakeOffDom: false })
-        }
-    }, [sectionDots])
-
     const handleMouseEnter = () => {
         setArrowContainer({ isInView: false, canTakeOffDom: true });
 
@@ -65,18 +57,30 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
 
     const scrollSectionIntoView = sectionId => {
         const targetSection = document.getElementById(sectionId);
-        let url = router.asPath;
 
         if (targetSection) {
-            (url.indexOf("#") !== -1) && router.replace(url.split("#")[0]);
             setTargetSec({ element: targetSection, id: sectionId })
         }
     }
 
     useEffect(() => {
-        if (targetSec) {
+        const overviewSection = sectionDots.dots.find(({ sectionTitleForDot }) => sectionTitleForDot.toLowerCase() === 'overview')
+
+        if (!overviewSection.isInView && arrowContainer.isInView) {
+            setArrowContainer({ isInView: false, canTakeOffDom: false })
+        }
+    }, [sectionDots])
+
+    useEffect(() => {
+        let url = router.asPath;
+
+        if (targetSec && url.indexOf("#")) {
             targetSec.element.scrollIntoView({ behavior: 'smooth', block: (targetSec.id === "lessonTitleId") ? 'center' : 'start' });
-            setTargetSec(null)
+            setTargetSec(null);
+            window.history.replaceState(null, '', url.split("#")[0]);
+        } else if (targetSec) {
+            targetSec.element.scrollIntoView({ behavior: 'smooth', block: (targetSec.id === "lessonTitleId") ? 'center' : 'start' });
+            setTargetSec(null);
         }
     }, [targetSec])
 

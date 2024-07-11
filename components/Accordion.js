@@ -46,8 +46,9 @@ const Accordion = ({
   }, []);
 
   return (
-    <div style={style} className={className}>
+    <div className={className}>
       <div
+        style={style}
         className={`accordion-header lessonsPgSec ${highlighted ? 'highlighted' : ''}`}
         id={`heading_${id}`}
       >

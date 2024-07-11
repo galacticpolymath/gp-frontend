@@ -344,6 +344,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
     let lessonParts = null;
     const resources = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources;
+
     if (resources?.every(resource => resource.lessons)) {
       lessonParts = []
 
@@ -359,10 +360,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
               const { links, itemCat } = itemObj;
 
               if (itemObj?.links?.length) {
-                itemObj.links = links.map(link => ({
-                  ...link,
-                  url: link.url ?? "",
-                }));
+                itemObj.links = links.filter(({ linkText, url }) => (linkText !== "Not shareable on GDrive") || url)
               }
 
               const isWebResource = itemCat === 'web resource'
