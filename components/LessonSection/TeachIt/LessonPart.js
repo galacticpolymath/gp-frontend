@@ -386,7 +386,7 @@ const LessonPart = ({
                 const imgStyle = (itemCat === 'web resource') ? { width: '220px !important', height: '124px !important' } : { objectFit: 'contain' };
 
                 return (
-                  <li key={itemTitle} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
+                  <li key={itemIndex} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
                     <div className="d-flex flex-column flex-md-row">
                       <section className='col-12 col-md-6'>
                         <strong><RichText content={itemTitle} /></strong>

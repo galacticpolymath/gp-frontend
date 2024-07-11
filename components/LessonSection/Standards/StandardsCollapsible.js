@@ -26,6 +26,7 @@ const StandardsCollapsible = ({
       initiallyExpanded
       _sectionDots={_sectionDots}
       className='text-left'
+      accordionId='standards_sec'
     >
       <div ref={ref}>
         {Badge && (

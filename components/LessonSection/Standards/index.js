@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
-import { useRef } from 'react';
 import Accordion from '../../Accordion';
 import Subject from './Subject';
 import { useArrowContainer } from '../../../customHooks/useArrowContainer';
@@ -9,7 +8,6 @@ const Standards = ({
   Data,
   GradesOrYears,
 }) => {
-  const ref = useRef();
   const areThereTargetStandards = Data?.some(({ target }) => target);
   const { _arrowContainer, handleElementVisibility } = useArrowContainer();
   const [arrowContainer, setArrowContainer] = _arrowContainer;
@@ -19,7 +17,7 @@ const Standards = ({
   };
 
   return (
-    <div ref={ref} className='container mb-4 px-0'>
+    <div className='container mb-4 px-0'>
       <Accordion
         id="standards"
         initiallyExpanded

@@ -103,7 +103,7 @@ const Overview = ({
           </div>
 
           {(SteamEpaulette && SteamEpaulette_vert) && (
-            <Link passHref href="#learning_standards">
+            <Link passHref href="#heading_standards_sec">
               <div className='position-relative'>
                 <div className="d-none d-sm-grid">
                   Subject breakdown by standard alignments:
