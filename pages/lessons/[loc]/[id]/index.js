@@ -347,12 +347,13 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
     let lessonParts = null;
     const resources = lessonToDisplayOntoUi?.Section?.['teaching-materials']?.Data?.classroom?.resources;
-
+    console.log("what is up there meng yo...")
     if (resources?.every(resource => resource.lessons)) {
       lessonParts = []
 
       for (const resource of resources) {
-        const resourceLessons = resource.lessons.map(async lesson => {
+        const resourceLessons = [];
+        for (const lesson of resource.lessons) {
           let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
 
           if (lesson?.itemList?.length) {
@@ -378,8 +379,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
                 });
                 continue;
               }
+              console.log('links?.[0]?.url: ', links?.[0]?.url);
+              const webAppPreview = (links?.[0]?.url && isWebResource) ? await getLinkPreviewObj(links[0].url) : null
 
-              const webAppPreview = (links?.[0]?.url && !isWebResource) ? await getLinkPreviewObj(links[0].url) : null
+              console.log('sup there meng: ', webAppPreview.images);
 
               if (webAppPreview?.images?.length && (typeof webAppPreview.images[0] === 'string')) {
                 itemListUpdated.push({
@@ -398,7 +401,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             }
           }
 
-          // getting the status for each lesson
           let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
 
           if (!lesson.tile && (lsnStatus?.status === "Upcoming")) {
@@ -408,11 +410,74 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             }
           }
 
-          return {
+          resourceLessons.push({
             ...lessonObjUpdated,
             status: lsnStatus?.status ?? "Proto",
-          };
-        });
+          });
+        }
+
+        // const resourceLessons = resource.lessons.map(async lesson => {
+
+        //   if (lesson?.itemList?.length) {
+        //     const itemListUpdated = []
+
+        //     for (const itemObj of lesson.itemList) {
+        //       const { links = [], itemCat } = itemObj;
+
+        //       if (itemObj?.links?.length) {
+        //         itemObj.links = links.map(link => ({
+        //           ...link,
+        //           url: link.url ?? "",
+        //         }));
+        //       }
+
+        //       const isWebResource = itemCat === 'web resource'
+        //       const googleDriveFileId = (links?.[0]?.url && !isWebResource) ? getGoogleDriveFileIdFromUrl(links[0].url) : null;
+
+        //       if (googleDriveFileId) {
+        //         itemListUpdated.push({
+        //           ...itemObj,
+        //           filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
+        //         });
+        //         continue;
+        //       }
+
+        //       const webAppPreview = (links?.[0]?.url && !isWebResource) ? await getLinkPreviewObj(links[0].url) : null
+
+        //       if (webAppPreview?.images?.length && (typeof webAppPreview.images[0] === 'string')) {
+        //         itemListUpdated.push({
+        //           ...itemObj,
+        //           filePreviewImg: webAppPreview.images[0],
+        //         });
+        //         continue;
+        //       }
+
+        //       itemListUpdated.push(itemObj);
+        //     }
+
+        //     lessonObjUpdated = {
+        //       ...lesson,
+        //       itemList: itemListUpdated,
+        //     }
+        //   }
+
+        //   // getting the status for each lesson
+        //   let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
+
+        //   if (!lesson.tile && (lsnStatus?.status === "Upcoming")) {
+        //     lessonObjUpdated = {
+        //       ...lessonObjUpdated,
+        //       tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
+        //     }
+        //   }
+
+        //   return {
+        //     ...lessonObjUpdated,
+        //     status: lsnStatus?.status ?? "Proto",
+        //   };
+        // });
+
+        console.log('yo there: ', resourceLessons);
 
         lessonParts.push(resourceLessons)
       }
