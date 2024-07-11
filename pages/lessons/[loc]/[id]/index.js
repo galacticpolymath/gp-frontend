@@ -356,7 +356,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             const itemListUpdated = []
 
             for (const itemObj of lesson.itemList) {
-              const { links = [], itemCat } = itemObj;
+              const { links, itemCat } = itemObj;
 
               if (itemObj?.links?.length) {
                 itemObj.links = links.map(link => ({
