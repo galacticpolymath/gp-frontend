@@ -119,15 +119,20 @@ const LessonDetails = ({ lesson }) => {
     sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
   }
 
-  sectionComps = sectionComps.filter(section => {
-    if (("Data" in section) && !section['Data']) {
-      return false;
-    }
+  sectionComps = useMemo(() => {
+    sectionComps = sectionComps.filter(section => {
+      if (("Data" in section) && !section['Data']) {
+        return false;
+      }
 
-    return true;
-  })
+      return true;
+    });
 
-  sectionComps = useMemo(() => addGradesOrYearsProperty(sectionComps, lesson.ForGrades, lesson.GradesOrYears), [])
+    return addGradesOrYearsProperty(sectionComps, lesson.ForGrades, lesson.GradesOrYears);
+  }, [])
+
+  console.log('sectionComps: ', sectionComps);
+
   const _dots = useMemo(() => sectionComps ? getSectionDotsDefaultVal(sectionComps) : [], [])
   const [sectionDots, setSectionDots] = useState({
     dots: _dots,
@@ -294,9 +299,10 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOntoU
   // getting the thumbnails for the google drive file handouts for each lesson
   if (lesson?.itemList?.length) {
     const itemListUpdated = lesson.itemList.map(itemObj => {
-      if (itemObj?.links?.length && itemObj.links[0]?.url && getGoogleDriveFileIdFromUrl(itemObj.links[0].url)) {
-        const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
+      console.log('itemObj.itemTitle: ', itemObj.itemTitle);
+      const googleDriveFileId = itemObj?.links[0]?.url ? getGoogleDriveFileIdFromUrl(itemObj.links[0].url) : null;
 
+      if (googleDriveFileId) {
         return {
           ...itemObj,
           filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
@@ -352,14 +358,19 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
           // getting the thumbnails for the google drive file handouts for each lesson
           if (lesson?.itemList?.length) {
             const itemListUpdated = lesson.itemList.map(itemObj => {
-              itemObj.links = itemObj.links.map(link => ({
-                ...link,
-                url: link.url ? link.url : "",
-              }));
+              const { links, itemCat } = itemObj;
+              itemObj.links = links?.length
+                ?
+                links.map(link => ({
+                  ...link,
+                  url: link.url ? link.url : "",
+                }))
+                :
+                [];
+              const isWebResource = itemCat === 'web resource'
+              const googleDriveFileId = (links?.[0]?.url && !isWebResource) ? getGoogleDriveFileIdFromUrl(links[0].url) : null;
 
-              if (itemObj?.links?.length && itemObj.links[0]?.url && getGoogleDriveFileIdFromUrl(itemObj.links[0].url)) {
-                const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
-
+              if (isWebResource && googleDriveFileId) {
                 return {
                   ...itemObj,
                   filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
@@ -488,6 +499,10 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         },
       }
     }
+
+    console.log("lessonToDisplayOntoUi?.Section?.preview?.Multimedia: ",
+      lessonToDisplayOntoUi?.Section?.preview?.Multimedia
+    )
 
     if (lessonToDisplayOntoUi?.Section?.preview?.Multimedia?.length) {
       for (const multiMedia of lessonToDisplayOntoUi.Section.preview.Multimedia) {

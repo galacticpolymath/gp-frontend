@@ -146,9 +146,15 @@ export const getIsTypeValid = (val, targetType) => {
     return typeof val === targetType;
 };
 
-export const getLinkPreviewObj = async (url) => {
+export const getLinkPreviewObj = async (url = '') => {
     try {
+        if (!url || (typeof url !== 'string')){
+            throw new Error('Either received an empty string or an incorrect data type.')
+        }
+
         const linkPreviewObj = await getLinkPreview(url);
+
+        console.log('linkPreviewObj: ', linkPreviewObj);
 
         return linkPreviewObj;
     } catch (error) {
