@@ -24,8 +24,10 @@ const StandardsCollapsible = ({
       index={index}
       SectionTitle={SectionTitle}
       initiallyExpanded
+      accordionStyleObj={{ scrollMarginTop: '125px' }}
       _sectionDots={_sectionDots}
       className='text-left'
+      accordionId='standards_sec'
     >
       <div ref={ref}>
         {Badge && (

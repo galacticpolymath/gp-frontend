@@ -35,6 +35,7 @@ const SendFeedback = ({
   txtSectionStyle = { width: "95%" },
   parentDivClassName = 'w-100 py-2 px-3 d-flex',
   txtSectionClassNameStr = 'px-sm-3 pt-4 pt-sm-2 pt-lg-0',
+  containerClassName = '',
   txt = (
     <>
         This unit is under construction. Please send your thoughts to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</Link>! And be sure to <Link style={{ wordWrap: "break-word" }} className="no-link-decoration text-decoration-underline" href={SIGN_UP_FOR_EMAIL_LINK}>sign up for emails</Link> to get notified when the final version is released.
@@ -56,6 +57,7 @@ const SendFeedback = ({
 
   return (
         <div
+            className={containerClassName}
             style={{ ...parentDivStyles, display: willHide ? "none" : "flex" }}
         >
             {CloseBtnComp && <CloseBtnComp classNameStr="d-sm-none" dynamicStyles={closeBtnDynamicStyles} handleOnClick={handleOnClick} />}

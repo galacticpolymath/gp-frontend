@@ -119,15 +119,18 @@ const LessonDetails = ({ lesson }) => {
     sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj)
   }
 
-  sectionComps = sectionComps.filter(section => {
-    if (("Data" in section) && !section['Data']) {
-      return false;
-    }
+  sectionComps = useMemo(() => {
+    sectionComps = sectionComps.filter(section => {
+      if (("Data" in section) && !section['Data']) {
+        return false;
+      }
 
-    return true;
-  })
+      return true;
+    });
 
-  sectionComps = useMemo(() => addGradesOrYearsProperty(sectionComps, lesson.ForGrades, lesson.GradesOrYears), [])
+    return addGradesOrYearsProperty(sectionComps, lesson.ForGrades, lesson.GradesOrYears);
+  }, [])
+
   const _dots = useMemo(() => sectionComps ? getSectionDotsDefaultVal(sectionComps) : [], [])
   const [sectionDots, setSectionDots] = useState({
     dots: _dots,
@@ -294,9 +297,9 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOntoU
   // getting the thumbnails for the google drive file handouts for each lesson
   if (lesson?.itemList?.length) {
     const itemListUpdated = lesson.itemList.map(itemObj => {
-      if (itemObj?.links?.length && itemObj.links[0]?.url && getGoogleDriveFileIdFromUrl(itemObj.links[0].url)) {
-        const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
+      const googleDriveFileId = itemObj?.links[0]?.url ? getGoogleDriveFileIdFromUrl(itemObj.links[0].url) : null;
 
+      if (googleDriveFileId) {
         return {
           ...itemObj,
           filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
@@ -346,28 +349,43 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       lessonParts = []
 
       for (const resource of resources) {
-        const resourceLessons = resource.lessons.map(lesson => {
+        const resourceLessons = [];
+        for (const lesson of resource.lessons) {
           let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
 
-          // getting the thumbnails for the google drive file handouts for each lesson
           if (lesson?.itemList?.length) {
-            const itemListUpdated = lesson.itemList.map(itemObj => {
-              itemObj.links = itemObj.links.map(link => ({
-                ...link,
-                url: link.url ? link.url : "",
-              }));
+            const itemListUpdated = []
 
-              if (itemObj?.links?.length && itemObj.links[0]?.url && getGoogleDriveFileIdFromUrl(itemObj.links[0].url)) {
-                const googleDriveFileId = getGoogleDriveFileIdFromUrl(itemObj.links[0].url);
+            for (const itemObj of lesson.itemList) {
+              const { links, itemCat } = itemObj;
 
-                return {
-                  ...itemObj,
-                  filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
-                }
+              if (itemObj?.links?.length) {
+                itemObj.links = links.filter(({ linkText, url }) => (linkText !== "Not shareable on GDrive") || url)
               }
 
-              return itemObj;
-            });
+              const isWebResource = itemCat === 'web resource'
+              const googleDriveFileId = (links?.[0]?.url && !isWebResource) ? getGoogleDriveFileIdFromUrl(links[0].url) : null;
+
+              if (googleDriveFileId) {
+                itemListUpdated.push({
+                  ...itemObj,
+                  filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
+                });
+                continue;
+              }
+
+              const webAppPreview = (links?.[0]?.url && isWebResource) ? await getLinkPreviewObj(links[0].url) : null
+
+              if (webAppPreview?.images?.length && (typeof webAppPreview.images[0] === 'string')) {
+                itemListUpdated.push({
+                  ...itemObj,
+                  filePreviewImg: webAppPreview.images[0],
+                });
+                continue;
+              }
+
+              itemListUpdated.push(itemObj);
+            }
 
             lessonObjUpdated = {
               ...lesson,
@@ -375,7 +393,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             }
           }
 
-          // getting the status for each lesson
           let lsnStatus = (Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) && lessonToDisplayOntoUi?.LsnStatuses?.length) ? lessonToDisplayOntoUi.LsnStatuses.find(lsnStatus => lsnStatus?.lsn == lesson.lsn) : null;
 
           if (!lesson.tile && (lsnStatus?.status === "Upcoming")) {
@@ -385,11 +402,11 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             }
           }
 
-          return {
+          resourceLessons.push({
             ...lessonObjUpdated,
             status: lsnStatus?.status ?? "Proto",
-          };
-        });
+          });
+        }
 
         lessonParts.push(resourceLessons)
       }

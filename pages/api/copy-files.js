@@ -172,7 +172,6 @@ const searchUserGoogleDrive = async (accessToken, searchQuery) => {
             }
         )
 
-        console.log('response.data: ', response.data)
 
         return [...(response?.data?.files ?? [])]
     } catch (error) {
@@ -557,11 +556,6 @@ export default async function handler(request, response) {
         const failedCopiedFiles = copiedFilesResult.filter(copiedFileResult => copiedFileResult.status === 'rejected')
 
         if (failedCopiedFiles.length) {
-            failedCopiedFiles.forEach(file => {
-                console.log('file: ', file.reason)
-                console.log('file.value.data: ', file.response);
-            })
-
             return response.status(500).json({
                 wasCopySuccessful: false,
                 msg: 'At least one file failed to be shared.',

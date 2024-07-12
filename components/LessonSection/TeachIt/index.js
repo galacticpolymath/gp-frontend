@@ -357,6 +357,7 @@ const TeachIt = ({
                     CloseBtnComp={null}
                     txtSectionStyle={{ width: '100%' }}
                     txtSectionClassNameStr="px-sm-3 pt-1 pt-sm-0"
+                    containerClassName='mt-3'
                   />
                 )
                   :

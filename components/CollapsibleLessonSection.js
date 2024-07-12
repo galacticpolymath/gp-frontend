@@ -24,6 +24,7 @@ const CollapsibleLessonSection = ({
   isAvailLocsMoreThan1,
   highlighted = false,
   scrollToTranslateVal = 'translateY(-90px)',
+  accordionStyleObj = {},
 }) => {
   const ref = useRef();
   const router = useRouter();
@@ -77,6 +78,7 @@ const CollapsibleLessonSection = ({
       dataBsToggle={{}}
       ariaExpanded={isAccordionContentOpen}
       handleOnClick={handleAccordionBtnClick}
+      style={accordionStyleObj}
       button={(
         <div
           className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} container position-relative text-black d-flex justify-content-between align-items-center py-1`}

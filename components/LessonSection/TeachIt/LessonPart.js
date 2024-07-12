@@ -381,11 +381,12 @@ const LessonPart = ({
             </div>
             <ol className='mt-2 materials-list'>
               {!!_itemList?.length && _itemList.map((item, itemIndex) => {
-                const { itemTitle, itemDescription, links, filePreviewImg } = item;
+                const { itemTitle, itemDescription, links, filePreviewImg, itemCat } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
+                const imgStyle = (itemCat === 'web resource') ? { width: '220px !important', height: '124px !important' } : { objectFit: 'contain' };
 
                 return (
-                  <li key={itemTitle} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
+                  <li key={itemIndex} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
                     <div className="d-flex flex-column flex-md-row">
                       <section className='col-12 col-md-6'>
                         <strong><RichText content={itemTitle} /></strong>
@@ -427,7 +428,7 @@ const LessonPart = ({
                               src={filePreviewImg}
                               alt="lesson_tile"
                               className='h-auto w-auto'
-                              style={{ objectFit: 'contain' }}
+                              style={imgStyle}
                             />
                           </div>
                         </section>
