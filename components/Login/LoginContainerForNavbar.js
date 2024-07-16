@@ -36,8 +36,6 @@ const LoginModal = ({
     className = 'position-absolute login-ui-modal rounded pt-2 box-shadow-login-ui-modal',
     styleObj = {},
 }) => {
-
-    // GOAL: present the login modal in bootstrap modal
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const { sendUserInputToServer, userErrorType } = useLogin();
 
@@ -163,7 +161,6 @@ const LoginContainerForNavbar = ({ className = "position-relative" }) => {
                     LOGIN
                 </span>
             </Button>
-            <LoginModal />
         </div>
     );
 };

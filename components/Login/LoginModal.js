@@ -32,7 +32,7 @@ const LoginModal = () => {
             show={isLoginModalDisplayed}
             onHide={handleOnHide}
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
-            contentClassName='selected-gp-web-app-content'
+            contentClassName='login-ui-modal rounded pt-2 box-shadow-login-ui-modal'
         >
             <div className="">
                 <div className="d-flex justify-content-center align-items-center">
