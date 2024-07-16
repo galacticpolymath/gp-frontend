@@ -4,6 +4,7 @@ import { useState } from "react";
 /* eslint-disable indent */
 export const useLogin = () => {
     const [userErrorType, setUserErrorType] = useState('');
+    const [loginForm, setLoginForm] = useState({ email: '', password: '' });
 
     const sendUserInputToServer = (userInput = { email: '', password: '' }) => {
         if (!userInput.email || !userInput.password) {
@@ -15,5 +16,9 @@ export const useLogin = () => {
 
     };
 
-    return { sendUserInputToServer, userErrorType };
+    return { 
+        sendUserInputToServer, 
+        userErrorType, 
+        _loginForm: [loginForm, setLoginForm] 
+    };
 };

@@ -18,10 +18,20 @@ import SelectedJob from "./components/Modals/SelectedJob";
 import DownloadTipModal from "./components/LessonSection/Modals/DownloadTipModal";
 
 const ModalContainers = () => {
-
     const { _selectedJob, _isDownloadModalInfoOn } = useContext(ModalContext);
     const [selectedJob,] = _selectedJob;
     const [isDownloadModalInfoOn] = _isDownloadModalInfoOn;
+
+    // NOTES: 
+    // create the login modal, get the ui from the LoginContainerForNavbar and put it into the modal
+
+    // GOAL: display the login modal when the user presses the login button 
+    // the login modal is displayed 
+    // if willDisplayLoginModal is true, then render the modal
+    // within the login modal component, get _willDipslayLoginModal
+    // transfer the state to the login modal component
+    // create the state in the ModalProvider component
+    // create a state that will determine to show the login modal, call willDisplayLoginModal
 
     return (
         <>
