@@ -6,12 +6,14 @@
 import { useContext } from "react";
 import Button from "../General/Button";
 import { ModalContext } from "../../providers/ModalProvider";
+import { signIn } from "next-auth/react";
 
 const LoginContainerForNavbar = ({ className = "position-relative" }) => {
     const { _isLoginModalDisplayed } = useContext(ModalContext);
     const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
 
     const handleOnClick = () => {
+        // signIn("google", { email: "gtorion97work@gmail.com" })
         setIsLoginModalDisplayed(true);
     };
 

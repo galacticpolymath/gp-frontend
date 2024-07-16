@@ -8,20 +8,16 @@ import { connectToMongodb, getDbClientConnectionPromise } from '../utils/connect
 import { signJwt } from '../utils/auth';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 
+ 
 /** @type {import('next-auth').AuthOptions} */
 export const authOptions = {
-  adapter: MongoDBAdapter(getDbClientConnectionPromise()),
+  // adapter: MongoDBAdapter(getDbClientConnectionPromise()),
   providers: [
-    EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
-    }),
     GoogleProvider({
       clientId: process.env.AUTH_CLIENT_ID,
       clientSecret: process.env.AUTH_CLIENT_SECRET,
     }),
   ],
-
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',

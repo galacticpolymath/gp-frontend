@@ -17,7 +17,7 @@ const AuthResultPg = () => {
   if (!wasRendered) {
     return (
       <Layout>
-        <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container">
+        <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container pt-4">
           <h1>Loading, please wait...</h1>
         </div>
       </Layout>
@@ -27,7 +27,7 @@ const AuthResultPg = () => {
   if (!session && wasRendered) {
     return (
       <Layout>
-        <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container">
+        <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container pt-4">
           <h1>This page is for the authentication result with google.</h1>
         </div>
       </Layout>
@@ -37,7 +37,7 @@ const AuthResultPg = () => {
   if (!session?.data?.token && wasRendered) {
     return (
       <Layout>
-        <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container">
+        <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container pt-4">
           <h1>Failed to generate token. You may have been authenticated already. Please try again.</h1>
         </div>
       </Layout>
@@ -46,7 +46,7 @@ const AuthResultPg = () => {
 
   return (
     <Layout>
-      <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container">
+      <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container pt-4">
         <p
           style={{
             maxWidth: '475px',

@@ -12,6 +12,7 @@ import CustomLink from "../CustomLink";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import Button from "../General/Button";
+import { signIn } from "next-auth/react";
 
 const LoginModal = () => {
     const { _isLoginModalDisplayed } = useContext(ModalContext);
@@ -24,7 +25,7 @@ const LoginModal = () => {
     };
 
     const handleLoginBtnClick = () => {
-
+        signIn("google", { email: "gtorion97work@gmail.com" })
     };
 
     return (
