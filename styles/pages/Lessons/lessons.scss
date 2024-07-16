@@ -92,6 +92,26 @@ $toolTipColor: #f0f4ff;
   animation: beat 1.5s infinite;
 }
 
+.login-container{
+  @media (min-width: 992px) {
+    transform: translateX(20%);       
+  }
+}
+
+.login-ui-modal{
+  background-color: #333438;
+  box-shadow: 2px 2px 2px 1px #333438;
+  width: 35vw;
+  right: 20%
+  // background-color: #212529;
+}
+
+.box-shadow-login-ui-modal{
+}
+
+.login-ui{
+}
+
 .standards-txt-container{
   max-width: 90%;
 

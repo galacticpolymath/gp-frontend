@@ -73,6 +73,7 @@ export default function Navbar() {
                   </li>
                 ))}
               </ul>
+              <LoginContainerForNavbar className='login-container' />
               {/* create a component for the login: */}
               {/* -modal */}
               {/* -and button */}
@@ -80,7 +81,6 @@ export default function Navbar() {
             </div>
           </div>
         </div>
-        <LoginContainerForNavbar />
       </div>
     </nav>
   );
