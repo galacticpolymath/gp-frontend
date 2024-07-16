@@ -24,7 +24,8 @@ const getGpUnitData = async (typeStr, pageNum, urlStr) => {
 };
 
 export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal, gpDataTypeStr, totalGpDataItems) => {
-    const [btnTxt, setBtnTxt] = useState(`Show More (${totalGpDataItems - dataDefaultVal?.length})`);
+    const itemsToShowStartingNum = Number.isInteger(totalGpDataItems) ? totalGpDataItems - dataDefaultVal?.length : 0; 
+    const [btnTxt, setBtnTxt] = useState(`Show More (${itemsToShowStartingNum})`);
     const [gpDataObj, setGpDataObj] = useState({
         data: dataDefaultVal,
         isLast: isLast,
@@ -76,7 +77,7 @@ export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal,
     };
 
     useEffect(() => {
-        if (gpDataObj.data.some(vid => vid.willScrollIntoView)) {
+        if (gpDataObj?.data?.length && gpDataObj.data.some(vid => vid.willScrollIntoView)) {
             setTimeout(() => {
                 setGpDataObj(state => ({
                     ...state,

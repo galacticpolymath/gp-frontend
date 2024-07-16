@@ -1,13 +1,21 @@
 /* eslint-disable no-console */
 import GoogleProvider from 'next-auth/providers/google';
+import EmailProvider from 'next-auth/providers/email';
 import getCanUserWriteToDb from '../services/dbAuthService';
 import { jwtVerify } from 'jose';
 import JwtModel from '../models/Jwt';
-import { connectToMongodb } from '../utils/connection';
+import { connectToMongodb, getDbClientConnectionPromise } from '../utils/connection';
 import { signJwt } from '../utils/auth';
+import { MongoDBAdapter } from '@auth/mongodb-adapter';
 
+/** @type {import('next-auth').AuthOptions} */
 export const authOptions = {
+  adapter: MongoDBAdapter(getDbClientConnectionPromise()),
   providers: [
+    EmailProvider({
+      server: process.env.EMAIL_SERVER,
+      from: process.env.EMAIL_FROM,
+    }),
     GoogleProvider({
       clientId: process.env.AUTH_CLIENT_ID,
       clientSecret: process.env.AUTH_CLIENT_SECRET,
@@ -29,7 +37,7 @@ export const authOptions = {
         const refreshToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, '1 day');
         const accessToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, '12hr');
 
-        if (!token?.payload) {
+        if (!token?.payload && canUserWriteToDb) {
           await connectToMongodb();
           const jwt = new JwtModel({ _id: email, access: accessToken, refresh: refreshToken });
 
