@@ -25,7 +25,7 @@ const LoginModal = () => {
     };
 
     const handleLoginBtnClick = () => {
-        signIn("google", { email: "gtorion97work@gmail.com" })
+        signIn("google");
     };
 
     return (

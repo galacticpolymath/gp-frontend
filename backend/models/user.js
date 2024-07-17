@@ -9,10 +9,11 @@ if (!models.users) {
     db: String,
   });
   User = new Schema({
-    // the _id will be the user's email address
-    _id: String,
+    _id: { type: String, required: true },
+    email: { type: String, required: true}, 
     password: String,
-    roles: [RoleSchema],
+    emailVerified: Date,
+    roles: { type: [String], required: true },
   }, { _id: false });
   User = model('users', User);
 }

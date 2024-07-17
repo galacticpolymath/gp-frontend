@@ -1,11 +1,9 @@
 /* eslint-disable no-console */
-import { MongoClient } from 'mongodb';
 import mongoose from 'mongoose';
 
 let isConnectedToDb = false;
-let isMongoDbClientConnectedToDb = false;
 
-const createConnectionUri = () => {
+export const createConnectionUri = () => {
   const { MONGODB_PASSWORD, MONGODB_USER, MONGODB_DB_NAME, MONGODB_DB_PROD } = process.env;
   let dbName = MONGODB_DB_NAME;
 
@@ -16,21 +14,6 @@ const createConnectionUri = () => {
   const connectionUri = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster0.tynope2.mongodb.net/${dbName}`;
 
   return connectionUri;
-};
-
-export const getDbClientConnectionPromise = () => {
-  if(isMongoDbClientConnectedToDb){
-    console.log('MongoClient is already connected.')
-    return;
-  }
-
-  const connectionUri = createConnectionUri();
-  const client = new MongoClient(connectionUri);
-  isMongoDbClientConnectedToDb = true;
-
-  console.log('will connect from MongoClient...')
-
-  return client.connect();
 };
 
 export const connectToMongodb = async () => {
