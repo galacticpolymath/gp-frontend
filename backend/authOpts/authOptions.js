@@ -1,56 +1,88 @@
 /* eslint-disable no-console */
 import GoogleProvider from 'next-auth/providers/google';
+import EmailProvider from 'next-auth/providers/email';
 import getCanUserWriteToDb from '../services/dbAuthService';
 import { jwtVerify } from 'jose';
 import JwtModel from '../models/Jwt';
-import { connectToMongodb, createConnectionUri } from '../utils/connection';
+import { connectToMongodb } from '../utils/connection';
 import { signJwt } from '../utils/auth';
-import { MongoDBAdapter } from '@auth/mongodb-adapter';
-import { MongoClient } from 'mongodb';
 
-let isMongoDbClientConnectedToDb = false;
+// GOAL: 
 
-const getDbClientConnectionPromise = () => {
-  console.log('isMongoDbClientConnectedToDb: ', isMongoDbClientConnectedToDb);
-  if (isMongoDbClientConnectedToDb) {
-    console.log('MongoClient is already connected.');
-    return;
-  }
-
-  const connectionUri = createConnectionUri();
-  const client = new MongoClient(connectionUri);
-  isMongoDbClientConnectedToDb = true;
-
-  console.log('will connect from MongoClient...');
-
-  return client.connect();
-};
-
-let adapter = MongoDBAdapter(getDbClientConnectionPromise());
-adapter = {
-  ...adapter,
-  async createUser(user) {
-    console.log('new user created: ', user);
-
-    if (user.email) {
+/** @return { import("next-auth/adapters").Adapter } */
+export default function MyAdapter(client, options = {}) {
+  return {
+    async createUser(user) {
+      console.log('createUser, user: ', user);
+      return user;
+    },
+    async getUser(id) {
+      return;
+    },
+    async getUserByEmail(email) {
+      console.log('getUserByEmail, param: ', email);
       return {
-        email: user.email,
-        name: user.name,
-        image: user.image,
+        name: 'Gabriel Torion',
+        email: 'gtorion97@gmail.com',
+        image: 'https://lh3.googleusercontent.com/a/ACg8ocLQWnyB3uuTWGK1pSvbLbViEXx0_vz_g1OoQf0_yjVwWuKCrw=s96-c',
+        emailVerified: null,
       };
-    }
+    },
+    async getUserByAccount(params) {
+      console.log('getUserByAccount: ', params);
 
-    return undefined;
-  },
-};
+      return {
+        name: 'Gabriel Torion',
+        email: 'gtorion97@gmail.com',
+        image: 'https://lh3.googleusercontent.com/a/ACg8ocLQWnyB3uuTWGK1pSvbLbViEXx0_vz_g1OoQf0_yjVwWuKCrw=s96-c',
+        emailVerified: null,
+      };
+    },
+    async updateUser(user) {
+      return;
+    },
+    async deleteUser(userId) {
+      return;
+    },
+    async linkAccount(account) {
+      return;
+    },
+    async unlinkAccount({ providerAccountId, provider }) {
+      console.log('unlinkAccount, params: ', { providerAccountId, provider });
+      return;
+    },
+    async createSession({ sessionToken, userId, expires }) {
+      return;
+    },
+    async getSessionAndUser(sessionToken) {
+      return;
+    },
+    async updateSession({ sessionToken }) {
+      return;
+    },
+    async deleteSession(sessionToken) {
+      return;
+    },
+    async createVerificationToken({ identifier, expires, token }) {
+      return;
+    },
+    async useVerificationToken({ identifier, token }) {
+      return;
+    },
+  };
+}
 
 /** @type {import('next-auth').AuthOptions} */
 export const authOptions = {
-  adapter: adapter,
+  adapter: MyAdapter(),
   providers: [
     GoogleProvider({
       clientId: process.env.AUTH_CLIENT_ID,
       clientSecret: process.env.AUTH_CLIENT_SECRET,
+    }),
+    EmailProvider({
+      server: process.env.EMAIL_SERVER,
+      from: process.env.EMAIL_FROM,
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
@@ -87,10 +119,15 @@ export const authOptions = {
     },
   },
   callbacks: {
+    async signIn(params) {
+      console.log('params, signin: ', params);
+
+      return true;
+    },
     async jwt({ token, user }) {
       const isUserSignedIn = !!user;
 
-      if (isUserSignedIn) {
+      if (isUserSignedIn && token?.id && user?.id) {
         token.id = user.id.toString();
       }
 
@@ -112,10 +149,10 @@ export const authOptions = {
 
       return Promise.resolve(session);
     },
-    async redirect({ url }) {
-      const urlObj = new URL(url);
+    async redirect({ baseUrl }) {
+      // const urlObj = new URL(url);
 
-      return Promise.resolve(`${urlObj.origin}/auth-result`);
+      return Promise.resolve(`${baseUrl}/auth-result`);
     },
   },
 };
