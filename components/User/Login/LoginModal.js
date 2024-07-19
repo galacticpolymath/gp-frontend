@@ -5,18 +5,19 @@
 /* eslint-disable quotes */
 import { useContext } from "react";
 import { Modal } from "react-bootstrap";
-import { ModalContext } from "../../providers/ModalProvider";
-import { useLogin } from "../../customHooks/useLogin";
-import GoogleSignIn from "./GoogleSignIn";
-import CustomLink from "../CustomLink";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
-import Button from "../General/Button";
 import { signIn } from "next-auth/react";
+import { ModalContext } from "../../../providers/ModalProvider";
+import { useLogin } from "../../../customHooks/useLogin";
+import Button from "../../General/Button";
+import CustomLink from "../../CustomLink";
+import GoogleSignIn from "../GoogleSignIn";
 
 const LoginModal = () => {
-    const { _isLoginModalDisplayed } = useContext(ModalContext);
+    const { _isLoginModalDisplayed, _isCreateAccountModalDisplayed } = useContext(ModalContext);
     const [isLoginModalDisplayed, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
+    const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     const { _loginForm } = useLogin();
     const [loginForm, setLoginForm] = _loginForm;
 
@@ -26,6 +27,13 @@ const LoginModal = () => {
 
     const handleLoginBtnClick = () => {
         signIn("google");
+    };
+
+    const handleCreateOneBtnClick = () => {
+        setIsLoginModalDisplayed(false);
+        setTimeout(() => {
+            setIsCreateAccountModalDisplayed(true);
+        }, 300);
     };
 
     return (
@@ -125,12 +133,23 @@ const LoginModal = () => {
                     <span className='text-white'>
                         Don{"'"}t have an account?
                     </span>
-                    <CustomLink
+                    <Button
                         color="#3C719F"
-                        className="ms-1 underline-on-hover no-link-decoration"
+                        defaultStyleObj={{
+                            background: "none",
+                            color: "inherit",
+                            border: "none",
+                            font: "inherit",
+                            cursor: "pointer",
+                            outline: "inherit",
+                        }}
+                        className="d-block no-link-decoration"
+                        handleOnClick={handleCreateOneBtnClick}
                     >
-                        Create one.
-                    </CustomLink>
+                        <span className='text-primary underline-on-hover'>
+                            Create one.
+                        </span>
+                    </Button>
                 </div>
             </div>
         </Modal>

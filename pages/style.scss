@@ -205,6 +205,10 @@ ol li {
   outline: inherit;
 }
 
+.underline-on-hover-all:hover *{
+    text-decoration: underline;
+}
+
 .no-outline{
   outline: none;
 }

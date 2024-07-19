@@ -1,13 +1,19 @@
 /* eslint-disable no-console */
 import GoogleProvider from 'next-auth/providers/google';
-import EmailProvider from 'next-auth/providers/email';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import getCanUserWriteToDb from '../services/dbAuthService';
 import { jwtVerify } from 'jose';
 import JwtModel from '../models/Jwt';
 import { connectToMongodb } from '../utils/connection';
 import { signJwt } from '../utils/auth';
 
-// GOAL: 
+// GOAL: create a form that will login the user
+
+// use the credentials
+// email
+// password 
+
+// create a dummy form
 
 /** @return { import("next-auth/adapters").Adapter } */
 export default function MyAdapter(client, options = {}) {
@@ -80,9 +86,31 @@ export const authOptions = {
       clientId: process.env.AUTH_CLIENT_ID,
       clientSecret: process.env.AUTH_CLIENT_SECRET,
     }),
-    EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
+    CredentialsProvider({
+      name: 'Create An Account With Your Email',
+      credentials: {
+        username: { label: 'Email', type: 'text', placeholder: 'Enter email' },
+        password: { label: 'Password', type: 'text', placeholder: 'Enter password' },
+      },
+      async authorize(credentials, req) {
+        console.log('authorize fn, req: ', req);
+        console.log('authorize fn, credentials: ', credentials);
+
+        // get the login type
+        // get the ip address as well  
+
+        const user = { id: '1', name: 'J Smith', email: 'jsmith@example.com' };
+
+        if (user) {
+          // Any object returned will be saved in `user` property of the JWT
+          return user;
+        } else {
+          // If you return null then an error will be displayed advising the user to check their details.
+          return null;
+
+          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+        }
+      },
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,

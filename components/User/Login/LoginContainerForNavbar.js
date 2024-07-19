@@ -4,9 +4,9 @@
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 import { useContext } from "react";
-import Button from "../General/Button";
-import { ModalContext } from "../../providers/ModalProvider";
 import { signIn } from "next-auth/react";
+import { ModalContext } from "../../../providers/ModalProvider";
+import Button from "../../General/Button";
 
 const LoginContainerForNavbar = ({ className = "position-relative" }) => {
     const { _isLoginModalDisplayed } = useContext(ModalContext);

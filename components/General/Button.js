@@ -7,6 +7,7 @@ const Button = ({
   backgroundColor = 'transparent',
   handleOnClick = () => { },
   ariaLabelStr = 'button',
+  btnType = 'button',
 }) => {
   const _style = { ...defaultStyleObj, backgroundColor: backgroundColor };
 
@@ -16,6 +17,7 @@ const Button = ({
 
   return (
     <button
+      type={btnType}
       disabled={isDisabled}
       className={classNameStr}
       style={_style}
