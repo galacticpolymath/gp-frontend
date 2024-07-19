@@ -6,14 +6,9 @@ import { jwtVerify } from 'jose';
 import JwtModel from '../models/Jwt';
 import { connectToMongodb } from '../utils/connection';
 import { signJwt } from '../utils/auth';
+import { hashPassword } from '../utils/security';
 
-// GOAL: create a form that will login the user
-
-// use the credentials
-// email
-// password 
-
-// create a dummy form
+const VALID_FORMS = ['createAccount', 'signIn'];
 
 /** @return { import("next-auth/adapters").Adapter } */
 export default function MyAdapter(client, options = {}) {
@@ -93,22 +88,43 @@ export const authOptions = {
         password: { label: 'Password', type: 'text', placeholder: 'Enter password' },
       },
       async authorize(credentials, req) {
-        console.log('authorize fn, req: ', req);
-        console.log('authorize fn, credentials: ', credentials);
+        try {
+          console.log('credentials: ', credentials);
+          console.log('request has been sent: ', req);
 
-        // get the login type
-        // get the ip address as well  
+          if (
+            !credentials.formType ||
+            !credentials.email ||
+            !credentials.password || 
+            !VALID_FORMS.includes(credentials.formType)
+          ) {
+            throw new Error('Either the "formType", "email", or the "password" field are not present in the request. If the "formType" field is present, then its value may be invalid.');
+          }
 
-        const user = { id: '1', name: 'J Smith', email: 'jsmith@example.com' };
+          const { email, password, formType } = credentials;
+          const passwordHashed = hashPassword(password);
 
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
+          console.log('passwordHashed: ', passwordHashed);
+          // GOAL: create a hashed password for the user 
+          // -hash the password
+          // -hash the uuid
+          // -create a salt that will be added to the password, use the uuid for the plain text  
 
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+          // CASE: the user is creating a account, the user does exist in the database
+          // -throw an error 
+
+          // CASE: the user does not exist in the database 
+          // -hash the password received from the client, add a salt, and store it on the database 
+
+
+          // check if the email exist in the database
+          // get the email if so
+          // get the password 
+          // hash the password received from the client
+          // compare the two from the database
+
+        } catch (error) {
+          console.error('Failed to authorize user. Reason: ', error);
         }
       },
     }),
