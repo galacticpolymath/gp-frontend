@@ -17,6 +17,21 @@ export const getUsers = async (queryObj = {}, projectionObj = {}) => {
 
 };
 
+export const getUser = async (queryObj = {}, projectionObj = {}) => {
+    try {
+        /** @typedef {import('../models/user.js').UserSchema} UserSchema */
+        /** @type {UserSchema} */
+        const user = await User.findOne(queryObj, projectionObj).lean();
+
+        return user;
+    } catch (error) {
+        console.error('An error has occurred in getting the target users: ', error);
+
+        return null;
+    }
+
+};
+
 export const getUserByEmail = async (email = '') => {
     try {
         /** @typedef {import('../models/user.js').UserSchema} UserSchema */
@@ -31,22 +46,50 @@ export const getUserByEmail = async (email = '') => {
     }
 };
 
+export const updateUser = async (filterQuery = {}, updatedProperties = {}) => {
+    try {
+        await User.updateOne(filterQuery, updatedProperties);
+        
+        return { wasSuccessful: true };
+    } catch (error) {
+        console.error('The target user failed to be updated. Reason: ', error);
+
+        return { wasSuccessful: false };
+    }
+
+};
+export const deleteUser = async (filterQuery = {}) => {
+    try {
+        await User.deleteOne(filterQuery);
+
+        return { wasSuccessful: true };
+    } catch (error) {
+        console.error('The target user failed to be updated. Reason: ', error);
+
+        return { wasSuccessful: false };
+    }
+};
+
 /**
  * Creates a database user.
  * @param {string} email
  * @param {string | null} password
+ * @param {string} providerAccountId
  * @param {"google" | "credentials"} provider
  * @param {string[]} roles "dbAdmin" | "user"
+ * @param {{ first: string, last: string }} [name]
  * @return { Promise<{ wasSuccessful: boolean, msg?: string }> }
  * */
-export const createUser = async (email, password, provider, roles) => {
+export const createUser = async (email, password, provider, roles, providerAccountId, name) => {
     try {
         const userDocument = createDocument({
             _id: uuidv4(),
+            providerAccountId,
             email: email,
             password: password,
             provider: provider,
             roles: roles,
+            name: name,
         }, User);
 
         await userDocument.save();

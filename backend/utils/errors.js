@@ -5,9 +5,10 @@ class CustomError {
   }
 }
 class AuthError{
-  constructor(errType = 'failedAuthorizeUser', code = 500){
+  constructor(errType = 'failedAuthorizeUser', code = 500, redirectUrl = ''){
     this.errType = errType;
     this.code = code;
+    this.redirectUrl = redirectUrl;
   }
 }
 class SignInError{

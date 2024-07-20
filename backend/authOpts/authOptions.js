@@ -12,7 +12,7 @@ import User from '../models/user';
 import { createDocument } from '../db/utils';
 import { AuthError, SignInError } from '../utils/errors';
 import { v4 as uuidv4 } from 'uuid';
-import { createUser, getUserByEmail } from '../services/userServices';
+import { createUser, deleteUser, getUser, getUserByEmail, updateUser } from '../services/userServices';
 
 const VALID_FORMS = ['createAccount', 'login'];
 
@@ -27,28 +27,45 @@ export default function MyAdapter() {
       return user;
     },
     async getUser(id) {
-      console.log(id);
+      console.log('id, getUser: ', id);
+
       return;
     },
     async getUserByEmail(email) {
-      console.log('getUserByEmail, param: ', email);
-      return {
-        name: 'Gabriel Torion',
-        email: 'gtorion97@gmail.com',
-        image: 'https://lh3.googleusercontent.com/a/ACg8ocLQWnyB3uuTWGK1pSvbLbViEXx0_vz_g1OoQf0_yjVwWuKCrw=s96-c',
-        emailVerified: null,
-      };
-    },
-    async getUserByAccount(params) {
-      console.log('getUserByAccount: ', params);
+      console.log('getting user by email: ', email);
+      const user = await getUserByEmail(email);
 
-      return params;
-      // return {
-      //   name: 'Gabriel Torion',
-      //   email: 'gtorion97@gmail.com',
-      //   image: 'https://lh3.googleusercontent.com/a/ACg8ocLQWnyB3uuTWGK1pSvbLbViEXx0_vz_g1OoQf0_yjVwWuKCrw=s96-c',
-      //   emailVerified: null,
-      // };
+      if(!user){
+        return null;
+      }
+
+      return user;
+    },
+    async getUserByAccount({ provider, providerAccountId }) {
+      try {
+        await connectToMongodb();
+
+        const user = await getUser({ providerAccountId: providerAccountId });
+        let wasUserCreated = false;
+
+        if (!user) {
+          const { wasSuccessful } = await createUser('PLACEHOLDER', null, provider, ['user'], providerAccountId);
+
+          console.log('"wasSuccessful" in creating the db user with a google account: ', wasSuccessful);
+
+          if (!wasSuccessful) {
+            throw new Error('Failed to create the document for the target user in the db.');
+          }
+
+          wasUserCreated = true;
+        }
+
+        return { providerAccountId, provider, wasUserCreated };
+      } catch (error) {
+        console.error('Failed to create the user doc into the database. Reason: ', error);
+
+        return null;
+      }
     },
     async updateUser(user) {
       console.log(user);
@@ -83,7 +100,7 @@ export default function MyAdapter() {
       return;
     },
     async createVerificationToken(params) {
-      console.log(params);
+      console.log('createVerificationToken: ', params);
       return;
     },
     async useVerificationToken(params) {
@@ -120,25 +137,28 @@ export const authOptions = {
 
           if (!dbUser && (formType === 'login')) {
             console.log('The user was not found.');
-            throw new AuthError('userNotFound', 404);
+            throw new AuthError('userNotFound', 404, credentials.callbackUrl ?? '');
           }
 
           // if no password, that means the user has a 'google' for the providers 
           // user must sign in with google to log in.
           if (dbUser && !dbUser?.password && (formType === 'login')) {
             console.log('The user does not have "credentials" for their provider.');
-            throw new AuthError('dbUserDoesNotHaveCredentialsProvider', 401);
+
+            throw new AuthError('dbUserDoesNotHaveCredentialsProvider', 401, credentials.callbackUrl ?? '');
           }
 
           const { iterations, salt, hash: hashedPasswordFromDb } = dbUser.password;
 
           if ((formType === 'login') && !getIsPasswordCorrect({ iterations, salt, password: password }, hashedPasswordFromDb)) {
             console.log('Invalid creds.');
-            throw new AuthError('invalidCredentials', 404);
+
+            throw new AuthError('invalidCredentials', 404, credentials.callbackUrl ?? '');
           }
 
           if ((formType === 'login') && getIsPasswordCorrect({ iterations, salt, password: password }, hashedPasswordFromDb)) {
             console.log('Password is correct, will log the user in.');
+
             return dbUser;
           }
 
@@ -154,7 +174,7 @@ export const authOptions = {
           const newUser = createDocument(userDocumentToCreate, User);
 
           if (!newUser) {
-            throw new AuthError('userCreationFailure', 500);
+            throw new AuthError('userCreationFailure', 500, credentials.callbackUrl ?? '');
           }
 
           await newUser.save();
@@ -162,13 +182,13 @@ export const authOptions = {
           return userDocumentToCreate;
         } catch (error) {
           console.log('error object: ', error);
-          const { errType, code } = error ?? {};
+          const { errType, code, redirectUrl } = error ?? {};
 
           if (!errType || !code) {
             return { errType: 'userAuthFailure', code: 500 };
           }
 
-          return { errType, code };
+          return { errType, code, redirectUrl };
         }
       },
     }),
@@ -209,9 +229,11 @@ export const authOptions = {
   callbacks: {
     async signIn(param) {
       console.log('signin, param: ', param);
+
       try {
-        const { user, account } = param;
-        const { errType, code, email } = user ?? {};
+        const { user, account, profile } = param;
+        const { errType, code, email, providerAccountId, wasUserCreated } = user ?? {};
+        const userEmail = profile?.email ?? email;
 
         if (errType === 'dbUserDoesNotHaveCredentialsProvider') {
           throw new SignInError(
@@ -223,24 +245,24 @@ export const authOptions = {
 
         await connectToMongodb();
 
-        const dbUser = email ? await getUserByEmail(email) : null;
-
-        // the user creates an account with google
-        if (!dbUser && (account.provider === 'google')) {
-          const { wasSuccessful } = await createUser(user.email, null, 'google', ['user']);
-
-          console.log('"wasSuccessful" in creating the db user with a google account: ', wasSuccessful);
+        // Finish creating the target user account in the db.
+        if (wasUserCreated && (account.provider === 'google')) {
+          const { wasSuccessful } = await updateUser({ providerAccountId: providerAccountId }, { email: userEmail });
 
           if (!wasSuccessful) {
+            await deleteUser({ providerAccountId: providerAccountId });
+            
             throw new SignInError(
               'user-account-creation-with-google-err',
               'Failed to create the user who signed in with google.',
               500
             );
           }
-
+          
           return '/account/?show-about-me-form=true';
         }
+
+        const dbUser = (userEmail && !wasUserCreated) ? await getUserByEmail(userEmail) : null;
 
         if ((dbUser && account) &&
           ('provider' in account) &&
@@ -269,7 +291,7 @@ export const authOptions = {
 
         console.error('Error message: ', msg ?? 'received none.');
 
-        return `/?signin-err-type=${type ?? 'sign-in-error'}`;
+        return param?.user?.redirectUrl ? `${param.user.redirectUrl}/?signin-err-type=${type ?? 'sign-in-error'}` : `/?signin-err-type=${type ?? 'sign-in-error'}`; 
       }
     },
     async jwt({ token, user }) {
@@ -282,7 +304,6 @@ export const authOptions = {
       return Promise.resolve(token);
     },
     async session({ session, token }) {
-      console.log('token.payload, what is up: ', token.payload);
       const { email, roles, name, pic } = token.payload;
       const accessToken = await signJwt({ email: email, roles: roles, name: name, pic }, process.env.NEXTAUTH_SECRET, '12hours');
       const refreshToken = await signJwt({ email: email, roles: roles, name: name, pic }, process.env.NEXTAUTH_SECRET, '1 day');
@@ -298,16 +319,15 @@ export const authOptions = {
       return Promise.resolve(session);
     },
     async redirect(param) {
-      console.log('param, hey there: ', param);
-
+      console.log('redirect, param: ', param);
       const { baseUrl, url } = param;
 
-      if(url.includes('account')){
+      if (url.includes('account')) {
         console.log('yo there!');
         return url;
       }
 
-      return `${baseUrl}/auth-result`;
+      return url;
     },
   },
 };

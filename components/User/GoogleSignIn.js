@@ -10,12 +10,11 @@ import { signIn } from "next-auth/react";
 const GoogleSignIn = ({ callbackUrl = '' }) => {
     const handleBtnClick = event => {
         event.preventDefault();
-        // check if the user exists: 
-        // the user has to have credentials for their provider
-        // if so, then save their last path on the site to redirect the user to that location
+        
+        let url = callbackUrl ? callbackUrl : window.location.href;
+        url = url.includes('?') ? url.split('?')[0] : url;
 
-        // GOAL: get the user from the database
-        signIn('google', { formType: 'createAccount', callbackUrl: callbackUrl ? callbackUrl : window.location.href });
+        signIn('google', { callbackUrl: url });
     };
 
     return (

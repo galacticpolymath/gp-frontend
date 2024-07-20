@@ -18,6 +18,7 @@ const PasswordSchema = new Schema({
  * @typedef {Object} UserSchema
  * @property {string} _id - The unique identifier for the user
  * @property {string} email - The user's email address
+ * @property {string} providerAccountId - The id of the document that contains the access token for the user.
  * @property {PasswordSchema} [password] - The password schema object
  * @property {'google' | 'credentials'} provider - The provider type
  * @property {Date} emailVerified - The date the email was verified
@@ -29,7 +30,12 @@ export const UserSchema = new Schema({
   password: { type: PasswordSchema, required: false },
   // 'google' | 'credentials' 
   provider: String,
+  providerAccountId: String,
   emailVerified: Date,
+  name: {
+    first: { type: String, required: false },
+    last: { type: String, required: false },
+  },
   roles: { type: [String], required: true },
 });
 

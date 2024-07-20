@@ -149,7 +149,7 @@ const LoginModal = () => {
                     </form>
                 </section>
                 <section className="d-flex justify-content-center align-items-center pt-3 pb-4">
-                    <GoogleSignIn />
+                    <GoogleSignIn callbackUrl={(typeof window !== 'undefined') ? window.location.href : ''} />
                 </section>
                 <div className="d-flex justify-content-center align-items-center border-top py-3">
                     <span className='text-white'>
