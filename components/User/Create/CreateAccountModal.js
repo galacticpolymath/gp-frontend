@@ -6,6 +6,8 @@ import { Modal, ModalTitle, ModalBody } from 'react-bootstrap';
 import { ModalContext } from '../../../providers/ModalProvider';
 import { useLogin } from '../../../customHooks/useLogin';
 import Button from '../../General/Button';
+import OR from '../ORTxtDivider';
+import CreateAccountWithGoogle from '../GoogleSignIn';
 
 const CreateAccountModal = () => {
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
@@ -63,6 +65,10 @@ const CreateAccountModal = () => {
                         Create
                     </Button>
                 </form>
+                <OR />
+                <CreateAccountWithGoogle 
+                    callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account`}
+                />
             </ModalBody>
         </Modal>
     );

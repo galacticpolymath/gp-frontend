@@ -7,7 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import Button from "../General/Button";
 import { signIn } from "next-auth/react";
 
-const GoogleSignIn = ({ formType = 'signIn' }) => {
+const GoogleSignIn = ({ callbackUrl = '' }) => {
     const handleBtnClick = event => {
         event.preventDefault();
         // check if the user exists: 
@@ -15,7 +15,7 @@ const GoogleSignIn = ({ formType = 'signIn' }) => {
         // if so, then save their last path on the site to redirect the user to that location
 
         // GOAL: get the user from the database
-        signIn('google', { callbackUrl: 'http://localhost:3000/account' });
+        signIn('google', { formType: 'createAccount', callbackUrl: callbackUrl ? callbackUrl : window.location.href });
     };
 
     return (

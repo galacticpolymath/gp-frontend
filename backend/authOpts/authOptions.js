@@ -207,6 +207,7 @@ export const authOptions = {
   },
   callbacks: {
     async signIn(param) {
+      console.log('signin, param: ', param);
       try {
         const { user, account } = param;
         const { errType, code, email } = user ?? {};
@@ -301,6 +302,7 @@ export const authOptions = {
       const { baseUrl, url } = param;
 
       if(url.includes('account')){
+        console.log('yo there!');
         return url;
       }
 
