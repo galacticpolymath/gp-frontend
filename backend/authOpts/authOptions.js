@@ -42,12 +42,13 @@ export default function MyAdapter() {
     async getUserByAccount(params) {
       console.log('getUserByAccount: ', params);
 
-      return {
-        name: 'Gabriel Torion',
-        email: 'gtorion97@gmail.com',
-        image: 'https://lh3.googleusercontent.com/a/ACg8ocLQWnyB3uuTWGK1pSvbLbViEXx0_vz_g1OoQf0_yjVwWuKCrw=s96-c',
-        emailVerified: null,
-      };
+      return params;
+      // return {
+      //   name: 'Gabriel Torion',
+      //   email: 'gtorion97@gmail.com',
+      //   image: 'https://lh3.googleusercontent.com/a/ACg8ocLQWnyB3uuTWGK1pSvbLbViEXx0_vz_g1OoQf0_yjVwWuKCrw=s96-c',
+      //   emailVerified: null,
+      // };
     },
     async updateUser(user) {
       console.log(user);
