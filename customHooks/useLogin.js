@@ -7,16 +7,24 @@ export const useLogin = () => {
     const [userErrorType, setUserErrorType] = useState('');
     const [loginForm, setLoginForm] = useState({ email: '', password: '' });
 
-    const sendFormToServer = (userInput = { email: '', password: '' }, formType = '') => {
+    /**
+    * Get all of the files for the target user.
+    * @param {'login' | 'createAccount'} formType The client side user's access token.
+    * @param {'credentials' | 'google'} providerType google drive service object
+    * @param {{ email: string, password: string }} userInput    
+    * */
+    const sendFormToServer = (userInput, formType, providerType) => {
+        console.log(userInput);
         if (!userInput.email || !userInput.password || !formType) {
             setUserErrorType('emptyInputs');
+            console.log('what is up ');
             return;
         }
 
-        signIn('credentials', { 
-            email: userInput.email, 
-            password: userInput.password, 
-            formType: formType, 
+        signIn(providerType, {
+            email: userInput.email,
+            password: userInput.password,
+            formType: formType,
         });
     };
 

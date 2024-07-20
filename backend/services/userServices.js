@@ -19,6 +19,8 @@ export const getUsers = async (queryObj = {}, projectionObj = {}) => {
 
 export const getUserByEmail = async (email = '') => {
     try {
+        /** @typedef {import('../models/user.js').UserSchema} UserSchema */
+        /** @type {UserSchema} */
         const targetUser = await User.findOne({ email: email }).lean();
 
         return targetUser;

@@ -7,7 +7,6 @@ import { useContext } from "react";
 import { Modal } from "react-bootstrap";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
-import { signIn } from "next-auth/react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import { useLogin } from "../../../customHooks/useLogin";
 import Button from "../../General/Button";
@@ -18,15 +17,27 @@ const LoginModal = () => {
     const { _isLoginModalDisplayed, _isCreateAccountModalDisplayed } = useContext(ModalContext);
     const [isLoginModalDisplayed, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
-    const { _loginForm } = useLogin();
+    const { _loginForm, sendFormToServer } = useLogin();
     const [loginForm, setLoginForm] = _loginForm;
+
+    const handleOnInputChange = event => {
+        const { name, value } = event.target;
+
+        setLoginForm(currentState => ({
+            ...currentState,
+            [name]: value,
+        }));
+    };
 
     const handleOnHide = () => {
         setIsLoginModalDisplayed(false);
     };
 
     const handleLoginBtnClick = () => {
-        signIn("credentials");
+        sendFormToServer({
+            email: loginForm.email,
+            password: loginForm.password,
+        }, "login", "credentials");
     };
 
     const handleCreateOneBtnClick = () => {
@@ -68,6 +79,10 @@ const LoginModal = () => {
                                 placeholder="Email"
                                 style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6' }}
                                 className="border-0 p-1 w-75 py-2"
+                                name="email"
+                                onChange={event => {
+                                    handleOnInputChange(event);
+                                }}
                             />
                         </div>
                         <div className="my-2 py-1 d-flex justify-content-center align-items-center">
@@ -88,6 +103,10 @@ const LoginModal = () => {
                                 placeholder="Password"
                                 style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6', border: 'solid 2px red' }}
                                 className="no-outline p-1 w-75 py-2 text-danger"
+                                name='password'
+                                onChange={event => {
+                                    handleOnInputChange(event);
+                                }}
                             />
                         </div>
                         <div className="my-2 py-1 d-flex justify-content-center align-items-center">

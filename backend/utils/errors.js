@@ -11,8 +11,8 @@ class AuthError{
   }
 }
 class SignInError{
-  constructor(path = 'signInErrorGeneral', msg = '',code = 500){
-    this.path = path;
+  constructor(type = 'sign-in-error', msg = '',code = 500){
+    this.type = type;
     this.code = code;
     this.msg = msg;
   }

@@ -21,7 +21,7 @@ const CreateAccountModal = () => {
         sendFormToServer({
             email: loginForm.email,
             password: loginForm.password,
-        }, 'createAccount');
+        }, 'createAccount', 'credentials');
         // get the ip address of the user
     };
 
