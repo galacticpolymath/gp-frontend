@@ -9,7 +9,7 @@ import { signIn } from "next-auth/react";
 const GoogleSignIn = () => {
     const handleBtnClick = event => {
         event.preventDefault();
-        signIn('google');
+        signIn('google', { formType: 'signIn' });
     };
 
     return (

@@ -4,17 +4,21 @@ const { Schema, models, model } = Mongoose;
 let User = models.users;
 
 if (!models.users) {
-  const RoleSchema = new Schema({
-    role: String,
-    db: String,
+  const PasswordSchema = new Schema({
+    hash: { type: String, required: true },
+    salt: { type: String, required: true },
+    iterations: { type: Number, required: true },
   });
-  User = new Schema({
+  const UserSchema = new Schema({
     _id: { type: String, required: true },
-    email: { type: String, required: true}, 
-    password: String,
+    email: { type: String, required: true },
+    password: { type: PasswordSchema, required: false },
+    // 'google' | 'credentials' 
+    provider: String,
     emailVerified: Date,
     roles: { type: [String], required: true },
-  }, { _id: false });
+  });
+  User = UserSchema;
   User = model('users', User);
 }
 

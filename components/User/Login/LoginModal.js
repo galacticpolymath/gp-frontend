@@ -26,7 +26,7 @@ const LoginModal = () => {
     };
 
     const handleLoginBtnClick = () => {
-        signIn("google");
+        signIn("credentials");
     };
 
     const handleCreateOneBtnClick = () => {
