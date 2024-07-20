@@ -31,7 +31,6 @@ const getUnitNum = pathName => parseInt(pathName.split('/').find(val => !Number.
 
 export async function middleware(request) {
   try {
-    console.log('request received: ', request);
     const { nextUrl, method, headers } = request;
 
     if (!headers) {

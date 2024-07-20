@@ -237,7 +237,7 @@ export const authOptions = {
             );
           }
 
-          return true;
+          return '/account/?show-about-me-form=true';
         }
 
         if ((dbUser && account) &&
@@ -295,10 +295,16 @@ export const authOptions = {
 
       return Promise.resolve(session);
     },
-    async redirect({ baseUrl }) {
-      // const urlObj = new URL(url);
+    async redirect(param) {
+      console.log('param, hey there: ', param);
 
-      return Promise.resolve(`${baseUrl}/auth-result`);
+      const { baseUrl, url } = param;
+
+      if(url.includes('account')){
+        return url;
+      }
+
+      return `${baseUrl}/auth-result`;
     },
   },
 };
