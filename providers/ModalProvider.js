@@ -22,11 +22,13 @@ export const ModalProvider = ({ children }) => {
     const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
     const [isLoginModalDisplayed, setIsLoginModalDisplayed] = useState(false);
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = useState(false);
+    const [isAboutMeModalDisplayed, setIsAboutMeModalDisplayed] = useState(false);
     const _selectedJob = [selectedJob, setSelectedJob]
     const _isJobModalOn = [isJobModalOn, setIsJobModalOn]
     const _isDownloadModalInfoOn = [isDownloadModalInfoOn, setIsDownloadModalInfoOn];
     const _isLoginModalDisplayed = [isLoginModalDisplayed, setIsLoginModalDisplayed];
     const _isCreateAccountModalDisplayed = [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed]
+    const _isAboutMeModalDisplayed = [isAboutMeModalDisplayed, setIsAboutMeModalDisplayed];
 
     return (
         <ModalContext.Provider
@@ -35,7 +37,8 @@ export const ModalProvider = ({ children }) => {
                 _isJobModalOn,
                 _isDownloadModalInfoOn,
                 _isLoginModalDisplayed,
-                _isCreateAccountModalDisplayed
+                _isCreateAccountModalDisplayed,
+                _isAboutMeModalDisplayed
             }}
         >
             {children}

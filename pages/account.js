@@ -28,6 +28,7 @@ const AccountPg = () => {
             JSON.parse(paths[1].split("=")?.[1])
         ) {
             // make the form modal appear onto the ui
+            
         }
 
     }, []);
