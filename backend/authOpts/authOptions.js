@@ -35,7 +35,7 @@ export default function MyAdapter() {
       console.log('getting user by email: ', email);
       const user = await getUserByEmail(email);
 
-      if(!user){
+      if (!user) {
         return null;
       }
 
@@ -47,6 +47,8 @@ export default function MyAdapter() {
 
         const user = await getUser({ providerAccountId: providerAccountId });
         let wasUserCreated = false;
+
+        console.log('user, sup there: ', user);
 
         if (!user) {
           const { wasSuccessful } = await createUser('PLACEHOLDER', null, provider, ['user'], providerAccountId);
@@ -60,7 +62,7 @@ export default function MyAdapter() {
           wasUserCreated = true;
         }
 
-        return { providerAccountId, provider, wasUserCreated };
+        return { providerAccountId, provider, wasUserCreated, user: { email: user.email, name: 'Gabe', image: 'sup' } };
       } catch (error) {
         console.error('Failed to create the user doc into the database. Reason: ', error);
 
@@ -76,7 +78,7 @@ export default function MyAdapter() {
       return;
     },
     async linkAccount(account) {
-      console.log(account);
+      console.log('linkAccount: ', account);
       return;
     },
     async unlinkAccount({ providerAccountId, provider }) {
@@ -84,19 +86,20 @@ export default function MyAdapter() {
       return;
     },
     async createSession(params) {
-      console.log(params);
+      console.log('createSession: ', params);
       return;
     },
     async getSessionAndUser(sessionToken) {
-      console.log(sessionToken);
+      console.log('getSessionAndUser: ' ,sessionToken);
       return;
     },
     async updateSession(params) {
-      console.log(params);
+      console.log('updateSession: ', params);
       return;
     },
     async deleteSession(sessionToken) {
-      console.log(sessionToken);
+      console.log('deleteSession: ', sessionToken);
+
       return;
     },
     async createVerificationToken(params) {
@@ -104,7 +107,7 @@ export default function MyAdapter() {
       return;
     },
     async useVerificationToken(params) {
-      console.log(params);
+      console.log('useVerificationToken: ', params);
       return;
     },
   };
@@ -198,10 +201,13 @@ export const authOptions = {
     strategy: 'jwt',
   },
   jwt: {
+
     secret: process.env.NEXTAUTH_SECRET,
     maxAge: 60 * 60 * 24 * 30,
-    encode: async ({ secret, token }) => {
+    encode: async (param) => {
       try {
+        console.log('param, session yo, encode: ', param);
+        const { token, secret } = param;
         const { email, name } = token?.payload ?? token;
         const pic = token.picture ?? token.pic;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
@@ -251,18 +257,21 @@ export const authOptions = {
 
           if (!wasSuccessful) {
             await deleteUser({ providerAccountId: providerAccountId });
-            
+
             throw new SignInError(
               'user-account-creation-with-google-err',
               'Failed to create the user who signed in with google.',
               500
             );
           }
-          
+
           return '/account/?show-about-me-form=true';
         }
 
         const dbUser = (userEmail && !wasUserCreated) ? await getUserByEmail(userEmail) : null;
+        // do something: 
+        // display the form to the user about who they are and what they are into
+        // display it on the account page.
 
         if ((dbUser && account) &&
           ('provider' in account) &&
@@ -291,10 +300,12 @@ export const authOptions = {
 
         console.error('Error message: ', msg ?? 'received none.');
 
-        return param?.user?.redirectUrl ? `${param.user.redirectUrl}/?signin-err-type=${type ?? 'sign-in-error'}` : `/?signin-err-type=${type ?? 'sign-in-error'}`; 
+        return param?.user?.redirectUrl ? `${param.user.redirectUrl}/?signin-err-type=${type ?? 'sign-in-error'}` : `/?signin-err-type=${type ?? 'sign-in-error'}`;
       }
     },
-    async jwt({ token, user }) {
+    async jwt(param) {
+      console.log('param, jwt: ', param);
+      const { user, token } = param;
       const isUserSignedIn = !!user;
 
       if (isUserSignedIn && token?.id && user?.id) {
@@ -303,9 +314,20 @@ export const authOptions = {
 
       return Promise.resolve(token);
     },
-    async session({ session, token }) {
+    async session(param) {
+      console.log('param, session yo: ', param);
+      const { token, session } = param;
       const { email, roles, name, pic } = token.payload;
-      const accessToken = await signJwt({ email: email, roles: roles, name: name, pic }, process.env.NEXTAUTH_SECRET, '12hours');
+      const accessToken = await signJwt(
+        {
+          email: email,
+          roles: roles,
+          name: name,
+          pic,
+        },
+        process.env.NEXTAUTH_SECRET,
+        '12hours'
+      );
       const refreshToken = await signJwt({ email: email, roles: roles, name: name, pic }, process.env.NEXTAUTH_SECRET, '1 day');
       session.id = token.id;
       session.token = accessToken;
@@ -316,6 +338,8 @@ export const authOptions = {
         image: pic,
       };
 
+      console.log('param, yo there meng: ', param);
+
       return Promise.resolve(session);
     },
     async redirect(param) {
@@ -324,10 +348,11 @@ export const authOptions = {
 
       if (url.includes('account')) {
         console.log('yo there!');
-        return url;
+        // return url;
+        return `${baseUrl}/auth-result`;
       }
 
-      return url;
+      return `${baseUrl}/auth-result`;
     },
   },
 };
