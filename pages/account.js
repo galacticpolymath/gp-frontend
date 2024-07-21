@@ -37,13 +37,17 @@ const AccountPg = () => {
         );
     }
 
-    const { email, name, image } = data.user;
+    const { email, name, image, occupation, affiliation } = data.user;
+
+    const handleBtnClick = () => {
+
+    };
 
     return (
         <Layout>
-            <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container pt-4">
-                <section className='row bg-danger'>
-                    <section className='col-12 d-flex justify-content-center align-items-center pt-5'>
+            <div style={{ minHeight: '90vh', paddingTop: '10px' }} className="container pt-4">
+                <section className='row border-bottom pb-4'>
+                    <section className='col-12 d-flex justify-content-center align-items-center pt-4'>
                         <img
                             src={image}
                             alt='user_img'
@@ -51,8 +55,28 @@ const AccountPg = () => {
                             className='rounded-circle'
                         />
                     </section>
-                    <section className='col-12 d-flex justify-content-center align-items-center mt-3'>
-                        <h5>{name.first} {name.last}</h5>
+                    <section className='col-12 d-flex justify-content-center align-items-center mt-3 flex-column'>
+                        <h5 className='mb-0'>{name.first} {name.last}</h5>
+                        <span>{email}</span>
+                    </section>
+                    <section className='col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2'>
+                        <span className='d-inline-flex justify-content-center align-tiems-center'>Occupation: </span>
+                        <span style={{ fontStyle: 'italic' }} className='d-inline-flex justify-content-center align-tiems-center '>
+                            {occupation ?? 'Professor'}, {affiliation ?? "Cornell University"}
+                        </span>
+                    </section>
+                    <section className='col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2'>
+                        <Button
+                            handleOnClick={handleBtnClick}
+                            classNameStr='rounded px-3 border shadow mt-2'
+                        >
+                            <span
+                                style={{ fontWeight: 410 }}
+                                className='text-black'
+                            >
+                                View 'About Me' form
+                            </span>
+                        </Button>
                     </section>
                 </section>
             </div>

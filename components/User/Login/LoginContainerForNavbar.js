@@ -4,7 +4,6 @@
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 import { useContext } from "react";
-import { signIn } from "next-auth/react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 
@@ -13,15 +12,14 @@ const LoginContainerForNavbar = ({ className = "position-relative" }) => {
     const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
 
     const handleOnClick = () => {
-        // signIn("google", { email: "gtorion97work@gmail.com" })
         setIsLoginModalDisplayed(true);
     };
 
     return (
         <div className={`login-container ${className}`}>
             <Button
-                classNameStr='rounded px-3 border-0'
                 handleOnClick={handleOnClick}
+                classNameStr='rounded px-3 border-0'
                 backgroundColor="#333438"
             >
                 <span style={{ color: 'white', fontWeight: 410 }}>
