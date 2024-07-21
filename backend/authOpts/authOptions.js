@@ -273,7 +273,7 @@ export const authOptions = {
             );
           }
 
-          return '/account/?show-about-me-form=true';
+          return '/account/?show_about_me_form=true';
         }
 
         const dbUser = (userEmail && !wasUserCreated) ? await getUserByEmail(userEmail) : null;

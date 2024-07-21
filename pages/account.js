@@ -7,10 +7,31 @@ import { useSession } from 'next-auth/react';
 import Layout from '../components/Layout';
 import LoginUI from '../components/User/Login/LoginUI';
 import Button from '../components/General/Button';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { getIsParsable } from '../globalFns';
 
 const AccountPg = () => {
     const session = useSession();
+    const router = useRouter();
     const { status, data } = session;
+
+    useEffect(() => {
+        const paths = router.asPath?.split('?');
+
+        if (
+            router.asPath &&
+            router?.asPath?.includes('?') &&
+            paths?.[1]?.includes('show_about_me_form') &&
+            paths[1].split("=")?.[1] &&
+            getIsParsable(paths[1].split("=")?.[1]) &&
+            JSON.parse(paths[1].split("=")?.[1])
+        ) {
+            // make the form modal appear onto the ui
+        }
+
+    }, []);
+
     console.log('session, yo there: ', session);
 
     if (status === 'loading') {

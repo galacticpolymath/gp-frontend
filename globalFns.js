@@ -148,7 +148,7 @@ export const getIsTypeValid = (val, targetType) => {
 
 export const getLinkPreviewObj = async (url = '') => {
     try {
-        if (!url || (typeof url !== 'string')){
+        if (!url || (typeof url !== 'string')) {
             throw new Error('Either received an empty string or an incorrect data type.')
         }
 
@@ -214,6 +214,18 @@ export const createObj = (keysAndValsArr = []) => {
 
         return obj;
     }, {})
+}
+
+export const getIsParsable = val => {
+    try {
+        JSON.parse(val);
+
+        return true;
+    } catch (error) {
+        console.error('Not parsable. Reason: ' , error);
+
+        return false;
+    }
 }
 
 export const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
