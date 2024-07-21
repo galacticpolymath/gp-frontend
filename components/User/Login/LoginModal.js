@@ -57,7 +57,7 @@ const LoginModal = () => {
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='login-ui-modal rounded pt-2 box-shadow-login-ui-modal'
         >
-            <div className="">
+            <div>
                 <div className="d-flex justify-content-center align-items-center">
                     <img
                         src='imgs/gp_logo_gradient_transBG.png'
