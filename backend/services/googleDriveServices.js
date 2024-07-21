@@ -77,7 +77,7 @@ export const generateGoogleAuthJwt = () => {
         let credentialsSplitted = credentials.split('')
         let indexesOfValsToDel = []
 
-        for (let index = 0; index < credentialsSplitted.length; index++) {
+        for (let index = 0; index < credentialsSplitted?.length; index++) {
             const nextVal = credentialsSplitted[index + 1]
 
             if (nextVal === undefined) {
