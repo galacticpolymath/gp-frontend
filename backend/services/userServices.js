@@ -78,7 +78,6 @@ export const deleteUser = async (filterQuery = {}) => {
  * @param {"google" | "credentials"} provider
  * @param {string[]} roles "dbAdmin" | "user"
  * @param {{ first: string, last: string }} [name]
- * @return { Promise<{ wasSuccessful: boolean, msg?: string }> }
  * */
 export const createUser = async (email, password, provider, roles, providerAccountId, name) => {
     try {
@@ -94,7 +93,7 @@ export const createUser = async (email, password, provider, roles, providerAccou
 
         await userDocument.save();
 
-        return { wasSuccessful: true };
+        return { wasSuccessful: true, createdUser: userDocument };
     } catch (error) {
         const errMsg = `Failed to create the target user into the db. Reason: ${error}`;
 

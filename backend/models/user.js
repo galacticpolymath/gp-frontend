@@ -23,6 +23,8 @@ const PasswordSchema = new Schema({
  * @property {'google' | 'credentials'} provider - The provider type
  * @property {Date} emailVerified - The date the email was verified
  * @property {string[]} roles - The roles assigned to the user
+ * @property {string} picture - The picture of the user
+ * @property {{ first: string, last: string }} name - The name of the user.
  */
 export const UserSchema = new Schema({
   _id: { type: String, required: true },
@@ -31,11 +33,12 @@ export const UserSchema = new Schema({
   // 'google' | 'credentials' 
   provider: String,
   providerAccountId: String,
-  emailVerified: Date,
+  emailVerified: { type: Date, required: false },
   name: {
     first: { type: String, required: false },
     last: { type: String, required: false },
   },
+  picture: { type: String, required: false },
   roles: { type: [String], required: true },
 });
 

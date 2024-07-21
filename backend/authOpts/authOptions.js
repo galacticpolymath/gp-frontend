@@ -7,14 +7,16 @@ import { jwtVerify } from 'jose';
 import JwtModel from '../models/Jwt';
 import { connectToMongodb } from '../utils/connection';
 import { signJwt } from '../utils/auth';
-import { HashedPassword, getIsPasswordCorrect, hashPassword } from '../utils/security';
+import { getIsPasswordCorrect, hashPassword } from '../utils/security';
 import User from '../models/user';
 import { createDocument } from '../db/utils';
 import { AuthError, SignInError } from '../utils/errors';
 import { v4 as uuidv4 } from 'uuid';
 import { createUser, deleteUser, getUser, getUserByEmail, updateUser } from '../services/userServices';
+import NodeCache from 'node-cache';
 
 const VALID_FORMS = ['createAccount', 'login'];
+const cache = new NodeCache();
 
 /** @return { import("next-auth/adapters").Adapter } */
 export default function MyAdapter() {
@@ -46,7 +48,6 @@ export default function MyAdapter() {
         await connectToMongodb();
 
         const user = await getUser({ providerAccountId: providerAccountId });
-        let wasUserCreated = false;
 
         console.log('user, sup there: ', user);
 
@@ -59,12 +60,13 @@ export default function MyAdapter() {
             throw new Error('Failed to create the document for the target user in the db.');
           }
 
-          wasUserCreated = true;
+          return { providerAccountId, provider, wasUserCreated: true };
         }
 
-        return { providerAccountId, provider, wasUserCreated, user: { email: user.email, name: 'Gabe', image: 'sup' } };
+        return { providerAccountId, provider, email: user.email, id: user._id, image: user.picture, name: user.name };
       } catch (error) {
         console.error('Failed to create the user doc into the database. Reason: ', error);
+        await deleteUser({ providerAccountId: providerAccountId });
 
         return null;
       }
@@ -90,7 +92,7 @@ export default function MyAdapter() {
       return;
     },
     async getSessionAndUser(sessionToken) {
-      console.log('getSessionAndUser: ' ,sessionToken);
+      console.log('getSessionAndUser: ', sessionToken);
       return;
     },
     async updateSession(params) {
@@ -209,11 +211,12 @@ export const authOptions = {
         console.log('param, session yo, encode: ', param);
         const { token, secret } = param;
         const { email, name } = token?.payload ?? token;
-        const pic = token.picture ?? token.pic;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
+
+        // get the user from the db, to get their first name last name, image
         const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
-        const refreshToken = await signJwt({ email: email, roles: allowedRoles, name: name, pic }, secret, '1 day');
-        const accessToken = await signJwt({ email: email, roles: allowedRoles, name: name, pic }, secret, '12hr');
+        const refreshToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, '1 day');
+        const accessToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, '12hr');
 
         if (!token?.payload && canUserWriteToDb) {
           await connectToMongodb();
@@ -253,7 +256,12 @@ export const authOptions = {
 
         // Finish creating the target user account in the db.
         if (wasUserCreated && (account.provider === 'google')) {
-          const { wasSuccessful } = await updateUser({ providerAccountId: providerAccountId }, { email: userEmail });
+          const { picture, given_name, family_name } = profile ?? {};
+          const name = {
+            first: given_name,
+            last: family_name,
+          };
+          const { wasSuccessful } = await updateUser({ providerAccountId: providerAccountId }, { email: userEmail, picture: picture ?? '', name: name });
 
           if (!wasSuccessful) {
             await deleteUser({ providerAccountId: providerAccountId });
@@ -269,9 +277,6 @@ export const authOptions = {
         }
 
         const dbUser = (userEmail && !wasUserCreated) ? await getUserByEmail(userEmail) : null;
-        // do something: 
-        // display the form to the user about who they are and what they are into
-        // display it on the account page.
 
         if ((dbUser && account) &&
           ('provider' in account) &&
@@ -304,55 +309,64 @@ export const authOptions = {
       }
     },
     async jwt(param) {
-      console.log('param, jwt: ', param);
-      const { user, token } = param;
+      console.log('param, sup there beef, jwt callback: ', param);
+      const { token, user, profile } = param;
       const isUserSignedIn = !!user;
 
-      if (isUserSignedIn && token?.id && user?.id) {
+      if (isUserSignedIn) {
         token.id = user.id.toString();
       }
+
+      console.log('token, jwt callback: ', token);
 
       return Promise.resolve(token);
     },
     async session(param) {
       console.log('param, session yo: ', param);
       const { token, session } = param;
-      const { email, roles, name, pic } = token.payload;
+      const { email, roles, name } = token.payload;
       const accessToken = await signJwt(
         {
           email: email,
           roles: roles,
           name: name,
-          pic,
         },
         process.env.NEXTAUTH_SECRET,
         '12hours'
       );
-      const refreshToken = await signJwt({ email: email, roles: roles, name: name, pic }, process.env.NEXTAUTH_SECRET, '1 day');
+      const refreshToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '1 day');
+      /** @type {{ [key: string]: string }  } */
+      const userPics = cache.get('pictures') ?? {};
+      let picture = '';
+
+      if (Object.keys(userPics).length && userPics[email]) {
+        picture = userPics[email];
+      } else {
+        const dbUser = await getUser({ email: email }, { picture: 1 });
+        picture = dbUser.picture ?? '';
+
+        cache.set('pictures', { ...userPics, [email]: picture });
+      }
+
+      console.log('userPic, yo there: ', picture);
+      
       session.id = token.id;
       session.token = accessToken;
       session.refresh = refreshToken;
       session.user = {
-        email,
-        name,
-        image: pic,
+        email: email,
+        name: name,
+        image: picture,
       };
 
-      console.log('param, yo there meng: ', param);
+      console.log('session yo there, updated: ', session);
 
       return Promise.resolve(session);
     },
     async redirect(param) {
-      console.log('redirect, param: ', param);
       const { baseUrl, url } = param;
 
-      if (url.includes('account')) {
-        console.log('yo there!');
-        // return url;
-        return `${baseUrl}/auth-result`;
-      }
-
-      return `${baseUrl}/auth-result`;
+      return url;
     },
   },
 };
