@@ -8,7 +8,7 @@ const cspHeader = `
     style-src 'self' 'unsafe-inline';
     object-src 'none';
     base-uri 'self';
-    connect-src 'self' https://galacticpolymath.com/api/auth/signin/google https://dev.galacticpolymath.com/api/auth/signin/google http://localhost:3000/api/auth/signin/google https://oauth2.googleapis.com/token https://www.google-analytics.com/ https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/by-code.json;
+    connect-src 'self' https://galacticpolymath.com/api/auth/signin/google https://dev.galacticpolymath.com/api/auth/signin/google http://localhost:3000/api/auth/signin/google https://oauth2.googleapis.com/token https://www.google-analytics.com/ https://restcountries.com/;
 `
 
 module.exports = {

@@ -63,11 +63,15 @@ const AboutUserModal = () => {
     useEffect(() => {
         (async () => {
             try {
-                const response = await fetch('https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/by-code.json');
-                const countriesObj = await response.json();
+                const response = await fetch('https://restcountries.com/v3.1/all?fields=name,flags');
+                const countries = await response.json();
 
-                if (Object.values(countriesObj)?.length) {
-                    setCountries(Object.values(countriesObj).map(countryObj => countryObj.name));
+                console.log('countries: ', countries);
+
+                if (countries.length) {
+                    const countryNames = countries.map(country => country.name.common);
+                    console.log('countryNames: ', countryNames);
+                    setCountries(countryNames);
                 }
             } catch (error) {
                 console.error('Failed to retrieve countries. Reason: ', error);
@@ -106,13 +110,15 @@ const AboutUserModal = () => {
                             <label htmlFor='country-input'>
                                 Country:
                             </label>
-                            <input
-                                placeholder='Your country'
-                                style={{ maxWidth: '400px' }}
-                                className='aboutme-txt-input no-outline'
-                            />
+                            {/* <div> */}
+                                <input
+                                    placeholder='Your country'
+                                    style={{ maxWidth: '400px' }}
+                                    className='aboutme-txt-input no-outline'
+                                />
+                            {/* </div> */}
                         </section>
-                        <section className='d-flex flex-column col-8 col-lg-4'>
+                        <section className='d-flex flex-column col-8 col-lg-2'>
                             <label htmlFor='country-input'>
                                 Zip Code:
                             </label>
@@ -130,7 +136,7 @@ const AboutUserModal = () => {
                             />
                         </section>
                     </section>
-                    <section style={{ columnCount: 2 }} className='mt-3 mb-2 row'>
+                    <section style={{ columnCount: 2 }} className='mt-4 mb-2 row'>
                         <GradesOrYearsSelection />
                         <section className='d-flex flex-column col-12 col-lg-6'>
                             <label style={{ lineHeight: '25px' }}>
@@ -144,11 +150,11 @@ const AboutUserModal = () => {
                             />
                         </section>
                     </section>
-                    <section className='d-flex flex-column mt-2'>
+                    <section className='d-flex flex-column mt-4 mt-lg-2'>
                         <label>
                             Subject(s) Taught:
                         </label>
-                        <div style={{ columnCount: 2 }} className='pt-1'>
+                        <div className='pt-1 subjects-taught-container'>
                             {SUBJECTS_OPTIONS.map((subject, index) => {
                                 return (
                                     <div key={index} className={`d-flex flex-column ${index === (SUBJECTS_OPTIONS.length - 1) ? 'mt-2' : ''}`}>
@@ -164,7 +170,7 @@ const AboutUserModal = () => {
                                             <input
                                                 placeholder='Enter subject.'
                                                 className='aboutme-txt-input no-outline'
-                                                style={{ maxWidth: '400px' }}
+                                                style={{ maxWidth: '250px' }}
                                             />
                                         )}
                                     </div>
@@ -176,9 +182,9 @@ const AboutUserModal = () => {
                         <label htmlFor='reasonForSiteVisit'>
                             What brings you to our site?
                         </label>
-                        <section className='d-flex'>
+                        <section className='d-flex flex-column flex-lg-row'>
                             {WHAT_BRINGS_YOU_TO_SITE_OPTS.map((opt, index) => (
-                                <div key={index} className={`d-flex ${index === 0 ? '' : 'ms-3'}`}>
+                                <div key={index} className={`d-flex ${index === 0 ? '' : 'ms-lg-3'}`}>
                                     <input
                                         type='checkbox'
                                         name='subject'
@@ -213,12 +219,13 @@ const AboutUserModal = () => {
                             placeholder='Your response...'
                         />
                     </section>
-                    <Button
-                        defaultStyleObj={{ transform: 'translateY(20%)' }}
-                        classNameStr='no-btn-styles text-white bg-primary p-2 rounded position-absolute end-0 bottom-0'
-                    >
-                        <span>SUBMIT & SAVE</span>
-                    </Button>
+                    <section className='d-flex justify-content-end'>
+                        <Button
+                            classNameStr='mt-2 no-btn-styles text-white bg-primary p-2 rounded'
+                        >
+                            <span>SUBMIT & SAVE</span>
+                        </Button>
+                    </section>
                 </form>
             </ModalBody>
         </Modal>
