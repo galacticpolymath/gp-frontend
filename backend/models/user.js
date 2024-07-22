@@ -39,6 +39,7 @@ export const UserSchema = new Schema({
     last: { type: String, required: false },
   },
   picture: { type: String, required: false },
+  occupation: { type: String, required: false },
   roles: { type: [String], required: true },
 });
 

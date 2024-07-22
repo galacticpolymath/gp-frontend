@@ -90,7 +90,7 @@ const AccountPg = () => {
                     <section className='col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2'>
                         <span className='d-inline-flex justify-content-center align-tiems-center'>Occupation: </span>
                         <span style={{ fontStyle: 'italic' }} className='d-inline-flex justify-content-center align-tiems-center '>
-                            {occupation ?? 'Professor'}, {affiliation ?? "Cornell University"}
+                            {(occupation && affiliation) ? `${occupation}, ${affiliation}` : 'UNANSWERED'}
                         </span>
                     </section>
                     <section className='col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2'>
