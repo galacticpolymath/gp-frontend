@@ -40,6 +40,7 @@ export const UserSchema = new Schema({
   },
   picture: { type: String, required: false },
   occupation: { type: String, required: false },
+  // aboutMeForm                        
   roles: { type: [String], required: true },
 });
 

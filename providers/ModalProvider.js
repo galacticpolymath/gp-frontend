@@ -14,8 +14,14 @@
 import { createContext, useState } from "react";
 
 /**
+ * @typedef {Object} TGradesOrYears
+ * @property {"grades" | "years"} selection
+ * @property {string[]} ageGroupsTaught 
+ */
+
+/**
  * @typedef {Object} TUserForm
- * @property {'grades' | 'years'} gradesOrYears
+ * @property {TGradesOrYears} gradesOrYears
  * @property {string} country
  * @property {number | null} zipCode
  * @property {string} studentAgeRange
@@ -34,7 +40,10 @@ import { createContext, useState } from "react";
 const aboutUserFormDefaultVal = {
     isModalDisplayed: false,
     form: {
-        gradesOrYears: 'grades',
+        gradesOrYears: {
+            selection: 'grades',
+            ageGroupsTaught: []
+        },
         country: '',
         zipCode: null,
         studentAgeRange: '',
