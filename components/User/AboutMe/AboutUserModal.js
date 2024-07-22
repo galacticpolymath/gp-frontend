@@ -14,7 +14,7 @@ const SUBJECTS_OPTIONS = [
     'math',
     'english language arts',
     'social studies',
-    'stem',
+    'STEM',
     'other:',
     'other:',
 ];
@@ -26,7 +26,7 @@ const WHAT_BRINGS_YOU_TO_SITE_OPTS = [
     'free resources',
 ];
 
-const AboutMeModal = () => {
+const AboutUserModal = () => {
     const { _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     const { _aboutUserForm } = useContext(UserContext);
     /** @type {[boolean, Function]} */
@@ -62,11 +62,11 @@ const AboutMeModal = () => {
 
     useEffect(() => {
         (async () => {
-            try {                
+            try {
                 const response = await fetch('https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/by-code.json');
                 const countriesObj = await response.json();
 
-                if(Object.values(countriesObj)?.length){
+                if (Object.values(countriesObj)?.length) {
                     setCountries(Object.values(countriesObj).map(countryObj => countryObj.name));
                 }
             } catch (error) {
@@ -91,18 +91,28 @@ const AboutMeModal = () => {
             </ModalTitle>
             <ModalBody ref={modalBodyRef} className='about-me-modal-body'>
                 <form className='position-relative  h-100 w-100'>
-                    <section style={{ columnCount: 2 }}>
-                        <section className='d-flex flex-column'>
+                    <section className='row d-flex'>
+                        <section className='d-flex flex-column col-4'>
+                            <label htmlFor='country-input'>
+                                Occupation:
+                            </label>
+                            <input
+                                placeholder='What do you do?'
+                                style={{ maxWidth: '400px' }}
+                                className='aboutme-txt-input no-outline'
+                            />
+                        </section>
+                        <section className='d-flex flex-column col-4'>
                             <label htmlFor='country-input'>
                                 Country:
                             </label>
                             <input
                                 placeholder='Your country'
-                                style={{ maxWidth: '500px' }}
+                                style={{ maxWidth: '400px' }}
                                 className='aboutme-txt-input no-outline'
                             />
                         </section>
-                        <section className='d-flex flex-column'>
+                        <section className='d-flex flex-column col-4'>
                             <label htmlFor='country-input'>
                                 Zip Code:
                             </label>
@@ -121,7 +131,7 @@ const AboutMeModal = () => {
                             />
                         </section>
                     </section>
-                    <section style={{ columnCount: 2 }} className='mt-3 row'>
+                    <section style={{ columnCount: 2 }} className='mt-3 mb-2 row'>
                         <GradesOrYearsSelection />
                         <section className='d-flex flex-column col-6'>
                             <label style={{ lineHeight: '25px' }}>
@@ -216,4 +226,4 @@ const AboutMeModal = () => {
     );
 };
 
-export default AboutMeModal;
+export default AboutUserModal;
