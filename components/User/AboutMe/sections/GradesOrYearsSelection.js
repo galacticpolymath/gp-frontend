@@ -55,7 +55,7 @@ const GradesOrYearsSelection = () => {
     };
 
     return (
-        <section className='d-flex flex-column col-6'>
+        <section className='d-flex flex-column col-12 col-lg-6'>
             <label>
                 What age do you teach?
             </label>

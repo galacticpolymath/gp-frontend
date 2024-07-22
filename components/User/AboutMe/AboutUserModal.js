@@ -91,8 +91,8 @@ const AboutUserModal = () => {
             </ModalTitle>
             <ModalBody ref={modalBodyRef} className='about-me-modal-body'>
                 <form className='position-relative  h-100 w-100'>
-                    <section className='row d-flex'>
-                        <section className='d-flex flex-column col-4'>
+                    <section className='row d-flex flex-column flex-lg-row'>
+                        <section className='d-flex flex-column col-8 col-lg-4'>
                             <label htmlFor='country-input'>
                                 Occupation:
                             </label>
@@ -102,7 +102,7 @@ const AboutUserModal = () => {
                                 className='aboutme-txt-input no-outline'
                             />
                         </section>
-                        <section className='d-flex flex-column col-4'>
+                        <section className='d-flex flex-column my-4 my-lg-0 col-8 col-lg-4'>
                             <label htmlFor='country-input'>
                                 Country:
                             </label>
@@ -112,7 +112,7 @@ const AboutUserModal = () => {
                                 className='aboutme-txt-input no-outline'
                             />
                         </section>
-                        <section className='d-flex flex-column col-4'>
+                        <section className='d-flex flex-column col-8 col-lg-4'>
                             <label htmlFor='country-input'>
                                 Zip Code:
                             </label>
@@ -120,7 +120,6 @@ const AboutUserModal = () => {
                                 placeholder='Your zip code'
                                 type='number'
                                 style={{
-                                    maxWidth: '200px',
                                     outline: 'none',
                                     borderTop: 'none',
                                     borderRight: 'none',
@@ -133,7 +132,7 @@ const AboutUserModal = () => {
                     </section>
                     <section style={{ columnCount: 2 }} className='mt-3 mb-2 row'>
                         <GradesOrYearsSelection />
-                        <section className='d-flex flex-column col-6'>
+                        <section className='d-flex flex-column col-12 col-lg-6'>
                             <label style={{ lineHeight: '25px' }}>
                                 How many students do you teach?
                             </label>
