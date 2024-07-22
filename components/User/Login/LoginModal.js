@@ -55,7 +55,7 @@ const LoginModal = () => {
             show={isLoginModalDisplayed}
             onHide={handleOnHide}
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
-            contentClassName='login-ui-modal rounded pt-2 box-shadow-login-ui-modal'
+            contentClassName='login-ui-modal bg-white shadow-lg rounded pt-2 box-shadow-login-ui-modal'
         >
             <div>
                 <div className="d-flex justify-content-center align-items-center">
@@ -66,7 +66,7 @@ const LoginModal = () => {
                         height={75}
                     />
                 </div>
-                <h5 className="text-white text-center mt-2">GP Login</h5>
+                <h5 className="text-black text-center mt-2">GP Login</h5>
                 <section>
                     <form>
                         <div className="mt-3 d-flex justify-content-center align-items-center position-relative">
@@ -152,7 +152,7 @@ const LoginModal = () => {
                     <GoogleSignIn callbackUrl={(typeof window !== 'undefined') ? window.location.href : ''} />
                 </section>
                 <div className="d-flex justify-content-center align-items-center border-top py-3">
-                    <span className='text-white'>
+                    <span className='text-black'>
                         Don{"'"}t have an account?
                     </span>
                     <Button

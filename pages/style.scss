@@ -199,7 +199,7 @@ ol li {
 }
 
 .user-modal-color {
-  background-color: $userModalColor;
+  background-color: white;
 }
 
 .aboutme-txt-input {
@@ -209,17 +209,21 @@ ol li {
   border-bottom: solid 1px grey;
 }
 
+.about-me-input-border{
+  border: solid 1px grey;
+}
+
 .txt-color-for-aboutme-modal {
-  color: #9aa0a6;
+  color: black;
 }
 
 .about-me-modal-body label {
   font-weight: bold;
-  color: #9aa0a6;
+  color: black;
 }
 .about-me-modal-body {
   input {
-    background-color: #333438;
+    background-color: white;
   }
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
@@ -234,10 +238,10 @@ ol li {
 
 .about-me-modal-body {
   input {
-    color: #9aa0a6;;
+    color: black;;
   }
   textarea {
-    color: #9aa0a6;
+    color: black;
     outline: none;
     field-sizing: content;
   }
