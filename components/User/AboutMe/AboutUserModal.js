@@ -36,7 +36,6 @@ const AboutUserModal = () => {
     const [isTextareaDisabled, setIsTextareaDisabled] = useState(true);
     /** @type {[import('../../../providers/ModalProvider').TUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
-    const [countries, setCountries] = useState([]);
     const modalBodyRef = useRef();
 
     const handleOnHide = () => {
@@ -79,9 +78,10 @@ const AboutUserModal = () => {
                                 Occupation:
                             </label>
                             <input
+                                name='occupation'
                                 placeholder='What do you do?'
                                 style={{ maxWidth: '400px' }}
-                                className='aboutme-txt-input no-outline'
+                                className='aboutme-txt-input no-outline pt-1'
                             />
                         </section>
                         <CountrySection />
@@ -99,7 +99,7 @@ const AboutUserModal = () => {
                                     borderLeft: 'none',
                                     borderBottom: 'solid 1px grey',
                                 }}
-                                className='aboutme-txt-input'
+                                className='aboutme-txt-input pt-1'
                             />
                         </section>
                     </section>
@@ -180,7 +180,7 @@ const AboutUserModal = () => {
                             style={{
                                 outline: 'none',
                                 opacity: isTextareaDisabled ? .3 : 1,
-                                height: '125px',
+                                height: '115px',
                             }}
                             className='rounded about-me-input-border about-user-textarea p-1 mt-2'
                             placeholder='Your response...'

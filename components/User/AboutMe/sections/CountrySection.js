@@ -2,30 +2,41 @@
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
-
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Button from "../../../General/Button";
+import { UserContext } from "../../../../providers/UserProvider";
 
 const CountrySection = () => {
     const [countries, setCountries] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const [isInputFocused, setIsInputFocused] = useState(false);
+    const { _aboutUserForm } = useContext(UserContext);
+    /** @type {[import("../../../../providers/UserProvider").TUserForm, Function]} */
+    const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
+    const [countryInput, setCountryInput] = useState(aboutUserForm.country);
 
     const handleOnInputFocus = () => {
         setIsInputFocused(true);
     };
 
-    const handleOnInputBlur = () => {
+    const handleCountrySelectionBtnClick = event => {
+        setCountryInput(event.target.value);
+        setAboutUserForm(state => ({
+            ...state,
+            country: event.target.value,
+        }));
         setIsInputFocused(false);
     };
 
     const handleInputOnChange = ({ target }) => {
+        setCountryInput(target.value);
+
         if (!target.value.length) {
             setSearchResults([]);
             return;
         }
 
-        const searchedCountries = countries.filter(countryName => countryName.includes(target.value));
+        const searchedCountries = countries.filter(countryName => countryName.toLowerCase().includes(target.value.toLowerCase()));
 
         setSearchResults(searchedCountries);
     };
@@ -58,20 +69,32 @@ const CountrySection = () => {
                 <input
                     placeholder='Your country'
                     style={{ maxWidth: '400px' }}
-                    className='aboutme-txt-input no-outline w-100'
-                    value={"hi"}
+                    className='aboutme-txt-input no-outline w-100 pt-1'
+                    defaultValue={countryInput}
+                    value={countryInput}
                     onChange={handleInputOnChange}
                     onFocus={handleOnInputFocus}
-                    onBlur={handleOnInputBlur}
                 />
                 {isInputFocused && (
-                    <div style={{ zIndex: 100, maxHeight: '400px', width: '100%' }} className="position-absolute border bg-white rounded shadow overflow-scroll">
+                    <div
+                        id='searchResultsModal'
+                        style={{ zIndex: 100, maxHeight: '400px', width: '100%' }}
+                        className="position-absolute border bg-white rounded shadow overflow-scroll"
+                    >
                         <section className='d-flex flex-column p-2'>
                             <h6>Common Selections: </h6>
-                            <Button classNameStr="border-bottom no-btn-styles py-2 d-flex ps-2 border-bottom">
+                            <Button
+                                value="United States"
+                                handleOnClick={handleCountrySelectionBtnClick}
+                                classNameStr="border-bottom no-btn-styles py-2 d-flex ps-2 border-bottom"
+                            >
                                 United States
                             </Button>
-                            <Button classNameStr="no-btn-styles py-2 d-flex ps-2">
+                            <Button
+                                value="New Zealand"
+                                handleOnClick={handleCountrySelectionBtnClick}
+                                classNameStr="no-btn-styles py-2 d-flex ps-2"
+                            >
                                 New Zealand
                             </Button>
                         </section>
@@ -79,15 +102,19 @@ const CountrySection = () => {
                             <h6>
                                 Search Result(s):
                             </h6>
-                            {searchResults?.length ? searchResults.map(country => (
-                                <Button
-                                    defaultStyleObj={{ width: '80%' }}
-                                    key={country}
-                                    classNameStr="ps-2 border-bottom no-btn-styles py-2 d-flex text-wrap"
-                                >
-                                    <span className="text-start">{country}</span>
-                                </Button>
-                            ))
+                            {searchResults?.length ? searchResults.map(country => {
+                                return (
+                                    <Button
+                                        defaultStyleObj={{ width: '80%' }}
+                                        key={country}
+                                        value={country}
+                                        handleOnClick={handleCountrySelectionBtnClick}
+                                        classNameStr="ps-2 border-bottom no-btn-styles py-2 d-flex text-wrap"
+                                    >
+                                        {country}
+                                    </Button>
+                                );
+                            })
                                 :
                                 <span className="ps-2" style={{ fontStyle: "italic" }}>Find your country.</span>
                             }

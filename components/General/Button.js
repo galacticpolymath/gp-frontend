@@ -2,6 +2,7 @@ const Button = ({
   children,
   fontSize,
   isDisabled,
+  value,
   defaultStyleObj = {},
   classNameStr = '',
   backgroundColor = 'transparent',
@@ -23,6 +24,7 @@ const Button = ({
       style={_style}
       onClick={handleOnClick}
       aria-label={ariaLabelStr}
+      value={value}
     >
       {children}
     </button>
