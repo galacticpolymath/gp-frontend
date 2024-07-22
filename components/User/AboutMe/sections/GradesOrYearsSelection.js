@@ -89,7 +89,7 @@ const GradesOrYearsSelection = () => {
                                     value={ageGroup}
                                     onChange={handleCheckboxInputChange}
                                 />
-                                <span className='ms-1 txt-color-for-aboutme-modal'>
+                                <span className='ms-1 txt-color-for-aboutme-modal text-nowrap'>
                                     {ageGroup}
                                 </span>
                             </section>

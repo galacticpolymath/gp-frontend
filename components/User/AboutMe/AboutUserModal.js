@@ -8,6 +8,7 @@ import { ModalContext } from '../../../providers/ModalProvider';
 import Button from '../../General/Button';
 import GradesOrYearsSelection from './sections/GradesOrYearsSelection';
 import { UserContext } from '../../../providers/UserProvider';
+import CountrySection from './sections/CountrySection';
 
 const SUBJECTS_OPTIONS = [
     'science',
@@ -60,29 +61,6 @@ const AboutUserModal = () => {
         }
     }, [isAboutMeFormModalDisplayed]);
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const response = await fetch('https://restcountries.com/v3.1/all?fields=name,flags');
-                const countries = await response.json();
-
-                console.log('countries: ', countries);
-
-                if (countries.length) {
-                    const countryNames = countries.map(country => country.name.common);
-                    console.log('countryNames: ', countryNames);
-                    setCountries(countryNames);
-                }
-            } catch (error) {
-                console.error('Failed to retrieve countries. Reason: ', error);
-            }
-        })();
-    }, []);
-
-    useEffect(() => {
-        console.log('countries: ', countries);
-    });
-
     return (
         <Modal
             show={isAboutMeFormModalDisplayed}
@@ -106,18 +84,7 @@ const AboutUserModal = () => {
                                 className='aboutme-txt-input no-outline'
                             />
                         </section>
-                        <section className='d-flex flex-column my-4 my-lg-0 col-8 col-lg-4'>
-                            <label htmlFor='country-input'>
-                                Country:
-                            </label>
-                            {/* <div> */}
-                                <input
-                                    placeholder='Your country'
-                                    style={{ maxWidth: '400px' }}
-                                    className='aboutme-txt-input no-outline'
-                                />
-                            {/* </div> */}
-                        </section>
+                        <CountrySection />
                         <section className='d-flex flex-column col-8 col-lg-2'>
                             <label htmlFor='country-input'>
                                 Zip Code:
