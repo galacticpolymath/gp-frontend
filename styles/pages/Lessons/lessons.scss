@@ -525,6 +525,12 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.about-user-textarea{
+  @media(min-width: 1024px){
+    // height: 125px;
+  }
+}
+
 .txt-underline-on-hover-white:hover {
   text-decoration: underline;
   text-decoration-color: white;
