@@ -213,6 +213,27 @@ ol li {
   border: solid 1px grey;
 }
 
+.no-border-left{
+ border-left: none;
+}
+
+.no-border-top{
+  border-top: none;
+}
+
+.selected-grade-or-years-opt{
+  border: #6192B0 solid 2px;
+  color: #6192B0;
+}
+
+.no-border-right{
+  border-right: none;
+}
+
+.no-border-bottom{
+  border-bottom: none;
+}
+
 .txt-color-for-aboutme-modal {
   color: black;
 }
