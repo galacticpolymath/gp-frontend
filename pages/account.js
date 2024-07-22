@@ -16,8 +16,8 @@ const AccountPg = () => {
     const session = useSession();
     const router = useRouter();
     const { status, data } = session;
-    const { _aboutUserForm } = useContext(ModalContext);
-    const setAboutUserForm = _aboutUserForm[1];
+    const { _isAboutMeFormModalDisplayed } = useContext(ModalContext);
+    const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
 
     useEffect(() => {
         const paths = router.asPath?.split('?');
@@ -33,7 +33,7 @@ const AccountPg = () => {
         ) {
             // make the form modal appear onto the ui
             setTimeout(() => {
-                setAboutUserForm(state => ({ ...state, isModalDisplayed: true }));
+                setIsAboutMeFormModalDisplayed(true);
             }, 300);
         }
 
@@ -68,7 +68,7 @@ const AccountPg = () => {
     const { email, name, image, occupation, affiliation } = data.user;
 
     const handleBtnClick = () => {
-        setAboutUserForm(state => ({ ...state, isModalDisplayed: true }));
+        setIsAboutMeFormModalDisplayed(true);
     };
 
     return (

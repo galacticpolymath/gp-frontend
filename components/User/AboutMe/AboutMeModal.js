@@ -18,30 +18,29 @@ const SUBJECTS_OPTIONS = [
 ];
 
 const AboutMeModal = () => {
-    const { _aboutUserForm } = useContext(ModalContext);
+    const { _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     /** @type {import('../../providers/ModalProvider').TAboutUserForm} */
-    const { isModalDisplayed } = _aboutUserForm[0];
+    const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
-    const setAboutUserForm = _aboutUserForm[1];
     const modalBodyRef = useRef();
 
     const handleOnHide = () => {
-        setAboutUserForm(state => ({ ...state, isModalDisplayed: false }));
+        setIsAboutMeFormModalDisplayed(false);
     };
 
     useEffect(() => {
-        if (modalBodyRef?.current?.clientHeight && isModalDisplayed && !textareaMaxHeight) {
-            const height = modalBodyRef.current.clientHeight * .34;
+        if (modalBodyRef?.current?.clientHeight && isAboutMeFormModalDisplayed && !textareaMaxHeight) {
+            const height = modalBodyRef.current.clientHeight * .27;
             setTextareaMaxHeight(height);
         }
-    }, [isModalDisplayed]);
+    }, [isAboutMeFormModalDisplayed]);
 
     return (
         <Modal
-            show={isModalDisplayed}
+            show={isAboutMeFormModalDisplayed}
             onHide={handleOnHide}
-            dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
-            contentClassName='selected-gp-web-app-content user-modal-color'
+            dialogClassName='border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
+            contentClassName='about-me-modal user-modal-color rounded-0'
         >
             <ModalTitle className='px-3 txt-color-for-aboutme-modal'>
                 About Me
@@ -87,7 +86,7 @@ const AboutMeModal = () => {
                             <input
                                 placeholder='Total students'
                                 type='number'
-                                style={{ maxWidth: '200px' }}
+                                style={{ maxWidth: '200px', transform: 'translateY(50%)' }}
                                 className='aboutme-txt-input no-outline'
                             />
                         </section>
@@ -126,7 +125,7 @@ const AboutMeModal = () => {
                         </label>
                         <textarea
                             id='reasonForSiteVisit'
-                            style={{ outline: 'none', minHeight: '175px', maxHeight: (textareaMaxHeight === 0) ? 'none' : `${textareaMaxHeight}px` }}
+                            style={{ outline: 'none', minHeight: '125px', maxHeight: (textareaMaxHeight === 0) ? 'none' : `${textareaMaxHeight}px` }}
                             className='rounded about-me-input-border p-1 mt-2'
                             placeholder='Your response...'
                         />
