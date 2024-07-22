@@ -18,6 +18,7 @@ import SelectedJob from "./components/Modals/SelectedJob";
 import DownloadTipModal from "./components/LessonSection/Modals/DownloadTipModal";
 import LoginModal from "./components/User/Login/LoginModal";
 import CreateAccountModal from "./components/User/Create/CreateAccountModal";
+import AboutMeModal from "./components/User/AboutMeModal";
 
 const ModalContainers = () => {
     const { _selectedJob, _isDownloadModalInfoOn } = useContext(ModalContext);
@@ -30,6 +31,7 @@ const ModalContainers = () => {
             {isDownloadModalInfoOn ? <DownloadTipModal /> : null}
             <LoginModal />
             <CreateAccountModal />
+            <AboutMeModal />
         </>
     )
 }

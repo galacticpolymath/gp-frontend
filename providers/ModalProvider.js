@@ -13,7 +13,36 @@
 /* eslint-disable react/jsx-indent */
 import { createContext, useState } from "react";
 
+/**
+ * @typedef {Object} TUserForm
+ * @property {'grades' | 'years'} gradesOrYears
+ * @property {string} country
+ * @property {number | null} zipCode
+ * @property {string} studentAgeRange
+ * @property {number} classroomSize
+ * @property {string[]} subjects
+ * @property {string} reasonForSiteVisit
+*/
 
+/**
+ * @typedef {Object} TAboutUserForm
+ * @property {boolean} isModalDisplayed
+ * @property {TUserForm} form
+ */
+
+/** @type {TAboutUserForm}*/
+const aboutUserFormDefaultVal = {
+    isModalDisplayed: false,
+    form: {
+        gradesOrYears: 'grades',
+        country: '',
+        zipCode: null,
+        studentAgeRange: '',
+        classroomSize: 0,
+        subjects: [],
+        reasonForSiteVisit: ''
+    }
+}
 export const ModalContext = createContext(null);
 
 export const ModalProvider = ({ children }) => {
@@ -22,13 +51,13 @@ export const ModalProvider = ({ children }) => {
     const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
     const [isLoginModalDisplayed, setIsLoginModalDisplayed] = useState(false);
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = useState(false);
-    const [isAboutMeModalDisplayed, setIsAboutMeModalDisplayed] = useState(false);
+    const [aboutUserForm, setAboutUserForm] = useState(aboutUserFormDefaultVal);
     const _selectedJob = [selectedJob, setSelectedJob]
     const _isJobModalOn = [isJobModalOn, setIsJobModalOn]
     const _isDownloadModalInfoOn = [isDownloadModalInfoOn, setIsDownloadModalInfoOn];
     const _isLoginModalDisplayed = [isLoginModalDisplayed, setIsLoginModalDisplayed];
     const _isCreateAccountModalDisplayed = [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed]
-    const _isAboutMeModalDisplayed = [isAboutMeModalDisplayed, setIsAboutMeModalDisplayed];
+    const _aboutUserForm = [aboutUserForm, setAboutUserForm];
 
     return (
         <ModalContext.Provider
@@ -38,7 +67,7 @@ export const ModalProvider = ({ children }) => {
                 _isDownloadModalInfoOn,
                 _isLoginModalDisplayed,
                 _isCreateAccountModalDisplayed,
-                _isAboutMeModalDisplayed
+                _aboutUserForm
             }}
         >
             {children}

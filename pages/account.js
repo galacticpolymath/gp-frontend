@@ -7,14 +7,17 @@ import { useSession } from 'next-auth/react';
 import Layout from '../components/Layout';
 import LoginUI from '../components/User/Login/LoginUI';
 import Button from '../components/General/Button';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getIsParsable } from '../globalFns';
+import { ModalContext } from '../providers/ModalProvider';
 
 const AccountPg = () => {
     const session = useSession();
     const router = useRouter();
     const { status, data } = session;
+    const { _aboutUserForm } = useContext(ModalContext);
+    const setAboutUserForm = _aboutUserForm[1];
 
     useEffect(() => {
         const paths = router.asPath?.split('?');
@@ -25,13 +28,16 @@ const AccountPg = () => {
             paths?.[1]?.includes('show_about_me_form') &&
             paths[1].split("=")?.[1] &&
             getIsParsable(paths[1].split("=")?.[1]) &&
-            JSON.parse(paths[1].split("=")?.[1])
+            JSON.parse(paths[1].split("=")?.[1]) && 
+            (status === 'authenticated')
         ) {
             // make the form modal appear onto the ui
-            
+            setTimeout(() => {
+                setAboutUserForm(state => ({ ...state, isModalDisplayed: true }));
+            }, 300);
         }
 
-    }, []);
+    }, [status]);
 
     console.log('session, yo there: ', session);
 
@@ -62,7 +68,7 @@ const AccountPg = () => {
     const { email, name, image, occupation, affiliation } = data.user;
 
     const handleBtnClick = () => {
-
+        setAboutUserForm(state => ({ ...state, isModalDisplayed: true }));
     };
 
     return (
