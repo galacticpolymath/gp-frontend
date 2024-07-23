@@ -12,6 +12,7 @@ import { useLogin } from "../../../customHooks/useLogin";
 import Button from "../../General/Button";
 import CustomLink from "../../CustomLink";
 import GoogleSignIn from "../GoogleSignIn";
+import ORTxtDivider from "../ORTxtDivider";
 
 const LoginModal = () => {
     const { _isLoginModalDisplayed, _isCreateAccountModalDisplayed } = useContext(ModalContext);
@@ -135,17 +136,7 @@ const LoginModal = () => {
                                 Forgot your email or password?
                             </CustomLink>
                         </div>
-                        <div className="d-flex mt-3 mb-2">
-                            <div style={{ width: "48%" }} className='d-flex justify-content-center align-items-center'>
-                                <div style={{ height: "3px", width: '80%' }} className="bg-white rounded" />
-                            </div>
-                            <div style={{ width: "4%" }} className='d-flex justify-content-center align-items-center'>
-                                <span className="text-white">OR</span>
-                            </div>
-                            <div style={{ width: "48%" }} className='d-flex justify-content-center align-items-center'>
-                                <div style={{ height: "3px", width: '80%' }} className="bg-white rounded" />
-                            </div>
-                        </div>
+                        <ORTxtDivider color="black" />
                     </form>
                 </section>
                 <section className="d-flex justify-content-center align-items-center pt-3 pb-4">

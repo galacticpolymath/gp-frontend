@@ -229,3 +229,9 @@ export const getIsParsable = val => {
 }
 
 export const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
+
+/** 
+ * @param {Map<string, any>} map
+ * @return {object}
+ */
+export const convertMapToObj = map => Object.fromEntries(map.entries())

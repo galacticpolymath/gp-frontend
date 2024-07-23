@@ -63,7 +63,7 @@ export async function middleware(request) {
       console.log('redirecting the user to the units page...');
       return NextResponse.redirect(`${nextUrl.origin}/lessons/${locale}/${unitNum}`);
     } else if (
-      // unit with locale value is present in the url
+      // unit with a locale value is present in the url
       !nextUrl.href.includes('api') &&
       nextUrl.pathname.includes('lessons') &&
       (nextUrl?.pathname?.split('/')?.filter(val => val)?.length == 3) &&
@@ -111,7 +111,7 @@ export async function middleware(request) {
     }
 
     if (isGettingJwtToken && (!email || (typeof email !== 'string'))) {
-      return new NextResponse('Email was either not provided or a invalid data type. Must be a string.', { status: 400 });
+      return new NextResponse('Email was either not provided or its value was a invalid data type. Must be a string.', { status: 400 });
     }
 
     if (isGettingJwtToken) {
@@ -129,8 +129,12 @@ export async function middleware(request) {
     if (
       ((nextUrl.pathname == '/api/update-lessons') && (method === 'PUT') && authorizationStr) ||
       ((nextUrl.pathname == '/api/insert-lesson') && (method === 'POST') && authorizationStr) ||
-      ((nextUrl.pathname == '/api/delete-lesson') && (method === 'DELETE') && authorizationStr)
+      ((nextUrl.pathname == '/api/delete-lesson') && (method === 'DELETE') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/save-about-user-form') && (method === 'PUT') && authorizationStr)
     ) {
+      // if the route '/api/save-about-user-form', then parse the jwt, get the email and compare it with the email 
+      // -within the body of the request
+      
       const { errResponse } = await getAuthorizeReqResult(authorizationStr, true);
 
       if (errResponse) {
@@ -160,6 +164,7 @@ export const config = {
     '/api/insert-lesson',
     '/api/delete-lesson/:id',
     '/api/update-lessons',
+    '/api/save-about-user-form',
     '/api/get-jwt-token',
     '/lessons/:path*',
   ],

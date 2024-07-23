@@ -19,6 +19,8 @@ const AccountPg = () => {
     const { _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
 
+    console.log('data: ', data);
+
     useEffect(() => {
         const paths = router.asPath?.split('?');
 
@@ -28,7 +30,7 @@ const AccountPg = () => {
             paths?.[1]?.includes('show_about_me_form') &&
             paths[1].split("=")?.[1] &&
             getIsParsable(paths[1].split("=")?.[1]) &&
-            JSON.parse(paths[1].split("=")?.[1]) && 
+            JSON.parse(paths[1].split("=")?.[1]) &&
             (status === 'authenticated')
         ) {
             // make the form modal appear onto the ui
@@ -65,7 +67,7 @@ const AccountPg = () => {
         );
     }
 
-    const { email, name, image, occupation, affiliation } = data.user;
+    const { email, name, image, occupation } = data.user;
 
     const handleBtnClick = () => {
         setIsAboutMeFormModalDisplayed(true);
@@ -90,7 +92,7 @@ const AccountPg = () => {
                     <section className='col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2'>
                         <span className='d-inline-flex justify-content-center align-tiems-center'>Occupation: </span>
                         <span style={{ fontStyle: 'italic' }} className='d-inline-flex justify-content-center align-tiems-center '>
-                            {(occupation && affiliation) ? `${occupation}, ${affiliation}` : 'UNANSWERED'}
+                            {occupation ?? 'UNANSWERED'}
                         </span>
                     </section>
                     <section className='col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2'>

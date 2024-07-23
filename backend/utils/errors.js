@@ -1,5 +1,5 @@
 class CustomError {
-  constructor(message, code, type = '') {
+  constructor(message, code = 500, type = '') {
     this.message = message;
     this.code = code;
     this.type = type;

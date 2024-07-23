@@ -3,6 +3,7 @@
 import { createDocument } from '../db/utils';
 import User from '../models/user';
 import { v4 as uuidv4 } from 'uuid';
+import { CustomError } from '../utils/errors.js';
 
 export const getUsers = async (queryObj = {}, projectionObj = {}) => {
     try {
@@ -48,16 +49,24 @@ export const getUserByEmail = async (email = '') => {
 
 export const updateUser = async (filterQuery = {}, updatedProperties = {}) => {
     try {
-        await User.updateOne(filterQuery, updatedProperties);
+        const result = await User.updateOne(filterQuery, updatedProperties);
+
+        if(result.modifiedCount !== 1){
+            throw new CustomError('When updating the target user, received a modified count not equal to 1. Check query or the update object argument.');
+        }
         
         return { wasSuccessful: true };
     } catch (error) {
-        console.error('The target user failed to be updated. Reason: ', error);
+        const { msg } = error;
+        const errMsg = msg ?? `The target user failed to be updated. Reason: ${error}`;
 
-        return { wasSuccessful: false };
+        console.log(errMsg);
+
+        return { wasSuccessful: false, errMsg };
     }
 
 };
+
 export const deleteUser = async (filterQuery = {}) => {
     try {
         await User.deleteOne(filterQuery);

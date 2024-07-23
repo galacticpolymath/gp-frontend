@@ -46,30 +46,30 @@ const AboutUserModal = () => {
     };
 
     const handleWhatBringsYouToSiteInputChange = event => {
-        const reasonForSiteVisit = structuredClone(aboutUserForm.reasonForSiteVisit);
+        const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit);
 
-        if (event.target.name === 'reason-for-visit-4') {
+        if (event.target.name === 'reason-for-visit-custom') {
             setReasonForVisitCustom(event.target.value);
 
-            reasonForSiteVisit.set(event.target.name, event.target.value);
+            reasonsForSiteVisit.set(event.target.name, event.target.value);
 
             setAboutUserForm({
                 ...aboutUserForm,
-                reasonForSiteVisit: reasonForSiteVisit,
+                reasonsForSiteVisit: reasonsForSiteVisit,
             });
 
             return;
         }
 
-        if (reasonForSiteVisit.has(event.target.name)) {
-            reasonForSiteVisit.delete(event.target.name);
+        if (reasonsForSiteVisit.has(event.target.name)) {
+            reasonsForSiteVisit.delete(event.target.name);
         } else {
-            reasonForSiteVisit.set(event.target.name, event.target.value);
+            reasonsForSiteVisit.set(event.target.name, event.target.value);
         }
 
         setAboutUserForm({
             ...aboutUserForm,
-            reasonForSiteVisit: reasonForSiteVisit,
+            reasonsForSiteVisit: reasonsForSiteVisit,
         });
     };
 
@@ -77,13 +77,13 @@ const AboutUserModal = () => {
         if (!isTextareaDisabled) {
             setReasonForVisitCustom('');
 
-            const reasonForSiteVisit = structuredClone(aboutUserForm.reasonForSiteVisit);
+            const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit);
 
-            reasonForSiteVisit.delete('reason-for-visit-4');
+            reasonsForSiteVisit.delete('reason-for-visit-custom');
 
             setAboutUserForm({
                 ...aboutUserForm,
-                reasonForSiteVisit: reasonForSiteVisit,
+                reasonsForSiteVisit: reasonsForSiteVisit,
             });
         }
 
@@ -113,7 +113,7 @@ const AboutUserModal = () => {
             show={isAboutMeFormModalDisplayed}
             onHide={handleOnHide}
             dialogClassName='border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
-            contentClassName='about-me-modal user-modal-color rounded-0 overflow-scroll'
+            contentClassName='about-me-modal user-modal-color rounded-0'
         >
             <ModalTitle className='px-3 txt-color-for-aboutme-modal'>
                 About Me
@@ -186,7 +186,7 @@ const AboutUserModal = () => {
                         </div>
                     </section>
                     <section className='d-flex flex-column mt-2'>
-                        <label htmlFor='reasonForSiteVisit'>
+                        <label htmlFor='reasonsForSiteVisit'>
                             What brings you to our site?
                         </label>
                         <section className='d-flex flex-column flex-lg-row'>
@@ -216,8 +216,8 @@ const AboutUserModal = () => {
                         </div>
                         <textarea
                             disabled={isTextareaDisabled}
-                            id='reasonForSiteVisit'
-                            name='reason-for-visit-4'
+                            id='reasonsForSiteVisit'
+                            name='reason-for-visit-custom'
                             style={{
                                 outline: 'none',
                                 opacity: isTextareaDisabled ? .3 : 1,

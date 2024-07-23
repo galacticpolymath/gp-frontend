@@ -17,7 +17,7 @@ import { createContext, useState } from "react";
  * @property {number | null} zipCode
  * @property {number} classroomSize
  * @property {Map<string, string>} subjects
- * @property {Map<string, string>} reasonForSiteVisit
+ * @property {Map<string, string>} reasonsForSiteVisit
 */
 
 /** @type {TAboutUserForm}*/
@@ -30,7 +30,7 @@ const aboutMeFormDefault = {
     zipCode: null,
     classroomSize: 0,
     subjects: new Map(),
-    reasonForSiteVisit: new Map(),
+    reasonsForSiteVisit: new Map(),
 };
 
 export const UserContext = createContext(null);

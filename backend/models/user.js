@@ -14,10 +14,12 @@ const PasswordSchema = new Schema({
   salt: { type: String, required: true },
   iterations: { type: Number, required: true },
 });
+
 /**
- * @typedef {Object} UserSchema
+ * @typedef {Object} TUserSchema
  * @property {string} _id - The unique identifier for the user
  * @property {string} email - The user's email address
+ * @property {string} occupation - The user's occupation
  * @property {string} providerAccountId - The id of the document that contains the access token for the user.
  * @property {PasswordSchema} [password] - The password schema object
  * @property {'google' | 'credentials'} provider - The provider type
@@ -40,7 +42,21 @@ export const UserSchema = new Schema({
   },
   picture: { type: String, required: false },
   occupation: { type: String, required: false },
-  // aboutMeForm                        
+  country: { type: String, required: false },
+  zipCode: { type: String, required: false },
+  gradesOrYears: {
+    ageGroupsTaught: [String],
+    selection: String, 
+  },
+  reasonsForSiteVisit: {
+    type: Map,
+    of: String,
+  },
+  subjects: {
+    type: Map,
+    of: String,
+  },
+  classRoomSize: Number,
   roles: { type: [String], required: true },
 });
 

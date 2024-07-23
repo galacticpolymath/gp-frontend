@@ -19,9 +19,8 @@ const LoginUI = ({
     isInputIconShow = true,
 }) => {
     const { sendFormToServer, _loginForm } = useLogin();
-    const { _isLoginModalDisplayed, _isCreateAccountModalDisplayed } = useContext(ModalContext);
+    const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
     const [loginForm, setLoginForm] = _loginForm;
-    const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     const inputFieldClassName = 'col-7';
 
@@ -128,16 +127,16 @@ const LoginUI = ({
                             Forgot your email or password?
                         </CustomLink>
                     </div>
-                    <div className="d-flex mt-3 mb-2">
-                        <div style={{ width: "48%" }} className='d-flex justify-content-center align-items-center'>
-                            <div style={{ height: "3px", width: '80%' }} className="bg-white rounded" />
-                        </div>
+                    <div className="d-flex justify-content-center mt-3 mb-2">
+                        {/* <div style={{ width: "48%" }} className='d-flex justify-content-center align-items-center'>
+                            <div style={{ height: "3px", width: '80%' }} className={`bg-black rounded`} />
+                        </div> */}
                         <div style={{ width: "4%" }} className='d-flex justify-content-center align-items-center'>
-                            <span className="text-white">OR</span>
+                            <span className={`text-black`}>OR</span>
                         </div>
-                        <div style={{ width: "48%" }} className='d-flex justify-content-center align-items-center'>
-                            <div style={{ height: "3px", width: '80%' }} className="bg-white rounded" />
-                        </div>
+                        {/* <div style={{ width: "48%" }} className='d-flex justify-content-center align-items-center'>
+                            <div style={{ height: "3px", width: '80%' }} className={`bg-black rounded`} />
+                        </div> */}
                     </div>
                 </form>
             </section>

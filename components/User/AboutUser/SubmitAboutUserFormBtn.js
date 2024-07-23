@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
@@ -8,12 +9,13 @@ import { UserContext } from "../../../providers/UserProvider";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { CustomError } from "../../../backend/utils/errors";
+import { convertMapToObj } from "../../../globalFns";
 
 const SubmitAboutUserFormBtn = ({ setErrors }) => {
     const { _aboutUserForm } = useContext(UserContext);
     const session = useSession();
-    const [, aboutUserForm] = _aboutUserForm;
-    console.log('current session: ', session);
+    /** @type { [import("../../../providers/UserProvider").TUserForm] } */
+    const [aboutUserForm] = _aboutUserForm;
     const { user, token } = session.data;
 
     const handleSubmitBtnClick = async (event) => {
@@ -24,14 +26,31 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
                 throw new CustomError("Email is not present.", null, "emailNotPresent");
             }
 
+            let aboutUserFormClone = structuredClone(aboutUserForm);
             const {
                 country,
                 zipCode,
                 classroomSize,
-            } = aboutUserForm;
+                reasonsForSiteVisit,
+                subjects,
+            } = aboutUserFormClone;
             let errors = {};
 
-            if ((country.toLowerCase() === 'united states')(!zipCode || (zipCode.toString().length == 0) || (zipCode < 0))) {
+            if (subjects.size > 0) {
+                aboutUserFormClone = {
+                    ...aboutUserFormClone,
+                    subjects: convertMapToObj(subjects),
+                };
+            }
+
+            if (reasonsForSiteVisit.size > 0) {
+                aboutUserFormClone = {
+                    ...aboutUserFormClone,
+                    reasonsForSiteVisit: convertMapToObj(reasonsForSiteVisit),
+                };
+            }
+
+            if ((country.toLowerCase() === 'united states') && (!zipCode || (zipCode.toString().length == 0) || (zipCode < 0))) {
                 errors.push({ field: 'zipCode', msg: 'Invalid zip code.' });
                 errors = { zipCode: 'Invalid zip code.' };
             }
@@ -51,10 +70,11 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
             }
 
             const responseBody = {
-                aboutUser: aboutUserForm,
-                email: user.email,
+                aboutUserForm: aboutUserFormClone,
+                userEmail: user.email,
             };
-            const response = await axios.post(
+
+            const response = await axios.put(
                 `${window.location.origin}/api/save-about-user-form`,
                 responseBody,
                 {
@@ -62,16 +82,18 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+            
+            console.log('response: ', response);
 
             if (response.status !== 200) {
                 throw new CustomError('Failed to save the "AboutUser" form.', null, "aboutUserFormReqFailure");
             }
 
-            if(response.msg !== 'success' || !response.msg){
-                throw new CustomError("Did not receive confirmation if the 'AboutUser' form was saved.", "abooutUserFormResponseConfirmationFailure");
-            }
+            console.log("From server, response.data: ", response.data);
         } catch (error) {
             console.error("An error has occurred. Couldn't update the 'About User' form. Reason: ", error);
+
+            alert("Failed to save your changes. Please refresh the page and try again.");
         }
     };
     return (

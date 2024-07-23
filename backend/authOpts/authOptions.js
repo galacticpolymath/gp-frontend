@@ -335,21 +335,27 @@ export const authOptions = {
         '12hours'
       );
       const refreshToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '1 day');
-      /** @type {{ [key: string]: string }  } */
-      const userPics = cache.get('pictures') ?? {};
+      /** @type {{ [key:string]: import('../models/user').TUserSchema  }} */
+      const users = cache.get('users') ?? {};
       let picture = '';
+      let occupation = null;
 
-      if (Object.keys(userPics).length && userPics[email]) {
-        picture = userPics[email];
+      if (Object.keys(users).length && users[email]) {
+        picture = users[email].picture;
+        occupation = users[email].occupation;
       } else {
-        const dbUser = await getUser({ email: email }, { picture: 1 });
+        // HANDLED CASE WHICH THE USER DOES NOT EXIST
+        /** @type {import('../models/user').TUserSchema  } */
+        const dbUser = await getUser({ email: email }, { picture: 1, occupation: 1 });
         picture = dbUser.picture ?? '';
+        occupation = dbUser.occupation ?? null;
 
-        cache.set('pictures', { ...userPics, [email]: picture });
+        cache.set('users', { ...users, [email]: dbUser });
       }
 
       console.log('userPic, yo there: ', picture);
-      
+      console.log('occupation, yo there: ', occupation);
+
       session.id = token.id;
       session.token = accessToken;
       session.refresh = refreshToken;
@@ -357,6 +363,7 @@ export const authOptions = {
         email: email,
         name: name,
         image: picture,
+        occupation: occupation,
       };
 
       console.log('session yo there, updated: ', session);
