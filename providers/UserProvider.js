@@ -15,10 +15,9 @@ import { createContext, useState } from "react";
  * @property {TGradesOrYears} gradesOrYears
  * @property {string} country
  * @property {number | null} zipCode
- * @property {string} studentAgeRange
  * @property {number} classroomSize
- * @property {string[]} subjects
- * @property {string} reasonForSiteVisit
+ * @property {Map<string, string>} subjects
+ * @property {Map<string, string>} reasonForSiteVisit
 */
 
 /** @type {TAboutUserForm}*/
@@ -29,10 +28,9 @@ const aboutMeFormDefault = {
     },
     country: '',
     zipCode: null,
-    studentAgeRange: '',
     classroomSize: 0,
-    subjects: [],
-    reasonForSiteVisit: '',
+    subjects: new Map(),
+    reasonForSiteVisit: new Map(),
 };
 
 export const UserContext = createContext(null);

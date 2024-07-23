@@ -1,7 +1,8 @@
 class CustomError {
-  constructor(message, code) {
+  constructor(message, code, type = '') {
     this.message = message;
     this.code = code;
+    this.type = type;
   }
 }
 class AuthError{

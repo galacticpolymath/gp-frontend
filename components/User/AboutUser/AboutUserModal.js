@@ -5,10 +5,11 @@
 import { Modal, ModalBody, ModalTitle } from 'react-bootstrap';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ModalContext } from '../../../providers/ModalProvider';
-import Button from '../../General/Button';
 import GradesOrYearsSelection from './sections/GradesOrYearsSelection';
 import { UserContext } from '../../../providers/UserProvider';
 import CountrySection from './sections/CountrySection';
+import SubjectOption from './sections/SubjectOption';
+import SubmitAboutUserFormBtn from './SubmitAboutUserFormBtn';
 
 const SUBJECTS_OPTIONS = [
     'science',
@@ -34,7 +35,9 @@ const AboutUserModal = () => {
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
     const [isTextareaDisabled, setIsTextareaDisabled] = useState(true);
-    /** @type {[import('../../../providers/ModalProvider').TUserForm, Function]} */
+    const [reasonForVisitCustom, setReasonForVisitCustom] = useState('');
+    const [errors, setErorrs] = useState({});
+    /** @type {[import('../../../providers/UserProvider').TUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const modalBodyRef = useRef();
 
@@ -43,14 +46,55 @@ const AboutUserModal = () => {
     };
 
     const handleWhatBringsYouToSiteInputChange = event => {
+        const reasonForSiteVisit = structuredClone(aboutUserForm.reasonForSiteVisit);
+
+        if (event.target.name === 'reason-for-visit-4') {
+            setReasonForVisitCustom(event.target.value);
+
+            reasonForSiteVisit.set(event.target.name, event.target.value);
+
+            setAboutUserForm({
+                ...aboutUserForm,
+                reasonForSiteVisit: reasonForSiteVisit,
+            });
+
+            return;
+        }
+
+        if (reasonForSiteVisit.has(event.target.name)) {
+            reasonForSiteVisit.delete(event.target.name);
+        } else {
+            reasonForSiteVisit.set(event.target.name, event.target.value);
+        }
+
         setAboutUserForm({
             ...aboutUserForm,
-            reasonForSiteVisit: event.target.value,
+            reasonForSiteVisit: reasonForSiteVisit,
         });
     };
 
     const handleToggleTextareaDisability = () => {
+        if (!isTextareaDisabled) {
+            setReasonForVisitCustom('');
+
+            const reasonForSiteVisit = structuredClone(aboutUserForm.reasonForSiteVisit);
+
+            reasonForSiteVisit.delete('reason-for-visit-4');
+
+            setAboutUserForm({
+                ...aboutUserForm,
+                reasonForSiteVisit: reasonForSiteVisit,
+            });
+        }
+
         setIsTextareaDisabled(state => !state);
+    };
+
+    const handleOnInputChange = event => {
+        setAboutUserForm(state => ({
+            ...state,
+            [event.target.name]: event.target.value,
+        }));
     };
 
     useEffect(() => {
@@ -59,6 +103,10 @@ const AboutUserModal = () => {
             setTextareaMaxHeight(height);
         }
     }, [isAboutMeFormModalDisplayed]);
+
+    useEffect(() => {
+        console.log('aboutUserForm: ', aboutUserForm);
+    });
 
     return (
         <Modal
@@ -79,6 +127,7 @@ const AboutUserModal = () => {
                             </label>
                             <input
                                 name='occupation'
+                                onChange={handleOnInputChange}
                                 placeholder='What do you do?'
                                 style={{ maxWidth: '400px' }}
                                 className='aboutme-txt-input no-outline pt-1'
@@ -92,6 +141,8 @@ const AboutUserModal = () => {
                             <input
                                 placeholder='Your zip code'
                                 type='number'
+                                name='zipCode'
+                                onChange={handleOnInputChange}
                                 style={{
                                     outline: 'none',
                                     borderTop: 'none',
@@ -112,6 +163,8 @@ const AboutUserModal = () => {
                             <input
                                 placeholder='Total students'
                                 type='number'
+                                name='classroomSize'
+                                onChange={handleOnInputChange}
                                 style={{ maxWidth: '200px', transform: 'translateY(50%)' }}
                                 className='aboutme-txt-input no-outline'
                             />
@@ -122,27 +175,14 @@ const AboutUserModal = () => {
                             Subject(s) Taught:
                         </label>
                         <div className='pt-1 subjects-taught-container'>
-                            {SUBJECTS_OPTIONS.map((subject, index) => {
-                                return (
-                                    <div key={index} className={`d-flex flex-column ${index === (SUBJECTS_OPTIONS.length - 1) ? 'mt-2' : ''}`}>
-                                        <section className='d-flex'>
-                                            <input
-                                                type='checkbox'
-                                                name='subject'
-                                                value={subject}
-                                            />
-                                            <span className='capitalize ms-1 txt-color-for-aboutme-modal'>{subject}</span>
-                                        </section>
-                                        {(subject === 'other:') && (
-                                            <input
-                                                placeholder='Enter subject.'
-                                                className='aboutme-txt-input no-outline'
-                                                style={{ maxWidth: '250px' }}
-                                            />
-                                        )}
-                                    </div>
-                                );
-                            })}
+                            {SUBJECTS_OPTIONS.map((subject, index) => (
+                                <SubjectOption
+                                    key={index}
+                                    index={index}
+                                    lastIndex={SUBJECTS_OPTIONS.length - 1}
+                                    subject={subject}
+                                />
+                            ))}
                         </div>
                     </section>
                     <section className='d-flex flex-column mt-2'>
@@ -154,8 +194,8 @@ const AboutUserModal = () => {
                                 <div key={index} className={`d-flex ${index === 0 ? '' : 'ms-lg-3'}`}>
                                     <input
                                         type='checkbox'
-                                        name='subject'
                                         value={opt}
+                                        name={`reason-for-visit-${index}`}
                                         onChange={handleWhatBringsYouToSiteInputChange}
                                     />
                                     <span className='capitalize ms-1'>
@@ -177,6 +217,7 @@ const AboutUserModal = () => {
                         <textarea
                             disabled={isTextareaDisabled}
                             id='reasonForSiteVisit'
+                            name='reason-for-visit-4'
                             style={{
                                 outline: 'none',
                                 opacity: isTextareaDisabled ? .3 : 1,
@@ -184,14 +225,12 @@ const AboutUserModal = () => {
                             }}
                             className='rounded about-me-input-border about-user-textarea p-1 mt-2'
                             placeholder='Your response...'
+                            value={reasonForVisitCustom}
+                            onChange={handleWhatBringsYouToSiteInputChange}
                         />
                     </section>
                     <section className='d-flex justify-content-end'>
-                        <Button
-                            classNameStr='mt-2 no-btn-styles text-white bg-primary p-2 rounded'
-                        >
-                            <span>SUBMIT & SAVE</span>
-                        </Button>
+                        <SubmitAboutUserFormBtn setErrors={setErorrs} />
                     </section>
                 </form>
             </ModalBody>

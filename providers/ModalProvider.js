@@ -13,45 +13,6 @@
 /* eslint-disable react/jsx-indent */
 import { createContext, useState } from "react";
 
-/**
- * @typedef {Object} TGradesOrYears
- * @property {"grades" | "years"} selection
- * @property {string[]} ageGroupsTaught 
- */
-
-/**
- * @typedef {Object} TUserForm
- * @property {TGradesOrYears} gradesOrYears
- * @property {string} country
- * @property {number | null} zipCode
- * @property {string} studentAgeRange
- * @property {number} classroomSize
- * @property {string[]} subjects
- * @property {string} reasonForSiteVisit
-*/
-
-/**
- * @typedef {Object} TAboutUserForm
- * @property {boolean} isModalDisplayed
- * @property {TUserForm} form
- */
-
-/** @type {TAboutUserForm}*/
-const aboutUserFormDefaultVal = {
-    isModalDisplayed: false,
-    form: {
-        gradesOrYears: {
-            selection: 'grades',
-            ageGroupsTaught: []
-        },
-        country: '',
-        zipCode: null,
-        studentAgeRange: '',
-        classroomSize: 0,
-        subjects: [],
-        reasonForSiteVisit: ''
-    }
-}
 export const ModalContext = createContext(null);
 
 export const ModalProvider = ({ children }) => {

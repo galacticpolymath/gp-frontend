@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 const AuthResultPg = () => {
   const session = useSession();
-  console.log('session, sup there: ', session);
   const [wasRendered, setWasRendered] = useState(false);
 
   useEffect(() => {
