@@ -10,12 +10,16 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { CustomError } from "../../../backend/utils/errors";
 import { convertMapToObj } from "../../../globalFns";
+import { ModalContext } from "../../../providers/ModalProvider";
 
 const SubmitAboutUserFormBtn = ({ setErrors }) => {
     const { _aboutUserForm } = useContext(UserContext);
+    const { _notifyModal, _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     const session = useSession();
     /** @type { [import("../../../providers/UserProvider").TUserForm] } */
     const [aboutUserForm] = _aboutUserForm;
+    const [, setIsAboutUserModalDisplayed] = _isAboutMeFormModalDisplayed;
+    const [, setNotifyModal] = _notifyModal;
     const { user, token } = session.data;
 
     const handleSubmitBtnClick = async (event) => {
@@ -88,6 +92,12 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
             if (response.status !== 200) {
                 throw new CustomError('Failed to save the "AboutUser" form.', null, "aboutUserFormReqFailure");
             }
+
+            setIsAboutUserModalDisplayed(false);
+
+            setTimeout(() => {
+                setNotifyModal({ isDisplayed: true, bodyTxt: '', headerTxt: 'Form Saved! Thank you!' });
+            }, 300);
 
             console.log("From server, response.data: ", response.data);
         } catch (error) {

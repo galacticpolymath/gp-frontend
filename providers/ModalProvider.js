@@ -20,8 +20,10 @@ export const ModalProvider = ({ children }) => {
     const [isJobModalOn, setIsJobModalOn] = useState(false);
     const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
     const [isLoginModalDisplayed, setIsLoginModalDisplayed] = useState(false);
+    const [notifyModal, setNotifyModal] = useState({ isDisplayed: false, bodyTxt: '', headerTxt: 'Form Saved! Thank you!' });
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = useState(false);
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = useState(false);
+    const _notifyModal = [notifyModal, setNotifyModal];
     const _selectedJob = [selectedJob, setSelectedJob]
     const _isJobModalOn = [isJobModalOn, setIsJobModalOn]
     const _isDownloadModalInfoOn = [isDownloadModalInfoOn, setIsDownloadModalInfoOn];
@@ -37,7 +39,8 @@ export const ModalProvider = ({ children }) => {
                 _isDownloadModalInfoOn,
                 _isLoginModalDisplayed,
                 _isCreateAccountModalDisplayed,
-                _isAboutMeFormModalDisplayed
+                _isAboutMeFormModalDisplayed,
+                _notifyModal
             }}
         >
             {children}
