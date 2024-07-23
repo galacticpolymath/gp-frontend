@@ -10,6 +10,8 @@ const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin)
   const token = authorizationStr.split(' ')[1].trim();
   const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
 
+  console.log('payload, yo there: ', payload);
+
   if (!payload) {
     return {
       isAuthorize: false,
@@ -130,6 +132,7 @@ export async function middleware(request) {
       ((nextUrl.pathname == '/api/update-lessons') && (method === 'PUT') && authorizationStr) ||
       ((nextUrl.pathname == '/api/insert-lesson') && (method === 'POST') && authorizationStr) ||
       ((nextUrl.pathname == '/api/delete-lesson') && (method === 'DELETE') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/get-about-user-form') && (method === 'GET') && authorizationStr) ||
       ((nextUrl.pathname == '/api/save-about-user-form') && (method === 'PUT') && authorizationStr)
     ) {
       // if the route '/api/save-about-user-form', then parse the jwt, get the email and compare it with the email 
@@ -166,6 +169,7 @@ export const config = {
     '/api/update-lessons',
     '/api/save-about-user-form',
     '/api/get-jwt-token',
+    '/api/get-about-user-form',
     '/lessons/:path*',
   ],
 };

@@ -56,7 +56,7 @@ export const UserSchema = new Schema({
     type: Map,
     of: String,
   },
-  classRoomSize: Number,
+  classroomSize: Number,
   roles: { type: [String], required: true },
 });
 

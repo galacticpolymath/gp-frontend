@@ -44,15 +44,9 @@ export default async function handler(request, response) {
         }
 
         const { userEmail, aboutUserForm } = request.body;
-        const doesUserExist = !!(await getUserByEmail(userEmail));
-
-        if (!doesUserExist) {
-            throw new CustomError("The user email does not exist in the database.", 404);
-        }
-
         const aboutUserFormFalseyValsFiltered = Object.entries(aboutUserForm)
             .filter(([, val]) => {
-                if(val && typeof val === 'object'){
+                if (val && typeof val === 'object') {
                     return Object.keys(val).length > 0;
                 }
 
@@ -61,6 +55,12 @@ export default async function handler(request, response) {
 
         if (!aboutUserFormFalseyValsFiltered?.length) {
             throw new CustomError("The 'aboutUser' form is empty or has falsey values");
+        }
+
+        const doesUserExist = !!(await getUserByEmail(userEmail));
+
+        if (!doesUserExist) {
+            throw new CustomError("The user email does not exist in the database.", 404);
         }
 
         /** @type {import("../../providers/UserProvider").TUserForm} */
@@ -73,12 +73,12 @@ export default async function handler(request, response) {
 
             return accumObjUpdated;
         }, {});
-        const udpateUserResult = await updateUser({ email: userEmail }, updatedUserProperties);
+        const updateUserResult = await updateUser({ email: userEmail }, updatedUserProperties);
 
-        console.log('udpateUserResult: ', udpateUserResult);
+        console.log('updateUserResult: ', updateUserResult);
 
-        if(!udpateUserResult.wasSuccessful){
-            throw new CustomError(udpateUserResult.errMsg, 500);
+        if (!updateUserResult.wasSuccessful) {
+            throw new CustomError(updateUserResult.errMsg, 500);
         }
 
         return response.status(200).json({ msg: "Successfully saved the 'aboutUser' form into the db." });

@@ -11,17 +11,39 @@ import { createContext, useState } from "react";
  */
 
 /**
- * @typedef {Object} TUserForm
+ * @typedef {Object} TSubjectsAndReasonsForVisitMap
+ * @property {Map<string, string>} subjects
+ * @property {Map<string, string>} reasonsForSiteVisit
+ */
+
+/**
+ * @typedef {Object} TSubjectsAndReasonsForVisitObjs
+ * @property {{ [key: string]: string }} subjects
+ * @property {{ [key: string]: string }} reasonsForSiteVisit
+ */
+
+/**
+ * @typedef {Object} TAboutUserForm
+ * @property {Map<string, string>} subjects
+ * @property {Map<string, string>} reasonsForSiteVisit
  * @property {TGradesOrYears} gradesOrYears
  * @property {string} country
  * @property {number | null} zipCode
  * @property {number} classroomSize
- * @property {Map<string, string>} subjects
- * @property {Map<string, string>} reasonsForSiteVisit
+*/
+
+/**
+ * @typedef {Object} TAboutUserFormFromServer
+ * @property {{ [key: string]: string }} subjects
+ * @property {{ [key: string]: string }} reasonsForSiteVisit
+ * @property {TGradesOrYears} gradesOrYears
+ * @property {string} country
+ * @property {number | null} zipCode
+ * @property {number} classroomSize
 */
 
 /** @type {TAboutUserForm}*/
-const aboutMeFormDefault = {
+export const aboutUserFormDefault = {
     gradesOrYears: {
         selection: 'grades',
         ageGroupsTaught: [],
@@ -36,7 +58,7 @@ const aboutMeFormDefault = {
 export const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
-    const [aboutUserForm, setAboutUserForm] = useState(aboutMeFormDefault);
+    const [aboutUserForm, setAboutUserForm] = useState(aboutUserFormDefault);
     const _aboutUserForm = [aboutUserForm, setAboutUserForm];
 
     return (

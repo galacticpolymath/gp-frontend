@@ -33,11 +33,11 @@ export const getUser = async (queryObj = {}, projectionObj = {}) => {
 
 };
 
-export const getUserByEmail = async (email = '') => {
+export const getUserByEmail = async (email = '', projectionsObj = {}) => {
     try {
         /** @typedef {import('../models/user.js').UserSchema} UserSchema */
         /** @type {UserSchema} */
-        const targetUser = await User.findOne({ email: email }).lean();
+        const targetUser = await User.findOne({ email: email }, projectionsObj).lean();
 
         return targetUser;
     } catch (error) {

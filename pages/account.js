@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-curly-brace-presence */
@@ -7,19 +8,86 @@ import { useSession } from 'next-auth/react';
 import Layout from '../components/Layout';
 import LoginUI from '../components/User/Login/LoginUI';
 import Button from '../components/General/Button';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getIsParsable } from '../globalFns';
 import { ModalContext } from '../providers/ModalProvider';
+import { UserContext, aboutUserFormDefault } from '../providers/UserProvider';
+import axios from 'axios';
 
 const AccountPg = () => {
     const session = useSession();
     const router = useRouter();
     const { status, data } = session;
+    const { _aboutUserForm } = useContext(UserContext);
     const { _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
+    const [wasTheAboutUserFormRetrieved, setWasTheAboutUserFormRetrieved] = useState(false);
+    const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
 
-    console.log('data: ', data);
+    useEffect(() => {
+        console.log('aboutUserForm: ', aboutUserForm);
+    });
+
+    useEffect(() => {
+        if ((status === 'authenticated') && !wasTheAboutUserFormRetrieved) {
+            (async () => {
+                try {
+                    const response = await axios.get(
+                        `${window.location.origin}/api/get-about-user-form`,
+                        {
+                            params: { email: data.user.email },
+                            headers: {
+                                Authorization: `Bearer ${data.token}`,
+                            },
+                        },
+                    );
+
+                    if (response.status !== 200) {
+                        throw new Error("Failed to get 'AboutUser' form for the target user.");
+                    }
+
+                    /** @type {import('../providers/UserProvider').TAboutUserFormFromServer} */
+                    const aboutUserFormFromServer = response.data;
+                    /** @type {import('../providers/UserProvider').TAboutUserForm} */
+                    const aboutUserFormForClient = { ...aboutUserFormDefault };
+
+                    if (Object.entries(aboutUserFormFromServer.reasonsForSiteVisit).length > 0) {
+                        const reasonsForSiteVisitMap = new Map(Object.entries(aboutUserFormFromServer.reasonsForSiteVisit));
+                        aboutUserFormForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;
+                    }
+
+                    if (Object.entries(aboutUserFormFromServer.subjects).length > 0) {
+                        const subjectsTeaching = new Map(Object.entries(aboutUserFormFromServer.subjects));
+                        aboutUserFormForClient.subjects = subjectsTeaching;
+                    }
+
+                    if (Object.entries(aboutUserFormFromServer.gradesOrYears).length > 0) {
+                        aboutUserFormForClient.gradesOrYears = aboutUserFormFromServer.gradesOrYears;
+                    }
+
+                    if (aboutUserFormFromServer.classroomSize) {
+                        aboutUserFormForClient.classroomSize = aboutUserFormFromServer.classroomSize;
+                    }
+
+                    if (aboutUserFormFromServer.zipCode) {
+                        aboutUserFormForClient.zipCode = aboutUserFormFromServer.zipCode;
+                    }
+
+                    if (aboutUserFormFromServer.country) {
+                        aboutUserFormForClient.country = aboutUserFormFromServer.country;
+                    }
+
+                    console.log('aboutUserFormForClient, what is up: ', aboutUserFormForClient);
+
+                    setAboutUserForm(aboutUserFormForClient);
+                } catch (error) {
+                    console.error('Failed to get "AboutUser" form. Reason: ', error);
+                }
+            })();
+            setWasTheAboutUserFormRetrieved(true);
+        }
+    }, [status]);
 
     useEffect(() => {
         const paths = router.asPath?.split('?');
