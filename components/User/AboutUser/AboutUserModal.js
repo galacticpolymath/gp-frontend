@@ -97,7 +97,7 @@ const AboutUserModal = () => {
         }));
     };
 
-    const parseAboutUserFormReviver = (key, val) => {
+    const handleParseUserForm = (key, val) => {
         if (['subjects', 'reasonsForSiteVisit'].includes(key)){
             const map = new Map(Object.entries(val));
 
@@ -111,9 +111,7 @@ const AboutUserModal = () => {
         const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
 
         if (aboutUserFormStringified) {
-            const aboutUserForm = JSON.parse(aboutUserFormStringified, parseAboutUserFormReviver);
-            console.log('aboutUserForm: ', aboutUserForm);
-            console.log('hey there!');
+            const aboutUserForm = JSON.parse(aboutUserFormStringified, handleParseUserForm);
             setAboutUserForm(aboutUserForm);
         }
     };
@@ -184,6 +182,7 @@ const AboutUserModal = () => {
                                 placeholder='Total students'
                                 type='number'
                                 name='classroomSize'
+                                value={aboutUserForm.classroomSize}
                                 onChange={handleOnInputChange}
                                 style={{ maxWidth: '200px', transform: 'translateY(50%)' }}
                                 className='aboutme-txt-input no-outline'

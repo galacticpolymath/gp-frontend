@@ -18,7 +18,7 @@ export default async function handler(request, response) {
             gradesOrYears: 1,
             reasonsForSiteVisit: 1,
             subjects: 1,
-            classRoomSize: 1,
+            classroomSize: 1,
             country: 1,
             zipCode: 1,
             occupation: 1,

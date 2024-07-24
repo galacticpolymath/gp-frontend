@@ -86,7 +86,7 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-            
+
             console.log('response: ', response);
 
             if (response.status !== 200) {
@@ -96,7 +96,14 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
             setIsAboutUserModalDisplayed(false);
 
             setTimeout(() => {
-                setNotifyModal({ isDisplayed: true, bodyTxt: '', headerTxt: 'Form Saved! Thank you!' });
+                setNotifyModal({
+                    isDisplayed: true,
+                    bodyTxt: '',
+                    headerTxt: 'Form Saved! Thank you!',
+                    handleOnHide: () => {
+                        session.update();
+                    },
+                });
             }, 300);
 
             console.log("From server, response.data: ", response.data);

@@ -30,7 +30,7 @@ const AccountPg = () => {
     });
 
     useEffect(() => {
-        if ((status === 'authenticated') && !wasTheAboutUserFormRetrieved) {
+        if (status === 'authenticated') {
             (async () => {
                 try {
                     const response = await axios.get(
@@ -85,12 +85,13 @@ const AccountPg = () => {
 
                     localStorage.setItem('aboutUserForm', JSON.stringify(aboutUserFormFromServer));
 
+                    console.log('aboutUserFormForClient: ', aboutUserFormForClient);
+
                     setAboutUserForm(aboutUserFormForClient);
                 } catch (error) {
                     console.error('Failed to get "AboutUser" form. Reason: ', error);
                 }
             })();
-            setWasTheAboutUserFormRetrieved(true);
         }
     }, [status]);
 

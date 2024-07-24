@@ -5,15 +5,19 @@
 
 import { useContext } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { ModalContext } from "../../providers/ModalProvider";
+import { ModalContext, defautlNotifyModalVal } from "../../providers/ModalProvider";
 
 const Notify = () => {
     const { _notifyModal } = useContext(ModalContext);
     const [notifyModal, setNotifyModal] = _notifyModal;
-    const { bodyTxt, headerTxt } = notifyModal;
+    const { bodyTxt, headerTxt, handleOnHide } = notifyModal;
 
     const closeModal = () => {
-        setNotifyModal({ isDisplayed: false, bodyTxt: '', headerTxt: '' });
+        if(typeof handleOnHide === 'function'){
+            handleOnHide();
+        }
+        
+        setNotifyModal(defautlNotifyModalVal);
     };
 
     return (

@@ -14,13 +14,19 @@
 import { createContext, useState } from "react";
 
 export const ModalContext = createContext(null);
+export const defautlNotifyModalVal = { 
+    isDisplayed: false, 
+    bodyTxt: '', 
+    headerTxt: '',
+    handleOnHide: () => {}
+};
 
 export const ModalProvider = ({ children }) => {
     const [selectedJob, setSelectedJob] = useState(null);
     const [isJobModalOn, setIsJobModalOn] = useState(false);
     const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
     const [isLoginModalDisplayed, setIsLoginModalDisplayed] = useState(false);
-    const [notifyModal, setNotifyModal] = useState({ isDisplayed: false, bodyTxt: '', headerTxt: 'Form Saved! Thank you!' });
+    const [notifyModal, setNotifyModal] = useState(defautlNotifyModalVal);
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = useState(false);
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = useState(false);
     const _notifyModal = [notifyModal, setNotifyModal];
