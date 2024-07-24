@@ -39,7 +39,6 @@ const AboutUserModal = () => {
     const [errors, setErorrs] = useState({});
     /** @type {[import('../../../providers/UserProvider').TAboutUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
-    const [, setCounterRerender] = useState(0);
     const modalBodyRef = useRef();
 
     const handleOnHide = () => {

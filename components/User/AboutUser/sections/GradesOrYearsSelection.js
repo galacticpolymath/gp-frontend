@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import Button from '../../../General/Button';
 import { UserContext } from '../../../../providers/UserProvider';
 
@@ -14,14 +14,10 @@ const GradesOrYearsSelection = () => {
     const { _aboutUserForm } = useContext(UserContext);
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const { selection, ageGroupsTaught } = aboutUserForm.gradesOrYears;
-    const [gradesColorCss, setGradesColorsCss] = useState((selection === 'grades') ? 'selected-grade-or-years-opt' : 'text-gray border' );
-    const [yearsColorCss, setYearsColorsCss] = useState((selection === 'years') ? 'selected-grade-or-years-opt' : 'text-gray border');
     /** @type {[import('../../../../providers/ModalProvider').TUserForm, Function]} */
     const ageGroupOptions = AGE_GROUPS[selection];
 
-    const handleGradesOrYearsBtnClick = (setCssOfSelectedBtn, setCssOfUnSelectBtn, gradesOrYearsSelectedOptName) => () => {
-        setCssOfSelectedBtn('selected-grade-or-years-opt');
-        setCssOfUnSelectBtn('text-gray border');
+    const handleGradesOrYearsBtnClick = gradesOrYearsSelectedOptName => () => {
         setAboutUserForm(state => ({
             ...state,
             gradesOrYears: {
@@ -65,15 +61,15 @@ const GradesOrYearsSelection = () => {
                 <section>
                     <Button
                         defaultStyleObj={{ borderTopLeftRadius: '.5em', borderBottomLeftRadius: '.5em', width: '100px' }}
-                        classNameStr={`py-1 no-btn-styles ${gradesColorCss}`}
-                        handleOnClick={handleGradesOrYearsBtnClick(setGradesColorsCss, setYearsColorsCss, 'grades')}
+                        classNameStr={`py-1 no-btn-styles ${selection === 'grades' ? 'selected-grade-or-years-opt' : 'text-gray border'}`}
+                        handleOnClick={handleGradesOrYearsBtnClick('grades')}
                     >
                         Grades
                     </Button>
                     <Button
                         defaultStyleObj={{ background: '#F2F8FD', width: '100px', borderTopRightRadius: '.5em', borderBottomRightRadius: '.5em' }}
-                        classNameStr={`py-1 no-btn-styles ${yearsColorCss}`}
-                        handleOnClick={handleGradesOrYearsBtnClick(setYearsColorsCss, setGradesColorsCss, 'years')}
+                        classNameStr={`py-1 no-btn-styles ${selection === 'years' ? 'selected-grade-or-years-opt' : 'text-gray border'}`}
+                        handleOnClick={handleGradesOrYearsBtnClick('years')}
                     >
                         Years
                     </Button>

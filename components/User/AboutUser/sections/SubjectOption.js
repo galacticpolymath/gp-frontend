@@ -8,30 +8,38 @@ import { UserContext } from "../../../../providers/UserProvider";
 
 const SubjectOption = ({ subject, index, lastIndex }) => {
     const { _aboutUserForm } = useContext(UserContext);
-    /** @type {[import("../../../../providers/UserProvider").TUserForm, Function]} */
+    /** @type {[import("../../../../providers/UserProvider").TAboutUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
-    const [isInputTxtDisabled, setIsInputTxtDisabled] = useState(true);
-    const [customSubject, setCustomSubject] = useState("");
+    const subjectName = `subject-${index}`;
+    const customSubjectName = `other-${index}`;
+    let isChecked = false;
+
+    if (aboutUserForm.subjects.has(subjectName) || aboutUserForm.subjects.has(customSubjectName)) {
+        isChecked = true;
+    }
+
+    const [isTxtInputDisabled, setIsTxtInputDisabled] = useState((subject === 'other:') ? !isChecked : true);
+    const [customSubject, setCustomSubject] = useState(aboutUserForm.subjects.get(customSubjectName) ?? "");
 
     const handleCheckboxOnchange = event => {
-        console.log('event.target.value: ', event.target.value);
-        if ((event.target.value === 'other:') && !isInputTxtDisabled) {
+        if ((event.target.value === 'other:') && isChecked) {
             const subjectsTaught = structuredClone(aboutUserForm.subjects);
-
+            
             subjectsTaught.delete(`other-${index}`);
 
             setAboutUserForm(state => ({ ...state, subjects: subjectsTaught }));
 
             setCustomSubject('');
 
-            setIsInputTxtDisabled(true);
+            setIsTxtInputDisabled(false);
+
             return;
         }
 
         if (event.target.value === 'other:') {
-            setIsInputTxtDisabled(false);
             return;
         }
+        // GOAL: present all of the input received from the server onto the form. 
 
         const subjectsTaught = structuredClone(aboutUserForm.subjects);
 
@@ -64,6 +72,7 @@ const SubjectOption = ({ subject, index, lastIndex }) => {
                     name={`subject-${index}`}
                     value={subject}
                     onChange={handleCheckboxOnchange}
+                    checked={isChecked}
                 />
                 <span className='capitalize ms-1 txt-color-for-aboutme-modal'>{subject}</span>
             </section>
@@ -71,8 +80,8 @@ const SubjectOption = ({ subject, index, lastIndex }) => {
                 <input
                     placeholder='Enter subject.'
                     className='aboutme-txt-input no-outline'
-                    style={{ maxWidth: '250px', opacity: isInputTxtDisabled ? .3 : 1 }}
-                    disabled={isInputTxtDisabled}
+                    style={{ maxWidth: '250px', opacity: isTxtInputDisabled ? .3 : 1 }}
+                    disabled={isTxtInputDisabled}
                     value={customSubject}
                     name={`other-${index}`}
                     onChange={handleOnInputChange}
