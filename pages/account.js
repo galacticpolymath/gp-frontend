@@ -52,6 +52,7 @@ const AccountPg = () => {
                     /** @type {import('../providers/UserProvider').TAboutUserForm} */
                     const aboutUserFormForClient = { ...aboutUserFormDefault };
 
+
                     if (Object.entries(aboutUserFormFromServer.reasonsForSiteVisit).length > 0) {
                         const reasonsForSiteVisitMap = new Map(Object.entries(aboutUserFormFromServer.reasonsForSiteVisit));
                         aboutUserFormForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;
@@ -78,7 +79,11 @@ const AccountPg = () => {
                         aboutUserFormForClient.country = aboutUserFormFromServer.country;
                     }
 
-                    console.log('aboutUserFormForClient, what is up: ', aboutUserFormForClient);
+                    if (aboutUserFormFromServer.occupation) {
+                        aboutUserFormForClient.occupation = aboutUserFormFromServer.occupation;
+                    }
+
+                    localStorage.setItem('aboutUserForm', JSON.stringify(aboutUserFormFromServer));
 
                     setAboutUserForm(aboutUserFormForClient);
                 } catch (error) {

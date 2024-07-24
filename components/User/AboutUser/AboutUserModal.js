@@ -37,8 +37,9 @@ const AboutUserModal = () => {
     const [isTextareaDisabled, setIsTextareaDisabled] = useState(true);
     const [reasonForVisitCustom, setReasonForVisitCustom] = useState('');
     const [errors, setErorrs] = useState({});
-    /** @type {[import('../../../providers/UserProvider').TUserForm, Function]} */
+    /** @type {[import('../../../providers/UserProvider').TAboutUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
+    const [, setCounterRerender] = useState(0);
     const modalBodyRef = useRef();
 
     const handleOnHide = () => {
@@ -97,6 +98,27 @@ const AboutUserModal = () => {
         }));
     };
 
+    const parseAboutUserFormReviver = (key, val) => {
+        if (['subjects', 'reasonsForSiteVisit'].includes(key)){
+            const map = new Map(Object.entries(val));
+
+            return map;
+        }
+
+        return val;
+    };
+
+    const handleOnShow = () => {
+        const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
+
+        if (aboutUserFormStringified) {
+            const aboutUserForm = JSON.parse(aboutUserFormStringified, parseAboutUserFormReviver);
+            console.log('aboutUserForm: ', aboutUserForm);
+            console.log('hey there!');
+            setAboutUserForm(aboutUserForm);
+        }
+    };
+
     useEffect(() => {
         if (modalBodyRef?.current?.clientHeight && isAboutMeFormModalDisplayed && !textareaMaxHeight) {
             const height = modalBodyRef.current.clientHeight * .27;
@@ -104,14 +126,11 @@ const AboutUserModal = () => {
         }
     }, [isAboutMeFormModalDisplayed]);
 
-    useEffect(() => {
-        console.log('aboutUserForm: ', aboutUserForm);
-    });
-
     return (
         <Modal
             show={isAboutMeFormModalDisplayed}
             onHide={handleOnHide}
+            onShow={handleOnShow}
             dialogClassName='border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='about-me-modal user-modal-color rounded-0'
         >
@@ -129,6 +148,7 @@ const AboutUserModal = () => {
                                 name='occupation'
                                 onChange={handleOnInputChange}
                                 placeholder='What do you do?'
+                                value={aboutUserForm.occupation}
                                 style={{ maxWidth: '400px' }}
                                 className='aboutme-txt-input no-outline pt-1'
                             />
@@ -142,6 +162,7 @@ const AboutUserModal = () => {
                                 placeholder='Your zip code'
                                 type='number'
                                 name='zipCode'
+                                value={aboutUserForm.zipCode}
                                 onChange={handleOnInputChange}
                                 style={{
                                     outline: 'none',

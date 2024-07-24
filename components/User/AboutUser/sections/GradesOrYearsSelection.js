@@ -12,11 +12,11 @@ const AGE_GROUPS = {
 
 const GradesOrYearsSelection = () => {
     const { _aboutUserForm } = useContext(UserContext);
-    const [gradesColorCss, setGradesColorsCss] = useState('selected-grade-or-years-opt');
-    const [yearsColorCss, setYearsColorsCss] = useState('text-gray border');
-    /** @type {[import('../../../../providers/ModalProvider').TUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const { selection, ageGroupsTaught } = aboutUserForm.gradesOrYears;
+    const [gradesColorCss, setGradesColorsCss] = useState((selection === 'grades') ? 'selected-grade-or-years-opt' : 'text-gray border' );
+    const [yearsColorCss, setYearsColorsCss] = useState((selection === 'years') ? 'selected-grade-or-years-opt' : 'text-gray border');
+    /** @type {[import('../../../../providers/ModalProvider').TUserForm, Function]} */
     const ageGroupOptions = AGE_GROUPS[selection];
 
     const handleGradesOrYearsBtnClick = (setCssOfSelectedBtn, setCssOfUnSelectBtn, gradesOrYearsSelectedOptName) => () => {
@@ -54,6 +54,8 @@ const GradesOrYearsSelection = () => {
         }));
     };
 
+    console.log('yo meng!');
+
     return (
         <section className='d-flex flex-column col-12 col-lg-6'>
             <label>
@@ -88,6 +90,7 @@ const GradesOrYearsSelection = () => {
                                     name='subject'
                                     value={ageGroup}
                                     onChange={handleCheckboxInputChange}
+                                    checked={ageGroupsTaught.includes(ageGroup)}
                                 />
                                 <span className='ms-1 txt-color-for-aboutme-modal text-nowrap'>
                                     {ageGroup}

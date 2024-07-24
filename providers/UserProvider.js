@@ -28,6 +28,7 @@ import { createContext, useState } from "react";
  * @property {Map<string, string>} reasonsForSiteVisit
  * @property {TGradesOrYears} gradesOrYears
  * @property {string} country
+ * @property {string} occupation
  * @property {number | null} zipCode
  * @property {number} classroomSize
 */
@@ -38,6 +39,7 @@ import { createContext, useState } from "react";
  * @property {{ [key: string]: string }} reasonsForSiteVisit
  * @property {TGradesOrYears} gradesOrYears
  * @property {string} country
+ * @property {string} occupation
  * @property {number | null} zipCode
  * @property {number} classroomSize
 */
@@ -49,6 +51,7 @@ export const aboutUserFormDefault = {
         ageGroupsTaught: [],
     },
     country: '',
+    occupation: '',
     zipCode: null,
     classroomSize: 0,
     subjects: new Map(),
