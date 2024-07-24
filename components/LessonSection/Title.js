@@ -32,12 +32,12 @@ const Title = ({
   const router = useRouter();
   let sponsors = useMemo(() => {
     let sponsorsLinkTxts = [];
+    let urls = SponsoredBy.match(/\((.*?)\)/g);
 
-    if (SponsoredBy) {
-      let urls = SponsoredBy.match(/\((.*?)\)/g);
-      urls = urls.length ? urls.map(txt => txt.replace(/\(|\)/g, '')) : urls;
+    if (SponsoredBy && urls) {
+      urls = urls?.length ? urls.map(txt => txt.replace(/\(|\)/g, '')) : urls;
       let sponsorByTxtArr = SponsoredBy.match(/\[(.*?)\]/g);
-      sponsorByTxtArr = sponsorByTxtArr.length ? sponsorByTxtArr.map(txt => txt.replace(/\[|\]/g, '')) : sponsorByTxtArr;
+      sponsorByTxtArr = sponsorByTxtArr?.length ? sponsorByTxtArr.map(txt => txt.replace(/\[|\]/g, '')) : sponsorByTxtArr;
 
       for (let index = 0; index < sponsorByTxtArr.length; index++) {
         let url = urls[index];
@@ -50,6 +50,10 @@ const Title = ({
 
         sponsorsLinkTxts.push(`[${sponsorByTxt}](${url})`);
       }
+    }
+
+    if(!sponsorsLinkTxts.length){
+      return [SponsoredBy];
     }
 
     return sponsorsLinkTxts;

@@ -13,7 +13,7 @@ export const createPaginationArr = arr => {
     arr.forEach((val, index) => {
         pgOfDataArr.push(val);
 
-        if ((pgOfDataArr.length === 6) || (index === (arr.length - 1))) {
+        if ((pgOfDataArr?.length === 6) || (index === (arr?.length - 1))) {
             pgsArr.push(structuredClone(pgOfDataArr));
             pgOfDataArr = [];
         }
@@ -31,7 +31,7 @@ export const getGpVids = lessons => {
 
         if (Section?.preview?.Multimedia?.length && Section?.preview?.Multimedia.every(multiMediaItem => multiMediaItem !== null)) {
             for (const media of Section.preview.Multimedia) {
-                const isTargetGpVidPresent = gpVideos.length ? gpVideos.some(({ mainLink: gpVidMainLink }) => gpVidMainLink === media.mainLink) : false;
+                const isTargetGpVidPresent = gpVideos?.length ? gpVideos.some(({ mainLink: gpVidMainLink }) => gpVidMainLink === media.mainLink) : false;
 
                 if (!isTargetGpVidPresent && (media.by === 'Galactic Polymath') && (media.type === 'video') && ((typeof media.mainLink === 'string') && media.mainLink.includes('youtube'))) {
                     lessonMultiMediaArr.push({
@@ -48,7 +48,7 @@ export const getGpVids = lessons => {
             }
         }
 
-        if (lessonMultiMediaArr.length) {
+        if (lessonMultiMediaArr?.length) {
             gpVideos.push(...lessonMultiMediaArr);
         }
     }

@@ -25,8 +25,8 @@ const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
 const NAV_CLASSNAMES = ['sectionNavDotLi', 'sectionNavDot', 'sectionTitleParent', 'sectionTitleLi', 'sectionTitleSpan']
 
 const getSectionDotsDefaultVal = sectionComps => sectionComps.map((section, index) => {
-  const _sectionTitle = `${index + 1}. ${section.SectionTitle}`;
-  let sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
+  const _sectionTitle = `${index}. ${section.SectionTitle}`;
+  const sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
 
   return {
     isInView: index === 0,
@@ -39,7 +39,7 @@ const getSectionDotsDefaultVal = sectionComps => sectionComps.map((section, inde
 
 const getLessonSections = sectionComps => sectionComps.map((section, index) => ({
   ...section,
-  SectionTitle: `${index + 1}. ${section.SectionTitle}`,
+  SectionTitle: `${index}. ${section.SectionTitle}`,
 }));
 const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
   return sectionComps.map(section => {
@@ -74,7 +74,7 @@ const LessonDetails = ({ lesson }) => {
 
     return false;
   });
-  const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonStandardsSections.length === 1 : false;
+  const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonStandardsSections?.length === 1 : false;
   let sectionComps = lesson?.Section ?
     Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     :
