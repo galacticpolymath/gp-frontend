@@ -49,8 +49,13 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
                 classroomSize,
                 reasonsForSiteVisit,
                 subjects,
+                gradesOrYears,
             } = aboutUserFormClone;
             let errors = {};
+
+            if(!gradesOrYears?.ageGroupsTaught?.length){
+                delete aboutUserFormClone.gradesOrYears;
+            }
 
             if (subjects.size > 0) {
                 subjects = filterOutFalseyValMapProperties(subjects);

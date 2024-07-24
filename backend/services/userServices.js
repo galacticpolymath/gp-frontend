@@ -49,6 +49,9 @@ export const getUserByEmail = async (email = '', projectionsObj = {}) => {
 
 export const updateUser = async (filterQuery = {}, updatedProperties = {}) => {
     try {
+        console.log('updateProperties: ', updatedProperties);
+        console.log('filterQuery: ', filterQuery);
+        
         const result = await User.updateOne(filterQuery, updatedProperties);
 
         if(result.modifiedCount !== 1){
@@ -57,8 +60,8 @@ export const updateUser = async (filterQuery = {}, updatedProperties = {}) => {
         
         return { wasSuccessful: true };
     } catch (error) {
-        const { msg } = error;
-        const errMsg = msg ?? `The target user failed to be updated. Reason: ${error}`;
+        const { message } = error;
+        const errMsg = message ?? `The target user failed to be updated. Reason: ${error}`;
 
         console.log(errMsg);
 
