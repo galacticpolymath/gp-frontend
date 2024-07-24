@@ -3,7 +3,6 @@
 import { createDocument } from '../db/utils';
 import User from '../models/user';
 import { v4 as uuidv4 } from 'uuid';
-import { CustomError } from '../utils/errors.js';
 
 export const getUsers = async (queryObj = {}, projectionObj = {}) => {
     try {
@@ -26,7 +25,7 @@ export const getUser = async (queryObj = {}, projectionObj = {}) => {
 
         return user;
     } catch (error) {
-        console.error('An error has occurred in getting the target users: ', error);
+        console.error('An error has occurred in getting the target user: ', error);
 
         return null;
     }
@@ -49,15 +48,16 @@ export const getUserByEmail = async (email = '', projectionsObj = {}) => {
 
 export const updateUser = async (filterQuery = {}, updatedProperties = {}) => {
     try {
-        console.log('updateProperties: ', updatedProperties);
-        console.log('filterQuery: ', filterQuery);
-        
-        const result = await User.updateOne(filterQuery, updatedProperties);
+        console.log('yo there!');
 
-        if(result.modifiedCount !== 1){
-            throw new CustomError('When updating the target user, received a modified count not equal to 1. Check query or the update object argument.');
+        const result = await User.updateOne(filterQuery, updatedProperties, { upsert: true });
+
+        console.log('Result, user updated: ', result);
+
+        if(result.matchedCount !== 1){
+            return { wasSuccessful: false };
         }
-        
+
         return { wasSuccessful: true };
     } catch (error) {
         const { message } = error;

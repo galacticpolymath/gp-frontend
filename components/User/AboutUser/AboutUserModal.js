@@ -34,9 +34,7 @@ const AboutUserModal = () => {
     /** @type {[boolean, Function]} */
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
-    const [isTextareaDisabled, setIsTextareaDisabled] = useState(true);
-    const [reasonForVisitCustom, setReasonForVisitCustom] = useState('');
-    const [errors, setErorrs] = useState({});
+    const [errors, setErorrs] = useState(new Map());
     /** @type {[import('../../../providers/UserProvider').TAboutUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const modalBodyRef = useRef();
@@ -81,7 +79,7 @@ const AboutUserModal = () => {
                 ...aboutUserForm,
                 reasonsForSiteVisit: reasonsForSiteVisit,
             });
-            
+
             return;
         }
 
@@ -94,6 +92,13 @@ const AboutUserModal = () => {
     };
 
     const handleOnInputChange = event => {
+        if(errors.has(event.target.name)){
+            const errorsClone = structuredClone(errors);
+
+            errorsClone.delete(event.target.name);
+
+            setErorrs(errorsClone);
+        }
         setAboutUserForm(state => ({
             ...state,
             [event.target.name]: event.target.value,
@@ -140,9 +145,9 @@ const AboutUserModal = () => {
             <ModalBody ref={modalBodyRef} className='about-me-modal-body'>
                 <form className='position-relative  h-100 w-100'>
                     <section className='row d-flex flex-column flex-lg-row'>
-                        <section className='d-flex flex-column col-8 col-lg-4'>
-                            <label htmlFor='country-input'>
-                                Occupation:
+                        <section className='d-flex flex-column col-8 col-lg-4 b7order'>
+                            <label htmlFor='country-input' className={`${errors.has('occupation') ? 'text-danger' : ''}`}>
+                                *Occupation:
                             </label>
                             <input
                                 name='occupation'
@@ -150,18 +155,20 @@ const AboutUserModal = () => {
                                 placeholder='What do you do?'
                                 value={aboutUserForm.occupation}
                                 style={{ maxWidth: '400px' }}
-                                className='aboutme-txt-input no-outline pt-1'
+                                className={`aboutme-txt-input no-outline  pt-1 ${errors.has('occupation') ? 'text-danger border-danger' : ''}`}
                             />
+                            {errors.has('occupation') && <span className='text-danger'>{errors.get('occupation')}</span>}                       
                         </section>
                         <CountrySection />
                         <section className='d-flex flex-column col-8 col-lg-2'>
-                            <label htmlFor='country-input'>
-                                Zip Code:
+                            <label htmlFor='country-input' style={{ opacity: aboutUserForm.country.toLowerCase() !== 'united states' ? .3 : 1 }}>
+                                *Zip Code:
                             </label>
                             <input
                                 placeholder='Your zip code'
                                 type='number'
                                 name='zipCode'
+                                disabled={aboutUserForm.country.toLowerCase() !== 'united states'}
                                 value={aboutUserForm.zipCode}
                                 onChange={handleOnInputChange}
                                 style={{
@@ -170,6 +177,7 @@ const AboutUserModal = () => {
                                     borderRight: 'none',
                                     borderLeft: 'none',
                                     borderBottom: 'solid 1px grey',
+                                    opacity: aboutUserForm.country.toLowerCase() !== 'united states' ? .3 : 1,
                                 }}
                                 className='aboutme-txt-input pt-1'
                             />
@@ -229,7 +237,7 @@ const AboutUserModal = () => {
                                             {opt}
                                         </span>
                                     </div>
-                                )
+                                );
                             })}
                         </section>
                         <div className='d-flex'>

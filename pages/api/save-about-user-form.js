@@ -75,8 +75,6 @@ export default async function handler(request, response) {
         }, {});
         const updateUserResult = await updateUser({ email: userEmail }, updatedUserProperties);
 
-        console.log('updateUserResult: ', updateUserResult);
-
         if (!updateUserResult.wasSuccessful) {
             throw new CustomError(updateUserResult.errMsg, 500);
         }

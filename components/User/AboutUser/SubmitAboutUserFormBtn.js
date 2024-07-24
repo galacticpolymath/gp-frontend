@@ -46,12 +46,12 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
             let {
                 country,
                 zipCode,
-                classroomSize,
                 reasonsForSiteVisit,
                 subjects,
+                occupation,
                 gradesOrYears,
             } = aboutUserFormClone;
-            let errors = {};
+            let errors = new Map();
 
             if(!gradesOrYears?.ageGroupsTaught?.length){
                 delete aboutUserFormClone.gradesOrYears;
@@ -80,22 +80,21 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
             }
 
             if ((country.toLowerCase() === 'united states') && (!zipCode || (zipCode.toString().length == 0) || (zipCode < 0))) {
-                errors.push({ field: 'zipCode', msg: 'Invalid zip code.' });
-                errors = { zipCode: 'Invalid zip code.' };
+                errors.set('zipCode', 'This field is required');
             }
 
-            if (country.length < 0) {
-                errors = { ...errors, country: 'The "Country" field is required.' };
+            if(occupation.length <= 0){
+                errors.set('occupation', 'This field is required.');
             }
 
-            if (classroomSize <= 0) {
-                errors = { ...errors, classroomSize: 'Must be greater than 0.' };
+            if (country.length <= 0) {
+                errors.set('country', 'This field is required.');
             }
 
-            if (Object.keys(errors).length) {
+            if (errors.size > 0) {
                 setErrors(errors);
 
-                throw new CustomError("Invalid entries for the 'About User' form.", null, "invalidAboutUserForm.");
+                throw new CustomError("Invalid entries. Please try again.", null, "invalidAboutUserForm.");
             }
 
             const responseBody = {
@@ -115,7 +114,7 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
             console.log('response: ', response);
 
             if (response.status !== 200) {
-                throw new CustomError('Failed to save the "AboutUser" form.', null, "aboutUserFormReqFailure");
+                throw new CustomError('Failed to save form. Refresh the page, and try again.', null, "aboutUserFormReqFailure");
             }
 
             setIsAboutUserModalDisplayed(false);
@@ -133,9 +132,11 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
 
             console.log("From server, response.data: ", response.data);
         } catch (error) {
+            const { message } = error ?? {};
+
             console.error("An error has occurred. Couldn't update the 'About User' form. Reason: ", error);
 
-            alert("Failed to save your changes. Please refresh the page and try again.");
+            alert(message ?? "Failed to save your changes. Please refresh the page and try again.");
         }
     };
     return (

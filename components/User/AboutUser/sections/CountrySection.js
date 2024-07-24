@@ -11,25 +11,32 @@ const CountrySection = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [isInputFocused, setIsInputFocused] = useState(false);
     const { _aboutUserForm } = useContext(UserContext);
-    /** @type {[import("../../../../providers/UserProvider").TUserForm, Function]} */
+    /** @type {[import("../../../../providers/UserProvider").TAboutUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
-    const [countryInput, setCountryInput] = useState(aboutUserForm.country);
 
     const handleOnInputFocus = () => {
         setIsInputFocused(true);
     };
 
-    const handleCountrySelectionBtnClick = event => {
-        setCountryInput(event.target.value);
-        setAboutUserForm(state => ({
-            ...state,
-            country: event.target.value,
-        }));
+    const handleCountrySelectionBtnClick = ({ target }) => {
+        let aboutUserFormUpdated = { ...aboutUserForm };
+
+        if (target.value.toLowerCase() !== 'united states') {
+            aboutUserFormUpdated = {
+                ...aboutUserFormUpdated,
+                zipCode: '',
+            };
+        }
+
+        setAboutUserForm({
+            ...aboutUserFormUpdated,
+            country: target.value,
+        });
         setIsInputFocused(false);
     };
 
     const handleInputOnChange = ({ target }) => {
-        setCountryInput(target.value);
+        setAboutUserForm(state => ({ ...state, country: target.value }));
 
         if (!target.value.length) {
             setSearchResults([]);
@@ -63,15 +70,15 @@ const CountrySection = () => {
     return (
         <section className='d-flex flex-column my-4 my-lg-0 col-8 col-lg-4'>
             <label htmlFor='country-input'>
-                Country:
+                *Country:
             </label>
             <div className='position-relative'>
                 <input
                     placeholder='Your country'
                     style={{ maxWidth: '400px' }}
                     className='aboutme-txt-input no-outline w-100 pt-1'
-                    defaultValue={countryInput}
-                    value={countryInput}
+                    defaultValue={aboutUserForm.country}
+                    value={aboutUserForm.country}
                     onChange={handleInputOnChange}
                     onFocus={handleOnInputFocus}
                 />
