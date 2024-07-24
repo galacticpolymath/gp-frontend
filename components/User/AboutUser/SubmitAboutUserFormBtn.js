@@ -12,11 +12,23 @@ import { CustomError } from "../../../backend/utils/errors";
 import { convertMapToObj } from "../../../globalFns";
 import { ModalContext } from "../../../providers/ModalProvider";
 
+/** 
+ * @function
+ * @template TData
+ * @param {Map<string, TData>} map
+ * @return {Map<string, TData>}
+ */
+const filterOutFalseyValMapProperties = map => {
+    const falseyValsFiltered = Array.from(map.entries()).filter(([, val]) => val);
+
+    return new Map(falseyValsFiltered);
+};
+
 const SubmitAboutUserFormBtn = ({ setErrors }) => {
     const { _aboutUserForm } = useContext(UserContext);
     const { _notifyModal, _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     const session = useSession();
-    /** @type { [import("../../../providers/UserProvider").TUserForm] } */
+    /** @type { [import("../../../providers/UserProvider").TAboutUserForm] } */
     const [aboutUserForm] = _aboutUserForm;
     const [, setIsAboutUserModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [, setNotifyModal] = _notifyModal;
@@ -31,7 +43,7 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
             }
 
             let aboutUserFormClone = structuredClone(aboutUserForm);
-            const {
+            let {
                 country,
                 zipCode,
                 classroomSize,
@@ -41,10 +53,18 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
             let errors = {};
 
             if (subjects.size > 0) {
+                subjects = filterOutFalseyValMapProperties(subjects);
+            }
+
+            if (subjects.size > 0) {
                 aboutUserFormClone = {
                     ...aboutUserFormClone,
                     subjects: convertMapToObj(subjects),
                 };
+            }
+
+            if (reasonsForSiteVisit.size > 0) {
+                reasonsForSiteVisit = filterOutFalseyValMapProperties(reasonsForSiteVisit);
             }
 
             if (reasonsForSiteVisit.size > 0) {

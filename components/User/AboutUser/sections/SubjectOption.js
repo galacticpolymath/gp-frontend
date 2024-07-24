@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { UserContext } from "../../../../providers/UserProvider";
 
 const SubjectOption = ({ subject, index, lastIndex }) => {
@@ -12,40 +12,32 @@ const SubjectOption = ({ subject, index, lastIndex }) => {
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const subjectName = `subject-${index}`;
     const customSubjectName = `other-${index}`;
-    let isChecked = false;
-
-    if (aboutUserForm.subjects.has(subjectName) || aboutUserForm.subjects.has(customSubjectName)) {
-        isChecked = true;
-    }
-
-    const [isTxtInputDisabled, setIsTxtInputDisabled] = useState((subject === 'other:') ? !isChecked : true);
-    const [customSubject, setCustomSubject] = useState(aboutUserForm.subjects.get(customSubjectName) ?? "");
+    const isChecked = aboutUserForm.subjects.has(subjectName) || aboutUserForm.subjects.has(customSubjectName);
 
     const handleCheckboxOnchange = event => {
+        const subjectsTaught = structuredClone(aboutUserForm.subjects);
+
         if ((event.target.value === 'other:') && isChecked) {
-            const subjectsTaught = structuredClone(aboutUserForm.subjects);
-            
-            subjectsTaught.delete(`other-${index}`);
+            subjectsTaught.delete(customSubjectName);
 
             setAboutUserForm(state => ({ ...state, subjects: subjectsTaught }));
-
-            setCustomSubject('');
-
-            setIsTxtInputDisabled(false);
 
             return;
         }
 
         if (event.target.value === 'other:') {
+            subjectsTaught.set(customSubjectName, '');
+
+            setAboutUserForm(state => ({ ...state, subjects: subjectsTaught }));
+
             return;
         }
-        // GOAL: present all of the input received from the server onto the form. 
-
-        const subjectsTaught = structuredClone(aboutUserForm.subjects);
 
         if (subjectsTaught.has(event.target.name)) {
             subjectsTaught.delete(event.target.name);
+
             setAboutUserForm(state => ({ ...state, subjects: subjectsTaught }));
+
             return;
         }
 
@@ -56,8 +48,6 @@ const SubjectOption = ({ subject, index, lastIndex }) => {
 
     const handleOnInputChange = event => {
         const subjectsTaught = structuredClone(aboutUserForm.subjects);
-
-        setCustomSubject(event.target.value);
 
         subjectsTaught.set(event.target.name, event.target.value);
 
@@ -80,9 +70,9 @@ const SubjectOption = ({ subject, index, lastIndex }) => {
                 <input
                     placeholder='Enter subject.'
                     className='aboutme-txt-input no-outline'
-                    style={{ maxWidth: '250px', opacity: isTxtInputDisabled ? .3 : 1 }}
-                    disabled={isTxtInputDisabled}
-                    value={customSubject}
+                    style={{ maxWidth: '250px', opacity: !isChecked ? .3 : 1 }}
+                    disabled={!isChecked}
+                    value={aboutUserForm.subjects.get(customSubjectName) ?? ''}
                     name={`other-${index}`}
                     onChange={handleOnInputChange}
                 />

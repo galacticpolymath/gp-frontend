@@ -49,8 +49,6 @@ const AboutUserModal = () => {
         const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit);
 
         if (event.target.name === 'reason-for-visit-custom') {
-            setReasonForVisitCustom(event.target.value);
-
             reasonsForSiteVisit.set(event.target.name, event.target.value);
 
             setAboutUserForm({
@@ -74,20 +72,25 @@ const AboutUserModal = () => {
     };
 
     const handleToggleTextareaDisability = () => {
-        if (!isTextareaDisabled) {
-            setReasonForVisitCustom('');
+        const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit);
 
-            const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit);
-
+        if (reasonsForSiteVisit.has('reason-for-visit-custom')) {
             reasonsForSiteVisit.delete('reason-for-visit-custom');
 
             setAboutUserForm({
                 ...aboutUserForm,
                 reasonsForSiteVisit: reasonsForSiteVisit,
             });
+            
+            return;
         }
 
-        setIsTextareaDisabled(state => !state);
+        reasonsForSiteVisit.set('reason-for-visit-custom', '');
+
+        setAboutUserForm({
+            ...aboutUserForm,
+            reasonsForSiteVisit: reasonsForSiteVisit,
+        });
     };
 
     const handleOnInputChange = event => {
@@ -98,7 +101,7 @@ const AboutUserModal = () => {
     };
 
     const handleParseUserForm = (key, val) => {
-        if (['subjects', 'reasonsForSiteVisit'].includes(key)){
+        if (['subjects', 'reasonsForSiteVisit'].includes(key)) {
             const map = new Map(Object.entries(val));
 
             return map;
@@ -209,42 +212,49 @@ const AboutUserModal = () => {
                             What brings you to our site?
                         </label>
                         <section className='d-flex flex-column flex-lg-row'>
-                            {WHAT_BRINGS_YOU_TO_SITE_OPTS.map((opt, index) => (
-                                <div key={index} className={`d-flex ${index === 0 ? '' : 'ms-lg-3'}`}>
-                                    <input
-                                        type='checkbox'
-                                        value={opt}
-                                        name={`reason-for-visit-${index}`}
-                                        onChange={handleWhatBringsYouToSiteInputChange}
-                                    />
-                                    <span className='capitalize ms-1'>
-                                        {opt}
-                                    </span>
-                                </div>
-                            ))}
+                            {WHAT_BRINGS_YOU_TO_SITE_OPTS.map((opt, index) => {
+                                const name = `reason-for-visit-${index}`;
+                                const isChecked = aboutUserForm.reasonsForSiteVisit.has(name);
+
+                                return (
+                                    <div key={index} className={`d-flex ${index === 0 ? '' : 'ms-lg-3'}`}>
+                                        <input
+                                            type='checkbox'
+                                            value={opt}
+                                            name={name}
+                                            onChange={handleWhatBringsYouToSiteInputChange}
+                                            checked={isChecked}
+                                        />
+                                        <span className='capitalize ms-1'>
+                                            {opt}
+                                        </span>
+                                    </div>
+                                )
+                            })}
                         </section>
                         <div className='d-flex'>
                             <input
                                 type='checkbox'
                                 name='subject'
                                 onChange={handleToggleTextareaDisability}
+                                checked={aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom')}
                             />
                             <span className='ms-1'>
                                 Other:
                             </span>
                         </div>
                         <textarea
-                            disabled={isTextareaDisabled}
+                            disabled={!aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom')}
                             id='reasonsForSiteVisit'
                             name='reason-for-visit-custom'
                             style={{
                                 outline: 'none',
-                                opacity: isTextareaDisabled ? .3 : 1,
+                                opacity: !aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom') ? .3 : 1,
                                 height: '115px',
                             }}
                             className='rounded about-me-input-border about-user-textarea p-1 mt-2'
                             placeholder='Your response...'
-                            value={reasonForVisitCustom}
+                            value={aboutUserForm.reasonsForSiteVisit.get('reason-for-visit-custom') ?? ''}
                             onChange={handleWhatBringsYouToSiteInputChange}
                         />
                     </section>
