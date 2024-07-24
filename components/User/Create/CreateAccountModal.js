@@ -44,7 +44,7 @@ const CreateAccountModal = () => {
             contentClassName='login-ui-modal rounded pt-2 box-shadow-login-ui-modal'
         >
             <ModalTitle>
-                Create A Account
+                Create An Account
             </ModalTitle>
             <ModalBody>
                 <form className='d-flex flex-column'>
