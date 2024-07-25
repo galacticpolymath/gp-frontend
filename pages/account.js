@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
@@ -22,24 +23,22 @@ const AccountPg = () => {
     const { _aboutUserForm } = useContext(UserContext);
     const { _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
-    const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
-
-    useEffect(() => {
-        console.log('aboutUserForm: ', aboutUserForm);
-    });
+    const [, setAboutUserForm] = _aboutUserForm;
 
     useEffect(() => {
         if (status === 'authenticated') {
             (async () => {
                 try {
+                    const paramsAndHeaders = {
+                        params: { email: data.user.email },
+                        headers: {
+                            Authorization: `Bearer ${data.token}`,
+                        },
+                    };
+                    debugger;
                     const response = await axios.get(
                         `${window.location.origin}/api/get-about-user-form`,
-                        {
-                            params: { email: data.user.email },
-                            headers: {
-                                Authorization: `Bearer ${data.token}`,
-                            },
-                        },
+                        paramsAndHeaders,
                     );
 
                     if (response.status !== 200) {
@@ -50,7 +49,7 @@ const AccountPg = () => {
                     const aboutUserFormFromServer = response.data;
                     /** @type {import('../providers/UserProvider').TAboutUserForm} */
                     const aboutUserFormForClient = { ...aboutUserFormDefault };
-                    
+
                     if (Object.entries(aboutUserFormFromServer.reasonsForSiteVisit).length > 0) {
                         const reasonsForSiteVisitMap = new Map(Object.entries(aboutUserFormFromServer.reasonsForSiteVisit));
                         aboutUserFormForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;

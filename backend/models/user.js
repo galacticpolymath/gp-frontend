@@ -14,13 +14,13 @@ let User = models.users;
  * @typedef {Object} TUserSchema
  * @property {string} _id - The unique identifier for the user
  * @property {string} email - The user's email address
- * @property {string} occupation - The user's occupation
- * @property {string} providerAccountId - The id of the document that contains the access token for the user.
+ * @property {string} [occupation] - The user's occupation
+ * @property {string} [providerAccountId] - The id of the document that contains the access token for the user.
  * @property {PasswordSchema} [password] - The password schema object
  * @property {'google' | 'credentials'} provider - The provider type
  * @property {Date} emailVerified - The date the email was verified
  * @property {string[]} roles - The roles assigned to the user
- * @property {string} picture - The picture of the user
+ * @property {string} [picture] - The picture of the user
  * @property {{ first: string, last: string }} name - The name of the user.
  */
 export const UserSchema = new Schema({
@@ -29,7 +29,7 @@ export const UserSchema = new Schema({
   password: {
     hash: { type: String, required: false },
     salt: { type: String, required: false },
-    iterations: { type: String, required: false },
+    iterations: { type: Number, required: false },
   },
   provider: String,
   providerAccountId: String,

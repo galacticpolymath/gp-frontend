@@ -47,6 +47,10 @@ export const useUserEntry = () => {
                 throw new Error('Received empty inputs.');
             }
 
+            if(!form.createAccount && !form.login){
+                throw new Error('No form was passed for the "form" argument.');
+            }
+
             if (form.createAccount && form.login) {
                 throw new Error('Cannot have both a "createAccount" form and a "login" form.');
             }
@@ -60,6 +64,7 @@ export const useUserEntry = () => {
             });
         } catch (error) {
             console.error('An error has occurred. Failed to send form to the server. Reason: ', error);
+            alert('An error has occurred during the login process. Please refresh the page. If this error persist, please contact support.');
         }
     };
 

@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
-// hash the password
-// check if a password is correct 
 import { pbkdf2Sync } from 'pbkdf2';
 import { nanoid } from 'nanoid';
 import { sha256 } from 'js-sha256';
@@ -26,7 +24,7 @@ export const createIterations = () => {
 
 /**
  * @param {string} password
- * @return {{ salt: string, hash: string, iterations: number }} The result of the hash. Will return `null` if a error occurs.
+ * @return {{ salt: string, hash: string, iterations: number }} The result of the hash.
  * */
 export function hashPassword(password, salt, iterations) {
     const hashedPassword = pbkdf2Sync(password, salt, iterations, 64, 'sha256');
@@ -55,9 +53,8 @@ export class HashedPassword {
  * @param {string} hashedPasswordFromDb
  * @return {boolean}
  * */
-export function getIsPasswordCorrect(passwordToValidateFromClient, hashedPasswordFromDb) {
-    const { password, salt, iterations } = passwordToValidateFromClient;
-    const passwordFromClientHashed = new HashedPassword(password, salt, iterations);
+export function getIsPasswordCorrect({ iterations, password, salt }, hashedPasswordFromDb) {
+    const { hash } = new HashedPassword(password, salt, iterations);
 
-    return passwordFromClientHashed === hashedPasswordFromDb;
+    return hash === hashedPasswordFromDb;
 }

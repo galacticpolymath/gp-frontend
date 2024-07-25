@@ -139,6 +139,7 @@ export const authOptions = {
           await connectToMongodb();
 
           const { email, password, firstName, lastName, formType } = credentials;
+          /** @type { import('../models/user').TUserSchema } */
           const dbUser = await getUserByEmail(email);
           const callbackUrl = credentials.callbackUrl.includes('?') ? credentials.callbackUrl.split('?')[0] : credentials.callbackUrl;
 
@@ -165,7 +166,10 @@ export const authOptions = {
 
           const { iterations, salt, hash: hashedPasswordFromDb } = dbUser?.password ?? {};
 
-          if ((formType === 'login') && !getIsPasswordCorrect({ iterations, salt, password: password }, hashedPasswordFromDb)) {
+          console.log('iterations: ', iterations);
+          console.log('typeof iterations: ', typeof iterations);
+
+          if ((formType === 'login') && !getIsPasswordCorrect({ iterations, salt, password }, hashedPasswordFromDb)) {
             console.log('Invalid creds.');
 
             throw new AuthError('invalidCredentials', 404, callbackUrl ?? '');
@@ -374,6 +378,8 @@ export const authOptions = {
       const users = cache.get('users') ?? {};
       let picture = '';
       let occupation = null;
+
+      console.log('users, cache: ', users);
 
       if (Object.keys(users).length && users[email]) {
         picture = users[email].picture;
