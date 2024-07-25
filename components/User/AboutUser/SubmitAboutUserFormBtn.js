@@ -91,6 +91,8 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
                 errors.set('country', 'This field is required.');
             }
 
+            // check if the country field is valid
+
             if (errors.size > 0) {
                 setErrors(errors);
 

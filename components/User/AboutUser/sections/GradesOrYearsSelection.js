@@ -1,13 +1,15 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import Button from '../../../General/Button';
 import { UserContext } from '../../../../providers/UserProvider';
 
+const AGE_GROUPS_FIELD_U_S = 'U.S.';
+const AGE_GROUPS_FIELD_NON_U_S = 'Outside U.S.';
 const AGE_GROUPS = {
-    grades: ['5-12', '4 year college/univ.'],
-    years: ['6-13'],
+    [AGE_GROUPS_FIELD_U_S]: ['K-4', '5', '6', '7', '8', '9', '10', '11', '12','College/Univ.'],
+    [AGE_GROUPS_FIELD_NON_U_S]: ['1-5', '6', '7', '8', '9', '10', '11', '12', '13', 'University'],
 };
 
 const GradesOrYearsSelection = () => {
@@ -15,11 +17,7 @@ const GradesOrYearsSelection = () => {
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const { selection, ageGroupsTaught } = aboutUserForm.gradesOrYears;
     /** @type {[import('../../../../providers/ModalProvider').TUserForm, Function]} */
-    const ageGroupOptions = AGE_GROUPS[selection ?? 'grades'];
-
-    useEffect(() => {
-        console.log('selection, sup there: ', selection);
-    });
+    const ageGroupOptions = AGE_GROUPS[selection ?? 'U.S.'];
 
     const handleGradesOrYearsBtnClick = gradesOrYearsSelectedOptName => () => {
         setAboutUserForm(state => ({
@@ -54,8 +52,6 @@ const GradesOrYearsSelection = () => {
         }));
     };
 
-    console.log('yo meng!');
-
     return (
         <section className='d-flex flex-column col-12 col-lg-6'>
             <label>
@@ -67,39 +63,41 @@ const GradesOrYearsSelection = () => {
                         defaultStyleObj={{
                             borderTopLeftRadius: '.5em',
                             borderBottomLeftRadius: '.5em',
-                            width: '100px',
-                            borderTop: selection !== 'grades' ? 'solid grey 1px' : '',
-                            borderLeft: selection !== 'grades' ? 'solid grey 1px' : '',
-                            borderBottom: selection !== 'grades' ? 'solid grey 1px' : '',
+                            width: '155px',
+                            borderTop: selection !== AGE_GROUPS_FIELD_U_S ? 'solid grey 1px' : '',
+                            borderLeft: selection !== AGE_GROUPS_FIELD_U_S ? 'solid grey 1px' : '',
+                            borderBottom: selection !== AGE_GROUPS_FIELD_U_S ? 'solid grey 1px' : '',
                         }}
-                        classNameStr={`py-1 no-btn-styles ${selection === 'grades' ? 'selected-grade-or-years-opt' : ''}`}
-                        handleOnClick={handleGradesOrYearsBtnClick('grades')}
-                        isDisabled={selection === 'grades'}
+                        classNameStr={`py-1 no-btn-styles ${selection === AGE_GROUPS_FIELD_U_S ? 'selected-grade-or-years-opt' : ''}`}
+                        handleOnClick={handleGradesOrYearsBtnClick(AGE_GROUPS_FIELD_U_S)}
+                        isDisabled={selection === AGE_GROUPS_FIELD_U_S}
                     >
-                        Grades
+                        {AGE_GROUPS_FIELD_U_S}
                     </Button>
                     <Button
                         defaultStyleObj={{
-                            width: '100px',
+                            width: '155px',
                             borderTopRightRadius: '.5em',
                             borderBottomRightRadius: '.5em',
-                            borderTop: selection !== 'years' ? 'solid grey 1px' : '',
-                            borderRight: selection !== 'years' ? 'solid grey 1px' : '',
-                            borderBottom: selection !== 'years' ? 'solid grey 1px' : '',
+                            borderTop: selection !== AGE_GROUPS_FIELD_NON_U_S ? 'solid grey 1px' : '',
+                            borderRight: selection !== AGE_GROUPS_FIELD_NON_U_S ? 'solid grey 1px' : '',
+                            borderBottom: selection !== AGE_GROUPS_FIELD_NON_U_S ? 'solid grey 1px' : '',
+                            borderLeft: !selection ? 'solid grey 1px' : '',
                         }}
-                        classNameStr={`py-1 no-btn-styles ${selection === 'years' ? 'selected-grade-or-years-opt' : ''}`}
-                        handleOnClick={handleGradesOrYearsBtnClick('years')}
-                        isDisabled={selection === 'years'}
+                        classNameStr={`py-1 no-btn-styles ${selection === AGE_GROUPS_FIELD_NON_U_S ? 'selected-grade-or-years-opt' : ''}`}
+                        handleOnClick={handleGradesOrYearsBtnClick(AGE_GROUPS_FIELD_NON_U_S)}
+                        isDisabled={selection === AGE_GROUPS_FIELD_NON_U_S}
                     >
-                        Years
+                        {AGE_GROUPS_FIELD_NON_U_S}
                     </Button>
                 </section>
-                <section className='d-flex pt-2 ps-2'>
+                <section style={{ maxWidth: '300px' }} className='d-flex pt-2 ps-2 flex-wrap'>
                     {ageGroupOptions.map((ageGroup, index) => {
                         return (
                             <section
                                 key={`${selection}-${index}`}
-                                className={`d-flex ${(index != 0) ? 'ms-3' : ''}`}
+                                className={`d-flex ms-2 ${(index != 0) ? '' : ''}`}
+                                style={{ width: '45px' }}
                             >
                                 <input
                                     type='checkbox'

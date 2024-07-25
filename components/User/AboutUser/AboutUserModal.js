@@ -94,7 +94,7 @@ const AboutUserModal = () => {
     };
 
     const handleOnInputChange = event => {
-        if(errors.has(event.target.name)){
+        if (errors.has(event.target.name)) {
             const errorsClone = structuredClone(errors);
 
             errorsClone.delete(event.target.name);
@@ -133,7 +133,9 @@ const AboutUserModal = () => {
         }
     }, [isAboutMeFormModalDisplayed]);
 
-    console.log('aboutUserForm, hey there: ', aboutUserForm);
+    useEffect(() => {
+        console.log('aboutUserForm, hey there: ', aboutUserForm);
+    });
 
     return (
         <Modal
@@ -162,7 +164,7 @@ const AboutUserModal = () => {
                                 autoFocus={!aboutUserForm?.occupation}
                                 className={`aboutme-txt-input no-outline  pt-1 ${errors.has('occupation') ? 'text-danger border-danger' : ''}`}
                             />
-                            {errors.has('occupation') && <span className='text-danger'>{errors.get('occupation')}</span>}                       
+                            {errors.has('occupation') && <span className='text-danger'>{errors.get('occupation')}</span>}
                         </section>
                         <CountrySection />
                         <section className='d-flex flex-column col-8 col-lg-2'>
@@ -209,16 +211,28 @@ const AboutUserModal = () => {
                         <label>
                             Subject(s) Taught:
                         </label>
-                        <div className='pt-1 subjects-taught-container'>
-                            {SUBJECTS_OPTIONS.map((subject, index) => (
-                                <SubjectOption
-                                    key={index}
-                                    index={index}
-                                    lastIndex={SUBJECTS_OPTIONS.length - 1}
-                                    subject={subject}
-                                />
-                            ))}
-                        </div>
+                        <section className='row d-flex'>
+                            <div className='pt-1 subjects-taught-container col-6'>
+                                {SUBJECTS_OPTIONS.slice(0, 5).map((subject, index) => (
+                                    <SubjectOption
+                                        key={index}
+                                        index={index}
+                                        subjectFieldNameForMapTracker={`subject-${index}`}
+                                        subject={subject}
+                                    />
+                                ))}
+                            </div>
+                            <div className='pt-1 subjects-taught-container col-6'>
+                                {SUBJECTS_OPTIONS.slice(5).map((subject, index) => (
+                                    <SubjectOption
+                                        key={index}
+                                        index={index}
+                                        subjectFieldNameForMapTracker={`other-subject-${index}`}
+                                        subject={subject}
+                                    />
+                                ))}
+                            </div>
+                        </section>
                     </section>
                     <section className='d-flex flex-column mt-2'>
                         <label htmlFor='reasonsForSiteVisit'>

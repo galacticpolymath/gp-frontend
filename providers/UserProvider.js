@@ -6,7 +6,7 @@ import { createContext, useState } from "react";
 
 /**
  * @typedef {Object} TGradesOrYears
- * @property {"grades" | "years"} selection
+ * @property {"US" | "Outside US"} selection
  * @property {string[]} ageGroupsTaught 
  */
 
