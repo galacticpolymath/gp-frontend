@@ -4,16 +4,16 @@
 import { useContext, useState } from 'react';
 import { CloseButton, Modal, ModalBody, ModalHeader } from 'react-bootstrap';
 import { ModalContext } from '../../../providers/ModalProvider';
-import { useLogin } from '../../../customHooks/useLogin';
+import { useUserEntry } from '../../../customHooks/useUserEntry';
 import Button from '../../General/Button';
 import CreateAccountWithGoogle from '../GoogleSignIn';
 import ORTxtDivider from '../ORTxtDivider';
 
 const CreateAccountModal = () => {
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
-    const { _loginForm, sendFormToServer } = useLogin();
+    const { _createAccountForm, sendFormToServer } = useUserEntry();
     const [errors, setErrors] = useState(new Map());
-    const [loginForm, setLoginForm] = _loginForm;
+    const [createAccountForm, setCreateAccountForm] = _createAccountForm;
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
 
     const handleOnHide = () => {
@@ -21,16 +21,32 @@ const CreateAccountModal = () => {
     };
 
     const handleSubmitBtnClick = () => {
-        sendFormToServer({
-            email: loginForm.email,
-            password: loginForm.password,
-        }, 'createAccount', 'credentials');
+        if(createAccountForm.confirmPassword !== createAccountForm.password){
+            const errors = new Map([['password', 'Paswords must match'], ['confirmPassword', 'Passwords must match']]);
+            setErrors(errors);
+            return;
+        }
+
+        console.log('will send form to the server');
+
+        sendFormToServer(
+            'createAccount', 
+            'credentials', 
+            {
+                createAccount: {
+                    email: createAccountForm.email,
+                    firstName: createAccountForm.firstName,
+                    lastName: createAccountForm.lastName,
+                    password: createAccountForm.password,
+                },
+            }
+        );
     };
 
     const handleOnInputChange = event => {
         event.preventDefault();
 
-        setLoginForm(form => ({
+        setCreateAccountForm(form => ({
             ...form,
             [event.target.name]: event.target.value,
         }));
