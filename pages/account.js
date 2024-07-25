@@ -35,7 +35,6 @@ const AccountPg = () => {
                             Authorization: `Bearer ${data.token}`,
                         },
                     };
-                    debugger;
                     const response = await axios.get(
                         `${window.location.origin}/api/get-about-user-form`,
                         paramsAndHeaders,
@@ -50,17 +49,17 @@ const AccountPg = () => {
                     /** @type {import('../providers/UserProvider').TAboutUserForm} */
                     const aboutUserFormForClient = { ...aboutUserFormDefault };
 
-                    if (Object.entries(aboutUserFormFromServer.reasonsForSiteVisit).length > 0) {
+                    if (aboutUserFormFromServer.reasonsForSiteVisit && Object.entries(aboutUserFormFromServer.reasonsForSiteVisit).length > 0) {
                         const reasonsForSiteVisitMap = new Map(Object.entries(aboutUserFormFromServer.reasonsForSiteVisit));
                         aboutUserFormForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;
                     }
 
-                    if (Object.entries(aboutUserFormFromServer.subjects).length > 0) {
+                    if (aboutUserFormFromServer.subjects && Object.entries(aboutUserFormFromServer.subjects).length > 0) {
                         const subjectsTeaching = new Map(Object.entries(aboutUserFormFromServer.subjects));
                         aboutUserFormForClient.subjects = subjectsTeaching;
                     }
 
-                    if (Object.entries(aboutUserFormFromServer.gradesOrYears).length > 0) {
+                    if (aboutUserFormFromServer.gradesOrYears && Object.entries(aboutUserFormFromServer.gradesOrYears).length > 0) {
                         aboutUserFormForClient.gradesOrYears = aboutUserFormFromServer.gradesOrYears;
                     }
 
@@ -80,9 +79,9 @@ const AccountPg = () => {
                         aboutUserFormForClient.occupation = aboutUserFormFromServer.occupation;
                     }
 
-                    localStorage.setItem('aboutUserForm', JSON.stringify(aboutUserFormFromServer));
+                    console.log('aboutUserFormForClient, yo there: ', aboutUserFormForClient);
 
-                    console.log('aboutUserFormForClient: ', aboutUserFormForClient);
+                    localStorage.setItem('aboutUserForm', JSON.stringify(aboutUserFormFromServer));
 
                     setAboutUserForm(aboutUserFormForClient);
                 } catch (error) {

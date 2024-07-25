@@ -2,31 +2,37 @@
 /* eslint-disable no-console */
 import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
+import { AuthMiddlwareError } from './backend/utils/errors';
 
 const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
 
-// may use this function to check for non-related admin routes
 const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin) => {
-  const token = authorizationStr.split(' ')[1].trim();
-  const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
+  try {
+    const token = authorizationStr.split(' ')[1].trim();
+    const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
 
-  console.log('payload, yo there: ', payload);
+    if (!payload) {
+      const errMsg = 'You are not authorized to access this service.';
+      const response = new NextResponse(errMsg, { status: 403 });
 
-  if (!payload) {
-    return {
-      isAuthorize: false,
-      errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 }),
-    };
+      throw new AuthMiddlwareError(false, response, errMsg);
+    }
+
+    if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(payload.roles, 'dbAdmin')) {
+      const errMsg = 'You are not authorized to access this service.';
+      const response = new NextResponse(errMsg, { status: 403 });
+
+      throw new AuthMiddlwareError(false, response, errMsg);
+    }
+
+    return { isAuthorize: true };
+  } catch (error) {
+    const { isAuthorize, errResponse, msg } = error ?? {};
+
+    console.error('Error message: ', msg ?? 'Failed to validate jwt.');
+
+    return { isAuthorize, errResponse, msg };
   }
-
-  if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(payload.roles, 'dbAdmin')) {
-    return {
-      isAuthorize: false,
-      errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 }),
-    };
-  }
-
-  return { isAuthorize: true };
 };
 
 const getUnitNum = pathName => parseInt(pathName.split('/').find(val => !Number.isNaN(parseInt(val)) && (typeof parseInt(val) === 'number')));
@@ -135,10 +141,8 @@ export async function middleware(request) {
       ((nextUrl.pathname == '/api/get-about-user-form') && (method === 'GET') && authorizationStr) ||
       ((nextUrl.pathname == '/api/save-about-user-form') && (method === 'PUT') && authorizationStr)
     ) {
-      // if the route '/api/save-about-user-form', then parse the jwt, get the email and compare it with the email 
-      // -within the body of the request
-      
-      const { errResponse } = await getAuthorizeReqResult(authorizationStr, true);
+      const willCheckIfUserIsDbAdmin = ['/api/insert-lesson', '/api/delete-lesson', '/api/update-lessons'].includes(nextUrl.pathname);
+      const { errResponse } = await getAuthorizeReqResult(authorizationStr, willCheckIfUserIsDbAdmin);
 
       if (errResponse) {
         return errResponse;

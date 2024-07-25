@@ -12,6 +12,13 @@ class AuthError{
     this.redirectUrl = redirectUrl;
   }
 }
+class AuthMiddlwareError{
+  constructor(isAuthorize, errResponse, msg){
+    this.isAuthorize = isAuthorize;
+    this.msg = msg;
+    this.errResponse = errResponse;
+  }
+}
 class SignInError{
   constructor(type = 'sign-in-error', msg = '',code = 500){
     this.type = type;
@@ -20,4 +27,4 @@ class SignInError{
   }
 }
 
-export { CustomError, AuthError, SignInError };
+export { CustomError, AuthError, SignInError, AuthMiddlwareError };

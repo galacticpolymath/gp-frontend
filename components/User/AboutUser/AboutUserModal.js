@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
@@ -37,6 +38,7 @@ const AboutUserModal = () => {
     const [errors, setErorrs] = useState(new Map());
     /** @type {[import('../../../providers/UserProvider').TAboutUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
+
     const modalBodyRef = useRef();
 
     const handleOnHide = () => {
@@ -70,7 +72,7 @@ const AboutUserModal = () => {
     };
 
     const handleToggleTextareaDisability = () => {
-        const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit);
+        const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit) ?? new Map();
 
         if (reasonsForSiteVisit.has('reason-for-visit-custom')) {
             reasonsForSiteVisit.delete('reason-for-visit-custom');
@@ -131,6 +133,8 @@ const AboutUserModal = () => {
         }
     }, [isAboutMeFormModalDisplayed]);
 
+    console.log('aboutUserForm, hey there: ', aboutUserForm);
+
     return (
         <Modal
             show={isAboutMeFormModalDisplayed}
@@ -153,23 +157,24 @@ const AboutUserModal = () => {
                                 name='occupation'
                                 onChange={handleOnInputChange}
                                 placeholder='What do you do?'
-                                value={aboutUserForm.occupation}
+                                value={aboutUserForm?.occupation ?? ''}
                                 style={{ maxWidth: '400px' }}
+                                autoFocus={!aboutUserForm?.occupation}
                                 className={`aboutme-txt-input no-outline  pt-1 ${errors.has('occupation') ? 'text-danger border-danger' : ''}`}
                             />
                             {errors.has('occupation') && <span className='text-danger'>{errors.get('occupation')}</span>}                       
                         </section>
                         <CountrySection />
                         <section className='d-flex flex-column col-8 col-lg-2'>
-                            <label htmlFor='country-input' style={{ opacity: aboutUserForm.country.toLowerCase() !== 'united states' ? .3 : 1 }}>
+                            <label htmlFor='country-input' style={{ opacity: aboutUserForm?.country?.toLowerCase() !== 'united states' ? .3 : 1 }}>
                                 *Zip Code:
                             </label>
                             <input
                                 placeholder='Your zip code'
                                 type='number'
                                 name='zipCode'
-                                disabled={aboutUserForm.country.toLowerCase() !== 'united states'}
-                                value={aboutUserForm.zipCode}
+                                disabled={aboutUserForm?.country?.toLowerCase() !== 'united states'}
+                                value={aboutUserForm?.zipCode ?? ''}
                                 onChange={handleOnInputChange}
                                 style={{
                                     outline: 'none',
@@ -177,7 +182,7 @@ const AboutUserModal = () => {
                                     borderRight: 'none',
                                     borderLeft: 'none',
                                     borderBottom: 'solid 1px grey',
-                                    opacity: aboutUserForm.country.toLowerCase() !== 'united states' ? .3 : 1,
+                                    opacity: aboutUserForm?.country?.toLowerCase() !== 'united states' ? .3 : 1,
                                 }}
                                 className='aboutme-txt-input pt-1'
                             />
@@ -193,7 +198,7 @@ const AboutUserModal = () => {
                                 placeholder='Total students'
                                 type='number'
                                 name='classroomSize'
-                                value={aboutUserForm.classroomSize}
+                                value={aboutUserForm?.classroomSize ?? '0'}
                                 onChange={handleOnInputChange}
                                 style={{ maxWidth: '200px', transform: 'translateY(50%)' }}
                                 className='aboutme-txt-input no-outline'
@@ -222,7 +227,7 @@ const AboutUserModal = () => {
                         <section className='d-flex flex-column flex-lg-row'>
                             {WHAT_BRINGS_YOU_TO_SITE_OPTS.map((opt, index) => {
                                 const name = `reason-for-visit-${index}`;
-                                const isChecked = aboutUserForm.reasonsForSiteVisit.has(name);
+                                const isChecked = (aboutUserForm.reasonsForSiteVisit && aboutUserForm.reasonsForSiteVisit instanceof Map) ? aboutUserForm.reasonsForSiteVisit.has(name) : false;
 
                                 return (
                                     <div key={index} className={`d-flex ${index === 0 ? '' : 'ms-lg-3'}`}>
@@ -245,24 +250,24 @@ const AboutUserModal = () => {
                                 type='checkbox'
                                 name='subject'
                                 onChange={handleToggleTextareaDisability}
-                                checked={aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom')}
+                                checked={(aboutUserForm.reasonsForSiteVisit && aboutUserForm.reasonsForSiteVisit instanceof Map) ? aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom') : false}
                             />
                             <span className='ms-1'>
                                 Other:
                             </span>
                         </div>
                         <textarea
-                            disabled={!aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom')}
+                            disabled={!((aboutUserForm.reasonsForSiteVisit && aboutUserForm.reasonsForSiteVisit instanceof Map) ? aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom') : false)}
                             id='reasonsForSiteVisit'
                             name='reason-for-visit-custom'
                             style={{
                                 outline: 'none',
-                                opacity: !aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom') ? .3 : 1,
+                                opacity: !aboutUserForm?.reasonsForSiteVisit?.has('reason-for-visit-custom') ? .3 : 1,
                                 height: '115px',
                             }}
                             className='rounded about-me-input-border about-user-textarea p-1 mt-2'
                             placeholder='Your response...'
-                            value={aboutUserForm.reasonsForSiteVisit.get('reason-for-visit-custom') ?? ''}
+                            value={aboutUserForm?.reasonsForSiteVisit?.has('reason-for-visit-custom') ? aboutUserForm.reasonsForSiteVisit.get('reason-for-visit-custom') : ''}
                             onChange={handleWhatBringsYouToSiteInputChange}
                         />
                     </section>

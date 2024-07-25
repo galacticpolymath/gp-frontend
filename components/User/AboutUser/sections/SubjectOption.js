@@ -12,7 +12,7 @@ const SubjectOption = ({ subject, index, lastIndex }) => {
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const subjectName = `subject-${index}`;
     const customSubjectName = `other-${index}`;
-    const isChecked = aboutUserForm.subjects.has(subjectName) || aboutUserForm.subjects.has(customSubjectName);
+    const isChecked = aboutUserForm?.subjects?.has(subjectName) || aboutUserForm?.subjects?.has(customSubjectName);
 
     const handleCheckboxOnchange = event => {
         const subjectsTaught = structuredClone(aboutUserForm.subjects);
@@ -33,7 +33,7 @@ const SubjectOption = ({ subject, index, lastIndex }) => {
             return;
         }
 
-        if (subjectsTaught.has(event.target.name)) {
+        if (subjectsTaught?.has(event.target.name)) {
             subjectsTaught.delete(event.target.name);
 
             setAboutUserForm(state => ({ ...state, subjects: subjectsTaught }));
@@ -72,7 +72,7 @@ const SubjectOption = ({ subject, index, lastIndex }) => {
                     className='aboutme-txt-input no-outline'
                     style={{ maxWidth: '250px', opacity: !isChecked ? .3 : 1 }}
                     disabled={!isChecked}
-                    value={aboutUserForm.subjects.get(customSubjectName) ?? ''}
+                    value={aboutUserForm?.subjects?.get(customSubjectName) ?? ''}
                     name={`other-${index}`}
                     onChange={handleOnInputChange}
                 />

@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import Button from '../../../General/Button';
 import { UserContext } from '../../../../providers/UserProvider';
 
@@ -15,7 +15,11 @@ const GradesOrYearsSelection = () => {
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const { selection, ageGroupsTaught } = aboutUserForm.gradesOrYears;
     /** @type {[import('../../../../providers/ModalProvider').TUserForm, Function]} */
-    const ageGroupOptions = AGE_GROUPS[selection];
+    const ageGroupOptions = AGE_GROUPS[selection ?? 'grades'];
+
+    useEffect(() => {
+        console.log('selection, sup there: ', selection);
+    });
 
     const handleGradesOrYearsBtnClick = gradesOrYearsSelectedOptName => () => {
         setAboutUserForm(state => ({
@@ -60,16 +64,32 @@ const GradesOrYearsSelection = () => {
             <section className='d-flex flex-column mt-2'>
                 <section>
                     <Button
-                        defaultStyleObj={{ borderTopLeftRadius: '.5em', borderBottomLeftRadius: '.5em', width: '100px' }}
-                        classNameStr={`py-1 no-btn-styles ${selection === 'grades' ? 'selected-grade-or-years-opt' : 'text-gray border'}`}
+                        defaultStyleObj={{
+                            borderTopLeftRadius: '.5em',
+                            borderBottomLeftRadius: '.5em',
+                            width: '100px',
+                            borderTop: selection !== 'grades' ? 'solid grey 1px' : '',
+                            borderLeft: selection !== 'grades' ? 'solid grey 1px' : '',
+                            borderBottom: selection !== 'grades' ? 'solid grey 1px' : '',
+                        }}
+                        classNameStr={`py-1 no-btn-styles ${selection === 'grades' ? 'selected-grade-or-years-opt' : ''}`}
                         handleOnClick={handleGradesOrYearsBtnClick('grades')}
+                        isDisabled={selection === 'grades'}
                     >
                         Grades
                     </Button>
                     <Button
-                        defaultStyleObj={{ background: '#F2F8FD', width: '100px', borderTopRightRadius: '.5em', borderBottomRightRadius: '.5em' }}
-                        classNameStr={`py-1 no-btn-styles ${selection === 'years' ? 'selected-grade-or-years-opt' : 'text-gray border'}`}
+                        defaultStyleObj={{
+                            width: '100px',
+                            borderTopRightRadius: '.5em',
+                            borderBottomRightRadius: '.5em',
+                            borderTop: selection !== 'years' ? 'solid grey 1px' : '',
+                            borderRight: selection !== 'years' ? 'solid grey 1px' : '',
+                            borderBottom: selection !== 'years' ? 'solid grey 1px' : '',
+                        }}
+                        classNameStr={`py-1 no-btn-styles ${selection === 'years' ? 'selected-grade-or-years-opt' : ''}`}
                         handleOnClick={handleGradesOrYearsBtnClick('years')}
+                        isDisabled={selection === 'years'}
                     >
                         Years
                     </Button>
@@ -87,8 +107,9 @@ const GradesOrYearsSelection = () => {
                                     value={ageGroup}
                                     onChange={handleCheckboxInputChange}
                                     checked={ageGroupsTaught.includes(ageGroup)}
+                                    disabled={!selection}
                                 />
-                                <span className='ms-1 txt-color-for-aboutme-modal text-nowrap'>
+                                <span style={{ opacity: !selection ? .3 : 1 }} className='ms-1 txt-color-for-aboutme-modal text-nowrap'>
                                     {ageGroup}
                                 </span>
                             </section>

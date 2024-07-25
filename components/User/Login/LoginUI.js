@@ -34,13 +34,16 @@ const LoginUI = ({
     };
 
     const handleLoginBtnClick = () => {
-        // check if the user exists: 
-        // the user has to have credentials for their provider
-        // if so, then save their last path on the site to redirect the user to that location
-        sendFormToServer({
-            email: loginForm.email,
-            password: loginForm.password,
-        }, "login", "credentials");
+        sendFormToServer(
+            "login",
+            "credentials",
+            {
+                login: {
+                    email: loginForm.email,
+                    password: loginForm.password,
+                },
+            },
+        );
     };
 
     const handleCreateOneBtnClick = () => {
