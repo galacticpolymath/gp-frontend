@@ -7,7 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import Button from "../General/Button";
 import { signIn } from "next-auth/react";
 
-const GoogleSignIn = ({ callbackUrl = '', className = 'rounded p-2 d-flex justify-content-center align-items-center border' }) => {
+const GoogleSignIn = ({ callbackUrl = '', className = 'rounded p-2 d-flex justify-content-center align-items-center border', txt = 'Sign in with Google.' }) => {
     const handleBtnClick = event => {
         event.preventDefault();
         
@@ -25,7 +25,7 @@ const GoogleSignIn = ({ callbackUrl = '', className = 'rounded p-2 d-flex justif
         >
             <FcGoogle className="mx-2" />
             <span style={{ fontSize: '16px' }}>
-                Sign in with Google.
+                {txt}
             </span>
         </Button>
     );

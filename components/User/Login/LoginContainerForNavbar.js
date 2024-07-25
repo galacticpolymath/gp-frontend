@@ -17,7 +17,7 @@ const LoginContainerForNavbar = () => {
     const { name, image } = data?.user ?? {};
 
     const handleOnClick = () => {
-        if (status === 'unauthenticated') {
+        if (status === 'authenticated') {
             setIsLoginModalDisplayed(true);
             return;
         }
@@ -40,7 +40,7 @@ const LoginContainerForNavbar = () => {
                 classNameStr='rounded px-3 border-0'
                 isDisabled={status === 'loading'}
                 backgroundColor="#333438"
-                defaultStyleObj={{ width: '100px' }}
+                defaultStyleObj={{ width: '125px' }}
             >
                 <span style={{ color: 'white', fontWeight: 410 }}>
                     {buttonTxt}

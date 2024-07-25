@@ -14,10 +14,8 @@ export const useLogin = () => {
     * @param {{ email: string, password: string }} userInput    
     * */
     const sendFormToServer = (userInput, formType, providerType) => {
-        console.log(userInput);
         if (!userInput.email || !userInput.password || !formType) {
             setUserErrorType('emptyInputs');
-            console.log('what is up ');
             return;
         }
 
