@@ -85,6 +85,34 @@ body {
   }
 }
 
+.fade-in-quick {
+  animation: fadeInQuick .5s forwards;
+  opacity: 1;
+}
+
+@keyframes fadeInQuick {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-out-quick {
+  animation: fadeOutQuick .5s forwards;
+  opacity: 1;
+}
+
+@keyframes fadeOutQuick {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 * {
   text-underline-offset: 4px !important;
 }
@@ -209,29 +237,85 @@ ol li {
   border-bottom: solid 1px grey;
 }
 
-.about-me-input-border{
+.about-me-input-border {
   border: solid 1px grey;
 }
 
-.no-border-left{
- border-left: none;
+.no-border-left {
+  border-left: none;
 }
 
-.no-border-top{
+.no-border-top {
   border-top: none;
 }
 
-.login-ui-modal{
+.login-ui-modal {
   width: 35vw;
 }
 
-.create-account-ui-modal{
-  width:55vw;
-  // height: 80vh;
+.create-account-ui-modal {
+  width: 55vw;
 }
 
+.grades-or-years-non-usa-btn,
+.grades-or-years-usa-btn {
+  width: 155px;
+}
 
-.subjects-taught-container{
+.grades-or-years-usa-btn {
+  border-top: solid grey 1px;
+  border-left: solid grey 1px;
+  border-right: solid grey 1px;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+
+  @media (min-width: 577px) {
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom: solid grey 1px;
+    border-right: none;
+  }
+}
+.grades-or-years-non-usa-btn {
+  border-bottom-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  border-right: solid grey 1px;
+  border-left: solid grey 1px;
+  border-bottom: solid grey 1px;
+  border-top: none;
+  
+  @media (min-width: 577px) {
+    border-top-right-radius: 0.5rem;
+    border-left: none;
+    border-top: solid grey 1px;
+    border-bottom-left-radius: 0px;
+    border-bottom: solid grey 1px;
+  }
+}
+
+.grades-or-years-non-usa-btn-unselected {
+  border-top: solid grey 1px;
+
+  @media (min-width: 577px) {
+    border-left: solid grey 1px;
+  }
+}
+
+.unselected-non-us-opt {
+  border-top: none;
+
+  @media (min-width: 577px) {
+    border-left: none;
+  }
+}
+
+#zipCode-input{
+  @media(max-width: 576px){
+    max-width: 400px;
+  }
+}
+
+.subjects-taught-container {
   column-count: 2;
 
   @media (max-width: 992px) {
@@ -251,16 +335,16 @@ ol li {
   }
 }
 
-.selected-grade-or-years-opt{
-  border: #6192B0 solid 2px;
-  color: #6192B0;
+.selected-grade-or-years-opt {
+  border: #6192b0 solid 2px;
+  color: #6192b0;
 }
 
-.no-border-right{
+.no-border-right {
   border-right: none;
 }
 
-.no-border-bottom{
+.no-border-bottom {
   border-bottom: none;
 }
 
@@ -283,13 +367,13 @@ ol li {
   }
 }
 
-.no-outline{
+.no-outline {
   outline: none;
 }
 
 .about-me-modal-body {
   input {
-    color: black;;
+    color: black;
   }
   textarea {
     color: black;

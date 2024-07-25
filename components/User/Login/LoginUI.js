@@ -4,10 +4,8 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";
-import { MdOutlineMail } from "react-icons/md";
-import { FaLock } from "react-icons/fa";
 import Button from "../../General/Button";
 import CustomLink from "../../CustomLink";
 import GoogleSignIn from "../GoogleSignIn";
@@ -16,12 +14,12 @@ import { useUserEntry } from "../../../customHooks/useUserEntry";
 const LoginUI = ({
     className = '',
     headingTitleClassName = "text-white text-center mt-2",
-    isInputIconShow = true,
 }) => {
     const { sendFormToServer, _loginForm } = useUserEntry();
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
     const [loginForm, setLoginForm] = _loginForm;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
+    const [errors, setErrors] = useState(new Map());
     const inputFieldClassName = 'col-7';
 
     const handleOnInputChange = event => {
@@ -64,19 +62,20 @@ const LoginUI = ({
             <h5 className={headingTitleClassName}>GP Login</h5>
             <section>
                 <form>
-                    <div className="mt-3 d-flex justify-content-center align-items-center position-relative row">
+                    <div className="mt-3 d-flex justify-content-center align-items-center flex-column">
                         <label
-                            style={{ width: '12.5%', display: isInputIconShow ? 'flex' : 'none' }}
-                            className="position-absolute bg-danger start-0 justify-content-center align-items-center"
+                            className="d-flex p-0 position-relative col-7 fw-bold pb-2"
                             htmlFor="email-input"
+
                         >
-                            <MdOutlineMail fontSize='31px' color="#D6D6D6" />
+                            Email:
                         </label>
                         <input
                             id="email-input"
                             placeholder="Email"
                             style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6' }}
-                            className={`border-0 p-1 ${inputFieldClassName} py-2`}
+                            className={`no-outline p-1 py-2 ${inputFieldClassName}`}
+                            autoFocus
                             name="email"
                             onChange={event => {
                                 handleOnInputChange(event);
@@ -85,22 +84,24 @@ const LoginUI = ({
                     </div>
                     <div className="my-2 py-1 d-flex justify-content-center align-items-center">
                         <div className={`${inputFieldClassName} d-flex align-items-center position-relative`}>
-                            <span style={{ fontSize: '16px' }} className='left-0 text-danger position-absolute'>*Incorrect email or password.</span>
+                            <span style={{ fontSize: '16px' }} className='left-0 text-danger position-absolute'>
+                                {errors.get('email') ?? ''}
+                            </span>
                         </div>
                     </div>
-                    <div className="mt-4 d-flex justify-content-center align-items-center row">
+                    <div className="mt-4 d-flex justify-content-center align-items-center flex-column">
                         <label
-                            style={{ width: '12.5%', display: isInputIconShow ? 'flex' : 'none' }}
-                            className="position-absolute start-0 justify-content-center align-items-center"
-                            htmlFor="email-input"
+                            className="d-flex p-0 position-relative col-7 fw-bold pb-2"
+                            htmlFor="password-input"
+
                         >
-                            <FaLock fontSize='31px' color="#D6D6D6" />
+                            Password:
                         </label>
                         <input
                             id='password-input'
                             placeholder="Password"
-                            style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6', border: 'solid 2px red' }}
-                            className={`no-outline p-1 py-2 text-danger ${inputFieldClassName}`}
+                            style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6' }}
+                            className={`no-outline p-1 py-2 ${inputFieldClassName}`}
                             name='password'
                             onChange={event => {
                                 handleOnInputChange(event);
@@ -109,7 +110,9 @@ const LoginUI = ({
                     </div>
                     <div className="my-2 py-1 d-flex justify-content-center align-items-center">
                         <div className={`d-flex align-items-center position-relative ${inputFieldClassName}`}>
-                            <span style={{ fontSize: '16px' }} className='left-0 text-danger position-absolute'>*Incorrect email or password.</span>
+                            <span style={{ fontSize: '16px' }} className='left-0 text-danger position-absolute'>
+                                {errors.get('password') ?? ''}
+                            </span>
                         </div>
                     </div>
                     <div className='d-flex justify-content-center align-items-center py-2 mt-3 row'>
@@ -149,7 +152,7 @@ const LoginUI = ({
                     className="rounded p-2 d-flex justify-content-center align-items-center border shadow"
                 />
             </section>
-            <div className="d-flex justify-content-center align-items-center border-top py-3">
+            <div className="d-flex justify-content-center align-items-center border-top pt-3 pb-5">
                 <span className='text-black'>
                     Don{"'"}t have an account?
                 </span>

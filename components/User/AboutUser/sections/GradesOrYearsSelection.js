@@ -58,34 +58,19 @@ const GradesOrYearsSelection = () => {
                 What age do you teach?
             </label>
             <section className='d-flex flex-column mt-2'>
-                <section>
+                <section className='d-flex flex-sm-row flex-column'>
                     <Button
                         defaultStyleObj={{
-                            borderTopLeftRadius: '.5em',
-                            borderBottomLeftRadius: '.5em',
-                            // width: '155px',
-                            borderTop: selection !== AGE_GROUPS_FIELD_U_S ? 'solid grey 1px' : '',
-                            borderLeft: selection !== AGE_GROUPS_FIELD_U_S ? 'solid grey 1px' : '',
-                            borderBottom: selection !== AGE_GROUPS_FIELD_U_S ? 'solid grey 1px' : '',
+                            width: '155px',
                         }}
-                        classNameStr={`py-1 no-btn-styles ${selection === AGE_GROUPS_FIELD_U_S ? 'selected-grade-or-years-opt' : ''}`}
+                        classNameStr={`py-1 grades-or-years-usa-btn no-btn-styles ${selection === AGE_GROUPS_FIELD_U_S ? 'selected-grade-or-years-opt' : ''}`}
                         handleOnClick={handleGradesOrYearsBtnClick(AGE_GROUPS_FIELD_U_S)}
                         isDisabled={selection === AGE_GROUPS_FIELD_U_S}
                     >
                         {AGE_GROUPS_FIELD_U_S}
                     </Button>
                     <Button
-                        defaultStyleObj={{
-                            // width: '155px',
-                            // width: '125px',
-                            borderTopRightRadius: '.5em',
-                            borderBottomRightRadius: '.5em',
-                            borderTop: selection !== AGE_GROUPS_FIELD_NON_U_S ? 'solid grey 1px' : '',
-                            borderRight: selection !== AGE_GROUPS_FIELD_NON_U_S ? 'solid grey 1px' : '',
-                            borderBottom: selection !== AGE_GROUPS_FIELD_NON_U_S ? 'solid grey 1px' : '',
-                            borderLeft: !selection ? 'solid grey 1px' : '',
-                        }}
-                        classNameStr={`py-1 no-btn-styles ${selection === AGE_GROUPS_FIELD_NON_U_S ? 'selected-grade-or-years-opt' : ''}`}
+                        classNameStr={`py-1 grades-or-years-non-usa-btn no-btn-styles ${!selection ? 'grades-or-years-non-usa-btn-unselected' : ''} ${selection === AGE_GROUPS_FIELD_NON_U_S ? 'selected-grade-or-years-opt' : ''}`}
                         handleOnClick={handleGradesOrYearsBtnClick(AGE_GROUPS_FIELD_NON_U_S)}
                         isDisabled={selection === AGE_GROUPS_FIELD_NON_U_S}
                     >
@@ -97,7 +82,7 @@ const GradesOrYearsSelection = () => {
                         return (
                             <section
                                 key={`${selection}-${index}`}
-                                className={`d-flex ms-2 ${(index != 0) ? '' : ''}`}
+                                className={`d-flex mt-1 mt-sm-0 ms-2 ${(index != 0) ? '' : ''}`}
                                 style={{ width: '45px' }}
                             >
                                 <input

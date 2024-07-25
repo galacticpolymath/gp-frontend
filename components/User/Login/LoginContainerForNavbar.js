@@ -6,22 +6,33 @@
 import { useContext, useState } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import CustomLink from "../../CustomLink";
 
 const LoginContainerForNavbar = () => {
     const { _isLoginModalDisplayed } = useContext(ModalContext);
     const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
-    const [isAccountModalDisplayed, setIsAccountModalDisplayed] = useState(false);
+    const [modalAnimation, setModalAnimation] = useState('');
+    const [isModalDisplayed, setIsModalDisplayed] = useState(false);
     const { status, data } = useSession();
     const { name, image } = data?.user ?? {};
 
     const handleOnClick = () => {
         if (status === 'authenticated') {
-            setIsAccountModalDisplayed(isAccountModalDisplayed => !isAccountModalDisplayed);
+            setModalAnimation(modalAnimation => {
+                if (modalAnimation === 'fade-out-quick' || modalAnimation === '') {
+                    return 'fade-in-quick';
+                }
+
+                if (modalAnimation === 'fade-in-quick') {
+                    return 'fade-out-quick';
+                }
+
+                return modalAnimation;
+            });
             return;
         }
-        
+
         setIsLoginModalDisplayed(true);
     };
 
@@ -57,37 +68,50 @@ const LoginContainerForNavbar = () => {
                     </>
                 )}
             </Button>
-            {isAccountModalDisplayed && (
-                <div
-                    style={{ backgroundColor: '#333438', minWidth: '120%', width: '21vw', right: '30%', maxWidth: '300px' }}
-                    className='position-absolute py-2 rounded'
+            <div
+                style={{
+                    backgroundColor: '#333438',
+                    minWidth: '120%',
+                    width: '21vw',
+                    right: '30%',
+                    maxWidth: '300px',
+                    opacity: 0,
+                    pointerEvents: modalAnimation === 'fade-out-quick' ? 'none' : 'auto',
+                }}
+                className={`position-absolute py-2 rounded ${modalAnimation}`}
+            >
+                <section
+                    style={{ borderBottom: '1px solid grey' }}
+                    className="d-flex flex-column justify-content-center align-items-center pb-2"
                 >
-                    <section
-                        style={{ borderBottom: '1px solid grey' }}
-                        className="d-flex flex-column justify-content-center align-items-center pb-2"
+                    <img
+                        src={image ?? '/imgs/gp_logo_gradient_transBG.png'}
+                        alt='user_img'
+                        width={75}
+                        height={75}
+                        style={{ objectFit: 'contain' }}
+                        className='rounded-circle'
+                    />
+                    <span className="text-white my-3">{name?.first} {name?.last}</span>
+                </section>
+                <section className='d-flex flex-column'>
+                    <CustomLink
+                        hrefStr="/account"
+                        className="text-white hover txt-underline-on-hover py-2 w-100 text-center"
                     >
-                        <img
-                            width={75}
-                            height={75}
-                            src={image}
-                            alt='user_profile_image'
-                            className="rounded-circle"
-                        />
-                        <span className="text-white my-3">{name?.first} {name?.last}</span>
-                    </section>
-                    <section className='d-flex flex-column'>
-                        <CustomLink
-                            hrefStr="/account"
-                            className="text-white hover txt-underline-on-hover py-2 w-100 text-center"
-                        >
-                            View Account
-                        </CustomLink>
-                        <Button classNameStr="no-btn-styles text-danger hover txt-underline-on-hover py-2">
-                            SIGN OUT
-                        </Button>
-                    </section>
-                </div>
-            )}
+                        View Account
+                    </CustomLink>
+                    <Button
+                        handleOnClick={() => {
+                            localStorage.clear();
+                            signOut();
+                        }}
+                        classNameStr="no-btn-styles text-danger hover txt-underline-on-hover py-2"
+                    >
+                        SIGN OUT
+                    </Button>
+                </section>
+            </div>
         </div>
     );
 };

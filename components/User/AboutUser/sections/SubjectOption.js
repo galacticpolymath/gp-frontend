@@ -64,7 +64,7 @@ const SubjectOption = ({ subject, customCssClassses = '', subjectFieldNameForMap
                     onChange={handleCheckboxOnchange}
                     checked={isChecked}
                 />
-                <span className='capitalize ms-1 txt-color-for-aboutme-modal'>{subject}</span>
+                <span className='capitalize ms-1 txt-color-for-aboutme-modal text-nowrap'>{subject}</span>
             </section>
             {(subject === 'other:') && (
                 <input

@@ -6,7 +6,15 @@ import { useContext, useState } from "react";
 import Button from "../../../General/Button";
 import { UserContext } from "../../../../providers/UserProvider";
 
-const CountrySection = ({ countryNames }) => {
+/**
+ * 
+ * @param {{
+ *  setErrors: Function,
+ *  countryNames: string[],
+ *  errorMsg: string
+ * }} param
+ */
+const CountrySection = ({ countryNames, errorMsg, setErrors }) => {
     const [searchResults, setSearchResults] = useState([]);
     const [isInputFocused, setIsInputFocused] = useState(false);
     const { _aboutUserForm } = useContext(UserContext);
@@ -18,6 +26,16 @@ const CountrySection = ({ countryNames }) => {
     };
 
     const handleCountrySelectionBtnClick = ({ target }) => {
+        setErrors(state => {
+            /**
+             * @type {Map<string, string}
+             */
+            const stateClone = structuredClone(state); 
+
+            stateClone.delete('country');
+
+            return stateClone;
+        });
         let aboutUserFormUpdated = { ...aboutUserForm };
 
         if (target.value.toLowerCase() !== 'united states') {
@@ -48,20 +66,21 @@ const CountrySection = ({ countryNames }) => {
     };
 
     return (
-        <section className='d-flex flex-column my-4 my-lg-0 col-8 col-lg-4'>
-            <label htmlFor='country-input'>
+        <section className='d-flex flex-column my-4 my-lg-0 col-12 col-sm-8 col-lg-4'>
+            <label htmlFor='country-input' className={errorMsg ? 'text-danger' : ''}>
                 *Country:
             </label>
-            <div className='position-relative'>
+            <div className='position-relative ms-2 ms-sm-0 d-flex flex-column'>
                 <input
                     placeholder='Your country'
                     style={{ maxWidth: '400px' }}
-                    className='aboutme-txt-input no-outline w-100 pt-1'
+                    className={`aboutme-txt-input no-outline w-100 pt-1 ${errorMsg ? 'border-danger text-danger' : ''}`}
                     defaultValue={aboutUserForm.country}
                     value={aboutUserForm.country}
                     onChange={handleInputOnChange}
                     onFocus={handleOnInputFocus}
                 />
+                <span style={{ height: '25px', fontSize: '16px' }} className='text-danger'>{errorMsg ?? ''}</span>
                 {isInputFocused && (
                     <div
                         id='searchResultsModal'

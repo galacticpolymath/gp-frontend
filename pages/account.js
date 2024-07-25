@@ -111,8 +111,6 @@ const AccountPg = () => {
 
     }, [status]);
 
-    console.log('session, yo there: ', session);
-
     if (status === 'loading') {
         return (
             <Layout>
@@ -149,8 +147,10 @@ const AccountPg = () => {
                 <section className='row border-bottom pb-4'>
                     <section className='col-12 d-flex justify-content-center align-items-center pt-4'>
                         <img
-                            src={image}
+                            src={image ?? '/imgs/gp_logo_gradient_transBG.png'}
                             alt='user_img'
+                            width={100}
+                            height={100}
                             style={{ objectFit: 'contain' }}
                             className='rounded-circle'
                         />

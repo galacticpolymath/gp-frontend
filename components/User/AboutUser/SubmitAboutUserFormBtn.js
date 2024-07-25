@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
@@ -53,7 +54,7 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
             } = aboutUserFormClone;
             const errors = new Map();
 
-            if(!gradesOrYears?.ageGroupsTaught?.length){
+            if (!gradesOrYears?.ageGroupsTaught?.length) {
                 delete aboutUserFormClone.gradesOrYears;
             }
 
@@ -79,24 +80,23 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 };
             }
 
-            if ((country.toLowerCase() === 'united states') && (!zipCode || (zipCode?.toString()?.length == 0) || (zipCode < 0))) {
+            if ((country?.toLowerCase() === 'united states') && (!zipCode || (zipCode?.toString()?.length == 0) || (zipCode < 0))) {
                 errors.set('zipCode', 'This field is required');
             }
 
-            if(occupation?.length <= 0){
+            if (!occupation || (occupation?.length <= 0)) {
                 errors.set('occupation', 'This field is required.');
             }
 
             if (country?.length <= 0) {
                 errors.set('country', 'This field is required.');
-            }
-
-            if(!countryNames?.includes(country)){
+            } else if (!countryNames?.includes(country)) {
                 errors.set('country', 'Invalid country name.');
             }
 
             if (errors?.size > 0) {
                 setErrors(errors);
+                debugger;
 
                 throw new CustomError("Invalid entries. Please try again.", null, "invalidAboutUserForm.");
             }

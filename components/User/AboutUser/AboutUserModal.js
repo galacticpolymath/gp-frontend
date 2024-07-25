@@ -21,7 +21,6 @@ const SUBJECTS_OPTIONS = [
     'other:',
     'other:',
 ];
-// whatBringsYouToSiteOpts
 const WHAT_BRINGS_YOU_TO_SITE_OPTS = [
     'interdisciplinary lesson',
     'science research',
@@ -32,13 +31,9 @@ const WHAT_BRINGS_YOU_TO_SITE_OPTS = [
 const AboutUserModal = () => {
     const { _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     const { _aboutUserForm } = useContext(UserContext);
-    /** @type {[boolean, Function]} */
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
-    const errorsMap = new Map();
-    errorsMap.set('occupation', 'This field is required');
-    const [errors, setErorrs] = useState(errorsMap);
-    /** @type {[import('../../../providers/UserProvider').TAboutUserForm, Function]} */
+    const [errors, setErorrs] = useState(new Map());
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
 
     const modalBodyRef = useRef();
@@ -170,7 +165,7 @@ const AboutUserModal = () => {
             <ModalBody ref={modalBodyRef} className='about-me-modal-body'>
                 <form className='position-relative  h-100 w-100'>
                     <section className='row d-flex flex-column flex-lg-row'>
-                        <section className='d-flex flex-column col-8 col-lg-4 b7order'>
+                        <section className='d-flex flex-column col-12 col-sm-8 col-lg-4'>
                             <label htmlFor='country-input' className={`${errors.has('occupation') ? 'text-danger' : ''}`}>
                                 *Occupation:
                             </label>
@@ -181,19 +176,24 @@ const AboutUserModal = () => {
                                 value={aboutUserForm?.occupation ?? ''}
                                 style={{ maxWidth: '400px' }}
                                 autoFocus={!aboutUserForm?.occupation}
-                                className={`aboutme-txt-input no-outline  pt-1 ${errors.has('occupation') ? 'text-danger border-danger' : ''}`}
+                                className={`ms-2 ms-sm-0 aboutme-txt-input no-outline pt-1 ${errors.has('occupation') ? 'text-danger border-danger' : ''}`}
                             />
-                            {errors.has('occupation') && <span className='text-danger'>{errors.get('occupation')}</span>}
+                            <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('occupation') ?? ''}</span>
                         </section>
-                        <CountrySection countryNames={countryNames} />
-                        <section className='d-flex flex-column col-8 col-lg-2'>
-                            <label htmlFor='country-input' style={{ opacity: aboutUserForm?.country?.toLowerCase() !== 'united states' ? .3 : 1 }}>
+                        <CountrySection
+                            countryNames={countryNames}
+                            errorMsg={errors?.get('country')}
+                            setErrors={setErorrs}
+                        />
+                        <section className='d-flex flex-column col-12 col-sm-8 col-lg-2'>
+                            <label htmlFor='zipCode-input' className={`${errors.has('zipCode') ? 'text-danger' : ''}`}>
                                 *Zip Code:
                             </label>
                             <input
                                 placeholder='Your zip code'
                                 type='number'
                                 name='zipCode'
+                                id='zipCode-input'
                                 disabled={aboutUserForm?.country?.toLowerCase() !== 'united states'}
                                 value={aboutUserForm?.zipCode ?? ''}
                                 onChange={handleOnInputChange}
@@ -202,16 +202,17 @@ const AboutUserModal = () => {
                                     borderTop: 'none',
                                     borderRight: 'none',
                                     borderLeft: 'none',
-                                    borderBottom: 'solid 1px grey',
+                                    borderBottom: errors.has('zipCode') ? 'solid 1px red' : 'solid 1px grey',
                                     opacity: aboutUserForm?.country?.toLowerCase() !== 'united states' ? .3 : 1,
                                 }}
-                                className='aboutme-txt-input pt-1'
+                                className={`aboutme-txt-input pt-1 ms-2 ms-sm-0 ${errors.has('zipCode') ? 'border-danger' : ''}`}
                             />
+                            <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('zipCode') ?? ''}</span>
                         </section>
                     </section>
-                    <section style={{ columnCount: 2 }} className='mt-4 mb-2 row'>
+                    <section style={{ columnCount: 2 }} className='mt-3 mb-2 row'>
                         <GradesOrYearsSelection />
-                        <section className='d-flex flex-column col-12 col-lg-6'>
+                        <section className='d-flex flex-column col-12 col-lg-6 mt-2 mt-sm-0'>
                             <label style={{ lineHeight: '25px' }}>
                                 How many students do you teach?
                             </label>
@@ -226,44 +227,46 @@ const AboutUserModal = () => {
                             />
                         </section>
                     </section>
-                    <section className='d-flex flex-column mt-4 mt-lg-2'>
+                    <section className='d-flex flex-column mt-4 mt-lg-3'>
                         <label>
                             Subject(s) Taught:
                         </label>
-                        <section className='row d-flex flex-column flex-sm-row'>
-                            <div className='pt-1 subjects-taught-container col-6'>
+                        <section className='row d-flex flex-column flex-sm-row ps-2'>
+                            <div className='pt-1 subjects-taught-container col-12 col-sm-6'>
                                 {SUBJECTS_OPTIONS.slice(0, 5).map((subject, index) => (
                                     <SubjectOption
                                         key={index}
                                         index={index}
                                         subjectFieldNameForMapTracker={`subject-${index}`}
+                                        customCssClassses={index !== 0 ? 'mt-2 mt-sm-0' : ''}
                                         subject={subject}
                                     />
                                 ))}
                             </div>
-                            <div className='pt-1 subjects-taught-container col-6'>
+                            <div className='pt-1 subjects-taught-container col-12 col-sm-6'>
                                 {SUBJECTS_OPTIONS.slice(5).map((subject, index) => (
                                     <SubjectOption
                                         key={index}
                                         index={index}
                                         subjectFieldNameForMapTracker={`other-subject-${index}`}
+                                        customCssClassses='mt-2 mt-sm-0'
                                         subject={subject}
                                     />
                                 ))}
                             </div>
                         </section>
                     </section>
-                    <section className='d-flex flex-column mt-2'>
+                    <section className='d-flex flex-column mt-2 mt-4 mt-lg-3'>
                         <label htmlFor='reasonsForSiteVisit'>
                             What brings you to our site?
                         </label>
-                        <section className='d-flex flex-column flex-lg-row'>
+                        <section className='d-flex flex-column flex-lg-row ps-2'>
                             {WHAT_BRINGS_YOU_TO_SITE_OPTS.map((opt, index) => {
                                 const name = `reason-for-visit-${index}`;
                                 const isChecked = (aboutUserForm.reasonsForSiteVisit && aboutUserForm.reasonsForSiteVisit instanceof Map) ? aboutUserForm.reasonsForSiteVisit.has(name) : false;
 
                                 return (
-                                    <div key={index} className={`d-flex ${index === 0 ? '' : 'ms-lg-3'}`}>
+                                    <div key={index} className={`d-flex mt-2 mt-sm-0 ${index === 0 ? '' : 'ms-lg-3'}`}>
                                         <input
                                             type='checkbox'
                                             value={opt}
@@ -278,31 +281,33 @@ const AboutUserModal = () => {
                                 );
                             })}
                         </section>
-                        <div className='d-flex'>
-                            <input
-                                type='checkbox'
-                                name='subject'
-                                onChange={handleToggleTextareaDisability}
-                                checked={(aboutUserForm.reasonsForSiteVisit && aboutUserForm.reasonsForSiteVisit instanceof Map) ? aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom') : false}
+                        <section className='d-flex flex-column ps-2'>
+                            <section className='d-flex'>
+                                <input
+                                    type='checkbox'
+                                    name='subject'
+                                    onChange={handleToggleTextareaDisability}
+                                    checked={(aboutUserForm.reasonsForSiteVisit && aboutUserForm.reasonsForSiteVisit instanceof Map) ? aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom') : false}
+                                />
+                                <span className='ms-1'>
+                                    Other:
+                                </span>
+                            </section>
+                            <textarea
+                                disabled={!((aboutUserForm.reasonsForSiteVisit && aboutUserForm.reasonsForSiteVisit instanceof Map) ? aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom') : false)}
+                                id='reasonsForSiteVisit'
+                                name='reason-for-visit-custom'
+                                style={{
+                                    outline: 'none',
+                                    opacity: !aboutUserForm?.reasonsForSiteVisit?.has('reason-for-visit-custom') ? .3 : 1,
+                                    height: '115px',
+                                }}
+                                className='rounded about-me-input-border about-user-textarea p-1 mt-2'
+                                placeholder='Your response...'
+                                value={aboutUserForm?.reasonsForSiteVisit?.has('reason-for-visit-custom') ? aboutUserForm.reasonsForSiteVisit.get('reason-for-visit-custom') : ''}
+                                onChange={handleWhatBringsYouToSiteInputChange}
                             />
-                            <span className='ms-1'>
-                                Other:
-                            </span>
-                        </div>
-                        <textarea
-                            disabled={!((aboutUserForm.reasonsForSiteVisit && aboutUserForm.reasonsForSiteVisit instanceof Map) ? aboutUserForm.reasonsForSiteVisit.has('reason-for-visit-custom') : false)}
-                            id='reasonsForSiteVisit'
-                            name='reason-for-visit-custom'
-                            style={{
-                                outline: 'none',
-                                opacity: !aboutUserForm?.reasonsForSiteVisit?.has('reason-for-visit-custom') ? .3 : 1,
-                                height: '115px',
-                            }}
-                            className='rounded about-me-input-border about-user-textarea p-1 mt-2'
-                            placeholder='Your response...'
-                            value={aboutUserForm?.reasonsForSiteVisit?.has('reason-for-visit-custom') ? aboutUserForm.reasonsForSiteVisit.get('reason-for-visit-custom') : ''}
-                            onChange={handleWhatBringsYouToSiteInputChange}
-                        />
+                        </section>
                     </section>
                     <section className='d-flex justify-content-end'>
                         <SubmitAboutUserFormBtn setErrors={setErorrs} countryNames={countryNames} />
