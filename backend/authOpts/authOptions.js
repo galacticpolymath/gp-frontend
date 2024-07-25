@@ -7,7 +7,7 @@ import { jwtVerify } from 'jose';
 import JwtModel from '../models/Jwt';
 import { connectToMongodb } from '../utils/connection';
 import { signJwt } from '../utils/auth';
-import { getIsPasswordCorrect, hashPassword } from '../utils/security';
+import { createIterations, createSalt, getIsPasswordCorrect, hashPassword } from '../utils/security';
 import User from '../models/user';
 import { createDocument } from '../db/utils';
 import { AuthError, SignInError } from '../utils/errors';
@@ -125,6 +125,7 @@ export const authOptions = {
     }),
     CredentialsProvider({
       async authorize(credentials) {
+        console.log('credentials, yo there: ', credentials);
         try {
           if (
             !credentials.formType ||
@@ -137,28 +138,37 @@ export const authOptions = {
 
           await connectToMongodb();
 
-          const { email, password, formType } = credentials;
+          const { email, password, firstName, lastName, formType } = credentials;
           const dbUser = await getUserByEmail(email);
+          const callbackUrl = credentials.callbackUrl.includes('?') ? credentials.callbackUrl.split('?')[0] : credentials.callbackUrl;
+
+          console.log('what is up there: ', callbackUrl);
 
           if (!dbUser && (formType === 'login')) {
             console.log('The user was not found.');
-            throw new AuthError('userNotFound', 404, credentials.callbackUrl ?? '');
+            throw new AuthError('userNotFound', 404, callbackUrl ?? '');
           }
 
           // if no password, that means the user has a 'google' for the providers 
           // user must sign in with google to log in.
           if (dbUser && !dbUser?.password && (formType === 'login')) {
-            console.log('The user does not have "credentials" for their provider.');
+            console.log('The user has "google" for their credentials.');
 
-            throw new AuthError('dbUserDoesNotHaveCredentialsProvider', 401, credentials.callbackUrl ?? '');
+            throw new AuthError('dbUserDoesNotHaveCredentialsProvider', 401, callbackUrl ?? '');
           }
 
-          const { iterations, salt, hash: hashedPasswordFromDb } = dbUser.password;
+          if (dbUser && formType === 'createAccount') {
+            throw new AuthError('userAlreadyExist', 409, callbackUrl ?? '');
+          }
+
+          console.log('If user is logging in, will check if the password is correct.');
+
+          const { iterations, salt, hash: hashedPasswordFromDb } = dbUser?.password ?? {};
 
           if ((formType === 'login') && !getIsPasswordCorrect({ iterations, salt, password: password }, hashedPasswordFromDb)) {
             console.log('Invalid creds.');
 
-            throw new AuthError('invalidCredentials', 404, credentials.callbackUrl ?? '');
+            throw new AuthError('invalidCredentials', 404, callbackUrl ?? '');
           }
 
           if ((formType === 'login') && getIsPasswordCorrect({ iterations, salt, password: password }, hashedPasswordFromDb)) {
@@ -168,23 +178,32 @@ export const authOptions = {
           }
 
           console.log('Will create the new user.');
+          const hashedPassword = hashPassword(password, createSalt(), createIterations());
 
-          // the user is being created 
+          console.log('hashedPassword: ', hashedPassword);
+
+          // the user will be created
+
           const userDocumentToCreate = {
             _id: uuidv4(),
             email: email,
-            password: hashPassword(password),
+            password: hashedPassword,
+            name: {
+              first: firstName,
+              last: lastName,
+            },
+            provider: 'credentials',
             roles: ['user'],
           };
           const newUser = createDocument(userDocumentToCreate, User);
 
           if (!newUser) {
-            throw new AuthError('userCreationFailure', 500, credentials.callbackUrl ?? '');
+            throw new AuthError('userCreationFailure', 500, callbackUrl ?? '');
           }
 
           await newUser.save();
 
-          return userDocumentToCreate;
+          return { ...userDocumentToCreate, wasUserCreated: true };
         } catch (error) {
           console.log('error object: ', error);
           const { errType, code, redirectUrl } = error ?? {};
@@ -252,9 +271,17 @@ export const authOptions = {
           );
         }
 
+        if (errType === 'userAlreadyExist') {
+          throw new SignInError(
+            'duplicate-user',
+            'This email has already been taken.',
+            code ?? 422
+          );
+        }
+
         await connectToMongodb();
 
-        // Finish creating the target user account in the db.
+        // Finish creating the gogole user account in the db.
         if (wasUserCreated && (account.provider === 'google')) {
           const { picture, given_name, family_name } = profile ?? {};
           const name = {
@@ -273,6 +300,10 @@ export const authOptions = {
             );
           }
 
+          return '/account/?show_about_me_form=true';
+        }
+
+        if(wasUserCreated && (account.provider === 'credentials')){
           return '/account/?show_about_me_form=true';
         }
 
@@ -302,8 +333,12 @@ export const authOptions = {
         console.error('An error has occurred, couldn\'t sign in the target user. Reason: ', error);
 
         const { type, msg } = error;
-
+        console.log('param.user.redirectUrl: ', param.user.redirectUrl);
+        console.log('type, error has occurred: ', type);
         console.error('Error message: ', msg ?? 'received none.');
+        if (type && param?.user?.redirectUrl) {
+          return `${param.user.redirectUrl}/?signin-err-type=${type}`;
+        }
 
         return param?.user?.redirectUrl ? `${param.user.redirectUrl}/?signin-err-type=${type ?? 'sign-in-error'}` : `/?signin-err-type=${type ?? 'sign-in-error'}`;
       }
@@ -313,8 +348,8 @@ export const authOptions = {
       const { token, user, profile } = param;
       const isUserSignedIn = !!user;
 
-      if (isUserSignedIn) {
-        token.id = user.id.toString();
+      if (isUserSignedIn && (user.id ?? user._id)) {
+        token.id = user.id ?? user._id;
       }
 
       console.log('token, jwt callback: ', token);

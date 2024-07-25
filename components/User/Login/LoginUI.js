@@ -5,20 +5,20 @@
 /* eslint-disable react/jsx-indent */
 
 import { useContext } from "react";
-import { useLogin } from "../../../customHooks/useLogin";
 import { ModalContext } from "../../../providers/ModalProvider";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import Button from "../../General/Button";
 import CustomLink from "../../CustomLink";
 import GoogleSignIn from "../GoogleSignIn";
+import { useUserEntry } from "../../../customHooks/useUserEntry";
 
 const LoginUI = ({
     className = '',
     headingTitleClassName = "text-white text-center mt-2",
     isInputIconShow = true,
 }) => {
-    const { sendFormToServer, _loginForm } = useLogin();
+    const { sendFormToServer, _loginForm } = useUserEntry();
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
     const [loginForm, setLoginForm] = _loginForm;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;

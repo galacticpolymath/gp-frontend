@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 import Layout from '../components/Layout';
 import LoginUI from '../components/User/Login/LoginUI';
 import Button from '../components/General/Button';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getIsParsable } from '../globalFns';
 import { ModalContext } from '../providers/ModalProvider';
@@ -22,7 +22,6 @@ const AccountPg = () => {
     const { _aboutUserForm } = useContext(UserContext);
     const { _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
-    const [wasTheAboutUserFormRetrieved, setWasTheAboutUserFormRetrieved] = useState(false);
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
 
     useEffect(() => {
@@ -51,8 +50,7 @@ const AccountPg = () => {
                     const aboutUserFormFromServer = response.data;
                     /** @type {import('../providers/UserProvider').TAboutUserForm} */
                     const aboutUserFormForClient = { ...aboutUserFormDefault };
-
-
+                    
                     if (Object.entries(aboutUserFormFromServer.reasonsForSiteVisit).length > 0) {
                         const reasonsForSiteVisitMap = new Map(Object.entries(aboutUserFormFromServer.reasonsForSiteVisit));
                         aboutUserFormForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;

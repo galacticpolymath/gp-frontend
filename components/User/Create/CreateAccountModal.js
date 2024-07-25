@@ -21,17 +21,17 @@ const CreateAccountModal = () => {
     };
 
     const handleSubmitBtnClick = () => {
-        if(createAccountForm.confirmPassword !== createAccountForm.password){
+        if (createAccountForm.confirmPassword !== createAccountForm.password) {
             const errors = new Map([['password', 'Paswords must match'], ['confirmPassword', 'Passwords must match']]);
             setErrors(errors);
             return;
         }
 
-        console.log('will send form to the server');
-
+        const url = window.location.href.includes('?') ? window.location.href.split('?')[0] : window.location.href;
+        
         sendFormToServer(
-            'createAccount', 
-            'credentials', 
+            'createAccount',
+            'credentials',
             {
                 createAccount: {
                     email: createAccountForm.email,
@@ -39,13 +39,12 @@ const CreateAccountModal = () => {
                     lastName: createAccountForm.lastName,
                     password: createAccountForm.password,
                 },
+                callbackUrl: url,
             }
         );
     };
 
     const handleOnInputChange = event => {
-        event.preventDefault();
-
         setCreateAccountForm(form => ({
             ...form,
             [event.target.name]: event.target.value,
@@ -74,6 +73,14 @@ const CreateAccountModal = () => {
                 </h5>
             </ModalHeader>
             <ModalBody>
+                <section className='d-flex justify-content-center align-items-center'>
+                    <CreateAccountWithGoogle
+                        callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account`}
+                        txt="Create An Account With Google"
+                        className='rounded p-2 w-50 d-flex justify-content-center align-items-center border'
+                    />
+                </section>
+                <ORTxtDivider color="black" />
                 <form className='row d-flex justify-content-center align-items-center flex-column'>
                     <div className='row d-flex justify-content-center align-items-center'>
                         <div className="d-flex col-6 flex-column ">
@@ -196,14 +203,6 @@ const CreateAccountModal = () => {
                         </Button>
                     </div>
                 </form>
-                <ORTxtDivider color="black" />
-                <section className='d-flex justify-content-center align-items-center'>
-                    <CreateAccountWithGoogle
-                        callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account`}
-                        txt="Create An Account With Google"
-                        className='rounded p-2 w-50 d-flex justify-content-center align-items-center border'
-                    />
-                </section>
             </ModalBody>
         </Modal>
     );

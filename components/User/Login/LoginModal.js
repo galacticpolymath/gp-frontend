@@ -8,17 +8,17 @@ import { Modal } from "react-bootstrap";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { ModalContext } from "../../../providers/ModalProvider";
-import { useLogin } from "../../../customHooks/useLogin";
 import Button from "../../General/Button";
 import CustomLink from "../../CustomLink";
 import GoogleSignIn from "../GoogleSignIn";
 import ORTxtDivider from "../ORTxtDivider";
+import { useUserEntry } from "../../../customHooks/useUserEntry";
 
 const LoginModal = () => {
     const { _isLoginModalDisplayed, _isCreateAccountModalDisplayed } = useContext(ModalContext);
     const [isLoginModalDisplayed, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
-    const { _loginForm, sendFormToServer } = useLogin();
+    const { _loginForm, sendFormToServer } = useUserEntry();
     const [loginForm, setLoginForm] = _loginForm;
 
     const handleOnInputChange = event => {

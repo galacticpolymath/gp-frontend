@@ -9,11 +9,6 @@ let User = models.users;
  * @property {string} salt - The salt used for hashing
  * @property {number} iterations - The number of iterations used in hashing
  */
-const PasswordSchema = new Schema({
-  hash: { type: String, required: true },
-  salt: { type: String, required: true },
-  iterations: { type: Number, required: true },
-});
 
 /**
  * @typedef {Object} TUserSchema
@@ -31,8 +26,11 @@ const PasswordSchema = new Schema({
 export const UserSchema = new Schema({
   _id: { type: String, required: true },
   email: { type: String, required: true },
-  password: { type: PasswordSchema, required: false },
-  // 'google' | 'credentials' 
+  password: {
+    hash: { type: String, required: false },
+    salt: { type: String, required: false },
+    iterations: { type: String, required: false },
+  },
   provider: String,
   providerAccountId: String,
   emailVerified: { type: Date, required: false },
@@ -46,17 +44,11 @@ export const UserSchema = new Schema({
   zipCode: { type: String, required: false },
   gradesOrYears: {
     ageGroupsTaught: [String],
-    selection: String, 
+    selection: String,
   },
-  reasonsForSiteVisit: {
-    type: Map,
-    of: String,
-  },
-  subjects: {
-    type: Map,
-    of: String,
-  },
-  classroomSize: Number,
+  reasonsForSiteVisit:{ type: Object, required: false },
+  subjects: { type: Object, required: false },
+  classroomSize: { type: Number, required: false },
   roles: { type: [String], required: true },
 });
 

@@ -18,11 +18,11 @@ const LoginContainerForNavbar = () => {
 
     const handleOnClick = () => {
         if (status === 'authenticated') {
-            setIsLoginModalDisplayed(true);
+            setIsAccountModalDisplayed(isAccountModalDisplayed => !isAccountModalDisplayed);
             return;
         }
-
-        setIsAccountModalDisplayed(isAccountModalDisplayed => !isAccountModalDisplayed);
+        
+        setIsLoginModalDisplayed(true);
     };
 
     let buttonTxt = 'ACCOUNT';
@@ -40,7 +40,7 @@ const LoginContainerForNavbar = () => {
                 classNameStr='rounded px-3 border-0'
                 isDisabled={status === 'loading'}
                 backgroundColor="#333438"
-                defaultStyleObj={{ width: '125px' }}
+                defaultStyleObj={{ width: '125px', opacity: status === 'loading' ? .3 : 1 }}
             >
                 <span style={{ color: 'white', fontWeight: 410 }}>
                     {buttonTxt}
