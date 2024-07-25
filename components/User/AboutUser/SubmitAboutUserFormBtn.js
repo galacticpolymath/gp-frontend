@@ -24,7 +24,7 @@ const filterOutFalseyValMapProperties = map => {
     return new Map(falseyValsFiltered);
 };
 
-const SubmitAboutUserFormBtn = ({ setErrors }) => {
+const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
     const { _aboutUserForm } = useContext(UserContext);
     const { _notifyModal, _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     const session = useSession();
@@ -34,7 +34,7 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
     const [, setNotifyModal] = _notifyModal;
     const { user, token } = session.data;
 
-    const handleSubmitBtnClick = async (event) => {
+    const handleSubmitBtnClick = async event => {
         try {
             event.preventDefault();
 
@@ -51,49 +51,51 @@ const SubmitAboutUserFormBtn = ({ setErrors }) => {
                 occupation,
                 gradesOrYears,
             } = aboutUserFormClone;
-            let errors = new Map();
+            const errors = new Map();
 
             if(!gradesOrYears?.ageGroupsTaught?.length){
                 delete aboutUserFormClone.gradesOrYears;
             }
 
-            if (subjects.size > 0) {
+            if (subjects?.size > 0) {
                 subjects = filterOutFalseyValMapProperties(subjects);
             }
 
-            if (subjects.size > 0) {
+            if (subjects?.size > 0) {
                 aboutUserFormClone = {
                     ...aboutUserFormClone,
                     subjects: convertMapToObj(subjects),
                 };
             }
 
-            if (reasonsForSiteVisit.size > 0) {
+            if (reasonsForSiteVisit?.size > 0) {
                 reasonsForSiteVisit = filterOutFalseyValMapProperties(reasonsForSiteVisit);
             }
 
-            if (reasonsForSiteVisit.size > 0) {
+            if (reasonsForSiteVisit?.size > 0) {
                 aboutUserFormClone = {
                     ...aboutUserFormClone,
                     reasonsForSiteVisit: convertMapToObj(reasonsForSiteVisit),
                 };
             }
 
-            if ((country.toLowerCase() === 'united states') && (!zipCode || (zipCode.toString().length == 0) || (zipCode < 0))) {
+            if ((country.toLowerCase() === 'united states') && (!zipCode || (zipCode?.toString()?.length == 0) || (zipCode < 0))) {
                 errors.set('zipCode', 'This field is required');
             }
 
-            if(occupation.length <= 0){
+            if(occupation?.length <= 0){
                 errors.set('occupation', 'This field is required.');
             }
 
-            if (country.length <= 0) {
+            if (country?.length <= 0) {
                 errors.set('country', 'This field is required.');
             }
 
-            // check if the country field is valid
+            if(!countryNames?.includes(country)){
+                errors.set('country', 'Invalid country name.');
+            }
 
-            if (errors.size > 0) {
+            if (errors?.size > 0) {
                 setErrors(errors);
 
                 throw new CustomError("Invalid entries. Please try again.", null, "invalidAboutUserForm.");

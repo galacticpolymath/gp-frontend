@@ -35,7 +35,9 @@ const AboutUserModal = () => {
     /** @type {[boolean, Function]} */
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
-    const [errors, setErorrs] = useState(new Map());
+    const errorsMap = new Map();
+    errorsMap.set('occupation', 'This field is required');
+    const [errors, setErorrs] = useState(errorsMap);
     /** @type {[import('../../../providers/UserProvider').TAboutUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
 
@@ -133,9 +135,26 @@ const AboutUserModal = () => {
         }
     }, [isAboutMeFormModalDisplayed]);
 
+    const [countryNames, setCountryNames] = useState([]);
+
     useEffect(() => {
-        console.log('aboutUserForm, hey there: ', aboutUserForm);
-    });
+        (async () => {
+            try {
+                const response = await fetch('https://restcountries.com/v3.1/all?fields=name,flags');
+                const responseBodyData = await response.json();
+
+                if (responseBodyData?.length) {
+                    const countryNamesReceived = responseBodyData.map(country => country.name.common);
+
+                    countryNamesReceived.sort();
+
+                    setCountryNames(countryNamesReceived);
+                }
+            } catch (error) {
+                console.error('Failed to retrieve countries. Reason: ', error);
+            }
+        })();
+    }, []);
 
     return (
         <Modal
@@ -166,7 +185,7 @@ const AboutUserModal = () => {
                             />
                             {errors.has('occupation') && <span className='text-danger'>{errors.get('occupation')}</span>}
                         </section>
-                        <CountrySection />
+                        <CountrySection countryNames={countryNames} />
                         <section className='d-flex flex-column col-8 col-lg-2'>
                             <label htmlFor='country-input' style={{ opacity: aboutUserForm?.country?.toLowerCase() !== 'united states' ? .3 : 1 }}>
                                 *Zip Code:
@@ -211,7 +230,7 @@ const AboutUserModal = () => {
                         <label>
                             Subject(s) Taught:
                         </label>
-                        <section className='row d-flex'>
+                        <section className='row d-flex flex-column flex-sm-row'>
                             <div className='pt-1 subjects-taught-container col-6'>
                                 {SUBJECTS_OPTIONS.slice(0, 5).map((subject, index) => (
                                     <SubjectOption
@@ -286,7 +305,7 @@ const AboutUserModal = () => {
                         />
                     </section>
                     <section className='d-flex justify-content-end'>
-                        <SubmitAboutUserFormBtn setErrors={setErorrs} />
+                        <SubmitAboutUserFormBtn setErrors={setErorrs} countryNames={countryNames} />
                     </section>
                 </form>
             </ModalBody>

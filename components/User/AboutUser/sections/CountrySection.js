@@ -2,12 +2,11 @@
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Button from "../../../General/Button";
 import { UserContext } from "../../../../providers/UserProvider";
 
-const CountrySection = () => {
-    const [countries, setCountries] = useState([]);
+const CountrySection = ({ countryNames }) => {
     const [searchResults, setSearchResults] = useState([]);
     const [isInputFocused, setIsInputFocused] = useState(false);
     const { _aboutUserForm } = useContext(UserContext);
@@ -43,29 +42,10 @@ const CountrySection = () => {
             return;
         }
 
-        const searchedCountries = countries.filter(countryName => countryName.toLowerCase().includes(target.value.toLowerCase()));
+        const searchedCountries = countryNames.filter(countryName => countryName.toLowerCase().includes(target.value.toLowerCase()));
 
         setSearchResults(searchedCountries);
     };
-
-    useEffect(() => {
-        (async () => {
-            try {
-                const response = await fetch('https://restcountries.com/v3.1/all?fields=name,flags');
-                const responseBodyData = await response.json();
-
-                if (responseBodyData?.length) {
-                    const countryNames = responseBodyData.map(country => country.name.common);
-
-                    countryNames.sort();
-
-                    setCountries(countryNames);
-                }
-            } catch (error) {
-                console.error('Failed to retrieve countries. Reason: ', error);
-            }
-        })();
-    }, []);
 
     return (
         <section className='d-flex flex-column my-4 my-lg-0 col-8 col-lg-4'>

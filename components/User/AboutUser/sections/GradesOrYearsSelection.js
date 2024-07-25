@@ -63,7 +63,7 @@ const GradesOrYearsSelection = () => {
                         defaultStyleObj={{
                             borderTopLeftRadius: '.5em',
                             borderBottomLeftRadius: '.5em',
-                            width: '155px',
+                            // width: '155px',
                             borderTop: selection !== AGE_GROUPS_FIELD_U_S ? 'solid grey 1px' : '',
                             borderLeft: selection !== AGE_GROUPS_FIELD_U_S ? 'solid grey 1px' : '',
                             borderBottom: selection !== AGE_GROUPS_FIELD_U_S ? 'solid grey 1px' : '',
@@ -76,7 +76,8 @@ const GradesOrYearsSelection = () => {
                     </Button>
                     <Button
                         defaultStyleObj={{
-                            width: '155px',
+                            // width: '155px',
+                            // width: '125px',
                             borderTopRightRadius: '.5em',
                             borderBottomRightRadius: '.5em',
                             borderTop: selection !== AGE_GROUPS_FIELD_NON_U_S ? 'solid grey 1px' : '',
@@ -91,7 +92,7 @@ const GradesOrYearsSelection = () => {
                         {AGE_GROUPS_FIELD_NON_U_S}
                     </Button>
                 </section>
-                <section style={{ maxWidth: '300px' }} className='d-flex pt-2 ps-2 flex-wrap'>
+                <section style={{ maxWidth: '300px' }} className='d-flex pt-2 ps-2 flex-wrap flex-column flex-sm-row'>
                     {ageGroupOptions.map((ageGroup, index) => {
                         return (
                             <section
