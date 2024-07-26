@@ -39,7 +39,7 @@ const CreateAccountModal = () => {
                     lastName: createAccountForm.lastName,
                     password: createAccountForm.password,
                 },
-                callbackUrl: url,
+                callbackUrl: `${url}/yo-there`,
             }
         );
     };
@@ -75,7 +75,7 @@ const CreateAccountModal = () => {
             <ModalBody>
                 <section className='d-flex justify-content-center align-items-center'>
                     <CreateAccountWithGoogle
-                        callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account`}
+                        callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`}
                         txt="Create An Account With Google"
                         className='rounded p-2 w-50 d-flex justify-content-center align-items-center border'
                     />

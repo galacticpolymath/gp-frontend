@@ -11,19 +11,36 @@ import LoginUI from '../components/User/Login/LoginUI';
 import Button from '../components/General/Button';
 import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { getIsParsable } from '../globalFns';
 import { ModalContext } from '../providers/ModalProvider';
 import { UserContext, aboutUserFormDefault } from '../providers/UserProvider';
 import axios from 'axios';
+
+/**
+ *  @param {import('next/router').NextRouter} router 
+ *  @param {string} urlField 
+ * */
+const getUrlVal = (router, urlField) => {
+    const paths = router.asPath?.split('?');
+    const urlKeyAndVal = paths?.[1]?.split("=");
+
+    console.log('urlKeyAndVal: ', urlKeyAndVal);
+       
+    if ((urlKeyAndVal?.length === 2) && (urlKeyAndVal?.[0] === urlField)) {
+        return paths[1].split("=")?.[1];
+    }
+
+    return null;
+};
 
 const AccountPg = () => {
     const session = useSession();
     const router = useRouter();
     const { status, data } = session;
     const { _aboutUserForm } = useContext(UserContext);
-    const { _isAboutMeFormModalDisplayed } = useContext(ModalContext);
+    const { _isAboutMeFormModalDisplayed, _notifyModal } = useContext(ModalContext);
     const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [, setAboutUserForm] = _aboutUserForm;
+    const [, setNotifyModal] = _notifyModal;
 
     useEffect(() => {
         if (status === 'authenticated') {
@@ -88,27 +105,34 @@ const AccountPg = () => {
                     console.error('Failed to get "AboutUser" form. Reason: ', error);
                 }
             })();
+            return;
+        }
+
+        if ((status === "unauthenticated") && getUrlVal(router, 'account-creation-err-type') === 'duplicate-email') {
+            setTimeout(() => {
+                setNotifyModal({
+                    isDisplayed: true,
+                    bodyTxt: '',
+                    headerTxt: 'There is an account with that email. Sign in instead.',
+                    handleOnHide: () => {},
+                });
+            }, 300);
         }
     }, [status]);
 
     useEffect(() => {
-        const paths = router.asPath?.split('?');
+        const urlVal = getUrlVal(router, "show_about_user_form");
 
-        if (
-            router.asPath &&
-            router?.asPath?.includes('?') &&
-            paths?.[1]?.includes('show_about_me_form') &&
-            paths[1].split("=")?.[1] &&
-            getIsParsable(paths[1].split("=")?.[1]) &&
-            JSON.parse(paths[1].split("=")?.[1]) &&
-            (status === 'authenticated')
-        ) {
-            // make the form modal appear onto the ui
+        console.log('urlVal: ', urlVal);
+
+        if (JSON.parse(urlVal) && (status === 'authenticated')) {
             setTimeout(() => {
                 setIsAboutMeFormModalDisplayed(true);
             }, 300);
+        } else if(JSON.parse(urlVal) && (status === 'unauthenticated')){
+            const url = router.asPath;
+            router.replace(url.split("?")[0]);
         }
-
     }, [status]);
 
     if (status === 'loading') {

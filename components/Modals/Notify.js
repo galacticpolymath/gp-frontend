@@ -17,7 +17,11 @@ const Notify = () => {
             handleOnHide();
         }
         
-        setNotifyModal(defautlNotifyModalVal);
+        setNotifyModal(state => ({ ...state, isDisplayed: false }));
+
+        setTimeout(() => {
+            setNotifyModal(defautlNotifyModalVal);
+        }, 300);
     };
 
     return (

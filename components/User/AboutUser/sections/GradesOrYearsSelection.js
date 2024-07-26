@@ -78,7 +78,7 @@ const GradesOrYearsSelection = () => {
                     </Button>
                 </section>
                 <section style={{ maxWidth: '300px' }} className='d-flex pt-2 ps-2 flex-wrap flex-column flex-sm-row'>
-                    {ageGroupOptions.map((ageGroup, index) => {
+                    {!!ageGroupOptions?.length && ageGroupOptions.map((ageGroup, index) => {
                         return (
                             <section
                                 key={`${selection}-${index}`}

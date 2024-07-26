@@ -7,14 +7,18 @@ import { FcGoogle } from "react-icons/fc";
 import Button from "../General/Button";
 import { signIn } from "next-auth/react";
 
-const GoogleSignIn = ({ callbackUrl = '', className = 'rounded p-2 d-flex justify-content-center align-items-center border', txt = 'Sign in with Google.' }) => {
+const GoogleSignIn = ({ callbackUrl = '', className = 'rounded p-2 d-flex justify-content-center align-items-center border', txt = 'Sign in with Google.', isCreatingAccount }) => {
     const handleBtnClick = event => {
         event.preventDefault();
-        
-        let url = callbackUrl ? callbackUrl : window.location.href;
-        url = url.includes('?') ? url.split('?')[0] : url;
 
-        signIn('google', { callbackUrl: url });
+        console.log('callbackUrl: ', callbackUrl);
+        
+        if(!callbackUrl){
+            console.error('The callback url cannot be empty.');
+            return;
+        }
+
+        signIn('google', { callbackUrl: callbackUrl });
     };
 
     return (

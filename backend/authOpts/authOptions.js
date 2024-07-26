@@ -285,8 +285,19 @@ export const authOptions = {
 
         await connectToMongodb();
 
+        const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
+
+        // if the user creates an account with google, after the placeholder user was created, but then the user with the same email is created and is in the database with their email,
+        // get the current url of the user, and route the user to the url, and the delete the document that was created for the target user
+
+        if (dbUser && wasUserCreated) {
+          await deleteUser({ providerAccountId: providerAccountId });
+
+          return '/account?account-creation-err-type=duplicate-email';
+        }
+
         // Finish creating the gogole user account in the db.
-        if (wasUserCreated && (account.provider === 'google')) {
+        if (wasUserCreated && (account.provider === 'google') && !dbUser) {
           const { picture, given_name, family_name } = profile ?? {};
           const name = {
             first: given_name,
@@ -304,14 +315,12 @@ export const authOptions = {
             );
           }
 
-          return '/account/?show_about_me_form=true';
+          return true;
         }
 
-        if(wasUserCreated && (account.provider === 'credentials')){
-          return '/account/?show_about_me_form=true';
+        if (wasUserCreated && (account.provider === 'credentials')) {
+          return true;
         }
-
-        const dbUser = (userEmail && !wasUserCreated) ? await getUserByEmail(userEmail) : null;
 
         if ((dbUser && account) &&
           ('provider' in account) &&

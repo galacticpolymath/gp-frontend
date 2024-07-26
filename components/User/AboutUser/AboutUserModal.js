@@ -43,7 +43,7 @@ const AboutUserModal = () => {
     };
 
     const handleWhatBringsYouToSiteInputChange = event => {
-        const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit);
+        const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit) ?? new Map();
 
         if (event.target.name === 'reason-for-visit-custom') {
             reasonsForSiteVisit.set(event.target.name, event.target.value);
