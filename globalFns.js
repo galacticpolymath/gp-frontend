@@ -148,7 +148,7 @@ export const getIsTypeValid = (val, targetType) => {
 
 export const getLinkPreviewObj = async (url = '') => {
     try {
-        if (!url || (typeof url !== 'string')){
+        if (!url || (typeof url !== 'string')) {
             throw new Error('Either received an empty string or an incorrect data type.')
         }
 
@@ -216,4 +216,37 @@ export const createObj = (keysAndValsArr = []) => {
     }, {})
 }
 
+export const getIsParsable = val => {
+    try {
+        JSON.parse(val);
+
+        return true;
+    } catch (error) {
+        console.error('Not parsable. Reason: ', error);
+
+        return false;
+    }
+}
+
 export const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
+
+export const sleep = milliseconds => new Promise(resolve => {
+    setTimeout(resolve, milliseconds);
+});
+
+export const getIsObj = val => !!val && (typeof val === 'object');
+
+/**
+ * 
+ * @param {import('next/router').NextRouter} router 
+ */
+export const resetUrl = router => {
+    const url = router.asPath;
+    router.replace(url.split('?')[0]);
+}
+
+/** 
+ * @param {Map<string, any>} map
+ * @return {object}
+ */
+export const convertMapToObj = map => Object.fromEntries(map.entries())

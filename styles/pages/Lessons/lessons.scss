@@ -92,6 +92,12 @@ $toolTipColor: #f0f4ff;
   animation: beat 1.5s infinite;
 }
 
+.login-container{
+  @media (min-width: 992px) {
+    transform: translateX(20%);       
+  }
+}
+
 .standards-txt-container{
   max-width: 90%;
 
@@ -506,6 +512,12 @@ $toolTipColor: #f0f4ff;
     width: 100vw;
     border-radius: 0px;
     overflow-y: scroll;
+  }
+}
+
+.about-user-textarea{
+  @media(min-width: 1024px){
+    // height: 125px;
   }
 }
 
