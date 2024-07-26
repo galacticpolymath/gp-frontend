@@ -170,7 +170,7 @@ const LoginUI = ({
                     handleOnClick={handleCreateOneBtnClick}
                 >
                     <span className='text-primary underline-on-hover'>
-                        Create one.
+                        Sign up.
                     </span>
                 </Button>
             </div>

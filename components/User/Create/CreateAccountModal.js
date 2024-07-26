@@ -7,7 +7,6 @@ import { ModalContext } from '../../../providers/ModalProvider';
 import { useUserEntry } from '../../../customHooks/useUserEntry';
 import Button from '../../General/Button';
 import CreateAccountWithGoogle from '../GoogleSignIn';
-import ORTxtDivider from '../ORTxtDivider';
 import { FcGoogle } from 'react-icons/fc';
 
 const CreateAccountModal = () => {
@@ -70,7 +69,7 @@ const CreateAccountModal = () => {
                     />
                 </div>
                 <h5 className="text-black text-center mt-2 my-0">
-                    Create An Account
+                    Sign up
                 </h5>
             </ModalHeader>
             <ModalBody>
@@ -85,7 +84,17 @@ const CreateAccountModal = () => {
                         </span>
                     </CreateAccountWithGoogle>
                 </section>
-                <ORTxtDivider color="black" />
+                <div className="d-flex justify-content-center mt-3 mb-2">
+                    <div style={{ width: '48%' }} className='d-flex justify-content-center justify-content-sm-end align-items-center'>
+                        <div style={{ height: '3px', width: '95%' }} className="bg-black rounded me-3 me-sm-2" />
+                    </div>
+                    <div style={{ width: '4%' }} className='d-flex justify-content-center align-items-center'>
+                        <span className='text-black'>OR</span>
+                    </div>
+                    <div style={{ width: '48%' }} className='d-flex justify-content-center justify-content-sm-start align-items-center'>
+                        <div style={{ height: '3px', width: '95%' }} className="bg-black rounded ms-3 ms-sm-2" />
+                    </div>
+                </div>
                 <form className='row d-flex justify-content-center align-items-center flex-column'>
                     <div className='row d-flex justify-content-center align-items-center'>
                         <div className="d-flex col-sm-6 flex-column ">
@@ -205,7 +214,7 @@ const CreateAccountModal = () => {
                             handleOnClick={handleSubmitBtnClick}
                             classNameStr="bg-primary rounded border-0 py-2 w-50 text-white underline-on-hover"
                         >
-                            CREATE
+                            SIGN UP
                         </Button>
                     </div>
                 </form>

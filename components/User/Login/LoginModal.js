@@ -137,7 +137,6 @@ const LoginModal = () => {
                         </div>
                         <div className="my-2 py-1 d-flex justify-content-center align-items-center">
                             <div className='w-75 d-flex align-items-center position-relative'>
-                                {/* <span style={{ fontSize: '16px' }} className='left-0 text-danger position-absolute'>*Incorrect email or password.</span> */}
                                 <span style={{ fontSize: '16px' }} className='left-0 text-danger position-absolute'>{errors.get('password') ?? ''}</span>
                             </div>
                         </div>

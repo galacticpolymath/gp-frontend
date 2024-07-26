@@ -26,7 +26,7 @@ export const getUrlVal = (router, urlField) => {
     const paths = router.asPath?.split('?');
     const urlKeyAndVal = paths?.[1]?.split("=");
 
-    if ((urlKeyAndVal?.length === 2) && (urlKeyAndVal?.[0] === urlField)) {
+    if (urlKeyAndVal?.length && (urlKeyAndVal?.[0] === urlField)) {
         return paths[1].split("=")?.[1];
     }
 
@@ -66,12 +66,6 @@ const AccountPg = () => {
         if (status === 'authenticated') {
             (async () => {
                 try {
-                    const usernameAndDomainExt = data.user.email.split('@');
-
-                    if (usernameAndDomainExt.length > 2 || usernameAndDomainExt <= 1) {
-                        throw new Error('Received an invalid email string.');
-                    }
-
                     const paramsAndHeaders = {
                         params: { email: data.user.email },
                         headers: {
@@ -187,8 +181,6 @@ const AccountPg = () => {
             </Layout>
         );
     }
-
-    console.log('data.user: ', data.user)
 
     const { email, name, image, occupation } = data.user;
 
