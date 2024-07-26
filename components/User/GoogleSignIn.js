@@ -7,13 +7,24 @@ import { FcGoogle } from "react-icons/fc";
 import Button from "../General/Button";
 import { signIn } from "next-auth/react";
 
-const GoogleSignIn = ({ callbackUrl = '', className = 'rounded p-2 d-flex justify-content-center align-items-center border', txt = 'Sign in with Google.', isCreatingAccount }) => {
+const GoogleSignIn = ({
+    children = (
+        <>
+            <FcGoogle className="mx-2" />
+            <span style={{ fontSize: '16px' }}>
+                Sign in with Google.
+            </span>
+        </>
+    ),
+    callbackUrl = '',
+    className = 'rounded p-2 d-flex justify-content-center align-items-center border',
+}) => {
     const handleBtnClick = event => {
         event.preventDefault();
 
         console.log('callbackUrl: ', callbackUrl);
-        
-        if(!callbackUrl){
+
+        if (!callbackUrl) {
             console.error('The callback url cannot be empty.');
             return;
         }
@@ -27,10 +38,7 @@ const GoogleSignIn = ({ callbackUrl = '', className = 'rounded p-2 d-flex justif
             classNameStr={className}
             handleOnClick={handleBtnClick}
         >
-            <FcGoogle className="mx-2" />
-            <span style={{ fontSize: '16px' }}>
-                {txt}
-            </span>
+            {children}
         </Button>
     );
 };

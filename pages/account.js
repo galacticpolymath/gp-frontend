@@ -16,7 +16,7 @@ import { ModalContext } from '../providers/ModalProvider';
 import { UserContext, aboutUserFormDefault } from '../providers/UserProvider';
 import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
-import { resetUrl } from '../globalFns';
+import { getIsParsable, resetUrl } from '../globalFns';
 
 /**
  *  @param {import('next/router').NextRouter} router 
@@ -39,9 +39,9 @@ export const getUrlVal = (router, urlField) => {
  * */
 export const getAllUrlVals = (router, willCreateSubTuples) => {
     const pathsStr = router.asPath.split('?')[1];
-    let urlKeysAndVals = pathsStr.split("&");
+    let urlKeysAndVals = pathsStr?.split("&");
 
-    if (willCreateSubTuples) {
+    if (urlKeysAndVals?.length && willCreateSubTuples) {
         const urlKeysAndValsTuples = urlKeysAndVals.map(keyAndValStr => {
             return keyAndValStr.split('=');
         });
@@ -134,7 +134,6 @@ const AccountPg = () => {
 
         if ((status === "unauthenticated") && router.asPath.includes('?') && getAllUrlVals(router).some(urlParam => urlParam.includes('duplicate-email'))) {
             const paths = getAllUrlVals(router, true);
-            console.log('paths, hey there: ', paths);
             const providerUsedForUserEntryArr = paths.find(([urlKey]) => urlKey === 'provider-used');
             const providerUsed = providerUsedForUserEntryArr?.length === 2 ? providerUsedForUserEntryArr[1] : null;
             const bodyTxt = providerUsed?.toLowerCase() === 'google' ? "Try signing using your email and password." : "Try signing in with Google.";
@@ -154,16 +153,14 @@ const AccountPg = () => {
     }, [status]);
 
     useEffect(() => {
-        const urlVal = getUrlVal(router, "show_about_user_form");
+        const urlVals = getAllUrlVals(router, true);
+        const urlVal = urlVals?.length ? urlVals.find(([urlKey]) => urlKey === 'show_about_user_form') : null;
 
-        if (JSON.parse(urlVal) && (status === 'authenticated')) {
+        if ((status === 'authenticated') && (urlVal?.length === 2) && getIsParsable(urlVal[1]) && JSON.parse(urlVal[1])) {
             setTimeout(() => {
                 setIsAboutMeFormModalDisplayed(true);
             }, 300);
-        } else if (JSON.parse(urlVal) && (status === 'unauthenticated')) {
-            const url = router.asPath;
-            router.replace(url.split("?")[0]);
-        }
+        } 
     }, [status]);
 
     if (status === 'loading') {

@@ -50,8 +50,6 @@ export const updateUser = async (filterQuery = {}, updatedProperties = {}) => {
     try {
         const result = await User.updateOne(filterQuery, updatedProperties, { upsert: true });
 
-        console.log('Result, user updated: ', result);
-
         if(result.matchedCount !== 1){
             return { wasSuccessful: false };
         }

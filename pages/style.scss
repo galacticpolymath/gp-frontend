@@ -273,19 +273,31 @@ ol li {
   width: 35vw;
   min-width: 400px;
 
-  @media (min-width: 578px) {
-    // transform: translateY(3%);
-  }
-
   @media (max-width: 577px) {
     width: 100vw;
-    height: 100%;
+    height: 100vh;
     border-radius: 0% !important;
+  }
+}
+
+.google-sign-in-btn{
+  min-width: 195px;
+
+  @media (min-width: 577px) {
+    min-width: 310px;
   }
 }
 
 .create-account-ui-modal {
   width: 55vw;
+  border-radius: 6.75px;
+
+  @media(max-width: 768px){
+    // max-width: 300px;
+    width: 100vw;
+    border-radius: 0%;
+    // height: 100vh;
+  }
 }
 
 .grades-or-years-non-usa-btn,

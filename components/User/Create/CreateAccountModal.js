@@ -8,6 +8,7 @@ import { useUserEntry } from '../../../customHooks/useUserEntry';
 import Button from '../../General/Button';
 import CreateAccountWithGoogle from '../GoogleSignIn';
 import ORTxtDivider from '../ORTxtDivider';
+import { FcGoogle } from 'react-icons/fc';
 
 const CreateAccountModal = () => {
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
@@ -28,7 +29,7 @@ const CreateAccountModal = () => {
         }
 
         const url = window.location.href.includes('?') ? window.location.href.split('?')[0] : window.location.href;
-        
+
         sendFormToServer(
             'createAccount',
             'credentials',
@@ -56,10 +57,10 @@ const CreateAccountModal = () => {
             show={isCreateAccountModalDisplayed}
             onHide={handleOnHide}
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
-            contentClassName='create-account-ui-modal rounded pt-2 box-shadow-login-ui-modal'
+            contentClassName='create-account-ui-modal pt-2 box-shadow-login-ui-modal'
         >
             <ModalHeader className='d-flex flex-column'>
-                <CloseButton className='position-absolute top-0 end-0 me-1 mt-1' />
+                <CloseButton onClick={handleOnHide} className='position-absolute top-0 end-0 me-1 mt-1' />
                 <div className="d-flex justify-content-center align-items-center">
                     <img
                         src='imgs/gp_logo_gradient_transBG.png'
@@ -76,14 +77,18 @@ const CreateAccountModal = () => {
                 <section className='d-flex justify-content-center align-items-center'>
                     <CreateAccountWithGoogle
                         callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`}
-                        txt="Create An Account With Google"
-                        className='rounded p-2 w-50 d-flex justify-content-center align-items-center border'
-                    />
+                        className='rounded p-2 w-50 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn'
+                    >
+                        <FcGoogle className="mx-2" size={31} />
+                        <span className='d-inline-flex justify-content-center align-items-center h-100'>
+                            Sign up with Google.
+                        </span>
+                    </CreateAccountWithGoogle>
                 </section>
                 <ORTxtDivider color="black" />
                 <form className='row d-flex justify-content-center align-items-center flex-column'>
                     <div className='row d-flex justify-content-center align-items-center'>
-                        <div className="d-flex col-6 flex-column ">
+                        <div className="d-flex col-sm-6 flex-column ">
                             <label
                                 className="d-block w-75 pb-1 fw-bold"
                                 htmlFor="first-name"
@@ -95,6 +100,7 @@ const CreateAccountModal = () => {
                                 placeholder="First Name"
                                 style={{ borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' }}
                                 className="border-0 p-1 w-100 py-2"
+                                autoFocus
                                 name="firstName"
                                 onChange={event => {
                                     handleOnInputChange(event);
@@ -104,7 +110,7 @@ const CreateAccountModal = () => {
                                 {errors.has('firstName') && <span>{errors.get('firstName')}</span>}
                             </section>
                         </div>
-                        <div className="d-flex flex-column col-6 position-relative">
+                        <div className="d-flex flex-column col-sm-6 position-relative">
                             <label
                                 className="d-block w-100 pb-1 fw-bold"
                                 htmlFor="last-name"
@@ -127,7 +133,7 @@ const CreateAccountModal = () => {
                         </div>
                     </div>
                     <div className='row'>
-                        <div className="d-flex flex-column position-relative col-6">
+                        <div className="d-flex flex-column position-relative col-sm-6">
                             <label
                                 className="d-block w-75 pb-1 fw-bold"
                                 htmlFor="email-input"
@@ -148,10 +154,10 @@ const CreateAccountModal = () => {
                                 {errors.has('email') && <span>{errors.get('email')}</span>}
                             </section>
                         </div>
-                        <div className='col-6' />
+                        <div className='col-6 d-none d-sm-block' />
                     </div>
                     <div className='row d-flex justify-content-center align-items-center'>
-                        <div className="d-flex flex-column position-relative col-6">
+                        <div className="d-flex flex-column position-relative col-sm-6">
                             <label
                                 className="d-block w-75 pb-1 fw-bold"
                                 htmlFor="email-input"
@@ -172,7 +178,7 @@ const CreateAccountModal = () => {
                                 {errors.has('password') && <span>{errors.get('password')}</span>}
                             </section>
                         </div>
-                        <div className="d-flex flex-column position-relative col-6">
+                        <div className="d-flex flex-column position-relative col-sm-6">
                             <label
                                 className="d-block w-100 pb-1 fw-bold"
                                 htmlFor="email-input"

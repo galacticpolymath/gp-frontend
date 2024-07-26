@@ -123,8 +123,6 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                     },
                 });
 
-            console.log('response: ', response);
-
             if (response.status !== 200) {
                 throw new CustomError('Failed to save form. Refresh the page, and try again.', null, "aboutUserFormReqFailure");
             }
