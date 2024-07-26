@@ -4,14 +4,15 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Button from "../../General/Button";
 import { UserContext } from "../../../providers/UserProvider";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { CustomError } from "../../../backend/utils/errors";
-import { convertMapToObj } from "../../../globalFns";
+import { convertMapToObj, sleep } from "../../../globalFns";
 import { ModalContext } from "../../../providers/ModalProvider";
+import { Spinner } from "react-bootstrap";
 
 /** 
  * @function
@@ -31,11 +32,16 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
     const session = useSession();
     /** @type { [import("../../../providers/UserProvider").TAboutUserForm] } */
     const [aboutUserForm] = _aboutUserForm;
+    const [wasBtnClicked, setWasBtnClicked] = useState(false);
     const [, setIsAboutUserModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [, setNotifyModal] = _notifyModal;
     const { user, token } = session.data;
 
     const handleSubmitBtnClick = async event => {
+        setWasBtnClicked(true);
+
+        await sleep(200);
+
         try {
             event.preventDefault();
 
@@ -96,9 +102,10 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
 
             if (errors?.size > 0) {
                 setErrors(errors);
-                debugger;
 
-                throw new CustomError("Invalid entries. Please try again.", null, "invalidAboutUserForm.");
+                const errMsg = (errors.size === 1) ? "Invalid entry. Please try again" : "Invalid entries. Please try again";
+
+                throw new CustomError(errMsg, null, "invalidAboutUserForm.");
             }
 
             const responseBody = {
@@ -136,19 +143,24 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
 
             console.log("From server, response.data: ", response.data);
         } catch (error) {
-            const { message } = error ?? {};
+            console.log('error: ', error);
+            const { message, response } = error ?? {};
 
             console.error("An error has occurred. Couldn't update the 'About User' form. Reason: ", error);
 
-            alert(message ?? "Failed to save your changes. Please refresh the page and try again.");
+            alert(message ? `${response ? 'From server:' : ''} ${message}. ${response?.data ?? ''}` : "Failed to save your changes. Please refresh the page and try again.");
+        } finally {
+            setWasBtnClicked(false);
         }
     };
     return (
         <Button
             handleOnClick={handleSubmitBtnClick}
-            classNameStr='mt-2 no-btn-styles text-white bg-primary p-2 rounded'
+            classNameStr='mt-2 no-btn-styles text-white p-2 rounded'
+            defaultStyleObj={{ width: '150px' }}
+            backgroundColor={wasBtnClicked ? 'grey' : '#4C96CC'}
         >
-            <span>SUBMIT & SAVE</span>
+            {wasBtnClicked ? <Spinner size="sm" className='text-white' /> : <span>SUBMIT & SAVE</span>}
         </Button>
     );
 };

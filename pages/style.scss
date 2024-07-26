@@ -86,7 +86,7 @@ body {
 }
 
 .fade-in-quick {
-  animation: fadeInQuick .5s forwards;
+  animation: fadeInQuick 0.5s forwards;
   opacity: 1;
 }
 
@@ -99,14 +99,21 @@ body {
   }
 }
 
-.account-modal{
+.account-sm-modal {
+  width: 21vw;
+  right: 30%;
+  max-width: 300px;
+  min-width: 270px;
+  opacity: 1;
+  position: absolute;
+
   @media (max-width: 541px) {
-      transform: translateX(30%);
+    display: none;
   }
 }
 
 .fade-out-quick {
-  animation: fadeOutQuick .5s forwards;
+  animation: fadeOutQuick 0.5s forwards;
   opacity: 1;
 }
 
@@ -255,8 +262,26 @@ ol li {
   border-top: none;
 }
 
+.login-modal-input{
+  width: 65%;
+  @media (min-width: 578px) {
+    width: 75%;
+  }
+}
+
 .login-ui-modal {
   width: 35vw;
+  min-width: 400px;
+
+  @media (min-width: 578px) {
+    // transform: translateY(3%);
+  }
+
+  @media (max-width: 577px) {
+    width: 100vw;
+    height: 100%;
+    border-radius: 0% !important;
+  }
 }
 
 .create-account-ui-modal {
@@ -289,7 +314,7 @@ ol li {
   border-left: solid grey 1px;
   border-bottom: solid grey 1px;
   border-top: none;
-  
+
   @media (min-width: 577px) {
     border-top-right-radius: 0.5rem;
     border-left: none;
@@ -315,8 +340,12 @@ ol li {
   }
 }
 
-#zipCode-input{
-  @media(max-width: 576px){
+.text-grey {
+  color: grey !important;
+}
+
+#zipCode-input {
+  @media (max-width: 576px) {
     max-width: 400px;
   }
 }
@@ -338,6 +367,17 @@ ol li {
     border-radius: 0px;
     overflow-y: scroll;
     height: auto;
+  }
+}
+.account-modal {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #333438;
+
+  @media (max-width: 992px) {
+    border-radius: 0px;
+    overflow-y: scroll;
   }
 }
 

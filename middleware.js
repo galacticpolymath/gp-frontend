@@ -3,10 +3,19 @@
 import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 import { AuthMiddlwareError } from './backend/utils/errors';
+import url from 'url';
 
 const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
 
-const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin) => {
+/**
+ * 
+ * @param {string} authorizationStr 
+ * @param {boolean} willCheckIfUserIsDbAdmin 
+ * @param {boolean} willCheckForValidEmail 
+ * @param {string} emailToValidate 
+ * @returns
+ */
+const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin, willCheckForValidEmail, emailToValidate) => {
   try {
     const token = authorizationStr.split(' ')[1].trim();
     const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
@@ -19,6 +28,13 @@ const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin)
     }
 
     if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(payload.roles, 'dbAdmin')) {
+      const errMsg = 'You are not authorized to access this service.';
+      const response = new NextResponse(errMsg, { status: 403 });
+
+      throw new AuthMiddlwareError(false, response, errMsg);
+    }
+
+    if (willCheckForValidEmail && payload.email !== emailToValidate) {
       const errMsg = 'You are not authorized to access this service.';
       const response = new NextResponse(errMsg, { status: 403 });
 
@@ -45,7 +61,7 @@ export async function middleware(request) {
       return new NextResponse('No headers were present in the request.', { status: 400 });
     }
 
-    // a selected unit without locale
+    // a unit has been selected without a locale
     if (
       !nextUrl.href.includes('api') &&
       nextUrl.pathname.includes('lessons') &&
@@ -142,7 +158,20 @@ export async function middleware(request) {
       ((nextUrl.pathname == '/api/save-about-user-form') && (method === 'PUT') && authorizationStr)
     ) {
       const willCheckIfUserIsDbAdmin = ['/api/insert-lesson', '/api/delete-lesson', '/api/update-lessons'].includes(nextUrl.pathname);
-      const { errResponse } = await getAuthorizeReqResult(authorizationStr, willCheckIfUserIsDbAdmin);
+      const willCheckForValidEmail = ['/api/get-about-user-form', '/api/save-about-user-form'].includes(nextUrl.pathname);
+      let clientEmail = '';
+
+      if(nextUrl.pathname === '/api/get-about-user-form'){
+        console.log('nextUrl: ', nextUrl);
+        let urlParams = nextUrl.search.replace(/\?/g, '');
+        urlParams = nextUrl.search.replace(/%40/g, '@');
+
+        console.log('urlParams: ', urlParams);
+      }
+
+      const reqData = await request.json();
+      console.log('reqData, hey there: ', reqData);
+      const { errResponse } = await getAuthorizeReqResult(authorizationStr, willCheckIfUserIsDbAdmin, willCheckForValidEmail, reqData?.userEmail ?? '');
 
       if (errResponse) {
         return errResponse;
@@ -155,9 +184,7 @@ export async function middleware(request) {
   } catch (error) {
     const errMsg = `An error has occurred in the middleware: ${error}`;
 
-    console.error('An error has occurred in the middlware function: ', errMsg);
-
-    if (!request.nextUrl.includes('api')) {
+    if (((typeof request?.nextUrl === 'string') && !request?.nextUrl?.includes('api')) || ((typeof request?.nextUrl?.href === 'string') && request.nextUrl.href.includes('api'))) {
       return NextResponse.redirect(`${request.nextUrl.origin}/error`);
     }
 

@@ -3,9 +3,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Logo from '../assets/img/galactic_polymath_white.png';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
+import { useState } from 'react';
 
 export default function Navbar() {
   const router = useRouter();
+  const [modalAnimation, setModalAnimation] = useState('d-none');
 
   return (
     <nav
@@ -44,6 +46,9 @@ export default function Navbar() {
             aria-controls='navbarSupportedContent'
             aria-expanded='false'
             aria-label='Toggle navigation'
+            onClick={() => {
+              setModalAnimation('fade-out-quick');
+            }}
           >
             <span className='navbar-toggler-icon'></span>
           </button>
@@ -73,11 +78,7 @@ export default function Navbar() {
                   </li>
                 ))}
               </ul>
-              <LoginContainerForNavbar className='login-container' />
-              {/* create a component for the login: */}
-              {/* -modal */}
-              {/* -and button */}
-              {/* -container for the abov */}
+              <LoginContainerForNavbar className='login-container' _modalAnimation={[modalAnimation, setModalAnimation]} />
             </div>
           </div>
         </div>

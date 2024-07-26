@@ -194,11 +194,16 @@ const AboutUserModal = () => {
                         </section>
                         <CountrySection
                             countryNames={countryNames}
-                            errorMsg={errors?.get('country')}
-                            setErrors={setErorrs}
+                            _errors={[errors, setErorrs]}
                         />
                         <section className='d-flex flex-column col-12 col-sm-8 col-lg-2'>
-                            <label htmlFor='zipCode-input' className={`${errors.has('zipCode') ? 'text-danger' : ''}`}>
+                            <label
+                                htmlFor='zipCode-input'
+                                className={`${errors.has('zipCode') ? 'text-danger' : ''}`}
+                                style={{
+                                    opacity: aboutUserForm?.country?.toLowerCase() === 'united states' ? 1 : .3,
+                                }}
+                            >
                                 *Zip Code:
                             </label>
                             <input

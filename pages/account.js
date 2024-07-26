@@ -24,8 +24,6 @@ export const getUrlVal = (router, urlField) => {
     const paths = router.asPath?.split('?');
     const urlKeyAndVal = paths?.[1]?.split("=");
 
-    console.log('urlKeyAndVal: ', urlKeyAndVal);
-
     if ((urlKeyAndVal?.length === 2) && (urlKeyAndVal?.[0] === urlField)) {
         return paths[1].split("=")?.[1];
     }
@@ -47,6 +45,14 @@ const AccountPg = () => {
         if (status === 'authenticated') {
             (async () => {
                 try {
+                    const usernameAndDomain = data.user.email.split('@');
+
+                    if(usernameAndDomain.length > 2){
+                        throw new Error('Received an invalid email string.');
+                    }
+
+                    console.log('usernameAndDomain: ', usernameAndDomain);
+
                     const paramsAndHeaders = {
                         params: { email: data.user.email },
                         headers: {
@@ -96,8 +102,6 @@ const AccountPg = () => {
                     if (aboutUserFormFromServer.occupation) {
                         aboutUserFormForClient.occupation = aboutUserFormFromServer.occupation;
                     }
-
-                    console.log('aboutUserFormForClient, yo there: ', aboutUserFormForClient);
 
                     localStorage.setItem('aboutUserForm', JSON.stringify(aboutUserFormFromServer));
 
@@ -200,7 +204,7 @@ const AccountPg = () => {
                                 style={{ fontWeight: 410 }}
                                 className='text-black'
                             >
-                                View 'About Me' form
+                                View {"'"}About Me{"'"} form
                             </span>
                         </Button>
                     </section>

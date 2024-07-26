@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import Button from '../../../General/Button';
 import { UserContext } from '../../../../providers/UserProvider';
 
@@ -17,7 +17,7 @@ const GradesOrYearsSelection = () => {
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const { selection, ageGroupsTaught } = aboutUserForm.gradesOrYears;
     /** @type {[import('../../../../providers/ModalProvider').TUserForm, Function]} */
-    const ageGroupOptions = AGE_GROUPS[selection ?? 'U.S.'];
+    const ageGroupOptions = AGE_GROUPS[(selection && Object.keys(AGE_GROUPS).includes(selection)) ? selection : 'U.S.'];
 
     const handleGradesOrYearsBtnClick = gradesOrYearsSelectedOptName => () => {
         setAboutUserForm(state => ({
@@ -52,6 +52,10 @@ const GradesOrYearsSelection = () => {
         }));
     };
 
+    useEffect(() => {
+        console.log('selection: ', selection);
+    });
+
     return (
         <section className='d-flex flex-column col-12 col-lg-6'>
             <label>
@@ -70,7 +74,7 @@ const GradesOrYearsSelection = () => {
                         {AGE_GROUPS_FIELD_U_S}
                     </Button>
                     <Button
-                        classNameStr={`py-1 grades-or-years-non-usa-btn no-btn-styles ${!selection ? 'grades-or-years-non-usa-btn-unselected' : ''} ${selection === AGE_GROUPS_FIELD_NON_U_S ? 'selected-grade-or-years-opt' : ''}`}
+                        classNameStr={`py-1 grades-or-years-non-usa-btn no-btn-styles ${!selection || (selection && !Object.keys(AGE_GROUPS).includes(selection)) ? 'grades-or-years-non-usa-btn-unselected' : ''} ${selection === AGE_GROUPS_FIELD_NON_U_S ? 'selected-grade-or-years-opt' : ''}`}
                         handleOnClick={handleGradesOrYearsBtnClick(AGE_GROUPS_FIELD_NON_U_S)}
                         isDisabled={selection === AGE_GROUPS_FIELD_NON_U_S}
                     >

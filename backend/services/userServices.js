@@ -48,8 +48,6 @@ export const getUserByEmail = async (email = '', projectionsObj = {}) => {
 
 export const updateUser = async (filterQuery = {}, updatedProperties = {}) => {
     try {
-        console.log('yo there!');
-
         const result = await User.updateOne(filterQuery, updatedProperties, { upsert: true });
 
         console.log('Result, user updated: ', result);

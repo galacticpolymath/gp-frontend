@@ -14,11 +14,11 @@
 import { createContext, useState } from "react";
 
 export const ModalContext = createContext(null);
-export const defautlNotifyModalVal = { 
-    isDisplayed: false, 
-    bodyTxt: '', 
+export const defautlNotifyModalVal = {
+    isDisplayed: false,
+    bodyTxt: '',
     headerTxt: '',
-    handleOnHide: () => {}
+    handleOnHide: () => { }
 };
 
 export const ModalProvider = ({ children }) => {
@@ -29,6 +29,7 @@ export const ModalProvider = ({ children }) => {
     const [notifyModal, setNotifyModal] = useState(defautlNotifyModalVal);
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = useState(false);
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = useState(false);
+    const [isAccountModalMobileOn, setIsAccountModalMobileOn] = useState(false);
     const _notifyModal = [notifyModal, setNotifyModal];
     const _selectedJob = [selectedJob, setSelectedJob]
     const _isJobModalOn = [isJobModalOn, setIsJobModalOn]
@@ -36,10 +37,12 @@ export const ModalProvider = ({ children }) => {
     const _isLoginModalDisplayed = [isLoginModalDisplayed, setIsLoginModalDisplayed];
     const _isCreateAccountModalDisplayed = [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed]
     const _isAboutMeFormModalDisplayed = [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed];
+    const _isAccountModalMobileOn = [isAccountModalMobileOn, setIsAccountModalMobileOn];
 
     return (
         <ModalContext.Provider
             value={{
+                _isAccountModalMobileOn,
                 _selectedJob,
                 _isJobModalOn,
                 _isDownloadModalInfoOn,

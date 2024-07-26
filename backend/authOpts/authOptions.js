@@ -49,8 +49,6 @@ export default function MyAdapter() {
 
         const user = await getUser({ providerAccountId: providerAccountId });
 
-        console.log('user, sup there: ', user);
-
         if (!user) {
           const { wasSuccessful } = await createUser('PLACEHOLDER', null, provider, ['user'], providerAccountId);
 
@@ -343,12 +341,7 @@ export const authOptions = {
 
         return true;
       } catch (error) {
-        console.error('An error has occurred, couldn\'t sign in the target user. Reason: ', error);
-
-        const { type, msg } = error;
-        console.log('param.user.redirectUrl: ', param.user.redirectUrl);
-        console.log('type, error has occurred: ', type);
-        console.error('Error message: ', msg ?? 'received none.');
+        const { type } = error;
         if (type && param?.user?.redirectUrl) {
           return `${param.user.redirectUrl}/?signin-err-type=${type}`;
         }
@@ -357,15 +350,12 @@ export const authOptions = {
       }
     },
     async jwt(param) {
-      console.log('param, sup there beef, jwt callback: ', param);
       const { token, user, profile } = param;
       const isUserSignedIn = !!user;
 
       if (isUserSignedIn && (user.id ?? user._id)) {
         token.id = user.id ?? user._id;
       }
-
-      console.log('token, jwt callback: ', token);
 
       return Promise.resolve(token);
     },
@@ -396,15 +386,14 @@ export const authOptions = {
       } else {
         // HANDLED CASE WHICH THE USER DOES NOT EXIST
         /** @type {import('../models/user').TUserSchema  } */
+        await connectToMongodb();
+
         const dbUser = await getUser({ email: email }, { picture: 1, occupation: 1 });
         picture = dbUser.picture ?? '';
         occupation = dbUser.occupation ?? null;
 
         cache.set('users', { ...users, [email]: dbUser });
       }
-
-      console.log('userPic, yo there: ', picture);
-      console.log('occupation, yo there: ', occupation);
 
       session.id = token.id;
       session.token = accessToken;

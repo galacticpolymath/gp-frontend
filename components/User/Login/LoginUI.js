@@ -19,7 +19,7 @@ const LoginUI = ({
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
     const [loginForm, setLoginForm] = _loginForm;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
-    const [errors, setErrors] = useState(new Map());
+    const [errors] = useState(new Map());
     const inputFieldClassName = 'col-7';
 
     const handleOnInputChange = event => {

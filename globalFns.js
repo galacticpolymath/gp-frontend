@@ -230,6 +230,10 @@ export const getIsParsable = val => {
 
 export const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
+export const sleep = milliseconds => new Promise(resolve => { 
+    setTimeout(resolve, milliseconds); 
+});
+
 /** 
  * @param {Map<string, any>} map
  * @return {object}

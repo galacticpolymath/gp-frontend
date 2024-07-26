@@ -2,7 +2,7 @@
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Button from "../../../General/Button";
 import { UserContext } from "../../../../providers/UserProvider";
 
@@ -14,10 +14,14 @@ import { UserContext } from "../../../../providers/UserProvider";
  *  errorMsg: string
  * }} param
  */
-const CountrySection = ({ countryNames, errorMsg, setErrors }) => {
+const CountrySection = ({ countryNames, _errors }) => {
     const [searchResults, setSearchResults] = useState([]);
     const [isInputFocused, setIsInputFocused] = useState(false);
     const { _aboutUserForm } = useContext(UserContext);
+    /**
+     * @type {[Map<string, string>, Function]}
+     */
+    const [errors, setErrors] = _errors;
     /** @type {[import("../../../../providers/UserProvider").TAboutUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
 
@@ -25,12 +29,16 @@ const CountrySection = ({ countryNames, errorMsg, setErrors }) => {
         setIsInputFocused(true);
     };
 
+    useEffect(() => {
+        console.log('errors: ', errors);
+    });
+
     const handleCountrySelectionBtnClick = ({ target }) => {
         setErrors(state => {
             /**
              * @type {Map<string, string}
              */
-            const stateClone = structuredClone(state); 
+            const stateClone = structuredClone(state);
 
             stateClone.delete('country');
 
@@ -38,11 +46,24 @@ const CountrySection = ({ countryNames, errorMsg, setErrors }) => {
         });
         let aboutUserFormUpdated = { ...aboutUserForm };
 
+        console.log('target.value: ', target.value);
         if (target.value.toLowerCase() !== 'united states') {
             aboutUserFormUpdated = {
                 ...aboutUserFormUpdated,
                 zipCode: '',
             };
+            setErrors(state => {
+                /**
+                 * @type {Map<string, string}
+                 */
+                const stateClone = structuredClone(state);
+
+                stateClone.delete('zipCode');
+
+                console.log('stateClone: ', stateClone);
+
+                return stateClone;
+            });
         }
 
         setAboutUserForm({
@@ -67,20 +88,20 @@ const CountrySection = ({ countryNames, errorMsg, setErrors }) => {
 
     return (
         <section className='d-flex flex-column my-4 my-lg-0 col-12 col-sm-8 col-lg-4'>
-            <label htmlFor='country-input' className={errorMsg ? 'text-danger' : ''}>
+            <label htmlFor='country-input' className={errors?.has('country') ? 'text-danger' : ''}>
                 *Country:
             </label>
             <div className='position-relative ms-2 ms-sm-0 d-flex flex-column'>
                 <input
                     placeholder='Your country'
                     style={{ maxWidth: '400px' }}
-                    className={`aboutme-txt-input no-outline w-100 pt-1 ${errorMsg ? 'border-danger text-danger' : ''}`}
+                    className={`aboutme-txt-input no-outline w-100 pt-1 ${errors?.has('country') ? 'border-danger text-danger' : ''}`}
                     defaultValue={aboutUserForm.country}
                     value={aboutUserForm.country}
                     onChange={handleInputOnChange}
                     onFocus={handleOnInputFocus}
                 />
-                <span style={{ height: '25px', fontSize: '16px' }} className='text-danger'>{errorMsg ?? ''}</span>
+                <span style={{ height: '25px', fontSize: '16px' }} className='text-danger'>{errors?.get('country') ?? ''}</span>
                 {isInputFocused && (
                     <div
                         id='searchResultsModal'

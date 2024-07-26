@@ -3,23 +3,31 @@
 /* eslint-disable indent */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import { signOut, useSession } from "next-auth/react";
-import CustomLink from "../../CustomLink";
+import { useRouter } from "next/router";
 
-const LoginContainerForNavbar = () => {
-    const { _isLoginModalDisplayed } = useContext(ModalContext);
+const LoginContainerForNavbar = ({ _modalAnimation }) => {
+    const router = useRouter();
+    const { _isLoginModalDisplayed, _isAccountModalMobileOn } = useContext(ModalContext);
     const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
-    const [modalAnimation, setModalAnimation] = useState('');
+    const [modalAnimation, setModalAnimation] = _modalAnimation;
     const { status, data } = useSession();
     const { name, image } = data?.user ?? {};
+    const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
 
     const handleOnClick = () => {
+
+        if ((document.documentElement.clientWidth <= 767) && (status === 'authenticated')) {
+            setIsAccountModalMobileOn(state => !state);
+            return;
+        }
+
         if (status === 'authenticated') {
             setModalAnimation(modalAnimation => {
-                if (modalAnimation === 'fade-out-quick' || modalAnimation === '') {
+                if (modalAnimation === 'fade-out-quick' || (modalAnimation === 'd-none')) {
                     return 'fade-in-quick';
                 }
 
@@ -70,15 +78,11 @@ const LoginContainerForNavbar = () => {
             <div
                 style={{
                     backgroundColor: '#333438',
-                    // minWidth: '120%',
-                    width: '21vw',
-                    right: '30%',
-                    maxWidth: '300px',
-                    minWidth: '270px',
-                    opacity: 0,
+                    display: modalAnimation === 'fade-out-quick' ? 'none' : 'block',
+                    zIndex: modalAnimation === 'fade-out-quick' ? -1000 : 100000,
                     pointerEvents: modalAnimation === 'fade-out-quick' ? 'none' : 'auto',
                 }}
-                className={`position-absolute account-modal py-2 rounded ${modalAnimation}`}
+                className={`account-sm-modal py-2 rounded ${modalAnimation}`}
             >
                 <section
                     style={{ borderBottom: '1px solid grey' }}
@@ -92,15 +96,19 @@ const LoginContainerForNavbar = () => {
                         style={{ objectFit: 'contain' }}
                         className='rounded-circle'
                     />
-                    <span className="text-white my-3">{name?.first} {name?.last}</span>
+                    <h5 className="text-white my-3">{name?.first} {name?.last}</h5>
                 </section>
                 <section className='d-flex flex-column'>
-                    <CustomLink
-                        hrefStr="/account"
-                        className="text-white hover txt-underline-on-hover py-2 w-100 text-center"
+                    <Button
+                        handleOnClick={() => {
+                            setModalAnimation('fade-out-quick');
+                            router.push('/account');
+                        }}
+                        classNameStr="no-btn-styles text-white txt-underline-on-hover py-2"
+
                     >
                         View Account
-                    </CustomLink>
+                    </Button>
                     <Button
                         handleOnClick={() => {
                             localStorage.clear();
