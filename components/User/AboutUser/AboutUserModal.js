@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-indent-props */
@@ -11,6 +12,8 @@ import { UserContext } from '../../../providers/UserProvider';
 import CountrySection from './sections/CountrySection';
 import SubjectOption from './sections/SubjectOption';
 import SubmitAboutUserFormBtn from './SubmitAboutUserFormBtn';
+import { getUrlVal } from '../../../pages/account';
+import { useRouter } from 'next/router';
 
 const SUBJECTS_OPTIONS = [
     'science',
@@ -114,8 +117,17 @@ const AboutUserModal = () => {
         return val;
     };
 
+    const router = useRouter();
+
     const handleOnShow = () => {
         const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
+
+        const urlVal = getUrlVal(router, "show_about_user_form");
+
+        if (typeof JSON.parse(urlVal) === 'boolean') {
+            const url = router.asPath;
+            router.replace(url.split("?")[0]);
+        }
 
         if (aboutUserFormStringified) {
             const aboutUserForm = JSON.parse(aboutUserFormStringified, handleParseUserForm);

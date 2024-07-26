@@ -14,17 +14,18 @@ import { useRouter } from 'next/router';
 import { ModalContext } from '../providers/ModalProvider';
 import { UserContext, aboutUserFormDefault } from '../providers/UserProvider';
 import axios from 'axios';
+import { Spinner } from 'react-bootstrap';
 
 /**
  *  @param {import('next/router').NextRouter} router 
  *  @param {string} urlField 
  * */
-const getUrlVal = (router, urlField) => {
+export const getUrlVal = (router, urlField) => {
     const paths = router.asPath?.split('?');
     const urlKeyAndVal = paths?.[1]?.split("=");
 
     console.log('urlKeyAndVal: ', urlKeyAndVal);
-       
+
     if ((urlKeyAndVal?.length === 2) && (urlKeyAndVal?.[0] === urlField)) {
         return paths[1].split("=")?.[1];
     }
@@ -114,7 +115,7 @@ const AccountPg = () => {
                     isDisplayed: true,
                     bodyTxt: '',
                     headerTxt: 'There is an account with that email. Sign in instead.',
-                    handleOnHide: () => {},
+                    handleOnHide: () => { },
                 });
             }, 300);
         }
@@ -129,7 +130,7 @@ const AccountPg = () => {
             setTimeout(() => {
                 setIsAboutMeFormModalDisplayed(true);
             }, 300);
-        } else if(JSON.parse(urlVal) && (status === 'unauthenticated')){
+        } else if (JSON.parse(urlVal) && (status === 'unauthenticated')) {
             const url = router.asPath;
             router.replace(url.split("?")[0]);
         }
@@ -138,8 +139,9 @@ const AccountPg = () => {
     if (status === 'loading') {
         return (
             <Layout>
-                <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container pt-4 d-flex flex-column">
-                    Loading...
+                <div style={{ minHeight: '100vh' }} className="container pt-5 mt-5 d-flex flex-column align-items-center">
+                    <h5>Loading, please wait...</h5>
+                    <Spinner className='text-dark' />
                 </div>
             </Layout>
         );
@@ -167,7 +169,7 @@ const AccountPg = () => {
 
     return (
         <Layout>
-            <div style={{ minHeight: '90vh', paddingTop: '10px' }} className="container pt-4">
+            <div style={{ minHeight: '90vh', paddingTop: '10px' }} className="container pt-5 pt-sm-4">
                 <section className='row border-bottom pb-4'>
                     <section className='col-12 d-flex justify-content-center align-items-center pt-4'>
                         <img

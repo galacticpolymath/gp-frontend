@@ -13,7 +13,6 @@ const LoginContainerForNavbar = () => {
     const { _isLoginModalDisplayed } = useContext(ModalContext);
     const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
     const [modalAnimation, setModalAnimation] = useState('');
-    const [isModalDisplayed, setIsModalDisplayed] = useState(false);
     const { status, data } = useSession();
     const { name, image } = data?.user ?? {};
 
@@ -71,14 +70,15 @@ const LoginContainerForNavbar = () => {
             <div
                 style={{
                     backgroundColor: '#333438',
-                    minWidth: '120%',
+                    // minWidth: '120%',
                     width: '21vw',
                     right: '30%',
                     maxWidth: '300px',
+                    minWidth: '270px',
                     opacity: 0,
                     pointerEvents: modalAnimation === 'fade-out-quick' ? 'none' : 'auto',
                 }}
-                className={`position-absolute py-2 rounded ${modalAnimation}`}
+                className={`position-absolute account-modal py-2 rounded ${modalAnimation}`}
             >
                 <section
                     style={{ borderBottom: '1px solid grey' }}
