@@ -38,7 +38,7 @@ export const CustomCloseButton = ({ children = <IoMdClose color="white" size={28
 
 
 const ModalContainers = () => {
-    const { _selectedJob, _isDownloadModalInfoOn, _isAccountModalMobileOn } = useContext(ModalContext);
+    const { _selectedJob, _isDownloadModalInfoOn } = useContext(ModalContext);
     const [selectedJob,] = _selectedJob;
     const [isDownloadModalInfoOn] = _isDownloadModalInfoOn;
 

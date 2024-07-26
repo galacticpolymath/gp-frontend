@@ -222,7 +222,7 @@ export const getIsParsable = val => {
 
         return true;
     } catch (error) {
-        console.error('Not parsable. Reason: ' , error);
+        console.error('Not parsable. Reason: ', error);
 
         return false;
     }
@@ -230,9 +230,20 @@ export const getIsParsable = val => {
 
 export const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
-export const sleep = milliseconds => new Promise(resolve => { 
-    setTimeout(resolve, milliseconds); 
+export const sleep = milliseconds => new Promise(resolve => {
+    setTimeout(resolve, milliseconds);
 });
+
+export const getIsObj = val => !!val && (typeof val === 'object');
+
+/**
+ * 
+ * @param {import('next/router').NextRouter} router 
+ */
+export const resetUrl = router => {
+    const url = router.asPath;
+    router.replace(url.split('?')[0]);
+}
 
 /** 
  * @param {Map<string, any>} map

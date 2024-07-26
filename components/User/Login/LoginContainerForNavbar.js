@@ -89,7 +89,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
                     className="d-flex flex-column justify-content-center align-items-center pb-2"
                 >
                     <img
-                        src={image ?? '/imgs/gp_logo_gradient_transBG.png'}
+                        src={image || '/imgs/gp_logo_gradient_transBG.png'}
                         alt='user_img'
                         width={75}
                         height={75}

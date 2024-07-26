@@ -1,3 +1,4 @@
+/* eslint-disable semi */
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
@@ -15,6 +16,7 @@ import { ModalContext } from '../providers/ModalProvider';
 import { UserContext, aboutUserFormDefault } from '../providers/UserProvider';
 import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
+import { resetUrl } from '../globalFns';
 
 /**
  *  @param {import('next/router').NextRouter} router 
@@ -31,10 +33,29 @@ export const getUrlVal = (router, urlField) => {
     return null;
 };
 
+/**
+ *  @param {import('next/router').NextRouter} router 
+ *  @param {string} urlField 
+ * */
+export const getAllUrlVals = (router, willCreateSubTuples) => {
+    const pathsStr = router.asPath.split('?')[1];
+    let urlKeysAndVals = pathsStr.split("&");
+
+    if (willCreateSubTuples) {
+        const urlKeysAndValsTuples = urlKeysAndVals.map(keyAndValStr => {
+            return keyAndValStr.split('=');
+        });
+
+        return urlKeysAndValsTuples;
+    }
+
+    return urlKeysAndVals;
+};
+
 const AccountPg = () => {
     const session = useSession();
-    const router = useRouter();
     const { status, data } = session;
+    const router = useRouter();
     const { _aboutUserForm } = useContext(UserContext);
     const { _isAboutMeFormModalDisplayed, _notifyModal } = useContext(ModalContext);
     const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
@@ -111,13 +132,22 @@ const AccountPg = () => {
             return;
         }
 
-        if ((status === "unauthenticated") && getUrlVal(router, 'account-creation-err-type') === 'duplicate-email') {
+        if ((status === "unauthenticated") && router.asPath.includes('?') && getAllUrlVals(router).some(urlParam => urlParam.includes('duplicate-email'))) {
+            const paths = getAllUrlVals(router, true);
+            console.log('paths, hey there: ', paths);
+            const providerUsedForUserEntryArr = paths.find(([urlKey]) => urlKey === 'provider-used');
+            const providerUsed = providerUsedForUserEntryArr?.length === 2 ? providerUsedForUserEntryArr[1] : null;
+            const bodyTxt = providerUsed?.toLowerCase() === 'google' ? "Try signing using your email and password." : "Try signing in with Google.";
+
             setTimeout(() => {
+
                 setNotifyModal({
                     isDisplayed: true,
-                    bodyTxt: '',
-                    headerTxt: 'There is an account with that email. Sign in instead.',
-                    handleOnHide: () => { },
+                    bodyTxt: bodyTxt,
+                    headerTxt: 'Sign-in ERROR. There is an email with a different provider in our records.',
+                    handleOnHide: () => {
+                        resetUrl(router);
+                    },
                 });
             }, 300);
         }
@@ -125,8 +155,6 @@ const AccountPg = () => {
 
     useEffect(() => {
         const urlVal = getUrlVal(router, "show_about_user_form");
-
-        console.log('urlVal: ', urlVal);
 
         if (JSON.parse(urlVal) && (status === 'authenticated')) {
             setTimeout(() => {
@@ -154,7 +182,7 @@ const AccountPg = () => {
             <Layout>
                 <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container pt-4">
                     <LoginUI
-                        className='pt-3'
+                        className='pt-5'
                         headingTitleClassName='text-center text-black my-2'
                         isInputIconShow={false}
                     />
@@ -162,6 +190,8 @@ const AccountPg = () => {
             </Layout>
         );
     }
+
+    console.log('data.user: ', data.user)
 
     const { email, name, image, occupation } = data.user;
 
@@ -175,7 +205,7 @@ const AccountPg = () => {
                 <section className='row border-bottom pb-4'>
                     <section className='col-12 d-flex justify-content-center align-items-center pt-4'>
                         <img
-                            src={image ?? '/imgs/gp_logo_gradient_transBG.png'}
+                            src={image || '/imgs/gp_logo_gradient_transBG.png'}
                             alt='user_img'
                             width={100}
                             height={100}

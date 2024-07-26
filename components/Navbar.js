@@ -4,9 +4,11 @@ import Link from 'next/link';
 import Logo from '../assets/img/galactic_polymath_white.png';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function Navbar() {
   const router = useRouter();
+  const session = useSession();
   const [modalAnimation, setModalAnimation] = useState('d-none');
 
   return (
@@ -78,7 +80,7 @@ export default function Navbar() {
                   </li>
                 ))}
               </ul>
-              <LoginContainerForNavbar className='login-container' _modalAnimation={[modalAnimation, setModalAnimation]} />
+              {(!router.asPath.includes('/account') || (session.status === 'authenticated')) && <LoginContainerForNavbar className='login-container' _modalAnimation={[modalAnimation, setModalAnimation]} />}
             </div>
           </div>
         </div>

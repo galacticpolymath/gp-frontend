@@ -20,7 +20,7 @@ const LoginUI = ({
     const [loginForm, setLoginForm] = _loginForm;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     const [errors] = useState(new Map());
-    const inputFieldClassName = 'col-7';
+    const inputFieldClassName = 'col-12 col-sm-7';
 
     const handleOnInputChange = event => {
         const { name, value } = event.target;
@@ -64,7 +64,7 @@ const LoginUI = ({
                 <form>
                     <div className="mt-3 d-flex justify-content-center align-items-center flex-column">
                         <label
-                            className="d-flex p-0 position-relative col-7 fw-bold pb-2"
+                            className={`d-flex p-0 position-relative ${inputFieldClassName} fw-bold pb-2`}
                             htmlFor="email-input"
 
                         >
@@ -91,7 +91,7 @@ const LoginUI = ({
                     </div>
                     <div className="mt-4 d-flex justify-content-center align-items-center flex-column">
                         <label
-                            className="d-flex p-0 position-relative col-7 fw-bold pb-2"
+                            className={`d-flex p-0 position-relative ${inputFieldClassName} fw-bold pb-2`}
                             htmlFor="password-input"
 
                         >
@@ -115,7 +115,7 @@ const LoginUI = ({
                             </span>
                         </div>
                     </div>
-                    <div className='d-flex justify-content-center align-items-center py-2 mt-3 row'>
+                    <div className='d-flex justify-content-center align-items-center px-2 px-sm-0 py-2 mt-3 row'>
                         <Button
                             handleOnClick={handleLoginBtnClick}
                             classNameStr={`bg-primary rounded-pill border-0 px-4 py-2 ${inputFieldClassName}`}
@@ -128,21 +128,21 @@ const LoginUI = ({
                     <div className="d-flex justify-content-center align-items-center">
                         <CustomLink
                             color="#3C719F"
-                            className="underline-on-hover no-link-decoration"
+                            className="underline-on-hover no-link-decoration text-center text-sm-start"
                         >
                             Forgot your email or password?
                         </CustomLink>
                     </div>
                     <div className="d-flex justify-content-center mt-3 mb-2">
-                        {/* <div style={{ width: "48%" }} className='d-flex justify-content-center align-items-center'>
+                        <div style={{ width: "48%" }} className='d-flex justify-content-center justify-content-sm-end align-items-center'>
                             <div style={{ height: "3px", width: '80%' }} className={`bg-black rounded`} />
-                        </div> */}
+                        </div>
                         <div style={{ width: "4%" }} className='d-flex justify-content-center align-items-center'>
                             <span className={`text-black`}>OR</span>
                         </div>
-                        {/* <div style={{ width: "48%" }} className='d-flex justify-content-center align-items-center'>
+                        <div style={{ width: "48%" }} className='d-flex justify-content-center justify-content-sm-start align-items-center'>
                             <div style={{ height: "3px", width: '80%' }} className={`bg-black rounded`} />
-                        </div> */}
+                        </div>
                     </div>
                 </form>
             </section>
@@ -152,7 +152,7 @@ const LoginUI = ({
                     className="rounded p-2 d-flex justify-content-center align-items-center border shadow"
                 />
             </section>
-            <div className="d-flex justify-content-center align-items-center border-top pt-3 pb-5">
+            <div className="d-flex flex-sm-row flex-column justify-content-center align-items-center border-top pt-3 pb-5">
                 <span className='text-black'>
                     Don{"'"}t have an account?
                 </span>

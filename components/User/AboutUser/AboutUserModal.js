@@ -14,6 +14,8 @@ import SubjectOption from './sections/SubjectOption';
 import SubmitAboutUserFormBtn from './SubmitAboutUserFormBtn';
 import { getUrlVal } from '../../../pages/account';
 import { useRouter } from 'next/router';
+import { CustomCloseButton } from '../../../ModalsContainer';
+import { IoMdClose } from 'react-icons/io';
 
 const SUBJECTS_OPTIONS = [
     'science',
@@ -36,9 +38,10 @@ const AboutUserModal = () => {
     const { _aboutUserForm } = useContext(UserContext);
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
+    const [countryNames, setCountryNames] = useState([]);
     const [errors, setErorrs] = useState(new Map());
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
-
+    const router = useRouter();
     const modalBodyRef = useRef();
 
     const handleOnHide = () => {
@@ -117,8 +120,6 @@ const AboutUserModal = () => {
         return val;
     };
 
-    const router = useRouter();
-
     const handleOnShow = () => {
         const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
 
@@ -141,8 +142,6 @@ const AboutUserModal = () => {
             setTextareaMaxHeight(height);
         }
     }, [isAboutMeFormModalDisplayed]);
-
-    const [countryNames, setCountryNames] = useState([]);
 
     useEffect(() => {
         (async () => {
@@ -171,10 +170,20 @@ const AboutUserModal = () => {
             dialogClassName='border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='about-me-modal user-modal-color rounded-0'
         >
-            <ModalTitle className='px-3 txt-color-for-aboutme-modal'>
+            <CustomCloseButton
+                className='no-btn-styles position-absolute top-0 end-0 me-2'
+                handleOnClick={handleOnHide}
+            >
+                <IoMdClose color="black" size={28} />
+            </CustomCloseButton>
+            <ModalTitle style={{ maxWidth: '1800px' }} className='px-3 txt-color-for-aboutme-modal w-100'>
                 About Me
             </ModalTitle>
-            <ModalBody ref={modalBodyRef} className='about-me-modal-body'>
+            <ModalBody
+                style={{ maxWidth: '1800px' }}
+                ref={modalBodyRef}
+                className='about-me-modal-body w-100'
+            >
                 <form className='position-relative  h-100 w-100'>
                     <section className='row d-flex flex-column flex-lg-row'>
                         <section className='d-flex flex-column col-12 col-sm-8 col-lg-4'>

@@ -16,7 +16,7 @@ import { createUser, deleteUser, getUser, getUserByEmail, updateUser } from '../
 import NodeCache from 'node-cache';
 
 const VALID_FORMS = ['createAccount', 'login'];
-const cache = new NodeCache();
+export const cache = new NodeCache({ stdTTL: 100 });
 
 /** @return { import("next-auth/adapters").Adapter } */
 export default function MyAdapter() {
@@ -291,7 +291,7 @@ export const authOptions = {
         if (dbUser && wasUserCreated) {
           await deleteUser({ providerAccountId: providerAccountId });
 
-          return '/account?account-creation-err-type=duplicate-email';
+          return '/account?account-creation-err-type=duplicate-email&provider-used=google';
         }
 
         // Finish creating the gogole user account in the db.
@@ -374,15 +374,15 @@ export const authOptions = {
       );
       const refreshToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '1 day');
       /** @type {{ [key:string]: import('../models/user').TUserSchema  }} */
-      const users = cache.get('users') ?? {};
+      const targetUser = cache.get(email) ?? {};
       let picture = '';
       let occupation = null;
 
-      console.log('users, cache: ', users);
+      console.log('users, cache: ', targetUser);
 
-      if (Object.keys(users).length && users[email]) {
-        picture = users[email].picture;
-        occupation = users[email].occupation;
+      if (targetUser && targetUser.picture && targetUser.occupation) {
+        picture = targetUser.picture;
+        occupation = targetUser.occupation;
       } else {
         // HANDLED CASE WHICH THE USER DOES NOT EXIST
         /** @type {import('../models/user').TUserSchema  } */
@@ -392,7 +392,7 @@ export const authOptions = {
         picture = dbUser.picture ?? '';
         occupation = dbUser.occupation ?? null;
 
-        cache.set('users', { ...users, [email]: dbUser });
+        cache.set(email, targetUser, 100);
       }
 
       session.id = token.id;
