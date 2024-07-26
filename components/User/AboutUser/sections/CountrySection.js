@@ -46,7 +46,6 @@ const CountrySection = ({ countryNames, _errors }) => {
         });
         let aboutUserFormUpdated = { ...aboutUserForm };
 
-        console.log('target.value: ', target.value);
         if (target.value.toLowerCase() !== 'united states') {
             aboutUserFormUpdated = {
                 ...aboutUserFormUpdated,
@@ -59,8 +58,6 @@ const CountrySection = ({ countryNames, _errors }) => {
                 const stateClone = structuredClone(state);
 
                 stateClone.delete('zipCode');
-
-                console.log('stateClone: ', stateClone);
 
                 return stateClone;
             });
@@ -105,7 +102,7 @@ const CountrySection = ({ countryNames, _errors }) => {
                 {isInputFocused && (
                     <div
                         id='searchResultsModal'
-                        style={{ zIndex: 100, maxHeight: '400px', width: '100%' }}
+                        style={{ zIndex: 100, maxWidth: '400px', maxHeight: '400px', width: '100%', transform: 'translateY(35px)' }}
                         className="position-absolute border bg-white rounded shadow overflow-scroll"
                     >
                         <section className='d-flex flex-column p-2'>

@@ -11,9 +11,14 @@ import { CustomError } from "../../backend/utils/errors";
 export default async function handler(request, response) {
     try {
         if (!request?.query?.email || (typeof request?.query?.email !== 'string')){
-            throw new CustomError("Email is not present in the params of the request. ", 400);
+            throw new CustomError("The 'email' of the email is not present in the params of the request. ", 400);
         }
 
+        // if (!request?.query?.domainAndExt || (typeof request?.query?.domainAndExt !== 'string')){
+        //     throw new CustomError("The 'domain' of the email is not present in the params of the request. ", 400);
+        // }
+
+        // const userEmail = `${request.query.username}@${request.query.domainAndExt}`;
         const dbUser = await getUserByEmail(request.query.email, { 
             gradesOrYears: 1,
             reasonsForSiteVisit: 1,

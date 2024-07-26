@@ -112,6 +112,7 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 aboutUserForm: aboutUserFormClone,
                 userEmail: user.email,
             };
+            debugger;
 
             const response = await axios.put(
                 `${window.location.origin}/api/save-about-user-form`,

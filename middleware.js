@@ -159,22 +159,34 @@ export async function middleware(request) {
     ) {
       const willCheckIfUserIsDbAdmin = ['/api/insert-lesson', '/api/delete-lesson', '/api/update-lessons'].includes(nextUrl.pathname);
       const willCheckForValidEmail = ['/api/get-about-user-form', '/api/save-about-user-form'].includes(nextUrl.pathname);
-      let clientEmail = '';
+      let clientEmail = null;
+      let urlParamsStr = typeof nextUrl?.search === 'string' ? nextUrl?.search.replace(/\?/g, '') : '';
+      urlParamsStr = typeof nextUrl?.search === 'string' ? urlParamsStr.replace(/%40/g, '@') : '';
 
-      if(nextUrl.pathname === '/api/get-about-user-form'){
-        console.log('nextUrl: ', nextUrl);
-        let urlParams = nextUrl.search.replace(/\?/g, '');
-        urlParams = nextUrl.search.replace(/%40/g, '@');
+      console.log('nextUrl: ', nextUrl);
 
-        console.log('urlParams: ', urlParams);
+      if ((nextUrl.pathname === '/api/get-about-user-form') && (urlParamsStr.split('=').length == 2)) {
+        clientEmail = urlParamsStr.split('=')[1];
+      } else if (nextUrl.pathname === '/api/get-about-user-form') {
+        throw new Error("Received invalid parameters for the retreival of the user's 'About Me' form.");
       }
 
-      const reqData = await request.json();
-      console.log('reqData, hey there: ', reqData);
-      const { errResponse } = await getAuthorizeReqResult(authorizationStr, willCheckIfUserIsDbAdmin, willCheckForValidEmail, reqData?.userEmail ?? '');
+      const body = ((nextUrl.pathname === '/api/save-about-user-form') && (method === 'PUT')) ? await request.json() : null;
 
-      if (errResponse) {
-        return errResponse;
+      if ((nextUrl.pathname === '/api/save-about-user-form') && (typeof body?.userEmail === 'string')) {
+        clientEmail = body.userEmail;
+      } else if (nextUrl.pathname === '/api/save-about-user-form') {
+        throw new Error("Received invalid parameters for the retreival of the user's 'About Me' form.");
+      }
+
+      console.log('clientEmail: ', clientEmail);
+
+      const authorizationResult = await getAuthorizeReqResult(authorizationStr, willCheckIfUserIsDbAdmin, willCheckForValidEmail, clientEmail);
+
+      console.log('authorizationResult: ', authorizationResult);
+
+      if (authorizationResult) {
+        return authorizationResult.errResponse;
       }
 
       return NextResponse.next();
@@ -183,6 +195,8 @@ export async function middleware(request) {
     return new NextResponse('Invalid request parameters, body, or method.', { status: 400 });
   } catch (error) {
     const errMsg = `An error has occurred in the middleware: ${error}`;
+
+    console.log('errMsg, what is up: ', errMsg);
 
     if (((typeof request?.nextUrl === 'string') && !request?.nextUrl?.includes('api')) || ((typeof request?.nextUrl?.href === 'string') && request.nextUrl.href.includes('api'))) {
       return NextResponse.redirect(`${request.nextUrl.origin}/error`);

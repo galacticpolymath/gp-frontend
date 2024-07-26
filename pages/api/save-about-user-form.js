@@ -45,9 +45,13 @@ export default async function handler(request, response) {
 
         const { userEmail, aboutUserForm } = request.body;
         const aboutUserFormFalseyValsFiltered = Object.entries(aboutUserForm)
-            .filter(([, val]) => {
-                if (val && typeof val === 'object') {
+            .filter(([key, val]) => {
+                if (val && (typeof val === 'object')) {
                     return Object.keys(val).length > 0;
+                }
+
+                if(key === 'zipCode'){
+                    return true;
                 }
 
                 return val;

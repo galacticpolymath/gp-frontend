@@ -45,13 +45,11 @@ const AccountPg = () => {
         if (status === 'authenticated') {
             (async () => {
                 try {
-                    const usernameAndDomain = data.user.email.split('@');
+                    const usernameAndDomainExt = data.user.email.split('@');
 
-                    if(usernameAndDomain.length > 2){
+                    if (usernameAndDomainExt.length > 2 || usernameAndDomainExt <= 1) {
                         throw new Error('Received an invalid email string.');
                     }
-
-                    console.log('usernameAndDomain: ', usernameAndDomain);
 
                     const paramsAndHeaders = {
                         params: { email: data.user.email },
