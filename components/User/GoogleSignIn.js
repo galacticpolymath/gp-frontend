@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent */
@@ -21,9 +22,7 @@ const GoogleSignIn = ({
 }) => {
     const handleBtnClick = event => {
         event.preventDefault();
-
-        console.log('callbackUrl: ', callbackUrl);
-
+        
         if (!callbackUrl) {
             console.error('The callback url cannot be empty.');
             return;

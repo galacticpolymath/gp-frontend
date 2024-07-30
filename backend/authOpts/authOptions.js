@@ -22,26 +22,13 @@ export const cache = new NodeCache({ stdTTL: 100 });
 export default function MyAdapter() {
   return {
     async createUser(user) {
-      console.log('createUser, user: ', user);
-
-      // GOAL: save the user into the database when the user signs into google
-      // what do I get when the user signs into the google 
-      return user;
+      return;
     },
     async getUser(id) {
-      console.log('id, getUser: ', id);
-
       return;
     },
     async getUserByEmail(email) {
-      console.log('getting user by email: ', email);
-      const user = await getUserByEmail(email);
-
-      if (!user) {
-        return null;
-      }
-
-      return user;
+      return;
     },
     async getUserByAccount({ provider, providerAccountId }) {
       try {
@@ -258,8 +245,6 @@ export const authOptions = {
   },
   callbacks: {
     async signIn(param) {
-      console.log('signin, param: ', param);
-
       try {
         const { user, account, profile } = param;
         const { errType, code, email, providerAccountId, wasUserCreated } = user ?? {};
@@ -284,9 +269,6 @@ export const authOptions = {
         await connectToMongodb();
 
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
-
-        // if the user creates an account with google, after the placeholder user was created, but then the user with the same email is created and is in the database with their email,
-        // get the current url of the user, and route the user to the url, and the delete the document that was created for the target user
 
         if (dbUser && wasUserCreated) {
           await deleteUser({ providerAccountId: providerAccountId });
