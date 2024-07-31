@@ -79,8 +79,8 @@ export async function middleware(request) {
       const getUnitsRes = await fetch(url);
       const { msg, lessons } = await getUnitsRes.json() ?? {};
 
-      if (msg || !lessons.length) {
-        console.log(!lessons.length ? 'The unit does not exist.' : `Couldn't get the units. Reason: ${msg}`);
+      if (msg || !lessons?.length) {
+        console.log(!lessons?.length ? 'The unit does not exist.' : `Couldn't get the units. Reason: ${msg}`);
 
         return NextResponse.redirect(`${nextUrl.origin}/error`);
       }

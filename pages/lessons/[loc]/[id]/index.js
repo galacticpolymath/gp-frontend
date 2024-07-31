@@ -75,7 +75,7 @@ const LessonDetails = ({ lesson }) => {
     return false;
   });
   const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonStandardsSections?.length === 1 : false;
-  let sectionComps = (lesson?.Section && ((typeof lesson?.Section === 'object') && (lesson?.Section !== null))) ?
+  let sectionComps = lesson?.Section ?
     Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     :
     null;
