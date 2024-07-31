@@ -9,6 +9,8 @@ import styles from './index.module.css';
 import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
+import VanderBiltPressReleaseImg from '../assets/img/vanderbilt_press_release.png';
+import FrontiersPaperImg from '../assets/img/frontiers_paper.png';
 import EdutopiaBoostingStudentsDataLiteracyImg from '../assets/img/Edutopia_boosting-students-data-literacy.jpg';
 import CarouselContainer from '../components/CarouselContainer';
 import CarouselItem from '../components/CarouselItem';
@@ -22,6 +24,7 @@ const papers = [
     articleLink: 'https://www.scientificamerican.com/article/why-it-took-so-long-to-appreciate-female-birds-songs/',
     lessonLink: '/lessons/en-US/1',
     h4Txt: 'Our lesson &quot;Females Singing to be Heard&quot; featured in <em>Scientific American</em>.',
+    className: 'paper-title',
   },
   {
     imgSrc: EdutopiaBoostingStudentsDataLiteracyImg.src,
@@ -29,6 +32,23 @@ const papers = [
     articleLink: 'https://www.edutopia.org/article/boosting-students-data-literacy/',
     lessonLink: '/lessons/en-US/5#lesson_part_2',
     h4Txt: 'Our data literacy strategy used in several lessons featured in <em>Edutopia</em>.',
+    className: 'paper-title',
+  },
+  {
+    imgSrc: VanderBiltPressReleaseImg.src,
+    imgAlt: 'VanderBilt Press Release',
+    articleLink: 'https://as.vanderbilt.edu/news/2024/06/28/heard-that-bird-creanza-lab-develops-free-curriculum-to-teach-birdsong-identification/',
+    lessonLink: '/lessons/en-US/11 #lesson_part_2',
+    h4Txt: 'Our lesson &quot;Heard that bird?&quot; featured in <em>Vanderbilt University Press</em>.',
+    className: 'paper-title',
+  },
+  {
+    imgSrc: FrontiersPaperImg.src,
+    imgAlt: 'Frontiers Paper Img',
+    articleLink: 'https://www.frontiersin.org/journals/communication/articles/10.3389/fcomm.2024.1366207/full',
+    lessonLink: '',
+    h4Txt: 'GP founder was lead author on an article arguing for importance of teachers as partners for growing a STEM engaged society.',
+    className: 'mb-3',
   },
 ];
 const releases = [
@@ -189,11 +209,14 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="bg-primary-light">
+      <div className="bg-primary-light py-md-4 py-lg-0">
+        <h2 className="fw-light fs-1 text-center pb-sm-3 pb-md-0 px-3 pt-3 px-lg-4 pt-lg-4 ">
+          In The Press:
+        </h2>
         <CarouselContainer
           autoCarouselSecClassName="col-12 mt-0 px-0 px-md-4 autoCarouselSec"
           parentStylesClassName="p-0 d-flex flex-column papersCarouselContainer position-relative"
-          dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-0'
+          dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-4 pt-lg-0'
         >
           {papers.map((paper, index) => {
             // have the items stream in a horizontal fashion, don't have it revert to the beginning
@@ -219,7 +242,7 @@ export default function Home() {
                     <div className="mt-md-0 mt-2 col-12 ps-lg-3 d-flex flex-column justify-content-center align-items-center d-md-block">
                       <h4
                         style={{ whiteSpace: 'initial' }}
-                        className="paper-title text-center text-md-start"
+                        className={`text-center text-md-start ${paper.className}`}
                         dangerouslySetInnerHTML={{ __html: paper.h4Txt }}
                       />
                       <Link
@@ -231,12 +254,14 @@ export default function Home() {
                         Read the article
                       </Link>
                       <br className="d-none d-md-block" />
-                      <Link
-                        href={paper.lessonLink}
-                        className='btn btn-secondary'
-                      >
-                        Check out the lesson
-                      </Link>
+                      {paper.lessonLink && (
+                        <Link
+                          href={paper.lessonLink}
+                          className='btn btn-secondary'
+                        >
+                          Check out the lesson
+                        </Link>
+                      )}
                     </div>
                   </section>
                 </div>
