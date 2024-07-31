@@ -51,7 +51,7 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
       }
     }
 
-    if (['lesson-plan.standards'].includes(section.__component)) {
+    if (['lesson-plan.standards']?.includes(section.__component)) {
       return {
         ...section,
         GradesOrYears: GradesOrYears,
@@ -67,7 +67,7 @@ const LessonDetails = ({ lesson }) => {
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
   let lessonStandardsSections = lessonSectionObjEntries.filter(([sectionName], index) => {
-    if (sectionName.includes('standards') || sectionName === 'learning-chart') {
+    if (sectionName?.includes('standards') || sectionName === 'learning-chart') {
       lessonStandardsIndexesToFilterOut.push(index);
       return true;
     }
@@ -109,7 +109,7 @@ const LessonDetails = ({ lesson }) => {
 
     // create the background section 
     lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards', InitiallyExpanded: true };
-    sectionComps = sectionComps.filter((_, index) => !lessonStandardsIndexesToFilterOut.includes(index));
+    sectionComps = sectionComps.filter((_, index) => !lessonStandardsIndexesToFilterOut?.includes(index));
     const backgroundSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
 
     if (backgroundSectionIndex === -1) {
@@ -120,6 +120,10 @@ const LessonDetails = ({ lesson }) => {
   }
 
   sectionComps = useMemo(() => {
+    if (!sectionComps?.length) {
+      return [];
+    }
+
     sectionComps = sectionComps.filter(section => {
       if (("Data" in section) && !section['Data']) {
         return false;
@@ -131,7 +135,7 @@ const LessonDetails = ({ lesson }) => {
     return addGradesOrYearsProperty(sectionComps, lesson.ForGrades, lesson.GradesOrYears);
   }, [])
 
-  const _dots = useMemo(() => sectionComps ? getSectionDotsDefaultVal(sectionComps) : [], [])
+  const _dots = useMemo(() => sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : [], [])
   const [sectionDots, setSectionDots] = useState({
     dots: _dots,
     clickedSectionId: null,
@@ -184,7 +188,7 @@ const LessonDetails = ({ lesson }) => {
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, []);
 
-  const _sections = useMemo(() => sectionComps ? getLessonSections(sectionComps) : [], []);
+  const _sections = useMemo(() => sectionComps?.length ? getLessonSections(sectionComps) : [], []);
 
   if (!lesson && typeof window === "undefined") {
     return null;
@@ -459,13 +463,13 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
       },
     };
 
-    const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
-    const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
+    const multiMediaFalsyValsFilteredOut = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia?.mainLink) : [];
+    const isVidOrWebAppPresent = multiMediaFalsyValsFilteredOut?.length ? multiMediaFalsyValsFilteredOut.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
 
-    if (isThereAWebApp) {
+    if (isVidOrWebAppPresent) {
       const multiMediaArrUpdated = [];
 
-      for (let multiMediaItem of multiMediaArr) {
+      for (let multiMediaItem of multiMediaFalsyValsFilteredOut) {
         if ((multiMediaItem.type === 'video') && multiMediaItem?.mainLink?.includes("drive.google")) {
           const videoId = multiMediaItem.mainLink.split("/").at(-2);
           multiMediaItem = {
@@ -508,7 +512,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
 
     if (lessonToDisplayOntoUi?.Section?.preview?.Multimedia?.length) {
       for (const multiMedia of lessonToDisplayOntoUi.Section.preview.Multimedia) {
-        if (multiMedia?.mainLink.includes('www.youtube.com/shorts')) {
+        if (multiMedia?.mainLink?.includes('www.youtube.com/shorts')) {
           multiMedia.mainLink = multiMedia.mainLink.replace('shorts', 'embed');
         }
       }
