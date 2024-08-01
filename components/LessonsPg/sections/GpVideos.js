@@ -36,7 +36,7 @@ const GpVideos = ({
                     </h4>
                 </div>
                 <div>
-                <a href="https://www.youtube.com/@galacticpolymath/videos">View on our YouTube Channel <i class="bi bi-box-arrow-up-right"></i></a>
+                <a href="https://www.youtube.com/@galacticpolymath/videos">View on our YouTube Channel <i className="bi bi-box-arrow-up-right"></i></a>
                 </div>
 
             </div>

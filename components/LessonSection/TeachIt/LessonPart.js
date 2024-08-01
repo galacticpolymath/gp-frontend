@@ -383,7 +383,6 @@ const LessonPart = ({
               {!!_itemList?.length && _itemList.map((item, itemIndex) => {
                 const { itemTitle, itemDescription, links, filePreviewImg, itemCat } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
-                
 
                 return (
                   <li key={itemIndex} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
@@ -428,7 +427,7 @@ const LessonPart = ({
                               src={filePreviewImg}
                               alt="lesson_tile"
                               className='h-auto w-auto'
-                              style={{maxHeight:'100px',maxWidth:'100px'}}
+                              style={{ maxHeight:'100px',maxWidth:'100px' }}
                               
                             />
                           </div>
