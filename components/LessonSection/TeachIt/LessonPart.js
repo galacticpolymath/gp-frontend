@@ -381,7 +381,7 @@ const LessonPart = ({
             </div>
             <ol className='mt-2 materials-list'>
               {!!_itemList?.length && _itemList.map((item, itemIndex) => {
-                const { itemTitle, itemDescription, links, filePreviewImg, itemCat } = item;
+                const { itemTitle, itemDescription, links, filePreviewImg } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
 
                 return (
