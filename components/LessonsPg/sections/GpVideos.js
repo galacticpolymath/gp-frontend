@@ -35,6 +35,10 @@ const GpVideos = ({
                         Galactic Polymath Videos
                     </h4>
                 </div>
+                <div>
+                <a href="https://www.youtube.com/@galacticpolymath/videos">View on our YouTube Channel <i className="bi bi-box-arrow-up-right"></i></a>
+                </div>
+
             </div>
             <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                 {gpDataObj.data?.length ? (
