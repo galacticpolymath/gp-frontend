@@ -38,7 +38,7 @@ const papers = [
     imgSrc: VanderBiltPressReleaseImg.src,
     imgAlt: 'VanderBilt Press Release',
     articleLink: 'https://as.vanderbilt.edu/news/2024/06/28/heard-that-bird-creanza-lab-develops-free-curriculum-to-teach-birdsong-identification/',
-    lessonLink: '/lessons/en-US/11 #lesson_part_2',
+    lessonLink: '/lessons/en-US/11#lesson_part_1',
     h4Txt: 'Our lesson &quot;Heard that bird?&quot; featured in <em>Vanderbilt University Press</em>.',
     className: 'paper-title',
   },
