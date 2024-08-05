@@ -12,13 +12,13 @@
 /* eslint-disable no-console */
 
 import { useMemo, useState } from "react";
-import { getIconStyles } from "../../../helperFns/getIconStyles";
+import { getNavDotIconStyles } from "../../../helperFns/getNavDotIconStyles";
 
 const LiNavDot = ({ section, fns, index, isOnDesktop, EnticementArrow = <></> }) => {
     const { isInView, sectionId, sectionTitleForDot: title, willShowTitle, sectionDotId } = section;
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
     const { goToSection, handleDotClick } = fns;
-    const backgroundColor = isInView ? ((sectionId === '3._teaching_materials') ? '#FEEAF8' : '#d5e6f3') : 'white'
+    const backgroundColor = isInView ? (sectionId.includes('teaching_materials') ? '#FEEAF8' : '#d5e6f3') : 'white'
 
     const handleMouseOverIcon = () => {
         setWillChangeIconColor(true);
@@ -28,7 +28,7 @@ const LiNavDot = ({ section, fns, index, isOnDesktop, EnticementArrow = <></> })
         setWillChangeIconColor(false);
     }
 
-    const iconStyles = useMemo(() => getIconStyles((isInView || willChangeIconColor), sectionId), [willChangeIconColor, isInView, sectionId]);
+    const iconStyles = useMemo(() => getNavDotIconStyles((isInView || willChangeIconColor), sectionId), [willChangeIconColor, isInView, sectionId]);
 
     return (
         <>

@@ -178,9 +178,6 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
     const liNavDotFns = { goToSection, handleDotClick, setSectionDots }
     let timer;
 
-    // delete the arrow when the following occurs:
-    // -when the user starts scrolling 
-    // -when the user hovers over the dots
     const handleElementVisibility = inViewPort => (throttle(() => {
         clearTimeout(timer);
 
