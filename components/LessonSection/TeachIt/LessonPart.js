@@ -389,12 +389,12 @@ const LessonPart = ({
                   { width: '220px !important', height: '124px !important' }
                   :
                   { objectFit: 'contain' };
-                const imgLink = (itemCat === 'web resource') ? (_links?.[0]?.url ?? '') : (_links?.[0]?.url ?? ''); 
+                const imgLink = (itemCat === 'web resource') ? (_links?.[0]?.url ?? '') : (_links?.[0]?.url ?? '');
 
                 return (
                   <li key={itemIndex} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
                     <div className="d-flex flex-column flex-md-row">
-                      <section className='col-12 col-md-6'>
+                      <section className='col-12 col-md-5 col-lg-4'>
                         <strong><RichText content={itemTitle} /></strong>
                         <div className='fst-italic mb-1' style={{ color: '#353637' }}>
                           <RichText
