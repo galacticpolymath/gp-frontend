@@ -12,10 +12,10 @@
 /* eslint-disable no-console */
 
 import { useMemo } from "react";
-import { getIconStyles } from "../../../helperFns/getIconStyles";
+import { getNavDotIconStyles } from "../../../helperFns/getNavDotIconStyles";
 
 const Dot = ({ isHighlighted }) => {
-    const iconStyles = useMemo(() => getIconStyles(isHighlighted, null), [isHighlighted]);
+    const iconStyles = useMemo(() => getNavDotIconStyles(isHighlighted, null), [isHighlighted]);
 
     return (
         <i

@@ -2,8 +2,8 @@ $enable-cssgrid: true;
 
 @import "colors";
 
-@import '../styles/globalVars.scss';
-@import '../pages/_colors.scss';
+@import "../styles/globalVars.scss";
+@import "../pages/_colors.scss";
 
 $primary: $hydrogen-blue;
 $secondary: $burst-purple;
@@ -23,18 +23,18 @@ $font-size-root: 18px;
 
 h4.words {
   word-wrap: break-word;
-  background-color: 'pink';
+  background-color: "pink";
 }
 
-@import '../node_modules/bootstrap/scss/bootstrap';
-@import '../node_modules/react-responsive-carousel/lib/styles/carousel.min.css';
-@import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/react-responsive-carousel/lib/styles/carousel.min.css";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
 .responseiveH1 {
   font-size: 27px;
 
-  @media(min-width: 577px) {
-    font-size: calc(1.375rem + 1.5vw)
+  @media (min-width: 577px) {
+    font-size: calc(1.375rem + 1.5vw);
   }
 }
 
@@ -48,9 +48,6 @@ body {
   scroll-behavior: smooth;
 }
 
-;
-
-
 .text-transform-default {
   text-transform: none;
 }
@@ -58,37 +55,35 @@ body {
 .fst-italic {
   font-style: italic !important;
   white-space: normal !important;
-  ;
 }
 
 .fade-out {
-	animation: fadeOut 2s forwards;
-  	opacity: 0;
+  animation: fadeOut 2s forwards;
+  opacity: 0;
 }
 
 @keyframes fadeOut {
   from {
-  	opacity: 1;
+    opacity: 1;
   }
   to {
- 	opacity: 0;
+    opacity: 0;
   }
 }
 
 .fade-in {
-	animation: fadeIn 2s forwards;
-  	opacity: 1;
+  animation: fadeIn 2s forwards;
+  opacity: 1;
 }
 
 @keyframes fadeIn {
   from {
-  	opacity: 0;
+    opacity: 0;
   }
   to {
- 	opacity: 1;
+    opacity: 1;
   }
 }
-
 
 * {
   text-underline-offset: 4px !important;
@@ -99,11 +94,9 @@ body {
 }
 
 a {
-
   color: $hydrogen-blue;
   text-decoration: none;
   font-weight: bolder;
-
 
   //automatic exceptions for badge & nav-links for certain effects
   &:hover:not(.badge, .no-link-decoration, .cardsOnLessonPg) {
@@ -113,17 +106,14 @@ a {
 
     text-decoration: underline;
   }
-
-
 }
 
-a>span {
+a > span {
   vertical-align: middle;
 }
 
 //add no-link-decoration to avoid hover effects and stuff
 .no-link-decoration {
-
   color: initial;
   font-weight: initial;
 
@@ -143,7 +133,7 @@ a>span {
 }
 
 .no-x-mobile-margin {
-  @media(max-width: 576px) {
+  @media (max-width: 576px) {
     margin-right: 0px;
     margin-left: 0px;
   }
@@ -171,7 +161,7 @@ h3 {
 }
 
 ::-webkit-scrollbar {
-  width: .01rem;
+  width: 0.01rem;
 }
 
 li {
@@ -182,13 +172,12 @@ li {
   box-sizing: border-box;
 }
 
-
 html {
   height: 100%;
 }
 
 .btn-disabled {
-  opacity: .5;
+  opacity: 0.5;
 }
 
 ol li {
@@ -218,22 +207,18 @@ ol li {
   font-size: 0.75rem;
 }
 
-
 .fs-larger {
   font-size: 33px;
 }
 
-
-
-
 .fs-md-larger {
-  @media(min-width: 768px) {
+  @media (min-width: 768px) {
     font-size: 33px !important;
   }
 }
 
 .fs-md-med {
-  @media(min-width: 768px) {
+  @media (min-width: 768px) {
     font-size: 26px !important;
   }
 }
@@ -241,7 +226,6 @@ ol li {
 .fs-large {
   font-size: 28px;
 }
-
 
 .fs-24 {
   font-size: 24px;
@@ -253,7 +237,6 @@ ol li {
 
 //standards
 .selected-standard {
-
   background-color: #fff9c8;
   -webkit-box-shadow: inset -1px 5px 14px -6px rgba(97, 97, 97, 1);
   -moz-box-shadow: inset -1px 5px 14px -6px rgba(97, 97, 97, 1);
@@ -299,8 +282,12 @@ ol li {
   background-color: $math;
 }
 
-.bg-sel{
+.bg-sel {
   background-color: $sel;
+}
+
+.bg-sel-light {
+  background-color: $sel-hl;
 }
 
 .bg-math-light {
@@ -337,7 +324,6 @@ ol li {
 }
 
 .quickPrep {
-
   //remove margin for ol
   ol {
     margin-bottom: 0;
@@ -410,12 +396,12 @@ ol li {
   color: #aaa;
 }
 
-.white-divider-lg> :not(:first-child) {
+.white-divider-lg > :not(:first-child) {
   border-top: 1px solid $white;
 }
 
 @media (min-width: 992px) {
-  .white-divider-lg> :not(:first-child) {
+  .white-divider-lg > :not(:first-child) {
     border-left: 1px solid $white;
     border-top: 0;
   }
@@ -442,7 +428,7 @@ ol li {
 }
 
 .underline-less-thick {
-  text-decoration-thickness: .5px !important;
+  text-decoration-thickness: 0.5px !important;
 }
 
 .fw650 {
@@ -513,13 +499,13 @@ ol li {
 }
 
 .mt-md-7 {
-  @media(min-width: 768px) {
+  @media (min-width: 768px) {
     margin-top: 70px !important;
   }
 }
 
 .mt-sm-7 {
-  @media(min-width: 576px) {
+  @media (min-width: 576px) {
     margin-top: 70px !important;
   }
 }
@@ -540,15 +526,12 @@ ol li {
   width: 95%;
 }
 
-
-
-
 .w-90 {
   width: 90%;
 }
 
 .w-sm-90 {
-  @media(min-width: 576px) {
+  @media (min-width: 576px) {
     width: 90% !important;
   }
 }
@@ -558,7 +541,7 @@ ol li {
 }
 
 .w-sm-85 {
-  @media(min-width: 576px) {
+  @media (min-width: 576px) {
     width: 85% !important;
   }
 }
@@ -576,16 +559,15 @@ ol li {
   height: 50vw;
 }
 
-
 .w-md-75 {
-  @media(min-width: 768px) {
+  @media (min-width: 768px) {
     width: 75%;
   }
 }
 
 .w-md-50 {
-  @media(min-width: 768px) {
-    width: 50%
+  @media (min-width: 768px) {
+    width: 50%;
   }
 }
 
@@ -594,7 +576,7 @@ ol li {
 }
 
 .w-lg-75 {
-  @media(min-width: 992px) {
+  @media (min-width: 992px) {
     width: 75% !important;
   }
 }
@@ -603,27 +585,26 @@ ol li {
   image-rendering: -webkit-optimize-contrast;
 }
 
-
 .w-md-75 {
-  @media(min-width: 992px) {
+  @media (min-width: 992px) {
     width: 75% !important;
   }
 }
 
 .w-sm-100 {
-  @media(min-width: 576px) {
+  @media (min-width: 576px) {
     width: 100% !important;
   }
 }
 
 .w-md-25 {
-  @media(min-width: 992px) {
-    width: 25%
+  @media (min-width: 992px) {
+    width: 25%;
   }
 }
 
 .w-max-sm-100 {
-  @media(max-width: 576px) {
+  @media (max-width: 576px) {
     width: 100%;
   }
 }
@@ -655,9 +636,8 @@ img {
   image-rendering: -webkit-optimize-contrast;
 }
 
-
 .w-sm-75 {
-  @media(min-width: 576px) {
+  @media (min-width: 576px) {
     width: 75% !important;
   }
 }
@@ -672,7 +652,6 @@ img {
 
 .roundedBorder {
   border-radius: 1.3em;
-  ;
 }
 
 .hyphen {
@@ -682,7 +661,7 @@ img {
 }
 
 .op-5 {
-  opacity: .5 !important;
+  opacity: 0.5 !important;
 }
 
 .moveLeft {
@@ -703,27 +682,23 @@ img {
 }
 
 .position-sm-absolute {
-  @media(min-width: 576px) {
+  @media (min-width: 576px) {
     position: absolute !important;
   }
 }
 
 .btnColorChangeOnHover:hover {
-  opacity: .8 !important;
+  opacity: 0.8 !important;
 }
-
-
 
 .moveRight {
   transform: translateX(15px) !important;
 }
 
-
 .spanSubheader {
   font-size: 18px !important;
   font-weight: 249 !important;
 }
-
 
 .accordion-header button {
   &.collapsed .bi-chevron-up {
@@ -747,7 +722,6 @@ img {
   margin-left: 1rem;
 
   @media screen and (max-width: 500px) {
-
     padding: 5px;
 
     & .navbar-toggler-icon {
