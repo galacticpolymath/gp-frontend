@@ -120,6 +120,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                         let src;
 
                         if ((type === 'video') || ((type === 'web-app') && webAppPreviewImg)) {
+                            console.log('mainLink, yo there! ', mainLink);
                             src = webAppPreviewImg ?? getVideoThumb(mainLink)
                         }
 
