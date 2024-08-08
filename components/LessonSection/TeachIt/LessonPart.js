@@ -389,7 +389,7 @@ const LessonPart = ({
                 return (
                   <li key={itemIndex} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
                     <div className="d-flex flex-column flex-md-row">
-                      <section className='col-12 col-md-5 col-lg-4'>
+                      <section className='col-12 col-md-8 col-lg-6 col-xl-4'>
                         <strong><RichText content={itemTitle} /></strong>
                         <div className='fst-italic mb-1' style={{ color: '#353637' }}>
                           <RichText
@@ -433,7 +433,7 @@ const LessonPart = ({
                                 src={filePreviewImg}
                                 alt="lesson_tile"
                                 className='h-auto w-auto'
-                                style={{objectFit:'contain', maxHeight:'100px',maxWidth:'100px',border:'1px solid gray' }}
+                                style={{ objectFit:'contain', maxHeight:'100px',maxWidth:'100px',border:'1px solid gray' }}
                               />
                             </CustomLink>
                           </div>
