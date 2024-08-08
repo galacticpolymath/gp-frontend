@@ -384,11 +384,6 @@ const LessonPart = ({
               {!!_itemList?.length && _itemList.map((item, itemIndex) => {
                 const { itemTitle, itemDescription, links, filePreviewImg, itemCat } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
-                const imgStyle = (itemCat === 'web resource')
-                  ?
-                  { width: '220px !important', height: '124px !important' }
-                  :
-                  { objectFit: 'contain' };
                 const imgLink = (itemCat === 'web resource') ? (_links?.[0]?.url ?? '') : (_links?.[0]?.url ?? '');
 
                 return (
@@ -429,7 +424,7 @@ const LessonPart = ({
                       </section>
                       {filePreviewImg && (
                         <section className="pt-1 ps-sm-1 ps-md-4 d-flex">
-                          <div className='border justify-content-start my-auto'>
+                          <div className='border align-content-start my-auto'>
                             <CustomLink
                               hrefStr={imgLink}
                               targetLinkStr='_blank'
@@ -438,7 +433,7 @@ const LessonPart = ({
                                 src={filePreviewImg}
                                 alt="lesson_tile"
                                 className='h-auto w-auto'
-                                style={imgStyle}
+                                style={{objectFit:'contain', maxHeight:'100px',maxWidth:'100px',border:'1px solid gray' }}
                               />
                             </CustomLink>
                           </div>
