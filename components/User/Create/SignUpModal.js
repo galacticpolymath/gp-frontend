@@ -107,7 +107,7 @@ const SignUpModal = () => {
                 </div>
                 <form className='mt-3 row d-flex justify-content-center align-items-center flex-column'>
                     <div className='row d-flex justify-content-center align-items-center'>
-                        <div className="d-flex col-sm-6 flex-column ">
+                        <div className="d-flex col-sm-6 flex-column">
                             <label
                                 className="d-block w-75 pb-1 fw-bold"
                                 htmlFor="first-name"
@@ -135,8 +135,9 @@ const SignUpModal = () => {
                             labelHtmlFor="last-name-id"
                             inputId="lastName"
                             inputName="lastName"
+                            labelClassName={`d-block w-100 pb-1 fw-bold ${errors.has('lastName') ? 'text-danger' : ''}`}
                             inputPlaceholder="Last Name"
-                            labelTxt="Last Name"
+                            label="Last Name"
                         />
                     </div>
                     <div className='row'>

@@ -9,8 +9,10 @@ import { ModalContext, defautlNotifyModalVal } from "../../providers/ModalProvid
 import { useRouter } from "next/router";
 
 const Notify = () => {
-    const { _notifyModal } = useContext(ModalContext);
+    const { _notifyModal, _customModalFooter } = useContext(ModalContext);
     const router = useRouter();
+    /** @type {[JSX.Element | null]} */
+    const [customModalFooter] = _customModalFooter;
     const [notifyModal, setNotifyModal] = _notifyModal;
     const { bodyTxt, headerTxt, handleOnHide } = notifyModal;
 
@@ -60,11 +62,13 @@ const Notify = () => {
                     {bodyTxt}
                 </Modal.Body>
             )}
-            <Modal.Footer>
-                <Button onClick={closeModal} className="px-3 py-1">
-                    CLOSE
-                </Button>
-            </Modal.Footer>
+            {customModalFooter ?? (
+                <Modal.Footer>
+                    <Button onClick={closeModal} className="px-3 py-1">
+                        CLOSE
+                    </Button>
+                </Modal.Footer>
+            )}
         </Modal>
     );
 };

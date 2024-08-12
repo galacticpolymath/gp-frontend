@@ -23,24 +23,22 @@ export const InputSection = ({
 
     return (
         <div className={containerClassName}>
-            <section className={inputAndLabelSectionClassName}>
-                <label
-                    className={labelClassName}
-                    htmlFor={inputId}
-                >
-                    {label}
-                </label>
-                <input
-                    id={inputId}
-                    placeholder={inputPlaceholder}
-                    style={inputStyle} 
-                    className={inputClassName}
-                    name={inputName}
-                    onChange={event => {
-                        handleOnInputChange(event);
-                    }}
-                />
-            </section>
+            <label
+                className={labelClassName}
+                htmlFor={inputId}
+            >
+                {label}
+            </label>
+            <input
+                id={inputId}
+                placeholder={inputPlaceholder}
+                style={{ borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' }}
+                className="border-0 p-1 w-100 py-2"
+                name={inputName}
+                onChange={event => {
+                    handleOnInputChange(event);
+                }}
+            />
             <section style={{ height: '29px' }}>
                 {errors.has(errorsFieldName) && <ErrorTxt>{errors.get(errorsFieldName)}</ErrorTxt>}
             </section>
