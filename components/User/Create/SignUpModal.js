@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
@@ -8,10 +9,11 @@ import { useUserEntry } from '../../../customHooks/useUserEntry';
 import Button from '../../General/Button';
 import CreateAccountWithGoogle from '../GoogleSignIn';
 import { FcGoogle } from 'react-icons/fc';
+import { CreateAccountInputSection, ErrorTxt } from '../formElements';
 
-const CreateAccountModal = () => {
+const SignUpModal = () => {
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
-    const { _createAccountForm, sendFormToServer } = useUserEntry();
+    const { _createAccountForm, sendFormToServer, validateForm } = useUserEntry();
     const [errors, setErrors] = useState(new Map());
     const [createAccountForm, setCreateAccountForm] = _createAccountForm;
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
@@ -28,6 +30,14 @@ const CreateAccountModal = () => {
         }
 
         const url = window.location.href.includes('?') ? window.location.href.split('?')[0] : window.location.href;
+        const errors = validateForm("createAccount");
+
+        if (errors.size > 0) {
+            alert("An error has occurred. Please check your inputs.");
+            console.log('errors: ', errors);
+            setErrors(errors);
+            return;
+        }
 
         sendFormToServer(
             'createAccount',
@@ -95,7 +105,7 @@ const CreateAccountModal = () => {
                         <div style={{ height: '3px', width: '95%' }} className="bg-black rounded ms-3 ms-sm-2" />
                     </div>
                 </div>
-                <form className='row d-flex justify-content-center align-items-center flex-column'>
+                <form className='mt-3 row d-flex justify-content-center align-items-center flex-column'>
                     <div className='row d-flex justify-content-center align-items-center'>
                         <div className="d-flex col-sm-6 flex-column ">
                             <label
@@ -119,27 +129,15 @@ const CreateAccountModal = () => {
                                 {errors.has('firstName') && <span>{errors.get('firstName')}</span>}
                             </section>
                         </div>
-                        <div className="d-flex flex-column col-sm-6 position-relative">
-                            <label
-                                className="d-block w-100 pb-1 fw-bold"
-                                htmlFor="last-name"
-                            >
-                                Last name:
-                            </label>
-                            <input
-                                id="last-name"
-                                placeholder="Last Name"
-                                style={{ borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' }}
-                                className="border-0 p-1 w-100 py-2"
-                                name="lastName"
-                                onChange={event => {
-                                    handleOnInputChange(event);
-                                }}
-                            />
-                            <section style={{ height: '29px' }}>
-                                {errors.has('lastName') && <span>{errors.get('lastName')}</span>}
-                            </section>
-                        </div>
+                        <CreateAccountInputSection
+                            errors={errors}
+                            errorsFieldName="lastName"
+                            labelHtmlFor="last-name-id"
+                            inputId="lastName"
+                            inputName="lastName"
+                            inputPlaceholder="Last Name"
+                            labelTxt="Last Name"
+                        />
                     </div>
                     <div className='row'>
                         <div className="d-flex flex-column position-relative col-sm-6">
@@ -152,15 +150,20 @@ const CreateAccountModal = () => {
                             <input
                                 id="email-input"
                                 placeholder="Email"
-                                style={{ borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' }}
-                                className="border-0 p-1 w-100 py-2"
+                                style={{
+                                    borderRadius: '5px',
+                                    fontSize: '18px',
+                                    border: errors.has('email') ? 'solid 1px red' : '',
+                                    background: '#D6D6D6',
+                                }}
+                                className={`${errors.has('email') ? '' : 'border-0'} p-1 w-100 py-2`}
                                 name="email"
                                 onChange={event => {
                                     handleOnInputChange(event);
                                 }}
                             />
                             <section style={{ height: '29px' }}>
-                                {errors.has('email') && <span>{errors.get('email')}</span>}
+                                {errors.has('email') && <ErrorTxt>{errors.get('email')}</ErrorTxt>}
                             </section>
                         </div>
                         <div className='col-6 d-none d-sm-block' />
@@ -176,15 +179,24 @@ const CreateAccountModal = () => {
                             <input
                                 id="email-input"
                                 placeholder="Enter Your Password"
-                                style={{ borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' }}
-                                className="border-0 p-1 w-100 py-2"
+                                style={{
+                                    borderRadius: '5px',
+                                    fontSize: '18px',
+                                    background: '#D6D6D6',
+                                    border: errors.has('password') ? 'solid 1px red' : '',
+                                }}
+                                className={`p-1 w-100 py-2 ${errors.has('password') ? 'text-danger' : 'border-0'}`}
                                 name="password"
                                 onChange={event => {
                                     handleOnInputChange(event);
                                 }}
                             />
                             <section style={{ height: '29px' }}>
-                                {errors.has('password') && <span>{errors.get('password')}</span>}
+                                {errors.has('password') && (
+                                    <ErrorTxt>
+                                        {errors.get('password')}
+                                    </ErrorTxt>
+                                )}
                             </section>
                         </div>
                         <div className="d-flex flex-column position-relative col-sm-6">
@@ -197,15 +209,24 @@ const CreateAccountModal = () => {
                             <input
                                 id="email-input"
                                 placeholder="Confirm Your Password"
-                                style={{ borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' }}
-                                className="border-0 p-1 w-100 py-2"
+                                style={{
+                                    borderRadius: '5px',
+                                    fontSize: '18px',
+                                    background: '#D6D6D6',
+                                    border: errors.has('password') ? 'solid 1px red' : '',
+                                }}
+                                className={`${(errors.size === 0) ? 'border-0' : ''} p-1 w-100 py-2`}
                                 name="confirmPassword"
                                 onChange={event => {
                                     handleOnInputChange(event);
                                 }}
                             />
                             <section style={{ height: '29px' }}>
-                                {errors.has('confirmPassword') && <span>{errors.get('confirmPassword')}</span>}
+                                {errors.has('password') && (
+                                    <ErrorTxt>
+                                        {errors.get('password')}
+                                    </ErrorTxt>
+                                )}
                             </section>
                         </div>
                     </div>
@@ -223,4 +244,4 @@ const CreateAccountModal = () => {
     );
 };
 
-export default CreateAccountModal;
+export default SignUpModal;

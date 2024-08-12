@@ -262,7 +262,7 @@ ol li {
   border-top: none;
 }
 
-.login-modal-input{
+.login-modal-input {
   width: 65%;
   @media (min-width: 578px) {
     width: 75%;
@@ -280,7 +280,7 @@ ol li {
   }
 }
 
-.google-sign-in-btn{
+.google-sign-in-btn {
   min-width: 195px;
 
   @media (min-width: 577px) {
@@ -292,11 +292,18 @@ ol li {
   width: 55vw;
   border-radius: 6.75px;
 
-  @media(max-width: 768px){
-    // max-width: 300px;
+  @media (max-width: 768px) {
+    width: 95vw;
+  }
+  
+  @media (min-width: 767px) {
+    min-width: 500px;
+    max-height: 770px;
+  }
+
+  @media(max-width: 576px){
     width: 100vw;
     border-radius: 0%;
-    // height: 100vh;
   }
 }
 

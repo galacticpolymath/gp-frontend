@@ -1,9 +1,15 @@
 /* eslint-disable indent */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent */
-const ORTxtDivider = ({ color = 'white', orWidth = '4%', firstLineWidth = "48%", secondLineWidth = "48%" }) => {
+const ORTxtDivider = ({
+    color = 'white',
+    orWidth = '4%',
+    firstLineWidth = "48%",
+    secondLineWidth = "48%",
+    className = "d-flex mt-3 mb-2",
+}) => {
     return (
-        <div className="d-flex mt-3 mb-2">
+        <div className={className}>
             <div style={{ width: firstLineWidth }} className='d-flex justify-content-center align-items-center'>
                 <div style={{ height: "3px", width: '80%' }} className={`bg-${color} rounde`} />
             </div>

@@ -18,6 +18,16 @@ import { useState } from "react";
 * @property {string} password
 */
 
+/**
+ * @param {string} userInput 
+ * @returns {boolean}
+ */
+const getDoesEmailExist = (userInput) => {
+    console.log(userInput);
+
+    return true;
+};
+
 export const useUserEntry = () => {
     const [userErrorType, setUserErrorType] = useState('');
     const [loginForm, setLoginForm] = useState({ email: '', password: '' });
@@ -28,6 +38,47 @@ export const useUserEntry = () => {
         password: '',
         confirmPassword: '',
     });
+
+    /**
+     * @returns {Map<string, string>}
+     */
+    const validateLoginForm = () => {
+
+    };
+
+    /**
+     * @returns {Map<string, string>}
+     */
+    const validateCreateAccountForm = () => {
+        const { password, confirmPassword, email } = createAccountForm;
+        const errors = new Map();
+
+        if (password !== confirmPassword) {
+            errors.set("password", "The passwords don't match.");
+            errors.set("confirmPassword", "The passwords don't match.");
+        } else if (!password && !confirmPassword) {
+            errors.set("password", "This field is required.");
+            errors.set("confirmPassword", "This field is required.");
+        }
+
+        if (getDoesEmailExist(email)) {
+            errors.set('email', 'This email has been taken.');
+        }
+
+        return errors;
+    };
+
+    /**
+     * @param {"login" | "createAccount"} formToValidate
+     * @returns {Map<string, string>}
+     */
+    const validateForm = (formToValidate = 'createAccount') => {
+        if (formToValidate === "createAccount") {
+            return validateCreateAccountForm();
+        }
+
+        return validateLoginForm();
+    };
 
     /**
     * Get all of the files for the target user.
@@ -47,7 +98,7 @@ export const useUserEntry = () => {
                 throw new Error('Received empty inputs.');
             }
 
-            if(!form.createAccount && !form.login){
+            if (!form.createAccount && !form.login) {
                 throw new Error('No form was passed for the "form" argument.');
             }
 
@@ -68,9 +119,18 @@ export const useUserEntry = () => {
         }
     };
 
+    const handleOnInputChange = event => {
+        setCreateAccountForm(form => ({
+            ...form,
+            [event.target.name]: event.target.value,
+        }));
+    };
+
     return {
         sendFormToServer,
         userErrorType,
+        validateForm,
+        handleOnInputChange,
         _loginForm: [loginForm, setLoginForm],
         _createAccountForm: [createAccountForm, setCreateAccountForm],
     };
