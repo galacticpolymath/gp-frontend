@@ -13,6 +13,7 @@ import CustomLink from "../../CustomLink";
 import GoogleSignIn from "../GoogleSignIn";
 import ORTxtDivider from "../ORTxtDivider";
 import { useUserEntry } from "../../../customHooks/useUserEntry";
+import { FcGoogle } from "react-icons/fc";
 
 const LoginModal = () => {
     const { _isLoginModalDisplayed, _isCreateAccountModalDisplayed } = useContext(ModalContext);
@@ -78,17 +79,26 @@ const LoginModal = () => {
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='login-ui-modal bg-white shadow-lg rounded pt-2 box-shadow-login-ui-modal'
         >
-            <div className="py-3 py-sm-0">
+            <div className="py-3 pt-sm-3">
                 <CloseButton className='position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey' onClick={handleOnHide} />
                 <div className="d-flex justify-content-center align-items-center">
                     <img
-                        src='imgs/gp_logo_gradient_transBG.png'
+                        src={typeof window === 'undefined' ? '' : `${window.location.origin}/imgs/gp_logo_gradient_transBG.png`}
                         alt="gp_logo"
                         width={75}
                         height={75}
                     />
                 </div>
                 <h5 className="text-black text-center mt-2">GP Login</h5>
+                <section className="d-flex justify-content-center align-items-center pt-3">
+                    <GoogleSignIn callbackUrl={(typeof window !== 'undefined') ? window.location.href : ''}>
+                        <FcGoogle className="mx-2" />
+                        <span style={{ fontSize: '16px' }}>
+                            Log in with Google.
+                        </span>
+                    </GoogleSignIn>
+                </section>
+                <ORTxtDivider color="black" className="d-flex my-3 mb-2" />
                 <section>
                     <form>
                         <div className="mt-3 d-flex justify-content-center align-items-center position-relative">
@@ -150,7 +160,7 @@ const LoginModal = () => {
                                 </span>
                             </Button>
                         </div>
-                        <div className="d-flex justify-content-center align-items-center">
+                        <div className="d-flex justify-content-center align-items-center py-3">
                             <CustomLink
                                 color="#3C719F"
                                 className="underline-on-hover no-link-decoration"
@@ -158,11 +168,7 @@ const LoginModal = () => {
                                 Forgot your email or password?
                             </CustomLink>
                         </div>
-                        <ORTxtDivider color="black" />
                     </form>
-                </section>
-                <section className="d-flex justify-content-center align-items-center pt-3 pb-4">
-                    <GoogleSignIn callbackUrl={(typeof window !== 'undefined') ? window.location.href : ''} />
                 </section>
                 <div className="d-flex justify-content-center align-items-center border-top py-3 flex-column flex-sm-row">
                     <span className='text-black'>

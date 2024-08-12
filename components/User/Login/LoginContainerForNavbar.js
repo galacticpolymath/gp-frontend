@@ -77,15 +77,15 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
             </Button>
             <div
                 style={{
-                    backgroundColor: '#333438',
                     display: modalAnimation === 'fade-out-quick' ? 'none' : 'block',
                     zIndex: modalAnimation === 'fade-out-quick' ? -1000 : 100000,
                     pointerEvents: modalAnimation === 'fade-out-quick' ? 'none' : 'auto',
+                    border: '.5px solid grey',
                 }}
-                className={`account-sm-modal py-2 rounded ${modalAnimation}`}
+                className={`bg-white account-sm-modal py-2 rounded ${modalAnimation}`}
             >
                 <section
-                    style={{ borderBottom: '1px solid grey' }}
+                    style={{ borderBottom: '.5px solid grey' }}
                     className="d-flex flex-column justify-content-center align-items-center pb-2"
                 >
                     <img
@@ -96,7 +96,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
                         style={{ objectFit: 'contain' }}
                         className='rounded-circle'
                     />
-                    <h5 className="text-white my-3">{name?.first} {name?.last}</h5>
+                    <h5 className="text-black my-3">{name?.first} {name?.last}</h5>
                 </section>
                 <section className='d-flex flex-column'>
                     <Button
@@ -104,7 +104,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
                             setModalAnimation('fade-out-quick');
                             router.push('/account');
                         }}
-                        classNameStr="no-btn-styles text-white txt-underline-on-hover py-2"
+                        classNameStr="no-btn-styles text-black txt-underline-on-hover py-2"
 
                     >
                         View Account
