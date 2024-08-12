@@ -10,6 +10,7 @@ import Link from 'next/link';
 import CopyableTxt from '../../CopyableTxt';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import CustomLink from '../../CustomLink';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 
@@ -383,12 +384,12 @@ const LessonPart = ({
               {!!_itemList?.length && _itemList.map((item, itemIndex) => {
                 const { itemTitle, itemDescription, links, filePreviewImg, itemCat } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
-                const imgStyle = (itemCat === 'web resource') ? { width: '220px !important', height: '124px !important' } : { objectFit: 'contain' };
+                const imgLink = (itemCat === 'web resource') ? (_links?.[0]?.url ?? '') : (_links?.[0]?.url ?? '');
 
                 return (
                   <li key={itemIndex} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
                     <div className="d-flex flex-column flex-md-row">
-                      <section className='col-12 col-md-6'>
+                      <section className='col-12 col-md-8 col-lg-6 col-xl-4'>
                         <strong><RichText content={itemTitle} /></strong>
                         <div className='fst-italic mb-1' style={{ color: '#353637' }}>
                           <RichText
@@ -423,13 +424,18 @@ const LessonPart = ({
                       </section>
                       {filePreviewImg && (
                         <section className="pt-1 ps-sm-1 ps-md-4 d-flex">
-                          <div className='border justify-content-start my-auto'>
-                            <img
-                              src={filePreviewImg}
-                              alt="lesson_tile"
-                              className='h-auto w-auto'
-                              style={imgStyle}
-                            />
+                          <div className='border align-content-start my-auto'>
+                            <CustomLink
+                              hrefStr={imgLink}
+                              targetLinkStr='_blank'
+                            >
+                              <img
+                                src={filePreviewImg}
+                                alt="lesson_tile"
+                                className='h-auto w-auto'
+                                style={{ objectFit:'contain', maxHeight:'100px',maxWidth:'100px',border:'1px solid gray' }}
+                              />
+                            </CustomLink>
                           </div>
                         </section>
                       )}
