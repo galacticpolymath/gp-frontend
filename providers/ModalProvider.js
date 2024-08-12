@@ -30,6 +30,7 @@ export const ModalProvider = ({ children }) => {
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = useState(false);
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = useState(false);
     const [isAccountModalMobileOn, setIsAccountModalMobileOn] = useState(false);
+    const [isPasswordResetModalOn, setIsPasswordResetModalOn] = useState(false);
     const _notifyModal = [notifyModal, setNotifyModal];
     const _selectedJob = [selectedJob, setSelectedJob]
     const _isJobModalOn = [isJobModalOn, setIsJobModalOn]
@@ -38,11 +39,13 @@ export const ModalProvider = ({ children }) => {
     const _isCreateAccountModalDisplayed = [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed]
     const _isAboutMeFormModalDisplayed = [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed];
     const _isAccountModalMobileOn = [isAccountModalMobileOn, setIsAccountModalMobileOn];
+    const _isPasswordResetModalOn = [isPasswordResetModalOn, setIsPasswordResetModalOn];
 
     return (
         <ModalContext.Provider
             value={{
                 _isAccountModalMobileOn,
+                _isPasswordResetModalOn,
                 _selectedJob,
                 _isJobModalOn,
                 _isDownloadModalInfoOn,

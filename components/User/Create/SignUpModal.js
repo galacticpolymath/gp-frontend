@@ -9,7 +9,7 @@ import { useUserEntry } from '../../../customHooks/useUserEntry';
 import Button from '../../General/Button';
 import CreateAccountWithGoogle from '../GoogleSignIn';
 import { FcGoogle } from 'react-icons/fc';
-import { CreateAccountInputSection, ErrorTxt } from '../formElements';
+import { InputSection, ErrorTxt } from '../formElements';
 
 const SignUpModal = () => {
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
@@ -72,7 +72,7 @@ const SignUpModal = () => {
                 <CloseButton onClick={handleOnHide} className='position-absolute top-0 end-0 me-1 mt-1' />
                 <div className="d-flex justify-content-center align-items-center">
                     <img
-                        src='imgs/gp_logo_gradient_transBG.png'
+                        src={typeof window === 'undefined' ? '' : `${window.location.origin}/imgs/gp_logo_gradient_transBG.png`}
                         alt="gp_logo"
                         width={75}
                         height={75}
@@ -129,7 +129,7 @@ const SignUpModal = () => {
                                 {errors.has('firstName') && <span>{errors.get('firstName')}</span>}
                             </section>
                         </div>
-                        <CreateAccountInputSection
+                        <InputSection
                             errors={errors}
                             errorsFieldName="lastName"
                             labelHtmlFor="last-name-id"

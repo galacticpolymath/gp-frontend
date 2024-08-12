@@ -9,16 +9,16 @@ import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
-import CustomLink from "../../CustomLink";
 import GoogleSignIn from "../GoogleSignIn";
 import ORTxtDivider from "../ORTxtDivider";
 import { useUserEntry } from "../../../customHooks/useUserEntry";
 import { FcGoogle } from "react-icons/fc";
 
 const LoginModal = () => {
-    const { _isLoginModalDisplayed, _isCreateAccountModalDisplayed } = useContext(ModalContext);
+    const { _isLoginModalDisplayed, _isCreateAccountModalDisplayed, _isPasswordResetModalOn } = useContext(ModalContext);
     const [isLoginModalDisplayed, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
+    const [, setIsPasswordResetModalOn] = _isPasswordResetModalOn;
     const { _loginForm, sendFormToServer } = useUserEntry();
     const [errors, setErrors] = useState(new Map());
     const [loginForm, setLoginForm] = _loginForm;
@@ -69,6 +69,13 @@ const LoginModal = () => {
         setIsLoginModalDisplayed(false);
         setTimeout(() => {
             setIsCreateAccountModalDisplayed(true);
+        }, 300);
+    };
+
+    const handleForgotYourPasswordBtnClick = () => {
+        setIsLoginModalDisplayed(false);
+        setTimeout(() => {
+            setIsPasswordResetModalOn(true);
         }, 300);
     };
 
@@ -161,12 +168,23 @@ const LoginModal = () => {
                             </Button>
                         </div>
                         <div className="d-flex justify-content-center align-items-center py-3">
-                            <CustomLink
+                            <Button
                                 color="#3C719F"
-                                className="underline-on-hover no-link-decoration"
+                                defaultStyleObj={{
+                                    background: "none",
+                                    color: "inherit",
+                                    border: "none",
+                                    font: "inherit",
+                                    cursor: "pointer",
+                                    outline: "inherit",
+                                }}
+                                className="d-block no-link-decoration"
+                                handleOnClick={handleForgotYourPasswordBtnClick}
                             >
-                                Forgot your email or password?
-                            </CustomLink>
+                                <span className='text-primary underline-on-hover'>
+                                    Forgot your password?
+                                </span>
+                            </Button>
                         </div>
                     </form>
                 </section>
