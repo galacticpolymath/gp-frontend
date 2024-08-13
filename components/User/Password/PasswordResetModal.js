@@ -51,6 +51,16 @@ const PasswordResetModal = () => {
             setCustomModalFooter(null);
         }, 300);
     };
+    
+    const handleStartOverBtnClick = () => {
+        setNotifyModal(state => ({ ...state, isDisplayed: false }));
+
+        setTimeout(() => {
+            setIsPasswordResetModalOn(true);
+            setNotifyModal(defautlNotifyModalVal);
+            setCustomModalFooter(null);
+        }, 300);
+    };
 
     const handleContinueBtnClick = async () => {
         try {
@@ -76,7 +86,7 @@ const PasswordResetModal = () => {
                         </span>
                     </Button>
                     <Button
-                        handleOnClick={closeNotifyModal}
+                        handleOnClick={handleStartOverBtnClick}
                         defaultStyleObj={{
                             width: '120px',
                         }}
