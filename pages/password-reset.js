@@ -4,6 +4,8 @@
 import Layout from '../components/Layout';
 import PasswordResetForm from '../components/User/Password/PasswordResetForm';
 
+// an error is occuring when the user goes to the password reset page
+
 const PasswordResetPg = () => {
     return (
         <Layout>

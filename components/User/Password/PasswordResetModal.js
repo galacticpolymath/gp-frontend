@@ -3,13 +3,16 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CloseButton, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { MdOutlineMail } from 'react-icons/md';
 import Button from '../../General/Button';
 import { InputSection } from '../formElements';
 import { defautlNotifyModalVal, ModalContext } from '../../../providers/ModalProvider';
 import axios from 'axios';
+import { getTargetKeyValFromUrl, resetUrl } from '../../../globalFns';
+import { useRouter } from 'next/router';
+import { CustomError } from '../../../backend/utils/errors';
 
 const PasswordResetModal = () => {
     const { _isPasswordResetModalOn, _isLoginModalDisplayed, _customModalFooter, _notifyModal } = useContext(ModalContext);
@@ -19,12 +22,17 @@ const PasswordResetModal = () => {
     const [, setNotifyModal] = _notifyModal;
     const [email, setEmail] = useState('');
     const [errors] = useState(new Map());
+    const router = useRouter();
 
     const handleOnHide = () => {
         setIsPasswordResetModalOn(false);
     };
 
     const handleGoBackToLoginBtnClick = () => {
+        if (getTargetKeyValFromUrl(router, 'is_password_recover_modal_on')) {
+            resetUrl(router);
+        }
+
         setIsPasswordResetModalOn(false);
         setTimeout(() => {
             setIsLoginModalDisplayed(true);
@@ -32,6 +40,10 @@ const PasswordResetModal = () => {
     };
 
     const closeNotifyModal = () => {
+        if (getTargetKeyValFromUrl(router, 'is_password_recover_modal_on')) {
+            resetUrl(router);
+        }
+
         setNotifyModal(state => ({ ...state, isDisplayed: false }));
 
         setTimeout(() => {
@@ -46,7 +58,7 @@ const PasswordResetModal = () => {
             const response = await axios.post(url, { email });
 
             if (response.status !== 200) {
-                throw new Error(`Received non 200 response from the server. From server: ${response.data}`);
+                throw new CustomError(`Server error: ${response.data}`);
             }
 
             setCustomModalFooter(
@@ -88,10 +100,33 @@ const PasswordResetModal = () => {
                     handleOnHide: closeNotifyModal,
                 });
             }, 300);
+
+            if (getTargetKeyValFromUrl(router, 'is_password_recover_modal_on')) {
+                resetUrl(router);
+            }
         } catch (error) {
+            const headerTxt = error?.message ?? 'Failed to send password reset link to your email. Please try again.';
+
+            setNotifyModal({
+                isDisplayed: true,
+                headerTxt: headerTxt,
+                handleOnHide: closeNotifyModal,
+            });
+
             console.error('An error has occurred in sending the email to the target user: ', error);
+        } finally {
+            setIsPasswordResetModalOn(false);
         }
     };
+
+    useEffect(() => {
+        console.log('router: ', router);
+        const isPasswordRecoverModalOnVarInUrl = router ? !!getTargetKeyValFromUrl(router, 'is_password_recover_modal_on') : false;
+
+        if (isPasswordRecoverModalOnVarInUrl) {
+            setIsPasswordResetModalOn(true);
+        }
+    }, [router.asPath]);
 
     return (
         <Modal

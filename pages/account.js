@@ -16,7 +16,7 @@ import { ModalContext } from '../providers/ModalProvider';
 import { UserContext, aboutUserFormDefault } from '../providers/UserProvider';
 import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
-import { getChunks, getIsParsable, resetUrl } from '../globalFns';
+import { getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
 
 /**
  *  @param {import('next/router').NextRouter} router 
@@ -31,25 +31,6 @@ export const getUrlVal = (router, urlField) => {
     }
 
     return null;
-};
-
-/**
- *  @param {import('next/router').NextRouter} router 
- *  @param {string} urlField 
- * */
-export const getAllUrlVals = (router, willCreateSubTuples) => {
-    const pathsStr = router.asPath.split('?')[1];
-    let urlKeysAndVals = pathsStr?.split("&");
-
-    if (urlKeysAndVals?.length && willCreateSubTuples) {
-        const urlKeysAndValsTuples = urlKeysAndVals.map(keyAndValStr => {
-            return keyAndValStr.split('=');
-        });
-
-        return urlKeysAndValsTuples;
-    }
-
-    return urlKeysAndVals;
 };
 
 const AccountPg = () => {

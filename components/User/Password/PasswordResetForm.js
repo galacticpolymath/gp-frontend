@@ -11,6 +11,7 @@ import axios from 'axios';
 import { CustomError } from '../../../backend/utils/errors';
 import { defautlNotifyModalVal, ModalContext } from '../../../providers/ModalProvider';
 import { CustomNotifyModalFooter } from '../../Modals/Notify';
+import { useRouter } from 'next/router';
 
 /**
  * @typedef {'input-focus-blue' | 'border-grey-dark'} TFocusCss
@@ -22,6 +23,7 @@ const PasswordResetForm = () => {
     const [, setNotifyModal] = _notifyModal;
     const [, setCustomModalFooter] = _customModalFooter;
     const [isNewPasswordShown, setIsNewPasswordShown] = useState(false);
+    const router = useRouter();
     const [isConfirmPasswordShown, setIsConfirmPasswordShown] = useState(false);
     /**
      * @type {[TFocusCss, import('react').Dispatch<import('react').SetStateAction<TFocusCss>>]}
@@ -46,13 +48,20 @@ const PasswordResetForm = () => {
     };
 
     const closeNotifyModal = () => {
-        setNotifyModal(defautlNotifyModalVal);
-        setCustomModalFooter(null);
+        setNotifyModal(state => ({
+            ...state,
+            isDisplayed: false,
+        }));
+
+        setTimeout(() => {
+            setNotifyModal(defautlNotifyModalVal);
+            setCustomModalFooter(null);
+        }, 200);
     };
 
     const handleRestartPasswordRecoverBtnClick = () => {
-        // go to the home page 
-        // open the password recover modal
+        closeNotifyModal();
+        router.push('/?is_password_recover_modal_on=true');
     };
 
     const handleOnSetPasswordBtnClick = async () => {
@@ -76,6 +85,7 @@ const PasswordResetForm = () => {
         } catch (error) {
             setCustomModalFooter(
                 <CustomNotifyModalFooter
+                    footerClassName='d-flex justify-content-end'
                     closeNotifyModal={closeNotifyModal}
                     customBtnTxt="Restart Recover"
                     handleCustomBtnClick={handleRestartPasswordRecoverBtnClick}

@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable quotes */
 import { useContext, useState } from "react";
-import { CloseButton, Modal } from "react-bootstrap";
+import { CloseButton, Modal, ModalHeader } from "react-bootstrap";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { ModalContext } from "../../../providers/ModalProvider";
@@ -88,15 +88,17 @@ const LoginModal = () => {
         >
             <div className="py-3 pt-sm-3">
                 <CloseButton className='position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey' onClick={handleOnHide} />
-                <div className="d-flex justify-content-center align-items-center">
-                    <img
-                        src={typeof window === 'undefined' ? '' : `${window.location.origin}/imgs/gp_logo_gradient_transBG.png`}
-                        alt="gp_logo"
-                        width={75}
-                        height={75}
-                    />
-                </div>
-                <h5 className="text-black text-center mt-2">GP Login</h5>
+                <ModalHeader className="position-relative d-flex flex-column justify-content-center">
+                    <div className="d-flex justify-content-center align-items-center">
+                        <img
+                            src={typeof window === 'undefined' ? '' : `${window.location.origin}/imgs/gp_logo_gradient_transBG.png`}
+                            alt="gp_logo"
+                            width={75}
+                            height={75}
+                        />
+                    </div>
+                    <h5 className="text-black text-center mt-2">GP Login</h5>
+                </ModalHeader>
                 <section className="d-flex justify-content-center align-items-center pt-3">
                     <GoogleSignIn callbackUrl={(typeof window !== 'undefined') ? window.location.href : ''}>
                         <FcGoogle className="mx-2" />

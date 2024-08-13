@@ -8,27 +8,23 @@ import { Button, Modal } from "react-bootstrap";
 import { ModalContext, defautlNotifyModalVal } from "../../providers/ModalProvider";
 import { useRouter } from "next/router";
 
-export const CustomNotifyModalFooter = ({ closeNotifyModal, customBtnTxt, handleCustomBtnClick }) => {
+export const CustomNotifyModalFooter = ({ footerClassName = 'd-flex justify-content-center', closeNotifyModal, customBtnTxt, handleCustomBtnClick }) => {
     return (
-        <Modal.Footer className='d-flex justify-content-center'>
+        <Modal.Footer className={footerClassName}>
             <Button
-                handleOnClick={closeNotifyModal}
-                defaultStyleObj={{
+                onClick={closeNotifyModal}
+                style={{
                     width: '120px',
+                    backgroundColor: '#898F9C',
                 }}
-                classNameStr="px-3 py-1 no-btn-styles rounded"
-                backgroundColor='grey'
+                className=""
             >
                 <span className='text-white'>
                     Close
                 </span>
             </Button>
             <Button
-                handleOnClick={handleCustomBtnClick}
-                defaultStyleObj={{
-                    width: '120px',
-                }}
-                classNameStr="px-3 py-1 no-btn-styles rounded"
+                onClick={handleCustomBtnClick}
                 backgroundColor='#007BFF'
             >
                 <span className='text-white'>
