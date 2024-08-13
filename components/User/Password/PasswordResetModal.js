@@ -21,14 +21,18 @@ const PasswordResetModal = () => {
     const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
     const [, setNotifyModal] = _notifyModal;
     const [email, setEmail] = useState('');
+    const [isLoadingSpinnerOn, setIsLoadingSpinner] = useState(false);
     const [errors] = useState(new Map());
     const router = useRouter();
 
     const handleOnHide = () => {
+        setIsLoadingSpinner(false);
         setIsPasswordResetModalOn(false);
     };
 
     const handleGoBackToLoginBtnClick = () => {
+        setIsLoadingSpinner(false);
+
         if (getTargetKeyValFromUrl(router, 'is_password_recover_modal_on')) {
             resetUrl(router);
         }
@@ -51,7 +55,7 @@ const PasswordResetModal = () => {
             setCustomModalFooter(null);
         }, 300);
     };
-    
+
     const handleStartOverBtnClick = () => {
         setNotifyModal(state => ({ ...state, isDisplayed: false }));
 
@@ -64,8 +68,9 @@ const PasswordResetModal = () => {
 
     const handleContinueBtnClick = async () => {
         try {
+            setIsLoadingSpinner(true);
             const url = `${window.location.origin}/api/send-password-recover-email`;
-            const response = await axios.post(url, { email });
+            const response = await axios.post(url, { email }, { timeout: 4_000 });
 
             if (response.status !== 200) {
                 throw new CustomError(`Server error: ${response.data}`);
@@ -115,17 +120,20 @@ const PasswordResetModal = () => {
                 resetUrl(router);
             }
         } catch (error) {
-            const headerTxt = error?.message ?? 'Failed to send password reset link to your email. Please try again.';
+
+            const bodyTxt = error?.message ?? 'Please try again. If this issue persist, please contact support.';
 
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: headerTxt,
+                headerTxt: 'Failed to send email link.',
+                bodyTxt: bodyTxt,
                 handleOnHide: closeNotifyModal,
             });
 
             console.error('An error has occurred in sending the email to the target user: ', error);
         } finally {
             setIsPasswordResetModalOn(false);
+            setIsLoadingSpinner(false);
         }
     };
 
@@ -195,7 +203,19 @@ const PasswordResetModal = () => {
                         classNameStr='no-btn-styles w-100 bg-primary rounded py-2'
                         handleOnClick={handleContinueBtnClick}
                     >
-                        <span className="text-white">Continue</span>
+                        {isLoadingSpinnerOn
+                            ?
+                            (
+                                <div
+                                    className="spinner-border spinner-border-sm text-light"
+                                    role="status"
+                                >
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                            )
+                            :
+                            <span className="text-white">Continue</span>
+                        }
                     </Button>
                 </form>
             </ModalBody>

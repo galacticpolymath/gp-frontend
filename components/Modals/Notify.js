@@ -85,7 +85,7 @@ const Notify = () => {
                 </Modal.Title>
             </Modal.Header>
             {bodyTxt && (
-                <Modal.Body className="text-center">
+                <Modal.Body className="text-center notify-modal-body">
                     {bodyTxt}
                 </Modal.Body>
             )}

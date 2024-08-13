@@ -3,7 +3,6 @@
 import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 import { AuthMiddlwareError } from './backend/utils/errors';
-import url from 'url';
 
 const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
 
@@ -20,6 +19,8 @@ const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin,
     const token = authorizationStr.split(' ')[1].trim();
     const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
 
+    // check if the token has expired
+
     if (!payload) {
       const errMsg = 'You are not authorized to access this service.';
       const response = new NextResponse(errMsg, { status: 403 });
@@ -34,7 +35,7 @@ const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin,
       throw new AuthMiddlwareError(false, response, errMsg);
     }
 
-    if (willCheckForValidEmail && payload.email !== emailToValidate) {
+    if (willCheckForValidEmail && (payload.email !== emailToValidate)) {
       const errMsg = 'You are not authorized to access this service.';
       const response = new NextResponse(errMsg, { status: 403 });
 
@@ -43,11 +44,11 @@ const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin,
 
     return { isAuthorize: true };
   } catch (error) {
-    const { isAuthorize, errResponse, msg } = error ?? {};
+    const { errResponse, msg } = error ?? {};
 
     console.error('Error message: ', msg ?? 'Failed to validate jwt.');
 
-    return { isAuthorize, errResponse, msg };
+    return { isAuthorize: false, errResponse, msg };
   }
 };
 
@@ -61,13 +62,15 @@ export async function middleware(request) {
       return new NextResponse('No headers were present in the request.', { status: 400 });
     }
 
-    // a unit has been selected without a locale
+    // if the user is taken to the reset-password path, and there is no token, then take the user back to the home page
+
     if (
       !nextUrl.href.includes('api') &&
       nextUrl.pathname.includes('lessons') &&
       (nextUrl?.pathname?.split('/')?.filter(val => val)?.length == 2) &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
+      // put this into a service
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
 

@@ -436,6 +436,10 @@ ol li {
   }
 }
 
+.notify-modal-body::first-letter{
+  text-transform: capitalize;
+}
+
 .input-focus-blue {
   box-shadow: 0 0 5px rgba(81, 203, 238, 1);
   // padding: 3px 0px 3px 3px;
