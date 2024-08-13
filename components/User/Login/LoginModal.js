@@ -205,7 +205,7 @@ const LoginModal = () => {
                         className="d-block no-link-decoration"
                         handleOnClick={handleCreateOneBtnClick}
                     >
-                        <span className='text-primary underline-on-hover'>
+                        <span className='text-primary underline-on-hover ms-1'>
                             Create one.
                         </span>
                     </Button>

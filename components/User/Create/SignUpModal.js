@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 import { useContext, useState } from 'react';
-import { CloseButton, Modal, ModalBody, ModalHeader } from 'react-bootstrap';
+import { CloseButton, Modal, ModalBody, ModalFooter, ModalHeader } from 'react-bootstrap';
 import { ModalContext } from '../../../providers/ModalProvider';
 import { useUserEntry } from '../../../customHooks/useUserEntry';
 import Button from '../../General/Button';
@@ -12,11 +12,12 @@ import { FcGoogle } from 'react-icons/fc';
 import { InputSection, ErrorTxt } from '../formElements';
 
 const SignUpModal = () => {
-    const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
+    const { _isCreateAccountModalDisplayed, _isLoginModalDisplayed } = useContext(ModalContext);
     const { _createAccountForm, sendFormToServer, validateForm } = useUserEntry();
     const [errors, setErrors] = useState(new Map());
     const [createAccountForm, setCreateAccountForm] = _createAccountForm;
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
+    const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
 
     const handleOnHide = () => {
         setIsCreateAccountModalDisplayed(false);
@@ -55,10 +56,28 @@ const SignUpModal = () => {
     };
 
     const handleOnInputChange = event => {
+        const { name, value } = event.target;
+
+        if (errors.has(name)) {
+            const errorsClone = structuredClone(errors);
+
+            errorsClone.delete(name);
+
+            setErrors(errorsClone);
+        }
+
         setCreateAccountForm(form => ({
             ...form,
-            [event.target.name]: event.target.value,
+            [name]: value,
         }));
+    };
+
+    const handleGoBackToLoginBtnClick = () => {
+        handleOnHide();
+
+        setTimeout(() => {
+            setIsLoginModalDisplayed(true);
+        }, 300);
     };
 
     return (
@@ -82,7 +101,7 @@ const SignUpModal = () => {
                     Sign up
                 </h5>
             </ModalHeader>
-            <ModalBody>
+            <ModalBody className='px-4'>
                 <section className='d-flex justify-content-center align-items-center'>
                     <CreateAccountWithGoogle
                         callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`}
@@ -105,7 +124,7 @@ const SignUpModal = () => {
                         <div style={{ height: '3px', width: '95%' }} className="bg-black rounded ms-3 ms-sm-2" />
                     </div>
                 </div>
-                <form className='mt-3 row d-flex justify-content-center align-items-center flex-column'>
+                <form className='mt-1 row d-flex justify-content-center align-items-center flex-column'>
                     <div className='row d-flex justify-content-center align-items-center'>
                         <div className="d-flex col-sm-6 flex-column">
                             <label
@@ -231,7 +250,7 @@ const SignUpModal = () => {
                             </section>
                         </div>
                     </div>
-                    <div className='d-flex justify-content-center align-items-center py-2 mt-3'>
+                    <div className='d-flex justify-content-center align-items-center'>
                         <Button
                             handleOnClick={handleSubmitBtnClick}
                             classNameStr="bg-primary rounded border-0 py-2 w-50 text-white underline-on-hover"
@@ -241,6 +260,17 @@ const SignUpModal = () => {
                     </div>
                 </form>
             </ModalBody>
+            <ModalFooter className='d-flex justify-content-center align-items-center'>
+                <span className='text-black'>
+                    Do you have an account?
+                </span>
+                <Button
+                    handleOnClick={handleGoBackToLoginBtnClick}
+                    classNameStr='no-btn-styles'
+                >
+                    <span className='underline-on-hover text-primary'>Log in.</span>
+                </Button>
+            </ModalFooter>
         </Modal>
     );
 };

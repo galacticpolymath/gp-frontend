@@ -16,7 +16,7 @@ import { ModalContext } from '../providers/ModalProvider';
 import { UserContext, aboutUserFormDefault } from '../providers/UserProvider';
 import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
-import { getIsParsable, resetUrl } from '../globalFns';
+import { getChunks, getIsParsable, resetUrl } from '../globalFns';
 
 /**
  *  @param {import('next/router').NextRouter} router 
@@ -138,6 +138,29 @@ const AccountPg = () => {
                     isDisplayed: true,
                     bodyTxt: bodyTxt,
                     headerTxt: 'Sign-in ERROR. There is an email with a different provider in our records.',
+                    handleOnHide: () => {
+                        resetUrl(router);
+                    },
+                });
+            }, 300);
+        }
+
+        const urlVals = getAllUrlVals(router)?.flatMap(urlVal => urlVal.split('='));
+        const urlValsChunks = urlVals?.length ? getChunks(urlVals, 2) : []
+        const didPasswordChange = urlValsChunks.find(([key, val]) => {
+            if((key === 'password_changed') && getIsParsable(val)){
+                return JSON.parse(val);
+            }   
+
+            return false;
+        }) !== undefined;
+
+        if ((status === "unauthenticated") && didPasswordChange) {
+            setTimeout(() => {
+                setNotifyModal({
+                    isDisplayed: true,
+                    bodyTxt: "",
+                    headerTxt: 'Password updated! You can now login',
                     handleOnHide: () => {
                         resetUrl(router);
                     },

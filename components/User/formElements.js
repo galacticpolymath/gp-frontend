@@ -17,10 +17,10 @@ export const InputSection = ({
     inputAndLabelSectionClassName = "",
     inputClassName = "",
     inputStyle = { borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' },
+    inputElement = null,
+    handleOnInputChange = () => {},
 
 }) => {
-    const { handleOnInputChange } = useUserEntry();
-
     return (
         <div className={containerClassName}>
             <label
@@ -29,16 +29,18 @@ export const InputSection = ({
             >
                 {label}
             </label>
-            <input
-                id={inputId}
-                placeholder={inputPlaceholder}
-                style={{ borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' }}
-                className="border-0 p-1 w-100 py-2"
-                name={inputName}
-                onChange={event => {
-                    handleOnInputChange(event);
-                }}
-            />
+            {inputElement ?? (
+                <input
+                    id={inputId}
+                    placeholder={inputPlaceholder}
+                    style={inputStyle}
+                    className="border-0 p-1 w-100 py-2"
+                    name={inputName}
+                    onChange={event => {
+                        handleOnInputChange(event);
+                    }}
+                />
+            )}
             <section style={{ height: '29px' }}>
                 {errors.has(errorsFieldName) && <ErrorTxt>{errors.get(errorsFieldName)}</ErrorTxt>}
             </section>
