@@ -398,28 +398,37 @@ const LessonPart = ({
                           />
                         </div>
                         <ul style={{ listStyle: 'none' }} className="links-list p-0">
-                          {!!_links && _links.map(({ url, linkText }, linkIndex) => (
-                            <li className='mb-0 d-flex' key={linkIndex}>
-                              <div className="d-flex justify-content-center  align-items-sm-center">
-                                <Link
-                                  href={url}
-                                  target="_blank"
-                                  rel='noopener noreferrer'
-                                >
-                                  {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
-                                </Link>
-                              </div>
-                              <div className="d-flex justify-content-center align-items-center ps-2">
-                                <a
-                                  href={url}
-                                  target='_blank'
-                                  rel='noopener noreferrer'
-                                >
-                                  {linkText}
-                                </a>
-                              </div>
-                            </li>
-                          ))}
+                          {!!_links && _links.map(({ url, linkText }, linkIndex) => {
+                            return (
+                              <li className='mb-0 d-flex' key={linkIndex}>
+                                <div className="d-flex justify-content-center  align-items-sm-center">
+                                  {url ? (
+                                    <Link
+                                      href={url}
+                                      target="_blank"
+                                      rel='noopener noreferrer'
+                                    >
+                                      {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
+                                    </Link>
+                                  )
+                                    :
+                                    <span className='mb-1'>Link not available.</span>
+                                  }
+                                </div>
+                                <div className="d-flex justify-content-center align-items-center ps-2">
+                                  {url &&
+                                    <a
+                                      href={url}
+                                      target='_blank'
+                                      rel='noopener noreferrer'
+                                    >
+                                      {linkText}
+                                    </a>
+                                  }
+                                </div>
+                              </li>
+                            );
+                          })}
                         </ul>
                       </section>
                       {filePreviewImg && (
@@ -433,7 +442,7 @@ const LessonPart = ({
                                 src={filePreviewImg}
                                 alt="lesson_tile"
                                 className='h-auto w-auto'
-                                style={{ objectFit:'contain', maxHeight:'100px',maxWidth:'100px',border:'1px solid gray' }}
+                                style={{ objectFit: 'contain', maxHeight: '100px', maxWidth: '100px', border: '1px solid gray' }}
                               />
                             </CustomLink>
                           </div>
@@ -483,15 +492,19 @@ const LessonPart = ({
                       style={{ color: '#4397D5' }}
                     >
                       <h6 className='mb-1'>
-                        <Link
-                          href={itemLink}
-                          target='_blank'
-                        >
-                          {itemTitle}
-                        </Link>
+                        {itemLink ? (
+                          <Link
+                            href={itemLink}
+                            target='_blank'
+                          >
+                            {itemTitle}
+                          </Link>
+                        )
+                          :
+                          <span>Link not available.</span>
+                        }
                       </h6>
-                      <RichText className='fw-normal text-dark' content={itemDescription}>
-                      </RichText>
+                      <RichText className='fw-normal text-dark' content={itemDescription} />
                     </li>
                   );
                 })}
