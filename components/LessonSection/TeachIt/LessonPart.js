@@ -402,7 +402,7 @@ const LessonPart = ({
                             return (
                               <li className='mb-0 d-flex' key={linkIndex}>
                                 <div className="d-flex justify-content-center  align-items-sm-center">
-                                  {url ? (
+                                  {url && (
                                     <Link
                                       href={url}
                                       target="_blank"
@@ -410,10 +410,7 @@ const LessonPart = ({
                                     >
                                       {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
                                     </Link>
-                                  )
-                                    :
-                                    <span className='mb-1'>Link not available.</span>
-                                  }
+                                  )}
                                 </div>
                                 <div className="d-flex justify-content-center align-items-center ps-2">
                                   {url &&
@@ -492,7 +489,7 @@ const LessonPart = ({
                       style={{ color: '#4397D5' }}
                     >
                       <h6 className='mb-1'>
-                        {itemLink ? (
+                        {itemLink && (
                           <Link
                             href={itemLink}
                             target='_blank'
@@ -500,8 +497,6 @@ const LessonPart = ({
                             {itemTitle}
                           </Link>
                         )
-                          :
-                          <span>Link not available.</span>
                         }
                       </h6>
                       <RichText className='fw-normal text-dark' content={itemDescription} />
