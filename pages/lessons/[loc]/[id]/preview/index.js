@@ -170,7 +170,7 @@ const LessonPreview = ({ lesson }) => {
               </div>
             </section>
           </div>
-          {/* Spacer for */}
+          {/* Spacer */}
           <div style={{ height: "180px" }} className="w-75" />
           <div className="w-90 d-flex flex-column px-1 ">
 
