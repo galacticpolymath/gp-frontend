@@ -2,90 +2,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import { NextResponse } from 'next/server';
-import { AuthMiddlwareError } from './backend/utils/errors';
-import { jwtVerify } from 'jose';
-import { getChunks } from './nondependencyFns';
-// import { getAuthorizeReqResult } from './backend/utils/security';
-
-/**
- * 
- * @param {string} token 
- */
-export const verifyJwt = async (token) => {
-  /**
-   * @type {import('jose').JWTVerifyResult}
-   */
-  const jwtVerifyResult = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
-
-  return jwtVerifyResult;
-};
-
-export const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
-
-/**
-* @param {string} authorizationStr 
-* @param {boolean} willCheckIfUserIsDbAdmin 
-* @param {boolean} willCheckForValidEmail 
-* @param {string} emailToValidate 
-* @returns
-*/
-export const getAuthorizeReqResult = async (
-  authorizationStr,
-  willCheckIfUserIsDbAdmin,
-  willCheckForValidEmail,
-  emailToValidate
-) => {
-  try {
-    const token = authorizationStr.split(' ')[1].trim();
-    const verifyJwtResult = await verifyJwt(token);
-    /** 
-     * @type {TJwtPayload}
-    */
-    const payload = verifyJwtResult.payload;
-
-    if (!payload) {
-      const errMsg = 'You are not authorized to access this service.';
-      const response = new NextResponse(errMsg, { status: 403 });
-
-      throw new AuthMiddlwareError(false, response, errMsg);
-    }
-
-    const { exp, roles, email } = payload;
-    const currentTimeUTCMs = new Date().getUTCMilliseconds();
-
-    console.log('expiration time: ', exp);
-    console.log('currentTimeUTCMs: ', currentTimeUTCMs);
-
-    if (currentTimeUTCMs > exp) {
-      const errMsg = 'The json web token has expired.';
-      const response = new NextResponse(errMsg, { status: 403 });
-
-      throw new AuthMiddlwareError(false, response, errMsg);
-    }
-
-    if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(roles, 'dbAdmin')) {
-      const errMsg = 'You are not authorized to access this service.';
-      const response = new NextResponse(errMsg, { status: 403 });
-
-      throw new AuthMiddlwareError(false, response, errMsg);
-    }
-
-    if (willCheckForValidEmail && (email !== emailToValidate)) {
-      const errMsg = 'You are not authorized to access this service.';
-      const response = new NextResponse(errMsg, { status: 403 });
-
-      throw new AuthMiddlwareError(false, response, errMsg);
-    }
-
-    return { isAuthorize: true };
-  } catch (error) {
-    const { errResponse, msg } = error ?? {};
-
-    console.error('Error message: ', msg ?? 'Failed to validate jwt.');
-
-    return { isAuthorize: false, errResponse, msg };
-  }
-};
+import { getAuthorizeReqResult, getChunks } from './nondependencyFns';
+import { PASSWORD_RESET_TOKEN_VAR_NAME } from './globalVars';
 
 const DB_ADMIN_ROUTES = ['/api/insert-lesson', '/api/delete-lesson', '/api/update-lessons'];
 const USER_ACCOUNT_ROUTES = ['/api/get-about-user-form', '/api/save-about-user-form'];
@@ -100,17 +18,15 @@ export async function middleware(request) {
      */
     let { pathname, search } = nextUrl;
 
-    console.log('hey there!');
     if (pathname === '/password-reset') {
       search = search.replace('?', '');
       const searchPathnamesSplitted = search.split('=');
       const searchPathnamesChunks = getChunks(searchPathnamesSplitted, 2);
-      // const isPasswordResetTokenPresent = searchPathnamesChunks.find(([urlVarName, token]) => {
-      //   return (urlVarName === PASSWORD_RESET_TOKEN_VAR_NAME) && token;
-      // });
+      const isPasswordResetTokenPresent = searchPathnamesChunks.find(([urlVarName, token]) => {
+        return (urlVarName === PASSWORD_RESET_TOKEN_VAR_NAME) && token;
+      });
 
-      // return isPasswordResetTokenPresent ? NextResponse.next() : NextResponse.redirect(`${nextUrl.origin}/`);
-      return NextResponse.next();
+      return isPasswordResetTokenPresent ? NextResponse.next() : NextResponse.redirect(`${nextUrl.origin}/`);
     }
 
     if (!headers) {
@@ -208,6 +124,7 @@ export async function middleware(request) {
 
     // put all routes that will check if the auth token has expired only in this code block 
     if ((nextUrl.pathname === '/api/update-password') && (method === 'POST') && authorizationStr) {
+      console.log('yo there meng!');
       const authResult = await getAuthorizeReqResult(authorizationStr);
 
       if (authResult.errResponse) {

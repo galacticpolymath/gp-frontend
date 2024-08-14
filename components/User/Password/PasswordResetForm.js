@@ -70,8 +70,15 @@ const PasswordResetForm = () => {
                 throw new Error('Passwords do not match.');
             }
 
-            const url = `${window.location.origin}/api/reset-password`;
-            const response = await axios.post(url, { newPassword });
+            const url = `${window.location.origin}/api/update-password`;
+            const passwordResetToken = router.query?.password_reset_token; 
+
+            if(!passwordResetToken){
+                throw new Error('The password reset token is not present.');
+            }
+
+            const Authorization = `Bearer ${passwordResetToken}`;
+            const response = await axios.post(url, { newPassword }, { headers: { Authorization } });
 
             if ((response.status !== 200) && response.errMsg) {
                 throw new CustomError(`Failed to upate password. Reason: ${response?.data?.errMsg}`, null, 'updatePasswordErr');
@@ -81,7 +88,7 @@ const PasswordResetForm = () => {
                 throw new CustomError('Failed to update password. Press "Restart Recover" to try again.', null, 'updatePasswordErr');
             }
 
-            // router.push('/account?password_changed=true');
+            router.push('/account?password_changed=true');
         } catch (error) {
             setCustomModalFooter(
                 <CustomNotifyModalFooter
@@ -95,7 +102,7 @@ const PasswordResetForm = () => {
                 headerTxt: error.message ?? 'Failed to update password. Press "Restart Recover" to try again.',
                 bodyTxt: '',
                 isDisplayed: true,
-                handleOnHide: () => { },
+                handleOnHide: closeNotifyModal,
             });
         }
     };
