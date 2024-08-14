@@ -8,6 +8,8 @@ import { signJwt } from '../../backend/utils/auth';
 import { connectToMongodb } from '../../backend/utils/connection';
 import { CustomError } from '../../backend/utils/errors';
 
+export const PASSWORD_RESET_TOKEN_VAR_NAME = 'password_reset_token';
+
 export default async function handler(request, response) {
     try {
         if (!request.body.email) {
@@ -25,7 +27,7 @@ export default async function handler(request, response) {
         }
 
         const resetPasswordToken = await signJwt({ email }, process.env.NEXTAUTH_SECRET, '5 minutes');
-        const resetPasswordLink = `${request.headers.origin}/password-reset/?password_reset_token=${resetPasswordToken}`;
+        const resetPasswordLink = `${request.headers.origin}/password-reset/?${PASSWORD_RESET_TOKEN_VAR_NAME}=${resetPasswordToken}`;
         const { wasSuccessful } = await sendEmail({
             from: process.env.EMAIL_USER,
             to: email,

@@ -1,22 +1,35 @@
+/* eslint-disable indent */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import { NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
 import { AuthMiddlwareError } from './backend/utils/errors';
-
-const DB_ADMIN_ROUTES = ['/api/insert-lesson', '/api/delete-lesson', '/api/update-lessons'];
-const USER_ACCOUNT_ROUTES = ['/api/get-about-user-form', '/api/save-about-user-form'];
-
-const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
+import { jwtVerify } from 'jose';
+import { getChunks } from './nondependencyFns';
+// import { getAuthorizeReqResult } from './backend/utils/security';
 
 /**
- * @param {string} authorizationStr 
- * @param {boolean} willCheckIfUserIsDbAdmin 
- * @param {boolean} willCheckForValidEmail 
- * @param {string} emailToValidate 
- * @returns
+ * 
+ * @param {string} token 
  */
-const getAuthorizeReqResult = async (
+export const verifyJwt = async (token) => {
+  /**
+   * @type {import('jose').JWTVerifyResult}
+   */
+  const jwtVerifyResult = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
+
+  return jwtVerifyResult;
+};
+
+export const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
+
+/**
+* @param {string} authorizationStr 
+* @param {boolean} willCheckIfUserIsDbAdmin 
+* @param {boolean} willCheckForValidEmail 
+* @param {string} emailToValidate 
+* @returns
+*/
+export const getAuthorizeReqResult = async (
   authorizationStr,
   willCheckIfUserIsDbAdmin,
   willCheckForValidEmail,
@@ -24,7 +37,11 @@ const getAuthorizeReqResult = async (
 ) => {
   try {
     const token = authorizationStr.split(' ')[1].trim();
-    const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
+    const verifyJwtResult = await verifyJwt(token);
+    /** 
+     * @type {TJwtPayload}
+    */
+    const payload = verifyJwtResult.payload;
 
     if (!payload) {
       const errMsg = 'You are not authorized to access this service.';
@@ -33,14 +50,27 @@ const getAuthorizeReqResult = async (
       throw new AuthMiddlwareError(false, response, errMsg);
     }
 
-    if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(payload.roles, 'dbAdmin')) {
+    const { exp, roles, email } = payload;
+    const currentTimeUTCMs = new Date().getUTCMilliseconds();
+
+    console.log('expiration time: ', exp);
+    console.log('currentTimeUTCMs: ', currentTimeUTCMs);
+
+    if (currentTimeUTCMs > exp) {
+      const errMsg = 'The json web token has expired.';
+      const response = new NextResponse(errMsg, { status: 403 });
+
+      throw new AuthMiddlwareError(false, response, errMsg);
+    }
+
+    if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(roles, 'dbAdmin')) {
       const errMsg = 'You are not authorized to access this service.';
       const response = new NextResponse(errMsg, { status: 403 });
 
       throw new AuthMiddlwareError(false, response, errMsg);
     }
 
-    if (willCheckForValidEmail && (payload.email !== emailToValidate)) {
+    if (willCheckForValidEmail && (email !== emailToValidate)) {
       const errMsg = 'You are not authorized to access this service.';
       const response = new NextResponse(errMsg, { status: 403 });
 
@@ -57,17 +87,35 @@ const getAuthorizeReqResult = async (
   }
 };
 
+const DB_ADMIN_ROUTES = ['/api/insert-lesson', '/api/delete-lesson', '/api/update-lessons'];
+const USER_ACCOUNT_ROUTES = ['/api/get-about-user-form', '/api/save-about-user-form'];
+
 const getUnitNum = pathName => parseInt(pathName.split('/').find(val => !Number.isNaN(parseInt(val)) && (typeof parseInt(val) === 'number')));
 
 export async function middleware(request) {
   try {
     const { nextUrl, method, headers } = request;
+    /**
+     * @type {{ pathname: string, search: string }}
+     */
+    let { pathname, search } = nextUrl;
+
+    console.log('hey there!');
+    if (pathname === '/password-reset') {
+      search = search.replace('?', '');
+      const searchPathnamesSplitted = search.split('=');
+      const searchPathnamesChunks = getChunks(searchPathnamesSplitted, 2);
+      // const isPasswordResetTokenPresent = searchPathnamesChunks.find(([urlVarName, token]) => {
+      //   return (urlVarName === PASSWORD_RESET_TOKEN_VAR_NAME) && token;
+      // });
+
+      // return isPasswordResetTokenPresent ? NextResponse.next() : NextResponse.redirect(`${nextUrl.origin}/`);
+      return NextResponse.next();
+    }
 
     if (!headers) {
       return new NextResponse('No headers were present in the request.', { status: 400 });
     }
-
-    // if the user is taken to the reset-password path, and there is no token, then take the user back to the home page
 
     if (
       !nextUrl.href.includes('api') &&
@@ -158,7 +206,16 @@ export async function middleware(request) {
       return new NextResponse('No pathName was provided.', { status: 400 });
     }
 
-    // get 
+    // put all routes that will check if the auth token has expired only in this code block 
+    if ((nextUrl.pathname === '/api/update-password') && (method === 'POST') && authorizationStr) {
+      const authResult = await getAuthorizeReqResult(authorizationStr);
+
+      if (authResult.errResponse) {
+        return authResult.errResponse;
+      }
+
+      return NextResponse.next();
+    }
 
     if (
       ((nextUrl.pathname == '/api/update-lessons') && (method === 'PUT') && authorizationStr) ||
@@ -225,6 +282,8 @@ export const config = {
     '/api/save-about-user-form',
     '/api/get-jwt-token',
     '/api/get-about-user-form',
+    '/api/update-password',
+    '/password-reset',
     '/lessons/:path*',
   ],
 };
