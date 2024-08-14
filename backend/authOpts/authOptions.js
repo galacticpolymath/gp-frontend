@@ -166,13 +166,7 @@ export const authOptions = {
             return dbUser;
           }
 
-          console.log('Will create the new user.');
           const hashedPassword = hashPassword(password, createSalt(), createIterations());
-
-          console.log('hashedPassword: ', hashedPassword);
-
-          // the user will be created
-
           const userDocumentToCreate = {
             _id: uuidv4(),
             email: email,

@@ -3,6 +3,18 @@
 import { pbkdf2Sync } from 'pbkdf2';
 import { nanoid } from 'nanoid';
 import { sha256 } from 'js-sha256';
+import { jwtVerify } from 'jose';
+
+/**
+ * @typedef {Object} TJwtPayloadCustomPropties
+ * @property {string} email
+ * @property {string[]} roles
+ */
+
+/**
+ * @global
+ * @typedef {TJwtPayloadCustomPropties & import('jsonwebtoken').JwtPayload} TJwtPayload
+ */
 
 export const createSalt = () => sha256.create().update(nanoid().toString()).hex();
 
@@ -53,8 +65,21 @@ export class HashedPassword {
  * @param {string} hashedPasswordFromDb
  * @return {boolean}
  * */
-export function getIsPasswordCorrect({ iterations, password, salt }, hashedPasswordFromDb) {
+export const getIsPasswordCorrect = ({ iterations, password, salt }, hashedPasswordFromDb) => {
     const { hash } = new HashedPassword(password, salt, iterations);
 
     return hash === hashedPasswordFromDb;
-}
+};
+
+/**
+ * 
+ * @param {string} token 
+ */
+export const verifyJwt = async (token) => {
+    /**
+     * @type {import('jose').JWTVerifyResult}
+     */
+    const jwtVerifyResult = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
+
+    return jwtVerifyResult;
+};

@@ -4,22 +4,27 @@ import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 import { AuthMiddlwareError } from './backend/utils/errors';
 
+const DB_ADMIN_ROUTES = ['/api/insert-lesson', '/api/delete-lesson', '/api/update-lessons'];
+const USER_ACCOUNT_ROUTES = ['/api/get-about-user-form', '/api/save-about-user-form'];
+
 const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
 
 /**
- * 
  * @param {string} authorizationStr 
  * @param {boolean} willCheckIfUserIsDbAdmin 
  * @param {boolean} willCheckForValidEmail 
  * @param {string} emailToValidate 
  * @returns
  */
-const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin, willCheckForValidEmail, emailToValidate) => {
+const getAuthorizeReqResult = async (
+  authorizationStr,
+  willCheckIfUserIsDbAdmin,
+  willCheckForValidEmail,
+  emailToValidate
+) => {
   try {
     const token = authorizationStr.split(' ')[1].trim();
     const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
-
-    // check if the token has expired
 
     if (!payload) {
       const errMsg = 'You are not authorized to access this service.';
@@ -153,6 +158,8 @@ export async function middleware(request) {
       return new NextResponse('No pathName was provided.', { status: 400 });
     }
 
+    // get 
+
     if (
       ((nextUrl.pathname == '/api/update-lessons') && (method === 'PUT') && authorizationStr) ||
       ((nextUrl.pathname == '/api/insert-lesson') && (method === 'POST') && authorizationStr) ||
@@ -160,13 +167,12 @@ export async function middleware(request) {
       ((nextUrl.pathname == '/api/get-about-user-form') && (method === 'GET') && authorizationStr) ||
       ((nextUrl.pathname == '/api/save-about-user-form') && (method === 'PUT') && authorizationStr)
     ) {
-      const willCheckIfUserIsDbAdmin = ['/api/insert-lesson', '/api/delete-lesson', '/api/update-lessons'].includes(nextUrl.pathname);
-      const willCheckForValidEmail = ['/api/get-about-user-form', '/api/save-about-user-form'].includes(nextUrl.pathname);
+      const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES.includes(nextUrl.pathname);
+      const willCheckForValidEmail = USER_ACCOUNT_ROUTES.includes(nextUrl.pathname);
       let clientEmail = null;
       let urlParamsStr = typeof nextUrl?.search === 'string' ? nextUrl?.search.replace(/\?/g, '') : '';
-      urlParamsStr = typeof nextUrl?.search === 'string' ? urlParamsStr.replace(/%40/g, '@') : '';
 
-      console.log('nextUrl: ', nextUrl);
+      urlParamsStr = typeof nextUrl?.search === 'string' ? urlParamsStr.replace(/%40/g, '@') : '';
 
       if ((nextUrl.pathname === '/api/get-about-user-form') && (urlParamsStr.split('=').length == 2)) {
         clientEmail = urlParamsStr.split('=')[1];
@@ -182,11 +188,12 @@ export async function middleware(request) {
         throw new Error("Received invalid parameters for the retreival of the user's 'About Me' form.");
       }
 
-      console.log('clientEmail: ', clientEmail);
-
-      const authorizationResult = await getAuthorizeReqResult(authorizationStr, willCheckIfUserIsDbAdmin, willCheckForValidEmail, clientEmail);
-
-      console.log('authorizationResult: ', authorizationResult);
+      const authorizationResult = await getAuthorizeReqResult(
+        authorizationStr,
+        willCheckIfUserIsDbAdmin,
+        willCheckForValidEmail,
+        clientEmail
+      );
 
       if (authorizationResult) {
         return authorizationResult.errResponse;

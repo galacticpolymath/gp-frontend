@@ -10,6 +10,10 @@ import { CustomError } from '../../backend/utils/errors';
 
 export default async function handler(request, response) {
     try {
+        if (!request.body.email) {
+            throw new CustomError('The "email" property is missing from the body of the request.', 500);
+        }
+
         const { email } = request.body;
 
         await connectToMongodb();
@@ -35,8 +39,8 @@ export default async function handler(request, response) {
 
         return response.status(200).json({ msg: "Successfully saved the 'aboutUser' form into the db." });
     } catch (error) {
-        console.error('Failed to send the email to the target user. Reason: ', error);
+        const errMsg = error?.message ?? `Failed to send the email to the target user. Reason: ${error}`;
 
-        return response.status(500);
+        return response.status(500).json({ msg: errMsg });
     }
 }
