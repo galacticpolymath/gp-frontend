@@ -10,7 +10,6 @@ import Link from 'next/link';
 import CopyableTxt from '../../CopyableTxt';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import CustomLink from '../../CustomLink';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
 
@@ -384,7 +383,7 @@ const LessonPart = ({
               {!!_itemList?.length && _itemList.map((item, itemIndex) => {
                 const { itemTitle, itemDescription, links, filePreviewImg, itemCat } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
-                const imgLink = (itemCat === 'web resource') ? (_links?.[0]?.url ?? '') : (_links?.[0]?.url ?? '');
+                const imgLink = (itemCat === 'web resource') ? (_links?.[0]?.url ?? '') : (_links?.[1]?.url ?? '');
 
                 return (
                   <li key={itemIndex} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
@@ -398,44 +397,50 @@ const LessonPart = ({
                           />
                         </div>
                         <ul style={{ listStyle: 'none' }} className="links-list p-0">
-                          {!!_links && _links.map(({ url, linkText }, linkIndex) => (
-                            <li className='mb-0 d-flex' key={linkIndex}>
-                              <div className="d-flex justify-content-center  align-items-sm-center">
-                                <Link
-                                  href={url}
-                                  target="_blank"
-                                  rel='noopener noreferrer'
-                                >
-                                  {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
-                                </Link>
-                              </div>
-                              <div className="d-flex justify-content-center align-items-center ps-2">
-                                <a
-                                  href={url}
-                                  target='_blank'
-                                  rel='noopener noreferrer'
-                                >
-                                  {linkText}
-                                </a>
-                              </div>
-                            </li>
-                          ))}
+                          {!!_links && _links.map(({ url, linkText }, linkIndex) => {
+                            return (
+                              <li className='mb-0 d-flex' key={linkIndex}>
+                                <div className="d-flex justify-content-center  align-items-sm-center">
+                                  {!!url && (
+                                    <Link
+                                      href={url}
+                                      target="_blank"
+                                      rel='noopener noreferrer'
+                                    >
+                                      {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
+                                    </Link>
+                                  )}
+                                </div>
+                                <div className="d-flex justify-content-center align-items-center ps-2">
+                                  {!!url &&
+                                    <a
+                                      href={url}
+                                      target='_blank'
+                                      rel='noopener noreferrer'
+                                    >
+                                      {linkText}
+                                    </a>
+                                  }
+                                </div>
+                              </li>
+                            );
+                          })}
                         </ul>
                       </section>
-                      {filePreviewImg && (
+                      {!!filePreviewImg && (
                         <section className="pt-1 ps-sm-1 ps-md-4 d-flex">
                           <div className='border align-content-start my-auto'>
-                            <CustomLink
-                              hrefStr={imgLink}
-                              targetLinkStr='_blank'
+                            <a
+                              href={imgLink}
+                              target='_blank'
                             >
                               <img
                                 src={filePreviewImg}
                                 alt="lesson_tile"
                                 className='h-auto w-auto'
-                                style={{ objectFit:'contain', maxHeight:'100px',maxWidth:'100px',border:'1px solid gray' }}
+                                style={{ objectFit: 'contain', maxHeight: '100px', maxWidth: '100px', border: '1px solid gray' }}
                               />
-                            </CustomLink>
+                            </a>
                           </div>
                         </section>
                       )}
@@ -483,15 +488,17 @@ const LessonPart = ({
                       style={{ color: '#4397D5' }}
                     >
                       <h6 className='mb-1'>
-                        <Link
-                          href={itemLink}
-                          target='_blank'
-                        >
-                          {itemTitle}
-                        </Link>
+                        {itemLink && (
+                          <Link
+                            href={itemLink}
+                            target='_blank'
+                          >
+                            {itemTitle}
+                          </Link>
+                        )
+                        }
                       </h6>
-                      <RichText className='fw-normal text-dark' content={itemDescription}>
-                      </RichText>
+                      <RichText className='fw-normal text-dark' content={itemDescription} />
                     </li>
                   );
                 })}

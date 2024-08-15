@@ -23,6 +23,7 @@ import QRCode from "react-qr-code";
 import { getLatestSubRelease } from '../../../../../helperFns/getLatestSubRelease';
 import Logo from '../../../../../assets/img/galactic_polymath_white.png';
 import { useState, useEffect } from 'react';
+import CustomLink from '../../../../../components/CustomLink';
 
 const LessonPreview = ({ lesson }) => {
   const latestSubRelease = lesson?.Section ? getLatestSubRelease(lesson?.Section) : {};
@@ -125,52 +126,64 @@ const LessonPreview = ({ lesson }) => {
         <div className='col-4 d-flex flex-column justify-content-center align-items-center position-relative'>
           <div
             style={{ top: 0, right: 0, borderBottomLeftRadius: "30px", backgroundColor: '#E1E2E3', width: "80%" }}
-            className="ps-1 position-absolute d-flex qrCodeImgAndTxtContainer"
+            className="position-absolute qrCodeImgAndTxtContainer"
           >
-            <section style={{ bottom: "40px" }} className='w-50 me-3 me-lg-0 d-flex justify-content-center align-items-center flex-column'>
-              <Link
-                href={lesson.URL}
-                target='_blank'
-                style={{ lineHeight: "20px", fontSize: "18px", fontWeight: 400 }}
-                className='mt-1 text-black mt-lg-2 text-center px-2 px-lg-4'
-              >
-                <div
-                  className='mb-2  w-100 d-flex justify-content-center align-items-center'
+            <section className='ps-1 d-flex mt-4'>
+              <section className='w-50 me-3 me-lg-0 d-flex justify-content-center align-items-center flex-column'>
+                <Link
+                  href={lesson.URL}
+                  target='_blank'
+                  style={{ lineHeight: "20px", fontSize: "18px", fontWeight: 400 }}
+                  className='mt-1 text-black mt-lg-2 text-center px-2 px-lg-4'
                 >
+                  <div
+                    className='mb-2  w-100 d-flex justify-content-center align-items-center'
+                  >
 
-                  <FiExternalLink
-                    size={25}
+                    <FiExternalLink
+                      size={25}
+                      style={{
+                        transform: 'scale(1.5)',
+                      }}
+                      color='black'
+                      className='ms-2'
+                    />
+                  </div>
+                  Click or Scan for Access.
+                </Link>
+
+              </section>
+              <section className='w-50 d-flex p-2'>
+                <div className='position-relative d-flex w-100 flex-column d-flex justify-content-center align-items-center'>
+                  <QRCode
                     style={{
-                      transform: 'scale(1.5)',
+                      height: "120%",
+                      minHeight: "130px",
+                      maxHeight: "150px",
+                      width: "120%",
+                      maxWidth: "150px",
+                      minWidth: "70px",
+                      right: ".5px",
                     }}
-                    color='black'
-                    className='ms-2'
+                    value={lesson.URL}
                   />
+
                 </div>
-                Click or Scan for Access.
-              </Link>
-
+              </section>
             </section>
-            <section className='w-50 d-flex p-2 border'>
-              <div className='position-relative d-flex w-100 flex-column'>
-                <QRCode
-                  style={{
-                    height: "120%",
-                    minHeight: "130px",
-                    maxHeight: "150px",
-                    width: "120%",
-                    maxWidth: "150px",
-                    minWidth: "70px",
-                    right: ".5px",
-                  }}
-                  value={lesson.URL}
-                  className='position-absolute'
-                />
-
-              </div>
-            </section>
+            {lesson.ShortURL && (
+              <section className='d-flex justify-content-center align-items-center'>
+                <CustomLink
+                  hrefStr={lesson.ShortURL}
+                  className='serif-text no-link-decoration my-2'
+                  fontSize="1.5em"
+                >
+                  {lesson.ShortURL}
+                </CustomLink>
+              </section>
+            )}
           </div>
-          {/* Spacer for */}
+          {/* Spacer */}
           <div style={{ height: "180px" }} className="w-75" />
           <div className="w-90 d-flex flex-column px-1 ">
 
