@@ -18,8 +18,6 @@ export const connectToMongodb = async () => {
 
     dbName = 'GP-Catalog';
 
-    console.log('dbName meng: ', dbName);
-
     const connectionStr = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster0.tynope2.mongodb.net/${dbName}`;
     const connectionState = await mongoose.connect(connectionStr, { retryWrites: true });
 

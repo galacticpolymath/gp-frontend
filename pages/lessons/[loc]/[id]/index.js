@@ -353,6 +353,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     if (resources?.every(resource => resource.lessons)) {
       lessonParts = []
 
+      // get all of preview images of google drive files
       for (const resource of resources) {
         const resourceLessons = [];
         for (const lesson of resource.lessons) {
@@ -362,24 +363,34 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             const itemListUpdated = []
 
             for (const itemObj of lesson.itemList) {
+              console.log('itemObj, yo there: ', itemObj);
+
               const { links, itemCat } = itemObj;
+
+              if (!itemObj?.links?.length) {
+                itemListUpdated.push(itemObj);
+                continue;
+              }
 
               if (itemObj?.links?.length) {
                 itemObj.links = links.filter(({ linkText, url }) => (linkText !== "Not shareable on GDrive") || url)
               }
 
               const isWebResource = itemCat === 'web resource'
-              const googleDriveFileId = (links?.[0]?.url && !isWebResource) ? getGoogleDriveFileIdFromUrl(links[0].url) : null;
+              const url = links.find(link => link?.url)?.url;
+              const googleDriveFileId = (url && !isWebResource) ? getGoogleDriveFileIdFromUrl(url) : null;
 
               if (googleDriveFileId) {
+                const filePreviewImg = `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`;
+
                 itemListUpdated.push({
                   ...itemObj,
-                  filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
+                  filePreviewImg,
                 });
                 continue;
               }
 
-              const webAppPreview = (links?.[0]?.url && isWebResource) ? await getLinkPreviewObj(links[0].url) : null
+              const webAppPreview = (url && isWebResource) ? await getLinkPreviewObj(url) : null
 
               if (webAppPreview?.images?.length && (typeof webAppPreview.images[0] === 'string')) {
                 itemListUpdated.push({

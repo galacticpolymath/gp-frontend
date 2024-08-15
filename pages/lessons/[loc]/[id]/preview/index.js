@@ -175,13 +175,13 @@ const LessonPreview = ({ lesson }) => {
                 </div>
               </section>
             </section>
-            {lesson.ShortURL && (
+            {(lesson.ShortURL && (typeof lesson.ShortURL === 'string')) && (
               <section className='d-flex justify-content-center align-items-center'>
                 <CustomLink
                   hrefStr={lesson.ShortURL}
-                  className='serif-text no-link-decoration my-2 bitly-txt-link'
+                  className='serif-text no-link-decoration my-2 bitly-txt-link underline-on-hover'
                 >
-                  {lesson.ShortURL}
+                  {lesson.ShortURL.replace("https://", "")}
                 </CustomLink>
               </section>
             )}
@@ -253,6 +253,7 @@ const LessonPreview = ({ lesson }) => {
             } = lessonPart;
             tags = (tags?.length && Array.isArray(tags[0])) ? tags[0] : tags;
             tags = tags?.length ? tags.filter(tag => tag) : [];
+
             const previewTagsProp = tags.length ? { previewTags: tags } : {};
 
             return (
