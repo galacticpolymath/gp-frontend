@@ -128,10 +128,10 @@ const LessonPreview = ({ lesson }) => {
         </div>
         <div className='col-4 d-flex flex-column justify-content-center align-items-center position-relative'>
           <div
-            style={{ top: 0, right: 0, borderBottomLeftRadius: "30px", backgroundColor: '#E1E2E3', width: "80%" }}
+            style={{ top: 0, right: 0, borderBottomLeftRadius: "30px", backgroundColor: '#E1E2E3', width: "90%" }}
             className="position-absolute qrCodeImgAndTxtContainer"
           >
-            <section className='ps-1 d-flex mt-4'>
+            <section className='ps-1 d-flex mt-0'>
               <section className='w-50 me-3 me-lg-0 d-flex justify-content-center align-items-center flex-column'>
                 <Link
                   href={lesson.URL}
@@ -162,11 +162,11 @@ const LessonPreview = ({ lesson }) => {
                 >
                   <QRCode
                     style={{
-                      height: "120%",
-                      minHeight: "130px",
-                      maxHeight: "150px",
-                      width: "120%",
-                      maxWidth: "150px",
+                      height: "10vh",
+                      minHeight: "70px",
+                      maxHeight: "200px",
+                      width: "10vh",
+                      maxWidth: "200px",
                       minWidth: "70px",
                       right: ".5px",
                     }}
@@ -179,7 +179,7 @@ const LessonPreview = ({ lesson }) => {
               <section className='d-flex justify-content-center align-items-center'>
                 <CustomLink
                   hrefStr={lesson.ShortURL}
-                  className='serif-text no-link-decoration my-2 bitly-txt-link underline-on-hover'
+                  className='serif-text no-link-decoration mb-2 mt-0 bitly-txt-link underline-on-hover'
                 >
                   {lesson.ShortURL.replace("https://", "")}
                 </CustomLink>

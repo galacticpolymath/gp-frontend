@@ -194,7 +194,7 @@ const LessonPart = ({
               <div className='d-flex flex-column w-100'>
                 <div className='d-flex justify-content-between w-100 position-relative'>
                   <div
-                    className='d-flex flex-column justify-content-between w-100 align-items-stretch mt-0 pe-sm-3'
+                    className='d-flex flex-column w-100 align-items-stretch mt-0 pe-sm-3'
                   >
                     <div className='lessonPartHeaderContainer d-flex position-relative justify-content-between'>
                       <h3
