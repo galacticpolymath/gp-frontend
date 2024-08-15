@@ -76,7 +76,10 @@ const LessonPreview = ({ lesson }) => {
 
   return (
     <div>
-      <div style={{ backgroundColor: '#252525' }} className='w-100 d-flex justify-content-center align-items-center py-2'>
+      <div
+        style={{ backgroundColor: '#252525' }}
+        className='w-100 d-flex justify-content-center align-items-center py-2'
+      >
         <Image
           className='object-fit-contain'
           alt="Galactic Polymath"
@@ -154,7 +157,9 @@ const LessonPreview = ({ lesson }) => {
 
               </section>
               <section className='w-50 d-flex p-2'>
-                <div className='position-relative d-flex w-100 flex-column d-flex justify-content-center align-items-center'>
+                <div
+                  className='position-relative d-flex w-100 flex-column d-flex justify-content-center align-items-center qr-code-lesson-preview'
+                >
                   <QRCode
                     style={{
                       height: "120%",
@@ -167,18 +172,16 @@ const LessonPreview = ({ lesson }) => {
                     }}
                     value={lesson.URL}
                   />
-
                 </div>
               </section>
             </section>
-            {lesson.ShortURL && (
+            {(lesson.ShortURL && (typeof lesson.ShortURL === 'string')) && (
               <section className='d-flex justify-content-center align-items-center'>
                 <CustomLink
                   hrefStr={lesson.ShortURL}
-                  className='serif-text no-link-decoration my-2'
-                  fontSize="1.5em"
+                  className='serif-text no-link-decoration my-2 bitly-txt-link underline-on-hover'
                 >
-                  {lesson.ShortURL}
+                  {lesson.ShortURL.replace("https://", "")}
                 </CustomLink>
               </section>
             )}
@@ -250,6 +253,7 @@ const LessonPreview = ({ lesson }) => {
             } = lessonPart;
             tags = (tags?.length && Array.isArray(tags[0])) ? tags[0] : tags;
             tags = tags?.length ? tags.filter(tag => tag) : [];
+
             const previewTagsProp = tags.length ? { previewTags: tags } : {};
 
             return (
@@ -377,6 +381,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         lesson: JSON.parse(JSON.stringify(lessonToDisplayOntoUi)),
         availLocs: targetLessonLocales,
       },
+      revalidate: 30,
     };
   } catch (error) {
     console.error('Faild to get lesson. Error message: ', error)
@@ -386,6 +391,7 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
         lesson: null,
         availLocs: null,
       },
+      revalidate: 30,
     }
   }
 };
