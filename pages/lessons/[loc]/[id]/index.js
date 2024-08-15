@@ -63,7 +63,6 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 }
 
 const LessonDetails = ({ lesson }) => {
-  console.log('lesson, what is up meng: ', lesson);
   const router = useRouter();
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
@@ -363,8 +362,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             const itemListUpdated = []
 
             for (const itemObj of lesson.itemList) {
-              console.log('itemObj, yo there: ', itemObj);
-
               const { links, itemCat } = itemObj;
 
               if (!itemObj?.links?.length) {
