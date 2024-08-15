@@ -86,6 +86,7 @@ if (!Lessons) {
     },
     Section: Schema.Types.Mixed,
     LsnStatuses: [LsnStatusSchema],
+    ShortURL: String,
   }, { _id: false });
 
   Lessons = model('lessons', LessonSchema);
