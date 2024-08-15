@@ -91,10 +91,10 @@ export default async function handler(request, response) {
             };
 
             cache.set(userEmail, targetUser, 100);
-        } else if (updatedUserProperties.occupation || updatedUserProperties.picture){
+        } else if (updatedUserProperties.occupation || updatedUserProperties.picture) {
             const { occupation, picture } = updatedUserProperties;
             cache.set(userEmail, {
-                occupation, picture,                
+                occupation, picture,
             }, 100);
         }
 
@@ -107,7 +107,6 @@ export default async function handler(request, response) {
         return response.status(200).json({ msg: "Successfully saved the 'aboutUser' form into the db." });
     } catch (error) {
         const { message, code } = error ?? {};
-        console.log('message, hey there: ', message);
         console.error('Failed to save the "AboutUser" form. Reason: ', error);
 
         return response.status(code).json({ msg: message });

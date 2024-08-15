@@ -49,7 +49,7 @@ const SignUpModal = () => {
                     lastName: createAccountForm.lastName,
                     password: createAccountForm.password,
                 },
-                callbackUrl: `${url}/yo-there`,
+                callbackUrl: `${url}/account`,
             }
         );
     };
