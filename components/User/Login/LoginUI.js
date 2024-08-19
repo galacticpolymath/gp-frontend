@@ -9,6 +9,7 @@ import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import GoogleSignIn from "../GoogleSignIn";
 import { useUserEntry } from "../../../customHooks/useUserEntry";
+import { CustomInput } from "../formElements";
 
 const LoginUI = ({
     className = '',
@@ -71,7 +72,16 @@ const LoginUI = ({
                         >
                             Email:
                         </label>
-                        <input
+                        <CustomInput
+                            onChange={event => {
+                                handleOnInputChange(event);
+                            }}
+                            passwordInputStyle={{ width: "100%", height: '45px', fontSize: '20px' }}
+                            inputContainerCss={`${inputFieldClassName} rounded position-relative`}
+                            inputId="email-input"
+                            inputName="email"
+                        />
+                        {/* <input
                             id="email-input"
                             placeholder="Email"
                             style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6' }}
@@ -81,7 +91,7 @@ const LoginUI = ({
                             onChange={event => {
                                 handleOnInputChange(event);
                             }}
-                        />
+                        /> */}
                     </div>
                     <div className="my-2 py-1 d-flex justify-content-center align-items-center">
                         <div className={`${inputFieldClassName} d-flex align-items-center position-relative`}>
@@ -98,15 +108,16 @@ const LoginUI = ({
                         >
                             Password:
                         </label>
-                        <input
-                            id='password-input'
-                            placeholder="Password"
-                            style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6' }}
-                            className={`no-outline p-1 py-2 ${inputFieldClassName}`}
-                            name='password'
+                        <CustomInput
                             onChange={event => {
                                 handleOnInputChange(event);
                             }}
+                            passwordInputStyle={{ width: "90%", height: '45px', fontSize: '20px' }}
+                            iconContainerStyle={{ width: "10%" }}
+                            inputContainerCss={`${inputFieldClassName} rounded position-relative`}
+                            inputId="password-input"
+                            inputName="password"
+                            isPasswordInput
                         />
                     </div>
                     <div className="my-2 py-1 d-flex justify-content-center align-items-center">
