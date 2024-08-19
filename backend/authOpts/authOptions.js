@@ -110,7 +110,6 @@ export const authOptions = {
     }),
     CredentialsProvider({
       async authorize(credentials) {
-        console.log('credentials, yo there: ', credentials);
         try {
           if (
             !credentials.formType ||
@@ -210,7 +209,6 @@ export const authOptions = {
     maxAge: 60 * 60 * 24 * 30,
     encode: async (param) => {
       try {
-        console.log('param, session yo, encode: ', param);
         const { token, secret } = param;
         const { email, name } = token?.payload ?? token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
@@ -336,7 +334,6 @@ export const authOptions = {
       return Promise.resolve(token);
     },
     async session(param) {
-      console.log('param, session yo: ', param);
       const { token, session } = param;
       const { email, roles, name } = token.payload;
       const accessToken = await signJwt(
@@ -380,8 +377,6 @@ export const authOptions = {
         image: picture,
         occupation: occupation,
       };
-
-      console.log('session yo there, updated: ', session);
 
       return Promise.resolve(session);
     },
