@@ -127,6 +127,8 @@ export async function middleware(request) {
       console.log('yo there meng!');
       const authResult = await getAuthorizeReqResult(authorizationStr);
 
+      console.log('authResult, updatePassword: ', authResult);
+
       if (authResult.errResponse) {
         return authResult.errResponse;
       }

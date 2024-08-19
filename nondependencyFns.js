@@ -69,13 +69,15 @@ export const getAuthorizeReqResult = async (
             throw new AuthMiddlwareError(false, response, errMsg);
         }
 
-        const { exp, roles, email } = payload;
-        const currentTimeUTCMs = new Date().getUTCMilliseconds();
+        console.log('payload, hey there: ', payload);
+        const { exp: expTimeSeconds, roles, email } = payload;
+        const currentMiliseconds = Date.now();
+        const expTimeMiliseconds = expTimeSeconds * 1_000;
 
-        console.log('expiration time: ', exp);
-        console.log('currentTimeUTCMs: ', currentTimeUTCMs);
+        console.log('expTimeMiliseconds: ', expTimeMiliseconds);
+        console.log('currentMiliseconds: ', currentMiliseconds);
 
-        if (currentTimeUTCMs > exp) {
+        if (currentMiliseconds > expTimeMiliseconds) {
             const errMsg = 'The json web token has expired.';
             console.log('errMsg: ', errMsg);
             const response = new NextResponse(errMsg, { status: 403 });

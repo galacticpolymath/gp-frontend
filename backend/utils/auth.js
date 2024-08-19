@@ -9,7 +9,11 @@ import { JWT } from 'google-auth-library';
  * @param {string | number} expirationTime 
  * @returns {SignJWT}
  */
-export const signJwt = async (jwtPayload, secret, expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60) => {
+export const signJwt = async (
+  jwtPayload,
+  secret,
+  expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60
+) => {
   const issueAtTime = Math.floor(Date.now() / 1000); // issued at tim
 
   return new SignJWT(jwtPayload)

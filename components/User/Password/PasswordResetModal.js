@@ -69,8 +69,11 @@ const PasswordResetModal = () => {
     const handleContinueBtnClick = async () => {
         try {
             setIsLoadingSpinner(true);
+
             const url = `${window.location.origin}/api/send-password-recover-email`;
             const response = await axios.post(url, { email }, { timeout: 4_000 });
+
+            console.log('response, yo there! ', response);
 
             if (response.status !== 200) {
                 throw new CustomError(`Server error: ${response.data}`);
@@ -120,6 +123,7 @@ const PasswordResetModal = () => {
                 resetUrl(router);
             }
         } catch (error) {
+            console.error('An error has occurred: ', error);
 
             const bodyTxt = error?.message ?? 'Please try again. If this issue persist, please contact support.';
 
@@ -138,7 +142,6 @@ const PasswordResetModal = () => {
     };
 
     useEffect(() => {
-        console.log('router: ', router);
         const isPasswordRecoverModalOnVarInUrl = router ? !!getTargetKeyValFromUrl(router, 'is_password_recover_modal_on') : false;
 
         if (isPasswordRecoverModalOnVarInUrl) {

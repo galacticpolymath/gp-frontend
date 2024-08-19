@@ -13,6 +13,8 @@ import { defautlNotifyModalVal, ModalContext } from '../../../providers/ModalPro
 import { CustomNotifyModalFooter } from '../../Modals/Notify';
 import { useRouter } from 'next/router';
 
+const JWT_EXPIRED_TOKENS_ERR_TYPES = ['ERR_JWT_EXPIRED', 'expiredToken'];
+
 /**
  * @typedef {'input-focus-blue' | 'border-grey-dark'} TFocusCss
  */
@@ -23,6 +25,7 @@ const PasswordResetForm = () => {
     const [, setNotifyModal] = _notifyModal;
     const [, setCustomModalFooter] = _customModalFooter;
     const [isNewPasswordShown, setIsNewPasswordShown] = useState(false);
+    const [isLoadingSpinnerOn, setIsLoadingSpinner] = useState(false);
     const router = useRouter();
     const [isConfirmPasswordShown, setIsConfirmPasswordShown] = useState(false);
     /**
@@ -66,14 +69,16 @@ const PasswordResetForm = () => {
 
     const handleOnSetPasswordBtnClick = async () => {
         try {
+            setIsLoadingSpinner(true);
+
             if (newPassword !== confirm) {
                 throw new Error('Passwords do not match.');
             }
 
             const url = `${window.location.origin}/api/update-password`;
-            const passwordResetToken = router.query?.password_reset_token; 
+            const passwordResetToken = router.query?.password_reset_token;
 
-            if(!passwordResetToken){
+            if (!passwordResetToken) {
                 throw new Error('The password reset token is not present.');
             }
 
@@ -90,6 +95,14 @@ const PasswordResetForm = () => {
 
             router.push('/account?password_changed=true');
         } catch (error) {
+            console.error('An error has occurred in reseting: ', error);
+            const { errType } = error?.response?.data ?? {};
+            let errMsg = error.message ?? 'Failed to update password. Press "Restart Recover" to try again.';
+
+            if ((typeof errType === 'string') && JWT_EXPIRED_TOKENS_ERR_TYPES.includes(errType)) {
+                errMsg = 'Time window for resetting your password has expired. Please try again.';
+            }
+
             setCustomModalFooter(
                 <CustomNotifyModalFooter
                     footerClassName='d-flex justify-content-end'
@@ -99,11 +112,13 @@ const PasswordResetForm = () => {
                 />
             );
             setNotifyModal({
-                headerTxt: error.message ?? 'Failed to update password. Press "Restart Recover" to try again.',
+                headerTxt: errMsg,
                 bodyTxt: '',
                 isDisplayed: true,
                 handleOnHide: closeNotifyModal,
             });
+        } finally {
+            setIsLoadingSpinner(false);
         }
     };
 
@@ -217,7 +232,19 @@ const PasswordResetForm = () => {
                 isDisabled={(newPassword && confirm) ? password.confirm !== password.new : true}
                 classNameStr='col-12 col-sm-6 no-btn-styles bg-primary rounded py-2 mt-2'
             >
-                <span className='text-white'>Set Password</span>
+                {isLoadingSpinnerOn
+                    ?
+                    (
+                        <div
+                            className="spinner-border spinner-border-sm text-light"
+                            role="status"
+                        >
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    )
+                    :
+                    <span className="text-white">Set Password</span>
+                }
             </Button>
         </form>
     );

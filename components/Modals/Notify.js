@@ -2,13 +2,17 @@
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
-
 import { useContext, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { ModalContext, defautlNotifyModalVal } from "../../providers/ModalProvider";
 import { useRouter } from "next/router";
 
-export const CustomNotifyModalFooter = ({ footerClassName = 'd-flex justify-content-center', closeNotifyModal, customBtnTxt, handleCustomBtnClick }) => {
+export const CustomNotifyModalFooter = ({
+    footerClassName = 'd-flex justify-content-center',
+    closeNotifyModal,
+    customBtnTxt,
+    handleCustomBtnClick,
+}) => {
     return (
         <Modal.Footer className={footerClassName}>
             <Button
@@ -17,7 +21,7 @@ export const CustomNotifyModalFooter = ({ footerClassName = 'd-flex justify-cont
                     width: '120px',
                     backgroundColor: '#898F9C',
                 }}
-                className=""
+                className="border"
             >
                 <span className='text-white'>
                     Close

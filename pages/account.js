@@ -129,9 +129,9 @@ const AccountPg = () => {
         const urlVals = getAllUrlVals(router)?.flatMap(urlVal => urlVal.split('='));
         const urlValsChunks = urlVals?.length ? getChunks(urlVals, 2) : []
         const didPasswordChange = urlValsChunks.find(([key, val]) => {
-            if((key === 'password_changed') && getIsParsable(val)){
+            if ((key === 'password_changed') && getIsParsable(val)) {
                 return JSON.parse(val);
-            }   
+            }
 
             return false;
         }) !== undefined;
@@ -141,7 +141,7 @@ const AccountPg = () => {
                 setNotifyModal({
                     isDisplayed: true,
                     bodyTxt: "",
-                    headerTxt: 'Password updated! You can now login',
+                    headerTxt: 'Password updated! You can now login.',
                     handleOnHide: () => {
                         resetUrl(router);
                     },
@@ -158,7 +158,7 @@ const AccountPg = () => {
             setTimeout(() => {
                 setIsAboutMeFormModalDisplayed(true);
             }, 300);
-        } 
+        }
     }, [status]);
 
     if (status === 'loading') {

@@ -25,6 +25,7 @@ export default async function handler(request, response) {
             throw new CustomError('Failed to send the email to the target user', 500, 'emailSendError');
         }
 
+        // const expirationTime = 
         const resetPasswordToken = await signJwt({ email }, process.env.NEXTAUTH_SECRET, '5 minutes');
         const resetPasswordLink = `${request.headers.origin}/password-reset/?${PASSWORD_RESET_TOKEN_VAR_NAME}=${resetPasswordToken}`;
         const htmlMsg = user.provider === 'credentials'
