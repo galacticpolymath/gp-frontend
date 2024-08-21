@@ -79,7 +79,7 @@ const releases = [
     releaseInfoTxt: "The Department of Chemical and Process Engineering at the University of Canterbury",
     customCss: 'col-12 col-md-3 col-lg-4 mt-3 mt-md-0',
     sponsorImgClassName: 'w-100 sponsor-img-release',
-  }
+  },
   
 ];
 
