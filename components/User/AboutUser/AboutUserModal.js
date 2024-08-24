@@ -27,9 +27,9 @@ const SUBJECTS_OPTIONS = [
     'other:',
 ];
 const WHAT_BRINGS_YOU_TO_SITE_OPTS = [
-    'interdisciplinary lesson',
-    'science research',
-    'culturally responsive',
+    'interdisciplinary lessons',
+    'lessons connected to research',
+    'culturally responsive lessons',
     'free resources',
 ];
 

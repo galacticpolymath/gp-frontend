@@ -4,6 +4,7 @@
 /* eslint-disable indent */
 import { useContext, useEffect, useState } from "react";
 import Button from "../../../General/Button";
+import Accordion from 'react-bootstrap/Accordion';
 import { UserContext } from "../../../../providers/UserProvider";
 
 /**
@@ -140,7 +141,7 @@ const CountrySection = ({ countryNames, _errors }) => {
                                 );
                             })
                                 :
-                                <span className="ps-2" style={{ fontStyle: "italic" }}>Find your country.</span>
+                                <span className="ps-2" style={{ fontStyle: "italic" }}>Type your country.</span>
                             }
                         </section>
                     </div>

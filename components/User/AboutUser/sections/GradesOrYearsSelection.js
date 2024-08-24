@@ -8,7 +8,7 @@ import { UserContext } from '../../../../providers/UserProvider';
 const AGE_GROUPS_FIELD_U_S = 'U.S.';
 const AGE_GROUPS_FIELD_NON_U_S = 'Outside U.S.';
 const AGE_GROUPS = {
-    [AGE_GROUPS_FIELD_U_S]: ['K-4', '5', '6', '7', '8', '9', '10', '11', '12','College/Univ.'],
+    [AGE_GROUPS_FIELD_U_S]: ['K-4', '5', '6', '7', '8', '9', '10', '11', '12', 'College/Univ.'],
     [AGE_GROUPS_FIELD_NON_U_S]: ['1-5', '6', '7', '8', '9', '10', '11', '12', '13', 'University'],
 };
 
@@ -52,10 +52,6 @@ const GradesOrYearsSelection = () => {
         }));
     };
 
-    useEffect(() => {
-        console.log('selection: ', selection);
-    });
-
     return (
         <section className='d-flex flex-column col-12 col-lg-6'>
             <label>
@@ -67,18 +63,28 @@ const GradesOrYearsSelection = () => {
                         defaultStyleObj={{
                             width: '155px',
                         }}
-                        classNameStr={`py-1 grades-or-years-usa-btn no-btn-styles ${selection === AGE_GROUPS_FIELD_U_S ? 'selected-grade-or-years-opt' : ''}`}
+                        classNameStr={`py-1 grades-or-years-usa-btn d-flex flex-column justify-content-center align-items-center no-btn-styles ${selection === AGE_GROUPS_FIELD_U_S ? 'selected-grade-or-years-opt' : ''}`}
                         handleOnClick={handleGradesOrYearsBtnClick(AGE_GROUPS_FIELD_U_S)}
                         isDisabled={selection === AGE_GROUPS_FIELD_U_S}
                     >
-                        {AGE_GROUPS_FIELD_U_S}
+                        <span>
+                            {AGE_GROUPS_FIELD_U_S}
+                        </span>
+                        <span>
+                            (Grades)
+                        </span>
                     </Button>
                     <Button
-                        classNameStr={`py-1 grades-or-years-non-usa-btn no-btn-styles ${!selection || (selection && !Object.keys(AGE_GROUPS).includes(selection)) ? 'grades-or-years-non-usa-btn-unselected' : ''} ${selection === AGE_GROUPS_FIELD_NON_U_S ? 'selected-grade-or-years-opt' : ''}`}
+                        classNameStr={`py-1 d-flex flex-column justify-content-center align-items-center grades-or-years-non-usa-btn no-btn-styles ${!selection || (selection && !Object.keys(AGE_GROUPS).includes(selection)) ? 'grades-or-years-non-usa-btn-unselected' : ''} ${selection === AGE_GROUPS_FIELD_NON_U_S ? 'selected-grade-or-years-opt' : ''}`}
                         handleOnClick={handleGradesOrYearsBtnClick(AGE_GROUPS_FIELD_NON_U_S)}
                         isDisabled={selection === AGE_GROUPS_FIELD_NON_U_S}
                     >
-                        {AGE_GROUPS_FIELD_NON_U_S}
+                        <span>
+                            {AGE_GROUPS_FIELD_NON_U_S}
+                        </span>
+                        <span>
+                            (Years)
+                        </span>
                     </Button>
                 </section>
                 <section style={{ maxWidth: '300px' }} className='d-flex pt-2 ps-2 flex-wrap flex-column flex-sm-row'>
