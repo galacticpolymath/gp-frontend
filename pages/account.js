@@ -18,6 +18,58 @@ import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
 import { getIsParsable, resetUrl } from '../globalFns';
 
+export const getAboutUserFormForClient = aboutUserFormFromServer => {
+    const aboutUserFormForClient = { ...aboutUserFormDefault };
+    const {
+        reasonsForSiteVisit,
+        subjects,
+        gradesOrYears,
+        classroomSize,
+        zipCode,
+        country,
+        occupation,
+        isTeacher,
+    } = aboutUserFormFromServer;
+
+    if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
+        const reasonsForSiteVisitMap = new Map(Object.entries(aboutUserFormFromServer.reasonsForSiteVisit));
+        aboutUserFormForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;
+    }
+
+    if (subjects && Object.entries(subjects).length > 0) {
+        const subjectsTeaching = new Map(Object.entries(subjects));
+        aboutUserFormForClient.subjects = subjectsTeaching;
+    } else if (subjects && Object.entries(subjects).length == 0) {
+        aboutUserFormForClient.subjects = aboutUserFormDefault.subjects;
+    }
+
+    if (gradesOrYears && (Object.entries(gradesOrYears).length > 0)) {
+        aboutUserFormForClient.gradesOrYears = gradesOrYears;
+    } else if (gradesOrYears && (Object.entries(gradesOrYears).length === 0)) {
+        aboutUserFormForClient.gradesOrYears = aboutUserFormDefault.gradesOrYears
+    }
+
+    if (classroomSize) {
+        aboutUserFormForClient.classroomSize = classroomSize;
+    }
+
+    if (zipCode) {
+        aboutUserFormForClient.zipCode = zipCode;
+    }
+
+    if (country) {
+        aboutUserFormForClient.country = country;
+    }
+
+    if (occupation) {
+        aboutUserFormForClient.occupation = occupation;
+    }
+
+    aboutUserFormForClient.isTeacher = isTeacher ?? false;
+
+    return aboutUserFormForClient;
+}
+
 /**
  *  @param {import('next/router').NextRouter} router 
  *  @param {string} urlField 

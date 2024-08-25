@@ -12,7 +12,7 @@ import { UserContext } from '../../../providers/UserProvider';
 import CountrySection from './sections/CountrySection';
 import SubjectOption from './sections/SubjectOption';
 import SubmitAboutUserFormBtn from './SubmitAboutUserFormBtn';
-import { getUrlVal } from '../../../pages/account';
+import { getAboutUserFormForClient, getUrlVal } from '../../../pages/account';
 import { useRouter } from 'next/router';
 import { CustomCloseButton } from '../../../ModalsContainer';
 import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from 'react-icons/io';
@@ -68,6 +68,15 @@ const AboutUserModal = () => {
     const modalBodyRef = useRef();
 
     const handleOnHide = () => {
+        const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
+
+        if (aboutUserFormStringified) {
+            setTimeout(() => {
+                const aboutUserForm = JSON.parse(aboutUserFormStringified);
+                setAboutUserForm(getAboutUserFormForClient(aboutUserForm));
+            }, 300);
+        }
+
         setIsAboutMeFormModalDisplayed(false);
     };
 
