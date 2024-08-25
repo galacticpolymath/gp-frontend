@@ -6,7 +6,7 @@
 /* eslint-disable indent */
 import { useContext, useState } from "react";
 import Button from "../../General/Button";
-import { UserContext } from "../../../providers/UserProvider";
+import { aboutUserFormDefault, UserContext } from "../../../providers/UserProvider";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { CustomError } from "../../../backend/utils/errors";
@@ -57,23 +57,31 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 subjects,
                 occupation,
                 gradesOrYears,
+                isTeacher,
             } = aboutUserFormClone;
             const errors = new Map();
 
-            console.log("aboutUserFormClone, hey there: ", aboutUserFormClone);
-
-            if (!gradesOrYears?.ageGroupsTaught?.length) {
-                delete aboutUserFormClone.gradesOrYears;
+            if (!gradesOrYears?.ageGroupsTaught?.length || !isTeacher) {
+                aboutUserFormClone.gradesOrYears = aboutUserFormDefault.gradesOrYears;
             }
 
-            if (subjects?.size > 0) {
+            if (!isTeacher) {
+                aboutUserFormClone.classroomSize = 0;
+            }
+
+            if (isTeacher && (subjects?.size > 0)) {
                 subjects = filterOutFalseyValMapProperties(subjects);
             }
 
-            if (subjects?.size > 0) {
+            if (isTeacher && (subjects?.size > 0)) {
                 aboutUserFormClone = {
                     ...aboutUserFormClone,
                     subjects: convertMapToObj(subjects),
+                };
+            } else if (!isTeacher) {
+                aboutUserFormClone = {
+                    ...aboutUserFormClone,
+                    subjects: {},
                 };
             }
 
@@ -109,6 +117,8 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
 
                 throw new CustomError(errMsg, null, "invalidAboutUserForm.");
             }
+
+            console.log("aboutUserForm: ", aboutUserForm);
 
             const responseBody = {
                 aboutUserForm: aboutUserFormClone,

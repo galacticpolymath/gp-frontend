@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import Button from '../../../General/Button';
 import { UserContext } from '../../../../providers/UserProvider';
 
@@ -15,6 +15,7 @@ const AGE_GROUPS = {
 const GradesOrYearsSelection = () => {
     const { _aboutUserForm } = useContext(UserContext);
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
+    console.log('aboutUserForm: ', aboutUserForm);
     const { selection, ageGroupsTaught } = aboutUserForm.gradesOrYears;
     /** @type {[import('../../../../providers/ModalProvider').TUserForm, Function]} */
     const ageGroupOptions = AGE_GROUPS[(selection && Object.keys(AGE_GROUPS).includes(selection)) ? selection : 'U.S.'];
@@ -100,7 +101,7 @@ const GradesOrYearsSelection = () => {
                                     name='subject'
                                     value={ageGroup}
                                     onChange={handleCheckboxInputChange}
-                                    checked={ageGroupsTaught.includes(ageGroup)}
+                                    checked={ageGroupsTaught?.includes(ageGroup)}
                                     disabled={!selection}
                                 />
                                 <span style={{ opacity: !selection ? .3 : 1 }} className='ms-1 txt-color-for-aboutme-modal text-nowrap'>

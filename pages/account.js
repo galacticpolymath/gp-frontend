@@ -104,10 +104,14 @@ const AccountPg = () => {
                     if (subjects && Object.entries(subjects).length > 0) {
                         const subjectsTeaching = new Map(Object.entries(subjects));
                         aboutUserFormForClient.subjects = subjectsTeaching;
+                    } else if (subjects && Object.entries(subjects).length == 0) {
+                        aboutUserFormForClient.subjects = aboutUserFormDefault.subjects;
                     }
 
-                    if (gradesOrYears && Object.entries(gradesOrYears).length > 0) {
+                    if (gradesOrYears && (Object.entries(gradesOrYears).length > 0)) {
                         aboutUserFormForClient.gradesOrYears = gradesOrYears;
+                    } else if (gradesOrYears && (Object.entries(gradesOrYears).length === 0)) {
+                        aboutUserFormForClient.gradesOrYears = aboutUserFormDefault.gradesOrYears
                     }
 
                     if (classroomSize) {

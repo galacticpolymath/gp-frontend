@@ -45,22 +45,10 @@ export default async function handler(request, response) {
             throw new CustomError("Received a empty object for the 'aboutUserForm' field.", 400);
         }
 
-        const VALID_FALSEY_VALS = ['zipCode', 'isTeacher'];
         const { userEmail, aboutUserForm } = request.body;
-        const aboutUserFormFalseyValsFiltered = Object.entries(aboutUserForm)
-            .filter(([key, val]) => {
-                if (val && (typeof val === 'object')) {
-                    return Object.keys(val).length > 0;
-                }
+        const aboutUserFormKeyVals = Object.entries(aboutUserForm);
 
-                if (VALID_FALSEY_VALS.includes(key)) {
-                    return true;
-                }
-
-                return val;
-            });
-
-        if (!aboutUserFormFalseyValsFiltered?.length) {
+        if (!aboutUserFormKeyVals?.length) {
             throw new CustomError("The 'aboutUser' form is empty or has falsey values");
         }
 
@@ -73,8 +61,7 @@ export default async function handler(request, response) {
         /** 
          * @type {import("../../providers/UserProvider").TAboutUserForm}
         */
-        const updatedUserProperties = aboutUserFormFalseyValsFiltered.reduce((accumObj, keyAndVal) => {
-            const [key, val] = keyAndVal;
+        const updatedUserProperties = aboutUserFormKeyVals.reduce((accumObj, [key, val]) => {
             const accumObjUpdated = {
                 ...accumObj,
                 [key]: val,

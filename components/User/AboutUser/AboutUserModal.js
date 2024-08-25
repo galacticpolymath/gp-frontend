@@ -271,7 +271,7 @@ const AboutUserModal = () => {
                             <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('zipCode') ?? ''}</span>
                         </section>
                     </section>
-                    <Accordion defaultActiveKey={aboutUserForm.isTeacher ? "0" : ""} className=''>
+                    <Accordion activeKey={aboutUserForm.isTeacher ? "0" : ""} className=''>
                         <div style={{ borderBottom: 'solid 1.7px lightgrey' }} className='d-flex justify-content-between'>
                             <section className='d-flex justify-content-center align-items-center'>
                                 <AccordionToggleBtn
