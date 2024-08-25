@@ -60,6 +60,8 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
             } = aboutUserFormClone;
             const errors = new Map();
 
+            console.log("aboutUserFormClone, hey there: ", aboutUserFormClone);
+
             if (!gradesOrYears?.ageGroupsTaught?.length) {
                 delete aboutUserFormClone.gradesOrYears;
             }
@@ -112,8 +114,6 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 aboutUserForm: aboutUserFormClone,
                 userEmail: user.email,
             };
-            debugger;
-
             const response = await axios.put(
                 `${window.location.origin}/api/save-about-user-form`,
                 responseBody,

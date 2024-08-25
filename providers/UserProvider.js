@@ -23,12 +23,14 @@ import { createContext, useState } from "react";
  */
 
 /**
+ * @global
  * @typedef {Object} TAboutUserForm
  * @property {Map<string, string>} subjects
  * @property {Map<string, string>} reasonsForSiteVisit
  * @property {TGradesOrYears} gradesOrYears
  * @property {string} country
  * @property {string} occupation
+ * @property {boolean} isTeacher
  * @property {number | null} zipCode
  * @property {number} classroomSize
 */
@@ -40,11 +42,14 @@ import { createContext, useState } from "react";
  * @property {TGradesOrYears} gradesOrYears
  * @property {string} country
  * @property {string} occupation
+ * @property {boolean} isTeacher
  * @property {number | null} zipCode
  * @property {number} classroomSize
 */
 
-/** @type {TAboutUserForm}*/
+/** 
+ * @global 
+ * @type {TAboutUserForm}*/
 export const aboutUserFormDefault = {
     gradesOrYears: {
         selection: 'grades',

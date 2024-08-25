@@ -10,16 +10,11 @@ import { CustomError } from "../../backend/utils/errors";
 */
 export default async function handler(request, response) {
     try {
-        if (!request?.query?.email || (typeof request?.query?.email !== 'string')){
+        if (!request?.query?.email || (typeof request?.query?.email !== 'string')) {
             throw new CustomError("The 'email' of the email is not present in the params of the request. ", 400);
         }
 
-        // if (!request?.query?.domainAndExt || (typeof request?.query?.domainAndExt !== 'string')){
-        //     throw new CustomError("The 'domain' of the email is not present in the params of the request. ", 400);
-        // }
-
-        // const userEmail = `${request.query.username}@${request.query.domainAndExt}`;
-        const dbUser = await getUserByEmail(request.query.email, { 
+        const dbUserAboutUserForm = await getUserByEmail(request.query.email, {
             gradesOrYears: 1,
             reasonsForSiteVisit: 1,
             subjects: 1,
@@ -27,14 +22,15 @@ export default async function handler(request, response) {
             country: 1,
             zipCode: 1,
             occupation: 1,
+            isTeacher: 1,
             _id: 0,
-         });
+        });
 
-        if(!dbUser){
+        if (!dbUserAboutUserForm) {
             throw new CustomError("User not found.", 404);
         }
 
-        return response.status(200).json(dbUser);
+        return response.status(200).json(dbUserAboutUserForm);
     } catch (error) {
         const { code, message } = error ?? {};
 

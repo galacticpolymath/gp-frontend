@@ -45,6 +45,7 @@ export default async function handler(request, response) {
             throw new CustomError("Received a empty object for the 'aboutUserForm' field.", 400);
         }
 
+        const VALID_FALSEY_VALS = ['zipCode', 'isTeacher'];
         const { userEmail, aboutUserForm } = request.body;
         const aboutUserFormFalseyValsFiltered = Object.entries(aboutUserForm)
             .filter(([key, val]) => {
@@ -52,7 +53,7 @@ export default async function handler(request, response) {
                     return Object.keys(val).length > 0;
                 }
 
-                if (key === 'zipCode') {
+                if (VALID_FALSEY_VALS.includes(key)) {
                     return true;
                 }
 
@@ -69,7 +70,9 @@ export default async function handler(request, response) {
             throw new CustomError("The user email does not exist in the database.", 404);
         }
 
-        /** @type {import("../../providers/UserProvider").TUserForm} */
+        /** 
+         * @type {import("../../providers/UserProvider").TAboutUserForm}
+        */
         const updatedUserProperties = aboutUserFormFalseyValsFiltered.reduce((accumObj, keyAndVal) => {
             const [key, val] = keyAndVal;
             const accumObjUpdated = {
@@ -79,6 +82,7 @@ export default async function handler(request, response) {
 
             return accumObjUpdated;
         }, {});
+
         let targetUser = cache.get(userEmail);
 
         if (targetUser && getIsObj(targetUser) && (updatedUserProperties.occupation || updatedUserProperties.picture)) {
@@ -97,6 +101,8 @@ export default async function handler(request, response) {
                 occupation, picture,
             }, 100);
         }
+
+        console.log('updatedUserProperties, sup there: ', updatedUserProperties);
 
         const updateUserResult = await updateUser({ email: userEmail }, updatedUserProperties);
 
