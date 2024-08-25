@@ -3,13 +3,14 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 import { useContext, useState } from 'react';
-import { CloseButton, Modal, ModalBody, ModalHeader } from 'react-bootstrap';
+import { CloseButton, Modal, ModalBody, ModalFooter, ModalHeader } from 'react-bootstrap';
 import { ModalContext } from '../../../providers/ModalProvider';
 import { useUserEntry } from '../../../customHooks/useUserEntry';
 import Button from '../../General/Button';
 import CreateAccountWithGoogle from '../GoogleSignIn';
 import { FcGoogle } from 'react-icons/fc';
 import { CreateAccountInputSection, ErrorTxt } from '../formElements';
+import { signIn } from 'next-auth/react';
 
 const SignUpModal = () => {
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
@@ -17,6 +18,14 @@ const SignUpModal = () => {
     const [errors, setErrors] = useState(new Map());
     const [createAccountForm, setCreateAccountForm] = _createAccountForm;
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
+    /**
+     * @typedef {"I solemnly swear that I am a teacher 🤨." | "I solemnly swear that I am a teacher 🤨 (REQUIRED)."} TUserIsTeacherTxt
+     * @type {[TUserIsTeacherTxt, import('react').Dispatch<import('react').SetStateAction<TUserIsTeacherTxt>>]}
+     */
+    const [userIsTeacherTxt, setUserIsTeacherTxt] = useState("*I solemnly swear that I am a teacher 🤨.");
+    const [wasChecked, setWasChecked] = useState(false);
+    const callbackUrl = `${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`;
+    const didCheckboxErrOccur = userIsTeacherTxt === "I solemnly swear that I am a teacher 🤨 (REQUIRED).";
 
     const handleOnHide = () => {
         setIsCreateAccountModalDisplayed(false);
@@ -61,6 +70,22 @@ const SignUpModal = () => {
         }));
     };
 
+    const handleCreateAnAccountWithGoogleBtnClick = event => {
+        event.preventDefault();
+
+        if (!wasChecked) {
+            setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
+            return;
+        }
+
+        if (!callbackUrl) {
+            console.error('The callback url cannot be empty.');
+            return;
+        }
+
+        signIn('google', { callbackUrl: callbackUrl });
+    };
+
     return (
         <Modal
             show={isCreateAccountModalDisplayed}
@@ -68,7 +93,7 @@ const SignUpModal = () => {
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='create-account-ui-modal pt-2 box-shadow-login-ui-modal'
         >
-            <ModalHeader className='d-flex flex-column'>
+            <ModalHeader className='d-flex flex-column py-2'>
                 <CloseButton onClick={handleOnHide} className='position-absolute top-0 end-0 me-1 mt-1' />
                 <div className="d-flex justify-content-center align-items-center">
                     <img
@@ -82,9 +107,10 @@ const SignUpModal = () => {
                     Sign up
                 </h5>
             </ModalHeader>
-            <ModalBody>
-                <section className='d-flex justify-content-center align-items-center'>
+            <ModalBody className='pt-2 px-1 pb-2'>
+                <section className='mt-2 d-flex justify-content-center align-items-center'>
                     <CreateAccountWithGoogle
+                        handleGoogleBtnClickCustom={handleCreateAnAccountWithGoogleBtnClick}
                         callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`}
                         className='rounded p-2 w-50 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn'
                     >
@@ -105,7 +131,7 @@ const SignUpModal = () => {
                         <div style={{ height: '3px', width: '95%' }} className="bg-black rounded ms-3 ms-sm-2" />
                     </div>
                 </div>
-                <form className='mt-3 row d-flex justify-content-center align-items-center flex-column'>
+                <form className='mt-2 row d-flex justify-content-center align-items-center flex-column'>
                     <div className='row d-flex justify-content-center align-items-center'>
                         <div className="d-flex col-sm-6 flex-column ">
                             <label
@@ -230,7 +256,7 @@ const SignUpModal = () => {
                             </section>
                         </div>
                     </div>
-                    <div className='d-flex justify-content-center align-items-center py-2 mt-3'>
+                    <div className='d-flex justify-content-center align-items-center py-2 mt-1'>
                         <Button
                             handleOnClick={handleSubmitBtnClick}
                             classNameStr="bg-primary rounded border-0 py-2 w-50 text-white underline-on-hover"
@@ -240,6 +266,17 @@ const SignUpModal = () => {
                     </div>
                 </form>
             </ModalBody>
+            <ModalFooter className='d-flex justify-content-center align-items-center'>
+                <input
+                    type="checkbox"
+                    id="demoCheckbox"
+                    name="checkbox"
+                    style={{ border: "solid 1.5px red" }}
+                    value={wasChecked}
+                    onChange={() => setWasChecked(state => !state)}
+                />
+                <label htmlFor="demoCheckbox" style={{ fontSize: "18px" }}>*I solemnly swear that I am a teacher 🤨.</label>
+            </ModalFooter>
         </Modal>
     );
 };

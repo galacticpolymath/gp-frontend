@@ -62,7 +62,7 @@ const AboutUserModal = () => {
     const [countryNames, setCountryNames] = useState([]);
     const [errors, setErorrs] = useState(new Map());
     /**
-     * @type {[import('../../../providers/UserProvider').TAboutUserForm, import('react').SetStateAction<import('../../../providers/UserProvider').TAboutUserForm>]} */
+     * @type {[import('../../../providers/UserProvider').TAboutUserForm, import('react').Dispatch<import('react').SetStateAction<import('../../../providers/UserProvider').TAboutUserForm>>]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const router = useRouter();
     const modalBodyRef = useRef();
