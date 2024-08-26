@@ -45,13 +45,6 @@ const SignUpModal = () => {
     };
 
     const handleSubmitBtnClick = async () => {
-        if (createAccountForm.confirmPassword !== createAccountForm.password) {
-            const errors = new Map([['password', 'Paswords must match'], ['confirmPassword', 'Passwords must match']]);
-            setErrors(errors);
-            return;
-        }
-
-        const url = window.location.href.includes('?') ? window.location.href.split('?')[0] : window.location.href;
         const errors = await validateForm("createAccount");
 
         console.log('errors: ', errors);
@@ -70,6 +63,8 @@ const SignUpModal = () => {
             setErrors(errors);
             return;
         }
+
+        const url = window.location.href.includes('?') ? window.location.href.split('?')[0] : window.location.href;
 
         sendFormToServer(
             'createAccount',
@@ -150,7 +145,8 @@ const SignUpModal = () => {
                     <CreateAccountWithGoogle
                         handleGoogleBtnClickCustom={handleCreateAnAccountWithGoogleBtnClick}
                         callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`}
-                        className='rounded shadow px-3 py-2  py-sm-4 px-sm-5 w-50 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn'
+                        className='rounded shadow w-75 px-3 py-2  py-sm-4 px-sm-5 w-50 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn'
+                        style={{ maxWidth: '400px' }}
 
                     >
                         <FcGoogle className="mx-2" size={31} />

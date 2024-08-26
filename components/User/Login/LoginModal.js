@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable quotes */
 import { useContext, useState } from "react";
-import { CloseButton, Modal } from "react-bootstrap";
+import { CloseButton, Modal, ModalHeader } from "react-bootstrap";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { ModalContext } from "../../../providers/ModalProvider";
@@ -79,21 +79,28 @@ const LoginModal = () => {
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='login-ui-modal bg-white shadow-lg rounded pt-2 box-shadow-login-ui-modal'
         >
-            <div className="py-3 pt-sm-3">
+            <ModalHeader className='d-flex flex-column py-3'>
                 <CloseButton className='position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey' onClick={handleOnHide} />
-                <div className="d-flex justify-content-center align-items-center">
-                    <img
-                        src={typeof window === 'undefined' ? '' : `${window.location.origin}/imgs/gp_logo_gradient_transBG.png`}
-                        alt="gp_logo"
-                        width={75}
-                        height={75}
-                    />
-                </div>
+                <img
+                    className='position-absolute top-0 start-0 me-5 mt-1'
+                    src='imgs/gp_logo_gradient_transBG.png'
+                    alt="gp_logo"
+                    width={50}
+                    height={50}
+                    style={{
+                        transform: 'translate(17%, 6%)',
+                    }}
+                />
                 <h5 className="text-black text-center mt-2">GP Login</h5>
+            </ModalHeader>
+            <div className="py-3 py-sm-2">
                 <section className="d-flex justify-content-center align-items-center pt-3">
-                    <GoogleSignIn callbackUrl={(typeof window !== 'undefined') ? window.location.href : ''}>
-                        <FcGoogle className="mx-2" />
-                        <span style={{ fontSize: '16px' }}>
+                    <GoogleSignIn
+                        callbackUrl={(typeof window !== 'undefined') ? window.location.href : ''}
+                        className="rounded shadow px-3 py-2 w-75 py-sm-4 px-sm-5 border"
+                    >
+                        <FcGoogle className="mx-2" size={31} />
+                        <span style={{ fontSize: '18px' }}>
                             Log in with Google.
                         </span>
                     </GoogleSignIn>
