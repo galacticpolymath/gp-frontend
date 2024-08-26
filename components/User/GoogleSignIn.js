@@ -18,11 +18,13 @@ const GoogleSignIn = ({
         </>
     ),
     callbackUrl = '',
+    handleGoogleBtnClickCustom,
+    style = {},
     className = 'rounded p-2 d-flex justify-content-center align-items-center border',
 }) => {
-    const handleBtnClick = event => {
+    const handleGoogleBtnClickDefault = event => {
         event.preventDefault();
-        
+
         if (!callbackUrl) {
             console.error('The callback url cannot be empty.');
             return;
@@ -33,9 +35,10 @@ const GoogleSignIn = ({
 
     return (
         <Button
+            defaultStyleObj={style}
             backgroundColor="white"
             classNameStr={className}
-            handleOnClick={handleBtnClick}
+            handleOnClick={typeof handleGoogleBtnClickCustom === 'function' ? handleGoogleBtnClickCustom : handleGoogleBtnClickDefault}
         >
             {children}
         </Button>

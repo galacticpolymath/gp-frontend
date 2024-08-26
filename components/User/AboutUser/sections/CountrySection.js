@@ -140,7 +140,7 @@ const CountrySection = ({ countryNames, _errors }) => {
                                 );
                             })
                                 :
-                                <span className="ps-2" style={{ fontStyle: "italic" }}>Find your country.</span>
+                                <span className="ps-2" style={{ fontStyle: "italic" }}>Type your country.</span>
                             }
                         </section>
                     </div>

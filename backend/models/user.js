@@ -32,6 +32,7 @@ export const UserSchema = new Schema({
     iterations: { type: Number, required: false },
   },
   provider: String,
+  isTeacher: { type: Boolean, required: true, default: () => false },
   providerAccountId: String,
   emailVerified: { type: Date, required: false },
   name: {
@@ -46,7 +47,7 @@ export const UserSchema = new Schema({
     ageGroupsTaught: [String],
     selection: String,
   },
-  reasonsForSiteVisit:{ type: Object, required: false },
+  reasonsForSiteVisit: { type: Object, required: false },
   subjects: { type: Object, required: false },
   classroomSize: { type: Number, required: false },
   roles: { type: [String], required: true },

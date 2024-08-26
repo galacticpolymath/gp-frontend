@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-import { Modal, ModalBody, ModalTitle } from 'react-bootstrap';
+import { Accordion, Modal, ModalBody, ModalTitle, useAccordionButton } from 'react-bootstrap';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ModalContext } from '../../../providers/ModalProvider';
 import GradesOrYearsSelection from './sections/GradesOrYearsSelection';
@@ -12,10 +12,31 @@ import { UserContext } from '../../../providers/UserProvider';
 import CountrySection from './sections/CountrySection';
 import SubjectOption from './sections/SubjectOption';
 import SubmitAboutUserFormBtn from './SubmitAboutUserFormBtn';
-import { getUrlVal } from '../../../pages/account';
+import { getAboutUserFormForClient, getUrlVal } from '../../../pages/account';
 import { useRouter } from 'next/router';
 import { CustomCloseButton } from '../../../ModalsContainer';
-import { IoMdClose } from 'react-icons/io';
+import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from 'react-icons/io';
+import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
+
+const AccordionToggleBtn = ({ children = <></>, btnClassName = "", eventKey, handleBtnClick }) => {
+    const handleAccordionToggleBtnClick = useAccordionButton(eventKey, event => {
+        event.preventDefault();
+
+        if (typeof handleBtnClick === 'function') {
+            handleBtnClick();
+        }
+    });
+
+    return (
+        <button
+            type="button"
+            onClick={handleAccordionToggleBtnClick}
+            className={btnClassName}
+        >
+            {children}
+        </button>
+    );
+};
 
 const SUBJECTS_OPTIONS = [
     'science',
@@ -27,9 +48,9 @@ const SUBJECTS_OPTIONS = [
     'other:',
 ];
 const WHAT_BRINGS_YOU_TO_SITE_OPTS = [
-    'interdisciplinary lesson',
-    'science research',
-    'culturally responsive',
+    'interdisciplinary lessons',
+    'lessons connected to research',
+    'culturally responsive lessons',
     'free resources',
 ];
 
@@ -40,13 +61,32 @@ const AboutUserModal = () => {
     const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
     const [countryNames, setCountryNames] = useState([]);
     const [errors, setErorrs] = useState(new Map());
+    /**
+     * @type {[import('../../../providers/UserProvider').TAboutUserForm, import('react').Dispatch<import('react').SetStateAction<import('../../../providers/UserProvider').TAboutUserForm>>]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const router = useRouter();
     const modalBodyRef = useRef();
 
     const handleOnHide = () => {
+        const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
+
+        if (aboutUserFormStringified) {
+            setTimeout(() => {
+                const aboutUserForm = JSON.parse(aboutUserFormStringified);
+                setAboutUserForm(getAboutUserFormForClient(aboutUserForm));
+            }, 300);
+        }
+
         setIsAboutMeFormModalDisplayed(false);
     };
+
+    const handleAreYouATeacherBtnClick = () => {
+        setAboutUserForm(state => ({ ...state, isTeacher: !state.isTeacher }));
+    };
+
+    useEffect(() => {
+        console.log('aboutUserForm: ', aboutUserForm);
+    });
 
     const handleWhatBringsYouToSiteInputChange = event => {
         const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit) ?? new Map();
@@ -162,6 +202,10 @@ const AboutUserModal = () => {
         })();
     }, []);
 
+    useEffect(() => {
+        console.log("aboutUserForm.isTeacher: ", aboutUserForm.isTeacher);
+    });
+
     return (
         <Modal
             show={isAboutMeFormModalDisplayed}
@@ -236,52 +280,75 @@ const AboutUserModal = () => {
                             <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('zipCode') ?? ''}</span>
                         </section>
                     </section>
-                    <section style={{ columnCount: 2 }} className='mt-3 mb-2 row'>
-                        <GradesOrYearsSelection />
-                        <section className='d-flex flex-column col-12 col-lg-6 mt-2 mt-sm-0'>
-                            <label style={{ lineHeight: '25px' }}>
-                                How many students do you teach?
-                            </label>
-                            <input
-                                placeholder='Total students'
-                                type='number'
-                                name='classroomSize'
-                                value={aboutUserForm?.classroomSize ?? '0'}
-                                onChange={handleOnInputChange}
-                                style={{ maxWidth: '200px', transform: 'translateY(50%)' }}
-                                className='aboutme-txt-input no-outline'
-                            />
-                        </section>
-                    </section>
-                    <section className='d-flex flex-column mt-4 mt-lg-3'>
-                        <label>
-                            Subject(s) Taught:
-                        </label>
-                        <section className='row d-flex flex-column flex-sm-row ps-2'>
-                            <div className='pt-1 subjects-taught-container col-12 col-sm-6'>
-                                {SUBJECTS_OPTIONS.slice(0, 5).map((subject, index) => (
-                                    <SubjectOption
-                                        key={index}
-                                        index={index}
-                                        subjectFieldNameForMapTracker={`subject-${index}`}
-                                        customCssClassses={index !== 0 ? 'mt-2 mt-sm-0' : ''}
-                                        subject={subject}
-                                    />
-                                ))}
-                            </div>
-                            <div className='pt-1 subjects-taught-container col-12 col-sm-6'>
-                                {SUBJECTS_OPTIONS.slice(5).map((subject, index) => (
-                                    <SubjectOption
-                                        key={index}
-                                        index={index}
-                                        subjectFieldNameForMapTracker={`other-subject-${index}`}
-                                        customCssClassses='mt-2 mt-sm-0'
-                                        subject={subject}
-                                    />
-                                ))}
-                            </div>
-                        </section>
-                    </section>
+                    <Accordion activeKey={aboutUserForm.isTeacher ? "0" : ""} className=''>
+                        <div style={{ borderBottom: 'solid 1.7px lightgrey' }} className='d-flex justify-content-between'>
+                            <section className='d-flex justify-content-center align-items-center'>
+                                <AccordionToggleBtn
+                                    btnClassName='no-btn-styles'
+                                    eventKey="0"
+                                    handleBtnClick={handleAreYouATeacherBtnClick}
+                                >
+                                    {aboutUserForm.isTeacher ? <BiCheckboxChecked fontSize="21px" /> : <BiCheckbox fontSize="21px" />}
+                                </AccordionToggleBtn>
+                                <span className='pt-1'>
+                                    Are you a teacher?
+                                </span>
+                            </section>
+                            <section>
+                                {aboutUserForm.isTeacher ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                            </section>
+                        </div>
+                        <Accordion.Item eventKey="0" className='p-0 rounded-0 border-0'>
+                            <Accordion.Body className='p-0 rounded-0'>
+                                <section style={{ columnCount: 2 }} className='mt-3 mb-2 row'>
+                                    <GradesOrYearsSelection />
+                                    <section className='d-flex flex-column col-12 col-lg-6 mt-2 mt-sm-0'>
+                                        <label style={{ lineHeight: '25px' }}>
+                                            How many students do you teach?
+                                        </label>
+                                        <input
+                                            placeholder='Total students'
+                                            type='number'
+                                            name='classroomSize'
+                                            value={aboutUserForm?.classroomSize ?? '0'}
+                                            onChange={handleOnInputChange}
+                                            style={{ maxWidth: '200px', transform: 'translateY(50%)' }}
+                                            className='aboutme-txt-input no-outline'
+                                        />
+                                    </section>
+                                </section>
+                                <section className='d-flex flex-column mt-4 mt-lg-3'>
+                                    <label>
+                                        Subject(s) Taught:
+                                    </label>
+                                    <section className='row d-flex flex-column flex-sm-row ps-2'>
+                                        <div className='pt-1 subjects-taught-container col-12 col-sm-6'>
+                                            {SUBJECTS_OPTIONS.slice(0, 5).map((subject, index) => (
+                                                <SubjectOption
+                                                    key={index}
+                                                    index={index}
+                                                    subjectFieldNameForMapTracker={`subject-${index}`}
+                                                    customCssClassses={index !== 0 ? 'mt-2 mt-sm-0' : ''}
+                                                    subject={subject}
+                                                />
+                                            ))}
+                                        </div>
+                                        <div className='pt-1 subjects-taught-container col-12 col-sm-6'>
+                                            {SUBJECTS_OPTIONS.slice(5).map((subject, index) => (
+                                                <SubjectOption
+                                                    key={index}
+                                                    index={index}
+                                                    subjectFieldNameForMapTracker={`other-subject-${index}`}
+                                                    customCssClassses='mt-2 mt-sm-0'
+                                                    subject={subject}
+                                                />
+                                            ))}
+                                        </div>
+                                    </section>
+                                </section>
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    </Accordion>
                     <section className='d-flex flex-column mt-2 mt-4 mt-lg-3'>
                         <label htmlFor='reasonsForSiteVisit'>
                             What brings you to our site?

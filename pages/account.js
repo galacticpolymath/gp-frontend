@@ -18,6 +18,58 @@ import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
 import { getIsParsable, resetUrl } from '../globalFns';
 
+export const getAboutUserFormForClient = aboutUserFormFromServer => {
+    const aboutUserFormForClient = { ...aboutUserFormDefault };
+    const {
+        reasonsForSiteVisit,
+        subjects,
+        gradesOrYears,
+        classroomSize,
+        zipCode,
+        country,
+        occupation,
+        isTeacher,
+    } = aboutUserFormFromServer;
+
+    if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
+        const reasonsForSiteVisitMap = new Map(Object.entries(aboutUserFormFromServer.reasonsForSiteVisit));
+        aboutUserFormForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;
+    }
+
+    if (subjects && Object.entries(subjects).length > 0) {
+        const subjectsTeaching = new Map(Object.entries(subjects));
+        aboutUserFormForClient.subjects = subjectsTeaching;
+    } else if (subjects && Object.entries(subjects).length == 0) {
+        aboutUserFormForClient.subjects = aboutUserFormDefault.subjects;
+    }
+
+    if (gradesOrYears && (Object.entries(gradesOrYears).length > 0)) {
+        aboutUserFormForClient.gradesOrYears = gradesOrYears;
+    } else if (gradesOrYears && (Object.entries(gradesOrYears).length === 0)) {
+        aboutUserFormForClient.gradesOrYears = aboutUserFormDefault.gradesOrYears
+    }
+
+    if (classroomSize) {
+        aboutUserFormForClient.classroomSize = classroomSize;
+    }
+
+    if (zipCode) {
+        aboutUserFormForClient.zipCode = zipCode;
+    }
+
+    if (country) {
+        aboutUserFormForClient.country = country;
+    }
+
+    if (occupation) {
+        aboutUserFormForClient.occupation = occupation;
+    }
+
+    aboutUserFormForClient.isTeacher = isTeacher ?? false;
+
+    return aboutUserFormForClient;
+}
+
 /**
  *  @param {import('next/router').NextRouter} router 
  *  @param {string} urlField 
@@ -85,38 +137,56 @@ const AccountPg = () => {
                     const aboutUserFormFromServer = response.data;
                     /** @type {import('../providers/UserProvider').TAboutUserForm} */
                     const aboutUserFormForClient = { ...aboutUserFormDefault };
+                    const {
+                        reasonsForSiteVisit,
+                        subjects,
+                        gradesOrYears,
+                        classroomSize,
+                        zipCode,
+                        country,
+                        occupation,
+                        isTeacher,
+                    } = aboutUserFormFromServer;
 
-                    if (aboutUserFormFromServer.reasonsForSiteVisit && Object.entries(aboutUserFormFromServer.reasonsForSiteVisit).length > 0) {
+                    if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
                         const reasonsForSiteVisitMap = new Map(Object.entries(aboutUserFormFromServer.reasonsForSiteVisit));
                         aboutUserFormForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;
                     }
 
-                    if (aboutUserFormFromServer.subjects && Object.entries(aboutUserFormFromServer.subjects).length > 0) {
-                        const subjectsTeaching = new Map(Object.entries(aboutUserFormFromServer.subjects));
+                    if (subjects && Object.entries(subjects).length > 0) {
+                        const subjectsTeaching = new Map(Object.entries(subjects));
                         aboutUserFormForClient.subjects = subjectsTeaching;
+                    } else if (subjects && Object.entries(subjects).length == 0) {
+                        aboutUserFormForClient.subjects = aboutUserFormDefault.subjects;
                     }
 
-                    if (aboutUserFormFromServer.gradesOrYears && Object.entries(aboutUserFormFromServer.gradesOrYears).length > 0) {
-                        aboutUserFormForClient.gradesOrYears = aboutUserFormFromServer.gradesOrYears;
+                    if (gradesOrYears && (Object.entries(gradesOrYears).length > 0)) {
+                        aboutUserFormForClient.gradesOrYears = gradesOrYears;
+                    } else if (gradesOrYears && (Object.entries(gradesOrYears).length === 0)) {
+                        aboutUserFormForClient.gradesOrYears = aboutUserFormDefault.gradesOrYears
                     }
 
-                    if (aboutUserFormFromServer.classroomSize) {
-                        aboutUserFormForClient.classroomSize = aboutUserFormFromServer.classroomSize;
+                    if (classroomSize) {
+                        aboutUserFormForClient.classroomSize = classroomSize;
                     }
 
-                    if (aboutUserFormFromServer.zipCode) {
-                        aboutUserFormForClient.zipCode = aboutUserFormFromServer.zipCode;
+                    if (zipCode) {
+                        aboutUserFormForClient.zipCode = zipCode;
                     }
 
-                    if (aboutUserFormFromServer.country) {
-                        aboutUserFormForClient.country = aboutUserFormFromServer.country;
+                    if (country) {
+                        aboutUserFormForClient.country = country;
                     }
 
-                    if (aboutUserFormFromServer.occupation) {
-                        aboutUserFormForClient.occupation = aboutUserFormFromServer.occupation;
+                    if (occupation) {
+                        aboutUserFormForClient.occupation = occupation;
                     }
+
+                    aboutUserFormForClient.isTeacher = isTeacher ?? false;
 
                     localStorage.setItem('aboutUserForm', JSON.stringify(aboutUserFormFromServer));
+
+                    console.log("aboutUserFormForClient: ", aboutUserFormForClient);
 
                     setAboutUserForm(aboutUserFormForClient);
                 } catch (error) {
@@ -154,7 +224,7 @@ const AccountPg = () => {
             setTimeout(() => {
                 setIsAboutMeFormModalDisplayed(true);
             }, 300);
-        } 
+        }
     }, [status]);
 
     if (status === 'loading') {
