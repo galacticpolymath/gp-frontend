@@ -53,6 +53,16 @@ const papers = [
 ];
 const releases = [
   {
+    
+    newReleasePath: '/lessons/en-US/10',
+    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/SciJourneys_en-US/if-then_logo.png',
+    sponsorImgAlt: 'gp_sponsor_image',
+    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/SciJourneys_en-US/SciJourneys-UnitAssets-2-card_FINAL.png',
+    releaseInfoTxt: "An initiative of Lyda Hill Philanthropies",
+    customCss: 'col-12 col-md-3 col-lg-4 mt-3',
+    sponsorImgClassName: 'w-100 sci-journey-sponsor-img',
+  },
+  {
     newReleasePath: '/lessons/en-US/8',
     sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
     sponsorImgAlt: 'gp_sponsor_image',
@@ -70,15 +80,7 @@ const releases = [
     customCss: 'col-12 col-md-3 col-lg-4 mt-3 mt-md-0',
     sponsorImgClassName: 'w-100 sponsor-img-release',
   },
-  {
-    newReleasePath: '/lessons/en-US/10',
-    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/SciJourneys_en-US/if-then_logo.png',
-    sponsorImgAlt: 'gp_sponsor_image',
-    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/SciJourneys_en-US/SciJourneys-UnitAssets-2-card-(1).png',
-    releaseInfoTxt: "An initiative of Lyda Hill Philanthropies",
-    customCss: 'col-12 col-md-3 col-lg-4 mt-3',
-    sponsorImgClassName: 'w-100 sci-journey-sponsor-img',
-  },
+  
 ];
 
 export default function Home() {

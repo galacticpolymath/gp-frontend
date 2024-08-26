@@ -308,6 +308,21 @@ $toolTipColor: #f0f4ff;
   padding-bottom: 30px;
 }
 
+.bitly-txt-link{
+  font-size: 1.1em;
+
+
+  @media print {
+    font-size: 1.1em;
+  }
+}
+
+.qr-code-lesson-preview{
+  @media print{
+    margin-right: 25px;
+  }
+}
+
 .thumbnailLi {
   @media (min-width: 576px) {
     width: 80px;
