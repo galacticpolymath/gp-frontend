@@ -1,8 +1,11 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable no-console */
 /* eslint-disable indent */
 /* eslint-disable quotes */
+import axios from "axios";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { constructUrlWithSearchQuery, validateEmail } from "../globalFns";
 
 /**
 * @typedef TLoginForm
@@ -22,10 +25,30 @@ import { useState } from "react";
  * @param {string} userInput 
  * @returns {boolean}
  */
-const getDoesEmailExist = (userInput) => {
-    console.log(userInput);
+const getDoesEmailExist = async (email) => {
+    try {
+        const url = constructUrlWithSearchQuery(
+            `${window.location.origin}/api/does-user-exist`,
+            [["email", email]]
+        );
+        const { status, data } = await axios.get(url.href);
 
-    return true;
+        if (status !== 200) {
+            throw new Error("Received a non 200 response from the server.");
+        }
+
+        if (typeof data !== 'object' || typeof data?.doesUserExist !== 'boolean') {
+            throw new Error("Receivded a invalid response body from the server.");
+        }
+
+        console.log('data: ', data);
+
+        return data.doesUserExist;
+    } catch (error) {
+        console.error("Failed to check if the email exist. Reason: ", error);
+
+        return false;
+    }
 };
 
 export const useUserEntry = () => {
@@ -40,44 +63,34 @@ export const useUserEntry = () => {
     });
 
     /**
-     * @returns {Map<string, string>}
-     */
-    const validateLoginForm = () => {
-
-    };
-
-    /**
-     * @returns {Map<string, string>}
-     */
-    const validateCreateAccountForm = () => {
-        const { password, confirmPassword, email } = createAccountForm;
-        const errors = new Map();
-
-        if (password !== confirmPassword) {
-            errors.set("password", "The passwords don't match.");
-            errors.set("confirmPassword", "The passwords don't match.");
-        } else if (!password && !confirmPassword) {
-            errors.set("password", "This field is required.");
-            errors.set("confirmPassword", "This field is required.");
-        }
-
-        if (getDoesEmailExist(email)) {
-            errors.set('email', 'This email has been taken.');
-        }
-
-        return errors;
-    };
-
-    /**
      * @param {"login" | "createAccount"} formToValidate
      * @returns {Map<string, string>}
      */
-    const validateForm = (formToValidate = 'createAccount') => {
+    const validateForm = async (formToValidate = 'createAccount') => {
         if (formToValidate === "createAccount") {
-            return validateCreateAccountForm();
-        }
+            const { password, confirmPassword, email } = createAccountForm;
+            const errors = new Map();
 
-        return validateLoginForm();
+            if (password !== confirmPassword) {
+                errors.set("password", "The passwords don't match.");
+                errors.set("confirmPassword", "The passwords don't match.");
+            } else if (!password && !confirmPassword) {
+                errors.set("password", "This field is required.");
+                errors.set("confirmPassword", "This field is required.");
+            }
+
+            const doesEmailExist = await getDoesEmailExist(email);
+
+            console.log("doesEmailExist: ", doesEmailExist);
+
+            if (doesEmailExist) {
+                errors.set('email', 'This email has been taken.');
+            } else if (!validateEmail(email)) {
+                errors.set("email", "Invalid email.");
+            }
+
+            return errors;
+        }
     };
 
     /**

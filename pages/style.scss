@@ -275,7 +275,6 @@ ol li {
 
   @media (max-width: 577px) {
     width: 100vw;
-    height: 100vh;
     border-radius: 0% !important;
   }
 }
@@ -295,13 +294,13 @@ ol li {
   @media (max-width: 768px) {
     width: 95vw;
   }
-  
+
   @media (min-width: 767px) {
     min-width: 500px;
     max-height: 770px;
   }
 
-  @media(max-width: 576px){
+  @media (max-width: 576px) {
     width: 100vw;
     border-radius: 0%;
   }
@@ -916,9 +915,8 @@ img {
 }
 
 .serif-text {
-    font-family: "Roboto Mono", Georgia, serif;;
+  font-family: "Roboto Mono", Georgia, serif;
 }
-
 
 .hyphen {
   font-family: Arial, Helvetica, sans-serif;

@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable no-useless-escape */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
@@ -30,6 +32,11 @@ const SignUpModal = () => {
 
     const handleOnHide = () => {
         setIsCreateAccountModalDisplayed(false);
+        setTimeout(() => {
+            setWasChecked(false);
+            setErrors(new Map());
+            setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨.");
+        }, 200);
     };
 
     const handleCheckBoxClick = () => {
@@ -37,7 +44,7 @@ const SignUpModal = () => {
         setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨.");
     };
 
-    const handleSubmitBtnClick = () => {
+    const handleSubmitBtnClick = async () => {
         if (createAccountForm.confirmPassword !== createAccountForm.password) {
             const errors = new Map([['password', 'Paswords must match'], ['confirmPassword', 'Passwords must match']]);
             setErrors(errors);
@@ -45,11 +52,21 @@ const SignUpModal = () => {
         }
 
         const url = window.location.href.includes('?') ? window.location.href.split('?')[0] : window.location.href;
-        const errors = validateForm("createAccount");
+        const errors = await validateForm("createAccount");
 
-        if (errors.size > 0) {
+        console.log('errors: ', errors);
+
+        if ((errors.size > 0) && !wasChecked) {
             alert("An error has occurred. Please check your inputs.");
-            console.log('errors: ', errors);
+            setErrors(errors);
+            setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
+            return;
+        } else if (!wasChecked) {
+            alert("An error has occurred. Please check your inputs.");
+            setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
+            return;
+        } else if (errors.size > 0) {
+            alert("An error has occurred. Please check your inputs.");
             setErrors(errors);
             return;
         }
@@ -70,6 +87,16 @@ const SignUpModal = () => {
     };
 
     const handleOnInputChange = event => {
+        if (errors.has(event.target.name)) {
+            setErrors(errors => {
+                const errorsClone = structuredClone(errors);
+
+                errorsClone.delete(event.target.name);
+
+                return errorsClone;
+            });
+        }
+
         setCreateAccountForm(form => ({
             ...form,
             [event.target.name]: event.target.value,
@@ -81,6 +108,9 @@ const SignUpModal = () => {
 
         if (!wasChecked) {
             setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
+            setTimeout(() => {
+                alert("Please check off that you are a teacher.");
+            }, 200);
             return;
         }
 
@@ -99,16 +129,18 @@ const SignUpModal = () => {
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='create-account-ui-modal pt-2 box-shadow-login-ui-modal'
         >
-            <ModalHeader className='d-flex flex-column py-2'>
+            <ModalHeader className='d-flex flex-column py-3'>
                 <CloseButton onClick={handleOnHide} className='position-absolute top-0 end-0 me-1 mt-1' />
-                <div className="d-flex justify-content-center align-items-center">
-                    <img
-                        src='imgs/gp_logo_gradient_transBG.png'
-                        alt="gp_logo"
-                        width={75}
-                        height={75}
-                    />
-                </div>
+                <img
+                    className='position-absolute top-0 start-0 me-5 mt-1'
+                    src='imgs/gp_logo_gradient_transBG.png'
+                    alt="gp_logo"
+                    width={50}
+                    height={50}
+                    style={{
+                        transform: 'translate(17%, 6%)',
+                    }}
+                />
                 <h5 className="text-black text-center mt-2 my-0">
                     Sign up
                 </h5>
@@ -118,7 +150,8 @@ const SignUpModal = () => {
                     <CreateAccountWithGoogle
                         handleGoogleBtnClickCustom={handleCreateAnAccountWithGoogleBtnClick}
                         callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`}
-                        className='rounded p-2 w-50 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn'
+                        className='rounded shadow px-3 py-2  py-sm-4 px-sm-5 w-50 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn'
+
                     >
                         <FcGoogle className="mx-2" size={31} />
                         <span className='d-inline-flex justify-content-center align-items-center h-100'>
@@ -272,30 +305,35 @@ const SignUpModal = () => {
                     </div>
                 </form>
             </ModalBody>
-            <ModalFooter className='d-flex justify-content-center align-items-center position-relative'>
-                <section style={{ transform: "translateX(10%)" }} className='d-flex'>
-                    <div className='d-flex justify-content-center align-items-center'>
-                        {wasChecked ?
-                            <BiCheckboxChecked onClick={handleCheckBoxClick} fontSize="21px" />
-                            : (
-                                <BiCheckbox
+            <ModalFooter className='position-relative px-0'>
+                <section className='d-flex flex-sm-row w-100'>
+                    <section className='p-0 row w-100 m-0'>
+                        <div className='d-flex justify-content-center justify-content-sm-end col-12 col-sm-4 ps-0 pb-0 pe-0 pt-1'>
+                            {wasChecked ? (
+                                <BiCheckboxChecked
                                     onClick={handleCheckBoxClick}
-                                    color={didCheckboxErrOccur ? 'red' : ""}
                                     fontSize="21px"
                                 />
-                            )}
-                    </div>
-                    <label
-                        className={`${didCheckboxErrOccur ? 'text-danger' : ''} `}
-                        htmlFor="demoCheckbox"
-                        style={{
-                            fontSize: "18px",
-                            transform: "translateX(.5%)",
-                            minWidth: "430px",
-                        }}
-                    >
-                        *{userIsTeacherTxt}
-                    </label>
+                            )
+                                : (
+                                    <BiCheckbox
+                                        onClick={handleCheckBoxClick}
+                                        color={didCheckboxErrOccur ? 'red' : ""}
+                                        fontSize="21px"
+                                    />
+                                )}
+                        </div>
+                        <div className='d-flex justify-content-center justify-content-sm-start col-12 col-sm-8 p-0'>
+                            <label
+                                className={`${didCheckboxErrOccur ? 'text-danger' : ''} text-sm-start text-center`}
+                                style={{
+                                    fontSize: "18px",
+                                }}
+                            >
+                                *{userIsTeacherTxt}
+                            </label>
+                        </div>
+                    </section>
                 </section>
             </ModalFooter>
         </Modal>

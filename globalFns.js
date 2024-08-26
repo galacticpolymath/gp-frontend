@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-empty */
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable indent */
@@ -177,6 +179,21 @@ export const getObjVals = obj => {
     return vals;
 };
 
+/**
+ * 
+ * @param {string} urlOriginWithPaths 
+ * @param {[string, unknown][]} searchQuery 
+ */
+export const constructUrlWithSearchQuery = (urlOriginWithPaths, searchQuery) => {
+    const url = new URL(urlOriginWithPaths);
+
+    for (const [key, val] of searchQuery) {
+        url.searchParams.append(key, val);
+    }
+
+    return url;
+}
+
 const searchParamsDefault = (typeof window === 'undefined') ? null : window.location.search;
 
 export const getUrlParamVal = (searchParams = searchParamsDefault, paramName = '') => {
@@ -250,3 +267,9 @@ export const resetUrl = router => {
  * @return {object}
  */
 export const convertMapToObj = map => Object.fromEntries(map.entries())
+
+export const validateEmail = (email) => {
+    return email.match(
+        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+};
