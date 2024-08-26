@@ -4,7 +4,6 @@
 /* eslint-disable indent */
 import { useContext, useEffect, useState } from "react";
 import Button from "../../../General/Button";
-import Accordion from 'react-bootstrap/Accordion';
 import { UserContext } from "../../../../providers/UserProvider";
 
 /**
