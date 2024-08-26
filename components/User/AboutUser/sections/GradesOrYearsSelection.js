@@ -15,7 +15,6 @@ const AGE_GROUPS = {
 const GradesOrYearsSelection = () => {
     const { _aboutUserForm } = useContext(UserContext);
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
-    console.log('aboutUserForm: ', aboutUserForm);
     const { selection, ageGroupsTaught } = aboutUserForm.gradesOrYears;
     /** @type {[import('../../../../providers/ModalProvider').TUserForm, Function]} */
     const ageGroupOptions = AGE_GROUPS[(selection && Object.keys(AGE_GROUPS).includes(selection)) ? selection : 'U.S.'];

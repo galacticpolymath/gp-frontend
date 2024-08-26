@@ -60,8 +60,6 @@ export const getVideoThumb = link => {
     return `https://i3.ytimg.com/vi/${slug}/hqdefault.jpg`;
   }
 
-  console.log('link: ', link);
-
   return '';
 };
 

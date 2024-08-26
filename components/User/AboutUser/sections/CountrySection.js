@@ -2,7 +2,7 @@
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Button from "../../../General/Button";
 import { UserContext } from "../../../../providers/UserProvider";
 
@@ -28,10 +28,6 @@ const CountrySection = ({ countryNames, _errors }) => {
     const handleOnInputFocus = () => {
         setIsInputFocused(true);
     };
-
-    useEffect(() => {
-        console.log('errors: ', errors);
-    });
 
     const handleCountrySelectionBtnClick = ({ target }) => {
         setErrors(state => {
