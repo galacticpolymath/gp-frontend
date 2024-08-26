@@ -11,6 +11,7 @@ import CreateAccountWithGoogle from '../GoogleSignIn';
 import { FcGoogle } from 'react-icons/fc';
 import { CreateAccountInputSection, ErrorTxt } from '../formElements';
 import { signIn } from 'next-auth/react';
+import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
 
 const SignUpModal = () => {
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
@@ -22,13 +23,18 @@ const SignUpModal = () => {
      * @typedef {"I solemnly swear that I am a teacher 🤨." | "I solemnly swear that I am a teacher 🤨 (REQUIRED)."} TUserIsTeacherTxt
      * @type {[TUserIsTeacherTxt, import('react').Dispatch<import('react').SetStateAction<TUserIsTeacherTxt>>]}
      */
-    const [userIsTeacherTxt, setUserIsTeacherTxt] = useState("*I solemnly swear that I am a teacher 🤨.");
+    const [userIsTeacherTxt, setUserIsTeacherTxt] = useState("I solemnly swear that I am a teacher 🤨.");
     const [wasChecked, setWasChecked] = useState(false);
     const callbackUrl = `${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`;
     const didCheckboxErrOccur = userIsTeacherTxt === "I solemnly swear that I am a teacher 🤨 (REQUIRED).";
 
     const handleOnHide = () => {
         setIsCreateAccountModalDisplayed(false);
+    };
+
+    const handleCheckBoxClick = () => {
+        setWasChecked(state => !state);
+        setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨.");
     };
 
     const handleSubmitBtnClick = () => {
@@ -266,16 +272,31 @@ const SignUpModal = () => {
                     </div>
                 </form>
             </ModalBody>
-            <ModalFooter className='d-flex justify-content-center align-items-center'>
-                <input
-                    type="checkbox"
-                    id="demoCheckbox"
-                    name="checkbox"
-                    style={{ border: "solid 1.5px red" }}
-                    value={wasChecked}
-                    onChange={() => setWasChecked(state => !state)}
-                />
-                <label htmlFor="demoCheckbox" style={{ fontSize: "18px" }}>*I solemnly swear that I am a teacher 🤨.</label>
+            <ModalFooter className='d-flex justify-content-center align-items-center position-relative'>
+                <section style={{ transform: "translateX(10%)" }} className='d-flex'>
+                    <div className='d-flex justify-content-center align-items-center'>
+                        {wasChecked ?
+                            <BiCheckboxChecked onClick={handleCheckBoxClick} fontSize="21px" />
+                            : (
+                                <BiCheckbox
+                                    onClick={handleCheckBoxClick}
+                                    color={didCheckboxErrOccur ? 'red' : ""}
+                                    fontSize="21px"
+                                />
+                            )}
+                    </div>
+                    <label
+                        className={`${didCheckboxErrOccur ? 'text-danger' : ''} `}
+                        htmlFor="demoCheckbox"
+                        style={{
+                            fontSize: "18px",
+                            transform: "translateX(.5%)",
+                            minWidth: "430px",
+                        }}
+                    >
+                        *{userIsTeacherTxt}
+                    </label>
+                </section>
             </ModalFooter>
         </Modal>
     );
