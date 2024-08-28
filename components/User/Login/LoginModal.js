@@ -79,7 +79,7 @@ const LoginModal = () => {
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='login-ui-modal bg-white shadow-lg rounded pt-2 box-shadow-login-ui-modal'
         >
-            <ModalHeader className='d-flex flex-column py-3'>
+            <ModalHeader className='d-flex flex-column'>
                 <CloseButton className='position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey' onClick={handleOnHide} />
                 <img
                     className='position-absolute top-0 start-0 me-5 mt-1'

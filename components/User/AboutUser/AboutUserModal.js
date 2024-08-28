@@ -291,7 +291,7 @@ const AboutUserModal = () => {
                                     {aboutUserForm.isTeacher ? <BiCheckboxChecked fontSize="21px" /> : <BiCheckbox fontSize="21px" />}
                                 </AccordionToggleBtn>
                                 <span className='pt-1'>
-                                    Are you a teacher?
+                                    I am a teacher?
                                 </span>
                             </section>
                             <section>

@@ -124,7 +124,7 @@ const SignUpModal = () => {
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='create-account-ui-modal pt-2 box-shadow-login-ui-modal'
         >
-            <ModalHeader className='d-flex flex-column py-3'>
+            <ModalHeader style={{ height: "65px" }} className='d-flex flex-column'>
                 <CloseButton onClick={handleOnHide} className='position-absolute top-0 end-0 me-1 mt-1' />
                 <img
                     className='position-absolute top-0 start-0 me-5 mt-1'
@@ -301,7 +301,7 @@ const SignUpModal = () => {
                     </div>
                 </form>
             </ModalBody>
-            <ModalFooter className='position-relative px-0'>
+            <ModalFooter className='position-relative px-0 py-2'>
                 <section className='d-flex flex-sm-row w-100'>
                     <section className='p-0 row w-100 m-0'>
                         <div className='d-flex justify-content-center justify-content-sm-end col-12 col-sm-4 ps-0 pb-0 pe-0 pt-1'>
