@@ -53,7 +53,15 @@ const papers = [
 ];
 const releases = [
   {
-    
+    newReleasePath: '/lessons/en-US/12',
+    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/HybridZones_en-US/NSF_logo_sm.png ',
+    sponsorImgAlt: 'gp_sponsor_image',
+    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/HybridZones_en-US/HybridZones_unit-assets-4-card-(1).png',
+    releaseInfoTxt: "National Science Foundation",
+    customCss: 'col-12 col-md-3 col-lg-4 mt-3',
+    sponsorImgClassName: 'w-100 sci-journey-sponsor-img',
+  },
+  {
     newReleasePath: '/lessons/en-US/10',
     sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/SciJourneys_en-US/if-then_logo.png',
     sponsorImgAlt: 'gp_sponsor_image',
@@ -80,7 +88,7 @@ const releases = [
     customCss: 'col-12 col-md-3 col-lg-4 mt-3 mt-md-0',
     sponsorImgClassName: 'w-100 sponsor-img-release',
   },
-  
+
 ];
 
 export default function Home() {
