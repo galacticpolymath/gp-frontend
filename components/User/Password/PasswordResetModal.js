@@ -109,7 +109,7 @@ const PasswordResetModal = () => {
             );
 
             setIsPasswordResetModalOn(false);
-
+            
             setTimeout(() => {
                 setNotifyModal({
                     isDisplayed: true,
@@ -125,11 +125,12 @@ const PasswordResetModal = () => {
         } catch (error) {
             console.error('An error has occurred: ', error);
 
-            const bodyTxt = error?.message ?? 'Please try again. If this issue persist, please contact support.';
+            const bodyTxt =
+                error?.message ? `Failed to send password reset link. Message from server: '${error.message}'` : "That email wasn't found. Maybe you normally log in with Google?";
 
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: 'Failed to send email link.',
+                headerTxt: bodyTxt,
                 bodyTxt: bodyTxt,
                 handleOnHide: closeNotifyModal,
             });
@@ -160,7 +161,8 @@ const PasswordResetModal = () => {
                 <CloseButton className='position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey' onClick={handleOnHide} />
                 <div className="d-flex justify-content-center align-items-center">
                     <img
-                        src={(typeof window === 'undefined') ? '' : `${window.location.origin}/imgs/gp_logo_gradient_transBG.png`}
+                        // src={(typeof window === 'undefined') ? '' : `${window.location.origin}/imgs/gp_logo_gradient_transBG.png`}
+                        // src={(typeof window === 'undefined') ? '' : `${window.location.origin}/imgs/gp_logo_gradient_transBG.png`}
                         alt="gp_logo"
                         width={75}
                         height={75}

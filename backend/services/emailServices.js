@@ -5,15 +5,15 @@ import nodemailer from 'nodemailer';
 
 class EmailTransport {
     constructor() {
-        const { EMAIL_USER, EMAIL_APP_PASSWORD } = process.env;
+        const { EMAIL_USER, EMAIL_PASSWORD } = process.env;
 
         this.service = 'Gmail';
-        this.host = 'smpt.gmail.com';
+        this.host = 'smtp.gmail.com';
         this.port = 587;
         this.secure = true;
         this.auth = {
             user: EMAIL_USER,
-            pass: EMAIL_APP_PASSWORD,
+            pass: EMAIL_PASSWORD,
         };
     }
 }

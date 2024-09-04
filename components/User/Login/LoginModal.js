@@ -13,6 +13,41 @@ import GoogleSignIn from "../GoogleSignIn";
 import ORTxtDivider from "../ORTxtDivider";
 import { useUserEntry } from "../../../customHooks/useUserEntry";
 import { FcGoogle } from "react-icons/fc";
+import axios from "axios";
+
+/**
+ * @global
+ * @typedef {'none' | 'userNotFound' | 'invalidCredentials' | 'googleLogin'} TUserLoginErrType
+
+/**
+ * 
+ * @param {string} email 
+ * @param {string} password 
+ * @returns {TUserLoginErrType}
+ */
+const getUserLoginErrType = async (email, password) => {
+    try {
+        const url = `${window.location.href}/api/can-login`;
+        /**
+         * @type {{ status: number, data: { errType: 'none' | 'userNotFound' | 'invalidCredentials' }}} */
+        const response = await axios.post(
+            url,
+            {
+                email,
+                password,
+            });
+
+        return response.data.errType;
+    } catch (error) {
+        console.error('Cannot log user in. Reason: ', error);
+
+        const { errType, msg } = error?.response?.data ?? {};
+
+        console.error("Message from server: ", msg);
+
+        return errType ?? "invalidCredentials";
+    }
+};
 
 const LoginModal = () => {
     const { _isLoginModalDisplayed, _isCreateAccountModalDisplayed, _isPasswordResetModalOn } = useContext(ModalContext);
@@ -21,10 +56,26 @@ const LoginModal = () => {
     const [, setIsPasswordResetModalOn] = _isPasswordResetModalOn;
     const { _loginForm, sendFormToServer } = useUserEntry();
     const [errors, setErrors] = useState(new Map());
+    /**
+   * @type {[import("../formElements").TFocusCss, import('react').Dispatch<import('react').SetStateAction<import("../formElements").TFocusCss>>]}
+   */
+    const [emailFocusCss, setEmailFocusCss] = useState("input-focus-blue");
+    /**
+    * @type {[import("../formElements").TFocusCss, import('react').Dispatch<import('react').SetStateAction<import("../formElements").TFocusCss>>]}
+    */
+    const [passwordFocusCss, setPasswordFocusCss] = useState("border-grey-dark");
     const [loginForm, setLoginForm] = _loginForm;
 
     const handleOnInputChange = event => {
         const { name, value } = event.target;
+
+        if (errors.has(name)) {
+            const errorsClone = structuredClone(errors);
+
+            errorsClone.delete(name);
+
+            setErrors(errorsClone);
+        }
 
         setLoginForm(currentState => ({
             ...currentState,
@@ -36,7 +87,8 @@ const LoginModal = () => {
         setIsLoginModalDisplayed(false);
     };
 
-    const handleLoginBtnClick = () => {
+    const handleLoginBtnClick = async () => {
+
         const errors = new Map();
 
         if (!loginForm.email) {
@@ -53,16 +105,57 @@ const LoginModal = () => {
             return;
         }
 
-        sendFormToServer(
-            "login",
-            "credentials",
-            {
-                login: {
-                    email: loginForm.email,
-                    password: loginForm.password,
-                },
-            },
-        );
+        const userLoginErrType = await getUserLoginErrType(loginForm.email, loginForm.password);
+
+        if (userLoginErrType === "googleLogin") {
+            errors.set('email', 'Try logging in with google instead.');
+            setErrors(errors);
+        }
+
+        console.log('userLoginErrType: ', userLoginErrType);
+
+        // const url = `${window.location.href}/api/can-login`;
+        // /**
+        //  * @type {{ status: number, data: { errType: 'none' | 'userNotFound' | 'invalidCredentials' }}} */
+        // const response = await axios.post(
+        //     url,
+        //     {
+        //         email: loginForm.email,
+        //         password: loginForm.password,
+        //     });
+
+        // if (response.data.errType === 'userNotFound') {
+        //     errors.set('email', 'This email is not found in our database.');
+        //     setErrors(errors);
+        //     return;
+        // }
+
+        // if (response.data.errType === 'invalidCredentials') {
+        //     errors.set('email', 'Invalid credentials.');
+        //     errors.set('password', 'Invalid credentials.');
+        //     setErrors(errors);
+        //     return;
+        // }
+
+        // if (response.data.errType === 'none') {
+        //     sendFormToServer(
+        //         "login",
+        //         "credentials",
+        //         {
+        //             login: {
+        //                 email: loginForm.email,
+        //                 password: loginForm.password,
+        //             },
+        //         },
+        //     );
+        //     return;
+        // }
+
+        // errors.set('email', 'Unable to validate credentials.');
+
+        // errors.set('password', 'Unable eto validate credentials.');
+
+        // setErrors(errors);
     };
 
     const handleCreateOneBtnClick = () => {
@@ -121,14 +214,22 @@ const LoginModal = () => {
                                 className="position-absolute d-none d-sm-flex start-0 d-flex justify-content-center align-items-center"
                                 htmlFor="email-input"
                             >
-                                <MdOutlineMail fontSize='31px' color="#D6D6D6" />
+                                <MdOutlineMail fontSize='31px' color={errors.has('email') ? 'red' : "#D6D6D6"} />
                             </label>
                             <input
                                 id="email-input"
                                 placeholder="Email"
                                 autoFocus
-                                style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6' }}
-                                className="border-0 p-1 py-2 login-modal-input"
+                                onFocus={() => setEmailFocusCss('input-focus-blue')}
+                                onBlur={() => setEmailFocusCss('border-grey-dark')}
+                                style={{
+                                    outline: 'none',
+                                    borderRadius: "5px",
+                                    fontSize: "18px",
+                                    background: '#D6D6D6',
+                                    color: errors.has('email') ? 'red' : 'black',
+                                }}
+                                className={`${errors.has('email') ? '' : emailFocusCss} p-1 py-2 login-modal-input ${errors.has('email') ? 'border-red' : ''}`}
                                 name="email"
                                 onChange={event => {
                                     handleOnInputChange(event);
@@ -151,8 +252,16 @@ const LoginModal = () => {
                             <input
                                 id='password-input'
                                 placeholder="Password"
-                                style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6' }}
-                                className="no-outline p-1 login-modal-input py-2"
+                                style={{
+                                    borderRadius: "5px",
+                                    fontSize: "18px",
+                                    background: '#D6D6D6',
+                                    border: errors.has("password") ? "solid 1.5px red" : passwordFocusCss,
+
+                                }}
+                                onFocus={() => setPasswordFocusCss('input-focus-blue')}
+                                onBlur={() => setPasswordFocusCss('border-grey-dark')}
+                                className={`no-outline p-1 login-modal-input py-2 ${errors.has('password') ? 'bg-danger text-danger' : ''}`}
                                 name='password'
                                 onChange={event => {
                                     handleOnInputChange(event);
