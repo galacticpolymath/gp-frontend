@@ -11,7 +11,7 @@ import { useUserEntry } from '../../../customHooks/useUserEntry';
 import Button from '../../General/Button';
 import CreateAccountWithGoogle from '../GoogleSignIn';
 import { FcGoogle } from 'react-icons/fc';
-import { CreateAccountInputSection, ErrorTxt } from '../formElements';
+import { ErrorTxt, InputSection } from '../formElements';
 import { signIn } from 'next-auth/react';
 import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
 
@@ -82,6 +82,16 @@ const SignUpModal = () => {
     };
 
     const handleOnInputChange = event => {
+        const { name, value } = event.target;
+
+        if (errors.has(name)) {
+            const errorsClone = structuredClone(errors);
+
+            errorsClone.delete(name);
+
+            setErrors(errorsClone);
+        }
+
         if (errors.has(event.target.name)) {
             setErrors(errors => {
                 const errorsClone = structuredClone(errors);
@@ -94,7 +104,7 @@ const SignUpModal = () => {
 
         setCreateAccountForm(form => ({
             ...form,
-            [event.target.name]: event.target.value,
+            [name]: value,
         }));
     };
 
@@ -168,7 +178,7 @@ const SignUpModal = () => {
                 </div>
                 <form className='mt-2 row d-flex justify-content-center align-items-center flex-column'>
                     <div className='row d-flex justify-content-center align-items-center'>
-                        <div className="d-flex col-sm-6 flex-column ">
+                        <div className="d-flex col-sm-6 flex-column">
                             <label
                                 className="d-block w-75 pb-1 fw-bold"
                                 htmlFor="first-name"
@@ -190,14 +200,15 @@ const SignUpModal = () => {
                                 {errors.has('firstName') && <span>{errors.get('firstName')}</span>}
                             </section>
                         </div>
-                        <CreateAccountInputSection
+                        <InputSection
                             errors={errors}
                             errorsFieldName="lastName"
                             labelHtmlFor="last-name-id"
                             inputId="lastName"
                             inputName="lastName"
+                            labelClassName={`d-block w-100 pb-1 fw-bold ${errors.has('lastName') ? 'text-danger' : ''}`}
                             inputPlaceholder="Last Name"
-                            labelTxt="Last Name"
+                            label="Last Name"
                         />
                     </div>
                     <div className='row'>

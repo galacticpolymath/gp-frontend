@@ -254,7 +254,6 @@ export const sleep = milliseconds => new Promise(resolve => {
 export const getIsObj = val => !!val && (typeof val === 'object');
 
 /**
- * 
  * @param {import('next/router').NextRouter} router 
  */
 export const resetUrl = router => {
@@ -267,6 +266,66 @@ export const resetUrl = router => {
  * @return {object}
  */
 export const convertMapToObj = map => Object.fromEntries(map.entries())
+
+/**
+ *  @param {import('next/router').NextRouter} router 
+ *  @param {string} urlField 
+ *  @returns {string[]} 
+* */
+export const getAllUrlVals = (router, willCreateSubTuples) => {
+    const pathsStr = router.asPath.split('?')[1];
+    let urlKeysAndVals = pathsStr?.split('&');
+
+    if (urlKeysAndVals?.length && willCreateSubTuples) {
+        const urlKeysAndValsTuples = urlKeysAndVals.map(keyAndValStr => {
+            return keyAndValStr.split('=');
+        });
+
+        return urlKeysAndValsTuples;
+    }
+
+    return urlKeysAndVals;
+};
+
+/**
+ * 
+ * @param {any[]} arr 
+ * @param {number} chunkSize 
+ * @returns {any[][]}
+ */
+export const getChunks = (arr, chunkSize) => {
+    const chunks = [];
+    let chunkWindow = [];
+
+    for (let index = 0; index < arr.length; index++) {
+        let val = arr[index];
+
+        if (chunkWindow.length === chunkSize) {
+            chunks.push(chunkWindow);
+            chunkWindow = [];
+        }
+
+        chunkWindow.push(val);
+
+        if (index === (arr.length - 1)) {
+            chunks.push(chunkWindow);
+        }
+    }
+
+    return chunks;
+};
+
+/**
+ * @param {import('next/router').NextRouter} router 
+ * @param {string} targetKey 
+ */
+export const getTargetKeyValFromUrl = (router, targetKey) => {
+    const urlVals = getAllUrlVals(router)?.flatMap(urlVal => urlVal.split('='));
+    const urlValsChunks = urlVals?.length ? getChunks(urlVals, 2) : []
+    const targetKeyVal = urlValsChunks.find(([key]) => key === targetKey)
+
+    return targetKeyVal;
+}
 
 export const validateEmail = (email) => {
     return email.match(

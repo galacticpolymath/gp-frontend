@@ -23,6 +23,7 @@ import AccountModal from "./components/User/AccoutModal";
 import Button from "./components/General/Button";
 import { IoMdClose } from "react-icons/io";
 import SignUpModal from "./components/User/Create/SignUpModal";
+import PasswordResetModal from "./components/User/Password/PasswordResetModal";
 
 export const CustomCloseButton = ({ children = <IoMdClose color="white" size={28} />, className = '', handleOnClick = () => { }, style = {} }) => {
     return (
@@ -51,6 +52,7 @@ const ModalContainers = () => {
             <AboutUserModal />
             <AccountModal />
             <Notify />
+            <PasswordResetModal />
         </>
     )
 }

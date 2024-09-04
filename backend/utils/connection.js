@@ -18,6 +18,7 @@ export const createConnectionUri = () => {
 
 export const connectToMongodb = async () => {
   try {
+    console.log('will connect to MongoDB...');
     if (isConnectedToDb) {
       console.log('Already connected to DB');
       return;

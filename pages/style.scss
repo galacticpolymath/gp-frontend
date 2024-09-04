@@ -289,8 +289,12 @@ ol li {
   }
 }
 
+.border-grey-dark{
+  border: solid 1px grey;
+}
+
 .create-account-ui-modal {
-  width: 55vw;
+  width: 60vw;
   border-radius: 6.75px;
 
   @media (max-width: 768px) {
@@ -431,6 +435,17 @@ ol li {
     -webkit-appearance: none;
     margin: 0;
   }
+}
+
+.notify-modal-body::first-letter{
+  text-transform: capitalize;
+}
+
+.input-focus-blue {
+  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+  // padding: 3px 0px 3px 3px;
+  // margin: 5px 1px 3px 0px;
+  border: 1px solid rgba(81, 203, 238, 1);
 }
 
 .no-outline {

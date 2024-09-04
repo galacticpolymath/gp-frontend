@@ -3,7 +3,7 @@
 /* eslint-disable indent */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import { signOut, useSession } from "next-auth/react";
@@ -17,9 +17,15 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
     const { status, data } = useSession();
     const { name, image } = data?.user ?? {};
     const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
+    const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
 
-    const handleOnClick = () => {
+    const handleSignOutBtnClick = () => {
+        localStorage.clear();
+        setIsLoadingSpinnerOn(true);
+        signOut();
+    };
 
+    const handleAccountBtnClick = () => {
         if ((document.documentElement.clientWidth <= 767) && (status === 'authenticated')) {
             setIsAccountModalMobileOn(state => !state);
             return;
@@ -54,15 +60,18 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
     return (
         <div className='login-container position-relative'>
             <Button
-                handleOnClick={handleOnClick}
+                handleOnClick={handleAccountBtnClick}
                 classNameStr='rounded px-3 border-0'
                 isDisabled={status === 'loading'}
                 backgroundColor="#333438"
                 defaultStyleObj={{ width: '125px', opacity: status === 'loading' ? .3 : 1 }}
             >
-                <span style={{ color: 'white', fontWeight: 410 }}>
-                    {buttonTxt}
-                </span>
+                {buttonTxt && (
+                    <span style={{ color: 'white', fontWeight: 410 }}>
+                        {buttonTxt}
+                    </span>
+                )
+                }
                 {(status === 'loading') && (
                     <>
                         <span
@@ -110,13 +119,22 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
                         View Account
                     </Button>
                     <Button
-                        handleOnClick={() => {
-                            localStorage.clear();
-                            signOut();
-                        }}
-                        classNameStr="no-btn-styles text-danger hover txt-underline-on-hover py-2"
+                        handleOnClick={handleSignOutBtnClick}
+                        classNameStr="no-btn-styles  hover txt-underline-on-hover py-2"
                     >
-                        SIGN OUT
+                        {isLoadingSpinnerOn
+                            ?
+                            (
+                                <div
+                                    className="spinner-border spinner-border-sm text-dark"
+                                    role="status"
+                                >
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                            )
+                            :
+                            <span>SIGN OUT</span>
+                        }
                     </Button>
                 </section>
             </div>

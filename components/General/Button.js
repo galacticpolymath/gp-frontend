@@ -4,7 +4,7 @@ const Button = ({
   isDisabled,
   value,
   defaultStyleObj = {},
-  classNameStr = '',
+  classNameStr = 'no-btn-styles',
   backgroundColor = 'transparent',
   handleOnClick = () => { },
   ariaLabelStr = 'button',

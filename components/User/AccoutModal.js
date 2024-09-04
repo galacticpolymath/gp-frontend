@@ -68,7 +68,7 @@ const AccountModal = () => {
                         localStorage.clear();
                         signOut();
                     }}
-                    classNameStr="no-btn-styles text-danger hover txt-underline-on-hover py-2"
+                    classNameStr="no-btn-styles hover txt-underline-on-hover py-2"
                 >
                     SIGN OUT
                 </Button>

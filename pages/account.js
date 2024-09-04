@@ -16,7 +16,7 @@ import { ModalContext } from '../providers/ModalProvider';
 import { UserContext, aboutUserFormDefault } from '../providers/UserProvider';
 import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
-import { getIsParsable, resetUrl } from '../globalFns';
+import { getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
 
 export const getAboutUserFormForClient = aboutUserFormFromServer => {
     const aboutUserFormForClient = { ...aboutUserFormDefault };
@@ -83,25 +83,6 @@ export const getUrlVal = (router, urlField) => {
     }
 
     return null;
-};
-
-/**
- *  @param {import('next/router').NextRouter} router 
- *  @param {string} urlField 
- * */
-export const getAllUrlVals = (router, willCreateSubTuples) => {
-    const pathsStr = router.asPath.split('?')[1];
-    let urlKeysAndVals = pathsStr?.split("&");
-
-    if (urlKeysAndVals?.length && willCreateSubTuples) {
-        const urlKeysAndValsTuples = urlKeysAndVals.map(keyAndValStr => {
-            return keyAndValStr.split('=');
-        });
-
-        return urlKeysAndValsTuples;
-    }
-
-    return urlKeysAndVals;
 };
 
 const AccountPg = () => {
@@ -208,6 +189,29 @@ const AccountPg = () => {
                     isDisplayed: true,
                     bodyTxt: bodyTxt,
                     headerTxt: 'Sign-in ERROR. There is an email with a different provider in our records.',
+                    handleOnHide: () => {
+                        resetUrl(router);
+                    },
+                });
+            }, 300);
+        }
+
+        const urlVals = getAllUrlVals(router)?.flatMap(urlVal => urlVal.split('='));
+        const urlValsChunks = urlVals?.length ? getChunks(urlVals, 2) : []
+        const didPasswordChange = urlValsChunks.find(([key, val]) => {
+            if ((key === 'password_changed') && getIsParsable(val)) {
+                return JSON.parse(val);
+            }
+
+            return false;
+        }) !== undefined;
+
+        if ((status === "unauthenticated") && didPasswordChange) {
+            setTimeout(() => {
+                setNotifyModal({
+                    isDisplayed: true,
+                    bodyTxt: "",
+                    headerTxt: 'Password updated! You can now login.',
                     handleOnHide: () => {
                         resetUrl(router);
                     },

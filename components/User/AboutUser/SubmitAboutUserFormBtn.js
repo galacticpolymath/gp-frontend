@@ -149,8 +149,6 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                     },
                 });
             }, 300);
-
-            console.log("From server, response.data: ", response.data);
         } catch (error) {
             console.log('error: ', error);
             const { message, response } = error ?? {};

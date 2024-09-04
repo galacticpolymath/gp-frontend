@@ -2,10 +2,21 @@ import { SignJWT } from 'jose';
 import { nanoid } from 'nanoid';
 import { JWT } from 'google-auth-library';
 
-export const signJwt = async ({ email, roles, name }, secret, expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60) => {
-  const issueAtTime = Math.floor(Date.now() / 1000); // issued at time
+/**
+ * Creates a json web token.
+ * @param {{ email?: string, role?: string[], name?: string }} jwtPayload 
+ * @param {string | Buffer} secret 
+ * @param {string | number} expirationTime 
+ * @returns {SignJWT}
+ */
+export const signJwt = async (
+  jwtPayload,
+  secret,
+  expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60
+) => {
+  const issueAtTime = Math.floor(Date.now() / 1000); // issued at tim
 
-  return new SignJWT({ email, roles, name })
+  return new SignJWT(jwtPayload)
     .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
     .setExpirationTime(expirationTime)
     .setIssuedAt(issueAtTime)
