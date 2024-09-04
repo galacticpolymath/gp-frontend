@@ -17,6 +17,7 @@ export const CustomInput = ({
     inputId,
     inputName,
     inputContainerCss,
+    inputClassName = 'px-1 py-2 position-relative no-outline border-0 rounded',
     isPasswordInput = false,
     passwordInputStyle = {},
     iconContainerStyle = {},
@@ -46,7 +47,7 @@ export const CustomInput = ({
                 type={isPasswordInput ? (isConfirmPasswordShown ? 'text' : 'password') : 'text'}
                 onChange={onChange}
                 placeholder={placeholder}
-                className='px-1 py-2 position-relative no-outline border-0 rounded'
+                className={inputClassName}
             />
             {isPasswordInput && (
                 <div

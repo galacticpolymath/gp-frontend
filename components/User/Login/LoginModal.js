@@ -14,6 +14,7 @@ import ORTxtDivider from "../ORTxtDivider";
 import { useUserEntry } from "../../../customHooks/useUserEntry";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
+import { CustomInput } from "../formElements";
 
 /**
  * @global
@@ -249,7 +250,7 @@ const LoginModal = () => {
                             >
                                 <FaLock fontSize='31px' color="#D6D6D6" />
                             </label>
-                            <input
+                            {/* <input
                                 id='password-input'
                                 placeholder="Password"
                                 style={{
@@ -266,6 +267,12 @@ const LoginModal = () => {
                                 onChange={event => {
                                     handleOnInputChange(event);
                                 }}
+                            /> */}
+                            <CustomInput
+                                inputContainerCss={`no-outline position-relative rounded login-modal-input ${errors.has('password') ? 'bg-danger text-danger' : ''}`}
+                                isPasswordInput
+                                passwordInputStyle={{ width: "90%" }}
+                                inputClassName="px-1 py-2 position-relative no-outline border-0 rounded"
                             />
                         </div>
                         <div className="my-2 py-1 d-flex justify-content-center align-items-center">
