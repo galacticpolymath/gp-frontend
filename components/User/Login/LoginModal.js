@@ -57,14 +57,6 @@ const LoginModal = () => {
     const [, setIsPasswordResetModalOn] = _isPasswordResetModalOn;
     const { _loginForm, sendFormToServer } = useUserEntry();
     const [errors, setErrors] = useState(new Map());
-    /**
-   * @type {[import("../formElements").TFocusCss, import('react').Dispatch<import('react').SetStateAction<import("../formElements").TFocusCss>>]}
-   */
-    const [emailFocusCss, setEmailFocusCss] = useState("input-focus-blue");
-    /**
-    * @type {[import("../formElements").TFocusCss, import('react').Dispatch<import('react').SetStateAction<import("../formElements").TFocusCss>>]}
-    */
-    const [passwordFocusCss, setPasswordFocusCss] = useState("border-grey-dark");
     const [loginForm, setLoginForm] = _loginForm;
 
     const handleOnInputChange = event => {
@@ -217,24 +209,12 @@ const LoginModal = () => {
                             >
                                 <MdOutlineMail fontSize='31px' color={errors.has('email') ? 'red' : "#D6D6D6"} />
                             </label>
-                            <input
-                                id="email-input"
-                                placeholder="Email"
-                                autoFocus
-                                onFocus={() => setEmailFocusCss('input-focus-blue')}
-                                onBlur={() => setEmailFocusCss('border-grey-dark')}
-                                style={{
-                                    outline: 'none',
-                                    borderRadius: "5px",
-                                    fontSize: "18px",
-                                    background: '#D6D6D6',
-                                    color: errors.has('email') ? 'red' : 'black',
-                                }}
-                                className={`${errors.has('email') ? '' : emailFocusCss} p-1 py-2 login-modal-input ${errors.has('email') ? 'border-red' : ''}`}
-                                name="email"
-                                onChange={event => {
-                                    handleOnInputChange(event);
-                                }}
+                            <CustomInput
+                                inputContainerCss={`no-outline position-relative rounded login-modal-input ${errors.has('password') ? 'bg-danger text-danger' : ''}`}
+                                inputName="email"
+                                inputId="email-id"
+                                placeholder="Enter email"
+                                inputClassName="px-1 py-2 position-relative no-outline border-0 rounded"
                             />
                         </div>
                         <div className="my-2 py-1 d-flex justify-content-center align-items-center">
@@ -250,28 +230,12 @@ const LoginModal = () => {
                             >
                                 <FaLock fontSize='31px' color="#D6D6D6" />
                             </label>
-                            {/* <input
-                                id='password-input'
-                                placeholder="Password"
-                                style={{
-                                    borderRadius: "5px",
-                                    fontSize: "18px",
-                                    background: '#D6D6D6',
-                                    border: errors.has("password") ? "solid 1.5px red" : passwordFocusCss,
-
-                                }}
-                                onFocus={() => setPasswordFocusCss('input-focus-blue')}
-                                onBlur={() => setPasswordFocusCss('border-grey-dark')}
-                                className={`no-outline p-1 login-modal-input py-2 ${errors.has('password') ? 'bg-danger text-danger' : ''}`}
-                                name='password'
-                                onChange={event => {
-                                    handleOnInputChange(event);
-                                }}
-                            /> */}
                             <CustomInput
                                 inputContainerCss={`no-outline position-relative rounded login-modal-input ${errors.has('password') ? 'bg-danger text-danger' : ''}`}
                                 isPasswordInput
                                 passwordInputStyle={{ width: "90%" }}
+                                inputName="password"
+                                inputId="password-id"
                                 inputClassName="px-1 py-2 position-relative no-outline border-0 rounded"
                             />
                         </div>
