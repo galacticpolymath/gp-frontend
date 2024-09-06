@@ -7,9 +7,9 @@ class EmailTransport {
     constructor() {
         const { EMAIL_USER, EMAIL_PASSWORD } = process.env;
 
-        this.service = 'Gmail';
-        this.host = 'smtp.gmail.com';
-        this.port = 587;
+        this.pool = true;
+        this.host = 'smtp.galacticpolymath.com';
+        this.port = 465;
         this.secure = true;
         this.auth = {
             user: EMAIL_USER,
@@ -45,7 +45,7 @@ export const sendEmail = async (mailOpts) => {
         return { wasSuccessful: true };
     } catch (error) {
         console.error('Error object: ', error);
-        
+
         return { wasSuccessful: false };
     }
 };

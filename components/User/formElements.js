@@ -125,6 +125,7 @@ export const InputSection = ({
     inputName,
     containerClassName = "d-flex flex-column col-sm-6 position-relative",
     labelClassName = "",
+    inputClassName = "border-0 p-1 w-100 py-2",
     inputStyle = { borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' },
     inputElement = null,
     handleOnInputChange = () => { },
@@ -143,7 +144,7 @@ export const InputSection = ({
                     id={inputId}
                     placeholder={inputPlaceholder}
                     style={inputStyle}
-                    className="border-0 p-1 w-100 py-2"
+                    className={inputClassName}
                     name={inputName}
                     onChange={event => {
                         handleOnInputChange(event);
