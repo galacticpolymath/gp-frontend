@@ -138,7 +138,7 @@ const SignUpModal = () => {
                 <CloseButton onClick={handleOnHide} className='position-absolute top-0 end-0 me-1 mt-1' />
                 <img
                     className='position-absolute top-0 start-0 me-5 mt-1'
-                    src='imgs/gp_logo_gradient_transBG.png'
+                    src='/imgs/gp_logo_gradient_transBG.png'
                     alt="gp_logo"
                     width={50}
                     height={50}

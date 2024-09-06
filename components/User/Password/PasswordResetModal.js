@@ -109,7 +109,7 @@ const PasswordResetModal = () => {
             );
 
             setIsPasswordResetModalOn(false);
-            
+
             setTimeout(() => {
                 setNotifyModal({
                     isDisplayed: true,
@@ -161,8 +161,7 @@ const PasswordResetModal = () => {
                 <CloseButton className='position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey' onClick={handleOnHide} />
                 <div className="d-flex justify-content-center align-items-center">
                     <img
-                        // src={(typeof window === 'undefined') ? '' : `${window.location.origin}/imgs/gp_logo_gradient_transBG.png`}
-                        // src={(typeof window === 'undefined') ? '' : `${window.location.origin}/imgs/gp_logo_gradient_transBG.png`}
+                        src='/imgs/gp_logo_gradient_transBG.png'
                         alt="gp_logo"
                         width={75}
                         height={75}

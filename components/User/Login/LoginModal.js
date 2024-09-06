@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable quotes */
 import { useContext, useState } from "react";
-import { CloseButton, Modal, ModalHeader } from "react-bootstrap";
+import { CloseButton, Modal, ModalHeader, Spinner } from "react-bootstrap";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { ModalContext } from "../../../providers/ModalProvider";
@@ -15,6 +15,7 @@ import { useUserEntry } from "../../../customHooks/useUserEntry";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 import { CustomInput } from "../formElements";
+import { validateEmail } from "../../../globalFns";
 
 /**
  * @global
@@ -28,9 +29,10 @@ import { CustomInput } from "../formElements";
  */
 const getUserLoginErrType = async (email, password) => {
     try {
-        const url = `${window.location.href}/api/can-login`;
+        const url = `${window.location.origin}/api/can-login`;
         /**
          * @type {{ status: number, data: { errType: 'none' | 'userNotFound' | 'invalidCredentials' }}} */
+        console.log('url, what is up there: ', url);
         const response = await axios.post(
             url,
             {
@@ -55,7 +57,8 @@ const LoginModal = () => {
     const [isLoginModalDisplayed, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     const [, setIsPasswordResetModalOn] = _isPasswordResetModalOn;
-    const { _loginForm, sendFormToServer } = useUserEntry();
+    const { _loginForm } = useUserEntry();
+    const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
     const [errors, setErrors] = useState(new Map());
     const [loginForm, setLoginForm] = _loginForm;
 
@@ -81,74 +84,47 @@ const LoginModal = () => {
     };
 
     const handleLoginBtnClick = async () => {
+        setIsLoadingSpinnerOn(true);
 
         const errors = new Map();
+        const { email, password } = loginForm;
 
-        if (!loginForm.email) {
+        if (!email) {
             errors.set('email', 'This field is required.');
-            setErrors(errors);
+        } else if (!validateEmail(email)) {
+            errors.set('email', "Invalid email.");
         }
 
-        if (!loginForm.password) {
+        if (!password) {
             errors.set('password', 'This field is required.');
-            setErrors(errors);
         }
 
         if (errors.size > 0) {
+            setErrors(errors);
+            setTimeout(() => {
+                setIsLoadingSpinnerOn(false);
+            }, 200);
             return;
         }
 
-        const userLoginErrType = await getUserLoginErrType(loginForm.email, loginForm.password);
+        const userLoginErrType = await getUserLoginErrType(email, password);
 
         if (userLoginErrType === "googleLogin") {
-            errors.set('email', 'Try logging in with google instead.');
-            setErrors(errors);
+            errors.set('email', 'This email exists but uses Google to log in.');
+        } else if (userLoginErrType === "userNotFound") {
+            errors.set("email", "Email not found.");
+        } else if (userLoginErrType === "invalidCredentials") {
+            errors.set("email", "Email or password is incorrect.");
+            errors.set("password", "Email or password is incorrect.");
         }
 
-        console.log('userLoginErrType: ', userLoginErrType);
-
-        // const url = `${window.location.href}/api/can-login`;
-        // /**
-        //  * @type {{ status: number, data: { errType: 'none' | 'userNotFound' | 'invalidCredentials' }}} */
-        // const response = await axios.post(
-        //     url,
-        //     {
-        //         email: loginForm.email,
-        //         password: loginForm.password,
-        //     });
-
-        // if (response.data.errType === 'userNotFound') {
-        //     errors.set('email', 'This email is not found in our database.');
-        //     setErrors(errors);
-        //     return;
-        // }
-
-        // if (response.data.errType === 'invalidCredentials') {
-        //     errors.set('email', 'Invalid credentials.');
-        //     errors.set('password', 'Invalid credentials.');
-        //     setErrors(errors);
-        //     return;
-        // }
-
-        // if (response.data.errType === 'none') {
-        //     sendFormToServer(
-        //         "login",
-        //         "credentials",
-        //         {
-        //             login: {
-        //                 email: loginForm.email,
-        //                 password: loginForm.password,
-        //             },
-        //         },
-        //     );
-        //     return;
-        // }
-
-        // errors.set('email', 'Unable to validate credentials.');
-
-        // errors.set('password', 'Unable eto validate credentials.');
-
-        // setErrors(errors);
+        if (errors.size > 0) {
+            setErrors(errors);
+            setTimeout(() => {
+                setIsLoadingSpinnerOn(false);
+            }, 200);
+            return;
+        }
     };
 
     const handleCreateOneBtnClick = () => {
@@ -176,7 +152,7 @@ const LoginModal = () => {
                 <CloseButton className='position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey' onClick={handleOnHide} />
                 <img
                     className='position-absolute top-0 start-0 me-5 mt-1'
-                    src='imgs/gp_logo_gradient_transBG.png'
+                    src='/imgs/gp_logo_gradient_transBG.png'
                     alt="gp_logo"
                     width={50}
                     height={50}
@@ -210,11 +186,14 @@ const LoginModal = () => {
                                 <MdOutlineMail fontSize='31px' color={errors.has('email') ? 'red' : "#D6D6D6"} />
                             </label>
                             <CustomInput
-                                inputContainerCss={`no-outline position-relative rounded login-modal-input ${errors.has('password') ? 'bg-danger text-danger' : ''}`}
+                                inputContainerCss={`no-outline position-relative rounded w-75 login-modal-input-container ${errors.has('email') ? 'border-red' : ''}`}
                                 inputName="email"
                                 inputId="email-id"
+                                inputType="email"
                                 placeholder="Enter email"
-                                inputClassName="px-1 py-2 position-relative no-outline border-0 rounded"
+                                inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-transparent w-100 ${errors.has('email') ? 'text-danger' : ''}`}
+                                onChange={handleOnInputChange}
+                                autoFocus
                             />
                         </div>
                         <div className="my-2 py-1 d-flex justify-content-center align-items-center">
@@ -228,15 +207,16 @@ const LoginModal = () => {
                                 className="position-absolute start-0 d-none d-sm-flex justify-content-center align-items-center"
                                 htmlFor="password-input"
                             >
-                                <FaLock fontSize='31px' color="#D6D6D6" />
+                                <FaLock fontSize='31px' color={errors.has('password') ? 'red' : "#D6D6D6"} />
                             </label>
                             <CustomInput
-                                inputContainerCss={`no-outline position-relative rounded login-modal-input ${errors.has('password') ? 'bg-danger text-danger' : ''}`}
+                                inputContainerCss={`no-outline position-relative rounded w-75 login-modal-input-container ${errors.has('password') ? 'border-red text-danger' : ''}`}
                                 isPasswordInput
                                 passwordInputStyle={{ width: "90%" }}
                                 inputName="password"
+                                onChange={handleOnInputChange}
                                 inputId="password-id"
-                                inputClassName="px-1 py-2 position-relative no-outline border-0 rounded"
+                                inputClassName="px-1 py-2 position-relative no-outline bg-transparent border-0 rounded"
                             />
                         </div>
                         <div className="my-2 py-1 d-flex justify-content-center align-items-center">
@@ -249,9 +229,15 @@ const LoginModal = () => {
                                 handleOnClick={handleLoginBtnClick}
                                 classNameStr="bg-primary rounded border-0 px-4 py-2 login-modal-input"
                             >
-                                <span className="text-white">
-                                    Login
-                                </span>
+                                {isLoadingSpinnerOn ?
+                                    <Spinner size="sm" className='text-white' />
+                                    :
+                                    (
+                                        <span className="text-white">
+                                            Login
+                                        </span>
+                                    )
+                                }
                             </Button>
                         </div>
                         <div className="d-flex justify-content-center align-items-center py-3">

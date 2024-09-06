@@ -262,6 +262,10 @@ ol li {
   border-top: none;
 }
 
+.login-modal-input-container {
+  background-color: rgb(232, 240, 254);
+}
+
 .login-modal-input {
   width: 65%;
   @media (min-width: 578px) {
@@ -289,7 +293,7 @@ ol li {
   }
 }
 
-.border-grey-dark{
+.border-grey-dark {
   border: solid 1px grey;
 }
 
@@ -437,11 +441,11 @@ ol li {
   }
 }
 
-.notify-modal-body::first-letter{
+.notify-modal-body::first-letter {
   text-transform: capitalize;
 }
 
-.border-red{
+.border-red {
   border: solid 1.5px red;
 }
 

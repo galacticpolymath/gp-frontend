@@ -55,7 +55,7 @@ const LoginUI = ({
         <div className={className}>
             <div className="d-flex justify-content-center align-items-center">
                 <img
-                    src='imgs/gp_logo_gradient_transBG.png'
+                    src='/imgs/gp_logo_gradient_transBG.png'
                     alt="gp_logo"
                     width={75}
                     height={75}
@@ -81,17 +81,6 @@ const LoginUI = ({
                             inputId="email-input"
                             inputName="email"
                         />
-                        {/* <input
-                            id="email-input"
-                            placeholder="Email"
-                            style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6' }}
-                            className={`no-outline p-1 py-2 ${inputFieldClassName}`}
-                            autoFocus
-                            name="email"
-                            onChange={event => {
-                                handleOnInputChange(event);
-                            }}
-                        /> */}
                     </div>
                     <div className="my-2 py-1 d-flex justify-content-center align-items-center">
                         <div className={`${inputFieldClassName} d-flex align-items-center position-relative`}>

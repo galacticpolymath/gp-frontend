@@ -7,16 +7,50 @@ import { useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
 /**
+ * @typedef {(
+ *   "button" |
+ *   "checkbox" |
+ *   "color" |
+ *   "date" |
+ *   "datetime-local" |
+ *   "email" |
+ *   "file" |
+ *   "hidden" |
+ *   "image" |
+ *   "month" |
+ *   "number" |
+ *   "password" |
+ *   "radio" |
+ *   "range" |
+ *   "reset" |
+ *   "search" |
+ *   "submit" |
+ *   "tel" |
+ *   "text" |
+ *   "time" |
+ *   "url" |
+ *   "week"
+ * )} TInputType
+
+/**
  *  @global 
  * * @typedef {'input-focus-blue' | 'border-grey-dark'} TFocusCss
+ * 
  */
 
+/**
+ * 
+ * @param {{ inputType: TInputType }} param0 
+ * @returns 
+ */
 export const CustomInput = ({
     onChange,
     placeholder = '',
     inputId,
     inputName,
+    autoFocus = false,
     inputContainerCss,
+    inputType = 'text',
     inputClassName = 'px-1 py-2 position-relative no-outline border-0 rounded',
     isPasswordInput = false,
     passwordInputStyle = {},
@@ -42,9 +76,10 @@ export const CustomInput = ({
                 style={passwordInputStyle}
                 id={inputId}
                 name={inputName}
+                autoFocus={autoFocus}
                 onFocus={handleFocusabilityCss('input-focus-blue')}
                 onBlur={handleFocusabilityCss('border-grey-dark')}
-                type={isPasswordInput ? (isConfirmPasswordShown ? 'text' : 'password') : 'text'}
+                type={isPasswordInput ? (isConfirmPasswordShown ? 'text' : 'password') : inputType}
                 onChange={onChange}
                 placeholder={placeholder}
                 className={inputClassName}
