@@ -45,6 +45,8 @@ export default async function handler(request, response) {
             throw new CustomError('Invalid reset token.', 401);
         }
 
+        console.log('email, yo there: ', email);
+
         const expMiliseconds = expSeconds * 1_000;
         const currentTimeMs = new Date().getMilliseconds();
 
@@ -53,6 +55,8 @@ export default async function handler(request, response) {
         }
 
         const doesUserExist = !!getUserByEmail(email);
+
+        console.log('doesUserExist: ', doesUserExist);
 
         if (!doesUserExist) {
             throw new CustomError('The user does not exist.', 404);
@@ -70,6 +74,8 @@ export default async function handler(request, response) {
 
             throw new CustomError(errMsg, 500);
         }
+
+        console.log('the password has been updated...');
 
         return response.status(200).json({ msg: 'Password has been updated.' });
     } catch (error) {

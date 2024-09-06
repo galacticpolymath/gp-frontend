@@ -57,7 +57,7 @@ const LoginModal = () => {
     const [isLoginModalDisplayed, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     const [, setIsPasswordResetModalOn] = _isPasswordResetModalOn;
-    const { _loginForm } = useUserEntry();
+    const { _loginForm, sendFormToServer } = useUserEntry();
     const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
     const [errors, setErrors] = useState(new Map());
     const [loginForm, setLoginForm] = _loginForm;
@@ -100,9 +100,9 @@ const LoginModal = () => {
         }
 
         if (errors.size > 0) {
-            setErrors(errors);
             setTimeout(() => {
                 setIsLoadingSpinnerOn(false);
+                setErrors(errors);
             }, 200);
             return;
         }
@@ -119,12 +119,23 @@ const LoginModal = () => {
         }
 
         if (errors.size > 0) {
-            setErrors(errors);
             setTimeout(() => {
                 setIsLoadingSpinnerOn(false);
+                setErrors(errors);
             }, 200);
             return;
         }
+
+        sendFormToServer(
+            "login",
+            "credentials",
+            {
+                login: {
+                    email,
+                    password,
+                },
+            },
+        );
     };
 
     const handleCreateOneBtnClick = () => {

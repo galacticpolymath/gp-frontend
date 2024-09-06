@@ -25,19 +25,21 @@ export default async function handler(request, response) {
             return response.status(404).json({ errType: 'googleLogin' });
         }
 
-        const { hash, iterations, salt } = dbUser?.password ?? {};
+        const { hash: hashedPassword, iterations, salt } = dbUser?.password ?? {};
         const isPasswordCorrect = getIsPasswordCorrect(
             {
-                password: hash,
+                password,
                 iterations,
                 salt,
             },
-            password
+            hashedPassword
         );
 
         if (!dbUser || !isPasswordCorrect) {
             return response.status(401).json({ errType: 'invalidCredentials' });
         }
+
+        console.log('The user can log in.');
 
         return response.status(200).json({ errType: 'none' });
     } catch (error) {
