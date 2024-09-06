@@ -178,6 +178,7 @@ export const useUserEntry = () => {
 
     const handleLoginBtnClick = async () => {
         setIsUserEntryInProcess(true);
+        setUserEntryErrors(new Map());
 
         const errors = new Map();
         const { email, password } = loginForm;

@@ -4,7 +4,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import GoogleSignIn from "../GoogleSignIn";
@@ -15,36 +15,32 @@ const LoginUI = ({
     className = '',
     headingTitleClassName = "text-white text-center mt-2",
 }) => {
-    const { sendFormToServer, _loginForm } = useUserEntry();
+    const { _loginForm, handleLoginBtnClick, _isUserEntryInProcess, _userEntryErrors } = useUserEntry();
     const { _isCreateAccountModalDisplayed, _isPasswordResetModalOn } = useContext(ModalContext);
-    const [loginForm, setLoginForm] = _loginForm;
+    const [, setLoginForm] = _loginForm;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     const [, setIsPasswordResetModalOn] = _isPasswordResetModalOn;
-    const [errors] = useState(new Map());
-    const [isLoadingSpinnerOn, setIsLoadingSpinner] = useState(false);
+    const [isUserEntryInProcess] = _isUserEntryInProcess;
+    const [userEntryErrors, setUserEntryErrors] = _userEntryErrors;
     const inputFieldClassName = 'col-12 col-sm-7';
 
     const handleOnInputChange = event => {
         const { name, value } = event.target;
 
+        if (userEntryErrors.has(name)) {
+            setUserEntryErrors(state => {
+                const userEntryErrorsClone = structuredClone(state);
+
+                userEntryErrorsClone.delete(name);
+
+                return userEntryErrorsClone;
+            });
+        }
+
         setLoginForm(currentState => ({
             ...currentState,
             [name]: value,
         }));
-    };
-
-    const handleLoginBtnClick = () => {
-        setIsLoadingSpinner(true);
-        sendFormToServer(
-            "login",
-            "credentials",
-            {
-                login: {
-                    email: loginForm.email,
-                    password: loginForm.password,
-                },
-            },
-        );
     };
 
     const handleCreateOneBtnClick = () => {
@@ -66,7 +62,7 @@ const LoginUI = ({
                 <form>
                     <div className="mt-3 d-flex justify-content-center align-items-center flex-column">
                         <label
-                            className={`d-flex p-0 position-relative ${inputFieldClassName} fw-bold pb-2`}
+                            className={`d-flex p-0 position-relative ${inputFieldClassName} ${userEntryErrors.has('email') ? 'text-danger' : ''}  fw-bold pb-2`}
                             htmlFor="email-input"
 
                         >
@@ -77,8 +73,8 @@ const LoginUI = ({
                                 handleOnInputChange(event);
                             }}
                             inputStyle={{ width: "100%", height: '45px', fontSize: '20px' }}
-                            inputContainerCss={`${inputFieldClassName} rounded position-relative bg-light-blue`}
-                            inputClassName='px-1 py-2 position-relative no-outline border-0 rounded bg-light-blue'
+                            inputContainerCss={`${inputFieldClassName} rounded position-relative bg-light-blue ${userEntryErrors.has('email') ? 'border-danger' : 'border'}`}
+                            inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-light-blue`}
                             inputId="email-input"
                             inputName="email"
                         />
@@ -86,13 +82,13 @@ const LoginUI = ({
                     <div className="my-2 py-1 d-flex justify-content-center align-items-center">
                         <div className={`${inputFieldClassName} d-flex align-items-center position-relative`}>
                             <span style={{ fontSize: '16px' }} className='left-0 text-danger position-absolute'>
-                                {errors.get('email') ?? ''}
+                                {userEntryErrors.get('email') ?? ''}
                             </span>
                         </div>
                     </div>
                     <div className="mt-4 d-flex justify-content-center align-items-center flex-column">
                         <label
-                            className={`d-flex p-0 position-relative ${inputFieldClassName} fw-bold pb-2`}
+                            className={`d-flex p-0 position-relative ${userEntryErrors.has('password') ? 'text-danger' : ''} ${inputFieldClassName} fw-bold pb-2`}
                             htmlFor="password-input"
 
                         >
@@ -102,11 +98,19 @@ const LoginUI = ({
                             onChange={event => {
                                 handleOnInputChange(event);
                             }}
-                            inputStyle={{ width: "90%", height: '45px', fontSize: '20px' }}
+                            inputStyle={{
+                                width: "90%",
+                                height: '45px',
+                                fontSize: '20px',
+                                borderTopRightRadius: '0px',
+                                borderBottomRightRadius: '0px',
+                                borderTopLeftRadius: '6.75px',
+                                borderBottomLeftRadius: '6.75px',
+                            }}
                             iconContainerStyle={{ width: "10%", borderTopRightRadius: '6.75px', borderBottomRightRadius: '6.75px' }}
                             iconContainerClassName='h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue'
-                            inputContainerCss={`${inputFieldClassName} rounded position-relative`}
-                            inputClassName='px-1 py-2 position-relative no-outline border-0 rounded bg-light-blue'
+                            inputContainerCss={`${inputFieldClassName} ${userEntryErrors.has('password') ? 'border-danger text-danger' : 'border'} rounded position-relative`}
+                            inputClassName='px-1 py-2 position-relative no-outline border-0 bg-light-blue'
                             inputId="password-input"
                             inputName="password"
                             isPasswordInput
@@ -115,7 +119,7 @@ const LoginUI = ({
                     <div className="my-2 py-1 d-flex justify-content-center align-items-center">
                         <div className={`d-flex align-items-center position-relative ${inputFieldClassName}`}>
                             <span style={{ fontSize: '16px' }} className='left-0 text-danger position-absolute'>
-                                {errors.get('password') ?? ''}
+                                {userEntryErrors.get('password') ?? ''}
                             </span>
                         </div>
                     </div>
@@ -125,7 +129,7 @@ const LoginUI = ({
                             defaultStyleObj={{ borderRadius: '5px' }}
                             classNameStr={`bg-primary border-0 px-4 py-2 ${inputFieldClassName}`}
                         >
-                            {isLoadingSpinnerOn
+                            {isUserEntryInProcess
                                 ?
                                 (
                                     <div

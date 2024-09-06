@@ -49,6 +49,7 @@ const LoginModal = () => {
 
     const handleLoginBtnClick = async () => {
         setIsLoadingSpinnerOn(true);
+        setErrors(new Map());
 
         const errors = new Map();
         const { email, password } = loginForm;
@@ -185,9 +186,16 @@ const LoginModal = () => {
                                 <FaLock fontSize='31px' color={errors.has('password') ? 'red' : "#D6D6D6"} />
                             </label>
                             <CustomInput
-                                inputContainerCss={`no-outline position-relative rounded w-75 light-blue ${errors.has('password') ? 'border-red text-danger' : ''}`}
+                                inputContainerCss={`no-outline position-relative rounded w-75 bg-light-blue ${errors.has('password') ? 'border-red text-danger' : ''}`}
                                 isPasswordInput
-                                inputStylee={{ width: "90%" }}
+                                inputStyle={{
+                                    width: "90%", borderTopRightRadius: '0px',
+                                    borderBottomRightRadius: '0px',
+                                    borderTopLeftRadius: '6.75px',
+                                    borderBottomLeftRadius: '6.75px',
+                                }}
+                                iconContainerStyle={{ width: "10%", borderTopRightRadius: '6.75px', borderBottomRightRadius: '6.75px' }}
+                                iconContainerClassName='h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue'
                                 inputName="password"
                                 onChange={handleOnInputChange}
                                 inputId="password-id"
