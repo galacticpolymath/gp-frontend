@@ -14,6 +14,41 @@ import { constructUrlWithSearchQuery, validateEmail } from "../globalFns";
 */
 
 /**
+ * @global
+ * @typedef {'none' | 'userNotFound' | 'invalidCredentials' | 'googleLogin'} TUserLoginErrType
+
+/**
+ * 
+ * @param {string} email 
+ * @param {string} password 
+ * @returns {TUserLoginErrType}
+ */
+export const getUserLoginErrType = async (email, password) => {
+    try {
+        const url = `${window.location.origin}/api/can-login`;
+        /**
+         * @type {{ status: number, data: { errType: 'none' | 'userNotFound' | 'invalidCredentials' }}} */
+        console.log('url, what is up there: ', url);
+        const response = await axios.post(
+            url,
+            {
+                email,
+                password,
+            });
+
+        return response.data.errType;
+    } catch (error) {
+        console.error('Cannot log user in. Reason: ', error);
+
+        const { errType, msg } = error?.response?.data ?? {};
+
+        console.error("Message from server: ", msg);
+
+        return errType ?? "invalidCredentials";
+    }
+};
+
+/**
 * @typedef TCreateAccount
 * @property {string} firstName
 * @property {string} lastName
@@ -54,6 +89,8 @@ const getDoesEmailExist = async (email) => {
 export const useUserEntry = () => {
     const [userErrorType, setUserErrorType] = useState('');
     const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+    const [userEntryErrors, setUserEntryErrors] = useState(new Map());
+    const [isUserEntryInProcess, setIsUserEntryInProcess] = useState(false);
     const [createAccountForm, setCreateAccountForm] = useState({
         firstName: '',
         lastName: '',
@@ -139,11 +176,69 @@ export const useUserEntry = () => {
         }));
     };
 
+    const handleLoginBtnClick = async () => {
+        setIsUserEntryInProcess(true);
+
+        const errors = new Map();
+        const { email, password } = loginForm;
+
+        if (!email) {
+            errors.set('email', 'This field is required.');
+        } else if (!validateEmail(email)) {
+            errors.set('email', "Invalid email.");
+        }
+
+        if (!password) {
+            errors.set('password', 'This field is required.');
+        }
+
+        if (errors.size > 0) {
+            setTimeout(() => {
+                setIsUserEntryInProcess(false);
+                setUserEntryErrors(errors);
+            }, 200);
+            return;
+        }
+
+        const userLoginErrType = await getUserLoginErrType(email, password);
+
+        if (userLoginErrType === "googleLogin") {
+            errors.set('email', 'This email exists but uses Google to log in.');
+        } else if (userLoginErrType === "userNotFound") {
+            errors.set("email", "Email not found.");
+        } else if (userLoginErrType === "invalidCredentials") {
+            errors.set("email", "Email or password is incorrect.");
+            errors.set("password", "Email or password is incorrect.");
+        }
+
+        if (errors.size > 0) {
+            setTimeout(() => {
+                setIsUserEntryInProcess(false);
+                setUserEntryErrors(errors);
+            }, 200);
+            return;
+        }
+
+        sendFormToServer(
+            "login",
+            "credentials",
+            {
+                login: {
+                    email,
+                    password,
+                },
+            },
+        );
+    };
+
     return {
         sendFormToServer,
         userErrorType,
         validateForm,
         handleOnInputChange,
+        handleLoginBtnClick,
+        _userEntryErrors: [userEntryErrors, setUserEntryErrors],
+        _isUserEntryInProcess: [isUserEntryInProcess, setIsUserEntryInProcess],
         _loginForm: [loginForm, setLoginForm],
         _createAccountForm: [createAccountForm, setCreateAccountForm],
     };

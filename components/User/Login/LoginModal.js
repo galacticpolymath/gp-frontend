@@ -11,46 +11,10 @@ import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import GoogleSignIn from "../GoogleSignIn";
 import ORTxtDivider from "../ORTxtDivider";
-import { useUserEntry } from "../../../customHooks/useUserEntry";
+import { getUserLoginErrType, useUserEntry } from "../../../customHooks/useUserEntry";
 import { FcGoogle } from "react-icons/fc";
-import axios from "axios";
 import { CustomInput } from "../formElements";
 import { validateEmail } from "../../../globalFns";
-
-/**
- * @global
- * @typedef {'none' | 'userNotFound' | 'invalidCredentials' | 'googleLogin'} TUserLoginErrType
-
-/**
- * 
- * @param {string} email 
- * @param {string} password 
- * @returns {TUserLoginErrType}
- */
-const getUserLoginErrType = async (email, password) => {
-    try {
-        const url = `${window.location.origin}/api/can-login`;
-        /**
-         * @type {{ status: number, data: { errType: 'none' | 'userNotFound' | 'invalidCredentials' }}} */
-        console.log('url, what is up there: ', url);
-        const response = await axios.post(
-            url,
-            {
-                email,
-                password,
-            });
-
-        return response.data.errType;
-    } catch (error) {
-        console.error('Cannot log user in. Reason: ', error);
-
-        const { errType, msg } = error?.response?.data ?? {};
-
-        console.error("Message from server: ", msg);
-
-        return errType ?? "invalidCredentials";
-    }
-};
 
 const LoginModal = () => {
     const { _isLoginModalDisplayed, _isCreateAccountModalDisplayed, _isPasswordResetModalOn } = useContext(ModalContext);
