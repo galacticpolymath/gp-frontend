@@ -221,9 +221,9 @@ const LoginModal = () => {
                                 <FaLock fontSize='31px' color={errors.has('password') ? 'red' : "#D6D6D6"} />
                             </label>
                             <CustomInput
-                                inputContainerCss={`no-outline position-relative rounded w-75 login-modal-input-container ${errors.has('password') ? 'border-red text-danger' : ''}`}
+                                inputContainerCss={`no-outline position-relative rounded w-75 light-blue ${errors.has('password') ? 'border-red text-danger' : ''}`}
                                 isPasswordInput
-                                passwordInputStyle={{ width: "90%" }}
+                                inputStylee={{ width: "90%" }}
                                 inputName="password"
                                 onChange={handleOnInputChange}
                                 inputId="password-id"

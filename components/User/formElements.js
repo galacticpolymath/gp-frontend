@@ -52,8 +52,9 @@ export const CustomInput = ({
     inputContainerCss,
     inputType = 'text',
     inputClassName = 'px-1 py-2 position-relative no-outline border-0 rounded',
+    iconContainerClassName = 'h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center',
     isPasswordInput = false,
-    passwordInputStyle = {},
+    inputStyle = {},
     iconContainerStyle = {},
 }) => {
     /**
@@ -73,7 +74,7 @@ export const CustomInput = ({
     return (
         <div className={`${inputContainerCss} ${focusCssInput}`}>
             <input
-                style={passwordInputStyle}
+                style={inputStyle}
                 id={inputId}
                 name={inputName}
                 autoFocus={autoFocus}
@@ -87,7 +88,7 @@ export const CustomInput = ({
             {isPasswordInput && (
                 <div
                     style={iconContainerStyle}
-                    className='h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center'
+                    className={iconContainerClassName}
                 >
                     <div style={{ height: '95%' }} className='d-flex justify-content-center align-items-center'>
                         {isConfirmPasswordShown ?

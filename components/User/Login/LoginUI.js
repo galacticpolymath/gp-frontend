@@ -76,8 +76,9 @@ const LoginUI = ({
                             onChange={event => {
                                 handleOnInputChange(event);
                             }}
-                            passwordInputStyle={{ width: "100%", height: '45px', fontSize: '20px' }}
-                            inputContainerCss={`${inputFieldClassName} rounded position-relative`}
+                            inputStyle={{ width: "100%", height: '45px', fontSize: '20px' }}
+                            inputContainerCss={`${inputFieldClassName} rounded position-relative bg-light-blue`}
+                            inputClassName='px-1 py-2 position-relative no-outline border-0 rounded bg-light-blue'
                             inputId="email-input"
                             inputName="email"
                         />
@@ -101,9 +102,11 @@ const LoginUI = ({
                             onChange={event => {
                                 handleOnInputChange(event);
                             }}
-                            passwordInputStyle={{ width: "90%", height: '45px', fontSize: '20px' }}
-                            iconContainerStyle={{ width: "10%" }}
+                            inputStyle={{ width: "90%", height: '45px', fontSize: '20px' }}
+                            iconContainerStyle={{ width: "10%", borderTopRightRadius: '6.75px', borderBottomRightRadius: '6.75px' }}
+                            iconContainerClassName='h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue'
                             inputContainerCss={`${inputFieldClassName} rounded position-relative`}
+                            inputClassName='px-1 py-2 position-relative no-outline border-0 rounded bg-light-blue'
                             inputId="password-input"
                             inputName="password"
                             isPasswordInput
