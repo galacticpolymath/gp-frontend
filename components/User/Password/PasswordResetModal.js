@@ -13,6 +13,7 @@ import axios from 'axios';
 import { getTargetKeyValFromUrl, resetUrl, validateEmail } from '../../../globalFns';
 import { useRouter } from 'next/router';
 import { CustomError } from '../../../backend/utils/errors';
+import CustomLink from '../../CustomLink';
 
 const PasswordResetModal = () => {
     const { _isPasswordResetModalOn, _isLoginModalDisplayed, _customModalFooter, _notifyModal } = useContext(ModalContext);
@@ -83,7 +84,7 @@ const PasswordResetModal = () => {
 
             const url = `${window.location.origin}/api/send-password-recover-email`;
             const response = await axios.post(url, { email }, {
-                // timeout: 4_000
+                timeout: 4_000,
             });
 
             if (response.status !== 200) {
@@ -136,15 +137,14 @@ const PasswordResetModal = () => {
                 resetUrl(router);
             }
         } catch (error) {
-            console.error('An error has occurred: ', error);
-
-            const bodyTxt =
-                error?.message ? `Failed to send password reset link. Message from server: '${error.message}'` : "That email wasn't found. Maybe you normally log in with Google?";
-
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: bodyTxt,
-                bodyTxt: bodyTxt,
+                headerTxt: error?.message ? 'Looks like there was an error on the server. Please refresh the page and try again.' : 'Unable to send password link. Please refresh the page and try again.',
+                bodyElements: (
+                    <>
+                        If this error persists, please contact <CustomLink className='text-primary'>support</CustomLink>.
+                    </>
+                ),
                 handleOnHide: closeNotifyModal,
             });
 

@@ -33,7 +33,11 @@ export const getUserLoginErrType = async (email, password) => {
             {
                 email,
                 password,
-            });
+            },
+            {
+                timeout: 4_000,
+            }
+        );
 
         return response.data.errType;
     } catch (error) {

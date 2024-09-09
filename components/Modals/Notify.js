@@ -45,7 +45,7 @@ const Notify = () => {
     /** @type {[JSX.Element | null]} */
     const [customModalFooter] = _customModalFooter;
     const [notifyModal, setNotifyModal] = _notifyModal;
-    const { bodyTxt, headerTxt, handleOnHide } = notifyModal;
+    const { bodyTxt, headerTxt, handleOnHide, bodyElements } = notifyModal;
 
     const closeModal = () => {
         if (typeof handleOnHide === 'function') {
@@ -91,6 +91,11 @@ const Notify = () => {
             {bodyTxt && (
                 <Modal.Body className="text-center notify-modal-body">
                     {bodyTxt}
+                </Modal.Body>
+            )}
+            {bodyElements && (
+                <Modal.Body className="text-center notify-modal-body">
+                    {bodyElements}
                 </Modal.Body>
             )}
             {customModalFooter ?? (
