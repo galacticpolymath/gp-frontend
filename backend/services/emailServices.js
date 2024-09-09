@@ -7,8 +7,8 @@ class EmailTransport {
     constructor() {
         const { EMAIL_USER, EMAIL_PASSWORD } = process.env;
         this.host = 'smtp.galacticpolymath.com';
-        this.port = 465;
-        this.secure = true;
+        this.port = 587;
+        this.secure = false;
         this.auth = {
             user: EMAIL_USER,
             pass: EMAIL_PASSWORD,
