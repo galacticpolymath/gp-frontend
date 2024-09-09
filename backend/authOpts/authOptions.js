@@ -127,8 +127,6 @@ export const authOptions = {
           const dbUser = await getUserByEmail(email);
           const callbackUrl = credentials.callbackUrl.includes('?') ? credentials.callbackUrl.split('?')[0] : credentials.callbackUrl;
 
-          console.log('what is up there: ', callbackUrl);
-
           if (!dbUser && (formType === 'login')) {
             console.log('The user was not found.');
             throw new AuthError('userNotFound', 404, callbackUrl ?? '');

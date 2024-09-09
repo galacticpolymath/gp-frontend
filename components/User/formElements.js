@@ -56,6 +56,10 @@ export const CustomInput = ({
     isPasswordInput = false,
     inputStyle = {},
     iconContainerStyle = {},
+    onKeyUp = () => { },
+    onKeyDown = () => { },
+    onKeyDownCapture = () => { },
+    onKeyUpCapture = () => { },
 }) => {
     /**
     * @type {[TFocusCss, import('react').Dispatch<import('react').SetStateAction<TFocusCss>>]}
@@ -84,6 +88,10 @@ export const CustomInput = ({
                 onChange={onChange}
                 placeholder={placeholder}
                 className={inputClassName}
+                onKeyUp={onKeyUp}
+                onKeyDown={onKeyDown}
+                onKeyUpCapture={onKeyUpCapture}
+                onKeyDownCapture={onKeyDownCapture}
             />
             {isPasswordInput && (
                 <div
@@ -129,6 +137,10 @@ export const InputSection = ({
     inputStyle = { borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' },
     inputElement = null,
     handleOnInputChange = () => { },
+    onKeyUp = () => { },
+    onKeyDown = () => { },
+    onKeyDownCapture = () => { },
+    onKeyUpCapture = () => { },
 
 }) => {
     return (
@@ -144,6 +156,10 @@ export const InputSection = ({
                     id={inputId}
                     placeholder={inputPlaceholder}
                     style={inputStyle}
+                    onKeyDown={onKeyDown}
+                    onKeyUp={onKeyUp}
+                    onKeyDownCapture={onKeyDownCapture}
+                    onKeyUpCapture={onKeyUpCapture}
                     className={inputClassName}
                     name={inputName}
                     onChange={event => {

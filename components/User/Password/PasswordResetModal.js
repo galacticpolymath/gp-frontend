@@ -66,8 +66,10 @@ const PasswordResetModal = () => {
         }, 300);
     };
 
-    const handleContinueBtnClick = async () => {
+    const handleContinueBtnClick = async event => {
         try {
+            event.preventDefault();
+
             setIsLoadingSpinner(true);
             setErrors(new Map());
             const isEmailValid = !!validateEmail(email);
@@ -211,6 +213,11 @@ const PasswordResetModal = () => {
                         handleOnInputChange={event => {
                             setErrors(new Map());
                             setEmail(event.target.value);
+                        }}
+                        onKeyDown={event => {
+                            if (event.key === 'Enter') {
+                                event.preventDefault();
+                            }
                         }}
 
                     />

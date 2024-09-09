@@ -75,7 +75,7 @@ const LoginModal = () => {
         const userLoginErrType = await getUserLoginErrType(email, password);
 
         if (userLoginErrType === "googleLogin") {
-            errors.set('email', 'This email exists but uses Google to log in.');
+            errors.set('email', 'Error: Please sign in using Google.');
         } else if (userLoginErrType === "userNotFound") {
             errors.set("email", "Email not found.");
         } else if (userLoginErrType === "invalidCredentials") {
@@ -170,6 +170,11 @@ const LoginModal = () => {
                                 inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-transparent w-100 ${errors.has('email') ? 'text-danger' : ''}`}
                                 onChange={handleOnInputChange}
                                 autoFocus
+                                onKeyUp={event => {
+                                    if (event.key === "Enter") {
+                                        handleLoginBtnClick();
+                                    }
+                                }}
                             />
                         </div>
                         <div className="my-2 py-1 d-flex justify-content-center align-items-center">
@@ -189,7 +194,8 @@ const LoginModal = () => {
                                 inputContainerCss={`no-outline position-relative rounded w-75 bg-light-blue ${errors.has('password') ? 'border-red text-danger' : ''}`}
                                 isPasswordInput
                                 inputStyle={{
-                                    width: "90%", borderTopRightRadius: '0px',
+                                    width: "90%",
+                                    borderTopRightRadius: '0px',
                                     borderBottomRightRadius: '0px',
                                     borderTopLeftRadius: '6.75px',
                                     borderBottomLeftRadius: '6.75px',
@@ -200,6 +206,11 @@ const LoginModal = () => {
                                 onChange={handleOnInputChange}
                                 inputId="password-id"
                                 inputClassName="px-1 py-2 position-relative no-outline bg-transparent border-0 rounded"
+                                onKeyUp={event => {
+                                    if (event.key === "Enter") {
+                                        handleLoginBtnClick();
+                                    }
+                                }}
                             />
                         </div>
                         <div className="my-2 py-1 d-flex justify-content-center align-items-center">
