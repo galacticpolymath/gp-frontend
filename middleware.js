@@ -124,7 +124,6 @@ export async function middleware(request) {
 
     // put all routes that will check if the auth token has expired only in this code block 
     if ((nextUrl.pathname === '/api/update-password') && (method === 'POST') && authorizationStr) {
-      console.log('yo there meng!');
       const authResult = await getAuthorizeReqResult(authorizationStr);
 
       console.log('authResult, updatePassword: ', authResult);

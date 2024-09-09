@@ -412,8 +412,6 @@ export default async function handler(request, response) {
             const { folderId, errMsg } = await createGoogleDriveFolderForUser(`${request.body.unitName} COPY`, request.body.accessToken)
 
             if (errMsg) {
-                console.log('An error has occurred, yo there: ', errMsg);
-
                 throw new CustomError(errMsg, 500)
             }
 
