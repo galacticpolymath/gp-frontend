@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import { getUserByEmail } from '../../backend/services/userServices';
+import { connectToMongodb } from '../../backend/utils/connection';
 import { CustomError } from '../../backend/utils/errors';
 import { getIsPasswordCorrect } from '../../backend/utils/security';
 
@@ -12,6 +13,8 @@ export default async function handler(request, response) {
         if (!email || !password) {
             throw new CustomError(400, 'Both "email" and "password" is required.', 'invalidReq');
         }
+
+        await connectToMongodb();
 
         /** 
          * @type { import('../../backend/models/user').TUserSchema}
