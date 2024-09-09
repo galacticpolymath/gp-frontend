@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable no-console */
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable indent */
@@ -7,16 +8,12 @@ class EmailTransport {
     constructor() {
         const { EMAIL_USER, EMAIL_PASSWORD } = process.env;
 
-        this.host = 'smtp.galacticpolymath.com';
+        this.host = 'smtp.gmail.com';
         this.port = 465;
         this.secure = true;
         this.auth = {
             user: EMAIL_USER,
             pass: EMAIL_PASSWORD,
-        };
-        this.tls = {
-            // do not fail on invalid certs
-            rejectUnauthorized: false,
         };
     }
 }

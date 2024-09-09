@@ -165,7 +165,7 @@ export const useUserEntry = () => {
             });
         } catch (error) {
             console.error('An error has occurred. Failed to send form to the server. Reason: ', error);
-            alert('An error has occurred during the login process. Please refresh the page. If this error persist, please contact support.');
+            alert('An error has occurred during the login process. Please refresh the page. If this error persists, please contact support.');
         }
     };
 

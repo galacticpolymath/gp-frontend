@@ -33,7 +33,6 @@ export default async function handler(request, response) {
             `<span>You requested to reset your password. If you didn't, please disregard this message. Please click the following link to reset it: <a href=${resetPasswordLink}>Reset Password Link</a></span>`
             :
             '<span>You requested a password reset, but your account uses a third party for the login. Only Galactic Polymath accounts that uses our platform for logins can request a password reset.</span>';
-
         const { wasSuccessful } = await sendEmail({
             from: process.env.EMAIL_USER,
             to: email,

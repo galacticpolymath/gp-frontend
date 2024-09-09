@@ -67,7 +67,7 @@ const Notify = () => {
             setNotifyModal({
                 isDisplayed: true,
                 headerTxt: 'Sign-in error.',
-                bodyTxt: 'Contact support if this error persist.',
+                bodyTxt: 'Contact support if this error persists.',
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);
