@@ -6,8 +6,6 @@ import nodemailer from 'nodemailer';
 class EmailTransport {
     constructor() {
         const { EMAIL_USER, EMAIL_PASSWORD } = process.env;
-
-        this.pool = true;
         this.host = 'smtp.galacticpolymath.com';
         this.port = 465;
         this.secure = true;
