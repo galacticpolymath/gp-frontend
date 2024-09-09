@@ -10,7 +10,7 @@ import Button from '../../General/Button';
 import { InputSection } from '../formElements';
 import { defautlNotifyModalVal, ModalContext } from '../../../providers/ModalProvider';
 import axios from 'axios';
-import { getTargetKeyValFromUrl, resetUrl } from '../../../globalFns';
+import { getTargetKeyValFromUrl, resetUrl, validateEmail } from '../../../globalFns';
 import { useRouter } from 'next/router';
 import { CustomError } from '../../../backend/utils/errors';
 
@@ -22,7 +22,7 @@ const PasswordResetModal = () => {
     const [, setNotifyModal] = _notifyModal;
     const [email, setEmail] = useState('');
     const [isLoadingSpinnerOn, setIsLoadingSpinner] = useState(false);
-    const [errors] = useState(new Map());
+    const [errors, setErrors] = useState(new Map());
     const router = useRouter();
 
     const handleOnHide = () => {
@@ -69,6 +69,15 @@ const PasswordResetModal = () => {
     const handleContinueBtnClick = async () => {
         try {
             setIsLoadingSpinner(true);
+            setErrors(new Map());
+            const isEmailValid = !!validateEmail(email);
+            const errorsClone = structuredClone(errors);
+
+            if (!isEmailValid) {
+                errorsClone.set('email', 'Email must be in a valid format.');
+                setErrors(errorsClone);
+                return;
+            }
 
             const url = `${window.location.origin}/api/send-password-recover-email`;
             const response = await axios.post(url, { email }, { timeout: 4_000 });
@@ -119,24 +128,26 @@ const PasswordResetModal = () => {
                 });
             }, 300);
 
+            setIsPasswordResetModalOn(false);
+
             if (getTargetKeyValFromUrl(router, 'is_password_recover_modal_on')) {
                 resetUrl(router);
             }
         } catch (error) {
             console.error('An error has occurred: ', error);
 
-            const bodyTxt = error?.message ?? 'Please try again. If this issue persist, please contact support.';
+            const bodyTxt =
+                error?.message ? `Failed to send password reset link. Message from server: '${error.message}'` : "That email wasn't found. Maybe you normally log in with Google?";
 
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: 'Failed to send email link.',
+                headerTxt: bodyTxt,
                 bodyTxt: bodyTxt,
                 handleOnHide: closeNotifyModal,
             });
 
             console.error('An error has occurred in sending the email to the target user: ', error);
         } finally {
-            setIsPasswordResetModalOn(false);
             setIsLoadingSpinner(false);
         }
     };
@@ -160,7 +171,7 @@ const PasswordResetModal = () => {
                 <CloseButton className='position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey' onClick={handleOnHide} />
                 <div className="d-flex justify-content-center align-items-center">
                     <img
-                        src={(typeof window === 'undefined') ? '' : `${window.location.origin}/imgs/gp_logo_gradient_transBG.png`}
+                        src='/imgs/gp_logo_gradient_transBG.png'
                         alt="gp_logo"
                         width={75}
                         height={75}
@@ -186,9 +197,9 @@ const PasswordResetModal = () => {
                             (
                                 <div className='d-flex'>
                                     <div className='d-flex justify-content-center align-items-center'>
-                                        <MdOutlineMail fontSize='27px' color="#D6D6D6" />
+                                        <MdOutlineMail fontSize='27px' color={errors.has('email') ? 'red' : '#D6D6D6'} />
                                     </div>
-                                    <span className='ms-1'>
+                                    <span className={`ms-1 ${errors.has('email') ? 'text-danger' : ''}`}>
                                         Enter your email
                                     </span>
                                 </div>
@@ -196,14 +207,15 @@ const PasswordResetModal = () => {
                         }
                         labelClassName={`d-block pb-1 ${errors.has('email') ? 'text-danger' : ''}`}
                         inputAndLabelSectionClassName='d-flex flex-column'
-                        inputClassName="px-1 pt-2 mt-1"
+                        inputClassName={`px-1 pt-2 mt-1 no-outline ${errors.has('email') ? 'border-red text-danger' : 'border'}`}
                         handleOnInputChange={event => {
+                            setErrors(new Map());
                             setEmail(event.target.value);
                         }}
 
                     />
                     <Button
-                        classNameStr='no-btn-styles w-100 bg-primary rounded py-2'
+                        classNameStr='no-btn-styles w-100 bg-primary rounded py-2 mt-2'
                         handleOnClick={handleContinueBtnClick}
                     >
                         {isLoadingSpinnerOn

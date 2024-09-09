@@ -4,15 +4,17 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable quotes */
 import { useContext, useState } from "react";
-import { CloseButton, Modal, ModalHeader } from "react-bootstrap";
+import { CloseButton, Modal, ModalHeader, Spinner } from "react-bootstrap";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import GoogleSignIn from "../GoogleSignIn";
 import ORTxtDivider from "../ORTxtDivider";
-import { useUserEntry } from "../../../customHooks/useUserEntry";
+import { getUserLoginErrType, useUserEntry } from "../../../customHooks/useUserEntry";
 import { FcGoogle } from "react-icons/fc";
+import { CustomInput } from "../formElements";
+import { validateEmail } from "../../../globalFns";
 
 const LoginModal = () => {
     const { _isLoginModalDisplayed, _isCreateAccountModalDisplayed, _isPasswordResetModalOn } = useContext(ModalContext);
@@ -20,11 +22,20 @@ const LoginModal = () => {
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     const [, setIsPasswordResetModalOn] = _isPasswordResetModalOn;
     const { _loginForm, sendFormToServer } = useUserEntry();
+    const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
     const [errors, setErrors] = useState(new Map());
     const [loginForm, setLoginForm] = _loginForm;
 
     const handleOnInputChange = event => {
         const { name, value } = event.target;
+
+        if (errors.has(name)) {
+            const errorsClone = structuredClone(errors);
+
+            errorsClone.delete(name);
+
+            setErrors(errorsClone);
+        }
 
         setLoginForm(currentState => ({
             ...currentState,
@@ -36,20 +47,47 @@ const LoginModal = () => {
         setIsLoginModalDisplayed(false);
     };
 
-    const handleLoginBtnClick = () => {
-        const errors = new Map();
+    const handleLoginBtnClick = async () => {
+        setIsLoadingSpinnerOn(true);
+        setErrors(new Map());
 
-        if (!loginForm.email) {
+        const errors = new Map();
+        const { email, password } = loginForm;
+
+        if (!email) {
             errors.set('email', 'This field is required.');
-            setErrors(errors);
+        } else if (!validateEmail(email)) {
+            errors.set('email', "Invalid email.");
         }
 
-        if (!loginForm.password) {
+        if (!password) {
             errors.set('password', 'This field is required.');
-            setErrors(errors);
         }
 
         if (errors.size > 0) {
+            setTimeout(() => {
+                setIsLoadingSpinnerOn(false);
+                setErrors(errors);
+            }, 200);
+            return;
+        }
+
+        const userLoginErrType = await getUserLoginErrType(email, password);
+
+        if (userLoginErrType === "googleLogin") {
+            errors.set('email', 'This email exists but uses Google to log in.');
+        } else if (userLoginErrType === "userNotFound") {
+            errors.set("email", "Email not found.");
+        } else if (userLoginErrType === "invalidCredentials") {
+            errors.set("email", "Email or password is incorrect.");
+            errors.set("password", "Email or password is incorrect.");
+        }
+
+        if (errors.size > 0) {
+            setTimeout(() => {
+                setIsLoadingSpinnerOn(false);
+                setErrors(errors);
+            }, 200);
             return;
         }
 
@@ -58,8 +96,8 @@ const LoginModal = () => {
             "credentials",
             {
                 login: {
-                    email: loginForm.email,
-                    password: loginForm.password,
+                    email,
+                    password,
                 },
             },
         );
@@ -90,7 +128,7 @@ const LoginModal = () => {
                 <CloseButton className='position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey' onClick={handleOnHide} />
                 <img
                     className='position-absolute top-0 start-0 me-5 mt-1'
-                    src='imgs/gp_logo_gradient_transBG.png'
+                    src='/imgs/gp_logo_gradient_transBG.png'
                     alt="gp_logo"
                     width={50}
                     height={50}
@@ -121,18 +159,17 @@ const LoginModal = () => {
                                 className="position-absolute d-none d-sm-flex start-0 d-flex justify-content-center align-items-center"
                                 htmlFor="email-input"
                             >
-                                <MdOutlineMail fontSize='31px' color="#D6D6D6" />
+                                <MdOutlineMail fontSize='31px' color={errors.has('email') ? 'red' : "#D6D6D6"} />
                             </label>
-                            <input
-                                id="email-input"
-                                placeholder="Email"
+                            <CustomInput
+                                inputContainerCss={`no-outline position-relative rounded w-75 login-modal-input-container ${errors.has('email') ? 'border-red' : ''}`}
+                                inputName="email"
+                                inputId="email-id"
+                                inputType="email"
+                                placeholder="Enter email"
+                                inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-transparent w-100 ${errors.has('email') ? 'text-danger' : ''}`}
+                                onChange={handleOnInputChange}
                                 autoFocus
-                                style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6' }}
-                                className="border-0 p-1 py-2 login-modal-input"
-                                name="email"
-                                onChange={event => {
-                                    handleOnInputChange(event);
-                                }}
                             />
                         </div>
                         <div className="my-2 py-1 d-flex justify-content-center align-items-center">
@@ -146,17 +183,23 @@ const LoginModal = () => {
                                 className="position-absolute start-0 d-none d-sm-flex justify-content-center align-items-center"
                                 htmlFor="password-input"
                             >
-                                <FaLock fontSize='31px' color="#D6D6D6" />
+                                <FaLock fontSize='31px' color={errors.has('password') ? 'red' : "#D6D6D6"} />
                             </label>
-                            <input
-                                id='password-input'
-                                placeholder="Password"
-                                style={{ borderRadius: "5px", fontSize: "18px", background: '#D6D6D6' }}
-                                className="no-outline p-1 login-modal-input py-2"
-                                name='password'
-                                onChange={event => {
-                                    handleOnInputChange(event);
+                            <CustomInput
+                                inputContainerCss={`no-outline position-relative rounded w-75 bg-light-blue ${errors.has('password') ? 'border-red text-danger' : ''}`}
+                                isPasswordInput
+                                inputStyle={{
+                                    width: "90%", borderTopRightRadius: '0px',
+                                    borderBottomRightRadius: '0px',
+                                    borderTopLeftRadius: '6.75px',
+                                    borderBottomLeftRadius: '6.75px',
                                 }}
+                                iconContainerStyle={{ width: "10%", borderTopRightRadius: '6.75px', borderBottomRightRadius: '6.75px' }}
+                                iconContainerClassName='h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue'
+                                inputName="password"
+                                onChange={handleOnInputChange}
+                                inputId="password-id"
+                                inputClassName="px-1 py-2 position-relative no-outline bg-transparent border-0 rounded"
                             />
                         </div>
                         <div className="my-2 py-1 d-flex justify-content-center align-items-center">
@@ -169,9 +212,15 @@ const LoginModal = () => {
                                 handleOnClick={handleLoginBtnClick}
                                 classNameStr="bg-primary rounded border-0 px-4 py-2 login-modal-input"
                             >
-                                <span className="text-white">
-                                    Login
-                                </span>
+                                {isLoadingSpinnerOn ?
+                                    <Spinner size="sm" className='text-white' />
+                                    :
+                                    (
+                                        <span className="text-white">
+                                            Login
+                                        </span>
+                                    )
+                                }
                             </Button>
                         </div>
                         <div className="d-flex justify-content-center align-items-center py-3">

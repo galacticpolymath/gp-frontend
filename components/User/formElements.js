@@ -7,18 +7,54 @@ import { useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
 /**
+ * @typedef {(
+ *   "button" |
+ *   "checkbox" |
+ *   "color" |
+ *   "date" |
+ *   "datetime-local" |
+ *   "email" |
+ *   "file" |
+ *   "hidden" |
+ *   "image" |
+ *   "month" |
+ *   "number" |
+ *   "password" |
+ *   "radio" |
+ *   "range" |
+ *   "reset" |
+ *   "search" |
+ *   "submit" |
+ *   "tel" |
+ *   "text" |
+ *   "time" |
+ *   "url" |
+ *   "week"
+ * )} TInputType
+
+/**
  *  @global 
  * * @typedef {'input-focus-blue' | 'border-grey-dark'} TFocusCss
+ * 
  */
 
+/**
+ * 
+ * @param {{ inputType: TInputType }} param0 
+ * @returns 
+ */
 export const CustomInput = ({
     onChange,
     placeholder = '',
     inputId,
     inputName,
+    autoFocus = false,
     inputContainerCss,
+    inputType = 'text',
+    inputClassName = 'px-1 py-2 position-relative no-outline border-0 rounded',
+    iconContainerClassName = 'h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center',
     isPasswordInput = false,
-    passwordInputStyle = {},
+    inputStyle = {},
     iconContainerStyle = {},
 }) => {
     /**
@@ -38,20 +74,21 @@ export const CustomInput = ({
     return (
         <div className={`${inputContainerCss} ${focusCssInput}`}>
             <input
-                style={passwordInputStyle}
+                style={inputStyle}
                 id={inputId}
                 name={inputName}
+                autoFocus={autoFocus}
                 onFocus={handleFocusabilityCss('input-focus-blue')}
                 onBlur={handleFocusabilityCss('border-grey-dark')}
-                type={isPasswordInput ? (isConfirmPasswordShown ? 'text' : 'password') : 'text'}
+                type={isPasswordInput ? (isConfirmPasswordShown ? 'text' : 'password') : inputType}
                 onChange={onChange}
                 placeholder={placeholder}
-                className='px-1 py-2 position-relative no-outline border-0 rounded'
+                className={inputClassName}
             />
             {isPasswordInput && (
                 <div
                     style={iconContainerStyle}
-                    className='h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center'
+                    className={iconContainerClassName}
                 >
                     <div style={{ height: '95%' }} className='d-flex justify-content-center align-items-center'>
                         {isConfirmPasswordShown ?
@@ -88,6 +125,7 @@ export const InputSection = ({
     inputName,
     containerClassName = "d-flex flex-column col-sm-6 position-relative",
     labelClassName = "",
+    inputClassName = "border-0 p-1 w-100 py-2",
     inputStyle = { borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' },
     inputElement = null,
     handleOnInputChange = () => { },
@@ -106,7 +144,7 @@ export const InputSection = ({
                     id={inputId}
                     placeholder={inputPlaceholder}
                     style={inputStyle}
-                    className="border-0 p-1 w-100 py-2"
+                    className={inputClassName}
                     name={inputName}
                     onChange={event => {
                         handleOnInputChange(event);

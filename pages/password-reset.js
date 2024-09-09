@@ -13,7 +13,7 @@ const PasswordResetPg = () => {
             >
                 <section className='d-flex justify-content-center pt-2'>
                     <img
-                        src='imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_transBG.png'
+                        src='/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_transBG.png'
                         alt='gp_logo'
                         style={{
                             maxHeight: '305px',
