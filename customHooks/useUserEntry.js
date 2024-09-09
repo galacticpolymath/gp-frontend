@@ -28,7 +28,6 @@ export const getUserLoginErrType = async (email, password) => {
         const url = `${window.location.origin}/api/can-login`;
         /**
          * @type {{ status: number, data: { errType: 'none' | 'userNotFound' | 'invalidCredentials' }}} */
-        console.log('url, what is up there: ', url);
         const response = await axios.post(
             url,
             {
