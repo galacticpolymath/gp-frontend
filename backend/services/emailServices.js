@@ -4,19 +4,19 @@
 /* eslint-disable indent */
 import nodemailer from 'nodemailer';
 
-class EmailTransport {
-    constructor() {
-        const { EMAIL_USER, EMAIL_PASSWORD } = process.env;
+// class EmailTransport {
+//     constructor() {
+//         const { EMAIL_USER, EMAIL_PASSWORD } = process.env;
 
-        this.host = 'smtp.gmail.com';
-        this.port = 465;
-        this.secure = true;
-        this.auth = {
-            user: EMAIL_USER,
-            pass: EMAIL_PASSWORD,
-        };
-    }
-}
+//         this.host = 'smtp.gmail.com';
+//         this.port = 465;
+//         this.secure = true;
+//         this.auth = {
+//             user: EMAIL_USER,
+//             pass: EMAIL_PASSWORD,
+//         };
+//     }
+// }
 
 /**
  * @typedef {Object} TMailOpts
@@ -34,7 +34,19 @@ class EmailTransport {
 export const sendEmail = async (mailOpts) => {
     try {
 
-        const transport = nodemailer.createTransport(new EmailTransport());
+        const emailTransport = {
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                type: 'OAuth2',
+                user: 'gabe-948@ethereal-entity-414923.iam.gserviceaccount.com',
+                serviceClient: process.env.GOOGLE_SERVICE_ACCOUNT_PROJECT_ID,
+                privateKey: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY_ID,
+                accessUrl: process.env.GOOGLE_SERVICE_ACCOUNT_TOKEN_URI,
+            },
+        };
+        const transport = nodemailer.createTransport(emailTransport);
 
         const sentMessageInfo = await transport.sendMail(mailOpts);
 
