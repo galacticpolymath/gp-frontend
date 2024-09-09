@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable indent */
 import { getUserByEmail, updateUser } from '../../backend/services/userServices';
 import { CustomError } from '../../backend/utils/errors';
@@ -17,16 +18,11 @@ export default async function handler(request, response) {
             throw new CustomError('The new password is not present in the body of the request.', 404);
         }
 
-        console.log('request: ', request);
-        console.log('request?.headers.authorization: ', request?.headers?.['authorization']);
-
         /**
          * @type {string}
          */
         const authorization = request?.headers?.['authorization'] ?? '';
         const passwordResetTokenSplitted = authorization.split(' ');
-
-        console.log('passwordResetTokenSplitted: ', passwordResetTokenSplitted);
 
         if (passwordResetTokenSplitted.length !== 2) {
             throw new CustomError('The authorization string is in a invalid format.', 422);
@@ -44,8 +40,6 @@ export default async function handler(request, response) {
         if (!expSeconds || !email) {
             throw new CustomError('Invalid reset token.', 401);
         }
-
-        console.log('email, yo there: ', email);
 
         const expMiliseconds = expSeconds * 1_000;
         const currentTimeMs = new Date().getMilliseconds();

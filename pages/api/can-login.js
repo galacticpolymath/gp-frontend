@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable indent */
 import { getUserByEmail } from '../../backend/services/userServices';
 import { CustomError } from '../../backend/utils/errors';
