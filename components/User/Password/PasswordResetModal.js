@@ -139,7 +139,7 @@ const PasswordResetModal = () => {
         } catch (error) {
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: error?.message ? 'Looks like there was an error on the server. Please refresh the page and try again.' : 'Unable to send password link. Please refresh the page and try again.',
+                headerTxt: error?.message ? 'SERVER ERROR. Please refresh the page and try again.' : 'Unable to send password link. Please refresh the page and try again.',
                 bodyElements: (
                     <>
                         If this error persists, please contact <CustomLink className='text-primary'>support</CustomLink>.

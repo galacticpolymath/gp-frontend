@@ -68,7 +68,7 @@ export const getGooglDriveFolders = async (googleService, folderId) => {
 
 /**
  * Create a service object that will access the company's google drive. 
- *  @return{JWT} Returns google auth jwt. Else, null will be returned.
+ *  @return {import('google-auth-library').JWT | null} Returns google auth jwt. Else, null will be returned.
  * */
 export const generateGoogleAuthJwt = () => {
     try {

@@ -40,7 +40,7 @@ export const sendEmail = async (mailOpts) => {
             secure: true,
             auth: {
                 type: 'OAuth2',
-                user: 'gabe-948@ethereal-entity-414923.iam.gserviceaccount.com',
+                user: process.env.EMAIL_USER,
                 serviceClient: process.env.GOOGLE_SERVICE_ACCOUNT_PROJECT_ID,
                 privateKey: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY_ID,
                 accessUrl: process.env.GOOGLE_SERVICE_ACCOUNT_TOKEN_URI,
