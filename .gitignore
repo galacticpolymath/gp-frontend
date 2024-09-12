@@ -5,6 +5,8 @@
 .env
 
 dummyReq.js
+creds.json
+creds2.json
 
 getLessons.js
 credentials.json

@@ -3,6 +3,8 @@
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable indent */
 import nodemailer from 'nodemailer';
+// import creds from '../../creds.json';
+import creds from '../../creds2.json';
 
 // class EmailTransport {
 //     constructor() {
@@ -14,6 +16,7 @@ import nodemailer from 'nodemailer';
 //         this.auth = {
 //             user: EMAIL_USER,
 //             pass: EMAIL_PASSWORD,
+//             serviceClient: 
 //         };
 //     }
 // }
@@ -33,26 +36,43 @@ import nodemailer from 'nodemailer';
  */
 export const sendEmail = async (mailOpts) => {
     try {
-
         const emailTransport = {
             host: 'smtp.gmail.com',
             port: 465,
             secure: true,
             auth: {
                 type: 'OAuth2',
-                user: process.env.EMAIL_USER,
-                serviceClient: process.env.GOOGLE_SERVICE_ACCOUNT_PROJECT_ID,
-                privateKey: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY_ID,
-                accessUrl: process.env.GOOGLE_SERVICE_ACCOUNT_TOKEN_URI,
+                user: "gabe@toriondev.com",
+                serviceClient: process.env.SERVICE_ACCOUNT_CLIENT_ID,
+                privateKey: process.env.SERVICE_ACCOUNT_PRIVATE_KEY,
+                accessUrl: 'https://oauth2.googleapis.com/token',
             },
         };
+        // console.log('emailTransport, yo there: ', emailTransport);
+
         const transport = nodemailer.createTransport(emailTransport);
 
-        const sentMessageInfo = await transport.sendMail(mailOpts);
+        // console.log("will verify transporter...", transport);
 
-        if (sentMessageInfo.rejected.length) {
-            throw new Error('Failed to send the email to the target user.');
-        }
+        const canSendEmail = await transport.verify();
+
+        console.log('canSendEmail: ', canSendEmail);
+
+
+        // console.log('transporter has been verified.');
+
+        // const mailOpts = {
+        //     from: process.env.EMAIL_USER,
+        //     to: "gabe-948@ethereal-entity-414923.iam.gserviceaccount.com",
+        //     subject: 'Galactic Polymath Password Reset',
+        //     html: "<p>hi</p>",
+        // };
+
+        // const sentMessageInfo = await transport.sendMail(mailOpts);
+
+        // if (sentMessageInfo.rejected.length) {
+        //     throw new Error('Failed to send the email to the target user.');
+        // }
 
         return { wasSuccessful: true };
     } catch (error) {

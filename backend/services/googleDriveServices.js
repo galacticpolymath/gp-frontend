@@ -14,7 +14,7 @@ export class FileMetaData {
     }
 }
 
-class Credentials {
+export class Credentials {
     constructor() {
         const {
             GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
