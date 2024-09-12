@@ -27,7 +27,7 @@ export const sendEmail = async (mailOpts) => {
             auth: {
                 privateKey,
                 type: 'OAuth2',
-                user: "gabe@toriondev.com",
+                user: "shared@galacticpolymath.com",
                 serviceClient: process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID,
                 accessUrl: "https://oauth2.googleapis.com/token",
             },
