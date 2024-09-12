@@ -4,7 +4,6 @@
 /* eslint-disable indent */
 import nodemailer from 'nodemailer';
 // import creds from '../../creds.json';
-import creds from '../../creds2.json';
 
 // class EmailTransport {
 //     constructor() {
@@ -16,7 +15,6 @@ import creds from '../../creds2.json';
 //         this.auth = {
 //             user: EMAIL_USER,
 //             pass: EMAIL_PASSWORD,
-//             serviceClient: 
 //         };
 //     }
 // }
@@ -36,16 +34,21 @@ import creds from '../../creds2.json';
  */
 export const sendEmail = async (mailOpts) => {
     try {
+        if (!process.env.SERVICE_ACCOUNT_PRIVATE_KEY) {
+            throw new Error("Service account private key environment variable is not present.");
+        }
+
+        const privateKey = process.env.SERVICE_ACCOUNT_PRIVATE_KEY.split("\\n").join("\n");
         const emailTransport = {
             host: 'smtp.gmail.com',
             port: 465,
             secure: true,
             auth: {
+                privateKey,
                 type: 'OAuth2',
                 user: "gabe@toriondev.com",
                 serviceClient: process.env.SERVICE_ACCOUNT_CLIENT_ID,
-                privateKey: process.env.SERVICE_ACCOUNT_PRIVATE_KEY,
-                accessUrl: 'https://oauth2.googleapis.com/token',
+                accessUrl: "https://oauth2.googleapis.com/token",
             },
         };
         // console.log('emailTransport, yo there: ', emailTransport);
@@ -55,9 +58,8 @@ export const sendEmail = async (mailOpts) => {
         // console.log("will verify transporter...", transport);
 
         const canSendEmail = await transport.verify();
-
+        console.log('bacon liver');
         console.log('canSendEmail: ', canSendEmail);
-
 
         // console.log('transporter has been verified.');
 
@@ -68,11 +70,18 @@ export const sendEmail = async (mailOpts) => {
         //     html: "<p>hi</p>",
         // };
 
-        // const sentMessageInfo = await transport.sendMail(mailOpts);
+        console.log('yo there!');
 
-        // if (sentMessageInfo.rejected.length) {
-        //     throw new Error('Failed to send the email to the target user.');
-        // }
+
+        const sentMessageInfo = await transport.sendMail(mailOpts);
+
+        // console.log()
+
+        if (sentMessageInfo.rejected.length) {
+            throw new Error('Failed to send the email to the target user.');
+        }
+
+        console.log('the email was sent...');
 
         return { wasSuccessful: true };
     } catch (error) {
