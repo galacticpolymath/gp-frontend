@@ -22,7 +22,10 @@ export const createSalt = () => sha256.create().update(nanoid().toString()).hex(
 
 export const createIterations = () => {
     try {
-        const { MAX_ITERATION_COUNT, MIN_ITERATION_COUNT } = process.env;
+        const {
+            MAX_ITERATION_COUNT,
+            MIN_ITERATION_COUNT,
+        } = process.env;
 
         if (!MAX_ITERATION_COUNT || !MIN_ITERATION_COUNT || !Number.isInteger(+MAX_ITERATION_COUNT) || !Number.isInteger(+MIN_ITERATION_COUNT)) {
             throw new Error("Couldn't load the necessary environment variables to hash password.");
