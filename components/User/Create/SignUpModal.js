@@ -5,7 +5,7 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 import { useContext, useState } from 'react';
-import { CloseButton, Modal, ModalBody, ModalFooter, ModalHeader } from 'react-bootstrap';
+import { CloseButton, Modal, ModalBody, ModalFooter, ModalHeader, Spinner } from 'react-bootstrap';
 import { ModalContext } from '../../../providers/ModalProvider';
 import { useUserEntry } from '../../../customHooks/useUserEntry';
 import Button from '../../General/Button';
@@ -19,6 +19,7 @@ const SignUpModal = () => {
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
     const { _createAccountForm, sendFormToServer, validateForm } = useUserEntry();
     const [errors, setErrors] = useState(new Map());
+    const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
     const [createAccountForm, setCreateAccountForm] = _createAccountForm;
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     /**
@@ -45,22 +46,33 @@ const SignUpModal = () => {
     };
 
     const handleSubmitBtnClick = async () => {
+        setIsLoadingSpinnerOn(true);
+
         const errors = await validateForm("createAccount");
 
         console.log('errors: ', errors);
 
         if ((errors.size > 0) && !wasChecked) {
             alert("An error has occurred. Please check your inputs.");
-            setErrors(errors);
-            setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
+            setTimeout(() => {
+                setErrors(errors);
+                setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
+                setIsLoadingSpinnerOn(false);
+            });
             return;
         } else if (!wasChecked) {
             alert("An error has occurred. Please check your inputs.");
-            setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
+            setTimeout(() => {
+                setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
+                setIsLoadingSpinnerOn(false);
+            });
             return;
         } else if (errors.size > 0) {
             alert("An error has occurred. Please check your inputs.");
-            setErrors(errors);
+            setTimeout(() => {
+                setErrors(errors);
+                setIsLoadingSpinnerOn(false);
+            });
             return;
         }
 
@@ -307,7 +319,15 @@ const SignUpModal = () => {
                             handleOnClick={handleSubmitBtnClick}
                             classNameStr="bg-primary rounded border-0 py-2 w-50 text-white underline-on-hover"
                         >
-                            SIGN UP
+                            {isLoadingSpinnerOn ?
+                                <Spinner size="sm" className='text-white' />
+                                :
+                                (
+                                    <span className="text-white">
+                                        SIGN UP
+                                    </span>
+                                )
+                            }
                         </Button>
                     </div>
                 </form>
