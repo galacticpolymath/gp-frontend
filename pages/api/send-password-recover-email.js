@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-empty */
 
+import { createPasswordResetEmail } from '../../backend/emailTemplates/passwordReset';
 import { sendEmail } from '../../backend/services/emailServices';
 import { getUserByEmail } from '../../backend/services/userServices';
 import { signJwt } from '../../backend/utils/auth';
@@ -38,7 +39,7 @@ export default async function handler(request, response) {
             from: 'gabe@toriondev.com',
             to: email,
             subject: 'Galactic Polymath Password Reset',
-            html: htmlMsg,
+            html: createPasswordResetEmail(),
         });
 
         if (!wasSuccessful) {
