@@ -254,6 +254,10 @@ ol li {
   border: solid 1px grey;
 }
 
+.link-disabled {
+  pointer-events: none;
+}
+
 .no-border-left {
   border-left: none;
 }
@@ -262,7 +266,7 @@ ol li {
   border-top: none;
 }
 
-.bg-light-blue{
+.bg-light-blue {
   background-color: rgb(232, 240, 254);
 }
 

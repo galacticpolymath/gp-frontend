@@ -305,6 +305,16 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.sign-in-teacher-materials-btn {
+  background: linear-gradient(180deg, #2c83c3 -34.09%, #9c2cc3 195.45%);
+  border-radius: 27px;
+  height: 44px;
+
+  @media (min-width: 576px) {
+    width: 275px;
+  }
+}
+
 .cardOnLessonsPg {
   @media (min-width: 1200px) {
     img {
