@@ -43,6 +43,8 @@ export const sendEmail = async (mailOpts) => {
 
         const sentMessageInfo = await transport.sendMail(mailOpts);
 
+        console.log('sentMessageInfo: ', sentMessageInfo);
+
         if (sentMessageInfo.rejected.length) {
             throw new Error('Failed to send the email to the target user.');
         }
@@ -61,29 +63,28 @@ export const sendEmail = async (mailOpts) => {
  * 
  * @param {string} email User email.
  * @param {string} firstName First name of user. 
+ * @param {string} lastName Last name of user. 
+ * @param {clientOrigin} clientOrigin The origin of the client to redirect the user to after the sign up. 
  * @returns {boolean} Will return a boolean if email contact was created successfully. 
  */
-export const addEmailToMailingList = async (email, firstName) => {
+export const addUserToMailingList = async (email, firstName, lastName, clientOrigin) => {
     try {
-        const apiInstance = new brevo.TransactionalEmailsApi();
-        const apiKey = apiInstance.authentications['apiKey'];
+        const contactsApiInstance = new brevo.ContactsApi();
 
-        apiKey.apiKey = process.env.BREVO_API_KEY;
+        contactsApiInstance.authentications.apiKey.apiKey = process.env.BREVO_API_KEY;
 
-        const sendSmtpEmail = new brevo.SendSmtpEmail();
+        let createDoiContact = new brevo.CreateDoiContact();
+        createDoiContact = {
+            email,
+            attributes: { contact: { FIRSTNAME: firstName, LASTNAME: lastName } },
+            includeListIds: [8],
+            templateId: 5,
+            redirectionUrl: `${clientOrigin}/mailing-list-sign-up?success=true`,
+        };
 
-        sendSmtpEmail.subject = 'Galactic Polymath Newsletter Confirmation Email';
-        sendSmtpEmail.htmlContent = '<html><body><h1>You have successfully been added to</h1></body></html>';
-        sendSmtpEmail.sender = { 'name': 'Galactic Polymath', 'email': 'shared@galacticpolymath.com' };
-        sendSmtpEmail.to = [
-            { 'email': email, 'name': firstName },
-        ];
-        sendSmtpEmail.replyTo = { 'email': 'shared@galacticpolymath.com', 'name': 'Galactic Polymath' };
-        sendSmtpEmail.params = { 'subject': 'GP NewsLetter Confirmation Email' };
+        const response = await contactsApiInstance.createDoiContact(createDoiContact);
 
-        const emailResponse = await apiInstance.sendTransacEmail(sendSmtpEmail);
-
-        if (emailResponse.body.statusCode !== 201) {
+        if (response.body.statusCode !== 201) {
             throw new Error('Failed to create email newsletter contact.');
         }
 

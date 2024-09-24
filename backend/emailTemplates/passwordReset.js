@@ -1,7 +1,13 @@
 /* eslint-disable indent */
-export const createPasswordResetEmail = (recipientName, passwordResetUrl) => {
+import { isProd, supportEmail } from '../../globalVars';
+
+const galacticpolymath = 'Galactic Polymath';
+
+export const createPasswordResetEmail = (recipientName, passwordResetUrl, doesAccountUseCredentials) => {
+    const imgOrigin = isProd ? 'https://www.galacticpolymath.com' : 'https://dev.galacticpolymath.com';
+
     return `
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -469,7 +475,7 @@ export const createPasswordResetEmail = (recipientName, passwordResetUrl) => {
                     <td class="email-masthead">
                         <a href="https://example.com" class="f-fallback email-masthead_name">
                           <img
-                            src="https://avatars.githubusercontent.com/u/63932735?s=200&v=4"
+                            src="${imgOrigin}/GP_bubbleLogo300px.png"
                             alt="logo"
                             class="gp-logo"
                           />
@@ -486,7 +492,8 @@ export const createPasswordResetEmail = (recipientName, passwordResetUrl) => {
                             <td class="content-cell">
                             <div class="f-fallback">
                                 <h1>Hi ${recipientName},</h1>
-                                <p>You recently requested to reset your password for your [Product Name] account. Use the button below to reset it. <strong>This password reset is only valid for the next 24 hours.</strong></p>
+                                ${doesAccountUseCredentials &&
+        `<p>You recently requested to reset your password for your ${galacticpolymath} account. Use the button below to reset it. <strong>This password reset is only valid for the next 24 hours.</strong></p>
                                 <!-- Action -->
                                 <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                                 <tr>
@@ -503,9 +510,15 @@ export const createPasswordResetEmail = (recipientName, passwordResetUrl) => {
                                     </td>
                                 </tr>
                                 </table>
-                                <p>For security, this request was received from a {{operating_system}} device using {{browser_name}}. If you did not request a password reset, please ignore this email or <a href="{{support_url}}">contact support</a> if you have questions.</p>
+                                <p>If you did not request a password reset, please ignore this email or <a href="${supportEmail}">contact support</a> if you have questions.</p>`
+        }
+                                ${!doesAccountUseCredentials &&
+        `<p>You recently requested to reset your password for your ${galacticpolymath} account, but it looks like your authentication provider is with Google. Please ignore this message.</strong></p>
+                            
+                                <p>If you think this was a mistake, consider <a href="${supportEmail}">contacting support</a> if you have questions.</p>`
+        }
                                 <p>Thanks,
-                                <br>The [Product Name] team</p>
+                                <br>The ${galacticpolymath} team</p>
                                 <!-- Sub copy -->
                                 <table class="body-sub" role="presentation">
                                 <tr>
@@ -528,9 +541,12 @@ export const createPasswordResetEmail = (recipientName, passwordResetUrl) => {
                             <td class="content-cell" align="center">
                             <p class="f-fallback sub align-center">
                                 Galactic Polymath 
-                                <br>1234 Street Rd.
-                                <br>Suite 1234
                             </p>
+                            <img 
+                              src="${imgOrigin}/GP_bubbleLogo300px.png"
+                            alt="logo"
+                            class="gp-logo"
+                            />
                             </td>
                         </tr>
                         </table>

@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createUser, deleteUser, getUser, getUserByEmail, updateUser } from '../services/userServices';
 import NodeCache from 'node-cache';
 import { getIsParsable } from '../../globalFns';
-import { addEmailToMailingList } from '../services/emailServices';
+import { addUserToMailingList } from '../services/emailServices';
 
 const VALID_FORMS = ['createAccount', 'login'];
 export const cache = new NodeCache({ stdTTL: 100 });
@@ -126,7 +126,7 @@ export const authOptions = {
 
           console.log('credentials, sup there: ', credentials);
 
-          let { email, password, firstName, lastName, formType, isOnMailingList } = credentials;
+          let { email, password, firstName, lastName, formType, isOnMailingList, clientOrigin } = credentials;
           /** @type { import('../models/user').TUserSchema } */
           const dbUser = await getUserByEmail(email);
           const callbackUrl = credentials.callbackUrl.includes('?') ? credentials.callbackUrl.split('?')[0] : credentials.callbackUrl;
@@ -185,7 +185,7 @@ export const authOptions = {
 
           await newUser.save();
 
-          return { ...userDocumentToCreate, wasUserCreated: true };
+          return { ...userDocumentToCreate, wasUserCreated: true, clientOrigin };
         } catch (error) {
           console.log('error object: ', error);
           const { errType, code, redirectUrl } = error ?? {};
@@ -238,7 +238,7 @@ export const authOptions = {
   callbacks: {
     async signIn(param) {
       try {
-        const { user, account, profile } = param;
+        const { user, account, profile, credentials } = param;
         const {
           errType,
           code,
@@ -247,6 +247,7 @@ export const authOptions = {
           wasUserCreated,
           isOnMailingList,
           name,
+          clientOrigin,
         } = user ?? {};
         const userEmail = profile?.email ?? email;
 
@@ -299,9 +300,9 @@ export const authOptions = {
         }
 
         if (wasUserCreated && (account.provider === 'credentials') && isOnMailingList) {
-          const wasEmailAdded = await addEmailToMailingList(userEmail, name.firstName);
-
-          console.log('wasEmailAdded: ', wasEmailAdded);
+          // console.log('bacon sauce liver: ', param);
+          const url = new URL(credentials.callbackUrl);
+          const wasEmailAdded = await addUserToMailingList(userEmail, name.firstName, name.lastName, url.origin);
 
           if (wasEmailAdded) {
             console.log('Successfully added the user to the mailing list.');

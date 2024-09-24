@@ -87,6 +87,8 @@ const PasswordResetModal = () => {
                 timeout: 4_000,
             });
 
+            console.log('response: ', response);
+
             if (response.status !== 200) {
                 throw new CustomError(`Server error: ${response.data}`);
             }
