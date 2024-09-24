@@ -46,51 +46,51 @@ const SignUpModal = () => {
     };
 
     const handleSubmitBtnClick = async () => {
-        setIsLoadingSpinnerOn(true);
+        // setIsLoadingSpinnerOn(true);
 
-        const errors = await validateForm("createAccount");
+        // const errors = await validateForm("createAccount");
 
-        console.log('errors: ', errors);
+        // console.log('errors: ', errors);
 
-        if ((errors.size > 0) && !wasChecked) {
-            alert("An error has occurred. Please check your inputs.");
-            setTimeout(() => {
-                setErrors(errors);
-                setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
-                setIsLoadingSpinnerOn(false);
-            });
-            return;
-        } else if (!wasChecked) {
-            alert("An error has occurred. Please check your inputs.");
-            setTimeout(() => {
-                setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
-                setIsLoadingSpinnerOn(false);
-            });
-            return;
-        } else if (errors.size > 0) {
-            alert("An error has occurred. Please check your inputs.");
-            setTimeout(() => {
-                setErrors(errors);
-                setIsLoadingSpinnerOn(false);
-            });
-            return;
-        }
+        // if ((errors.size > 0) && !wasChecked) {
+        //     alert("An error has occurred. Please check your inputs.");
+        //     setTimeout(() => {
+        //         setErrors(errors);
+        //         setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
+        //         setIsLoadingSpinnerOn(false);
+        //     });
+        //     return;
+        // } else if (!wasChecked) {
+        //     alert("An error has occurred. Please check your inputs.");
+        //     setTimeout(() => {
+        //         setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
+        //         setIsLoadingSpinnerOn(false);
+        //     });
+        //     return;
+        // } else if (errors.size > 0) {
+        //     alert("An error has occurred. Please check your inputs.");
+        //     setTimeout(() => {
+        //         setErrors(errors);
+        //         setIsLoadingSpinnerOn(false);
+        //     });
+        //     return;
+        // }
 
-        const url = window.location.href.includes('?') ? window.location.href.split('?')[0] : window.location.href;
+        // const url = window.location.href.includes('?') ? window.location.href.split('?')[0] : window.location.href;
 
-        sendFormToServer(
-            'createAccount',
-            'credentials',
-            {
-                createAccount: {
-                    email: createAccountForm.email,
-                    firstName: createAccountForm.firstName,
-                    lastName: createAccountForm.lastName,
-                    password: createAccountForm.password,
-                },
-                callbackUrl: `${url}/account`,
-            }
-        );
+        // sendFormToServer(
+        //     'createAccount',
+        //     'credentials',
+        //     {
+        //         createAccount: {
+        //             email: createAccountForm.email,
+        //             firstName: createAccountForm.firstName,
+        //             lastName: createAccountForm.lastName,
+        //             password: createAccountForm.password,
+        //         },
+        //         callbackUrl: `${url}/account`,
+        //     }
+        // );
     };
 
     const handleOnInputChange = event => {
