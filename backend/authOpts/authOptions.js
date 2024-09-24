@@ -14,6 +14,8 @@ import { AuthError, SignInError } from '../utils/errors';
 import { v4 as uuidv4 } from 'uuid';
 import { createUser, deleteUser, getUser, getUserByEmail, updateUser } from '../services/userServices';
 import NodeCache from 'node-cache';
+import { getIsParsable } from '../../globalFns';
+import { addEmailToMailingList } from '../services/emailServices';
 
 const VALID_FORMS = ['createAccount', 'login'];
 export const cache = new NodeCache({ stdTTL: 100 });
@@ -122,7 +124,9 @@ export const authOptions = {
 
           await connectToMongodb();
 
-          const { email, password, firstName, lastName, formType } = credentials;
+          console.log('credentials, sup there: ', credentials);
+
+          let { email, password, firstName, lastName, formType, isOnMailingList } = credentials;
           /** @type { import('../models/user').TUserSchema } */
           const dbUser = await getUserByEmail(email);
           const callbackUrl = credentials.callbackUrl.includes('?') ? credentials.callbackUrl.split('?')[0] : credentials.callbackUrl;
@@ -144,12 +148,7 @@ export const authOptions = {
             throw new AuthError('userAlreadyExist', 409, callbackUrl ?? '');
           }
 
-          console.log('If user is logging in, will check if the password is correct.');
-
           const { iterations, salt, hash: hashedPasswordFromDb } = dbUser?.password ?? {};
-
-          console.log('iterations: ', iterations);
-          console.log('typeof iterations: ', typeof iterations);
 
           if ((formType === 'login') && !getIsPasswordCorrect({ iterations, salt, password }, hashedPasswordFromDb)) {
             console.log('Invalid creds.');
@@ -163,8 +162,11 @@ export const authOptions = {
             return dbUser;
           }
 
+          isOnMailingList =
+            getIsParsable(isOnMailingList) && (typeof JSON.parse(isOnMailingList) === 'boolean') ? JSON.parse(isOnMailingList) : false;
           const hashedPassword = hashPassword(password, createSalt(), createIterations());
           const userDocumentToCreate = {
+            isOnMailingList,
             _id: uuidv4(),
             email: email,
             password: hashedPassword,
@@ -237,14 +239,22 @@ export const authOptions = {
     async signIn(param) {
       try {
         const { user, account, profile } = param;
-        const { errType, code, email, providerAccountId, wasUserCreated } = user ?? {};
+        const {
+          errType,
+          code,
+          email,
+          providerAccountId,
+          wasUserCreated,
+          isOnMailingList,
+          name,
+        } = user ?? {};
         const userEmail = profile?.email ?? email;
 
         if (errType === 'dbUserDoesNotHaveCredentialsProvider') {
           throw new SignInError(
             'provider-mismatch-error',
             'The provider of the sign in method does not match with the provider stored in the database for the user.',
-            code ?? 422
+            code ?? 400
           );
         }
 
@@ -252,7 +262,7 @@ export const authOptions = {
           throw new SignInError(
             'duplicate-user',
             'This email has already been taken.',
-            code ?? 422
+            code ?? 400
           );
         }
 
@@ -260,13 +270,13 @@ export const authOptions = {
 
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
 
-        if (dbUser && wasUserCreated) {
+        if (dbUser && wasUserCreated && (account.provider === 'google')) {
           await deleteUser({ providerAccountId: providerAccountId });
 
           return '/account?account-creation-err-type=duplicate-email&provider-used=google';
         }
 
-        // Finish creating the gogole user account in the db.
+        // Finish creating the google user account in the db.
         if (wasUserCreated && (account.provider === 'google') && !dbUser) {
           const { picture, given_name, family_name } = profile ?? {};
           const name = {
@@ -288,7 +298,23 @@ export const authOptions = {
           return true;
         }
 
+        if (wasUserCreated && (account.provider === 'credentials') && isOnMailingList) {
+          const wasEmailAdded = await addEmailToMailingList(userEmail, name.firstName);
+
+          console.log('wasEmailAdded: ', wasEmailAdded);
+
+          if (wasEmailAdded) {
+            console.log('Successfully added the user to the mailing list.');
+          } else {
+            console.error('Failed to add user to mailing list.');
+          }
+
+          return true;
+        }
+
         if (wasUserCreated && (account.provider === 'credentials')) {
+          console.log('bacon sauce liver: ', param);
+
           return true;
         }
 

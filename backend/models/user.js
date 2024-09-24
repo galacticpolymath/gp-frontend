@@ -11,6 +11,7 @@ let User = models.users;
  */
 
 /**
+ * @global
  * @typedef {Object} TUserSchema
  * @property {string} _id - The unique identifier for the user
  * @property {string} email - The user's email address
@@ -21,6 +22,7 @@ let User = models.users;
  * @property {Date} emailVerified - The date the email was verified
  * @property {string[]} roles - The roles assigned to the user
  * @property {string} [picture] - The picture of the user
+ * @property {boolean} isOnMailingList - If the user wants to receive GP promotion emails.
  * @property {{ first: string, last: string }} name - The name of the user.
  */
 export const UserSchema = new Schema({
@@ -51,6 +53,7 @@ export const UserSchema = new Schema({
   subjects: { type: Object, required: false },
   classroomSize: { type: Number, required: false },
   roles: { type: [String], required: true },
+  isOnMailingList: { type: Boolean, required: false, default: false },
 });
 
 if (!models.users) {
