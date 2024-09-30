@@ -84,10 +84,6 @@ const AboutUserModal = () => {
         setAboutUserForm(state => ({ ...state, isTeacher: !state.isTeacher }));
     };
 
-    useEffect(() => {
-        console.log('aboutUserForm: ', aboutUserForm);
-    });
-
     const handleWhatBringsYouToSiteInputChange = event => {
         const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit) ?? new Map();
 
@@ -202,10 +198,6 @@ const AboutUserModal = () => {
         })();
     }, []);
 
-    useEffect(() => {
-        console.log("aboutUserForm.isTeacher: ", aboutUserForm.isTeacher);
-    });
-
     return (
         <Modal
             show={isAboutMeFormModalDisplayed}
@@ -291,7 +283,7 @@ const AboutUserModal = () => {
                                     {aboutUserForm.isTeacher ? <BiCheckboxChecked fontSize="21px" /> : <BiCheckbox fontSize="21px" />}
                                 </AccordionToggleBtn>
                                 <span className='pt-1'>
-                                    I am a teacher?
+                                    I am a teacher.
                                 </span>
                             </section>
                             <section>

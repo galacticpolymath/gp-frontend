@@ -247,7 +247,6 @@ export const authOptions = {
           wasUserCreated,
           isOnMailingList,
           name,
-          clientOrigin,
         } = user ?? {};
         const userEmail = profile?.email ?? email;
 
@@ -300,7 +299,6 @@ export const authOptions = {
         }
 
         if (wasUserCreated && (account.provider === 'credentials') && isOnMailingList) {
-          // console.log('bacon sauce liver: ', param);
           const url = new URL(credentials.callbackUrl);
           const wasEmailAdded = await addUserToMailingList(userEmail, name.firstName, name.lastName, url.origin);
 
@@ -314,8 +312,6 @@ export const authOptions = {
         }
 
         if (wasUserCreated && (account.provider === 'credentials')) {
-          console.log('bacon sauce liver: ', param);
-
           return true;
         }
 
