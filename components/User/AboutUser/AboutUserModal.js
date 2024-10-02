@@ -202,10 +202,6 @@ const AboutUserModal = () => {
         })();
     }, []);
 
-    useEffect(() => {
-        console.log("aboutUserForm.isTeacher: ", aboutUserForm.isTeacher);
-    });
-
     return (
         <Modal
             show={isAboutMeFormModalDisplayed}
