@@ -45,6 +45,8 @@ const LessonsPage = ({
     setIsWebAppModalShown(true);
   }
 
+  const origin = typeof window === 'undefined' ? '' : window.location.origin;
+
   return (
     <Layout
       title='Galactic Polymath Mini-Unit Releases'
