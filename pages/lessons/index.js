@@ -56,7 +56,7 @@ const LessonsPage = ({
     >
       <section
         style={{
-          backgroundImage: `url(${origin}/imgs/lessons/lessons-page-hero.png)`,
+          backgroundImage: `url(${origin}/imgs/lessons/lessons-hero.png)`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
         }}
