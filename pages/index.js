@@ -109,10 +109,10 @@ export default function Home() {
           backgroundSize: 'fill',
         }}
         className='home-pg-hero'
-        isStylesHereOn={false}
+        isStylesHeroOn={false}
       >
-        <h1 className={styles.shadow}>We are an education studio.</h1>
-        <p className={`${styles.shadow} my-4 fs-5 fw-light`}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
+        <h1 className={styles.home_pg_hero_txt}>We are an education studio.</h1>
+        <p className={`${styles.home_pg_hero_txt} my-4 fs-5 fw-light`}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
         <div className="d-flex d-sm-block flex-column justify-content-start align-items-start">
           <Link
             passHref

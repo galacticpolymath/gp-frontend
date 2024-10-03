@@ -7,15 +7,19 @@ import styles from './Hero.module.css';
 const Hero = ({
   imgSrc,
   isImgToTheSide,
-  isStylesHereOn = true,
+  isStylesHeroOn = true,
   children,
   childrenContainerStyle,
   imgContainerStyle,
   childrenContainerClassName,
   className = '',
+  heroContainerStyle = {},
 }) => {
   return (
-    <div className={`${isStylesHereOn ? styles.hero : ''} ${className} position-relative`}>
+    <div
+      style={heroContainerStyle}
+      className={`${isStylesHeroOn ? styles.hero : ''} ${className} position-relative`}
+    >
       {(imgSrc && !isImgToTheSide) && (
         <Image
           src={imgSrc} alt="Hero_Image_Galactic_Polymath"
