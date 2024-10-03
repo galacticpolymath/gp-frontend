@@ -54,7 +54,14 @@ const LessonsPage = ({
       keywords='Galatic Polymath Lessons, Galactic Polymath Learning Tools'
       className='lessons-pg-container overflow-hidden'
     >
-      <section className="bg-secondary p-4">
+      <section
+        style={{
+          backgroundImage: `url(${origin}/imgs/lessons/lessons-page-hero.png)`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+        }}
+        className="p-4"
+      >
         <div className="text-white container">
           <h1 className='responseiveH1'>Free, Interdisciplinary Lessons</h1>
           <p className='col-sm-12 col-md-10 col-lg-8 col-xl-7'>
