@@ -6,7 +6,6 @@ import Image from 'next/image';
 import Layout from '../components/Layout';
 import Hero from '../components/Hero';
 import styles from './index.module.css';
-import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 import VanderBiltPressReleaseImg from '../assets/img/vanderbilt_press_release.png';
@@ -99,10 +98,19 @@ export default function Home() {
     imgSrc: 'https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png',
     keywords: 'Galactic Polymath, Galactic, Polymath, education, studio, education studio, education studio for kids, education studio for children, education studio for teens, education studio for teenagers, education studio for young adults, education studio for young people, education studio for youth, education studio for adolescents, education studio for parents, education studio for teachers, education studio for counselors, education studio for schools, education studio for school districts.',
   };
+  const origin = typeof window
 
   return (
     <Layout {...layoutProps}>
-      <Hero imgSrc={HeroImage.src}>
+      <Hero
+        heroContainerStyle={{
+          backgroundImage: `url(${origin}/imgs/home/home_pg_hero.png)`,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'fill',
+        }}
+        className='home-pg-hero'
+        isStylesHereOn={false}
+      >
         <h1 className={styles.shadow}>We are an education studio.</h1>
         <p className={`${styles.shadow} my-4 fs-5 fw-light`}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
         <div className="d-flex d-sm-block flex-column justify-content-start align-items-start">
