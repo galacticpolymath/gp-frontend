@@ -104,7 +104,7 @@ export default function Home() {
     <Layout {...layoutProps}>
       <Hero
         heroContainerStyle={{
-          backgroundImage: `url(${origin}/imgs/home/home_pg_hero.png)`,
+          backgroundImage: `url(${origin}/imgs/home/home-pg-banner.png)`,
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'fill',
         }}
