@@ -7,13 +7,44 @@
 }
 
 .home-pg-hero {
+  @media (min-width: 576px) {
+    background-image: url("/imgs/home/banners/new-gp-splosion-homepage-hero_gp-homepage-hero_mobile.png");
+  }
+  @media (min-width: 992px) {
+    background-image: url("/imgs/home/banners/new-gp-splosion-homepage-hero_gp-homepage-hero_desktop.png");
+  }
+
+  background-image: url("/imgs/home/banners/new-gp-splosion-homepage-hero_gp-homepage-hero_mobile_no-buffer.png");
+}
+
+.home-pg-hero-title {
+  @media (min-width: 992px) and (max-width: 1199px) {
+    max-width: 400px;
+  }
+}
+
+.home-pg-hero-sub-title {
+  max-width: 400px;
+}
+
+.home-pg-hero {
   color: white;
   background-size: cover;
-  background-position: center;
+  // background-position: 90% center;
   object-fit: cover;
   z-index: -1;
-  background-position: center;
-  padding: 13vh 0;
+
+  @media (min-width: 576px) {
+    background-position: 90% bottom;
+  }
+
+  @media (min-width: 992px) {
+    background-position: center;
+    padding: 24vh 0;
+  }
+
+  width: 100%;
+  padding: 13vh 0vh;
 }
 
 .newReleaseImg {
