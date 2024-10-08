@@ -6,7 +6,6 @@ import Image from 'next/image';
 import Layout from '../components/Layout';
 import Hero from '../components/Hero';
 import styles from './index.module.css';
-import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 import VanderBiltPressReleaseImg from '../assets/img/vanderbilt_press_release.png';
@@ -99,13 +98,22 @@ export default function Home() {
     imgSrc: 'https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png',
     keywords: 'Galactic Polymath, Galactic, Polymath, education, studio, education studio, education studio for kids, education studio for children, education studio for teens, education studio for teenagers, education studio for young adults, education studio for young people, education studio for youth, education studio for adolescents, education studio for parents, education studio for teachers, education studio for counselors, education studio for schools, education studio for school districts.',
   };
-
+  
   return (
     <Layout {...layoutProps}>
-      <Hero imgSrc={HeroImage.src}>
-        <h1 className={styles.shadow}>We are an education studio.</h1>
-        <p className={`${styles.shadow} my-4 fs-5 fw-light`}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
-        <div className="d-flex d-sm-block flex-column justify-content-start align-items-start">
+      <Hero
+        heroContainerStyle={{
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'fill',
+        }}
+        className='home-pg-hero'
+        isStylesHeroOn={false}
+      >
+        <h1 className={`${styles.home_pg_hero_txt} home-pg-hero-title home-pg-hero-title`}>We are an education studio.</h1>
+        <p className={`${styles.home_pg_hero_txt} my-4 fs-5 fw-light home-pg-hero-sub-title col-12`}>
+          We translate current STEM research into free interdisciplinary lessons.
+        </p>
+        <div className="d-flex d-md-block flex-column flex-md-row justify-content-start align-items-start">
           <Link
             passHref
             href="/lessons"
@@ -115,7 +123,7 @@ export default function Home() {
           </Link>
           <Link
             href="/hire-us"
-            className="btn btn-primary mt-4 mt-sm-0 mx-sm-2"
+            className="btn btn-primary mx-md-2 mt-4 mt-md-0"
           >
             Do Outreach
           </Link>

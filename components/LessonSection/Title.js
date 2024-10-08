@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import { format } from 'date-fns';
 import { useMemo } from 'react';
 import RichText from '../RichText';
@@ -32,12 +33,12 @@ const Title = ({
   const router = useRouter();
   let sponsors = useMemo(() => {
     let sponsorsLinkTxts = [];
-    let urls = SponsoredBy.match(/\((.*?)\)/g);
 
-    if (SponsoredBy && urls) {
+    if (SponsoredBy && (typeof SponsoredBy === 'string')) {
+      let urls = SponsoredBy.match(/\((.*?)\)/g);
       urls = urls?.length ? urls.map(txt => txt.replace(/\(|\)/g, '')) : urls;
       let sponsorByTxtArr = SponsoredBy.match(/\[(.*?)\]/g);
-      sponsorByTxtArr = sponsorByTxtArr?.length ? sponsorByTxtArr.map(txt => txt.replace(/\[|\]/g, '')) : sponsorByTxtArr;
+      sponsorByTxtArr = sponsorByTxtArr?.length ? sponsorByTxtArr.map(txt => txt.replace(/\[|\]/g, '')) : [];
 
       for (let index = 0; index < sponsorByTxtArr.length; index++) {
         let url = urls[index];
@@ -52,7 +53,7 @@ const Title = ({
       }
     }
 
-    if(!sponsorsLinkTxts.length){
+    if (!sponsorsLinkTxts.length) {
       return [SponsoredBy];
     }
 

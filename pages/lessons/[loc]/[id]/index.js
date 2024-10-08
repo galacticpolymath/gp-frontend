@@ -194,7 +194,7 @@ const LessonDetails = ({ lesson }) => {
     return null;
   }
 
-  if (!lesson || !_sections?.length || ((typeof window !== "undefined") && lesson.PublicationStatus === "Proto")) {
+  if (!lesson || !_sections?.length) {
     router.replace('/error');
     return null;
   }

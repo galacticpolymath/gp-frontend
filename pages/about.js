@@ -48,7 +48,7 @@ const AboutPage = () => (
       imgContainerStyle={{ maxWidth: '718px', width: '100%', height: '100%' }}
       childrenContainerClassName='mx-auto mx-xl-0'
       className='about-hero d-flex pt-5 pb-5 pt-md-0 pb-md-0 flex-column-reverse flex-md-row-reverse justify-content-xl-center align-items-xl-center'
-      isStylesHereOn={false}
+      isStylesHeroOn={false}
     >
       <h1 className={styles.shadow}>About GP</h1>
       <p className={`${styles.shadow} sub-heading-about-pg`}>Galactic Polymath (GP) is an education studio. We help scientists, nonprofits, and sustainable companies achieve outreach at scale by translating complex, cutting-edge research into mind-blowing lessons for grades 5+.</p>
