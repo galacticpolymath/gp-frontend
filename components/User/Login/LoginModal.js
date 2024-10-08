@@ -136,7 +136,7 @@ const LoginModal = () => {
                         transform: 'translate(17%, 6%)',
                     }}
                 />
-                <h5 className="text-black text-center mt-2">GP Login</h5>
+                <h5 className="text-black text-center mt-2">GP Sign In</h5>
             </ModalHeader>
             <div className="py-3 py-sm-2">
                 <section className="d-flex justify-content-center align-items-center pt-3">
@@ -146,7 +146,7 @@ const LoginModal = () => {
                     >
                         <FcGoogle className="mx-2" size={31} />
                         <span style={{ fontSize: '18px' }}>
-                            Log in with Google.
+                            Sign in with Google.
                         </span>
                     </GoogleSignIn>
                 </section>

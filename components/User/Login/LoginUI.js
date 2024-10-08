@@ -10,6 +10,7 @@ import Button from "../../General/Button";
 import GoogleSignIn from "../GoogleSignIn";
 import { useUserEntry } from "../../../customHooks/useUserEntry";
 import { CustomInput } from "../formElements";
+import { FcGoogle } from "react-icons/fc";
 
 const LoginUI = ({
     className = '',
@@ -57,7 +58,29 @@ const LoginUI = ({
                     height={75}
                 />
             </div>
-            <h5 className={headingTitleClassName}>GP Login</h5>
+            <h5 className={headingTitleClassName}>GP Sign In</h5>
+            <section className="d-flex justify-content-center align-items-center pt-3 pb-4 mt-4">
+                <GoogleSignIn
+                    callbackUrl={(typeof window !== 'undefined') ? window.location.href : ''}
+                    className="rounded px-5 py-4 d-flex justify-content-center align-items-center border shadow col-7 d-flex flex-column"
+                >
+                    <FcGoogle className="mx-2" size={55} />
+                    <span style={{ fontSize: '21px' }} className="mt-2">
+                        Sign in with Google.
+                    </span>
+                </GoogleSignIn>
+            </section>
+            <div className="d-flex justify-content-center mt-3 mb-2">
+                <div style={{ width: "48%" }} className='d-flex justify-content-center justify-content-sm-end align-items-center'>
+                    <div style={{ height: "3px", width: '80%' }} className={`bg-black rounded`} />
+                </div>
+                <div style={{ width: "4%" }} className='d-flex justify-content-center align-items-center'>
+                    <span className={`text-black`} style={{ fontSize: "22px" }}>OR</span>
+                </div>
+                <div style={{ width: "48%" }} className='d-flex justify-content-center justify-content-sm-start align-items-center'>
+                    <div style={{ height: "3px", width: '80%' }} className={`bg-black rounded`} />
+                </div>
+            </div>
             <section>
                 <form>
                     <div className="mt-3 d-flex justify-content-center align-items-center flex-column">
@@ -165,24 +188,7 @@ const LoginUI = ({
                             </span>
                         </Button>
                     </div>
-                    <div className="d-flex justify-content-center mt-3 mb-2">
-                        <div style={{ width: "48%" }} className='d-flex justify-content-center justify-content-sm-end align-items-center'>
-                            <div style={{ height: "3px", width: '80%' }} className={`bg-black rounded`} />
-                        </div>
-                        <div style={{ width: "4%" }} className='d-flex justify-content-center align-items-center'>
-                            <span className={`text-black`}>OR</span>
-                        </div>
-                        <div style={{ width: "48%" }} className='d-flex justify-content-center justify-content-sm-start align-items-center'>
-                            <div style={{ height: "3px", width: '80%' }} className={`bg-black rounded`} />
-                        </div>
-                    </div>
                 </form>
-            </section>
-            <section className="d-flex justify-content-center align-items-center pt-3 pb-4">
-                <GoogleSignIn
-                    callbackUrl={(typeof window !== 'undefined') ? window.location.href : ''}
-                    className="rounded p-2 d-flex justify-content-center align-items-center border shadow"
-                />
             </section>
             <div className="d-flex flex-sm-row flex-column justify-content-center align-items-center border-top pt-3 pb-5">
                 <span className='text-black'>
