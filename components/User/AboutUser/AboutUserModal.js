@@ -277,30 +277,35 @@ const AboutUserModal = () => {
                         </section>
                     </section>
                     <Accordion activeKey={aboutUserForm.isTeacher ? "0" : ""} className=''>
-                        <div style={{ borderBottom: 'solid 1.7px lightgrey' }} className='d-flex justify-content-between'>
-                            <section className='d-flex justify-content-center align-items-center'>
-                                <AccordionToggleBtn
-                                    btnClassName='no-btn-styles'
-                                    eventKey="0"
-                                    handleBtnClick={handleAreYouATeacherBtnClick}
-                                >
-                                    {aboutUserForm.isTeacher ? <BiCheckboxChecked fontSize="21px" /> : <BiCheckbox fontSize="21px" />}
-                                </AccordionToggleBtn>
-                                <span className='pt-1'>
-                                    I am a teacher.
-                                </span>
-                            </section>
-                            <section>
-                                {aboutUserForm.isTeacher ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                        <div className='d-flex justify-content-between'>
+                            <section className='d-flex flex-column justify-content-center align-items-center w-100'>
+                                <section className='d-flex col-12  flex-column'>
+                                    <h3>Help us to keep the content free for everyone!</h3>
+                                    <span><b>For access to teacher guides</b>, we need to know a bit more about who you are.</span>
+                                </section>
+                                <section className='col-12 px-3'>
+                                    <div style={{ borderBottom: 'solid 1.7px lightgrey' }} className='d-flex col-12'>
+                                        <AccordionToggleBtn
+                                            btnClassName='no-btn-styles'
+                                            eventKey="0"
+                                            handleBtnClick={handleAreYouATeacherBtnClick}
+                                        >
+                                            {aboutUserForm.isTeacher ? <BiCheckboxChecked fontSize="21px" /> : <BiCheckbox fontSize="21px" />}
+                                        </AccordionToggleBtn>
+                                        <span className='pt-1'>
+                                            I am a teacher.
+                                        </span>
+                                    </div>
+                                </section>
                             </section>
                         </div>
-                        <Accordion.Item eventKey="0" className='p-0 rounded-0 border-0'>
+                        <Accordion.Item eventKey="0" className='p-0 rounded-0 border-0 col-12 px-sm-4'>
                             <Accordion.Body className='p-0 rounded-0'>
                                 <section style={{ columnCount: 2 }} className='mt-3 mb-2 row'>
                                     <GradesOrYearsSelection />
                                     <section className='d-flex flex-column col-12 col-lg-6 mt-2 mt-sm-0'>
                                         <label style={{ lineHeight: '25px' }}>
-                                            How many students do you teach?
+                                            *How many students do you teach?
                                         </label>
                                         <input
                                             placeholder='Total students'
@@ -315,7 +320,7 @@ const AboutUserModal = () => {
                                 </section>
                                 <section className='d-flex flex-column mt-4 mt-lg-3'>
                                     <label>
-                                        Subject(s) Taught:
+                                        *Subject(s) Taught:
                                     </label>
                                     <section className='row d-flex flex-column flex-sm-row ps-2'>
                                         <div className='pt-1 subjects-taught-container col-12 col-sm-6'>
