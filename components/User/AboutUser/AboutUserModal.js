@@ -283,8 +283,8 @@ const AboutUserModal = () => {
                                     <h3>Help us to keep the content free for everyone!</h3>
                                     <span><b>For access to teacher guides</b>, we need to know a bit more about who you are.</span>
                                 </section>
-                                <section className='col-12 px-3'>
-                                    <div style={{ borderBottom: 'solid 1.7px lightgrey' }} className='d-flex col-12'>
+                                <section className='col-12 px-lg3'>
+                                    <div style={{ borderBottom: 'solid 1.7px lightgrey' }} className='d-flex col-12 position-relative'>
                                         <AccordionToggleBtn
                                             btnClassName='no-btn-styles'
                                             eventKey="0"
@@ -295,11 +295,12 @@ const AboutUserModal = () => {
                                         <span className='pt-1'>
                                             I am a teacher.
                                         </span>
+                                        {aboutUserForm.isTeacher ? <IoIosArrowDown className='position-absolute end-0 bottom-0 mb-1' /> : <IoIosArrowUp className='position-absolute end-0 bottom-0 mb-1' />}
                                     </div>
                                 </section>
                             </section>
                         </div>
-                        <Accordion.Item eventKey="0" className='p-0 rounded-0 border-0 col-12 px-sm-4'>
+                        <Accordion.Item eventKey="0" className='p-0 rounded-0 border-0 col-12 px-lg-4'>
                             <Accordion.Body className='p-0 rounded-0'>
                                 <section style={{ columnCount: 2 }} className='mt-3 mb-2 row'>
                                     <GradesOrYearsSelection />
