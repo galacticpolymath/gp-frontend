@@ -30,9 +30,7 @@
 .home-pg-hero {
   color: white;
   background-size: cover;
-  // background-position: 90% center;
   object-fit: cover;
-  z-index: -1;
 
   @media (min-width: 576px) {
     background-position: 90% bottom;
