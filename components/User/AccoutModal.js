@@ -21,15 +21,10 @@ const AccountModal = () => {
         setIsAccountModalMobileOn(false);
     };
 
-    const handleOnShow = () => {
-
-    };
-
     return (
         <Modal
             show={isAccountModalMobileOn}
             onHide={handleOnHide}
-            onShow={handleOnShow}
             dialogClassName='border-0 selected-gp-web-app-dialog m-0'
             contentClassName='account-modal user-modal-color rounded-0 pt-3'
         >

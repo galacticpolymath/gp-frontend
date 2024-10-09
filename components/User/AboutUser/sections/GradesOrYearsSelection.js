@@ -55,7 +55,7 @@ const GradesOrYearsSelection = () => {
     return (
         <section className='d-flex flex-column col-12 col-lg-6'>
             <label>
-                What age do you teach?
+                *What age do you teach?
             </label>
             <span style={{ fontSize: '16px' }}>
                 <i>Sharing a few more details helps us understand our users and keep resources free!</i>

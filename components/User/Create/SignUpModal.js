@@ -167,12 +167,12 @@ const SignUpModal = () => {
                     <CreateAccountWithGoogle
                         handleGoogleBtnClickCustom={handleCreateAnAccountWithGoogleBtnClick}
                         callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`}
-                        className='rounded shadow w-75 px-3 py-2  py-sm-4 px-sm-5 w-50 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn'
+                        className='rounded shadow w-75 px-3 py-2 p-sm-5 w-50 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn'
                         style={{ maxWidth: '400px' }}
 
                     >
                         <FcGoogle className="mx-2" size={31} />
-                        <span className='d-inline-flex justify-content-center align-items-center h-100'>
+                        <span style={{ fontSize: "24px" }} className='d-inline-flex justify-content-center align-items-center h-100'>
                             Sign up with Google.
                         </span>
                     </CreateAccountWithGoogle>
