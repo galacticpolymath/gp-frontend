@@ -276,80 +276,82 @@ const AboutUserModal = () => {
                             <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('zipCode') ?? ''}</span>
                         </section>
                     </section>
-                    <Accordion activeKey={aboutUserForm.isTeacher ? "0" : ""} className=''>
-                        <div className='d-flex justify-content-between'>
-                            <section className='d-flex flex-column justify-content-center align-items-center w-100'>
-                                <section className='d-flex col-12  flex-column'>
-                                    <h3>Help us to keep the content free for everyone!</h3>
-                                    <span><b>For access to teacher guides</b>, we need to know a bit more about who you are.</span>
+                    <Accordion activeKey={aboutUserForm.isTeacher ? "0" : ""}>
+                        <div style={{ border: aboutUserForm.isTeacher ? "3.5px solid #EEB7DA" : '3.5px solid transparent', transition: 'border .3s' }} className='px-3 py-2 rounded'>
+                            <div className='d-flex justify-content-between'>
+                                <section className='d-flex flex-column justify-content-center align-items-center w-100'>
+                                    <section className='d-flex col-12  flex-column'>
+                                        <h3>Help us to keep the content free for everyone!</h3>
+                                        <span><b>For access to teacher guides</b>, we need to know a bit more about who you are.</span>
+                                    </section>
+                                    <section className='col-12 px-lg3'>
+                                        <div style={{ borderBottom: 'solid 1.7px lightgrey' }} className='d-flex col-12 position-relative'>
+                                            <AccordionToggleBtn
+                                                btnClassName='no-btn-styles'
+                                                eventKey="0"
+                                                handleBtnClick={handleAreYouATeacherBtnClick}
+                                            >
+                                                {aboutUserForm.isTeacher ? <BiCheckboxChecked fontSize="21px" /> : <BiCheckbox fontSize="21px" />}
+                                            </AccordionToggleBtn>
+                                            <span className='pt-1'>
+                                                I am a teacher.
+                                            </span>
+                                            {aboutUserForm.isTeacher ? <IoIosArrowDown className='position-absolute end-0 bottom-0 mb-1' /> : <IoIosArrowUp className='position-absolute end-0 bottom-0 mb-1' />}
+                                        </div>
+                                    </section>
                                 </section>
-                                <section className='col-12 px-lg3'>
-                                    <div style={{ borderBottom: 'solid 1.7px lightgrey' }} className='d-flex col-12 position-relative'>
-                                        <AccordionToggleBtn
-                                            btnClassName='no-btn-styles'
-                                            eventKey="0"
-                                            handleBtnClick={handleAreYouATeacherBtnClick}
-                                        >
-                                            {aboutUserForm.isTeacher ? <BiCheckboxChecked fontSize="21px" /> : <BiCheckbox fontSize="21px" />}
-                                        </AccordionToggleBtn>
-                                        <span className='pt-1'>
-                                            I am a teacher.
-                                        </span>
-                                        {aboutUserForm.isTeacher ? <IoIosArrowDown className='position-absolute end-0 bottom-0 mb-1' /> : <IoIosArrowUp className='position-absolute end-0 bottom-0 mb-1' />}
-                                    </div>
-                                </section>
-                            </section>
-                        </div>
-                        <Accordion.Item eventKey="0" className='p-0 rounded-0 border-0 col-12 px-lg-4'>
-                            <Accordion.Body className='p-0 rounded-0'>
-                                <section style={{ columnCount: 2 }} className='mt-3 mb-2 row'>
-                                    <GradesOrYearsSelection />
-                                    <section className='d-flex flex-column col-12 col-lg-6 mt-2 mt-sm-0'>
-                                        <label style={{ lineHeight: '25px' }}>
-                                            *How many students do you teach?
+                            </div>
+                            <Accordion.Item eventKey="0" className='p-0 rounded-0 border-0 col-12 px-lg-4'>
+                                <Accordion.Body className='p-0 rounded-0'>
+                                    <section style={{ columnCount: 2 }} className='mt-3 mb-2 row'>
+                                        <GradesOrYearsSelection />
+                                        <section className='d-flex flex-column col-12 col-lg-6 mt-2 mt-sm-0'>
+                                            <label style={{ lineHeight: '25px' }}>
+                                                *How many students do you teach?
+                                            </label>
+                                            <input
+                                                placeholder='Total students'
+                                                type='number'
+                                                name='classroomSize'
+                                                value={aboutUserForm?.classroomSize ?? '0'}
+                                                onChange={handleOnInputChange}
+                                                style={{ maxWidth: '200px', transform: 'translateY(50%)' }}
+                                                className='aboutme-txt-input no-outline'
+                                            />
+                                        </section>
+                                    </section>
+                                    <section className='d-flex flex-column mt-4 mt-lg-3'>
+                                        <label>
+                                            *Subject(s) Taught:
                                         </label>
-                                        <input
-                                            placeholder='Total students'
-                                            type='number'
-                                            name='classroomSize'
-                                            value={aboutUserForm?.classroomSize ?? '0'}
-                                            onChange={handleOnInputChange}
-                                            style={{ maxWidth: '200px', transform: 'translateY(50%)' }}
-                                            className='aboutme-txt-input no-outline'
-                                        />
+                                        <section className='row d-flex flex-column flex-sm-row ps-2'>
+                                            <div className='pt-1 subjects-taught-container col-12 col-sm-6'>
+                                                {SUBJECTS_OPTIONS.slice(0, 5).map((subject, index) => (
+                                                    <SubjectOption
+                                                        key={index}
+                                                        index={index}
+                                                        subjectFieldNameForMapTracker={`subject-${index}`}
+                                                        customCssClassses={index !== 0 ? 'mt-2 mt-sm-0' : ''}
+                                                        subject={subject}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <div className='pt-1 subjects-taught-container col-12 col-sm-6'>
+                                                {SUBJECTS_OPTIONS.slice(5).map((subject, index) => (
+                                                    <SubjectOption
+                                                        key={index}
+                                                        index={index}
+                                                        subjectFieldNameForMapTracker={`other-subject-${index}`}
+                                                        customCssClassses='mt-2 mt-sm-0'
+                                                        subject={subject}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </section>
                                     </section>
-                                </section>
-                                <section className='d-flex flex-column mt-4 mt-lg-3'>
-                                    <label>
-                                        *Subject(s) Taught:
-                                    </label>
-                                    <section className='row d-flex flex-column flex-sm-row ps-2'>
-                                        <div className='pt-1 subjects-taught-container col-12 col-sm-6'>
-                                            {SUBJECTS_OPTIONS.slice(0, 5).map((subject, index) => (
-                                                <SubjectOption
-                                                    key={index}
-                                                    index={index}
-                                                    subjectFieldNameForMapTracker={`subject-${index}`}
-                                                    customCssClassses={index !== 0 ? 'mt-2 mt-sm-0' : ''}
-                                                    subject={subject}
-                                                />
-                                            ))}
-                                        </div>
-                                        <div className='pt-1 subjects-taught-container col-12 col-sm-6'>
-                                            {SUBJECTS_OPTIONS.slice(5).map((subject, index) => (
-                                                <SubjectOption
-                                                    key={index}
-                                                    index={index}
-                                                    subjectFieldNameForMapTracker={`other-subject-${index}`}
-                                                    customCssClassses='mt-2 mt-sm-0'
-                                                    subject={subject}
-                                                />
-                                            ))}
-                                        </div>
-                                    </section>
-                                </section>
-                            </Accordion.Body>
-                        </Accordion.Item>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </div>
                     </Accordion>
                     <section className='d-flex flex-column mt-2 mt-4 mt-lg-3'>
                         <label htmlFor='reasonsForSiteVisit'>
