@@ -6,7 +6,6 @@ import Image from 'next/image';
 import Layout from '../components/Layout';
 import Hero from '../components/Hero';
 import styles from './index.module.css';
-import HeroImage from '../assets/img/city_network.jpg';
 import EngineeringImage from '../assets/img/engineering_together.jpeg';
 import ScientificAmericanImage from '../assets/img/scientific_american.jpg';
 import VanderBiltPressReleaseImg from '../assets/img/vanderbilt_press_release.png';
@@ -16,6 +15,8 @@ import CarouselContainer from '../components/CarouselContainer';
 import CarouselItem from '../components/CarouselItem';
 import SponsorsMarquee from '../components/Sponsors';
 import NewRelease from '../components/Home/NewRelease';
+import { FaSchool } from "react-icons/fa";
+import { PiHandshake } from "react-icons/pi";
 
 const papers = [
   {
@@ -102,22 +103,41 @@ export default function Home() {
 
   return (
     <Layout {...layoutProps}>
-      <Hero imgSrc={HeroImage.src}>
-        <h1 className={styles.shadow}>We are an education studio.</h1>
-        <p className={`${styles.shadow} my-4 fs-5 fw-light`}>We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for <em>everyone</em>.</p>
-        <div className="d-flex d-sm-block flex-column justify-content-start align-items-start">
+      <Hero
+        heroContainerStyle={{
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'fill',
+        }}
+        className='home-pg-hero'
+        isStylesHeroOn={false}
+      >
+        <h1 className={`${styles.home_pg_hero_txt} home-pg-hero-title home-pg-hero-title`}>We are an education studio.</h1>
+        <p className={`${styles.home_pg_hero_txt} my-4 fs-5 fw-light home-pg-hero-sub-title col-12`}>
+          We translate current STEM research into free interdisciplinary lessons.
+        </p>
+        <div className="d-flex d-md-block flex-column flex-md-row justify-content-start align-items-start">
           <Link
             passHref
             href="/lessons"
             className="btn btn-primary"
           >
-            Get Lessons
+            <section className='d-flex justify-content-center align-items-center'>
+              <span>
+                Get Lessons
+              </span>
+              <FaSchool className='ms-2 mb-1' />
+            </section>
           </Link>
           <Link
             href="/hire-us"
-            className="btn btn-primary mt-4 mt-sm-0 mx-sm-2"
+            className="btn btn-primary mx-md-2 mt-4 mt-md-0"
           >
-            Do Outreach
+            <section className='d-flex justify-content-center align-items-center'>
+              <span>
+                Do outreach
+              </span>
+              <PiHandshake className='ms-2 mb-1' />
+            </section>
           </Link>
         </div>
       </Hero>
