@@ -49,26 +49,18 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
         setIsLoginModalDisplayed(true);
     };
 
-    let buttonTxt = 'ACCOUNT';
-
-    if (status === 'unauthenticated') {
-        buttonTxt = 'LOGIN';
-    } else if (status === 'loading') {
-        buttonTxt = '';
-    }
-
     return (
         <div className='login-container position-relative'>
             <Button
                 handleOnClick={handleAccountBtnClick}
-                classNameStr='rounded px-3 border-0'
+                classNameStr='rounded px-2 py-2 border-0 d-flex justify-content-center align-items-center'
                 isDisabled={status === 'loading'}
                 backgroundColor="#333438"
-                defaultStyleObj={{ width: '125px', opacity: status === 'loading' ? .3 : 1 }}
+                defaultStyleObj={{ width: '125px', opacity: status === 'loading' ? .3 : 1, height: '44px' }}
             >
-                {buttonTxt && (
+                {(status === 'unauthenticated') && (
                     <span style={{ color: 'white', fontWeight: 410 }}>
-                        {buttonTxt}
+                        LOGIN
                     </span>
                 )
                 }
@@ -82,6 +74,16 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
                         </span>
                         <span className="sr-only text-white">Loading...</span>
                     </>
+                )}
+                {(status === "authenticated") && (
+                    <img
+                        src={image || '/imgs/gp_logo_gradient_transBG.png'}
+                        alt='user_img'
+                        width={35}
+                        height={35}
+                        style={{ objectFit: 'contain' }}
+                        className='rounded-circle'
+                    />
                 )}
             </Button>
             <div
@@ -97,14 +99,6 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
                     style={{ borderBottom: '.5px solid grey' }}
                     className="d-flex flex-column justify-content-center align-items-center pb-2"
                 >
-                    <img
-                        src={image || '/imgs/gp_logo_gradient_transBG.png'}
-                        alt='user_img'
-                        width={75}
-                        height={75}
-                        style={{ objectFit: 'contain' }}
-                        className='rounded-circle'
-                    />
                     <h5 className="text-black my-3">{name?.first} {name?.last}</h5>
                 </section>
                 <section className='d-flex flex-column'>
