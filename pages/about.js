@@ -200,13 +200,14 @@ const AboutPage = () => (
         <div className='row'>
           <div className='col-12 text-center p-3 py-lg-4 px-lg-5'>
             <h3 className='fs-4 mb-3 text-uppercase fw-light'>Dev Team</h3>
-            <p className='fs-5'>The talented (mostly volunteer) group building and maintaining our site, as well as a growing variety of publishing and teaching tools. Fluent in React.js, SASS, CSS, HTML, R and other languages.</p>
+            <p className='fs-5'>The talented group building and maintaining our site, as well as a growing variety of publishing and teaching tools. Fluent in React.js, SASS, CSS, HTML, R and other languages.</p>
           </div>
         </div>
 
         <div className='row justify-content-center align-items-stretch'>
           {devTeam.map((member, index) => {
             const { name, position, links, imgSrc, description } = member;
+
             return (
               <TeamMemberCard
                 key={`${index}_${name}`}

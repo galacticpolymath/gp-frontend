@@ -22,17 +22,5 @@
                 "reactIcon": "BsTwitch"
             }
         ]
-    },
-    {
-        "name": "Patrick Cheng",
-        "position": "LESSON PLAN UI/UX LEAD",
-        "imgSrc": "/imgs/about/devTeam/Patrick-Cheng.webp",
-        "description": "An earnest problem solver that loves to break things down and build things up. Loves food, beer, and communing with the great outdoors.",
-        "links": [
-            {
-                "link": "https://github.com/chengp3",
-                "icon": "bi bi-github"
-            }
-        ]
     }
 ]
