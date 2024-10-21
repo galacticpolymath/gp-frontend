@@ -135,8 +135,6 @@ const LessonDetails = ({ lesson }) => {
     return addGradesOrYearsProperty(sectionComps, lesson.ForGrades, lesson.GradesOrYears);
   }, []);
 
-  console.log("yo there sectionComps: ", sectionComps);
-
   const _dots = useMemo(() => sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : [], [])
   const [sectionDots, setSectionDots] = useState({
     dots: _dots,
@@ -364,7 +362,6 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
             const itemListUpdated = []
 
             for (const itemObj of lesson.itemList) {
-              console.log('yo there, itemObj: ', itemObj);
               const { links, itemCat } = itemObj;
 
               if (!itemObj?.links?.length) {
