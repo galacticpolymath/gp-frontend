@@ -20,7 +20,7 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import LessonSlide from './LessonSlide';
 import { getVideoThumb } from './utils';
 import Image from 'next/image';
