@@ -36,6 +36,8 @@ export default function MyAdapter() {
 
         const user = await getUser({ providerAccountId: providerAccountId });
 
+        // if the user exist
+
         if (!user) {
           const { wasSuccessful } = await createUser('PLACEHOLDER', null, provider, ['user'], providerAccountId);
 
