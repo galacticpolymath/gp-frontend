@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
@@ -63,10 +64,32 @@ const Notify = () => {
         let paramsStr = window.location.search.replace(/\?/, '');
         const params = paramsStr.split('=');
 
-        if ((params[0] === 'signin-err-type') && (params[1] === 'provider-mismatch-error')) {
+        console.log('params, yo there meng: ', params);
+
+        if ((params[0] === 'signin-err-type') && (params[1] === 'duplicate-user-try-google')) {
+            setNotifyModal({
+                headerTxt: "ERROR! Couldn't create account.",
+                bodyTxt: "This account already exist. Try signing in with Google instead.",
+                isDisplayed: true,
+                handleOnHide: () => {
+                    const url = router.asPath;
+                    router.replace(url.split("?")[0]);
+                },
+            });
+        } else if ((params[0] === 'signin-err-type') && (params[1] === 'duplicate-user-try-creds')) {
+            setNotifyModal({
+                headerTxt: "ERROR! Couldn't create account.",
+                bodyTxt: "This account already exist. Try signing in with your email and password instead.",
+                isDisplayed: true,
+                handleOnHide: () => {
+                    const url = router.asPath;
+                    router.replace(url.split("?")[0]);
+                },
+            });
+        } else if (params[0] === 'signin-err-type') {
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: 'Sign-in error.',
+                headerTxt: 'ERROR! Unable sign in or create your account.',
                 bodyTxt: 'Contact support if this error persists.',
                 handleOnHide: () => {
                     const url = router.asPath;

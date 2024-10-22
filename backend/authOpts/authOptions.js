@@ -142,8 +142,6 @@ export const authOptions = {
             throw new AuthError('userNotFound', 404, callbackUrl ?? '');
           }
 
-          // if no password, that means the user has a 'google' for the providers 
-          // user must sign in with google to log in.
           if (dbUser && !dbUser?.password && (formType === 'login')) {
             console.log('The user has "google" for their credentials.');
 
@@ -246,12 +244,17 @@ export const authOptions = {
   callbacks: {
     async signIn(param) {
       try {
-        // the user signs in with google, but has a credentials provider account
-        console.log('param, yo there: ', param);
+        console.log('sigin, param: ', param);
 
-        const { user, account, profile } = param;
+        const { user, account, profile, credentials } = param;
         const { errType, code, email, providerAccountId, wasUserCreated } = user ?? {};
-        const userEmail = profile?.email ?? email;
+        let userEmail = profile?.email ?? email;
+
+        if (credentials && !userEmail) {
+          userEmail = credentials.email;
+        }
+
+        console.log('userEmail, yo there: ', userEmail);
 
         if (errType === 'dbUserDoesNotHaveCredentialsProvider') {
           throw new SignInError(
@@ -261,27 +264,34 @@ export const authOptions = {
           );
         }
 
+        await connectToMongodb();
+
+        // unable to query the user from the database
+        const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
+
         if (errType === 'userAlreadyExist') {
+          const errTypeParam = dbUser?.provider === 'google' ? 'duplicate-user-try-google' : 'duplicate-user-try-creds';
+
           throw new SignInError(
-            'duplicate-user',
+            errTypeParam,
             'This email has already been taken.',
             code ?? 422
           );
         }
 
-        // if the user has an account with GP, but uses the credentials provider, then throw an error
-
-        await connectToMongodb();
-
-        const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
-
-        if (dbUser && wasUserCreated) {
+        if (dbUser && wasUserCreated && providerAccountId) {
           await deleteUser({ providerAccountId: providerAccountId });
 
-          return '/account?account-creation-err-type=duplicate-email&provider-used=google';
+          const errTypeParam = dbUser.provider === 'google' ? 'duplicate-user-try-google' : 'duplicate-user-try-creds';
+
+          throw new SignInError(
+            errTypeParam,
+            'This email has already been taken.',
+            code ?? 422
+          );
         }
 
-        // Finish creating the gogole user account in the db.
+        // Finish creating the google user account in the db.
         if (wasUserCreated && (account.provider === 'google') && !dbUser) {
           const { picture, given_name, family_name } = profile ?? {};
           const name = {
@@ -307,17 +317,6 @@ export const authOptions = {
           return true;
         }
 
-        if ((dbUser && account) &&
-          ('provider' in account) &&
-          ('provider' in dbUser) &&
-          (dbUser.provider !== account.provider)) {
-          throw new SignInError(
-            'provider-mismatch-error',
-            'The provider of the sign in method is incorrect with the provider stored in the database.',
-            422
-          );
-        }
-
         if (!dbUser) {
           throw new SignInError(
             'user-not-found',
@@ -328,6 +327,8 @@ export const authOptions = {
 
         return true;
       } catch (error) {
+        console.error('sign in error: ', error);
+
         const { type } = error;
         if (type && param?.user?.redirectUrl) {
           return `${param.user.redirectUrl}/?signin-err-type=${type}`;
