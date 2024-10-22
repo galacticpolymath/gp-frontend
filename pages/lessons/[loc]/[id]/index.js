@@ -114,9 +114,9 @@ const LessonDetails = ({ lesson }) => {
 
     if (backgroundSectionIndex === -1) {
       console.error('The background section DOES NOT EXIST!')
-    } else {
-      sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj);
-    }
+    } 
+
+    sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj);
   }
 
   sectionComps = useMemo(() => {

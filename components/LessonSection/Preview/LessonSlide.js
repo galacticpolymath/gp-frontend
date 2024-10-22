@@ -21,7 +21,7 @@ const LessonSlide = ({
     <div className='autoCarouselItem onLessonsPg mb-1 rounded p-1 justify-content-center align-items-center'>
       <div className='px-1 pb-0 rounded w-100'>
         <div className='px-1 mediaItemContainer'>
-          {(typeof mainLink === 'object') && getMediaComponent({ type, mainLink, webAppPreviewImg, webAppImgAlt })}
+          {(typeof mainLink === 'string') && getMediaComponent({ type, mainLink, webAppPreviewImg, webAppImgAlt })}
           {((type === "web-app") && (typeof mainLink === 'string')) && (
             <Link
               href={mainLink}
