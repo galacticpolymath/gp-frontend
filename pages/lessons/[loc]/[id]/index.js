@@ -114,9 +114,9 @@ const LessonDetails = ({ lesson }) => {
 
     if (backgroundSectionIndex === -1) {
       console.error('The background section DOES NOT EXIST!')
-    } else {
-      sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj);
-    }
+    } 
+
+    sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj);
   }
 
   sectionComps = useMemo(() => {
@@ -134,8 +134,6 @@ const LessonDetails = ({ lesson }) => {
 
     return addGradesOrYearsProperty(sectionComps, lesson.ForGrades, lesson.GradesOrYears);
   }, []);
-
-  console.log("yo there sectionComps: ", sectionComps);
 
   const _dots = useMemo(() => sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : [], [])
   const [sectionDots, setSectionDots] = useState({
