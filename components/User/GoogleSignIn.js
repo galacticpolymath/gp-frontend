@@ -22,6 +22,7 @@ const GoogleSignIn = ({
     style = {},
     className = 'rounded p-2 d-flex justify-content-center align-items-center border',
 }) => {
+    
     const handleGoogleBtnClickDefault = event => {
         event.preventDefault();
 

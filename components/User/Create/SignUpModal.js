@@ -123,6 +123,9 @@ const SignUpModal = () => {
     const handleCreateAnAccountWithGoogleBtnClick = event => {
         event.preventDefault();
 
+        // handle the case which the user signs in with google but uses a credentials providers for
+        // the sign in
+
         if (!wasChecked) {
             setUserIsTeacherTxt("I solemnly swear that I am a teacher 🤨 (REQUIRED).");
             setTimeout(() => {

@@ -22,21 +22,29 @@ export const cache = new NodeCache({ stdTTL: 100 });
 export default function MyAdapter() {
   return {
     async createUser(user) {
+      console.log('createUser, yo there: ', user);
       return;
     },
     async getUser(id) {
+      console.log('id: ', id);
       return;
     },
     async getUserByEmail(email) {
+      console.log('email, yo meng: ', email);
       return;
     },
-    async getUserByAccount({ provider, providerAccountId }) {
+    async getUserByAccount(param) {
+      const { provider, providerAccountId } = param;
       try {
+        console.log('yo there meng: ', param);
+        // determine if the following:
+        // -if the user is signing 
+        // -if the user is creating an account 
         await connectToMongodb();
 
         const user = await getUser({ providerAccountId: providerAccountId });
 
-        // if the user exist
+        console.log('the user is signing in with google: ', user);
 
         if (!user) {
           const { wasSuccessful } = await createUser('PLACEHOLDER', null, provider, ['user'], providerAccountId);
@@ -59,7 +67,7 @@ export default function MyAdapter() {
       }
     },
     async updateUser(user) {
-      console.log(user);
+      console.log('updateUser: ', user);
       return;
     },
     async deleteUser(userId) {
@@ -142,7 +150,7 @@ export const authOptions = {
             throw new AuthError('dbUserDoesNotHaveCredentialsProvider', 401, callbackUrl ?? '');
           }
 
-          if (dbUser && formType === 'createAccount') {
+          if (dbUser && (formType === 'createAccount')) {
             throw new AuthError('userAlreadyExist', 409, callbackUrl ?? '');
           }
 
@@ -238,6 +246,9 @@ export const authOptions = {
   callbacks: {
     async signIn(param) {
       try {
+        // the user signs in with google, but has a credentials provider account
+        console.log('param, yo there: ', param);
+
         const { user, account, profile } = param;
         const { errType, code, email, providerAccountId, wasUserCreated } = user ?? {};
         const userEmail = profile?.email ?? email;
@@ -257,6 +268,8 @@ export const authOptions = {
             code ?? 422
           );
         }
+
+        // if the user has an account with GP, but uses the credentials provider, then throw an error
 
         await connectToMongodb();
 
@@ -334,6 +347,11 @@ export const authOptions = {
       return Promise.resolve(token);
     },
     async session(param) {
+      console.log('current user session: ', param);
+      // CASE: the user tries to create an account with google, but already has an account
+      // tell the user that they have an account, 
+      // and don't show the about user modal to the user
+
       const { token, session } = param;
       const { email, roles, name } = token.payload;
       const accessToken = await signJwt(
@@ -381,6 +399,8 @@ export const authOptions = {
       return Promise.resolve(session);
     },
     async redirect(param) {
+      console.log('will redirect user to the following: ', param);
+
       const { baseUrl, url } = param;
 
       return url;
