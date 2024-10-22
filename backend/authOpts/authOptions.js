@@ -268,6 +268,20 @@ export const authOptions = {
 
         // unable to query the user from the database
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
+        const errTypeParams = [
+          {
+            condition: wasUserCreated && dbUser.provider === 'google',
+            errTypeParam: 'duplicate-user-try-google',
+          },
+          {
+            condition: wasUserCreated && dbUser.provider === 'credentials',
+            errTypeParam: 'duplicate-user-try-creds',
+          },
+          {
+            condition: dbUser.provider === 'credentials',
+            errTypeParam: 'duplicate-user-sigin-in-try'
+          }
+        ]
 
         if (errType === 'userAlreadyExist') {
           const errTypeParam = dbUser?.provider === 'google' ? 'duplicate-user-try-google' : 'duplicate-user-try-creds';
