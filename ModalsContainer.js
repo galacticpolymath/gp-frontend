@@ -18,7 +18,6 @@ import SelectedJob from "./components/Modals/SelectedJob";
 import DownloadTipModal from "./components/LessonSection/Modals/DownloadTipModal";
 
 const ModalContainers = () => {
-
     const { _selectedJob, _isDownloadModalInfoOn } = useContext(ModalContext);
     const [selectedJob,] = _selectedJob;
     const [isDownloadModalInfoOn] = _isDownloadModalInfoOn;
