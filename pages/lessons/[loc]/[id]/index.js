@@ -92,7 +92,6 @@ const LessonDetails = ({ lesson }) => {
 
         return lessonStandards;
       })
-      // construct the object that holds all of the sections of the unit
       .reduce((lessonStandardObj, lessonStandardsAccumulatedObj) => {
         let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
 
@@ -107,16 +106,27 @@ const LessonDetails = ({ lesson }) => {
         return _lessonStandardsAccumulated;
       }, {});
 
-    // create the background section 
+    // create the stanards section section 
     lessonStandardsObj = { ...lessonStandardsObj, __component: 'lesson-plan.standards', InitiallyExpanded: true };
     sectionComps = sectionComps.filter((_, index) => !lessonStandardsIndexesToFilterOut?.includes(index));
-    const backgroundSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
+    let lessonsStandardsSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Background');
 
-    if (backgroundSectionIndex === -1) {
-      console.error('The background section DOES NOT EXIST!')
-    } 
+    if (lessonsStandardsSectionIndex === -1) {
+      lessonsStandardsSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Bonus Content');
+    }
+    
+    if (lessonsStandardsSectionIndex === -1) {
+      lessonsStandardsSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Teaching Materials');
+    }
 
-    sectionComps.splice(backgroundSectionIndex + 1, 0, lessonStandardsObj);
+    if (lessonsStandardsSectionIndex === -1) {
+      console.error('The background section DOES NOT EXIST!');
+    }
+
+    //if the background section does not exist, find the index of the bonus content section and place the background seection in front of it
+    // else if the bonus content does not exist, find the teaching materials, and place the lesson standards in front it
+
+    sectionComps.splice(lessonsStandardsSectionIndex + 1, 0, lessonStandardsObj);
   }
 
   sectionComps = useMemo(() => {
@@ -144,8 +154,6 @@ const LessonDetails = ({ lesson }) => {
   const [wasDotClicked, setWasDotClicked] = useState(false)
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(setSectionDots);
 
-  const getViewportWidth = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-
   const scrollSectionIntoView = sectionId => {
     const targetSection = document.getElementById(sectionId);
     let url = router.asPath;
@@ -158,7 +166,7 @@ const LessonDetails = ({ lesson }) => {
 
   const handleDocumentClick = event => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some(className => event.target.classList.contains(className))
-    const viewPortWidth = getViewportWidth()
+    const viewPortWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 
     if (!wasANavDotElementClicked && (viewPortWidth <= 767)) {
       setSectionDots(sectionDots => {
