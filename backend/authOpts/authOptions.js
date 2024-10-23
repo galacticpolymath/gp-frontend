@@ -279,9 +279,9 @@ export const authOptions = {
           },
           {
             condition: dbUser.provider === 'credentials',
-            errTypeParam: 'duplicate-user-sigin-in-try'
-          }
-        ]
+            errTypeParam: 'duplicate-user-sigin-in-try',
+          },
+        ];
 
         if (errType === 'userAlreadyExist') {
           const errTypeParam = dbUser?.provider === 'google' ? 'duplicate-user-try-google' : 'duplicate-user-try-creds';
