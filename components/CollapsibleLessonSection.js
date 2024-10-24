@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-max-props-per-line */
 import PropTypes from 'prop-types';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import useLessonElementInView from '../customHooks/useLessonElementInView';
 import Accordion from './Accordion';
 import CopyableTxt from './CopyableTxt';
@@ -68,11 +68,15 @@ const CollapsibleLessonSection = ({
     setIsAccordionContentOpen(isAccordionContentOpen => !isAccordionContentOpen);
   };
 
+  const cssSectionClassName = useMemo(() => SectionTitle.split(" ").filter((_, index) => index !== 0).join("_"), []);
+
+  console.log('cssSectionClassName: ', cssSectionClassName);
+
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}
       id={_accordionId}
-      className={`SectionHeading ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} ${className} collapsibleLessonSection`}
+      className={`SectionHeading ${cssSectionClassName} ${SectionTitle.replace(/[\s!]/gi, '_').toLowerCase()} ${className} collapsibleLessonSection`}
       buttonClassName={`btn ${highlighted ? '' : 'btn-primary-light'} w-100 text-left`}
       highlighted={highlighted}
       dataBsToggle={{}}

@@ -675,6 +675,13 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.Bonus_Content img {
+  float: left;
+  margin-right: 15px;
+  margin-bottom: 10px; /* Optional: adds some space below the image */
+  max-width: 50%; /* Optional: ensures the image doesn't take up too much space */
+}
+
 .lessonSecsNavDotsListContainer {
   top: 95px;
   right: 20px;

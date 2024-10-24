@@ -16,9 +16,28 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-
-import scientists from '../../../data/HireUsPg/scientists.json'
 import PicAndDescriptionSec from './PicAndDescriptionSec';
+
+const SCIENTISTS = [
+    {
+        "name": "Stephanie Castillo, PhD",
+        "description": "Award-winning science communicator and video producer.",
+        "src": "/imgs/profilePics/Stephanie.jpeg",
+        "alt": "Galactic_Polymath_We_Work_With"
+    },
+    {
+        "name": "Aarati Asundi, PhD",
+        "description": "A scientist, entrepreneur and storyteller specializing in hand-drawn animation.",
+        "src": "/imgs/profilePics/aarati.jpg",
+        "alt": "Galactic_Polymath_We_Work_With"
+    },
+    {
+        "name": "Madelyn Leembruggen",
+        "description": "Harvard PhD candidate in physics, science communicator, and education consultant.",
+        "src": "/imgs/profilePics/madelyn_sm.jpg",
+        "alt": "Galactic_Polymath_We_Work_With"
+    },
+]
 
 const ScientistSection = () => (
     <section className="scientistSection">
@@ -31,7 +50,7 @@ const ScientistSection = () => (
         </section>
         <section className="d-flex justify-content-center align-items-center justify-content-md-start align-items-md-stretch ps-md-5 pe-md-5 ms-md-5 me-md-5 pb-md-5 pb-xl-5">
             <section className="d-flex d-md-block flex-column flex-md-row justify-content-center justify-content-md-start scientistSec">
-                {scientists.map((scientist, index) => {
+                {SCIENTISTS.map((scientist, index) => {
                     const { alt, src, name, description } = scientist;
 
                     return (
