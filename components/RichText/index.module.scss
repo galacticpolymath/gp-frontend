@@ -16,3 +16,11 @@
     margin-bottom: 0;
   }
 }
+
+.Bonus_Content img {
+  margin: 10px 0px 10px 0px;
+
+  @media (max-width: 576px) {
+    max-width: 100% !important;
+  }
+}

@@ -14,6 +14,7 @@ const CollapsibleRichTextSection = ({
 }) => {
   const { _sectionDots, SectionTitle } = props;
   const ref = useRef();
+  const sectionTitle = SectionTitle.split(' ').slice(1).join('_');
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
@@ -23,7 +24,11 @@ const CollapsibleRichTextSection = ({
         ref={ref}
         className='container mx-auto mb-4'
       >
-        <RichText className='mt-4' content={Content} />
+        <RichText
+          className='mt-4'
+          content={Content}
+          sectionName={sectionTitle}
+        />
       </div>
     </CollapsibleLessonSection>
   );

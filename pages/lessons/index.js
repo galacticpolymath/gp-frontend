@@ -72,11 +72,11 @@ const LessonsPage = ({
         </div>
       </section>
       <section className='w-100 my-4 my-md-3'>
-        <div className="container">
+        <div className="container sponsors-container-lessons">
           <h4 className="text-muted mb-3 mb-sm-5 text-left mt-2 mt-sm-4 pe-lg-5">
             Made open access by these funding organizations and research institutions:
           </h4>
-          <Sponsors />
+          <Sponsors decimal={.24} parentContainerCss='d-flex justify-content-center align-items-center sponsor-container-lessons-pg' />
         </div>
       </section>
       <section className="mb-3 mt-5">

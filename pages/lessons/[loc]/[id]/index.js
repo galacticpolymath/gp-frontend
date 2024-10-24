@@ -229,6 +229,8 @@ const LessonDetails = ({ lesson }) => {
     className: 'overflow-hidden',
   };
 
+  console.log("sectionComps, what is up: ", sectionComps);
+
   return (
     <Layout {...layoutProps}>
       {(lesson.PublicationStatus === "Beta") && (

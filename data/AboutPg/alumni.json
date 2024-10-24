@@ -66,5 +66,33 @@
                 "icon": "bi bi-github"
             }
         ]
+    },
+    {
+        "name": "Patrick Cheng",
+        "position": "LESSON PLAN UI/UX LEAD",
+        "imgSrc": "/imgs/about/devTeam/Patrick-Cheng.webp",
+        "description": "An earnest problem solver that loves to break things down and build things up. Loves food, beer, and communing with the great outdoors.",
+        "links": [
+            {
+                "link": "https://github.com/chengp3",
+                "icon": "bi bi-github"
+            }
+        ]
+    },
+    {
+        "name": "Stephanie Rapciak, M.A.",
+        "description": "Veteran teacher with 13 years of experience teaching middle and high school science in public and private schools. She is passionate about designing student-centered curriculum that empowers kids to take on the world!",
+        "position": "CURRICULUM DEVELOPER & WORKSHOP FACILITATOR",
+        "imgSrc": "/imgs/profilePics/rapciak.png",
+        "links": [
+            {
+                "link": "https://www.linkedin.com/in/stephanie-rapciak/",
+                "icon": "bi bi-linkedin"
+            },
+            {
+                "link": "https://www.instagram.com/stephanierapciak/",
+                "icon": "bi bi-instagram"
+            }
+        ]
     }
 ]
