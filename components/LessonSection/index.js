@@ -65,7 +65,7 @@ export const sectionTypeMap = {
 
 const LessonSection = ({ index, section, _sectionDots }) => {
   const Component = sectionTypeMap[section.__component];
-  let compProps = { ...section, _sectionDots };
+  const compProps = { ...section, _sectionDots };
   const parentId = `${section.SectionTitle}-parent-${index}`;
 
   return Component ? (

@@ -79,27 +79,33 @@ $toolTipColor: #f0f4ff;
   transform: rotateZ(45deg);
 }
 
-.jump-infinite-animate{
+.jump-infinite-animate {
   animation: jumpInfinite 1.5s infinite;
 }
 
 @keyframes beat {
-  0%, 50%, 100% { transform: scale(1, 1); }
-  30%, 80% { transform: scale(0.92, 0.95); }
+  0%,
+  50%,
+  100% {
+    transform: scale(1, 1);
+  }
+  30%,
+  80% {
+    transform: scale(0.92, 0.95);
+  }
 }
 
-.beat-animate{
+.beat-animate {
   animation: beat 1.5s infinite;
 }
 
-.standards-txt-container{
+.standards-txt-container {
   max-width: 90%;
 
   @media (max-width: 576px) {
     max-width: 85%;
   }
 }
-
 
 @keyframes jumpInfinite {
   0% {
@@ -114,20 +120,36 @@ $toolTipColor: #f0f4ff;
 }
 
 @keyframes wave-animation {
-  0% { transform: rotate( 0.0deg) }
- 10% { transform: rotate(14.0deg) }  /* The following five values can be played with to make the waving more or less extreme */
- 20% { transform: rotate(-8.0deg) }
- 30% { transform: rotate(14.0deg) }
- 40% { transform: rotate(-4.0deg) }
- 50% { transform: rotate(10.0deg) }
- 60% { transform: rotate( 0.0deg) }  /* Reset for the last half to pause */
-100% { transform: rotate( 0.0deg) }
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(14deg);
+  } /* The following five values can be played with to make the waving more or less extreme */
+  20% {
+    transform: rotate(-8deg);
+  }
+  30% {
+    transform: rotate(14deg);
+  }
+  40% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  } /* Reset for the last half to pause */
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 .wave {
-  animation-name: wave-animation;  /* Refers to the name of your @keyframes element below */
-  animation-duration: 2.5s;        /* Change to speed up or slow down */
-  animation-iteration-count: infinite;  /* Never stop waving :) */
+  animation-name: wave-animation; /* Refers to the name of your @keyframes element below */
+  animation-duration: 2.5s; /* Change to speed up or slow down */
+  animation-iteration-count: infinite; /* Never stop waving :) */
   transform-origin: 70% 70%;
 }
 
@@ -302,17 +324,16 @@ $toolTipColor: #f0f4ff;
   padding-bottom: 30px;
 }
 
-.bitly-txt-link{
+.bitly-txt-link {
   font-size: 1.1em;
-
 
   @media print {
     font-size: 1.1em;
   }
 }
 
-.qr-code-lesson-preview{
-  @media print{
+.qr-code-lesson-preview {
+  @media print {
     margin-right: 25px;
   }
 }
