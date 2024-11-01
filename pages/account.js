@@ -17,6 +17,7 @@ import { UserContext, aboutUserFormDefault } from '../providers/UserProvider';
 import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
 import { getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
+import { FaUserAlt } from 'react-icons/fa';
 
 export const getAboutUserFormForClient = aboutUserFormFromServer => {
     const aboutUserFormForClient = { ...aboutUserFormDefault };
@@ -94,6 +95,8 @@ const AccountPg = () => {
     const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [, setAboutUserForm] = _aboutUserForm;
     const [, setNotifyModal] = _notifyModal;
+    const { user, token } = data ?? {};
+    const { email, name, image, occupation } = user ?? {};
 
     useEffect(() => {
         if (status === 'authenticated') {
@@ -102,7 +105,7 @@ const AccountPg = () => {
                     const paramsAndHeaders = {
                         params: { email: data.user.email },
                         headers: {
-                            Authorization: `Bearer ${data.token}`,
+                            Authorization: `Bearer ${token}`,
                         },
                     };
                     const response = await axios.get(
@@ -229,6 +232,41 @@ const AccountPg = () => {
                 setIsAboutMeFormModalDisplayed(true);
             }, 300);
         }
+
+        const isOnMailingList = localStorage.getItem('isOnMailingList') ? JSON.parse(localStorage.getItem('isOnMailingList')) : false;
+
+        if (isOnMailingList && (status === 'authenticated')) {
+            (async () => {
+                try {
+                    const response = await axios.put(
+                        '/api/add-user-to-email-listing',
+                        {
+                            email,
+                            callbackUrl: window.location.href,
+                        },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    ) ?? {};
+                    const { status, data } = response;
+
+                    console.log('response: ', response);
+
+                    if (status !== 200) {
+                        throw new Error("Failed to add user to email listing.");
+                    }
+
+                    console.log('Added user to mail listing. From server: ', data);
+
+                    localStorage.removeItem('isOnMailingList');
+                } catch (error) {
+                    console.error("Failed to add user to mail listing. Reason: ", error);
+                }
+
+            })();
+        }
     }, [status]);
 
     if (status === 'loading') {
@@ -256,8 +294,6 @@ const AccountPg = () => {
         );
     }
 
-    const { email, name, image, occupation } = data.user;
-
     const handleBtnClick = () => {
         setIsAboutMeFormModalDisplayed(true);
     };
@@ -267,14 +303,18 @@ const AccountPg = () => {
             <div style={{ minHeight: '90vh', paddingTop: '10px' }} className="container pt-5 pt-sm-4">
                 <section className='row border-bottom pb-4'>
                     <section className='col-12 d-flex justify-content-center align-items-center pt-4'>
-                        <img
-                            src={image || '/imgs/gp_logo_gradient_transBG.png'}
-                            alt='user_img'
-                            width={100}
-                            height={100}
-                            style={{ objectFit: 'contain' }}
-                            className='rounded-circle'
-                        />
+                        {image ? (
+                            <img
+                                src={image}
+                                alt='user_img'
+                                width={35}
+                                height={35}
+                                style={{ objectFit: 'contain' }}
+                                className='rounded-circle'
+                            />
+                        )
+                            :
+                            <FaUserAlt fontSize={35} color='#2C83C3' />}
                     </section>
                     <section className='col-12 d-flex justify-content-center align-items-center mt-3 flex-column'>
                         <h5 className='mb-0'>{name.first} {name.last}</h5>
