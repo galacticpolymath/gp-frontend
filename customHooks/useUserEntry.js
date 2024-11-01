@@ -93,6 +93,7 @@ export const useUserEntry = () => {
     const [userErrorType, setUserErrorType] = useState('');
     const [loginForm, setLoginForm] = useState({ email: '', password: '' });
     const [userEntryErrors, setUserEntryErrors] = useState(new Map());
+    const [isUserTeacher, setIsUserTeacher] = useState(false);
     const [isUserEntryInProcess, setIsUserEntryInProcess] = useState(false);
     const [createAccountForm, setCreateAccountForm] = useState({
         firstName: '',
@@ -100,37 +101,48 @@ export const useUserEntry = () => {
         email: '',
         password: '',
         confirmPassword: '',
+        isOnMailingList: false,
     });
 
     /**
-     * @param {"login" | "createAccount"} formToValidate
+     * @param {"credentials" | "google"} provider
      * @returns {Map<string, string>}
      */
-    const validateForm = async (formToValidate = 'createAccount') => {
-        if (formToValidate === "createAccount") {
-            const { password, confirmPassword, email } = createAccountForm;
-            const errors = new Map();
+    const validateForm = async (provider) => {
+        console.log('createAccountForm: ', createAccountForm);
+        const { password, confirmPassword, email, firstName, lastName } = createAccountForm;
+        const errors = new Map();
+        const isCredentialsAccountCreation = provider === "credentials";
 
-            if (password !== confirmPassword) {
-                errors.set("password", "The passwords don't match.");
-                errors.set("confirmPassword", "The passwords don't match.");
-            } else if (!password && !confirmPassword) {
-                errors.set("password", "This field is required.");
-                errors.set("confirmPassword", "This field is required.");
-            }
-
-            const doesEmailExist = await getDoesEmailExist(email);
-
-            console.log("doesEmailExist: ", doesEmailExist);
-
-            if (doesEmailExist) {
-                errors.set('email', 'This email has been taken.');
-            } else if (!validateEmail(email)) {
-                errors.set("email", "Invalid email.");
-            }
-
-            return errors;
+        if (isCredentialsAccountCreation && (password !== confirmPassword)) {
+            errors.set("password", "The passwords don't match.");
+            errors.set("confirmPassword", "The passwords don't match.");
+        } else if (isCredentialsAccountCreation && (!password && !confirmPassword)) {
+            errors.set("password", "This field is required.");
+            errors.set("confirmPassword", "This field is required.");
         }
+
+        if (!isUserTeacher) {
+            errors.set('isUserTeacherErr', true);
+        }
+
+        if (isCredentialsAccountCreation && !firstName) {
+            errors.set("firstName", "This field is required.");
+        }
+
+        if (isCredentialsAccountCreation && !lastName) {
+            errors.set("lastName", "This field is required.");
+        }
+
+        const doesEmailExist = await getDoesEmailExist(email);
+
+        if (isCredentialsAccountCreation && doesEmailExist) {
+            errors.set('email', 'This email has been taken.');
+        } else if (isCredentialsAccountCreation && !validateEmail(email)) {
+            errors.set("email", "Invalid email.");
+        }
+
+        return errors;
     };
 
     /**
@@ -160,12 +172,14 @@ export const useUserEntry = () => {
             }
 
             /** @type {TCreateAccount | TLoginForm} */
-            const formToSend = form.createAccount ?? form.login;
-
-            signIn(providerType, {
-                ...formToSend,
+            const formToSend = {
+                ...(form.createAccount ?? form.login),
                 formType: formType,
-            });
+                clientOrigin: window.location.origin,
+                callbackUrl: form.callbackUrl,
+            };
+
+            signIn(providerType, formToSend);
         } catch (error) {
             console.error('An error has occurred. Failed to send form to the server. Reason: ', error);
             alert('An error has occurred during the login process. Please refresh the page. If this error persists, please contact support.');
@@ -245,5 +259,6 @@ export const useUserEntry = () => {
         _isUserEntryInProcess: [isUserEntryInProcess, setIsUserEntryInProcess],
         _loginForm: [loginForm, setLoginForm],
         _createAccountForm: [createAccountForm, setCreateAccountForm],
+        _isUserTeacher: [isUserTeacher, setIsUserTeacher],
     };
 };
