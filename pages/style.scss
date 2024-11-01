@@ -243,11 +243,16 @@ ol li {
   background-color: white;
 }
 
+.account-settings-input,
 .aboutme-txt-input {
   border-top: none;
   border-right: none;
   border-left: none;
   border-bottom: solid 1px grey;
+}
+
+.account-settings-input {
+  max-width: 450px;
 }
 
 .about-me-input-border {
@@ -378,6 +383,7 @@ ol li {
   }
 }
 
+.account-settings-modal,
 .about-me-modal {
   width: 100vw;
   height: 100vh;
@@ -389,6 +395,15 @@ ol li {
     height: auto;
   }
 }
+
+.account-settings-modal {
+  @media (min-width: 992px) {
+    width: 70vw;
+    max-height: 700px;
+    border-radius: 1.5rem;;
+  }
+}
+
 .account-modal {
   width: 100vw;
   height: 100vh;
@@ -422,6 +437,7 @@ ol li {
   font-weight: bold;
   color: black;
 }
+
 .about-me-modal-body {
   input {
     background-color: white;

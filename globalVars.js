@@ -19,3 +19,8 @@ export const PROJECTED_LESSONS_FIELDS = [
     'ForGrades',
     'GradesOrYears',
 ];
+
+// user account inputs
+export const USER_INPUT_BACKGROUND_COLOR = '#E8F0FE';
+export const INPUT_FOCUS_BLUE_CLASSNAME = 'input-focus-blue';
+export const ERROR_INPUT_BORDER_COLOR = 'solid 1px red';

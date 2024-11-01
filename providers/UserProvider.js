@@ -67,12 +67,18 @@ export const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
     const [aboutUserForm, setAboutUserForm] = useState(aboutUserFormDefault);
+    const [accountForm, setAccountForm] = useState({
+        firstName: "",
+        lastName: "",
+        isOnMailingList: false,
+    });
     const _aboutUserForm = [aboutUserForm, setAboutUserForm];
 
     return (
         <UserContext.Provider
             value={{
                 _aboutUserForm,
+                _accountForm: [accountForm, setAccountForm],
             }}
         >
             {children}

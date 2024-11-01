@@ -91,8 +91,9 @@ const AccountPg = () => {
     const { status, data } = session;
     const router = useRouter();
     const { _aboutUserForm } = useContext(UserContext);
-    const { _isAboutMeFormModalDisplayed, _notifyModal } = useContext(ModalContext);
+    const { _isAboutMeFormModalDisplayed, _notifyModal, _isAccountSettingModalOn } = useContext(ModalContext);
     const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
+    const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;
     const [, setAboutUserForm] = _aboutUserForm;
     const [, setNotifyModal] = _notifyModal;
     const { user, token } = data ?? {};
@@ -294,9 +295,12 @@ const AccountPg = () => {
         );
     }
 
-    const handleBtnClick = () => {
+    const handleViewAboutMeFormBtnClick = () => {
         setIsAboutMeFormModalDisplayed(true);
     };
+    const handleAccontSettingsBtnClick = () => {
+        setIsAccountSettingsModalOn(true);
+    }
 
     return (
         <Layout>
@@ -328,7 +332,7 @@ const AccountPg = () => {
                     </section>
                     <section className='col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2'>
                         <Button
-                            handleOnClick={handleBtnClick}
+                            handleOnClick={handleViewAboutMeFormBtnClick}
                             classNameStr='rounded px-3 border shadow mt-2'
                         >
                             <span
@@ -336,6 +340,17 @@ const AccountPg = () => {
                                 className='text-black'
                             >
                                 View {"'"}About Me{"'"} form
+                            </span>
+                        </Button>
+                        <Button
+                            handleOnClick={handleAccontSettingsBtnClick}
+                            classNameStr='rounded px-3 border shadow mt-2'
+                        >
+                            <span
+                                style={{ fontWeight: 410 }}
+                                className='text-black'
+                            >
+                                Account Settings
                             </span>
                         </Button>
                     </section>
