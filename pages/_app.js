@@ -13,6 +13,7 @@ import '../styles/icons/icons.scss';
 import '../styles/comps/carousel.scss';
 import '../styles/pages/home.scss';
 import '../styles/pages/About/about.scss';
+import '../styles/modals/signUp.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { UserProvider } from '../providers/UserProvider';
 
