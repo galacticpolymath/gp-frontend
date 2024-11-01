@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import GoogleProvider from 'next-auth/providers/google';
@@ -10,10 +11,11 @@ import { signJwt } from '../utils/auth';
 import { createIterations, createSalt, getIsPasswordCorrect, hashPassword } from '../utils/security';
 import User from '../models/user';
 import { createDocument } from '../db/utils';
-import { AuthError, SignInError } from '../utils/errors';
+import { AuthError, CustomError, SignInError } from '../utils/errors';
 import { v4 as uuidv4 } from 'uuid';
 import { createUser, deleteUser, getUser, getUserByEmail, updateUser } from '../services/userServices';
 import NodeCache from 'node-cache';
+import { addUserToEmailList } from '../services/emailServices';
 
 const VALID_FORMS = ['createAccount', 'login'];
 export const cache = new NodeCache({ stdTTL: 100 });
@@ -35,11 +37,9 @@ export default function MyAdapter() {
     },
     async getUserByAccount(param) {
       const { provider, providerAccountId } = param;
+      let isCreatingUser = false;
+
       try {
-        console.log('yo there meng: ', param);
-        // determine if the following:
-        // -if the user is signing 
-        // -if the user is creating an account 
         await connectToMongodb();
 
         const user = await getUser({ providerAccountId: providerAccountId });
@@ -47,12 +47,20 @@ export default function MyAdapter() {
         console.log('the user is signing in with google: ', user);
 
         if (!user) {
-          const { wasSuccessful } = await createUser('PLACEHOLDER', null, provider, ['user'], providerAccountId);
-
-          console.log('"wasSuccessful" in creating the db user with a google account: ', wasSuccessful);
+          isCreatingUser = true;
+          const { wasSuccessful, msg } = await createUser(
+            'PLACEHOLDER',
+            null,
+            provider,
+            ['user'],
+            providerAccountId,
+            null,
+            { willAddUserToMailingList: true }
+          );
 
           if (!wasSuccessful) {
-            throw new Error('Failed to create the document for the target user in the db.');
+            console.error('Failed to create the target user...');
+            throw new CustomError(`Failed to create the document for the target user in the db. Reason: ${msg}`, 500, 'userCreationFailure', 'user-creation-err', true);
           }
 
           return { providerAccountId, provider, wasUserCreated: true };
@@ -60,10 +68,21 @@ export default function MyAdapter() {
 
         return { providerAccountId, provider, email: user.email, id: user._id, image: user.picture, name: user.name };
       } catch (error) {
-        console.error('Failed to create the user doc into the database. Reason: ', error);
-        await deleteUser({ providerAccountId: providerAccountId });
+        const { message, code, type, urlErrorParamKey, urlErrorParamVal } = error ?? {};
 
-        return null;
+        if (isCreatingUser) {
+          console.log('will delete user...');
+
+          await deleteUser({ providerAccountId: providerAccountId });
+        }
+
+        return {
+          errType: type,
+          code,
+          msg: message ?? 'Failed to retrieve the target user from google.',
+          urlErrorParamKey,
+          urlErrorParamVal,
+        };
       }
     },
     async updateUser(user) {
@@ -120,6 +139,8 @@ export const authOptions = {
     }),
     CredentialsProvider({
       async authorize(credentials) {
+        // print credentials
+        console.log('credentials: ', credentials);
         try {
           if (
             !credentials.formType ||
@@ -132,7 +153,14 @@ export const authOptions = {
 
           await connectToMongodb();
 
-          const { email, password, firstName, lastName, formType } = credentials;
+          const {
+            email,
+            password,
+            firstName,
+            lastName,
+            formType,
+            isOnMailingList,
+          } = credentials;
           /** @type { import('../models/user').TUserSchema } */
           const dbUser = await getUserByEmail(email);
           const callbackUrl = credentials.callbackUrl.includes('?') ? credentials.callbackUrl.split('?')[0] : credentials.callbackUrl;
@@ -149,7 +177,7 @@ export const authOptions = {
           }
 
           if (dbUser && (formType === 'createAccount')) {
-            throw new AuthError('userAlreadyExist', 409, callbackUrl ?? '');
+            throw new AuthError('userAlreadyExist', 409, callbackUrl ?? '', 'user-account-creation-err-type', 'duplicate-user-try-google');
           }
 
           console.log('If user is logging in, will check if the password is correct.');
@@ -171,9 +199,12 @@ export const authOptions = {
             return dbUser;
           }
 
+          console.log('Creating the new user...');
+
           const hashedPassword = hashPassword(password, createSalt(), createIterations());
           const userDocumentToCreate = {
             _id: uuidv4(),
+            isOnMailingList,
             email: email,
             password: hashedPassword,
             name: {
@@ -182,25 +213,38 @@ export const authOptions = {
             },
             provider: 'credentials',
             roles: ['user'],
+            willAddUserToMailingList: false,
           };
-          const newUser = createDocument(userDocumentToCreate, User);
+          const newUserDoc = createDocument(userDocumentToCreate, User);
+
+          if (!newUserDoc) {
+            throw new AuthError('userCreationFailure', 500, callbackUrl ?? '');
+          }
+
+          const newUser = await newUserDoc.save();
 
           if (!newUser) {
             throw new AuthError('userCreationFailure', 500, callbackUrl ?? '');
           }
 
-          await newUser.save();
+          // print isOnMailingList
+          console.log('isOnMailingList: ', isOnMailingList);
+
+          if (isOnMailingList) {
+            const userAddedToMailingListResult = addUserToEmailList(email, "https://localhost:3000/");
+            console.log('userAddedToMailingListResult: ', userAddedToMailingListResult);
+          }
 
           return { ...userDocumentToCreate, wasUserCreated: true };
         } catch (error) {
           console.log('error object: ', error);
-          const { errType, code, redirectUrl } = error ?? {};
+          const { errType, code, redirectUrl, urlErrorParamKey, urlErrorParamVal } = error ?? {};
 
           if (!errType || !code) {
-            return { errType: 'userAuthFailure', code: 500 };
+            return { errType: 'userAuthFailure', code: 500, urlErrorParamKey, urlErrorParamVal };
           }
 
-          return { errType, code, redirectUrl };
+          return { errType, code, redirectUrl, urlErrorParamKey, urlErrorParamVal };
         }
       },
     }),
@@ -210,7 +254,6 @@ export const authOptions = {
     strategy: 'jwt',
   },
   jwt: {
-
     secret: process.env.NEXTAUTH_SECRET,
     maxAge: 60 * 60 * 24 * 30,
     encode: async (param) => {
@@ -238,23 +281,29 @@ export const authOptions = {
     },
     decode: async ({ secret, token }) => {
       const decodedToken = await jwtVerify(token, new TextEncoder().encode(secret));
+
       return decodedToken;
     },
   },
   callbacks: {
     async signIn(param) {
       try {
-        console.log('sigin, param: ', param);
-
+        console.log('param, sup there: ', param);
         const { user, account, profile, credentials } = param;
-        const { errType, code, email, providerAccountId, wasUserCreated } = user ?? {};
+        const {
+          errType,
+          code,
+          email,
+          providerAccountId,
+          wasUserCreated,
+          urlErrorParamKey,
+          urlErrorParamVal,
+        } = user ?? {};
         let userEmail = profile?.email ?? email;
 
         if (credentials && !userEmail) {
           userEmail = credentials.email;
         }
-
-        console.log('userEmail, yo there: ', userEmail);
 
         if (errType === 'dbUserDoesNotHaveCredentialsProvider') {
           throw new SignInError(
@@ -264,44 +313,43 @@ export const authOptions = {
           );
         }
 
+        if (errType === 'userCreationFailure') {
+          throw new SignInError(
+            'user-creation-error',
+            'Failed to create the user in the DB.',
+            code ?? 500,
+            urlErrorParamKey ?? '',
+            urlErrorParamVal ?? ''
+          );
+        }
+
         await connectToMongodb();
 
         // unable to query the user from the database
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
-        const errTypeParams = [
-          {
-            condition: wasUserCreated && dbUser.provider === 'google',
-            errTypeParam: 'duplicate-user-try-google',
-          },
-          {
-            condition: wasUserCreated && dbUser.provider === 'credentials',
-            errTypeParam: 'duplicate-user-try-creds',
-          },
-          {
-            condition: dbUser.provider === 'credentials',
-            errTypeParam: 'duplicate-user-sigin-in-try',
-          },
-        ];
 
         if (errType === 'userAlreadyExist') {
-          const errTypeParam = dbUser?.provider === 'google' ? 'duplicate-user-try-google' : 'duplicate-user-try-creds';
+          const urlErrorParamVal = dbUser.provider === 'google' ? 'duplicate-user-try-creds' : 'duplicate-user-try-google';
 
           throw new SignInError(
-            errTypeParam,
+            'duplicate-user',
             'This email has already been taken.',
-            code ?? 422
+            code ?? 422,
+            'user-account-creation-err-type',
+            urlErrorParamVal
           );
         }
 
+        // The user is creating an account, a duplicate google account already exist.
         if (dbUser && wasUserCreated && providerAccountId) {
           await deleteUser({ providerAccountId: providerAccountId });
 
-          const errTypeParam = dbUser.provider === 'google' ? 'duplicate-user-try-google' : 'duplicate-user-try-creds';
-
           throw new SignInError(
-            errTypeParam,
+            'duplicate-user',
             'This email has already been taken.',
-            code ?? 422
+            code ?? 422,
+            'user-account-creation-err-type',
+            'duplicate-user-try-creds'
           );
         }
 
@@ -327,6 +375,7 @@ export const authOptions = {
           return true;
         }
 
+        // sign the credentials based user in.
         if (wasUserCreated && (account.provider === 'credentials')) {
           return true;
         }
@@ -341,9 +390,12 @@ export const authOptions = {
 
         return true;
       } catch (error) {
-        console.error('sign in error: ', error);
+        const { type, urlErrorParamKey, urlErrorParamVal } = error ?? {};
 
-        const { type } = error;
+        if (urlErrorParamKey && urlErrorParamVal) {
+          return `/?${urlErrorParamKey}=${urlErrorParamVal}`;
+        }
+
         if (type && param?.user?.redirectUrl) {
           return `${param.user.redirectUrl}/?signin-err-type=${type}`;
         }
@@ -362,11 +414,6 @@ export const authOptions = {
       return Promise.resolve(token);
     },
     async session(param) {
-      console.log('current user session: ', param);
-      // CASE: the user tries to create an account with google, but already has an account
-      // tell the user that they have an account, 
-      // and don't show the about user modal to the user
-
       const { token, session } = param;
       const { email, roles, name } = token.payload;
       const accessToken = await signJwt(
@@ -383,8 +430,6 @@ export const authOptions = {
       const targetUser = cache.get(email) ?? {};
       let picture = '';
       let occupation = null;
-
-      console.log('users, cache: ', targetUser);
 
       if (targetUser && targetUser.picture && targetUser.occupation) {
         picture = targetUser.picture;
