@@ -56,3 +56,46 @@ export const sendEmail = async (mailOpts) => {
     }
 };
 
+/**
+ * Adds a user to our email list via the brevo api.
+ * @param {string} email The user's email.
+ * @param {string} clientUrl The url of the client side of the app. This is used to construct the unsubscribe link.
+ * @return {Promise<{ wasSuccessful: boolean }>} A promise that resolves to an object with a boolean indicating whether the operation was successful.
+ */
+export const addUserToEmailList = async (email, clientUrl) => {
+    try {
+        // add the user to our maliing list via the brevo api 
+        const reqBody = {
+            email,
+            includeListIds: [8],
+            templateId: 5,
+            redirectionUrl: clientUrl,
+        };
+        const options = {
+            method: 'POST',
+            headers: {
+                accept: 'application/json',
+                'content-type': 'application/json',
+                'api-key': process.env.BREVO_API_KEY,
+            },
+            body: JSON.stringify(reqBody),
+        };
+
+        const response = await fetch('https://api.brevo.com/v3/contacts/doubleOptinConfirmation', options);
+
+        console.log('response: ', response);
+        console.log('status typeof: ', typeof response.status);
+        console.log('status: ', response.status);
+
+
+        if (!((response.status >= 200) && (response.status < 300))) {
+            return { wasSuccessful: false };
+        }
+
+        return { wasSuccessful: true };
+    } catch (error) {
+        console.error(error);
+        return { wasSuccessful: false };
+    }
+};
+
