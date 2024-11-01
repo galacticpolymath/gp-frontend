@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
@@ -5,6 +6,7 @@
 
 import { useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { ERROR_INPUT_BORDER_COLOR } from "../../globalVars";
 
 /**
  * @typedef {(
@@ -44,7 +46,7 @@ import { IoMdEye, IoMdEyeOff } from "react-icons/io";
  * @returns 
  */
 export const CustomInput = ({
-    onChange,
+    onChange = () => { },
     placeholder = '',
     inputId,
     inputName,
@@ -56,16 +58,19 @@ export const CustomInput = ({
     isPasswordInput = false,
     inputStyle = {},
     iconContainerStyle = {},
+    inputContainerStyle = {},
     onKeyUp = () => { },
     onKeyDown = () => { },
     onKeyDownCapture = () => { },
     onKeyUpCapture = () => { },
+    handleShowPasswordTxtBtnClickCustom,
+    noInputBorderColorOnBlur = false,
 }) => {
     /**
     * @type {[TFocusCss, import('react').Dispatch<import('react').SetStateAction<TFocusCss>>]}
     */
-    const [focusCssInput, setFocusCssInput] = useState("border-grey-dark");
-    const [isConfirmPasswordShown, setIsConfirmPasswordShown] = useState(false);
+    const [focusCssInput, setFocusCssInput] = useState(noInputBorderColorOnBlur ? '' : "border-grey-dark");
+    const [isPasswordTxtShown, setIsPasswordTxtShown] = useState(false);
 
     /**
      * 
@@ -75,16 +80,21 @@ export const CustomInput = ({
         setFocusCssInput(focusCssInput);
     };
 
+    const handleShowPasswordTxtBtnClickDefault = () => {
+        setIsPasswordTxtShown(state => !state);
+    };
+
     return (
-        <div className={`${inputContainerCss} ${focusCssInput}`}>
+        <div style={inputContainerStyle} className={`${inputContainerCss} ${focusCssInput}`}>
+            {/* {labelComp} */}
             <input
                 style={inputStyle}
                 id={inputId}
                 name={inputName}
                 autoFocus={autoFocus}
                 onFocus={handleFocusabilityCss('input-focus-blue')}
-                onBlur={handleFocusabilityCss('border-grey-dark')}
-                type={isPasswordInput ? (isConfirmPasswordShown ? 'text' : 'password') : inputType}
+                onBlur={handleFocusabilityCss(noInputBorderColorOnBlur ? '' : 'border-grey-dark')}
+                type={(isPasswordInput && !handleShowPasswordTxtBtnClickCustom) ? (isPasswordTxtShown ? 'text' : 'password') : inputType}
                 onChange={onChange}
                 placeholder={placeholder}
                 className={inputClassName}
@@ -98,13 +108,13 @@ export const CustomInput = ({
                     style={iconContainerStyle}
                     className={iconContainerClassName}
                 >
-                    <div style={{ height: '95%' }} className='d-flex justify-content-center align-items-center'>
-                        {isConfirmPasswordShown ?
+                    <div style={{ height: '95%' }} className='ps-1 d-flex justify-content-center align-items-center'>
+                        {isPasswordTxtShown || (inputType === "text") ?
                             (
                                 <IoMdEye
                                     fontSize="25px"
                                     className='pointer'
-                                    onClick={() => setIsConfirmPasswordShown(state => !state)}
+                                    onClick={handleShowPasswordTxtBtnClickCustom ?? handleShowPasswordTxtBtnClickDefault}
                                 />
                             )
                             :
@@ -112,7 +122,7 @@ export const CustomInput = ({
                                 <IoMdEyeOff
                                     fontSize="25px"
                                     className='pointer'
-                                    onClick={() => setIsConfirmPasswordShown(state => !state)}
+                                    onClick={handleShowPasswordTxtBtnClickCustom ?? handleShowPasswordTxtBtnClickDefault}
                                 />
                             )
                         }
@@ -141,6 +151,8 @@ export const InputSection = ({
     onKeyDown = () => { },
     onKeyDownCapture = () => { },
     onKeyUpCapture = () => { },
+    onFocus = () => { },
+    onBlur = () => { },
 
 }) => {
     return (
@@ -155,7 +167,10 @@ export const InputSection = ({
                 <input
                     id={inputId}
                     placeholder={inputPlaceholder}
-                    style={inputStyle}
+                    style={{
+                        ...inputStyle,
+                        border: errors.has(inputName) ? ERROR_INPUT_BORDER_COLOR : '',
+                    }}
                     onKeyDown={onKeyDown}
                     onKeyUp={onKeyUp}
                     onKeyDownCapture={onKeyDownCapture}
@@ -165,6 +180,8 @@ export const InputSection = ({
                     onChange={event => {
                         handleOnInputChange(event);
                     }}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                 />
             )}
             <section style={{ height: '29px' }}>
