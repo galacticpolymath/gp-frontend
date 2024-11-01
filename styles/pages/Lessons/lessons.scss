@@ -684,6 +684,12 @@ $toolTipColor: #f0f4ff;
   object-fit: contain;
 }
 
+.create-account-toggle-btn-container {
+  @media (min-width: 992px) {
+    min-width: 375px;
+  }
+}
+
 .lessonsPartContainer {
   width: 100%;
 }
