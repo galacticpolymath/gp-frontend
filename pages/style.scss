@@ -262,7 +262,7 @@ ol li {
   border-top: none;
 }
 
-.bg-light-blue{
+.bg-light-blue {
   background-color: rgb(232, 240, 254);
 }
 
@@ -277,15 +277,22 @@ ol li {
   }
 }
 
+.error-border {
+  border: solid 1px red;
+}
+
 .login-ui-modal {
   width: 35vw;
-  min-width: 400px;
-  max-height: 670px;
 
-  @media (max-width: 577px) {
+  @media (min-width: 577px) {
+    min-width: 400px;
+    max-height: 670px;
+  }
+
+  @media (max-width: 576px) {
     width: 100vw;
     border-radius: 0% !important;
-    max-height: none;
+    height: 100vh;
   }
 }
 
@@ -299,25 +306,6 @@ ol li {
 
 .border-grey-dark {
   border: solid 1px grey;
-}
-
-.create-account-ui-modal {
-  width: 60vw;
-  border-radius: 6.75px;
-
-  @media (max-width: 768px) {
-    width: 95vw;
-  }
-
-  @media (min-width: 767px) {
-    min-width: 500px;
-    max-height: 770px;
-  }
-
-  @media (max-width: 576px) {
-    width: 100vw;
-    border-radius: 0%;
-  }
 }
 
 .grades-or-years-non-usa-btn,
