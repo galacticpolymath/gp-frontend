@@ -86,11 +86,31 @@ const Notify = () => {
                     router.replace(url.split("?")[0]);
                 },
             });
-        } else if (params[0] === 'signin-err-type') {
+        } else if (params[0] === 'signin-err-type' || params[0] === 'user-creation-err') {
             setNotifyModal({
                 isDisplayed: true,
                 headerTxt: 'ERROR! Unable sign in or create your account.',
                 bodyTxt: 'Contact support if this error persists.',
+                handleOnHide: () => {
+                    const url = router.asPath;
+                    router.replace(url.split("?")[0]);
+                },
+            });
+        } else if (params[0] === 'user-account-creation-err-type' && params[1] === 'duplicate-user-try-google') {
+            setNotifyModal({
+                isDisplayed: true,
+                headerTxt: 'ERROR! Unable to create your account.',
+                bodyTxt: 'This email already exist. Try signing up with Google instead.',
+                handleOnHide: () => {
+                    const url = router.asPath;
+                    router.replace(url.split("?")[0]);
+                },
+            });
+        } else if (params[0] === 'user-account-creation-err-type' && params[1] === 'duplicate-user-try-creds') {
+            setNotifyModal({
+                isDisplayed: true,
+                headerTxt: 'ERROR! Unable to create your account.',
+                bodyTxt: 'This email already exist. Try signing up using an email and password instead.',
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);
