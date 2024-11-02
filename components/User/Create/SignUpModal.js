@@ -182,6 +182,7 @@ const SignUpModal = () => {
         <Modal
             show={isCreateAccountModalDisplayed}
             onHide={handleOnHide}
+            onBackdropClick={handleOnHide}
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='create-account-ui-modal pt-2 box-shadow-login-ui-modal'
         >

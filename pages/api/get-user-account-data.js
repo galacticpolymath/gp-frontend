@@ -25,7 +25,6 @@ export default async function handler(request, response) {
             isTeacher: 1,
             isOnMailingList: 1,
             name: 1,
-            _id: 0,
         });
 
         if (!userAccount) {

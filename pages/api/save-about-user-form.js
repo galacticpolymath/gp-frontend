@@ -89,8 +89,6 @@ export default async function handler(request, response) {
             }, 100);
         }
 
-        console.log('updatedUserProperties, sup there: ', updatedUserProperties);
-
         const updateUserResult = await updateUser({ email: userEmail }, updatedUserProperties);
 
         if (!updateUserResult.wasSuccessful) {

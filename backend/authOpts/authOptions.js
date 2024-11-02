@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createUser, deleteUser, getUser, getUserByEmail, updateUser } from '../services/userServices';
 import NodeCache from 'node-cache';
 import { addUserToEmailList } from '../services/emailServices';
+import { zip } from 'd3';
 
 const VALID_FORMS = ['createAccount', 'login'];
 export const cache = new NodeCache({ stdTTL: 100 });
@@ -139,8 +140,8 @@ export const authOptions = {
     }),
     CredentialsProvider({
       async authorize(credentials) {
-        // print credentials
         console.log('credentials: ', credentials);
+
         try {
           if (
             !credentials.formType ||
@@ -184,9 +185,6 @@ export const authOptions = {
 
           const { iterations, salt, hash: hashedPasswordFromDb } = dbUser?.password ?? {};
 
-          console.log('iterations: ', iterations);
-          console.log('typeof iterations: ', typeof iterations);
-
           if ((formType === 'login') && !getIsPasswordCorrect({ iterations, salt, password }, hashedPasswordFromDb)) {
             console.log('Invalid creds.');
 
@@ -227,10 +225,8 @@ export const authOptions = {
             throw new AuthError('userCreationFailure', 500, callbackUrl ?? '');
           }
 
-          // print isOnMailingList
-          console.log('isOnMailingList: ', isOnMailingList);
-
           if (isOnMailingList) {
+            // get the origin from the client 
             const userAddedToMailingListResult = addUserToEmailList(email, "https://localhost:3000/");
             console.log('userAddedToMailingListResult: ', userAddedToMailingListResult);
           }
@@ -241,10 +237,21 @@ export const authOptions = {
           const { errType, code, redirectUrl, urlErrorParamKey, urlErrorParamVal } = error ?? {};
 
           if (!errType || !code) {
-            return { errType: 'userAuthFailure', code: 500, urlErrorParamKey, urlErrorParamVal };
+            return {
+              errType: 'userAuthFailure',
+              code: 500,
+              urlErrorParamKey,
+              urlErrorParamVal,
+            };
           }
 
-          return { errType, code, redirectUrl, urlErrorParamKey, urlErrorParamVal };
+          return {
+            errType,
+            code,
+            redirectUrl,
+            urlErrorParamKey,
+            urlErrorParamVal,
+          };
         }
       },
     }),
@@ -258,14 +265,15 @@ export const authOptions = {
     maxAge: 60 * 60 * 24 * 30,
     encode: async (param) => {
       try {
+        console.log('jwt, param: ', param);
         const { token, secret } = param;
-        const { email, name } = token?.payload ?? token;
+        const { email, name, picture } = token?.payload ?? token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
 
         // get the user from the db, to get their first name last name, image
         const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
-        const refreshToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, '1 day');
-        const accessToken = await signJwt({ email: email, roles: allowedRoles, name: name }, secret, '12hr');
+        const refreshToken = await signJwt({ email, roles: allowedRoles, name, picture }, secret, '1 day');
+        const accessToken = await signJwt({ email, roles: allowedRoles, name, picture }, secret, '12hr');
 
         if (!token?.payload && canUserWriteToDb) {
           await connectToMongodb();
@@ -288,13 +296,15 @@ export const authOptions = {
   callbacks: {
     async signIn(param) {
       try {
-        console.log('param, sup there: ', param);
+        console.log('signin param, yo there: ', param);
+
         const { user, account, profile, credentials } = param;
         const {
           errType,
           code,
           email,
           providerAccountId,
+          image,
           wasUserCreated,
           urlErrorParamKey,
           urlErrorParamVal,
@@ -360,7 +370,16 @@ export const authOptions = {
             first: given_name,
             last: family_name,
           };
-          const { wasSuccessful } = await updateUser({ providerAccountId: providerAccountId }, { email: userEmail, picture: picture ?? '', name: name });
+          const { wasSuccessful } = await updateUser(
+            {
+              providerAccountId: providerAccountId,
+            },
+            {
+              email: userEmail,
+              picture: picture ?? '',
+              name: name,
+            }
+          );
 
           if (!wasSuccessful) {
             await deleteUser({ providerAccountId: providerAccountId });
@@ -415,7 +434,10 @@ export const authOptions = {
     },
     async session(param) {
       const { token, session } = param;
-      const { email, roles, name } = token.payload;
+      /**
+       * @type {{ email: string, roles: string[], name: { first: string, last: string }, picture: string }}
+       */
+      const { email, roles, name, picture } = token.payload;
       const accessToken = await signJwt(
         {
           email: email,
@@ -428,22 +450,19 @@ export const authOptions = {
       const refreshToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '1 day');
       /** @type {{ [key:string]: import('../models/user').TUserSchema  }} */
       const targetUser = cache.get(email) ?? {};
-      let picture = '';
       let occupation = null;
 
-      if (targetUser && targetUser.picture && targetUser.occupation) {
-        picture = targetUser.picture;
+      if (targetUser && targetUser.occupation) {
         occupation = targetUser.occupation;
       } else {
-        // HANDLED CASE WHICH THE USER DOES NOT EXIST
-        /** @type {import('../models/user').TUserSchema  } */
         await connectToMongodb();
 
-        const dbUser = await getUser({ email: email }, { picture: 1, occupation: 1 });
-        picture = dbUser.picture ?? '';
-        occupation = dbUser.occupation ?? null;
+        const dbUser = await getUserByEmail(email);
+        occupation = dbUser.occupation ?? '';
 
-        cache.set(email, targetUser, 100);
+        delete dbUser.password;
+
+        cache.set(email, dbUser, 100);
       }
 
       session.id = token.id;

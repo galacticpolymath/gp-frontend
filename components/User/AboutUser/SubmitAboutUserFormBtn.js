@@ -38,12 +38,13 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
     const { user, token } = session.data;
 
     const handleSubmitBtnClick = async event => {
+        event.preventDefault();
+        
         setWasBtnClicked(true);
 
         await sleep(200);
 
         try {
-            event.preventDefault();
 
             if (!user.email) {
                 throw new CustomError("Email is not present.", null, "emailNotPresent");

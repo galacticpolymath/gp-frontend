@@ -50,8 +50,6 @@ export default async function handler(request, response) {
 
         const doesUserExist = !!getUserByEmail(email);
 
-        console.log('doesUserExist: ', doesUserExist);
-
         if (!doesUserExist) {
             throw new CustomError('The user does not exist.', 404);
         }

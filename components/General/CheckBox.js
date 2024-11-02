@@ -5,20 +5,30 @@
 
 import { BiCheckbox, BiCheckboxChecked } from "react-icons/bi";
 
-const CheckBox = ({ isChecked, handleOnClick, children, txtStyle = {}, txtClassName = "", checkBoxContainerClassName = "d-flex", checkBoxContainerStyle = {} }) => {
+const CheckBox = ({
+    isChecked,
+    handleOnClick,
+    children,
+    txtStyle = {},
+    txtClassName = "",
+    checkBoxContainerClassName = "d-flex",
+    checkBoxContainerStyle = {},
+}) => {
     return (
         <div className={checkBoxContainerClassName} style={checkBoxContainerStyle}>
-            <div>
+            <div className="pb-3">
                 {isChecked ? (
                     <BiCheckboxChecked
                         onClick={handleOnClick}
-                        fontSize="21px"
+                        fontSize="28px"
+                        className="pb-1"
                     />
                 )
                     : (
                         <BiCheckbox
                             onClick={handleOnClick}
-                            fontSize="21px"
+                            fontSize="28px"
+                            className='pb-1'
                         />
                     )}
             </div>

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable quotes */
 /* eslint-disable no-debugger */
@@ -5,25 +6,28 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle, Spinner } from 'react-bootstrap';
+import { useContext, useRef, useState } from 'react';
 import { ModalContext } from '../../../providers/ModalProvider';
 import { CustomCloseButton } from '../../../ModalsContainer';
 import { IoMdClose } from 'react-icons/io';
 import CheckBox from '../../General/CheckBox';
-import { UserContext } from '../../../providers/UserProvider';
 import Button from '../../General/Button';
 import { getIsParsable } from '../../../globalFns';
+import { updateUser } from '../../../apiServices/user/crudFns';
+import { useSession } from 'next-auth/react';
 
 const AccountSettings = () => {
-    const { _isAccountSettingModalOn } = useContext(ModalContext);
+    const { _isAccountSettingModalOn, _notifyModal } = useContext(ModalContext);
     const [isAccountSettingsModalDisplayed, setIsAccountSettingModalDisplayed] = _isAccountSettingModalOn;
     const [isDeleteAccountBtnSpinnerOn, setIsDeleteAccountBtnSpinnerOn] = useState(false);
     const [isSavingChangesSpinnerOn, setIsSavingChangesSpinnerOn] = useState(false);
-    // when the user opens the modal, get the first name and the last name of the user, get from the db
     const [accountForm, setAccountForm] = useState({});
+    const session = useSession();
+    const { email } = session?.data?.user ?? {};
     const [inputElementsFocused, setInputElementsFocused] = useState(new Map());
     const [errors, setErrors] = useState(new Map());
+    const [, setNotifyModal] = _notifyModal;
 
     /**
      * @type {[import('../../../providers/UserProvider').TAboutUserForm, import('react').Dispatch<import('react').SetStateAction<import('../../../providers/UserProvider').TAboutUserForm>>]} */
@@ -32,8 +36,11 @@ const AccountSettings = () => {
     const handleOnHide = () => {
         setIsAccountSettingModalDisplayed(false);
     };
-    const handleOnInputChange = () => {
-
+    const handleOnInputChange = event => {
+        setAccountForm(state => ({
+            ...state,
+            [event.target.name]: event.target.value,
+        }));
     };
     const handleOnShow = () => {
         setIsAccountSettingModalDisplayed(true);
@@ -55,23 +62,46 @@ const AccountSettings = () => {
     const handleDeleteAccountBtnClick = () => {
         console.log('delete account');
     };
-    const handleInputOnChange = (event) => {
-        const { name, value } = event.target;
-        setAccountForm(state => ({ ...state, [name]: value }));
+    const handleIsOnMailingListBtnToggle = () => {
+        setAccountForm(state => ({
+            ...state,
+            isOnMailingList: !state.isOnMailingList,
+        }));
     };
-    const handleCheckBoxClick = () => {
 
+    const handleSaveBtnClick = async () => {
+        setIsSavingChangesSpinnerOn(true);
+        
+        const updatedUser = {
+            name: {
+                first: accountForm.firstName,
+                last: accountForm.lastName,
+            },
+            isOnMailingList: accountForm.isOnMailingList,
+        };
+        const responseBody = await updateUser({ email: email }, updatedUser);
+
+        if (!responseBody) {
+            alert('Failed to save changes. Please try again later. If this problem persists, please contact support.');
+            setTimeout(() => {
+                setIsSavingChangesSpinnerOn(false);
+            }, 250);
+            return;
+        }
+
+        setTimeout(() => {
+            handleOnHide();
+            setNotifyModal({
+                isDisplayed: true,
+                bodyTxt: '',
+                headerTxt: 'Updates saved!',
+                handleOnHide: () => {
+                    session.update();
+                },
+            });
+            setIsSavingChangesSpinnerOn(false);
+        }, 250);
     };
-
-    useEffect(() => {
-        // print hte userACcount value 
-        console.log('userAccount: ', accountForm.last);
-    });
-
-    // display the first name
-    // displasy the last name
-    // get the status if the user is on the mailing list
-    // give the option for the user to delete their account
 
     return (
         <Modal
@@ -106,7 +136,7 @@ const AccountSettings = () => {
                     <section className='d-flex flex-column'>
                         <section className='row d-flex flex-column flex-lg-row px-sm-3'>
                             <section className='d-flex flex-column col-12 col-sm-8 col-lg-6'>
-                                <label htmlFor='country-input' className={`${errors.has('occupation') ? 'text-danger' : ''}`}>
+                                <label htmlFor='country-input' className={`${errors.has('firstName') ? 'text-danger' : ''}`}>
                                     First name:
                                 </label>
                                 <input
@@ -115,9 +145,9 @@ const AccountSettings = () => {
                                     placeholder='First name'
                                     value={accountForm.firstName}
                                     defaultValue={accountForm.firstName}
-                                    className={`account-settings-input no-outline pt-1 ${errors.has('occupation') ? 'text-danger border-danger' : ''}`}
+                                    className={`account-settings-input no-outline pt-1 ${errors.has('firstName') ? 'text-danger border-danger' : ''}`}
                                 />
-                                <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-sm-2 ms-sm-0'>{errors.get('occupation') ?? ''}</span>
+                                <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-sm-2 ms-sm-0'>{errors.get('firstName') ?? ''}</span>
                             </section>
                             <section className='d-flex flex-column col-12 col-sm-8 col-lg-6'>
                                 <label
@@ -147,7 +177,7 @@ const AccountSettings = () => {
                         <section className='row d-flex flex-column flex-lg-row px-sm-3'>
                             <CheckBox
                                 isChecked={accountForm.isOnMailingList}
-                                handleOnClick={handleCheckBoxClick}
+                                handleOnClick={handleIsOnMailingListBtnToggle}
                             >
                                 Subscribe to GP mailing list.
                             </CheckBox>
@@ -174,7 +204,7 @@ const AccountSettings = () => {
                                     <section className='d-flex justify-content-sm-center align-items-sm-center pt-sm-0 pt-2'>
                                         <Button
                                             classNameStr='bg-danger no-btn-styles rounded px-2 py-2 px-sm-4 py-sm-2 mt-2 mt-sm-0'
-                                            onClick={handleCheckBoxClick}
+                                            onClick={handleDeleteAccountBtnClick}
                                         >
                                             <span className='text-white'>
                                                 Delete account
@@ -188,8 +218,20 @@ const AccountSettings = () => {
                 </form>
             </ModalBody>
             <ModalFooter className='px-4'>
-                <Button classNameStr='btn bg-primary'>
-                    Save
+                <Button
+                    handleOnClick={handleSaveBtnClick}
+                    classNameStr='btn bg-primary'
+                >
+                    {isSavingChangesSpinnerOn ?
+                        <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                        /> :
+                        'Save'
+                    }
                 </Button>
             </ModalFooter>
         </Modal>

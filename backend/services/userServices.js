@@ -29,7 +29,6 @@ export const getUser = async (queryObj = {}, projectionObj = {}) => {
 
         return null;
     }
-
 };
 
 export const getUserByEmail = async (email = '', projectionsObj = {}) => {
@@ -46,15 +45,45 @@ export const getUserByEmail = async (email = '', projectionsObj = {}) => {
     }
 };
 
-export const updateUser = async (filterQuery = {}, updatedProperties = {}) => {
+export const updateUser = async (
+    filterQuery = {},
+    updatedUserProperties = {},
+    updatedUserPropertiesToInclude = [],
+    updatedUserPropsToFilterOut = [],
+) => {
     try {
-        const result = await User.updateOne(filterQuery, updatedProperties, { upsert: true });
+        /** @type {import('../models/user').TUserSchema} */
+        let updatedUser = await User.findOneAndUpdate(filterQuery, updatedUserProperties, { new: true }).lean();
 
-        if(result.matchedCount !== 1){
+        if (!updatedUser) {
+            console.error('The target user does not exist. Check "filterQuery" object.');
+
             return { wasSuccessful: false };
         }
 
-        return { wasSuccessful: true };
+        if (updatedUserPropertiesToInclude.length || updatedUserPropsToFilterOut.length) {
+            const updateUserWithProjectedProps = Object.entries(updatedUser).reduce(
+                (updatedUserWithProjectedPropsAccum, [key, value]) => {
+                    if (updatedUserPropsToFilterOut?.includes(key)) {
+                        return updatedUserWithProjectedPropsAccum;
+                    }
+
+                    if (updatedUserPropertiesToInclude?.includes(key)) {
+                        return {
+                            ...updatedUserWithProjectedPropsAccum,
+                            [key]: value,
+                        };
+                    }
+
+                    return updatedUserWithProjectedPropsAccum;
+                },
+                {}
+            );
+
+            return { wasSuccessful: true, updatedUser: updateUserWithProjectedProps };
+        }
+
+        return { wasSuccessful: true, updatedUser };
     } catch (error) {
         const { message } = error;
         const errMsg = message ?? `The target user failed to be updated. Reason: ${error}`;

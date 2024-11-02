@@ -1,6 +1,20 @@
 import Mongoose from 'mongoose';
-const { Schema, models, model } = Mongoose;
 
+class StringValidator {
+  constructor(message) {
+    this.validate = (val) => {
+      if ((typeof val !== 'string') || (val.length === 0)) {
+        return false;
+      }
+
+      return true;
+    };
+
+    this.message = message;
+  }
+}
+
+const { Schema, models, model } = Mongoose;
 let User = models.users;
 
 /**
@@ -39,8 +53,8 @@ export const UserSchema = new Schema({
   providerAccountId: String,
   emailVerified: { type: Date, required: false },
   name: {
-    first: { type: String, required: false },
-    last: { type: String, required: false },
+    first: { type: String, required: false, validator: new StringValidator('First name is required and must be a string.') },
+    last: { type: String, required: false, validator: new StringValidator('Last name is required and must be a string.') },
   },
   picture: { type: String, required: false },
   occupation: { type: String, required: false },
