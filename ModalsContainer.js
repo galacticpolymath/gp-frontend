@@ -12,7 +12,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { ModalContext } from "./providers/ModalProvider";
 import SelectedJob from "./components/Modals/SelectedJob";
 import DownloadTipModal from "./components/LessonSection/Modals/DownloadTipModal";
@@ -40,7 +40,7 @@ export const CustomCloseButton = ({ children = <IoMdClose color="white" size={28
 
 
 const ModalContainers = () => {
-    const { _selectedJob, _isDownloadModalInfoOn, _notifyModal } = useContext(ModalContext);
+    const { _selectedJob, _isDownloadModalInfoOn } = useContext(ModalContext);
     const [selectedJob,] = _selectedJob;
     const [isDownloadModalInfoOn] = _isDownloadModalInfoOn;
 

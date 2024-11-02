@@ -26,14 +26,24 @@ const _sponsors = [...sponsors].map((sponsorObj, index) => {
   };
 });
 
-const SponsorsMarquee = ({ velocityNum = 45 }) => {
+const computeDimension = (dimension, decimal) => {
+  return Math.floor(dimension - (dimension * decimal));
+};
+
+const SponsorsMarquee = ({ velocityNum = 45, decimal = 0, parentContainerCss = 'd-flex justify-content-center align-items-center' }) => {
   return (
     <Marquee velocity={velocityNum}>
       {_sponsors.map((sponsorObj, index) => {
-        let _style = (index === 3) ? { width: sponsorObj.width, height: sponsorObj.height } : { width: sponsorObj.width, height: sponsorObj.height };
+        let _style = (index === 3) ?
+          { width: computeDimension(sponsorObj.width, decimal), height: computeDimension(sponsorObj.height, decimal) }
+          :
+          { width: computeDimension(sponsorObj.width, decimal), height: computeDimension(sponsorObj.height, decimal) };
 
         return (
-          <div key={index} className='d-flex justify-content-center align-items-center'>
+          <div
+            key={index}
+            className={parentContainerCss}
+          >
             <div
               style={{ ..._style }}
               className="position-relative me-5"

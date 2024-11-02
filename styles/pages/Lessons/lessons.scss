@@ -756,6 +756,22 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.sponsors-container-lessons {
+  > div {
+    > div {
+      min-width: 0;
+    }
+  }
+}
+
+.sponsor-container-lessons-pg{
+  width: auto;
+  
+  @media (min-width: 576px) {
+    width: 210px;
+  }
+}
+
 .lessonSubject {
   bottom: 8px;
   left: 15px;
