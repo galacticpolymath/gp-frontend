@@ -36,7 +36,7 @@ import { createContext, useState } from "react";
 */
 
 /**
- * @typedef {Object} TAboutUserFormFromServer
+ * @typedef {Object} TUserAccount
  * @property {{ [key: string]: string }} subjects
  * @property {{ [key: string]: string }} reasonsForSiteVisit
  * @property {TGradesOrYears} gradesOrYears
@@ -45,12 +45,13 @@ import { createContext, useState } from "react";
  * @property {boolean} isTeacher
  * @property {number | null} zipCode
  * @property {number} classroomSize
+ * @property {boolean} isOnMailingList
 */
 
 /** 
  * @global 
  * @type {TAboutUserForm}*/
-export const aboutUserFormDefault = {
+export const userAccountDefault = {
     gradesOrYears: {
         selection: 'grades',
         ageGroupsTaught: [],
@@ -66,7 +67,7 @@ export const aboutUserFormDefault = {
 export const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
-    const [aboutUserForm, setAboutUserForm] = useState(aboutUserFormDefault);
+    const [aboutUserForm, setAboutUserForm] = useState(userAccountDefault);
     const [accountForm, setAccountForm] = useState({
         firstName: "",
         lastName: "",

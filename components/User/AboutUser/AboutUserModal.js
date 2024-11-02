@@ -68,7 +68,7 @@ const AboutUserModal = () => {
     const modalBodyRef = useRef();
 
     const handleOnHide = () => {
-        const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
+        const aboutUserFormStringified = localStorage.getItem('userAccount');
 
         if (aboutUserFormStringified) {
             setTimeout(() => {
@@ -161,7 +161,7 @@ const AboutUserModal = () => {
     };
 
     const handleOnShow = () => {
-        const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
+        const aboutUserFormStringified = localStorage.getItem('userAccount');
 
         const urlVal = getUrlVal(router, "show_about_user_form");
 

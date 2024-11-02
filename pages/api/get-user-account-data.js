@@ -14,7 +14,7 @@ export default async function handler(request, response) {
             throw new CustomError("The 'email' of the email is not present in the params of the request. ", 400);
         }
 
-        const dbUserAboutUserForm = await getUserByEmail(request.query.email, {
+        const userAccount = await getUserByEmail(request.query.email, {
             gradesOrYears: 1,
             reasonsForSiteVisit: 1,
             subjects: 1,
@@ -23,15 +23,16 @@ export default async function handler(request, response) {
             zipCode: 1,
             occupation: 1,
             isTeacher: 1,
+            isOnMailingList: 1,
             name: 1,
             _id: 0,
         });
 
-        if (!dbUserAboutUserForm) {
+        if (!userAccount) {
             throw new CustomError("User not found.", 404);
         }
 
-        return response.status(200).json(dbUserAboutUserForm);
+        return response.status(200).json(userAccount);
     } catch (error) {
         const { code, message } = error ?? {};
 

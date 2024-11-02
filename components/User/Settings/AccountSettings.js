@@ -6,22 +6,22 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
-import { useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { ModalContext } from '../../../providers/ModalProvider';
 import { CustomCloseButton } from '../../../ModalsContainer';
 import { IoMdClose } from 'react-icons/io';
 import CheckBox from '../../General/CheckBox';
 import { UserContext } from '../../../providers/UserProvider';
 import Button from '../../General/Button';
+import { getIsParsable } from '../../../globalFns';
 
 const AccountSettings = () => {
     const { _isAccountSettingModalOn } = useContext(ModalContext);
-    const { _accountForm } = useContext(UserContext);
     const [isAccountSettingsModalDisplayed, setIsAccountSettingModalDisplayed] = _isAccountSettingModalOn;
     const [isDeleteAccountBtnSpinnerOn, setIsDeleteAccountBtnSpinnerOn] = useState(false);
     const [isSavingChangesSpinnerOn, setIsSavingChangesSpinnerOn] = useState(false);
     // when the user opens the modal, get the first name and the last name of the user, get from the db
-    const [accountForm, setAccountForm] = _accountForm;
+    const [accountForm, setAccountForm] = useState({});
     const [inputElementsFocused, setInputElementsFocused] = useState(new Map());
     const [errors, setErrors] = useState(new Map());
 
@@ -37,6 +37,20 @@ const AccountSettings = () => {
     };
     const handleOnShow = () => {
         setIsAccountSettingModalDisplayed(true);
+
+        const userAccountParsable = localStorage.getItem('userAccount');
+
+        if (getIsParsable(userAccountParsable) && (typeof JSON.parse(userAccountParsable) === 'object')) {
+            const userAccount = JSON.parse(userAccountParsable);
+
+            debugger;
+
+            setAccountForm({
+                firstName: userAccount.name.first ?? "",
+                lastName: userAccount.name.last ?? "",
+                isOnMailingList: userAccount.isOnMailingList ?? false,
+            });
+        }
     };
     const handleDeleteAccountBtnClick = () => {
         console.log('delete account');
@@ -48,6 +62,11 @@ const AccountSettings = () => {
     const handleCheckBoxClick = () => {
 
     };
+
+    useEffect(() => {
+        // print hte userACcount value 
+        console.log('userAccount: ', accountForm.last);
+    });
 
     // display the first name
     // displasy the last name
@@ -95,6 +114,7 @@ const AccountSettings = () => {
                                     onChange={handleOnInputChange}
                                     placeholder='First name'
                                     value={accountForm.firstName}
+                                    defaultValue={accountForm.firstName}
                                     className={`account-settings-input no-outline pt-1 ${errors.has('occupation') ? 'text-danger border-danger' : ''}`}
                                 />
                                 <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-sm-2 ms-sm-0'>{errors.get('occupation') ?? ''}</span>
@@ -102,7 +122,7 @@ const AccountSettings = () => {
                             <section className='d-flex flex-column col-12 col-sm-8 col-lg-6'>
                                 <label
                                     htmlFor='last-name'
-                                    className={`${errors.has('zipCode') ? 'text-danger' : ''}`}
+                                    className={`${errors.has('lastName') ? 'text-danger' : ''}`}
                                 >
                                     Last name:
                                 </label>
@@ -112,6 +132,7 @@ const AccountSettings = () => {
                                     name='lastName'
                                     id='last-name'
                                     value={accountForm.lastName}
+                                    defaultValue={accountForm.lastName}
                                     onChange={handleOnInputChange}
                                     style={{
                                         outline: 'none',

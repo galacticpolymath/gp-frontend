@@ -13,14 +13,14 @@ import Button from '../components/General/Button';
 import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ModalContext } from '../providers/ModalProvider';
-import { UserContext, aboutUserFormDefault } from '../providers/UserProvider';
+import { UserContext, userAccountDefault } from '../providers/UserProvider';
 import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
 import { getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
 import { FaUserAlt } from 'react-icons/fa';
 
-export const getAboutUserFormForClient = aboutUserFormFromServer => {
-    const aboutUserFormForClient = { ...aboutUserFormDefault };
+export const getAboutUserFormForClient = userAccount => {
+    const userAccountForClient = { ...userAccountDefault };
     const {
         reasonsForSiteVisit,
         subjects,
@@ -30,45 +30,45 @@ export const getAboutUserFormForClient = aboutUserFormFromServer => {
         country,
         occupation,
         isTeacher,
-    } = aboutUserFormFromServer;
+    } = userAccount;
 
     if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
-        const reasonsForSiteVisitMap = new Map(Object.entries(aboutUserFormFromServer.reasonsForSiteVisit));
-        aboutUserFormForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;
+        const reasonsForSiteVisitMap = new Map(Object.entries(userAccount.reasonsForSiteVisit));
+        userAccountForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;
     }
 
     if (subjects && Object.entries(subjects).length > 0) {
         const subjectsTeaching = new Map(Object.entries(subjects));
-        aboutUserFormForClient.subjects = subjectsTeaching;
+        userAccountForClient.subjects = subjectsTeaching;
     } else if (subjects && Object.entries(subjects).length == 0) {
-        aboutUserFormForClient.subjects = aboutUserFormDefault.subjects;
+        userAccountForClient.subjects = userAccountDefault.subjects;
     }
 
     if (gradesOrYears && (Object.entries(gradesOrYears).length > 0)) {
-        aboutUserFormForClient.gradesOrYears = gradesOrYears;
+        userAccountForClient.gradesOrYears = gradesOrYears;
     } else if (gradesOrYears && (Object.entries(gradesOrYears).length === 0)) {
-        aboutUserFormForClient.gradesOrYears = aboutUserFormDefault.gradesOrYears
+        userAccountForClient.gradesOrYears = userAccountDefault.gradesOrYears
     }
 
     if (classroomSize) {
-        aboutUserFormForClient.classroomSize = classroomSize;
+        userAccountForClient.classroomSize = classroomSize;
     }
 
     if (zipCode) {
-        aboutUserFormForClient.zipCode = zipCode;
+        userAccountForClient.zipCode = zipCode;
     }
 
     if (country) {
-        aboutUserFormForClient.country = country;
+        userAccountForClient.country = country;
     }
 
     if (occupation) {
-        aboutUserFormForClient.occupation = occupation;
+        userAccountForClient.occupation = occupation;
     }
 
-    aboutUserFormForClient.isTeacher = isTeacher ?? false;
+    userAccountForClient.isTeacher = isTeacher ?? false;
 
-    return aboutUserFormForClient;
+    return userAccountForClient;
 }
 
 /**
@@ -110,18 +110,20 @@ const AccountPg = () => {
                         },
                     };
                     const response = await axios.get(
-                        `${window.location.origin}/api/get-about-user-form`,
+                        `${window.location.origin}/api/get-user-account-data`,
                         paramsAndHeaders,
                     );
+
+                    console.log("response, yo there: ", response);
 
                     if (response.status !== 200) {
                         throw new Error("Failed to get 'AboutUser' form for the target user.");
                     }
 
-                    /** @type {import('../providers/UserProvider').TAboutUserFormFromServer} */
-                    const aboutUserFormFromServer = response.data;
+                    /** @type {import('../providers/UserProvider').TUserAccount} */
+                    const userAccount = response.data;
                     /** @type {import('../providers/UserProvider').TAboutUserForm} */
-                    const aboutUserFormForClient = { ...aboutUserFormDefault };
+                    const userAccountForClient = { ...userAccountDefault };
                     const {
                         reasonsForSiteVisit,
                         subjects,
@@ -131,47 +133,47 @@ const AccountPg = () => {
                         country,
                         occupation,
                         isTeacher,
-                    } = aboutUserFormFromServer;
+                    } = userAccount;
 
                     if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
-                        const reasonsForSiteVisitMap = new Map(Object.entries(aboutUserFormFromServer.reasonsForSiteVisit));
-                        aboutUserFormForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;
+                        const reasonsForSiteVisitMap = new Map(Object.entries(userAccount.reasonsForSiteVisit));
+                        userAccountForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;
                     }
 
                     if (subjects && Object.entries(subjects).length > 0) {
                         const subjectsTeaching = new Map(Object.entries(subjects));
-                        aboutUserFormForClient.subjects = subjectsTeaching;
+                        userAccountForClient.subjects = subjectsTeaching;
                     } else if (subjects && Object.entries(subjects).length == 0) {
-                        aboutUserFormForClient.subjects = aboutUserFormDefault.subjects;
+                        userAccountForClient.subjects = userAccountDefault.subjects;
                     }
 
                     if (gradesOrYears && (Object.entries(gradesOrYears).length > 0)) {
-                        aboutUserFormForClient.gradesOrYears = gradesOrYears;
+                        userAccountForClient.gradesOrYears = gradesOrYears;
                     } else if (gradesOrYears && (Object.entries(gradesOrYears).length === 0)) {
-                        aboutUserFormForClient.gradesOrYears = aboutUserFormDefault.gradesOrYears
+                        userAccountForClient.gradesOrYears = userAccountDefault.gradesOrYears
                     }
 
                     if (classroomSize) {
-                        aboutUserFormForClient.classroomSize = classroomSize;
+                        userAccountForClient.classroomSize = classroomSize;
                     }
 
                     if (zipCode) {
-                        aboutUserFormForClient.zipCode = zipCode;
+                        userAccountForClient.zipCode = zipCode;
                     }
 
                     if (country) {
-                        aboutUserFormForClient.country = country;
+                        userAccountForClient.country = country;
                     }
 
                     if (occupation) {
-                        aboutUserFormForClient.occupation = occupation;
+                        userAccountForClient.occupation = occupation;
                     }
 
-                    aboutUserFormForClient.isTeacher = isTeacher ?? false;
+                    userAccountForClient.isTeacher = isTeacher ?? false;
 
-                    localStorage.setItem('aboutUserForm', JSON.stringify(aboutUserFormFromServer));
+                    localStorage.setItem('userAccount', JSON.stringify(userAccount));
 
-                    setAboutUserForm(aboutUserFormForClient);
+                    setAboutUserForm(userAccountForClient);
                 } catch (error) {
                     console.error('Failed to get "AboutUser" form. Reason: ', error);
                 }
