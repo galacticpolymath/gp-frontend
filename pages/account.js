@@ -100,10 +100,6 @@ const AccountPg = () => {
     const { email, name, image, occupation } = user ?? {};
 
     useEffect(() => {
-        console.log('user, yo there: ', user);
-    });
-
-    useEffect(() => {
         if (status === 'authenticated') {
             (async () => {
                 try {
@@ -192,7 +188,6 @@ const AccountPg = () => {
             const bodyTxt = providerUsed?.toLowerCase() === 'google' ? "Try signing using your email and password." : "Try signing in with Google.";
 
             setTimeout(() => {
-
                 setNotifyModal({
                     isDisplayed: true,
                     bodyTxt: bodyTxt,

@@ -1,6 +1,8 @@
+/* eslint-disable no-console */
 /* eslint-disable indent */
 /* eslint-disable quotes */
 import { cache } from "../../backend/authOpts/authOptions";
+import { addUserToEmailList, deleteUserFromMailingList } from "../../backend/services/emailServices";
 import { updateUser } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
@@ -29,11 +31,20 @@ export default async function handler(request, response) {
             throw new CustomError("Must have 'email' or the 'id' field in the body of the request. Values must be strings.", 404);
         }
 
-        // take the user off the mailing list if the user wants to be taken of the mailing list 
+        const { email, id, updatedUser, isOnMailingListConfirmationUrl } = request.body;
+        
+        if ((updatedUser.isOnMailList === true) && isOnMailingListConfirmationUrl) {
+            const { wasSuccessful } = await addUserToEmailList(email, isOnMailingListConfirmationUrl);
+
+            console.log('was user successfully add to the mailing list: ', wasSuccessful);
+        } else if (updatedUser?.isOnMailingList === false){
+            const { wasSuccessful } = await deleteUserFromMailingList(email);
+
+            console.log('Was user successfully deleted? ', wasSuccessful);
+        }
 
         await connectToMongodb();
         
-        const { email, id, updatedUser } = request.body;
         const query = email ? { email } : { _id: id };
         const { updatedUser: updatedUserFromDb, wasSuccessful } = await updateUser(query, updatedUser, ['password']);
 

@@ -65,6 +65,7 @@ export const CustomInput = ({
     onKeyUpCapture = () => { },
     handleShowPasswordTxtBtnClickCustom,
     noInputBorderColorOnBlur = false,
+    willUseDefaultTxtShowToggle,
 }) => {
     /**
     * @type {[TFocusCss, import('react').Dispatch<import('react').SetStateAction<TFocusCss>>]}
@@ -86,7 +87,6 @@ export const CustomInput = ({
 
     return (
         <div style={inputContainerStyle} className={`${inputContainerCss} ${focusCssInput}`}>
-            {/* {labelComp} */}
             <input
                 style={inputStyle}
                 id={inputId}
@@ -109,7 +109,7 @@ export const CustomInput = ({
                     className={iconContainerClassName}
                 >
                     <div style={{ height: '95%' }} className='ps-1 d-flex justify-content-center align-items-center'>
-                        {isPasswordTxtShown || (inputType === "text") ?
+                        {(willUseDefaultTxtShowToggle ? isPasswordTxtShown : (inputType === "text")) ?
                             (
                                 <IoMdEye
                                     fontSize="25px"

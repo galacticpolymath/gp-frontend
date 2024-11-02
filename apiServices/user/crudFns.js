@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 import axios from 'axios';
 
-export const updateUser = async (query = {}, updatedUser = {}) => {
+export const updateUser = async (query = {}, updatedUser = {}, additionalReqBodyProps = {}) => {
     try {
         if ((Object.keys(query).length <= 0) || (Object.keys(updatedUser).length <= 0)) {
             throw new Error('The "query" and "updatedUser" parameters cannot be empty objects.');
@@ -16,7 +16,15 @@ export const updateUser = async (query = {}, updatedUser = {}) => {
             throw new Error('The "id" and "email" parameters must be strings. Both cannot be present.');
         }
 
-        const responseBody = { ...query, updatedUser };
+        let responseBody = { ...query, updatedUser };
+
+        if (Object.keys(additionalReqBodyProps).length) {
+            responseBody = {
+                ...responseBody,
+                ...additionalReqBodyProps,
+            };
+        }
+
         const response = await axios.put('/api/update-user', responseBody);
 
         if(response.status !== 200) {

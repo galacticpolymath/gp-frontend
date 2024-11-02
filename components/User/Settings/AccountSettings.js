@@ -69,7 +69,7 @@ const AccountSettings = () => {
 
     const handleSaveBtnClick = async () => {
         setIsSavingChangesSpinnerOn(true);
-        
+
         const updatedUser = {
             name: {
                 first: accountForm.firstName,
@@ -77,7 +77,8 @@ const AccountSettings = () => {
             },
             isOnMailingList: accountForm.isOnMailingList,
         };
-        const responseBody = await updateUser({ email: email }, updatedUser);
+        const additionalReqBodyProps = accountForm.isOnMailingList ? { isOnMailingListConfirmationUrl: `${window.location.origin}/on-mailing-list-confirmation` } : {};
+        const responseBody = await updateUser({ email: email }, updatedUser, additionalReqBodyProps);
 
         if (!responseBody) {
             alert('Failed to save changes. Please try again later. If this problem persists, please contact support.');

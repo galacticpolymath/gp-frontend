@@ -2,7 +2,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable indent */
-import axios from 'axios';
 import nodemailer from 'nodemailer';
 
 /**
@@ -84,11 +83,6 @@ export const addUserToEmailList = async (email, clientUrl) => {
 
         const response = await fetch('https://api.brevo.com/v3/contacts/doubleOptinConfirmation', options);
 
-        console.log('response: ', response);
-        console.log('status typeof: ', typeof response.status);
-        console.log('status: ', response.status);
-
-
         if (!((response.status >= 200) && (response.status < 300))) {
             return { wasSuccessful: false };
         }
@@ -105,14 +99,41 @@ export const addUserToEmailList = async (email, clientUrl) => {
  * @return {Promise<{ wasSuccessful: boolean }>} A promise that resolves to an object with a boolean indicating whether the operation was successful.
  */
 export const deleteUserFromMailingList = async (email) => {
-    const { status, data } = await axios.delete(`https://api.brevo.com/v3/contacts/${email}`);
+    try {
 
-    if (status !== 204) {
-        console.log('Failed to delete the target user from the mailing list. Reason: ', data);
+        console.log('delete the user  from the brevo mailing list.');
+        
+        const options = {
+            method: 'DELETE',
+            headers: {
+                accept: 'application/json',
+                'api-key': process.env.BREVO_API_KEY,
+            },
+        };
+        const response = await fetch(`https://api.brevo.com/v3/contacts/${email}`, options);
+        const fromBrevoServer = await response.json();
+
+        console.log('fromBrevoServer: ', fromBrevoServer);
+        
+        if (response.status === 404) {
+            console.log('Contact was not found on the mailing list.');
+
+            return { wasSuccessful: true };
+        }
+        
+        if (response.status !== 204) {
+            console.log('Failed to delete the target user from the mailing list. Reason: ', fromBrevoServer);
+            
+            return { wasSuccessful: false };
+        }
+        
+        console.log('Deleted contact from mailing list.');
+        
+        return { wasSuccessful: true };
+    } catch (error) {
+        console.error('An error has occurred. Failed to delete the target user from the mailing list.', error);
 
         return { wasSuccessful: false };
     }
-
-    return { wasSuccessful: true };
 };
 

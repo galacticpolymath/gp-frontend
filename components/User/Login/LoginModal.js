@@ -200,6 +200,7 @@ const LoginModal = () => {
                                     borderTopLeftRadius: '6.75px',
                                     borderBottomLeftRadius: '6.75px',
                                 }}
+                                willUseDefaultTxtShowToggle
                                 iconContainerStyle={{ width: "10%", borderTopRightRadius: '6.75px', borderBottomRightRadius: '6.75px' }}
                                 iconContainerClassName='h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue'
                                 inputName="password"
