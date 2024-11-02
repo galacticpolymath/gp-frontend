@@ -68,7 +68,7 @@ const AboutUserModal = () => {
     const modalBodyRef = useRef();
 
     const handleOnHide = () => {
-        const aboutUserFormStringified = localStorage.getItem('userAccount');
+        const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
 
         if (aboutUserFormStringified) {
             setTimeout(() => {
@@ -83,10 +83,6 @@ const AboutUserModal = () => {
     const handleAreYouATeacherBtnClick = () => {
         setAboutUserForm(state => ({ ...state, isTeacher: !state.isTeacher }));
     };
-
-    useEffect(() => {
-        console.log('aboutUserForm: ', aboutUserForm);
-    });
 
     const handleWhatBringsYouToSiteInputChange = event => {
         const reasonsForSiteVisit = structuredClone(aboutUserForm.reasonsForSiteVisit) ?? new Map();
@@ -161,7 +157,7 @@ const AboutUserModal = () => {
     };
 
     const handleOnShow = () => {
-        const aboutUserFormStringified = localStorage.getItem('userAccount');
+        const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
 
         const urlVal = getUrlVal(router, "show_about_user_form");
 
@@ -277,7 +273,7 @@ const AboutUserModal = () => {
                         </section>
                     </section>
                     <Accordion activeKey={aboutUserForm.isTeacher ? "0" : ""}>
-                        <div style={{ border: aboutUserForm.isTeacher ? "3.5px solid #EEB7DA" : '3.5px solid transparent', transition: 'border .3s' }} className='px-3 py-2 rounded'>
+                        <div style={{ border: "3.5px solid #EEB7DA", transition: 'border .3s' }} className='px-3 py-2 rounded'>
                             <div className='d-flex justify-content-between'>
                                 <section className='d-flex flex-column justify-content-center align-items-center w-100'>
                                     <section className='d-flex col-12  flex-column'>

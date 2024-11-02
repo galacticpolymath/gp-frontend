@@ -110,7 +110,7 @@ const AccountSettings = () => {
                                     First name:
                                 </label>
                                 <input
-                                    name='occupation'
+                                    name='firstName'
                                     onChange={handleOnInputChange}
                                     placeholder='First name'
                                     value={accountForm.firstName}
@@ -128,7 +128,6 @@ const AccountSettings = () => {
                                 </label>
                                 <input
                                     placeholder='Last name'
-                                    type='number'
                                     name='lastName'
                                     id='last-name'
                                     value={accountForm.lastName}
