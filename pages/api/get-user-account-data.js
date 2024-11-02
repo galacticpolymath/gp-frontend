@@ -23,6 +23,7 @@ export default async function handler(request, response) {
             zipCode: 1,
             occupation: 1,
             isTeacher: 1,
+            name: 1,
             _id: 0,
         });
 
