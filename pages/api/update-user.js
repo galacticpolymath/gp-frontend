@@ -32,14 +32,16 @@ export default async function handler(request, response) {
         // take the user off the mailing list if the user wants to be taken of the mailing list 
 
         await connectToMongodb();
-
+        
         const { email, id, updatedUser } = request.body;
         const query = email ? { email } : { _id: id };
-        const { updatedUser: updatedUserFromDb, wasSuccessful } = await updateUser(query, updatedUser, [], ['password']);
+        const { updatedUser: updatedUserFromDb, wasSuccessful } = await updateUser(query, updatedUser, ['password']);
 
         if (!wasSuccessful || !updatedUserFromDb) {
             throw new CustomError('Failed to update user.', 500);
         }
+
+        console.log('updated user, sup there: ', updatedUserFromDb);
 
         cache.set(email, updatedUserFromDb);
 

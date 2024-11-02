@@ -57,6 +57,7 @@ export const getUserLoginErrType = async (email, password) => {
 * @property {string} lastName
 * @property {string} email
 * @property {string} password
+* @property {boolean} isOnMailingList
 */
 
 /**
@@ -172,12 +173,19 @@ export const useUserEntry = () => {
             }
 
             /** @type {TCreateAccount | TLoginForm} */
-            const formToSend = {
+            let formToSend = {
                 ...(form.createAccount ?? form.login),
                 formType: formType,
                 clientOrigin: window.location.origin,
                 callbackUrl: form.callbackUrl,
             };
+
+            if (form?.createAccount?.isOnMailingList) {
+                formToSend = {
+                    ...formToSend,
+                    isOnMailingListConfirmationUrl: `${window.location.origin}/on-mailing-list-confirmation`,
+                };
+            }
 
             signIn(providerType, formToSend);
         } catch (error) {

@@ -3,6 +3,7 @@
 /* eslint-disable indent */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
+import { FaUserAlt } from "react-icons/fa";
 import { useContext, useState } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
@@ -76,14 +77,19 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
                     </>
                 )}
                 {(status === "authenticated") && (
-                    <img
-                        src={image || '/imgs/gp_logo_gradient_transBG.png'}
-                        alt='user_img'
-                        width={35}
-                        height={35}
-                        style={{ objectFit: 'contain' }}
-                        className='rounded-circle'
-                    />
+                    image ? (
+                        <img
+                            src={image}
+                            alt='user_img'
+                            width={35}
+                            height={35}
+                            style={{ objectFit: 'contain' }}
+                            className='rounded-circle'
+                        />
+                    )
+                        :
+                        <FaUserAlt color='#2C83C3' />
+
                 )}
             </Button>
             <div

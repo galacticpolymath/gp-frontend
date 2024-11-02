@@ -13,7 +13,7 @@ import { CustomCloseButton } from '../../../ModalsContainer';
 import { IoMdClose } from 'react-icons/io';
 import CheckBox from '../../General/CheckBox';
 import Button from '../../General/Button';
-import { getIsParsable } from '../../../globalFns';
+import { getIsParsable, getIsParsableToVal } from '../../../globalFns';
 import { updateUser } from '../../../apiServices/user/crudFns';
 import { useSession } from 'next-auth/react';
 
@@ -50,8 +50,6 @@ const AccountSettings = () => {
         if (getIsParsable(userAccountParsable) && (typeof JSON.parse(userAccountParsable) === 'object')) {
             const userAccount = JSON.parse(userAccountParsable);
 
-            debugger;
-
             setAccountForm({
                 firstName: userAccount.name.first ?? "",
                 lastName: userAccount.name.last ?? "",
@@ -87,6 +85,24 @@ const AccountSettings = () => {
                 setIsSavingChangesSpinnerOn(false);
             }, 250);
             return;
+        }
+
+        const userAccountParsable = localStorage.getItem('userAccount');
+
+        if (userAccountParsable && getIsParsableToVal(userAccountParsable, 'object')) {
+            let userAccount = JSON.parse(userAccountParsable);
+            userAccount = {
+                ...userAccount,
+                name: {
+                    first: accountForm.firstName,
+                    last: accountForm.lastName,
+                },
+                isOnMailingList: accountForm.isOnMailingList,
+            };
+
+            localStorage.setItem('userAccount', JSON.stringify(userAccount));
+        } else {
+            console.error('Unable to update the local storage with the new user values.');
         }
 
         setTimeout(() => {

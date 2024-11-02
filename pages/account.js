@@ -100,6 +100,10 @@ const AccountPg = () => {
     const { email, name, image, occupation } = user ?? {};
 
     useEffect(() => {
+        console.log('user, yo there: ', user);
+    });
+
+    useEffect(() => {
         if (status === 'authenticated') {
             (async () => {
                 try {

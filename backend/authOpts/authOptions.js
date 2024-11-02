@@ -140,8 +140,6 @@ export const authOptions = {
     }),
     CredentialsProvider({
       async authorize(credentials) {
-        console.log('credentials: ', credentials);
-
         try {
           if (
             !credentials.formType ||
@@ -161,6 +159,7 @@ export const authOptions = {
             lastName,
             formType,
             isOnMailingList,
+            isOnMailingListConfirmationUrl,
           } = credentials;
           /** @type { import('../models/user').TUserSchema } */
           const dbUser = await getUserByEmail(email);
@@ -168,6 +167,7 @@ export const authOptions = {
 
           if (!dbUser && (formType === 'login')) {
             console.log('The user was not found.');
+
             throw new AuthError('userNotFound', 404, callbackUrl ?? '');
           }
 
@@ -226,8 +226,7 @@ export const authOptions = {
           }
 
           if (isOnMailingList) {
-            // get the origin from the client 
-            const userAddedToMailingListResult = addUserToEmailList(email, "https://localhost:3000/");
+            const userAddedToMailingListResult = addUserToEmailList(email, isOnMailingListConfirmationUrl || "");
             console.log('userAddedToMailingListResult: ', userAddedToMailingListResult);
           }
 
@@ -433,11 +432,14 @@ export const authOptions = {
       return Promise.resolve(token);
     },
     async session(param) {
+      console.log('hello there, session: ');
+      console.dir(param, { depth: null });
+
       const { token, session } = param;
       /**
        * @type {{ email: string, roles: string[], name: { first: string, last: string }, picture: string }}
        */
-      const { email, roles, name, picture } = token.payload;
+      let { email, roles, name, picture } = token.payload;
       const accessToken = await signJwt(
         {
           email: email,
@@ -448,17 +450,24 @@ export const authOptions = {
         '12hours'
       );
       const refreshToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '1 day');
-      /** @type {{ [key:string]: import('../models/user').TUserSchema  }} */
+      /** @type { import('../models/user').TUserSchema } */
       const targetUser = cache.get(email) ?? {};
       let occupation = null;
 
-      if (targetUser && targetUser.occupation) {
+      if (targetUser && targetUser.occupation && targetUser.name) {
         occupation = targetUser.occupation;
+        name = targetUser.name;
       } else {
         await connectToMongodb();
 
         const dbUser = await getUserByEmail(email);
-        occupation = dbUser.occupation ?? '';
+        
+        if (!dbUser) {
+          return Promise.resolve(session);
+        }
+
+        occupation = dbUser.occupation ?? null;
+        name = dbUser.name ?? name;
 
         delete dbUser.password;
 

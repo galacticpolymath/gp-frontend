@@ -245,6 +245,22 @@ export const getIsParsable = val => {
     }
 }
 
+export const getIsParsableToVal = (val, valType) => {
+    try {
+        const parsedVal = JSON.parse(val);
+
+        if (typeof parsedVal !== valType) { 
+            throw Error('Incorrect parsed value type.')
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Not parsable. Reason: ', error);
+
+        return false;
+    }
+}
+
 export const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
 export const sleep = milliseconds => new Promise(resolve => {

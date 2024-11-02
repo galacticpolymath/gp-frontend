@@ -114,20 +114,21 @@ const SignUpModal = () => {
             password,
             isOnMailingList,
         } = createAccountForm;
+        const signUpForm = {
+            createAccount: {
+                email,
+                firstName,
+                lastName,
+                password,
+                isOnMailingList,
+            },
+            callbackUrl: `${window.location.origin}/account?show_about_user_form=true`, 
+        };
 
         sendFormToServer(
             'createAccount',
             'credentials',
-            {
-                createAccount: {
-                    email,
-                    firstName,
-                    lastName,
-                    password,
-                    isOnMailingList,
-                },
-                callbackUrl: `${window.location.origin}/account?show_about_user_form=true`,
-            }
+            signUpForm,
         );
     };
 

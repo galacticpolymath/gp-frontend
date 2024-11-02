@@ -48,12 +48,13 @@ export const getUserByEmail = async (email = '', projectionsObj = {}) => {
 export const updateUser = async (
     filterQuery = {},
     updatedUserProperties = {},
-    updatedUserPropertiesToInclude = [],
     updatedUserPropsToFilterOut = [],
 ) => {
     try {
         /** @type {import('../models/user').TUserSchema} */
         let updatedUser = await User.findOneAndUpdate(filterQuery, updatedUserProperties, { new: true }).lean();
+
+        console.log('yo there meng, updatedUser: ', updatedUser);
 
         if (!updatedUser) {
             console.error('The target user does not exist. Check "filterQuery" object.');
@@ -61,21 +62,21 @@ export const updateUser = async (
             return { wasSuccessful: false };
         }
 
-        if (updatedUserPropertiesToInclude.length || updatedUserPropsToFilterOut.length) {
-            const updateUserWithProjectedProps = Object.entries(updatedUser).reduce(
+        if (updatedUserPropsToFilterOut.length) {
+            const entries = Object.entries(updatedUser);
+
+            console.log('entries, yo there: ', entries);
+
+            const updateUserWithProjectedProps = entries.reduce(
                 (updatedUserWithProjectedPropsAccum, [key, value]) => {
                     if (updatedUserPropsToFilterOut?.includes(key)) {
                         return updatedUserWithProjectedPropsAccum;
                     }
 
-                    if (updatedUserPropertiesToInclude?.includes(key)) {
-                        return {
-                            ...updatedUserWithProjectedPropsAccum,
-                            [key]: value,
-                        };
-                    }
-
-                    return updatedUserWithProjectedPropsAccum;
+                    return {
+                        ...updatedUserWithProjectedPropsAccum,
+                        [key]: value,
+                    };
                 },
                 {}
             );
