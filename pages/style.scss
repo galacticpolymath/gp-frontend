@@ -397,10 +397,11 @@ ol li {
 }
 
 .account-settings-modal {
+  height: 100vh;
   @media (min-width: 992px) {
     width: 70vw;
     max-height: 700px;
-    border-radius: 1.5rem;;
+    border-radius: 1.5rem;
   }
 }
 
