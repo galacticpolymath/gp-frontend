@@ -3,10 +3,33 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
+import { useEffect } from "react";
 import CustomLink from "../components/CustomLink";
 import Layout from "../components/Layout";
+import axios from "axios";
+import { updateUser } from "../apiServices/user/crudFns";
+import { useSession } from "next-auth/react";
 
 const MailingListConfirmation = () => {
+    const session = useSession();
+    const { status, data } = session;
+    const { email } = data.user ?? {};
+
+    useEffect(() => {
+        if (status === 'authenticated') {
+            (async () => {
+                const paramsAndHeaders = {
+                    params: { email: data.user.email },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                };
+
+
+                const responseBody = await updateUser({ email: email }, { isOnMailingList: true });
+            })();
+        }
+    }, [status]);
     return (
         <Layout>
             <div

@@ -42,6 +42,7 @@ export const UserSchema = new Schema({
   _id: { type: String, required: true },
   email: { type: String, required: true },
   willAddUserToMailingList: { type: Boolean, required: true },
+  wasMailingListConfirmationEmailSent: { type: Boolean, required: false },
   isOnMailingList: { type: Boolean, required: false },
   password: {
     hash: { type: String, required: false },

@@ -3,6 +3,7 @@
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable indent */
 import nodemailer from 'nodemailer';
+import { updateUser } from './userServices';
 
 /**
  * @typedef {Object} TMailOpts
@@ -83,10 +84,14 @@ export const addUserToEmailList = async (email, clientUrl) => {
 
         const response = await fetch('https://api.brevo.com/v3/contacts/doubleOptinConfirmation', options);
 
-        console.log('response added user to mailing list: ', response);
-
         if (!((response.status >= 200) && (response.status < 300))) {
             return { wasSuccessful: false };
+        }
+
+        if (response.status === 201) {
+            const { wasSuccessful } = await updateUser({ email }, { wasMailingListConfirmationEmailSent: true });
+
+            console.log('Did update target user in the db: ', wasSuccessful);
         }
 
         return { wasSuccessful: true };
