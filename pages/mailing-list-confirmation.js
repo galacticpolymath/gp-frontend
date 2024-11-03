@@ -24,7 +24,9 @@ const MailingListConfirmation = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 };
-
+                // send a requeeset to the backend to update the isOnMailingList boolean for the target user
+                // only if wasMailingListConfirmationEmailSent is true
+                // -send the request either way, you will check on the backend if wasMailingListConfirmationEmailSent is true
 
                 const responseBody = await updateUser({ email: email }, { isOnMailingList: true });
             })();

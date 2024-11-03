@@ -18,11 +18,6 @@ export const updateUser = async (query = {}, updatedUser = {}, additionalReqBody
         }
 
         const responseBody = { ...query, updatedUser, ...additionalReqBodyProps };
-
-        console.log('responseBody, updating the user: ', responseBody);
-
-        debugger;
-
         const response = await axios.put('/api/update-user', responseBody);
 
         if (response.status !== 200) {
@@ -35,4 +30,10 @@ export const updateUser = async (query = {}, updatedUser = {}, additionalReqBody
 
         return null;
     }
+};
+
+export const addUserToMailingList = async (email) => {
+    // must get the email of the user
+    // the route on the the backend will update the isOnMailingList to be true only if 
+    // -wasMailingListConfirmationEmailSent is true
 };

@@ -76,7 +76,7 @@ const AccountSettings = () => {
                 last: accountForm.lastName,
             },
         };
-        const additionalReqBodyProps = accountForm.isOnMailingList ? { isOnMailingListConfirmationUrl: `${window.location.origin}/on-mailing-list-confirmation` } : {};
+        const additionalReqBodyProps = accountForm.isOnMailingList ? { isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation` } : {};
         const responseBody = await updateUser({ email: email }, updatedUser, additionalReqBodyProps);
 
         if (!responseBody) {
