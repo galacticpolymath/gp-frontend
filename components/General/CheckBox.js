@@ -16,7 +16,7 @@ const CheckBox = ({
 }) => {
     return (
         <div className={checkBoxContainerClassName} style={checkBoxContainerStyle}>
-            <div className="pb-3">
+            <div>
                 {isChecked ? (
                     <BiCheckboxChecked
                         onClick={handleOnClick}

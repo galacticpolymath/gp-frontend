@@ -9,7 +9,6 @@ import { CustomError } from "../../backend/utils/errors";
 
 export default async function handler(request, response) {
     try {
-        console.log('will update the target user...');
         if (!request.body || (request.body && (typeof request.body !== 'object'))) {
             throw new CustomError("Received either a incorrect data type for the body of the request or its value is falsey.", 400);
         }
@@ -31,20 +30,30 @@ export default async function handler(request, response) {
             throw new CustomError("Must have 'email' or the 'id' field in the body of the request. Values must be strings.", 404);
         }
 
-        const { email, id, updatedUser, isOnMailingListConfirmationUrl } = request.body;
-        
-        if ((updatedUser.isOnMailList === true) && isOnMailingListConfirmationUrl) {
+        const {
+            email,
+            id,
+            updatedUser,
+            isOnMailingListConfirmationUrl,
+        } = request.body;
+
+        console.log('updatedUser, yo there: ', updatedUser);
+        console.log('request.body, yo meng: ', request.body);
+
+        if ((updatedUser.isOnMailingList === true) && isOnMailingListConfirmationUrl) {
+            console.log('will add user to mailing list.');
             const { wasSuccessful } = await addUserToEmailList(email, isOnMailingListConfirmationUrl);
 
             console.log('was user successfully add to the mailing list: ', wasSuccessful);
-        } else if (updatedUser?.isOnMailingList === false){
+        } else if (updatedUser?.isOnMailingList === false) {
+            console.log('will delete the user  from the mailing list...');
             const { wasSuccessful } = await deleteUserFromMailingList(email);
 
             console.log('Was user successfully deleted? ', wasSuccessful);
         }
 
         await connectToMongodb();
-        
+
         const query = email ? { email } : { _id: id };
         const { updatedUser: updatedUserFromDb, wasSuccessful } = await updateUser(query, updatedUser, ['password']);
 

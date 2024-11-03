@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import axios from 'axios';
@@ -10,24 +11,21 @@ export const updateUser = async (query = {}, updatedUser = {}, additionalReqBody
 
         if (
             ('id' in query && typeof query.id !== 'string') ||
-            ('email' in query && typeof query.email !== 'string') || 
+            ('email' in query && typeof query.email !== 'string') ||
             ('emali' in query && 'id' in query)
-        ) { 
+        ) {
             throw new Error('The "id" and "email" parameters must be strings. Both cannot be present.');
         }
 
-        let responseBody = { ...query, updatedUser };
+        const responseBody = { ...query, updatedUser, ...additionalReqBodyProps };
 
-        if (Object.keys(additionalReqBodyProps).length) {
-            responseBody = {
-                ...responseBody,
-                ...additionalReqBodyProps,
-            };
-        }
+        console.log('responseBody, updating the user: ', responseBody);
+
+        debugger;
 
         const response = await axios.put('/api/update-user', responseBody);
 
-        if(response.status !== 200) {
+        if (response.status !== 200) {
             throw new Error('Failed to update user.');
         }
 

@@ -83,6 +83,8 @@ export const addUserToEmailList = async (email, clientUrl) => {
 
         const response = await fetch('https://api.brevo.com/v3/contacts/doubleOptinConfirmation', options);
 
+        console.log('response added user to mailing list: ', response);
+
         if (!((response.status >= 200) && (response.status < 300))) {
             return { wasSuccessful: false };
         }
@@ -102,7 +104,7 @@ export const deleteUserFromMailingList = async (email) => {
     try {
 
         console.log('delete the user  from the brevo mailing list.');
-        
+
         const options = {
             method: 'DELETE',
             headers: {
@@ -114,21 +116,21 @@ export const deleteUserFromMailingList = async (email) => {
         const fromBrevoServer = await response.json();
 
         console.log('fromBrevoServer: ', fromBrevoServer);
-        
+
         if (response.status === 404) {
             console.log('Contact was not found on the mailing list.');
 
             return { wasSuccessful: true };
         }
-        
+
         if (response.status !== 204) {
             console.log('Failed to delete the target user from the mailing list. Reason: ', fromBrevoServer);
-            
+
             return { wasSuccessful: false };
         }
-        
-        console.log('Deleted contact from mailing list.');
-        
+
+        console.log('Contact was deleted from mailing list.');
+
         return { wasSuccessful: true };
     } catch (error) {
         console.error('An error has occurred. Failed to delete the target user from the mailing list.', error);

@@ -75,7 +75,6 @@ const AccountSettings = () => {
                 first: accountForm.firstName,
                 last: accountForm.lastName,
             },
-            isOnMailingList: accountForm.isOnMailingList,
         };
         const additionalReqBodyProps = accountForm.isOnMailingList ? { isOnMailingListConfirmationUrl: `${window.location.origin}/on-mailing-list-confirmation` } : {};
         const responseBody = await updateUser({ email: email }, updatedUser, additionalReqBodyProps);
@@ -89,16 +88,17 @@ const AccountSettings = () => {
         }
 
         const userAccountParsable = localStorage.getItem('userAccount');
+        let isOnMailingListPrevVal = false;
 
         if (userAccountParsable && getIsParsableToVal(userAccountParsable, 'object')) {
             let userAccount = JSON.parse(userAccountParsable);
+            isOnMailingListPrevVal = userAccount.isOnMailingList;
             userAccount = {
                 ...userAccount,
                 name: {
                     first: accountForm.firstName,
                     last: accountForm.lastName,
                 },
-                isOnMailingList: accountForm.isOnMailingList,
             };
 
             localStorage.setItem('userAccount', JSON.stringify(userAccount));
@@ -107,10 +107,20 @@ const AccountSettings = () => {
         }
 
         setTimeout(() => {
+            let bodyTxt = '';
+
+            if (accountForm.isOnMailingList) {
+                bodyTxt = 'Please check your e-mail inbox to confirm your subscription with GP\'s mailing list.';
+            } else if (isOnMailingListPrevVal && (accountForm.isOnMailingList === false)) {
+                // the unscribed from our mailing list
+                bodyTxt = 'You\'ve unscribed from GP\'s mailing list. You will no longer receive e-mails from us.';
+            }
+
             handleOnHide();
+
             setNotifyModal({
                 isDisplayed: true,
-                bodyTxt: '',
+                bodyTxt,
                 headerTxt: 'Updates saved!',
                 handleOnHide: () => {
                     session.update();
@@ -195,9 +205,11 @@ const AccountSettings = () => {
                             <CheckBox
                                 isChecked={accountForm.isOnMailingList}
                                 handleOnClick={handleIsOnMailingListBtnToggle}
+                                checkBoxContainerClassName='d-flex'
                             >
                                 Subscribe to GP mailing list.
                             </CheckBox>
+                            <span className='ps-3'>*If you{"'"}re subscribing, please check your email inbox for the confirmation email.</span>
                         </section>
                     </section>
                     <section style={{ height: '55%' }} className='mt-2 mt-sm-2'>
