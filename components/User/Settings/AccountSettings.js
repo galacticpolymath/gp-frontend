@@ -16,6 +16,7 @@ import Button from '../../General/Button';
 import { getIsParsable, getIsParsableToVal } from '../../../globalFns';
 import { updateUser } from '../../../apiServices/user/crudFns';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const AccountSettings = () => {
     const { _isAccountSettingModalOn, _notifyModal } = useContext(ModalContext);
@@ -27,6 +28,7 @@ const AccountSettings = () => {
     const { email } = session?.data?.user ?? {};
     const [inputElementsFocused, setInputElementsFocused] = useState(new Map());
     const [errors, setErrors] = useState(new Map());
+    const router = useRouter();
     const [, setNotifyModal] = _notifyModal;
 
     /**
@@ -56,6 +58,9 @@ const AccountSettings = () => {
                 isOnMailingList: userAccount.isOnMailingList ?? false,
             });
         }
+
+        const url = router.asPath;
+        router.replace(url.split("?")[0]);
     };
     const handleDeleteAccountBtnClick = () => {
         console.log('delete account');
@@ -69,14 +74,19 @@ const AccountSettings = () => {
 
     const handleSaveBtnClick = async () => {
         setIsSavingChangesSpinnerOn(true);
-
+        const userAccountPrevVals = localStorage.getItem('userAccount') ? JSON.parse(localStorage.getItem('userAccount')) : {};
+        const willSendEmailListingSubConfirmationEmailObj = userAccountPrevVals.isOnMailingList === accountForm.isOnMailingList ? {} : { willSendEmailListingSubConfirmationEmail: accountForm.isOnMailingList };
         const updatedUser = {
             name: {
                 first: accountForm.firstName,
                 last: accountForm.lastName,
             },
         };
-        const additionalReqBodyProps = accountForm.isOnMailingList ? { isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation` } : {};
+        let additionalReqBodyProps = accountForm.isOnMailingList ? { isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation` } : {};
+        additionalReqBodyProps = {
+            ...additionalReqBodyProps,
+            ...willSendEmailListingSubConfirmationEmailObj,
+        };
         const responseBody = await updateUser({ email: email }, updatedUser, additionalReqBodyProps);
 
         if (!responseBody) {
@@ -87,32 +97,13 @@ const AccountSettings = () => {
             return;
         }
 
-        const userAccountParsable = localStorage.getItem('userAccount');
-        let isOnMailingListPrevVal = false;
-
-        if (userAccountParsable && getIsParsableToVal(userAccountParsable, 'object')) {
-            let userAccount = JSON.parse(userAccountParsable);
-            isOnMailingListPrevVal = userAccount.isOnMailingList;
-            userAccount = {
-                ...userAccount,
-                name: {
-                    first: accountForm.firstName,
-                    last: accountForm.lastName,
-                },
-            };
-
-            localStorage.setItem('userAccount', JSON.stringify(userAccount));
-        } else {
-            console.error('Unable to update the local storage with the new user values.');
-        }
-
         setTimeout(() => {
             let bodyTxt = '';
 
-            if (accountForm.isOnMailingList) {
+            if (!userAccountPrevVals.isOnMailingList && accountForm.isOnMailingList) {
                 bodyTxt = 'Please check your e-mail inbox to confirm your subscription with GP\'s mailing list.';
-            } else if (isOnMailingListPrevVal && (accountForm.isOnMailingList === false)) {
-                // the unscribed from our mailing list
+            } else if (userAccountPrevVals.isOnMailingList && (accountForm.isOnMailingList === false)) {
+                // the user unscribed from our mailing list
                 bodyTxt = 'You\'ve unscribed from GP\'s mailing list. You will no longer receive e-mails from us.';
             }
 
@@ -135,12 +126,14 @@ const AccountSettings = () => {
             show={isAccountSettingsModalDisplayed}
             onHide={handleOnHide}
             onShow={handleOnShow}
+            onBackdropClick={handleOnHide}
             dialogClassName='border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='account-settings-modal user-modal-color'
         >
             <CustomCloseButton
                 className='no-btn-styles position-absolute top-0 end-0 me-sm-2 me-sm-3 mt-1'
                 handleOnClick={handleOnHide}
+                style={{ zIndex: 100000000 }}
             >
                 <IoMdClose color="black" size={28} />
             </CustomCloseButton>

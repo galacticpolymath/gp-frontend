@@ -249,10 +249,10 @@ export const getIsParsableToVal = (val, valType) => {
     try {
         const parsedVal = JSON.parse(val);
 
-        if (typeof parsedVal !== valType) { 
+        if (typeof parsedVal !== valType) {
             throw Error('Incorrect parsed value type.')
         }
-        
+
         return true;
     } catch (error) {
         console.error('Not parsable. Reason: ', error);
@@ -327,6 +327,32 @@ export const getChunks = (arr, chunkSize) => {
             chunks.push(chunkWindow);
         }
     }
+
+    return chunks;
+};
+
+export const createChunks = (arr, chunkSize) => {
+    const chunks = [];
+    let chunkWindow = [];
+    // print arr 
+    console.log('arr, yo there: ', arr)
+
+    for (let index = 0; index < arr.length; index++) {
+        let val = arr[index];
+
+        if (chunkWindow.length === chunkSize) {
+            chunks.push(chunkWindow);
+            chunkWindow = [];
+        }
+
+        chunkWindow.push(val);
+
+        if (index === (arr.length - 1)) {
+            chunks.push(chunkWindow);
+        }
+    }
+
+    console.log('chunks, yo there: ', chunks)
 
     return chunks;
 };

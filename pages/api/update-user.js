@@ -35,24 +35,29 @@ export default async function handler(request, response) {
             id,
             updatedUser,
             isOnMailingListConfirmationUrl,
+            willUpdateMailingListStatusOnly,
+            willSendEmailListingSubConfirmationEmail,
         } = request.body;
 
-        console.log('updatedUser, yo there: ', updatedUser);
-        console.log('request.body, yo meng: ', request.body);
+        console.log('request.body, yo there: ', request.body);
 
-        if ((updatedUser.isOnMailingList === true) && isOnMailingListConfirmationUrl) {
+        await connectToMongodb();
+
+        if ((willSendEmailListingSubConfirmationEmail === true) && isOnMailingListConfirmationUrl) {
             console.log('will add user to mailing list.');
             const { wasSuccessful } = await addUserToEmailList(email, isOnMailingListConfirmationUrl);
 
             console.log('was user successfully add to the mailing list: ', wasSuccessful);
-        } else if (updatedUser?.isOnMailingList === false) {
+        } else if (willSendEmailListingSubConfirmationEmail === false) {
             console.log('will delete the user  from the mailing list...');
             const { wasSuccessful } = await deleteUserFromMailingList(email);
 
             console.log('Was user successfully deleted? ', wasSuccessful);
         }
 
-        await connectToMongodb();
+        if (willUpdateMailingListStatusOnly) {
+            return response.status(200).json({ msg: 'User updated successfully.' });
+        }
 
         const query = email ? { email } : { _id: id };
         const { updatedUser: updatedUserFromDb, wasSuccessful } = await updateUser(query, updatedUser, ['password']);

@@ -4,6 +4,7 @@
 /* eslint-disable indent */
 import nodemailer from 'nodemailer';
 import { updateUser } from './userServices';
+import { nanoid } from 'nanoid';
 
 /**
  * @typedef {Object} TMailOpts
@@ -66,11 +67,14 @@ export const sendEmail = async (mailOpts) => {
 export const addUserToEmailList = async (email, clientUrl) => {
     try {
         // add the user to our maliing list via the brevo api 
+        const mailingListConfirmationEmailId = nanoid();
+        const redirectionUrl = `${clientUrl}?confirmation-id=${mailingListConfirmationEmailId}`;
+        console.log('redirectionUrl: ', redirectionUrl);
         const reqBody = {
             email,
             includeListIds: [8],
             templateId: 5,
-            redirectionUrl: clientUrl,
+            redirectionUrl,
         };
         const options = {
             method: 'POST',
@@ -81,22 +85,26 @@ export const addUserToEmailList = async (email, clientUrl) => {
             },
             body: JSON.stringify(reqBody),
         };
-
         const response = await fetch('https://api.brevo.com/v3/contacts/doubleOptinConfirmation', options);
 
+        console.log('response, adding user to mailing list: ', response);
+
         if (!((response.status >= 200) && (response.status < 300))) {
-            return { wasSuccessful: false };
+            const responseBody = await response.json();
+
+            return { wasSuccessful: false, errMsg: `Failed to add the user to the mailing list. Response body from Brevo server: ${responseBody}` };
         }
 
-        if (response.status === 201) {
-            const { wasSuccessful } = await updateUser({ email }, { wasMailingListConfirmationEmailSent: true });
+        if ((response.status === 201) || (response.status === 204)) {
+            const { wasSuccessful } = await updateUser({ email }, { mailingListConfirmationEmailId });
 
-            console.log('Did update target user in the db: ', wasSuccessful);
+            console.log('Did update target user in db: ', wasSuccessful);
         }
 
         return { wasSuccessful: true };
     } catch (error) {
         console.error(error);
+
         return { wasSuccessful: false };
     }
 };
@@ -108,7 +116,7 @@ export const addUserToEmailList = async (email, clientUrl) => {
 export const deleteUserFromMailingList = async (email) => {
     try {
 
-        console.log('delete the user  from the brevo mailing list.');
+        console.log('delete the user from the brevo mailing list.');
 
         const options = {
             method: 'DELETE',
@@ -118,9 +126,6 @@ export const deleteUserFromMailingList = async (email) => {
             },
         };
         const response = await fetch(`https://api.brevo.com/v3/contacts/${email}`, options);
-        const fromBrevoServer = await response.json();
-
-        console.log('fromBrevoServer: ', fromBrevoServer);
 
         if (response.status === 404) {
             console.log('Contact was not found on the mailing list.');
@@ -129,12 +134,13 @@ export const deleteUserFromMailingList = async (email) => {
         }
 
         if (response.status !== 204) {
-            console.log('Failed to delete the target user from the mailing list. Reason: ', fromBrevoServer);
 
             return { wasSuccessful: false };
         }
 
         console.log('Contact was deleted from mailing list.');
+
+        await updateUser({ email }, { isOnMailingList: false });
 
         return { wasSuccessful: true };
     } catch (error) {

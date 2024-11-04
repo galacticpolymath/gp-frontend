@@ -56,7 +56,6 @@ export default function MyAdapter() {
             ['user'],
             providerAccountId,
             null,
-            { willAddUserToMailingList: true }
           );
 
           if (!wasSuccessful) {
@@ -202,7 +201,6 @@ export const authOptions = {
           const hashedPassword = hashPassword(password, createSalt(), createIterations());
           const userDocumentToCreate = {
             _id: uuidv4(),
-            isOnMailingList,
             email: email,
             password: hashedPassword,
             name: {
@@ -211,7 +209,6 @@ export const authOptions = {
             },
             provider: 'credentials',
             roles: ['user'],
-            willAddUserToMailingList: false,
           };
           const newUserDoc = createDocument(userDocumentToCreate, User);
 
@@ -225,9 +222,14 @@ export const authOptions = {
             throw new AuthError('userCreationFailure', 500, callbackUrl ?? '');
           }
 
+          let emailingListingConfrimationEmailMsg = null;
           if (isOnMailingList) {
-            const userAddedToMailingListResult = addUserToEmailList(email, isOnMailingListConfirmationUrl || "");
-            console.log('userAddedToMailingListResult: ', userAddedToMailingListResult);
+            const { errMsg } = await addUserToEmailList(email, isOnMailingListConfirmationUrl || "");
+            emailingListingConfrimationEmailMsg = errMsg;
+          }
+
+          if (emailingListingConfrimationEmailMsg) {
+            console.error('Failed to send mailing list confirmation email. Reason: ', emailingListingConfrimationEmailMsg);
           }
 
           return { ...userDocumentToCreate, wasUserCreated: true };

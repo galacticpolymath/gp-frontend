@@ -35,14 +35,14 @@ let User = models.users;
  * @property {Date} emailVerified - The date the email was verified
  * @property {string[]} roles - The roles assigned to the user
  * @property {string} [picture] - The picture of the user
+ * @property {string} [mailingListConfirmationEmailId] - The picture of the user
  * @property {boolean} [isOnMailingList] - If the user will receive GP emails.
  * @property {{ first: string, last: string }} name - The name of the user.
  */
 export const UserSchema = new Schema({
   _id: { type: String, required: true },
   email: { type: String, required: true },
-  willAddUserToMailingList: { type: Boolean, required: true },
-  wasMailingListConfirmationEmailSent: { type: Boolean, required: false },
+  mailingListConfirmationEmailId: { type: String, required: false },
   isOnMailingList: { type: Boolean, required: false },
   password: {
     hash: { type: String, required: false },

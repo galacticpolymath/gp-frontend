@@ -16,7 +16,7 @@ import { ModalContext } from '../providers/ModalProvider';
 import { UserContext, userAccountDefault } from '../providers/UserProvider';
 import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
-import { getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
+import { createChunks, getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
 import { FaUserAlt } from 'react-icons/fa';
 
 export const getAboutUserFormForClient = userAccount => {
@@ -239,10 +239,14 @@ const AccountPg = () => {
             (async () => {
                 try {
                     const response = await axios.put(
-                        '/api/add-user-to-email-listing',
+                        '/api/update-user',
                         {
                             email,
-                            callbackUrl: window.location.href,
+                            isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation`,
+                            willUpdateMailingListStatusOnly: true,
+                            updatedUser: {
+                                isOnMailingList: true,
+                            },
                         },
                         {
                             headers: {
@@ -266,6 +270,20 @@ const AccountPg = () => {
                 }
 
             })();
+        }
+
+        const urlValsChunks = urlVals?.length ? getChunks(urlVals.flat(), 2) : []
+        const willOpenAccountSettingsModal = urlValsChunks.find(([key, val]) => {
+            if ((key === 'will-open-account-settings-modal') && getIsParsable(val)) {
+                return JSON.parse(val);
+            }
+
+            return false;
+        }) !== undefined;
+
+        // if the user is authenticated, if there is action parameter that contains 'open-account-settings-modal', then open the account setting modal
+        if ((status === 'authenticated') && willOpenAccountSettingsModal) {
+            setIsAccountSettingsModalOn(true);
         }
     }, [status]);
 
