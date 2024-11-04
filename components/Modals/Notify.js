@@ -116,6 +116,16 @@ const Notify = () => {
                     router.replace(url.split("?")[0]);
                 },
             });
+        } else if ((params[0] === 'user-deleted') && (params[1] === 'true')) {
+            setNotifyModal({
+                isDisplayed: true,
+                headerTxt: 'Success!',
+                bodyTxt: 'Your account was successfully deleted. Fairwell 👋! We hope to see you again .',
+                handleOnHide: () => {
+                    const url = router.asPath;
+                    router.replace(url.split("?")[0]);
+                },
+            });
         }
     }, [router.asPath]);
 

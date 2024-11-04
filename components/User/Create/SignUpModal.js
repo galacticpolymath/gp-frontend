@@ -143,6 +143,17 @@ const SignUpModal = () => {
             setErrors(errorsClone);
         }
 
+        if (name === "confirmPassword" || name === "password") {
+            setErrors(errors => {
+                const errorsClone = structuredClone(errors);
+
+                errorsClone.delete("confirmPassword");
+                errorsClone.delete("password");
+
+                return errorsClone;
+            });
+        }
+
         setCreateAccountForm(form => ({
             ...form,
             [name]: value,
@@ -486,7 +497,7 @@ const SignUpModal = () => {
                                         fontSize: "18px",
                                     }}
                                 >
-                                    *Opt in to our mailing list 📧.
+                                    *Opt in to our mailing list 📧 (Check mailbox to confirm).
                                 </label>
                             </div>
                         </div>

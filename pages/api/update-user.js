@@ -17,7 +17,7 @@ export default async function handler(request, response) {
             throw new CustomError("The request body is empty. Must include the 'user' field.", 404);
         }
 
-        if (!('updatedUser' in request.body) || (typeof request.body.updatedUser !== 'object') || !Object.values(request.body.updatedUser).length) {
+        if (!request.body.willUpdateMailingListStatusOnly && (!('updatedUser' in request.body) || (typeof request.body.updatedUser !== 'object') || !Object.values(request.body.updatedUser).length)) {
             throw new CustomError("The user field is empty or contains the incorrect data type (must be a non-array object).", 404);
         }
 

@@ -235,18 +235,20 @@ const AccountPg = () => {
 
         const isOnMailingList = localStorage.getItem('isOnMailingList') ? JSON.parse(localStorage.getItem('isOnMailingList')) : false;
 
+        console.log('isOnMailingList, yo there: ', isOnMailingList);
+
         if (isOnMailingList && (status === 'authenticated')) {
             (async () => {
                 try {
+                    console.log('will update the mailing list status: ', isOnMailingList);
+
                     const response = await axios.put(
                         '/api/update-user',
                         {
                             email,
                             isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation`,
                             willUpdateMailingListStatusOnly: true,
-                            updatedUser: {
-                                isOnMailingList: true,
-                            },
+                            willSendEmailListingSubConfirmationEmail: true,
                         },
                         {
                             headers: {

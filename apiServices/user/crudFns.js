@@ -32,8 +32,30 @@ export const updateUser = async (query = {}, updatedUser = {}, additionalReqBody
     }
 };
 
-export const addUserToMailingList = async (email) => {
-    // must get the email of the user
-    // the route on the the backend will update the isOnMailingList to be true only if 
-    // -wasMailingListConfirmationEmailSent is true
+/**
+ * Makes a delete request to the server to delete the user with the given id.
+ * @param {string} email The id of the user to be deleted.
+ * @return {Promise<{ wasSuccessful: boolean }>} A promise that resolves to an object with a boolean indicating whether the operation was successful.
+ * @throws An error has occurred if the server responds with a status code that is not 200 or the wrong parameter type is passed.
+ */
+export const sendDeleteUserReq = async (email) => {
+    try {
+        if (typeof email !== 'string') {
+            throw new Error('The "userId" parameter must be a string.');
+        }
+
+        const response = await axios.delete(`/api/delete-user?email=${email}`);
+
+        console.log('rseponse: ', response);
+
+        if(response.status !== 200) {
+            throw new Error('Failed to delete the target user.');
+        }
+
+        return { wasSuccessful: true };
+    } catch (error) {
+        console.error('Failed to delete the target user. Reason: ', error);
+
+        return { wasSuccessful: false };
+    }
 };

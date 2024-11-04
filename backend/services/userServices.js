@@ -96,9 +96,21 @@ export const updateUser = async (
 
 };
 
-export const deleteUser = async (filterQuery = {}) => {
+export const deleteUserById = async (userId) => {
     try {
-        await User.deleteOne(filterQuery);
+        await User.deleteOne({ _id: userId });
+
+        return { wasSuccessful: true };
+    } catch (error) {
+        console.error('The target user failed to be updated. Reason: ', error);
+
+        return { wasSuccessful: false };
+    }
+};
+
+export const deleteUserByEmail = async (email) => {
+    try {
+        await User.deleteOne({ email: email });
 
         return { wasSuccessful: true };
     } catch (error) {

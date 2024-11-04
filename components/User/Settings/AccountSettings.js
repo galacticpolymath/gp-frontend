@@ -13,20 +13,18 @@ import { CustomCloseButton } from '../../../ModalsContainer';
 import { IoMdClose } from 'react-icons/io';
 import CheckBox from '../../General/CheckBox';
 import Button from '../../General/Button';
-import { getIsParsable, getIsParsableToVal } from '../../../globalFns';
-import { updateUser } from '../../../apiServices/user/crudFns';
-import { useSession } from 'next-auth/react';
+import { getIsParsable } from '../../../globalFns';
+import { sendDeleteUserReq, updateUser } from '../../../apiServices/user/crudFns';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 const AccountSettings = () => {
     const { _isAccountSettingModalOn, _notifyModal } = useContext(ModalContext);
     const [isAccountSettingsModalDisplayed, setIsAccountSettingModalDisplayed] = _isAccountSettingModalOn;
-    const [isDeleteAccountBtnSpinnerOn, setIsDeleteAccountBtnSpinnerOn] = useState(false);
     const [isSavingChangesSpinnerOn, setIsSavingChangesSpinnerOn] = useState(false);
     const [accountForm, setAccountForm] = useState({});
     const session = useSession();
     const { email } = session?.data?.user ?? {};
-    const [inputElementsFocused, setInputElementsFocused] = useState(new Map());
     const [errors, setErrors] = useState(new Map());
     const router = useRouter();
     const [, setNotifyModal] = _notifyModal;
@@ -62,8 +60,28 @@ const AccountSettings = () => {
         const url = router.asPath;
         router.replace(url.split("?")[0]);
     };
-    const handleDeleteAccountBtnClick = () => {
-        console.log('delete account');
+    const handleDeleteAccountBtnClick = async () => {
+        const willDeleteAccount = confirm("Are you sure you want to delete your account? This operation is irreversible.");
+
+        if (!willDeleteAccount) {
+            return;
+        }
+
+        let didDeleteUserSuccessfully = false;
+
+        if (willDeleteAccount && email) {
+            const { wasSuccessful } = await sendDeleteUserReq(email);
+            didDeleteUserSuccessfully = wasSuccessful;
+        }
+
+        if (didDeleteUserSuccessfully) {
+            localStorage.removeItem('userAccount');
+            localStorage.removeItem('isOnMailingList');
+            signOut({ callbackUrl: '/?user-deleted=true' });
+            return;
+        }
+
+        alert('An error has occurred. Please refresh the page and try again.')
     };
     const handleIsOnMailingListBtnToggle = () => {
         setAccountForm(state => ({
@@ -133,7 +151,7 @@ const AccountSettings = () => {
             <CustomCloseButton
                 className='no-btn-styles position-absolute top-0 end-0 me-sm-2 me-sm-3 mt-1'
                 handleOnClick={handleOnHide}
-                style={{ zIndex: 100000000 }}
+                style={{ zIndex: 10000000 }}
             >
                 <IoMdClose color="black" size={28} />
             </CustomCloseButton>
@@ -225,12 +243,10 @@ const AccountSettings = () => {
                                     </section>
                                     <section className='d-flex justify-content-sm-center align-items-sm-center pt-sm-0 pt-2'>
                                         <Button
-                                            classNameStr='bg-danger no-btn-styles rounded px-2 py-2 px-sm-4 py-sm-2 mt-2 mt-sm-0'
-                                            onClick={handleDeleteAccountBtnClick}
+                                            classNameStr='btn bg-danger no-btn-styles rounded px-2 py-2 px-sm-4 py-sm-2 mt-2 mt-sm-0'
+                                            handleOnClick={handleDeleteAccountBtnClick}
                                         >
-                                            <span className='text-white'>
-                                                Delete account
-                                            </span>
+                                            Delete account
                                         </Button>
                                     </section>
                                 </section>
