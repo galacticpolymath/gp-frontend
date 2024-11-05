@@ -434,8 +434,8 @@ const LessonPart = ({
                         )}
                         <section
                           // isTeacherItem && !isSignedIn ? 'blur(4px)' : 'none'
-                          style={{ filter: isTeacherItem && !isSignedIn ? 'blur(4px)' : 'none' }}
-                          className='d-flex justify-content-between position-relative'
+                          style={{ filter: isTeacherItem && !isSignedIn ? 'blur(12px)' : 'none' }}
+                          className='d-flex justify-content-between position-relative bg-white'
                         >
                           <section>
                             <strong><RichText content={itemTitle} /></strong>

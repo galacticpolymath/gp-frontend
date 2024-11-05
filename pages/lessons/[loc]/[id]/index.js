@@ -114,7 +114,7 @@ const LessonDetails = ({ lesson }) => {
     if (lessonsStandardsSectionIndex === -1) {
       lessonsStandardsSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Bonus Content');
     }
-    
+
     if (lessonsStandardsSectionIndex === -1) {
       lessonsStandardsSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Teaching Materials');
     }
@@ -288,7 +288,6 @@ const getGoogleDriveFileIdFromUrl = url => {
   if (typeof url !== "string") {
     return null;
   }
-
   const urlSplitted = url.split("/");
   const indexOfDInSplittedUrl = urlSplitted.findIndex(str => str === "d");
 
@@ -345,8 +344,9 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOntoU
   };
 }
 
-export const getStaticProps = async ({ params: { id, loc } }) => {
+export const getStaticProps = async (arg) => {
   try {
+    const { params: { id, loc } } = arg;
     await connectToMongodb();
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();

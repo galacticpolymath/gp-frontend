@@ -3,12 +3,8 @@
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable indent */
 import nodemailer from 'nodemailer';
-<<<<<<< HEAD
 import { updateUser } from './userServices';
 import { nanoid } from 'nanoid';
-=======
-const brevo = require('@getbrevo/brevo');
->>>>>>> feature/login-for-teachers-worksheet
 
 /**
  * @typedef {Object} TMailOpts
