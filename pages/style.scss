@@ -259,6 +259,10 @@ ol li {
   border: solid 1px grey;
 }
 
+.link-disabled {
+  pointer-events: none;
+}
+
 .no-border-left {
   border-left: none;
 }

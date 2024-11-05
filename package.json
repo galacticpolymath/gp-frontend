@@ -15,6 +15,7 @@
     "@auth/mongodb-adapter": "^3.4.1",
     "@fortawesome/fontawesome-free": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@getbrevo/brevo": "^2.2.0",
     "@google-cloud/iam": "^1.2.0",
     "@google-cloud/local-auth": "^3.0.1",
     "@google-cloud/resource-manager": "^5.1.0",
@@ -31,6 +32,7 @@
     "date-fns": "^2.29.3",
     "dotenv": "^16.1.4",
     "font-awesome": "^4.7.0",
+    "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",
     "google-auth-library": "^8.9.0",
     "googleapis": "^118.0.0",
@@ -46,6 +48,7 @@
     "mongodb": "^6.8.0",
     "mongoose": "^7.6.11",
     "nanoid": "^5.0.5",
+    "net": "^1.0.2",
     "next": "^13.5.6",
     "next-auth": "^4.24.5",
     "nextjs-google-analytics": "^2.3.3",
@@ -80,6 +83,7 @@
     "reactstrap": "^9.1.6",
     "sharp": "^0.32.6",
     "swr": "^2.0.4",
+    "tls": "^0.0.1",
     "url": "^0.11.3",
     "urllib": "^3.17.1",
     "uuid": "^10.0.0",
@@ -92,5 +96,10 @@
     "eslint-plugin-react": "^7.32.2",
     "jest-puppeteer": "^9.0.0",
     "sass": "^1.58.3"
-  }
+  },
+ "browser": {
+  "fs": false,
+  "path": false,
+  "os": false
+}
 }

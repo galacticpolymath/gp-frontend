@@ -122,7 +122,7 @@ const SignUpModal = () => {
                 password,
                 isOnMailingList,
             },
-            callbackUrl: `${window.location.origin}/account?show_about_user_form=true`, 
+            callbackUrl: `${window.location.origin}/account?show_about_user_form=true`,
         };
 
         sendFormToServer(

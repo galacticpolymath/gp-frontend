@@ -3,7 +3,7 @@ import { CONTACT_SUPPORT_EMAIL } from '../../globalVars';
 
 export const createPasswordResetEmail = (recipientName, passwordResetUrl) => {
     return `
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -471,7 +471,7 @@ export const createPasswordResetEmail = (recipientName, passwordResetUrl) => {
                     <td class="email-masthead">
                         <a href="https://example.com" class="f-fallback email-masthead_name">
                           <img
-                            src="https://avatars.githubusercontent.com/u/63932735?s=200&v=4"
+                            src="${imgOrigin}/GP_bubbleLogo300px.png"
                             alt="logo"
                             class="gp-logo"
                           />
@@ -530,9 +530,12 @@ export const createPasswordResetEmail = (recipientName, passwordResetUrl) => {
                             <td class="content-cell" align="center">
                             <p class="f-fallback sub align-center">
                                 Galactic Polymath 
-                                <br>1234 Street Rd.
-                                <br>Suite 1234
                             </p>
+                            <img 
+                              src="${imgOrigin}/GP_bubbleLogo300px.png"
+                            alt="logo"
+                            class="gp-logo"
+                            />
                             </td>
                         </tr>
                         </table>

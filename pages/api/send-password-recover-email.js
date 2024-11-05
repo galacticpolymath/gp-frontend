@@ -12,8 +12,6 @@ import { PASSWORD_RESET_TOKEN_VAR_NAME } from '../../globalVars';
 
 export default async function handler(request, response) {
     try {
-        console.log('what is up there!');
-
         if (!request.body.email) {
             throw new CustomError('The "email" property is missing from the body of the request.', 500);
         }
@@ -25,8 +23,10 @@ export default async function handler(request, response) {
         const user = await getUserByEmail(email);
 
         if (!user) {
-            throw new CustomError('Failed to send the email to the target user', 500, 'emailSendError');
+            return response.status(200).json({ msg: 'Requested processed.' });
         }
+
+        console.log('will send password recover email');
 
         const resetPasswordToken = await signJwt({ email }, process.env.NEXTAUTH_SECRET, '5 minutes');
         const resetPasswordLink = `${request.headers.origin}/password-reset/?${PASSWORD_RESET_TOKEN_VAR_NAME}=${resetPasswordToken}`;
@@ -41,9 +41,11 @@ export default async function handler(request, response) {
             throw new CustomError('Failed to send email to the target user.', 500, 'emailSendError');
         }
 
-        return response.status(200).json({ msg: "Successfully saved the 'aboutUser' form into the db." });
+        return response.status(200).json({ msg: 'Requested processed.' });
     } catch (error) {
         const errMsg = error?.message ?? `Failed to send the email to the target user. Reason: ${error}`;
+
+        console.error('An error has occurred: ', error);
 
         return response.status(500).json({ msg: errMsg });
     }

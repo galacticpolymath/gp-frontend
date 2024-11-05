@@ -3,8 +3,12 @@
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable indent */
 import nodemailer from 'nodemailer';
+<<<<<<< HEAD
 import { updateUser } from './userServices';
 import { nanoid } from 'nanoid';
+=======
+const brevo = require('@getbrevo/brevo');
+>>>>>>> feature/login-for-teachers-worksheet
 
 /**
  * @typedef {Object} TMailOpts
@@ -29,7 +33,7 @@ export const sendEmail = async (mailOpts) => {
             auth: {
                 privateKey,
                 type: 'OAuth2',
-                user: "shared@galacticpolymath.com",
+                user: "techguy@galacticpolymath.com",
                 serviceClient: process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID,
                 accessUrl: "https://oauth2.googleapis.com/token",
             },
@@ -43,6 +47,8 @@ export const sendEmail = async (mailOpts) => {
         }
 
         const sentMessageInfo = await transport.sendMail(mailOpts);
+
+        console.log('sentMessageInfo: ', sentMessageInfo);
 
         if (sentMessageInfo.rejected.length) {
             throw new Error('Failed to send the email to the target user.');

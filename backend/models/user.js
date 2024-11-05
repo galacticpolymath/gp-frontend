@@ -25,6 +25,7 @@ let User = models.users;
  */
 
 /**
+ * @global
  * @typedef {Object} TUserSchema
  * @property {string} _id - The unique identifier for the user
  * @property {string} email - The user's email address
@@ -69,6 +70,7 @@ export const UserSchema = new Schema({
   subjects: { type: Object, required: false },
   classroomSize: { type: Number, required: false },
   roles: { type: [String], required: true },
+  isOnMailingList: { type: Boolean, required: false, default: false },
 });
 
 if (!models.users) {
