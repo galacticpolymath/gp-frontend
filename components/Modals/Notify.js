@@ -66,7 +66,7 @@ const Notify = () => {
 
         console.log('params, yo there meng: ', params);
 
-        if ((params[0] === 'signin-err-type') && (params[1] === 'duplicate-user-try-google')) {
+        if ((params[0] === 'signin-err-type') && (params[1] === 'duplicate-user-with-google')) {
             setNotifyModal({
                 headerTxt: "ERROR! Couldn't create account.",
                 bodyTxt: "This account already exist. Try signing in with Google instead.",
@@ -76,7 +76,7 @@ const Notify = () => {
                     router.replace(url.split("?")[0]);
                 },
             });
-        } else if ((params[0] === 'signin-err-type') && (params[1] === 'duplicate-user-try-creds')) {
+        } else if ((params[0] === 'signin-err-type') && (params[1] === 'duplicate-user-with-creds')) {
             setNotifyModal({
                 headerTxt: "ERROR! Couldn't create account.",
                 bodyTxt: "This account already exist. Try signing in with your email and password instead.",
@@ -96,21 +96,21 @@ const Notify = () => {
                     router.replace(url.split("?")[0]);
                 },
             });
-        } else if (params[0] === 'user-account-creation-err-type' && params[1] === 'duplicate-user-try-google') {
+        } else if (params[0] === 'user-account-creation-err-type' && params[1] === 'duplicate-user-with-google') {
             setNotifyModal({
                 isDisplayed: true,
                 headerTxt: 'ERROR! Unable to create your account.',
-                bodyTxt: 'This email already exist. Try signing up with Google instead.',
+                bodyTxt: 'This email already exist. If you are this user, try signing in with google.',
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);
                 },
             });
-        } else if (params[0] === 'user-account-creation-err-type' && params[1] === 'duplicate-user-try-creds') {
+        } else if (params[0] === 'user-account-creation-err-type' && params[1] === 'duplicate-user-with-creds') {
             setNotifyModal({
                 isDisplayed: true,
                 headerTxt: 'ERROR! Unable to create your account.',
-                bodyTxt: 'This email already exist. Try signing up using an email and password instead.',
+                bodyTxt: 'This email already exist. If you are this user, try signing in with your credentials',
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);

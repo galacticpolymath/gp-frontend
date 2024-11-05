@@ -96,6 +96,22 @@ export const updateUser = async (
 
 };
 
+export const deleteUser = async (query = {}) => {
+    try {
+        if(!query || (Object.keys(query).length === 0) || (query && (typeof query !== 'object')) || (Array.isArray(query))) {
+            throw new Error('"query" must be a non-array object. The "query" argument cannot be an empty object.');
+        }
+
+        await User.deleteOne(query);
+
+        return { wasSuccessful: true };
+    } catch (error) {
+        console.error('Failed to delete the target user. Reason: ', error);
+
+        return { wasSuccessful: false };
+    }
+};
+
 export const deleteUserById = async (userId) => {
     try {
         await User.deleteOne({ _id: userId });

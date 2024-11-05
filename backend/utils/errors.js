@@ -24,7 +24,7 @@ class AuthMiddlwareError {
   }
 }
 class SignInError {
-  constructor(type = 'sign-in-error', msg = '', code = 500, urlErrorParamKey = '', urlErrorParamVal) {
+  constructor(type = 'sign-in-error', msg = '', code = 500, urlErrorParamKey = '', urlErrorParamVal = '') {
     this.type = type;
     this.code = code;
     this.msg = msg;

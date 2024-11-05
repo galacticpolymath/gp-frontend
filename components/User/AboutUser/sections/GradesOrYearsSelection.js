@@ -4,6 +4,7 @@
 import { useContext } from 'react';
 import Button from '../../../General/Button';
 import { UserContext } from '../../../../providers/UserProvider';
+import { ErrorTxt } from '../../formElements';
 
 const AGE_GROUPS_FIELD_U_S = 'U.S.';
 const AGE_GROUPS_FIELD_NON_U_S = 'Outside U.S.';
@@ -12,14 +13,26 @@ const AGE_GROUPS = {
     [AGE_GROUPS_FIELD_NON_U_S]: ['1-5', '6', '7', '8', '9', '10', '11', '12', '13', 'University'],
 };
 
-const GradesOrYearsSelection = () => {
+const GradesOrYearsSelection = ({ _errors }) => {
     const { _aboutUserForm } = useContext(UserContext);
+    const [errors, setErrors] = _errors;
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const { selection, ageGroupsTaught } = aboutUserForm.gradesOrYears;
     /** @type {[import('../../../../providers/ModalProvider').TUserForm, Function]} */
     const ageGroupOptions = AGE_GROUPS[(selection && Object.keys(AGE_GROUPS).includes(selection)) ? selection : 'U.S.'];
 
     const handleGradesOrYearsBtnClick = gradesOrYearsSelectedOptName => () => {
+        setErrors(state => {
+            const errorsClone = structuredClone(state);
+            const errMsg = errorsClone.get('gradesOrYears');
+
+            if (errMsg === '*Please select either "U.S." or "outside U.S."') {
+                errorsClone.delete('gradesOrYears');
+            }
+
+            return errorsClone;
+        });
+
         setAboutUserForm(state => ({
             ...state,
             gradesOrYears: {
@@ -31,6 +44,19 @@ const GradesOrYearsSelection = () => {
 
     const handleCheckboxInputChange = event => {
         const { value: selectedAgeGroup } = event.target;
+
+        setErrors(state => {
+            console.log('state, yo there: ', state);
+            const errorsClone = structuredClone(state);
+            const errMsg = errorsClone.get('gradesOrYears');
+
+            if (errMsg === '*Please select atleast one grade or year.') {
+                console.log('fuck you bitch ');
+                errorsClone.delete('gradesOrYears');
+            }
+
+            return errorsClone;
+        });
 
         if (ageGroupsTaught.find(ageGroup => ageGroup === selectedAgeGroup)) {
             setAboutUserForm(state => ({
@@ -112,6 +138,11 @@ const GradesOrYearsSelection = () => {
                             </section>
                         );
                     })}
+                </section>
+                <section className='error-txt-about-user-container'>
+                    <ErrorTxt>
+                        {errors.get('gradesOrYears') ?? ''}
+                    </ErrorTxt>
                 </section>
             </section>
         </section>

@@ -96,16 +96,16 @@ const SignUpModal = () => {
     const handleSubmitCredentialsBtnClick = async () => {
         setIsLoadingSpinnerOn(true);
 
-        const errors = await validateForm("credentials");
+        // const errors = await validateForm("credentials");
 
-        if (errors.size > 0) {
-            alert("An error has occurred. Please check your inputs.");
-            setTimeout(() => {
-                setErrors(errors);
-                setIsLoadingSpinnerOn(false);
-            });
-            return;
-        }
+        // if (errors.size > 0) {
+        //     alert("An error has occurred. Please check your inputs.");
+        //     setTimeout(() => {
+        //         setErrors(errors);
+        //         setIsLoadingSpinnerOn(false);
+        //     });
+        //     return;
+        // }
 
         const {
             email,

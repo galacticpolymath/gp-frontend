@@ -396,6 +396,14 @@ ol li {
   }
 }
 
+.error-txt-about-user-container {
+  height: 65px;
+
+  @media (min-width: 577px) {
+    height: 30px;
+  }
+}
+
 .account-settings-modal {
   height: 100vh;
   @media (min-width: 992px) {

@@ -63,6 +63,8 @@ export default function MyAdapter() {
             throw new CustomError(`Failed to create the document for the target user in the db. Reason: ${msg}`, 500, 'userCreationFailure', 'user-creation-err', true);
           }
 
+          console.log('the google user was created...');
+
           return { providerAccountId, provider, wasUserCreated: true };
         }
 
@@ -177,7 +179,7 @@ export const authOptions = {
           }
 
           if (dbUser && (formType === 'createAccount')) {
-            const urlErrParamVal = dbUser.provider === 'google' ? 'duplicate-user-try-google' : 'duplicate-user-try-creds';
+            const urlErrParamVal = dbUser.provider === 'google' ? 'duplicate-user-with-google' : 'duplicate-user-with-creds';
 
             throw new AuthError('userAlreadyExist', 409, callbackUrl ?? '', 'user-account-creation-err-type', urlErrParamVal);
           }
@@ -187,7 +189,7 @@ export const authOptions = {
           const { iterations, salt, hash: hashedPasswordFromDb } = dbUser?.password ?? {};
 
           if ((formType === 'login') && !getIsPasswordCorrect({ iterations, salt, password }, hashedPasswordFromDb)) {
-            console.log('Invalid creds.');
+            console.log('Invalid credentials.');
 
             throw new AuthError('invalidCredentials', 404, callbackUrl ?? '');
           }
@@ -343,18 +345,16 @@ export const authOptions = {
 
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
 
-        // if you get a dbUser, the provider === 'google', wasUserCreated is true, then do the following:
-        // throw the signInError, with the following error type: 
-        // -duplicate-user
-        // get the provider for the target user in the db, if it is google, then = 'duplicate-user-try-google', else if 
-        // -it is 'credentials', then it is = 'duplicate-user-try-creds'
-
         console.log('dbUser, liver: ', dbUser);
         console.log('wasUserCreated, beef: ', wasUserCreated);
 
         if ((errType === 'userAlreadyExist') || (dbUser && (typeof dbUser === "object") && wasUserCreated)) {
-          console.log('there exist another user in the db, the clienet is trying to create an account with google..');
-          const urlErrorParamVal = dbUser.provider === 'google' ? 'duplicate-user-try-google' : 'duplicate-user-try-creds';
+          console.log('there exist another user in the db, the client is trying to create an account with google..');
+          const urlErrorParamVal = dbUser.provider === 'google' ? 'duplicate-user-with-google' : 'duplicate-user-with-creds';
+
+          if (typeof providerAccountId === 'string') {
+            await deleteUser({ providerAccountId: providerAccountId });
+          }
 
           throw new SignInError(
             'duplicate-user',
@@ -376,7 +376,7 @@ export const authOptions = {
             'This email has already been taken.',
             code ?? 422,
             'user-account-creation-err-type',
-            'duplicate-user-try-google'
+            'duplicate-user-with-google'
           );
         }
 
@@ -433,6 +433,8 @@ export const authOptions = {
 
         return true;
       } catch (error) {
+        console.log('error, yo there: ', error);
+
         const { type, urlErrorParamKey, urlErrorParamVal } = error ?? {};
 
         if (urlErrorParamKey && urlErrorParamVal) {

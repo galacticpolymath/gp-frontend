@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import { CustomCloseButton } from '../../../ModalsContainer';
 import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from 'react-icons/io';
 import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
+import { ErrorTxt } from '../formElements';
 
 const AccordionToggleBtn = ({ children = <></>, btnClassName = "", eventKey, handleBtnClick }) => {
     const handleAccordionToggleBtnClick = useAccordionButton(eventKey, event => {
@@ -60,7 +61,7 @@ const AboutUserModal = () => {
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
     const [countryNames, setCountryNames] = useState([]);
-    const [errors, setErorrs] = useState(new Map());
+    const [errors, setErrors] = useState(new Map());
     /**
      * @type {[import('../../../providers/UserProvider').TAboutUserForm, import('react').Dispatch<import('react').SetStateAction<import('../../../providers/UserProvider').TAboutUserForm>>]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
@@ -138,7 +139,7 @@ const AboutUserModal = () => {
 
             errorsClone.delete(event.target.name);
 
-            setErorrs(errorsClone);
+            setErrors(errorsClone);
         }
         setAboutUserForm(state => ({
             ...state,
@@ -235,11 +236,11 @@ const AboutUserModal = () => {
                                 autoFocus={!aboutUserForm?.occupation}
                                 className={`ms-2 ms-sm-0 aboutme-txt-input no-outline pt-1 ${errors.has('occupation') ? 'text-danger border-danger' : ''}`}
                             />
-                            <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('occupation') ?? ''}</span>
+                            <span style={{ fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('occupation') ?? ''}</span>
                         </section>
                         <CountrySection
                             countryNames={countryNames}
-                            _errors={[errors, setErorrs]}
+                            _errors={[errors, setErrors]}
                         />
                         <section className='d-flex flex-column col-12 col-sm-8 col-lg-2'>
                             <label
@@ -269,11 +270,11 @@ const AboutUserModal = () => {
                                 }}
                                 className={`aboutme-txt-input pt-1 ms-2 ms-sm-0 ${errors.has('zipCode') ? 'border-danger' : ''}`}
                             />
-                            <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('zipCode') ?? ''}</span>
+                            <span style={{ fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('zipCode') ?? ''}</span>
                         </section>
                     </section>
                     <Accordion activeKey={aboutUserForm.isTeacher ? "0" : ""}>
-                        <div style={{ border: "3.5px solid #EEB7DA", transition: 'border .3s' }} className='px-3 py-2 rounded'>
+                        <div style={{ border: "3.5px solid #EEB7DA", transition: 'border .3s' }} className='px-3 py-2 rounded mt-0 mt-sm-3'>
                             <div className='d-flex justify-content-between'>
                                 <section className='d-flex flex-column justify-content-center align-items-center w-100'>
                                     <section className='d-flex col-12  flex-column'>
@@ -300,7 +301,7 @@ const AboutUserModal = () => {
                             <Accordion.Item eventKey="0" className='p-0 rounded-0 border-0 col-12 px-lg-4'>
                                 <Accordion.Body className='p-0 rounded-0'>
                                     <section style={{ columnCount: 2 }} className='mt-3 mb-2 row'>
-                                        <GradesOrYearsSelection />
+                                        <GradesOrYearsSelection _errors={[errors, setErrors]} />
                                         <section className='d-flex flex-column col-12 col-lg-6 mt-2 mt-sm-0'>
                                             <label style={{ lineHeight: '25px' }}>
                                                 *How many students do you teach?
@@ -311,9 +312,14 @@ const AboutUserModal = () => {
                                                 name='classroomSize'
                                                 value={aboutUserForm?.classroomSize ?? '0'}
                                                 onChange={handleOnInputChange}
-                                                style={{ maxWidth: '200px', transform: 'translateY(50%)' }}
-                                                className='aboutme-txt-input no-outline'
+                                                style={{ maxWidth: '200px' }}
+                                                className='aboutme-txt-input no-outline mt-1'
                                             />
+                                            <section className='border-danger'>
+                                                <ErrorTxt>
+                                                    {errors.get('classroomSize') ?? ''}
+                                                </ErrorTxt>
+                                            </section>
                                         </section>
                                     </section>
                                     <section className='d-flex flex-column mt-4 mt-lg-3'>
@@ -326,6 +332,7 @@ const AboutUserModal = () => {
                                                     <SubjectOption
                                                         key={index}
                                                         index={index}
+                                                        _errors={[errors, setErrors]}
                                                         subjectFieldNameForMapTracker={`subject-${index}`}
                                                         customCssClassses={index !== 0 ? 'mt-2 mt-sm-0' : ''}
                                                         subject={subject}
@@ -337,12 +344,18 @@ const AboutUserModal = () => {
                                                     <SubjectOption
                                                         key={index}
                                                         index={index}
+                                                        _errors={[errors, setErrors]}
                                                         subjectFieldNameForMapTracker={`other-subject-${index}`}
                                                         customCssClassses='mt-2 mt-sm-0'
                                                         subject={subject}
                                                     />
                                                 ))}
                                             </div>
+                                        </section>
+                                        <section style={{ height: '28px' }}>
+                                            <ErrorTxt>
+                                                {errors.get('subjects') ?? ''}
+                                            </ErrorTxt>
                                         </section>
                                     </section>
                                 </Accordion.Body>
@@ -403,7 +416,7 @@ const AboutUserModal = () => {
                         </section>
                     </section>
                     <section className='d-flex justify-content-end'>
-                        <SubmitAboutUserFormBtn setErrors={setErorrs} countryNames={countryNames} />
+                        <SubmitAboutUserFormBtn setErrors={setErrors} countryNames={countryNames} />
                     </section>
                 </form>
             </ModalBody>

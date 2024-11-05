@@ -6,7 +6,7 @@
 /* eslint-disable indent */
 import { useContext, useState } from "react";
 import Button from "../../General/Button";
-import { aboutUserFormDefault, UserContext } from "../../../providers/UserProvider";
+import { userAccountDefault, UserContext } from "../../../providers/UserProvider";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { CustomError } from "../../../backend/utils/errors";
@@ -39,7 +39,7 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
 
     const handleSubmitBtnClick = async event => {
         event.preventDefault();
-        
+
         setWasBtnClicked(true);
 
         await sleep(200);
@@ -51,6 +51,7 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
             }
 
             let aboutUserFormClone = structuredClone(aboutUserForm);
+            console.log('aboutUserFormClone: ', aboutUserFormClone);
             let {
                 country,
                 zipCode,
@@ -58,12 +59,22 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 subjects,
                 occupation,
                 gradesOrYears,
+                classroomSize,
                 isTeacher,
             } = aboutUserFormClone;
+            const { ageGroupsTaught, selection } = gradesOrYears ?? {};
             const errors = new Map();
 
+            // if the user is teacher, then following must filled out:
+            // -gradesOrYears and the grades taught 
+            // -how many students that they taught
+            // -subjects taught
+
             if (!gradesOrYears?.ageGroupsTaught?.length || !isTeacher) {
-                aboutUserFormClone.gradesOrYears = aboutUserFormDefault.gradesOrYears;
+                aboutUserFormClone = {
+                    ...aboutUserFormClone,
+                    gradesOrYears: userAccountDefault.gradesOrYears,
+                };
             }
 
             if (!isTeacher) {
@@ -97,18 +108,33 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 };
             }
 
+            // adding the errors
             if ((country?.toLowerCase() === 'united states') && (!zipCode || (zipCode?.toString()?.length == 0) || (zipCode < 0))) {
                 errors.set('zipCode', 'This field is required');
             }
 
             if (!occupation || (occupation?.length <= 0)) {
-                errors.set('occupation', 'This field is required.');
+                errors.set('occupation', '*This field is required.');
             }
 
             if (country?.length <= 0) {
-                errors.set('country', 'This field is required.');
+                errors.set('country', '*This field is required.');
             } else if (!countryNames?.includes(country)) {
-                errors.set('country', 'Invalid country name.');
+                errors.set('country', '*Invalid country name.');
+            }
+
+            if (isTeacher && !selection) {
+                errors.set('gradesOrYears', `*Please select either "U.S." or "outside U.S."`);
+            } else if (isTeacher && !ageGroupsTaught?.length) {
+                errors.set('gradesOrYears', `*Please select atleast one grade or year.`);
+            }
+
+            if (isTeacher && ((Number.isInteger(+classroomSize) && (Number.parseInt(classroomSize) <= 0)) || !classroomSize)) {
+                errors.set('classroomSize', `*This field is required. Must be greater than 0.`);
+            }
+
+            if (isTeacher && subjects.size === 0) {
+                errors.set('subjects', `*This field is required.`);
             }
 
             if (errors?.size > 0) {
@@ -118,8 +144,6 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
 
                 throw new CustomError(errMsg, null, "invalidAboutUserForm.");
             }
-
-            console.log("aboutUserForm: ", aboutUserForm);
 
             const responseBody = {
                 aboutUserForm: aboutUserFormClone,
@@ -138,6 +162,8 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 throw new CustomError('Failed to save form. Refresh the page, and try again.', null, "aboutUserFormReqFailure");
             }
 
+            localStorage.setItem('userAccount', JSON.stringify(aboutUserFormClone));
+
             setIsAboutUserModalDisplayed(false);
 
             setTimeout(() => {
@@ -151,7 +177,7 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 });
             }, 300);
         } catch (error) {
-            console.log('error: ', error);
+            console.error('error: ', error);
             const { message, response } = error ?? {};
 
             console.error("An error has occurred. Couldn't update the 'About User' form. Reason: ", error);

@@ -6,8 +6,9 @@
 import { useContext } from "react";
 import { UserContext } from "../../../../providers/UserProvider";
 
-const SubjectOption = ({ subject, customCssClassses = '', subjectFieldNameForMapTracker }) => {
+const SubjectOption = ({ subject, customCssClassses = '', subjectFieldNameForMapTracker, _errors }) => {
     const { _aboutUserForm } = useContext(UserContext);
+    const [, setErrors] = _errors;
     /** @type {[import("../../../../providers/UserProvider").TAboutUserForm, Function]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const isChecked = aboutUserForm?.subjects?.has(subjectFieldNameForMapTracker);
@@ -15,6 +16,16 @@ const SubjectOption = ({ subject, customCssClassses = '', subjectFieldNameForMap
     const handleCheckboxOnchange = ({ target }) => {
         const { value, name } = target;
         const subjectsTaught = structuredClone(aboutUserForm.subjects) ?? new Map();
+
+        setErrors(state => {
+            const stateClone = structuredClone(state);
+
+            if (stateClone.has('subjects')) {
+                stateClone.delete('subjects');
+            }
+
+            return stateClone;
+        });
 
         if ((value === 'other:') && isChecked) {
             subjectsTaught.delete(name);
