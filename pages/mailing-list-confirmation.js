@@ -32,9 +32,9 @@ const MailingListConfirmation = () => {
             (async () => {
                 try {
                     const headers = {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+
                     };
                     const paramsStr = window.location.search.replace(/\?/, '');
                     const urlParams = paramsStr.split('=');
@@ -52,8 +52,6 @@ const MailingListConfirmation = () => {
                         {
                             headers,
                         });
-                    console.log('data, yo there: ', data);
-
                     if (status !== 200) {
                         console.log('An error has occurred: ', data);
                         setUserMailingListStatusResultUI(

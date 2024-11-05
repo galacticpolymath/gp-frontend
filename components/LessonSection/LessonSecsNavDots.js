@@ -190,8 +190,6 @@ const LessonsSecsNavDots = ({ _sectionDots, setIsScrollListenerOn, isScrollListe
         }
     }, 200))();
 
-    console.log("yo there meng: ", sectionDots.dots)
-
     return (
         <div
             style={{ transform: 'translateY(8%)' }}

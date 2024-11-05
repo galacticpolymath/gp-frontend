@@ -64,8 +64,6 @@ const Notify = () => {
         let paramsStr = window.location.search.replace(/\?/, '');
         const params = paramsStr.split('=');
 
-        console.log('params, yo there meng: ', params);
-
         if ((params[0] === 'signin-err-type') && (params[1] === 'duplicate-user-with-google')) {
             setNotifyModal({
                 headerTxt: "ERROR! Couldn't create account.",

@@ -16,7 +16,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { createUser, deleteUser, getUser, getUserByEmail, updateUser } from '../services/userServices';
 import NodeCache from 'node-cache';
 import { addUserToEmailList } from '../services/emailServices';
-import { zip } from 'd3';
 
 const VALID_FORMS = ['createAccount', 'login'];
 export const cache = new NodeCache({ stdTTL: 100 });
@@ -25,7 +24,6 @@ export const cache = new NodeCache({ stdTTL: 100 });
 export default function MyAdapter() {
   return {
     async createUser(user) {
-      console.log('createUser, yo there: ', user);
       return;
     },
     async getUser(id) {
@@ -33,7 +31,6 @@ export default function MyAdapter() {
       return;
     },
     async getUserByEmail(email) {
-      console.log('email, yo meng: ', email);
       return;
     },
     async getUserByAccount(param) {
@@ -304,8 +301,6 @@ export const authOptions = {
   callbacks: {
     async signIn(param) {
       try {
-        console.log('signin param, yo there: ', param);
-
         const { user, account, profile, credentials } = param;
         const {
           errType,

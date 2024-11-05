@@ -63,6 +63,7 @@ export const getAuthorizeReqResult = async (
         const payload = verifyJwtResult.payload;
 
         if (!payload) {
+            console.log('payload, fuck: ', payload);
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 
@@ -88,7 +89,8 @@ export const getAuthorizeReqResult = async (
             throw new AuthMiddlwareError(false, response, errMsg);
         }
 
-        if (willCheckForValidEmail && (email !== emailToValidate)) {
+        if (willCheckForValidEmail && (emailToValidate && (email !== emailToValidate))) {
+            console.log('FUCK YOU BITCH!');
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 

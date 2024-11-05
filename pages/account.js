@@ -114,8 +114,6 @@ const AccountPg = () => {
                         paramsAndHeaders,
                     );
 
-                    console.log("response, yo there: ", response);
-
                     if (response.status !== 200) {
                         throw new Error("Failed to get 'AboutUser' form for the target user.");
                     }
@@ -234,8 +232,6 @@ const AccountPg = () => {
         }
 
         const isOnMailingList = localStorage.getItem('isOnMailingList') ? JSON.parse(localStorage.getItem('isOnMailingList')) : false;
-
-        console.log('isOnMailingList, yo there: ', isOnMailingList);
 
         if (isOnMailingList && (status === 'authenticated')) {
             (async () => {

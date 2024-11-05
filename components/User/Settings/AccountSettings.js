@@ -24,6 +24,9 @@ const AccountSettings = () => {
     const [isSavingChangesSpinnerOn, setIsSavingChangesSpinnerOn] = useState(false);
     const [accountForm, setAccountForm] = useState({});
     const session = useSession();
+    // print session
+    // create indicator txdt 
+    const { token } = session?.data ?? {};
     const { email } = session?.data?.user ?? {};
     const [errors, setErrors] = useState(new Map());
     const router = useRouter();
@@ -37,6 +40,11 @@ const AccountSettings = () => {
         setIsAccountSettingModalDisplayed(false);
     };
     const handleOnInputChange = event => {
+        setErrors(state => {
+            state.delete(event.target.name);
+
+            return state;
+        });
         setAccountForm(state => ({
             ...state,
             [event.target.name]: event.target.value,
@@ -70,7 +78,7 @@ const AccountSettings = () => {
         let didDeleteUserSuccessfully = false;
 
         if (willDeleteAccount && email) {
-            const { wasSuccessful } = await sendDeleteUserReq(email);
+            const { wasSuccessful } = await sendDeleteUserReq(email, token);
             didDeleteUserSuccessfully = wasSuccessful;
         }
 
@@ -81,7 +89,7 @@ const AccountSettings = () => {
             return;
         }
 
-        alert('An error has occurred. Please refresh the page and try again.')
+        alert('An error has occurred. Please refresh the page and try again.');
     };
     const handleIsOnMailingListBtnToggle = () => {
         setAccountForm(state => ({
@@ -92,6 +100,22 @@ const AccountSettings = () => {
 
     const handleSaveBtnClick = async () => {
         setIsSavingChangesSpinnerOn(true);
+        const errors = new Map();
+
+        if (!accountForm.firstName) {
+            errors.set('firstName', 'Please enter your first name.');
+        }
+        if (!accountForm.lastName) {
+            errors.set('lastName', 'Please enter your last name.');
+        }
+
+        if (errors.size > 0) {
+            setErrors(errors);
+            setTimeout(() => {
+                setIsSavingChangesSpinnerOn(false);
+            }, 250);
+            return;
+        }
         const userAccountPrevVals = localStorage.getItem('userAccount') ? JSON.parse(localStorage.getItem('userAccount')) : {};
         const willSendEmailListingSubConfirmationEmailObj = userAccountPrevVals.isOnMailingList === accountForm.isOnMailingList ? {} : { willSendEmailListingSubConfirmationEmail: accountForm.isOnMailingList };
         const updatedUser = {
@@ -105,7 +129,7 @@ const AccountSettings = () => {
             ...additionalReqBodyProps,
             ...willSendEmailListingSubConfirmationEmailObj,
         };
-        const responseBody = await updateUser({ email: email }, updatedUser, additionalReqBodyProps);
+        const responseBody = await updateUser({ email: email }, updatedUser, additionalReqBodyProps, token);
 
         if (!responseBody) {
             alert('Failed to save changes. Please try again later. If this problem persists, please contact support.');
@@ -185,7 +209,7 @@ const AccountSettings = () => {
                                     defaultValue={accountForm.firstName}
                                     className={`account-settings-input no-outline pt-1 ${errors.has('firstName') ? 'text-danger border-danger' : ''}`}
                                 />
-                                <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-sm-2 ms-sm-0'>{errors.get('firstName') ?? ''}</span>
+                                <span style={{ height: '25px', fontSize: '16px' }} className='text-danger'>{errors.get('firstName') ?? ''}</span>
                             </section>
                             <section className='d-flex flex-column col-12 col-sm-8 col-lg-6'>
                                 <label
@@ -209,10 +233,10 @@ const AccountSettings = () => {
                                     }}
                                     className={`account-settings-input pt-1 ${errors.has('lastName') ? 'border-danger' : ''}`}
                                 />
-                                <span style={{ height: '25px', fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('lastName') ?? ''}</span>
+                                <span style={{ height: '25px', fontSize: '16px' }} className='text-danger'>{errors.get('lastName') ?? ''}</span>
                             </section>
                         </section>
-                        <section className='row d-flex flex-column flex-lg-row px-sm-3'>
+                        <section className='row d-flex flex-column flex-lg-row px-sm-3 mt-3'>
                             <CheckBox
                                 isChecked={accountForm.isOnMailingList}
                                 handleOnClick={handleIsOnMailingListBtnToggle}

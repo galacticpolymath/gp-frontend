@@ -54,8 +54,6 @@ export const updateUser = async (
         /** @type {import('../models/user').TUserSchema} */
         let updatedUser = await User.findOneAndUpdate(filterQuery, updatedUserProperties, { new: true }).lean();
 
-        console.log('yo there meng, updatedUser: ', updatedUser);
-
         if (!updatedUser) {
             console.error('The target user does not exist. Check "filterQuery" object.');
 
@@ -64,8 +62,6 @@ export const updateUser = async (
 
         if (updatedUserPropsToFilterOut.length) {
             const entries = Object.entries(updatedUser);
-
-            console.log('entries, yo there: ', entries);
 
             const updateUserWithProjectedProps = entries.reduce(
                 (updatedUserWithProjectedPropsAccum, [key, value]) => {
@@ -98,7 +94,7 @@ export const updateUser = async (
 
 export const deleteUser = async (query = {}) => {
     try {
-        if(!query || (Object.keys(query).length === 0) || (query && (typeof query !== 'object')) || (Array.isArray(query))) {
+        if (!query || (Object.keys(query).length === 0) || (query && (typeof query !== 'object')) || (Array.isArray(query))) {
             throw new Error('"query" must be a non-array object. The "query" argument cannot be an empty object.');
         }
 

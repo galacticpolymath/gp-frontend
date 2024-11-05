@@ -6,7 +6,13 @@ import { getAuthorizeReqResult, getChunks } from './nondependencyFns';
 import { PASSWORD_RESET_TOKEN_VAR_NAME } from './globalVars';
 
 const DB_ADMIN_ROUTES = ['/api/insert-lesson', '/api/delete-lesson', '/api/update-lessons'];
-const USER_ACCOUNT_ROUTES = ['/api/get-about-user-form', '/api/save-about-user-form'];
+const USER_ACCOUNT_ROUTES = [
+  '/api/save-about-user-form',
+  '/api/update-user',
+  '/api/get-user-account-data',
+  '/api/delete-user',
+  '/api/user-confirms-mailing-list-sub',
+];
 
 const getUnitNum = pathName => parseInt(pathName.split('/').find(val => !Number.isNaN(parseInt(val)) && (typeof parseInt(val) === 'number')));
 
@@ -98,6 +104,7 @@ export async function middleware(request) {
     }
 
     const authorizationStr = headers.get('authorization');
+    console.log('authorizationStr: ', authorizationStr);
     const isGettingJwtToken = (nextUrl.pathname == '/api/get-jwt-token') && (method === 'POST');
     let email = null;
 
@@ -139,8 +146,11 @@ export async function middleware(request) {
       ((nextUrl.pathname == '/api/update-lessons') && (method === 'PUT') && authorizationStr) ||
       ((nextUrl.pathname == '/api/insert-lesson') && (method === 'POST') && authorizationStr) ||
       ((nextUrl.pathname == '/api/delete-lesson') && (method === 'DELETE') && authorizationStr) ||
-      ((nextUrl.pathname == '/api/get-about-user-form') && (method === 'GET') && authorizationStr) ||
-      ((nextUrl.pathname == '/api/save-about-user-form') && (method === 'PUT') && authorizationStr)
+      ((nextUrl.pathname == '/api/delete-user') && (method === 'DELETE') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/get-user-account-data') && (method === 'GET') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/save-about-user-form') && (method === 'PUT') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/update-user') && (method === 'PUT') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/user-confirms-mailing-list-sub') && (method === 'PUT') && authorizationStr)
     ) {
       const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES.includes(nextUrl.pathname);
       const willCheckForValidEmail = USER_ACCOUNT_ROUTES.includes(nextUrl.pathname);
@@ -149,9 +159,9 @@ export async function middleware(request) {
 
       urlParamsStr = typeof nextUrl?.search === 'string' ? urlParamsStr.replace(/%40/g, '@') : '';
 
-      if ((nextUrl.pathname === '/api/get-about-user-form') && (urlParamsStr.split('=').length == 2)) {
+      if ((nextUrl.pathname === '/api/get-user-account-data') && (urlParamsStr.split('=').length == 2)) {
         clientEmail = urlParamsStr.split('=')[1];
-      } else if (nextUrl.pathname === '/api/get-about-user-form') {
+      } else if (nextUrl.pathname === '/api/get-user-account-data') {
         throw new Error("Received invalid parameters for the retreival of the user's 'About Me' form.");
       }
 
@@ -163,15 +173,17 @@ export async function middleware(request) {
         throw new Error("Received invalid parameters for the retreival of the user's 'About Me' form.");
       }
 
-      const authorizationResult = await getAuthorizeReqResult(
+      const { isAuthorize, errResponse } = await getAuthorizeReqResult(
         authorizationStr,
         willCheckIfUserIsDbAdmin,
         willCheckForValidEmail,
         clientEmail
       );
 
-      if (authorizationResult) {
-        return authorizationResult.errResponse;
+      console.log('isAuthorize, deleting account: ', isAuthorize);
+
+      if (!isAuthorize) {
+        return errResponse;
       }
 
       return NextResponse.next();
@@ -203,5 +215,9 @@ export const config = {
     '/api/update-password',
     '/password-reset',
     '/lessons/:path*',
+    '/api/delete-user',
+    '/api/get-user-account-data',
+    '/api/update-user',
+    '/api/user-confirms-mailing-list-sub',
   ],
 };
