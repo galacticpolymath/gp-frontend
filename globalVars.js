@@ -19,6 +19,7 @@ export const PROJECTED_LESSONS_FIELDS = [
     'ForGrades',
     'GradesOrYears',
 ];
+export const CONTACT_SUPPORT_EMAIL = 'mailto:feedback@galacticpolymath.com';
 
 // user account inputs
 export const USER_INPUT_BACKGROUND_COLOR = '#E8F0FE';

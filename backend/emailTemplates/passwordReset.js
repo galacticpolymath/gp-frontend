@@ -1,4 +1,6 @@
 /* eslint-disable indent */
+import { CONTACT_SUPPORT_EMAIL } from '../../globalVars';
+
 export const createPasswordResetEmail = (recipientName, passwordResetUrl) => {
     return `
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -486,7 +488,7 @@ export const createPasswordResetEmail = (recipientName, passwordResetUrl) => {
                             <td class="content-cell">
                             <div class="f-fallback">
                                 <h1>Hi ${recipientName},</h1>
-                                <p>You recently requested to reset your password for your [Product Name] account. Use the button below to reset it. <strong>This password reset is only valid for the next 24 hours.</strong></p>
+                                <p>You recently requested to reset your password. Use the button below to reset it. <strong>This password reset is only valid for the next 5 minutes.</strong></p>
                                 <!-- Action -->
                                 <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                                 <tr>
@@ -503,9 +505,9 @@ export const createPasswordResetEmail = (recipientName, passwordResetUrl) => {
                                     </td>
                                 </tr>
                                 </table>
-                                <p>For security, this request was received from a {{operating_system}} device using {{browser_name}}. If you did not request a password reset, please ignore this email or <a href="{{support_url}}">contact support</a> if you have questions.</p>
+                                <p>If you did not request a password reset or if you don't use an email and password to access your GP account, please ignore this email or <a href="${CONTACT_SUPPORT_EMAIL}">contact support</a> if you have questions.</p>
                                 <p>Thanks,
-                                <br>The [Product Name] team</p>
+                                <br>The Galactic Polymath Team</p>
                                 <!-- Sub copy -->
                                 <table class="body-sub" role="presentation">
                                 <tr>

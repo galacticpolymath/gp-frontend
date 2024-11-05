@@ -12,6 +12,7 @@ import { CustomError } from '../../../backend/utils/errors';
 import { defautlNotifyModalVal, ModalContext } from '../../../providers/ModalProvider';
 import { CustomNotifyModalFooter } from '../../Modals/Notify';
 import { useRouter } from 'next/router';
+import { CONTACT_SUPPORT_EMAIL } from '../../../globalVars';
 
 const JWT_EXPIRED_TOKENS_ERR_TYPES = ['ERR_JWT_EXPIRED', 'expiredToken'];
 
@@ -97,7 +98,25 @@ const PasswordResetForm = () => {
         } catch (error) {
             console.error('An error has occurred in reseting: ', error);
             const { errType } = error?.response?.data ?? {};
+            // print errTy;e
+            console.log('errType: ', errType);
             let errMsg = error.message ?? 'Failed to update password. Press "Restart Recover" to try again.';
+            let bodyTxt = '';
+            let bodyElements = (
+                <span>
+                    Password reset time window may have expired. Please try again.
+                </span>
+            );
+
+            if (errType === 'notCredentialsUser') {
+                errMsg = 'ERROR!';
+                bodyElements = (
+                    <span>
+                        This account does not log in using an email and password. If you think this is a mistake, please <a href={`{${CONTACT_SUPPORT_EMAIL}`}>contact</a> support.
+                    </span>
+                );
+
+            }
 
             if ((typeof errType === 'string') && JWT_EXPIRED_TOKENS_ERR_TYPES.includes(errType)) {
                 errMsg = 'Time window for resetting your password has expired. Please try again.';
@@ -113,8 +132,9 @@ const PasswordResetForm = () => {
             );
             setNotifyModal({
                 headerTxt: errMsg,
-                bodyTxt: '',
+                bodyTxt,
                 isDisplayed: true,
+                bodyElements,
                 handleOnHide: closeNotifyModal,
             });
         } finally {

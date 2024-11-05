@@ -48,10 +48,15 @@ export default async function handler(request, response) {
             throw new CustomError('The password reset token has expired.', 401, 'expiredToken');
         }
 
-        const doesUserExist = !!getUserByEmail(email);
+        const user = await getUserByEmail(email);
 
-        if (!doesUserExist) {
+        if (!user) {
             throw new CustomError('The user does not exist.', 404);
+        }
+
+        console.log('the user: ', user);          
+        if (user.provider !== 'credentials') {
+            throw new CustomError('Only credentials based user can reset their password.', 401, 'notCredentialsUser');
         }
 
         const hashedPasswordResult = hashPassword(
@@ -79,6 +84,6 @@ export default async function handler(request, response) {
 
         console.error('An error has occurred: ', errMsg);
 
-        return response.status(status ?? 500).json({ msg: errMsg, errType: code ?? type });
+        return response.status(status ?? 500).json({ msg: errMsg, errType: type });
     }
 }
