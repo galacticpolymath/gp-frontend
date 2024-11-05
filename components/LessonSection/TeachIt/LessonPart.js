@@ -406,10 +406,14 @@ const LessonPart = ({
             </div>
             <ol className='mt-2 materials-list'>
               {!!_itemList?.length && _itemList.map((item, itemIndex) => {
+                console.log('yo there item: ', item);
                 const { itemTitle, itemDescription, links, filePreviewImg, itemCat } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
                 const imgLink = (itemCat === 'web resource') ? (_links?.[0]?.url ?? '') : (_links?.[1]?.url ?? '');
                 const isTeacherItem = itemTitle.toLowerCase().includes('teacher');
+                // print isTeacherItem
+                console.log('isTeacherItem: ', isTeacherItem);
+                console.log('isSignedIn: ', isSignedIn);
 
                 return (
                   <li key={itemIndex} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
@@ -422,12 +426,14 @@ const LessonPart = ({
                                 onClick={handleSignInBtnClick}
                                 className='mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover'
                               >
+                                sup there!
                                 Sign in
                               </Button>
                             </div>
                           </SignInSuggestion>
                         )}
                         <section
+                          // isTeacherItem && !isSignedIn ? 'blur(4px)' : 'none'
                           style={{ filter: isTeacherItem && !isSignedIn ? 'blur(4px)' : 'none' }}
                           className='d-flex justify-content-between position-relative'
                         >
