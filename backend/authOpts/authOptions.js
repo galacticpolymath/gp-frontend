@@ -428,8 +428,6 @@ export const authOptions = {
 
         return true;
       } catch (error) {
-        console.log('error, yo there: ', error);
-
         const { type, urlErrorParamKey, urlErrorParamVal } = error ?? {};
 
         if (urlErrorParamKey && urlErrorParamVal) {

@@ -63,7 +63,6 @@ export const getAuthorizeReqResult = async (
         const payload = verifyJwtResult.payload;
 
         if (!payload) {
-            console.log('payload, fuck: ', payload);
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 
@@ -73,7 +72,7 @@ export const getAuthorizeReqResult = async (
         const { exp: expTimeSeconds, roles, email } = payload;
         const currentMiliseconds = Date.now();
         const expTimeMiliseconds = expTimeSeconds * 1_000;
-        
+
         if (currentMiliseconds > expTimeMiliseconds) {
             const errMsg = 'The json web token has expired.';
             console.log('errMsg: ', errMsg);

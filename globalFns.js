@@ -334,8 +334,6 @@ export const getChunks = (arr, chunkSize) => {
 export const createChunks = (arr, chunkSize) => {
     const chunks = [];
     let chunkWindow = [];
-    // print arr 
-    console.log('arr, yo there: ', arr)
 
     for (let index = 0; index < arr.length; index++) {
         let val = arr[index];
@@ -351,8 +349,6 @@ export const createChunks = (arr, chunkSize) => {
             chunks.push(chunkWindow);
         }
     }
-
-    console.log('chunks, yo there: ', chunks)
 
     return chunks;
 };

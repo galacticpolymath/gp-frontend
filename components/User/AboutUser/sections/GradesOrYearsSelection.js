@@ -46,12 +46,10 @@ const GradesOrYearsSelection = ({ _errors }) => {
         const { value: selectedAgeGroup } = event.target;
 
         setErrors(state => {
-            console.log('state, yo there: ', state);
             const errorsClone = structuredClone(state);
             const errMsg = errorsClone.get('gradesOrYears');
 
             if (errMsg === '*Please select atleast one grade or year.') {
-                console.log('fuck you bitch ');
                 errorsClone.delete('gradesOrYears');
             }
 
