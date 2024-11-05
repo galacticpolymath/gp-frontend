@@ -16,7 +16,7 @@ import { ModalContext } from '../providers/ModalProvider';
 import { UserContext, userAccountDefault } from '../providers/UserProvider';
 import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
-import { createChunks, getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
+import { getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
 import { FaUserAlt } from 'react-icons/fa';
 
 export const getAboutUserFormForClient = userAccount => {
@@ -340,7 +340,7 @@ const AccountPg = () => {
                             <FaUserAlt fontSize={35} color='#2C83C3' />}
                     </section>
                     <section className='col-12 d-flex justify-content-center align-items-center mt-3 flex-column'>
-                        <h5 className='mb-0'>{name.first} {name.last}</h5>
+                        <h5 className='mb-0'>{name?.first} {name?.last}</h5>
                         <span>{email}</span>
                     </section>
                     <section className='col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2'>

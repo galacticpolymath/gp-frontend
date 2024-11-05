@@ -177,7 +177,9 @@ export const authOptions = {
           }
 
           if (dbUser && (formType === 'createAccount')) {
-            throw new AuthError('userAlreadyExist', 409, callbackUrl ?? '', 'user-account-creation-err-type', 'duplicate-user-try-google');
+            const urlErrParamVal = dbUser.provider === 'google' ? 'duplicate-user-try-google' : 'duplicate-user-try-creds';
+
+            throw new AuthError('userAlreadyExist', 409, callbackUrl ?? '', 'user-account-creation-err-type', urlErrParamVal);
           }
 
           console.log('If user is logging in, will check if the password is correct.');
@@ -189,6 +191,9 @@ export const authOptions = {
 
             throw new AuthError('invalidCredentials', 404, callbackUrl ?? '');
           }
+
+          // TEST FOR THE FOLLOWING: 
+          // there is a user with a credentials login, create an account using google with the same email
 
           if ((formType === 'login') && getIsPasswordCorrect({ iterations, salt, password: password }, hashedPasswordFromDb)) {
             console.log('Password is correct, will log the user in.');
@@ -336,11 +341,20 @@ export const authOptions = {
 
         await connectToMongodb();
 
-        // unable to query the user from the database
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
 
-        if (errType === 'userAlreadyExist') {
-          const urlErrorParamVal = dbUser.provider === 'google' ? 'duplicate-user-try-creds' : 'duplicate-user-try-google';
+        // if you get a dbUser, the provider === 'google', wasUserCreated is true, then do the following:
+        // throw the signInError, with the following error type: 
+        // -duplicate-user
+        // get the provider for the target user in the db, if it is google, then = 'duplicate-user-try-google', else if 
+        // -it is 'credentials', then it is = 'duplicate-user-try-creds'
+
+        console.log('dbUser, liver: ', dbUser);
+        console.log('wasUserCreated, beef: ', wasUserCreated);
+
+        if ((errType === 'userAlreadyExist') || (dbUser && (typeof dbUser === "object") && wasUserCreated)) {
+          console.log('there exist another user in the db, the clienet is trying to create an account with google..');
+          const urlErrorParamVal = dbUser.provider === 'google' ? 'duplicate-user-try-google' : 'duplicate-user-try-creds';
 
           throw new SignInError(
             'duplicate-user',
@@ -353,6 +367,8 @@ export const authOptions = {
 
         // The user is creating an account, a duplicate google account already exist.
         if (dbUser && wasUserCreated && providerAccountId) {
+          console.log('the user is creating an account with google, there is exist another account...');
+
           await deleteUser({ providerAccountId: providerAccountId });
 
           throw new SignInError(
@@ -360,12 +376,13 @@ export const authOptions = {
             'This email has already been taken.',
             code ?? 422,
             'user-account-creation-err-type',
-            'duplicate-user-try-creds'
+            'duplicate-user-try-google'
           );
         }
 
         // Finish creating the google user account in the db.
         if (wasUserCreated && (account.provider === 'google') && !dbUser) {
+          console.log('creating the target google user...');
           const { picture, given_name, family_name } = profile ?? {};
           const name = {
             first: given_name,
@@ -397,16 +414,22 @@ export const authOptions = {
 
         // sign the credentials based user in.
         if (wasUserCreated && (account.provider === 'credentials')) {
+          console.log('will create the target user...');
+
           return true;
         }
 
         if (!dbUser) {
+          console.log('the user is not found in the db...');
+
           throw new SignInError(
             'user-not-found',
             'The target user is not found in the db.',
             404
           );
         }
+
+        console.log('the user is found in the db...');
 
         return true;
       } catch (error) {
@@ -463,7 +486,7 @@ export const authOptions = {
         await connectToMongodb();
 
         const dbUser = await getUserByEmail(email);
-        
+
         if (!dbUser) {
           return Promise.resolve(session);
         }
