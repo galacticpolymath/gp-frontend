@@ -70,7 +70,6 @@ export const UserSchema = new Schema({
   subjects: { type: Object, required: false },
   classroomSize: { type: Number, required: false },
   roles: { type: [String], required: true },
-  isOnMailingList: { type: Boolean, required: false, default: false },
 });
 
 if (!models.users) {

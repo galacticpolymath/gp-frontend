@@ -175,8 +175,10 @@ export const authOptions = {
             throw new AuthError('dbUserDoesNotHaveCredentialsProvider', 401, callbackUrl ?? '');
           }
 
-          if (dbUser && formType === 'createAccount') {
-            throw new AuthError('userAlreadyExist', 409, callbackUrl ?? '');
+          if (dbUser && (formType === 'createAccount')) {
+            const urlErrParamVal = dbUser.provider === 'google' ? 'duplicate-user-with-google' : 'duplicate-user-with-creds';
+
+            throw new AuthError('userAlreadyExist', 409, callbackUrl ?? '', 'user-account-creation-err-type', urlErrParamVal);
           }
 
           console.log('If user is logging in, will check if the password is correct.');
@@ -200,13 +202,8 @@ export const authOptions = {
 
           console.log('Creating the new user...');
 
-          console.log('Creating the new user...');
-
-          isOnMailingList =
-            getIsParsable(isOnMailingList) && (typeof JSON.parse(isOnMailingList) === 'boolean') ? JSON.parse(isOnMailingList) : false;
           const hashedPassword = hashPassword(password, createSalt(), createIterations());
           const userDocumentToCreate = {
-            isOnMailingList,
             _id: uuidv4(),
             email: email,
             password: hashedPassword,
@@ -239,7 +236,7 @@ export const authOptions = {
             console.error('Failed to send mailing list confirmation email. Reason: ', emailingListingConfrimationEmailMsg);
           }
 
-          return { ...userDocumentToCreate, wasUserCreated: true, clientOrigin };
+          return { ...userDocumentToCreate, wasUserCreated: true };
         } catch (error) {
           console.log('error object: ', error);
           const { errType, code, redirectUrl, urlErrorParamKey, urlErrorParamVal } = error ?? {};
@@ -325,7 +322,7 @@ export const authOptions = {
           throw new SignInError(
             'provider-mismatch-error',
             'The provider of the sign in method does not match with the provider stored in the database for the user.',
-            code ?? 400
+            code ?? 422
           );
         }
 
@@ -405,19 +402,6 @@ export const authOptions = {
               'Failed to create the user who signed in with google.',
               500
             );
-          }
-
-          return true;
-        }
-
-        if (wasUserCreated && (account.provider === 'credentials') && isOnMailingList) {
-          const url = new URL(credentials.callbackUrl);
-          const wasEmailAdded = await addUserToMailingList(userEmail, name.firstName, name.lastName, url.origin);
-
-          if (wasEmailAdded) {
-            console.log('Successfully added the user to the mailing list.');
-          } else {
-            console.error('Failed to add user to mailing list.');
           }
 
           return true;
