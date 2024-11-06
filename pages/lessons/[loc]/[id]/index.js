@@ -9,7 +9,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import Layout from '../../../../components/Layout';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import ParentLessonSection from '../../../../components/LessonSection/ParentLessonSection';
 import LessonsSecsNavDots from '../../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../../components/AboutPgComps/ShareWidget';
@@ -20,6 +20,7 @@ import { connectToMongodb } from '../../../../backend/utils/connection';
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
 import { getLinkPreviewObj, removeHtmlTags } from '../../../../globalFns';
 import { useSession } from 'next-auth/react';
+import { ModalContext } from '../../../../providers/ModalProvider';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
@@ -65,6 +66,8 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
+  const { _notifyModal } = useContext(ModalContext);
+  const [, setNotifyModal, _customModalFooter] = _notifyModal;
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
   let lessonStandardsSections = lessonSectionObjEntries.filter(([sectionName], index) => {
@@ -191,8 +194,34 @@ const LessonDetails = ({ lesson }) => {
     }
   }, [willGoToTargetSection])
 
+  const getIsWithinParentElemenet = (element, specifier, classNameOrId = "className") => {
+    if (!element?.parentElement || (element?.parentElement && (classNameOrId in element.parentElement) && (element?.parentElement[classNameOrId] === undefined))) {
+      console.error('Reached end of document.');
+      return false;
+    }
+
+    if (element.parentElement[classNameOrId].includes(specifier)) {
+      return true;
+    }
+
+    return getIsWithinParentElemenet(element.parentElement, specifier, classNameOrId);
+  }
+
   useEffect(() => {
     document.body.addEventListener('click', handleDocumentClick);
+
+    document.body.addEventListener('click', event => {
+      const isWithinBonusContent = getIsWithinParentElemenet(event.target, 'Bonus_Content_collapsible_text_sec', 'className');
+      // print the above value
+      if (isWithinBonusContent) {
+        setNotifyModal, _customModalFooter({
+
+        })
+      }
+      
+    });
+
+    // when a element is clicked, check if it is witihn the bonus content section 
 
     return () => document.body.removeEventListener('click', handleDocumentClick);
   }, []);

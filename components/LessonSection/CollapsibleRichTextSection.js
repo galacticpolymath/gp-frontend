@@ -15,6 +15,9 @@ const CollapsibleRichTextSection = ({
   const { _sectionDots, SectionTitle } = props;
   const ref = useRef();
   const sectionTitle = SectionTitle.split(' ').slice(1).join('_');
+  // print sectionTitle
+
+  console.log('sectionTitle, yo there: ', sectionTitle);
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
@@ -22,7 +25,7 @@ const CollapsibleRichTextSection = ({
     <CollapsibleLessonSection initiallyExpanded={InitiallyExpanded} {...props}>
       <div
         ref={ref}
-        className='container mx-auto mb-4'
+        className={`${sectionTitle}_collapsible_text_sec container mx-auto mb-4`}
       >
         <RichText
           className='mt-4'

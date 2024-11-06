@@ -13,6 +13,7 @@ export const CustomNotifyModalFooter = ({
     closeNotifyModal,
     customBtnTxt,
     handleCustomBtnClick,
+    firstBtnTxt = 'Close',
 }) => {
     return (
         <Modal.Footer className={footerClassName}>
@@ -25,7 +26,7 @@ export const CustomNotifyModalFooter = ({
                 className="border"
             >
                 <span className='text-white'>
-                    Close
+                    {firstBtnTxt}
                 </span>
             </Button>
             <Button
