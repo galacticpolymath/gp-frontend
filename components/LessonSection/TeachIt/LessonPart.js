@@ -25,7 +25,7 @@ const SignInSuggestion = ({
   }
 
   return (
-    <div style={{ zIndex: 100 }} className='center-absolutely d-flex flex-column justify-content-center'>
+    <div style={{ zIndex: 100 }} className='center-absolutely d-flex flex-column justify-content-center col-12'>
       <span className='text-center fw-bold'>
         {txt}
       </span>
@@ -144,7 +144,7 @@ const LessonPart = ({
     setIsLoginModalDisplayed(true);
   };
   const handleUpdateProfileBtnClick = () => {
-    router.push('/account/will-open-account-setting-modal=true');
+    router.push('/account?show_about_user_form=true');
   };
 
   if (allTags?.length && Array.isArray(allTags)) {
@@ -422,7 +422,7 @@ const LessonPart = ({
                 let btnTxt = 'Sign in';
                 let handleBtnClick = handleSignInBtnClick;
 
-                if (!user?.isTeacher === false) {
+                if (user?.isTeacher === false) {
                   blurTxt = 'You must be a teacher to view this item.';
                   btnTxt = 'Update Profile';
                   handleBtnClick = handleUpdateProfileBtnClick;
@@ -446,7 +446,7 @@ const LessonPart = ({
                         )}
                         <section
                           style={{ filter: (isTeacherItem && !user?.isTeacher) ? 'blur(12px)' : 'none' }}
-                          className='d-flex justify-content-between position-relative bg-white'
+                          className='d-flex justify-content-between position-relative bg-white flex-sm-row flex-column'
                         >
                           <section>
                             <strong><RichText content={itemTitle} /></strong>
