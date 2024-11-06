@@ -147,8 +147,11 @@ const AccountPg = () => {
 
                     if (gradesOrYears && (Object.entries(gradesOrYears).length > 0)) {
                         userAccountForClient.gradesOrYears = gradesOrYears;
-                    } else if (gradesOrYears && (Object.entries(gradesOrYears).length === 0)) {
-                        userAccountForClient.gradesOrYears = userAccountDefault.gradesOrYears
+                    } else if ((gradesOrYears && (Object.entries(gradesOrYears).length === 0)) || !gradesOrYears) {
+                        userAccountForClient.gradesOrYears = {
+                            selection: '',
+                            ageGroupsTaught: [],
+                        }
                     }
 
                     if (classroomSize) {

@@ -6,7 +6,7 @@
 /* eslint-disable indent */
 import { useContext, useState } from "react";
 import Button from "../../General/Button";
-import { userAccountDefault, UserContext } from "../../../providers/UserProvider";
+import { UserContext } from "../../../providers/UserProvider";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { CustomError } from "../../../backend/utils/errors";
@@ -68,8 +68,10 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
             if (!ageGroupsTaught?.length || !isTeacher) {
                 aboutUserFormClone = {
                     ...aboutUserFormClone,
-                    selection: "",
-                    gradesOrYears: userAccountDefault.gradesOrYears,
+                    gradesOrYears: {
+                        selection: '',
+                        ageGroupsTaught: [],
+                    },
                 };
             }
 
@@ -140,6 +142,8 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
 
                 throw new CustomError(errMsg, null, "invalidAboutUserForm.");
             }
+
+            console.log('aboutUserFormClone, after updates: ', aboutUserFormClone);
 
             const responseBody = {
                 aboutUserForm: aboutUserFormClone,
