@@ -20,7 +20,8 @@ import { connectToMongodb } from '../../../../backend/utils/connection';
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
 import { getLinkPreviewObj, removeHtmlTags } from '../../../../globalFns';
 import { useSession } from 'next-auth/react';
-import { ModalContext } from '../../../../providers/ModalProvider';
+import { defautlNotifyModalVal, ModalContext } from '../../../../providers/ModalProvider';
+import { CustomNotifyModalFooter } from '../../../../components/Modals/Notify';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
@@ -66,8 +67,13 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
-  const { _notifyModal } = useContext(ModalContext);
-  const [, setNotifyModal, _customModalFooter] = _notifyModal;
+  const session = useSession();
+  const { status } = session;
+  const { _notifyModal, _isLoginModalDisplayed, _isCreateAccountModalDisplayed, _customModalFooter } = useContext(ModalContext);
+  const [, setNotifyModal] = _notifyModal;
+  const [, setCustomModalFooter] = _customModalFooter;
+  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
+  const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
   let lessonStandardsSections = lessonSectionObjEntries.filter(([sectionName], index) => {
@@ -207,19 +213,54 @@ const LessonDetails = ({ lesson }) => {
     return getIsWithinParentElemenet(element.parentElement, specifier, classNameOrId);
   }
 
+  const handleUserNeedsAnAccountHideModal = () => {
+    setNotifyModal(defautlNotifyModalVal);
+    setCustomModalFooter(null);
+  }
+  const handleIsUserEntryModalDisplayed = setIsModalOn => () => {
+    setNotifyModal(state => ({ ...state, isDisplayed: false }));
+
+    setTimeout(() => {
+      handleUserNeedsAnAccountHideModal();
+      setIsModalOn(true);
+    }, 250);
+  }
+
+  const handleBonusContentDocumentClick = event => {
+    const isWithinBonusContentSec = getIsWithinParentElemenet(event.target, 'Bonus_Content_collapsible_text_sec', 'className');
+    const { tagName, origin } = event.target ?? {};
+
+    if ((status === "unauthenticated") && isWithinBonusContentSec && (tagName === "A") && (origin === "https://storage.googleapis.com")) {
+      event.preventDefault();
+      setCustomModalFooter(<CustomNotifyModalFooter
+        closeNotifyModal={handleIsUserEntryModalDisplayed(setIsLoginModalDisplayed)}
+        firstBtnTxt='Sign In'
+        customBtnTxt='Sign Up'
+        footerClassName='d-flex justify-content-center'
+        leftBtnClassName='border'
+        leftBtnStyles={{ width: '150px', backgroundColor: '#898F9C' }}
+        rightBtnStyles={{ backgroundColor: '#007BFF', width: '150px' }}
+        handleCustomBtnClick={handleIsUserEntryModalDisplayed(setIsCreateAccountModalDisplayed)}
+      />)
+      setNotifyModal({
+        headerTxt: "You must have an account to access this content.",
+        isDisplayed: true,
+        handleOnHide: () => {
+          setNotifyModal(state => ({ ...state, isDisplayed: false }));
+
+          setTimeout(() => {
+            setNotifyModal(defautlNotifyModalVal);
+            setCustomModalFooter(null);
+          }, 250);
+        },
+      });
+    }
+  }
+
   useEffect(() => {
     document.body.addEventListener('click', handleDocumentClick);
 
-    document.body.addEventListener('click', event => {
-      const isWithinBonusContent = getIsWithinParentElemenet(event.target, 'Bonus_Content_collapsible_text_sec', 'className');
-      // print the above value
-      if (isWithinBonusContent) {
-        setNotifyModal, _customModalFooter({
-
-        })
-      }
-      
-    });
+    document.body.addEventListener('click', handleBonusContentDocumentClick);
 
     // when a element is clicked, check if it is witihn the bonus content section 
 

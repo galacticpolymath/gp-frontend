@@ -14,16 +14,20 @@ export const CustomNotifyModalFooter = ({
     customBtnTxt,
     handleCustomBtnClick,
     firstBtnTxt = 'Close',
+    leftBtnStyles = {
+        width: '120px',
+        backgroundColor: '#898F9C',
+    },
+    rightBtnStyles = {},
+    leftBtnClassName = '',
+    rightBtnClassName = '',
 }) => {
     return (
         <Modal.Footer className={footerClassName}>
             <Button
                 onClick={closeNotifyModal}
-                style={{
-                    width: '120px',
-                    backgroundColor: '#898F9C',
-                }}
-                className="border"
+                style={leftBtnStyles}
+                className={leftBtnClassName}
             >
                 <span className='text-white'>
                     {firstBtnTxt}
@@ -32,6 +36,8 @@ export const CustomNotifyModalFooter = ({
             <Button
                 onClick={handleCustomBtnClick}
                 backgroundColor='#007BFF'
+                style={rightBtnStyles}
+                className={rightBtnClassName}
             >
                 <span className='text-white'>
                     {customBtnTxt}

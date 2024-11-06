@@ -97,8 +97,6 @@ const AccountPg = () => {
     const [, setAboutUserForm] = _aboutUserForm;
     const [, setNotifyModal] = _notifyModal;
     const { user, token } = data ?? {};
-    // print out the user 
-    console.log('user, sup there: ', user);
     const { email, name, image, occupation } = user ?? {};
 
     useEffect(() => {
