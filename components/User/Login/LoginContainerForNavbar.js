@@ -23,6 +23,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
     const handleSignOutBtnClick = () => {
         localStorage.clear();
         setIsLoadingSpinnerOn(true);
+        localStorage.clear();
         signOut();
     };
 
