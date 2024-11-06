@@ -91,6 +91,10 @@ export const addUserToEmailList = async (email, clientUrl) => {
 
         console.log('response, adding user to mailing list: ', response);
 
+        if (response.status === 401) {
+            throw new Error('Unauthorized. Check Brevo API key.');
+        }
+
         if (!((response.status >= 200) && (response.status < 300))) {
             const responseBody = await response.json();
 
@@ -133,6 +137,10 @@ export const deleteUserFromMailingList = async (email) => {
             console.log('Contact was not found on the mailing list.');
 
             return { wasSuccessful: true };
+        }
+
+        if (response.status === 401) {
+            throw new Error('Unauthorized. Check Brevo API key.');
         }
 
         if (response.status !== 204) {

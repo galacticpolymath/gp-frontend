@@ -61,7 +61,7 @@ export const updateUser = async (
             };
         }
         /** @type {import('../models/user').TUserSchema} */
-        let updatedUser = await User.findOneAndUpdate(filterQuery, updatedUserProperties, { new: true }).lean();
+        const updatedUser = await User.findOneAndUpdate(filterQuery, updatedUserProperties, { new: true }).lean();
 
         if (!updatedUser) {
             console.error('The target user does not exist. Check "filterQuery" object.');

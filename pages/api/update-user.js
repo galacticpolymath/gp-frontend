@@ -39,6 +39,9 @@ export default async function handler(request, response) {
             willSendEmailListingSubConfirmationEmail,
         } = request.body;
 
+        // print the request body 
+        console.log('request.body, yo there: ', request.body);
+
         await connectToMongodb();
 
         if ((willSendEmailListingSubConfirmationEmail === true) && isOnMailingListConfirmationUrl) {
