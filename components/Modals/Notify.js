@@ -102,20 +102,28 @@ const Notify = () => {
                 },
             });
         } else if (params[0] === 'user-account-creation-err-type' && params[1] === 'duplicate-user-with-google') {
+            const isUserLoggingIn = localStorage.getItem('userEntryType') ? (JSON.parse(localStorage.getItem('userEntryType')) === 'login') : false;
+
+            localStorage.removeItem('userEntryType');
+
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: 'ERROR! Unable to create your account.',
-                bodyTxt: 'This email already exist. If you are this user, try signing in with google.',
+                headerTxt: isUserLoggingIn ? 'SIGN IN ERROR!' : 'ERROR! Unable to create your account.',
+                bodyTxt: isUserLoggingIn ? 'Unable to sign in. Try sigining in with google instead.' : 'This email already exist. If you are this user, try signing in with your credentials.',
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);
                 },
             });
         } else if (params[0] === 'user-account-creation-err-type' && params[1] === 'duplicate-user-with-creds') {
+            const isUserLoggingIn = localStorage.getItem('userEntryType') ? (JSON.parse(localStorage.getItem('userEntryType')) === 'login') : false;
+
+            localStorage.removeItem('userEntryType');
+
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: 'ERROR! Unable to create your account.',
-                bodyTxt: 'This email already exist. If you are this user, try signing in with your credentials',
+                headerTxt: isUserLoggingIn ? 'SIGN IN ERROR!' : 'ERROR! Unable to create your account.',
+                bodyTxt: isUserLoggingIn ? 'Unable to sign in. Try sigining in with an email and password instead.' : 'This email already exist. If you are this user, try signing in with your credentials.',
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);

@@ -91,6 +91,8 @@ const LoginModal = () => {
             return;
         }
 
+        localStorage.setItem("userEntryType", JSON.stringify("login"));
+
         sendFormToServer(
             "login",
             "credentials",
@@ -143,6 +145,7 @@ const LoginModal = () => {
                     <GoogleSignIn
                         callbackUrl={(typeof window !== 'undefined') ? window.location.href : ''}
                         className="rounded shadow px-3 py-2 w-75 py-sm-4 px-sm-5 border"
+                        isLoggingIn
                     >
                         <FcGoogle className="mx-2" size={31} />
                         <span style={{ fontSize: '18px' }}>

@@ -21,14 +21,19 @@ const GoogleSignIn = ({
     handleGoogleBtnClickCustom,
     style = {},
     className = 'rounded p-2 d-flex justify-content-center align-items-center border',
+    isLoggingIn = false,
 }) => {
-    
+
     const handleGoogleBtnClickDefault = event => {
         event.preventDefault();
 
         if (!callbackUrl) {
             console.error('The callback url cannot be empty.');
             return;
+        }
+
+        if (isLoggingIn) {
+            localStorage.setItem('userEntryType', JSON.stringify('login'));
         }
 
         signIn('google', { callbackUrl: callbackUrl });
