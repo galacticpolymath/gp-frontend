@@ -77,6 +77,9 @@ export default async function handler(request, response) {
 
         delete updatedUser.password;
 
+        console.log('will update the cache for the target user, about user form modal has been update: ', updatedUser);
+        console.log('user email: ', userEmail);
+
         cache.set(userEmail, updatedUser);
 
         return response.status(200).json({ msg: "Successfully saved the 'aboutUser' form into the db." });
