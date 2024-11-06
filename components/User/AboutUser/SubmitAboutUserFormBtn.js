@@ -65,14 +65,10 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
             const { ageGroupsTaught, selection } = gradesOrYears ?? {};
             const errors = new Map();
 
-            // if the user is teacher, then following must filled out:
-            // -gradesOrYears and the grades taught 
-            // -how many students that they taught
-            // -subjects taught
-
-            if (!gradesOrYears?.ageGroupsTaught?.length || !isTeacher) {
+            if (!ageGroupsTaught?.length || !isTeacher) {
                 aboutUserFormClone = {
                     ...aboutUserFormClone,
+                    selection: "",
                     gradesOrYears: userAccountDefault.gradesOrYears,
                 };
             }
