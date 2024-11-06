@@ -226,10 +226,17 @@ const AccountPg = () => {
     useEffect(() => {
         const urlVals = getAllUrlVals(router, true);
         const urlVal = urlVals?.length ? urlVals.find(([urlKey]) => urlKey === 'show_about_user_form') : null;
+        const accountSettingsModalOnUrlVals = urlVals?.length ? urlVals.find(([urlKey]) => urlKey === 'will-open-account-setting-modal') : null;
 
         if ((status === 'authenticated') && (urlVal?.length === 2) && getIsParsable(urlVal[1]) && JSON.parse(urlVal[1])) {
             setTimeout(() => {
                 setIsAboutMeFormModalDisplayed(true);
+            }, 300);
+
+            // the second value in the arr is a boolean
+        } else if ((status === 'authenticated') && (accountSettingsModalOnUrlVals?.length === 2) && getIsParsable(accountSettingsModalOnUrlVals[1]) && JSON.parse(accountSettingsModalOnUrlVals[1])) {
+            setTimeout(() => {
+                setIsAccountSettingsModalOn(true);
             }, 300);
         }
 

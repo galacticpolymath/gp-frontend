@@ -51,6 +51,15 @@ export const updateUser = async (
     updatedUserPropsToFilterOut = [],
 ) => {
     try {
+        if (updatedUserProperties.isTeacher === false) {
+            updatedUserProperties = {
+                ...updatedUserProperties,
+                gradesOrYears: {
+                    ageGroupsTaught: [],
+                    selection: '',
+                },
+            };
+        }
         /** @type {import('../models/user').TUserSchema} */
         let updatedUser = await User.findOneAndUpdate(filterQuery, updatedUserProperties, { new: true }).lean();
 

@@ -61,8 +61,7 @@ const LessonPart = ({
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const router = useRouter();
   const session = useSession();
-  const { status, data } = session;
-  const isSignedIn = status === 'authenticated';
+  const { data } = session;
   const { user } = data ?? {};
   const [isExpanded, setIsExpanded] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
@@ -143,6 +142,9 @@ const LessonPart = ({
   };
   const handleSignInBtnClick = () => {
     setIsLoginModalDisplayed(true);
+  };
+  const handleUpdateProfileBtnClick = () => {
+    router.push('/account/will-open-account-setting-modal=true');
   };
 
   if (allTags?.length && Array.isArray(allTags)) {
@@ -416,24 +418,25 @@ const LessonPart = ({
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
                 const imgLink = (itemCat === 'web resource') ? (_links?.[0]?.url ?? '') : (_links?.[1]?.url ?? '');
                 const isTeacherItem = itemTitle.toLowerCase().includes('teacher');
-                const canUserViewTeacherItem = !user?.isTeacher || (status === 'unauthenticated');
                 let blurTxt = '';
                 let btnTxt = 'Sign in';
-                
-                if (!canUserViewTeacherItem && (!user?.isTeacher && status === 'authenticated')) {
+                let handleBtnClick = handleSignInBtnClick;
+
+                if (!user?.isTeacher === false) {
                   blurTxt = 'You must be a teacher to view this item.';
-                  btnTxt = 'If you are, update your profile.';
+                  btnTxt = 'Update Profile';
+                  handleBtnClick = handleUpdateProfileBtnClick;
                 }
 
                 return (
                   <li key={itemIndex} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
                     <div className="d-flex flex-column flex-md-row">
                       <section className='col-12 col-md-8 col-lg-6 col-xl-6 position-relative'>
-                        {(isTeacherItem && !canUserViewTeacherItem) && (
+                        {(isTeacherItem && !user?.isTeacher) && (
                           <SignInSuggestion txt={blurTxt}>
                             <div className='d-flex justify-content-center align-items-center'>
                               <Button
-                                onClick={handleSignInBtnClick}
+                                onClick={handleBtnClick}
                                 className='mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover'
                               >
                                 {btnTxt}
@@ -442,7 +445,7 @@ const LessonPart = ({
                           </SignInSuggestion>
                         )}
                         <section
-                          style={{ filter: (isTeacherItem && (!user?.isTeacher || (status === 'unauthenticated'))) ? 'blur(12px)' : 'none' }}
+                          style={{ filter: (isTeacherItem && !user?.isTeacher) ? 'blur(12px)' : 'none' }}
                           className='d-flex justify-content-between position-relative bg-white'
                         >
                           <section>
@@ -463,7 +466,7 @@ const LessonPart = ({
                                           href={url}
                                           target="_blank"
                                           rel='noopener noreferrer'
-                                          className={`${isTeacherItem ? (isSignedIn ? '' : 'link-disabled') : ''}`}
+                                          className={`${isTeacherItem ? (user?.isTeacher ? '' : 'link-disabled') : ''}`}
                                         >
                                           {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
                                         </Link>
@@ -475,7 +478,7 @@ const LessonPart = ({
                                           href={url}
                                           target='_blank'
                                           rel='noopener noreferrer'
-                                          className={`${isTeacherItem ? (isSignedIn ? '' : 'link-disabled') : ''}`}
+                                          className={`${isTeacherItem ? (user?.isTeacher ? '' : 'link-disabled') : ''}`}
                                         >
                                           {linkText}
                                         </a>
@@ -490,9 +493,9 @@ const LessonPart = ({
                             <section className="pt-1 ps-sm-1 ps-md-4 d-flex col-3">
                               <div className='border align-content-start my-auto'>
                                 <a
-                                  href={isTeacherItem ? (isSignedIn ? imgLink : '') : imgLink}
+                                  href={isTeacherItem ? (user?.isTeacher ? imgLink : '') : imgLink}
                                   target='_blank'
-                                  className={`${isTeacherItem ? (isSignedIn ? '' : 'link-disabled') : imgLink}`}
+                                  className={`${isTeacherItem ? (user?.isTeacher ? '' : 'link-disabled') : imgLink}`}
                                 >
                                   <img
                                     src={filePreviewImg}

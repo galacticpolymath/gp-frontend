@@ -477,8 +477,6 @@ export const authOptions = {
           return Promise.resolve(session);
         }
 
-        console.log('dbUser, bacon suace: ', dbUser);
-
         occupation = dbUser.occupation ?? null;
         name = dbUser.name ?? name;
         isTeacher = dbUser.isTeacher;
