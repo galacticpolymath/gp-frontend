@@ -15,9 +15,6 @@ const CollapsibleRichTextSection = ({
   const { _sectionDots, SectionTitle } = props;
   const ref = useRef();
   const sectionTitle = SectionTitle.split(' ').slice(1).join('_');
-  // print sectionTitle
-
-  console.log('sectionTitle, yo there: ', sectionTitle);
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
