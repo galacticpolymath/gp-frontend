@@ -28,8 +28,7 @@ export default async function handler(request, response) {
         };
         // get the user's account data when the user is on the lessons page
 
-        if (request.query.customProjections.length) {
-            // print the customProjections
+        if (request.query?.customProjections?.length) {
             console.log('CUSTOM PROJECTIONS: ');
             console.log(request.query.customProjections);
         }

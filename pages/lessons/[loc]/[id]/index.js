@@ -65,9 +65,6 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
-  const session = useSession();
-  const { user } = session.data ?? {};
-  console.log('user, yo there: ', user);
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
   let lessonStandardsSections = lessonSectionObjEntries.filter(([sectionName], index) => {

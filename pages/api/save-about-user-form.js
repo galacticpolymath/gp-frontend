@@ -6,7 +6,6 @@
 import { cache } from "../../backend/authOpts/authOptions";
 import { getUserByEmail, updateUser } from "../../backend/services/userServices";
 import { CustomError } from "../../backend/utils/errors";
-import { getIsObj } from "../../globalFns";
 
 /**
  * @typedef {Object} ReqBody
@@ -70,30 +69,15 @@ export default async function handler(request, response) {
             return accumObjUpdated;
         }, {});
 
-        let targetUser = cache.get(userEmail);
+        const { wasSuccessful, updatedUser, errMsg } = await updateUser({ email: userEmail }, updatedUserProperties) ?? {};
 
-        if (targetUser && getIsObj(targetUser) && (updatedUserProperties.occupation || updatedUserProperties.picture)) {
-            const { occupation, picture } = updatedUserProperties;
-
-            targetUser = {
-                occupation,
-                picture,
-                ...targetUser,
-            };
-
-            cache.set(userEmail, targetUser, 100);
-        } else if (updatedUserProperties.occupation || updatedUserProperties.picture) {
-            const { occupation, picture } = updatedUserProperties;
-            cache.set(userEmail, {
-                occupation, picture,
-            }, 100);
+        if (!wasSuccessful) {
+            throw new CustomError(errMsg, 500);
         }
 
-        const updateUserResult = await updateUser({ email: userEmail }, updatedUserProperties);
+        delete updatedUser.password;
 
-        if (!updateUserResult.wasSuccessful) {
-            throw new CustomError(updateUserResult.errMsg, 500);
-        }
+        cache.set(userEmail, updatedUser);
 
         return response.status(200).json({ msg: "Successfully saved the 'aboutUser' form into the db." });
     } catch (error) {

@@ -18,8 +18,12 @@ const LESSON_PART_BTN_COLOR = '#2C83C3';
 
 const SignInSuggestion = ({
   children,
-  txt = 'For teachers guides, sign in with a free account!',
+  txt,
 }) => {
+  if (!txt) {
+    txt = 'For teachers guides, sign in with a free account!';
+  }
+
   return (
     <div style={{ zIndex: 100 }} className='center-absolutely d-flex flex-column justify-content-center'>
       <span className='text-center fw-bold'>
@@ -57,8 +61,9 @@ const LessonPart = ({
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const router = useRouter();
   const session = useSession();
-  const { status } = session;
+  const { status, data } = session;
   const isSignedIn = status === 'authenticated';
+  const { user } = data ?? {};
   const [isExpanded, setIsExpanded] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
   const isOnAssessments = lsnTitle === 'Assessments';
@@ -411,30 +416,33 @@ const LessonPart = ({
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
                 const imgLink = (itemCat === 'web resource') ? (_links?.[0]?.url ?? '') : (_links?.[1]?.url ?? '');
                 const isTeacherItem = itemTitle.toLowerCase().includes('teacher');
-                // print isTeacherItem
-                console.log('isTeacherItem: ', isTeacherItem);
-                console.log('isSignedIn: ', isSignedIn);
+                const canUserViewTeacherItem = !user?.isTeacher || (status === 'unauthenticated');
+                let blurTxt = '';
+                let btnTxt = 'Sign in';
+                
+                if (!canUserViewTeacherItem && (!user?.isTeacher && status === 'authenticated')) {
+                  blurTxt = 'You must be a teacher to view this item.';
+                  btnTxt = 'If you are, update your profile.';
+                }
 
                 return (
                   <li key={itemIndex} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
                     <div className="d-flex flex-column flex-md-row">
                       <section className='col-12 col-md-8 col-lg-6 col-xl-6 position-relative'>
-                        {(isTeacherItem && !isSignedIn) && (
-                          <SignInSuggestion>
+                        {(isTeacherItem && !canUserViewTeacherItem) && (
+                          <SignInSuggestion txt={blurTxt}>
                             <div className='d-flex justify-content-center align-items-center'>
                               <Button
                                 onClick={handleSignInBtnClick}
                                 className='mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover'
                               >
-                                sup there!
-                                Sign in
+                                {btnTxt}
                               </Button>
                             </div>
                           </SignInSuggestion>
                         )}
                         <section
-                          // isTeacherItem && !isSignedIn ? 'blur(4px)' : 'none'
-                          style={{ filter: isTeacherItem && !isSignedIn ? 'blur(12px)' : 'none' }}
+                          style={{ filter: (isTeacherItem && (!user?.isTeacher || (status === 'unauthenticated'))) ? 'blur(12px)' : 'none' }}
                           className='d-flex justify-content-between position-relative bg-white'
                         >
                           <section>
