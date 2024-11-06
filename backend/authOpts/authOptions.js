@@ -452,47 +452,49 @@ export const authOptions = {
       return Promise.resolve(token);
     },
     async session(param) {
-      console.log('hello there, session: ');
-      console.dir(param, { depth: null });
-
       const { token, session } = param;
       /**
        * @type {{ email: string, roles: string[], name: { first: string, last: string }, picture: string }}
        */
       let { email, roles, name, picture } = token.payload;
+      /** @type { import('../models/user').TUserSchema } */
+      const targetUser = cache.get(email) ?? {};
+      let isTeacher = false;
+      let occupation = null;
+      
+      if (targetUser && targetUser.occupation && targetUser.name) {
+        occupation = targetUser.occupation;
+        name = targetUser.name;
+        isTeacher = targetUser.isTeacher;
+      } else {
+        await connectToMongodb();
+        
+        const dbUser = await getUserByEmail(email);
+        
+        if (!dbUser) {
+          return Promise.resolve(session);
+        }
+        
+        occupation = dbUser.occupation ?? null;
+        name = dbUser.name ?? name;
+        isTeacher = dbUser.isTeacher;
+        
+        delete dbUser.password;
+        
+        cache.set(email, dbUser, 100);
+      }
+
       const accessToken = await signJwt(
         {
           email: email,
           roles: roles,
           name: name,
+          isTeacher,
         },
         process.env.NEXTAUTH_SECRET,
         '12hours'
       );
-      const refreshToken = await signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '1 day');
-      /** @type { import('../models/user').TUserSchema } */
-      const targetUser = cache.get(email) ?? {};
-      let occupation = null;
-
-      if (targetUser && targetUser.occupation && targetUser.name) {
-        occupation = targetUser.occupation;
-        name = targetUser.name;
-      } else {
-        await connectToMongodb();
-
-        const dbUser = await getUserByEmail(email);
-
-        if (!dbUser) {
-          return Promise.resolve(session);
-        }
-
-        occupation = dbUser.occupation ?? null;
-        name = dbUser.name ?? name;
-
-        delete dbUser.password;
-
-        cache.set(email, dbUser, 100);
-      }
+      const refreshToken = await signJwt({ email: email, roles: roles, name: name, isTeacher }, process.env.NEXTAUTH_SECRET, '1 day');
 
       session.id = token.id;
       session.token = accessToken;

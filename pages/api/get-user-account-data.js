@@ -13,8 +13,8 @@ export default async function handler(request, response) {
         if (!request?.query?.email || (typeof request?.query?.email !== 'string')) {
             throw new CustomError("The 'email' of the email is not present in the params of the request. ", 400);
         }
-
-        const userAccount = await getUserByEmail(request.query.email, {
+        
+        let projections = {
             gradesOrYears: 1,
             reasonsForSiteVisit: 1,
             subjects: 1,
@@ -25,7 +25,19 @@ export default async function handler(request, response) {
             isTeacher: 1,
             isOnMailingList: 1,
             name: 1,
-        });
+        };
+        // get the user's account data when the user is on the lessons page
+
+        if (request.query.customProjections.length) {
+            // print the customProjections
+            console.log('CUSTOM PROJECTIONS: ');
+            console.log(request.query.customProjections);
+        }
+
+        // send an array that contains all of the projected fields that are to be returend and give to the user 
+        // create a parameter called customProjection, it will an array that contains 
+        
+        const userAccount = await getUserByEmail(request.query.email, projections);
 
         if (!userAccount) {
             throw new CustomError("User not found.", 404);

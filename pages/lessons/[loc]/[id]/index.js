@@ -19,6 +19,7 @@ import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
 import { getLinkPreviewObj, removeHtmlTags } from '../../../../globalFns';
+import { useSession } from 'next-auth/react';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
@@ -64,6 +65,9 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
+  const session = useSession();
+  const { user } = session.data ?? {};
+  console.log('user, yo there: ', user);
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
   let lessonStandardsSections = lessonSectionObjEntries.filter(([sectionName], index) => {
@@ -343,6 +347,10 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOntoU
     status: lsnStatus?.status ?? "Proto",
   };
 }
+
+// GOAL: if the user is logged, get if the user is a teacher or not
+// if the user is teacher, then show the worksheets and other related resources
+// else keep the documents blurred
 
 export const getStaticProps = async (arg) => {
   try {
