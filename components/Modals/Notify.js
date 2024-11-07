@@ -109,7 +109,7 @@ const Notify = () => {
             setNotifyModal({
                 isDisplayed: true,
                 headerTxt: isUserLoggingIn ? 'SIGN IN ERROR!' : 'ERROR! Unable to create your account.',
-                bodyTxt: isUserLoggingIn ? 'Unable to sign in. Try sigining in with google instead.' : 'This email already exist. If you are this user, try signing in with your credentials.',
+                bodyTxt: isUserLoggingIn ? 'Unable to sign in. Try sigining in with google instead.' : 'This email already exists. If you are this user, try signing in with your credentials.',
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);
@@ -123,7 +123,7 @@ const Notify = () => {
             setNotifyModal({
                 isDisplayed: true,
                 headerTxt: isUserLoggingIn ? 'SIGN IN ERROR!' : 'ERROR! Unable to create your account.',
-                bodyTxt: isUserLoggingIn ? 'Unable to sign in. Try sigining in with an email and password instead.' : 'This email already exist. If you are this user, try signing in with your credentials.',
+                bodyTxt: isUserLoggingIn ? 'Unable to sign in. Try sigining in with an email and password instead.' : 'This email already exists. If you are this user, try signing in with your credentials.',
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);

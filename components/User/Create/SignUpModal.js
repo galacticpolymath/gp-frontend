@@ -497,7 +497,7 @@ const SignUpModal = () => {
                                         fontSize: "18px",
                                     }}
                                 >
-                                    *Opt in to our mailing list 📧 (Check mailbox to confirm).
+                                    *📧 Send me email upates about new/free resources (Check inbox to confirm subscription).
                                 </label>
                             </div>
                         </div>

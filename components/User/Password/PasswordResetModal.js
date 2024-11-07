@@ -83,7 +83,7 @@ const PasswordResetModal = () => {
             }
 
             const url = `${window.location.origin}/api/send-password-recover-email`;
-            const response = await axios.post(url, { email }, {
+            const response = await axios.post(url, { email, clientOrigin: window }, {
                 timeout: 7_000,
             });
 

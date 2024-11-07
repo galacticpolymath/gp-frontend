@@ -16,7 +16,7 @@ export default async function handler(request, response) {
             throw new CustomError('The "email" property is missing from the body of the request.', 500);
         }
 
-        const { email } = request.body;
+        const { email, clientOrigin } = request.body;
 
         await connectToMongodb();
 
@@ -34,7 +34,7 @@ export default async function handler(request, response) {
             from: 'shared@galacticpolymath.com',
             to: email,
             subject: 'Galactic Polymath Password Reset',
-            html: createPasswordResetEmail(user.name.first, resetPasswordLink),
+            html: createPasswordResetEmail(user.name.first, resetPasswordLink, clientOrigin),
         });
 
         if (!wasSuccessful) {

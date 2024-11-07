@@ -24,16 +24,19 @@ export const cache = new NodeCache({ stdTTL: 100 });
 export default function MyAdapter() {
   return {
     async createUser(user) {
+      console.log('yo there meng user, createUser: ', user);
       return;
     },
     async getUser(id) {
-      console.log('id: ', id);
+      console.log('yo there meng id: ', id);
       return;
     },
     async getUserByEmail(email) {
+      console.log('getUserByEmail: ', email);
       return;
     },
     async getUserByAccount(param) {
+      console.log('param, getUserByAccount: ', param);
       const { provider, providerAccountId } = param;
       let isCreatingUser = false;
 
@@ -191,9 +194,6 @@ export const authOptions = {
             throw new AuthError('invalidCredentials', 404, callbackUrl ?? '');
           }
 
-          // TEST FOR THE FOLLOWING: 
-          // there is a user with a credentials login, create an account using google with the same email
-
           if ((formType === 'login') && getIsPasswordCorrect({ iterations, salt, password: password }, hashedPasswordFromDb)) {
             console.log('Password is correct, will log the user in.');
 
@@ -301,6 +301,7 @@ export const authOptions = {
   callbacks: {
     async signIn(param) {
       try {
+        console.log('param, signIn: ', param);
         const { user, account, profile, credentials } = param;
         const {
           errType,
@@ -340,31 +341,9 @@ export const authOptions = {
 
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
 
-        console.log('dbUser, liver: ', dbUser);
-        console.log('wasUserCreated, beef: ', wasUserCreated);
-
-        if ((errType === 'userAlreadyExist') || (dbUser && (typeof dbUser === "object") && wasUserCreated)) {
-          console.log('there exist another user in the db, the client is trying to create an account with google..');
-          const urlErrorParamVal = dbUser.provider === 'google' ? 'duplicate-user-with-google' : 'duplicate-user-with-creds';
-
-          if (typeof providerAccountId === 'string') {
-            await deleteUser({ providerAccountId: providerAccountId });
-          }
-
-          throw new SignInError(
-            'duplicate-user',
-            'This email has already been taken.',
-            code ?? 422,
-            'user-account-creation-err-type',
-            urlErrorParamVal
-          );
-        }
-
-        // The user is creating an account, a duplicate google account already exist.
-        if (dbUser && wasUserCreated && providerAccountId) {
-          console.log('the user is creating an account with google, there is exist another account...');
-
-          await deleteUser({ providerAccountId: providerAccountId });
+        // the user is creating an account with google, there is user with the same email in the db   
+        if ((errType === 'userAlreadyExist') || (dbUser && (typeof dbUser === "object") && wasUserCreated && (dbUser.provider === 'google') && (typeof providerAccountId === 'string'))) {
+          await deleteUser({ providerAccountId });
 
           throw new SignInError(
             'duplicate-user',
@@ -496,7 +475,7 @@ export const authOptions = {
       );
       const refreshTokenPromise = signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '1 day');
       const [accessToken, refreshToken] = await Promise.all([accessTokenPromise, refreshTokenPromise]);
-      
+
       session.id = token.id;
       session.token = accessToken;
       session.refresh = refreshToken;

@@ -36,7 +36,7 @@ const GoogleSignIn = ({
             localStorage.setItem('userEntryType', JSON.stringify('login'));
         }
 
-        signIn('google', { callbackUrl: callbackUrl });
+        signIn('google', { callbackUrl: callbackUrl, yoThere: 'yo there meng' });
     };
 
     return (
