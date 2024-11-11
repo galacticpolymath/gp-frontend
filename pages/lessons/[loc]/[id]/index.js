@@ -18,7 +18,7 @@ import useScrollHandler from '../../../../customHooks/useScrollHandler';
 import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
-import { getLinkPreviewObj, removeHtmlTags } from '../../../../globalFns';
+import { getIsWithinParentElement, getLinkPreviewObj, removeHtmlTags } from '../../../../globalFns';
 import { useSession } from 'next-auth/react';
 import { defautlNotifyModalVal, ModalContext } from '../../../../providers/ModalProvider';
 import { CustomNotifyModalFooter } from '../../../../components/Modals/Notify';
@@ -200,19 +200,6 @@ const LessonDetails = ({ lesson }) => {
     }
   }, [willGoToTargetSection])
 
-  const getIsWithinParentElemenet = (element, specifier, classNameOrId = "className") => {
-    if (!element?.parentElement || (element?.parentElement && (classNameOrId in element.parentElement) && (element?.parentElement[classNameOrId] === undefined))) {
-      console.error('Reached end of document.');
-      return false;
-    }
-
-    if (element.parentElement[classNameOrId].includes(specifier)) {
-      return true;
-    }
-
-    return getIsWithinParentElemenet(element.parentElement, specifier, classNameOrId);
-  }
-
   const handleUserNeedsAnAccountHideModal = () => {
     setNotifyModal(defautlNotifyModalVal);
     setCustomModalFooter(null);
@@ -227,7 +214,7 @@ const LessonDetails = ({ lesson }) => {
   }
 
   const handleBonusContentDocumentClick = event => {
-    const isWithinBonusContentSec = getIsWithinParentElemenet(event.target, 'Bonus_Content_collapsible_text_sec', 'className');
+    const isWithinBonusContentSec = getIsWithinParentElement(event.target, 'Bonus_Content_collapsible_text_sec', 'className');
     const { tagName, origin } = event.target ?? {};
 
     if ((status === "unauthenticated") && isWithinBonusContentSec && (tagName === "A") && (origin === "https://storage.googleapis.com")) {

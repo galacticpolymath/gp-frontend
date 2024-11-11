@@ -215,7 +215,70 @@ const SignUpModal = () => {
                 </h5>
             </ModalHeader>
             <ModalBody className='pt-1 px-1 pb-1'>
-                <section className='my-3 mt-md-1 d-flex justify-content-center align-items-center'>
+                <div className='border-bottom py-2'>
+                    <section className='p-0 row w-100 m-0'>
+                        <div className='w-100 d-flex justify-content-center align-items-center'>
+                            <div className='col-sm-6 col-11 d-flex justify-content-center align-items-center'>
+                                <div style={{ width: '100%' }} className='d-flex create-account-toggle-btn-container'>
+                                    <div>
+                                        {isUserTeacher ? (
+                                            <BiCheckboxChecked
+                                                onClick={handleIsUserATeacherCheckBoxClick}
+                                                fontSize="21px"
+                                            />
+                                        )
+                                            : (
+                                                <BiCheckbox
+                                                    onClick={handleIsUserATeacherCheckBoxClick}
+                                                    color={didIsUserTeacherErr ? 'red' : ""}
+                                                    fontSize="21px"
+                                                />
+                                            )}
+                                    </div>
+                                    <label
+                                        className={`${didIsUserTeacherErr ? 'text-danger' : ''}`}
+                                        style={{
+                                            fontSize: "18px",
+
+                                        }}
+                                    >
+                                        *{userIsTeacherTxt}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section className='p-0 row w-100 m-0 mt-2 mb-1'>
+                        <div className='w-100 d-flex justify-content-center align-items-center'>
+                            <div className='col-sm-6 col-11 d-flex justify-content-center align-items-center'>
+                                <div style={{ width: '100%' }} className='d-flex create-account-toggle-btn-container'>
+                                    <div>
+                                        {createAccountForm.isOnMailingList ? (
+                                            <BiCheckboxChecked
+                                                onClick={handleToAddToMailingListToggleBtnClick}
+                                                fontSize="21px"
+                                            />
+                                        )
+                                            : (
+                                                <BiCheckbox
+                                                    onClick={handleToAddToMailingListToggleBtnClick}
+                                                    fontSize="21px"
+                                                />
+                                            )}
+                                    </div>
+                                    <label
+                                        style={{
+                                            fontSize: "18px",
+                                        }}
+                                    >
+                                        *📧 Send me email upates about new/free resources (Check inbox to confirm subscription).
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <section className='my-3 mt-md-1 d-flex justify-content-center align-items-center pt-3'>
                     <CreateAccountWithGoogle
                         handleGoogleBtnClickCustom={handleCreateAnAccountWithGoogleBtnClick}
                         callbackUrl={`${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`}
@@ -421,7 +484,7 @@ const SignUpModal = () => {
                             </section>
                         </div>
                     </div>
-                    <div className='d-flex justify-content-center align-items-center py-1 mt-3 mb-2 row'>
+                    <ModalFooter className='pt-3 d-flex justify-content-center align-items-center py-1 mt-3 mb-2 row'>
                         <Button
                             handleOnClick={handleSubmitCredentialsBtnClick}
                             classNameStr="bg-primary rounded border-0 py-2 col-11 col-sm-10 col-lg-7 text-white underline-on-hover sign-up-btn"
@@ -436,74 +499,9 @@ const SignUpModal = () => {
                                 )
                             }
                         </Button>
-                    </div>
+                    </ModalFooter>
                 </form>
             </ModalBody>
-            <ModalFooter className='position-relative px-0 pb-2 pt-1'>
-                <section className='d-flex flex-sm-row w-100'>
-                </section>
-                <section className='p-0 row w-100 m-0'>
-                    <div className='w-100 d-flex justify-content-center align-items-center'>
-                        <div className='col-sm-6 col-11 d-flex justify-content-center align-items-center'>
-                            <div style={{ width: '100%' }} className='d-flex create-account-toggle-btn-container'>
-                                <div>
-                                    {isUserTeacher ? (
-                                        <BiCheckboxChecked
-                                            onClick={handleIsUserATeacherCheckBoxClick}
-                                            fontSize="21px"
-                                        />
-                                    )
-                                        : (
-                                            <BiCheckbox
-                                                onClick={handleIsUserATeacherCheckBoxClick}
-                                                color={didIsUserTeacherErr ? 'red' : ""}
-                                                fontSize="21px"
-                                            />
-                                        )}
-                                </div>
-                                <label
-                                    className={`${didIsUserTeacherErr ? 'text-danger' : ''}`}
-                                    style={{
-                                        fontSize: "18px",
-
-                                    }}
-                                >
-                                    *{userIsTeacherTxt}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section className='p-0 row w-100 m-0 mt-2 mb-1'>
-                    <div className='w-100 d-flex justify-content-center align-items-center'>
-                        <div className='col-sm-6 col-11 d-flex justify-content-center align-items-center'>
-                            <div style={{ width: '100%' }} className='d-flex create-account-toggle-btn-container'>
-                                <div>
-                                    {createAccountForm.isOnMailingList ? (
-                                        <BiCheckboxChecked
-                                            onClick={handleToAddToMailingListToggleBtnClick}
-                                            fontSize="21px"
-                                        />
-                                    )
-                                        : (
-                                            <BiCheckbox
-                                                onClick={handleToAddToMailingListToggleBtnClick}
-                                                fontSize="21px"
-                                            />
-                                        )}
-                                </div>
-                                <label
-                                    style={{
-                                        fontSize: "18px",
-                                    }}
-                                >
-                                    *📧 Send me email upates about new/free resources (Check inbox to confirm subscription).
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </ModalFooter>
         </Modal>
     );
 };

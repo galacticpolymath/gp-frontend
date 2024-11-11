@@ -370,3 +370,16 @@ export const validateEmail = (email) => {
         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
 };
+
+export const getIsWithinParentElement = (element, specifier, classNameOrId = 'className') => {
+    if (!element?.parentElement || (element?.parentElement && (classNameOrId in element.parentElement) && (element?.parentElement[classNameOrId] === undefined))) {
+        console.error('Reached end of document.');
+        return false;
+    }
+
+    if (element.parentElement[classNameOrId].includes(specifier)) {
+        return true;
+    }
+
+    return getIsWithinParentElement(element.parentElement, specifier, classNameOrId);
+}

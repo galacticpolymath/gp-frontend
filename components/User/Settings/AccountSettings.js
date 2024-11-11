@@ -145,7 +145,6 @@ const AccountSettings = () => {
             if (!userAccountPrevVals.isOnMailingList && accountForm.isOnMailingList) {
                 bodyTxt = 'Please check your e-mail inbox to confirm your subscription with GP\'s mailing list.';
             } else if (userAccountPrevVals.isOnMailingList && (accountForm.isOnMailingList === false)) {
-                // the user unscribed from our mailing list
                 bodyTxt = 'You\'ve unscribed from GP\'s mailing list. You will no longer receive e-mails from us.';
             }
 
