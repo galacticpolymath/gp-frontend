@@ -18,6 +18,7 @@ import { CustomCloseButton } from '../../../ModalsContainer';
 import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from 'react-icons/io';
 import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
 import { ErrorTxt } from '../formElements';
+import { useRouter } from 'next/router';
 
 const AccordionToggleBtn = ({ children = <></>, btnClassName = "", eventKey, handleBtnClick }) => {
     const handleAccordionToggleBtnClick = useAccordionButton(eventKey, event => {
@@ -62,14 +63,11 @@ const AboutUserModal = () => {
     const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
     const [countryNames, setCountryNames] = useState([]);
     const [errors, setErrors] = useState(new Map());
+    const router = useRouter();
     /**
      * @type {[import('../../../providers/UserProvider').TAboutUserForm, import('react').Dispatch<import('react').SetStateAction<import('../../../providers/UserProvider').TAboutUserForm>>]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const modalBodyRef = useRef();
-
-    useEffect(() => {
-        console.log('aboutUserForm: ', aboutUserForm);
-    });
 
     const handleOnHide = () => {
         const userAccountStringified = localStorage.getItem('userAccount');
@@ -83,11 +81,49 @@ const AboutUserModal = () => {
             }, 300);
         }
 
+        setErrors(new Map());
         setIsAboutMeFormModalDisplayed(false);
     };
 
     const handleAreYouATeacherBtnClick = () => {
         setAboutUserForm(state => ({ ...state, isTeacher: !state.isTeacher }));
+    };
+
+    const handleOnClassRoomSizeInputChange = (event) => {
+        const num = Number.isInteger(+event.target.value) ? Number.parseInt(event.target.value) : 0;
+
+        setErrors(state => {
+            const stateClone = structuredClone(state);
+
+            stateClone.delete('classroomSize');
+
+            return stateClone;
+        });
+
+        setAboutUserForm(state => ({
+            ...state,
+            classroomSize: {
+                ...state.classroomSize,
+                num: num <= 0 ? 0 : event.target.value,
+            },
+        }));
+    };
+    const handleIsTeachingInputToggle = () => {
+        setErrors(state => {
+            const stateClone = structuredClone(state);
+
+            stateClone.delete('classroomSize');
+
+            return stateClone;
+        });
+
+        setAboutUserForm(state => ({
+            ...state,
+            classroomSize: {
+                num: 0,
+                isNotTeaching: !state.classroomSize.isNotTeaching,
+            },
+        }));
     };
 
     const handleWhatBringsYouToSiteInputChange = event => {
@@ -146,6 +182,7 @@ const AboutUserModal = () => {
 
             setErrors(errorsClone);
         }
+
         setAboutUserForm(state => ({
             ...state,
             [event.target.name]: event.target.value,
@@ -182,6 +219,12 @@ const AboutUserModal = () => {
         <Modal
             show={isAboutMeFormModalDisplayed}
             onHide={handleOnHide}
+            onShow={() => {
+                setTimeout(() => {
+                    const url = router.asPath;
+                    router.replace(url.split("?")[0]);
+                }, 250);
+            }}
             dialogClassName='border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='about-me-modal user-modal-color rounded-0'
         >
@@ -246,9 +289,13 @@ const AboutUserModal = () => {
                                     borderBottom: errors.has('zipCode') ? 'solid 1px red' : 'solid 1px grey',
                                     opacity: aboutUserForm?.country?.toLowerCase() !== 'united states' ? .3 : 1,
                                 }}
-                                className={`aboutme-txt-input pt-1 ms-2 ms-sm-0 ${errors.has('zipCode') ? 'border-danger' : ''}`}
+                                className={`aboutme-txt-input pt-1 ms-2 ms-sm-0 ${errors.has('zipCode') ? 'border-danger text-danger' : ''}`}
                             />
-                            <span style={{ fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('zipCode') ?? ''}</span>
+                            <section style={{ height: '47px' }}>
+                                <ErrorTxt>
+                                    {errors.get('zipCode') ?? ''}
+                                </ErrorTxt>
+                            </section>
                         </section>
                     </section>
                     <Accordion activeKey={aboutUserForm.isTeacher ? "0" : ""}>
@@ -286,17 +333,21 @@ const AboutUserModal = () => {
                                             </label>
                                             <input
                                                 placeholder='Total students'
-                                                type='number'
+                                                type={aboutUserForm.classroomSize.isNotTeaching ? 'text' : 'number'}
                                                 name='classroomSize'
-                                                value={aboutUserForm?.classroomSize ?? '0'}
-                                                onChange={handleOnInputChange}
-                                                style={{ maxWidth: '200px' }}
+                                                value={aboutUserForm.classroomSize.isNotTeaching ? "N/A" : (aboutUserForm?.classroomSize?.num ?? '0')}
+                                                disabled={aboutUserForm.classroomSize.isNotTeaching}
+                                                onChange={handleOnClassRoomSizeInputChange}
+                                                style={{ maxWidth: '200px', opacity: aboutUserForm.classroomSize.isNotTeaching ? .3 : 1 }}
                                                 className='aboutme-txt-input no-outline mt-1'
                                             />
                                             <section className='mt-1'>
                                                 <input
+                                                    value={!!aboutUserForm?.classroomSize?.isNotTeaching}
+                                                    checked={!!aboutUserForm?.classroomSize?.isNotTeaching}
                                                     type='checkbox'
                                                     name='isNotTeaching'
+                                                    onChange={handleIsTeachingInputToggle}
                                                 />
                                                 <label htmlFor='isNotTeaching' className='fw-normal ms-1 pb-1'>I{"'"}m not teaching.</label>
                                             </section>

@@ -35,7 +35,7 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
     const [wasBtnClicked, setWasBtnClicked] = useState(false);
     const [, setIsAboutUserModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [, setNotifyModal] = _notifyModal;
-    const { user, token } = session.data;
+    const { user, token } = session.data ?? {};
 
     const handleSubmitBtnClick = async event => {
         event.preventDefault();
@@ -51,7 +51,6 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
             }
 
             let aboutUserFormClone = structuredClone(aboutUserForm);
-            console.log('aboutUserFormClone: ', aboutUserFormClone);
             let {
                 country,
                 zipCode,
@@ -76,7 +75,10 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
             }
 
             if (!isTeacher) {
-                aboutUserFormClone.classroomSize = 0;
+                aboutUserFormClone.classroomSize = {
+                    isNotTeaching: false,
+                    num: 0,
+                };
             }
 
             if (isTeacher && (subjects?.size > 0)) {
@@ -106,9 +108,14 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 };
             }
 
-            // adding the errors
-            if ((country?.toLowerCase() === 'united states') && (!zipCode || (zipCode?.toString()?.length == 0) || (zipCode < 0))) {
+            const zipCodeStr = Number.isInteger(+zipCode) ? zipCode.trim() : "";
+
+            if ((country?.toLowerCase() === 'united states') && (!zipCodeStr || (zipCodeStr?.length == 0))) {
                 errors.set('zipCode', 'This field is required');
+            } else if ((country.toLowerCase() === 'united states') && (zipCode < 0)) {
+                errors.set('zipCode', 'Cannot be a negative number.');
+            } else if ((country.toLowerCase() === 'united states') && (((zipCodeStr?.length > 0) && (zipCodeStr?.length < 5)) || (zipCodeStr.length > 5))) {
+                errors.set('zipCode', 'Invalid zip code. Must be 5 digits.');
             }
 
             if (!occupation || (occupation?.length <= 0)) {
@@ -127,11 +134,11 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 errors.set('gradesOrYears', `*Please select atleast one grade or year.`);
             }
 
-            if (isTeacher && ((Number.isInteger(+classroomSize) && (Number.parseInt(classroomSize) <= 0)) || !classroomSize)) {
+            if ((isTeacher && !classroomSize.isNotTeaching) && ((Number.isInteger(+classroomSize.num) && (Number.parseInt(classroomSize.num) <= 0)) || !classroomSize)) {
                 errors.set('classroomSize', `*This field is required. Must be greater than 0.`);
             }
 
-            if (isTeacher && subjects.size === 0) {
+            if (isTeacher && (subjects.size === 0)) {
                 errors.set('subjects', `*This field is required.`);
             }
 
@@ -143,7 +150,12 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 throw new CustomError(errMsg, null, "invalidAboutUserForm.");
             }
 
-            console.log('aboutUserFormClone, after updates: ', aboutUserFormClone);
+            if (country?.toLowerCase() === 'united states') {
+                aboutUserFormClone = {
+                    ...aboutUserFormClone,
+                    zipCode: Number.parseInt(zipCode),
+                };
+            }
 
             const responseBody = {
                 aboutUserForm: aboutUserFormClone,
@@ -163,9 +175,8 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
             }
 
             localStorage.setItem('userAccount', JSON.stringify(aboutUserFormClone));
-
             setIsAboutUserModalDisplayed(false);
-
+            setErrors(new Map());
             setTimeout(() => {
                 setNotifyModal({
                     isDisplayed: true,

@@ -68,7 +68,10 @@ export const UserSchema = new Schema({
   },
   reasonsForSiteVisit: { type: Object, required: false },
   subjects: { type: Object, required: false },
-  classroomSize: { type: Number, required: false },
+  classroomSize: {
+    num: { type: Number, required: false, default: () => 0 },
+    isNotTeaching: { type: Boolean, required: false, default: () => false },
+  },
   roles: { type: [String], required: true },
 });
 

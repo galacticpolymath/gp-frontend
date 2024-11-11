@@ -66,6 +66,7 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 }
 
 const LessonDetails = ({ lesson }) => {
+  // print the lesson object 
   const router = useRouter();
   const session = useSession();
   const { status } = session;
@@ -249,9 +250,10 @@ const LessonDetails = ({ lesson }) => {
 
     document.body.addEventListener('click', handleBonusContentDocumentClick);
 
-    // when a element is clicked, check if it is witihn the bonus content section 
-
-    return () => document.body.removeEventListener('click', handleDocumentClick);
+    return () => {
+      document.body.removeEventListener('click', handleDocumentClick)
+      document.body.removeEventListener('click', handleBonusContentDocumentClick)
+    };
   }, []);
 
   const _sections = useMemo(() => sectionComps?.length ? getLessonSections(sectionComps) : [], []);

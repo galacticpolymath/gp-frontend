@@ -32,7 +32,7 @@ import { createContext, useState } from "react";
  * @property {string} occupation
  * @property {boolean} isTeacher
  * @property {number | null} zipCode
- * @property {number} classroomSize
+ * @property {{ num: number, isNotTeaching: boolean }} classroomSize
 */
 
 /**
@@ -44,7 +44,7 @@ import { createContext, useState } from "react";
  * @property {string} occupation
  * @property {boolean} isTeacher
  * @property {number | null} zipCode
- * @property {number} classroomSize
+ * @property {{ num: number, isNotTeaching: boolean }} classroomSize
  * @property {boolean} isOnMailingList
 */
 
@@ -59,7 +59,10 @@ export const userAccountDefault = {
     country: '',
     occupation: '',
     zipCode: null,
-    classroomSize: 0,
+    classroomSize: {
+        num: 0,
+        isNotTeaching: false,
+    },
     subjects: new Map(),
     reasonsForSiteVisit: new Map(),
 };

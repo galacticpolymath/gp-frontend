@@ -163,8 +163,18 @@ const AccountPg = () => {
 
                     console.log('userAccountForClient.gradesOrYears: ', userAccountForClient.gradesOrYears);
 
-                    if (classroomSize) {
+                    if ((typeof classroomSize === 'object') && classroomSize) {
                         userAccountForClient.classroomSize = classroomSize;
+                    } else if (typeof classroomSize === 'number') {
+                        userAccountForClient.classroomSize = {
+                            num: classroomSize,
+                            isNotTeaching: false,
+                        }
+                    } else if (!classroomSize) {
+                        userAccountForClient.classroomSize = {
+                            num: 0,
+                            isNotTeaching: false,
+                        }
                     }
 
                     if (zipCode) {

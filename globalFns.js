@@ -377,7 +377,7 @@ export const getIsWithinParentElement = (element, specifier, classNameOrId = 'cl
         return false;
     }
 
-    if (element.parentElement[classNameOrId].includes(specifier)) {
+    if (element?.parentElement?.[classNameOrId]?.includes(specifier)) {
         return true;
     }
 
