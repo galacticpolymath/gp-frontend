@@ -12,8 +12,7 @@ import { UserContext } from '../../../providers/UserProvider';
 import CountrySection from './sections/CountrySection';
 import SubjectOption from './sections/SubjectOption';
 import SubmitAboutUserFormBtn from './SubmitAboutUserFormBtn';
-import { getAboutUserFormForClient, getUrlVal } from '../../../pages/account';
-import { useRouter } from 'next/router';
+import { getAboutUserFormForClient } from '../../../pages/account';
 import { CustomCloseButton } from '../../../ModalsContainer';
 import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from 'react-icons/io';
 import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
@@ -65,16 +64,21 @@ const AboutUserModal = () => {
     /**
      * @type {[import('../../../providers/UserProvider').TAboutUserForm, import('react').Dispatch<import('react').SetStateAction<import('../../../providers/UserProvider').TAboutUserForm>>]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
-    const router = useRouter();
     const modalBodyRef = useRef();
 
-    const handleOnHide = () => {
-        const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
+    useEffect(() => {
+        console.log('aboutUserForm: ', aboutUserForm);
+    });
 
-        if (aboutUserFormStringified) {
+    const handleOnHide = () => {
+        const userAccountStringified = localStorage.getItem('userAccount');
+
+        if (userAccountStringified) {
             setTimeout(() => {
-                const aboutUserForm = JSON.parse(aboutUserFormStringified);
-                setAboutUserForm(getAboutUserFormForClient(aboutUserForm));
+                // resetting reseting user account data
+                /** @type {import('../../../providers/UserProvider').TUserAccount} */
+                const userAccount = JSON.parse(userAccountStringified);
+                setAboutUserForm(getAboutUserFormForClient(userAccount));
             }, 300);
         }
 
@@ -147,32 +151,6 @@ const AboutUserModal = () => {
         }));
     };
 
-    const handleParseUserForm = (key, val) => {
-        if (['subjects', 'reasonsForSiteVisit'].includes(key)) {
-            const map = new Map(Object.entries(val));
-
-            return map;
-        }
-
-        return val;
-    };
-
-    const handleOnShow = () => {
-        const aboutUserFormStringified = localStorage.getItem('aboutUserForm');
-
-        const urlVal = getUrlVal(router, "show_about_user_form");
-
-        if (typeof JSON.parse(urlVal) === 'boolean') {
-            const url = router.asPath;
-            router.replace(url.split("?")[0]);
-        }
-
-        if (aboutUserFormStringified) {
-            const aboutUserForm = JSON.parse(aboutUserFormStringified, handleParseUserForm);
-            setAboutUserForm(aboutUserForm);
-        }
-    };
-
     useEffect(() => {
         if (modalBodyRef?.current?.clientHeight && isAboutMeFormModalDisplayed && !textareaMaxHeight) {
             const height = modalBodyRef.current.clientHeight * .27;
@@ -203,7 +181,6 @@ const AboutUserModal = () => {
         <Modal
             show={isAboutMeFormModalDisplayed}
             onHide={handleOnHide}
-            onShow={handleOnShow}
             dialogClassName='border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='about-me-modal user-modal-color rounded-0'
         >

@@ -14,6 +14,7 @@ import { getTargetKeyValFromUrl, resetUrl, validateEmail } from '../../../global
 import { useRouter } from 'next/router';
 import { CustomError } from '../../../backend/utils/errors';
 import CustomLink from '../../CustomLink';
+import { CONTACT_SUPPORT_EMAIL } from '../../../globalVars';
 
 const PasswordResetModal = () => {
     const { _isPasswordResetModalOn, _isLoginModalDisplayed, _customModalFooter, _notifyModal } = useContext(ModalContext);
@@ -144,7 +145,7 @@ const PasswordResetModal = () => {
                 headerTxt: error?.message ? 'SERVER ERROR. Please refresh the page and try again.' : 'Unable to send password link. Please refresh the page and try again.',
                 bodyElements: (
                     <>
-                        If this error persists, please contact <CustomLink className='text-primary'>support</CustomLink>.
+                        If this error persists, please contact <CustomLink className='text-primary' hrefStr={CONTACT_SUPPORT_EMAIL}>support</CustomLink>.
                     </>
                 ),
                 handleOnHide: closeNotifyModal,

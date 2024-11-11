@@ -119,7 +119,7 @@ const AccountPg = () => {
                     }
 
                     /** @type {import('../providers/UserProvider').TUserAccount} */
-                    const userAccount = response.data;
+                    let userAccount = response.data;
                     /** @type {import('../providers/UserProvider').TAboutUserForm} */
                     const userAccountForClient = { ...userAccountDefault };
                     const {
@@ -145,14 +145,23 @@ const AccountPg = () => {
                         userAccountForClient.subjects = userAccountDefault.subjects;
                     }
 
-                    if (gradesOrYears && (Object.entries(gradesOrYears).length > 0)) {
+                    if (gradesOrYears && (Object.entries(gradesOrYears).length > 0) && gradesOrYears.selection) {
                         userAccountForClient.gradesOrYears = gradesOrYears;
-                    } else if ((gradesOrYears && (Object.entries(gradesOrYears).length === 0)) || !gradesOrYears) {
+                    } else if (gradesOrYears && ((Object.entries(gradesOrYears).length === 0) || !gradesOrYears.selection || !gradesOrYears?.ageGroupsTaught?.length)) {
                         userAccountForClient.gradesOrYears = {
-                            selection: '',
+                            selection: 'U.S.',
                             ageGroupsTaught: [],
                         }
                     }
+
+                    if (userAccount && ((Object.entries(userAccount).length === 0) || !userAccount.selection || !userAccount?.ageGroupsTaught?.length)) {
+                        userAccount.gradesOrYears = {
+                            selection: 'U.S.',
+                            ageGroupsTaught: [],
+                        }
+                    }
+
+                    console.log('userAccountForClient.gradesOrYears: ', userAccountForClient.gradesOrYears);
 
                     if (classroomSize) {
                         userAccountForClient.classroomSize = classroomSize;

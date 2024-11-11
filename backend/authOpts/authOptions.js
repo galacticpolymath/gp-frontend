@@ -301,7 +301,6 @@ export const authOptions = {
   callbacks: {
     async signIn(param) {
       try {
-        console.log('param, signIn: ', param);
         const { user, account, profile, credentials } = param;
         const {
           errType,
@@ -314,6 +313,13 @@ export const authOptions = {
           urlErrorParamVal,
         } = user ?? {};
         let userEmail = profile?.email ?? email;
+
+        // when the user creates an account with google and that email already exists on a credentials based account, the following error occurs:
+        // -a mongodb document gets created with teh PLACEHOLDER string value in the db 
+
+        // POSSIBLE ERRORS:  
+        // -should check if the email exist, when creating an account with google 
+        // -if the email exist, the credentials is google, then throw an error 
 
         if (credentials && !userEmail) {
           userEmail = credentials.email;
@@ -340,8 +346,8 @@ export const authOptions = {
         await connectToMongodb();
 
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
+        // print dbUser 
 
-        // the user is creating an account with google, there is user with the same email in the db   
         if ((errType === 'userAlreadyExist') || (dbUser && (typeof dbUser === "object") && wasUserCreated && (dbUser.provider === 'google') && (typeof providerAccountId === 'string'))) {
           await deleteUser({ providerAccountId });
 
@@ -438,8 +444,7 @@ export const authOptions = {
       let { email, roles, name, picture } = token.payload;
       /** @type { import('../models/user').TUserSchema } */
       const targetUser = cache.get(email) ?? {};
-      console.log('TARGET USER: ');
-      console.log(targetUser);
+      console.log('cached target user: ', targetUser);
       let isTeacher = false;
       let occupation = null;
 
@@ -492,7 +497,7 @@ export const authOptions = {
     async redirect(param) {
       console.log('will redirect user to the following: ', param);
 
-      const { baseUrl, url } = param;
+      const { url } = param;
 
       return url;
     },
