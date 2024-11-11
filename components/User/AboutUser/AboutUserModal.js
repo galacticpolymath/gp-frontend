@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable quotes */
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
@@ -292,6 +293,13 @@ const AboutUserModal = () => {
                                                 style={{ maxWidth: '200px' }}
                                                 className='aboutme-txt-input no-outline mt-1'
                                             />
+                                            <section className='mt-1'>
+                                                <input
+                                                    type='checkbox'
+                                                    name='isNotTeaching'
+                                                />
+                                                <label htmlFor='isNotTeaching' className='fw-normal ms-1 pb-1'>I{"'"}m not teaching.</label>
+                                            </section>
                                             <section className='border-danger'>
                                                 <ErrorTxt>
                                                     {errors.get('classroomSize') ?? ''}

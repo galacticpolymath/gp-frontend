@@ -55,10 +55,19 @@ const Notify = () => {
     /** @type {[JSX.Element | null]} */
     const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
-    const [customModalFooter, setCustomModalFooter] = _customModalFooter;
+    const [customModalFooter] = _customModalFooter;
     const [notifyModal, setNotifyModal] = _notifyModal;
     const { bodyTxt, headerTxt, handleOnHide, bodyElements } = notifyModal;
 
+    const openUserEntryModal = (setModal = setIsLoginModalDisplayed) => {
+        const url = router.asPath;
+        router.replace(url.split("?")[0]);
+        setNotifyModal((state) => ({ ...state, isDisplayed: false }));
+        setTimeout(() => {
+            setNotifyModal(defautlNotifyModalVal);
+            setModal(true);
+        }, 350);
+    };
     const closeModal = () => {
         if (typeof handleOnHide === "function") {
             handleOnHide();
@@ -154,37 +163,6 @@ const Notify = () => {
             }, 500);
 
             console.log("isUserLoggingInStringified: ", isUserLoggingInStringified);
-            setCustomModalFooter(
-                <CustomNotifyModalFooter
-                    footerClassName='d-flex justify-content-center align-items-center'
-                    closeNotifyModal={() => {
-                        const url = router.asPath;
-                        router.replace(url.split("?")[0]);
-                        setTimeout(() => {
-                            setCustomModalFooter(null);
-                        }, 250);
-                        setIsLoginModalDisplayed(true);
-                    }}
-                    customBtnTxt="Sign Up"
-                    leftBtnTxt="Sign In"
-                    leftBtnClassName="border"
-                    handleCustomBtnClick={() => {
-                        const url = router.asPath;
-                        router.replace(url.split("?")[0]);
-                        setTimeout(() => {
-                            setCustomModalFooter(null);
-                        }, 250);
-                        setIsCreateAccountModalDisplayed(true);
-                    }}
-                    leftBtnStyles={{
-                        width: "40%",
-                        backgroundColor: "grey",
-                    }}
-                    rightBtnStyles={{
-                        width: "40%",
-                    }}
-                />
-            );
             setNotifyModal({
                 isDisplayed: true,
                 headerTxt: isUserLoggingIn
@@ -192,11 +170,11 @@ const Notify = () => {
                     : "ERROR! Unable to create your account.",
                 bodyElements: isUserLoggingIn ? (
                     <div>
-                        The corresponding email exist as a credentials based account. If you are this user, try <CustomButton classNameStr="text-primary underline-on-hover no-btn-styles">signing</CustomButton> with your email and password instead. Or, if you don{"'"}t have an account create one <CustomButton classNameStr="text-primary underline-on-hover no-btn-styles">here</CustomButton>.
+                        The corresponding email exist as a credentials based account. If you are this user, try <CustomButton handleOnClick={() => openUserEntryModal(setIsLoginModalDisplayed)} classNameStr="text-primary underline-on-hover no-btn-styles">signing</CustomButton> with your email and password instead. Or, if you don{"'"}t have an account create one <CustomButton handleOnClick={() => openUserEntryModal(setIsCreateAccountModalDisplayed)} classNameStr="text-primary underline-on-hover no-btn-styles">here</CustomButton>.
                     </div>
                 ) : (
                     <div>
-                            This email already exists. If you are this user, try <CustomButton classNameStr="text-primary underline-on-hover no-btn-styles">signing</CustomButton> in with your credentials. Or, if you don{"'"}t have an account create one <CustomButton classNameStr="text-primary underline-on-hover no-btn-styles">here</CustomButton>.
+                            This email already exists. If you are this user, try <CustomButton handleOnClick={() => openUserEntryModal(setIsLoginModalDisplayed)} classNameStr="text-primary underline-on-hover no-btn-styles">signing</CustomButton> in with your credentials. Or, if you don{"'"}t have an account create one <CustomButton handleOnClick={() => openUserEntryModal(setIsCreateAccountModalDisplayed)} classNameStr="text-primary underline-on-hover no-btn-styles">here</CustomButton>.
                     </div>
                 ),
                 handleOnHide: () => {
