@@ -9,7 +9,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import Layout from '../../../../components/Layout';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import ParentLessonSection from '../../../../components/LessonSection/ParentLessonSection';
 import LessonsSecsNavDots from '../../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../../components/AboutPgComps/ShareWidget';
@@ -70,6 +70,7 @@ const LessonDetails = ({ lesson }) => {
   const router = useRouter();
   const session = useSession();
   const { status } = session;
+  const statusRef = useRef(status);
   const { _notifyModal, _isLoginModalDisplayed, _isCreateAccountModalDisplayed, _customModalFooter } = useContext(ModalContext);
   const [, setNotifyModal] = _notifyModal;
   const [, setCustomModalFooter] = _customModalFooter;
@@ -199,7 +200,11 @@ const LessonDetails = ({ lesson }) => {
       scrollSectionIntoView(sectionDots.clickedSectionId)
       setWillGoToTargetSection(false)
     }
-  }, [willGoToTargetSection])
+  }, [willGoToTargetSection]);
+
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
 
   const handleUserNeedsAnAccountHideModal = () => {
     setNotifyModal(defautlNotifyModalVal);
@@ -215,10 +220,10 @@ const LessonDetails = ({ lesson }) => {
   }
 
   const handleBonusContentDocumentClick = event => {
-    const isWithinBonusContentSec = getIsWithinParentElement(event.target, 'Bonus_Content_collapsible_text_sec', 'className');
+    const isWithinBonusContentSec = getIsWithinParentElement(event.target, 'Bonus_Content', 'className');
     const { tagName, origin } = event.target ?? {};
 
-    if ((status === "unauthenticated") && isWithinBonusContentSec && (tagName === "A") && (origin === "https://storage.googleapis.com")) {
+    if ((statusRef.current !== "authenticated") && isWithinBonusContentSec && (tagName === "A") && (origin === "https://storage.googleapis.com")) {
       event.preventDefault();
       setCustomModalFooter(<CustomNotifyModalFooter
         closeNotifyModal={handleIsUserEntryModalDisplayed(setIsLoginModalDisplayed)}
