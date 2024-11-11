@@ -1,26 +1,32 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 import { useContext, useEffect } from "react";
+import CustomButton from '../../components/General/Button';
 import { Button, Modal } from "react-bootstrap";
-import { ModalContext, defautlNotifyModalVal } from "../../providers/ModalProvider";
+import {
+    ModalContext,
+    defautlNotifyModalVal,
+} from "../../providers/ModalProvider";
 import { useRouter } from "next/router";
+import { getIsParsable } from "../../globalFns";
 
 export const CustomNotifyModalFooter = ({
-    footerClassName = 'd-flex justify-content-center',
+    footerClassName = "d-flex justify-content-center",
     closeNotifyModal,
     customBtnTxt,
     handleCustomBtnClick,
-    firstBtnTxt = 'Close',
+    leftBtnTxt = "Close",
     leftBtnStyles = {
-        width: '120px',
-        backgroundColor: '#898F9C',
+        width: "120px",
+        backgroundColor: "#898F9C",
     },
     rightBtnStyles = {},
-    leftBtnClassName = '',
-    rightBtnClassName = '',
+    leftBtnClassName = "",
+    rightBtnClassName = "",
 }) => {
     return (
         <Modal.Footer className={footerClassName}>
@@ -29,38 +35,36 @@ export const CustomNotifyModalFooter = ({
                 style={leftBtnStyles}
                 className={leftBtnClassName}
             >
-                <span className='text-white'>
-                    {firstBtnTxt}
-                </span>
+                <span className="text-white">{leftBtnTxt}</span>
             </Button>
             <Button
                 onClick={handleCustomBtnClick}
-                backgroundColor='#007BFF'
+                backgroundColor="#007BFF"
                 style={rightBtnStyles}
                 className={rightBtnClassName}
             >
-                <span className='text-white'>
-                    {customBtnTxt}
-                </span>
+                <span className="text-white">{customBtnTxt}</span>
             </Button>
         </Modal.Footer>
     );
 };
 
 const Notify = () => {
-    const { _notifyModal, _customModalFooter } = useContext(ModalContext);
+    const { _notifyModal, _customModalFooter, _isCreateAccountModalDisplayed, _isLoginModalDisplayed } = useContext(ModalContext);
     const router = useRouter();
     /** @type {[JSX.Element | null]} */
-    const [customModalFooter] = _customModalFooter;
+    const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
+    const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
+    const [customModalFooter, setCustomModalFooter] = _customModalFooter;
     const [notifyModal, setNotifyModal] = _notifyModal;
     const { bodyTxt, headerTxt, handleOnHide, bodyElements } = notifyModal;
 
     const closeModal = () => {
-        if (typeof handleOnHide === 'function') {
+        if (typeof handleOnHide === "function") {
             handleOnHide();
         }
 
-        setNotifyModal(state => ({ ...state, isDisplayed: false }));
+        setNotifyModal((state) => ({ ...state, isDisplayed: false }));
 
         setTimeout(() => {
             setNotifyModal(defautlNotifyModalVal);
@@ -68,72 +72,144 @@ const Notify = () => {
     };
 
     useEffect(() => {
-        let paramsStr = window.location.search.replace(/\?/, '');
-        const params = paramsStr.split('=');
+        let paramsStr = window.location.search.replace(/\?/, "");
+        const params = paramsStr.split("=");
 
-        if ((params[0] === 'signin-err-type') && (params[1] === 'duplicate-user-with-google')) {
+        if (
+            (params[0] === "signin-err-type") &&
+            (params[1] === "duplicate-user-with-google")
+        ) {
             setNotifyModal({
                 headerTxt: "ERROR! Couldn't create account.",
-                bodyTxt: "This account already exist. Try signing in with Google instead.",
+                bodyTxt:
+                    "This account already exist. Try signing in with Google instead.",
                 isDisplayed: true,
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);
                 },
             });
-        } else if ((params[0] === 'signin-err-type') && (params[1] === 'duplicate-user-with-creds')) {
+        } else if (
+            params[0] === "signin-err-type" &&
+            params[1] === "duplicate-user-with-creds"
+        ) {
             setNotifyModal({
                 headerTxt: "ERROR! Couldn't create account.",
-                bodyTxt: "This account already exist. Try signing in with your email and password instead.",
+                bodyTxt:
+                    "This account already exist. Try signing in with your email and password instead.",
                 isDisplayed: true,
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);
                 },
             });
-        } else if (params[0] === 'signin-err-type' || params[0] === 'user-creation-err') {
+        } else if (
+            params[0] === "signin-err-type" ||
+            params[0] === "user-creation-err"
+        ) {
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: 'ERROR! Unable sign in or create your account.',
-                bodyTxt: 'Contact support if this error persists.',
+                headerTxt: "ERROR! Unable sign in or create your account.",
+                bodyTxt: "Contact support if this error persists.",
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);
                 },
             });
-        } else if (params[0] === 'user-account-creation-err-type' && params[1] === 'duplicate-user-with-google') {
-            const isUserLoggingIn = localStorage.getItem('userEntryType') ? (JSON.parse(localStorage.getItem('userEntryType')) === 'login') : false;
+        } else if (
+            params[0] === "user-account-creation-err-type" &&
+            params[1] === "duplicate-user-with-google"
+        ) {
+            const isUserLoggingIn = localStorage.getItem("userEntryType")
+                ? JSON.parse(localStorage.getItem("userEntryType")) === "login"
+                : false;
 
-            localStorage.removeItem('userEntryType');
+            localStorage.removeItem("userEntryType");
 
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: isUserLoggingIn ? 'SIGN IN ERROR!' : 'ERROR! Unable to create your account.',
-                bodyTxt: isUserLoggingIn ? 'Unable to sign in. Try sigining in with google instead.' : 'This email already exists. If you are this user, try signing in with your credentials.',
+                headerTxt: isUserLoggingIn
+                    ? "SIGN IN ERROR!"
+                    : "ERROR! Unable to create your account.",
+                bodyTxt: isUserLoggingIn
+                    ? "Unable to sign in. Try sigining in with google instead."
+                    : "This email already exists. If you are this user, try signing in with your credentials.",
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);
                 },
             });
-        } else if (params[0] === 'user-account-creation-err-type' && params[1] === 'duplicate-user-with-creds') {
-            const isUserLoggingIn = localStorage.getItem('userEntryType') ? (JSON.parse(localStorage.getItem('userEntryType')) === 'login') : false;
+        } else if (
+            params[0] === "user-account-creation-err-type" &&
+            params[1] === "duplicate-user-with-creds"
+        ) {
+            const isUserLoggingInStringified = localStorage.getItem("userEntryType");
+            console.log("isUserLoggingInStringified: ", isUserLoggingInStringified);
+            const isUserLoggingIn = getIsParsable(isUserLoggingInStringified)
+                ? JSON.parse(isUserLoggingInStringified) === "login"
+                : false;
 
-            localStorage.removeItem('userEntryType');
+            setTimeout(() => {
+                localStorage.removeItem("userEntryType");
+            }, 500);
 
+            console.log("isUserLoggingInStringified: ", isUserLoggingInStringified);
+            setCustomModalFooter(
+                <CustomNotifyModalFooter
+                    footerClassName='d-flex justify-content-center align-items-center'
+                    closeNotifyModal={() => {
+                        const url = router.asPath;
+                        router.replace(url.split("?")[0]);
+                        setTimeout(() => {
+                            setCustomModalFooter(null);
+                        }, 250);
+                        setIsLoginModalDisplayed(true);
+                    }}
+                    customBtnTxt="Sign Up"
+                    leftBtnTxt="Sign In"
+                    leftBtnClassName="border"
+                    handleCustomBtnClick={() => {
+                        const url = router.asPath;
+                        router.replace(url.split("?")[0]);
+                        setTimeout(() => {
+                            setCustomModalFooter(null);
+                        }, 250);
+                        setIsCreateAccountModalDisplayed(true);
+                    }}
+                    leftBtnStyles={{
+                        width: "40%",
+                        backgroundColor: "grey",
+                    }}
+                    rightBtnStyles={{
+                        width: "40%",
+                    }}
+                />
+            );
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: isUserLoggingIn ? 'SIGN IN ERROR!' : 'ERROR! Unable to create your account.',
-                bodyTxt: isUserLoggingIn ? 'Unable to sign in. Try sigining in with an email and password instead.' : 'This email already exists. If you are this user, try signing in with your credentials.',
+                headerTxt: isUserLoggingIn
+                    ? "SIGN IN ERROR!"
+                    : "ERROR! Unable to create your account.",
+                bodyElements: isUserLoggingIn ? (
+                    <div>
+                        The corresponding email exist as a credentials based account. If you are this user, try <CustomButton classNameStr="text-primary underline-on-hover no-btn-styles">signing</CustomButton> with your email and password instead. Or, if you don{"'"}t have an account create one <CustomButton classNameStr="text-primary underline-on-hover no-btn-styles">here</CustomButton>.
+                    </div>
+                ) : (
+                    <div>
+                            This email already exists. If you are this user, try <CustomButton classNameStr="text-primary underline-on-hover no-btn-styles">signing</CustomButton> in with your credentials. Or, if you don{"'"}t have an account create one <CustomButton classNameStr="text-primary underline-on-hover no-btn-styles">here</CustomButton>.
+                    </div>
+                ),
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);
                 },
             });
-        } else if ((params[0] === 'user-deleted') && (params[1] === 'true')) {
+        } else if (params[0] === "user-deleted" && params[1] === "true") {
             setNotifyModal({
                 isDisplayed: true,
-                headerTxt: 'Success!',
-                bodyTxt: 'Your account was successfully deleted. Fairwell 👋! We hope to see you again .',
+                headerTxt: "Success!",
+                bodyTxt:
+                    "Your account was successfully deleted. Fairwell 👋! We hope to see you again .",
                 handleOnHide: () => {
                     const url = router.asPath;
                     router.replace(url.split("?")[0]);
@@ -150,7 +226,10 @@ const Notify = () => {
             aria-labelledby="example-modal-sizes-title-sm"
         >
             <Modal.Header>
-                <Modal.Title id="example-modal-sizes-title-sm" className="text-center w-100">
+                <Modal.Title
+                    id="example-modal-sizes-title-sm"
+                    className="text-center w-100"
+                >
                     {headerTxt}
                 </Modal.Title>
             </Modal.Header>

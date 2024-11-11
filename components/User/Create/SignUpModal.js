@@ -187,6 +187,8 @@ const SignUpModal = () => {
             localStorage.removeItem('isOnMailingList');
         }
 
+        localStorage.setItem('userEntryType', JSON.stringify('create-account'));
+
         signIn('google', { callbackUrl: callbackUrl });
     };
 

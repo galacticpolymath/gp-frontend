@@ -221,7 +221,7 @@ const LessonDetails = ({ lesson }) => {
       event.preventDefault();
       setCustomModalFooter(<CustomNotifyModalFooter
         closeNotifyModal={handleIsUserEntryModalDisplayed(setIsLoginModalDisplayed)}
-        firstBtnTxt='Sign In'
+        leftBtnTxt='Sign In'
         customBtnTxt='Sign Up'
         footerClassName='d-flex justify-content-center'
         leftBtnClassName='border'

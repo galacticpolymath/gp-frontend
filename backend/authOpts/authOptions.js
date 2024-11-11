@@ -346,9 +346,11 @@ export const authOptions = {
         await connectToMongodb();
 
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
-        // print dbUser 
 
-        if ((errType === 'userAlreadyExist') || (dbUser && (typeof dbUser === "object") && wasUserCreated && (dbUser.provider === 'google') && (typeof providerAccountId === 'string'))) {
+        if ((errType === 'userAlreadyExist') || (dbUser && (typeof dbUser === "object") && wasUserCreated && (typeof providerAccountId === 'string'))) {
+          console.log('creating an account with google, the user with the specific email  already exists, deleting the mongodb doc...');
+          const urlErrorParamVal = dbUser.provider === 'google' ? 'duplicate-user-with-google' : 'duplicate-user-with-creds';
+
           await deleteUser({ providerAccountId });
 
           throw new SignInError(
@@ -356,7 +358,7 @@ export const authOptions = {
             'This email has already been taken.',
             code ?? 422,
             'user-account-creation-err-type',
-            'duplicate-user-with-google'
+            urlErrorParamVal
           );
         }
 

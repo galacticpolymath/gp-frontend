@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 /* eslint-disable quotes */
@@ -36,7 +37,7 @@ const GoogleSignIn = ({
             localStorage.setItem('userEntryType', JSON.stringify('login'));
         }
 
-        signIn('google', { callbackUrl: callbackUrl, yoThere: 'yo there meng' });
+        signIn('google', { callbackUrl: callbackUrl });
     };
 
     return (
