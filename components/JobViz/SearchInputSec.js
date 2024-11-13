@@ -12,8 +12,7 @@
 /* eslint-disable react/jsx-indent */
 
 import { BsSearch } from "react-icons/bs"
-import { Button, Card } from 'react-bootstrap';
-import { AiOutlineClose } from 'react-icons/ai'
+import { Card } from 'react-bootstrap';
 import getSearchResultsAsync from "../../helperFns/getSearchResults";
 import { useCallback, useEffect, useState } from "react";
 import SearchResult from "./SearchSec/SearchResult";

@@ -13,31 +13,43 @@ const GoogleSignIn = ({
     children = (
         <>
             <FcGoogle className="mx-2" />
-            <span style={{ fontSize: '16px' }}>
-                Sign in with Google.
-            </span>
+            <span style={{ fontSize: "16px" }}>Sign in with Google.</span>
         </>
     ),
-    callbackUrl = '',
+    callbackUrl = "",
     handleGoogleBtnClickCustom,
     style = {},
-    className = 'rounded p-2 d-flex justify-content-center align-items-center border',
+    className = "rounded p-2 d-flex justify-content-center align-items-center border",
     isLoggingIn = false,
+    executeExtraBtnClickLogic = null,
+    executeFinallyBlockLogic = null,
 }) => {
 
-    const handleGoogleBtnClickDefault = event => {
-        event.preventDefault();
+    const handleGoogleBtnClickDefault = (event) => {
+        try {
+            event.preventDefault();
 
-        if (!callbackUrl) {
-            console.error('The callback url cannot be empty.');
-            return;
+            if (typeof executeExtraBtnClickLogic === "function") {
+                executeExtraBtnClickLogic();
+            }
+
+            if (!callbackUrl) {
+                console.error("The callback url cannot be empty.");
+                return;
+            }
+
+            if (isLoggingIn) {
+                localStorage.setItem("userEntryType", JSON.stringify("login"));
+            }
+
+            signIn("google", { callbackUrl: callbackUrl });
+        } catch (error) {
+            console.log('An error has occurred: ', error);
+        } finally {
+            if (typeof executeFinallyBlockLogic === 'function') {
+                executeFinallyBlockLogic();
+            }
         }
-
-        if (isLoggingIn) {
-            localStorage.setItem('userEntryType', JSON.stringify('login'));
-        }
-
-        signIn('google', { callbackUrl: callbackUrl });
     };
 
     return (
@@ -45,7 +57,11 @@ const GoogleSignIn = ({
             defaultStyleObj={style}
             backgroundColor="white"
             classNameStr={className}
-            handleOnClick={typeof handleGoogleBtnClickCustom === 'function' ? handleGoogleBtnClickCustom : handleGoogleBtnClickDefault}
+            handleOnClick={
+                typeof handleGoogleBtnClickCustom === "function"
+                    ? handleGoogleBtnClickCustom
+                    : handleGoogleBtnClickDefault
+            }
         >
             {children}
         </Button>

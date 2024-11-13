@@ -353,6 +353,7 @@ const getGoogleDriveFileIdFromUrl = url => {
   if (typeof url !== "string") {
     return null;
   }
+
   const urlSplitted = url.split("/");
   const indexOfDInSplittedUrl = urlSplitted.findIndex(str => str === "d");
 
@@ -409,13 +410,10 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOntoU
   };
 }
 
-// GOAL: if the user is logged, get if the user is a teacher or not
-// if the user is teacher, then show the worksheets and other related resources
-// else keep the documents blurred
-
 export const getStaticProps = async (arg) => {
   try {
     const { params: { id, loc } } = arg;
+
     await connectToMongodb();
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
