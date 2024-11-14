@@ -13,6 +13,7 @@ import { defautlNotifyModalVal, ModalContext } from '../../../providers/ModalPro
 import { CustomNotifyModalFooter } from '../../Modals/Notify';
 import { useRouter } from 'next/router';
 import { CONTACT_SUPPORT_EMAIL } from '../../../globalVars';
+import CustomLink from '../../CustomLink';
 
 const JWT_EXPIRED_TOKENS_ERR_TYPES = ['ERR_JWT_EXPIRED', 'expiredToken'];
 
@@ -96,10 +97,7 @@ const PasswordResetForm = () => {
 
             router.push('/account?password_changed=true');
         } catch (error) {
-            console.error('An error has occurred in reseting: ', error);
             const { errType } = error?.response?.data ?? {};
-            // print errTy;e
-            console.log('errType: ', errType);
             let errMsg = error.message ?? 'Failed to update password. Press "Restart Recover" to try again.';
             let bodyTxt = '';
             let bodyElements = (
@@ -112,7 +110,7 @@ const PasswordResetForm = () => {
                 errMsg = 'ERROR!';
                 bodyElements = (
                     <span>
-                        This account does not log in using an email and password. If you think this is a mistake, please <a href={`{${CONTACT_SUPPORT_EMAIL}`}>contact</a> support.
+                        This account does not log in using an email and password. If you think this is a mistake, please contact <CustomLink hrefStr={CONTACT_SUPPORT_EMAIL} className='text-primary'>support</CustomLink>.
                     </span>
                 );
 
@@ -124,7 +122,7 @@ const PasswordResetForm = () => {
 
             setCustomModalFooter(
                 <CustomNotifyModalFooter
-                    footerClassName='d-flex justify-content-end'
+                    footerClassName='d-flex justify-content-center align-items-center'
                     closeNotifyModal={closeNotifyModal}
                     customBtnTxt="Restart Recover"
                     handleCustomBtnClick={handleRestartPasswordRecoverBtnClick}

@@ -28,6 +28,8 @@ const PasswordResetModal = () => {
     const router = useRouter();
 
     const handleOnHide = () => {
+        const url = router.asPath;
+        router.replace(url.split('?')[0]);
         setIsLoadingSpinner(false);
         setIsPasswordResetModalOn(false);
     };
@@ -84,11 +86,9 @@ const PasswordResetModal = () => {
             }
 
             const url = `${window.location.origin}/api/send-password-recover-email`;
-            const response = await axios.post(url, { email, clientOrigin: window }, {
-                timeout: 7_000,
+            const response = await axios.post(url, { email, clientOrigin: window.location.origin }, {
+                timeout: 13_000,
             });
-
-            console.log('response: ', response);
 
             if (response.status !== 200) {
                 throw new CustomError(`Server error: ${response.data}`);
@@ -169,6 +169,15 @@ const PasswordResetModal = () => {
         <Modal
             show={isPasswordResetModal}
             onHide={handleOnHide}
+            onShow={() => {
+                const url = router.asPath;
+
+                if (url.includes('?')) {
+                    setTimeout(() => {
+                        router.replace(url.split('?')[0]);
+                    }, 300);
+                }
+            }}
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='login-ui-modal bg-white shadow-lg rounded pt-2 box-shadow-login-ui-modal'
         >

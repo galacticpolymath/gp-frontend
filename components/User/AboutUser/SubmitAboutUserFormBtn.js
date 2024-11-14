@@ -108,7 +108,7 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames }) => {
                 };
             }
 
-            const zipCodeStr = Number.isInteger(+zipCode) ? zipCode.trim() : "";
+            const zipCodeStr = ((typeof zipCode === 'string') && Number.isInteger(+zipCode)) ? zipCode.trim() : "";
 
             if ((country?.toLowerCase() === 'united states') && (!zipCodeStr || (zipCodeStr?.length == 0))) {
                 errors.set('zipCode', 'This field is required');

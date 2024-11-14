@@ -12,6 +12,8 @@ import { PASSWORD_RESET_TOKEN_VAR_NAME } from '../../globalVars';
 
 export default async function handler(request, response) {
     try {
+        console.log('request received...');
+        
         if (!request.body.email) {
             throw new CustomError('The "email" property is missing from the body of the request.', 500);
         }
