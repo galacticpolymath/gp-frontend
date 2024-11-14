@@ -26,10 +26,9 @@ const PasswordResetForm = () => {
     const [password, setPassword] = useState({ new: '', confirm: '' });
     const [, setNotifyModal] = _notifyModal;
     const [, setCustomModalFooter] = _customModalFooter;
-    const [isNewPasswordShown, setIsNewPasswordShown] = useState(false);
     const [isLoadingSpinnerOn, setIsLoadingSpinner] = useState(false);
+    const [passwordInputType, setPasswordInputType] = useState('password');    
     const router = useRouter();
-    const [isConfirmPasswordShown, setIsConfirmPasswordShown] = useState(false);
     /**
      * @type {[TFocusCss, import('react').Dispatch<import('react').SetStateAction<TFocusCss>>]}
      */
@@ -41,11 +40,8 @@ const PasswordResetForm = () => {
     const { new: newPassword, confirm } = password;
     const [errors] = useState(new Map());
 
-    /**
-     * @param {import('react').Dispatch<import('react').SetStateAction<boolean>>} setter 
-     */
-    const handleShowPasswordBtnClick = setState => () => {
-        setState(state => !state);
+    const handlePasswordTxtShowBtnClick = () => {
+        setPasswordInputType(state => state === 'password' ? 'text' : 'password');
     };
 
     const handleOnChange = event => {
@@ -167,7 +163,7 @@ const PasswordResetForm = () => {
                             name='new'
                             onFocus={handleFocusCssState(setFocusCssNewPassword, 'input-focus-blue')}
                             onBlur={handleFocusCssState(setFocusCssNewPassword, 'border-grey-dark')}
-                            type={isNewPasswordShown ? 'text' : 'password'}
+                            type={passwordInputType}
                             className='px-1 py-2 position-relative no-outline border-0 rounded'
                             onChange={handleOnChange}
                         />
@@ -176,12 +172,12 @@ const PasswordResetForm = () => {
                             className='h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center'
                         >
                             <div style={{ height: '95%' }} className='d-flex justify-content-center align-items-center'>
-                                {isNewPasswordShown ?
+                                {(passwordInputType === 'text') ?
                                     (
                                         <IoMdEye
                                             fontSize="25px"
                                             className='pointer'
-                                            onClick={handleShowPasswordBtnClick(setIsNewPasswordShown)}
+                                            onClick={handlePasswordTxtShowBtnClick}
                                         />
                                     )
                                     :
@@ -189,7 +185,7 @@ const PasswordResetForm = () => {
                                         <IoMdEyeOff
                                             fontSize="25px"
                                             className='pointer'
-                                            onClick={handleShowPasswordBtnClick(setIsNewPasswordShown)}
+                                            onClick={handlePasswordTxtShowBtnClick}
                                         />
                                     )
                                 }
@@ -211,9 +207,9 @@ const PasswordResetForm = () => {
                             style={{ width: '90%', height: '45px', fontSize: '20px' }}
                             id='confirm-password'
                             name='confirm'
+                            type={passwordInputType}
                             onFocus={handleFocusCssState(setFocusCssConfirmPassword, 'input-focus-blue')}
                             onBlur={handleFocusCssState(setFocusCssConfirmPassword, 'border-grey-dark')}
-                            type={isConfirmPasswordShown ? 'text' : 'password'}
                             onChange={handleOnChange}
                             className='px-1 py-2 position-relative no-outline border-0 rounded'
                         />
@@ -222,12 +218,12 @@ const PasswordResetForm = () => {
                             className='h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center'
                         >
                             <div style={{ height: '95%' }} className='d-flex justify-content-center align-items-center'>
-                                {isConfirmPasswordShown ?
+                                {(passwordInputType === 'text') ?
                                     (
                                         <IoMdEye
                                             fontSize="25px"
                                             className='pointer'
-                                            onClick={handleShowPasswordBtnClick(setIsConfirmPasswordShown)}
+                                            onClick={handlePasswordTxtShowBtnClick}
                                         />
                                     )
                                     :
@@ -235,7 +231,7 @@ const PasswordResetForm = () => {
                                         <IoMdEyeOff
                                             fontSize="25px"
                                             className='pointer'
-                                            onClick={handleShowPasswordBtnClick(setIsConfirmPasswordShown)}
+                                            onClick={handlePasswordTxtShowBtnClick}
                                         />
                                     )
                                 }
