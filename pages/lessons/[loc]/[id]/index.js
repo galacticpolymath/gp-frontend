@@ -9,7 +9,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import Layout from '../../../../components/Layout';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import ParentLessonSection from '../../../../components/LessonSection/ParentLessonSection';
 import LessonsSecsNavDots from '../../../../components/LessonSection/LessonSecsNavDots';
 import ShareWidget from '../../../../components/AboutPgComps/ShareWidget';
@@ -18,7 +18,10 @@ import useScrollHandler from '../../../../customHooks/useScrollHandler';
 import Lessons from '../../../../backend/models/lesson';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
-import { getLinkPreviewObj, removeHtmlTags } from '../../../../globalFns';
+import { getIsWithinParentElement, getLinkPreviewObj, removeHtmlTags } from '../../../../globalFns';
+import { useSession } from 'next-auth/react';
+import { defautlNotifyModalVal, ModalContext } from '../../../../providers/ModalProvider';
+import { CustomNotifyModalFooter } from '../../../../components/Modals/Notify';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id='
@@ -63,7 +66,16 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 }
 
 const LessonDetails = ({ lesson }) => {
+  // print the lesson object 
   const router = useRouter();
+  const session = useSession();
+  const { status } = session;
+  const statusRef = useRef(status);
+  const { _notifyModal, _isLoginModalDisplayed, _isCreateAccountModalDisplayed, _customModalFooter } = useContext(ModalContext);
+  const [, setNotifyModal] = _notifyModal;
+  const [, setCustomModalFooter] = _customModalFooter;
+  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
+  const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
   const lessonSectionObjEntries = lesson?.Section ? Object.entries(lesson.Section) : [];
   let lessonStandardsIndexesToFilterOut = [];
   let lessonStandardsSections = lessonSectionObjEntries.filter(([sectionName], index) => {
@@ -75,7 +87,7 @@ const LessonDetails = ({ lesson }) => {
     return false;
   });
   const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length ? lessonStandardsSections?.length === 1 : false;
-  let sectionComps = lesson?.Section ?
+  let sectionComps = (lesson?.Section && ((typeof lesson?.Section === 'object') && (lesson?.Section !== null))) ?
     Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure')
     :
     null;
@@ -114,7 +126,7 @@ const LessonDetails = ({ lesson }) => {
     if (lessonsStandardsSectionIndex === -1) {
       lessonsStandardsSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Bonus Content');
     }
-    
+
     if (lessonsStandardsSectionIndex === -1) {
       lessonsStandardsSectionIndex = sectionComps.findIndex(({ SectionTitle }) => SectionTitle === 'Teaching Materials');
     }
@@ -188,12 +200,65 @@ const LessonDetails = ({ lesson }) => {
       scrollSectionIntoView(sectionDots.clickedSectionId)
       setWillGoToTargetSection(false)
     }
-  }, [willGoToTargetSection])
+  }, [willGoToTargetSection]);
+
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
+
+  const handleUserNeedsAnAccountHideModal = () => {
+    setNotifyModal(defautlNotifyModalVal);
+    setCustomModalFooter(null);
+  }
+  const handleIsUserEntryModalDisplayed = setIsModalOn => () => {
+    setNotifyModal(state => ({ ...state, isDisplayed: false }));
+
+    setTimeout(() => {
+      handleUserNeedsAnAccountHideModal();
+      setIsModalOn(true);
+    }, 250);
+  }
+
+  const handleBonusContentDocumentClick = event => {
+    const isWithinBonusContentSec = getIsWithinParentElement(event.target, 'Bonus_Content', 'className');
+    const { tagName, origin } = event.target ?? {};
+
+    if ((statusRef.current !== "authenticated") && isWithinBonusContentSec && (tagName === "A") && (origin === "https://storage.googleapis.com")) {
+      event.preventDefault();
+      setCustomModalFooter(<CustomNotifyModalFooter
+        closeNotifyModal={handleIsUserEntryModalDisplayed(setIsLoginModalDisplayed)}
+        leftBtnTxt='Sign In'
+        customBtnTxt='Sign Up'
+        footerClassName='d-flex justify-content-center'
+        leftBtnClassName='border'
+        leftBtnStyles={{ width: '150px', backgroundColor: '#898F9C' }}
+        rightBtnStyles={{ backgroundColor: '#007BFF', width: '150px' }}
+        handleCustomBtnClick={handleIsUserEntryModalDisplayed(setIsCreateAccountModalDisplayed)}
+      />)
+      setNotifyModal({
+        headerTxt: "You must have an account to access this content.",
+        isDisplayed: true,
+        handleOnHide: () => {
+          setNotifyModal(state => ({ ...state, isDisplayed: false }));
+
+          setTimeout(() => {
+            setNotifyModal(defautlNotifyModalVal);
+            setCustomModalFooter(null);
+          }, 250);
+        },
+      });
+    }
+  }
 
   useEffect(() => {
     document.body.addEventListener('click', handleDocumentClick);
 
-    return () => document.body.removeEventListener('click', handleDocumentClick);
+    document.body.addEventListener('click', handleBonusContentDocumentClick);
+
+    return () => {
+      document.body.removeEventListener('click', handleDocumentClick)
+      document.body.removeEventListener('click', handleBonusContentDocumentClick)
+    };
   }, []);
 
   const _sections = useMemo(() => sectionComps?.length ? getLessonSections(sectionComps) : [], []);
@@ -345,8 +410,10 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (lesson, lessonToDisplayOntoU
   };
 }
 
-export const getStaticProps = async ({ params: { id, loc } }) => {
+export const getStaticProps = async (arg) => {
   try {
+    const { params: { id, loc } } = arg;
+
     await connectToMongodb();
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();

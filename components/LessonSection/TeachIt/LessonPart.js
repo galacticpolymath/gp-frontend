@@ -5,13 +5,34 @@ import PropTypes from 'prop-types';
 import Accordion from '../../Accordion';
 import LessonChunk from './LessonChunk';
 import RichText from '../../RichText';
-import { memo, useState } from 'react';
+import { memo, useContext, useState } from 'react';
 import Link from 'next/link';
 import CopyableTxt from '../../CopyableTxt';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { Button } from 'react-bootstrap';
+import { ModalContext } from '../../../providers/ModalProvider';
 
 const LESSON_PART_BTN_COLOR = '#2C83C3';
+
+const SignInSuggestion = ({
+  children,
+  txt,
+}) => {
+  if (!txt) {
+    txt = 'For teachers guides, sign in with a free account!';
+  }
+
+  return (
+    <div style={{ zIndex: 100 }} className='center-absolutely d-flex flex-column justify-content-center col-12'>
+      <span className='text-center fw-bold'>
+        {txt}
+      </span>
+      {children}
+    </div>
+  );
+};
 
 const LessonPart = ({
   lsnNum,
@@ -36,7 +57,12 @@ const LessonPart = ({
   accordionBtnStyle = {},
   isAccordionExpandable = true,
 }) => {
+  const { _isLoginModalDisplayed } = useContext(ModalContext);
+  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const router = useRouter();
+  const session = useSession();
+  const { data } = session;
+  const { user } = data ?? {};
   const [isExpanded, setIsExpanded] = useState(false);
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = _numsOfLessonPartsThatAreExpanded;
   const isOnAssessments = lsnTitle === 'Assessments';
@@ -113,6 +139,12 @@ const LessonPart = ({
 
       setIsExpanded(!isExpanded);
     }
+  };
+  const handleSignInBtnClick = () => {
+    setIsLoginModalDisplayed(true);
+  };
+  const handleUpdateProfileBtnClick = () => {
+    router.push('/account?show_about_user_form=true');
   };
 
   if (allTags?.length && Array.isArray(allTags)) {
@@ -384,66 +416,98 @@ const LessonPart = ({
                 const { itemTitle, itemDescription, links, filePreviewImg, itemCat } = item;
                 const _links = links ? (Array.isArray(links) ? links : [links]) : null;
                 const imgLink = (itemCat === 'web resource') ? (_links?.[0]?.url ?? '') : (_links?.[1]?.url ?? '');
+                const isTeacherItem = itemTitle.toLowerCase().includes('teacher');
+                let blurTxt = '';
+                let btnTxt = 'Sign in';
+                let handleBtnClick = handleSignInBtnClick;
+
+                if (user?.isTeacher === false) {
+                  blurTxt = 'You must be a teacher to view this item.';
+                  btnTxt = 'Update Profile';
+                  handleBtnClick = handleUpdateProfileBtnClick;
+                }
 
                 return (
                   <li key={itemIndex} className={`${(itemIndex === 0) ? 'mt-2' : 'mt-4'} mb-0`}>
                     <div className="d-flex flex-column flex-md-row">
-                      <section className='col-12 col-md-8 col-lg-6 col-xl-4'>
-                        <strong><RichText content={itemTitle} /></strong>
-                        <div className='fst-italic mb-1' style={{ color: '#353637' }}>
-                          <RichText
-                            content={itemDescription}
-                            css={{ color: 'red' }}
-                          />
-                        </div>
-                        <ul style={{ listStyle: 'none' }} className="links-list p-0">
-                          {!!_links && _links.map(({ url, linkText }, linkIndex) => {
-                            return (
-                              <li className='mb-0 d-flex' key={linkIndex}>
-                                <div className="d-flex justify-content-center  align-items-sm-center">
-                                  {!!url && (
-                                    <Link
-                                      href={url}
-                                      target="_blank"
-                                      rel='noopener noreferrer'
-                                    >
-                                      {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
-                                    </Link>
-                                  )}
-                                </div>
-                                <div className="d-flex justify-content-center align-items-center ps-2">
-                                  {!!url &&
-                                    <a
-                                      href={url}
-                                      target='_blank'
-                                      rel='noopener noreferrer'
-                                    >
-                                      {linkText}
-                                    </a>
-                                  }
-                                </div>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </section>
-                      {!!filePreviewImg && (
-                        <section className="pt-1 ps-sm-1 ps-md-4 d-flex">
-                          <div className='border align-content-start my-auto'>
-                            <a
-                              href={imgLink}
-                              target='_blank'
-                            >
-                              <img
-                                src={filePreviewImg}
-                                alt="lesson_tile"
-                                className='h-auto w-auto'
-                                style={{ objectFit: 'contain', maxHeight: '100px', maxWidth: '100px', border: '1px solid gray' }}
+                      <section className='col-12 col-md-8 col-lg-6 col-xl-6 position-relative'>
+                        {(isTeacherItem && !user?.isTeacher) && (
+                          <SignInSuggestion txt={blurTxt}>
+                            <div className='d-flex justify-content-center align-items-center'>
+                              <Button
+                                onClick={handleBtnClick}
+                                className='mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover'
+                              >
+                                {btnTxt}
+                              </Button>
+                            </div>
+                          </SignInSuggestion>
+                        )}
+                        <section
+                          style={{ filter: (isTeacherItem && !user?.isTeacher) ? 'blur(12px)' : 'none' }}
+                          className='d-flex justify-content-between position-relative bg-white flex-sm-row flex-column'
+                        >
+                          <section>
+                            <strong><RichText content={itemTitle} /></strong>
+                            <div className='fst-italic mb-1' style={{ color: '#353637' }}>
+                              <RichText
+                                content={itemDescription}
+                                css={{ color: 'red' }}
                               />
-                            </a>
-                          </div>
+                            </div>
+                            <ul style={{ listStyle: 'none' }} className="links-list p-0">
+                              {!!_links && _links.map(({ url, linkText }, linkIndex) => {
+                                return (
+                                  <li className='mb-0 d-flex' key={linkIndex}>
+                                    <div className="d-flex justify-content-center  align-items-sm-center">
+                                      {!!url && (
+                                        <Link
+                                          href={url}
+                                          target="_blank"
+                                          rel='noopener noreferrer'
+                                          className={`${isTeacherItem ? (user?.isTeacher ? '' : 'link-disabled') : ''}`}
+                                        >
+                                          {(linkIndex === 0) ? <i style={{ color: '#4498CC' }} className="bi bi-box-arrow-up-right" /> : <i style={{ color: '#0273BA' }} className="fab fa-google-drive" />}
+                                        </Link>
+                                      )}
+                                    </div>
+                                    <div className="d-flex justify-content-center align-items-center ps-2">
+                                      {!!url &&
+                                        <a
+                                          href={url}
+                                          target='_blank'
+                                          rel='noopener noreferrer'
+                                          className={`${isTeacherItem ? (user?.isTeacher ? '' : 'link-disabled') : ''}`}
+                                        >
+                                          {linkText}
+                                        </a>
+                                      }
+                                    </div>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </section>
+                          {!!filePreviewImg && (
+                            <section className="pt-1 ps-sm-1 ps-md-4 d-flex col-3">
+                              <div className='border align-content-start my-auto'>
+                                <a
+                                  href={isTeacherItem ? (user?.isTeacher ? imgLink : '') : imgLink}
+                                  target='_blank'
+                                  className={`${isTeacherItem ? (user?.isTeacher ? '' : 'link-disabled') : imgLink}`}
+                                >
+                                  <img
+                                    src={filePreviewImg}
+                                    alt="lesson_tile"
+                                    className='h-auto w-auto'
+                                    style={{ objectFit: 'contain', maxHeight: '100px', maxWidth: '100px', border: '1px solid gray' }}
+                                  />
+                                </a>
+                              </div>
+                            </section>
+                          )}
                         </section>
-                      )}
+                      </section>
                     </div>
                   </li>
                 );

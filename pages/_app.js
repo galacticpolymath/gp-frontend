@@ -13,7 +13,9 @@ import '../styles/icons/icons.scss';
 import '../styles/comps/carousel.scss';
 import '../styles/pages/home.scss';
 import '../styles/pages/About/about.scss';
+import '../styles/modals/signUp.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { UserProvider } from '../providers/UserProvider';
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   useEffect(() => {
@@ -25,10 +27,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <GoogleAnalytics gaMeasurementId='G-8B58Y7HD3T' trackPageViews />
       <SessionProvider session={session}>
         <LessonsCarouselProvider>
-          <ModalProvider>
-            <Component {...pageProps} />
-            <ModalsContainer />
-          </ModalProvider>
+          <UserProvider>
+            <ModalProvider>
+              <Component {...pageProps} />
+              <ModalsContainer />
+            </ModalProvider>
+          </UserProvider>
         </LessonsCarouselProvider>
       </SessionProvider>
     </>

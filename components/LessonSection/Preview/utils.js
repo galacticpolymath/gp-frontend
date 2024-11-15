@@ -59,6 +59,7 @@ export const getVideoThumb = link => {
     const slug = link.split('/embed/')[1];
     return `https://i3.ytimg.com/vi/${slug}/hqdefault.jpg`;
   }
+
   return '';
 };
 

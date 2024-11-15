@@ -1,49 +1,51 @@
+/* eslint-disable indent */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import { NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
+import { getAuthorizeReqResult, getChunks } from './nondependencyFns';
+import { PASSWORD_RESET_TOKEN_VAR_NAME } from './globalVars';
 
-const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
-
-// may use this function to check for non-related admin routes
-const getAuthorizeReqResult = async (authorizationStr, willCheckIfUserIsDbAdmin) => {
-  const token = authorizationStr.split(' ')[1].trim();
-  const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
-
-  if (!payload) {
-    return {
-      isAuthorize: false,
-      errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 }),
-    };
-  }
-
-  if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(payload.roles, 'dbAdmin')) {
-    return {
-      isAuthorize: false,
-      errResponse: new NextResponse('You are not authorized to access this service.', { status: 403 }),
-    };
-  }
-
-  return { isAuthorize: true };
-};
+const DB_ADMIN_ROUTES = ['/api/insert-lesson', '/api/delete-lesson', '/api/update-lessons'];
+const USER_ACCOUNT_ROUTES = [
+  '/api/save-about-user-form',
+  '/api/update-user',
+  '/api/get-user-account-data',
+  '/api/delete-user',
+  '/api/user-confirms-mailing-list-sub',
+];
 
 const getUnitNum = pathName => parseInt(pathName.split('/').find(val => !Number.isNaN(parseInt(val)) && (typeof parseInt(val) === 'number')));
 
 export async function middleware(request) {
   try {
     const { nextUrl, method, headers } = request;
+    /**
+     * @type {{ pathname: string, search: string }}
+     */
+    let { pathname, search } = nextUrl;
+
+    if (pathname === '/password-reset') {
+      search = search.replace('?', '');
+      const searchPathnamesSplitted = search.split('=');
+      const searchPathnamesChunks = getChunks(searchPathnamesSplitted, 2);
+      const isPasswordResetTokenPresent = searchPathnamesChunks.find(([urlVarName, token]) => {
+        return (urlVarName === PASSWORD_RESET_TOKEN_VAR_NAME) && token;
+      });
+
+      return isPasswordResetTokenPresent ? NextResponse.next() : NextResponse.redirect(`${nextUrl.origin}/`);
+    }
 
     if (!headers) {
       return new NextResponse('No headers were present in the request.', { status: 400 });
     }
 
-    // a selected unit without locale
     if (
       !nextUrl.href.includes('api') &&
       nextUrl.pathname.includes('lessons') &&
       (nextUrl?.pathname?.split('/')?.filter(val => val)?.length == 2) &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
+      // put this into a service
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
 
@@ -63,7 +65,7 @@ export async function middleware(request) {
       console.log('redirecting the user to the units page...');
       return NextResponse.redirect(`${nextUrl.origin}/lessons/${locale}/${unitNum}`);
     } else if (
-      // unit with locale value is present in the url
+      // unit with a locale value is present in the url
       !nextUrl.href.includes('api') &&
       nextUrl.pathname.includes('lessons') &&
       (nextUrl?.pathname?.split('/')?.filter(val => val)?.length == 3) &&
@@ -102,6 +104,7 @@ export async function middleware(request) {
     }
 
     const authorizationStr = headers.get('authorization');
+    console.log('authorizationStr: ', authorizationStr);
     const isGettingJwtToken = (nextUrl.pathname == '/api/get-jwt-token') && (method === 'POST');
     let email = null;
 
@@ -111,7 +114,7 @@ export async function middleware(request) {
     }
 
     if (isGettingJwtToken && (!email || (typeof email !== 'string'))) {
-      return new NextResponse('Email was either not provided or a invalid data type. Must be a string.', { status: 400 });
+      return new NextResponse('Email was either not provided or its value was a invalid data type. Must be a string.', { status: 400 });
     }
 
     if (isGettingJwtToken) {
@@ -126,14 +129,60 @@ export async function middleware(request) {
       return new NextResponse('No pathName was provided.', { status: 400 });
     }
 
+    // put all routes that will check if the auth token has expired only in this code block 
+    if ((nextUrl.pathname === '/api/update-password') && (method === 'POST') && authorizationStr) {
+      const authResult = await getAuthorizeReqResult(authorizationStr);
+
+      console.log('authResult, updatePassword: ', authResult);
+
+      if (authResult.errResponse) {
+        return authResult.errResponse;
+      }
+
+      return NextResponse.next();
+    }
+
     if (
       ((nextUrl.pathname == '/api/update-lessons') && (method === 'PUT') && authorizationStr) ||
       ((nextUrl.pathname == '/api/insert-lesson') && (method === 'POST') && authorizationStr) ||
-      ((nextUrl.pathname == '/api/delete-lesson') && (method === 'DELETE') && authorizationStr)
+      ((nextUrl.pathname == '/api/delete-lesson') && (method === 'DELETE') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/delete-user') && (method === 'DELETE') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/get-user-account-data') && (method === 'GET') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/save-about-user-form') && (method === 'PUT') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/update-user') && (method === 'PUT') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/user-confirms-mailing-list-sub') && (method === 'PUT') && authorizationStr)
     ) {
-      const { errResponse } = await getAuthorizeReqResult(authorizationStr, true);
+      const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES.includes(nextUrl.pathname);
+      const willCheckForValidEmail = USER_ACCOUNT_ROUTES.includes(nextUrl.pathname);
+      let clientEmail = null;
+      let urlParamsStr = typeof nextUrl?.search === 'string' ? nextUrl?.search.replace(/\?/g, '') : '';
 
-      if (errResponse) {
+      urlParamsStr = typeof nextUrl?.search === 'string' ? urlParamsStr.replace(/%40/g, '@') : '';
+
+      if ((nextUrl.pathname === '/api/get-user-account-data') && (urlParamsStr.split('=').length == 2)) {
+        clientEmail = urlParamsStr.split('=')[1];
+      } else if (nextUrl.pathname === '/api/get-user-account-data') {
+        throw new Error("Received invalid parameters for the retreival of the user's 'About Me' form.");
+      }
+
+      const body = ((nextUrl.pathname === '/api/save-about-user-form') && (method === 'PUT')) ? await request.json() : null;
+
+      if ((nextUrl.pathname === '/api/save-about-user-form') && (typeof body?.userEmail === 'string')) {
+        clientEmail = body.userEmail;
+      } else if (nextUrl.pathname === '/api/save-about-user-form') {
+        throw new Error("Received invalid parameters for the retreival of the user's 'About Me' form.");
+      }
+
+      const { isAuthorize, errResponse } = await getAuthorizeReqResult(
+        authorizationStr,
+        willCheckIfUserIsDbAdmin,
+        willCheckForValidEmail,
+        clientEmail
+      );
+
+      console.log('isAuthorize, deleting account: ', isAuthorize);
+
+      if (!isAuthorize) {
         return errResponse;
       }
 
@@ -144,9 +193,9 @@ export async function middleware(request) {
   } catch (error) {
     const errMsg = `An error has occurred in the middleware: ${error}`;
 
-    console.error('An error has occurred in the middlware function: ', errMsg);
+    console.log('errMsg, what is up: ', errMsg);
 
-    if (!request.nextUrl.includes('api')) {
+    if (((typeof request?.nextUrl === 'string') && !request?.nextUrl?.includes('api')) || ((typeof request?.nextUrl?.href === 'string') && request.nextUrl.href.includes('api'))) {
       return NextResponse.redirect(`${request.nextUrl.origin}/error`);
     }
 
@@ -160,7 +209,15 @@ export const config = {
     '/api/insert-lesson',
     '/api/delete-lesson/:id',
     '/api/update-lessons',
+    '/api/save-about-user-form',
     '/api/get-jwt-token',
+    '/api/get-about-user-form',
+    '/api/update-password',
+    '/password-reset',
     '/lessons/:path*',
+    '/api/delete-user',
+    '/api/get-user-account-data',
+    '/api/update-user',
+    '/api/user-confirms-mailing-list-sub',
   ],
 };

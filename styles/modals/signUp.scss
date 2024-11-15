@@ -1,0 +1,34 @@
+.sign-up-btn {
+  @media (min-width: 992px) {
+    min-width: 430px;
+  }
+}
+
+.create-account-toggle-btn-container {
+  @media (min-width: 577px) {
+    min-width: 350px;
+  }
+}
+
+.create-account-ui-modal {
+  @media (min-width: 577px) {
+    width: 100vw;
+    border-radius: 0%;
+  }
+
+  @media (min-width: 767px) {
+    min-width: 500px;
+    width: 60vw;
+    border-radius: 6.75px;
+  }
+
+  @media (min-width: 577px) and (max-width: 991px) {
+    width: 100vw;
+    border-radius: 0%;
+  }
+
+  @media (max-width: 576px) {
+    width: 100vw;
+    border-radius: 0%;
+  }
+}

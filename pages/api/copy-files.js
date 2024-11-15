@@ -58,10 +58,10 @@ const listAllUserFiles = async (accessToken, nextPageToken, startingFiles = []) 
 
 /**
  * Copy a google drive file into a folder (if specified).
- * @param{string} fileId The id of the file.
- * @param{string[]} folderIds The ids of the folders to copy the files into.
- * @param{string} accessToken The client side user's access token.
- * @return{Promise<AxiosResponse<any, any>>} An object contain the results and optional message.
+ * @param {string} fileId The id of the file.
+ * @param {string[]} folderIds The ids of the folders to copy the files into.
+ * @param {string} accessToken The client side user's access token.
+ * @return {Promise<AxiosResponse<any, any>>} An object contain the results and optional message.
  * */
 const getCopyFilePromise = (accessToken, folderIds, fileId) => {
     const reqBody = folderIds ? { parents: folderIds } : {};
@@ -83,11 +83,11 @@ const getCopyFilePromise = (accessToken, folderIds, fileId) => {
 
 /**
  * Copy a google drive file into a folder (if specified).
- * @param{string} fileId The id of the file.
- * @param{string[]} folderIds The ids of the folders to copy the files into.
- * @param{string} accessToken The client side user's access token.
- * @param{drive_v3.Drive} service google drive service object
- * @return{Promise<{ wasSuccessful: boolean }>} An object contain the results and optional message.
+ * @param {string} fileId The id of the file.
+ * @param {string[]} folderIds The ids of the folders to copy the files into.
+ * @param {string} accessToken The client side user's access token.
+ * @param {drive_v3.Drive} service google drive service object
+ * @return {Promise<{ wasSuccessful: boolean }>} An object contain the results and optional message.
  * */
 const copyFile = async (fileId, folderIds, accessToken) => {
     try {
@@ -201,7 +201,7 @@ const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFol
 
         return { wasSuccessful: true, folderId: response.data.id }
     } catch (error) {
-        console.error("Error object: ", error)
+        console.error("Error object: ", error.response.data.error)
         const errMsg = `Failed to create folder for the user. Reason: ${error.response.data.error}`
         console.log('errMsg: ', errMsg)
 
@@ -232,6 +232,8 @@ export default async function handler(request, response) {
 
         console.log('googleService: ', googleService)
         const rootDriveFolders = await getGooglDriveFolders(googleService, request.body.unitDriveId)
+
+        console.log('rootDriveFolders: ', rootDriveFolders);
 
         if (!rootDriveFolders?.length) {
             console.error('The root of the drive folder is empty.')
@@ -547,13 +549,11 @@ export default async function handler(request, response) {
 
             copiedFilesPromises.push(getCopyFilePromise(request.body.accessToken, [parentFolderId], file.id))
         }
-        console.log('executing Promise.allSettled, excuting copying of files...')
 
         const copiedFilesResult = await Promise.allSettled(copiedFilesPromises);
+        const failedCopiedFiles = copiedFilesResult.filter(copiedFileResult => copiedFileResult.status === 'rejected');
 
-        console.log('copying files has been completed...')
-
-        const failedCopiedFiles = copiedFilesResult.filter(copiedFileResult => copiedFileResult.status === 'rejected')
+        // implement retries if a file failed to be copied.
 
         if (failedCopiedFiles.length) {
             return response.status(500).json({
@@ -562,6 +562,10 @@ export default async function handler(request, response) {
                 failedSharedFiles: failedCopiedFiles
             });
         }
+
+        setTimeout(() => {
+            // create a email of the copy files results and send it to the user
+        }, 2000);
 
         return response.json({ wasCopySuccessful: true });
     } catch (error) {

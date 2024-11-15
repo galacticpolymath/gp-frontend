@@ -8,7 +8,7 @@ const cspHeader = `
     style-src 'self' 'unsafe-inline';
     object-src 'none';
     base-uri 'self';
-    connect-src 'self' https://galacticpolymath.com/api/auth/signin/google https://dev.galacticpolymath.com/api/auth/signin/google http://localhost:3000/api/auth/signin/google https://oauth2.googleapis.com/token https://www.google-analytics.com/;
+    connect-src 'self' https://galacticpolymath.com/api/auth/signin/google https://dev.galacticpolymath.com/api/auth/signin/google http://localhost:3000/api/auth/signin/google https://oauth2.googleapis.com/token https://www.google-analytics.com/ https://restcountries.com/ https://api.brevo.com/v3/smtp/email;
 `
 
 module.exports = {
@@ -39,5 +39,17 @@ module.exports = {
         ],
       },
     ]
-  }
+  },
+  webpack(config) {
+    config.resolve.fallback = {
+
+      // if you miss it, all the other options in fallback, specified
+      // by next.js will be dropped.
+      ...config.resolve.fallback,
+
+      fs: false, // the solution
+    };
+
+    return config;
+  },
 };

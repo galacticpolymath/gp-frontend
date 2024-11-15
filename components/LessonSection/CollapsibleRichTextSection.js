@@ -22,7 +22,7 @@ const CollapsibleRichTextSection = ({
     <CollapsibleLessonSection initiallyExpanded={InitiallyExpanded} {...props}>
       <div
         ref={ref}
-        className='container mx-auto mb-4'
+        className={`${sectionTitle}_collapsible_text_sec container mx-auto mb-4`}
       >
         <RichText
           className='mt-4'

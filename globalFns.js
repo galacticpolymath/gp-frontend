@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-empty */
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable indent */
@@ -148,7 +150,7 @@ export const getIsTypeValid = (val, targetType) => {
 
 export const getLinkPreviewObj = async (url = '') => {
     try {
-        if (!url || (typeof url !== 'string')){
+        if (!url || (typeof url !== 'string')) {
             throw new Error('Either received an empty string or an incorrect data type.')
         }
 
@@ -176,6 +178,21 @@ export const getObjVals = obj => {
 
     return vals;
 };
+
+/**
+ * 
+ * @param {string} urlOriginWithPaths 
+ * @param {[string, unknown][]} searchQuery 
+ */
+export const constructUrlWithSearchQuery = (urlOriginWithPaths, searchQuery) => {
+    const url = new URL(urlOriginWithPaths);
+
+    for (const [key, val] of searchQuery) {
+        url.searchParams.append(key, val);
+    }
+
+    return url;
+}
 
 const searchParamsDefault = (typeof window === 'undefined') ? null : window.location.search;
 
@@ -216,4 +233,153 @@ export const createObj = (keysAndValsArr = []) => {
     }, {})
 }
 
+export const getIsParsable = val => {
+    try {
+        JSON.parse(val);
+
+        return true;
+    } catch (error) {
+        console.error('Not parsable. Reason: ', error);
+
+        return false;
+    }
+}
+
+export const getIsParsableToVal = (val, valType) => {
+    try {
+        const parsedVal = JSON.parse(val);
+
+        if (typeof parsedVal !== valType) {
+            throw Error('Incorrect parsed value type.')
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Not parsable. Reason: ', error);
+
+        return false;
+    }
+}
+
 export const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
+
+export const sleep = milliseconds => new Promise(resolve => {
+    setTimeout(resolve, milliseconds);
+});
+
+export const getIsObj = val => !!val && (typeof val === 'object');
+
+/**
+ * @param {import('next/router').NextRouter} router 
+ */
+export const resetUrl = router => {
+    const url = router.asPath;
+    router.replace(url.split('?')[0]);
+}
+
+/** 
+ * @param {Map<string, any>} map
+ * @return {object}
+ */
+export const convertMapToObj = map => Object.fromEntries(map.entries())
+
+/**
+ *  @param {import('next/router').NextRouter} router 
+ *  @param {string} urlField 
+ *  @returns {string[]} 
+* */
+export const getAllUrlVals = (router, willCreateSubTuples) => {
+    const pathsStr = router.asPath.split('?')[1];
+    let urlKeysAndVals = pathsStr?.split('&');
+
+    if (urlKeysAndVals?.length && willCreateSubTuples) {
+        const urlKeysAndValsTuples = urlKeysAndVals.map(keyAndValStr => {
+            return keyAndValStr.split('=');
+        });
+
+        return urlKeysAndValsTuples;
+    }
+
+    return urlKeysAndVals;
+};
+
+/**
+ * 
+ * @param {any[]} arr 
+ * @param {number} chunkSize 
+ * @returns {any[][]}
+ */
+export const getChunks = (arr, chunkSize) => {
+    const chunks = [];
+    let chunkWindow = [];
+
+    for (let index = 0; index < arr.length; index++) {
+        let val = arr[index];
+
+        if (chunkWindow.length === chunkSize) {
+            chunks.push(chunkWindow);
+            chunkWindow = [];
+        }
+
+        chunkWindow.push(val);
+
+        if (index === (arr.length - 1)) {
+            chunks.push(chunkWindow);
+        }
+    }
+
+    return chunks;
+};
+
+export const createChunks = (arr, chunkSize) => {
+    const chunks = [];
+    let chunkWindow = [];
+
+    for (let index = 0; index < arr.length; index++) {
+        let val = arr[index];
+
+        if (chunkWindow.length === chunkSize) {
+            chunks.push(chunkWindow);
+            chunkWindow = [];
+        }
+
+        chunkWindow.push(val);
+
+        if (index === (arr.length - 1)) {
+            chunks.push(chunkWindow);
+        }
+    }
+
+    return chunks;
+};
+
+/**
+ * @param {import('next/router').NextRouter} router 
+ * @param {string} targetKey 
+ */
+export const getTargetKeyValFromUrl = (router, targetKey) => {
+    const urlVals = getAllUrlVals(router)?.flatMap(urlVal => urlVal.split('='));
+    const urlValsChunks = urlVals?.length ? getChunks(urlVals, 2) : []
+    const targetKeyVal = urlValsChunks.find(([key]) => key === targetKey)
+
+    return targetKeyVal;
+}
+
+export const validateEmail = (email) => {
+    return email.match(
+        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+};
+
+export const getIsWithinParentElement = (element, specifier, classNameOrId = 'className') => {
+    if (!element?.parentElement || (element?.parentElement && (classNameOrId in element.parentElement) && (element?.parentElement[classNameOrId] === undefined))) {
+        console.error('Reached end of document.');
+        return false;
+    }
+
+    if (element?.parentElement?.[classNameOrId]?.includes(specifier)) {
+        return true;
+    }
+
+    return getIsWithinParentElement(element.parentElement, specifier, classNameOrId);
+}

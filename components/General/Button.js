@@ -2,11 +2,13 @@ const Button = ({
   children,
   fontSize,
   isDisabled,
+  value,
   defaultStyleObj = {},
-  classNameStr = '',
+  classNameStr = 'no-btn-styles',
   backgroundColor = 'transparent',
   handleOnClick = () => { },
   ariaLabelStr = 'button',
+  btnType = 'button',
 }) => {
   const _style = { ...defaultStyleObj, backgroundColor: backgroundColor };
 
@@ -16,11 +18,13 @@ const Button = ({
 
   return (
     <button
+      type={btnType}
       disabled={isDisabled}
       className={classNameStr}
       style={_style}
       onClick={handleOnClick}
       aria-label={ariaLabelStr}
+      value={value}
     >
       {children}
     </button>

@@ -49,6 +49,10 @@ if (!Lessons) {
     lng: String,
     locale: { type: String, required: true },
     TemplateVer: String,
+    TargetStandardsCodes: {
+      type: [Object],
+      required: true,
+    },
     galacticPubsVer: String,
     isTestRepo: Boolean,
     DefaultLocale: String,

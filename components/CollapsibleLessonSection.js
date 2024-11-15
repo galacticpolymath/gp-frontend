@@ -70,8 +70,6 @@ const CollapsibleLessonSection = ({
 
   const cssSectionClassName = useMemo(() => SectionTitle.split(" ").filter((_, index) => index !== 0).join("_"), []);
 
-  console.log('cssSectionClassName: ', cssSectionClassName);
-
   return (
     <Accordion
       initiallyExpanded={initiallyExpanded}

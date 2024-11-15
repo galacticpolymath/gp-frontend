@@ -99,6 +99,12 @@ $toolTipColor: #f0f4ff;
   animation: beat 1.5s infinite;
 }
 
+.login-container {
+  @media (min-width: 992px) {
+    transform: translateX(20%);
+  }
+}
+
 .standards-txt-container {
   max-width: 90%;
 
@@ -290,6 +296,23 @@ $toolTipColor: #f0f4ff;
 
 .lessonImgContainer {
   height: 70px;
+}
+
+#check-box-not-a-teacher {
+  @media (min-width: 576px) {
+    // transform: translateX(0.5%);
+    min-width: 430px;
+  }
+}
+
+.sign-in-teacher-materials-btn {
+  background: linear-gradient(180deg, #2c83c3 -34.09%, #9c2cc3 195.45%);
+  border-radius: 27px;
+  
+  @media (min-width: 576px) {
+    height: 44px;
+    width: 275px;
+  }
 }
 
 .cardOnLessonsPg {
@@ -545,6 +568,12 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.about-user-textarea {
+  @media (min-width: 1024px) {
+    // height: 125px;
+  }
+}
+
 .txt-underline-on-hover-white:hover {
   text-decoration: underline;
   text-decoration-color: white;
@@ -663,6 +692,12 @@ $toolTipColor: #f0f4ff;
   border: 1px solid lightgray;
   width: 100%;
   object-fit: contain;
+}
+
+.create-account-toggle-btn-container {
+  @media (min-width: 992px) {
+    min-width: 375px;
+  }
 }
 
 .lessonsPartContainer {
