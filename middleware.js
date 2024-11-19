@@ -129,11 +129,8 @@ export async function middleware(request) {
       return new NextResponse('No pathName was provided.', { status: 400 });
     }
 
-    // put all routes that will check if the auth token has expired only in this code block 
     if ((nextUrl.pathname === '/api/update-password') && (method === 'POST') && authorizationStr) {
       const authResult = await getAuthorizeReqResult(authorizationStr);
-
-      console.log('authResult, updatePassword: ', authResult);
 
       if (authResult.errResponse) {
         return authResult.errResponse;
@@ -142,6 +139,7 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
+    // put this into an array and search via the pathname field
     if (
       ((nextUrl.pathname == '/api/update-lessons') && (method === 'PUT') && authorizationStr) ||
       ((nextUrl.pathname == '/api/insert-lesson') && (method === 'POST') && authorizationStr) ||
@@ -192,8 +190,6 @@ export async function middleware(request) {
     return new NextResponse('Invalid request parameters, body, or method.', { status: 400 });
   } catch (error) {
     const errMsg = `An error has occurred in the middleware: ${error}`;
-
-    console.log('errMsg, what is up: ', errMsg);
 
     if (((typeof request?.nextUrl === 'string') && !request?.nextUrl?.includes('api')) || ((typeof request?.nextUrl?.href === 'string') && request.nextUrl.href.includes('api'))) {
       return NextResponse.redirect(`${request.nextUrl.origin}/error`);

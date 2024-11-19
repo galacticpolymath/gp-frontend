@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable no-useless-escape */
@@ -273,7 +274,7 @@ const SignUpModal = () => {
                                             fontSize: "18px",
                                         }}
                                     >
-                                        *📧 Send me email upates about new/free resources (Check inbox to confirm subscription).
+                                        📧Send me updates about new/free resources (You{"'"}ll get an email to confirm subscription).
                                     </label>
                                 </div>
                             </div>

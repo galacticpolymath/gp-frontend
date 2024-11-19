@@ -210,6 +210,7 @@ const LessonDetails = ({ lesson }) => {
     setNotifyModal(defautlNotifyModalVal);
     setCustomModalFooter(null);
   }
+
   const handleIsUserEntryModalDisplayed = setIsModalOn => () => {
     setNotifyModal(state => ({ ...state, isDisplayed: false }));
 
@@ -293,8 +294,6 @@ const LessonDetails = ({ lesson }) => {
     imgAlt: `${lesson.Title} cover image`,
     className: 'overflow-hidden',
   };
-
-  console.log("sectionComps, what is up: ", sectionComps);
 
   return (
     <Layout {...layoutProps}>
