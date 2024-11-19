@@ -26,7 +26,12 @@ import SignUpModal from "./components/User/Create/SignUpModal";
 import PasswordResetModal from "./components/User/Password/PasswordResetModal";
 import AccountSettings from "./components/User/Settings/AccountSettings";
 
-export const CustomCloseButton = ({ children = <IoMdClose color="white" size={28} />, className = '', handleOnClick = () => { }, style = {} }) => {
+export const CustomCloseButton = ({
+    children = <IoMdClose color="white" size={28} />,
+    className = "",
+    handleOnClick = () => { },
+    style = {},
+}) => {
     return (
         <Button
             handleOnClick={handleOnClick}
@@ -35,19 +40,17 @@ export const CustomCloseButton = ({ children = <IoMdClose color="white" size={28
         >
             {children}
         </Button>
-    )
-}
-
+    );
+};
 
 const ModalContainers = () => {
-    const { _selectedJob, _isDownloadModalInfoOn } = useContext(ModalContext);
-    const [selectedJob,] = _selectedJob;
-    const [isDownloadModalInfoOn] = _isDownloadModalInfoOn;
+    const { _selectedJob } = useContext(ModalContext);
+    const [selectedJob] = _selectedJob;
 
     return (
         <>
             {selectedJob ? <SelectedJob /> : null}
-            {isDownloadModalInfoOn ? <DownloadTipModal /> : null}
+            <DownloadTipModal />
             <LoginModal />
             <SignUpModal />
             <AboutUserModal />
@@ -56,7 +59,7 @@ const ModalContainers = () => {
             <PasswordResetModal />
             <AccountSettings />
         </>
-    )
-}
+    );
+};
 
 export default ModalContainers;

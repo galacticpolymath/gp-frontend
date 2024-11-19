@@ -20,6 +20,7 @@ import { getIsValObj, getObjVals } from "../../../globalFns";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
+import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 
 const LessonTile = ({
   lessonTileUrl,
@@ -75,6 +76,7 @@ const TeachIt = ({
   GradesOrYears,
 }) => {
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
+  const { handleRestrictedItemBtnClick, session } = useCanUserAccessMaterial(false);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const [arrowContainer, setArrowContainer] = useState({ isInView: true, canTakeOffDom: false });
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = useState([]);
@@ -239,8 +241,10 @@ const TeachIt = ({
               <a
                 target='_blank'
                 rel='noopener noreferrer'
-                href={selectedGradeResources.url}
-                className='btn btn-primary px-3 py-2 col-8 col-md-12'
+                onClick={handleRestrictedItemBtnClick}
+                style={{ pointerEvents: (session.status === 'loading') ? 'none' : 'auto' }}
+                href={(session.status === 'authenticated') ? selectedGradeResources.url : ""}
+                className={`btn btn-primary px-3 py-2 col-8 col-md-12 ${(session.status === 'loading') ? 'opacity-25' : 'opacity-100'}`}
               >
                 <div className='d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2 '>
                   <div className='d-flex justify-content-center align-items-center'>

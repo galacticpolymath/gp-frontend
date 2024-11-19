@@ -24,11 +24,9 @@ export const cache = new NodeCache({ stdTTL: 100 });
 export default function MyAdapter() {
   return {
     async createUser(user) {
-      console.log('yo there meng user, createUser: ', user);
       return;
     },
     async getUser(id) {
-      console.log('yo there meng id: ', id);
       return;
     },
     async getUserByEmail(email) {
