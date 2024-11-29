@@ -24,7 +24,8 @@ module.exports = {
       'echo-galactic-polymath.vercel.app',
       'drive.google.com',
       'img.youtube.com',
-      'pacific-h2o.galacticpolymath.com'
+      'pacific-h2o.galacticpolymath.com',
+      'energy-app.galacticpolymath.com'
     ],
   },
   async headers() {
