@@ -97,9 +97,9 @@
     "jest-puppeteer": "^9.0.0",
     "sass": "^1.58.3"
   },
- "browser": {
-  "fs": false,
-  "path": false,
-  "os": false
-}
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  }
 }
