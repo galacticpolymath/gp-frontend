@@ -20,7 +20,6 @@ import {
     PinterestIcon,
     TwitterShareButton,
     TwitterIcon,
-
 } from "react-share";
 import CopyableTxt from "../CopyableTxt";
 
