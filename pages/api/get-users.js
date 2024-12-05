@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable indent */
 /* eslint-disable no-unused-vars */
 /* eslint-disable quotes */
@@ -15,8 +16,6 @@ import { connectToMongodb } from "../../backend/utils/connection";
 export default async function handler(request, response) {
     try {
         const result = await connectToMongodb();
-
-        console.log("result mongodb connection: ", result);
 
         if (!result.wasSuccessful) {
             throw new Error("Failed to connect to the database.");

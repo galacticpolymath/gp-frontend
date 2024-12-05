@@ -211,6 +211,8 @@ export const authOptions = {
             },
             provider: 'credentials',
             roles: ['user'],
+            totalSignIns: 1,
+            lastSignIn: Date.now(),
           };
           const newUserDoc = createDocument(userDocumentToCreate, User);
 
@@ -298,18 +300,19 @@ export const authOptions = {
   },
   callbacks: {
     async signIn(param) {
+      const { user, account, profile, credentials } = param;
+      const {
+        errType,
+        code,
+        email,
+        providerAccountId,
+        wasUserCreated,
+        urlErrorParamKey,
+        urlErrorParamVal,
+      } = user ?? {};
+      let userEmail = profile?.email ?? email;
+
       try {
-        const { user, account, profile, credentials } = param;
-        const {
-          errType,
-          code,
-          email,
-          providerAccountId,
-          wasUserCreated,
-          urlErrorParamKey,
-          urlErrorParamVal,
-        } = user ?? {};
-        let userEmail = profile?.email ?? email;
 
         if (credentials && !userEmail) {
           userEmail = credentials.email;
@@ -368,6 +371,8 @@ export const authOptions = {
               email: userEmail,
               picture: picture ?? '',
               name: name,
+              totalSignIns: 1,
+              lastSignIn: Date.now(),
             }
           );
 
@@ -386,8 +391,6 @@ export const authOptions = {
 
         // sign the credentials based user in.
         if (wasUserCreated && (account.provider === 'credentials')) {
-          console.log('will create the target user...');
-
           return true;
         }
 
@@ -416,6 +419,21 @@ export const authOptions = {
         }
 
         return param?.user?.redirectUrl ? `${param.user.redirectUrl}/?signin-err-type=${type ?? 'sign-in-error'}` : `/?signin-err-type=${type ?? 'sign-in-error'}`;
+      } finally {
+        if (!wasUserCreated) {
+          const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
+
+          if (!dbUser) {
+            console.error("Unable to retrieve the target user from the db.");
+          } else {
+            const totalSignIns = typeof dbUser?.totalSignIns === 'number' ? dbUser.totalSignIns + 1 : 1;
+            const { wasSuccessful } = await updateUser({ email: userEmail }, { totalSignIns, lastSignIn: Date.now() });
+
+            if (!wasSuccessful) {
+              console.error('Failed to update the total sign ins for the user.');
+            }
+          }
+        }
       }
     },
     async jwt(param) {
