@@ -75,7 +75,6 @@ export const getAuthorizeReqResult = async (
 
         if (currentMiliseconds > expTimeMiliseconds) {
             const errMsg = 'The json web token has expired.';
-            console.log('errMsg: ', errMsg);
             const response = new NextResponse(errMsg, { status: 403 });
 
             throw new AuthMiddlwareError(false, response, errMsg);
@@ -89,8 +88,12 @@ export const getAuthorizeReqResult = async (
         }
 
         if (willCheckForValidEmail && (emailToValidate && (email !== emailToValidate))) {
-            console.log('FUCK YOU BITCH!');
             const errMsg = 'You are not authorized to access this service.';
+            const response = new NextResponse(errMsg, { status: 403 });
+
+            throw new AuthMiddlwareError(false, response, errMsg);
+        } else if (willCheckForValidEmail && !emailToValidate) {
+            const errMsg = 'Need an email string value for validation.';
             const response = new NextResponse(errMsg, { status: 403 });
 
             throw new AuthMiddlwareError(false, response, errMsg);

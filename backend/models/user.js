@@ -1,9 +1,10 @@
-import Mongoose from 'mongoose';
+/* eslint-disable quotes */
+import Mongoose from "mongoose";
 
 class StringValidator {
   constructor(message) {
     this.validate = (val) => {
-      if ((typeof val !== 'string') || (val.length === 0)) {
+      if (typeof val !== "string" || val.length === 0) {
         return false;
       }
 
@@ -40,44 +41,61 @@ let User = models.users;
  * @property {boolean} [isOnMailingList] - If the user will receive GP emails.
  * @property {{ first: string, last: string }} name - The name of the user.
  */
-export const UserSchema = new Schema({
-  _id: { type: String, required: true },
-  email: { type: String, required: true },
-  mailingListConfirmationEmailId: { type: String, required: false },
-  isOnMailingList: { type: Boolean, required: false },
-  password: {
-    hash: { type: String, required: false },
-    salt: { type: String, required: false },
-    iterations: { type: Number, required: false },
+export const UserSchema = new Schema(
+  {
+    _id: { type: String, required: true },
+    email: { type: String, required: true },
+    mailingListConfirmationEmailId: { type: String, required: false },
+    isOnMailingList: { type: Boolean, required: false },
+    password: {
+      hash: { type: String, required: false },
+      salt: { type: String, required: false },
+      iterations: { type: Number, required: false },
+    },
+    provider: String,
+    isTeacher: { type: Boolean, required: true, default: () => false },
+    providerAccountId: String,
+    emailVerified: { type: Date, required: false },
+    name: {
+      first: {
+        type: String,
+        required: false,
+        validator: new StringValidator(
+          "First name is required and must be a string."
+        ),
+      },
+      last: {
+        type: String,
+        required: false,
+        validator: new StringValidator(
+          "Last name is required and must be a string."
+        ),
+      },
+    },
+    picture: { type: String, required: false },
+    occupation: { type: String, required: false },
+    country: { type: String, required: false },
+    zipCode: { type: String, required: false },
+    gradesOrYears: {
+      ageGroupsTaught: [String],
+      selection: String,
+    },
+    reasonsForSiteVisit: { type: Object, required: false },
+    subjects: { type: Object, required: false },
+    classroomSize: {
+      num: { type: Number, required: false, default: () => 0 },
+      isNotTeaching: { type: Boolean, required: false, default: () => false },
+    },
+    roles: { type: [String], required: true },
   },
-  provider: String,
-  isTeacher: { type: Boolean, required: true, default: () => false },
-  providerAccountId: String,
-  emailVerified: { type: Date, required: false },
-  name: {
-    first: { type: String, required: false, validator: new StringValidator('First name is required and must be a string.') },
-    last: { type: String, required: false, validator: new StringValidator('Last name is required and must be a string.') },
-  },
-  picture: { type: String, required: false },
-  occupation: { type: String, required: false },
-  country: { type: String, required: false },
-  zipCode: { type: String, required: false },
-  gradesOrYears: {
-    ageGroupsTaught: [String],
-    selection: String,
-  },
-  reasonsForSiteVisit: { type: Object, required: false },
-  subjects: { type: Object, required: false },
-  classroomSize: {
-    num: { type: Number, required: false, default: () => 0 },
-    isNotTeaching: { type: Boolean, required: false, default: () => false },
-  },
-  roles: { type: [String], required: true },
-});
+  {
+    timestamps: true,
+  }
+);
 
 if (!models.users) {
   User = UserSchema;
-  User = model('users', User);
+  User = model("users", User);
 }
 
 export default User;

@@ -104,7 +104,6 @@ export async function middleware(request) {
     }
 
     const authorizationStr = headers.get('authorization');
-    console.log('authorizationStr: ', authorizationStr);
     const isGettingJwtToken = (nextUrl.pathname == '/api/get-jwt-token') && (method === 'POST');
     let email = null;
 
