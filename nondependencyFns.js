@@ -2,7 +2,7 @@
 
 import { jwtVerify } from 'jose';
 import { NextResponse } from 'next/server';
-import { AuthMiddlwareError } from './backend/utils/errors';
+import { AuthMiddleWareError } from './backend/utils/errors';
 
 export const getChunks = (arr, chunkSize) => {
     const chunks = [];
@@ -66,7 +66,7 @@ export const getAuthorizeReqResult = async (
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddlwareError(false, response, errMsg);
+            throw new AuthMiddleWareError(false, response, errMsg);
         }
 
         const { exp: expTimeSeconds, roles, email } = payload;
@@ -77,26 +77,26 @@ export const getAuthorizeReqResult = async (
             const errMsg = 'The json web token has expired.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddlwareError(false, response, errMsg);
+            throw new AuthMiddleWareError(false, response, errMsg);
         }
 
         if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(roles, 'dbAdmin')) {
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddlwareError(false, response, errMsg);
+            throw new AuthMiddleWareError(false, response, errMsg);
         }
 
         if (willCheckForValidEmail && (emailToValidate && (email !== emailToValidate))) {
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddlwareError(false, response, errMsg);
+            throw new AuthMiddleWareError(false, response, errMsg);
         } else if (willCheckForValidEmail && !emailToValidate) {
             const errMsg = 'Need an email string value for validation.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddlwareError(false, response, errMsg);
+            throw new AuthMiddleWareError(false, response, errMsg);
         }
 
         return { isAuthorize: true };

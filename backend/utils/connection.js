@@ -21,7 +21,7 @@ export const connectToMongodb = async () => {
     console.log('will connect to MongoDB...');
     if (isConnectedToDb) {
       console.log('Already connected to DB');
-      return;
+      return { wasSuccessful: true };
     }
 
     const connectionUri = createConnectionUri();

@@ -305,19 +305,11 @@ export const authOptions = {
           code,
           email,
           providerAccountId,
-          image,
           wasUserCreated,
           urlErrorParamKey,
           urlErrorParamVal,
         } = user ?? {};
         let userEmail = profile?.email ?? email;
-
-        // when the user creates an account with google and that email already exists on a credentials based account, the following error occurs:
-        // -a mongodb document gets created with teh PLACEHOLDER string value in the db 
-
-        // POSSIBLE ERRORS:  
-        // -should check if the email exist, when creating an account with google 
-        // -if the email exist, the credentials is google, then throw an error 
 
         if (credentials && !userEmail) {
           userEmail = credentials.email;

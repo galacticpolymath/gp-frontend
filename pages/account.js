@@ -99,6 +99,8 @@ const AccountPg = () => {
     const { user, token } = data ?? {};
     const { email, name, image, occupation } = user ?? {};
 
+    console.log('token, yo there meng: ', token);
+
     useEffect(() => {
         if (status === 'authenticated') {
             (async () => {

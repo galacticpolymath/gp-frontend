@@ -87,6 +87,8 @@ export const UserSchema = new Schema(
       isNotTeaching: { type: Boolean, required: false, default: () => false },
     },
     roles: { type: [String], required: true },
+    totalSignIns: { type: Number, required: false, default: () => 0 },
+    lastSignIn: { type: Number, required: false },
   },
   {
     timestamps: true,
