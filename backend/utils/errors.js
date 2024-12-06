@@ -16,7 +16,7 @@ class AuthError {
     this.urlErrorParamVal = urlErrorParamVal;
   }
 }
-class AuthMiddlwareError {
+class AuthMiddleWareError {
   constructor(isAuthorize, errResponse, msg) {
     this.isAuthorize = isAuthorize;
     this.msg = msg;
@@ -33,4 +33,4 @@ class SignInError {
   }
 }
 
-export { CustomError, AuthError, SignInError, AuthMiddlwareError };
+export { CustomError, AuthError, SignInError, AuthMiddleWareError };
