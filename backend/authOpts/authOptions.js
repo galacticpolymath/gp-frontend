@@ -212,7 +212,7 @@ export const authOptions = {
             provider: 'credentials',
             roles: ['user'],
             totalSignIns: 1,
-            lastSignIn: Date.now(),
+            lastSignIn: new Date(),
           };
           const newUserDoc = createDocument(userDocumentToCreate, User);
 
@@ -372,7 +372,7 @@ export const authOptions = {
               picture: picture ?? '',
               name: name,
               totalSignIns: 1,
-              lastSignIn: Date.now(),
+              lastSignIn: new Date(),
             }
           );
 
@@ -427,7 +427,7 @@ export const authOptions = {
             console.error("Unable to retrieve the target user from the db.");
           } else {
             const totalSignIns = typeof dbUser?.totalSignIns === 'number' ? dbUser.totalSignIns + 1 : 1;
-            const { wasSuccessful } = await updateUser({ email: userEmail }, { totalSignIns, lastSignIn: Date.now() });
+            const { wasSuccessful } = await updateUser({ email: userEmail }, { totalSignIns, lastSignIn: new Date() });
 
             if (!wasSuccessful) {
               console.error('Failed to update the total sign ins for the user.');

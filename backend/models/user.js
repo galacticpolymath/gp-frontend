@@ -88,7 +88,7 @@ export const UserSchema = new Schema(
     },
     roles: { type: [String], required: true },
     totalSignIns: { type: Number, required: false, default: () => 0 },
-    lastSignIn: { type: Number, required: false },
+    lastSignIn: { type: Date, required: false },
   },
   {
     timestamps: true,
