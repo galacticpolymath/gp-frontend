@@ -245,7 +245,11 @@ const AccountPg = () => {
 
     useEffect(() => {
         const urlVals = getAllUrlVals(router, true);
+        console.log('status: ', status);
+        console.log("urlVals: ", urlVals);
         const urlVal = urlVals?.length ? urlVals.find(([urlKey]) => urlKey === 'show_about_user_form') : null;
+        // print urlVal
+        console.log('urlVal, yo there: ', urlVal);
         const accountSettingsModalOnUrlVals = urlVals?.length ? urlVals.find(([urlKey]) => urlKey === 'will-open-account-setting-modal') : null;
 
         if ((status === 'authenticated') && (urlVal?.length === 2) && getIsParsable(urlVal[1]) && JSON.parse(urlVal[1])) {

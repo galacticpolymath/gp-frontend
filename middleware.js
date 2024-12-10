@@ -5,7 +5,12 @@ import { NextResponse } from 'next/server';
 import { getAuthorizeReqResult, getChunks } from './nondependencyFns';
 import { PASSWORD_RESET_TOKEN_VAR_NAME } from './globalVars';
 
-const DB_ADMIN_ROUTES = ['/api/insert-lesson', '/api/delete-lesson', '/api/update-lessons'];
+const DB_ADMIN_ROUTES = [
+  '/api/insert-lesson',
+  '/api/delete-lesson',
+  '/api/update-lessons',
+  '/api/get-users',
+];
 const USER_ACCOUNT_ROUTES = [
   '/api/save-about-user-form',
   '/api/update-user',
@@ -104,7 +109,6 @@ export async function middleware(request) {
     }
 
     const authorizationStr = headers.get('authorization');
-    console.log('authorizationStr: ', authorizationStr);
     const isGettingJwtToken = (nextUrl.pathname == '/api/get-jwt-token') && (method === 'POST');
     let email = null;
 
@@ -148,7 +152,8 @@ export async function middleware(request) {
       ((nextUrl.pathname == '/api/get-user-account-data') && (method === 'GET') && authorizationStr) ||
       ((nextUrl.pathname == '/api/save-about-user-form') && (method === 'PUT') && authorizationStr) ||
       ((nextUrl.pathname == '/api/update-user') && (method === 'PUT') && authorizationStr) ||
-      ((nextUrl.pathname == '/api/user-confirms-mailing-list-sub') && (method === 'PUT') && authorizationStr)
+      ((nextUrl.pathname == '/api/user-confirms-mailing-list-sub') && (method === 'PUT') && authorizationStr) ||
+      ((nextUrl.pathname == '/api/get-users') && (method === 'GET') && authorizationStr)
     ) {
       const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES.includes(nextUrl.pathname);
       const willCheckForValidEmail = USER_ACCOUNT_ROUTES.includes(nextUrl.pathname);
@@ -178,7 +183,8 @@ export async function middleware(request) {
         clientEmail
       );
 
-      console.log('isAuthorize, deleting account: ', isAuthorize);
+      console.log('willCheckIfUserIsDbAdmin: ', willCheckIfUserIsDbAdmin);
+      console.log('isAuthorize: ', isAuthorize);
 
       if (!isAuthorize) {
         return errResponse;
@@ -215,5 +221,6 @@ export const config = {
     '/api/get-user-account-data',
     '/api/update-user',
     '/api/user-confirms-mailing-list-sub',
+    '/api/get-users',
   ],
 };
