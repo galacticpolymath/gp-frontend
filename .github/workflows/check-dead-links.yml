@@ -34,7 +34,9 @@ jobs:
       run: npm install exceljs 
 
     - name: Build and run the production app 
-      run: npm run prod 
+      run: |
+        export $(echo "${{ toJSON(env) }}" | jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]')
+        npm run prod
 
     - name: Run dead links checks
       run: node .github/checkDeadLinks.js
