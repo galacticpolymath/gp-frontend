@@ -1,22 +1,30 @@
-name: Check for dead links for app
-on: 
-    schedule:
-        - cron: '0 0 * * 0'
-    push:
+name: Check for dead links
+
+on: push
+
+# build the app
+# after the app has been built, execute the js file that checks for dead links
+# after the execution has been completed, replace the origin of the urls with the dev url
+
 jobs:
-    dead-links-check:
-      runs-on: ubuntu-latest
+  dead-links-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: npm install 
       
-      steps:
-      - uses: actions/checkout@v3
-      
-      - name: Install dependencies
-        run: |
-          npm ci
-          npm install -g broken-link-checker
-          
-      - name: Build Next.js app
-        run: npm run build
-        
-      - name: Check for dead links
-        run: broken-link-checker --recursive --exclude node_modules https://dev.galacticpolymath.com/
+    - name: Install linkinator
+      run: npm install linkinator 
+
+    - name: Install exceljs
+      run: npm install exceljs 
+
+    - name: Build and run production app 
+      run: npm run prod 
+
+    - name: Run checks
+      run: node .github/checkDeadLinks.js
