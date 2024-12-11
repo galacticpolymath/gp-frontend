@@ -107,20 +107,18 @@ async function checkForDeadLinks() {
         console.log(`link state:  ${result.state}`);
     });
 
-    // use the prod url to check the urls
-    // after the check has been completed, do the following: 
-    // -get the url in the parent value
-    // -pass it as a value for the url constructor class 
-    // -get the pathname from the url object
-    // -using the dev url append the path to it
-    // -insert the final string for the parent property of the object that contains the results 
     const result = await checker.check({
-        path: "https://dev.galacticpolymath.com/",
+        path: "http://localhost:3000/",
         recurse: true,
         timeout: 7_000,
         retryErrors: true,
         retryErrorsCount: 3,
         retryErrorsJitter: 5,
+        linksToSkip(link) {
+            const url = new URL(link);
+
+            return url.pathname === "/_next/image";
+        }
     });
 
     console.log(result.passed ? "PASSED :D" : "FAILED :(");
@@ -132,16 +130,42 @@ async function checkForDeadLinks() {
 
 (async () => {
     try {
-        const deadLinks = await checkForDeadLinks();
+        const allLinks = await checkForDeadLinks();
+        let deadLinks = allLinks.filter((link) => link.state === "BROKEN")
         const currentDateStr = getCurrentDate(true, "/");
         const text = deadLinks.length
-            ? `A git push has been made. Dead links check has been executed. There ${deadLinks.length == 1 ? "is" : "are"
+            ? `A git push has been made. Dead links check has been executed. A total of ${allLinks.length} ${allLinks.length == 1 ? "link" : "links"
+            } ${allLinks.length == 1 ? "was" : "were"
+            } scanned. There ${deadLinks.length == 1 ? "is" : "are"
             } ${deadLinks.length} dead ${deadLinks.length == 1 ? "link" : "links"
             }. See attached file.`
-            : "A git push has been made. Dead links check has been executed. No dead links found.";
+            : `A git push has been made. Dead links check has been executed. A total of ${allLinks.length} ${allLinks.length == 1 ? "link" : "links"
+            } ${allLinks.length == 1 ? "was" : "were"
+            } scanned.  No dead links found.`;
+        console.log("text: ", text);
         let attachments = [];
 
         if (deadLinks.length) {
+            deadLinks = deadLinks.map(deadLink => {
+                const urlParentConstructor = new URL(deadLink.parent);
+                const scannedUrlConstructor = new URL(deadLink.url);
+                const newParentUrl = `https://dev.galacticpolymath.com${urlParentConstructor.pathname}`;
+
+                if (scannedUrlConstructor.host === "localhost") {
+                    const newScannedUrl = `https://dev.galacticpolymath.com${scannedUrlConstructor.pathname}`;
+
+                    return {
+                        ...deadLink,
+                        parent: newParentUrl,
+                        url: newScannedUrl
+                    }
+                }
+
+                return {
+                    ...deadLink,
+                    parent: newParentUrl
+                }
+            })
             await createDeadLinksResultsExcelSheet(
                 deadLinks,
                 currentDateStr

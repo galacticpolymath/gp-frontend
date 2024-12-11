@@ -23,8 +23,8 @@ jobs:
     - name: Install exceljs
       run: npm install exceljs 
 
-    - name: Build and run production app 
+    - name: Build and run the production app 
       run: npm run prod 
 
-    - name: Run checks
+    - name: Run dead links checks
       run: node .github/checkDeadLinks.js
