@@ -28,7 +28,7 @@ jobs:
     - name: Install waiton
       run: npm install wait-on 
 
-    - name: Create .env.local file
+    - name: Create the .env.local file
       run: |
         touch .env.local
         echo MONGODB_USER=${{ vars.MONGODB_USER }} >> .env.local

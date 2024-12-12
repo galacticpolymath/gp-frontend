@@ -2,6 +2,7 @@
     const { LinkChecker } = await import("linkinator");
     const fs = await import("fs");
     const nodemailer = await import("nodemailer");
+    const EXCEL_SHEET_FILE_NAME = "DeadLinksCheckResult.xlsx";
 
     /**
      * @typedef {Object} TMailOpts
