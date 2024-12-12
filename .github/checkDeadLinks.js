@@ -2,7 +2,7 @@
     const { LinkChecker } = await import("linkinator");
     const fs = await import("fs");
     const nodemailer = await import("nodemailer");
-    const ExcelJS = await import("exceljs");
+    const ExcelJS = (await import("exceljs")).default;
     const EXCEL_SHEET_FILE_NAME = "DeadLinksCheckResult.xlsx";
 
     /**
@@ -262,7 +262,7 @@
 
             const { wasSuccessful } = await sendEmailWithRetries({
                 from: "shared@galacticpolymath.com",
-                to: "gtorionnotion@gmail.com",
+                to: "matt@galacticpolymath.com",
                 subject: `Deads Links Check On ${currentDateStr}`,
                 text,
                 attachments,
