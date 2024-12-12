@@ -1,7 +1,7 @@
-import { LinkChecker } from "linkinator";
-import ExcelJS from "exceljs";
+import LinkChecker from "linkinator";
 import fs from "fs";
-import { sendEmailWithRetries } from "./backend/services/emailServices";
+import { sendEmailWithRetries } from "../galacticpolymath/backend/services/emailServices.js";
+import ExcelJS from "exceljs";
 
 const EXCEL_SHEET_FILE_NAME = "DeadLinksCheckResult.xlsx";
 
@@ -114,11 +114,7 @@ async function checkForDeadLinks() {
         retryErrors: true,
         retryErrorsCount: 3,
         retryErrorsJitter: 5,
-        linksToSkip(link) {
-            const url = new URL(link);
-
-            return url.pathname === "/_next/image";
-        }
+        linksToSkip: link => new URL(link).pathname === "/_next/image"
     });
 
     console.log(result.passed ? "PASSED :D" : "FAILED :(");
