@@ -10,6 +10,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.6.0'
     
     - name: Install dependencies
       run: npm install 
@@ -20,7 +25,10 @@ jobs:
     - name: Install exceljs
       run: npm install exceljs 
 
-    - name: Build and run the production app 
+    - name: Install waiton
+      run: npm install wait-on 
+
+    - name: Create .env.local file
       run: |
         touch .env.local
         echo MONGODB_USER=${{ vars.MONGODB_USER }} >> .env.local
@@ -36,7 +44,11 @@ jobs:
         echo EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID=${{ vars.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID }} >> .env.local
         echo EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY=${{ secrets.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY }} >> .env.local
         echo BREVO_API_KEY=${{ secrets.BREVO_API_KEY }} >> .env.local
-        npm run prod
+    - name: Build and serve the app
+      run: npm run prod &
+
+    - name: Wait for the app to start
+      run: wait-on http://localhost:3000/ && NEXT_CMD
 
     - name: Run dead links checks
-      run: node .github/checkDeadLinks.js
+      run: node --env-file=.env.local .github/checkDeadLinks.js
