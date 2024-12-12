@@ -4,21 +4,8 @@ on: push
 
 jobs:
   dead-links-check:
+    environment: Preview
     runs-on: ubuntu-latest
-    env:
-      MONGODB_USER: ${{ vars.MONGODB_USER }}
-      MONGODB_PASSWORD: ${{ vars.MONGODB_PASSWORD }}
-      MONGODB_DB_NAME: ${{ vars.MONGODB_DB_NAME }}
-      MONGODB_DB_PROD: ${{ vars.MONGODB_DB_PROD }}
-      MONGODB_PROJECT_ID: ${{ vars.MONGODB_PROJECT_ID }}
-      MONGODB_PROJECT_PRIVATE_KEY: ${{ secrets.MONGODB_PROJECT_PRIVATE_KEY }} 
-      MONGODB_PROJECT_PUBLIC_KEY: ${{ vars.MONGODB_PROJECT_PUBLIC_KEY }} 
-      AUTH_CLIENT_ID: ${{ vars.AUTH_CLIENT_ID }}
-      AUTH_CLIENT_SECRET: ${{ secrets.AUTH_CLIENT_SECRET }}
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID: ${{ vars.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID }}
-      EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY }}
-      BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
 
     steps:
     - name: Checkout repository
@@ -37,7 +24,7 @@ jobs:
       run: |
         touch .env.local
         echo MONGODB_USER=${{ vars.MONGODB_USER }} >> .env.local
-        echo MONGODB_PASSWORD=${{ vars.MONGODB_PASSWORD }} >> .env.local
+        echo MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }} >> .env.local
         echo MONGODB_DB_NAME=${{ vars.MONGODB_DB_NAME }} >> .env.local
         echo MONGODB_DB_PROD=${{ vars.MONGODB_DB_PROD }} >> .env.local
         echo MONGODB_PROJECT_ID=${{ vars.MONGODB_PROJECT_ID }} >> .env.local
