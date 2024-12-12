@@ -1,7 +1,7 @@
 import { LinkChecker } from "linkinator";
 import ExcelJS from "exceljs";
 import fs from "fs";
-import { sendEmailWithRetries } from "../backend/services/emailServices";
+import { sendEmailWithRetries } from "./backend/services/emailServices";
 
 const EXCEL_SHEET_FILE_NAME = "DeadLinksCheckResult.xlsx";
 
