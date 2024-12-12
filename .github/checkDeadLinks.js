@@ -2,6 +2,7 @@
     const { LinkChecker } = await import("linkinator");
     const fs = await import("fs");
     const nodemailer = await import("nodemailer");
+    const ExcelJS = await import("exceljs");
     const EXCEL_SHEET_FILE_NAME = "DeadLinksCheckResult.xlsx";
 
     /**
@@ -270,6 +271,8 @@
             if (!wasSuccessful) {
                 throw new Error("Email failed to be sent.");
             }
+
+            console.log("The email was sent.")
         } catch (error) {
             console.log("Error checking for dead links: ", error);
         } finally {
