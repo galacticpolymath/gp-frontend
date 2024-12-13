@@ -21,18 +21,20 @@
     const sendEmail = async (mailOpts) => {
         try {
             const privateKey = process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY.split("\\n").join("\n");
+            console.log("length: ", privateKey.length);
             const emailTransport = {
                 host: 'smtp.gmail.com',
                 port: 465,
                 secure: true,
                 auth: {
                     privateKey,
-                    type: 'JWT',
+                    type: 'OAuth2',
                     user: "techguy@galacticpolymath.com",
                     serviceClient: process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID,
-                    scope: 'https://mail.google.com/'
+                    accessUrl: "https://oauth2.googleapis.com/token",
                 },
             };
+
             const transport = nodemailer.createTransport(emailTransport);
             const canSendEmail = await transport.verify();
 

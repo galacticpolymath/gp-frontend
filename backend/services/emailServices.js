@@ -34,7 +34,6 @@ export const sendEmail = async (mailOpts) => {
                 accessUrl: "https://oauth2.googleapis.com/token",
             },
         };
-
         const transport = nodemailer.createTransport(emailTransport);
         const canSendEmail = await transport.verify();
 
