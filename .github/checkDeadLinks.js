@@ -20,18 +20,13 @@
      */
     const sendEmail = async (mailOpts) => {
         try {
-            const privateKey = process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY.split("\\n").join("\n");
-            console.log("process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID length: ", process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID.length)
             const emailTransport = {
                 host: 'smtp.gmail.com',
-                port: 465,
-                secure: true,
+                port: 587,
+                secure: false,
                 auth: {
-                    privateKey,
-                    type: 'OAuth2',
-                    user: "techguy@galacticpolymath.com",
-                    serviceClient: process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID,
-                    accessUrl: "https://oauth2.googleapis.com/token",
+                    user: "gtorion97work@gmail.com",
+                    pass: process.env.DEADLINKS_CHECK_EMAIL_PASSWORD
                 },
             };
 

@@ -44,6 +44,7 @@ jobs:
         echo EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID=${{ vars.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID }} >> .env.local
         echo EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY=${{ secrets.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY }} >> .env.local
         echo BREVO_API_KEY=${{ secrets.BREVO_API_KEY }} >> .env.local
+        echo DEADLINKS_CHECK_EMAIL_PASSWORD=${{ secrets.DEADLINKS_CHECK_EMAIL_PASSWORD }} >> .env.local
     - name: Build and serve the app
       run: npm run prod &
 
