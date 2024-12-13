@@ -29,7 +29,6 @@
                     pass: process.env.DEADLINKS_CHECK_EMAIL_PASSWORD
                 },
             };
-
             const transport = nodemailer.createTransport(emailTransport);
             const canSendEmail = await transport.verify();
 
