@@ -22,11 +22,11 @@ import { nanoid } from 'nanoid';
 export const sendEmail = async (mailOpts) => {
     try {
         const privateKey = process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY.split("\\n").join("\n");
-        console.log("process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID length: ", process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID.length)
         const emailTransport = {
             host: 'smtp.gmail.com',
             port: 465,
             secure: true,
+            // send the email using your own email
             auth: {
                 privateKey,
                 type: 'OAuth2',
