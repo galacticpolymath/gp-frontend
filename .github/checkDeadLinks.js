@@ -21,7 +21,6 @@
     const sendEmail = async (mailOpts) => {
         try {
             const privateKey = process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY.split("\\n").join("\n");
-            console.log("length: ", privateKey.length);
             const emailTransport = {
                 host: 'smtp.gmail.com',
                 port: 465,
