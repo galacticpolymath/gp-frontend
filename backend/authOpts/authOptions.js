@@ -13,7 +13,7 @@ import User from '../models/user';
 import { createDocument } from '../db/utils';
 import { AuthError, CustomError, SignInError } from '../utils/errors';
 import { v4 as uuidv4 } from 'uuid';
-import { createUser, deleteUser, getUser, getUserByEmail, updateUser } from '../services/userServices';
+import { createUser, deleteUser, getUser, getUserByEmail, getUserWithRetries, updateUser } from '../services/userServices';
 import NodeCache from 'node-cache';
 import { addUserToEmailList } from '../services/emailServices';
 
@@ -34,16 +34,21 @@ export default function MyAdapter() {
       return;
     },
     async getUserByAccount(param) {
-      console.log('param, getUserByAccount: ', param);
       const { provider, providerAccountId } = param;
       let isCreatingUser = false;
 
       try {
         await connectToMongodb();
 
-        const user = await getUser({ providerAccountId: providerAccountId });
+        const { user, errType } = await getUserWithRetries({ providerAccountId: providerAccountId }, {});
 
-        console.log('the user is signing in with google: ', user);
+        if (errType === "timeout") {
+          return {
+            errType,
+            code: 504
+          };
+        }
+
 
         if (!user) {
           isCreatingUser = true;
@@ -316,6 +321,14 @@ export const authOptions = {
 
         if (credentials && !userEmail) {
           userEmail = credentials.email;
+        }
+
+        if (errType === "timeout") {
+          throw new SignInError(
+            'timeout-error',
+            'The server timed out. Please try again.',
+            code ?? 504
+          );
         }
 
         if (errType === 'dbUserDoesNotHaveCredentialsProvider') {
