@@ -73,9 +73,18 @@ export const getAuthorizeReqResult = async (
         const currentMiliseconds = Date.now();
         const expTimeMiliseconds = expTimeSeconds * 1_000;
 
+        if (!roles.includes('user')) {
+            const errMsg = 'You are not authorized to access this service. Invalid token.';
+            const response = new NextResponse(errMsg, { status: 498 });
+
+            console.error(errMsg);
+
+            throw new AuthMiddlewareError(false, response, 'You are not authorized to access this service. Invalid token.');
+        }
+
         if (currentMiliseconds > expTimeMiliseconds) {
             const errMsg = 'The json web token has expired.';
-            const response = new NextResponse(errMsg, { status: 403 });
+            const response = new NextResponse(errMsg, { status: 498 });
 
             throw new AuthMiddlewareError(false, response, errMsg);
         }
@@ -93,7 +102,7 @@ export const getAuthorizeReqResult = async (
 
             throw new AuthMiddlewareError(false, response, errMsg);
         } else if (willCheckForValidEmail && !emailToValidate) {
-            const errMsg = 'Need an email string value for validation.';
+            const errMsg = 'Need an email string ("emailToValide") value for validation.';
             const response = new NextResponse(errMsg, { status: 403 });
 
             throw new AuthMiddlewareError(false, response, errMsg);

@@ -176,11 +176,10 @@ const SignUpModal = () => {
             return;
         }
 
-        if (!callbackUrl) {
-            console.error('The callback url cannot be empty.');
-            setIsGoogleLoadingSpinnerOn(false);
-            return;
-        }
+        // put the request that updates the mailing list logic for the target user into a global component
+        const callbackUrl = `${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`;
+
+        console.log("callBackUrl: ", callbackUrl);
 
         if (createAccountForm.isOnMailingList) {
             localStorage.setItem('isOnMailingList', JSON.stringify(true));
@@ -270,9 +269,11 @@ const SignUpModal = () => {
                                             )}
                                     </div>
                                     <label
+                                        onClick={handleToAddToMailingListToggleBtnClick}
                                         style={{
                                             fontSize: "18px",
                                         }}
+                                        className='pointer'
                                     >
                                         📧Send me updates about new/free resources (You{"'"}ll get an email to confirm subscription).
                                     </label>

@@ -179,8 +179,6 @@ export async function middleware(request) {
       const { isAuthorize, errResponse } = await getAuthorizeReqResult(
         authorizationStr,
         willCheckIfUserIsDbAdmin,
-        willCheckForValidEmail,
-        clientEmail
       );
 
       console.log('willCheckIfUserIsDbAdmin: ', willCheckIfUserIsDbAdmin);
