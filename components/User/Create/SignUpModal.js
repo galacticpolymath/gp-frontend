@@ -6,7 +6,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CloseButton, Modal, ModalBody, ModalFooter, ModalHeader, Spinner } from 'react-bootstrap';
 import { ModalContext } from '../../../providers/ModalProvider';
 import { useUserEntry } from '../../../customHooks/useUserEntry';
@@ -18,6 +18,7 @@ import { signIn } from 'next-auth/react';
 import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
 import { INPUT_FOCUS_BLUE_CLASSNAME, USER_INPUT_BACKGROUND_COLOR } from '../../../globalVars';
 
+const FONT_SIZE_CHECKBOX = '28px';
 const inputElementsFocusedDefault = new Map();
 
 inputElementsFocusedDefault.set('email', false);
@@ -33,15 +34,17 @@ const SignUpModal = () => {
     const [isGoogleLoadingSpinnerOn, setIsGoogleLoadingSpinnerOn] = useState(false);
     const [inputElementsFocused, setInputElementsFocused] = useState(inputElementsFocusedDefault);
     const [createAccountForm, setCreateAccountForm] = _createAccountForm;
+    useEffect(() => {
+        console.log('createAccountForm: ', createAccountForm);
+    })
     const [isUserTeacher, setIsUserTeacher] = _isUserTeacher;
     const [passwordInputType, setPasswordInputType] = useState('password');
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     /**
-     * @typedef {"I solemnly swear I'm not a student just trying to get the answer key 🤨."} TUserIsTeacherTxt
+     * @typedef {"I solemnly swear I'm not a student just trying to get the answer key."} TUserIsTeacherTxt
      * @type {[TUserIsTeacherTxt, import('react').Dispatch<import('react').SetStateAction<TUserIsTeacherTxt>>]}
      */
-    const [userIsTeacherTxt, setUserIsTeacherTxt] = useState("I solemnly swear I'm not a student just trying to get the answer key 🤨.");
-    const callbackUrl = `${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`;
+    const [userIsTeacherTxt, setUserIsTeacherTxt] = useState("I solemnly swear I'm not a student just trying to get the answer key.");
 
     const handlePasswordTxtShowBtnClick = () => {
         setPasswordInputType(state => state === 'password' ? 'text' : 'password');
@@ -52,7 +55,7 @@ const SignUpModal = () => {
         setTimeout(() => {
             setIsUserTeacher(false);
             setErrors(new Map());
-            setUserIsTeacherTxt("I solemnly swear I'm not a student just trying to get the answer key 🤨.");
+            setUserIsTeacherTxt("I solemnly swear I'm not a student just trying to get the answer key.");
         }, 200);
     };
 
@@ -226,19 +229,22 @@ const SignUpModal = () => {
                                         {isUserTeacher ? (
                                             <BiCheckboxChecked
                                                 onClick={handleIsUserATeacherCheckBoxClick}
-                                                fontSize="21px"
+                                                fontSize={FONT_SIZE_CHECKBOX}
+                                                className='pointer'
                                             />
                                         )
                                             : (
                                                 <BiCheckbox
                                                     onClick={handleIsUserATeacherCheckBoxClick}
                                                     color={didIsUserTeacherErr ? 'red' : ""}
-                                                    fontSize="21px"
+                                                    fontSize={FONT_SIZE_CHECKBOX}
+                                                    className='pointer'
                                                 />
                                             )}
                                     </div>
                                     <label
-                                        className={`${didIsUserTeacherErr ? 'text-danger' : ''}`}
+                                        onClick={handleIsUserATeacherCheckBoxClick}
+                                        className={`${didIsUserTeacherErr ? 'text-danger' : ''} pointer`}
                                         style={{
                                             fontSize: "18px",
 
@@ -258,13 +264,15 @@ const SignUpModal = () => {
                                         {createAccountForm.isOnMailingList ? (
                                             <BiCheckboxChecked
                                                 onClick={handleToAddToMailingListToggleBtnClick}
-                                                fontSize="21px"
+                                                fontSize={FONT_SIZE_CHECKBOX}
+                                                className='pointer'
                                             />
                                         )
                                             : (
                                                 <BiCheckbox
                                                     onClick={handleToAddToMailingListToggleBtnClick}
-                                                    fontSize="21px"
+                                                    fontSize={FONT_SIZE_CHECKBOX}
+                                                    className='pointer'
                                                 />
                                             )}
                                     </div>

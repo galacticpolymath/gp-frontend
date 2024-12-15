@@ -13,8 +13,8 @@ const getCanUserWriteToDb = async clientEmail => {
     }
 
     let data = response?.data?.toString();
-    data = JSON.parse(data);
-    const canUserWriteToDb = !!data?.results?.find(({ emailAddress }) => emailAddress === clientEmail);
+    data = data ? JSON.parse(data) : null;
+    const canUserWriteToDb = data?.result?.length ? data.results.find(({ emailAddress }) => emailAddress === clientEmail) : false;
 
     return canUserWriteToDb;
   } catch (error) {

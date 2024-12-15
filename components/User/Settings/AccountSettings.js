@@ -6,29 +6,45 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle, Spinner } from 'react-bootstrap';
-import { useContext, useRef, useState } from 'react';
-import { ModalContext } from '../../../providers/ModalProvider';
-import { CustomCloseButton } from '../../../ModalsContainer';
-import { IoMdClose } from 'react-icons/io';
-import CheckBox from '../../General/CheckBox';
-import Button from '../../General/Button';
-import { getIsParsable } from '../../../globalFns';
-import { sendDeleteUserReq, updateUser } from '../../../apiServices/user/crudFns';
-import { signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import {
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    ModalTitle,
+    Spinner,
+} from "react-bootstrap";
+import { useContext, useRef, useState } from "react";
+import {
+    ModalContext,
+} from "../../../providers/ModalProvider";
+import { CustomCloseButton } from "../../../ModalsContainer";
+import { IoMdClose } from "react-icons/io";
+import CheckBox from "../../General/CheckBox";
+import Button from "../../General/Button";
+import { getIsParsable } from "../../../globalFns";
+import {
+    sendDeleteUserReq,
+    updateUser,
+} from "../../../apiServices/user/crudFns";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import CustomLink from "../../CustomLink";
+import { CONTACT_SUPPORT_EMAIL } from "../../../globalVars";
 
 const AccountSettings = () => {
-    const { _isAccountSettingModalOn, _notifyModal } = useContext(ModalContext);
-    const [isAccountSettingsModalDisplayed, setIsAccountSettingModalDisplayed] = _isAccountSettingModalOn;
-    const [isSavingChangesSpinnerOn, setIsSavingChangesSpinnerOn] = useState(false);
+    const { _isAccountSettingModalOn, _notifyModal } =
+        useContext(ModalContext);
+    const [isAccountSettingsModalDisplayed, setIsAccountSettingModalDisplayed] =
+        _isAccountSettingModalOn;
+    const [isSavingChangesSpinnerOn, setIsSavingChangesSpinnerOn] =
+        useState(false);
     const [accountForm, setAccountForm] = useState({});
     const session = useSession();
-    // print session
-    // create indicator txdt 
     const { token } = session?.data ?? {};
     const { email } = session?.data?.user ?? {};
     const [errors, setErrors] = useState(new Map());
+    const [didServerErrOccur, setDidServerErrOccur] = useState(false);
     const router = useRouter();
     const [, setNotifyModal] = _notifyModal;
 
@@ -38,14 +54,15 @@ const AccountSettings = () => {
 
     const handleOnHide = () => {
         setIsAccountSettingModalDisplayed(false);
+        setDidServerErrOccur(false);
     };
-    const handleOnInputChange = event => {
-        setErrors(state => {
+    const handleOnInputChange = (event) => {
+        setErrors((state) => {
             state.delete(event.target.name);
 
             return state;
         });
-        setAccountForm(state => ({
+        setAccountForm((state) => ({
             ...state,
             [event.target.name]: event.target.value,
         }));
@@ -53,9 +70,12 @@ const AccountSettings = () => {
     const handleOnShow = () => {
         setIsAccountSettingModalDisplayed(true);
 
-        const userAccountParsable = localStorage.getItem('userAccount');
+        const userAccountParsable = localStorage.getItem("userAccount");
 
-        if (getIsParsable(userAccountParsable) && (typeof JSON.parse(userAccountParsable) === 'object')) {
+        if (
+            getIsParsable(userAccountParsable) &&
+            typeof JSON.parse(userAccountParsable) === "object"
+        ) {
             const userAccount = JSON.parse(userAccountParsable);
 
             setAccountForm({
@@ -69,7 +89,9 @@ const AccountSettings = () => {
         router.replace(url.split("?")[0]);
     };
     const handleDeleteAccountBtnClick = async () => {
-        const willDeleteAccount = confirm("Are you sure you want to delete your account? This operation is irreversible.");
+        const willDeleteAccount = confirm(
+            "Are you sure you want to delete your account? This operation is irreversible."
+        );
 
         if (!willDeleteAccount) {
             return;
@@ -83,16 +105,16 @@ const AccountSettings = () => {
         }
 
         if (didDeleteUserSuccessfully) {
-            localStorage.removeItem('userAccount');
-            localStorage.removeItem('isOnMailingList');
-            signOut({ callbackUrl: '/?user-deleted=true' });
+            localStorage.removeItem("userAccount");
+            localStorage.removeItem("isOnMailingList");
+            signOut({ callbackUrl: "/?user-deleted=true" });
             return;
         }
 
-        alert('An error has occurred. Please refresh the page and try again.');
+        alert("An error has occurred. Please refresh the page and try again.");
     };
     const handleIsOnMailingListBtnToggle = () => {
-        setAccountForm(state => ({
+        setAccountForm((state) => ({
             ...state,
             isOnMailingList: !state.isOnMailingList,
         }));
@@ -100,13 +122,14 @@ const AccountSettings = () => {
 
     const handleSaveBtnClick = async () => {
         setIsSavingChangesSpinnerOn(true);
+        setDidServerErrOccur(false);
         const errors = new Map();
 
         if (!accountForm.firstName) {
-            errors.set('firstName', 'Please enter your first name.');
+            errors.set("firstName", "Please enter your first name.");
         }
         if (!accountForm.lastName) {
-            errors.set('lastName', 'Please enter your last name.');
+            errors.set("lastName", "Please enter your last name.");
         }
 
         if (errors.size > 0) {
@@ -116,36 +139,58 @@ const AccountSettings = () => {
             }, 250);
             return;
         }
-        const userAccountPrevVals = localStorage.getItem('userAccount') ? JSON.parse(localStorage.getItem('userAccount')) : {};
-        const willSendEmailListingSubConfirmationEmailObj = userAccountPrevVals.isOnMailingList === accountForm.isOnMailingList ? {} : { willSendEmailListingSubConfirmationEmail: accountForm.isOnMailingList };
+        const userAccountPrevVals = localStorage.getItem("userAccount")
+            ? JSON.parse(localStorage.getItem("userAccount"))
+            : {};
+        const willSendEmailListingSubConfirmationEmailObj =
+            userAccountPrevVals.isOnMailingList === accountForm.isOnMailingList
+                ? {}
+                : {
+                    willSendEmailListingSubConfirmationEmail:
+                        accountForm.isOnMailingList,
+                };
         const updatedUser = {
             name: {
                 first: accountForm.firstName,
                 last: accountForm.lastName,
             },
         };
-        let additionalReqBodyProps = accountForm.isOnMailingList ? { isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation` } : {};
+        let additionalReqBodyProps = accountForm.isOnMailingList
+            ? {
+                isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation`,
+            }
+            : {};
         additionalReqBodyProps = {
             ...additionalReqBodyProps,
             ...willSendEmailListingSubConfirmationEmailObj,
         };
-        const responseBody = await updateUser({ email: email }, updatedUser, additionalReqBodyProps, token);
+        const responseBody = await updateUser(
+            { email: email },
+            updatedUser,
+            additionalReqBodyProps,
+            token
+        );
 
         if (!responseBody) {
-            alert('Failed to save changes. Please try again later. If this problem persists, please contact support.');
             setTimeout(() => {
+                setDidServerErrOccur(true);
                 setIsSavingChangesSpinnerOn(false);
             }, 250);
             return;
         }
 
         setTimeout(() => {
-            let bodyTxt = '';
+            let bodyTxt = "";
 
             if (!userAccountPrevVals.isOnMailingList && accountForm.isOnMailingList) {
-                bodyTxt = 'Please check your e-mail inbox to confirm your subscription with GP\'s mailing list.';
-            } else if (userAccountPrevVals.isOnMailingList && (accountForm.isOnMailingList === false)) {
-                bodyTxt = 'You\'ve unscribed from GP\'s mailing list. You will no longer receive e-mails from us.';
+                bodyTxt =
+                    "Please check your e-mail inbox to confirm your subscription with GP's mailing list.";
+            } else if (
+                userAccountPrevVals.isOnMailingList &&
+                accountForm.isOnMailingList === false
+            ) {
+                bodyTxt =
+                    "You've unscribed from GP's mailing list. You will no longer receive e-mails from us.";
             }
 
             handleOnHide();
@@ -153,7 +198,7 @@ const AccountSettings = () => {
             setNotifyModal({
                 isDisplayed: true,
                 bodyTxt,
-                headerTxt: 'Updates saved!',
+                headerTxt: "Updates saved!",
                 handleOnHide: () => {
                     session.update();
                 },
@@ -168,105 +213,129 @@ const AccountSettings = () => {
             onHide={handleOnHide}
             onShow={handleOnShow}
             onBackdropClick={handleOnHide}
-            dialogClassName='border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
-            contentClassName='account-settings-modal user-modal-color'
+            dialogClassName="border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center"
+            contentClassName="account-settings-modal user-modal-color"
         >
             <CustomCloseButton
-                className='no-btn-styles position-absolute top-0 end-0 me-sm-2 me-sm-3 mt-1'
+                className="no-btn-styles position-absolute top-0 end-0 me-sm-2 me-sm-3 mt-1"
                 handleOnClick={handleOnHide}
                 style={{ zIndex: 10000000 }}
             >
                 <IoMdClose color="black" size={28} />
             </CustomCloseButton>
             <ModalHeader
-                className='position-relative'
+                className="position-relative"
                 style={{
-                    height: '80px',
+                    height: "80px",
                 }}
             >
-                <ModalTitle style={{ maxWidth: '1800px' }} className='px-2 py-3 txt-color-for-aboutme-modal w-100'>
+                <ModalTitle
+                    style={{ maxWidth: "1800px" }}
+                    className="px-2 py-3 txt-color-for-aboutme-modal w-100"
+                >
                     Account Settings
                 </ModalTitle>
             </ModalHeader>
             <ModalBody
-                style={{ maxWidth: '1800px' }}
+                style={{ maxWidth: "1800px" }}
                 ref={modalBodyRef}
-                className='about-me-modal-body w-100 d-flex flex-column'
+                className="about-me-modal-body w-100 d-flex flex-column"
             >
-                <form className='h-100 px-1 px-sm-4 position-relative d-flex flex-column justify-content-between'>
-                    <section className='d-flex flex-column'>
-                        <section className='row d-flex flex-column flex-lg-row px-sm-3'>
-                            <section className='d-flex flex-column col-12 col-sm-8 col-lg-6'>
-                                <label htmlFor='country-input' className={`${errors.has('firstName') ? 'text-danger' : ''}`}>
+                <form className="h-100 px-1 px-sm-4 position-relative d-flex flex-column justify-content-between">
+                    <section className="d-flex flex-column">
+                        <section className="row d-flex flex-column flex-lg-row px-sm-3">
+                            <section className="d-flex flex-column col-12 col-sm-8 col-lg-6">
+                                <label
+                                    htmlFor="country-input"
+                                    className={`${errors.has("firstName") ? "text-danger" : ""}`}
+                                >
                                     First name:
                                 </label>
                                 <input
-                                    name='firstName'
+                                    name="firstName"
                                     onChange={handleOnInputChange}
-                                    placeholder='First name'
+                                    placeholder="First name"
                                     value={accountForm.firstName}
                                     defaultValue={accountForm.firstName}
-                                    className={`account-settings-input no-outline pt-1 ${errors.has('firstName') ? 'text-danger border-danger' : ''}`}
+                                    className={`account-settings-input no-outline pt-1 ${errors.has("firstName") ? "text-danger border-danger" : ""
+                                        }`}
                                 />
-                                <span style={{ height: '25px', fontSize: '16px' }} className='text-danger'>{errors.get('firstName') ?? ''}</span>
+                                <span
+                                    style={{ height: "25px", fontSize: "16px" }}
+                                    className="text-danger"
+                                >
+                                    {errors.get("firstName") ?? ""}
+                                </span>
                             </section>
-                            <section className='d-flex flex-column col-12 col-sm-8 col-lg-6'>
+                            <section className="d-flex flex-column col-12 col-sm-8 col-lg-6">
                                 <label
-                                    htmlFor='last-name'
-                                    className={`${errors.has('lastName') ? 'text-danger' : ''}`}
+                                    htmlFor="last-name"
+                                    className={`${errors.has("lastName") ? "text-danger" : ""}`}
                                 >
                                     Last name:
                                 </label>
                                 <input
-                                    placeholder='Last name'
-                                    name='lastName'
-                                    id='last-name'
+                                    placeholder="Last name"
+                                    name="lastName"
+                                    id="last-name"
                                     value={accountForm.lastName}
                                     defaultValue={accountForm.lastName}
                                     onChange={handleOnInputChange}
                                     style={{
-                                        outline: 'none',
-                                        borderTop: 'none',
-                                        borderRight: 'none',
-                                        borderLeft: 'none',
+                                        outline: "none",
+                                        borderTop: "none",
+                                        borderRight: "none",
+                                        borderLeft: "none",
                                     }}
-                                    className={`account-settings-input pt-1 ${errors.has('lastName') ? 'border-danger' : ''}`}
+                                    className={`account-settings-input pt-1 ${errors.has("lastName") ? "border-danger" : ""
+                                        }`}
                                 />
-                                <span style={{ height: '25px', fontSize: '16px' }} className='text-danger'>{errors.get('lastName') ?? ''}</span>
+                                <span
+                                    style={{ height: "25px", fontSize: "16px" }}
+                                    className="text-danger"
+                                >
+                                    {errors.get("lastName") ?? ""}
+                                </span>
                             </section>
                         </section>
-                        <section className='row d-flex flex-column flex-lg-row px-sm-3 mt-3'>
+                        <section className="row d-flex flex-column flex-lg-row px-sm-3 mt-3">
                             <CheckBox
                                 isChecked={accountForm.isOnMailingList}
                                 handleOnClick={handleIsOnMailingListBtnToggle}
-                                checkBoxContainerClassName='d-flex'
+                                checkBoxContainerClassName="d-flex"
+                                txtClassName="pointer underline-on-hover"
                             >
                                 Subscribe to GP mailing list.
                             </CheckBox>
-                            <span className='ps-3'>*If you{"'"}re subscribing, please check your email inbox for the confirmation email.</span>
+                            <span className="ps-3">
+                                *If you{"'"}re subscribing, please check your email inbox for
+                                the confirmation email.
+                            </span>
                         </section>
                     </section>
-                    <section style={{ height: '55%' }} className='mt-2 mt-sm-2'>
-                        <h5 style={{ height: '10%' }} className='text-danger px-sm-3'>
-                            <i>
-                                Danger Zone
-                            </i>
+                    <section style={{ height: "55%" }} className="mt-2 mt-sm-2">
+                        <h5 style={{ height: "10%" }} className="text-danger px-sm-3">
+                            <i>Danger Zone</i>
                         </h5>
-                        <section style={{ height: '90%' }} className='rounded w-100 px-2 py-2 px-sm-3 py-sm-2'>
+                        <section
+                            style={{ height: "90%" }}
+                            className="rounded w-100 px-2 py-2 px-sm-3 py-sm-2"
+                        >
                             <div
-                                style={{ border: 'solid 1.75px red' }}
-                                className='rounded bottom-0 w-100 row d-flex flex-column py-2 h-100'
+                                style={{ border: "solid 1.75px red" }}
+                                className="rounded bottom-0 w-100 row d-flex flex-column py-2 h-100"
                             >
-                                <section
-                                    className="w-100 d-flex flex-sm-row flex-column justify-content-between"
-                                >
-                                    <section className='d-flex flex-column'>
+                                <section className="w-100 d-flex flex-sm-row flex-column justify-content-between">
+                                    <section className="d-flex flex-column">
                                         <span style={{ fontWeight: 600 }}>Delete your account</span>
-                                        <span style={{ textWrap: 'break-word', maxWidth: '450px' }}>You will no longer have access to the {"teacher's"} materials of a unit if you are a teacher.</span>
+                                        <span style={{ textWrap: "break-word", maxWidth: "450px" }}>
+                                            You will no longer have access to the {"teacher's"}{" "}
+                                            materials of a unit if you are a teacher.
+                                        </span>
                                     </section>
-                                    <section className='d-flex justify-content-sm-center align-items-sm-center pt-sm-0 pt-2'>
+                                    <section className="d-flex justify-content-sm-center align-items-sm-center pt-sm-0 pt-2">
                                         <Button
-                                            classNameStr='btn bg-danger no-btn-styles rounded px-2 py-2 px-sm-4 py-sm-2 mt-2 mt-sm-0'
+                                            classNameStr="btn bg-danger no-btn-styles rounded px-2 py-2 px-sm-4 py-sm-2 mt-2 mt-sm-0"
                                             handleOnClick={handleDeleteAccountBtnClick}
                                         >
                                             Delete account
@@ -278,22 +347,42 @@ const AccountSettings = () => {
                     </section>
                 </form>
             </ModalBody>
-            <ModalFooter className='px-4'>
+            <ModalFooter className="px-4 d-flex flex-column justify-content-start align-items-start">
                 <Button
+                    defaultStyleObj={{
+                        width: "110px",
+                    }}
                     handleOnClick={handleSaveBtnClick}
-                    classNameStr='btn bg-primary'
+                    classNameStr="btn bg-primary"
                 >
-                    {isSavingChangesSpinnerOn ?
+                    {isSavingChangesSpinnerOn ? (
                         <Spinner
                             as="span"
                             animation="border"
                             size="sm"
                             role="status"
                             aria-hidden="true"
-                        /> :
-                        'Save'
-                    }
+                        />
+                    ) : (
+                        "Save"
+                    )}
                 </Button>
+                <div className="d-inline-block error-txt-container-account-settings text-break">
+                    {didServerErrOccur && (
+                        <>
+                            <span style={{ fontSize: '1.2em' }} className="text-danger">*</span>
+                            Failed to save changes. If this error persists, please email and
+                            describe the problem at{" "}
+                            <CustomLink
+                                hrefStr={CONTACT_SUPPORT_EMAIL}
+                                className="text-primary"
+                            >
+                                {CONTACT_SUPPORT_EMAIL}
+                            </CustomLink>
+                            .
+                        </>
+                    )}
+                </div>
             </ModalFooter>
         </Modal>
     );

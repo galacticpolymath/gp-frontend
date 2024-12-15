@@ -38,7 +38,14 @@ export default function MyAdapter() {
       let isCreatingUser = false;
 
       try {
-        await connectToMongodb();
+        const { wasSuccessful } = await connectToMongodb();
+
+        if (!wasSuccessful) {
+          return {
+            errType: "timeout",
+            code: 504
+          };
+        }
 
         const { user, errType } = await getUserWithRetries({ providerAccountId: providerAccountId }, {});
 
@@ -317,6 +324,8 @@ export const authOptions = {
       } = user ?? {};
       let userEmail = profile?.email ?? email;
 
+      console.log("Error type: ", errType)
+
       try {
 
         if (credentials && !userEmail) {
@@ -324,10 +333,13 @@ export const authOptions = {
         }
 
         if (errType === "timeout") {
+          console.error('The server timed out.');
           throw new SignInError(
             'timeout-error',
             'The server timed out. Please try again.',
-            code ?? 504
+            code ?? 504,
+            'timeout-error',
+            true
           );
         }
 

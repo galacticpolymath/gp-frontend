@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
+import { sleep } from "../../globalFns.js";
 import { createDocument } from "../db/utils";
 import User from "../models/user";
 import { v4 as uuidv4 } from "uuid";
@@ -51,6 +52,8 @@ export const getUserWithRetries = async (
     tries = 1
 ) => {
     try {
+        console.log('retrieving user...');
+        console.log("Current try: ", tries);
         /** @typedef {import('../models/user.js').UserSchema} UserSchema */
         /** @type {UserSchema} */
         const user = await User.findOne(queryObj, projectionObj)
@@ -59,11 +62,15 @@ export const getUserWithRetries = async (
 
         return { user };
     } catch (error) {
+        console.log("Failed to get the target user.");
         if (tries <= 3) {
+            console.log("Will try again.");
             tries += 1;
             const randomNumMs =
                 Math.floor(Math.random() * (4000 - 1000 + 1)) + 1000;
             const waitTime = randomNumMs + (tries * 1_000);
+
+            await sleep(waitTime);
 
             return getUserWithRetries(queryObj, projectionObj, tries);
         }

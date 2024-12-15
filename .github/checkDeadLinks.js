@@ -254,7 +254,7 @@
 
             const { wasSuccessful } = await sendEmailWithRetries({
                 from: "shared@galacticpolymath.com",
-                to: "matt@galacticpolymath.com",
+                to: ["matt@galacticpolymath.com", "gtorion97work@gmail.com"],
                 subject: `Deads Links Check On ${currentDateStr}`,
                 text,
                 attachments,
