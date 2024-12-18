@@ -57,7 +57,7 @@ export const getUserWithRetries = async (
         /** @typedef {import('../models/user.js').UserSchema} UserSchema */
         /** @type {UserSchema} */
         const user = await User.findOne(queryObj, projectionObj)
-            .maxTimeMS(4_500)
+            .maxTimeMS(5_500)
             .lean();
 
         return { user };
@@ -67,7 +67,7 @@ export const getUserWithRetries = async (
             console.log("Will try again.");
             tries += 1;
             const randomNumMs =
-                Math.floor(Math.random() * (4000 - 1000 + 1)) + 1000;
+                Math.floor(Math.random() * (5_500 - 1000 + 1)) + 1000;
             const waitTime = randomNumMs + (tries * 1_000);
 
             await sleep(waitTime);

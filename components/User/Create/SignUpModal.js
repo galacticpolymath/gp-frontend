@@ -6,7 +6,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { CloseButton, Modal, ModalBody, ModalFooter, ModalHeader, Spinner } from 'react-bootstrap';
 import { ModalContext } from '../../../providers/ModalProvider';
 import { useUserEntry } from '../../../customHooks/useUserEntry';
@@ -34,9 +34,6 @@ const SignUpModal = () => {
     const [isGoogleLoadingSpinnerOn, setIsGoogleLoadingSpinnerOn] = useState(false);
     const [inputElementsFocused, setInputElementsFocused] = useState(inputElementsFocusedDefault);
     const [createAccountForm, setCreateAccountForm] = _createAccountForm;
-    useEffect(() => {
-        console.log('createAccountForm: ', createAccountForm);
-    })
     const [isUserTeacher, setIsUserTeacher] = _isUserTeacher;
     const [passwordInputType, setPasswordInputType] = useState('password');
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
