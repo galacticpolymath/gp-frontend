@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import { sha256 } from 'js-sha256';
 import { jwtVerify } from 'jose';
 import { NextResponse } from 'next/server';
-import { AuthMiddlwareError } from './errors';
+import { AuthMiddlewareError } from './errors';
 
 /**
  * @typedef {Object} TJwtPayloadCustomPropties
@@ -116,7 +116,7 @@ export const getAuthorizeReqResult = async (
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddlwareError(false, response, errMsg);
+            throw new AuthMiddlewareError(false, response, errMsg);
         }
 
         const { exp, roles, email } = payload;
@@ -125,25 +125,25 @@ export const getAuthorizeReqResult = async (
         console.log('expiration time: ', exp);
         console.log('currentTimeUTCMs: ', currentTimeUTCMs);
 
-        if(currentTimeUTCMs > exp){
+        if (currentTimeUTCMs > exp) {
             const errMsg = 'The json web token has expired.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddlwareError(false, response, errMsg);
+            throw new AuthMiddlewareError(false, response, errMsg);
         }
 
         if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(roles, 'dbAdmin')) {
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddlwareError(false, response, errMsg);
+            throw new AuthMiddlewareError(false, response, errMsg);
         }
 
         if (willCheckForValidEmail && (email !== emailToValidate)) {
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddlwareError(false, response, errMsg);
+            throw new AuthMiddlewareError(false, response, errMsg);
         }
 
         return { isAuthorize: true };

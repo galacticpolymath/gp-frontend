@@ -387,8 +387,8 @@ ol li {
   }
 }
 
-.text-shadow-violent{
-  text-shadow: 0px 0px 4px #470d29;;
+.text-shadow-violent {
+  text-shadow: 0px 0px 4px #470d29;
 }
 
 .account-settings-modal,
@@ -412,11 +412,18 @@ ol li {
   }
 }
 
+.error-txt-container-account-settings {
+  @media (min-width: 768px) {
+    height: 45px;
+  }
+}
+
 .account-settings-modal {
   height: 100vh;
+
   @media (min-width: 992px) {
     width: 70vw;
-    max-height: 700px;
+    max-height: 740px;
     border-radius: 1.5rem;
   }
 }

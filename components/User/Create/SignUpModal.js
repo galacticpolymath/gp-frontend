@@ -18,6 +18,7 @@ import { signIn } from 'next-auth/react';
 import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
 import { INPUT_FOCUS_BLUE_CLASSNAME, USER_INPUT_BACKGROUND_COLOR } from '../../../globalVars';
 
+const FONT_SIZE_CHECKBOX = '28px';
 const inputElementsFocusedDefault = new Map();
 
 inputElementsFocusedDefault.set('email', false);
@@ -37,11 +38,10 @@ const SignUpModal = () => {
     const [passwordInputType, setPasswordInputType] = useState('password');
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     /**
-     * @typedef {"I solemnly swear I'm not a student just trying to get the answer key 🤨."} TUserIsTeacherTxt
+     * @typedef {"I solemnly swear I'm not a student just trying to get the answer key."} TUserIsTeacherTxt
      * @type {[TUserIsTeacherTxt, import('react').Dispatch<import('react').SetStateAction<TUserIsTeacherTxt>>]}
      */
-    const [userIsTeacherTxt, setUserIsTeacherTxt] = useState("I solemnly swear I'm not a student just trying to get the answer key 🤨.");
-    const callbackUrl = `${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`;
+    const [userIsTeacherTxt, setUserIsTeacherTxt] = useState("I solemnly swear I'm not a student just trying to get the answer key.");
 
     const handlePasswordTxtShowBtnClick = () => {
         setPasswordInputType(state => state === 'password' ? 'text' : 'password');
@@ -52,7 +52,7 @@ const SignUpModal = () => {
         setTimeout(() => {
             setIsUserTeacher(false);
             setErrors(new Map());
-            setUserIsTeacherTxt("I solemnly swear I'm not a student just trying to get the answer key 🤨.");
+            setUserIsTeacherTxt("I solemnly swear I'm not a student just trying to get the answer key.");
         }, 200);
     };
 
@@ -176,11 +176,10 @@ const SignUpModal = () => {
             return;
         }
 
-        if (!callbackUrl) {
-            console.error('The callback url cannot be empty.');
-            setIsGoogleLoadingSpinnerOn(false);
-            return;
-        }
+        // put the request that updates the mailing list logic for the target user into a global component
+        const callbackUrl = `${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`;
+
+        console.log("callBackUrl: ", callbackUrl);
 
         if (createAccountForm.isOnMailingList) {
             localStorage.setItem('isOnMailingList', JSON.stringify(true));
@@ -227,19 +226,22 @@ const SignUpModal = () => {
                                         {isUserTeacher ? (
                                             <BiCheckboxChecked
                                                 onClick={handleIsUserATeacherCheckBoxClick}
-                                                fontSize="21px"
+                                                fontSize={FONT_SIZE_CHECKBOX}
+                                                className='pointer'
                                             />
                                         )
                                             : (
                                                 <BiCheckbox
                                                     onClick={handleIsUserATeacherCheckBoxClick}
                                                     color={didIsUserTeacherErr ? 'red' : ""}
-                                                    fontSize="21px"
+                                                    fontSize={FONT_SIZE_CHECKBOX}
+                                                    className='pointer'
                                                 />
                                             )}
                                     </div>
                                     <label
-                                        className={`${didIsUserTeacherErr ? 'text-danger' : ''}`}
+                                        onClick={handleIsUserATeacherCheckBoxClick}
+                                        className={`${didIsUserTeacherErr ? 'text-danger' : ''} pointer`}
                                         style={{
                                             fontSize: "18px",
 
@@ -259,20 +261,24 @@ const SignUpModal = () => {
                                         {createAccountForm.isOnMailingList ? (
                                             <BiCheckboxChecked
                                                 onClick={handleToAddToMailingListToggleBtnClick}
-                                                fontSize="21px"
+                                                fontSize={FONT_SIZE_CHECKBOX}
+                                                className='pointer'
                                             />
                                         )
                                             : (
                                                 <BiCheckbox
                                                     onClick={handleToAddToMailingListToggleBtnClick}
-                                                    fontSize="21px"
+                                                    fontSize={FONT_SIZE_CHECKBOX}
+                                                    className='pointer'
                                                 />
                                             )}
                                     </div>
                                     <label
+                                        onClick={handleToAddToMailingListToggleBtnClick}
                                         style={{
                                             fontSize: "18px",
                                         }}
+                                        className='pointer'
                                     >
                                         📧Send me updates about new/free resources (You{"'"}ll get an email to confirm subscription).
                                     </label>

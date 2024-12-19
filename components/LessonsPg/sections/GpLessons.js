@@ -59,7 +59,7 @@ const GpLessons = ({
                         <p className='text-center text-sm-start'>An error has occurred. Couldn&apos;t retrieve lessons. Please try again by refreshing the page.</p>
                     </div>
                 )}
-                {!gpDataObj.isLast && (
+                {gpDataObj.data?.length && !gpDataObj.isLast && (
                     <SeeMoreBtnSec
                         btnTxt={btnTxt}
                         handleOnClick={handleOnClick}

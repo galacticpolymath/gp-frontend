@@ -174,7 +174,7 @@ const Notify = () => {
                     </div>
                 ) : (
                     <div>
-                            This email already exists. If you are this user, try <CustomButton handleOnClick={() => openUserEntryModal(setIsLoginModalDisplayed)} classNameStr="text-primary underline-on-hover no-btn-styles">signing</CustomButton> in with your credentials. Or, if you don{"'"}t have an account create one <CustomButton handleOnClick={() => openUserEntryModal(setIsCreateAccountModalDisplayed)} classNameStr="text-primary underline-on-hover no-btn-styles">here</CustomButton>.
+                        This email already exists. If you are this user, try <CustomButton handleOnClick={() => openUserEntryModal(setIsLoginModalDisplayed)} classNameStr="text-primary underline-on-hover no-btn-styles">signing</CustomButton> in with your credentials. Or, if you don{"'"}t have an account create one <CustomButton handleOnClick={() => openUserEntryModal(setIsCreateAccountModalDisplayed)} classNameStr="text-primary underline-on-hover no-btn-styles">here</CustomButton>.
                     </div>
                 ),
                 handleOnHide: () => {
@@ -193,6 +193,21 @@ const Notify = () => {
                     router.replace(url.split("?")[0]);
                 },
             });
+        } else if (params[0] === "timeout-error" && params[1] === "true") {
+            setNotifyModal({
+                isDisplayed: true,
+                headerTxt: "ERROR 504",
+                bodyTxt:
+                    "The server has timed out. Please try again.",
+                handleOnHide: () => {
+                    const url = router.asPath;
+                    router.replace(url.split("?")[0]);
+                },
+            });
+            setTimeout(() => {
+                const url = router.asPath;
+                router.replace(url.split("?")[0]);
+            }, 300);
         }
     }, [router.asPath]);
 

@@ -102,7 +102,7 @@ export const useUserEntry = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        isOnMailingList: false,
+        isOnMailingList: true,
     });
 
     /**

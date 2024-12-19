@@ -2,7 +2,7 @@
 
 import { jwtVerify } from 'jose';
 import { NextResponse } from 'next/server';
-import { AuthMiddleWareError } from './backend/utils/errors';
+import { AuthMiddlewareError } from './backend/utils/errors';
 
 export const getChunks = (arr, chunkSize) => {
     const chunks = [];
@@ -66,37 +66,46 @@ export const getAuthorizeReqResult = async (
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddleWareError(false, response, errMsg);
+            throw new AuthMiddlewareError(false, response, errMsg);
         }
 
         const { exp: expTimeSeconds, roles, email } = payload;
         const currentMiliseconds = Date.now();
         const expTimeMiliseconds = expTimeSeconds * 1_000;
 
+        if (!roles.includes('user')) {
+            const errMsg = 'You are not authorized to access this service. Invalid token.';
+            const response = new NextResponse(errMsg, { status: 498 });
+
+            console.error(errMsg);
+
+            throw new AuthMiddlewareError(false, response, 'You are not authorized to access this service. Invalid token.');
+        }
+
         if (currentMiliseconds > expTimeMiliseconds) {
             const errMsg = 'The json web token has expired.';
-            const response = new NextResponse(errMsg, { status: 403 });
+            const response = new NextResponse(errMsg, { status: 498 });
 
-            throw new AuthMiddleWareError(false, response, errMsg);
+            throw new AuthMiddlewareError(false, response, errMsg);
         }
 
         if (willCheckIfUserIsDbAdmin && !getDoesUserHaveSpecifiedRole(roles, 'dbAdmin')) {
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddleWareError(false, response, errMsg);
+            throw new AuthMiddlewareError(false, response, errMsg);
         }
 
         if (willCheckForValidEmail && (emailToValidate && (email !== emailToValidate))) {
             const errMsg = 'You are not authorized to access this service.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddleWareError(false, response, errMsg);
+            throw new AuthMiddlewareError(false, response, errMsg);
         } else if (willCheckForValidEmail && !emailToValidate) {
-            const errMsg = 'Need an email string value for validation.';
+            const errMsg = 'Need an email string ("emailToValide") value for validation.';
             const response = new NextResponse(errMsg, { status: 403 });
 
-            throw new AuthMiddleWareError(false, response, errMsg);
+            throw new AuthMiddlewareError(false, response, errMsg);
         }
 
         return { isAuthorize: true };

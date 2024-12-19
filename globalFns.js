@@ -263,9 +263,13 @@ export const getIsParsableToVal = (val, valType) => {
 
 export const removeHtmlTags = str => str.replace(/<[^>]*>/g, '');
 
-export const sleep = milliseconds => new Promise(resolve => {
-    setTimeout(resolve, milliseconds);
-});
+export const sleep = milliseconds => {
+    console.log(`Will sleep for: ${milliseconds} ms`);
+
+    return new Promise(resolve => {
+        setTimeout(resolve, milliseconds);
+    });
+};
 
 export const getIsObj = val => !!val && (typeof val === 'object');
 

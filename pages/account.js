@@ -266,6 +266,9 @@ const AccountPg = () => {
 
         const isOnMailingList = localStorage.getItem('isOnMailingList') ? JSON.parse(localStorage.getItem('isOnMailingList')) : false;
 
+        console.log('isOnMailingList: ', isOnMailingList);
+        console.log('status: ', status);
+
         if (isOnMailingList && (status === 'authenticated')) {
             (async () => {
                 try {

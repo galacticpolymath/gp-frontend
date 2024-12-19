@@ -13,7 +13,7 @@ import User from '../models/user';
 import { createDocument } from '../db/utils';
 import { AuthError, CustomError, SignInError } from '../utils/errors';
 import { v4 as uuidv4 } from 'uuid';
-import { createUser, deleteUser, getUser, getUserByEmail, updateUser } from '../services/userServices';
+import { createUser, deleteUser, getUser, getUserByEmail, getUserWithRetries, updateUser } from '../services/userServices';
 import NodeCache from 'node-cache';
 import { addUserToEmailList } from '../services/emailServices';
 
@@ -34,16 +34,28 @@ export default function MyAdapter() {
       return;
     },
     async getUserByAccount(param) {
-      console.log('param, getUserByAccount: ', param);
       const { provider, providerAccountId } = param;
       let isCreatingUser = false;
 
       try {
-        await connectToMongodb();
+        const { wasSuccessful } = await connectToMongodb();
 
-        const user = await getUser({ providerAccountId: providerAccountId });
+        if (!wasSuccessful) {
+          return {
+            errType: "timeout",
+            code: 504
+          };
+        }
 
-        console.log('the user is signing in with google: ', user);
+        const { user, errType } = await getUserWithRetries({ providerAccountId: providerAccountId }, {});
+
+        if (errType === "timeout") {
+          return {
+            errType,
+            code: 504
+          };
+        }
+
 
         if (!user) {
           isCreatingUser = true;
@@ -312,10 +324,23 @@ export const authOptions = {
       } = user ?? {};
       let userEmail = profile?.email ?? email;
 
+      console.log("Error type: ", errType)
+
       try {
 
         if (credentials && !userEmail) {
           userEmail = credentials.email;
+        }
+
+        if (errType === "timeout") {
+          console.error('The server timed out.');
+          throw new SignInError(
+            'timeout-error',
+            'The server timed out. Please try again.',
+            code ?? 504,
+            'timeout-error',
+            true
+          );
         }
 
         if (errType === 'dbUserDoesNotHaveCredentialsProvider') {
