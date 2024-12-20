@@ -361,7 +361,22 @@ export const authOptions = {
           );
         }
 
-        await connectToMongodb();
+        const { wasSuccessful } = await connectToMongodb();
+
+        if (!wasSuccessful) {
+          throw new CustomError("Failed to connect to the database.", 500);
+        }
+
+        if (errType === "timeout") {
+          console.error('The server timed out.');
+          throw new SignInError(
+            'timeout-error',
+            'The server timed out. Please try again.',
+            code ?? 504,
+            'timeout-error',
+            true
+          );
+        }
 
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
 

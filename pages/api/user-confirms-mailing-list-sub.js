@@ -2,6 +2,7 @@
 /* eslint-disable indent */
 import { getUserByEmail, updateUser } from '../../backend/services/userServices';
 import { connectToMongodb } from '../../backend/utils/connection';
+import { CustomError } from '../../backend/utils/errors';
 
 export default async function handler(request, response) {
     console.log('will add user to the mailing list: ', request.body);

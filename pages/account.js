@@ -272,8 +272,6 @@ const AccountPg = () => {
         if (isOnMailingList && (status === 'authenticated')) {
             (async () => {
                 try {
-                    console.log('will update the mailing list status: ', isOnMailingList);
-
                     const response = await axios.put(
                         '/api/update-user',
                         {

@@ -56,6 +56,7 @@ const AccountSettings = () => {
         setIsAccountSettingModalDisplayed(false);
         setDidServerErrOccur(false);
     };
+
     const handleOnInputChange = (event) => {
         setErrors((state) => {
             state.delete(event.target.name);

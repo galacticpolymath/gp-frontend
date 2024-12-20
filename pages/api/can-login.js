@@ -14,7 +14,11 @@ export default async function handler(request, response) {
             throw new CustomError(400, 'Both "email" and "password" is required.', 'invalidReq');
         }
 
-        await connectToMongodb();
+        const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+
+        if (!wasConnectionSuccessful) {
+            throw new CustomError("Failed to connect to the database.", 500);
+        }
 
         /** 
          * @type { import('../../backend/models/user').TUserSchema}
