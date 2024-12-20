@@ -33,6 +33,7 @@ const CheckBox = ({
                     )}
             </div>
             <span
+                onClick={handleOnClick}
                 style={txtStyle}
                 className={txtClassName}
             >

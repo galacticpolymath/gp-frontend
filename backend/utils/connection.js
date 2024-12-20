@@ -24,8 +24,7 @@ export const connectToMongodb = async () => {
       return { wasSuccessful: true };
     }
 
-    const connectionUri = createConnectionUri();
-    const connectionState = await mongoose.connect(connectionUri, { retryWrites: true });
+    const connectionState = await mongoose.connect(createConnectionUri(), { retryWrites: true, timeoutMS: 6_000 });
 
     isConnectedToDb = connectionState.connections[0].readyState === 1;
 

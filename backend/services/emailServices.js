@@ -26,6 +26,7 @@ export const sendEmail = async (mailOpts) => {
             host: 'smtp.gmail.com',
             port: 465,
             secure: true,
+            // send the email using your own email
             auth: {
                 privateKey,
                 type: 'OAuth2',
@@ -34,7 +35,6 @@ export const sendEmail = async (mailOpts) => {
                 accessUrl: "https://oauth2.googleapis.com/token",
             },
         };
-
         const transport = nodemailer.createTransport(emailTransport);
         const canSendEmail = await transport.verify();
 
@@ -55,6 +55,37 @@ export const sendEmail = async (mailOpts) => {
         return { wasSuccessful: true };
     } catch (error) {
         console.error('Error object: ', error);
+
+        return { wasSuccessful: false };
+    }
+};
+
+/**
+ * Sends an email with the given options and retries the operation if it fails.
+ * Retries are done with an exponential backoff.
+ * @param {TMailOpts} mailOpts
+ * @param {number} [retries=1]
+ * @return {Promise<{ wasSuccessful: boolean }>} A promise that resolves to an object with a boolean indicating whether the operation was successful.
+ */
+export const sendEmailWithRetries = async (mailOpts, retries = 1) => {
+    try {
+        const { wasSuccessful } = await sendEmail(mailOpts)
+
+        if (!wasSuccessful) {
+            throw new Error("Failed to send email. Retrying...");
+        }
+
+        return { wasSuccessful: true };
+    } catch (error) {
+        if (retries <= 3) {
+            const randomNumMs = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
+            const waitTime = randomNumMs + (retries * 1_000);
+            console.log("Will wait for ", waitTime);
+            await new Promise((resolve) => setTimeout(resolve, waitTime));
+            return await sendEmailWithRetries(mailOpts, retries + 1);
+        }
+
+        console.error("Failed to send the email.")
 
         return { wasSuccessful: false };
     }

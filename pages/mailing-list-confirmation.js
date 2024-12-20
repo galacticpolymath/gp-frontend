@@ -96,9 +96,9 @@ const MailingListConfirmation = () => {
                     if (errType === "mailingListConfirmationEmailIdMismatch") {
                         setUserMailingListStatusResultUI(
                             <>
-                                <span className="pt-3">An error has occurred. You may have confirm the wrong email. Click the latest email that you have received to confirm your subscription</span>
+                                <span className="pt-3">An error has occurred. You may have confirm the wrong email. Click the latest email that you have received to confirm your subscription.</span>
                                 <span className='mt-2'>
-                                    You can click <CustomLink hrefStr="/account?will-open-account-setting-modal=true" className="color-primary underline-on-hover">here</CustomLink> to sign up and try again.
+                                    Or you can click <CustomLink hrefStr="/account?will-open-account-setting-modal=true" className="color-primary underline-on-hover">here</CustomLink> to sign up and try again.
                                 </span>
                             </>
                         );

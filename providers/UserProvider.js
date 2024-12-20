@@ -74,7 +74,7 @@ export const UserProvider = ({ children }) => {
     const [accountForm, setAccountForm] = useState({
         firstName: "",
         lastName: "",
-        isOnMailingList: false,
+        isOnMailingList: true,
     });
     const _aboutUserForm = [aboutUserForm, setAboutUserForm];
 

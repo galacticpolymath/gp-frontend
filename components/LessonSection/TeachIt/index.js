@@ -187,7 +187,7 @@ const TeachIt = ({
                     <i className="bi-alarm fs-5 me-2" />
                     {Data.lessonDur}
                   </h3>
-                  {!!Data.lessonPreface && <RichText content={Data.lessonPreface} className='d-flex justify-content-center quickPrep' />}
+                  {!!Data.lessonPreface && <RichText content={Data.lessonPreface} className='flex-column d-flex justify-content-center quickPrep' />}
                 </div>
               </div>
             </div>
