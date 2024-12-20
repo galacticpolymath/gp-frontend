@@ -15,7 +15,7 @@ export default async function handler(request, response) {
             throw new CustomError("The 'email' of the email is not present in the params of the request. ", 400);
         }
 
-        let projections = {
+        const projections = {
             gradesOrYears: 1,
             reasonsForSiteVisit: 1,
             subjects: 1,
@@ -27,7 +27,6 @@ export default async function handler(request, response) {
             isOnMailingList: 1,
             name: 1,
         };
-
         const { wasSuccessful } = await connectToMongodb();
 
         if (!wasSuccessful) {

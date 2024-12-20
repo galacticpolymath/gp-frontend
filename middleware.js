@@ -270,10 +270,6 @@ export async function middleware(request) {
         );
       }
 
-      // print the pathname 
-      console.log("nextUrl.pathname, yo there: ", nextUrl.pathname);
-
-
       if (
         ["/api/save-about-user-form", "/api/get-user-account-data"].includes(
           nextUrl.pathname

@@ -6,7 +6,7 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { useSession } from 'next-auth/react';
+import { useSession, } from 'next-auth/react';
 import Layout from '../components/Layout';
 import LoginUI from '../components/User/Login/LoginUI';
 import Button from '../components/General/Button';
@@ -97,7 +97,8 @@ const AccountPg = () => {
     const [, setAboutUserForm] = _aboutUserForm;
     const [, setNotifyModal] = _notifyModal;
     const { user, token } = data ?? {};
-    const { email, name, image, occupation } = user ?? {};
+    const { email, name, image } = user ?? {};
+    const occupation = typeof localStorage === 'undefined' ? null : JSON.parse(localStorage.getItem('userAccount') ?? '{}').occupation;
 
     useEffect(() => {
         if (status === 'authenticated') {
@@ -160,8 +161,6 @@ const AccountPg = () => {
                             ageGroupsTaught: [],
                         }
                     }
-
-                    console.log('userAccountForClient.gradesOrYears: ', userAccountForClient.gradesOrYears);
 
                     if ((typeof classroomSize === 'object') && classroomSize) {
                         userAccountForClient.classroomSize = classroomSize;
@@ -245,10 +244,7 @@ const AccountPg = () => {
 
     useEffect(() => {
         const urlVals = getAllUrlVals(router, true);
-        console.log('status: ', status);
-        console.log("urlVals: ", urlVals);
         const urlVal = urlVals?.length ? urlVals.find(([urlKey]) => urlKey === 'show_about_user_form') : null;
-        // print urlVal
         console.log('urlVal, yo there: ', urlVal);
         const accountSettingsModalOnUrlVals = urlVals?.length ? urlVals.find(([urlKey]) => urlKey === 'will-open-account-setting-modal') : null;
 
@@ -257,7 +253,7 @@ const AccountPg = () => {
                 setIsAboutMeFormModalDisplayed(true);
             }, 300);
 
-            // the second value in the arr is a boolean
+            // the second value in 'accountSettingsModalOnUrlVals is a boolean
         } else if ((status === 'authenticated') && (accountSettingsModalOnUrlVals?.length === 2) && getIsParsable(accountSettingsModalOnUrlVals[1]) && JSON.parse(accountSettingsModalOnUrlVals[1])) {
             setTimeout(() => {
                 setIsAccountSettingsModalOn(true);
@@ -265,9 +261,6 @@ const AccountPg = () => {
         }
 
         const isOnMailingList = localStorage.getItem('isOnMailingList') ? JSON.parse(localStorage.getItem('isOnMailingList')) : false;
-
-        console.log('isOnMailingList: ', isOnMailingList);
-        console.log('status: ', status);
 
         if (isOnMailingList && (status === 'authenticated')) {
             (async () => {
