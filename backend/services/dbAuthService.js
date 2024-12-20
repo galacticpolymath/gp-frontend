@@ -14,7 +14,7 @@ const getCanUserWriteToDb = async clientEmail => {
 
     let data = response?.data?.toString();
     data = data ? JSON.parse(data) : null;
-    const canUserWriteToDb = data?.result?.length ? data.results.find(({ emailAddress }) => emailAddress === clientEmail) : false;
+    const canUserWriteToDb = data?.results?.length ? !!data.results.find(({ emailAddress }) => emailAddress === clientEmail) : false;
 
     return canUserWriteToDb;
   } catch (error) {

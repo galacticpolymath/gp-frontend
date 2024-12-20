@@ -202,7 +202,7 @@
 
         console.log(`Scanned total of ${result.links.length} links!`);
 
-        return result.links.filter((link) => link.state === "BROKEN");
+        return result.links;
     }
 
     (async () => {
