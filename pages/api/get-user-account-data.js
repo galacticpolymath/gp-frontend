@@ -27,12 +27,6 @@ export default async function handler(request, response) {
             isOnMailingList: 1,
             name: 1,
         };
-        // get the user's account data when the user is on the lessons page
-
-        if (request.query?.customProjections?.length) {
-            console.log('CUSTOM PROJECTIONS: ');
-            console.log(request.query.customProjections);
-        }
 
         const { wasSuccessful } = await connectToMongodb();
 

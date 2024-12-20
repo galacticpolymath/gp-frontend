@@ -293,6 +293,7 @@ export const authOptions = {
         const accessToken = await signJwt({ email, roles: allowedRoles, name, picture }, secret, '12hr');
 
         if (!token?.payload && canUserWriteToDb) {
+          console.log("will save jwt to db.");
           await connectToMongodb();
           const jwt = new JwtModel({ _id: email, access: accessToken, refresh: refreshToken });
 
@@ -323,6 +324,7 @@ export const authOptions = {
         urlErrorParamVal,
       } = user ?? {};
       let userEmail = profile?.email ?? email;
+      const { wasSuccessful: isDbConnected } = await connectToMongodb();
 
       console.log("Error type: ", errType)
 
@@ -361,9 +363,8 @@ export const authOptions = {
           );
         }
 
-        const { wasSuccessful } = await connectToMongodb();
 
-        if (!wasSuccessful) {
+        if (!isDbConnected) {
           throw new CustomError("Failed to connect to the database.", 500);
         }
 
@@ -460,7 +461,7 @@ export const authOptions = {
 
         return param?.user?.redirectUrl ? `${param.user.redirectUrl}/?signin-err-type=${type ?? 'sign-in-error'}` : `/?signin-err-type=${type ?? 'sign-in-error'}`;
       } finally {
-        if (!wasUserCreated) {
+        if (!wasUserCreated && isDbConnected) {
           const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
 
           if (!dbUser) {

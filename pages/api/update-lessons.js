@@ -34,7 +34,7 @@ export default async function handler(request, response) {
     const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
 
     if (!wasConnectionSuccessful) {
-      throw new CustomError("Failed to connect to the database.", 500);
+      throw new CustomError('Failed to connect to the database.', 500);
     }
 
     const { errMsg: updateLessonErrMsg } = await updateLesson(
