@@ -6,7 +6,7 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { useSession, } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Layout from '../components/Layout';
 import LoginUI from '../components/User/Login/LoginUI';
 import Button from '../components/General/Button';
