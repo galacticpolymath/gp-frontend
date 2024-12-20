@@ -38,7 +38,7 @@ export default function MyAdapter() {
       let isCreatingUser = false;
 
       try {
-        const { wasSuccessful } = await connectToMongodb();
+        const { wasSuccessful } = await connectToMongodb(7_000);
 
         if (!wasSuccessful) {
           return {

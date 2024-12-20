@@ -39,7 +39,11 @@ export default async function handler(request, response) {
             willSendEmailListingSubConfirmationEmail,
         } = request.body;
 
-        await connectToMongodb();
+        const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+
+        if (!wasConnectionSuccessful) {
+            throw new CustomError("Failed to connect to the database.", 500);
+        }
 
         if ((willSendEmailListingSubConfirmationEmail === true) && isOnMailingListConfirmationUrl) {
             console.log('will add user to mailing list.');

@@ -29,7 +29,11 @@ export default async function handler(request, response) {
       throw new CustomError(filterObjCreationResult.errMsg, 400);
     }
 
-    await connectToMongodb();
+    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+
+    if (!wasConnectionSuccessful) {
+      throw new CustomError("Failed to connect to the database.", 500);
+    }
 
     const { data, errMsg } = await retrieveLessons(filterObj ?? {}, projectionsObj ?? {});
 

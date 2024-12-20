@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import { getUserByEmail, updateUser } from '../../backend/services/userServices';
+import { connectToMongodb } from '../../backend/utils/connection';
 
 export default async function handler(request, response) {
     console.log('will add user to the mailing list: ', request.body);
@@ -45,6 +46,12 @@ export default async function handler(request, response) {
         console.error('The mailing list confirmation email ids do not match.');
 
         return response.status(400).json({ msg: 'The mailing list confirmation email ids do not match.', errType: 'mailingListConfirmationEmailIdMismatch' });
+    }
+
+    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+
+    if (!wasConnectionSuccessful) {
+        throw new CustomError("Failed to connect to the database.", 500);
     }
 
     const { wasSuccessful } = await updateUser({ email }, { mailingListConfirmationEmailId: null, isOnMailingList: true });

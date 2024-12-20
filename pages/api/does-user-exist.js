@@ -11,7 +11,11 @@ export default async function handler(request, response) {
             throw new CustomError("The 'email' param is not present in the url of the request. ", 400);
         }
 
-        await connectToMongodb();
+        const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+
+        if (!wasConnectionSuccessful) {
+            throw new CustomError("Failed to connect to the database.", 500);
+        }
 
         const doesUserExist = !!(await getUserByEmail(request.query.email, { _id: 1 }));
 

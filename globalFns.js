@@ -390,3 +390,13 @@ export const getIsWithinParentElement = (element, specifier, classNameOrId = 'cl
 
     return getIsWithinParentElement(element.parentElement, specifier, classNameOrId);
 }
+
+export const waitWithExponentialBackOff = async (num = 1) => {
+    const randomNumMs =
+        Math.floor(Math.random() * (5_500 - 1000 + 1)) + 1000;
+    const waitTime = randomNumMs + (num * 1_000);
+
+    await sleep(waitTime);
+
+    return num + 1;
+}

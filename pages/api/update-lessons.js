@@ -31,7 +31,11 @@ export default async function handler(request, response) {
       filterObjForDbQuery = _filterObjForUpdatedLessonServiceResult;
     }
 
-    await connectToMongodb();
+    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+
+    if (!wasConnectionSuccessful) {
+      throw new CustomError("Failed to connect to the database.", 500);
+    }
 
     const { errMsg: updateLessonErrMsg } = await updateLesson(
       filterObjForDbQuery,
