@@ -5,6 +5,7 @@
 
 import { cache } from "../../backend/authOpts/authOptions";
 import { getUserByEmail, updateUser } from "../../backend/services/userServices";
+import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 
 /**
@@ -51,6 +52,12 @@ export default async function handler(request, response) {
             throw new CustomError("The 'aboutUser' form is empty or has falsey values");
         }
 
+        const { wasSuccessful: wasConnectionSuccessful } = connectToMongodb();
+
+        if (!wasConnectionSuccessful) {
+            throw new CustomError("Failed to connect to the database.", 500);
+        }
+
         const doesUserExist = !!(await getUserByEmail(userEmail));
 
         if (!doesUserExist) {
@@ -68,6 +75,7 @@ export default async function handler(request, response) {
 
             return accumObjUpdated;
         }, {});
+
 
         const { wasSuccessful, updatedUser, errMsg } = await updateUser({ email: userEmail }, updatedUserProperties) ?? {};
 

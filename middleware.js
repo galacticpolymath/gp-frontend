@@ -210,9 +210,6 @@ export async function middleware(request) {
       (nextUrl.pathname == "/api/delete-user" &&
         method === "DELETE" &&
         authorizationStr) ||
-      (nextUrl.pathname == "/api/get-user-account-data" &&
-        method === "GET" &&
-        authorizationStr) ||
       (nextUrl.pathname == "/api/save-about-user-form" &&
         method === "PUT" &&
         authorizationStr) ||
@@ -223,6 +220,9 @@ export async function middleware(request) {
         method === "PUT" &&
         authorizationStr) ||
       (nextUrl.pathname == "/api/get-users" &&
+        method === "GET" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/get-user-account-data" &&
         method === "GET" &&
         authorizationStr)
     ) {
@@ -270,6 +270,10 @@ export async function middleware(request) {
         );
       }
 
+      // print the pathname 
+      console.log("nextUrl.pathname, yo there: ", nextUrl.pathname);
+
+
       if (
         ["/api/save-about-user-form", "/api/get-user-account-data"].includes(
           nextUrl.pathname
@@ -281,6 +285,8 @@ export async function middleware(request) {
           willCheckForValidEmail,
           clientEmail,
         );
+
+        console.log("iasAuthorize: ", isAuthorize);
 
         return isAuthorize ? errResponse : NextResponse.next();
       }

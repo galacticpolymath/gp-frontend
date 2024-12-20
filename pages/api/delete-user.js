@@ -3,6 +3,7 @@
 import { CustomError } from "../../backend/utils/errors";
 import { deleteUserByEmail } from "../../backend/services/userServices";
 import { cache } from "../../backend/authOpts/authOptions";
+import { connectToMongodb } from "../../backend/utils/connection";
 
 export default async function handler(request, response) {
     try {
@@ -12,6 +13,12 @@ export default async function handler(request, response) {
 
         if (!request.query.email) {
             throw new CustomError("'email' is not present in the request url.", 404);
+        }
+
+        const { wasSuccessful: isDbConnected } = await connectToMongodb();
+
+        if (!isDbConnected) {
+            throw new CustomError("Failed to connect to the database.", 500);
         }
 
         const { wasSuccessful: wasUserDeletedFromDb } = await deleteUserByEmail(request.query.email);

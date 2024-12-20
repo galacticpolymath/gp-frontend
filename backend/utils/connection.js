@@ -16,7 +16,7 @@ export const createConnectionUri = () => {
   return connectionUri;
 };
 
-export const connectToMongodb = async () => {
+export const connectToMongodb = async (serverSelectionTimeoutMS = 15_000) => {
   try {
     console.log('will connect to MongoDB...');
     if (isConnectedToDb) {
@@ -24,7 +24,7 @@ export const connectToMongodb = async () => {
       return { wasSuccessful: true };
     }
 
-    const connectionState = await mongoose.connect(createConnectionUri(), { retryWrites: true, timeoutMS: 6_000 });
+    const connectionState = await mongoose.connect(createConnectionUri(), { retryWrites: true, serverSelectionTimeoutMS });
 
     isConnectedToDb = connectionState.connections[0].readyState === 1;
 

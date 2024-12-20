@@ -3,6 +3,7 @@
 /* eslint-disable indent */
 
 import { getUserByEmail } from "../../backend/services/userServices";
+import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 
 /**
@@ -13,7 +14,7 @@ export default async function handler(request, response) {
         if (!request?.query?.email || (typeof request?.query?.email !== 'string')) {
             throw new CustomError("The 'email' of the email is not present in the params of the request. ", 400);
         }
-        
+
         let projections = {
             gradesOrYears: 1,
             reasonsForSiteVisit: 1,
@@ -33,9 +34,12 @@ export default async function handler(request, response) {
             console.log(request.query.customProjections);
         }
 
-        // send an array that contains all of the projected fields that are to be returend and give to the user 
-        // create a parameter called customProjection, it will an array that contains 
-        
+        const { wasSuccessful } = await connectToMongodb();
+
+        if (!wasSuccessful) {
+            throw new CustomError("Failed to connect to the database.", 500);
+        }
+
         const userAccount = await getUserByEmail(request.query.email, projections);
 
         if (!userAccount) {
