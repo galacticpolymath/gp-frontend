@@ -12,13 +12,14 @@ import GradesOrYearsSelection from './sections/GradesOrYearsSelection';
 import { UserContext } from '../../../providers/UserProvider';
 import CountrySection from './sections/CountrySection';
 import SubjectOption from './sections/SubjectOption';
-import SubmitAboutUserFormBtn from './SubmitAboutUserFormBtn';
+import SubmitAboutUserFormBtn, { sendAboutUserFormToServer } from './SubmitAboutUserFormBtn';
 import { getAboutUserFormForClient } from '../../../pages/account';
 import { CustomCloseButton } from '../../../ModalsContainer';
 import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from 'react-icons/io';
 import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
 import { ErrorTxt } from '../formElements';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 const AccordionToggleBtn = ({ children = <></>, btnClassName = "", eventKey, handleBtnClick }) => {
     const handleAccordionToggleBtnClick = useAccordionButton(eventKey, event => {
@@ -57,17 +58,27 @@ const WHAT_BRINGS_YOU_TO_SITE_OPTS = [
 ];
 
 const AboutUserModal = () => {
-    const { _isAboutMeFormModalDisplayed } = useContext(ModalContext);
+    const { _isAboutMeFormModalDisplayed, _notifyModal } = useContext(ModalContext);
     const { _aboutUserForm } = useContext(UserContext);
+    const [, setNotifyModal] = _notifyModal;
+    const session = useSession();
+    const { user, token } = session.data ?? {};
+    const email = user?.email ?? '';
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
     const [countryNames, setCountryNames] = useState([]);
     const [errors, setErrors] = useState(new Map());
+    const [isInputFocused, setIsInputFocused] = useState(false);
+    const [wasBtnClicked, setWasBtnClicked] = useState(false);
     const router = useRouter();
     /**
      * @type {[import('../../../providers/UserProvider').TAboutUserForm, import('react').Dispatch<import('react').SetStateAction<import('../../../providers/UserProvider').TAboutUserForm>>]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const modalBodyRef = useRef();
+
+    const handleFocusRelatedEvent = (isInputFocused) => () => {
+        setIsInputFocused(isInputFocused)
+    }
 
     const handleOnHide = () => {
         const userAccountStringified = localStorage.getItem('userAccount');
@@ -215,6 +226,29 @@ const AboutUserModal = () => {
         })();
     }, []);
 
+    const handleKeyPress = async (event) => {
+        if ((event.key === 'Enter') && !isInputFocused) {
+            await sendAboutUserFormToServer(
+                aboutUserForm,
+                setWasBtnClicked,
+                setErrors,
+                setIsAboutMeFormModalDisplayed,
+                setNotifyModal,
+                email,
+                countryNames,
+                token
+            );
+        }
+    }
+
+    useEffect(() => {
+        if (isAboutMeFormModalDisplayed) {
+            document.addEventListener('keydown', handleKeyPress);
+        } else {
+            document.removeEventListener('keydown', handleKeyPress);
+        }
+    }, [isAboutMeFormModalDisplayed])
+
     return (
         <Modal
             show={isAboutMeFormModalDisplayed}
@@ -253,6 +287,8 @@ const AboutUserModal = () => {
                                 onChange={handleOnInputChange}
                                 placeholder='What do you do?'
                                 value={aboutUserForm?.occupation ?? ''}
+                                onFocus={handleFocusRelatedEvent(true)}
+                                onBlur={handleFocusRelatedEvent(false)}
                                 style={{ maxWidth: '400px' }}
                                 autoFocus={!aboutUserForm?.occupation}
                                 className={`ms-2 ms-sm-0 aboutme-txt-input no-outline pt-1 ${errors.has('occupation') ? 'text-danger border-danger' : ''}`}
@@ -260,6 +296,7 @@ const AboutUserModal = () => {
                             <span style={{ fontSize: '16px' }} className='text-danger ms-2 ms-sm-0'>{errors.get('occupation') ?? ''}</span>
                         </section>
                         <CountrySection
+                            setIsInputFocused={setIsInputFocused}
                             countryNames={countryNames}
                             _errors={[errors, setErrors]}
                         />
@@ -289,6 +326,8 @@ const AboutUserModal = () => {
                                     borderBottom: errors.has('zipCode') ? 'solid 1px red' : 'solid 1px grey',
                                     opacity: aboutUserForm?.country?.toLowerCase() !== 'united states' ? .3 : 1,
                                 }}
+                                onFocus={handleFocusRelatedEvent(true)}
+                                onBlur={handleFocusRelatedEvent(false)}
                                 className={`aboutme-txt-input pt-1 ms-2 ms-sm-0 ${errors.has('zipCode') ? 'border-danger text-danger' : ''}`}
                             />
                             <section style={{ height: '47px' }}>
@@ -340,6 +379,8 @@ const AboutUserModal = () => {
                                                 onChange={handleOnClassRoomSizeInputChange}
                                                 style={{ maxWidth: '200px', opacity: aboutUserForm.classroomSize.isNotTeaching ? .3 : 1 }}
                                                 className='aboutme-txt-input no-outline mt-1'
+                                                onFocus={handleFocusRelatedEvent(true)}
+                                                onBlur={handleFocusRelatedEvent(false)}
                                             />
                                             <section className='mt-1'>
                                                 <input
@@ -348,6 +389,8 @@ const AboutUserModal = () => {
                                                     type='checkbox'
                                                     name='isNotTeaching'
                                                     onChange={handleIsTeachingInputToggle}
+                                                    onFocus={handleFocusRelatedEvent(true)}
+                                                    onBlur={handleFocusRelatedEvent(false)}
                                                 />
                                                 <label htmlFor='isNotTeaching' className='fw-normal ms-1 pb-1'>I{"'"}m not teaching.</label>
                                             </section>
@@ -448,11 +491,17 @@ const AboutUserModal = () => {
                                 placeholder='Your response...'
                                 value={aboutUserForm?.reasonsForSiteVisit?.has('reason-for-visit-custom') ? aboutUserForm.reasonsForSiteVisit.get('reason-for-visit-custom') : ''}
                                 onChange={handleWhatBringsYouToSiteInputChange}
+                                onFocus={handleFocusRelatedEvent(true)}
+                                onBlur={handleFocusRelatedEvent(false)}
                             />
                         </section>
                     </section>
                     <section className='d-flex justify-content-end'>
-                        <SubmitAboutUserFormBtn setErrors={setErrors} countryNames={countryNames} />
+                        <SubmitAboutUserFormBtn
+                            setErrors={setErrors}
+                            countryNames={countryNames}
+                            _wasBtnClicked={[wasBtnClicked, setWasBtnClicked]}
+                        />
                     </section>
                 </form>
             </ModalBody>

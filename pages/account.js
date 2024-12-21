@@ -111,7 +111,7 @@ const AccountPg = () => {
                         },
                     };
                     const response = await axios.get(
-                        `/api/get-user-account-data`,
+                        '/api/get-user-account-data',
                         paramsAndHeaders,
                     );
 

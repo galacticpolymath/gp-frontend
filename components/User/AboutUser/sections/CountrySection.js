@@ -11,12 +11,13 @@ import { UserContext } from "../../../../providers/UserProvider";
  * @param {{
  *  setErrors: Function,
  *  countryNames: string[],
- *  errorMsg: string
+ *  errorMsg: string,
+ *  setIsInputFocused: Function
  * }} param
  */
-const CountrySection = ({ countryNames, _errors }) => {
+const CountrySection = ({ countryNames, _errors, setIsInputFocused }) => {
     const [searchResults, setSearchResults] = useState([]);
-    const [isInputFocused, setIsInputFocused] = useState(false);
+    const [isCountriesInputFocused, setIsCountriesInputFocused] = useState(false);
     const { _aboutUserForm } = useContext(UserContext);
     /**
      * @type {[Map<string, string>, Function]}
@@ -26,6 +27,7 @@ const CountrySection = ({ countryNames, _errors }) => {
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
 
     const handleOnInputFocus = () => {
+        setIsCountriesInputFocused(true);
         setIsInputFocused(true);
     };
 
@@ -63,7 +65,7 @@ const CountrySection = ({ countryNames, _errors }) => {
             ...aboutUserFormUpdated,
             country: target.value,
         });
-        setIsInputFocused(false);
+        setIsCountriesInputFocused(false);
     };
 
     const handleInputOnChange = ({ target }) => {
@@ -93,9 +95,12 @@ const CountrySection = ({ countryNames, _errors }) => {
                     value={aboutUserForm.country}
                     onChange={handleInputOnChange}
                     onFocus={handleOnInputFocus}
+                    onBlur={() => {
+                        setIsInputFocused(false)
+                    }}
                 />
                 <span style={{ height: '25px', fontSize: '16px' }} className='text-danger'>{errors?.get('country') ?? ''}</span>
-                {isInputFocused && (
+                {isCountriesInputFocused && (
                     <div
                         id='searchResultsModal'
                         style={{ zIndex: 100, maxWidth: '400px', maxHeight: '400px', width: '100%', transform: 'translateY(35px)' }}
