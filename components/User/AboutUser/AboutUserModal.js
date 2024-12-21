@@ -226,29 +226,6 @@ const AboutUserModal = () => {
         })();
     }, []);
 
-    const handleKeyPress = async (event) => {
-        if ((event.key === 'Enter') && !isInputFocused) {
-            await sendAboutUserFormToServer(
-                aboutUserForm,
-                setWasBtnClicked,
-                setErrors,
-                setIsAboutMeFormModalDisplayed,
-                setNotifyModal,
-                email,
-                countryNames,
-                token
-            );
-        }
-    }
-
-    useEffect(() => {
-        if (isAboutMeFormModalDisplayed) {
-            document.addEventListener('keydown', handleKeyPress);
-        } else {
-            document.removeEventListener('keydown', handleKeyPress);
-        }
-    }, [isAboutMeFormModalDisplayed])
-
     return (
         <Modal
             show={isAboutMeFormModalDisplayed}
