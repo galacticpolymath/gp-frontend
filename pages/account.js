@@ -19,6 +19,36 @@ import { Spinner } from 'react-bootstrap';
 import { getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
 import { FaUserAlt } from 'react-icons/fa';
 
+export const getUserAccountData = async (token, email) => {
+    try {
+        const paramsAndHeaders = {
+            params: { email, customProjections: "name, " },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+        const url = `${window.location.origin}/api/get-user-account-data`;
+        console.log("url: ", url);
+        const response = await axios.get(
+            url,
+            paramsAndHeaders,
+        );
+
+        // print the response
+        console.log("response.data: ", response.data);
+
+        if (response.status !== 200) {
+            throw new Error('Received a non 200 response from the server.');
+        };
+
+        return response.data;
+    } catch (error) {
+        console.error('Failed to get the user account data. Reason: ', error)
+
+        return null;
+    }
+}
+
 export const getAboutUserFormForClient = userAccount => {
     const userAccountForClient = { ...userAccountDefault };
     const {
@@ -99,10 +129,10 @@ const AccountPg = () => {
     const session = useSession();
     const { status, data } = session;
     const { user, token } = data ?? {};
-    const { email, name, image } = user ?? {};
+    const { email, image, name } = user ?? {};
     const occupation = typeof localStorage === 'undefined' ? null : JSON.parse(localStorage.getItem('userAccount') ?? '{}').occupation;
-    const firstName = aboutUserForm?.name?.first ? aboutUserForm.name.first : (name?.first ?? "");
-    const lastName = aboutUserForm?.name?.last ? aboutUserForm.name.last : (name?.last ?? "");
+    const firstName = aboutUserForm?.name?.first || (name?.first ?? '')
+    const lastName = aboutUserForm?.name?.last || (name?.last ?? '')
 
     useEffect(() => {
         if (status === 'authenticated') {
@@ -125,7 +155,7 @@ const AccountPg = () => {
 
                     /** @type {import('../providers/UserProvider').TUserAccount} */
                     const userAccount = response.data;
-                    /** @type {import('../providers/UserProvider').TAboutUserForm} */
+                    /** @type {import('../providers/UserProvider').TUserAccount} */
                     const userAccountForClient = { ...userAccountDefault };
                     const {
                         reasonsForSiteVisit,
@@ -193,6 +223,13 @@ const AccountPg = () => {
 
                     if (occupation) {
                         userAccountForClient.occupation = occupation;
+                    }
+
+                    if (name?.first && name?.last) {
+                        userAccountForClient.name = {
+                            first: name.first,
+                            last: name.last,
+                        }
                     }
 
                     userAccountForClient.isTeacher = isTeacher ?? false;

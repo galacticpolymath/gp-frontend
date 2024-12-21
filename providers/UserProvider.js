@@ -31,6 +31,7 @@ import { createContext, useState } from "react";
  * @property {string} country
  * @property {string} occupation
  * @property {boolean} isTeacher
+ * @property {{ first: string, last: string }} name
  * @property {number | null} zipCode
  * @property {{ num: number, isNotTeaching: boolean }} classroomSize
 */
@@ -66,6 +67,10 @@ export const userAccountDefault = {
     },
     subjects: new Map(),
     reasonsForSiteVisit: new Map(),
+    name: {
+        first: '',
+        last: ''
+    }
 };
 
 export const UserContext = createContext(null);
