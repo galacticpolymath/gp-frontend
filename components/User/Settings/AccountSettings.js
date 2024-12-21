@@ -88,8 +88,11 @@ const AccountSettings = () => {
 
         const url = router.asPath;
 
-        if (url.includes("?")) {
-            router.replace(url.split("?")[0]);
+        if (url.includes('?')) {
+            console.log('url: ', url);
+            const newUrl = url.split("?")[0];
+            console.log('newUrl, yo there: ', newUrl);
+            router.replace(newUrl);
         }
     };
     const handleDeleteAccountBtnClick = async () => {
