@@ -79,19 +79,19 @@ const AccountSettings = () => {
         ) {
             const userAccount = JSON.parse(userAccountParsable);
 
+            console.log("userAccount: ", userAccount);
+
             setAccountForm({
-                firstName: userAccount.name.first ?? "",
-                lastName: userAccount.name.last ?? "",
-                isOnMailingList: userAccount.isOnMailingList ?? false,
+                firstName: userAccount?.name?.first ?? "",
+                lastName: userAccount?.name?.last ?? "",
+                isOnMailingList: userAccount?.isOnMailingList ?? false,
             });
         }
 
         const url = router.asPath;
 
         if (url.includes('?')) {
-            console.log('url: ', url);
             const newUrl = url.split("?")[0];
-            console.log('newUrl, yo there: ', newUrl);
             router.replace(newUrl);
         }
     };
