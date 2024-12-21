@@ -42,7 +42,7 @@ const AccountSettings = () => {
     const [accountForm, setAccountForm] = useState({});
     const session = useSession();
     const { token } = session?.data ?? {};
-    const { email } = session?.data?.user ?? {};
+    const { email, name } = session?.data?.user ?? {};
     const [errors, setErrors] = useState(new Map());
     const [didServerErrOccur, setDidServerErrOccur] = useState(false);
     const router = useRouter();
@@ -78,12 +78,12 @@ const AccountSettings = () => {
             (typeof JSON.parse(userAccountParsable) === "object")
         ) {
             const userAccount = JSON.parse(userAccountParsable);
-
-            console.log("userAccount: ", userAccount);
+            const firstName = userAccount?.name?.first ? userAccount?.name?.first : (name?.first ?? "");
+            const lastName = userAccount?.name?.last ? userAccount?.name?.last : (name?.last ?? "");
 
             setAccountForm({
-                firstName: userAccount?.name?.first ?? "",
-                lastName: userAccount?.name?.last ?? "",
+                firstName,
+                lastName,
                 isOnMailingList: userAccount?.isOnMailingList ?? false,
             });
         }

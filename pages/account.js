@@ -87,8 +87,6 @@ export const getUrlVal = (router, urlField) => {
 };
 
 const AccountPg = () => {
-    const session = useSession();
-    const { status, data } = session;
     const router = useRouter();
     const { _aboutUserForm } = useContext(UserContext);
     const { _isAboutMeFormModalDisplayed, _notifyModal, _isAccountSettingModalOn } = useContext(ModalContext);
@@ -96,6 +94,8 @@ const AccountPg = () => {
     const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;
     const [, setAboutUserForm] = _aboutUserForm;
     const [, setNotifyModal] = _notifyModal;
+    const session = useSession();
+    const { status, data } = session;
     const { user, token } = data ?? {};
     const { email, name, image } = user ?? {};
     const occupation = typeof localStorage === 'undefined' ? null : JSON.parse(localStorage.getItem('userAccount') ?? '{}').occupation;
@@ -186,6 +186,13 @@ const AccountPg = () => {
 
                     if (occupation) {
                         userAccountForClient.occupation = occupation;
+                    }
+
+                    if (name.first && name.last) {
+                        userAccountForClient.name = {
+                            first: name.first,
+                            last: name.last,
+                        }
                     }
 
                     userAccountForClient.isTeacher = isTeacher ?? false;
