@@ -12,14 +12,13 @@ import GradesOrYearsSelection from './sections/GradesOrYearsSelection';
 import { UserContext } from '../../../providers/UserProvider';
 import CountrySection from './sections/CountrySection';
 import SubjectOption from './sections/SubjectOption';
-import SubmitAboutUserFormBtn, { sendAboutUserFormToServer } from './SubmitAboutUserFormBtn';
+import SubmitAboutUserFormBtn from './SubmitAboutUserFormBtn';
 import { getAboutUserFormForClient } from '../../../pages/account';
 import { CustomCloseButton } from '../../../ModalsContainer';
 import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from 'react-icons/io';
 import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
 import { ErrorTxt } from '../formElements';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 
 const AccordionToggleBtn = ({ children = <></>, btnClassName = "", eventKey, handleBtnClick }) => {
     const handleAccordionToggleBtnClick = useAccordionButton(eventKey, event => {
@@ -58,17 +57,13 @@ const WHAT_BRINGS_YOU_TO_SITE_OPTS = [
 ];
 
 const AboutUserModal = () => {
-    const { _isAboutMeFormModalDisplayed, _notifyModal } = useContext(ModalContext);
+    const { _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     const { _aboutUserForm } = useContext(UserContext);
-    const [, setNotifyModal] = _notifyModal;
-    const session = useSession();
-    const { user, token } = session.data ?? {};
-    const email = user?.email ?? '';
     const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
     const [countryNames, setCountryNames] = useState([]);
     const [errors, setErrors] = useState(new Map());
-    const [isInputFocused, setIsInputFocused] = useState(false);
+    const [, setIsInputFocused] = useState(false);
     const [wasBtnClicked, setWasBtnClicked] = useState(false);
     const router = useRouter();
     /**
@@ -77,8 +72,8 @@ const AboutUserModal = () => {
     const modalBodyRef = useRef();
 
     const handleFocusRelatedEvent = (isInputFocused) => () => {
-        setIsInputFocused(isInputFocused)
-    }
+        setIsInputFocused(isInputFocused);
+    };
 
     const handleOnHide = () => {
         const userAccountStringified = localStorage.getItem('userAccount');

@@ -96,7 +96,7 @@ const CountrySection = ({ countryNames, _errors, setIsInputFocused }) => {
                     onChange={handleInputOnChange}
                     onFocus={handleOnInputFocus}
                     onBlur={() => {
-                        setIsInputFocused(false)
+                        setIsInputFocused(false);
                     }}
                 />
                 <span style={{ height: '25px', fontSize: '16px' }} className='text-danger'>{errors?.get('country') ?? ''}</span>

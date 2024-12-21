@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import Button from "../../General/Button";
 import { UserContext } from "../../../providers/UserProvider";
 import axios from "axios";
@@ -185,7 +185,7 @@ export const sendAboutUserFormToServer = async (
     } finally {
         setWasBtnClicked(false);
     }
-}
+};
 
 const SubmitAboutUserFormBtn = ({ setErrors, countryNames, _wasBtnClicked }) => {
     const { _aboutUserForm } = useContext(UserContext);
