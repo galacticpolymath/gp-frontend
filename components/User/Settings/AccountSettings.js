@@ -75,7 +75,7 @@ const AccountSettings = () => {
 
         if (
             getIsParsable(userAccountParsable) &&
-            typeof JSON.parse(userAccountParsable) === "object"
+            (typeof JSON.parse(userAccountParsable) === "object")
         ) {
             const userAccount = JSON.parse(userAccountParsable);
 
@@ -87,7 +87,10 @@ const AccountSettings = () => {
         }
 
         const url = router.asPath;
-        router.replace(url.split("?")[0]);
+
+        if (url.includes("?")) {
+            router.replace(url.split("?")[0]);
+        }
     };
     const handleDeleteAccountBtnClick = async () => {
         const willDeleteAccount = confirm(
