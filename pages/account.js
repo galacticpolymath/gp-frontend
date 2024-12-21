@@ -92,13 +92,17 @@ const AccountPg = () => {
     const { _isAboutMeFormModalDisplayed, _notifyModal, _isAccountSettingModalOn } = useContext(ModalContext);
     const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;
-    const [, setAboutUserForm] = _aboutUserForm;
+    /** 
+     * @type {[import('../providers/UserProvider').TUserAccount, import('react').Dispatch<import('react').SetStateAction<import('../providers/UserProvider').TUserAccount>>]} */
+    const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const [, setNotifyModal] = _notifyModal;
     const session = useSession();
     const { status, data } = session;
     const { user, token } = data ?? {};
     const { email, name, image } = user ?? {};
     const occupation = typeof localStorage === 'undefined' ? null : JSON.parse(localStorage.getItem('userAccount') ?? '{}').occupation;
+    const firstName = aboutUserForm?.name?.first ? aboutUserForm.name.first : (name?.first ?? "");
+    const lastName = aboutUserForm?.name?.last ? aboutUserForm.name.last : (name?.last ?? "");
 
     useEffect(() => {
         if (status === 'authenticated') {
@@ -120,7 +124,7 @@ const AccountPg = () => {
                     }
 
                     /** @type {import('../providers/UserProvider').TUserAccount} */
-                    let userAccount = response.data;
+                    const userAccount = response.data;
                     /** @type {import('../providers/UserProvider').TAboutUserForm} */
                     const userAccountForClient = { ...userAccountDefault };
                     const {
@@ -132,7 +136,10 @@ const AccountPg = () => {
                         country,
                         occupation,
                         isTeacher,
+                        name,
                     } = userAccount;
+
+                    console.log('name: ', name);
 
                     if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
                         const reasonsForSiteVisitMap = new Map(Object.entries(userAccount.reasonsForSiteVisit));
@@ -186,13 +193,6 @@ const AccountPg = () => {
 
                     if (occupation) {
                         userAccountForClient.occupation = occupation;
-                    }
-
-                    if (name.first && name.last) {
-                        userAccountForClient.name = {
-                            first: name.first,
-                            last: name.last,
-                        }
                     }
 
                     userAccountForClient.isTeacher = isTeacher ?? false;
@@ -370,7 +370,7 @@ const AccountPg = () => {
                             <FaUserAlt fontSize={35} color='#2C83C3' />}
                     </section>
                     <section className='col-12 d-flex justify-content-center align-items-center mt-3 flex-column'>
-                        <h5 className='mb-0'>{name?.first} {name?.last}</h5>
+                        <h5 className='mb-0'>{firstName} {lastName}</h5>
                         <span>{email}</span>
                     </section>
                     <section className='col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2'>

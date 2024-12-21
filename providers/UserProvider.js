@@ -30,7 +30,6 @@ import { createContext, useState } from "react";
  * @property {TGradesOrYears} gradesOrYears
  * @property {string} country
  * @property {string} occupation
- * @property {{ first: string, last: string }} name
  * @property {boolean} isTeacher
  * @property {number | null} zipCode
  * @property {{ num: number, isNotTeaching: boolean }} classroomSize
@@ -43,6 +42,7 @@ import { createContext, useState } from "react";
  * @property {TGradesOrYears} gradesOrYears
  * @property {string} country
  * @property {string} occupation
+ * @property {{ first: string, last: string }} name
  * @property {boolean} isTeacher
  * @property {number | null} zipCode
  * @property {{ num: number, isNotTeaching: boolean }} classroomSize

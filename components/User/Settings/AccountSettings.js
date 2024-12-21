@@ -68,6 +68,7 @@ const AccountSettings = () => {
             [event.target.name]: event.target.value,
         }));
     };
+
     const handleOnShow = () => {
         setIsAccountSettingModalDisplayed(true);
 
@@ -78,8 +79,8 @@ const AccountSettings = () => {
             (typeof JSON.parse(userAccountParsable) === "object")
         ) {
             const userAccount = JSON.parse(userAccountParsable);
-            const firstName = userAccount?.name?.first ? userAccount?.name?.first : (name?.first ?? "");
-            const lastName = userAccount?.name?.last ? userAccount?.name?.last : (name?.last ?? "");
+            const firstName = userAccount?.name?.first ?? (name?.first ?? "");
+            const lastName = userAccount?.name?.last ?? (name?.last ?? "");
 
             setAccountForm({
                 firstName,
