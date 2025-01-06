@@ -91,21 +91,14 @@ export const sendEmailWithRetries = async (mailOpts, retries = 1) => {
     }
 };
 
-/**
- * Adds a user to our email list via the brevo api.
- * @param {string} email The user's email.
- * @param {string} clientUrl The url of the client side of the app. This is used to construct the unsubscribe link.
- * @return {Promise<{ wasSuccessful: boolean }>} A promise that resolves to an object with a boolean indicating whether the operation was successful.
- */
-export const addUserToEmailList = async (email, clientUrl) => {
+
+export const addUserToEmailList = async (email, clientUrl, mailingListConfirmationId) => {
     try {
-        // add the user to our maliing list via the brevo api 
-        const mailingListConfirmationEmailId = nanoid();
-        const redirectionUrl = `${clientUrl}?confirmation-id=${mailingListConfirmationEmailId}`;
+        const redirectionUrl = `${clientUrl}?confirmation-id=${mailingListConfirmationId}`;
         console.log('redirectionUrl: ', redirectionUrl);
         const reqBody = {
             email,
-            includeListIds: [8],
+            includeListIds: [7],
             templateId: 5,
             redirectionUrl,
         };

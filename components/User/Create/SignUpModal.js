@@ -280,7 +280,7 @@ const SignUpModal = () => {
                                         }}
                                         className='pointer'
                                     >
-                                        📧Send me updates about new/free resources (You{"'"}ll get an email to confirm subscription).
+                                        Send me updates about new/free resources (You{"'"}ll get an email to confirm subscription).
                                     </label>
                                 </div>
                             </div>
