@@ -170,7 +170,7 @@ export const authOptions = {
             lastName,
             formType,
             isOnMailingList,
-            isOnMailingListConfirmationUrl,
+            clientUrl,
           } = credentials;
           /** @type { import('../models/user').TUserSchema } */
           const dbUser = await getUserByEmail(email);
@@ -240,7 +240,7 @@ export const authOptions = {
 
           let emailingListingConfrimationEmailMsg = null;
           if (isOnMailingList) {
-            const { errMsg } = await addUserToEmailList(email, isOnMailingListConfirmationUrl || "");
+            const { errMsg } = await addUserToEmailList(email, clientUrl || "");
             emailingListingConfrimationEmailMsg = errMsg;
           }
 

@@ -91,6 +91,17 @@ export const sendEmailWithRetries = async (mailOpts, retries = 1) => {
     }
 };
 
+class BrevoOptions {
+    constructor(method = 'GET') {
+        this.method = method;
+        this.headers = {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            'api-key': process.env.BREVO_API_KEY,
+        }
+    }
+}
+
 
 export const addUserToEmailList = async (email, clientUrl, mailingListConfirmationId) => {
     try {
@@ -183,4 +194,29 @@ export const deleteUserFromMailingList = async (email) => {
         return { wasSuccessful: false };
     }
 };
+
+/**
+ * Finds the contact with the given email on the Brevo mailing list.
+ * @param {string} email The email of the contact on the mailing list.
+ * @return {Promise<Object | null>} A promise that resolves to the `Contact` object if the contact is found, otherwise `null`.
+ */
+export const getMailingListContact = async (email) => {
+    try {
+        if (!email) {
+            throw new Error("The email was not provided.")
+        };
+
+        const options = new BrevoOptions();
+        const response = await fetch(`https://api.brevo.com/v3/contacts/${email}?identifierType=email_id`, options);
+        const body = await response.json();
+
+        console.log("body: ", body);
+
+        return body;
+    } catch (error) {
+        console.error("Unable to find the target user. Reason: ", error);
+
+        return null;
+    }
+}
 

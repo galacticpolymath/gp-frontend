@@ -183,7 +183,7 @@ export const useUserEntry = () => {
             if (form?.createAccount?.isOnMailingList) {
                 formToSend = {
                     ...formToSend,
-                    isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation`,
+                    clientUrl: `${window.location.origin}/mailing-list-confirmation`,
                 };
             }
 

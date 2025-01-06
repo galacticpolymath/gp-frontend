@@ -313,7 +313,7 @@ const AccountPg = () => {
                         '/api/update-user',
                         {
                             email,
-                            isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation`,
+                            clientUrl: `${window.location.origin}/mailing-list-confirmation`,
                             willUpdateMailingListStatusOnly: true,
                             willSendEmailListingSubConfirmationEmail: true,
                         },

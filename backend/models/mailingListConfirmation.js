@@ -1,10 +1,10 @@
 import Mongoose from 'mongoose';
 
 const { Schema, models, model } = Mongoose;
-let MailingListConfirmationModel = models.mailingListConfirmation;
+let MailingListConfirmation = models.mailingListConfirmation;
 
-if (!MailingListConfirmationModel) {
-    MailingListConfirmationModel = new Schema({
+if (!MailingListConfirmation) {
+    MailingListConfirmation = new Schema({
         _id: String,
         email: String,
         expireAt: {
@@ -12,8 +12,9 @@ if (!MailingListConfirmationModel) {
             default: Date.now(),
         },
     }, { _id: false });
-    MailingListConfirmationModel.index({ expireAt: 1 }, { expireAfterSeconds: 60 * 60 * 60 * 24 });
-    JwtModel = model('jwt', JwtModel);
+    MailingListConfirmation.index({ expireAt: 1 }, { expireAfterSeconds: 60 * 60 * 60 * 24 });
+
+    MailingListConfirmation = model('mailingListConfirmations', MailingListConfirmation);
 };
 
-export default MailingListConfirmationModel;
+export default MailingListConfirmation;

@@ -165,7 +165,7 @@ const AccountSettings = () => {
         };
         let additionalReqBodyProps = accountForm.isOnMailingList
             ? {
-                isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation`,
+                clientUrl: `${window.location.origin}/mailing-list-confirmation`,
             }
             : {};
         additionalReqBodyProps = {

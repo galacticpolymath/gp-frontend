@@ -1,11 +1,13 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 /* eslint-disable quotes */
+import { nanoid } from "nanoid";
 import { cache } from "../../backend/authOpts/authOptions";
 import { addUserToEmailList, deleteUserFromMailingList } from "../../backend/services/emailServices";
 import { updateUser } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
+import MailingListConfirmationModel from "../../backend/models/mailingListConfirmation";
 
 export default async function handler(request, response) {
     try {
@@ -34,7 +36,7 @@ export default async function handler(request, response) {
             email,
             id,
             updatedUser,
-            isOnMailingListConfirmationUrl,
+            clientUrl,
             willUpdateMailingListStatusOnly,
             willSendEmailListingSubConfirmationEmail,
         } = request.body;
@@ -45,9 +47,20 @@ export default async function handler(request, response) {
             throw new CustomError("Failed to connect to the database.", 500);
         }
 
-        if ((willSendEmailListingSubConfirmationEmail === true) && isOnMailingListConfirmationUrl) {
-            console.log('will add user to mailing list.');
-            const { wasSuccessful } = await addUserToEmailList(email, isOnMailingListConfirmationUrl);
+        if ((willSendEmailListingSubConfirmationEmail === true) && typeof clientUrl === 'string') {
+            const mailingListConfirmationId = nanoid();
+            const { wasSuccessful } = await addUserToEmailList(email, clientUrl, mailingListConfirmationId);
+
+            if (wasSuccessful) {
+                const mailingListConfirmationDoc = new MailingListConfirmationModel({ _id: mailingListConfirmationId, email });
+                const saveResult = await mailingListConfirmationDoc.save();
+
+                console.log("saveResult: ", saveResult);
+
+                if (!saveResult) {
+                    console.error("Failed to save the document into the database.");
+                }
+            }
 
             console.log('was user successfully add to the mailing list: ', wasSuccessful);
         } else if (willSendEmailListingSubConfirmationEmail === false) {
