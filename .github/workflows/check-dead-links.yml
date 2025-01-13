@@ -41,10 +41,7 @@ jobs:
         echo BREVO_API_KEY=${{ secrets.BREVO_API_KEY }} >> .env.local
         echo DEADLINKS_CHECK_EMAIL_PASSWORD=${{ secrets.DEADLINKS_CHECK_EMAIL_PASSWORD }} >> .env.local
     - name: Build and serve the app
-      run: npm run prod &
-
-    - name: Wait for the app to start
-      run: npx wait-on -t 300000 http://localhost:3000
+      run: npm run prod
 
     - name: Run dead links checks
       run: node --env-file=.env.local .github/checkDeadLinks.js
