@@ -10,11 +10,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20.6.0'
     
     - name: Install dependencies
       run: npm install 
@@ -49,7 +44,7 @@ jobs:
       run: npm run prod &
 
     - name: Wait for the app to start
-      run: npx wait-on http://localhost:3000
+      run: npx wait-on -t 300000 http://localhost:3000
 
     - name: Run dead links checks
       run: node --env-file=.env.local .github/checkDeadLinks.js

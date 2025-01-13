@@ -8,9 +8,12 @@ import { updateUser } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 import MailingListConfirmationModel from "../../backend/models/mailingListConfirmation";
+import { ConversationsAgentOnlinePingPostRequest } from "@getbrevo/brevo";
 
 export default async function handler(request, response) {
     try {
+        console.log('will update the target user, in progress...');
+
         if (!request.body || (request.body && (typeof request.body !== 'object'))) {
             throw new CustomError("Received either a incorrect data type for the body of the request or its value is falsey.", 400);
         }
@@ -41,28 +44,20 @@ export default async function handler(request, response) {
             willSendEmailListingSubConfirmationEmail,
         } = request.body;
 
+        console.log("the request body, yo there: ", request.body);
+
         const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
 
         if (!wasConnectionSuccessful) {
             throw new CustomError("Failed to connect to the database.", 500);
         }
 
-        if ((willSendEmailListingSubConfirmationEmail === true) && typeof clientUrl === 'string') {
-            const mailingListConfirmationId = nanoid();
-            const { wasSuccessful } = await addUserToEmailList(email, clientUrl, mailingListConfirmationId);
+        if ((willSendEmailListingSubConfirmationEmail === true) && (typeof clientUrl === 'string')) {
+            console.log("Will add the user to mailing list...");
 
-            if (wasSuccessful) {
-                const mailingListConfirmationDoc = new MailingListConfirmationModel({ _id: mailingListConfirmationId, email });
-                const saveResult = await mailingListConfirmationDoc.save();
+            const { wasSuccessful } = await addUserToEmailList(email, clientUrl);
 
-                console.log("saveResult: ", saveResult);
-
-                if (!saveResult) {
-                    console.error("Failed to save the document into the database.");
-                }
-            }
-
-            console.log('was user successfully add to the mailing list: ', wasSuccessful);
+            console.log("Was user added to mailing list: ", wasSuccessful);
         } else if (willSendEmailListingSubConfirmationEmail === false) {
             console.log('will delete the user  from the mailing list...');
             const { wasSuccessful } = await deleteUserFromMailingList(email);

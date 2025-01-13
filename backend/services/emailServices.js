@@ -5,6 +5,8 @@
 import nodemailer from 'nodemailer';
 import { updateUser } from './userServices';
 import { nanoid } from 'nanoid';
+import MailingListConfirmation from '../models/mailingListConfirmation';
+import { deleteMailingListConfirmationsByEmail } from './mailingListConfirmationServices';
 
 /**
  * @typedef {Object} TMailOpts
@@ -103,8 +105,9 @@ class BrevoOptions {
 }
 
 
-export const addUserToEmailList = async (email, clientUrl, mailingListConfirmationId) => {
+export const addUserToEmailList = async (email, clientUrl) => {
     try {
+        const mailingListConfirmationId = nanoid();
         const redirectionUrl = `${clientUrl}?confirmation-id=${mailingListConfirmationId}`;
         console.log('redirectionUrl: ', redirectionUrl);
         const reqBody = {
@@ -136,10 +139,15 @@ export const addUserToEmailList = async (email, clientUrl, mailingListConfirmati
             return { wasSuccessful: false, errMsg: `Failed to add the user to the mailing list. Response body from Brevo server: ${responseBody}` };
         }
 
-        if ((response.status === 201) || (response.status === 204)) {
-            const { wasSuccessful } = await updateUser({ email }, { mailingListConfirmationEmailId });
+        await deleteMailingListConfirmationsByEmail(email);
 
-            console.log('Did update target user in db: ', wasSuccessful);
+        const mailingListConfirmationDoc = new MailingListConfirmation({ _id: mailingListConfirmationId, email });
+        const saveResult = await mailingListConfirmationDoc.save();
+
+        console.log("saveResult, mailingListConfirmationDoc: ", saveResult);
+
+        if (!saveResult) {
+            console.error("Failed to save the document into the database.");
         }
 
         return { wasSuccessful: true };
@@ -208,9 +216,13 @@ export const getMailingListContact = async (email) => {
 
         const options = new BrevoOptions();
         const response = await fetch(`https://api.brevo.com/v3/contacts/${email}?identifierType=email_id`, options);
+
+        if (response.status !== 200) {
+            return null;
+        }
+
         const body = await response.json();
 
-        console.log("body: ", body);
 
         return body;
     } catch (error) {

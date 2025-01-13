@@ -358,7 +358,7 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames, _wasBtnClicked }) => 
     return (
         <Button
             handleOnClick={handleSubmitBtnClick}
-            classNameStr='mt-2 no-btn-styles text-white p-2 rounded'
+            classNameStr='mt-2 no-btn-styles text-white p-2 rounded '
             defaultStyleObj={{ width: '150px' }}
             backgroundColor={wasBtnClicked ? 'grey' : '#4C96CC'}
         >

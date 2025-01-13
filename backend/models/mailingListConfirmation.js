@@ -1,7 +1,7 @@
 import Mongoose from 'mongoose';
 
 const { Schema, models, model } = Mongoose;
-let MailingListConfirmation = models.mailingListConfirmation;
+let MailingListConfirmation = models.mailingListConfirmations;
 
 if (!MailingListConfirmation) {
     MailingListConfirmation = new Schema({

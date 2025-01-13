@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import { NextResponse } from "next/server";
-import { getAuthorizeReqResult, getChunks } from "./nondependencyFns";
+import { getAuthorizeReqResult, getChunks, verifyJwt } from "./nondependencyFns";
 import { PASSWORD_RESET_TOKEN_VAR_NAME } from "./globalVars";
 
 const DB_ADMIN_ROUTES = [
@@ -17,6 +17,7 @@ const USER_ACCOUNT_ROUTES = [
   "/api/get-user-account-data",
   "/api/delete-user",
   "/api/user-confirms-mailing-list-sub",
+  "/api/get-signed-in-user-brevo-status"
 ];
 
 const getUnitNum = (pathName) =>
@@ -178,6 +179,15 @@ export async function middleware(request) {
       });
     }
 
+    const token = authorizationStr.split(' ')[1].trim();
+    const payload = await verifyJwt(token);
+
+    if (payload?.payload?.accessibleRoutes?.length && !payload.payload.accessibleRoutes.includes(nextUrl.pathname)) {
+      console.error("The client does not have access to this route.");
+
+      return new NextResponse("Unauthorized.", { status: 401 })
+    }
+
     if (!nextUrl.pathname) {
       return new NextResponse("No pathName was provided.", { status: 400 });
     }
@@ -222,6 +232,9 @@ export async function middleware(request) {
       (nextUrl.pathname == "/api/get-users" &&
         method === "GET" &&
         authorizationStr) ||
+      (nextUrl.pathname == "/api/get-signed-in-user-brevo-status" &&
+        method === "GET" &&
+        authorizationStr) ||
       (nextUrl.pathname == "/api/get-user-account-data" &&
         method === "GET" &&
         authorizationStr)
@@ -236,6 +249,7 @@ export async function middleware(request) {
       let urlParamsStr =
         typeof nextUrl?.search === "string"
           ? nextUrl?.search.replace(/\?/g, "")
+
           : "";
 
       urlParamsStr =
@@ -333,5 +347,6 @@ export const config = {
     "/api/update-user",
     "/api/user-confirms-mailing-list-sub",
     "/api/get-users",
+    "/api/get-signed-in-user-brevo-status"
   ],
 };
