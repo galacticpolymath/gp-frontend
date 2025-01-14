@@ -1,6 +1,9 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-console */
+/* eslint-disable quotes */
+/* eslint-disable indent */
+
 import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
@@ -73,10 +76,10 @@ const LessonPart = ({
   let _itemList = itemList;
   const targetLessonsResources = resources?.[0]?.[partsFieldName]
     ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => {
-      if (lsn) {
-        return lsnNum.toString() === lsn.toString();
-      }
-    }) ?? {}
+        if (lsn) {
+          return lsnNum.toString() === lsn.toString();
+        }
+      }) ?? {}
     : {};
   let { tags: allTags, itemList: linkResources } = targetLessonsResources;
   _itemList = _itemList ?? linkResources;
@@ -218,8 +221,9 @@ const LessonPart = ({
   return (
     <div style={accordionStyleAccordionWrapper}>
       <Accordion
-        buttonClassName={`w-100 text-start border-0 p-0 ${isExpanded ? "" : "bg-white"
-          }`}
+        buttonClassName={`w-100 text-start border-0 p-0 ${
+          isExpanded ? "" : "bg-white"
+        }`}
         key={lsnNum}
         btnStyle={
           isExpanded
@@ -235,7 +239,7 @@ const LessonPart = ({
         button={
           <div
             onClick={
-              isAccordionExpandable ? handleAccordionBtnOnClick : () => { }
+              isAccordionExpandable ? handleAccordionBtnOnClick : () => {}
             }
             className="position-relative"
           >
@@ -269,8 +273,9 @@ const LessonPart = ({
                           style={{
                             width: 30,
                             height: 30,
-                            border: `solid 2.3px ${isExpanded ? highlightedBorderColor : "#DEE2E6"
-                              }`,
+                            border: `solid 2.3px ${
+                              isExpanded ? highlightedBorderColor : "#DEE2E6"
+                            }`,
                           }}
                         >
                           {ClickToSeeMoreComp}
@@ -344,8 +349,9 @@ const LessonPart = ({
                         style={{
                           width: 35,
                           height: 35,
-                          border: `solid 2.3px ${isExpanded ? highlightedBorderColor : "#DEE2E6"
-                            }`,
+                          border: `solid 2.3px ${
+                            isExpanded ? highlightedBorderColor : "#DEE2E6"
+                          }`,
                         }}
                       >
                         {ClickToSeeMoreComp}
@@ -541,12 +547,13 @@ const LessonPart = ({
                                               href={url}
                                               target="_blank"
                                               rel="noopener noreferrer"
-                                              className={`${isTeacherItem
-                                                ? user?.isTeacher
-                                                  ? ""
-                                                  : "link-disabled"
-                                                : ""
-                                                }`}
+                                              className={`${
+                                                isTeacherItem
+                                                  ? user?.isTeacher
+                                                    ? ""
+                                                    : "link-disabled"
+                                                  : ""
+                                              }`}
                                             >
                                               {linkIndex === 0 ? (
                                                 <i
@@ -568,12 +575,13 @@ const LessonPart = ({
                                               href={url}
                                               target="_blank"
                                               rel="noopener noreferrer"
-                                              className={`${isTeacherItem
-                                                ? user?.isTeacher
-                                                  ? ""
-                                                  : "link-disabled"
-                                                : ""
-                                                }`}
+                                              className={`${
+                                                isTeacherItem
+                                                  ? user?.isTeacher
+                                                    ? ""
+                                                    : "link-disabled"
+                                                  : ""
+                                              }`}
                                             >
                                               {linkText}
                                             </a>
@@ -596,12 +604,13 @@ const LessonPart = ({
                                         : imgLink
                                     }
                                     target="_blank"
-                                    className={`${isTeacherItem
-                                      ? user?.isTeacher
-                                        ? ""
-                                        : "link-disabled"
-                                      : imgLink
-                                      }`}
+                                    className={`${
+                                      isTeacherItem
+                                        ? user?.isTeacher
+                                          ? ""
+                                          : "link-disabled"
+                                        : imgLink
+                                    }`}
                                   >
                                     <img
                                       src={filePreviewImg}

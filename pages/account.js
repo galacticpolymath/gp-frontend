@@ -126,8 +126,7 @@ const AccountPg = () => {
      * @type {[import('../providers/UserProvider').TUserAccount, import('react').Dispatch<import('react').SetStateAction<import('../providers/UserProvider').TUserAccount>>]} */
     const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const [, setNotifyModal] = _notifyModal;
-    const session = useSession();
-    const { status, data } = session;
+    const { status, data } = useSession();
     const { user, token } = data ?? {};
     const { email, image, name } = user ?? {};
     const occupation = typeof localStorage === 'undefined' ? null : JSON.parse(localStorage.getItem('userAccount') ?? '{}').occupation;

@@ -190,13 +190,13 @@ export const sendAboutUserFormToServer = async (
 const SubmitAboutUserFormBtn = ({ setErrors, countryNames, _wasBtnClicked }) => {
     const { _aboutUserForm } = useContext(UserContext);
     const { _notifyModal, _isAboutMeFormModalDisplayed } = useContext(ModalContext);
-    const session = useSession();
+    const { data, update } = useSession();
     /** @type { [import("../../../providers/UserProvider").TAboutUserForm] } */
     const [aboutUserForm] = _aboutUserForm;
     const [wasBtnClicked, setWasBtnClicked] = _wasBtnClicked;
     const [, setIsAboutUserModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [, setNotifyModal] = _notifyModal;
-    const { user, token } = session.data ?? {};
+    const { user, token } = data ?? {};
 
     const handleSubmitBtnClick = async event => {
         event.preventDefault();
@@ -343,6 +343,7 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames, _wasBtnClicked }) => 
                     bodyTxt: '',
                     headerTxt: 'Form Saved! Thank you!',
                 });
+                update();
             }, 300);
         } catch (error) {
             console.error('error: ', error);
