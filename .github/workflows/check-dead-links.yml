@@ -20,9 +20,6 @@ jobs:
     - name: Install exceljs
       run: npm install exceljs 
 
-    - name: Install waiton
-      run: npm install wait-on 
-
     - name: Create the .env.local file
       run: |
         touch .env.local
