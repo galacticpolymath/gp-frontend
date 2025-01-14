@@ -10,6 +10,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.6.0'
     
     - name: Install dependencies
       run: npm install 
@@ -19,6 +24,9 @@ jobs:
 
     - name: Install exceljs
       run: npm install exceljs 
+
+    - name: Install waiton
+      run: npm install wait-on 
 
     - name: Create the .env.local file
       run: |
@@ -38,7 +46,10 @@ jobs:
         echo BREVO_API_KEY=${{ secrets.BREVO_API_KEY }} >> .env.local
         echo DEADLINKS_CHECK_EMAIL_PASSWORD=${{ secrets.DEADLINKS_CHECK_EMAIL_PASSWORD }} >> .env.local
     - name: Build and serve the app
-      run: npm run prod
+      run: npm run prod &
+
+    - name: Wait for the app to start
+      run: npx wait-on -t 240000 http://localhost:3000
 
     - name: Run dead links checks
       run: node --env-file=.env.local .github/checkDeadLinks.js
