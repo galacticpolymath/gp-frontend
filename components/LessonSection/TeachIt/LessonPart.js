@@ -73,10 +73,10 @@ const LessonPart = ({
   let _itemList = itemList;
   const targetLessonsResources = resources?.[0]?.[partsFieldName]
     ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => {
-        if (lsn) {
-          return lsnNum.toString() === lsn.toString();
-        }
-      }) ?? {}
+      if (lsn) {
+        return lsnNum.toString() === lsn.toString();
+      }
+    }) ?? {}
     : {};
   let { tags: allTags, itemList: linkResources } = targetLessonsResources;
   _itemList = _itemList ?? linkResources;
@@ -218,9 +218,8 @@ const LessonPart = ({
   return (
     <div style={accordionStyleAccordionWrapper}>
       <Accordion
-        buttonClassName={`w-100 text-start border-0 p-0 ${
-          isExpanded ? "" : "bg-white"
-        }`}
+        buttonClassName={`w-100 text-start border-0 p-0 ${isExpanded ? "" : "bg-white"
+          }`}
         key={lsnNum}
         btnStyle={
           isExpanded
@@ -236,7 +235,7 @@ const LessonPart = ({
         button={
           <div
             onClick={
-              isAccordionExpandable ? handleAccordionBtnOnClick : () => {}
+              isAccordionExpandable ? handleAccordionBtnOnClick : () => { }
             }
             className="position-relative"
           >
@@ -250,6 +249,7 @@ const LessonPart = ({
               className="position-absolute"
               id={`lesson_${_accordionId}`}
             />
+            {/* keep the spacing  for the image, when moving the image out of its container */}
             <div className="position-relative px-3 pt-3 pb-2 w-100 d-flex">
               <div className="d-flex flex-column w-100">
                 <div className="d-flex justify-content-between w-100 position-relative">
@@ -269,9 +269,8 @@ const LessonPart = ({
                           style={{
                             width: 30,
                             height: 30,
-                            border: `solid 2.3px ${
-                              isExpanded ? highlightedBorderColor : "#DEE2E6"
-                            }`,
+                            border: `solid 2.3px ${isExpanded ? highlightedBorderColor : "#DEE2E6"
+                              }`,
                           }}
                         >
                           {ClickToSeeMoreComp}
@@ -345,9 +344,8 @@ const LessonPart = ({
                         style={{
                           width: 35,
                           height: 35,
-                          border: `solid 2.3px ${
-                            isExpanded ? highlightedBorderColor : "#DEE2E6"
-                          }`,
+                          border: `solid 2.3px ${isExpanded ? highlightedBorderColor : "#DEE2E6"
+                            }`,
                         }}
                       >
                         {ClickToSeeMoreComp}
@@ -504,6 +502,9 @@ const LessonPart = ({
                               </div>
                             </SignInSuggestion>
                           )}
+                          <strong>
+                            <RichText content={itemTitle} />
+                          </strong>
                           <section
                             style={{
                               filter:
@@ -514,9 +515,6 @@ const LessonPart = ({
                             className="d-flex justify-content-between position-relative bg-white flex-sm-row flex-column"
                           >
                             <section>
-                              <strong>
-                                <RichText content={itemTitle} />
-                              </strong>
                               <div
                                 className="fst-italic mb-1"
                                 style={{ color: "#353637" }}
@@ -543,13 +541,12 @@ const LessonPart = ({
                                               href={url}
                                               target="_blank"
                                               rel="noopener noreferrer"
-                                              className={`${
-                                                isTeacherItem
-                                                  ? user?.isTeacher
-                                                    ? ""
-                                                    : "link-disabled"
-                                                  : ""
-                                              }`}
+                                              className={`${isTeacherItem
+                                                ? user?.isTeacher
+                                                  ? ""
+                                                  : "link-disabled"
+                                                : ""
+                                                }`}
                                             >
                                               {linkIndex === 0 ? (
                                                 <i
@@ -571,13 +568,12 @@ const LessonPart = ({
                                               href={url}
                                               target="_blank"
                                               rel="noopener noreferrer"
-                                              className={`${
-                                                isTeacherItem
-                                                  ? user?.isTeacher
-                                                    ? ""
-                                                    : "link-disabled"
-                                                  : ""
-                                              }`}
+                                              className={`${isTeacherItem
+                                                ? user?.isTeacher
+                                                  ? ""
+                                                  : "link-disabled"
+                                                : ""
+                                                }`}
                                             >
                                               {linkText}
                                             </a>
@@ -600,13 +596,12 @@ const LessonPart = ({
                                         : imgLink
                                     }
                                     target="_blank"
-                                    className={`${
-                                      isTeacherItem
-                                        ? user?.isTeacher
-                                          ? ""
-                                          : "link-disabled"
-                                        : imgLink
-                                    }`}
+                                    className={`${isTeacherItem
+                                      ? user?.isTeacher
+                                        ? ""
+                                        : "link-disabled"
+                                      : imgLink
+                                      }`}
                                   >
                                     <img
                                       src={filePreviewImg}
