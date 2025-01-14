@@ -10,6 +10,7 @@ import Button from "../../General/Button";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { UserContext } from "../../../providers/UserProvider";
+import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 
 const LoginContainerForNavbar = ({ _modalAnimation }) => {
     const router = useRouter();
@@ -22,13 +23,14 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
     const { image, name } = data?.user ?? {};
     const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
     const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
+    const { clearCookies } = useCustomCookies();
     const firstName = aboutUserForm?.name?.first || (name?.first ?? '');
     const lastName = aboutUserForm?.name?.last || (name?.last ?? '');
 
     const handleSignOutBtnClick = () => {
         localStorage.clear();
         setIsLoadingSpinnerOn(true);
-        localStorage.clear();
+        clearCookies();
         signOut();
     };
 

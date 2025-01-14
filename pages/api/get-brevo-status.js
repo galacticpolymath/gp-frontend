@@ -1,4 +1,5 @@
 /* eslint-disable quotes */
+/* eslint-disable no-console */
 
 /**
  * Handles incoming API requests to retrieve the Brevo status.
@@ -38,10 +39,16 @@ export default async function handler(request, response) {
     );
     const deleteMailingListConfirmationByEmailPromise =
       deleteMailingListConfirmationsByEmail(mailingListConfirmationIdDoc.email);
-    const [mailingListContact] = await Promise.all([
-      mailingListContactPromise,
-      deleteMailingListConfirmationByEmailPromise,
-    ]);
+    const [mailingListContact, deleteMailingListConfirmationByEmailResult] =
+      await Promise.all([
+        mailingListContactPromise,
+        deleteMailingListConfirmationByEmailPromise,
+      ]);
+
+    console.log(
+      "deleteMailingListConfirmationByEmailResult, yo there: ",
+      deleteMailingListConfirmationByEmailResult
+    );
 
     if (!mailingListContact) {
       throw new Error("The target user was not found on the mailing list.");
@@ -50,6 +57,8 @@ export default async function handler(request, response) {
     return response.status(200).json({ isOnMailingList: true });
   } catch (error) {
     const errMsg = `An error has occurred. Failed to retrieve the brevo status of the non-signed in user. Reason: ${error}`;
+
+    console.error(errMsg);
 
     return response
       .status(500)

@@ -1,13 +1,13 @@
 /* eslint-disable quotes */
+/* eslint-disable no-console */
 
 import { getMailingListContact } from "../../backend/services/emailServices";
+import { deleteMailingListConfirmationsByEmail } from "../../backend/services/mailingListConfirmationServices";
 import { CustomError } from "../../backend/utils/errors";
 import { verifyJwt } from "../../nondependencyFns";
 
 export default async function handler(request, response) {
   try {
-    console.log("what is up there, request: ", request);
-
     if (request.method !== "GET") {
       throw new CustomError(
         "Incorrect request method. Must be a 'GET'.",
@@ -35,9 +35,21 @@ export default async function handler(request, response) {
       );
     }
 
-    const emailListContact = await getMailingListContact(payload.email);
+    const mailingListContactPromise = getMailingListContact(payload.email);
+    const deleteMailingListConfirmationByEmailPromise =
+      deleteMailingListConfirmationsByEmail(payload.email);
+    const [mailingListContact, deleteMailingListConfirmationByEmailResult] =
+      await Promise.all([
+        mailingListContactPromise,
+        deleteMailingListConfirmationByEmailPromise,
+      ]);
 
-    return response.status(200).json({ isOnMailingList: !!emailListContact });
+    console.log(
+      "deletion result: ",
+      deleteMailingListConfirmationByEmailResult
+    );
+
+    return response.status(200).json({ isOnMailingList: !!mailingListContact });
   } catch (error) {
     const { errType, msg } = error ?? {};
     console.error(
