@@ -426,7 +426,7 @@ const AboutUserModal = () => {
                                                 value={
                                                     aboutUserForm.classroomSize.isNotTeaching
                                                         ? "N/A"
-                                                        : aboutUserForm?.classroomSize?.num ?? "0"
+                                                        : aboutUserForm?.classroomSize?.num == 0 ? "" : aboutUserForm?.classroomSize?.num
                                                 }
                                                 disabled={aboutUserForm.classroomSize.isNotTeaching}
                                                 onChange={handleOnClassRoomSizeInputChange}

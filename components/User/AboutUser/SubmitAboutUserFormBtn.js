@@ -10,7 +10,7 @@ import { UserContext } from "../../../providers/UserProvider";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { CustomError } from "../../../backend/utils/errors";
-import { convertMapToObj, sleep } from "../../../globalFns";
+import { convertMapToObj, getIsParsableToVal, sleep } from "../../../globalFns";
 import { ModalContext } from "../../../providers/ModalProvider";
 import { Spinner } from "react-bootstrap";
 
@@ -333,7 +333,12 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames, _wasBtnClicked }) => 
             if (response.status !== 200) {
                 throw new CustomError('Failed to save form. Refresh the page, and try again.', null, "aboutUserFormReqFailure");
             }
-
+            const userAccountParsable = localStorage.getItem('userAccount');
+            const userAccount = getIsParsableToVal(userAccountParsable, "object") ? JSON.parse(userAccountParsable) : {};
+            aboutUserFormClone = {
+                ...userAccount,
+                ...aboutUserFormClone,
+            };
             localStorage.setItem('userAccount', JSON.stringify(aboutUserFormClone));
             setIsAboutUserModalDisplayed(false);
             setErrors(new Map());

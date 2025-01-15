@@ -245,12 +245,20 @@ export const getIsParsable = val => {
     }
 }
 
-export const getIsParsableToVal = (val, valType) => {
+export const getIsParsableToVal = (val, valType, isArr) => {
     try {
         const parsedVal = JSON.parse(val);
 
         if (typeof parsedVal !== valType) {
             throw Error('Incorrect parsed value type.')
+        }
+
+        if (isArr) {
+            return Array.isArray(parsedVal);
+        }
+
+        if (valType === 'object') {
+            return getIsValObj(parsedVal);
         }
 
         return true;
