@@ -15,13 +15,26 @@ import { connectToMongodb } from "../../backend/utils/connection";
  */
 export default async function handler(request, response) {
     try {
-        const result = await connectToMongodb();
+        const result = await connectToMongodb(
+            15_000,
+            0,
+            true,
+            true
+        );
 
         if (!result.wasSuccessful) {
             throw new Error("Failed to connect to the database.");
         }
 
         const users = await getUsers();
+
+        // Goal: get the email status for each user
+
+        // go through all of the users
+        // using the email, get their email contact from the brevo api
+        // if the user is attained, then get thei
+
+        
 
         return response.status(200).json({ users });
     } catch (error) {

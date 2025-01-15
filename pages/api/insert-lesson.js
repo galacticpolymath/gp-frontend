@@ -12,7 +12,12 @@ export default async function handler(request, response) {
       return response.status(400).json({ msg: 'The `request.body.lesson` is empty or the wrong data type.' });
     }
 
-    const { wasSuccessful } = await connectToMongodb();
+    const { wasSuccessful } = await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     if (!wasSuccessful) {
       throw new CustomError('Failed to connect to the database.', 500);

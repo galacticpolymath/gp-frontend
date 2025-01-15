@@ -42,11 +42,14 @@ export default async function handler(request, response) {
         ...projections,
         _id: 0,
       };
-
-      console.log("projections, yo there: ", projections);
     }
 
-    const { wasSuccessful } = await connectToMongodb();
+    const { wasSuccessful } = await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     if (!wasSuccessful) {
       throw new CustomError("Failed to connect to the database.", 500);

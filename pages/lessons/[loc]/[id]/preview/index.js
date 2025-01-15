@@ -293,7 +293,12 @@ const LessonPreview = ({ lesson }) => {
 
 export const getStaticPaths = async () => {
   try {
-    await connectToMongodb();
+    await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     const lessons = await Lessons.find({}, { numID: 1, locale: 1, _id: 0 }).lean()
 
@@ -323,7 +328,12 @@ async function getLinkPreviewObj(url) {
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
-    await connectToMongodb();
+    await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     // add projections, get the target fields for the UI. 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();

@@ -20,7 +20,13 @@ export default async function handler(request, response) {
 
         const { email, clientOrigin } = request.body;
 
-        await connectToMongodb();
+        await connectToMongodb(
+            15_000,
+            0,
+            true,
+            true
+        );
+
 
         const user = await getUserByEmail(email);
 

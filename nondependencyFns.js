@@ -4,6 +4,8 @@ import { jwtVerify } from 'jose';
 import { NextResponse } from 'next/server';
 import { AuthMiddlewareError } from './backend/utils/errors';
 
+
+
 export const getChunks = (arr, chunkSize) => {
     const chunks = [];
     let chunkWindow = [];
@@ -117,3 +119,27 @@ export const getAuthorizeReqResult = async (
         return { isAuthorize: false, errResponse, msg };
     }
 };
+
+
+/**
+ * Given a authorization string, this function will return the payload of the jwt,
+ * assuming the jwt is valid. If the authorization string is invalid or the jwt is
+ * invalid, this function will return null.
+ * @param {string} authorization The authorization string.
+ * @returns {Promise<import('jose').JWTVerifyResult | null>}
+ */
+export const getJwtPayloadPromise = (authorization = '') => {
+    if (!authorization) {
+        console.error("'authorization' string cannot be empty.")
+        return null;
+    }
+
+    const authSplit = authorization.split(' ');
+
+    if (authSplit.length !== 2) {
+        console.error('The authorization string is in a invalid format.', 422);
+        return null;
+    }
+
+    return verifyJwt(authSplit[1]);
+}

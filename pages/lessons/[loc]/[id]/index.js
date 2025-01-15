@@ -495,7 +495,12 @@ const LessonDetails = ({ lesson }) => {
 
 export const getStaticPaths = async () => {
   try {
-    await connectToMongodb();
+    await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     const lessons = await Lessons.find(
       {},
@@ -594,7 +599,12 @@ export const getStaticProps = async (arg) => {
       params: { id, loc },
     } = arg;
 
-    await connectToMongodb();
+    await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     let lessonToDisplayOntoUi = targetLessons.find(

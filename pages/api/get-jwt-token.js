@@ -15,7 +15,12 @@ export default async function handler(request, response) {
       throw new CustomError('You are not authorized to access this service.', 403);
     }
 
-    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     if (!wasConnectionSuccessful) {
       throw new CustomError('Failed to connect to the database.', 500);
