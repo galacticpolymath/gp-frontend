@@ -416,7 +416,6 @@ const AboutUserModal = () => {
                                                 *How many students do you teach?
                                             </label>
                                             <input
-                                                placeholder="Total students"
                                                 type={
                                                     aboutUserForm.classroomSize.isNotTeaching
                                                         ? "text"
