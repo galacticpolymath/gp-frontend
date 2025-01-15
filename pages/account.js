@@ -19,10 +19,16 @@ import { Spinner } from 'react-bootstrap';
 import { getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
 import { FaUserAlt } from 'react-icons/fa';
 
-export const getUserAccountData = async (token, email) => {
+export const getUserAccountData = async (token, email, customProjections = []) => {
     try {
+        let custom_projections = ''
+
+        if (customProjections.every(val => typeof val === 'string')) {
+            custom_projections = customProjections.join(', ')
+        }
+
         const paramsAndHeaders = {
-            params: { email, customProjections: "name, " },
+            params: { email: email, custom_projections },
             headers: {
                 Authorization: `Bearer ${token}`,
             },

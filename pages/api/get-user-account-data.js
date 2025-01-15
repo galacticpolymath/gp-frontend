@@ -29,15 +29,18 @@ export default async function handler(request, response) {
       occupation: 1,
       isTeacher: 1,
       name: 1,
+      _id: 0
     };
 
-    if (request.query?.customProjections?.length) {
+    if (request.query?.custom_projections?.length) {
       const customProjections = request.query?.customProjections.split(", ");
       projections = Object.fromEntries(
         customProjections
           .filter((projection) => projection)
           .map((projection) => [projection, 1])
       );
+
+      console.log("projections, yo there: ", projections);
     }
 
     const { wasSuccessful } = await connectToMongodb();
