@@ -52,7 +52,12 @@ export default async function handler(request, response) {
             throw new CustomError("The 'aboutUser' form is empty or has falsey values");
         }
 
-        const { wasSuccessful: isDbConnected } = await connectToMongodb();
+        const { wasSuccessful: isDbConnected } = await connectToMongodb(
+            15_000,
+            0,
+            true,
+            true,
+        );
 
         if (!isDbConnected) {
             throw new CustomError('Failed to connect to the database.', 500);

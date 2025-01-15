@@ -17,16 +17,15 @@ export const createConnectionUri = () => {
   return connectionUri;
 };
 
-export const connectToMongodb = async (serverSelectionTimeoutMS = 15_000, tries = 1, isRetryable = false) => {
+export const connectToMongodb = async (serverSelectionTimeoutMS = 15_000, tries = 0, isRetryable = false, willForceConnection = false) => {
   try {
     console.log('will connect to MongoDB...');
-    if (isConnectedToDb) {
+    if (isConnectedToDb && !willForceConnection) {
       console.log('Already connected to DB.');
       return { wasSuccessful: true };
     }
 
     const connectionState = await mongoose.connect(createConnectionUri(), { retryWrites: true, serverSelectionTimeoutMS: serverSelectionTimeoutMS });
-
     isConnectedToDb = connectionState.connections[0].readyState === 1;
 
     if (!isConnectedToDb && (tries <= 3) && isRetryable) {

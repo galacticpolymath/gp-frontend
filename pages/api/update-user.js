@@ -12,8 +12,6 @@ import { CustomError } from "../../backend/utils/errors";
 
 export default async function handler(request, response) {
   try {
-    console.log("will update the target user, in progress...");
-
     if (!request.body || (request.body && typeof request.body !== "object")) {
       throw new CustomError(
         "Received either a incorrect data type for the body of the request or its value is falsey.",
@@ -40,6 +38,8 @@ export default async function handler(request, response) {
       );
     }
 
+    // use the email in the jwt token
+
     if (
       ("email" in request.body && typeof request.body.email !== "string") ||
       ("id" in request.body && typeof request.body.id !== "string") ||
@@ -60,10 +60,12 @@ export default async function handler(request, response) {
       willUpdateMailingListStatusOnly,
       willSendEmailListingSubConfirmationEmail,
     } = request.body;
-
-    console.log("the request body, yo there: ", request.body);
-
-    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
+      15_000, 
+      0,
+      true,
+      true,
+    );
 
     if (!wasConnectionSuccessful) {
       throw new CustomError("Failed to connect to the database.", 500);

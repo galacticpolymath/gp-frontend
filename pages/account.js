@@ -173,8 +173,6 @@ const AccountPg = () => {
                         name,
                     } = userAccount;
 
-                    console.log('name, hey there: ', name);
-
                     if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
                         const reasonsForSiteVisitMap = new Map(Object.entries(userAccount.reasonsForSiteVisit));
                         userAccountForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;

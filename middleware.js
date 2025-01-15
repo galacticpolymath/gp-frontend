@@ -32,7 +32,6 @@ const getUnitNum = (pathName) =>
 
 export async function middleware(request) {
   try {
-    console.log("what is up with the request: ", request);
     const { nextUrl, method, headers } = request;
     /**
      * @type {{ pathname: string, search: string }}
