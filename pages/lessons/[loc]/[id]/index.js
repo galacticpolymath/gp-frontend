@@ -599,12 +599,7 @@ export const getStaticProps = async (arg) => {
       params: { id, loc },
     } = arg;
 
-    await connectToMongodb(
-      15_000,
-      0,
-      true,
-      true
-    );
+    await connectToMongodb();
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     let lessonToDisplayOntoUi = targetLessons.find(

@@ -254,12 +254,7 @@ const DATA_PER_PG = 6;
 
 export async function getStaticProps() {
   try {
-    await connectToMongodb(
-      15_000,
-      0,
-      true,
-      true
-    );
+    await connectToMongodb();
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS).sort({ ReleaseDate: -1 }).lean();
 

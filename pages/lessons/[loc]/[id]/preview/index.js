@@ -328,12 +328,7 @@ async function getLinkPreviewObj(url) {
 
 export const getStaticProps = async ({ params: { id, loc } }) => {
   try {
-    await connectToMongodb(
-      15_000,
-      0,
-      true,
-      true
-    );
+    await connectToMongodb();
 
     // add projections, get the target fields for the UI. 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();

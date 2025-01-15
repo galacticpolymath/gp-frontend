@@ -14,7 +14,12 @@ export default async function handler(request, response) {
             throw new CustomError(400, 'Both "email" and "password" is required.', 'invalidReq');
         }
 
-        const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+        const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
+            15_000,
+            0,
+            true,
+            true
+        );
 
         if (!wasConnectionSuccessful) {
             throw new CustomError('Failed to connect to the database.', 500);
