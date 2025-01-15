@@ -144,7 +144,6 @@ const AccountPg = () => {
             (async () => {
                 try {
                     const paramsAndHeaders = {
-                        params: { email: data.user.email },
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -174,7 +173,7 @@ const AccountPg = () => {
                         name,
                     } = userAccount;
 
-                    console.log('name: ', name);
+                    console.log('name, hey there: ', name);
 
                     if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
                         const reasonsForSiteVisitMap = new Map(Object.entries(userAccount.reasonsForSiteVisit));

@@ -82,12 +82,14 @@ export const UserProvider = ({ children }) => {
         lastName: "",
         isOnMailingList: true,
     });
+    const [isUserTeacher, setIsUserTeacher] = useState(false);
     const _aboutUserForm = [aboutUserForm, setAboutUserForm];
 
     return (
         <UserContext.Provider
             value={{
                 _aboutUserForm,
+                _isUserTeacher: [isUserTeacher, setIsUserTeacher],
                 _accountForm: [accountForm, setAccountForm],
             }}
         >

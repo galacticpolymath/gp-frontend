@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "react-bootstrap";
 import { ModalContext } from "../../../providers/ModalProvider";
+import { UserContext } from "../../../providers/UserProvider";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -59,11 +60,11 @@ const LessonPart = ({
   isAccordionExpandable = true,
 }) => {
   const { _isLoginModalDisplayed } = useContext(ModalContext);
+  const { _isUserTeacher } = useContext(UserContext);
+  const [isUserTeacher] = _isUserTeacher;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const router = useRouter();
-  const session = useSession();
-  const { data } = session;
-  const { user } = data ?? {};
+  const { status } = useSession();
   const [isExpanded, setIsExpanded] = useState(false);
   const [
     numsOfLessonPartsThatAreExpanded,
@@ -76,10 +77,10 @@ const LessonPart = ({
   let _itemList = itemList;
   const targetLessonsResources = resources?.[0]?.[partsFieldName]
     ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => {
-        if (lsn) {
-          return lsnNum.toString() === lsn.toString();
-        }
-      }) ?? {}
+      if (lsn) {
+        return lsnNum.toString() === lsn.toString();
+      }
+    }) ?? {}
     : {};
   let { tags: allTags, itemList: linkResources } = targetLessonsResources;
   _itemList = _itemList ?? linkResources;
@@ -221,9 +222,8 @@ const LessonPart = ({
   return (
     <div style={accordionStyleAccordionWrapper}>
       <Accordion
-        buttonClassName={`w-100 text-start border-0 p-0 ${
-          isExpanded ? "" : "bg-white"
-        }`}
+        buttonClassName={`w-100 text-start border-0 p-0 ${isExpanded ? "" : "bg-white"
+          }`}
         key={lsnNum}
         btnStyle={
           isExpanded
@@ -239,7 +239,7 @@ const LessonPart = ({
         button={
           <div
             onClick={
-              isAccordionExpandable ? handleAccordionBtnOnClick : () => {}
+              isAccordionExpandable ? handleAccordionBtnOnClick : () => { }
             }
             className="position-relative"
           >
@@ -273,9 +273,8 @@ const LessonPart = ({
                           style={{
                             width: 30,
                             height: 30,
-                            border: `solid 2.3px ${
-                              isExpanded ? highlightedBorderColor : "#DEE2E6"
-                            }`,
+                            border: `solid 2.3px ${isExpanded ? highlightedBorderColor : "#DEE2E6"
+                              }`,
                           }}
                         >
                           {ClickToSeeMoreComp}
@@ -349,9 +348,8 @@ const LessonPart = ({
                         style={{
                           width: 35,
                           height: 35,
-                          border: `solid 2.3px ${
-                            isExpanded ? highlightedBorderColor : "#DEE2E6"
-                          }`,
+                          border: `solid 2.3px ${isExpanded ? highlightedBorderColor : "#DEE2E6"
+                            }`,
                         }}
                       >
                         {ClickToSeeMoreComp}
@@ -483,7 +481,7 @@ const LessonPart = ({
                   let btnTxt = "Sign in";
                   let handleBtnClick = handleSignInBtnClick;
 
-                  if (user?.isTeacher === false) {
+                  if (!isUserTeacher && (status === "authenticated")) {
                     blurTxt = "You must be a teacher to view this item.";
                     btnTxt = "Update Profile";
                     handleBtnClick = handleUpdateProfileBtnClick;
@@ -496,7 +494,7 @@ const LessonPart = ({
                     >
                       <div className="d-flex flex-column flex-md-row">
                         <section className="col-12 col-md-8 col-lg-6 col-xl-6 position-relative">
-                          {isTeacherItem && !user?.isTeacher && (
+                          {isTeacherItem && !isUserTeacher && (
                             <SignInSuggestion txt={blurTxt}>
                               <div className="d-flex justify-content-center align-items-center">
                                 <Button
@@ -514,7 +512,7 @@ const LessonPart = ({
                           <section
                             style={{
                               filter:
-                                isTeacherItem && !user?.isTeacher
+                                isTeacherItem && !isUserTeacher
                                   ? "blur(12px)"
                                   : "none",
                             }}
@@ -547,13 +545,12 @@ const LessonPart = ({
                                               href={url}
                                               target="_blank"
                                               rel="noopener noreferrer"
-                                              className={`${
-                                                isTeacherItem
-                                                  ? user?.isTeacher
-                                                    ? ""
-                                                    : "link-disabled"
-                                                  : ""
-                                              }`}
+                                              className={`${isTeacherItem
+                                                ? isUserTeacher
+                                                  ? ""
+                                                  : "link-disabled"
+                                                : ""
+                                                }`}
                                             >
                                               {linkIndex === 0 ? (
                                                 <i
@@ -575,13 +572,12 @@ const LessonPart = ({
                                               href={url}
                                               target="_blank"
                                               rel="noopener noreferrer"
-                                              className={`${
-                                                isTeacherItem
-                                                  ? user?.isTeacher
-                                                    ? ""
-                                                    : "link-disabled"
-                                                  : ""
-                                              }`}
+                                              className={`${isTeacherItem
+                                                ? isUserTeacher
+                                                  ? ""
+                                                  : "link-disabled"
+                                                : ""
+                                                }`}
                                             >
                                               {linkText}
                                             </a>
@@ -598,19 +594,18 @@ const LessonPart = ({
                                   <a
                                     href={
                                       isTeacherItem
-                                        ? user?.isTeacher
+                                        ? isUserTeacher
                                           ? imgLink
                                           : ""
                                         : imgLink
                                     }
                                     target="_blank"
-                                    className={`${
-                                      isTeacherItem
-                                        ? user?.isTeacher
-                                          ? ""
-                                          : "link-disabled"
-                                        : imgLink
-                                    }`}
+                                    className={`${isTeacherItem
+                                      ? isUserTeacher
+                                        ? ""
+                                        : "link-disabled"
+                                      : imgLink
+                                      }`}
                                   >
                                     <img
                                       src={filePreviewImg}

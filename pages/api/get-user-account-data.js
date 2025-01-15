@@ -6,19 +6,18 @@ import { getMailingListContact } from "../../backend/services/emailServices";
 import { getUserByEmail } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
+import { verifyJwt } from "../../backend/utils/security";
 
-/**
- * @param {{ query: { email: string } }} request
- */
 export default async function handler(request, response) {
   try {
-    if (!request?.query?.email || typeof request?.query?.email !== "string") {
-      throw new CustomError(
-        "The 'email' of the email is not present in the params of the request. ",
-        400
-      );
+    const authorization = request?.headers?.['authorization'] ?? '';
+    const authSplit = authorization.split(' ');
+
+    if (authSplit.length !== 2) {
+      throw new CustomError('The authorization string is in a invalid format.', 422);
     }
 
+    const { email } = (await verifyJwt(authSplit[1])).payload;
     let projections = {
       gradesOrYears: 1,
       reasonsForSiteVisit: 1,
@@ -29,16 +28,20 @@ export default async function handler(request, response) {
       occupation: 1,
       isTeacher: 1,
       name: 1,
-      _id: 0
+      _id: 0,
     };
 
     if (request.query?.custom_projections?.length) {
-      const customProjections = request.query?.customProjections.split(", ");
+      const customProjections = request.query?.custom_projections.split(", ");
       projections = Object.fromEntries(
         customProjections
           .filter((projection) => projection)
           .map((projection) => [projection, 1])
       );
+      projections = {
+        ...projections,
+        _id: 0,
+      };
 
       console.log("projections, yo there: ", projections);
     }
@@ -50,27 +53,27 @@ export default async function handler(request, response) {
     }
 
     const getUserAccountPromise = getUserByEmail(
-      request.query.email,
+      email,
       projections
     );
     const getMailingListContactPromise = getMailingListContact(
-      request.query.email
+      email
     );
     let [userAccount, mailingListContact] = await Promise.all([
       getUserAccountPromise,
       getMailingListContactPromise,
     ]);
 
-    console.log("mailingListContact, yo there: ", mailingListContact);
-
     if (!userAccount) {
       throw new CustomError("User not found.", 404);
     }
 
-    userAccount = {
-      ...userAccount,
-      isOnMailingList: !!mailingListContact,
-    };
+    if (!request.query.willNotRetrieveMailingListStatus) {
+      userAccount = {
+        ...userAccount,
+        isOnMailingList: !!mailingListContact,
+      };
+    }
 
     return response.status(200).json(userAccount);
   } catch (error) {
@@ -84,9 +87,8 @@ export default async function handler(request, response) {
     return response
       .status(code ?? 500)
       .json({
-        msg: `Error message: ${
-          message ?? "An error has occurred on the server."
-        }`,
+        msg: `Error message: ${message ?? "An error has occurred on the server."
+          }`,
       });
   }
 }

@@ -247,27 +247,6 @@ export async function middleware(request) {
         nextUrl.pathname
       );
       let clientEmail = null;
-      let urlParamsStr =
-        typeof nextUrl?.search === "string"
-          ? nextUrl?.search.replace(/\?/g, "")
-
-          : "";
-
-      urlParamsStr =
-        typeof nextUrl?.search === "string"
-          ? urlParamsStr.replace(/%40/g, "@")
-          : "";
-
-      if (
-        nextUrl.pathname === "/api/get-user-account-data" &&
-        urlParamsStr.split("=").length == 2
-      ) {
-        clientEmail = urlParamsStr.split("=")[1];
-      } else if (nextUrl.pathname === "/api/get-user-account-data") {
-        throw new Error(
-          "Received invalid parameters for the retreival of the user's 'About Me' form."
-        );
-      }
 
       const body =
         nextUrl.pathname === "/api/save-about-user-form" && method === "PUT"
@@ -286,7 +265,7 @@ export async function middleware(request) {
       }
 
       if (
-        ["/api/save-about-user-form", "/api/get-user-account-data"].includes(
+        ["/api/save-about-user-form"].includes(
           nextUrl.pathname
         )
       ) {
@@ -296,8 +275,6 @@ export async function middleware(request) {
           willCheckForValidEmail,
           clientEmail,
         );
-
-        console.log("iasAuthorize: ", isAuthorize);
 
         return isAuthorize ? errResponse : NextResponse.next();
       }

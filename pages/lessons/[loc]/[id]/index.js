@@ -31,6 +31,7 @@ import {
 import { CustomNotifyModalFooter } from "../../../../components/Modals/Notify";
 import { getUserAccountData } from "../../../account";
 import axios from "axios";
+import { UserContext } from "../../../../providers/UserProvider";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -84,8 +85,9 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
+  const { _isUserTeacher } = useContext(UserContext);
   const { status, data } = useSession();
-  const { user, token } = data ?? {};
+  const { token } = data ?? {};
   const statusRef = useRef(status);
   const {
     _notifyModal,
@@ -93,6 +95,7 @@ const LessonDetails = ({ lesson }) => {
     _isCreateAccountModalDisplayed,
     _customModalFooter,
   } = useContext(ModalContext);
+  const [, setIsUserTeacher] = _isUserTeacher;
   const [, setNotifyModal] = _notifyModal;
   const [, setCustomModalFooter] = _customModalFooter;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
@@ -345,6 +348,60 @@ const LessonDetails = ({ lesson }) => {
     []
   );
 
+  useEffect(() => {
+    if (willGoToTargetSection) {
+      scrollSectionIntoView(sectionDots.clickedSectionId);
+      setWillGoToTargetSection(false);
+    }
+  }, [willGoToTargetSection]);
+
+  useEffect(() => {
+    statusRef.current = status;
+
+    (async () => {
+      if (status === "authenticated" && token) {
+        try {
+          const paramsAndHeaders = {
+            params: {
+              custom_projections: "isTeacher",
+              willNotRetrieveMailingListStatus: true,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+          const origin = window.location.origin;
+          const { status, data } = await axios.get(
+            `${origin}/api/get-user-account-data`,
+            paramsAndHeaders
+          );
+
+          if (status !== 200) {
+            throw new Error("An error has occurred. Failed to check if the user is a teacher.");
+          }
+
+          setIsUserTeacher(!!data?.isTeacher);
+        } catch (error) {
+          console.error("An error has occurred: ", error);
+        }
+      }
+    })();
+  }, [status]);
+
+  useEffect(() => {
+    document.body.addEventListener("click", handleDocumentClick);
+
+    document.body.addEventListener("click", handleBonusContentDocumentClick);
+
+    return () => {
+      document.body.removeEventListener("click", handleDocumentClick);
+      document.body.removeEventListener(
+        "click",
+        handleBonusContentDocumentClick
+      );
+    };
+  }, []);
+
   if (!lesson && typeof window === "undefined") {
     return null;
   }
@@ -390,56 +447,6 @@ const LessonDetails = ({ lesson }) => {
     imgAlt: `${lesson.Title} cover image`,
     className: "overflow-hidden",
   };
-
-  useEffect(() => {
-    if (willGoToTargetSection) {
-      scrollSectionIntoView(sectionDots.clickedSectionId);
-      setWillGoToTargetSection(false);
-    }
-  }, [willGoToTargetSection]);
-
-  useEffect(() => {
-    statusRef.current = status;
-
-    (async () => {
-      if (status === "authenticated" && token) {
-        try {
-          const paramsAndHeaders = {
-            params: { email: data.user.email, custom_projections: "isTeacher" },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          };
-          const origin = window.location.origin;
-          const response = await axios.get(
-            // put https:
-            `${origin}/api/get-user-account-data`,
-            paramsAndHeaders
-          );
-          console.log("response: ", response);
-        } catch (error) {
-          console.error("An error has occurred: ", error);
-        }
-      }
-    })();
-  }, [status]);
-
-  useEffect(() => {
-    document.body.addEventListener("click", handleDocumentClick);
-
-    document.body.addEventListener("click", handleBonusContentDocumentClick);
-
-    return () => {
-      document.body.removeEventListener("click", handleDocumentClick);
-      document.body.removeEventListener(
-        "click",
-        handleBonusContentDocumentClick
-      );
-    };
-  }, []);
-
-  // get the email of the user if the user is authenticated
-  // send the request to the backend to determine if the user is a teacher or not
 
   return (
     <Layout {...layoutProps}>
