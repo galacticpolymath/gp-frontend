@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import { getUserByEmail, updateUser } from '../../backend/services/userServices';
+import { connectToMongodb } from '../../backend/utils/connection';
 import { CustomError } from '../../backend/utils/errors';
 import { createIterations, createSalt, hashPassword, verifyJwt } from '../../backend/utils/security';
 
@@ -48,13 +49,19 @@ export default async function handler(request, response) {
             throw new CustomError('The password reset token has expired.', 401, 'expiredToken');
         }
 
+        const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+
+        if (!wasConnectionSuccessful) {
+            throw new CustomError('Failed to connect to the database.', 500);
+        }
+
         const user = await getUserByEmail(email);
 
         if (!user) {
             throw new CustomError('The user does not exist.', 404);
         }
 
-        console.log('the user: ', user);          
+        console.log('the user: ', user);
         if (user.provider !== 'credentials') {
             throw new CustomError('Only credentials based user can reset their password.', 401, 'notCredentialsUser');
         }

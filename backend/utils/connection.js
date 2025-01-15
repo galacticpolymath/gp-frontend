@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import mongoose from 'mongoose';
+import { waitWithExponentialBackOff } from '../../globalFns';
 
 let isConnectedToDb = false;
 
@@ -16,17 +17,23 @@ export const createConnectionUri = () => {
   return connectionUri;
 };
 
-export const connectToMongodb = async () => {
+export const connectToMongodb = async (serverSelectionTimeoutMS = 15_000, tries = 1, isRetryable = false) => {
   try {
     console.log('will connect to MongoDB...');
     if (isConnectedToDb) {
-      console.log('Already connected to DB');
+      console.log('Already connected to DB.');
       return { wasSuccessful: true };
     }
 
-    const connectionState = await mongoose.connect(createConnectionUri(), { retryWrites: true, timeoutMS: 6_000 });
+    const connectionState = await mongoose.connect(createConnectionUri(), { retryWrites: true, serverSelectionTimeoutMS: serverSelectionTimeoutMS });
 
     isConnectedToDb = connectionState.connections[0].readyState === 1;
+
+    if (!isConnectedToDb && (tries <= 3) && isRetryable) {
+      const triesUpdated = await waitWithExponentialBackOff(tries);
+
+      return await connectToMongodb(serverSelectionTimeoutMS, triesUpdated, true);
+    }
 
     return { wasSuccessful: isConnectedToDb };
   } catch (error) {

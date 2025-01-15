@@ -9,16 +9,24 @@ import { signOut, useSession } from 'next-auth/react';
 import Button from '../General/Button';
 import { useRouter } from 'next/router';
 import { CustomCloseButton } from '../../ModalsContainer';
+import { useCustomCookies } from '../../customHooks/useCustomCookies';
 
 const AccountModal = () => {
     const { _isAccountModalMobileOn } = useContext(ModalContext);
     const router = useRouter();
     const [isAccountModalMobileOn, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
     const { data } = useSession();
+    const { clearCookies } = useCustomCookies();
     const { image, name } = data?.user ?? {};
 
     const handleOnHide = () => {
         setIsAccountModalMobileOn(false);
+    };
+
+    const handleSignOutBtnClick = async () => {
+        localStorage.clear();
+        clearCookies();
+        signOut();
     };
 
     return (
@@ -59,10 +67,7 @@ const AccountModal = () => {
                     View Account
                 </Button>
                 <Button
-                    handleOnClick={() => {
-                        localStorage.clear();
-                        signOut();
-                    }}
+                    handleOnClick={handleSignOutBtnClick}
                     classNameStr="no-btn-styles hover txt-underline-on-hover py-2"
                 >
                     SIGN OUT

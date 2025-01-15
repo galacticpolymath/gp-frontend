@@ -15,7 +15,11 @@ export default async function handler(request, response) {
       throw new CustomError('You are not authorized to access this service.', 403);
     }
 
-    await connectToMongodb();
+    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+
+    if (!wasConnectionSuccessful) {
+      throw new CustomError('Failed to connect to the database.', 500);
+    }
 
     const jwtDoc = await JwtModel.findOne({ _id: request.body.email }).lean();
 
@@ -30,7 +34,7 @@ export default async function handler(request, response) {
     return response.status(200).json({ access: jwtDoc.access, refresh: jwtDoc.refresh });
   } catch (error) {
     const { message, status } = error;
-    
+
     return response.status(status ?? 500).json({ msg: message ?? 'Internal server error.' });
   }
 }

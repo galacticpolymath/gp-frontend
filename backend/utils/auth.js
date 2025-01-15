@@ -4,7 +4,7 @@ import { JWT } from 'google-auth-library';
 
 /**
  * Creates a json web token.
- * @param {{ email?: string, role?: string[], name?: string }} jwtPayload 
+ * @param {{ email?: string, role?: string[], name?: string, emailConfirmationId?: string, accessibleRoutes?: string[] }} jwtPayload 
  * @param {string | Buffer} secret 
  * @param {string | number} expirationTime 
  * @returns {SignJWT}

@@ -42,7 +42,7 @@ const AccountSettings = () => {
     const [accountForm, setAccountForm] = useState({});
     const session = useSession();
     const { token } = session?.data ?? {};
-    const { email } = session?.data?.user ?? {};
+    const { email, name } = session?.data?.user ?? {};
     const [errors, setErrors] = useState(new Map());
     const [didServerErrOccur, setDidServerErrOccur] = useState(false);
     const router = useRouter();
@@ -56,6 +56,7 @@ const AccountSettings = () => {
         setIsAccountSettingModalDisplayed(false);
         setDidServerErrOccur(false);
     };
+
     const handleOnInputChange = (event) => {
         setErrors((state) => {
             state.delete(event.target.name);
@@ -67,6 +68,7 @@ const AccountSettings = () => {
             [event.target.name]: event.target.value,
         }));
     };
+
     const handleOnShow = () => {
         setIsAccountSettingModalDisplayed(true);
 
@@ -74,19 +76,25 @@ const AccountSettings = () => {
 
         if (
             getIsParsable(userAccountParsable) &&
-            typeof JSON.parse(userAccountParsable) === "object"
+            (typeof JSON.parse(userAccountParsable) === "object")
         ) {
             const userAccount = JSON.parse(userAccountParsable);
+            const firstName = userAccount?.name?.first ?? (name?.first ?? "");
+            const lastName = userAccount?.name?.last ?? (name?.last ?? "");
 
             setAccountForm({
-                firstName: userAccount.name.first ?? "",
-                lastName: userAccount.name.last ?? "",
-                isOnMailingList: userAccount.isOnMailingList ?? false,
+                firstName,
+                lastName,
+                isOnMailingList: userAccount?.isOnMailingList ?? false,
             });
         }
 
         const url = router.asPath;
-        router.replace(url.split("?")[0]);
+
+        if (url.includes('?')) {
+            const newUrl = url.split("?")[0];
+            router.replace(newUrl);
+        }
     };
     const handleDeleteAccountBtnClick = async () => {
         const willDeleteAccount = confirm(
@@ -157,7 +165,7 @@ const AccountSettings = () => {
         };
         let additionalReqBodyProps = accountForm.isOnMailingList
             ? {
-                isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation`,
+                clientUrl: `${window.location.origin}/mailing-list-confirmation`,
             }
             : {};
         additionalReqBodyProps = {

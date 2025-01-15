@@ -19,6 +19,42 @@ import { Spinner } from 'react-bootstrap';
 import { getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
 import { FaUserAlt } from 'react-icons/fa';
 
+export const getUserAccountData = async (token, email, customProjections = []) => {
+    try {
+        let custom_projections = ''
+
+        if (customProjections.every(val => typeof val === 'string')) {
+            custom_projections = customProjections.join(', ')
+        }
+
+        const paramsAndHeaders = {
+            params: { email: email, custom_projections },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+        const url = `${window.location.origin}/api/get-user-account-data`;
+        console.log("url: ", url);
+        const response = await axios.get(
+            url,
+            paramsAndHeaders,
+        );
+
+        // print the response
+        console.log("response.data: ", response.data);
+
+        if (response.status !== 200) {
+            throw new Error('Received a non 200 response from the server.');
+        };
+
+        return response.data;
+    } catch (error) {
+        console.error('Failed to get the user account data. Reason: ', error)
+
+        return null;
+    }
+}
+
 export const getAboutUserFormForClient = userAccount => {
     const userAccountForClient = { ...userAccountDefault };
     const {
@@ -87,30 +123,33 @@ export const getUrlVal = (router, urlField) => {
 };
 
 const AccountPg = () => {
-    const session = useSession();
-    const { status, data } = session;
     const router = useRouter();
     const { _aboutUserForm } = useContext(UserContext);
     const { _isAboutMeFormModalDisplayed, _notifyModal, _isAccountSettingModalOn } = useContext(ModalContext);
     const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;
-    const [, setAboutUserForm] = _aboutUserForm;
+    /** 
+     * @type {[import('../providers/UserProvider').TUserAccount, import('react').Dispatch<import('react').SetStateAction<import('../providers/UserProvider').TUserAccount>>]} */
+    const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
     const [, setNotifyModal] = _notifyModal;
+    const { status, data } = useSession();
     const { user, token } = data ?? {};
-    const { email, name, image, occupation } = user ?? {};
+    const { email, image, name } = user ?? {};
+    const occupation = typeof localStorage === 'undefined' ? null : JSON.parse(localStorage.getItem('userAccount') ?? '{}').occupation;
+    const firstName = aboutUserForm?.name?.first || (name?.first ?? '')
+    const lastName = aboutUserForm?.name?.last || (name?.last ?? '')
 
     useEffect(() => {
         if (status === 'authenticated') {
             (async () => {
                 try {
                     const paramsAndHeaders = {
-                        params: { email: data.user.email },
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     };
                     const response = await axios.get(
-                        `/api/get-user-account-data`,
+                        '/api/get-user-account-data',
                         paramsAndHeaders,
                     );
 
@@ -119,8 +158,8 @@ const AccountPg = () => {
                     }
 
                     /** @type {import('../providers/UserProvider').TUserAccount} */
-                    let userAccount = response.data;
-                    /** @type {import('../providers/UserProvider').TAboutUserForm} */
+                    const userAccount = response.data;
+                    /** @type {import('../providers/UserProvider').TUserAccount} */
                     const userAccountForClient = { ...userAccountDefault };
                     const {
                         reasonsForSiteVisit,
@@ -131,7 +170,10 @@ const AccountPg = () => {
                         country,
                         occupation,
                         isTeacher,
+                        name,
                     } = userAccount;
+
+                    console.log('name, hey there: ', name);
 
                     if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
                         const reasonsForSiteVisitMap = new Map(Object.entries(userAccount.reasonsForSiteVisit));
@@ -161,8 +203,6 @@ const AccountPg = () => {
                         }
                     }
 
-                    console.log('userAccountForClient.gradesOrYears: ', userAccountForClient.gradesOrYears);
-
                     if ((typeof classroomSize === 'object') && classroomSize) {
                         userAccountForClient.classroomSize = classroomSize;
                     } else if (typeof classroomSize === 'number') {
@@ -187,6 +227,13 @@ const AccountPg = () => {
 
                     if (occupation) {
                         userAccountForClient.occupation = occupation;
+                    }
+
+                    if (name?.first && name?.last) {
+                        userAccountForClient.name = {
+                            first: name.first,
+                            last: name.last,
+                        }
                     }
 
                     userAccountForClient.isTeacher = isTeacher ?? false;
@@ -245,10 +292,7 @@ const AccountPg = () => {
 
     useEffect(() => {
         const urlVals = getAllUrlVals(router, true);
-        console.log('status: ', status);
-        console.log("urlVals: ", urlVals);
         const urlVal = urlVals?.length ? urlVals.find(([urlKey]) => urlKey === 'show_about_user_form') : null;
-        // print urlVal
         console.log('urlVal, yo there: ', urlVal);
         const accountSettingsModalOnUrlVals = urlVals?.length ? urlVals.find(([urlKey]) => urlKey === 'will-open-account-setting-modal') : null;
 
@@ -257,7 +301,7 @@ const AccountPg = () => {
                 setIsAboutMeFormModalDisplayed(true);
             }, 300);
 
-            // the second value in the arr is a boolean
+            // the second value in 'accountSettingsModalOnUrlVals is a boolean
         } else if ((status === 'authenticated') && (accountSettingsModalOnUrlVals?.length === 2) && getIsParsable(accountSettingsModalOnUrlVals[1]) && JSON.parse(accountSettingsModalOnUrlVals[1])) {
             setTimeout(() => {
                 setIsAccountSettingsModalOn(true);
@@ -266,19 +310,14 @@ const AccountPg = () => {
 
         const isOnMailingList = localStorage.getItem('isOnMailingList') ? JSON.parse(localStorage.getItem('isOnMailingList')) : false;
 
-        console.log('isOnMailingList: ', isOnMailingList);
-        console.log('status: ', status);
-
         if (isOnMailingList && (status === 'authenticated')) {
             (async () => {
                 try {
-                    console.log('will update the mailing list status: ', isOnMailingList);
-
                     const response = await axios.put(
                         '/api/update-user',
                         {
                             email,
-                            isOnMailingListConfirmationUrl: `${window.location.origin}/mailing-list-confirmation`,
+                            clientUrl: `${window.location.origin}/mailing-list-confirmation`,
                             willUpdateMailingListStatusOnly: true,
                             willSendEmailListingSubConfirmationEmail: true,
                         },
@@ -372,7 +411,7 @@ const AccountPg = () => {
                             <FaUserAlt fontSize={35} color='#2C83C3' />}
                     </section>
                     <section className='col-12 d-flex justify-content-center align-items-center mt-3 flex-column'>
-                        <h5 className='mb-0'>{name?.first} {name?.last}</h5>
+                        <h5 className='mb-0'>{firstName} {lastName}</h5>
                         <span>{email}</span>
                     </section>
                     <section className='col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2'>

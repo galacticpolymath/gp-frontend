@@ -9,21 +9,28 @@ import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { UserContext } from "../../../providers/UserProvider";
+import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 
 const LoginContainerForNavbar = ({ _modalAnimation }) => {
     const router = useRouter();
     const { _isLoginModalDisplayed, _isAccountModalMobileOn } = useContext(ModalContext);
+    const { _aboutUserForm } = useContext(UserContext);
+    const [aboutUserForm] = _aboutUserForm;
     const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
     const [modalAnimation, setModalAnimation] = _modalAnimation;
     const { status, data } = useSession();
-    const { name, image } = data?.user ?? {};
+    const { image, name } = data?.user ?? {};
     const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
     const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
+    const { clearCookies } = useCustomCookies();
+    const firstName = aboutUserForm?.name?.first || (name?.first ?? '');
+    const lastName = aboutUserForm?.name?.last || (name?.last ?? '');
 
     const handleSignOutBtnClick = () => {
         localStorage.clear();
         setIsLoadingSpinnerOn(true);
-        localStorage.clear();
+        clearCookies();
         signOut();
     };
 
@@ -106,7 +113,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }) => {
                     style={{ borderBottom: '.5px solid grey' }}
                     className="d-flex flex-column justify-content-center align-items-center pb-2"
                 >
-                    <h5 className="text-black my-3">{name?.first} {name?.last}</h5>
+                    <h5 className="text-black my-3">{firstName} {lastName}</h5>
                 </section>
                 <section className='d-flex flex-column'>
                     <Button

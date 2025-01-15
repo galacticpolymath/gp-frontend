@@ -38,7 +38,7 @@ export default function MyAdapter() {
       let isCreatingUser = false;
 
       try {
-        const { wasSuccessful } = await connectToMongodb();
+        const { wasSuccessful } = await connectToMongodb(7_000);
 
         if (!wasSuccessful) {
           return {
@@ -170,7 +170,7 @@ export const authOptions = {
             lastName,
             formType,
             isOnMailingList,
-            isOnMailingListConfirmationUrl,
+            clientUrl,
           } = credentials;
           /** @type { import('../models/user').TUserSchema } */
           const dbUser = await getUserByEmail(email);
@@ -240,7 +240,7 @@ export const authOptions = {
 
           let emailingListingConfrimationEmailMsg = null;
           if (isOnMailingList) {
-            const { errMsg } = await addUserToEmailList(email, isOnMailingListConfirmationUrl || "");
+            const { errMsg } = await addUserToEmailList(email, clientUrl || "");
             emailingListingConfrimationEmailMsg = errMsg;
           }
 
@@ -293,6 +293,7 @@ export const authOptions = {
         const accessToken = await signJwt({ email, roles: allowedRoles, name, picture }, secret, '12hr');
 
         if (!token?.payload && canUserWriteToDb) {
+          console.log("will save jwt to db.");
           await connectToMongodb();
           const jwt = new JwtModel({ _id: email, access: accessToken, refresh: refreshToken });
 
@@ -323,6 +324,7 @@ export const authOptions = {
         urlErrorParamVal,
       } = user ?? {};
       let userEmail = profile?.email ?? email;
+      const { wasSuccessful: isDbConnected } = await connectToMongodb();
 
       console.log("Error type: ", errType)
 
@@ -361,7 +363,21 @@ export const authOptions = {
           );
         }
 
-        await connectToMongodb();
+
+        if (!isDbConnected) {
+          throw new CustomError("Failed to connect to the database.", 500);
+        }
+
+        if (errType === "timeout") {
+          console.error('The server timed out.');
+          throw new SignInError(
+            'timeout-error',
+            'The server timed out. Please try again.',
+            code ?? 504,
+            'timeout-error',
+            true
+          );
+        }
 
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
 
@@ -445,7 +461,7 @@ export const authOptions = {
 
         return param?.user?.redirectUrl ? `${param.user.redirectUrl}/?signin-err-type=${type ?? 'sign-in-error'}` : `/?signin-err-type=${type ?? 'sign-in-error'}`;
       } finally {
-        if (!wasUserCreated) {
+        if (!wasUserCreated && isDbConnected) {
           const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
 
           if (!dbUser) {

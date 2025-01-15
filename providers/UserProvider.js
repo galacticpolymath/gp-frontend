@@ -31,6 +31,7 @@ import { createContext, useState } from "react";
  * @property {string} country
  * @property {string} occupation
  * @property {boolean} isTeacher
+ * @property {{ first: string, last: string }} name
  * @property {number | null} zipCode
  * @property {{ num: number, isNotTeaching: boolean }} classroomSize
 */
@@ -42,6 +43,7 @@ import { createContext, useState } from "react";
  * @property {TGradesOrYears} gradesOrYears
  * @property {string} country
  * @property {string} occupation
+ * @property {{ first: string, last: string }} name
  * @property {boolean} isTeacher
  * @property {number | null} zipCode
  * @property {{ num: number, isNotTeaching: boolean }} classroomSize
@@ -65,6 +67,10 @@ export const userAccountDefault = {
     },
     subjects: new Map(),
     reasonsForSiteVisit: new Map(),
+    name: {
+        first: '',
+        last: ''
+    }
 };
 
 export const UserContext = createContext(null);
@@ -76,12 +82,14 @@ export const UserProvider = ({ children }) => {
         lastName: "",
         isOnMailingList: true,
     });
+    const [isUserTeacher, setIsUserTeacher] = useState(false);
     const _aboutUserForm = [aboutUserForm, setAboutUserForm];
 
     return (
         <UserContext.Provider
             value={{
                 _aboutUserForm,
+                _isUserTeacher: [isUserTeacher, setIsUserTeacher],
                 _accountForm: [accountForm, setAccountForm],
             }}
         >

@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import { NextResponse } from "next/server";
-import { getAuthorizeReqResult, getChunks } from "./nondependencyFns";
+import { getAuthorizeReqResult, getChunks, verifyJwt } from "./nondependencyFns";
 import { PASSWORD_RESET_TOKEN_VAR_NAME } from "./globalVars";
 
 const DB_ADMIN_ROUTES = [
@@ -17,6 +17,7 @@ const USER_ACCOUNT_ROUTES = [
   "/api/get-user-account-data",
   "/api/delete-user",
   "/api/user-confirms-mailing-list-sub",
+  "/api/get-signed-in-user-brevo-status"
 ];
 
 const getUnitNum = (pathName) =>
@@ -31,6 +32,7 @@ const getUnitNum = (pathName) =>
 
 export async function middleware(request) {
   try {
+    console.log("what is up with the request: ", request);
     const { nextUrl, method, headers } = request;
     /**
      * @type {{ pathname: string, search: string }}
@@ -178,6 +180,15 @@ export async function middleware(request) {
       });
     }
 
+    const token = authorizationStr.split(' ')[1].trim();
+    const payload = await verifyJwt(token);
+
+    if (payload?.payload?.accessibleRoutes?.length && !payload.payload.accessibleRoutes.includes(nextUrl.pathname)) {
+      console.error("The client does not have access to this route.");
+
+      return new NextResponse("Unauthorized.", { status: 401 })
+    }
+
     if (!nextUrl.pathname) {
       return new NextResponse("No pathName was provided.", { status: 400 });
     }
@@ -210,9 +221,6 @@ export async function middleware(request) {
       (nextUrl.pathname == "/api/delete-user" &&
         method === "DELETE" &&
         authorizationStr) ||
-      (nextUrl.pathname == "/api/get-user-account-data" &&
-        method === "GET" &&
-        authorizationStr) ||
       (nextUrl.pathname == "/api/save-about-user-form" &&
         method === "PUT" &&
         authorizationStr) ||
@@ -224,6 +232,12 @@ export async function middleware(request) {
         authorizationStr) ||
       (nextUrl.pathname == "/api/get-users" &&
         method === "GET" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/get-signed-in-user-brevo-status" &&
+        method === "GET" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/get-user-account-data" &&
+        method === "GET" &&
         authorizationStr)
     ) {
       const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES.includes(
@@ -233,26 +247,6 @@ export async function middleware(request) {
         nextUrl.pathname
       );
       let clientEmail = null;
-      let urlParamsStr =
-        typeof nextUrl?.search === "string"
-          ? nextUrl?.search.replace(/\?/g, "")
-          : "";
-
-      urlParamsStr =
-        typeof nextUrl?.search === "string"
-          ? urlParamsStr.replace(/%40/g, "@")
-          : "";
-
-      if (
-        nextUrl.pathname === "/api/get-user-account-data" &&
-        urlParamsStr.split("=").length == 2
-      ) {
-        clientEmail = urlParamsStr.split("=")[1];
-      } else if (nextUrl.pathname === "/api/get-user-account-data") {
-        throw new Error(
-          "Received invalid parameters for the retreival of the user's 'About Me' form."
-        );
-      }
 
       const body =
         nextUrl.pathname === "/api/save-about-user-form" && method === "PUT"
@@ -271,7 +265,7 @@ export async function middleware(request) {
       }
 
       if (
-        ["/api/save-about-user-form", "/api/get-user-account-data"].includes(
+        ["/api/save-about-user-form"].includes(
           nextUrl.pathname
         )
       ) {
@@ -331,5 +325,6 @@ export const config = {
     "/api/update-user",
     "/api/user-confirms-mailing-list-sub",
     "/api/get-users",
+    "/api/get-signed-in-user-brevo-status"
   ],
 };

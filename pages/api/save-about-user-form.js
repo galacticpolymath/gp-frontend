@@ -5,6 +5,7 @@
 
 import { cache } from "../../backend/authOpts/authOptions";
 import { getUserByEmail, updateUser } from "../../backend/services/userServices";
+import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 
 /**
@@ -51,10 +52,16 @@ export default async function handler(request, response) {
             throw new CustomError("The 'aboutUser' form is empty or has falsey values");
         }
 
+        const { wasSuccessful: isDbConnected } = await connectToMongodb();
+
+        if (!isDbConnected) {
+            throw new CustomError('Failed to connect to the database.', 500);
+        }
+
         const doesUserExist = !!(await getUserByEmail(userEmail));
 
         if (!doesUserExist) {
-            throw new CustomError("The user email does not exist in the database.", 404);
+            throw new CustomError('The user email does not exist in the database.', 404);
         }
 
         /** 
@@ -76,9 +83,6 @@ export default async function handler(request, response) {
         }
 
         delete updatedUser.password;
-
-        console.log('will update the cache for the target user, about user form modal has been update: ', updatedUser);
-        console.log('user email: ', userEmail);
 
         cache.set(userEmail, updatedUser);
 

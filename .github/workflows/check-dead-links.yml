@@ -49,7 +49,7 @@ jobs:
       run: npm run prod &
 
     - name: Wait for the app to start
-      run: npx wait-on http://localhost:3000
+      run: npx wait-on -t 240000 http://localhost:3000
 
     - name: Run dead links checks
       run: node --env-file=.env.local .github/checkDeadLinks.js

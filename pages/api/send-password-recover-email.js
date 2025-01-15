@@ -13,7 +13,7 @@ import { PASSWORD_RESET_TOKEN_VAR_NAME } from '../../globalVars';
 export default async function handler(request, response) {
     try {
         console.log('request received...');
-        
+
         if (!request.body.email) {
             throw new CustomError('The "email" property is missing from the body of the request.', 500);
         }
@@ -30,7 +30,7 @@ export default async function handler(request, response) {
 
         console.log('will send password recover email');
 
-        const resetPasswordToken = await signJwt({ email }, process.env.NEXTAUTH_SECRET, '5 minutes');
+        const resetPasswordToken = await signJwt({ email, accessibleRoutes: ['/api/updated-password'] }, process.env.NEXTAUTH_SECRET, '5 minutes');
         const resetPasswordLink = `${request.headers.origin}/password-reset/?${PASSWORD_RESET_TOKEN_VAR_NAME}=${resetPasswordToken}`;
         const { wasSuccessful } = await sendEmail({
             from: 'shared@galacticpolymath.com',
