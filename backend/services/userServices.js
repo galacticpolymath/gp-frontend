@@ -9,11 +9,10 @@ export const getUsers = async (queryObj = {}, projectionObj = {}) => {
     try {
         const users = await User.find(queryObj, projectionObj).lean();
 
-        return users;
+        return { users };
     } catch (error) {
-        console.error("An error has occurred in getting the target users: ", error);
 
-        return null;
+        return { errMsg: `Unable to retrieve all users. Reason: ${error}` };
     }
 };
 
@@ -52,7 +51,7 @@ export const getUserWithRetries = async (
     tries = 1
 ) => {
     try {
-        console.log('retrieving user...');
+        console.log("retrieving user...");
         console.log("Current try: ", tries);
         /** @typedef {import('../models/user.js').UserSchema} UserSchema */
         /** @type {UserSchema} */
@@ -66,9 +65,8 @@ export const getUserWithRetries = async (
         if (tries <= 3) {
             console.log("Will try again.");
             tries += 1;
-            const randomNumMs =
-                Math.floor(Math.random() * (5_500 - 1000 + 1)) + 1000;
-            const waitTime = randomNumMs + (tries * 1_000);
+            const randomNumMs = Math.floor(Math.random() * (5_500 - 1000 + 1)) + 1000;
+            const waitTime = randomNumMs + tries * 1_000;
 
             await sleep(waitTime);
 
@@ -256,4 +254,83 @@ export const createUser = async (
 
         return { wasSuccessful: false, msg: errMsg };
     }
+};
+
+/**
+ * Determines the mailing list status for each user in the provided array.
+ * 
+ * @param {Array} users - An array of user objects, each containing at least an email property.
+ * @returns {Array} - The updated array of user objects with an added mailingListStatus property.
+ * 
+ * The function checks each user's email against the mailing list and updates their status. 
+ * If a user is already on the mailing list, their status is set to "onList". 
+ * If a user is not on the mailing list, it checks if a double opt-in email has been sent by 
+ * querying confirmation documents. The status for users with a confirmation document is set to 
+ * "doubleOptEmailSent", otherwise, it is set to "notOnList".
+ */
+export const getUsersMailingListStatus = async (users) => {
+    const getUserMailingListStatusesPromises = users.map((user) =>
+        getMailingListContact(user.email)
+    );
+    const userMailingListStatuses = await Promise.all(
+        getUserMailingListStatusesPromises
+    );
+    const notOnMailingListIndices = new Set();
+
+    for (let index = 0; index < userMailingListStatuses.length; index++) {
+        const userMailingListStatus = userMailingListStatuses[index];
+
+        if (userMailingListStatus !== null) {
+            let targetUser = users[index];
+            targetUser = {
+                ...targetUser,
+                mailingListStatus: "onList",
+            };
+            users[index] = targetUser;
+            continue;
+        }
+
+        notOnMailingListIndices.add(index);
+    }
+
+    if (notOnMailingListIndices.size) {
+        const emails = users
+            .filter((_, index) => notOnMailingListIndices.has(index))
+            .map((user) => user.email);
+        const getUserMailingListConfirmationDocsPromises = emails.map((email) =>
+            findMailingListConfirmationByEmail(email)
+        );
+        const userMailingListConfirmationDocs = await Promise.all(
+            getUserMailingListConfirmationDocsPromises
+        );
+
+        for (
+            let index = 0;
+            index < userMailingListConfirmationDocs.length;
+            index++
+        ) {
+            const email = emails[index];
+            const userMailingListConfirmationDoc =
+                userMailingListConfirmationDocs[index];
+            const targetUserIndex = users.findIndex((user) => user.email === email);
+
+            if (targetUserIndex === -1) {
+                console.error("ERROR. Target user was not found.");
+                continue;
+            }
+
+            const mailingListStatus =
+                userMailingListConfirmationDoc == null
+                    ? "notOnList"
+                    : "doubleOptEmailSent";
+            let targetUser = users[targetUserIndex];
+            targetUser = {
+                ...targetUser,
+                mailingListStatus,
+            };
+            users[targetUserIndex] = targetUser;
+        }
+    }
+
+    return users;
 };

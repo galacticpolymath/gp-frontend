@@ -140,6 +140,8 @@ const AccountPg = () => {
     const lastName = aboutUserForm?.name?.last || (name?.last ?? '')
 
     useEffect(() => {
+        console.log("token, yo there: ", token);
+
         if (status === 'authenticated') {
             (async () => {
                 try {
