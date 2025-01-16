@@ -4,6 +4,8 @@ import { sleep } from "../../globalFns.js";
 import { createDocument } from "../db/utils";
 import User from "../models/user";
 import { v4 as uuidv4 } from "uuid";
+import { findMailingListConfirmationByEmail } from "./mailingListConfirmationServices.js";
+import { getMailingListContact } from "./emailServices.js";
 
 export const getUsers = async (queryObj = {}, projectionObj = {}) => {
     try {

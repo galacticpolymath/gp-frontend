@@ -26,13 +26,12 @@ export default async function handler(request, response) {
 
         const payload = await getJwtPayloadPromise(request.headers.authorization);
         console.log("hey there payload: ", payload);
-        
+
         if (!payload) {
             throw new Error(
-              "The 'authorization' header is not present in the request."
+                "The 'authorization' header is not present in the request."
             );
         }
-
 
         if (!request.body || (request.body && (typeof request.body !== 'object') || Array.isArray(request.body))) {
             throw new CustomError("Received either a incorrect data type for the body of the request or its value is falsey.");

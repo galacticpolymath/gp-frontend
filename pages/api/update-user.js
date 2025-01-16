@@ -17,14 +17,13 @@ export default async function handler(request, response) {
       throw new Error("'authorization' header is not present in the request.");
     }
 
-    const { payload } = await getJwtPayloadPromise(request.headers.authorization) ?? {}
+    const { payload } = await getJwtPayloadPromise(request.headers.authorization) ?? {};
 
     if (!payload) {
       throw new Error(
         "The 'authorization' header is not present in the request."
       );
     }
-
 
     if (!request.body || (request.body && typeof request.body !== "object")) {
       throw new CustomError(
@@ -89,7 +88,7 @@ export default async function handler(request, response) {
       return response.status(200).json({ msg: "User updated successfully." });
     }
 
-    console.log("payload.email: ", payload.email)
+    console.log("payload.email: ", payload.email);
     const { updatedUser: updatedUserFromDb, wasSuccessful } = await updateUser(
       { email: payload.email },
       updatedUser,

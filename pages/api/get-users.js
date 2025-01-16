@@ -2,9 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable no-unused-vars */
 /* eslint-disable quotes */
-import { getMailingListContact } from "../../backend/services/emailServices";
-import { findMailingListConfirmationByEmail, findMailingListConfirmations } from "../../backend/services/mailingListConfirmationServices";
-import { getUsers } from "../../backend/services/userServices";
+import { getUsers, getUsersMailingListStatus } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 
 /**
@@ -28,54 +26,17 @@ export default async function handler(_, response) {
             throw new Error("Failed to connect to the database.");
         }
 
-        const users = await getUsers();
-        const getUserMailingListStatusesPromises = users.map(user => getMailingListContact(user.email))
-        const userMailingListStatuses = await Promise.all(getUserMailingListStatusesPromises);
-        const notOnMailingListIndices = new Set();
+        let { errMsg, users } = await getUsers();
 
-        for (let index = 0; index < userMailingListStatuses.length; index++) {
-            const userMailingListStatus = userMailingListStatuses[index];
-
-            if (userMailingListStatus !== null) {
-                let targetUser = users[index];
-                targetUser = {
-                    ...targetUser,
-                    mailingListStatus: "onList"
-                }
-                users[index] = targetUser;
-                continue;
-            }
-
-            notOnMailingListIndices.add(index)
+        if (errMsg || !users) {
+            return response.status(500).json({ errMsg: errMsg ?? "Failed to retrieve all users." });
         }
 
-        if (notOnMailingListIndices.size) {
-            const emails = users
-                .filter((_, index) => notOnMailingListIndices.has(index))
-                .map(user => user.email);
-            const getUserMailingListConfirmationDocsPromises = emails
-                .map(email => findMailingListConfirmationByEmail(email))
-            const userMailingListConfirmationDocs = await Promise.all(getUserMailingListConfirmationDocsPromises);
-
-            for (let index = 0; index < userMailingListConfirmationDocs.length; index++) {
-                const email = emails[index];
-                const userMailingListConfirmationDoc = userMailingListConfirmationDocs[index];
-                const targetUserIndex = users.findIndex(user => user.email === email)
-
-                if (targetUserIndex === -1) {
-                    console.error("ERROR. Target user was not found.");
-                    continue;
-                }
-
-                const mailingListStatus = userMailingListConfirmationDoc == null ? "notOnList" : "doubleOptEmailSent";
-                let targetUser = users[targetUserIndex]
-                targetUser = {
-                    ...targetUser,
-                    mailingListStatus,
-                }
-                users[targetUserIndex] = targetUser;
-            }
+        if (users.length === 0) {
+            return response.status(200).json({ users });
         }
+
+        users = await getUsersMailingListStatus(users);
 
         return response.status(200).json({ users });
     } catch (error) {

@@ -27,7 +27,6 @@ export default async function handler(request, response) {
             true
         );
 
-
         const user = await getUserByEmail(email);
 
         if (!user) {

@@ -287,7 +287,6 @@ export const authOptions = {
     maxAge: 60 * 60 * 24 * 30,
     encode: async (param) => {
       try {
-        console.log('jwt, param: ', param);
         const { token, secret } = param;
         const { email, name, picture } = token?.payload ?? token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
