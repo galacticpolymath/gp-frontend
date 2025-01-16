@@ -33,6 +33,7 @@ export default async function handler(_, response) {
         }
 
         if (users.length === 0) {
+            console.error("No users found.");
             return response.status(200).json({ users });
         }
 
