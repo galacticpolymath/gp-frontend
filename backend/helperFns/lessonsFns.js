@@ -6,7 +6,12 @@ import { connectToMongodb } from '../utils/connection';
 
 export const getUnits = async (projectedFields = PROJECTED_LESSONS_FIELDS) => {
     try {
-        await connectToMongodb();
+        await connectToMongodb(
+            15_000,
+            0,
+            true,
+            true
+        );
 
         let units = await Lessons.find({}, projectedFields).sort({ ReleaseDate: -1 }).lean();
 

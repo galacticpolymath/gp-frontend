@@ -161,7 +161,12 @@ export const authOptions = {
             throw new AuthError('invalidForm', 500);
           }
 
-          await connectToMongodb();
+          await connectToMongodb(
+            15_000,
+            0,
+            true,
+            true
+          );
 
           const {
             email,
@@ -282,7 +287,6 @@ export const authOptions = {
     maxAge: 60 * 60 * 24 * 30,
     encode: async (param) => {
       try {
-        console.log('jwt, param: ', param);
         const { token, secret } = param;
         const { email, name, picture } = token?.payload ?? token;
         const canUserWriteToDb = await getCanUserWriteToDb(email);
@@ -294,7 +298,12 @@ export const authOptions = {
 
         if (!token?.payload && canUserWriteToDb) {
           console.log("will save jwt to db.");
-          await connectToMongodb();
+          await connectToMongodb(
+            15_000,
+            0,
+            true,
+            true
+          );
           const jwt = new JwtModel({ _id: email, access: accessToken, refresh: refreshToken });
 
           jwt.save();
@@ -324,7 +333,12 @@ export const authOptions = {
         urlErrorParamVal,
       } = user ?? {};
       let userEmail = profile?.email ?? email;
-      const { wasSuccessful: isDbConnected } = await connectToMongodb();
+      const { wasSuccessful: isDbConnected } = await connectToMongodb(
+        15_000,
+        0,
+        true,
+        true
+      );
 
       console.log("Error type: ", errType)
 
@@ -504,7 +518,12 @@ export const authOptions = {
         name = targetUser.name;
         isTeacher = targetUser.isTeacher;
       } else {
-        await connectToMongodb();
+        await connectToMongodb(
+          15_000,
+          0,
+          true,
+          true
+        );
 
         const dbUser = await getUserByEmail(email);
 

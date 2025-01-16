@@ -49,7 +49,12 @@ export default async function handler(request, response) {
         return response.status(400).json({ msg: 'The mailing list confirmation email ids do not match.', errType: 'mailingListConfirmationEmailIdMismatch' });
     }
 
-    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
+        15_000,
+        0,
+        true,
+        true
+    );
 
     if (!wasConnectionSuccessful) {
         throw new CustomError('Failed to connect to the database.', 500);

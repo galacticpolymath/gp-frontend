@@ -9,10 +9,21 @@ import {
 import { updateUser } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
+import { getJwtPayloadPromise } from "../../nondependencyFns";
 
 export default async function handler(request, response) {
   try {
-    console.log("will update the target user, in progress...");
+    if (typeof request.headers?.authorization !== 'string') {
+      throw new Error("'authorization' header is not present in the request.");
+    }
+
+    const { payload } = await getJwtPayloadPromise(request.headers.authorization) ?? {};
+
+    if (!payload) {
+      throw new Error(
+        "The 'authorization' header is not present in the request."
+      );
+    }
 
     if (!request.body || (request.body && typeof request.body !== "object")) {
       throw new CustomError(
@@ -40,30 +51,18 @@ export default async function handler(request, response) {
       );
     }
 
-    if (
-      ("email" in request.body && typeof request.body.email !== "string") ||
-      ("id" in request.body && typeof request.body.id !== "string") ||
-      ("email" in request.body && "id" in request.body) ||
-      (!("email" in request.body) && !("id" in request.body))
-    ) {
-      throw new CustomError(
-        "Must have 'email' or the 'id' field in the body of the request. Values must be strings.",
-        404
-      );
-    }
-
     const {
-      email,
-      id,
       updatedUser,
       clientUrl,
       willUpdateMailingListStatusOnly,
       willSendEmailListingSubConfirmationEmail,
     } = request.body;
-
-    console.log("the request body, yo there: ", request.body);
-
-    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb();
+    const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     if (!wasConnectionSuccessful) {
       throw new CustomError("Failed to connect to the database.", 500);
@@ -75,12 +74,12 @@ export default async function handler(request, response) {
     ) {
       console.log("Will add the user to mailing list...");
 
-      const { wasSuccessful } = await addUserToEmailList(email, clientUrl);
+      const { wasSuccessful } = await addUserToEmailList(payload.email, clientUrl);
 
       console.log("Was user added to mailing list: ", wasSuccessful);
     } else if (willSendEmailListingSubConfirmationEmail === false) {
       console.log("will delete the user  from the mailing list...");
-      const { wasSuccessful } = await deleteUserFromMailingList(email);
+      const { wasSuccessful } = await deleteUserFromMailingList(payload.email);
 
       console.log("Was user successfully deleted? ", wasSuccessful);
     }
@@ -89,9 +88,9 @@ export default async function handler(request, response) {
       return response.status(200).json({ msg: "User updated successfully." });
     }
 
-    const query = email ? { email } : { _id: id };
+    console.log("payload.email: ", payload.email);
     const { updatedUser: updatedUserFromDb, wasSuccessful } = await updateUser(
-      query,
+      { email: payload.email },
       updatedUser,
       ["password"]
     );
@@ -102,7 +101,7 @@ export default async function handler(request, response) {
 
     console.log("updated user, sup there: ", updatedUserFromDb);
 
-    cache.set(email, updatedUserFromDb);
+    cache.set(payload.email, updatedUserFromDb);
 
     return response.status(200).json({ msg: "User updated successfully." });
   } catch (error) {

@@ -293,7 +293,12 @@ const LessonPreview = ({ lesson }) => {
 
 export const getStaticPaths = async () => {
   try {
-    await connectToMongodb();
+    await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     const lessons = await Lessons.find({}, { numID: 1, locale: 1, _id: 0 }).lean()
 

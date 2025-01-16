@@ -4,7 +4,12 @@ import { connectToMongodb } from '../utils/connection';
 
 const insertLesson = async lesson => {
   try {
-    await connectToMongodb();
+    await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     const newLesson = new Lessons(lesson);
     const saveResult = await newLesson.save();
@@ -25,7 +30,12 @@ const insertLesson = async lesson => {
 
 const deleteLesson = async lessonId => {
   try {
-    await connectToMongodb();
+    await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     await Lessons.deleteOne({ _id: lessonId });
 

@@ -15,7 +15,12 @@ export default async function handler(request, response) {
             throw new CustomError("'email' is not present in the request url.", 404);
         }
 
-        const { wasSuccessful: isDbConnected } = await connectToMongodb();
+        const { wasSuccessful: isDbConnected } = await connectToMongodb(
+            15_000,
+            0,
+            true,
+            true
+        );
 
         if (!isDbConnected) {
             throw new CustomError("Failed to connect to the database.", 500);

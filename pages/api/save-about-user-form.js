@@ -7,10 +7,10 @@ import { cache } from "../../backend/authOpts/authOptions";
 import { getUserByEmail, updateUser } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
+import { getJwtPayloadPromise } from "../../nondependencyFns";
 
 /**
  * @typedef {Object} ReqBody
- * @property {string} userEmail
  * @property {import("../../providers/UserProvider").TUserForm} aboutUserForm 
  */
 
@@ -20,7 +20,19 @@ import { CustomError } from "../../backend/utils/errors";
  * */
 export default async function handler(request, response) {
     try {
-        console.log('saving the about user form: ', request.body);
+        if (typeof request.headers?.authorization !== 'string') {
+            throw new Error("'authorization' header is not present in the request.");
+        }
+
+        const payload = await getJwtPayloadPromise(request.headers.authorization);
+        console.log("hey there payload: ", payload);
+
+        if (!payload) {
+            throw new Error(
+                "The 'authorization' header is not present in the request."
+            );
+        }
+
         if (!request.body || (request.body && (typeof request.body !== 'object') || Array.isArray(request.body))) {
             throw new CustomError("Received either a incorrect data type for the body of the request or its value is falsey.");
         }
@@ -33,10 +45,6 @@ export default async function handler(request, response) {
             throw new CustomError("Missing the 'aboutUser' field in the body of the request.", 404);
         }
 
-        if (!('userEmail' in request.body) || (typeof request.body.userEmail !== 'string')) {
-            throw new CustomError("Missing the 'email' field in the body of the request or the data type is incorrect.", 404);
-        }
-
         if (!request.body.aboutUserForm || typeof request.body.aboutUserForm !== 'object' || Array.isArray(request.body.aboutUserForm)) {
             throw new CustomError("Incorrect data type for the 'aboutUserForm' field.", 400);
         }
@@ -45,20 +53,25 @@ export default async function handler(request, response) {
             throw new CustomError("Received a empty object for the 'aboutUserForm' field.", 400);
         }
 
-        const { userEmail, aboutUserForm } = request.body;
+        const { aboutUserForm } = request.body;
         const aboutUserFormKeyVals = Object.entries(aboutUserForm);
 
         if (!aboutUserFormKeyVals?.length) {
             throw new CustomError("The 'aboutUser' form is empty or has falsey values");
         }
 
-        const { wasSuccessful: isDbConnected } = await connectToMongodb();
+        const { wasSuccessful: isDbConnected } = await connectToMongodb(
+            15_000,
+            0,
+            true,
+            true,
+        );
 
         if (!isDbConnected) {
             throw new CustomError('Failed to connect to the database.', 500);
         }
 
-        const doesUserExist = !!(await getUserByEmail(userEmail));
+        const doesUserExist = !!(await getUserByEmail(payload.payload.email));
 
         if (!doesUserExist) {
             throw new CustomError('The user email does not exist in the database.', 404);
@@ -76,7 +89,7 @@ export default async function handler(request, response) {
             return accumObjUpdated;
         }, {});
 
-        const { wasSuccessful, updatedUser, errMsg } = await updateUser({ email: userEmail }, updatedUserProperties) ?? {};
+        const { wasSuccessful, updatedUser, errMsg } = await updateUser({ email: payload.payload.email }, updatedUserProperties) ?? {};
 
         if (!wasSuccessful) {
             throw new CustomError(errMsg, 500);
@@ -84,7 +97,7 @@ export default async function handler(request, response) {
 
         delete updatedUser.password;
 
-        cache.set(userEmail, updatedUser);
+        cache.set(payload.payload.email, updatedUser);
 
         return response.status(200).json({ msg: "Successfully saved the 'aboutUser' form into the db." });
     } catch (error) {

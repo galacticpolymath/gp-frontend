@@ -10,7 +10,12 @@ export default async function handler(request, response) {
       throw new CustomError('Must provide a lesson id.', 404);
     }
 
-    const { wasSuccessful } = await connectToMongodb();
+    const { wasSuccessful } = await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     if (!wasSuccessful) {
       throw new CustomError('Failed to connect to the database.', 500);

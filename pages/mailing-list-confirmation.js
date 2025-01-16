@@ -170,7 +170,7 @@ const MailingListConfirmation = () => {
 
       const resultTxt = data.isOnMailingList
         ? "You are on the mailing list."
-        : "You are not on the mailing list.";
+        : "You are not on the mailing list. This link may have expired or been used.";
       setUserMailingListStatusResultUI(
         <OnEmailListingCheckResultUI
           resultTxt={resultTxt}

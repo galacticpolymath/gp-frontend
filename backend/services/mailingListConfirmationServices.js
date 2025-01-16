@@ -11,3 +11,13 @@ export const deleteMailingListConfirmationsByEmail = async (email) => {
         return null;
     }
 }
+
+export const findMailingListConfirmationByEmail = async (email) => {
+    try {
+        return await MailingListConfirmations.findOne({ email }).lean();
+    } catch (error) {
+        console.error("Failed to delete all. Reason: ", error);
+
+        return null;
+    }
+}

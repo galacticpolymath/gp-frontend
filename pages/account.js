@@ -140,6 +140,8 @@ const AccountPg = () => {
     const lastName = aboutUserForm?.name?.last || (name?.last ?? '')
 
     useEffect(() => {
+        console.log("token, yo there: ", token);
+
         if (status === 'authenticated') {
             (async () => {
                 try {
@@ -172,8 +174,6 @@ const AccountPg = () => {
                         isTeacher,
                         name,
                     } = userAccount;
-
-                    console.log('name, hey there: ', name);
 
                     if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
                         const reasonsForSiteVisitMap = new Map(Object.entries(userAccount.reasonsForSiteVisit));
