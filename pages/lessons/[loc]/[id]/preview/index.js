@@ -345,8 +345,9 @@ export const getStaticProps = async ({ params: { id, loc } }) => {
     }
 
     const multiMediaArr = lessonToDisplayOntoUi?.Section?.preview?.Multimedia;
+    const isWebAppPresent = multiMediaArr?.some(multiMedia => multiMedia?.type === 'web-app');
 
-    if (multiMediaArr?.length && multiMediaArr.some(({ type }) => type === 'web-app')) {
+    if (multiMediaArr?.length && isWebAppPresent) {
       let multiMediaArrUpdated = []
 
       for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
