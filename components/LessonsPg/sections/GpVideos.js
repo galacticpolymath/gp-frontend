@@ -8,7 +8,7 @@
 import VideoCard from "../VideoCard";
 import { useGetGpDataStates } from "../../../customHooks/useGetGpDataStates";
 import SeeMoreBtnSec from "./SeeMoreBtnSec";
-import ReactLoading from "react-loading";
+import { Spinner } from "react-bootstrap";
 
 const GpVideos = ({
     startingGpVids,
@@ -82,11 +82,7 @@ const GpVideos = ({
                             style={{ height: 25 }}
                             className="d-inline-flex justify-content-center align-items-center w-100 position-relative"
                         >
-                            <ReactLoading
-                                type="bubbles"
-                                color="#444444"
-                                className="loading-bubbles"
-                            />
+                            <Spinner className='text-black' />
                         </span>
                     ) : (
                         <span className="d-inline-flex w-100 h-100 justify-content-center">

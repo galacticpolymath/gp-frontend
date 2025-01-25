@@ -24,7 +24,7 @@ const getGpUnitData = async (typeStr, pageNum, urlStr) => {
 };
 
 export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal, gpDataTypeStr, totalGpDataItems) => {
-    const itemsToShowStartingNum = Number.isInteger(totalGpDataItems) ? totalGpDataItems - dataDefaultVal?.length : 0; 
+    const itemsToShowStartingNum = Number.isInteger(totalGpDataItems) ? totalGpDataItems - dataDefaultVal?.length : 0;
     const [btnTxt, setBtnTxt] = useState(`Show More (${itemsToShowStartingNum})`);
     const [gpDataObj, setGpDataObj] = useState({
         data: dataDefaultVal,
@@ -36,6 +36,8 @@ export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal,
         try {
             setBtnTxt('Loading');
             const gpVideosResponse = await getGpUnitData(gpDataTypeStr, gpDataObj.nextPgNum, `${window.location.origin}/api`);
+
+
 
             if (gpVideosResponse.errType === 'timeout') {
                 alert(`Failed to get ${gpDataTypeStr}. Please refesh the page and try again.`);
