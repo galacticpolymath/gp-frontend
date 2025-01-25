@@ -6,13 +6,15 @@ import { getUsers, getUsersMailingListStatus } from "../../backend/services/user
 import { connectToMongodb } from "../../backend/utils/connection";
 
 /**
- * @description
- *
- * Get users from db.
- *
- * @param {import('next').NextApiRequest} request
- * @param {import('next').NextApiResponse} response
+ * @swagger
+ * /api/get-users:
+ *   get:
+ *     description: Returns the hello world
+ *     responses:
+ *       200:
+ *         description: hello world
  */
+
 export default async function handler(_, response) {
     try {
         const result = await connectToMongodb(
@@ -46,6 +48,6 @@ export default async function handler(_, response) {
             error
         );
 
-        return response.status(200).json({ users: null, error });
+        return response.status(500).json({ users: null, errMsg: `${error}` });
     }
 }
