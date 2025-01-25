@@ -127,7 +127,7 @@
      * columns are set to a specific width to accommodate the data.
      */
     async function createDeadLinksResultsExcelSheet(deadLinks, currentDateStr) {
-        console.log("will createt dead links results");
+        console.log("will create dead links results");
         console.log("deadLinks length: ", deadLinks.length);
         const workBook = new ExcelJS.Workbook();
         const workSheetTitle = `Dead links check on ${getCurrentDate(
