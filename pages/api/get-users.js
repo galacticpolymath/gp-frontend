@@ -8,13 +8,28 @@ import { connectToMongodb } from "../../backend/utils/connection";
 /**
  * @swagger
  * /api/get-users:
- *   get:
- *     description: Returns the hello world
- *     responses:
+ *   description: Retrieves all users from the db along with their mailing list status. The client was must be authenticated as a database administrator to use this endpoint.
+ *   requiresAuth: true
+ *   requiresDbAdminAuth: true
+ *   requestBodyComments: "The request body must be empty."
+ *   requestBody: {}
+ *   methodType: GET
+ *   response:
+ *     description200Response: Returns an array of all users from the db along with their mailing list status.
+ *     descriptionErrResponse: Returns an error message.
+ *     possibleResponses:
  *       200:
- *         description: hello world
+ *         body: { users: "{ ...UserSchema, mailingListStatus: 'onList' | 'notOnList' | 'doubleOptEmailSent' }[]"}
+ *       500:
+ *         body: { errMsg: "A message describing the error. Possible reasons: Failed to connect to the database | Failed to retrieve all users." }
  */
 
+/**
+ * Retrieves all users from the db.
+ * @param {import("next").NextApiRequest} _ - The request object. Not used.
+ * @param {import("next").NextApiResponse} response - The response object.
+ * @returns {Promise<void>}
+ */
 export default async function handler(_, response) {
     try {
         const result = await connectToMongodb(
