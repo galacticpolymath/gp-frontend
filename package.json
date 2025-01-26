@@ -62,7 +62,6 @@
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.6",
     "react-cookie": "^7.2.2",
-    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^19.0.0",
     "react-flags-select": "^2.2.3",
     "react-ga": "^3.3.1",
