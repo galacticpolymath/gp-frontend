@@ -1,6 +1,7 @@
 ## API Documentation
 
-This README provides instructions on how to access the API documentation for this project. The API documentation is powered by Swagger UI and is available on your local development server.## Prerequisites
+This README provides instructions on how to access the API documentation for this project. The API documentation is powered by Swagger UI and is available on your local development server.
+## Prerequisites
 
 * Git
 * Node.js (version 14 or later recommended)
