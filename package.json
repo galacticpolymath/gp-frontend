@@ -94,7 +94,7 @@
     "eslint-config-next": "^15.0.3",
     "eslint-plugin-react": "^7.37.2",
     "jest-puppeteer": "^11.0.0",
-    "sass": "^1.81.1"
+    "sass": "^1.83.4"
   },
   "browser": {
     "fs": false,
