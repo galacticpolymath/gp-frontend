@@ -6,20 +6,44 @@ import { getUsers, getUsersMailingListStatus } from "../../backend/services/user
 import { connectToMongodb } from "../../backend/utils/connection";
 
 /**
- * @description
- *
- * Get users from db.
- *
- * @param {import('next').NextApiRequest} request
- * @param {import('next').NextApiResponse} response
+ * @swagger
+ * /api/get-users:
+ *   description: Retrieves all users from the db along with their mailing list status. The client was must be authenticated as a database administrator to use this endpoint.
+ *   requiresAuth: true
+ *   requiresDbAdminAuth: true
+ *   requestBodyComments: "No request body. Do not set one."
+ *   methodType: GET
+ *   params: {  dbType: { val: "'dev' | 'prod'", isOptional: true } }
+ *   examples: { path: "/api/get-users?dbType=prod" }
+ *   response:
+ *     description200Response: Returns an array of all users from the db along with their mailing list status.
+ *     descriptionErrResponse: Returns an error message.
+ *     possibleResponses:
+ *       200:
+ *         body: { users: "{ ...UserSchema, mailingListStatus: 'onList' | 'notOnList' | 'doubleOptEmailSent' }[]"}
+ *       500:
+ *         body: { errMsg: "A message describing the error. Possible reasons: Failed to connect to the database | Failed to retrieve all users." }
  */
-export default async function handler(_, response) {
+
+/**
+ * Retrieves all users from the db.
+ * @param {import("next").NextApiRequest} _ - The request object. Not used.
+ * @param {import("next").NextApiResponse} response - The response object.
+ * @returns {Promise<void>}
+ */
+export default async function handler(request, response) {
     try {
+        if (request.method !== "GET") {
+            return response.status(405).json({ errMsg: "Incorrect request method. Must be a 'GET'." });
+        }
+
+        console.log("hi there, dbType: ", request?.query?.dbType);
         const result = await connectToMongodb(
             15_000,
             0,
             true,
-            true
+            true,
+            request?.query?.dbType
         );
 
         if (!result.wasSuccessful) {
@@ -46,6 +70,6 @@ export default async function handler(_, response) {
             error
         );
 
-        return response.status(200).json({ users: null, error });
+        return response.status(500).json({ users: null, errMsg: `${error}` });
     }
 }

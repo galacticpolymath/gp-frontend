@@ -32,7 +32,7 @@ const computeDimension = (dimension, decimal) => {
 
 const SponsorsMarquee = ({ velocityNum = 45, decimal = 0, parentContainerCss = 'd-flex justify-content-center align-items-center' }) => {
   return (
-    <Marquee velocity={velocityNum}>
+    <Marquee velocity={velocityNum} onInit={() => { }}>
       {_sponsors.map((sponsorObj, index) => {
         let _style = (index === 3) ?
           { width: computeDimension(sponsorObj.width, decimal), height: computeDimension(sponsorObj.height, decimal) }

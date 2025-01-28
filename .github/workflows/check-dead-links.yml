@@ -17,16 +17,16 @@ jobs:
         node-version: '20.6.0'
     
     - name: Install dependencies
-      run: npm install 
+      run: npm install --legacy-peer-deps
       
     - name: Install linkinator
-      run: npm install linkinator 
+      run: npm install linkinator --legacy-peer-deps
 
     - name: Install exceljs
-      run: npm install exceljs 
+      run: npm install exceljs --legacy-peer-deps
 
     - name: Install waiton
-      run: npm install wait-on 
+      run: npm install wait-on --legacy-peer-deps
 
     - name: Create the .env.local file
       run: |
