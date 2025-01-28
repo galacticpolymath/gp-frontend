@@ -30,13 +30,18 @@ import { connectToMongodb } from "../../backend/utils/connection";
  * @param {import("next").NextApiResponse} response - The response object.
  * @returns {Promise<void>}
  */
-export default async function handler(_, response) {
+export default async function handler(request, response) {
     try {
+        if (request.method !== "GET") {
+            return response.status(405).json({ errMsg: "Incorrect request method. Must be a 'GET'." });
+        }
+
         const result = await connectToMongodb(
             15_000,
             0,
             true,
-            true
+            true,
+            request?.query?.dbType
         );
 
         if (!result.wasSuccessful) {
