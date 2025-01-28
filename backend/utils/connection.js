@@ -4,13 +4,19 @@ import { waitWithExponentialBackOff } from "../../globalFns";
 
 let isConnectedToDb = false;
 
-export const createConnectionUri = () => {
+export const createConnectionUri = (dbType) => {
   const { MONGODB_PASSWORD, MONGODB_USER, MONGODB_DB_NAME, MONGODB_DB_PROD } =
     process.env;
   let dbName = MONGODB_DB_NAME;
 
   if (process.env.NEXT_PUBLIC_VERCEL_ENV === "production") {
     dbName = MONGODB_DB_PROD;
+  }
+
+  if (dbType === "prod") {
+    dbName = MONGODB_DB_PROD;
+  } else if (dbType === "dev") {
+    dbName = MONGODB_DB_NAME;
   }
 
   const connectionUri = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster0.tynope2.mongodb.net/${dbName}`;
@@ -23,6 +29,7 @@ export const connectToMongodb = async (
   tries = 0,
   isRetryable = false,
   willForceConnection = false,
+  dbType
 ) => {
   try {
     console.log("will connect to MongoDB...");
@@ -31,13 +38,23 @@ export const connectToMongodb = async (
       return { wasSuccessful: true };
     }
 
-    const connectionState = await mongoose.connect(createConnectionUri(), {
+    if (mongoose.connection.readyState === 1 && (dbType && mongoose.connection.host.includes(dbType))) {
+      console.log("Already connected to DB.");
+      return { wasSuccessful: true };
+    }
+
+    if ((mongoose.connection.readyState === 1) && ((dbType === "dev") || (dbType === "prod"))) {
+      await mongoose.disconnect()
+    }
+
+    const connectionState = await mongoose.connect(createConnectionUri(dbType), {
       retryWrites: true,
       serverSelectionTimeoutMS: serverSelectionTimeoutMS,
     });
     isConnectedToDb = connectionState.connection.readyState === 1;
 
     if (!isConnectedToDb && (tries <= 3) && isRetryable) {
+      console.log("Failed to connect to DB. Will try again.");
       const triesUpdated = await waitWithExponentialBackOff(tries);
 
       return await connectToMongodb(

@@ -11,9 +11,10 @@ import { connectToMongodb } from "../../backend/utils/connection";
  *   description: Retrieves all users from the db along with their mailing list status. The client was must be authenticated as a database administrator to use this endpoint.
  *   requiresAuth: true
  *   requiresDbAdminAuth: true
- *   requestBodyComments: "The request body must be empty."
- *   requestBody: {}
+ *   requestBodyComments: "No request body. Do not set one."
  *   methodType: GET
+ *   params: {  dbType: { val: "'dev' | 'prod'", isOptional: true } }
+ *   examples: { path: "/api/get-users?dbType=dev" }
  *   response:
  *     description200Response: Returns an array of all users from the db along with their mailing list status.
  *     descriptionErrResponse: Returns an error message.
@@ -36,6 +37,7 @@ export default async function handler(request, response) {
             return response.status(405).json({ errMsg: "Incorrect request method. Must be a 'GET'." });
         }
 
+        console.log("hi there, dbType: ", request?.query?.dbType);
         const result = await connectToMongodb(
             15_000,
             0,
