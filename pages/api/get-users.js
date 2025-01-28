@@ -14,7 +14,7 @@ import { connectToMongodb } from "../../backend/utils/connection";
  *   requestBodyComments: "No request body. Do not set one."
  *   methodType: GET
  *   params: {  dbType: { val: "'dev' | 'prod'", isOptional: true } }
- *   examples: { path: "/api/get-users?dbType=dev" }
+ *   examples: { path: "/api/get-users?dbType=prod" }
  *   response:
  *     description200Response: Returns an array of all users from the db along with their mailing list status.
  *     descriptionErrResponse: Returns an error message.
