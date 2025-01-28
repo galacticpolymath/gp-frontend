@@ -91,7 +91,7 @@
   "devDependencies": {
     "cypress": "^14.0.0",
     "eslint": "9.16.0",
-    "eslint-config-next": "^15.0.3",
+    "eslint-config-next": "^15.1.6",
     "eslint-plugin-react": "^7.37.2",
     "jest-puppeteer": "^11.0.0",
     "sass": "^1.81.1"
