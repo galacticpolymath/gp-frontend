@@ -38,6 +38,7 @@ const GpUnits = ({
     didErrorOccur,
 }) => {
     const now = Date.now();
+    const endDateOfANewUnitMs = now + THIRTY_SEVEN_DAYS;
 
     return (
         <section className="lessonsSection pt-1">
@@ -62,13 +63,11 @@ const GpUnits = ({
             {!!units?.length && (
                 <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                     {units.map((lesson, index) => {
-                        const releaseDateMilliseconds = new Date(lesson.ReleaseDate).getTime();
-                        const endDateOfNewReleaseMs = releaseDateMilliseconds + THIRTY_SEVEN_DAYS;
-                        const isNew = (now > releaseDateMilliseconds) && (now < endDateOfNewReleaseMs);
+                        console.log("unit, sup there: ", lesson.isNew);
                         let PillComp = null;
 
-                        if (isNew) {
-                            PillComp = <Pill txt='NEW' pillColor='#0085C9' />
+                        if (lesson.isNew) {
+                            PillComp = <Pill txt='NEW' color='#0085C9' />
                         } else if ((lesson.PublicationStatus === "Beta") || (lesson.PublicationStatus === "Draft")) {
                             PillComp = <Pill />
                         }

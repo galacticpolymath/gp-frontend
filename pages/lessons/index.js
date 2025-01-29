@@ -27,7 +27,8 @@ import Image from 'next/image.js';
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
 };
-const MARGIN_X_FOR_SEC = "3.5rem";
+const THIRTY_SEVEN_DAYS = 1_000 * 60 * 60 * 24 * 37;
+
 
 const LessonsPage = ({
   units,
@@ -253,6 +254,14 @@ const WEB_APP_PATHS = [
 ];
 const DATA_PER_PG = 6;
 
+function getIsUnitNew(releaseDate, now) {
+  const releaseDateMilliseconds = new Date(releaseDate).getTime();
+  const endDateOfNewReleaseMs = releaseDateMilliseconds + THIRTY_SEVEN_DAYS;
+  const isNew = (now > releaseDateMilliseconds) && (now < endDateOfNewReleaseMs);
+
+  return isNew;
+}
+
 export async function getStaticProps() {
   try {
     await connectToMongodb();
@@ -268,6 +277,7 @@ export async function getStaticProps() {
     let lessonPartsForUI = [];
     let webApps = []
     const todaysDate = new Date();
+    const now = todaysDate.getTime();
 
     // getting the lessons and web-apps from each unit
     for (let lesson of lessons) {
@@ -279,6 +289,7 @@ export async function getStaticProps() {
       const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
       const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
 
+      // retrieve the web apps of the units
       if (isThereAWebApp) {
         for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
           let multiMediaItem = multiMediaArr[numIteration]
@@ -311,6 +322,7 @@ export async function getStaticProps() {
       let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
       let lessonPartsFromClassRoomObj = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
 
+      // retrieve the individual lessons
       if (lessonParts?.length) {
         for (let lsnStatus of lesson.LsnStatuses) {
           const wasLessonReleased = moment(todaysDate).format('YYYY-MM-DD') > moment(lsnStatus.unit_release_date).format('YYYY-MM-DD');
@@ -357,7 +369,9 @@ export async function getStaticProps() {
         ...lesson,
         individualLessonsNum,
         ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
+        isNew: getIsUnitNew(lesson.ReleaseDate, now)
       };
+
 
       delete lessonObj.LsnStatuses;
 
