@@ -54,6 +54,24 @@ const papers = [
 ];
 const releases = [
   {
+    newReleasePath: '/lessons/en-US/14',
+    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/BalancingAct_en-US/NSF_logo_sm.png',
+    sponsorImgAlt: 'gp_sponsor_image',
+    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BalancingAct_en-US/BalancingAct_Unit-4-card-(1).png',
+    releaseInfoTxt: "National Science Foundation",
+    customCss: 'col-12 col-md-3 col-lg-4 mt-3 mt-md-0',
+    sponsorImgClassName: 'w-100 sponsor-img-release',
+  },
+  {
+    newReleasePath: '/lessons/en-NZ/15',
+    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/PowerfulSolns_en-NZ/MBIE-logo-(1).jpg',
+    sponsorImgAlt: 'gp_sponsor_image',
+    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/PowerfulSolns_en-NZ/PowerfulSolns_unit-6-card.png',
+    releaseInfoTxt: "Ministry of Business, Innovation and Employment (MBIE) of New Zealand",
+    customCss: 'col-12 col-md-3 col-lg-4 mt-3 mt-md-0',
+    sponsorImgClassName: 'w-100 sponsor-img-release',
+  },
+  {
     newReleasePath: '/lessons/en-US/12',
     sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/HybridZones_en-US/NSF_logo_sm.png ',
     sponsorImgAlt: 'gp_sponsor_image',
@@ -61,24 +79,6 @@ const releases = [
     releaseInfoTxt: "National Science Foundation",
     customCss: 'col-12 col-md-3 col-lg-4 mt-3',
     sponsorImgClassName: 'w-100 sci-journey-sponsor-img',
-  },
-  {
-    newReleasePath: '/lessons/en-US/10',
-    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/SciJourneys_en-US/if-then_logo.png',
-    sponsorImgAlt: 'gp_sponsor_image',
-    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/SciJourneys_en-US/SciJourneys-UnitAssets-2-card_FINAL.png',
-    releaseInfoTxt: "An initiative of Lyda Hill Philanthropies",
-    customCss: 'col-12 col-md-3 col-lg-4 mt-3',
-    sponsorImgClassName: 'w-100 sci-journey-sponsor-img',
-  },
-  {
-    newReleasePath: '/lessons/en-US/8',
-    sponsorImgPath: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/JTF_logo_wtagline.png',
-    sponsorImgAlt: 'gp_sponsor_image',
-    NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/BioInspired_en-US/bioinspired_assets-3-card.png',
-    releaseInfoTxt: "Dr. Emilie Snell-Rood's Lab at the University of Minnesota",
-    customCss: 'col-12 col-md-3 col-lg-4 mt-3 mt-md-0 pt-0 pt-md-3 pt-xxl-4',
-    sponsorImgClassName: 'w-100 sponsor-img-release',
   },
   {
     newReleasePath: '/lessons/en-US/13',
@@ -89,7 +89,6 @@ const releases = [
     customCss: 'col-12 col-md-3 col-lg-4 mt-3 mt-md-0',
     sponsorImgClassName: 'w-100 sponsor-img-release',
   },
-
 ];
 
 export default function Home() {
