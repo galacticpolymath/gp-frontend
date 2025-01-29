@@ -31,11 +31,14 @@ const UnshowableLesson = () => (
         <p style={{ fontWeight: 700 }} className="text-center">Not shown on Lessons page.</p>
     </div>
 );
+const THIRTY_SEVEN_DAYS = 1_000 * 60 * 60 * 24 * 37;
 
 const GpUnits = ({
     units,
     didErrorOccur,
 }) => {
+    const now = Date.now();
+
     return (
         <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black mb-2 mb-sm-4 text-left mt-4 mt-sm-0 mx-4'>
@@ -59,6 +62,18 @@ const GpUnits = ({
             {!!units?.length && (
                 <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                     {units.map((lesson, index) => {
+                        const releaseDateMilliseconds = new Date(lesson.ReleaseDate).getTime();
+                        const endDateOfNewReleaseMs = releaseDateMilliseconds + THIRTY_SEVEN_DAYS;
+                        const isNew = (now > releaseDateMilliseconds) && (now < endDateOfNewReleaseMs);
+                        let PillComp = null;
+
+                        if (isNew) {
+                            PillComp = <Pill txt='NEW' pillColor='#0085C9' />
+                        } else if ((lesson.PublicationStatus === "Beta") || (lesson.PublicationStatus === "Draft")) {
+                            PillComp = <Pill />
+                        }
+
+
                         return (
                             (lesson.PublicationStatus === 'Proto') ?
                                 <UnshowableLesson key={index} />
@@ -67,7 +82,7 @@ const GpUnits = ({
                                         key={lesson._id}
                                         lesson={lesson}
                                         lessonImgSrc={getLessonImgSrc(lesson)}
-                                        BetaPillComp={(lesson.PublicationStatus === "Beta") || (lesson.PublicationStatus === "Draft") ? <Pill /> : null}
+                                        PillComp={PillComp}
                                     />
                                 )
                         );
