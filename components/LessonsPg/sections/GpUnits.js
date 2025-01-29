@@ -39,7 +39,7 @@ const GpUnits = ({
     return (
         <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black mb-2 mb-sm-4 text-left mt-4 mt-sm-0 mx-4'>
-                <div className="d-flex">
+                <div className="d-flex flex-column flex-sm-row">
                     <Image
                         src={UnitIconSvg}
                         style={{ height: 'fit-content' }}
