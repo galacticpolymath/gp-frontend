@@ -42,6 +42,17 @@ const NAV_CLASSNAMES = [
   "sectionTitleLi",
   "sectionTitleSpan",
 ];
+const SORT_ORDER = {
+  "Overview": 0,
+  "Lesson Preview": 1,
+  "Teaching Materials": 2,
+  "Feedback": 3,
+  "Background": 4,
+  "Learning Standards": 5,
+  "Credits": 6,
+  "Acknowledgments": 7,
+  "Version Notes": 8
+};
 
 const getSectionDotsDefaultVal = (sectionComps) =>
   sectionComps.map((section, index) => {
@@ -84,6 +95,10 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 };
 
 const LessonDetails = ({ lesson }) => {
+  useEffect(() => {
+    console.log("lesson, sup there: ", lesson);
+  });
+
   const router = useRouter();
   const { _isUserTeacher } = useContext(UserContext);
   const { status, data } = useSession();
@@ -233,7 +248,18 @@ const LessonDetails = ({ lesson }) => {
       lesson.GradesOrYears
     );
   }, []);
+  sectionComps.sort((sectionA, sectionB) => {
+    const sectionASortOrderNum = SORT_ORDER[sectionA.SectionTitle.replace(/[0-9.]/g, '')]
+    const sectioBSortOrderNum = SORT_ORDER[sectionB.SectionTitle.replace(/[0-9.]/g, '')]
 
+    return sectionASortOrderNum - sectioBSortOrderNum;
+  })
+  let _sections = useMemo(
+    () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
+    []
+  );
+
+  console.log("_sections, sup there: ", _sections)
   const _dots = useMemo(
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []
@@ -342,11 +368,6 @@ const LessonDetails = ({ lesson }) => {
       });
     }
   };
-
-  const _sections = useMemo(
-    () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
-    []
-  );
 
   useEffect(() => {
     if (willGoToTargetSection) {
