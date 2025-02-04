@@ -27,8 +27,8 @@ import Image from 'next/image.js';
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
 };
-const THIRTY_SEVEN_DAYS = 1_000 * 60 * 60 * 24 * 37;
 
+const THIRTY_SEVEN_DAYS = 1_000 * 60 * 60 * 24 * 37;
 
 const LessonsPage = ({
   units,
@@ -369,9 +369,8 @@ export async function getStaticProps() {
         ...lesson,
         individualLessonsNum,
         ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
-        isNew: getIsUnitNew(lesson.ReleaseDate, now)
+        isNew: getIsUnitNew(lesson.ReleaseDate, now),
       };
-
 
       delete lessonObj.LsnStatuses;
 

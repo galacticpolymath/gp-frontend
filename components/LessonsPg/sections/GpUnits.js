@@ -31,15 +31,11 @@ const UnshowableLesson = () => (
         <p style={{ fontWeight: 700 }} className="text-center">Not shown on Lessons page.</p>
     </div>
 );
-const THIRTY_SEVEN_DAYS = 1_000 * 60 * 60 * 24 * 37;
 
 const GpUnits = ({
     units,
     didErrorOccur,
 }) => {
-    const now = Date.now();
-    const endDateOfANewUnitMs = now + THIRTY_SEVEN_DAYS;
-
     return (
         <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black mb-2 mb-sm-4 text-left mt-4 mt-sm-0 mx-4'>
@@ -67,11 +63,10 @@ const GpUnits = ({
                         let PillComp = null;
 
                         if (lesson.isNew) {
-                            PillComp = <Pill txt='NEW' color='#0085C9' />
+                            PillComp = <Pill txt='NEW' color='#0085C9' />;
                         } else if ((lesson.PublicationStatus === "Beta") || (lesson.PublicationStatus === "Draft")) {
-                            PillComp = <Pill />
+                            PillComp = <Pill />;
                         }
-
 
                         return (
                             (lesson.PublicationStatus === 'Proto') ?

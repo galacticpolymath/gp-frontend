@@ -45,11 +45,6 @@ export default async function handler(request, response) {
         deleteMailingListConfirmationByEmailPromise,
       ]);
 
-    console.log(
-      "deleteMailingListConfirmationByEmailResult, yo there: ",
-      deleteMailingListConfirmationByEmailResult
-    );
-
     if (!mailingListContact) {
       throw new Error("The target user was not found on the mailing list.");
     }

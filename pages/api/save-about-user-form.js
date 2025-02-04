@@ -25,7 +25,6 @@ export default async function handler(request, response) {
         }
 
         const payload = await getJwtPayloadPromise(request.headers.authorization);
-        console.log("hey there payload: ", payload);
 
         if (!payload) {
             throw new Error(
