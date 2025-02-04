@@ -72,7 +72,6 @@ if (!Lessons) {
     GdriveDirURL: String,
     RebuildAllMaterials: Boolean,
     ReleaseDate: Date,
-    NewReleaseImg: { type: String, required: true },
     Title: { type: String, required: true },
     Subtitle: String,
     SponsorName: [String],
