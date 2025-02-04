@@ -6,6 +6,15 @@ $borderThickness: 1px;
 $borderColor: darkgray;
 $toolTipColor: #f0f4ff;
 
+.lessons-pg-sec {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  @media (min-width: 576px) {
+    margin-left: 3.5rem;
+    margin-right: 3.5rem;
+  }
+}
+
 .loading-bubbles {
   transform: scale(150%);
 }
@@ -308,7 +317,7 @@ $toolTipColor: #f0f4ff;
 .sign-in-teacher-materials-btn {
   background: linear-gradient(180deg, #2c83c3 -34.09%, #9c2cc3 195.45%);
   border-radius: 27px;
-  
+
   @media (min-width: 576px) {
     height: 44px;
     width: 275px;
@@ -774,9 +783,9 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.sponsor-container-lessons-pg{
+.sponsor-container-lessons-pg {
   width: auto;
-  
+
   @media (min-width: 576px) {
     width: 210px;
   }

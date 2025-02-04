@@ -216,7 +216,6 @@ const MailingListConfirmation = () => {
 
   useEffect(() => {
     (async () => {
-      console.log("yo there bacon: status: ", status);
       if (
         status === "unauthenticated" &&
         wasStatusRetrievalCompleted.current === false

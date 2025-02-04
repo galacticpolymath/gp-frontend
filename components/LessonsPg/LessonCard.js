@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useScrollCardIntoView } from '../../customHooks/useScrollCardIntoView';
 
 // MAKE COMPONENT EXTENABLE FOR THE IMAGE
-const LessonCard = ({ lesson, BetaPillComp = null, lessonImgSrc }) => {
+const LessonCard = ({ lesson, PillComp = null, lessonImgSrc }) => {
   const {
     _id,
     locale,
@@ -38,7 +38,7 @@ const LessonCard = ({ lesson, BetaPillComp = null, lessonImgSrc }) => {
           }}
           priority
         />
-        {BetaPillComp}
+        {PillComp}
       </div>
       <div className='pt-2 ps-sm-3 d-grid'>
         <h3 style={{ textDecoration: 'none' }} className='w-light text-black mb-0 no-underline-on-hover'>{Title}</h3>

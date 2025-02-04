@@ -39,7 +39,7 @@ const GpUnits = ({
     return (
         <section className="lessonsSection pt-1">
             <div className='ms-sm-4 galactic-black mb-2 mb-sm-4 text-left mt-4 mt-sm-0 mx-4'>
-                <div className="d-flex">
+                <div className="d-flex flex-column flex-sm-row">
                     <Image
                         src={UnitIconSvg}
                         style={{ height: 'fit-content' }}
@@ -59,6 +59,15 @@ const GpUnits = ({
             {!!units?.length && (
                 <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                     {units.map((lesson, index) => {
+                        console.log("unit, sup there: ", lesson.isNew);
+                        let PillComp = null;
+
+                        if (lesson.isNew) {
+                            PillComp = <Pill txt='NEW' color='#0085C9' />;
+                        } else if ((lesson.PublicationStatus === "Beta") || (lesson.PublicationStatus === "Draft")) {
+                            PillComp = <Pill />;
+                        }
+
                         return (
                             (lesson.PublicationStatus === 'Proto') ?
                                 <UnshowableLesson key={index} />
@@ -67,7 +76,7 @@ const GpUnits = ({
                                         key={lesson._id}
                                         lesson={lesson}
                                         lessonImgSrc={getLessonImgSrc(lesson)}
-                                        BetaPillComp={(lesson.PublicationStatus === "Beta") || (lesson.PublicationStatus === "Draft") ? <Pill /> : null}
+                                        PillComp={PillComp}
                                     />
                                 )
                         );

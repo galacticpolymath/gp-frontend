@@ -28,6 +28,8 @@ const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
 };
 
+const THIRTY_SEVEN_DAYS = 1_000 * 60 * 60 * 24 * 37;
+
 const LessonsPage = ({
   units,
   lessonsObj,
@@ -62,9 +64,9 @@ const LessonsPage = ({
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
         }}
-        className="p-4"
+        className="py-sm-4 py-5"
       >
-        <div className="text-white container">
+        <div className="text-white lessons-pg-sec">
           <h1 className='responseiveH1'>Free, Interdisciplinary Lessons</h1>
           <p className='col-sm-12 col-md-10 col-lg-8 col-xl-7'>
             We strive to create mind-expanding learning experiences that a non-specialist can teach in <em>any G5-12 classroom</em> with 15 minutes of prep time!
@@ -72,7 +74,7 @@ const LessonsPage = ({
         </div>
       </section>
       <section className='w-100 my-4 my-md-3'>
-        <div className="container sponsors-container-lessons">
+        <div className="sponsors-container-lessons lessons-pg-sec">
           <h4 className="text-muted mb-3 mb-sm-5 text-left mt-2 mt-sm-4 pe-lg-5">
             Made open access by these funding organizations and research institutions:
           </h4>
@@ -82,7 +84,7 @@ const LessonsPage = ({
       <section className="mb-3 mt-5">
         <div className='border-top border-bottom' style={{ backgroundColor: "#F0F4FF" }}>
           <div
-            className="w-100 container px-3 px-xxl-0 px-sm-5 py-2 lessons-nav-section-container"
+            className="w-100 container lessons-pg-sec py-2 lessons-nav-section-container"
           >
             <h4 className="p-0 mb-0">
               <span className='h-100'>
@@ -92,7 +94,7 @@ const LessonsPage = ({
                 Navigate To:
               </span>
             </h4>
-            <section className="d-flex flex-wrap justify-content-sm-start pt-3 ps-xxl-2">
+            <section style={{ width: "85%" }} className="d-flex flex-wrap justify-content-sm-start pt-3">
               <div className="m-1 m-md-0 mx-md-2 p-1 p-sm-0 d-flex justify-content-center align-items-center">
                 <div className="bg-white nav-section-btn rounded">
                   <a href="#gp-units" style={{ background: "none" }} className='no-link-decoration txt-underline-on-hover w-100 h-100 d-flex flex-column justify-content-center align-items-center no-btn-styles'>
@@ -155,14 +157,14 @@ const LessonsPage = ({
         </div>
       </section>
       <section>
-        <div className='container'>
+        <div className='lessons-pg-sec'>
           <GpUnits
             units={units}
             didErrorOccur={didErrorOccur}
           />
           <section className="mb-5 pt-2 lessonsSection lessons-section-border-top">
-            <section className="headerSecLessonsPg d-flex">
-              <section className="d-flex justify-content-center align-items-center">
+            <section className="headerSecLessonsPg d-flex flex-column flex-sm-row">
+              <section className="d-flex justify-content-sm-center align-items-sm-center">
                 <img src="GP_bubbleLogo300px.png" alt="Apps_Icon" style={{ objectFit: 'contain', width: 100, height: 100 }} />
               </section>
               <section className="d-flex justify-content-center align-items-center">
@@ -252,6 +254,14 @@ const WEB_APP_PATHS = [
 ];
 const DATA_PER_PG = 6;
 
+function getIsUnitNew(releaseDate, now) {
+  const releaseDateMilliseconds = new Date(releaseDate).getTime();
+  const endDateOfNewReleaseMs = releaseDateMilliseconds + THIRTY_SEVEN_DAYS;
+  const isNew = (now > releaseDateMilliseconds) && (now < endDateOfNewReleaseMs);
+
+  return isNew;
+}
+
 export async function getStaticProps() {
   try {
     await connectToMongodb();
@@ -267,6 +277,7 @@ export async function getStaticProps() {
     let lessonPartsForUI = [];
     let webApps = []
     const todaysDate = new Date();
+    const now = todaysDate.getTime();
 
     // getting the lessons and web-apps from each unit
     for (let lesson of lessons) {
@@ -278,6 +289,7 @@ export async function getStaticProps() {
       const multiMediaWebAppNoFalsyVals = multiMediaArr?.length ? multiMediaArr.filter(multiMedia => multiMedia) : [];
       const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length ? multiMediaWebAppNoFalsyVals.some(({ type }) => (type === 'web-app') || (type === 'video')) : false;
 
+      // retrieve the web apps of the units
       if (isThereAWebApp) {
         for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
           let multiMediaItem = multiMediaArr[numIteration]
@@ -310,6 +322,7 @@ export async function getStaticProps() {
       let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
       let lessonPartsFromClassRoomObj = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
 
+      // retrieve the individual lessons
       if (lessonParts?.length) {
         for (let lsnStatus of lesson.LsnStatuses) {
           const wasLessonReleased = moment(todaysDate).format('YYYY-MM-DD') > moment(lsnStatus.unit_release_date).format('YYYY-MM-DD');
@@ -356,6 +369,7 @@ export async function getStaticProps() {
         ...lesson,
         individualLessonsNum,
         ReleaseDate: moment(lesson.ReleaseDate).format('YYYY-MM-DD'),
+        isNew: getIsUnitNew(lesson.ReleaseDate, now),
       };
 
       delete lessonObj.LsnStatuses;

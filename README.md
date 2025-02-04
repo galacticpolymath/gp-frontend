@@ -1,6 +1,7 @@
 ## API Documentation
 
 This README provides instructions on how to access the API documentation for this project. The API documentation is powered by Swagger UI and is available on your local development server.
+
 ## Prerequisites
 
 * Git
@@ -30,7 +31,7 @@ This README provides instructions on how to access the API documentation for thi
 Once your local development server is running, you can access the API documentation by following these steps:
 
 1. Open your web browser.
-3. Navigate to: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
+2. Navigate to: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
 
 This will open the Swagger UI interface, where you can explore and interact with the API endpoints.## Features of the API Documentation
 
@@ -43,9 +44,10 @@ This will open the Swagger UI interface, where you can explore and interact with
 
 ## Troubleshooting
 
-If you encounter any issues:1. Ensure your development server is running.
+If you encounter any issues:
 
-1. Check that you're using the correct port (default is 3000).
-2. Clear your browser cache or try in an incognito/private window.
+1. Ensure your development server is running.
+2. Check that you're using the correct port (default is 3000).
+3. Clear your browser cache or try in an incognito/private window.
 
 For any further assistance, please open an issue in the GitHub repository.
