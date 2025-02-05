@@ -254,6 +254,9 @@ const LessonDetails = ({ lesson }) => {
 
     return sectionASortOrderNum - sectioBSortOrderNum;
   })
+
+  console.log("sectionComps, yo there: ", sectionComps);
+
   let _sections = useMemo(
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
     []
