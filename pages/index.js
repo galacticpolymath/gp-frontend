@@ -394,7 +394,17 @@ export const getStaticProps = async () => {
       throw new Error("Failed to connect to the database.");
     }
 
-    const { data, wasSuccessful: wasLessonsRetrievalSuccessful } = await retrieveLessons({ PublicationStatus: "Live" }, { numID: 1, SponsorLogo: 1, SponsorName: 1, locale: 1, _id: 0 }, 4, { ReleaseDate: -1 })
+    const { data, wasSuccessful: wasLessonsRetrievalSuccessful } = await retrieveLessons(
+      {
+        PublicationStatus: "Live"
+      }, {
+      numID: 1,
+      UnitCard: 1,
+      SponsorLogo: 1,
+      SponsorName: 1,
+      locale: 1,
+      _id: 0
+    }, 4, { ReleaseDate: -1 })
 
     if (!wasLessonsRetrievalSuccessful || !data?.length) {
       throw new Error("Failed to rerieve lessons.")

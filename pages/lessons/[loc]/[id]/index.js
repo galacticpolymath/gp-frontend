@@ -238,26 +238,32 @@ const LessonDetails = ({ lesson }) => {
     );
   }, []);
 
-  // find the index of the teaching's material section, call it x
-  // get the feedback section, the object
-  // get the insertion index, x + 1 
-  // delete the feedback section from the sectionComps
-  // insert the feedback section in front of the teaching materials section
-
-
-  sectionComps.sort((sectionA, sectionB) => {
-    const sectionASortOrderNum = SORT_ORDER[sectionA.SectionTitle.replace(/[0-9.]/g, '')]
-    const sectioBSortOrderNum = SORT_ORDER[sectionB.SectionTitle.replace(/[0-9.]/g, '')]
-
-    return sectionASortOrderNum - sectioBSortOrderNum;
-  })
-
-  console.log("sectionComps, yo there: ", sectionComps);
-
   sectionComps = useMemo(() => {
-    const teachingMaterialsSecIndex = sectionComps.find(sectionComp => {
-      const isTeachersMaterialsSec = sectionComp.SectionTitle === "";
-    })
+    const sectionCompsCopy = structuredClone(sectionComps);
+    const teachingMaterialsSecIndex =
+      sectionCompsCopy.findIndex(sectionComp => {
+        const sectionTitle = sectionComp.SectionTitle.replace(/[0-9.]/g, '').trim();
+
+        return sectionTitle === "Teaching Materials"
+      })
+    const feedbackSecIndex =
+      sectionCompsCopy.findIndex(sectionComp => {
+        const sectionTitle = sectionComp.SectionTitle.replace(/[0-9.]/g, '').trim();
+
+        return sectionTitle === "Feedback"
+      });
+    if (teachingMaterialsSecIndex === -1 || feedbackSecIndex === -1) {
+      console.error("Can't find the Teacher Materials section or the feedback section.");
+      return sectionCompsCopy;
+    }
+
+    const feedBackSec = sectionCompsCopy[feedbackSecIndex]
+
+    sectionCompsCopy.splice(feedbackSecIndex, 1)
+
+    sectionCompsCopy.splice(teachingMaterialsSecIndex + 1, 1, feedBackSec)
+
+    return sectionCompsCopy
   }, [])
 
   let _sections = useMemo(
