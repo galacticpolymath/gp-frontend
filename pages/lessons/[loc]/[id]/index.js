@@ -42,17 +42,6 @@ const NAV_CLASSNAMES = [
   "sectionTitleLi",
   "sectionTitleSpan",
 ];
-const SORT_ORDER = {
-  "Overview": 0,
-  "Lesson Preview": 1,
-  "Teaching Materials": 2,
-  "Feedback": 3,
-  "Background": 4,
-  "Learning Standards": 5,
-  "Credits": 6,
-  "Acknowledgments": 7,
-  "Version Notes": 8
-};
 
 const getSectionDotsDefaultVal = (sectionComps) =>
   sectionComps.map((section, index) => {
@@ -248,6 +237,14 @@ const LessonDetails = ({ lesson }) => {
       lesson.GradesOrYears
     );
   }, []);
+
+  // find the index of the teaching's material section, call it x
+  // get the feedback section, the object
+  // get the insertion index, x + 1 
+  // delete the feedback section from the sectionComps
+  // insert the feedback section in front of the teaching materials section
+
+
   sectionComps.sort((sectionA, sectionB) => {
     const sectionASortOrderNum = SORT_ORDER[sectionA.SectionTitle.replace(/[0-9.]/g, '')]
     const sectioBSortOrderNum = SORT_ORDER[sectionB.SectionTitle.replace(/[0-9.]/g, '')]
@@ -256,6 +253,12 @@ const LessonDetails = ({ lesson }) => {
   })
 
   console.log("sectionComps, yo there: ", sectionComps);
+
+  sectionComps = useMemo(() => {
+    const teachingMaterialsSecIndex = sectionComps.find(sectionComp => {
+      const isTeachersMaterialsSec = sectionComp.SectionTitle === "";
+    })
+  }, [])
 
   let _sections = useMemo(
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
