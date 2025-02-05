@@ -104,6 +104,11 @@ export default function Home({ latestReleases }) {
   };
 
   useEffect(() => {
+    latestReleases.forEach((release) => {
+      const lessonLink = `/lessons/${release.locale}/${release.numID}`;
+      const sponsorLogo = release.SponsorLogo[0]
+      const sponsorDescription = release.SponsorName[0]
+    })
     console.log("latestReleases, hey there: ", latestReleases)
   });
 
@@ -184,11 +189,23 @@ export default function Home({ latestReleases }) {
               dotSecClassName='d-flex justify-content-center align-items-center pb-3 pt-sm-2 pt-md-3'
               intervalTimeMs={4_000}
             >
-              {releases.map(({ NewReleaseImage_src, newReleasePath, sponsorImgPath, sponsorImgAlt, releaseInfoTxt, customCss, sponsorImgClassName }, index) => (
-                <div key={index} className='autoCarouselItem'>
-                  <NewRelease sponsorImgClassName={sponsorImgClassName} releaseInfoTxt={releaseInfoTxt} NewReleaseImage_src={NewReleaseImage_src} customCss={customCss} newReleasePath={newReleasePath} sponsorImgPath={sponsorImgPath} sponsorImgAlt={sponsorImgAlt} />
-                </div>
-              ))}
+              {latestReleases.map((release, index) => {
+                console.log("release, yo there: ", release);
+                const lessonLink = `/lessons/${release.locale}/${release.numID}`;
+                const sponsorLogo = release?.SponsorLogo?.[0] ?? ''
+                const sponsorDescription = release?.SponsorName?.[0] ?? ''
+
+                return (
+                  <div key={index} className='autoCarouselItem'>
+                    <NewRelease
+                      releaseInfoTxt={sponsorDescription}
+                      NewReleaseImage_src={release.UnitCard}
+                      newReleasePath={lessonLink}
+                      sponsorImgPath={sponsorLogo}
+                    />
+                  </div>
+                )
+              })}
             </CarouselContainer>
           </div>
 
