@@ -17,6 +17,9 @@ import SponsorsMarquee from '../components/Sponsors';
 import NewRelease from '../components/Home/NewRelease';
 import { FaSchool } from "react-icons/fa";
 import { PiHandshake } from "react-icons/pi";
+import { connectToMongodb } from '../backend/utils/connection';
+import { retrieveLessons } from '../backend/services/lessonsServices';
+import { useEffect } from 'react';
 
 const papers = [
   {
@@ -77,8 +80,8 @@ const releases = [
     sponsorImgAlt: 'gp_sponsor_image',
     NewReleaseImage_src: 'https://storage.googleapis.com/gp-cloud/lessons/HybridZones_en-US/HybridZones_unit-assets-4-card-(1).png',
     releaseInfoTxt: "National Science Foundation",
-    customCss: 'col-12 col-md-3 col-lg-4 mt-3',
-    sponsorImgClassName: 'w-100 sci-journey-sponsor-img',
+    customCss: 'col-12 col-md-3 col-lg-4 mt-3 mt-md-0',
+    sponsorImgClassName: 'w-100 sponsor-img-release',
   },
   {
     newReleasePath: '/lessons/en-US/13',
@@ -91,7 +94,7 @@ const releases = [
   },
 ];
 
-export default function Home() {
+export default function Home({ latestReleases }) {
   const layoutProps = {
     title: 'Galactic Polymath - Home Page',
     description: 'We are an education studio. We translate current research into creative, interdisciplinary lessons for grades 5+ that are free for everyone.',
@@ -99,6 +102,10 @@ export default function Home() {
     imgSrc: 'https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png',
     keywords: 'Galactic Polymath, Galactic, Polymath, education, studio, education studio, education studio for kids, education studio for children, education studio for teens, education studio for teenagers, education studio for young adults, education studio for young people, education studio for youth, education studio for adolescents, education studio for parents, education studio for teachers, education studio for counselors, education studio for schools, education studio for school districts.',
   };
+
+  useEffect(() => {
+    console.log("latestReleases, hey there: ", latestReleases)
+  });
 
   return (
     <Layout {...layoutProps}>
@@ -330,10 +337,8 @@ export default function Home() {
           {/* For Teachers and Clients boxes container */}
           <div className='container my-5'>
             <div className='row g-5 justify-content-center align-content-start mx-1'>
-
               {/* Teachers box */}
               <div className='d-grid col-12 col-md-5 bg-white rounded-3 p-4 me-md-5'>
-                {/* <div className='d-grid '> */}
                 <h2 className="d-block">For Teachers</h2>
                 <ul className="fs-4 align-self-start">
                   <li>Get free, high-quality lessons!</li>
@@ -345,8 +350,6 @@ export default function Home() {
                     Get lessons
                   </Link>
                 </div>
-                {/* </div> */}
-
               </div>
 
               {/* Clients box */}
@@ -374,3 +377,41 @@ export default function Home() {
     </Layout>
   );
 }
+
+// MAIN GOAL: get the 4 latest lessons and display them onto the dom
+// -pass an array that will contain these four
+// -the four latest lessons are attained
+// -only get four of them
+// -query through all of the lessons, retrieved them by the latest lessons
+
+
+// GOAL: use the SponsorBy of the lesson model to display the text 
+export const getStaticProps = async () => {
+  try {
+    const { wasSuccessful } = await connectToMongodb();
+
+    if (!wasSuccessful) {
+      throw new Error("Failed to connect to the database.");
+    }
+
+    const { data, wasSuccessful: wasLessonsRetrievalSuccessful } = await retrieveLessons({ PublicationStatus: "Live" }, { numID: 1, SponsorLogo: 1, SponsorName: 1, locale: 1, _id: 0 }, 4, { ReleaseDate: -1 })
+
+    if (!wasLessonsRetrievalSuccessful || !data?.length) {
+      throw new Error("Failed to rerieve lessons.")
+    }
+
+    return {
+      props: {
+        latestReleases: data
+      }
+    }
+  } catch (error) {
+    console.error("Failed to get the target new releases. Reason: ", error);
+
+    return {
+      props: {
+        latestReleases: []
+      }
+    }
+  }
+};

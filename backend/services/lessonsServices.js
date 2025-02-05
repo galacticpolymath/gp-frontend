@@ -77,9 +77,9 @@ const createFilterObj = keysAndValsForQueryArr => {
   }
 };
 
-const retrieveLessons = async (filterObj = {}, projectionObj = {}) => {
+const retrieveLessons = async (filterObj = {}, projectionObj = {}, limit = 0, sort = {}) => {
   try {
-    const lessons = await Lessons.find(filterObj, projectionObj).lean();
+    const lessons = await Lessons.find(filterObj, projectionObj).sort(sort).limit(limit).lean();
 
     return { wasSuccessful: true, data: lessons };
   } catch (error) {

@@ -84,6 +84,10 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 };
 
 const LessonDetails = ({ lesson }) => {
+  useEffect(() => {
+    console.log("lesson, sup there: ", lesson);
+  });
+
   const router = useRouter();
   const { _isUserTeacher } = useContext(UserContext);
   const { status, data } = useSession();
@@ -234,6 +238,34 @@ const LessonDetails = ({ lesson }) => {
     );
   }, []);
 
+  // find the index of the teaching's material section, call it x
+  // get the feedback section, the object
+  // get the insertion index, x + 1 
+  // delete the feedback section from the sectionComps
+  // insert the feedback section in front of the teaching materials section
+
+
+  sectionComps.sort((sectionA, sectionB) => {
+    const sectionASortOrderNum = SORT_ORDER[sectionA.SectionTitle.replace(/[0-9.]/g, '')]
+    const sectioBSortOrderNum = SORT_ORDER[sectionB.SectionTitle.replace(/[0-9.]/g, '')]
+
+    return sectionASortOrderNum - sectioBSortOrderNum;
+  })
+
+  console.log("sectionComps, yo there: ", sectionComps);
+
+  sectionComps = useMemo(() => {
+    const teachingMaterialsSecIndex = sectionComps.find(sectionComp => {
+      const isTeachersMaterialsSec = sectionComp.SectionTitle === "";
+    })
+  }, [])
+
+  let _sections = useMemo(
+    () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
+    []
+  );
+
+  console.log("_sections, sup there: ", _sections)
   const _dots = useMemo(
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []
@@ -342,11 +374,6 @@ const LessonDetails = ({ lesson }) => {
       });
     }
   };
-
-  const _sections = useMemo(
-    () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
-    []
-  );
 
   useEffect(() => {
     if (willGoToTargetSection) {
