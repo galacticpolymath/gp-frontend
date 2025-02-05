@@ -103,15 +103,6 @@ export default function Home({ latestReleases }) {
     keywords: 'Galactic Polymath, Galactic, Polymath, education, studio, education studio, education studio for kids, education studio for children, education studio for teens, education studio for teenagers, education studio for young adults, education studio for young people, education studio for youth, education studio for adolescents, education studio for parents, education studio for teachers, education studio for counselors, education studio for schools, education studio for school districts.',
   };
 
-  useEffect(() => {
-    latestReleases.forEach((release) => {
-      const lessonLink = `/lessons/${release.locale}/${release.numID}`;
-      const sponsorLogo = release.SponsorLogo[0]
-      const sponsorDescription = release.SponsorName[0]
-    })
-    console.log("latestReleases, hey there: ", latestReleases)
-  });
-
   return (
     <Layout {...layoutProps}>
       <Hero
