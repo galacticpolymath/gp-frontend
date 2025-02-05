@@ -395,14 +395,6 @@ export default function Home({ latestReleases }) {
   );
 }
 
-// MAIN GOAL: get the 4 latest lessons and display them onto the dom
-// -pass an array that will contain these four
-// -the four latest lessons are attained
-// -only get four of them
-// -query through all of the lessons, retrieved them by the latest lessons
-
-
-// GOAL: use the SponsorBy of the lesson model to display the text 
 export const getStaticProps = async () => {
   try {
     const { wasSuccessful } = await connectToMongodb();
