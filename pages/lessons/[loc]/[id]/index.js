@@ -632,6 +632,14 @@ export const getStaticProps = async (arg) => {
       params: { id, loc },
     } = arg;
 
+    // GOAL: make the standards link click to work, take the user to target standards
+
+    // GOAL: get the standards for the overview section
+    // -the standards are displayed 
+    // -insert that into the standards prop of the overview section
+    // -the standards are inserted in the overview section
+    // -the standards are retrieved
+
     await connectToMongodb();
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
