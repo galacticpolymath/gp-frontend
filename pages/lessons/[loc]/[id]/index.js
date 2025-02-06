@@ -640,6 +640,11 @@ export const getStaticProps = async (arg) => {
     // -the standards are inserted in the overview section
     // -the standards are retrieved
 
+    // NOTES: 
+    // -get the ids for each of the sections
+    // -get the names of the code 
+    // -send the following array with each element as: Section.standards.Data[i]
+
     await connectToMongodb();
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
@@ -649,6 +654,26 @@ export const getStaticProps = async (arg) => {
 
     if (!lessonToDisplayOntoUi || typeof lessonToDisplayOntoUi !== "object") {
       throw new Error("Lesson is not found.");
+    }
+
+    const standards = [];
+    // GOAL: CREATE the id of the standards section
+    // loop through standards.Data
+    // for each iteration of standards.Data do the following:
+    // -get the subject 
+    // -get the first value in the set array, call it x 
+    // -get x.dimensions
+    // -loop through x.dimensions:
+    // for the  current index of the iteration, create: {subject}-index = y
+    // access standardsGroup, loop through that: 
+    // -get the index, call it index-y
+    // -create the string: y-{index-y}, call it z
+    // return the following: { txtUI: standardsGroup[i].codes, id: z  }
+    // push it into an array, call it standards
+    if (lessonToDisplayOntoUi?.Section?.standards?.Data?.length) {
+      for (const x of lessonToDisplayOntoUi?.Section?.standards?.Data) {
+
+      }
     }
 
     let lessonParts = null;
