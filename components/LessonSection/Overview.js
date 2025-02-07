@@ -204,6 +204,7 @@ const Overview = ({
               return (
                 <li key={index} className="ms-sm-4">
                   <Link
+                    target="_blank"
                     href={accessibility.Link}
                     style={{
                       wordWrap: "break-word",
