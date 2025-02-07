@@ -169,7 +169,6 @@ export default function Home({ latestReleases }) {
               intervalTimeMs={4_000}
             >
               {latestReleases.map((release, index) => {
-                console.log("release, yo there: ", release);
                 const lessonLink = `/lessons/${release.locale}/${release.numID}`;
                 const sponsorLogo = release?.SponsorLogo?.[0] ?? "";
                 const sponsorDescription = release?.SponsorName?.[0] ?? "";

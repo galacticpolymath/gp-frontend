@@ -200,9 +200,9 @@ const Overview = ({
             </div>
           </section>
           <ul className="ps-2">
-            {Accessibility.map((accessibility) => {
+            {Accessibility.map((accessibility, index) => {
               return (
-                <li className="ms-sm-4">
+                <li key={index} className="ms-sm-4">
                   <Link
                     href={accessibility.Link}
                     style={{
