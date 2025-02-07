@@ -1,4 +1,8 @@
 /* eslint-disable no-console */
+/* eslint-disable indent */
+/* eslint-disable quotes */
+/* eslint-disable comma-dangle */
+
 import Link from "next/link";
 import PropTypes from "prop-types";
 import Image from "next/image";
@@ -6,7 +10,6 @@ import RichText from "../RichText";
 import { useMemo, useRef } from "react";
 import useLessonElementInView from "../../customHooks/useLessonElementInView";
 import Title from "./Title";
-import { useRouter } from "next/router";
 
 const Overview = ({
   LearningSummary,
@@ -21,37 +24,24 @@ const Overview = ({
   GradesOrYears,
   _sectionDots,
   SectionTitle,
-  standards = [
-    { id: "sdfsd", uiTxt: "some text text text" },
-    { id: "sdfsd", uiTxt: "some text text text" },
-    { id: "sdfsd", uiTxt: "some text text text" },
-    { id: "sdfsd", uiTxt: "some text text text" },
-  ],
+  Accessibility,
   ...titleProps
 }) => {
   const ref = useRef();
-  const router = useRouter();
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
   const _h2Id = SectionTitle.toLowerCase()
     .replace(/[0-9.]/g, "")
     .trim()
     .replace(/ /g, "-");
-  console.log("hey there, router: ", router);
-  const local = useMemo(() => {
-    const loc = router.query["loc"];
-
-    if (!loc.includes("-")) {
-      return "";
-    }
-
-    const locSplitted = loc.split("-");
-
-    if (locSplitted.length !== 2) {
-      return "";
-    }
-
-    return locSplitted[1];
-  }, []);
+  const isAccessibilityValid = useMemo(() => {
+    return (
+      Accessibility?.length &&
+      Accessibility.every(
+        (val) =>
+          typeof val.Description === "string" && typeof val.Link === "string"
+      )
+    );
+  });
 
   return (
     <div
@@ -178,22 +168,6 @@ const Overview = ({
               </div>
             </Link>
           )}
-          {standards?.length && <div className="py-3">
-            <div className="w-100 bg-white rounded-3 px-3 pt-2 pb-1">
-              <h5 className="d-flex">
-                Target Standards: {local.toUpperCase()} Curriculum
-              </h5>
-              <div className="row row-cols-1 row-cols-md-3 g-2 ps-3">
-                {standards.map((standard, index) => {
-                  return (
-                    <div className="col text-start" key={index}>
-                      <p className="mb-2">{standard.uiTxt}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>}
         </div>
       </div>
       <RichText className="mt-4" content={Text} />
@@ -215,23 +189,35 @@ const Overview = ({
           <RichText content={Description} />
         </>
       )}
-      {standards?.length && <section className="mt-2">
-        <section className="d-flex">
-          <div className="d-flex justify-content-center align-items-center">
-            <i className="bi bi-universal-access-circle fs-4"></i>
-          </div>
-          <div className="d-flex justify-content-center align-items-center">
-            <h5 className="mb-0 mt-0 me-0 ms-2">Accessibility Resources:</h5>
-          </div>
+      {isAccessibilityValid && (
+        <section className="mt-2">
+          <section className="d-flex">
+            <div className="d-flex justify-content-center align-items-center">
+              <i className="bi bi-universal-access-circle fs-4"></i>
+            </div>
+            <div className="d-flex justify-content-center align-items-center">
+              <h5 className="mb-0 mt-0 me-0 ms-2">Accessibility Resources:</h5>
+            </div>
+          </section>
+          <ul className="ps-2">
+            {Accessibility.map((accessibility) => {
+              return (
+                <li className="ms-sm-4">
+                  <Link
+                    href={accessibility.Link}
+                    style={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                    }}
+                  >
+                    {accessibility.Description}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </section>
-        <ul className="ps-5">
-          <li className="ms-sm-2">
-            <Link href="#" style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}>
-              www.afsdklja;lsdfj.com
-            </Link>
-          </li>
-        </ul>
-      </section>}
+      )}
     </div>
   );
 };

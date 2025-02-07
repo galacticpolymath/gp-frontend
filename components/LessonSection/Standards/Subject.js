@@ -80,7 +80,7 @@ const Subject = ({
                     key={groupIndex}
                     {...group}
                   />
-                )
+                );
               })}
             </div>
           );

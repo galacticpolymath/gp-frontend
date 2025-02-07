@@ -2,6 +2,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable indent */
+/* eslint-disable no-console */
 
 import Link from "next/link";
 import Image from "next/image";
@@ -76,6 +77,8 @@ export default function Home({ latestReleases }) {
     keywords:
       "Galactic Polymath, Galactic, Polymath, education, studio, education studio, education studio for kids, education studio for children, education studio for teens, education studio for teenagers, education studio for young adults, education studio for young people, education studio for youth, education studio for adolescents, education studio for parents, education studio for teachers, education studio for counselors, education studio for schools, education studio for school districts.",
   };
+
+  console.log("latestReleases, sup there: ", latestReleases);
 
   return (
     <Layout {...layoutProps}>
@@ -410,9 +413,12 @@ export default function Home({ latestReleases }) {
 
 export const getStaticProps = async () => {
   try {
-    const dbResult = await connectToMongodb();
-
-    console.log("dbResult, yo there: ", dbResult);
+    const dbResult = await connectToMongodb(
+      15_000,
+      0,
+      true,
+      true
+    );
 
     if (!dbResult.wasSuccessful) {
       throw new Error("Failed to connect to the database.");
