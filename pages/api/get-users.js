@@ -3,7 +3,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable quotes */
 import { getUsers, getUsersMailingListStatus } from "../../backend/services/userServices";
-import { connectToMongodb } from "../../backend/utils/connection";
+import { connectToDbWithoutChecks, connectToMongodb } from "../../backend/utils/connection";
+
+export const config = {
+    maxDuration: 45,
+};
 
 /**
  * @swagger
@@ -37,17 +41,10 @@ export default async function handler(request, response) {
             return response.status(405).json({ errMsg: "Incorrect request method. Must be a 'GET'." });
         }
 
-        console.log("hi there, dbType: ", request?.query?.dbType);
-        const result = await connectToMongodb(
-            15_000,
-            0,
-            true,
-            true,
-            request?.query?.dbType
-        );
+        const isDbConnected = await connectToDbWithoutChecks();
 
-        if (!result.wasSuccessful) {
-            throw new Error("Failed to connect to the database.");
+        if (!isDbConnected) {
+            return response.status(500).json({ errMsg: "Failed to connect to the database." });
         }
 
         let { errMsg, users } = await getUsers();
@@ -58,6 +55,7 @@ export default async function handler(request, response) {
 
         if (users.length === 0) {
             console.error("No users found.");
+
             return response.status(200).json({ users });
         }
 

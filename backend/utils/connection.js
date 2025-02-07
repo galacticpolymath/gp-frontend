@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import mongoose from "mongoose";
 import { waitWithExponentialBackOff } from "../../globalFns";
+import { ConversationsAgentOnlinePingPostRequest } from "@getbrevo/brevo";
 
 let isConnectedToDb = false;
 
@@ -71,3 +72,21 @@ export const connectToMongodb = async (
     return { wasSuccessful: false };
   }
 };
+
+export const connectToDbWithoutRetries = async () => {
+  try {
+    await mongoose.connect(createConnectionUri());
+
+    if (mongoose.connection.readyState !== 1) {
+      throw new Error("Ready state is not 1.");
+    }
+
+    console.log("Connection status: ", mongoose.connection);
+
+    return true;
+  } catch (error) {
+    console.error("Failed to connect to the database. Reason: ", error);
+
+    return false;
+  }
+}
