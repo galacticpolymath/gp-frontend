@@ -43,7 +43,7 @@ export const connectToMongodb = async (
       return { wasSuccessful: true };
     }
 
-    if ((mongoose.connection.readyState === 1) && ((dbType === "dev") || (dbType === "prod"))) {
+    if ((mongoose.connection.readyState === 1) && ((dbType === "preview") || (dbType === "production"))) {
       await mongoose.disconnect()
     }
 

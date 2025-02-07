@@ -4,7 +4,12 @@
 /* eslint-disable indent */
 import CustomLink from "../CustomLink";
 
-const NewRelease = ({ newReleasePath, NewReleaseImage_src, sponsorImgPath, sponsorImgAlt, releaseInfoTxt, customCss = '', sponsorImgClassName = 'w-100 sponsor-img-release' }) => {
+const NewRelease = ({
+    newReleasePath,
+    NewReleaseImage_src,
+    sponsorImgPath,
+    releaseInfoTxt,
+}) => {
     return (
         <div className='row justify-content-center'>
             <div className='pt-3 col-12 offset-0 offset-md-1 col-md-7 col-lg-6'>
@@ -30,14 +35,14 @@ const NewRelease = ({ newReleasePath, NewReleaseImage_src, sponsorImgPath, spons
                     </CustomLink>
                 </div>
             </div>
-            <div className={customCss}>
+            <div className="col-12 col-md-3 col-lg-4 mt-3 mt-md-0">
                 <h5 className='fw-light text-center'>Sponsor:</h5>
                 <div className="d-flex w-80 mx-auto justify-content-center align-items-center">
                     <img
                         src={sponsorImgPath}
-                        className={sponsorImgClassName}
+                        className="w-100 sponsor-img-release"
                         style={{ maxWidth: '400px', objectFit: 'contain' }}
-                        alt={sponsorImgAlt}
+                        alt="sponsor_img"
                     />
                 </div>
                 <div className='my-3'>

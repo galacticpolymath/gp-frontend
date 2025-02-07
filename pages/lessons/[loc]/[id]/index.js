@@ -84,6 +84,10 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 };
 
 const LessonDetails = ({ lesson }) => {
+  useEffect(() => {
+    console.log("lesson, sup there: ", lesson);
+  });
+
   const router = useRouter();
   const { _isUserTeacher } = useContext(UserContext);
   const { status, data } = useSession();
@@ -234,6 +238,39 @@ const LessonDetails = ({ lesson }) => {
     );
   }, []);
 
+  sectionComps = useMemo(() => {
+    const sectionCompsCopy = structuredClone(sectionComps);
+    const teachingMaterialsSecIndex =
+      sectionCompsCopy.findIndex(sectionComp => {
+        const sectionTitle = sectionComp.SectionTitle.replace(/[0-9.]/g, '').trim();
+
+        return sectionTitle === "Teaching Materials"
+      })
+    const feedbackSecIndex =
+      sectionCompsCopy.findIndex(sectionComp => {
+        const sectionTitle = sectionComp.SectionTitle.replace(/[0-9.]/g, '').trim();
+
+        return sectionTitle === "Feedback"
+      });
+    if (teachingMaterialsSecIndex === -1 || feedbackSecIndex === -1) {
+      console.error("Can't find the Teacher Materials section or the feedback section.");
+      return sectionCompsCopy;
+    }
+
+    const feedBackSec = sectionCompsCopy[feedbackSecIndex]
+
+    sectionCompsCopy.splice(feedbackSecIndex, 1)
+
+    sectionCompsCopy.splice(teachingMaterialsSecIndex + 1, 0, feedBackSec)
+
+    return sectionCompsCopy
+  }, [])
+
+  let _sections = useMemo(
+    () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
+    []
+  );
+
   const _dots = useMemo(
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []
@@ -342,11 +379,6 @@ const LessonDetails = ({ lesson }) => {
       });
     }
   };
-
-  const _sections = useMemo(
-    () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
-    []
-  );
 
   useEffect(() => {
     if (willGoToTargetSection) {

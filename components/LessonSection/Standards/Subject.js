@@ -30,7 +30,7 @@ const Subject = ({
   let subjectSlugIds;
 
   if (subjectDimensions.length > 1) {
-    subjectSlugIds = new Array(subjectDimensions.length).fill(subjectSlug).map((subjectSlugId, index) => `${subjectSlugId}-${index}`);
+    subjectSlugIds = new Array(subjectDimensions.length).fill(subjectSlug).map((subjectSlug, index) => `${subjectSlug}-${index}`);
   }
 
   return (
@@ -67,17 +67,21 @@ const Subject = ({
           return (
             <div className={`bg-${subjectSlug}-light p-2  mx-1`} key={subjectDimIndex}>
               <p className='mb-1 p-1'><strong>Dimension:</strong> {name}</p>
-              {standardsGroup.map((group, groupIndex) => (
-                <StandardsGroup
-                  id={`${subjectSlugIdName}-${groupIndex}`}
-                  GradesOrYears={GradesOrYears}
-                  _arrowContainer={_arrowContainerForStandsElementVisibility}
-                  handleElementVisibility={handleStandardsElementVisibility}
-                  willShowArrow={subjectDimIndex == 0 && index == 0}
-                  key={groupIndex}
-                  {...group}
-                />
-              ))}
+              {standardsGroup.map((group, groupIndex) => {
+                const id = `${subjectSlugIdName}-${groupIndex}`;
+
+                return (
+                  <StandardsGroup
+                    id={id}
+                    GradesOrYears={GradesOrYears}
+                    _arrowContainer={_arrowContainerForStandsElementVisibility}
+                    handleElementVisibility={handleStandardsElementVisibility}
+                    willShowArrow={subjectDimIndex == 0 && index == 0}
+                    key={groupIndex}
+                    {...group}
+                  />
+                );
+              })}
             </div>
           );
         })}
