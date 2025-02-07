@@ -261,7 +261,7 @@ const LessonDetails = ({ lesson }) => {
 
     sectionCompsCopy.splice(feedbackSecIndex, 1)
 
-    sectionCompsCopy.splice(teachingMaterialsSecIndex + 1, 1, feedBackSec)
+    sectionCompsCopy.splice(teachingMaterialsSecIndex + 1, 0, feedBackSec)
 
     return sectionCompsCopy
   }, [])
