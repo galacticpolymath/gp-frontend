@@ -33,7 +33,7 @@ export const config = {
  *       200:
  *         body: { users: "{ ...UserSchema, mailingListStatus: 'onList' | 'notOnList' | 'doubleOptEmailSent' }[]"}
  *       500:
- *         body: { errMsg: "A message describing the error. Possible reasons: Failed to connect to the database | Failed to retrieve all users | Reached max triese when retrieving the mailing list status of a user from Brevo." }
+ *         body: { errMsg: "A message describing the error. Possible reasons: Failed to connect to the database | Failed to retrieve all users | Reached max triese when retrieving the mailing list status of a user from Brevo.", errType?: "dbConnectionErr | userRetrievalErr | maxTriesExceeded" }  
  */
 
 /**
@@ -74,14 +74,19 @@ export default async function handler(request, response) {
             return response.status(200).json({ users });
         }
 
-        const { users: usersWithMailingListStatus, errType, msg } = await getUserMailingListStatusWithRetries(
-            users,
-            []
-        );
+        const {
+            users: usersWithMailingStatusWithRetries,
+            errorMessage,
+            errType,
+        } = await getUserMailingListStatusWithRetries(users, []);
 
         return response
-            .status(usersWithMailingListStatus ? 200 : 500)
-            .json({ users, errMsg: msg ?? null, errType });
+            .status(usersWithMailingStatusWithRetries ? 200 : 500)
+            .json({
+                users: usersWithMailingStatusWithRetries,
+                errMsg: errorMessage,
+                errType,
+            });
     } catch (error) {
         console.error(
             "Failed to retrieve the target users from the db. Reason: ",

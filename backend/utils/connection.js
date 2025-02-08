@@ -83,13 +83,18 @@ export const connectToMongodb = async (
 };
 
 export const connectToDbWithoutRetries = async (
-  dbType = process.env.NEXT_PUBLIC_VERCEL_ENV === "production" ? "prod" : "dev"
+  dbType
 ) => {
   let targetDb = undefined;
+  let _dbType = dbType;
 
-  if (typeof dbType === "string") {
+  if (!_dbType) {
+    _dbType = process.env.NEXT_PUBLIC_VERCEL_ENV === "production" ? "prod" : "dev"
+  }
+
+  if (typeof _dbType === "string") {
     targetDb =
-      dbType === "prod"
+      _dbType === "prod"
         ? process.env.MONGODB_DB_PROD
         : process.env.MONGODB_DB_NAME;
   }
@@ -103,12 +108,12 @@ export const connectToDbWithoutRetries = async (
       await mongoose.disconnect();
     }
 
-    if (typeof targetDb !== "string" && mongoose.connection.readyState === 1) {
+    if ((typeof targetDb !== "string") && mongoose.connection.readyState === 1) {
       console.log("Already connected to DB.");
       return true;
     }
 
-    await mongoose.connect(createConnectionUri(dbType));
+    await mongoose.connect(createConnectionUri(_dbType));
 
     if (mongoose.connection.readyState !== 1) {
       throw new Error("Ready state is not 1.");

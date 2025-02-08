@@ -218,6 +218,8 @@ export const getMailingListContact = async (email) => {
         const options = new BrevoOptions();
         const response = await fetch(`https://api.brevo.com/v3/contacts/${email}?identifierType=email_id`, options);
 
+        console.log('response, getting user from mailing list status: ', response.status);
+
         if (response.status === 429) {
             return email;
         }

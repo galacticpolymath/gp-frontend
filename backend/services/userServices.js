@@ -353,25 +353,14 @@ export const getUsersMailingListStatus = async (users) => {
     return users;
 };
 
-/**
- * Retrieves the mailing list status of a list of users from Brevo.
- *
- * If a 429 error occurs during status retrieval, it will retry up to 7 times with exponential backoff.
- * The function takes in an array of user objects, which must contain at least an 'email' property.
- * The function will return an object with a 'user' property containing all the users in the input array, with their mailing list status.
- * If there is an error, it will return an object with an 'errType' property and a 'msg' property containing an error message.
- *
- * @param {Array<Object>} usersToRetrieveStatus - An array of user objects, each containing at least an 'email' property.
- * @param {Array<Object>} allUsers - An array of user objects, which must contain all the users in 'usersToRetrieveStatus'.
- * @param {number} tries - The number of times the function has tried to retrieve the mailing list status of a user from Brevo.
- * @returns {Promise<{  user: Array<Object>} | { errType: string, msg: string }>} A promise that resolves to an object with a 'user' property containing all the users in the input array, with their mailing list status, or an object with an 'errType' property and a 'msg' property containing an error message.
- */
 export const getUserMailingListStatusWithRetries = async (
     usersToRetrieveStatus,
     allUsers,
     tries = 0
 ) => {
     try {
+        console.log("Current tries: ", tries);
+
         if (tries >= 7) {
             throw new CustomError("Reached max tries when retrieving the mailing list status of a user from Brevo.", undefined, "maxTriesExceeded");
         }
@@ -403,11 +392,16 @@ export const getUserMailingListStatusWithRetries = async (
             );
         }
 
-        return { users: [...usersMailingListStatus, ...allUsers] };
+        return {
+            users: [...usersMailingListStatus, ...allUsers]
+        };
     } catch (error) {
-        let { message, type } = error ?? {}
-        message = message ?? ("Failed to get the mailing list statuses of users. Reason: " + error)
+        let { message, type } = error ?? {};
+        message = message ?? `Failed to get the mailing list statuses of users. Reason: ${error}`
 
-        return { errType: type, msg: message };
+        return {
+            errorMessage: message,
+            errType: type
+        };
     }
 };
