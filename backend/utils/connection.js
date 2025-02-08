@@ -38,22 +38,32 @@ export const connectToMongodb = async (
       return { wasSuccessful: true };
     }
 
-    if (mongoose.connection.readyState === 1 && (dbType && mongoose.connection.host.includes(dbType))) {
+    if (
+      mongoose.connection.readyState === 1 &&
+      dbType &&
+      mongoose.connection.host.includes(dbType)
+    ) {
       console.log("Already connected to DB.");
       return { wasSuccessful: true };
     }
 
-    if ((mongoose.connection.readyState === 1) && ((dbType === "preview") || (dbType === "production"))) {
-      await mongoose.disconnect()
+    if (
+      mongoose.connection.readyState === 1 &&
+      (dbType === "preview" || dbType === "production")
+    ) {
+      await mongoose.disconnect();
     }
 
-    const connectionState = await mongoose.connect(createConnectionUri(dbType), {
-      retryWrites: true,
-      serverSelectionTimeoutMS: serverSelectionTimeoutMS,
-    });
+    const connectionState = await mongoose.connect(
+      createConnectionUri(dbType),
+      {
+        retryWrites: true,
+        serverSelectionTimeoutMS: serverSelectionTimeoutMS,
+      }
+    );
     isConnectedToDb = connectionState.connection.readyState === 1;
 
-    if (!isConnectedToDb && (tries <= 3) && isRetryable) {
+    if (!isConnectedToDb && tries <= 3 && isRetryable) {
       console.log("Failed to connect to DB. Will try again.");
       const triesUpdated = await waitWithExponentialBackOff(tries);
 
@@ -69,5 +79,50 @@ export const connectToMongodb = async (
     console.error("Failed to connect to the db. Error message: ", error);
 
     return { wasSuccessful: false };
+  }
+};
+
+export const connectToDbWithoutRetries = async (
+  dbType
+) => {
+  let targetDb = undefined;
+  let _dbType = dbType;
+
+  if (!_dbType) {
+    _dbType = process.env.NEXT_PUBLIC_VERCEL_ENV === "production" ? "prod" : "dev"
+  }
+
+  if (typeof _dbType === "string") {
+    targetDb =
+      _dbType === "prod"
+        ? process.env.MONGODB_DB_PROD
+        : process.env.MONGODB_DB_NAME;
+  }
+
+  try {
+    if (
+      typeof targetDb === "string" &&
+      mongoose.connection?.db?.databaseName !== targetDb
+    ) {
+      console.log("Will disconnect from DB.");
+      await mongoose.disconnect();
+    }
+
+    if ((typeof targetDb !== "string") && mongoose.connection.readyState === 1) {
+      console.log("Already connected to DB.");
+      return true;
+    }
+
+    await mongoose.connect(createConnectionUri(_dbType));
+
+    if (mongoose.connection.readyState !== 1) {
+      throw new Error("Ready state is not 1.");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Failed to connect to the database. Reason: ", error);
+
+    return false;
   }
 };

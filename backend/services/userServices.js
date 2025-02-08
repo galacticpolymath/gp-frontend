@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
-import { sleep } from "../../globalFns.js";
+import { sleep, waitWithExponentialBackOff } from "../../globalFns.js";
 import { createDocument } from "../db/utils";
 import User from "../models/user";
 import { v4 as uuidv4 } from "uuid";
 import { findMailingListConfirmationByEmail } from "./mailingListConfirmationServices.js";
 import { getMailingListContact } from "./emailServices.js";
+import { CustomError } from "../utils/errors.js";
 
 export const getUsers = async (queryObj = {}, projectionObj = {}) => {
     try {
@@ -13,7 +14,6 @@ export const getUsers = async (queryObj = {}, projectionObj = {}) => {
 
         return { users };
     } catch (error) {
-
         return { errMsg: `Unable to retrieve all users. Reason: ${error}` };
     }
 };
@@ -259,17 +259,17 @@ export const createUser = async (
 };
 
 /**
- * Determines the mailing list status for each user in the provided array.
- * 
- * @param {Array} users - An array of user objects, each containing at least an email property.
- * @returns {Array} - The updated array of user objects with an added mailingListStatus property.
- * 
- * The function checks each user's email against the mailing list and updates their status. 
- * If a user is already on the mailing list, their status is set to "onList". 
- * If a user is not on the mailing list, it checks if a double opt-in email has been sent by 
- * querying confirmation documents. The status for users with a confirmation document is set to 
- * "doubleOptEmailSent", otherwise, it is set to "notOnList".
+ * Retrieves and updates the mailing list status for a list of users.
+ *
+ * @param {Array<Object>} users - An array of user objects, each containing at least an 'email' property.
+ * @returns {Promise<Array<Object>>} A promise that resolves to the updated array of user objects with their mailing list status.
+ *
+ * The function fetches mailing list status for each user by their email using the Brevo API.
+ * It sets the 'mailingListStatus' property to "onList", "notOnList", or "doubleOptEmailSent" based on the user's status.
+ * If a 429 error occurs during status retrieval, it adds 'didMailingListStatusRetrievalReqErr' as true.
+ * If the status is not directly retrievable, it checks for mailing list confirmation documents to determine the status.
  */
+
 export const getUsersMailingListStatus = async (users) => {
     const getUserMailingListStatusesPromises = users.map((user) =>
         getMailingListContact(user.email)
@@ -277,28 +277,44 @@ export const getUsersMailingListStatus = async (users) => {
     const userMailingListStatuses = await Promise.all(
         getUserMailingListStatusesPromises
     );
-    const notOnMailingListIndices = new Set();
+    const userEmailsNotOnMailingList = new Set();
 
     for (let index = 0; index < userMailingListStatuses.length; index++) {
         const userMailingListStatus = userMailingListStatuses[index];
 
-        if (userMailingListStatus !== null) {
+        if (userMailingListStatus && typeof userMailingListStatus === "object") {
             let targetUser = users[index];
             targetUser = {
                 ...targetUser,
                 mailingListStatus: "onList",
             };
+            delete targetUser.didMailingListStatusRetrievalReqErr;
             users[index] = targetUser;
             continue;
         }
 
-        notOnMailingListIndices.add(index);
+        if (typeof userMailingListStatus === "string") {
+            console.log(
+                "429 error has occurred for atleast one request that retrieve the mailling list status of a user."
+            );
+            let targetUser = users[index];
+            targetUser = {
+                ...targetUser,
+                didMailingListStatusRetrievalReqErr: true,
+            };
+            users[index] = targetUser;
+            continue;
+        }
+
+        const targetUser = users[index];
+
+        delete targetUser.didMailingListStatusRetrievalReqErr;
+
+        userEmailsNotOnMailingList.add(targetUser.email);
     }
 
-    if (notOnMailingListIndices.size) {
-        const emails = users
-            .filter((_, index) => notOnMailingListIndices.has(index))
-            .map((user) => user.email);
+    if (userEmailsNotOnMailingList.size) {
+        const emails = Array.from(userEmailsNotOnMailingList);
         const getUserMailingListConfirmationDocsPromises = emails.map((email) =>
             findMailingListConfirmationByEmail(email)
         );
@@ -335,4 +351,57 @@ export const getUsersMailingListStatus = async (users) => {
     }
 
     return users;
+};
+
+export const getUserMailingListStatusWithRetries = async (
+    usersToRetrieveStatus,
+    allUsers,
+    tries = 0
+) => {
+    try {
+        console.log("Current tries: ", tries);
+
+        if (tries >= 7) {
+            throw new CustomError("Reached max tries when retrieving the mailing list status of a user from Brevo.", undefined, "maxTriesExceeded");
+        }
+
+        const usersMailingListStatus = await getUsersMailingListStatus(
+            usersToRetrieveStatus
+        );
+        const usersOfFailedMailingListStatusReqErr = usersMailingListStatus.filter(
+            (user) => user.didMailingListStatusRetrievalReqErr
+        );
+
+        console.log(
+            "Failed to get the mailing list statuses of users: ",
+            usersOfFailedMailingListStatusReqErr.length
+        );
+
+        if (usersOfFailedMailingListStatusReqErr.length) {
+            const usersWithMailingListStatuses = usersMailingListStatus.filter(
+                (user) => !user.didMailingListStatusRetrievalReqErr
+            );
+
+            await waitWithExponentialBackOff(tries);
+
+            tries += 1;
+
+            return await getUserMailingListStatusWithRetries(
+                usersOfFailedMailingListStatusReqErr,
+                usersWithMailingListStatuses
+            );
+        }
+
+        return {
+            users: [...usersMailingListStatus, ...allUsers]
+        };
+    } catch (error) {
+        let { message, type } = error ?? {};
+        message = message ?? `Failed to get the mailing list statuses of users. Reason: ${error}`
+
+        return {
+            errorMessage: message,
+            errType: type
+        };
+    }
 };

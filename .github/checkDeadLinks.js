@@ -75,7 +75,6 @@
                 const randomNumMs =
                     Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
                 const waitTime = randomNumMs + retries * 1_000;
-                console.log("Will wait for ", waitTime);
                 await new Promise((resolve) => setTimeout(resolve, waitTime));
                 return await sendEmailWithRetries(mailOpts, retries + 1);
             }

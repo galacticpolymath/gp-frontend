@@ -263,7 +263,7 @@ const LessonDetails = ({ lesson }) => {
 
     sectionCompsCopy.splice(teachingMaterialsSecIndex + 1, 0, feedBackSec)
 
-    return sectionCompsCopy
+    return sectionCompsCopy;
   }, [])
 
   let _sections = useMemo(

@@ -134,6 +134,7 @@ const AccountPg = () => {
     const [, setNotifyModal] = _notifyModal;
     const { status, data } = useSession();
     const { user, token } = data ?? {};
+    console.log("token: ", token);
     const { email, image, name } = user ?? {};
     const occupation = typeof localStorage === 'undefined' ? null : JSON.parse(localStorage.getItem('userAccount') ?? '{}').occupation;
     const firstName = aboutUserForm?.name?.first || (name?.first ?? '')
