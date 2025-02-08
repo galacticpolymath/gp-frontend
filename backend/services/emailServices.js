@@ -204,18 +204,23 @@ export const deleteUserFromMailingList = async (email) => {
 };
 
 /**
- * Finds the contact with the given email on the Brevo mailing list.
- * @param {string} email The email of the contact on the mailing list.
- * @return {Promise<Object | null>} A promise that resolves to the `Contact` object if the contact is found, otherwise `null`.
+ * Retrieves the Brevo contact information for the given email. 
+ * 
+ * @param {string} email The email of the target user.
+ * @returns {Promise<Object | string | null>} A promise that resolves to the Brevo contact information associated with the email. If the email is not found, null is returned. If Brevo returns a 429 status code, the email is returned as a string. If there is an error, null is returned.
  */
 export const getMailingListContact = async (email) => {
     try {
-        if (!email) {
-            throw new Error("The email was not provided.")
+        if (!email || (typeof email !== 'string')) {
+            throw new Error("The email was not provided or was not a string data type.")
         };
 
         const options = new BrevoOptions();
         const response = await fetch(`https://api.brevo.com/v3/contacts/${email}?identifierType=email_id`, options);
+
+        if (response.status === 429) {
+            return email;
+        }
 
         if (response.status !== 200) {
             return null;

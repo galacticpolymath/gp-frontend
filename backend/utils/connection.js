@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import mongoose from "mongoose";
 import { waitWithExponentialBackOff } from "../../globalFns";
-import { ConversationsAgentOnlinePingPostRequest } from "@getbrevo/brevo";
 
 let isConnectedToDb = false;
 
@@ -39,22 +38,32 @@ export const connectToMongodb = async (
       return { wasSuccessful: true };
     }
 
-    if (mongoose.connection.readyState === 1 && (dbType && mongoose.connection.host.includes(dbType))) {
+    if (
+      mongoose.connection.readyState === 1 &&
+      dbType &&
+      mongoose.connection.host.includes(dbType)
+    ) {
       console.log("Already connected to DB.");
       return { wasSuccessful: true };
     }
 
-    if ((mongoose.connection.readyState === 1) && ((dbType === "preview") || (dbType === "production"))) {
-      await mongoose.disconnect()
+    if (
+      mongoose.connection.readyState === 1 &&
+      (dbType === "preview" || dbType === "production")
+    ) {
+      await mongoose.disconnect();
     }
 
-    const connectionState = await mongoose.connect(createConnectionUri(dbType), {
-      retryWrites: true,
-      serverSelectionTimeoutMS: serverSelectionTimeoutMS,
-    });
+    const connectionState = await mongoose.connect(
+      createConnectionUri(dbType),
+      {
+        retryWrites: true,
+        serverSelectionTimeoutMS: serverSelectionTimeoutMS,
+      }
+    );
     isConnectedToDb = connectionState.connection.readyState === 1;
 
-    if (!isConnectedToDb && (tries <= 3) && isRetryable) {
+    if (!isConnectedToDb && tries <= 3 && isRetryable) {
       console.log("Failed to connect to DB. Will try again.");
       const triesUpdated = await waitWithExponentialBackOff(tries);
 
@@ -73,15 +82,37 @@ export const connectToMongodb = async (
   }
 };
 
-export const connectToDbWithoutRetries = async () => {
+export const connectToDbWithoutRetries = async (
+  dbType = process.env.NEXT_PUBLIC_VERCEL_ENV === "production" ? "prod" : "dev"
+) => {
+  let targetDb = undefined;
+
+  if (typeof dbType === "string") {
+    targetDb =
+      dbType === "prod"
+        ? process.env.MONGODB_DB_PROD
+        : process.env.MONGODB_DB_NAME;
+  }
+
   try {
-    await mongoose.connect(createConnectionUri());
+    if (
+      typeof targetDb === "string" &&
+      mongoose.connection?.db?.databaseName !== targetDb
+    ) {
+      console.log("Will disconnect from DB.");
+      await mongoose.disconnect();
+    }
+
+    if (typeof targetDb !== "string" && mongoose.connection.readyState === 1) {
+      console.log("Already connected to DB.");
+      return true;
+    }
+
+    await mongoose.connect(createConnectionUri(dbType));
 
     if (mongoose.connection.readyState !== 1) {
       throw new Error("Ready state is not 1.");
     }
-
-    console.log("Connection status: ", mongoose.connection);
 
     return true;
   } catch (error) {
@@ -89,4 +120,4 @@ export const connectToDbWithoutRetries = async () => {
 
     return false;
   }
-}
+};
