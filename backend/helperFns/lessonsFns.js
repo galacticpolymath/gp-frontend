@@ -10,7 +10,6 @@ export const getUnits = async (projectedFields = PROJECTED_LESSONS_FIELDS) => {
             15_000,
             0,
             true,
-            true
         );
 
         let units = await Lessons.find({}, projectedFields).sort({ ReleaseDate: -1 }).lean();

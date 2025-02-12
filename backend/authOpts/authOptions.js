@@ -165,7 +165,6 @@ export const authOptions = {
             15_000,
             0,
             true,
-            true
           );
 
           const {
@@ -302,7 +301,6 @@ export const authOptions = {
             15_000,
             0,
             true,
-            true
           );
           const jwt = new JwtModel({ _id: email, access: accessToken, refresh: refreshToken });
 
@@ -337,7 +335,6 @@ export const authOptions = {
         15_000,
         0,
         true,
-        true
       );
 
       console.log("Error type: ", errType)
@@ -522,7 +519,6 @@ export const authOptions = {
           15_000,
           0,
           true,
-          true
         );
 
         const dbUser = await getUserByEmail(email);

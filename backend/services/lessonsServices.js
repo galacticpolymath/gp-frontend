@@ -8,7 +8,6 @@ const insertLesson = async lesson => {
       15_000,
       0,
       true,
-      true
     );
 
     const newLesson = new Lessons(lesson);
@@ -34,7 +33,6 @@ const deleteLesson = async lessonId => {
       15_000,
       0,
       true,
-      true
     );
 
     await Lessons.deleteOne({ _id: lessonId });

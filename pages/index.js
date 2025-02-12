@@ -414,7 +414,6 @@ export const getStaticProps = async () => {
       15_000,
       0,
       true,
-      true
     );
 
     if (!dbResult.wasSuccessful) {

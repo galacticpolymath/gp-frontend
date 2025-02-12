@@ -31,7 +31,6 @@ export const connectToMongodb = async (
   serverSelectionTimeoutMS = 15_000,
   tries = 0,
   isRetryable = false,
-  willForceConnection = false,
   dbType
 ) => {
   try {
