@@ -356,9 +356,7 @@ export const getUserMailingListStatusWithRetries = async (
     tries = 0
 ) => {
     try {
-        console.log("Current tries: ", tries);
-
-        if (tries >= 7) {
+        if (tries >= 11) {
             throw new CustomError("Reached max tries when retrieving the mailing list status of a user from Brevo.", undefined, "maxTriesExceeded");
         }
 

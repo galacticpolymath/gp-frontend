@@ -218,8 +218,6 @@ export const getMailingListContact = async (email) => {
         const options = new BrevoOptions();
         const response = await fetch(`https://api.brevo.com/v3/contacts/${email}?identifierType=email_id`, options);
 
-        console.log('response, getting user from mailing list status: ', response.status);
-
         if (response.status === 429) {
             return email;
         }
@@ -229,13 +227,17 @@ export const getMailingListContact = async (email) => {
         }
 
         const body = await response.json();
-        // print the body
-        console.log('body: ', body);
-
 
         return body;
     } catch (error) {
         console.error("Unable to find the target user. Reason: ", error);
+        console.log("error.name, sup there: ", error?.name)
+
+        if (error.name === "FetchError" || error.name === "TypeError") {
+            console.error("Failed to get the target user. Fetch error.");
+            return email;
+        }
+
 
         return null;
     }
