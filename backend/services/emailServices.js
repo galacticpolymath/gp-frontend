@@ -229,6 +229,8 @@ export const getMailingListContact = async (email) => {
         }
 
         const body = await response.json();
+        // print the body
+        console.log('body: ', body);
 
 
         return body;

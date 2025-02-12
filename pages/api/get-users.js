@@ -81,7 +81,7 @@ export default async function handler(request, response) {
             users: usersWithMailingStatusWithRetries,
             errorMessage,
             errType,
-        } = await getUserMailingListStatusWithRetries(users, []);
+        } = await getUserMailingListStatusWithRetries(users);
 
         return response
             .status(usersWithMailingStatusWithRetries ? 200 : 500)

@@ -6,7 +6,7 @@
     "prebuild": "npm run test",
     "build": "next build",
     "start": "next dev",
-    "start-server": "npm run start -- -p 3000",
+    "start-server": "next dev",
     "ci": "start-server-and-test start-server http://localhost:3000 test:integration",
     "prod": "next build && next start",
     "lint": "eslint .",

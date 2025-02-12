@@ -387,7 +387,8 @@ export const getUserMailingListStatusWithRetries = async (
 
             return await getUserMailingListStatusWithRetries(
                 usersOfFailedMailingListStatusReqErr,
-                usersWithMailingListStatuses
+                usersWithMailingListStatuses,
+                tries
             );
         }
 

@@ -21,7 +21,6 @@ export const createConnectionUri = (dbType) => {
     dbName = MONGODB_DB_NAME;
   }
 
-
   const connectionUri = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster0.tynope2.mongodb.net/${dbName}`;
 
   return connectionUri;
@@ -35,26 +34,22 @@ export const connectToMongodb = async (
 ) => {
   try {
     console.log("will connect to MongoDB...");
-    console.log("the dbType is: ", dbType);
-    const dbNameForConnection = (dbType === 'production' || dbType === 'dev') ? (dbType === 'production' ? process.env.MONGODB_DB_PROD : process.env.MONGODB_DB_NAME) : null;
-    const currentDbName = mongoose.connection?.db?.databaseName ?? '';
 
-    console.log("dbNameForConnection, yo there: ", dbNameForConnection);
-
-    if (isConnectedToDb && ((dbNameForConnection === currentDbName) || !dbNameForConnection)) {
+    if (isConnectedToDb && !dbType) {
       console.log("Already connected to DB.");
       return { wasSuccessful: true };
     }
 
-    if ((mongoose.connection.readyState === 1) && ((dbNameForConnection === currentDbName) || !dbNameForConnection)) {
+    if ((mongoose.connection.readyState === 1) && !dbType) {
       console.log("Already connected to DB. Read state is 1.");
       return { wasSuccessful: true };
     }
 
-    if (
-      mongoose.connection.readyState === 1 &&
-      (typeof dbNameForConnection === 'string') && (dbNameForConnection !== currentDbName)
-    ) {
+    const currentDbName = mongoose.connection.db?.databaseName;
+    const targetDbNameForConnection =
+      ((dbType === "production") || (dbType === 'dev')) ? (dbType === 'production' ? process.env.MONGODB_DB_PROD : process.env.MONGODB_DB_NAME) : null;
+
+    if ((mongoose.connection.readyState === 1) && (currentDbName !== targetDbNameForConnection)) {
       console.log("Will disconnect from DB.");
       await mongoose.disconnect();
     }
@@ -87,14 +82,13 @@ export const connectToMongodb = async (
   }
 };
 
-export const connectToDbWithoutRetries = async (
-  dbType
-) => {
+export const connectToDbWithoutRetries = async (dbType) => {
   let targetDb = undefined;
   let _dbType = dbType;
 
   if (!_dbType) {
-    _dbType = process.env.NEXT_PUBLIC_VERCEL_ENV === "production" ? "prod" : "dev"
+    _dbType =
+      process.env.NEXT_PUBLIC_VERCEL_ENV === "production" ? "prod" : "dev";
   }
 
   if (typeof _dbType === "string") {
@@ -113,7 +107,7 @@ export const connectToDbWithoutRetries = async (
       await mongoose.disconnect();
     }
 
-    if ((typeof targetDb !== "string") && mongoose.connection.readyState === 1) {
+    if (typeof targetDb !== "string" && mongoose.connection.readyState === 1) {
       console.log("Already connected to DB.");
       return true;
     }
