@@ -12,12 +12,15 @@ export const createConnectionUri = (dbType) => {
   if (process.env.NEXT_PUBLIC_VERCEL_ENV === "production") {
     dbName = MONGODB_DB_PROD;
   }
+  console.log("dbType: ", dbType);
+  console.log("dbName: ", dbName);
 
-  if (dbType === "prod") {
+  if (dbType === "production") {
     dbName = MONGODB_DB_PROD;
   } else if (dbType === "dev") {
     dbName = MONGODB_DB_NAME;
   }
+
 
   const connectionUri = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster0.tynope2.mongodb.net/${dbName}`;
 
@@ -33,24 +36,27 @@ export const connectToMongodb = async (
 ) => {
   try {
     console.log("will connect to MongoDB...");
-    if (isConnectedToDb && !willForceConnection) {
+    console.log("the dbType is: ", dbType);
+    const dbNameForConnection = (dbType === 'production' || dbType === 'dev') ? (dbType === 'production' ? process.env.MONGODB_DB_PROD : process.env.MONGODB_DB_NAME) : null;
+    const currentDbName = mongoose.connection.db.databaseName;
+
+    console.log("dbNameForConnection, yo there: ", dbNameForConnection);
+
+    if (isConnectedToDb && ((dbNameForConnection === currentDbName) || !dbNameForConnection)) {
       console.log("Already connected to DB.");
+      return { wasSuccessful: true };
+    }
+
+    if ((mongoose.connection.readyState === 1) && ((dbNameForConnection === currentDbName) || !dbNameForConnection)) {
+      console.log("Already connected to DB. Read state is 1.");
       return { wasSuccessful: true };
     }
 
     if (
       mongoose.connection.readyState === 1 &&
-      dbType &&
-      mongoose.connection.host.includes(dbType)
+      (typeof dbNameForConnection === 'string') && (dbNameForConnection !== currentDbName)
     ) {
-      console.log("Already connected to DB.");
-      return { wasSuccessful: true };
-    }
-
-    if (
-      mongoose.connection.readyState === 1 &&
-      (dbType === "preview" || dbType === "production")
-    ) {
+      console.log("Will disconnect from DB.");
       await mongoose.disconnect();
     }
 

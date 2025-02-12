@@ -49,6 +49,7 @@ export default async function handler(request, response) {
         }
 
         const { dbType } = request.query;
+        console.log("The dbType is, yo there: ", dbType);
         const isDbConnected = await connectToMongodb(15_000, 0, true, true, dbType);
 
         if (!isDbConnected) {
@@ -58,6 +59,9 @@ export default async function handler(request, response) {
         }
 
         let { errMsg, users } = await getUsers();
+
+        // print the total length of users
+        // console.log("Total number of users: ", users.length);
 
         if (errMsg || !users) {
             return response

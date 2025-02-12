@@ -14,8 +14,6 @@ test("Will check if the responses from the `get-users` route are constant.", asy
      *    If the request fails, it will log the error and return an empty
      *    object.
      */
-    // console.log("yo there, process.env: ", process.env)
-
     const getUserResults = async () => {
         const {
             NEXTAUTH_SECRET,
@@ -37,18 +35,22 @@ test("Will check if the responses from the `get-users` route are constant.", asy
         );
 
         try {
-            const url = new URL("http://localhost:8080/api/get-users");
+            const url = new URL("http://localhost:3000/api/get-users");
             const auth = `Bearer ${accessToken}`;
 
-            url.searchParams.append("dbType", "prod");
 
-            const { status, data } = await axios.get(url.href, { headers: { "Authorization": auth } });
+            const { status, data } = await axios.get(
+                url.href,
+                {
+                    headers: { "Authorization": auth },
+                    params: {
+                        dbType: "production"
+                    }
+                });
 
             if (status !== 200) {
                 throw new Error("Received a non 200 response from the server.");
             }
-
-            console.log("data, yo there: ", data)
 
             const usersOnMailingList = data.users.filter(user => user.mailingListStatus === "onList");
 
@@ -73,7 +75,7 @@ test("Will check if the responses from the `get-users` route are constant.", asy
     const userResults = await Promise.all(getUserResultsPromises);
     const firstResult = userResults[0];
 
-    if (Object.keys(firstResult).length) {
+    if (!Object.keys(firstResult).length) {
         console.error("Failed to get users.");
         expect(false).toBe(true)
         return;
