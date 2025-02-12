@@ -6,7 +6,9 @@
     "prebuild": "npm run test",
     "build": "next build",
     "start": "next dev",
-    "prod": "npm run test:integration && next build && next start",
+    "start-server": "npm run start -- -p 8080",
+    "ci": "start-server-and-test start-server http://localhost:8080 test:integration",
+    "prod": "start-server-and-test start-server http://localhost:8080 && npm run test:integration && next build && next start",
     "lint": "eslint .",
     "lint_fix": "eslint --fix --ext .js,.jsx .",
     "test:integration": "jest --roots testing/integration",
@@ -32,7 +34,7 @@
     "chalk": "^5.3.0",
     "d3": "^7.9.0",
     "date-fns": "^4.1.0",
-    "dotenv": "^16.4.6",
+    "dotenv": "^16.4.7",
     "font-awesome": "^4.7.0",
     "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",
@@ -81,6 +83,7 @@
     "react-share": "^5.1.1",
     "react-showdown": "^2.3.1",
     "sharp": "^0.33.5",
+    "start-server-and-test": "^2.0.10",
     "styled-components": "^6.1.14",
     "swagger-ui-react": "^5.18.2",
     "swr": "^2.2.5",
@@ -88,7 +91,8 @@
     "url": "^0.11.4",
     "urllib": "^4.5.1",
     "uuid": "^11.0.3",
-    "validator": "^13.12.0"
+    "validator": "^13.12.0",
+    "wait-on": "^8.0.2"
   },
   "devDependencies": {
     "cypress": "^14.0.0",

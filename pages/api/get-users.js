@@ -5,10 +5,8 @@
 import {
     getUserMailingListStatusWithRetries,
     getUsers,
-    getUsersMailingListStatus,
 } from "../../backend/services/userServices";
 import {
-    connectToDbWithoutRetries,
     connectToMongodb,
 } from "../../backend/utils/connection";
 
@@ -51,7 +49,7 @@ export default async function handler(request, response) {
         }
 
         const { dbType } = request.query;
-        const isDbConnected = await connectToDbWithoutRetries(dbType);
+        const isDbConnected = await connectToMongodb(15_000, 0, true, true, dbType);
 
         if (!isDbConnected) {
             return response

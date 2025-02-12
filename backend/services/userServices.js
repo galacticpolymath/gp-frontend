@@ -294,9 +294,6 @@ export const getUsersMailingListStatus = async (users) => {
         }
 
         if (typeof userMailingListStatus === "string") {
-            console.log(
-                "429 error has occurred for atleast one request that retrieve the mailling list status of a user."
-            );
             let targetUser = users[index];
             targetUser = {
                 ...targetUser,

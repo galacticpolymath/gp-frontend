@@ -173,14 +173,24 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
+    // print something 
+    console.log("Yo there meng...")
+
     if (!authorizationStr) {
+      console.log("No auth string was provided.");
       return new NextResponse("No authorization header was provided.", {
         status: 400,
       });
     }
 
     const token = authorizationStr.split(' ')[1].trim();
+    console.log("token length before trim: ", token.length)
+    console.log("yo there token: ", token)
+    console.log("token length after trim: ", token.trim().length)
     const payload = await verifyJwt(token);
+
+    // print the payload
+    console.log("payload sup there: ", payload);
 
     if (payload?.payload?.accessibleRoutes?.length && !payload.payload.accessibleRoutes.includes(nextUrl.pathname)) {
       console.error("The client does not have access to this route.");
@@ -294,6 +304,8 @@ export async function middleware(request) {
     });
   } catch (error) {
     const errMsg = `An error has occurred in the middleware: ${error}`;
+
+    console.error("Middleware errror: ", errMsg)
 
     if (
       (typeof request?.nextUrl === "string" &&
