@@ -243,3 +243,25 @@ export const getMailingListContact = async (email) => {
     }
 }
 
+export const getAllBrevoMailingListContacts = async () => {
+    try {
+        // implement recursion to get all of the brevo contacts
+        const url = new URL('https://api.brevo.com/v3/contacts');
+
+        url.searchParams.set('limit', 5);
+
+        const options = new BrevoOptions();
+        const response = await fetch(url.href, options);
+
+        if (response.status !== 200) {
+            throw new Error("Failed to get the mailing list contacts.");
+        }
+
+        const body = await response.json();
+
+        return body;
+    } catch (error) {
+        console.error("Failed to get the mailing list contacts. Reason: ", error);
+    }
+
+}

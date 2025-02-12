@@ -60,10 +60,8 @@ export default async function handler(request, response) {
                 .json({ errMsg: "Failed to connect to the database." });
         }
 
+        // get all of the users from the brevo api
         let { errMsg, users } = await getUsers();
-
-        // print the total length of users
-        // console.log("Total number of users: ", users.length);
 
         if (errMsg || !users) {
             return response
