@@ -23,9 +23,6 @@ jobs:
     - name: Install dependencies
       run: npm install --legacy-peer-deps
 
-    - name: Install waiton
-      run: npm install wait-on --legacy-peer-deps
-
     - name: Create the .env.local file
       run: |
         touch .env.local
@@ -45,12 +42,6 @@ jobs:
         echo DEADLINKS_CHECK_EMAIL_PASSWORD=${{ secrets.DEADLINKS_CHECK_EMAIL_PASSWORD }} >> .env.local
         echo TESTING_EMAIL=${{ vars.TESTING_EMAIL }} >> .env.local
 
-    - name: Build and serve the app
-      run: npm run prod &
-
-    - name: Wait for the app to start
-      run: npx wait-on -t 240000 http://localhost:3000
-
     - name: Run the integration tests
       id: run-tests # Add an ID so we can reference this step if needed.
-      run: npm run test:integration
+      run: npm run ci
