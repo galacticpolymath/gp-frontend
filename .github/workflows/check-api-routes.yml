@@ -7,7 +7,7 @@ on:
 
 jobs:
   integration-tests-and-deploy:
-    name: Run Integration Tests and Deploy for Preview
+    name: Run Integration Tests
     environment: Preview
     runs-on: ubuntu-latest
 
@@ -43,6 +43,7 @@ jobs:
         echo EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY=${{ secrets.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY }} >> .env.local
         echo BREVO_API_KEY=${{ secrets.BREVO_API_KEY }} >> .env.local
         echo DEADLINKS_CHECK_EMAIL_PASSWORD=${{ secrets.DEADLINKS_CHECK_EMAIL_PASSWORD }} >> .env.local
+        echo TESTING_EMAIL=${{ vars.TESTING_EMAIL }} >> .env.local
 
     - name: Build and serve the app
       run: npm run prod &
