@@ -51,7 +51,6 @@ export default async function handler(request, response) {
         }
 
         const { dbType } = request.query;
-
         const isDbConnected = await connectToDbWithoutRetries(dbType);
 
         if (!isDbConnected) {

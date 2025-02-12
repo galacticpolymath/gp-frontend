@@ -355,7 +355,7 @@ export const getUsersMailingListStatus = async (users) => {
 
 export const getUserMailingListStatusWithRetries = async (
     usersToRetrieveStatus,
-    allUsers,
+    successfullyRetrievedUsers = [],
     tries = 0
 ) => {
     try {
@@ -382,6 +382,8 @@ export const getUserMailingListStatusWithRetries = async (
                 (user) => !user.didMailingListStatusRetrievalReqErr
             );
 
+            usersWithMailingListStatuses.push(...successfullyRetrievedUsers);
+
             await waitWithExponentialBackOff(tries);
 
             tries += 1;
@@ -393,7 +395,7 @@ export const getUserMailingListStatusWithRetries = async (
         }
 
         return {
-            users: [...usersMailingListStatus, ...allUsers]
+            users: [...usersMailingListStatus, ...successfullyRetrievedUsers]
         };
     } catch (error) {
         let { message, type } = error ?? {};
