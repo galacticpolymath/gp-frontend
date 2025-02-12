@@ -37,7 +37,7 @@ export const connectToMongodb = async (
     console.log("will connect to MongoDB...");
     console.log("the dbType is: ", dbType);
     const dbNameForConnection = (dbType === 'production' || dbType === 'dev') ? (dbType === 'production' ? process.env.MONGODB_DB_PROD : process.env.MONGODB_DB_NAME) : null;
-    const currentDbName = mongoose.connection.db.databaseName;
+    const currentDbName = mongoose.connection?.db?.databaseName ?? '';
 
     console.log("dbNameForConnection, yo there: ", dbNameForConnection);
 
