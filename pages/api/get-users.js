@@ -123,12 +123,12 @@ export default async function handler(request, response) {
                 if (usersOfficiallyNotOnMailingList.has(user.email)) {
                     return {
                         ...user,
-                        mailingListStatus: "notOnList"
-                    }
+                        mailingListStatus: "notOnList",
+                    };
                 }
 
-                return user
-            })
+                return user;
+            });
         }
 
         if (errMsg || !users) {
