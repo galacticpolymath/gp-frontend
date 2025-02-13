@@ -37,6 +37,7 @@ const LessonsPage = ({
   webAppsObj,
   didErrorOccur,
 }) => {
+  console.log("webAppsObj, hey there: ", webAppsObj)
   const [selectedVideo, setSelectedVideo] = useState(null)
   const [selectedGpWebApp, setSelectedGpWebApp] = useState(null);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
@@ -291,10 +292,16 @@ export async function getStaticProps() {
 
       // retrieve the web apps of the units
       if (isThereAWebApp) {
-        for (let numIteration = 0; numIteration < multiMediaArr.length; numIteration++) {
-          let multiMediaItem = multiMediaArr[numIteration]
+        for (let index = 0; index < multiMediaArr.length; index++) {
+          let multiMediaItem = multiMediaArr[index]
 
           if (multiMediaItem?.type === 'web-app') {
+            const isPresentInWebApps = webApps.find(webApp => webApp.webAppLink === multiMediaItem.mainLink)
+
+            if (isPresentInWebApps) {
+              continue
+            }
+
             const { errMsg, images, title } = await getLinkPreviewObj(multiMediaItem.mainLink);
 
             if (errMsg && !images?.length) {
@@ -318,6 +325,8 @@ export async function getStaticProps() {
           }
         }
       }
+
+      console.log("webApps, bacon: ", webApps.length);
 
       let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
       let lessonPartsFromClassRoomObj = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
@@ -362,6 +371,8 @@ export async function getStaticProps() {
         }
       }
     }
+
+    console.log("webApps, hey there: ", webApps)
 
     const units = getShowableUnits(lessons).map(lesson => {
       const individualLessonsNum = lesson?.LsnStatuses?.length ? lesson.LsnStatuses.filter(({ status }) => status !== 'Hidden')?.length : 0;

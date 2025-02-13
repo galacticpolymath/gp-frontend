@@ -59,7 +59,6 @@ const GpUnits = ({
             {!!units?.length && (
                 <div className='mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5'>
                     {units.map((lesson, index) => {
-                        console.log("unit, sup there: ", lesson.isNew);
                         let PillComp = null;
 
                         if (lesson.isNew) {

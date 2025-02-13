@@ -42,7 +42,9 @@ const GpLessons = ({
                     <p className='mt-2 mb-0'>Free lessons to engage students in current research, real world problems, and interdisciplinary thinking.</p>
                 </div>
                 {!!gpDataObj.data?.length && (
-                    <div className='mx-auto d-flex flex-column d-sm-grid grid justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch pb-1 px-2 p-sm-4 gap-3 pt-3 pb-5'>
+                    <div
+                        className='mx-auto d-flex flex-column d-sm-grid grid justify-content-center align-items-center justify-content-sm-start align-items-sm-stretch pb-1 px-2 p-sm-4 gap-3 pt-3 pb-5'
+                    >
                         {(gpDataObj.data ?? startingLessonsToShow).map((lesson, index) => {
                             return (
                                 <IndividualLesson

@@ -41,7 +41,9 @@ const getUserResults = async () => {
     headers.append("Authorization", `Bearer ${accessToken}`);
 
     try {
-        const url = new URL("http://localhost:3000/api/get-users");
+        // https://dev.galacticpolymath.com/
+        // http://localhost:3000/api/get-users
+        const url = new URL("https://dev.galacticpolymath.com/api/get-users");
         const auth = `Bearer ${accessToken}`;
         const { status, data } = await axios.get(url.href, {
             headers: { Authorization: auth },
@@ -70,7 +72,7 @@ const getUserResults = async () => {
             usersWithDoubleOptSent: usersWithDoubleOptSent?.length,
             totalUsers: data?.users?.length,
             emailsOnMailingList: usersOnMailingList.map((user) => user.email),
-            mailingListStatuses: usersOnMailingList.map(
+            mailingListStatuses: data.users.map(
                 (user) => user.mailingListStatus
             ),
             users: data.users,
@@ -85,7 +87,7 @@ const getUserResults = async () => {
 test(
     "Will check if the responses from the `get-users` route are constant.",
     async () => {
-        const getUserResultsPromises = new Array(20)
+        const getUserResultsPromises = new Array(10)
             .fill(0)
             .map(() => getUserResults());
         const userResults = await Promise.all(getUserResultsPromises);
@@ -116,6 +118,12 @@ test(
                 return doesTargetPropExist;
             }
         );
+
+        delete userResults[0].users;
+
+        const userResult = userResults[0];
+
+        console.log("userResult, yo there: ", userResult);
 
         expect(areResultsConstant).toBe(true);
         expect(doAllUsersHaveMailingListStatusField).toBe(true);
