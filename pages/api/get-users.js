@@ -3,13 +3,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable quotes */
 import { getAllBrevoMailingListContacts } from "../../backend/services/emailServices";
+import { findMailingListConfirmationsByEmails } from "../../backend/services/mailingListConfirmationServices";
 import {
     getUserMailingListStatusWithRetries,
     getUsers,
 } from "../../backend/services/userServices";
-import {
-    connectToMongodb,
-} from "../../backend/utils/connection";
+import { connectToMongodb } from "../../backend/utils/connection";
 
 export const config = {
     maxDuration: 45,
@@ -32,7 +31,7 @@ export const config = {
  *       200:
  *         body: { users: "{ ...UserSchema, mailingListStatus: 'onList' | 'notOnList' | 'doubleOptEmailSent' }[]"}
  *       500:
- *         body: { errMsg: "A message describing the error. Possible reasons: Failed to connect to the database | Failed to retrieve all users | Reached max triese when retrieving the mailing list status of a user from Brevo.", errType?: "dbConnectionErr | userRetrievalErr | maxTriesExceeded" }  
+ *         body: { errMsg: "A message describing the error. Possible reasons: Failed to connect to the database | Failed to retrieve all users | Reached max triese when retrieving the mailing list status of a user from Brevo.", errType?: "dbConnectionErr | userRetrievalErr | maxTriesExceeded" }
  */
 
 /**
@@ -63,7 +62,9 @@ export default async function handler(request, response) {
 
         const allBrevoContacts = await getAllBrevoMailingListContacts();
         let { errMsg, users } = await getUsers();
-        const brevoContactEmails = new Set(allBrevoContacts.map(contact => contact.email));
+        const brevoContactEmails = new Set(
+            allBrevoContacts.map((contact) => contact.email)
+        );
         const userEmailsNotOnMailingList = [];
 
         for (const userIndex in users) {
@@ -73,11 +74,61 @@ export default async function handler(request, response) {
                 users[userIndex] = {
                     ...user,
                     mailingListStatus: "onList",
-                }
+                };
                 continue;
             }
 
-            userEmailsNotOnMailingList.push(user)
+            userEmailsNotOnMailingList.push(user);
+        }
+
+        let usersEmailsWithDoubleOptEmailSent = [];
+
+        if (userEmailsNotOnMailingList.length > 0) {
+            const usersWithDoubleOptEmailSent =
+                await findMailingListConfirmationsByEmails(userEmailsNotOnMailingList);
+
+            for (const userWithDoubleOptEmailSent of usersWithDoubleOptEmailSent) {
+                const targetUserIndex = users.findIndex(
+                    (user) => user.email === userWithDoubleOptEmailSent.email
+                );
+
+                if (targetUserIndex === -1) {
+                    continue;
+                }
+
+                const user = users[targetUserIndex];
+
+                users[targetUserIndex] = {
+                    ...user,
+                    mailingListStatus: "doubleOptEmailSent",
+                };
+
+                usersEmailsWithDoubleOptEmailSent.push(user.email);
+            }
+        }
+
+        const usersEmailsWithDoubleOptEmailSentSet = new Set(
+            usersEmailsWithDoubleOptEmailSent
+        );
+        const usersOfficiallyNotOnMailingList =
+            new Set(usersEmailsWithDoubleOptEmailSentSet.size
+                ? userEmailsNotOnMailingList.filter(
+                    (userEmail) =>
+                        !usersEmailsWithDoubleOptEmailSentSet.has(userEmail.email)
+                )
+                : userEmailsNotOnMailingList);
+
+        if (usersOfficiallyNotOnMailingList.size > 0) {
+            users = users.map(user => {
+                if (usersOfficiallyNotOnMailingList.has(user.email)) {
+                    return {
+                        ...user,
+                        mailingListStatus: "notOnList"
+                    }
+                }
+
+                return user
+            })
         }
 
         if (errMsg || !users) {
@@ -92,11 +143,9 @@ export default async function handler(request, response) {
             return response.status(200).json({ users });
         }
 
-        return response
-            .status(200)
-            .json({
-                users
-            });
+        return response.status(200).json({
+            users,
+        });
     } catch (error) {
         console.error(
             "Failed to retrieve the target users from the db. Reason: ",
