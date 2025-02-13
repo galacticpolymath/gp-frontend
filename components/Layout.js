@@ -34,6 +34,7 @@ export default function Layout({
         <title>{title}</title>
         {process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' && <meta name="robots" content="noindex, nofollow" />}
         <meta property="og:title" content={title} />
+        <meta name="google-site-verification" content="87qwPzeD5oQKG15RKEP8BzbRr5VNhCbDPf98tLcZGUk" />
         <meta property="og:type" content={type} />
         <meta property='og:description' content={description} />
         {imgSrc && (
