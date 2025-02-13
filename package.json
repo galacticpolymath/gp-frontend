@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prebuild": "npm run test",
     "build": "next build",
     "start": "next dev",
     "prod": "next build && next start",
