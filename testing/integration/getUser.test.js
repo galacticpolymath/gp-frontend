@@ -3,14 +3,27 @@ const { signJwt } = require("../../backend/utils/auth");
 require("dotenv").config();
 
 /**
- * Makes a GET request to the `get-users` route and filters the
- * results to only include users who are on the mailing list.
- * @returns {Promise<{ usersOnMailingList?: number | undefined, totalUsers?: number | undefined }>} A promise that resolves to an object
- *    containing the properties `usersOnMailingList` and `totalUsers`.
- *    `usersOnMailingList` is the number of users on the mailing list
- *    and `totalUsers` is the total number of users in the database.
- *    If the request fails, it will log the error and return an empty
- *    object.
+ * Makes a request to the server to get all users from the database, including their
+ * mailing list status. The request is made with a JWT token that is signed with the
+ * NEXTAUTH_SECRET environment variable and has a payload of the TESTING_EMAIL env
+ * variable, the roles "dbAdmin" and "user", and the name "Gabe". The request is made
+ * to the /api/get-users endpoint with the query parameter dbType set to "production".
+ *
+ * @returns {Promise<{
+ *   usersOnMailingList: number;
+ *   notOnListUsers: number;
+ *   usersWithDoubleOptSent: number;
+ *   totalUsers: number;
+ *   emailsOnMailingList: string[];
+ *   mailingListStatuses: ("onList" | "notOnList" | "doubleOptEmailSent")[];
+ *   users: {
+ *     email: string;
+ *     mailingListStatus: "onList" | "notOnList" | "doubleOptEmailSent";
+ *   }[];
+ * }>} - An object with the number of users on the mailing list, the number of users
+ *        not on the mailing list, the number of users with double opt-in sent, the
+ *        total number of users, an array of emails on the mailing list, an array of
+ *        mailing list statuses, and an array of all users.
  */
 const getUserResults = async () => {
     const { NEXTAUTH_SECRET, TESTING_EMAIL } = process.env;
@@ -44,11 +57,23 @@ const getUserResults = async () => {
         const usersOnMailingList = data.users.filter(
             (user) => user.mailingListStatus === "onList"
         );
+        const usersWithDoubleOptSent = data.users.filter(
+            (user) => user.mailingListStatus === "doubleOptEmailSent"
+        );
+        const notOnListUsers = data.users.filter(
+            (user) => user.mailingListStatus === "notOnList"
+        );
 
         return {
             usersOnMailingList: usersOnMailingList?.length,
+            notOnListUsers: notOnListUsers?.length,
+            usersWithDoubleOptSent: usersWithDoubleOptSent?.length,
             totalUsers: data?.users?.length,
             emailsOnMailingList: usersOnMailingList.map((user) => user.email),
+            mailingListStatuses: usersOnMailingList.map(
+                (user) => user.mailingListStatus
+            ),
+            users: data.users,
         };
     } catch (error) {
         console.error("Failed to get users. Reason: ", error);
@@ -60,7 +85,9 @@ const getUserResults = async () => {
 test(
     "Will check if the responses from the `get-users` route are constant.",
     async () => {
-        const getUserResultsPromises = new Array(10).fill(0).map(() => getUserResults());
+        const getUserResultsPromises = new Array(20)
+            .fill(0)
+            .map(() => getUserResults());
         const userResults = await Promise.all(getUserResultsPromises);
         const firstResult = userResults[0];
 
@@ -70,19 +97,28 @@ test(
             return;
         }
 
-        const results = userResults.map(({ totalUsers, usersOnMailingList }) => ({
-            totalUsers,
-            usersOnMailingList,
-        }));
-        console.log("Results: ", results);
         const areResultsConstant = userResults.every((result) => {
             return (
                 result.usersOnMailingList === firstResult.usersOnMailingList &&
-                result.totalUsers === firstResult.totalUsers
+                result.totalUsers === firstResult.totalUsers &&
+                result.notOnListUsers === firstResult.notOnListUsers &&
+                result.usersWithDoubleOptSent === firstResult.usersWithDoubleOptSent
             );
         });
+        const doAllUsersHaveMailingListStatusField = userResults.every(
+            (userResult) => {
+                const doesTargetPropExist = userResult.users.every((user) => {
+                    const doesPropExist = "mailingListStatus" in user;
+
+                    return doesPropExist;
+                });
+
+                return doesTargetPropExist;
+            }
+        );
 
         expect(areResultsConstant).toBe(true);
+        expect(doAllUsersHaveMailingListStatusField).toBe(true);
     },
     1_000 * 60 * 3
 );

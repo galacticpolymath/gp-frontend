@@ -78,48 +78,47 @@ export default async function handler(request, response) {
                 continue;
             }
 
-            userEmailsNotOnMailingList.push(user);
+            userEmailsNotOnMailingList.push(user.email);
         }
 
-        let usersEmailsWithDoubleOptEmailSent = [];
+        let usersOfficiallyNotOnMailingList = new Set();
 
         if (userEmailsNotOnMailingList.length > 0) {
             const usersWithDoubleOptEmailSent =
                 await findMailingListConfirmationsByEmails(userEmailsNotOnMailingList);
 
-            for (const userWithDoubleOptEmailSent of usersWithDoubleOptEmailSent) {
-                const targetUserIndex = users.findIndex(
-                    (user) => user.email === userWithDoubleOptEmailSent.email
-                );
+            if (usersWithDoubleOptEmailSent.length) {
+                const usersEmailsWithDoubleOptEmailSent = new Set(usersWithDoubleOptEmailSent.map(user => user.email));
+                usersOfficiallyNotOnMailingList = new Set(userEmailsNotOnMailingList.filter(userEmail => {
+                    return !usersEmailsWithDoubleOptEmailSent.has(userEmail);
+                }));
 
-                if (targetUserIndex === -1) {
-                    continue;
+                for (const userWithDoubleOptEmailSent of usersWithDoubleOptEmailSent) {
+                    const targetUserIndex = users.findIndex(
+                        (user) => user.email === userWithDoubleOptEmailSent.email
+                    );
+
+                    if (targetUserIndex === -1) {
+                        usersOfficiallyNotOnMailingList.add(
+                            userWithDoubleOptEmailSent.email
+                        );
+                        continue;
+                    }
+
+                    const user = users[targetUserIndex];
+
+                    users[targetUserIndex] = {
+                        ...user,
+                        mailingListStatus: "doubleOptEmailSent",
+                    };
                 }
-
-                const user = users[targetUserIndex];
-
-                users[targetUserIndex] = {
-                    ...user,
-                    mailingListStatus: "doubleOptEmailSent",
-                };
-
-                usersEmailsWithDoubleOptEmailSent.push(user.email);
+            } else {
+                usersOfficiallyNotOnMailingList = new Set(userEmailsNotOnMailingList);
             }
         }
 
-        const usersEmailsWithDoubleOptEmailSentSet = new Set(
-            usersEmailsWithDoubleOptEmailSent
-        );
-        const usersOfficiallyNotOnMailingList =
-            new Set(usersEmailsWithDoubleOptEmailSentSet.size
-                ? userEmailsNotOnMailingList.filter(
-                    (userEmail) =>
-                        !usersEmailsWithDoubleOptEmailSentSet.has(userEmail.email)
-                )
-                : userEmailsNotOnMailingList);
-
         if (usersOfficiallyNotOnMailingList.size > 0) {
-            users = users.map(user => {
+            users = users.map((user) => {
                 if (usersOfficiallyNotOnMailingList.has(user.email)) {
                     return {
                         ...user,
@@ -139,8 +138,6 @@ export default async function handler(request, response) {
 
         if (users.length === 0) {
             console.error("No users found.");
-
-            return response.status(200).json({ users });
         }
 
         return response.status(200).json({
