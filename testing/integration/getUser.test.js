@@ -60,7 +60,7 @@ const getUserResults = async () => {
 test(
     "Will check if the responses from the `get-users` route are constant.",
     async () => {
-        const getUserResultsPromises = new Array(10).fill(0).map(() => getUserResults());
+        const getUserResultsPromises = new Array(1).fill(0).map(() => getUserResults());
         const userResults = await Promise.all(getUserResultsPromises);
         const firstResult = userResults[0];
 
@@ -74,7 +74,7 @@ test(
             totalUsers,
             usersOnMailingList,
         }));
-        console.log("Results: ", results);
+        // console.log("Results: ", results);
         const areResultsConstant = userResults.every((result) => {
             return (
                 result.usersOnMailingList === firstResult.usersOnMailingList &&

@@ -2,6 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable no-unused-vars */
 /* eslint-disable quotes */
+import { getAllBrevoMailingListContacts } from "../../backend/services/emailServices";
 import {
     getUserMailingListStatusWithRetries,
     getUsers,
@@ -60,8 +61,24 @@ export default async function handler(request, response) {
                 .json({ errMsg: "Failed to connect to the database." });
         }
 
-        // get all of the users from the brevo api
+        const allBrevoContacts = await getAllBrevoMailingListContacts();
         let { errMsg, users } = await getUsers();
+        const brevoContactEmails = new Set(allBrevoContacts.map(contact => contact.email));
+        const userEmailsNotOnMailingList = [];
+
+        for (const userIndex in users) {
+            const user = users[userIndex];
+
+            if (brevoContactEmails.has(user.email)) {
+                users[userIndex] = {
+                    ...user,
+                    mailingListStatus: "onList",
+                }
+                continue;
+            }
+
+            userEmailsNotOnMailingList.push(user)
+        }
 
         if (errMsg || !users) {
             return response
@@ -75,18 +92,10 @@ export default async function handler(request, response) {
             return response.status(200).json({ users });
         }
 
-        const {
-            users: usersWithMailingStatusWithRetries,
-            errorMessage,
-            errType,
-        } = await getUserMailingListStatusWithRetries(users);
-
         return response
-            .status(usersWithMailingStatusWithRetries ? 200 : 500)
+            .status(200)
             .json({
-                users: usersWithMailingStatusWithRetries,
-                errMsg: errorMessage,
-                errType,
+                users
             });
     } catch (error) {
         console.error(
