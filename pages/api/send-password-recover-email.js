@@ -23,7 +23,6 @@ export default async function handler(request, response) {
         await connectToMongodb(
             15_000,
             0,
-            true,
             true
         );
 

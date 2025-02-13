@@ -13,6 +13,7 @@ if (!JwtModel) {
       default: Date.now(),
     },
   }, { _id: false });
+  // TODO: have the expiration time be a dynamic value
   JwtModel.index({ expireAt: 1 }, { expireAfterSeconds: 30 });
   JwtModel = model('jwt', JwtModel);
 }

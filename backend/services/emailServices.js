@@ -7,6 +7,11 @@ import { updateUser } from './userServices';
 import { nanoid } from 'nanoid';
 import MailingListConfirmation from '../models/mailingListConfirmation';
 import { deleteMailingListConfirmationsByEmail } from './mailingListConfirmationServices';
+import { CustomError } from '../utils/errors';
+import { waitWithExponentialBackOff } from '../../globalFns';
+
+const MAILING_LIST_ID = 7;
+const BREVO_PG_LIMIT = 1_000;
 
 /**
  * @typedef {Object} TMailOpts
@@ -112,7 +117,7 @@ export const addUserToEmailList = async (email, clientUrl) => {
         console.log('redirectionUrl: ', redirectionUrl);
         const reqBody = {
             email,
-            includeListIds: [7],
+            includeListIds: [MAILING_LIST_ID],
             templateId: 5,
             redirectionUrl,
         };
@@ -218,8 +223,6 @@ export const getMailingListContact = async (email) => {
         const options = new BrevoOptions();
         const response = await fetch(`https://api.brevo.com/v3/contacts/${email}?identifierType=email_id`, options);
 
-        console.log('response, getting user from mailing list status: ', response.status);
-
         if (response.status === 429) {
             return email;
         }
@@ -230,12 +233,111 @@ export const getMailingListContact = async (email) => {
 
         const body = await response.json();
 
-
         return body;
     } catch (error) {
         console.error("Unable to find the target user. Reason: ", error);
+        console.log("error.name, sup there: ", error?.name)
+
+        if (error.name === "FetchError" || error.name === "TypeError") {
+            console.error("Failed to get the target user. Fetch error.");
+            return email;
+        }
+
 
         return null;
     }
 }
 
+export const getBrevoMailingListContacts = async (listIds = [MAILING_LIST_ID], offset = 0) => {
+    try {
+        const url = new URL('https://api.brevo.com/v3/contacts');
+
+        url.searchParams.set('limit', BREVO_PG_LIMIT);
+        url.searchParams.set('offset', offset);
+
+        for (const listId of listIds) {
+            url.searchParams.set('listIds', listId);
+        }
+
+        const options = new BrevoOptions();
+        const response = await fetch(url.href, options);
+
+        if (response.status !== 200) {
+            throw new Error("Failed to get the mailing list contacts.");
+        }
+
+        const body = await response.json();
+
+        return body;
+    } catch (error) {
+        console.error("Failed to get the mailing list contacts. Reason: ", error);
+
+        return null;
+    }
+}
+
+
+
+export const getAllBrevoMailingListContacts = async (offset = 0, allContacts = [], tries = 0) => {
+    try {
+        if (tries > 15) {
+            throw new CustomError("Reached max tries.", undefined, "maxTriesExceeded");
+        }
+
+        const allContactsClone = structuredClone(allContacts);
+        console.log("allContactsClone: ", allContactsClone.length);
+        console.log("tries, sup there: ", tries);
+        const brevoMailingListContacts = await getBrevoMailingListContacts([MAILING_LIST_ID], offset);
+
+        if (!brevoMailingListContacts && (typeof brevoMailingListContacts === 'object')) {
+            console.log("Failed to get the mailing list contacts. Will try again.");
+            await waitWithExponentialBackOff(tries);
+            tries += 1;
+
+            return getAllBrevoMailingListContacts(offset, allContactsClone, tries)
+        }
+
+        const { contacts, count } = brevoMailingListContacts;
+
+        console.log("contacts.length: ", contacts.length);
+        console.log("count of contacts: ", count);
+
+        if (!contacts.length) {
+            console.log("No more contacts to retrieve.");
+            return allContactsClone;
+        }
+
+        for (const contact of contacts) {
+            const isPresent = allContactsClone
+                .find(retrievedContact => retrievedContact.email === contact.email)
+
+            if (!isPresent) {
+                allContactsClone.push(contact)
+            }
+        }
+
+        if (allContactsClone.length >= count) {
+            console.log("No more contacts to retrieve. Reached end.");
+            return allContactsClone;
+        }
+
+        console.log("More contacts to retrieve. Will try again.");
+
+        return await getAllBrevoMailingListContacts(offset + BREVO_PG_LIMIT, allContactsClone)
+    } catch (error) {
+        const { type, name } = error ?? {};
+
+        if (type === "maxTriesExceeded") {
+            return null;
+        }
+
+        if (name === "FetchError" || name === "TypeError") {
+            console.error("Failed to get the target user. Fetch error.");
+            return email;
+        }
+
+        console.error("An error has occurred: ", error);
+
+        return null;
+    }
+}

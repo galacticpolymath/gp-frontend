@@ -32,6 +32,7 @@ export default function Layout({
     <div style={style} className={`${montserrat.className} ${className}`}>
       <Head>
         <title>{title}</title>
+        {process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' && <meta name="robots" content="noindex, nofollow" />}
         <meta property="og:title" content={title} />
         <meta property="og:type" content={type} />
         <meta property='og:description' content={description} />

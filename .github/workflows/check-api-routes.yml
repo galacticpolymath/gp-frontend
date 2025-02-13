@@ -1,0 +1,47 @@
+name: Test API routes for Preview
+
+on: 
+  push:
+    branches:
+      - backend-development
+
+jobs:
+  integration-tests-and-deploy:
+    name: Run Integration Tests
+    environment: Preview
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.6.0'
+    
+    - name: Install dependencies
+      run: npm install --legacy-peer-deps
+
+    - name: Create the .env file
+      run: |
+        touch .env
+        echo MONGODB_USER=${{ vars.MONGODB_USER }} >> .env
+        echo MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }} >> .env
+        echo MONGODB_DB_NAME=${{ vars.MONGODB_DB_NAME }} >> .env
+        echo MONGODB_DB_PROD=${{ vars.MONGODB_DB_PROD }} >> .env
+        echo MONGODB_PROJECT_ID=${{ vars.MONGODB_PROJECT_ID }} >> .env
+        echo MONGODB_PROJECT_PRIVATE_KEY=${{ secrets.MONGODB_PROJECT_PRIVATE_KEY }}  >> .env
+        echo MONGODB_PROJECT_PUBLIC_KEY=${{ vars.MONGODB_PROJECT_PUBLIC_KEY }}  >> .env
+        echo AUTH_CLIENT_ID=${{ vars.AUTH_CLIENT_ID }} >> .env
+        echo AUTH_CLIENT_SECRET=${{ secrets.AUTH_CLIENT_SECRET }} >> .env
+        echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> .env
+        echo EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID=${{ vars.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID }} >> .env
+        echo EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY=${{ secrets.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY }} >> .env
+        echo BREVO_API_KEY=${{ secrets.BREVO_API_KEY }} >> .env
+        echo DEADLINKS_CHECK_EMAIL_PASSWORD=${{ secrets.DEADLINKS_CHECK_EMAIL_PASSWORD }} >> .env
+        echo TESTING_EMAIL=${{ vars.TESTING_EMAIL }} >> .env
+
+    - name: Run the integration tests
+      id: run-tests # Add an ID so we can reference this step if needed.
+      run: npm run ci

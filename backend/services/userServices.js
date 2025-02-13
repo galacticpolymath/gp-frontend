@@ -294,9 +294,6 @@ export const getUsersMailingListStatus = async (users) => {
         }
 
         if (typeof userMailingListStatus === "string") {
-            console.log(
-                "429 error has occurred for atleast one request that retrieve the mailling list status of a user."
-            );
             let targetUser = users[index];
             targetUser = {
                 ...targetUser,
@@ -355,13 +352,11 @@ export const getUsersMailingListStatus = async (users) => {
 
 export const getUserMailingListStatusWithRetries = async (
     usersToRetrieveStatus,
-    allUsers,
+    successfullyRetrievedUsers = [],
     tries = 0
 ) => {
     try {
-        console.log("Current tries: ", tries);
-
-        if (tries >= 7) {
+        if (tries >= 11) {
             throw new CustomError("Reached max tries when retrieving the mailing list status of a user from Brevo.", undefined, "maxTriesExceeded");
         }
 
@@ -382,18 +377,21 @@ export const getUserMailingListStatusWithRetries = async (
                 (user) => !user.didMailingListStatusRetrievalReqErr
             );
 
+            usersWithMailingListStatuses.push(...successfullyRetrievedUsers);
+
             await waitWithExponentialBackOff(tries);
 
             tries += 1;
 
             return await getUserMailingListStatusWithRetries(
                 usersOfFailedMailingListStatusReqErr,
-                usersWithMailingListStatuses
+                usersWithMailingListStatuses,
+                tries
             );
         }
 
         return {
-            users: [...usersMailingListStatus, ...allUsers]
+            users: [...usersMailingListStatus, ...successfullyRetrievedUsers]
         };
     } catch (error) {
         let { message, type } = error ?? {};

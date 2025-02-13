@@ -1,31 +1,42 @@
-import { SignJWT } from 'jose';
-import { nanoid } from 'nanoid';
-import { JWT } from 'google-auth-library';
+const { SignJWT } = require('jose');
+const { v4 } = require("uuid")
+const { JWT } = require('google-auth-library');
 
 /**
- * Creates a json web token.
+ * Creates a JSON Web Token.
  * @param {{ email?: string, role?: string[], name?: string, emailConfirmationId?: string, accessibleRoutes?: string[] }} jwtPayload 
  * @param {string | Buffer} secret 
  * @param {string | number} expirationTime 
- * @returns {SignJWT}
+ * @returns {Promise<string>}
  */
-export const signJwt = async (
+const signJwt = async (
   jwtPayload,
   secret,
   expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60
 ) => {
-  const issueAtTime = Math.floor(Date.now() / 1000); // issued at tim
+  const issueAtTime = Math.floor(Date.now() / 1000); // issued at time
 
   return new SignJWT(jwtPayload)
     .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
     .setExpirationTime(expirationTime)
     .setIssuedAt(issueAtTime)
-    .setJti(nanoid())
+    .setJti(v4())
     .sign(new TextEncoder().encode(secret));
 };
 
-export const getGoogleAuthJwt = (keyFile, scopes) => {
+/**
+ * Generates a Google Auth JWT.
+ * @param {string} keyFile - Path to the service account key file.
+ * @param {string[]} scopes - Scopes required for the JWT.
+ * @returns {JWT}
+ */
+const getGoogleAuthJwt = (keyFile, scopes) => {
   const serviceAccountJwt = new JWT({ keyFile: keyFile, scopes: scopes });
-
   return serviceAccountJwt;
+};
+
+// Exporting the functions using CommonJS
+module.exports = {
+  signJwt,
+  getGoogleAuthJwt,
 };

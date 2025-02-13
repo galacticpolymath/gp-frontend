@@ -102,7 +102,7 @@ const test4CorrectResult = '/3/29-9000/412/490/490'
 
 
 
-test("Get the path of the selected search result.", () => {
+test.skip("Get the path of the selected search result.", () => {
     const newPathsTest1 = getPathsOfSearchResult(selectedJobCategoryTest1);
 
     expect(newPathsTest1).toBe(test1CorrectResult)

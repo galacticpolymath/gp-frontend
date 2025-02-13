@@ -19,7 +19,6 @@ export default async function handler(request, response) {
       15_000,
       0,
       true,
-      true
     );
 
     if (!wasConnectionSuccessful) {
