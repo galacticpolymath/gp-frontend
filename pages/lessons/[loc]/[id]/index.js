@@ -630,7 +630,11 @@ export const getStaticProps = async (arg) => {
       params: { id, loc },
     } = arg;
 
-    await connectToMongodb();
+    const { wasSuccessful } = await connectToMongodb();
+
+    if (!wasSuccessful) {
+      throw new Error("Failed to connect to the database.");
+    }
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     let lessonToDisplayOntoUi = targetLessons.find(

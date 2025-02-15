@@ -42,7 +42,7 @@ const LessonsPage = ({
   webAppsObj,
   didErrorOccur,
 }) => {
-  console.log("webAppsObj, hey there: ", webAppsObj);
+  console.log("units, hey there: ", units);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedGpWebApp, setSelectedGpWebApp] = useState(null);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
@@ -325,7 +325,11 @@ function getIsUnitNew(releaseDate, now) {
 
 export async function getStaticProps() {
   try {
-    await connectToMongodb();
+    const { wasSuccessful } = await connectToMongodb();
+
+    if (!wasSuccessful) {
+      throw new Error("Failed to connect to the database.");
+    }
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS)
       .sort({ ReleaseDate: -1 })
@@ -475,8 +479,6 @@ export async function getStaticProps() {
         }
       }
     }
-
-    console.log("webApps, hey there: ", webApps);
 
     const units = getShowableUnits(lessons).map((lesson) => {
       const individualLessonsNum = lesson?.LsnStatuses?.length

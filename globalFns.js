@@ -138,6 +138,21 @@ export const getShowableUnits = units => {
             !uniqueUnits.some(uniqueUnit => unit.numID === uniqueUnit.numID) &&
             (moment(unit.ReleaseDate).format('YYYY-MM-DD') <= moment(todaysDate).format('YYYY-MM-DD'))) {
             uniqueUnits.push(unit);
+            continue;
+        }
+
+        if (STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) &&
+            uniqueUnits.some(uniqueUnit => unit.numID === uniqueUnit.numID)) {
+
+            const targetUnitIndex = uniqueUnits.findIndex(uniqueUnit => unit.numID === uniqueUnit.numID);
+            let targetUnit = uniqueUnits[targetUnitIndex];
+
+            targetUnit = {
+                ...targetUnit,
+                locals: targetUnit?.locals ? [...targetUnit?.locals, unit.locale] : [targetUnit.locale, unit.locale]
+            };
+
+            uniqueUnits[targetUnitIndex] = targetUnit;
         }
     }
 

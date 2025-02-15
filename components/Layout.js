@@ -14,10 +14,6 @@ import { Montserrat, Noto_Sans } from 'next/font/google';
 const notoSansLight = Noto_Sans({
   subsets: ['latin'],
   weight: 'variable',
-})
-const montserrat = Montserrat({
-  subsets: ['latin'],
-  weight: 'variable',
 });
 
 export default function Layout({
