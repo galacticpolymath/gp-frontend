@@ -9,8 +9,12 @@
 import Head from 'next/head';
 import Footer from './Footer';
 import Navbar from './Navbar';
-import { Montserrat } from 'next/font/google';
+import { Montserrat, Noto_Sans } from 'next/font/google';
 
+const notoSansLight = Noto_Sans({
+  subsets: ['latin'],
+  weight: 'variable',
+})
 const montserrat = Montserrat({
   subsets: ['latin'],
   weight: 'variable',
@@ -29,7 +33,7 @@ export default function Layout({
   style = {},
 }) {
   return (
-    <div style={style} className={`${montserrat.className} ${className}`}>
+    <div style={style} className={`${notoSansLight.className} ${className}`}>
       <Head>
         <title>{title}</title>
         {process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' && <meta name="robots" content="noindex, nofollow" />}
