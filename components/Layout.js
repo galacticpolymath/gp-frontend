@@ -9,7 +9,7 @@
 import Head from 'next/head';
 import Footer from './Footer';
 import Navbar from './Navbar';
-import { Montserrat, Noto_Sans } from 'next/font/google';
+import { Noto_Sans } from 'next/font/google';
 
 const notoSansLight = Noto_Sans({
   subsets: ['latin'],

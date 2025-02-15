@@ -92,7 +92,7 @@ const LessonCard = ({ lesson, PillComp = null, lessonImgSrc }) => {
                 <BsGlobe style={{ transform: 'scale(1.2) translateY(-.7px)' }} className="me-1" />
               </span>
               {locals.map((local) => (
-                <span style={{ fontWeight: 249 }} className="list-item">{local}</span>
+                <span style={{ fontWeight: 300 }} className="list-item">{local}</span>
               ))}
             </Tag>
           ) : null}
