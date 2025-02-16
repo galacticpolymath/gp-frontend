@@ -27,7 +27,7 @@ import { ErrorTxt } from "../formElements";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { TROUBLE_LOGGING_IN_LINK } from "../../../globalVars";
-import CheckBox from "../../General/CheckBox";
+import CheckBoxInput from "../../CheckBoxInput";
 
 const AccordionToggleBtn = ({
     children = <></>,
@@ -90,11 +90,21 @@ const AboutUserModal = () => {
     const modalBodyRef = useRef();
 
     const handleIsTeacherConfirmationCheckBoxClick = () => {
-        setAboutUserForm(state => ({
+        if (errors.has("isTeacherConfirmationErr")) {
+            setErrors(state => {
+                const stateClone = structuredClone(state);
+
+                stateClone.delete("isTeacherConfirmationErr")
+
+                return stateClone;
+            });
+        }
+
+        setAboutUserForm((state) => ({
             ...state,
-            isTeacherConfirmed: !state.isTeacherConfirmed
-        }))
-    }
+            isTeacherConfirmed: !state.isTeacherConfirmed,
+        }));
+    };
 
     const handleFocusRelatedEvent = (isInputFocused) => () => {
         setIsInputFocused(isInputFocused);
@@ -418,7 +428,10 @@ const AboutUserModal = () => {
                                     <section style={{ columnCount: 2 }} className="mt-3 mb-2 row">
                                         <GradesOrYearsSelection _errors={[errors, setErrors]} />
                                         <section className="d-flex flex-column col-12 col-lg-6 mt-2 mt-sm-0">
-                                            <label style={{ lineHeight: "25px" }}>
+                                            <label className={`${errors.has("classroomSize")
+                                                ? "text-danger"
+                                                : ""
+                                                }`} style={{ lineHeight: "25px" }}>
                                                 *How many students do you teach?
                                             </label>
                                             <input
@@ -431,7 +444,9 @@ const AboutUserModal = () => {
                                                 value={
                                                     aboutUserForm.classroomSize.isNotTeaching
                                                         ? "N/A"
-                                                        : aboutUserForm?.classroomSize?.num == 0 ? "" : aboutUserForm?.classroomSize?.num
+                                                        : aboutUserForm?.classroomSize?.num == 0
+                                                            ? ""
+                                                            : aboutUserForm?.classroomSize?.num
                                                 }
                                                 disabled={aboutUserForm.classroomSize.isNotTeaching}
                                                 onChange={handleOnClassRoomSizeInputChange}
@@ -470,7 +485,10 @@ const AboutUserModal = () => {
                                         </section>
                                     </section>
                                     <section className="d-flex flex-column mt-4 mt-lg-3">
-                                        <label>*Subject(s) Taught:</label>
+                                        <label className={`${errors.has("subjects")
+                                            ? "text-danger"
+                                            : ""
+                                            }`}>*Subject(s) Taught:</label>
                                         <section className="row d-flex flex-column flex-sm-row ps-2">
                                             <div className="pt-1 subjects-taught-container col-12 col-sm-6">
                                                 {SUBJECTS_OPTIONS.slice(0, 5).map((subject, index) => (
@@ -503,15 +521,34 @@ const AboutUserModal = () => {
                                             <ErrorTxt>{errors.get("subjects") ?? ""}</ErrorTxt>
                                         </section>
                                     </section>
-                                    <section>
-                                        <CheckBox
-                                            handleOnClick={handleIsTeacherConfirmationCheckBoxClick}
-                                            isChecked={aboutUserForm.isTeacherConfirmed}
-                                            txtClassName={`${!errors.has("isTeacherConfirmedErr") ? 'text-danger' : ''} pointer`}
-                                            txtStyle={{ fontSize: "18px", }}
-                                        >
-
-                                        </CheckBox>
+                                    <section className="d-flex flex-column mt-2">
+                                        <label className={`${errors.has("isTeacherConfirmationErr")
+                                            ? "text-danger"
+                                            : ""
+                                            } pointer`}>*Teacher Confirmation:</label>
+                                        <section className="ps-2">
+                                            <CheckBoxInput
+                                                handleCheckboxOnchange={
+                                                    handleIsTeacherConfirmationCheckBoxClick
+                                                }
+                                                isChecked={aboutUserForm.isTeacherConfirmed}
+                                                txtClassName={`${errors.has("isTeacherConfirmationErr")
+                                                    ? "text-danger"
+                                                    : ""
+                                                    } pointer`}
+                                                checkBoxInputClassName={`pb-1 me-1 ${errors.has("isTeacherConfirmationErr")
+                                                    ? "border-danger"
+                                                    : ""
+                                                    }`}
+                                                txtStyle={{ fontSize: "18px" }}
+                                            >
+                                                I solemnly swear I'm not a student just trying to get
+                                                the answer key🤨
+                                            </CheckBoxInput>
+                                        </section>
+                                        <section style={{ height: "28px" }}>
+                                            <ErrorTxt>{errors.get("isTeacherConfirmationErr") ?? ""}</ErrorTxt>
+                                        </section>
                                     </section>
                                 </Accordion.Body>
                             </Accordion.Item>

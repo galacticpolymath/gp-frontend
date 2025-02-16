@@ -17,7 +17,6 @@ import { CustomInput, ErrorTxt, InputSection } from '../formElements';
 import { signIn } from 'next-auth/react';
 import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
 import { INPUT_FOCUS_BLUE_CLASSNAME, USER_INPUT_BACKGROUND_COLOR } from '../../../globalVars';
-import CheckBox from '../../CheckBox';
 
 export const FONT_SIZE_CHECKBOX = '28px';
 const inputElementsFocusedDefault = new Map();
