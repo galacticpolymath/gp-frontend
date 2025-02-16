@@ -81,19 +81,7 @@ const LessonsPage = ({
           </p>
         </div>
       </section>
-      <section className="w-100 my-4 my-md-3 d-flex justify-content-center align-items-center">
-        <div className="sponsors-container-lessons lessons-pg-sec lessons-pg-sec-max-width">
-          <h4 className="text-muted mb-3 mb-sm-5 text-left mt-2 mt-sm-4 pe-lg-5">
-            Made open access by these funding organizations and research
-            institutions:
-          </h4>
-          <Sponsors
-            decimal={0.24}
-            parentContainerCss="d-flex justify-content-center align-items-center sponsor-container-lessons-pg"
-          />
-        </div>
-      </section>
-      <section className="mb-3 mt-5 d-flex justify-content-center align-items-center">
+      <section className="mb-3 mt-4 d-flex justify-content-center align-items-center">
         <div
           className="border-top border-bottom w-100"
           style={{ backgroundColor: "#F0F4FF" }}
@@ -204,7 +192,19 @@ const LessonsPage = ({
       <section className="d-flex justify-content-center align-items-center">
         <div className="lessons-pg-sec lessons-pg-sec-max-width">
           <GpUnits units={units} didErrorOccur={didErrorOccur} />
-          <section className="mb-5 pt-2 lessonsSection lessons-section-border-top">
+          <section className="my-4 my-md-3 d-flex justify-content-center align-items-center img-background-container lessons-section-border-top lessons-section-border-bottom">
+            <div style={{ width: '86%' }} className="sponsors-container-lessons">
+              <h4 className="text-muted mb-3 mb-sm-5 text-left mt-2 mt-sm-4 pe-lg-5">
+                Made open access by these funding organizations and research
+                institutions:
+              </h4>
+              <Sponsors
+                decimal={0.24}
+                parentContainerCss="d-flex justify-content-center align-items-center sponsor-container-lessons-pg"
+              />
+            </div>
+          </section>
+          <section className="mb-5 pt-2 lessonsSection">
             <section className="headerSecLessonsPg d-flex flex-column flex-sm-row">
               <section className="d-flex justify-content-sm-center align-items-sm-center">
                 <img
