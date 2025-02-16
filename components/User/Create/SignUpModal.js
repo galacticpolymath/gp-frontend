@@ -17,8 +17,9 @@ import { CustomInput, ErrorTxt, InputSection } from '../formElements';
 import { signIn } from 'next-auth/react';
 import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
 import { INPUT_FOCUS_BLUE_CLASSNAME, USER_INPUT_BACKGROUND_COLOR } from '../../../globalVars';
+import CheckBox from '../../CheckBox';
 
-const FONT_SIZE_CHECKBOX = '28px';
+export const FONT_SIZE_CHECKBOX = '28px';
 const inputElementsFocusedDefault = new Map();
 
 inputElementsFocusedDefault.set('email', false);
@@ -29,7 +30,6 @@ const SignUpModal = () => {
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
     const { _createAccountForm, sendFormToServer, validateForm, _isUserTeacher } = useUserEntry();
     const [errors, setErrors] = useState(new Map());
-    const didIsUserTeacherErr = errors.has('isUserTeacherErr');
     const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
     const [isGoogleLoadingSpinnerOn, setIsGoogleLoadingSpinnerOn] = useState(false);
     const [inputElementsFocused, setInputElementsFocused] = useState(inputElementsFocusedDefault);
@@ -218,42 +218,7 @@ const SignUpModal = () => {
             </ModalHeader>
             <ModalBody className='pt-1 px-1 pb-1'>
                 <div className='border-bottom py-2'>
-                    <section className='p-0 row w-100 m-0'>
-                        <div className='w-100 d-flex justify-content-center align-items-center'>
-                            <div className='col-sm-6 col-11 d-flex justify-content-center align-items-center'>
-                                <div style={{ width: '100%' }} className='d-flex create-account-toggle-btn-container'>
-                                    <div>
-                                        {isUserTeacher ? (
-                                            <BiCheckboxChecked
-                                                onClick={handleIsUserATeacherCheckBoxClick}
-                                                fontSize={FONT_SIZE_CHECKBOX}
-                                                className='pointer'
-                                            />
-                                        )
-                                            : (
-                                                <BiCheckbox
-                                                    onClick={handleIsUserATeacherCheckBoxClick}
-                                                    color={didIsUserTeacherErr ? 'red' : ""}
-                                                    fontSize={FONT_SIZE_CHECKBOX}
-                                                    className='pointer'
-                                                />
-                                            )}
-                                    </div>
-                                    <label
-                                        onClick={handleIsUserATeacherCheckBoxClick}
-                                        className={`${didIsUserTeacherErr ? 'text-danger' : ''} pointer`}
-                                        style={{
-                                            fontSize: "18px",
-
-                                        }}
-                                    >
-                                        *{userIsTeacherTxt}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <section className='p-0 row w-100 m-0 mt-2 mb-1'>
+                    <section className='p-0 row w-100 m-0 mb-1'>
                         <div className='w-100 d-flex justify-content-center align-items-center'>
                             <div className='col-sm-6 col-11 d-flex justify-content-center align-items-center'>
                                 <div style={{ width: '100%' }} className='d-flex create-account-toggle-btn-container'>
