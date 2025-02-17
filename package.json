@@ -94,7 +94,7 @@
     "wait-on": "^8.0.2"
   },
   "devDependencies": {
-    "cypress": "^14.0.0",
+    "cypress": "^14.0.3",
     "eslint": "9.16.0",
     "eslint-config-next": "^15.0.3",
     "eslint-plugin-react": "^7.37.2",
