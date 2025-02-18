@@ -11,6 +11,7 @@ import { CustomError } from '../../backend/utils/errors';
 import axios from 'axios';
 import { copyFiles, FileMetaData, generateGoogleAuthJwt, getGooglDriveFolders, shareFilesWithRetries } from '../../backend/services/googleDriveServices';
 import { ConnectionPoolClosedEvent } from 'mongodb';
+import { getJwtPayloadPromise, verifyJwt } from '../../nondependencyFns';
 
 const getUserDriveFiles = (accessToken, nextPageToken) => axios.get(
     'https://www.googleapis.com/drive/v3/files',
@@ -57,105 +58,6 @@ const listAllUserFiles = async (accessToken, nextPageToken, startingFiles = []) 
     }
 }
 
-/**
- * Copy a google drive file into a folder (if specified).
- * @param {string} fileId The id of the file.
- * @param {string[]} folderIds The ids of the folders to copy the files into.
- * @param {string} accessToken The client side user's access token.
- * @param {drive_v3.Drive} service google drive service object
- * @return {Promise<{ wasSuccessful: boolean }>} An object contain the results and optional message.
- * */
-const copyFile = async (fileId, folderIds, accessToken) => {
-    try {
-        const reqBody = folderIds ? { parents: folderIds } : {};
-        const response = await axios.post(
-            `https://www.googleapis.com/drive/v3/files/${fileId}/copy`,
-            reqBody,
-            {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                params: {
-                    supportsAllDrives: true,
-                }
-            }
-        )
-
-
-        if (response.status !== 200) {
-            throw new CustomError("Failed to copy the files into the user's google drive.", response.status)
-        }
-
-        return { wasSuccessful: true, msg: response.data };
-    } catch (error) {
-        const errMsg = `Failed to create folder for the user. Reason: ${error.response.data.error}`;
-
-        return { wasSuccessful: false }
-    }
-}
-
-/**
- * Share the google drive file with a user.
- * @param{string} fileId The id of the file.
- * @param{string} fileName The name of the file.
- * @param{{ type: string, role: string, emailAddress: string }[]} permissions Permissions for the user to access the file
- * @param{drive_v3.Drive} service google drive service object
- * @return{Promise<any[] | null>} An array of the permission ids if successful. Otherwise, it will return null.
- * */
-const shareFile = async (fileId, service, permissions, fileName) => {
-    let permissionIdsForFile = []
-
-    for (const permission of permissions) {
-        try {
-            const result = await service.permissions.create({
-                resource: permission,
-                fileId: fileId,
-                fields: 'id',
-                corpora: 'drive',
-                includeItemsFromAllDrives: true,
-                supportsAllDrives: true,
-                driveId: process.env.GOOGLE_DRIVE_ID
-            });
-            permissionIdsForFile.push({ fileId: fileId, permissionId: result.data.id });
-
-            console.log(`Inserted permission id: ${result.data.id}`);
-        } catch (err) {
-            console.error(`Failed to share file '${fileId}' with the name of ${fileName} with the user. Reason: `, err);
-        }
-    }
-
-    return permissionIdsForFile?.length ? permissionIdsForFile : null;
-}
-
-
-/**
- * Searches through the user's google drive.
- * @param{string} accessToken Access token for user's google drive. The client must send this.
- * @param{string} searchQuery The query for the user's google drive.
- * @return{Promise<any[] | null>} An array of searched folders and files. Otherwise, it will return null if an error has occurred.
- * */
-const searchUserGoogleDrive = async (accessToken, searchQuery) => {
-    try {
-        const response = await axios.get('https://www.googleapis.com/drive/v3/files',
-            {
-                params: { q: searchQuery },
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        )
-
-
-        return [...(response?.data?.files ?? [])]
-    } catch (error) {
-        console.error('Failed to search google drive of user. Reason: ', error)
-
-        return null;
-    }
-}
-
 const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFolderIds = []) => {
     try {
         const folderMetadata = new FileMetaData(folderName, parentFolderIds);
@@ -184,15 +86,62 @@ const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFol
     }
 }
 
+
+/**
+ * @swagger
+ * /api/copy-files:
+ *   post:
+ *     summary: Copy user files to a specified folder.
+ *     description: The user must authenticate with their Google account to copy files.  Authentication must be done with the following url: https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:3000/google-drive-auth-result/&prompt=consent&response_type=token&client_id=1038023225572-3ir2sqrlbtfcpl3ves15847tbu5li2gv.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/drive
+ *     security:
+ *       - Bearer: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               unitDriveId:
+ *                 type: string
+ *                 description: The id of the drive to copy the files to.
+ *               unitName:
+ *                 type: string
+ *                 description: The name of the unit to copy the files to.
+ *     responses:
+ *       200:
+ *         description: The result of the copy operation.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 wasSuccessful:
+ *                   type: boolean
+ *                   description: Whether the copy operation was successful.
+ *                 errMsg:
+ *                   type: string
+ *                   description: The error message if the copy operation was not successful.
+ */
 export default async function handler(request, response) {
     try {
-        if (!request.body.accessToken) {
-            throw new CustomError('access token was not provided.', 400);
+        console.log("sup there yo, liver...")
+        const gdriveAccessToken = request.headers['gdrive-token'];
+        const jwtPayload = await getJwtPayloadPromise(request.headers.authorization);
+
+        console.log('jwtPayload, sup there: ', jwtPayload);
+        console.log("gdriveAccessToken, sup there: ", gdriveAccessToken);
+
+        if (!jwtPayload || !jwtPayload?.payload?.email) {
+            throw new CustomError('The access token is not valid.', 400);
         }
 
-        if (!request.body.email) {
-            throw new CustomError('The email was not provided.', 400);
+
+        if (!gdriveAccessToken) {
+            throw new CustomError('The gdrive access token was not provided.', 400);
         }
+
+        const email = jwtPayload.payload.email;
 
         if (!request.body.unitDriveId) {
             throw new CustomError('The id of the drive was not provided.', 400);
@@ -204,11 +153,7 @@ export default async function handler(request, response) {
 
         const googleAuthJwt = generateGoogleAuthJwt()
         const googleService = google.drive({ version: 'v3', auth: googleAuthJwt });
-
-        console.log('googleService: ', googleService)
         const rootDriveFolders = await getGooglDriveFolders(googleService, request.body.unitDriveId)
-
-        console.log('rootDriveFolders: ', rootDriveFolders);
 
         if (!rootDriveFolders?.length) {
             console.error('The root of the drive folder is empty.')
@@ -377,7 +322,7 @@ export default async function handler(request, response) {
         }
 
         // give the user the ability to name the folder where the files will be copied to. 
-        const { folderId: unitFolderId, errMsg } = await createGoogleDriveFolderForUser(`${request.body.unitName} COPY`, request.body.accessToken)
+        const { folderId: unitFolderId, errMsg } = await createGoogleDriveFolderForUser(`${request.body.unitName} COPY`, gdriveAccessToken)
 
         if (errMsg) {
             console.error("Failed to create the target folder.");
@@ -407,7 +352,7 @@ export default async function handler(request, response) {
         for (const folderToCreate of folderPaths) {
             // if the folder is at the root
             if (folderToCreate.pathToFile === '') {
-                const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderToCreate.name, request.body.accessToken, [unitFolderId])
+                const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderToCreate.name, gdriveAccessToken, [unitFolderId])
 
                 if (!wasSuccessful) {
                     foldersFailedToCreate.push(folderToCreate.name)
@@ -432,7 +377,7 @@ export default async function handler(request, response) {
                 continue
             }
 
-            const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderToCreate.name, request.body.accessToken, [parentFolderId])
+            const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderToCreate.name, gdriveAccessToken, [parentFolderId])
 
             if (!wasSuccessful) {
                 foldersFailedToCreate.push(folderToCreate.name)
@@ -451,7 +396,9 @@ export default async function handler(request, response) {
         const files = unitFolders.filter(folder => !folder.mimeType.includes('folder'))
         console.log("Will share the target files with the target user.");
         const { wasSuccessful: wasSharesSuccessful } =
-            await shareFilesWithRetries(files, request.body.email, googleService)
+            await shareFilesWithRetries(files, email, googleService)
+
+        console.log("Was files share successful, wasSharesSuccessful: ", wasSharesSuccessful);
 
         if (!wasSharesSuccessful) {
             console.error("Failed to share at least one file.");
@@ -465,7 +412,7 @@ export default async function handler(request, response) {
         const { wasSuccessful: wasCopiesSuccessful } = await copyFiles(
             files,
             createdFolders,
-            request.body.accessToken
+            gdriveAccessToken
         );
         console.log("Attempted to copy files. Result: ", wasCopiesSuccessful);
 

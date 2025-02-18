@@ -13,6 +13,7 @@ const DB_ADMIN_ROUTES = [
 ];
 const USER_ACCOUNT_ROUTES = [
   "/api/save-about-user-form",
+  "/api/copy-files",
   "/api/update-user",
   "/api/get-user-account-data",
   "/api/delete-user",
@@ -213,7 +214,30 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
-    // put this into an array and search via the pathname field
+    console.log("headers, yo there: ", headers);
+    console.log("nextUrl.pathName, sup there: ", nextUrl.pathname);
+
+    if ((nextUrl.pathname === "/api/copy-files") && (method === "POST") && headers.has("GDrive-Token")) {
+      console.log("will check if the auth string is valid.");
+      const { errResponse } = await getAuthorizeReqResult(
+        authorizationStr,
+        false
+      );
+
+      console.log("errResponse, sup there: ", errResponse);
+
+      if (errResponse) {
+        return errResponse
+      }
+
+      console.log("The GDrive-Token was provided.");
+
+      return NextResponse.next();
+    } else if ((nextUrl.pathname === "/api/copy-files") && (method === "POST")) {
+      console.error("No GDrive-Token was provided, bacon yo there.");
+      return new NextResponse("No GDrive-Token was provided.", { status: 400 });
+    }
+
     if (
       (nextUrl.pathname == "/api/update-lessons" &&
         method === "PUT" &&
@@ -333,6 +357,7 @@ export const config = {
     "/api/update-user",
     "/api/user-confirms-mailing-list-sub",
     "/api/get-users",
+    "/api/copy-files",
     "/api/get-signed-in-user-brevo-status"
   ],
 };
