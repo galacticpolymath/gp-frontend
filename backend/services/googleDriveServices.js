@@ -131,3 +131,7 @@ export async function listFilesOfGoogleDriveFolder(googleService, driveId, query
         return null
     }
 }
+
+export async function shareFilesWithRetries() {
+
+}

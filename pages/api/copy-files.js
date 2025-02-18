@@ -240,10 +240,10 @@ export default async function handler(request, response) {
         }
 
         /** @type {{ id: string, name: string, pathToFile: string, mimeType: string, parentFolderId?: string, wasCreated?: boolean }[]} */
-        // will hold all of the folders
+        // all of the folders for the target unit
         let unitFolders = [...rootDriveFolders.map(folder => ({ name: folder.name, id: folder.id, mimeType: folder.mimeType, pathToFile: '' }))]
 
-        // get all of the folders of the unit 
+        // get all of the folders of the target unit folder
         for (const unitFolder of unitFolders) {
             const parentFolderAlternativeName = unitFolder.alternativeName
 
@@ -282,7 +282,7 @@ export default async function handler(request, response) {
                     }
                 }
 
-                const folderFilesAndFolders = folderDataResponse.data.files.map(file => {
+                const childFolderAndFilesOfFolder = folderDataResponse.data.files.map(file => {
                     if (!file.mimeType.includes('folder') || !foldersOccurrenceObj || !foldersOccurrenceObj?.[file.name] || (foldersOccurrenceObj?.[file.name]?.length === 1)) {
                         return {
                             ...file,
@@ -310,7 +310,7 @@ export default async function handler(request, response) {
                     }
                 })
 
-                unitFolders.push(...folderFilesAndFolders)
+                unitFolders.push(...childFolderAndFilesOfFolder)
                 continue
             }
 
@@ -421,7 +421,7 @@ export default async function handler(request, response) {
         /** @type {{ id: string, name: string, pathToFile: string, parentFolderId: string, gpFolderId: string }[]} */
         let createdFolders = []
         /** @type {{ fileId: string, pathToFile: string, parentFolderId: string, name: string }[]} */
-        // get only the folders of the unit
+        // get only the chlid folders of the target unit folder
         let folderPaths = unitFolders
             .filter(folder => folder.mimeType.includes('folder'))
             .map(folder => {
