@@ -3,14 +3,19 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable quotes */
 /* eslint-disable semi */
-import fs from 'fs'
-import { getGoogleAuthJwt } from '../utils/auth'
+import fs from "fs";
+import { getGoogleAuthJwt } from "../utils/auth";
+import { waitWithExponentialBackOff } from "../../globalFns";
 
 export class FileMetaData {
-    constructor(folderName, parents = [], mimeType = 'application/vnd.google-apps.folder') {
-        this.name = folderName
-        this.parents = parents
-        this.mimeType = mimeType
+    constructor(
+        folderName,
+        parents = [],
+        mimeType = "application/vnd.google-apps.folder"
+    ) {
+        this.name = folderName;
+        this.parents = parents;
+        this.mimeType = mimeType;
     }
 }
 
@@ -26,19 +31,20 @@ export class Credentials {
             GOOGLE_SERVICE_ACCOUNT_TOKEN_URI,
             GOOGLE_SERVICE_ACCOUNT_AUTH_PROVIDER_X509_CERT_URL,
             GOOGLE_SERVICE_ACCOUNT_CLIENT_X509_CERT_URL,
-        } = process.env
+        } = process.env;
 
-        this.type = 'service_account'
-        this.project_id = GOOGLE_SERVICE_ACCOUNT_PROJECT_ID
-        this.private_key_id = GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY_ID
-        this.private_key = GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
-        this.client_email = GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL
-        this.client_id = GOOGLE_SERVICE_ACCOUNT_CLIENT_ID
-        this.auth_uri = GOOGLE_SERVICE_ACCOUNT_AUTH_URI
-        this.token_uri = GOOGLE_SERVICE_ACCOUNT_TOKEN_URI
-        this.auth_provider_x509_cert_url = GOOGLE_SERVICE_ACCOUNT_AUTH_PROVIDER_X509_CERT_URL
-        this.client_x509_cert_url = GOOGLE_SERVICE_ACCOUNT_CLIENT_X509_CERT_URL
-        this.universe_domain = "googleapis.com"
+        this.type = "service_account";
+        this.project_id = GOOGLE_SERVICE_ACCOUNT_PROJECT_ID;
+        this.private_key_id = GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY_ID;
+        this.private_key = GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
+        this.client_email = GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL;
+        this.client_id = GOOGLE_SERVICE_ACCOUNT_CLIENT_ID;
+        this.auth_uri = GOOGLE_SERVICE_ACCOUNT_AUTH_URI;
+        this.token_uri = GOOGLE_SERVICE_ACCOUNT_TOKEN_URI;
+        this.auth_provider_x509_cert_url =
+            GOOGLE_SERVICE_ACCOUNT_AUTH_PROVIDER_X509_CERT_URL;
+        this.client_x509_cert_url = GOOGLE_SERVICE_ACCOUNT_CLIENT_X509_CERT_URL;
+        this.universe_domain = "googleapis.com";
     }
 }
 
@@ -51,62 +57,67 @@ export class Credentials {
 export const getGooglDriveFolders = async (googleService, folderId) => {
     try {
         const response = await googleService.files.list({
-            corpora: 'drive',
+            corpora: "drive",
             includeItemsFromAllDrives: true,
             supportsAllDrives: true,
             driveId: process.env.GOOGLE_DRIVE_ID,
-            q: `'${folderId}' in parents`
-        })
+            q: `'${folderId}' in parents`,
+        });
 
-        return response.data.files
+        return response.data.files;
     } catch (error) {
-        console.error('Failed to get the root folders of drive. Reason: ', error)
+        console.error("Failed to get the root folders of drive. Reason: ", error);
 
         return null;
     }
-}
+};
 
 /**
- * Create a service object that will access the company's google drive. 
+ * Create a service object that will access the company's google drive.
  *  @return {import('google-auth-library').JWT | null} Returns google auth jwt. Else, null will be returned.
  * */
 export const generateGoogleAuthJwt = () => {
     try {
-        let credentials = new Credentials()
-        credentials = JSON.stringify(credentials)
-        let credentialsSplitted = credentials.split('')
-        let indexesOfValsToDel = []
+        let credentials = new Credentials();
+        credentials = JSON.stringify(credentials);
+        let credentialsSplitted = credentials.split("");
+        let indexesOfValsToDel = [];
 
         for (let index = 0; index < credentialsSplitted?.length; index++) {
-            const nextVal = credentialsSplitted[index + 1]
+            const nextVal = credentialsSplitted[index + 1];
 
             if (nextVal === undefined) {
-                break
+                break;
             }
 
-            const currentVal = credentialsSplitted[index]
+            const currentVal = credentialsSplitted[index];
 
-            if ((currentVal === '\\') && (nextVal === '\\')) {
-                indexesOfValsToDel.push(index)
+            if (currentVal === "\\" && nextVal === "\\") {
+                indexesOfValsToDel.push(index);
             }
         }
 
-        credentialsSplitted = credentialsSplitted.filter((_, index) => !indexesOfValsToDel.includes(index));
-        credentials = credentialsSplitted.join('');
+        credentialsSplitted = credentialsSplitted.filter(
+            (_, index) => !indexesOfValsToDel.includes(index)
+        );
+        credentials = credentialsSplitted.join("");
 
-        fs.writeFileSync('credentials.json', credentials)
+        fs.writeFileSync("credentials.json", credentials);
 
-        const googleAuthJwt = getGoogleAuthJwt('credentials.json', [
-            "https://www.googleapis.com/auth/drive"
+        const googleAuthJwt = getGoogleAuthJwt("credentials.json", [
+            "https://www.googleapis.com/auth/drive",
         ]);
 
-        return googleAuthJwt
+        return googleAuthJwt;
     } catch (error) {
-        console.error('Failed to retrieve the google drive service object. Reason: ', error)
+        console.error(
+            "Failed to retrieve the google drive service object. Reason: ",
+            error
+        );
 
         return null;
     }
-}
+};
 
 /**
  * Share the google drive file with a user.
@@ -114,64 +125,84 @@ export const generateGoogleAuthJwt = () => {
  * @param{drive_v3.Drive} googleService google drive service object
  * @return{Promise<[] | null>} An array of the permission ids if successful. Otherwise, it will return null.
  * */
-export async function listFilesOfGoogleDriveFolder(googleService, driveId, queryObj = { q: '' }) {
+export async function listFilesOfGoogleDriveFolder(
+    googleService,
+    driveId,
+    queryObj = { q: "" }
+) {
     try {
         const files = googleService.files.list({
-            corpora: 'drive',
+            corpora: "drive",
             includeItemsFromAllDrives: true,
             supportsAllDrives: true,
             driveId: driveId,
-            ...queryObj
+            ...queryObj,
         });
 
-        return files
+        return files;
     } catch (error) {
-        console.error('Failed to get files from google drive. Reason: ', error)
+        console.error("Failed to get files from google drive. Reason: ", error);
 
-        return null
+        return null;
     }
 }
 
-export async function shareFilesWithRetries(files, userEmail) {
-    const permissions = [
-        {
-            type: 'user',
-            role: 'writer',
-            emailAddress: userEmail
-        },
-    ];
+export async function shareFilesWithRetries(files, userEmail, googleService, tries = 0) {
+    try {
+        console.log("Current try: ", tries);
+        console.log("Files to shared: ", files.length);
+        if (tries > 7) {
+            return { wasSuccessful: false };
+        }
 
-    let shareFilePromises = [];
+        const shareFilePromises = [];
 
-    for (const file of files) {
-        for (const permission of permissions) {
+        for (const file of files) {
             const shareFilePromise = googleService.permissions.create({
-                resource: permission,
+                resource: {
+                    type: "user",
+                    role: "writer",
+                    emailAddress: userEmail,
+                },
                 fileId: file.id,
-                fields: 'id',
-                corpora: 'drive',
+                fields: "id",
+                corpora: "drive",
                 includeItemsFromAllDrives: true,
                 supportsAllDrives: true,
-                driveId: process.env.GOOGLE_DRIVE_ID
+                driveId: process.env.GOOGLE_DRIVE_ID,
             });
+
             shareFilePromises.push(shareFilePromise);
         }
-    }
 
-    let sharedFilesResults = await Promise.allSettled(shareFilePromises);
-    let failedShareFiles = sharedFilesResults.filter(sharedFileResult => sharedFileResult.status === "rejected")
+        const sharedFilesResults = await Promise.allSettled(shareFilePromises);
+        const failedShareFilesIndices = new Set();
 
+        for (const resultIndex in sharedFilesResults) {
+            const result = sharedFilesResults[resultIndex];
 
-    if (failedShareFiles.length) {
-        failedShareFiles.forEach(file => {
-            console.log("file.value.data: ", file?.value?.data)
-            console.log('file.reason: ', file)
-        });
+            if (result.status === "rejected") {
+                failedShareFilesIndices.add(resultIndex);
+            }
+        }
 
-        return response.status(500).json({
-            wasCopySuccessful: false,
-            msg: `Failed to share at least one file.`,
-            failedSharedFiles: failedShareFiles
-        });
+        console.log("Files failed to share length: ", failedShareFilesIndices.size);
+
+        if (failedShareFilesIndices.size) {
+            const failedFilesToShare = files.filter((_, index) =>
+                failedShareFilesIndices.has(index)
+            );
+            tries = waitWithExponentialBackOff(tries);
+
+            return await shareFilesWithRetries(failedFilesToShare, userEmail, tries);
+        }
+
+        console.log("Successfully shared all files.");
+
+        return { wasSuccessful: true };
+    } catch (error) {
+        console.error("Failed to share files with user. Reason: ", error);
+
+        return { wasSuccessful: false };
     }
 }

@@ -9,7 +9,8 @@
 import { google, drive_v3 } from 'googleapis';
 import { CustomError } from '../../backend/utils/errors';
 import axios from 'axios';
-import { FileMetaData, generateGoogleAuthJwt, getGooglDriveFolders } from '../../backend/services/googleDriveServices';
+import { FileMetaData, generateGoogleAuthJwt, getGooglDriveFolders, shareFilesWithRetries } from '../../backend/services/googleDriveServices';
+import { ConnectionPoolClosedEvent } from 'mongodb';
 
 const getUserDriveFiles = (accessToken, nextPageToken) => axios.get(
     'https://www.googleapis.com/drive/v3/files',
@@ -408,6 +409,8 @@ export default async function handler(request, response) {
             throw new CustomError(errMsg, 500)
         }
 
+        console.log("The target folder was created.");
+
         let foldersFailedToCreate = [];
         /** @type {{ id: string, name: string, pathToFile: string, parentFolderId: string, gpFolderId: string }[]} */
         let createdFolders = []
@@ -471,40 +474,15 @@ export default async function handler(request, response) {
         }
 
         const files = unitFolders.filter(folder => !folder.mimeType.includes('folder'))
-        const permissions = [
-            {
-                type: 'user',
-                role: 'writer',
-                emailAddress: request.body.email
-            },
-        ];
+        console.log("Will share the target files with the target user.");
+        const { wasSuccessful: wasSharesSuccessful } =
+            await shareFilesWithRetries(files, request.body.email, googleService)
 
-        let shareFilePromises = [];
-
-        for (const file of files) {
-            for (const permission of permissions) {
-                const shareFilePromise = googleService.permissions.create({
-                    resource: permission,
-                    fileId: file.id,
-                    fields: 'id',
-                    corpora: 'drive',
-                    includeItemsFromAllDrives: true,
-                    supportsAllDrives: true,
-                    driveId: process.env.GOOGLE_DRIVE_ID
-                });
-                shareFilePromises.push(shareFilePromise);
-            }
-        }
-
-        let sharedFilesResults = await Promise.allSettled(shareFilePromises);
-        let failedShareFiles = sharedFilesResults.filter(sharedFileResult => sharedFileResult.status === "rejected")
-
-
-        if (failedShareFiles.length) {
+        if (!wasSharesSuccessful) {
+            console.error("Failed to share at least one file.");
             return response.status(500).json({
                 wasCopySuccessful: false,
-                msg: `Failed to share at least one file.`,
-                failedSharedFiles: failedShareFiles
+                msg: 'At least one file failed to be shared.',
             });
         }
 
@@ -529,9 +507,6 @@ export default async function handler(request, response) {
 
         const copiedFilesResult = await Promise.allSettled(copiedFilesPromises);
         const failedCopiedFiles = copiedFilesResult.filter(copiedFileResult => copiedFileResult.status === 'rejected');
-
-        console.log("total files attempted to be copied: ", copiedFilesPromises.length)
-        console.log("failedCopiedFiles: ", failedCopiedFiles.length)
 
         if (failedCopiedFiles.length) {
             return response.status(500).json({
