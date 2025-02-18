@@ -152,7 +152,6 @@ const shareFile = async (fileId, service, permissions, fileName) => {
     return permissionIdsForFile?.length ? permissionIdsForFile : null;
 }
 
-// create a files
 
 /**
  * Searches through the user's google drive.
@@ -520,7 +519,7 @@ export default async function handler(request, response) {
 
         if (failedShareFiles.length) {
             failedShareFiles.forEach(file => {
-                console.log("file.value.data: ", file.value.data)
+                console.log("file.value.data: ", file?.value?.data)
                 console.log('file.reason: ', file)
             });
 
@@ -553,7 +552,8 @@ export default async function handler(request, response) {
         const copiedFilesResult = await Promise.allSettled(copiedFilesPromises);
         const failedCopiedFiles = copiedFilesResult.filter(copiedFileResult => copiedFileResult.status === 'rejected');
 
-        // implement retries if a file failed to be copied.
+        console.log("total files attempted to be copied: ", copiedFilesPromises.length)
+        console.log("failedCopiedFiles: ", failedCopiedFiles.length)
 
         if (failedCopiedFiles.length) {
             return response.status(500).json({

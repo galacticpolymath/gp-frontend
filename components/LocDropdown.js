@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
+/* eslint-disable quotes */
+
 import React, { useState } from "react";
 import { useEffect } from "react";
 import ReactFlagsSelect from "react-flags-select";
@@ -120,7 +122,7 @@ const LocDropdown = ({ id, availLocs, loc }) => {
           width: "100px",
         }}
         disabled={isSpinnerDisplayed}
-        placeholder={
+        placeholder={(
           <div className="d-flex position-relative">
             <section className={`d-flex justify-content-center align-items-center pe-1 opacity-${isSpinnerDisplayed ? '0' : '100'}`}>
               <i className="bi bi-globe" />
@@ -128,11 +130,11 @@ const LocDropdown = ({ id, availLocs, loc }) => {
             <section className={`d-flex justify-content-center align-items-center opacity-${isSpinnerDisplayed ? '0' : '100'}`}>
               {loc}
             </section>
-            <div className={`center-absolutely d-${isSpinnerDisplayed ? 'block' : 'none'}`} >
+            <div className={`center-absolutely d-${isSpinnerDisplayed ? 'block' : 'none'}`}>
               <Spinner size="sm" className="text-black" />
             </div>
           </div>
-        }
+        )}
         alignOptionsToRight={true}
         fullWidth={false}
       />

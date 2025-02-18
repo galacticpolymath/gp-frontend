@@ -33,14 +33,14 @@ const SignUpModal = () => {
     const [isGoogleLoadingSpinnerOn, setIsGoogleLoadingSpinnerOn] = useState(false);
     const [inputElementsFocused, setInputElementsFocused] = useState(inputElementsFocusedDefault);
     const [createAccountForm, setCreateAccountForm] = _createAccountForm;
-    const [isUserTeacher, setIsUserTeacher] = _isUserTeacher;
+    const [, setIsUserTeacher] = _isUserTeacher;
     const [passwordInputType, setPasswordInputType] = useState('password');
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     /**
      * @typedef {"I solemnly swear I'm not a student just trying to get the answer key."} TUserIsTeacherTxt
      * @type {[TUserIsTeacherTxt, import('react').Dispatch<import('react').SetStateAction<TUserIsTeacherTxt>>]}
      */
-    const [userIsTeacherTxt, setUserIsTeacherTxt] = useState("I solemnly swear I'm not a student just trying to get the answer key.");
+    const [, setUserIsTeacherTxt] = useState("I solemnly swear I'm not a student just trying to get the answer key.");
 
     const handlePasswordTxtShowBtnClick = () => {
         setPasswordInputType(state => state === 'password' ? 'text' : 'password');
@@ -73,17 +73,6 @@ const SignUpModal = () => {
 
             return stateClone;
         });
-    };
-
-    const handleIsUserATeacherCheckBoxClick = () => {
-        setErrors(errors => {
-            const errorsClone = structuredClone(errors);
-
-            errorsClone.delete("isUserTeacherErr");
-
-            return errorsClone;
-        });
-        setIsUserTeacher(state => !state);
     };
 
     const handleToAddToMailingListToggleBtnClick = () => {

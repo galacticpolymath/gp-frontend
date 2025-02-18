@@ -1,9 +1,16 @@
+/* eslint-disable quotes */
+
 import Image from "next/image";
 import Link from "next/link";
 import { BsGlobe } from "react-icons/bs";
 import { useScrollCardIntoView } from "../../customHooks/useScrollCardIntoView";
 
-const Tag = ({ children, className = '', color = 'gray', style = { whiteSpace: "normal" } }) => {
+const Tag = ({
+  children,
+  className = "",
+  color = "gray",
+  style = { whiteSpace: "normal" },
+}) => {
   return (
     <span
       style={style}
@@ -89,10 +96,19 @@ const LessonCard = ({ lesson, PillComp = null, lessonImgSrc }) => {
           {locals?.length ? (
             <Tag className="h-100">
               <span>
-                <BsGlobe style={{ transform: 'scale(1.2) translateY(-.7px)' }} className="me-1" />
+                <BsGlobe
+                  style={{ transform: "scale(1.2) translateY(-.7px)" }}
+                  className="me-1"
+                />
               </span>
-              {locals.map((local) => (
-                <span style={{ fontWeight: 300 }} className="list-item">{local}</span>
+              {locals.map((local, index) => (
+                <span
+                  key={index}
+                  style={{ fontWeight: 300 }}
+                  className="list-item"
+                >
+                  {local}
+                </span>
               ))}
             </Tag>
           ) : null}

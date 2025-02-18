@@ -478,6 +478,7 @@ const LessonDetails = ({ lesson }) => {
     url: lesson.URL,
     imgAlt: `${lesson.Title} cover image`,
     className: "overflow-hidden",
+    canonicalLink: `https://www.galacticpolymath.com/lessons/${lesson.numID}`,
   };
 
   return (
@@ -637,6 +638,11 @@ export const getStaticProps = async (arg) => {
     }
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
+
+    // get all of the lessons and their locales
+    // each value in the array will be as follows: [href, hrefLang]
+    // hrefLang will produce as follows: https://www.galacticpolymath.com/lessons/{local}/{locale}
+
     let lessonToDisplayOntoUi = targetLessons.find(
       ({ numID, locale }) => numID === parseInt(id) && locale === loc
     );
