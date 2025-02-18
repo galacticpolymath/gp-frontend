@@ -132,6 +132,46 @@ export async function listFilesOfGoogleDriveFolder(googleService, driveId, query
     }
 }
 
-export async function shareFilesWithRetries() {
+export async function shareFilesWithRetries(files, userEmail) {
+    const permissions = [
+        {
+            type: 'user',
+            role: 'writer',
+            emailAddress: userEmail
+        },
+    ];
 
+    let shareFilePromises = [];
+
+    for (const file of files) {
+        for (const permission of permissions) {
+            const shareFilePromise = googleService.permissions.create({
+                resource: permission,
+                fileId: file.id,
+                fields: 'id',
+                corpora: 'drive',
+                includeItemsFromAllDrives: true,
+                supportsAllDrives: true,
+                driveId: process.env.GOOGLE_DRIVE_ID
+            });
+            shareFilePromises.push(shareFilePromise);
+        }
+    }
+
+    let sharedFilesResults = await Promise.allSettled(shareFilePromises);
+    let failedShareFiles = sharedFilesResults.filter(sharedFileResult => sharedFileResult.status === "rejected")
+
+
+    if (failedShareFiles.length) {
+        failedShareFiles.forEach(file => {
+            console.log("file.value.data: ", file?.value?.data)
+            console.log('file.reason: ', file)
+        });
+
+        return response.status(500).json({
+            wasCopySuccessful: false,
+            msg: `Failed to share at least one file.`,
+            failedSharedFiles: failedShareFiles
+        });
+    }
 }

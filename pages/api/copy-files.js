@@ -401,20 +401,11 @@ export default async function handler(request, response) {
         }
 
         // give the user the ability to name the folder where the files will be copied to. 
-        const searchGoogleDriveUnitFolders = await searchUserGoogleDrive(request.body.accessToken, `name = "${request.body.unitName} COPY"`)
-        let unitFolderId = searchGoogleDriveUnitFolders?.[0]?.id
+        const { folderId: unitFolderId, errMsg } = await createGoogleDriveFolderForUser(`${request.body.unitName} COPY`, request.body.accessToken)
 
-        console.log('unitFolderId: ', unitFolderId)
-
-        // Create the folder that the user wants to copy
-        if (!searchGoogleDriveUnitFolders?.length) {
-            const { folderId, errMsg } = await createGoogleDriveFolderForUser(`${request.body.unitName} COPY`, request.body.accessToken)
-
-            if (errMsg) {
-                throw new CustomError(errMsg, 500)
-            }
-
-            unitFolderId = folderId
+        if (errMsg) {
+            console.error("Failed to create the target folder.");
+            throw new CustomError(errMsg, 500)
         }
 
         let foldersFailedToCreate = [];
@@ -486,11 +477,6 @@ export default async function handler(request, response) {
                 role: 'writer',
                 emailAddress: request.body.email
             },
-            {
-                type: 'domain',
-                role: 'writer',
-                domain: 'galacticpolymath.com'
-            }
         ];
 
         let shareFilePromises = [];
@@ -510,19 +496,11 @@ export default async function handler(request, response) {
             }
         }
 
-        console.log('Sharing all files via Promse.allSettled...')
-
         let sharedFilesResults = await Promise.allSettled(shareFilePromises);
-
-        console.log('Files has been shared....')
         let failedShareFiles = sharedFilesResults.filter(sharedFileResult => sharedFileResult.status === "rejected")
 
-        if (failedShareFiles.length) {
-            failedShareFiles.forEach(file => {
-                console.log("file.value.data: ", file?.value?.data)
-                console.log('file.reason: ', file)
-            });
 
+        if (failedShareFiles.length) {
             return response.status(500).json({
                 wasCopySuccessful: false,
                 msg: `Failed to share at least one file.`,
