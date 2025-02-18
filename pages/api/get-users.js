@@ -51,7 +51,6 @@ export default async function handler(request, response) {
         }
 
         const { dbType } = request.query;
-        console.log("The dbType is, yo there: ", dbType);
         const isDbConnected = await connectToMongodb(15_000, 0, true, dbType);
 
         if (!isDbConnected) {

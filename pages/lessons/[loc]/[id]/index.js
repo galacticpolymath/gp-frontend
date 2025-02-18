@@ -476,7 +476,7 @@ const LessonDetails = ({ lesson }) => {
     className: "overflow-hidden",
     canonicalLink: `https://www.galacticpolymath.com/lessons/${lesson.numID}`,
     defaultLink: `https://www.galacticpolymath.com/lessons/${lesson.numID}`,
-    langLinks: lesson.headLinks
+    langLinks: lesson.headLinks,
   };
 
   return (
@@ -629,7 +629,7 @@ export const getStaticProps = async (arg) => {
       params: { id, loc },
     } = arg;
 
-    const { wasSuccessful } = await connectToMongodb();
+    const { wasSuccessful } = await connectToMongodb(15_000, 0, true);
 
     if (!wasSuccessful) {
       throw new Error("Failed to connect to the database.");
@@ -649,7 +649,7 @@ export const getStaticProps = async (arg) => {
     );
     lessonToDisplayOntoUi = {
       ...lessonToDisplayOntoUi,
-      headLinks
+      headLinks,
     }
     let lessonParts = null;
     const resources =

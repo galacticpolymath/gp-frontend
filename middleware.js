@@ -173,9 +173,6 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
-    // print something 
-    console.log("Yo there meng...")
-
     if (!authorizationStr) {
       console.log("No auth string was provided.");
       return new NextResponse("No authorization header was provided.", {
