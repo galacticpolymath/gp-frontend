@@ -9,7 +9,7 @@
 import { google, drive_v3 } from 'googleapis';
 import { CustomError } from '../../backend/utils/errors';
 import axios from 'axios';
-import { FileMetaData, generateGoogleAuthJwt, getGooglDriveFolders, shareFilesWithRetries } from '../../backend/services/googleDriveServices';
+import { copyFiles, FileMetaData, generateGoogleAuthJwt, getGooglDriveFolders, shareFilesWithRetries } from '../../backend/services/googleDriveServices';
 import { ConnectionPoolClosedEvent } from 'mongodb';
 
 const getUserDriveFiles = (accessToken, nextPageToken) => axios.get(
@@ -55,31 +55,6 @@ const listAllUserFiles = async (accessToken, nextPageToken, startingFiles = []) 
 
         return null;
     }
-}
-
-/**
- * Copy a google drive file into a folder (if specified).
- * @param {string} fileId The id of the file.
- * @param {string[]} folderIds The ids of the folders to copy the files into.
- * @param {string} accessToken The client side user's access token.
- * @return {Promise<AxiosResponse<any, any>>} An object contain the results and optional message.
- * */
-const getCopyFilePromise = (accessToken, folderIds, fileId) => {
-    const reqBody = folderIds ? { parents: folderIds } : {};
-
-    return axios.post(
-        `https://www.googleapis.com/drive/v3/files/${fileId}/copy`,
-        reqBody,
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            },
-            params: {
-                supportsAllDrives: true,
-            }
-        }
-    )
 }
 
 /**
@@ -486,39 +461,21 @@ export default async function handler(request, response) {
             });
         }
 
+        console.log("Will copy files...");
+        const { wasSuccessful: wasCopiesSuccessful } = await copyFiles(
+            files,
+            createdFolders,
+            request.body.accessToken
+        );
+        console.log("Attempted to copy files. Result: ", wasCopiesSuccessful);
 
-        let parentFoldersThatDontExist = []
-        /** @type {Promise<AxiosResponse<any, any>>[]} */
-        let copiedFilesPromises = [];
-
-
-        // copy the files into the corresponding folder
-        for (const file of files) {
-            const parentFolderId = createdFolders.find(folder => folder.gpFolderId === file.parentFolderId)?.id
-
-            if (!parentFolderId) {
-                console.error(`The parent folder for '${file.name}' file does not exist.`)
-                parentFoldersThatDontExist.push(parentFolderId)
-                continue
-            }
-
-            copiedFilesPromises.push(getCopyFilePromise(request.body.accessToken, [parentFolderId], file.id))
-        }
-
-        const copiedFilesResult = await Promise.allSettled(copiedFilesPromises);
-        const failedCopiedFiles = copiedFilesResult.filter(copiedFileResult => copiedFileResult.status === 'rejected');
-
-        if (failedCopiedFiles.length) {
+        if (!wasCopiesSuccessful) {
+            console.error("Failed to copy at least one file.");
             return response.status(500).json({
                 wasCopySuccessful: false,
-                msg: 'At least one file failed to be shared.',
-                failedSharedFiles: failedCopiedFiles
+                msg: 'At least one file failed to be copied.',
             });
         }
-
-        setTimeout(() => {
-            // create a email of the copy files results and send it to the user
-        }, 2000);
 
         return response.json({ wasCopySuccessful: true });
     } catch (error) {

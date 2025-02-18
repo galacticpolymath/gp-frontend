@@ -6,6 +6,7 @@
 import fs from "fs";
 import { getGoogleAuthJwt } from "../utils/auth";
 import { waitWithExponentialBackOff } from "../../globalFns";
+import axios from "axios";
 
 export class FileMetaData {
     constructor(
@@ -205,4 +206,75 @@ export async function shareFilesWithRetries(files, userEmail, googleService, tri
 
         return { wasSuccessful: false };
     }
+}
+
+/**
+ * Copy a google drive file into a folder (if specified).
+ * @param {string} fileId The id of the file.
+ * @param {string[]} folderIds The ids of the folders to copy the files into.
+ * @param {string} accessToken The client side user's access token.
+ * @return {Promise<AxiosResponse<any, any>>} An object contain the results and optional message.
+ * */
+const getCopyFilePromise = (accessToken, folderIds, fileId) => {
+    const reqBody = folderIds ? { parents: folderIds } : {};
+
+    return axios.post(
+        `https://www.googleapis.com/drive/v3/files/${fileId}/copy`,
+        reqBody,
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            params: {
+                supportsAllDrives: true,
+            }
+        }
+    )
+}
+
+export async function copyFiles(files, createdFolders, accessToken, tries = 0) {
+    if (tries > 10) {
+        console.error("Failed to copy files. Reached max tries.");
+        return { wasSuccessful: false };
+    }
+
+    /** @type {Promise<AxiosResponse<any, any>>[]} */
+    const copiedFilesPromises = [];
+
+    for (const file of files) {
+        const parentFolderId = createdFolders.find(folder => folder.gpFolderId === file.parentFolderId)?.id
+
+        if (!parentFolderId) {
+            console.error(`The parent folder for '${file.name}' file does not exist.`)
+            continue
+        }
+
+        copiedFilesPromises.push(getCopyFilePromise(accessToken, [parentFolderId], file.id))
+    }
+
+    const copiedFilesResult = await Promise.allSettled(copiedFilesPromises);
+    const failedCopiedFilesIndices = new Set();
+
+    for (const resultIndex in copiedFilesResult) {
+        const result = copiedFilesResult[resultIndex];
+
+        if (result.status === "rejected") {
+            failedCopiedFilesIndices.add(resultIndex);
+        }
+    }
+
+    console.log("failedCopiedFilesIndices: ", failedCopiedFilesIndices)
+
+    if (failedCopiedFilesIndices.size) {
+        console.error("Failed to copy files length: ", failedCopiedFilesIndices.size);
+        const failedCopiedFiles = files.filter((_, index) => failedCopiedFilesIndices.has(index));
+        tries = waitWithExponentialBackOff(tries);
+
+        return await copyFiles(failedCopiedFiles, createdFolders, accessToken, tries);
+    }
+
+    console.log("Successfully copied all files.");
+
+    return { wasSuccessful: true };
 }

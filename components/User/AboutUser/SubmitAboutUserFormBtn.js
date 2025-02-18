@@ -102,9 +102,7 @@ export const sendAboutUserFormToServer = async (
 
         const zipCodeStr = ((typeof zipCode === 'string') && Number.isInteger(+zipCode)) ? zipCode.trim() : "";
 
-        console.log("yo there meng, isTeacherConfirmed: ", isTeacherConfirmed);
-
-        if (!isTeacherConfirmed) {
+        if (isTeacher && !isTeacherConfirmed) {
             errors.set('isTeacherConfirmationErr', 'This field is required');
         }
 
@@ -278,9 +276,7 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames, _wasBtnClicked }) => 
 
             const zipCodeStr = ((typeof zipCode === 'string') && Number.isInteger(+zipCode)) ? zipCode.trim() : "";
 
-            console.log("yo there meng, isTeacherConfirmed: ", isTeacherConfirmed);
-
-            if (!isTeacherConfirmed) {
+            if (isTeacher && !isTeacherConfirmed) {
                 errors.set('isTeacherConfirmationErr', '*This field is required');
             }
 

@@ -193,7 +193,7 @@ const LessonsPage = ({
         <div className="lessons-pg-sec lessons-pg-sec-max-width">
           <GpUnits units={units} didErrorOccur={didErrorOccur} />
           <section className="my-4 my-md-3 d-flex justify-content-center align-items-center img-background-container lessons-section-border-top lessons-section-border-bottom">
-            <div style={{ width: '86%' }} className="sponsors-container-lessons">
+            <div style={{ width: '86%', maxWidth: '1240px' }} className="sponsors-container-lessons">
               <h4 className="text-muted mb-3 mb-sm-5 text-left mt-2 mt-sm-4 pe-lg-5">
                 Made open access by these funding organizations and research
                 institutions:
