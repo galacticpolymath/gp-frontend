@@ -92,7 +92,7 @@ const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFol
  * /api/copy-files:
  *   post:
  *     summary: Copy user files to a specified folder.
- *     description: The user must authenticate with their Google account to copy files.  Authentication must be done with the following url: https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:3000/google-drive-auth-result/&prompt=consent&response_type=token&client_id=1038023225572-3ir2sqrlbtfcpl3ves15847tbu5li2gv.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/drive
+ *     description: The user must authenticate with their Google account to copy files.
  *     security:
  *       - Bearer: []
  *     requestBody:
@@ -122,6 +122,9 @@ const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFol
  *                 errMsg:
  *                   type: string
  *                   description: The error message if the copy operation was not successful.
+ *     externalDocs:
+ *       url: https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=${site_url}/google-drive-auth-result/&prompt=consent&response_type=token&client_id=1038023225572-3ir2sqrlbtfcpl3ves15847tbu5li2gv.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/drive
+ *       description: The google authentication url.
  */
 export default async function handler(request, response) {
     try {
