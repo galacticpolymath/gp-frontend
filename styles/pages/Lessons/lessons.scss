@@ -68,6 +68,10 @@ $toolTipColor: #f0f4ff;
   border-top: solid $borderThickness $borderColor;
 }
 
+.lessons-section-border-bottom {
+  border-bottom: solid $borderThickness $borderColor;
+}
+
 .down-arrow {
   position: absolute;
   background-color: black;

@@ -51,6 +51,7 @@ export const sendAboutUserFormToServer = async (
             gradesOrYears,
             classroomSize,
             isTeacher,
+            isTeacherConfirmed,
         } = aboutUserFormClone;
         const { ageGroupsTaught, selection } = gradesOrYears ?? {};
         const errors = new Map();
@@ -100,6 +101,10 @@ export const sendAboutUserFormToServer = async (
         }
 
         const zipCodeStr = ((typeof zipCode === 'string') && Number.isInteger(+zipCode)) ? zipCode.trim() : "";
+
+        if (isTeacher && !isTeacherConfirmed) {
+            errors.set('isTeacherConfirmationErr', 'This field is required');
+        }
 
         if ((country?.toLowerCase() === 'united states') && (!zipCodeStr || (zipCodeStr?.length == 0))) {
             errors.set('zipCode', 'This field is required');
@@ -220,6 +225,7 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames, _wasBtnClicked }) => 
                 gradesOrYears,
                 classroomSize,
                 isTeacher,
+                isTeacherConfirmed,
             } = aboutUserFormClone;
             const { ageGroupsTaught, selection } = gradesOrYears ?? {};
             const errors = new Map();
@@ -269,6 +275,10 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames, _wasBtnClicked }) => 
             }
 
             const zipCodeStr = ((typeof zipCode === 'string') && Number.isInteger(+zipCode)) ? zipCode.trim() : "";
+
+            if (isTeacher && !isTeacherConfirmed) {
+                errors.set('isTeacherConfirmationErr', '*This field is required');
+            }
 
             if ((country?.toLowerCase() === 'united states') && (!zipCodeStr || (zipCodeStr?.length == 0))) {
                 errors.set('zipCode', 'This field is required');

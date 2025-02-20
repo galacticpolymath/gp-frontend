@@ -48,6 +48,10 @@ body {
   scroll-behavior: smooth;
 }
 
+.list-item:not(:last-child)::after {
+  content: ", ";
+}
+
 .text-transform-default {
   text-transform: none;
 }

@@ -4,6 +4,7 @@
 /* eslint-disable react/jsx-indent-props */
 
 import { BiCheckbox, BiCheckboxChecked } from "react-icons/bi";
+import { FONT_SIZE_CHECKBOX } from "../User/Create/SignUpModal";
 
 const CheckBox = ({
     isChecked,
@@ -13,6 +14,8 @@ const CheckBox = ({
     txtClassName = "",
     checkBoxContainerClassName = "d-flex",
     checkBoxContainerStyle = {},
+    checkBoxCheckedClassName = 'pb-1',
+    checkBoxClassName = 'pb-1',
 }) => {
     return (
         <div className={checkBoxContainerClassName} style={checkBoxContainerStyle}>
@@ -20,15 +23,15 @@ const CheckBox = ({
                 {isChecked ? (
                     <BiCheckboxChecked
                         onClick={handleOnClick}
-                        fontSize="28px"
-                        className="pb-1"
+                        fontSize={FONT_SIZE_CHECKBOX}
+                        className={checkBoxCheckedClassName}
                     />
                 )
                     : (
                         <BiCheckbox
                             onClick={handleOnClick}
-                            fontSize="28px"
-                            className='pb-1'
+                            fontSize={FONT_SIZE_CHECKBOX}
+                            className={checkBoxClassName}
                         />
                     )}
             </div>

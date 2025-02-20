@@ -31,6 +31,7 @@ import { createContext, useState } from "react";
  * @property {string} country
  * @property {string} occupation
  * @property {boolean} isTeacher
+ * @property {boolean} isTeacherConfirmed
  * @property {{ first: string, last: string }} name
  * @property {number | null} zipCode
  * @property {{ num: number, isNotTeaching: boolean }} classroomSize
@@ -60,6 +61,7 @@ export const userAccountDefault = {
     },
     country: '',
     occupation: '',
+    isTeacherConfirmed: false,
     zipCode: null,
     classroomSize: {
         num: 0,

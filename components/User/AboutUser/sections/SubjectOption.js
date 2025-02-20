@@ -63,7 +63,6 @@ const SubjectOption = ({ subject, customCssClassses = '', subjectFieldNameForMap
 
         setAboutUserForm(state => ({ ...state, subjects: subjectsTaught }));
     };
-    // index === lastIndex ? 'mt-2' : ''
 
     return (
         <div className={`d-flex flex-column ${customCssClassses}`}>

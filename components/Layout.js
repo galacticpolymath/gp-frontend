@@ -9,9 +9,9 @@
 import Head from 'next/head';
 import Footer from './Footer';
 import Navbar from './Navbar';
-import { Montserrat } from 'next/font/google';
+import { Noto_Sans } from 'next/font/google';
 
-const montserrat = Montserrat({
+const notoSansLight = Noto_Sans({
   subsets: ['latin'],
   weight: 'variable',
 });
@@ -27,13 +27,17 @@ export default function Layout({
   className = '',
   type = 'article',
   style = {},
+  canonicalLink,
+  defaultLink,
+  langLinks,
 }) {
   return (
-    <div style={style} className={`${montserrat.className} ${className}`}>
+    <div style={style} className={`${notoSansLight.className} ${className}`}>
       <Head>
         <title>{title}</title>
-        {process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' && <meta name="robots" content="noindex, nofollow" />}
         <meta property="og:title" content={title} />
+        {process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' && <meta name="robots" content="noindex, nofollow" />}
+        <meta name="google-site-verification" content="87qwPzeD5oQKG15RKEP8BzbRr5VNhCbDPf98tLcZGUk" />
         <meta property="og:type" content={type} />
         <meta property='og:description' content={description} />
         {imgSrc && (
@@ -63,6 +67,10 @@ export default function Layout({
         {imgAlt && <meta name="twitter:image:alt" content={imgAlt} />}
         <meta name="twitter:domain" content="galacticpolymath.com" />
         <meta name="twitter:url" content={url} />
+        {/* check if the user is on prod first and then add the links */}
+        {(typeof canonicalLink === 'string') && <link rel="canonical" href={canonicalLink} />}
+        {langLinks?.length && langLinks.map(([href, hrefLang], index) => <link key={index} rel="alternate" hrefLang={hrefLang} href={href} />)}
+        {(typeof defaultLink === 'string') && <link rel="alternate" hrefLang='x-default' href={defaultLink} />}
       </Head>
       <div style={{ height: "50px" }}>
         <Navbar />

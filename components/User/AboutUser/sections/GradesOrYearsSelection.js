@@ -78,10 +78,10 @@ const GradesOrYearsSelection = ({ _errors }) => {
 
     return (
         <section className='d-flex flex-column col-12 col-lg-6'>
-            <label>
+            <label className={`${errors.get('gradesOrYears') ? 'text-danger' : ''}`}>
                 *What age do you teach?
             </label>
-            <span style={{ fontSize: '16px' }}>
+            <span style={{ fontSize: '16px' }} className={`${errors.get('gradesOrYears') ? 'text-danger' : ''}`}>
                 <i>Sharing a few more details helps us understand our users and keep resources free!</i>
             </span>
             <section className='d-flex flex-column mt-2'>

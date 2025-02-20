@@ -18,7 +18,7 @@ import { signIn } from 'next-auth/react';
 import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
 import { INPUT_FOCUS_BLUE_CLASSNAME, USER_INPUT_BACKGROUND_COLOR } from '../../../globalVars';
 
-const FONT_SIZE_CHECKBOX = '28px';
+export const FONT_SIZE_CHECKBOX = '28px';
 const inputElementsFocusedDefault = new Map();
 
 inputElementsFocusedDefault.set('email', false);
@@ -29,19 +29,18 @@ const SignUpModal = () => {
     const { _isCreateAccountModalDisplayed } = useContext(ModalContext);
     const { _createAccountForm, sendFormToServer, validateForm, _isUserTeacher } = useUserEntry();
     const [errors, setErrors] = useState(new Map());
-    const didIsUserTeacherErr = errors.has('isUserTeacherErr');
     const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
     const [isGoogleLoadingSpinnerOn, setIsGoogleLoadingSpinnerOn] = useState(false);
     const [inputElementsFocused, setInputElementsFocused] = useState(inputElementsFocusedDefault);
     const [createAccountForm, setCreateAccountForm] = _createAccountForm;
-    const [isUserTeacher, setIsUserTeacher] = _isUserTeacher;
+    const [, setIsUserTeacher] = _isUserTeacher;
     const [passwordInputType, setPasswordInputType] = useState('password');
     const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     /**
      * @typedef {"I solemnly swear I'm not a student just trying to get the answer key."} TUserIsTeacherTxt
      * @type {[TUserIsTeacherTxt, import('react').Dispatch<import('react').SetStateAction<TUserIsTeacherTxt>>]}
      */
-    const [userIsTeacherTxt, setUserIsTeacherTxt] = useState("I solemnly swear I'm not a student just trying to get the answer key.");
+    const [, setUserIsTeacherTxt] = useState("I solemnly swear I'm not a student just trying to get the answer key.");
 
     const handlePasswordTxtShowBtnClick = () => {
         setPasswordInputType(state => state === 'password' ? 'text' : 'password');
@@ -74,17 +73,6 @@ const SignUpModal = () => {
 
             return stateClone;
         });
-    };
-
-    const handleIsUserATeacherCheckBoxClick = () => {
-        setErrors(errors => {
-            const errorsClone = structuredClone(errors);
-
-            errorsClone.delete("isUserTeacherErr");
-
-            return errorsClone;
-        });
-        setIsUserTeacher(state => !state);
     };
 
     const handleToAddToMailingListToggleBtnClick = () => {
@@ -218,42 +206,7 @@ const SignUpModal = () => {
             </ModalHeader>
             <ModalBody className='pt-1 px-1 pb-1'>
                 <div className='border-bottom py-2'>
-                    <section className='p-0 row w-100 m-0'>
-                        <div className='w-100 d-flex justify-content-center align-items-center'>
-                            <div className='col-sm-6 col-11 d-flex justify-content-center align-items-center'>
-                                <div style={{ width: '100%' }} className='d-flex create-account-toggle-btn-container'>
-                                    <div>
-                                        {isUserTeacher ? (
-                                            <BiCheckboxChecked
-                                                onClick={handleIsUserATeacherCheckBoxClick}
-                                                fontSize={FONT_SIZE_CHECKBOX}
-                                                className='pointer'
-                                            />
-                                        )
-                                            : (
-                                                <BiCheckbox
-                                                    onClick={handleIsUserATeacherCheckBoxClick}
-                                                    color={didIsUserTeacherErr ? 'red' : ""}
-                                                    fontSize={FONT_SIZE_CHECKBOX}
-                                                    className='pointer'
-                                                />
-                                            )}
-                                    </div>
-                                    <label
-                                        onClick={handleIsUserATeacherCheckBoxClick}
-                                        className={`${didIsUserTeacherErr ? 'text-danger' : ''} pointer`}
-                                        style={{
-                                            fontSize: "18px",
-
-                                        }}
-                                    >
-                                        *{userIsTeacherTxt}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <section className='p-0 row w-100 m-0 mt-2 mb-1'>
+                    <section className='p-0 row w-100 m-0 mb-1'>
                         <div className='w-100 d-flex justify-content-center align-items-center'>
                             <div className='col-sm-6 col-11 d-flex justify-content-center align-items-center'>
                                 <div style={{ width: '100%' }} className='d-flex create-account-toggle-btn-container'>

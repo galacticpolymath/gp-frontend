@@ -9,7 +9,8 @@
 import { google, drive_v3 } from 'googleapis';
 import { CustomError } from '../../backend/utils/errors';
 import axios from 'axios';
-import { FileMetaData, generateGoogleAuthJwt, getGooglDriveFolders } from '../../backend/services/googleDriveServices';
+import { copyFiles, FileMetaData, generateGoogleAuthJwt, getGooglDriveFolders, shareFilesWithRetries } from '../../backend/services/googleDriveServices';
+import { ConnectionPoolClosedEvent } from 'mongodb';
 
 const getUserDriveFiles = (accessToken, nextPageToken) => axios.get(
     'https://www.googleapis.com/drive/v3/files',
@@ -54,31 +55,6 @@ const listAllUserFiles = async (accessToken, nextPageToken, startingFiles = []) 
 
         return null;
     }
-}
-
-/**
- * Copy a google drive file into a folder (if specified).
- * @param {string} fileId The id of the file.
- * @param {string[]} folderIds The ids of the folders to copy the files into.
- * @param {string} accessToken The client side user's access token.
- * @return {Promise<AxiosResponse<any, any>>} An object contain the results and optional message.
- * */
-const getCopyFilePromise = (accessToken, folderIds, fileId) => {
-    const reqBody = folderIds ? { parents: folderIds } : {};
-
-    return axios.post(
-        `https://www.googleapis.com/drive/v3/files/${fileId}/copy`,
-        reqBody,
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            },
-            params: {
-                supportsAllDrives: true,
-            }
-        }
-    )
 }
 
 /**
@@ -152,7 +128,6 @@ const shareFile = async (fileId, service, permissions, fileName) => {
     return permissionIdsForFile?.length ? permissionIdsForFile : null;
 }
 
-// create a files
 
 /**
  * Searches through the user's google drive.
@@ -241,10 +216,10 @@ export default async function handler(request, response) {
         }
 
         /** @type {{ id: string, name: string, pathToFile: string, mimeType: string, parentFolderId?: string, wasCreated?: boolean }[]} */
-        // will hold all of the folders
+        // all of the folders for the target unit
         let unitFolders = [...rootDriveFolders.map(folder => ({ name: folder.name, id: folder.id, mimeType: folder.mimeType, pathToFile: '' }))]
 
-        // get all of the folders of the unit 
+        // get all of the folders of the target unit folder
         for (const unitFolder of unitFolders) {
             const parentFolderAlternativeName = unitFolder.alternativeName
 
@@ -283,7 +258,7 @@ export default async function handler(request, response) {
                     }
                 }
 
-                const folderFilesAndFolders = folderDataResponse.data.files.map(file => {
+                const childFolderAndFilesOfFolder = folderDataResponse.data.files.map(file => {
                     if (!file.mimeType.includes('folder') || !foldersOccurrenceObj || !foldersOccurrenceObj?.[file.name] || (foldersOccurrenceObj?.[file.name]?.length === 1)) {
                         return {
                             ...file,
@@ -311,7 +286,7 @@ export default async function handler(request, response) {
                     }
                 })
 
-                unitFolders.push(...folderFilesAndFolders)
+                unitFolders.push(...childFolderAndFilesOfFolder)
                 continue
             }
 
@@ -402,27 +377,20 @@ export default async function handler(request, response) {
         }
 
         // give the user the ability to name the folder where the files will be copied to. 
-        const searchGoogleDriveUnitFolders = await searchUserGoogleDrive(request.body.accessToken, `name = "${request.body.unitName} COPY"`)
-        let unitFolderId = searchGoogleDriveUnitFolders?.[0]?.id
+        const { folderId: unitFolderId, errMsg } = await createGoogleDriveFolderForUser(`${request.body.unitName} COPY`, request.body.accessToken)
 
-        console.log('unitFolderId: ', unitFolderId)
-
-        // Create the folder that the user wants to copy
-        if (!searchGoogleDriveUnitFolders?.length) {
-            const { folderId, errMsg } = await createGoogleDriveFolderForUser(`${request.body.unitName} COPY`, request.body.accessToken)
-
-            if (errMsg) {
-                throw new CustomError(errMsg, 500)
-            }
-
-            unitFolderId = folderId
+        if (errMsg) {
+            console.error("Failed to create the target folder.");
+            throw new CustomError(errMsg, 500)
         }
+
+        console.log("The target folder was created.");
 
         let foldersFailedToCreate = [];
         /** @type {{ id: string, name: string, pathToFile: string, parentFolderId: string, gpFolderId: string }[]} */
         let createdFolders = []
         /** @type {{ fileId: string, pathToFile: string, parentFolderId: string, name: string }[]} */
-        // get only the folders of the unit
+        // get only the chlid folders of the target unit folder
         let folderPaths = unitFolders
             .filter(folder => folder.mimeType.includes('folder'))
             .map(folder => {
@@ -481,91 +449,33 @@ export default async function handler(request, response) {
         }
 
         const files = unitFolders.filter(folder => !folder.mimeType.includes('folder'))
-        const permissions = [
-            {
-                type: 'user',
-                role: 'writer',
-                emailAddress: request.body.email
-            },
-            {
-                type: 'domain',
-                role: 'writer',
-                domain: 'galacticpolymath.com'
-            }
-        ];
+        console.log("Will share the target files with the target user.");
+        const { wasSuccessful: wasSharesSuccessful } =
+            await shareFilesWithRetries(files, request.body.email, googleService)
 
-        let shareFilePromises = [];
-
-        for (const file of files) {
-            for (const permission of permissions) {
-                const shareFilePromise = googleService.permissions.create({
-                    resource: permission,
-                    fileId: file.id,
-                    fields: 'id',
-                    corpora: 'drive',
-                    includeItemsFromAllDrives: true,
-                    supportsAllDrives: true,
-                    driveId: process.env.GOOGLE_DRIVE_ID
-                });
-                shareFilePromises.push(shareFilePromise);
-            }
-        }
-
-        console.log('Sharing all files via Promse.allSettled...')
-
-        let sharedFilesResults = await Promise.allSettled(shareFilePromises);
-
-        console.log('Files has been shared....')
-        let failedShareFiles = sharedFilesResults.filter(sharedFileResult => sharedFileResult.status === "rejected")
-
-        if (failedShareFiles.length) {
-            failedShareFiles.forEach(file => {
-                console.log("file.value.data: ", file.value.data)
-                console.log('file.reason: ', file)
-            });
-
-            return response.status(500).json({
-                wasCopySuccessful: false,
-                msg: `Failed to share at least one file.`,
-                failedSharedFiles: failedShareFiles
-            });
-        }
-
-
-        let parentFoldersThatDontExist = []
-        /** @type {Promise<AxiosResponse<any, any>>[]} */
-        let copiedFilesPromises = [];
-
-
-        // copy the files into the corresponding folder
-        for (const file of files) {
-            const parentFolderId = createdFolders.find(folder => folder.gpFolderId === file.parentFolderId)?.id
-
-            if (!parentFolderId) {
-                console.error(`The parent folder for '${file.name}' file does not exist.`)
-                parentFoldersThatDontExist.push(parentFolderId)
-                continue
-            }
-
-            copiedFilesPromises.push(getCopyFilePromise(request.body.accessToken, [parentFolderId], file.id))
-        }
-
-        const copiedFilesResult = await Promise.allSettled(copiedFilesPromises);
-        const failedCopiedFiles = copiedFilesResult.filter(copiedFileResult => copiedFileResult.status === 'rejected');
-
-        // implement retries if a file failed to be copied.
-
-        if (failedCopiedFiles.length) {
+        if (!wasSharesSuccessful) {
+            console.error("Failed to share at least one file.");
             return response.status(500).json({
                 wasCopySuccessful: false,
                 msg: 'At least one file failed to be shared.',
-                failedSharedFiles: failedCopiedFiles
             });
         }
 
-        setTimeout(() => {
-            // create a email of the copy files results and send it to the user
-        }, 2000);
+        console.log("Will copy files...");
+        const { wasSuccessful: wasCopiesSuccessful } = await copyFiles(
+            files,
+            createdFolders,
+            request.body.accessToken
+        );
+        console.log("Attempted to copy files. Result: ", wasCopiesSuccessful);
+
+        if (!wasCopiesSuccessful) {
+            console.error("Failed to copy at least one file.");
+            return response.status(500).json({
+                wasCopySuccessful: false,
+                msg: 'At least one file failed to be copied.',
+            });
+        }
 
         return response.json({ wasCopySuccessful: true });
     } catch (error) {
