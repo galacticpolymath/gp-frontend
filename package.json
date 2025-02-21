@@ -57,7 +57,7 @@
     "next-swagger-doc": "^0.4.1",
     "nextjs-google-analytics": "^2.3.7",
     "node-cache": "^5.1.2",
-    "nodemailer": "^6.9.16",
+    "nodemailer": "^6.10.0",
     "npm-check-updates": "^17.1.11",
     "passive-events-support": "^1.1.0",
     "pbkdf2": "^3.1.2",
