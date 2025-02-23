@@ -412,7 +412,6 @@ const LessonPart = ({
               ))}
             </div>
           )}
-          {/* put the feedback component here */}
           {FeedbackComp}
           {Array.isArray(learningObjectives) && (
             <div className="mt-4 d-col col-12 col-lg-8">

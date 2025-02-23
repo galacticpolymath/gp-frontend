@@ -128,12 +128,8 @@ const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFol
  */
 export default async function handler(request, response) {
     try {
-        console.log("sup there yo, liver...")
         const gdriveAccessToken = request.headers['gdrive-token'];
         const jwtPayload = await getJwtPayloadPromise(request.headers.authorization);
-
-        console.log('jwtPayload, sup there: ', jwtPayload);
-        console.log("gdriveAccessToken, sup there: ", gdriveAccessToken);
 
         if (!jwtPayload || !jwtPayload?.payload?.email) {
             throw new CustomError('The access token is not valid.', 400);

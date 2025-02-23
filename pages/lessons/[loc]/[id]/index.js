@@ -84,6 +84,7 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 };
 
 const LessonDetails = ({ lesson }) => {
+  console.log("lesson section, yo there: ", lesson?.Section)
   const router = useRouter();
   const { _isUserTeacher } = useContext(UserContext);
   const { status, data } = useSession();
