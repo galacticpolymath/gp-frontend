@@ -94,9 +94,9 @@
     "wait-on": "^8.0.2"
   },
   "devDependencies": {
-    "cypress": "^14.0.0",
+    "cypress": "^14.0.3",
     "eslint": "9.16.0",
-    "eslint-config-next": "^15.0.3",
+    "eslint-config-next": "^15.1.7",
     "eslint-plugin-react": "^7.37.2",
     "jest-puppeteer": "^11.0.0",
     "sass": "^1.85.0"
