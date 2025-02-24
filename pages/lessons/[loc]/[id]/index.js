@@ -83,8 +83,11 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
   });
 };
 
-const LessonDetails = ({ lesson }) => {
-  console.log("lesson section, yo there: ", lesson?.Section)
+// with the updated schema, the sections will accessed via lesson.Sections
+
+const LessonDetails = ({ lesson, lessonFromDb }) => {
+  console.log("the lesson itself: ", lesson)
+  console.log("the lesson itself, yo there: ", lessonFromDb)
   const router = useRouter();
   const { _isUserTeacher } = useContext(UserContext);
   const { status, data } = useSession();
@@ -101,6 +104,7 @@ const LessonDetails = ({ lesson }) => {
   const [, setCustomModalFooter] = _customModalFooter;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
+  // TODO: this needs to be deleted when the schema is updated (BELOW).
   const lessonSectionObjEntries = lesson?.Section
     ? Object.entries(lesson.Section)
     : [];
@@ -249,6 +253,7 @@ const LessonDetails = ({ lesson }) => {
 
         return sectionTitle === "Feedback"
       });
+
     if (teachingMaterialsSecIndex === -1 || feedbackSecIndex === -1) {
       console.error("Can't find the Teacher Materials section or the feedback section.");
       return sectionCompsCopy;
@@ -262,16 +267,28 @@ const LessonDetails = ({ lesson }) => {
 
     return sectionCompsCopy;
   }, [])
-
   let _sections = useMemo(
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
     []
   );
 
+  console.log("_sections, hey there: ", _sections)
+
+  for (const section of _sections) {
+    // get the sectionName from section
+    // query the LessonFromDb.Section object using the sectionName
+  }
+  // const uiOnlyFields = _sections
+  // GOAL: 
+
   const _dots = useMemo(
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []
   );
+
+  // Get the lesson from the database, compare each section, and view what fields do not appear in the original 
+  // object found in the database
+
   const [sectionDots, setSectionDots] = useState({
     dots: _dots,
     clickedSectionId: null,
@@ -640,6 +657,7 @@ export const getStaticProps = async (arg) => {
     let lessonToDisplayOntoUi = targetLessons.find(
       ({ numID, locale }) => numID === parseInt(id) && locale === loc
     );
+    const lessonFromDb = structuredClone(lessonToDisplayOntoUi);
 
     if (!lessonToDisplayOntoUi || typeof lessonToDisplayOntoUi !== "object") {
       throw new Error("Lesson is not found.");
@@ -882,9 +900,21 @@ export const getStaticProps = async (arg) => {
       }
     }
 
+    // create an algorithm that will get the all of the fields that are present
+    // the object that will be displayed onto the ui and but is not present in the corresponding section
+    // in the unit object that is retrieved from the db.
+
+
+
+
+    // WHY ARE YOU DOING THIS?
+    // -figure out what fields you need to extract from the root of the unit object
+    // -or for the media array, what you need to extract from external apis 
+
     return {
       props: {
         lesson: JSON.parse(JSON.stringify(lessonToDisplayOntoUi)),
+        lessonFromDb: JSON.parse(JSON.stringify(lessonFromDb)),
         availLocs: targetLessonLocales,
       },
       revalidate: 30,
