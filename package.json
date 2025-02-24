@@ -85,7 +85,7 @@
     "start-server-and-test": "^2.0.10",
     "styled-components": "^6.1.14",
     "swagger-ui-react": "^5.18.2",
-    "swr": "^2.2.5",
+    "swr": "^2.3.2",
     "tls": "^0.0.1",
     "url": "^0.11.4",
     "urllib": "^4.5.1",
