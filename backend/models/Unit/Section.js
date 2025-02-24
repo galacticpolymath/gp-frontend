@@ -1,18 +1,13 @@
-import mongoose from 'mongoose';
+import { Schema } from "mongoose"
 
-const { Schema, model } = mongoose;
-
-export const UnitSectionPropsSchema = new Schema({
+export const unitSectionObj = {
     __component: String,
     SectionTitle: String,
     sortOrder: Number,
     InitiallyExpanded: { type: Boolean, default: true }
+}
+export const GeneralSection = new Schema({
+    ...unitSectionObj,
+    Content: String
 });
-const UnitSectionProps = model('UnitSectionProps', UnitSectionPropsSchema);
-
-UnitSectionProps.discriminator('Section', new Schema({
-    Content: String,
-}, { discriminatorKey: 'kind' }));
-
-export { UnitSectionProps }
 

@@ -30,14 +30,14 @@ const VersionSchema = new Schema({
 }, { _id: false });
 
 // WHEN RETRIEVING THE UNIT FROM THE DB, get the following fields:
-// -Must get the availLocals for the specific unit
+// -Must get the availLocals for the specific unit, when retrieving the unit from the database
 // -get the SponsorLogo, get the first value from the array
 function getOverviewSecPropsFromRoot() {
 
 }
 
 export const Overview = new Schema({
-    __component: String,
+    ...unitSectionObj,
     LearningSummary: St, ring,
     EstLessonTime: String,
     GradesOrYears: String,
@@ -49,12 +49,9 @@ export const Overview = new Schema({
     SteamEpaulette: String,
     SteamEpaulette_vert: String,
     sponsorLogoImgUrl: String,
-    availLocs: [String],
     lessonTitle: String,
-    sortOrder: Number,
     versions: [VersionSchema],
-    SectionTitle: String,
-    rootFieldsToRetrieve: {
+    rootFieldsToRetrieveForUI: {
         type: [RootFieldToRetrieve],
         default: () => {
             let rootFields = [
@@ -85,4 +82,4 @@ export const Overview = new Schema({
             }))
         }
     },
-});
+}, { _id: false });

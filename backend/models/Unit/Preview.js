@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { unitSectionObj } from './Section';
 
 const { Schema } = mongoose;
 
@@ -17,12 +18,9 @@ const MultimediaSchema = new Schema({
     webAppImgAlt: String
 }, { _id: false });
 
-// Define the schema for the lesson plan unit preview
 export const UnitPreview = new Schema({
-    __component: String,
-    SectionTitle: String,
+    ...unitSectionObj,
     QuickPrep: String,
     Multimedia: [MultimediaSchema],
     InitiallyExpanded: Boolean,
-    sortOrder: Number
-});
+}, { _id: false });
