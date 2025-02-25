@@ -75,16 +75,15 @@ const TeachIt = ({
   ForGrades,
   GradesOrYears,
 }) => {
+  const { } = Data;
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const { handleRestrictedItemBtnClick, session } = useCanUserAccessMaterial(false);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const [arrowContainer, setArrowContainer] = useState({ isInView: true, canTakeOffDom: false });
   const [numsOfLessonPartsThatAreExpanded, setNumsOfLessonPartsThatAreExpanded] = useState([]);
   const [, setSectionDots] = _sectionDots;
-  // REFACTOR THIS:
   const environments = ['classroom', 'remote'].filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   const gradeVariations = Data[environments[0]]?.resources ? (getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources) : [];
-  // TODO: 
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations?.length ? gradeVariations[0] : {});
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
   const allResources = Data?.[selectedEnvironment]?.resources ? (getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources) : [];

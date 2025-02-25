@@ -3,6 +3,12 @@ import { unitSectionObj } from './Section';
 
 const { Schema } = mongoose;
 
+function getMultiMediaWebAppPreviewImgs() {
+    // There fields will be as follows:
+    // webAppPreviewImg: String,
+    // webAppImgAlt: String
+}
+
 const MultimediaSchema = new Schema({
     order: String,
     type: String,
@@ -14,8 +20,6 @@ const MultimediaSchema = new Schema({
     byLink: String,
     mainLink: String,
     otherLink: String,
-    webAppPreviewImg: String,
-    webAppImgAlt: String
 }, { _id: false });
 
 export const UnitPreview = new Schema({

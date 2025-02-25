@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 // Define the schema for a single standard
-const standardSchema = new Schema({
+const StandardSchema = new Schema({
     lessons: [String],
     codes: String,
     grades: [String],
@@ -15,37 +15,37 @@ const standardSchema = new Schema({
 }, { _id: false });
 
 // Define the schema for a standards group
-const standardsGroupSchema = new Schema({
+const StandardsGroupSchema = new Schema({
     slug: String,
     name: String,
-    standardsGroup: [standardSchema]
+    standardsGroup: [StandardSchema]
 }, { _id: false });
 
 // Define the schema for a dimension
-const dimensionSchema = new Schema({
+const DimensionSchema = new Schema({
     slug: String,
     name: String,
-    standardsGroup: [standardsGroupSchema]
+    standardsGroup: [StandardsGroupSchema]
 }, { _id: false });
 
 // Define the schema for a set
-const setSchema = new Schema({
+const SetSchema = new Schema({
     slug: String,
     name: String,
-    dimensions: [dimensionSchema]
+    dimensions: [DimensionSchema]
 }, { _id: false });
 
 // Define the schema for a subject
-const subjectSchema = new Schema({
+const SubjectSchema = new Schema({
     subject: String,
     target: Boolean,
-    sets: [setSchema]
+    sets: [SetSchema]
 }, { _id: false });
 
-export const lessonPlanStandardsSchema = new Schema({
+export const StandardsSchema = new Schema({
     ...unitSectionObj,
-    Data: [subjectSchema],
-    rootFieldsToRetrieve: {
+    Data: [SubjectSchema],
+    rootFieldsToRetrieveForUI: {
         type: [RootFieldToRetrieve],
         default: () => {
             let rootFields = [

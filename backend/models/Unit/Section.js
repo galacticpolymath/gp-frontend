@@ -9,5 +9,5 @@ export const unitSectionObj = {
 export const GeneralSection = new Schema({
     ...unitSectionObj,
     Content: String
-});
+}, { _id: false });
 

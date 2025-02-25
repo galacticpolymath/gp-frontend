@@ -38,18 +38,18 @@ function getOverviewSecPropsFromRoot() {
 
 export const Overview = new Schema({
     ...unitSectionObj,
-    LearningSummary: St, ring,
+    LearningSummary: String,
     EstLessonTime: String,
     GradesOrYears: String,
     ForGrades: String,
-    Accessibility: [AccessibilitySchema],
     TargetSubject: String,
     Text: String,
-    Tags: [TagSchema],
     SteamEpaulette: String,
     SteamEpaulette_vert: String,
     sponsorLogoImgUrl: String,
     lessonTitle: String,
+    Accessibility: [AccessibilitySchema],
+    Tags: [TagSchema],
     versions: [VersionSchema],
     rootFieldsToRetrieveForUI: {
         type: [RootFieldToRetrieve],

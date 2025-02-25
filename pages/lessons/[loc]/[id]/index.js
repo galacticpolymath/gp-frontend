@@ -678,7 +678,7 @@ export const getStaticProps = async (arg) => {
     if (resources?.every((resource) => resource.lessons)) {
       lessonParts = [];
 
-      // get all of preview images of google drive files
+      // get all of preview images of google drive files for the teaching materials section
       for (const resource of resources) {
         const resourceLessons = [];
         for (const lesson of resource.lessons) {
@@ -899,17 +899,6 @@ export const getStaticProps = async (arg) => {
         }
       }
     }
-
-    // create an algorithm that will get the all of the fields that are present
-    // the object that will be displayed onto the ui and but is not present in the corresponding section
-    // in the unit object that is retrieved from the db.
-
-
-
-
-    // WHY ARE YOU DOING THIS?
-    // -figure out what fields you need to extract from the root of the unit object
-    // -or for the media array, what you need to extract from external apis 
 
     return {
       props: {
