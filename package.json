@@ -83,7 +83,7 @@
     "react-showdown": "^2.3.1",
     "sharp": "^0.33.5",
     "start-server-and-test": "^2.0.10",
-    "styled-components": "^6.1.14",
+    "styled-components": "^6.1.15",
     "swagger-ui-react": "^5.18.2",
     "swr": "^2.3.2",
     "tls": "^0.0.1",
