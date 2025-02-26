@@ -12,7 +12,7 @@ const RecordSchema = new Schema({
 const AcknowledgementsDataSchema = new Schema({
     role: String,
     def: String,
-    records: [RecordSchema] // Array of RecordSchema subdocuments
+    records: [RecordSchema]
 }, { _id: false });
 
 export const Acknowledgments = new Schema({
