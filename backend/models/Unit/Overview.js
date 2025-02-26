@@ -31,7 +31,7 @@ const VersionSchema = new Schema({
 
 // WHEN RETRIEVING THE UNIT FROM THE DB for the ui, get the following fields from the root of the document:
 // -Must get the availLocals for the specific unit, when retrieving the unit from the database
-// -get the SponsorLogo, get the first value from the array
+// -get the SponsorLogo, get the first value from the array, the first value, store as sponsorLogoImgUrl
 function getOverviewSecPropsFromRoot() {
 
 }
@@ -40,14 +40,9 @@ export const Overview = new Schema({
     ...unitSectionObj,
     LearningSummary: String,
     EstLessonTime: String,
-    GradesOrYears: String,
-    ForGrades: String,
-    TargetSubject: String,
     Text: String,
     SteamEpaulette: String,
     SteamEpaulette_vert: String,
-    sponsorLogoImgUrl: String,
-    lessonTitle: String,
     Accessibility: [AccessibilitySchema],
     Tags: [TagSchema],
     versions: [VersionSchema],
@@ -62,6 +57,18 @@ export const Overview = new Schema({
                 {
                     name: "Title",
                     as: "lessonTitle"
+                },
+                {
+                    name: "ForGrades",
+                    as: "ForGrades"
+                },
+                {
+                    name: "TargetSubject",
+                    as: "TargetSubject"
+                },
+                {
+                    name: "GradesOrYears",
+                    as: "GradesOrYears"
                 },
                 {
                     name: "numID",
