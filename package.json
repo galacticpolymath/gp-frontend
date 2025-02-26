@@ -79,7 +79,7 @@
     "react-qr-code": "^2.0.15",
     "react-responsive-carousel": "^3.2.23",
     "react-scroll-parallax": "^3.4.5",
-    "react-share": "^5.2.1",
+    "react-share": "^5.2.2",
     "react-showdown": "^2.3.1",
     "sharp": "^0.33.5",
     "start-server-and-test": "^2.0.10",
