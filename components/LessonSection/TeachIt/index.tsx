@@ -21,6 +21,7 @@ import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
+import { TeachItProps } from "./types";
 
 const LessonTile = ({
   lessonTileUrl,
@@ -80,7 +81,7 @@ const TeachIt = ({
   SectionTitle,
   ForGrades,
   GradesOrYears,
-}) => {
+}: TeachItProps) => {
   const props = {
     index,
     Data,
@@ -89,8 +90,6 @@ const TeachIt = ({
     ForGrades,
     GradesOrYears,
   };
-
-  console.log("Props, sup there: ", props);
 
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const { handleRestrictedItemBtnClick, session } =
