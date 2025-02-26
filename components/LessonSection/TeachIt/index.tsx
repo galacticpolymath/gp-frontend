@@ -4,7 +4,10 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 import { AiOutlineQuestionCircle } from "react-icons/ai";
-import { ModalContext } from "../../../providers/ModalProvider";
+import {
+  ModalContext,
+  useModalContext,
+} from "../../../providers/ModalProvider";
 import { useContext, useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
@@ -22,6 +25,8 @@ import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import { TeachItProps } from "./types";
+
+const GRADE_VARIATION_ID = "gradeVariation";
 
 const LessonTile = ({
   lessonTileUrl,
@@ -82,16 +87,7 @@ const TeachIt = ({
   ForGrades,
   GradesOrYears,
 }: TeachItProps) => {
-  const props = {
-    index,
-    Data,
-    _sectionDots,
-    SectionTitle,
-    ForGrades,
-    GradesOrYears,
-  };
-
-  const { _isDownloadModalInfoOn } = useContext(ModalContext);
+  const { _isDownloadModalInfoOn } = useModalContext();
   const { handleRestrictedItemBtnClick, session } =
     useCanUserAccessMaterial(false);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
@@ -104,9 +100,13 @@ const TeachIt = ({
     setNumsOfLessonPartsThatAreExpanded,
   ] = useState([]);
   const [, setSectionDots] = _sectionDots;
+  const ref = useRef(null);
+  useLessonElementInView(_sectionDots, SectionTitle, ref);
+
   const environments = ["classroom", "remote"].filter((setting) =>
     Object.prototype.hasOwnProperty.call(Data, setting)
   );
+
   const gradeVariations = Data[environments[0]]?.resources
     ? getIsValObj(Data[environments[0]].resources)
       ? getObjVals(Data[environments[0]].resources)
@@ -146,7 +146,6 @@ const TeachIt = ({
       : "lessons";
   const dataLesson = Data.lesson;
   let parts = [];
-  const ref = useRef();
 
   if (isPartsObjPresent && !areThereMoreThan1Resource) {
     parts = Data.classroom.resources[0]?.[partsFieldName];
@@ -175,8 +174,6 @@ const TeachIt = ({
     const lastPart = { itemList, lsn, preface, tile, title };
     parts = [...Object.values(restOfLessonParts), lastPart];
   }
-
-  useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
@@ -267,7 +264,9 @@ const TeachIt = ({
         </div>
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
-            <h3 className="fs-5">Available {GradesOrYears} Bands</h3>
+            <h3 id={GRADE_VARIATION_ID} className="fs-5">
+              Available {GradesOrYears} Bands
+            </h3>
             {!!gradeVariations.length &&
               gradeVariations.map((variation, i) => (
                 <label key={i} className="text-capitalize d-block mb-1">
@@ -362,7 +361,6 @@ const TeachIt = ({
             </div>
           </div>
         )}
-
         <div className="container lessonsPartContainer px-0 pe-sm-1 px-md-2 pb-4">
           {!!parts.length &&
             parts.every((part) => part !== null) &&
