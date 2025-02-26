@@ -67,6 +67,8 @@ const DisplayLessonTile = ({ lessonPart, imgContainerClassNameStr, lessonTileUrl
   );
 };
 
+// GOAL: show where the TeachIt component corresponds with interface in the database
+
 const TeachIt = ({
   index,
   SectionTitle,
@@ -75,6 +77,7 @@ const TeachIt = ({
   ForGrades,
   GradesOrYears,
 }) => {
+  console.log("Data, yo there: ", Data);
   const { } = Data;
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const { handleRestrictedItemBtnClick, session } = useCanUserAccessMaterial(false);
