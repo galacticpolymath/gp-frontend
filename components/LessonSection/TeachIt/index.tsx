@@ -81,8 +81,17 @@ const TeachIt = ({
   ForGrades,
   GradesOrYears,
 }) => {
-  console.log("Data, yo there: ", Data);
-  const {} = Data;
+  const props = {
+    index,
+    Data,
+    _sectionDots,
+    SectionTitle,
+    ForGrades,
+    GradesOrYears,
+  };
+
+  console.log("Props, sup there: ", props);
+
   const { _isDownloadModalInfoOn } = useContext(ModalContext);
   const { handleRestrictedItemBtnClick, session } =
     useCanUserAccessMaterial(false);

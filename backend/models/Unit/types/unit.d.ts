@@ -1,0 +1,68 @@
+export interface IUnit {
+    _id: string;
+    numID: number;
+    ShortTitle: string | null;
+    PublicationStatus: string | null;
+    Language: string | null;
+    Country: string | null;
+    DefaultLanguage: string | null;
+    DefaultCountry: string | null;
+    LastUpdated: Date | null;
+    FirstPublicationDate: Date | null;
+    featuring: FeaturingSchema[] | null;
+    MediumTitle: string | null;
+    lang: string | null;
+    lng: string | null;
+    locale: string;
+    TemplateVer: string | null;
+    TargetStandardsCodes: object[] | null;
+    galacticPubsVer: string | null;
+    isTestRepo: boolean | null;
+    DefaultLocale: string | null;
+    URL: string | null;
+    GPCatalogURL: string | null;
+    GitHubURL: string | null;
+    GdriveHome: string | null;
+    GdriveDirName: string | null;
+    GdriveTeachMatPath: string | null;
+    GdriveTeachMatID: string | null;
+    GdrivePublicID: string | null;
+    GdriveDirID: string | null;
+    GdriveMetaID: string | null;
+    GdriveTeachItID: string | null;
+    GdriveStandardsID: string | null;
+    GdrivePublishedID: string | null;
+    GdriveDirURL: string | null;
+    RebuildAllMaterials: boolean | null;
+    ReleaseDate: Date | null;
+    Title: string;
+    Subtitle: string | null;
+    SponsorName: string[] | null;
+    SponsoredBy: string | null;
+    SponsorLogo: string[] | null;
+    LessonBanner: string | null;
+    UnitCard: string | null;
+    TargetSubject: string | null;
+    LessonEnvir: string | null;
+    ForGrades: string | null;
+    GradesOrYears: string | null;
+    SponsorImage: {
+        url: string[] | null;
+    } | null;
+    CoverImage: {
+        url: string | null;
+    } | null;
+    Section: {
+        overview?: Overview | null;
+        preview?: UnitPreview | null;
+        teachingMaterials?: TeachingMaterialsSchema | null;
+        feedback?: GeneralSection | null;
+        background?: GeneralSection | null;
+        standards?: StandardsSchema | null;
+        credits?: GeneralSection | null;
+        acknowledgements?: Acknowledgments | null;
+        versionNotes?: VersionNotes | null;
+    } | null;
+    LsnStatuses: LsnStatusSchema[] | null;
+    ShortURL: string | null;
+}
