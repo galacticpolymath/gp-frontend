@@ -8,7 +8,7 @@ import {
   ModalContext,
   useModalContext,
 } from "../../../providers/ModalProvider";
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useState, useRef, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import LessonPart from "./LessonPart";
@@ -99,10 +99,14 @@ const TeachIt = (props: TeachItProps) => {
   const ref = useRef(null);
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
-  const environments = ["classroom", "remote"].filter((setting) =>
-    Object.prototype.hasOwnProperty.call(Data, setting)
-  );
+  const environments = useMemo(() => {
+    const dataKeys = Data && typeof Data === "object" ? Object.keys(Data) : [];
+    const environments = dataKeys.length
+      ? ["classroom", "remote"].filter((setting) => dataKeys.includes(setting))
+      : [];
 
+    return environments;
+  }, []);
   const gradeVariations = Data[environments[0]]?.resources
     ? getIsValObj(Data[environments[0]].resources)
       ? getObjVals(Data[environments[0]].resources)

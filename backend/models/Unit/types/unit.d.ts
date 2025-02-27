@@ -53,15 +53,16 @@ export interface IUnit {
         url: string | null;
     } | null;
     Section: {
-        overview?: Overview | null;
-        preview?: UnitPreview | null;
-        teachingMaterials?: TeachingMaterialsSchema | null;
-        feedback?: GeneralSection | null;
-        background?: GeneralSection | null;
-        standards?: StandardsSchema | null;
-        credits?: GeneralSection | null;
-        acknowledgements?: Acknowledgments | null;
-        versionNotes?: VersionNotes | null;
+        overview: Overview | null;
+        preview: UnitPreview | null;
+        teachingMaterials: TeachingMaterialsSchema | null;
+        feedback: GeneralSection | null;
+        background: GeneralSection | null;
+        bonusContent: GeneralSection | null;
+        standards: StandardsSchema | null;
+        credits: GeneralSection | null;
+        acknowledgements: Acknowledgments | null;
+        versionNotes: VersionNotes | null;
     } | null;
     LsnStatuses: LsnStatusSchema[] | null;
     ShortURL: string | null;

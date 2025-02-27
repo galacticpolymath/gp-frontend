@@ -29,7 +29,6 @@ export interface IResource {
     gradePrefix: string | null;
     links: ILink | null;
     lessons: ILesson[] | null;
-    parts?: ILesson[] | null;
 }
 
 export interface IClassroom {
