@@ -79,14 +79,10 @@ const DisplayLessonTile = ({
 
 // GOAL: show where the TeachIt component corresponds with interface in the database
 
-const TeachIt = ({
-  index,
-  Data,
-  _sectionDots,
-  SectionTitle,
-  ForGrades,
-  GradesOrYears,
-}: TeachItProps) => {
+const TeachIt = (props: TeachItProps) => {
+  let { index, Data, _sectionDots, SectionTitle, ForGrades, GradesOrYears } =
+    props;
+  console.log("TeachIt props: ", props);
   const { _isDownloadModalInfoOn } = useModalContext();
   const { handleRestrictedItemBtnClick, session } =
     useCanUserAccessMaterial(false);

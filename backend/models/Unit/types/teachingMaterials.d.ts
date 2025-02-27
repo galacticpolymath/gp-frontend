@@ -29,6 +29,7 @@ export interface IResource {
     gradePrefix: string | null;
     links: ILink | null;
     lessons: ILesson[] | null;
+    parts?: ILesson[] | null;
 }
 
 export interface IClassroom {
@@ -95,6 +96,7 @@ export interface ITeachingMaterialsData {
     lessonPreface: string | null;
     lessonDur: string | null;
     classroom: IClassroom | null;
+    remote: IClassroom | null;
     lesson: ILessonDetail[] | null;
     gatheredVocab: IGatheredVocab | null;
 }
