@@ -107,6 +107,7 @@ const TeachIt = (props: TeachItProps) => {
 
     return environments;
   }, []);
+  // IT WILL ALWAYS BE AN OBJECT
   const gradeVariations = Data[environments[0]]?.resources
     ? getIsValObj(Data[environments[0]].resources)
       ? getObjVals(Data[environments[0]].resources)
