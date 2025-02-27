@@ -83,7 +83,11 @@ const TeachIt = ({
   const [, setSectionDots] = _sectionDots;
   const environments = ['classroom', 'remote'].filter(setting => Object.prototype.hasOwnProperty.call(Data, setting));
   const gradeVariations = Data?.[environments?.[0]]?.resources ? (getIsValObj(Data[environments[0]].resources) ? getObjVals(Data[environments[0]].resources) : Data[environments[0]].resources) : [];
+  // print gradeVariations
+  console.log("gradeVariations, yo there: ", gradeVariations);
   const [selectedGrade, setSelectedGrade] = useState(gradeVariations?.length ? gradeVariations[0] : {});
+  // print selectedGrade
+  console.log("selectedGrade, sup there: ", selectedGrade);
   const [selectedEnvironment, setSelectedEnvironment] = useState(environments[0]);
   const allResources = Data?.[selectedEnvironment]?.resources ? (getIsValObj(Data[selectedEnvironment].resources) ? getObjVals(Data[selectedEnvironment].resources) : Data[selectedEnvironment].resources) : [];
   const [selectedGradeResources, setSelectedGradeResources] = useState(allResources?.[0]?.links ?? []);
@@ -92,7 +96,9 @@ const TeachIt = ({
   const areThereMoreThan1Resource = Data?.classroom?.resources.length > 1;
   ForGrades = areThereMoreThan1Resource ? selectedGrade.grades : ForGrades;
   const isPartsObjPresent = !areThereMoreThan1Resource && Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object');
-  const partsFieldName = ((Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object')) && ('parts' in Data.classroom.resources[0])) ? 'parts' : 'lessons';
+  console.log("Data?.classroom?.resources?.[0]: ", Data?.classroom?.resources?.[0]);
+  console.log("what is up there, 'parts' in Data.classroom.resources[0]: ", 'parts' in (Data?.classroom?.resources?.[0] ?? {}));
+  const partsFieldName = ((Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object')) && ('parts' in (Data?.classroom?.resources?.[0] ?? {}))) ? 'parts' : 'lessons';
   const dataLesson = Data.lesson;
   let parts = [];
   const ref = useRef();
