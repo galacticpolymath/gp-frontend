@@ -45,7 +45,7 @@ const LessonTile = ({
           fill
           style={imgStyle}
           sizes="130px"
-          className="img-optimize rounded w-100 h-100"
+          className="img-optimize rounded w-100 h-100 lesson-tile"
         />
       )}
     </div>
@@ -62,7 +62,7 @@ const DisplayLessonTile = ({
       <LessonTile
         imgStyle={{ objectFit: "contain" }}
         lessonTileUrl={lessonTileUrl}
-        imgContainerClassNameStr={imgContainerClassNameStr}
+        imgContainerClassNameStr={`${imgContainerClassNameStr}`}
         Pill={<Pill zIndex={10} />}
       />
     );
@@ -76,8 +76,6 @@ const DisplayLessonTile = ({
     />
   );
 };
-
-// GOAL: show where the TeachIt component corresponds with interface in the database
 
 const TeachIt = (props: TeachItProps) => {
   let { index, Data, _sectionDots, SectionTitle, ForGrades, GradesOrYears } =
@@ -102,17 +100,18 @@ const TeachIt = (props: TeachItProps) => {
   const environments = useMemo(() => {
     const dataKeys = Data && typeof Data === "object" ? Object.keys(Data) : [];
     const environments = dataKeys.length
-      ? ["classroom", "remote"].filter((setting) => dataKeys.includes(setting))
+      ? (["classroom", "remote"] as const).filter((setting) => dataKeys.includes(setting))
       : [];
 
     return environments;
   }, []);
   // IT WILL ALWAYS BE AN OBJECT
-  const gradeVariations = Data[environments[0]]?.resources
-    ? getIsValObj(Data[environments[0]].resources)
-      ? getObjVals(Data[environments[0]].resources)
-      : Data[environments[0]].resources
-    : [];
+  // const gradeVariations = Data?.[environments[0]]?.resources
+  //   ? getIsValObj(Data[environments[0]].resources)
+  //     ? getObjVals(Data[environments[0]].resources)
+  //     : Data[environments[0]].resources
+  //   : [];
+  const gradeVariations = Data?.classroom?.resources ?? [];
   const [selectedGrade, setSelectedGrade] = useState(
     gradeVariations?.length ? gradeVariations[0] : {}
   );

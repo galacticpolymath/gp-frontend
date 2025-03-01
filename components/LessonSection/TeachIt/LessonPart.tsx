@@ -77,10 +77,10 @@ const LessonPart = ({
   let _itemList = itemList;
   const targetLessonsResources = resources?.[0]?.[partsFieldName]
     ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => {
-      if (lsn) {
-        return lsnNum.toString() === lsn.toString();
-      }
-    }) ?? {}
+        if (lsn) {
+          return lsnNum.toString() === lsn.toString();
+        }
+      }) ?? {}
     : {};
   let { tags: allTags, itemList: linkResources } = targetLessonsResources;
   _itemList = _itemList ?? linkResources;
@@ -222,8 +222,9 @@ const LessonPart = ({
   return (
     <div style={accordionStyleAccordionWrapper}>
       <Accordion
-        buttonClassName={`w-100 text-start border-0 p-0 ${isExpanded ? "" : "bg-white"
-          }`}
+        buttonClassName={`w-100 text-start border-0 p-0 ${
+          isExpanded ? "" : "bg-white"
+        }`}
         key={lsnNum}
         btnStyle={
           isExpanded
@@ -239,7 +240,7 @@ const LessonPart = ({
         button={
           <div
             onClick={
-              isAccordionExpandable ? handleAccordionBtnOnClick : () => { }
+              isAccordionExpandable ? handleAccordionBtnOnClick : () => {}
             }
             className="position-relative"
           >
@@ -273,8 +274,9 @@ const LessonPart = ({
                           style={{
                             width: 30,
                             height: 30,
-                            border: `solid 2.3px ${isExpanded ? highlightedBorderColor : "#DEE2E6"
-                              }`,
+                            border: `solid 2.3px ${
+                              isExpanded ? highlightedBorderColor : "#DEE2E6"
+                            }`,
                           }}
                         >
                           {ClickToSeeMoreComp}
@@ -319,13 +321,14 @@ const LessonPart = ({
                     </div>
                     {!!previewTags?.length && (
                       <div className="d-flex tagPillContainer flex-wrap">
-                        {previewTags.map((tag, index) => (
+                        {previewTags.map((tag: string, index) => (
                           <div
                             key={index}
                             style={{
                               border: `solid .5px ${LESSON_PART_BTN_COLOR}`,
                             }}
-                            className="rounded-pill badge bg-white p-2 mt-2"
+                            id={`${lsnNum}-${tag.split(" ").join("-")}`}
+                            className={`rounded-pill badge bg-white p-2 mt-2`}
                           >
                             <span
                               style={{
@@ -348,8 +351,9 @@ const LessonPart = ({
                         style={{
                           width: 35,
                           height: 35,
-                          border: `solid 2.3px ${isExpanded ? highlightedBorderColor : "#DEE2E6"
-                            }`,
+                          border: `solid 2.3px ${
+                            isExpanded ? highlightedBorderColor : "#DEE2E6"
+                          }`,
                         }}
                       >
                         {ClickToSeeMoreComp}
@@ -397,9 +401,10 @@ const LessonPart = ({
         <div className="p-0 lessonPartContent">
           {!!restOfTags?.length && (
             <div className="d-flex mt-0 mt-md-1 justify-content-sm-start tagPillContainer flex-wrap">
-              {restOfTags.map((tag, index) => (
+              {restOfTags.map((tag: string, index) => (
                 <div
                   key={index}
+                  id={`${lsnNum}-${tag.split(" ").join("-")}`}
                   style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
                   className="rounded-pill badge bg-white p-2"
                 >
@@ -424,7 +429,8 @@ const LessonPart = ({
               <p className="lead mb-0">Students will be able to...</p>
               <ol className="mt-0">
                 {learningObjectives.map((objectiveStr, index) => (
-                  <li key={index}>
+                  // check if the given li is not empty, it should have text in it.
+                  <li id={`objective-${lsnNum}-${index}`} key={index}>
                     <RichText content={objectiveStr} />
                   </li>
                 ))}
@@ -441,7 +447,7 @@ const LessonPart = ({
               </div>
               <p className="lead mb-0">Students will be able to...</p>
               <ol className="mt-0">
-                <li>
+                <li id={`objective-${lsnNum}-0`}>
                   <RichText content={learningObjectives} />
                 </li>
               </ol>
@@ -450,13 +456,13 @@ const LessonPart = ({
           <div className="mt-4 pb-1">
             <div className="d-flex align-items-start">
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
-              <h5 className="fw-bold">
+              <h5 className="fw-bold" id="materials-title">
                 Materials for {GradesOrYears} {ForGrades}
               </h5>
             </div>
             <ol className="mt-2 materials-list">
               {!!_itemList?.length &&
-                _itemList.map((item, itemIndex) => {
+                _itemList.map((item, itemIndex: number) => {
                   const {
                     itemTitle,
                     itemDescription,
@@ -480,7 +486,7 @@ const LessonPart = ({
                   let btnTxt = "Sign in";
                   let handleBtnClick = handleSignInBtnClick;
 
-                  if (!isUserTeacher && (status === "authenticated")) {
+                  if (!isUserTeacher && status === "authenticated") {
                     blurTxt = "You must be a teacher to view this item.";
                     btnTxt = "Update Profile";
                     handleBtnClick = handleUpdateProfileBtnClick;
@@ -506,7 +512,10 @@ const LessonPart = ({
                             </SignInSuggestion>
                           )}
                           <strong>
-                            <RichText content={itemTitle} />
+                            <RichText
+                              content={itemTitle}
+                              className={`item-title-${lsnNum}-${itemIndex}`}
+                            />
                           </strong>
                           <section
                             style={{
@@ -522,10 +531,7 @@ const LessonPart = ({
                                 className="fst-italic mb-1"
                                 style={{ color: "#353637" }}
                               >
-                                <RichText
-                                  content={itemDescription}
-                                  css={{ color: "red" }}
-                                />
+                                <RichText content={itemDescription} />
                               </div>
                               <ul
                                 style={{ listStyle: "none" }}
@@ -544,12 +550,13 @@ const LessonPart = ({
                                               href={url}
                                               target="_blank"
                                               rel="noopener noreferrer"
-                                              className={`${isTeacherItem
-                                                ? isUserTeacher
-                                                  ? ""
-                                                  : "link-disabled"
-                                                : ""
-                                                }`}
+                                              className={`${
+                                                isTeacherItem
+                                                  ? isUserTeacher
+                                                    ? ""
+                                                    : "link-disabled"
+                                                  : ""
+                                              }`}
                                             >
                                               {linkIndex === 0 ? (
                                                 <i
@@ -571,12 +578,13 @@ const LessonPart = ({
                                               href={url}
                                               target="_blank"
                                               rel="noopener noreferrer"
-                                              className={`${isTeacherItem
-                                                ? isUserTeacher
-                                                  ? ""
-                                                  : "link-disabled"
-                                                : ""
-                                                }`}
+                                              className={`${
+                                                isTeacherItem
+                                                  ? isUserTeacher
+                                                    ? ""
+                                                    : "link-disabled"
+                                                  : ""
+                                              }`}
                                             >
                                               {linkText}
                                             </a>
@@ -599,12 +607,13 @@ const LessonPart = ({
                                         : imgLink
                                     }
                                     target="_blank"
-                                    className={`${isTeacherItem
-                                      ? isUserTeacher
-                                        ? ""
-                                        : "link-disabled"
-                                      : imgLink
-                                      }`}
+                                    className={`${
+                                      isTeacherItem
+                                        ? isUserTeacher
+                                          ? ""
+                                          : "link-disabled"
+                                        : imgLink
+                                    }`}
                                   >
                                     <img
                                       src={filePreviewImg}
