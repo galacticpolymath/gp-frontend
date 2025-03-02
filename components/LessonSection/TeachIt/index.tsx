@@ -165,10 +165,6 @@ const TeachIt = (props: TeachItProps) => {
   const dataLesson = Data.lesson;
   let parts = selectedGrade.lessons ?? [];
 
-  useEffect(() => {
-    console.log("parts, yo there: ", parts);
-  });
-
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
   };
@@ -368,11 +364,7 @@ const TeachIt = (props: TeachItProps) => {
             parts.map((part, index, self) => {
               let {
                 lsn,
-                lsnTitle,
-                partTitle,
                 title,
-                lsnPreface,
-                partPreface,
                 preface,
                 chunks,
                 learningObj,
@@ -382,11 +374,6 @@ const TeachIt = (props: TeachItProps) => {
                 lsnExt,
               } = part;
               let secondTitle = null;
-
-              if (lsnTitle === "Procedure not documented yet") {
-                secondTitle =
-                  lsnTitle === "Procedure not documented yet" ? title : null;
-              }
 
               let targetLessonInDataLesson = null;
 
@@ -500,8 +487,8 @@ const TeachIt = (props: TeachItProps) => {
                     setNumsOfLessonPartsThatAreExpanded,
                   ]}
                   lsnNum={lsn}
-                  lsnTitle={secondTitle ?? lsnTitle ?? partTitle ?? title}
-                  lsnPreface={lsnPreface ?? partPreface ?? preface}
+                  lsnTitle={title}
+                  lsnPreface={preface}
                   lsnExt={lsnExt}
                   chunks={chunks}
                   ForGrades={ForGrades}
