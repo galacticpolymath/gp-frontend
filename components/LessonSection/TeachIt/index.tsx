@@ -25,6 +25,7 @@ import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import { TeachItProps } from "./types";
+import { IResource } from "../../../backend/models/Unit/types/teachingMaterials";
 
 const GRADE_VARIATION_ID = "gradeVariation";
 
@@ -122,15 +123,13 @@ const TeachIt = (props: TeachItProps) => {
   //   : [];
   const gradeVariations = Data?.classroom?.resources ?? [];
   const [selectedGrade, setSelectedGrade] = useState(
-    gradeVariations?.length ? gradeVariations[0] : {}
+    gradeVariations?.length ? gradeVariations[0] : ({} as IResource)
   );
   const [selectedEnvironment, setSelectedEnvironment] = useState(
     environments[0]
   );
   const allResources = Data?.[selectedEnvironment]?.resources
-    ? getIsValObj(Data[selectedEnvironment].resources)
-      ? getObjVals(Data[selectedEnvironment].resources)
-      : Data[selectedEnvironment].resources
+    ? Data[selectedEnvironment].resources
     : [];
   const [selectedGradeResources, setSelectedGradeResources] = useState(
     allResources?.[0]?.links ?? []
@@ -139,9 +138,15 @@ const TeachIt = (props: TeachItProps) => {
     ? allResources.find(
         ({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix
       )
-    : [];
-  resources = getIsValObj(resources) ? [resources] : resources;
-  const areThereMoreThan1Resource = Data?.classroom?.resources.length > 1;
+    : ({} as IResource);
+
+  if (!Data || !resources) {
+    return <div>No resources/lessons to display.</div>;
+  }
+
+  const areThereMoreThan1Resource = Data.classroom?.resources?.length
+    ? Data.classroom?.resources?.length > 1
+    : false;
   ForGrades = areThereMoreThan1Resource ? selectedGrade.grades : ForGrades;
   const isPartsObjPresent =
     !areThereMoreThan1Resource &&
