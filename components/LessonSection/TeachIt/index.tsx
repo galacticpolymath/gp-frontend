@@ -15,9 +15,9 @@ import {
   useEffect,
   useMemo,
   ReactNode,
+  CSSProperties,
 } from "react";
 import PropTypes from "prop-types";
-import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import LessonPart from "./LessonPart";
 import useLessonElementInView from "../../../customHooks/useLessonElementInView";
 import RichText from "../../RichText";
@@ -26,19 +26,27 @@ import Pill from "../../Pill";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import Link from "next/link";
 import Button from "../../General/Button";
-import { getIsValObj, getObjVals } from "../../../globalFns";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import { TeachItProps } from "./types";
 import {
-  ILesson,
   ILink,
   IResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
+import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 
 const GRADE_VARIATION_ID = "gradeVariation";
+
+export interface ILessonTileProps {
+  lessonTileUrl: string;
+  imgContainerClassNameStr?: string;
+  imgStyle?: CSSProperties;
+  imgContainerStyle?: CSSProperties;
+  Pill?: ReactNode;
+  id?: { id: string } | {};
+}
 
 const LessonTile = ({
   lessonTileUrl,
@@ -47,7 +55,7 @@ const LessonTile = ({
   imgContainerStyle = { width: 150, height: 150 },
   Pill = null,
   id = {},
-}) => {
+}: ILessonTileProps) => {
   return (
     <div style={imgContainerStyle} className={imgContainerClassNameStr}>
       {Pill}
@@ -104,8 +112,7 @@ const DisplayLessonTile = ({
 };
 
 const TeachIt = (props: TeachItProps) => {
-  let { index, Data, _sectionDots, SectionTitle, ForGrades, GradesOrYears } =
-    props;
+  let { Data, _sectionDots, SectionTitle, ForGrades, GradesOrYears } = props;
   console.log("TeachIt props: ", props);
   const { _isDownloadModalInfoOn } = useModalContext();
   const { handleRestrictedItemBtnClick, session } =
@@ -265,14 +272,15 @@ const TeachIt = (props: TeachItProps) => {
               Available {GradesOrYears} Bands
             </h3>
             {!!gradeVariations.length &&
+              gradeVariations.every((variation) => !!variation.grades) &&
               gradeVariations.map((variation, i) => (
                 <label key={i} className="text-capitalize d-block mb-1">
                   <input
                     className="form-check-input me-2"
                     type="radio"
                     name="gradeVariation"
-                    id={variation.grades}
-                    value={variation.grades}
+                    id={variation.grades as string}
+                    value={variation.grades as string}
                     checked={variation.grades === selectedGrade.grades}
                     onChange={() => handleOnChange(variation)}
                   />
@@ -311,7 +319,7 @@ const TeachIt = (props: TeachItProps) => {
                 }}
                 href={
                   session.status === "authenticated"
-                    ? selectedGradeResources.url
+                    ? selectedGradeResources?.url?.[0]
                     : ""
                 }
                 className={`btn btn-primary px-3 py-2 col-8 col-md-12 ${
@@ -348,7 +356,7 @@ const TeachIt = (props: TeachItProps) => {
                     className="downloadTipIcon"
                     style={{
                       width: "25px",
-                      heigth: "25px",
+                      height: "25px",
                       zIndex: -1,
                       pointerEvents: "none",
                     }}
@@ -480,7 +488,6 @@ const TeachIt = (props: TeachItProps) => {
                     lsn !== "last" ? targetLessonInDataLesson?.learningObj : []
                   }
                   partsFieldName="lessons"
-                  lessonTileUrl={tile}
                   itemList={itemList}
                   isAccordionExpandable={part.status !== UNVIEWABLE_LESSON_STR}
                   accordionBtnStyle={

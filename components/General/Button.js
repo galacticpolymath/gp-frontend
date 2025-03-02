@@ -1,8 +1,8 @@
 const Button = ({
   children,
-  fontSize,
-  isDisabled,
-  value,
+  fontSize = null,
+  isDisabled = false,
+  value = null,
   defaultStyleObj = {},
   classNameStr = 'no-btn-styles',
   backgroundColor = 'transparent',

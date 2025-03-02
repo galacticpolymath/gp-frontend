@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
 import RichText from "../../RichText";
-import { memo, ReactNode, useContext, useState } from "react";
+import { CSSProperties, memo, ReactNode, useContext, useState } from "react";
 import Link from "next/link";
 import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
@@ -18,7 +18,10 @@ import { Button } from "react-bootstrap";
 import { ModalContext } from "../../../providers/ModalProvider";
 import { UserContext } from "../../../providers/UserProvider";
 import {
+  IChunk,
+  IItem,
   ILesson,
+  ILsnExt,
   IResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import { TUseStateReturnVal } from "../../../types/global";
@@ -50,6 +53,19 @@ interface ILessonPartProps {
   partsArr: ILesson[];
   _numsOfLessonPartsThatAreExpanded: TUseStateReturnVal<number[]>;
   lsnNum?: string | null;
+  learningObjectives?: string[] | null;
+  partsFieldName?: string;
+  chunks?: IChunk[] | null;
+  lessonTileForDesktop?: ReactNode;
+  lessonTileForMobile?: ReactNode;
+  ComingSoonLessonEmailSignUp?: ReactNode;
+  lsnTitle?: string | null;
+  ForGrades?: string | null;
+  lsnPreface?: string | null;
+  lsnExt?: ILsnExt[] | null;
+  itemList?: IItem[] | null;
+  isAccordionExpandable: boolean;
+  accordionBtnStyle?: CSSProperties;
 }
 
 const LessonPart = ({
