@@ -34,6 +34,7 @@ import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMater
 import { TeachItProps } from "./types";
 import {
   ILesson,
+  ILink,
   IResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 
@@ -143,7 +144,7 @@ const TeachIt = (props: TeachItProps) => {
     ? Data[selectedEnvironment].resources
     : [];
   const [selectedGradeResources, setSelectedGradeResources] = useState(
-    allResources?.[0]?.links ?? []
+    allResources?.[0]?.links ?? ({} as ILink)
   );
   let resources = allResources?.length
     ? allResources.find(
@@ -157,20 +158,12 @@ const TeachIt = (props: TeachItProps) => {
 
   console.log("resources, yo there: ", resources);
 
-  // SOURCE OF BUG:
-  // resources = getIsValObj(resources) ? [resources] : resources;
   const areThereMoreThan1Resource = Data.classroom?.resources?.length
     ? Data.classroom?.resources?.length > 1
     : false;
   ForGrades = areThereMoreThan1Resource ? selectedGrade.grades : ForGrades;
-  const isPartsObjPresent =
-    !areThereMoreThan1Resource &&
-    Data?.classroom?.resources?.[0] &&
-    typeof Data?.classroom?.resources?.[0] === "object";
   const dataLesson = Data.lesson;
   let parts = selectedGrade.lessons ?? [];
-
-  console.log("parts, sup there: ", parts);
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
@@ -180,14 +173,14 @@ const TeachIt = (props: TeachItProps) => {
     setArrowContainer({ isInView: true, canTakeOffDom: true });
   };
 
-  const handleOnChange = (selectedGrade) => {
-    setSelectedGradeResources(selectedGrade.links);
+  const handleOnChange = (selectedGrade: IResource) => {
+    setSelectedGradeResources(selectedGrade.links as ILink);
     setSelectedGrade(selectedGrade);
   };
 
-  let timer;
+  let timer: NodeJS.Timeout;
 
-  const handleElementVisibility = (inViewPort) =>
+  const handleElementVisibility = (inViewPort: boolean) =>
     throttle(() => {
       clearTimeout(timer);
 
@@ -202,14 +195,22 @@ const TeachIt = (props: TeachItProps) => {
 
   useEffect(() => {
     const lessonPartPath = window.location.href.split("#").at(-1);
-    const lessonPartNum = lessonPartPath
-      ? Number.parseInt(lessonPartPath.split("_").at(-1))
-      : null;
+    let lessonPartNum: number | null = null;
+
+    if (
+      typeof lessonPartPath === "string" &&
+      typeof lessonPartPath.split("_").at(-1) === "string"
+    ) {
+      const lessonPartNumRetrieved = lessonPartPath.split("_").at(-1) as string;
+      lessonPartNum = Number.parseInt(lessonPartNumRetrieved);
+    }
 
     if (
       lessonPartPath &&
       lessonPartPath.includes("lesson_part_") &&
-      parts.length >= lessonPartNum > 0
+      typeof lessonPartNum === "number" &&
+      parts.length >= 0 &&
+      lessonPartNum > 0
     ) {
       setSectionDots((sectionDotsObj) => ({
         ...sectionDotsObj,

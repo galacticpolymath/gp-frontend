@@ -32,6 +32,7 @@ import { CustomNotifyModalFooter } from "../../../../components/Modals/Notify";
 import { getUserAccountData } from "../../../account";
 import axios from "axios";
 import { UserContext } from "../../../../providers/UserProvider";
+import { ISectionDot, ISectionDots } from "../../../../types/global";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -86,8 +87,8 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 // with the updated schema, the sections will accessed via lesson.Sections
 
 const LessonDetails = ({ lesson, lessonFromDb }) => {
-  console.log("the lesson itself: ", lesson)
-  console.log("the lesson itself, yo there: ", lessonFromDb)
+  console.log("the lesson itself: ", lesson);
+  console.log("the lesson itself, yo there: ", lessonFromDb);
   const router = useRouter();
   const { _isUserTeacher } = useContext(UserContext);
   const { status, data } = useSession();
@@ -127,11 +128,11 @@ const LessonDetails = ({ lesson, lessonFromDb }) => {
     : false;
   let sectionComps =
     lesson?.Section &&
-      typeof lesson?.Section === "object" &&
-      lesson?.Section !== null
+    typeof lesson?.Section === "object" &&
+    lesson?.Section !== null
       ? Object.values(lesson.Section).filter(
-        ({ SectionTitle }) => SectionTitle !== "Procedure"
-      )
+          ({ SectionTitle }) => SectionTitle !== "Procedure"
+        )
       : null;
 
   if (sectionComps?.length) {
@@ -241,58 +242,64 @@ const LessonDetails = ({ lesson, lessonFromDb }) => {
 
   sectionComps = useMemo(() => {
     const sectionCompsCopy = structuredClone(sectionComps);
-    const teachingMaterialsSecIndex =
-      sectionCompsCopy.findIndex(sectionComp => {
-        const sectionTitle = sectionComp.SectionTitle.replace(/[0-9.]/g, '').trim();
+    const teachingMaterialsSecIndex = sectionCompsCopy.findIndex(
+      (sectionComp) => {
+        const sectionTitle = sectionComp.SectionTitle.replace(
+          /[0-9.]/g,
+          ""
+        ).trim();
 
-        return sectionTitle === "Teaching Materials"
-      })
-    const feedbackSecIndex =
-      sectionCompsCopy.findIndex(sectionComp => {
-        const sectionTitle = sectionComp.SectionTitle.replace(/[0-9.]/g, '').trim();
+        return sectionTitle === "Teaching Materials";
+      }
+    );
+    const feedbackSecIndex = sectionCompsCopy.findIndex((sectionComp) => {
+      const sectionTitle = sectionComp.SectionTitle.replace(
+        /[0-9.]/g,
+        ""
+      ).trim();
 
-        return sectionTitle === "Feedback"
-      });
+      return sectionTitle === "Feedback";
+    });
 
     if (teachingMaterialsSecIndex === -1 || feedbackSecIndex === -1) {
-      console.error("Can't find the Teacher Materials section or the feedback section.");
+      console.error(
+        "Can't find the Teacher Materials section or the feedback section."
+      );
       return sectionCompsCopy;
     }
 
-    const feedBackSec = sectionCompsCopy[feedbackSecIndex]
+    const feedBackSec = sectionCompsCopy[feedbackSecIndex];
 
-    sectionCompsCopy.splice(feedbackSecIndex, 1)
+    sectionCompsCopy.splice(feedbackSecIndex, 1);
 
-    sectionCompsCopy.splice(teachingMaterialsSecIndex + 1, 0, feedBackSec)
+    sectionCompsCopy.splice(teachingMaterialsSecIndex + 1, 0, feedBackSec);
 
     return sectionCompsCopy;
-  }, [])
+  }, []);
   let _sections = useMemo(
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
     []
   );
 
-  console.log("_sections, hey there: ", _sections)
-
-  for (const section of _sections) {
-    // get the sectionName from section
-    // query the LessonFromDb.Section object using the sectionName
-  }
-  // const uiOnlyFields = _sections
-  // GOAL: 
+  console.log("_sections, hey there: ", _sections);
 
   const _dots = useMemo(
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []
   );
 
-  // Get the lesson from the database, compare each section, and view what fields do not appear in the original 
+  // Get the lesson from the database, compare each section, and view what fields do not appear in the original
   // object found in the database
 
-  const [sectionDots, setSectionDots] = useState({
+  const [sectionDots, setSectionDots] = useState<ISectionDots>({
     dots: _dots,
     clickedSectionId: null,
   });
+
+  useEffect(() => {
+    console.log("sectionDots, yo there: ", sectionDots);
+  }, []);
+
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
   const [wasDotClicked, setWasDotClicked] = useState(false);
   const [isScrollListenerOn, setIsScrollListenerOn] =
@@ -423,7 +430,9 @@ const LessonDetails = ({ lesson, lessonFromDb }) => {
           );
 
           if (status !== 200) {
-            throw new Error("An error has occurred. Failed to check if the user is a teacher.");
+            throw new Error(
+              "An error has occurred. Failed to check if the user is a teacher."
+            );
           }
 
           setIsUserTeacher(!!data?.isTeacher);
@@ -461,28 +470,28 @@ const LessonDetails = ({ lesson, lessonFromDb }) => {
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner;
   const shareWidgetFixedProps = IS_ON_PROD
     ? {
-      pinterestMedia: lessonBannerUrl,
-      shareWidgetStyle: {
-        borderTopRightRadius: "1rem",
-        borderBottomRightRadius: "1rem",
-        boxShadow:
-          "0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)",
-        top: 150,
-        width: "60px",
-      },
-    }
+        pinterestMedia: lessonBannerUrl,
+        shareWidgetStyle: {
+          borderTopRightRadius: "1rem",
+          borderBottomRightRadius: "1rem",
+          boxShadow:
+            "0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)",
+          top: 150,
+          width: "60px",
+        },
+      }
     : {
-      pinterestMedia: lessonBannerUrl,
-      developmentUrl: `${lesson.URL}/`,
-      shareWidgetStyle: {
-        borderTopRightRadius: "1rem",
-        borderBottomRightRadius: "1rem",
-        boxShadow:
-          "0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)",
-        top: 150,
-        width: "60px",
-      },
-    };
+        pinterestMedia: lessonBannerUrl,
+        developmentUrl: `${lesson.URL}/`,
+        shareWidgetStyle: {
+          borderTopRightRadius: "1rem",
+          borderBottomRightRadius: "1rem",
+          boxShadow:
+            "0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)",
+          top: 150,
+          width: "60px",
+        },
+      };
   const layoutProps = {
     title: `Mini-Unit: ${lesson.Title}`,
     description: lesson?.Section?.overview?.LearningSummary
@@ -544,11 +553,7 @@ const LessonDetails = ({ lesson, lessonFromDb }) => {
 
 export const getStaticPaths = async () => {
   try {
-    await connectToMongodb(
-      15_000,
-      0,
-      true
-    );
+    await connectToMongodb(15_000, 0, true);
 
     const lessons = await Lessons.find(
       {},
@@ -622,10 +627,10 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (
   // getting the status for each lesson
   let lsnStatus =
     Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) &&
-      lessonToDisplayOntoUi?.LsnStatuses?.length
+    lessonToDisplayOntoUi?.LsnStatuses?.length
       ? lessonToDisplayOntoUi.LsnStatuses.find(
-        (lsnStatus) => lsnStatus?.lsn == lesson.lsn
-      )
+          (lsnStatus) => lsnStatus?.lsn == lesson.lsn
+        )
       : null;
 
   if (!lesson.tile && lsnStatus?.status === "Upcoming") {
@@ -663,13 +668,14 @@ export const getStaticProps = async (arg) => {
       throw new Error("Lesson is not found.");
     }
 
-    const headLinks = targetLessons.map(({ locale, numID }) =>
-      [`https://www.galacticpolymath.com/lessons/${locale}/${numID}`, locale]
-    );
+    const headLinks = targetLessons.map(({ locale, numID }) => [
+      `https://www.galacticpolymath.com/lessons/${locale}/${numID}`,
+      locale,
+    ]);
     lessonToDisplayOntoUi = {
       ...lessonToDisplayOntoUi,
       headLinks,
-    }
+    };
     let lessonParts = null;
     const resources =
       lessonToDisplayOntoUi?.Section?.["teaching-materials"]?.Data?.classroom
@@ -742,10 +748,10 @@ export const getStaticProps = async (arg) => {
 
           let lsnStatus =
             Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) &&
-              lessonToDisplayOntoUi?.LsnStatuses?.length
+            lessonToDisplayOntoUi?.LsnStatuses?.length
               ? lessonToDisplayOntoUi.LsnStatuses.find(
-                (lsnStatus) => lsnStatus?.lsn == lesson.lsn
-              )
+                  (lsnStatus) => lsnStatus?.lsn == lesson.lsn
+                )
               : null;
 
           if (!lesson.tile && lsnStatus?.status === "Upcoming") {
@@ -834,8 +840,8 @@ export const getStaticProps = async (arg) => {
       : [];
     const isVidOrWebAppPresent = multiMediaFalsyValsFilteredOut?.length
       ? multiMediaFalsyValsFilteredOut.some(
-        ({ type }) => type === "web-app" || type === "video"
-      )
+          ({ type }) => type === "web-app" || type === "video"
+        )
       : false;
 
     if (isVidOrWebAppPresent) {
