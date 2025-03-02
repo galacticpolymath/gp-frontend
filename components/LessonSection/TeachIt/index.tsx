@@ -362,19 +362,7 @@ const TeachIt = (props: TeachItProps) => {
           {!!parts.length &&
             parts.every((part) => part !== null) &&
             parts.map((part, index, self) => {
-              let {
-                lsn,
-                title,
-                preface,
-                chunks,
-                learningObj,
-                itemList,
-                lessonTile,
-                tile,
-                lsnExt,
-              } = part;
-              let secondTitle = null;
-
+              let { lsn, title, preface, itemList, tile } = part;
               let targetLessonInDataLesson = null;
 
               if (
@@ -386,24 +374,18 @@ const TeachIt = (props: TeachItProps) => {
                 );
               }
 
-              if (
-                !learningObj &&
-                lsn !== "last" &&
-                targetLessonInDataLesson?.learningObj
-              ) {
-                const { learningObj: _learningObj } = targetLessonInDataLesson;
-                learningObj = _learningObj;
-              }
+              let lsnExt = null;
 
-              if (!chunks && lsn !== "last" && targetLessonInDataLesson) {
-                chunks = targetLessonInDataLesson.chunks;
-              }
-
-              if (!lsnExt && dataLesson && typeof dataLesson === "object") {
+              if (dataLesson?.length) {
                 const { lsnExt: lsnExtBackup } =
                   Object.values(dataLesson).find(
                     ({ lsnNum: lsnNumDataLesson }) => {
-                      return lsnNumDataLesson && lsn == lsnNumDataLesson;
+                      return (
+                        lsnNumDataLesson &&
+                        lsn != null &&
+                        !isNaN(Number(lsn)) &&
+                        parseInt(lsn) == lsnNumDataLesson
+                      );
                     }
                   ) ?? {};
                 lsnExt = lsnExtBackup;
@@ -494,7 +476,9 @@ const TeachIt = (props: TeachItProps) => {
                     lsn !== "last" ? targetLessonInDataLesson?.chunks : []
                   }
                   ForGrades={ForGrades}
-                  learningObjectives={learningObj}
+                  learningObjectives={
+                    lsn !== "last" ? targetLessonInDataLesson?.learningObj : []
+                  }
                   partsFieldName="lessons"
                   lessonTileUrl={tile}
                   itemList={itemList}
