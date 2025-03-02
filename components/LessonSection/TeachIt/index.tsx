@@ -490,7 +490,9 @@ const TeachIt = (props: TeachItProps) => {
                   lsnTitle={title}
                   lsnPreface={preface}
                   lsnExt={lsnExt}
-                  chunks={chunks}
+                  chunks={
+                    lsn !== "last" ? targetLessonInDataLesson?.chunks : []
+                  }
                   ForGrades={ForGrades}
                   learningObjectives={learningObj}
                   partsFieldName="lessons"
