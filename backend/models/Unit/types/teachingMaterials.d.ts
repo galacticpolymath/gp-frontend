@@ -1,3 +1,5 @@
+import { ILessonForUI } from "../../../../types/global";
+
 export interface ILink {
     linkText: string | null;
     url: string[] | null;
@@ -12,7 +14,7 @@ export interface IItem {
 
 export interface ILesson {
     lsn: string | null;
-    title: string | null;
+    title: string | null
     tags: string[] | null;
     preface: string | null;
     tile: string | null;
@@ -28,7 +30,7 @@ export interface IResource {
     grades: string | null;
     gradePrefix: string | null;
     links: ILink | null;
-    lessons: ILesson[] | null;
+    lessons: ILessonForUI[] | null;
 }
 
 export interface IClassroom {

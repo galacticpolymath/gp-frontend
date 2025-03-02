@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
 import RichText from "../../RichText";
-import { memo, useContext, useState } from "react";
+import { memo, ReactNode, useContext, useState } from "react";
 import Link from "next/link";
 import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
@@ -17,7 +17,11 @@ import { useSession } from "next-auth/react";
 import { Button } from "react-bootstrap";
 import { ModalContext } from "../../../providers/ModalProvider";
 import { UserContext } from "../../../providers/UserProvider";
-import { IResource } from "../../../backend/models/Unit/types/teachingMaterials";
+import {
+  ILesson,
+  IResource,
+} from "../../../backend/models/Unit/types/teachingMaterials";
+import { TUseStateReturnVal } from "../../../types/global";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -38,7 +42,14 @@ const SignInSuggestion = ({ children, txt }) => {
 };
 
 interface ILessonPartProps {
-  resources: IResource;
+  resources?: IResource;
+  GradesOrYears?: string | null;
+  removeClickToSeeMoreTxt: () => void;
+  ClickToSeeMoreComp?: ReactNode;
+  FeedbackComp?: ReactNode;
+  partsArr: ILesson[];
+  _numsOfLessonPartsThatAreExpanded: TUseStateReturnVal<number[]>;
+  lsnNum?: string | null;
 }
 
 const LessonPart = ({

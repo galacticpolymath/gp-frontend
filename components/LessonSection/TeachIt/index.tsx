@@ -117,7 +117,7 @@ const TeachIt = (props: TeachItProps) => {
   const [
     numsOfLessonPartsThatAreExpanded,
     setNumsOfLessonPartsThatAreExpanded,
-  ] = useState([]);
+  ] = useState<number[]>([]);
   const [, setSectionDots] = _sectionDots;
   const ref = useRef(null);
   useLessonElementInView(_sectionDots, SectionTitle, ref);
@@ -132,12 +132,6 @@ const TeachIt = (props: TeachItProps) => {
 
     return environments;
   }, []);
-  // IT WILL ALWAYS BE AN OBJECT
-  // const gradeVariations = Data?.[environments[0]]?.resources
-  //   ? getIsValObj(Data[environments[0]].resources)
-  //     ? getObjVals(Data[environments[0]].resources)
-  //     : Data[environments[0]].resources
-  //   : [];
   const gradeVariations = Data?.classroom?.resources ?? [];
   const [selectedGrade, setSelectedGrade] = useState(
     gradeVariations?.length ? gradeVariations[0] : ({} as IResource)
@@ -173,40 +167,10 @@ const TeachIt = (props: TeachItProps) => {
     !areThereMoreThan1Resource &&
     Data?.classroom?.resources?.[0] &&
     typeof Data?.classroom?.resources?.[0] === "object";
-  const partsFieldName =
-    Data?.classroom?.resources?.[0] &&
-    typeof Data?.classroom?.resources?.[0] === "object" &&
-    "parts" in Data.classroom.resources[0]
-      ? "parts"
-      : "lessons";
   const dataLesson = Data.lesson;
-  let parts: ILesson[] = [];
+  let parts = selectedGrade.lessons ?? [];
 
-  if (areThereMoreThan1Resource) {
-    parts = selectedGrade.lessons ?? [];
-  }
-
-  if (
-    (parts !== undefined || parts !== null) &&
-    parts?.title === "Assessments" &&
-    parts?.length
-  ) {
-    const { itemList, lsn, preface, tile, title } = parts;
-    parts = [...parts, { itemList, lsn, preface, tile, title }];
-  }
-
-  if (
-    isPartsObjPresent &&
-    Data.classroom.resources[0]?.[partsFieldName]?.title === "Assessments" &&
-    typeof parts === "object" &&
-    parts !== null
-  ) {
-    const { itemList, lsn, preface, tile, title, ...restOfLessonParts } = parts;
-    const lastPart = { itemList, lsn, preface, tile, title };
-    parts = [...Object.values(restOfLessonParts), lastPart];
-  }
-
-  console.log("parts, sup there meng: ", parts);
+  console.log("parts, sup there: ", parts);
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
@@ -542,7 +506,7 @@ const TeachIt = (props: TeachItProps) => {
                   chunks={chunks}
                   ForGrades={ForGrades}
                   learningObjectives={learningObj}
-                  partsFieldName={partsFieldName}
+                  partsFieldName="lessons"
                   lessonTileUrl={tile}
                   itemList={itemList}
                   isAccordionExpandable={part.status !== UNVIEWABLE_LESSON_STR}

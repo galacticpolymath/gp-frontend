@@ -1,4 +1,5 @@
 import { ReactNode, CSSProperties } from "react"
+import { ILesson } from "../backend/models/Unit/types/teachingMaterials";
 
 // front-end
 interface IComponent{
@@ -7,8 +8,11 @@ interface IComponent{
     className: string;
     style: CSSProperties
 }
-export type TSetter<TData> = React.Dispatch<React.SetStateAction<TData>>
-export type TUseStateReturnVal<TData> = [TData, TSetter<TData>]
+type TSetter<TData> = React.Dispatch<React.SetStateAction<TData>>
+type TUseStateReturnVal<TData> = [TData, TSetter<TData>]
+interface ILessonForUI extends ILesson{
+  status: string
+}
 
 
-export { IComponent }
+export { IComponent, ILessonForUI, TUseStateReturnVal, TSetter }
