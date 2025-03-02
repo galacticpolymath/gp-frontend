@@ -12,16 +12,18 @@ const LessonStep = ({
   TeachingTips,
   VariantNotes,
   StepQuickDescription,
+  className,
+  id
 }) => {
+  const stepTitleClassNameForTesting = `${StepTitle.split(" ").join("-").replace("'", "")}`;
 
   return (
     // Desktop Step Header
-    <div className='mt-3 ms-sm-1 d-grid  align-items-center'>
+    <div id={id} className={`${className}`}>
       <div className='d-none d-sm-flex align-items-center gap-2 fs-5 mb-1'>
-        
         <h6 className='m-0 d-flex fw-semibold align-items-start'>
           <span className='d-inline me-1'>{`${Step}.`}</span>
-          <RichText className='d-inline-block' content={StepTitle} />
+          <RichText className={`d-inline-block ${stepTitleClassNameForTesting}-title`} content={StepTitle} />
         </h6>
       </div>
       {/* Mobile Step Header*/}
@@ -36,21 +38,21 @@ const LessonStep = ({
         {/* Same Step Detail formatting */}
         <div className='ms-xs-0 ps-xs-0 ps-sm-3'>
           <div className='mb-2 ps-0'>
-            <RichText className='fs-6 ' content={StepQuickDescription} />
+            <RichText className={`fs-6 ${stepTitleClassNameForTesting}-description`} content={StepQuickDescription} />
           </div>
           {/* Partial border */}
           {StepDetails && (
             <div className='ps-1 border-left'>
               <div className='d-flex align-items-start my-3 gap-2'>
                 <i className="bi bi-tools"></i>
-                <RichText content={StepDetails} />
+                <RichText className={`${stepTitleClassNameForTesting}-step-details`} content={StepDetails} />
               </div>
             </div>
           )}
           {Vocab && (
             <div className="bg-white vocab px-2 py-2 mb-2 border border-gray shadow-sm rounded">
               {/* <h6>Vocab</h6> */}
-              <RichText className='m-0 p-0 vocabTxt' content={Vocab} />
+              <RichText className={`m-0 p-0 vocabTxt ${stepTitleClassNameForTesting}-step-vocab`} content={Vocab} />
             </div>
           )}
           {VariantNotes && (
@@ -59,7 +61,7 @@ const LessonStep = ({
                 <TbArrowsSplit2 style={{ transform: "rotate(270deg)", fontSize: 22 }} />
               </div>
               <div>
-                <RichText content={VariantNotes} />
+                <RichText content={VariantNotes} className={`${stepTitleClassNameForTesting}-variant-notes`} />
               </div>
             </div>
           )}
@@ -69,7 +71,7 @@ const LessonStep = ({
                 <HiLightBulb style={{ fontSize: 22 }} />
               </div>
               <div>
-                <RichText content={TeachingTips} />
+                <RichText content={TeachingTips} className={`${stepTitleClassNameForTesting}-teaching-tips`} />
               </div>
             </div>
           )}

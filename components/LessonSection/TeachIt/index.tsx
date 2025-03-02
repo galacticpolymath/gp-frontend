@@ -34,18 +34,20 @@ const LessonTile = ({
   imgStyle = { objectFit: "contain" },
   imgContainerStyle = { width: 150, height: 150 },
   Pill = null,
+  id = {},
 }) => {
   return (
     <div style={imgContainerStyle} className={imgContainerClassNameStr}>
       {Pill}
       {lessonTileUrl && (
         <Image
+          {...id}
           src={lessonTileUrl}
           alt="lesson_tile"
           fill
           style={imgStyle}
           sizes="130px"
-          className="img-optimize rounded w-100 h-100 lesson-tile"
+          className="img-optimize rounded w-100 h-100"
         />
       )}
     </div>
@@ -56,10 +58,14 @@ const DisplayLessonTile = ({
   lessonPart,
   imgContainerClassNameStr,
   lessonTileUrl,
+  id,
 }) => {
+  const tileId = id ? { id } : {};
+
   if (lessonPart.status === "Beta") {
     return (
       <LessonTile
+        {...tileId}
         imgStyle={{ objectFit: "contain" }}
         lessonTileUrl={lessonTileUrl}
         imgContainerClassNameStr={`${imgContainerClassNameStr}`}
@@ -70,6 +76,7 @@ const DisplayLessonTile = ({
 
   return (
     <LessonTile
+      {...tileId}
       imgStyle={{ objectFit: "contain", border: "solid 2px #C0BFC1" }}
       lessonTileUrl={lessonTileUrl}
       imgContainerClassNameStr={imgContainerClassNameStr}
@@ -100,7 +107,9 @@ const TeachIt = (props: TeachItProps) => {
   const environments = useMemo(() => {
     const dataKeys = Data && typeof Data === "object" ? Object.keys(Data) : [];
     const environments = dataKeys.length
-      ? (["classroom", "remote"] as const).filter((setting) => dataKeys.includes(setting))
+      ? (["classroom", "remote"] as const).filter((setting) =>
+          dataKeys.includes(setting)
+        )
       : [];
 
     return environments;
@@ -442,6 +451,7 @@ const TeachIt = (props: TeachItProps) => {
                       lessonPart={part}
                       imgContainerClassNameStr="d-none d-lg-block position-relative me-4"
                       lessonTileUrl={lessonTile}
+                      id={{ id: `${lsn ?? lsnNum}-tile` }}
                     />
                   ),
                   lessonTileForMobile: (

@@ -3,16 +3,16 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 
-export default function ChunkGraph({ durList, chunkNum }) {
+export default function ChunkGraph({ durList, chunkNum, className = '' }) {
   const container = useRef();
   const [didRendered, setDidRendered] = useState(false);
 
   useEffect(() => {
-    if(!didRendered) {
+    if (!didRendered) {
       setDidRendered(true);
-    } 
+    }
 
-    if(didRendered){
+    if (didRendered) {
       update();
     }
   }, [didRendered]);
@@ -94,7 +94,7 @@ export default function ChunkGraph({ durList, chunkNum }) {
       .attr('stroke', 'none')
       .attr('style', 'fill:rgb(0,0,0)')
       .attr('font-weight', 'bold')
-      .attr('class','chunkGraphAxisLabels')
+      .attr('class', 'chunkGraphAxisLabels')
       .text((d) => d.value);
 
     // GRAY BARS
@@ -137,7 +137,7 @@ export default function ChunkGraph({ durList, chunkNum }) {
 
     const anchorPoint = [
       (blueCoords[blueCoords.length - 1] - blueCoords[0] + barSpacing) / 2 +
-        blueCoords[0],
+      blueCoords[0],
     ];
 
     svg
@@ -151,9 +151,9 @@ export default function ChunkGraph({ durList, chunkNum }) {
       // .text(`${currentDuration} min.`)
       .attr('text-anchor', 'middle')
       .attr('font-family', '"Montserrat", "Helvetica", "Arial", sans-serif')
-      .attr('class','chunkGraphTimeLabel');
+      .attr('class', 'chunkGraphTimeLabel');
 
   }
 
-  return <div ref={container} />;
+  return <div ref={container} className={className} />;
 }

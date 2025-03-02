@@ -650,6 +650,7 @@ const LessonPart = ({
                   chunkNum={i}
                   chunkDur={durList[i]}
                   durList={durList}
+                  lessonNum={lsnNum}
                   partInfo={resources?.[partsFieldName]?.[lsnNum - 1]}
                   {...chunk}
                 />
@@ -673,6 +674,14 @@ const LessonPart = ({
               <ol className="mt-2">
                 {lsnExt.map(
                   ({ itemTitle, itemDescription, item, itemLink }) => {
+                    console.log("itemTitle, yo there: ", itemTitle);
+                    const itemClassNameRoot = itemTitle
+                      .split(" ")
+                      .join("-")
+                      .replace(/[^a-zA-Z]/g, "");
+                    const itemClassNameTitle = `${itemClassNameRoot}-title`;
+                    const itemClassNameDescription = `${itemClassNameRoot}-description`;
+
                     return (
                       <li
                         key={item}
@@ -681,13 +690,17 @@ const LessonPart = ({
                       >
                         <h6 className="mb-1">
                           {itemLink && (
-                            <Link href={itemLink} target="_blank">
+                            <Link
+                              className={`${itemClassNameTitle}`}
+                              href={itemLink}
+                              target="_blank"
+                            >
                               {itemTitle}
                             </Link>
                           )}
                         </h6>
                         <RichText
-                          className="fw-normal text-dark"
+                          className={`fw-normal text-dark ${itemClassNameDescription}`}
                           content={itemDescription}
                         />
                       </li>
