@@ -10,6 +10,7 @@ const CopyableTxt = ({
     width: '110px',
     backgroundColor: '#212529',
     textAlign: 'center',
+    zIndex: 0,
   },
   additiveYCoord = -20,
   additiveXCoord = 0,

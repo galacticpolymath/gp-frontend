@@ -165,6 +165,10 @@ const TeachIt = (props: TeachItProps) => {
   const dataLesson = Data.lesson;
   let parts = selectedGrade.lessons ?? [];
 
+  useEffect(() => {
+    console.log("parts, yo there: ", parts);
+  });
+
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
   };
@@ -233,7 +237,6 @@ const TeachIt = (props: TeachItProps) => {
 
   return (
     <CollapsibleLessonSection
-      index={index}
       SectionTitle={SectionTitle}
       highlighted
       initiallyExpanded
@@ -365,7 +368,6 @@ const TeachIt = (props: TeachItProps) => {
             parts.map((part, index, self) => {
               let {
                 lsn,
-                lsnNum,
                 lsnTitle,
                 partTitle,
                 title,
@@ -414,10 +416,7 @@ const TeachIt = (props: TeachItProps) => {
                 const { lsnExt: lsnExtBackup } =
                   Object.values(dataLesson).find(
                     ({ lsnNum: lsnNumDataLesson }) => {
-                      return (
-                        lsnNumDataLesson &&
-                        (lsn == lsnNumDataLesson || lsnNum == lsnNumDataLesson)
-                      );
+                      return lsnNumDataLesson && lsn == lsnNumDataLesson;
                     }
                   ) ?? {};
                 lsnExt = lsnExtBackup;
@@ -444,7 +443,7 @@ const TeachIt = (props: TeachItProps) => {
                       status={part.status}
                       imgContainerClassNameStr="d-none d-lg-block position-relative me-4"
                       lessonTileUrl={tile}
-                      id={{ id: `${lsn ?? lsnNum}-tile` }}
+                      id={{ id: `${lsn}-tile` }}
                     />
                   ),
                   lessonTileForMobile: (
@@ -500,7 +499,7 @@ const TeachIt = (props: TeachItProps) => {
                     numsOfLessonPartsThatAreExpanded,
                     setNumsOfLessonPartsThatAreExpanded,
                   ]}
-                  lsnNum={lsn ?? lsnNum}
+                  lsnNum={lsn}
                   lsnTitle={secondTitle ?? lsnTitle ?? partTitle ?? title}
                   lsnPreface={lsnPreface ?? partPreface ?? preface}
                   lsnExt={lsnExt}
