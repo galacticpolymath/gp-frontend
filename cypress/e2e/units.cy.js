@@ -1,15 +1,17 @@
 describe('Check unit page formatting', () => {
-    it('Will check ui of the unit page', async () => {
-        console.log("The test is running...");
-        const filterObjStr = JSON.stringify({ numID: [15], locale: ['en-NZ'] })
-        const url = new URL('http://localhost:3000/api/get-lessons');
+    let body;
 
+    before(() => {
+        const url = new URL('http://localhost:3000/api/get-lessons');
+        const filterObjStr = JSON.stringify({ numID: [15], locale: ['en-NZ'] })
         url.searchParams.set('filterObj', filterObjStr)
-        console.log("will get the target lesson.");
-        const response = await fetch(url.href);
-        // print the response
-        console.log("response, sup there: ", response);
-        const body = await response.json();
+        cy.request('GET', url.href).then((response) => {
+            body = response.body;
+        });
+    });
+
+    it('Will check ui of the unit page', () => {
+        console.log("The test is running...");
 
         const lesson = body.lessons[0];
         const resources = lesson.Section['teaching-materials'].Data.classroom.resources;
@@ -144,11 +146,13 @@ describe('Check unit page formatting', () => {
 
         cy.wait(2500);
 
-        const gradeVariation = await cy.get(`#gradeVariation`);
-        const headingTxt = gradeVariation.text();
-        const txts = headingTxt.split(" ");
+        cy.get(`#gradeVariation`).should(($element) => {
+            const headingTxt = $element.text();
+            const txts = headingTxt.split(" ");
 
-        expect(txts.length).to.equal(3);
+            expect(txts.length).to.equal(3);
+        })
+
 
         lessonTileIds.forEach(tileId => {
             cy.get(`#${tileId}`)

@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 import { Button } from "react-bootstrap";
 import { ModalContext } from "../../../providers/ModalProvider";
 import { UserContext } from "../../../providers/UserProvider";
+import { IResource } from "../../../backend/models/Unit/types/teachingMaterials";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -35,6 +36,10 @@ const SignInSuggestion = ({ children, txt }) => {
     </div>
   );
 };
+
+interface ILessonPartProps {
+  resources: IResource;
+}
 
 const LessonPart = ({
   lsnNum,
@@ -58,7 +63,7 @@ const LessonPart = ({
   ComingSoonLessonEmailSignUp = null,
   accordionBtnStyle = {},
   isAccordionExpandable = true,
-}) => {
+}: ILessonPartProps) => {
   const { _isLoginModalDisplayed } = useContext(ModalContext);
   const { _isUserTeacher } = useContext(UserContext);
   const [isUserTeacher] = _isUserTeacher;
@@ -75,14 +80,11 @@ const LessonPart = ({
     ? null
     : chunks && chunks.map(({ chunkDur }) => chunkDur);
   let _itemList = itemList;
-  const targetLessonsResources = resources?.[0]?.[partsFieldName]
-    ? Object.values(resources?.[0]?.[partsFieldName]).find(({ lsn }) => {
-        if (lsn) {
-          return lsnNum.toString() === lsn.toString();
-        }
-      }) ?? {}
-    : {};
-  let { tags: allTags, itemList: linkResources } = targetLessonsResources;
+  console.log("sup there meng, resources: ", resources);
+  const targetLessonsResources = resources.lessons?.find(
+    (lesson) => lesson?.lsn == lsnNum
+  );
+  let { tags: allTags, itemList: linkResources } = targetLessonsResources ?? {};
   _itemList = _itemList ?? linkResources;
   let previewTags = null;
   let restOfTags = null;

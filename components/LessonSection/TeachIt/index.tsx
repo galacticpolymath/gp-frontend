@@ -8,7 +8,14 @@ import {
   ModalContext,
   useModalContext,
 } from "../../../providers/ModalProvider";
-import { useContext, useState, useRef, useEffect, useMemo } from "react";
+import {
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  ReactNode,
+} from "react";
 import PropTypes from "prop-types";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import LessonPart from "./LessonPart";
@@ -25,7 +32,10 @@ import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import { TeachItProps } from "./types";
-import { IResource } from "../../../backend/models/Unit/types/teachingMaterials";
+import {
+  ILesson,
+  IResource,
+} from "../../../backend/models/Unit/types/teachingMaterials";
 
 const GRADE_VARIATION_ID = "gradeVariation";
 
@@ -55,15 +65,22 @@ const LessonTile = ({
   );
 };
 
+interface IDisplayLessonTileProps {
+  status: string;
+  imgContainerClassNameStr: string;
+  lessonTileUrl: string;
+  id?: { id: string };
+}
+
 const DisplayLessonTile = ({
-  lessonPart,
+  status,
   imgContainerClassNameStr,
   lessonTileUrl,
   id,
-}) => {
+}: IDisplayLessonTileProps) => {
   const tileId = id ? { id } : {};
 
-  if (lessonPart.status === "Beta") {
+  if (status === "Beta") {
     return (
       <LessonTile
         {...tileId}
@@ -140,10 +157,14 @@ const TeachIt = (props: TeachItProps) => {
       )
     : ({} as IResource);
 
-  if (!Data || !resources) {
-    return <div>No resources/lessons to display.</div>;
+  if (!Data) {
+    return <div>No lessons to display.</div>;
   }
 
+  console.log("resources, yo there: ", resources);
+
+  // SOURCE OF BUG:
+  // resources = getIsValObj(resources) ? [resources] : resources;
   const areThereMoreThan1Resource = Data.classroom?.resources?.length
     ? Data.classroom?.resources?.length > 1
     : false;
@@ -159,11 +180,7 @@ const TeachIt = (props: TeachItProps) => {
       ? "parts"
       : "lessons";
   const dataLesson = Data.lesson;
-  let parts = [];
-
-  if (isPartsObjPresent && !areThereMoreThan1Resource) {
-    parts = Data.classroom.resources[0]?.[partsFieldName];
-  }
+  let parts: ILesson[] = [];
 
   if (areThereMoreThan1Resource) {
     parts = selectedGrade.lessons ?? [];
@@ -188,6 +205,8 @@ const TeachIt = (props: TeachItProps) => {
     const lastPart = { itemList, lsn, preface, tile, title };
     parts = [...Object.values(restOfLessonParts), lastPart];
   }
+
+  console.log("parts, sup there meng: ", parts);
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
@@ -392,14 +411,12 @@ const TeachIt = (props: TeachItProps) => {
                 learningObj,
                 itemList,
                 lessonTile,
+                tile,
                 lsnExt,
               } = part;
               let secondTitle = null;
 
-              if (partsFieldName === "lessons") {
-                const { tile, title } =
-                  resources?.[0]?.[partsFieldName]?.[index] ?? {};
-                lessonTile = tile;
+              if (lsnTitle === "Procedure not documented yet") {
                 secondTitle =
                   lsnTitle === "Procedure not documented yet" ? title : null;
               }
@@ -441,29 +458,35 @@ const TeachIt = (props: TeachItProps) => {
                 lsnExt = lsnExtBackup;
               }
 
-              let lessonTilesObj = {};
+              let lessonTilesObj: {
+                lessonTileForDesktop: ReactNode | null;
+                lessonTileForMobile: ReactNode | null;
+              } = {
+                lessonTileForDesktop: null,
+                lessonTileForMobile: null,
+              };
 
               if (
                 part &&
                 typeof part === "object" &&
                 "status" in part &&
-                lessonTile &&
-                typeof lessonTile === "string"
+                tile &&
+                typeof tile === "string"
               ) {
                 lessonTilesObj = {
                   lessonTileForDesktop: (
                     <DisplayLessonTile
-                      lessonPart={part}
+                      status={part.status}
                       imgContainerClassNameStr="d-none d-lg-block position-relative me-4"
-                      lessonTileUrl={lessonTile}
+                      lessonTileUrl={tile}
                       id={{ id: `${lsn ?? lsnNum}-tile` }}
                     />
                   ),
                   lessonTileForMobile: (
                     <DisplayLessonTile
-                      lessonPart={part}
+                      status={part.status}
                       imgContainerClassNameStr="d-flex my-3 my-lg-0 d-lg-none position-relative"
-                      lessonTileUrl={lessonTile}
+                      lessonTileUrl={tile}
                     />
                   ),
                 };
@@ -520,7 +543,7 @@ const TeachIt = (props: TeachItProps) => {
                   ForGrades={ForGrades}
                   learningObjectives={learningObj}
                   partsFieldName={partsFieldName}
-                  lessonTileUrl={lessonTile}
+                  lessonTileUrl={tile}
                   itemList={itemList}
                   isAccordionExpandable={part.status !== UNVIEWABLE_LESSON_STR}
                   accordionBtnStyle={
