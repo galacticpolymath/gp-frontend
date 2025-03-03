@@ -27,7 +27,8 @@ import {
   ILsnExt,
   IResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
-import { TUseStateReturnVal } from "../../../types/global";
+import { IItemForClient, TUseStateReturnVal } from "../../../types/global";
+import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -66,7 +67,7 @@ interface ILessonPartProps {
   ForGrades?: string | null;
   lsnPreface?: string | null;
   lsnExt?: ILsnExt[] | null;
-  itemList?: IItem[] | null;
+  itemList?: IItemForClient[] | null;
   isAccordionExpandable: boolean;
   accordionBtnStyle?: CSSProperties;
 }
@@ -115,9 +116,15 @@ const LessonPart = ({
     (lesson) => lesson?.lsn == lsnNum
   );
   let { tags: allTags, itemList: linkResources } = targetLessonsResources ?? {};
-  _itemList = _itemList ?? linkResources;
+  _itemList = (_itemList ?? linkResources) as IItemForClient[];
   let previewTags = null;
   let restOfTags = null;
+  let lsnNumParsed = NaN;
+
+  if (typeof lsnNum === "string" && !isNaN(Number(lsnNum))) {
+    lsnNumParsed = parseInt(lsnNum);
+  }
+
   const _accordionId = `part_${lsnNum}`;
 
   const handleClipBoardIconClick = () => {
@@ -173,28 +180,16 @@ const LessonPart = ({
     }
   }, []);
 
-  const checkIfElementClickedWasClipboard = (parentElement) => {
-    if (parentElement.nodeName.toLowerCase() === "body") {
-      console.log("Clip board icon wasn't clicked...");
-      return false;
-    }
-
-    if (parentElement.id === "clipboardIconWrapper") {
-      console.log("clip board icon was clicked...");
-      return true;
-    }
-
-    return checkIfElementClickedWasClipboard(parentElement.parentElement);
-  };
-
-  const handleAccordionBtnOnClick = (event) => {
+  const handleAccordionBtnOnClick = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     if (removeClickToSeeMoreTxt) {
       removeClickToSeeMoreTxt();
     }
 
     if (!checkIfElementClickedWasClipboard(event.target)) {
       const previousLessonPartNum =
-        lsnNum === "last" ? partsArr.length - 1 : lsnNum - 1;
+        lsnNum === "last" ? partsArr.length - 1 : lsnNumParsed - 1;
 
       setNumsOfLessonPartsThatAreExpanded((prevState) => {
         if (!isExpanded) {
@@ -228,16 +223,17 @@ const LessonPart = ({
   const highlightedGlow = "inset 0px 0px 20px 0px rgba(44,131,195,0.25)";
   let _borderTop = "none";
 
-  if (isExpanded && lsnNum == 1) {
+  if (isExpanded && lsnNumParsed == 1) {
     _borderTop = "none";
   }
 
-  if (!isExpanded && lsnNum == 1) {
+  if (!isExpanded && lsnNumParsed == 1) {
     _borderTop = defaultBorder;
   }
 
   const _borderBottom =
-    numsOfLessonPartsThatAreExpanded.find((num) => num == lsnNum) || isExpanded
+    numsOfLessonPartsThatAreExpanded.find((num) => num === lsnNumParsed) ||
+    isExpanded
       ? "none"
       : defaultBorder;
   const accordionStyle = {
@@ -250,16 +246,17 @@ const LessonPart = ({
 
   let _borderTopAccordionWrapper = "none";
 
-  if (isExpanded && lsnNum == 1) {
+  if (isExpanded && lsnNumParsed == 1) {
     _borderTopAccordionWrapper = highlightedBorder;
   }
 
-  if (!isExpanded && lsnNum == 1) {
+  if (!isExpanded && lsnNumParsed == 1) {
     _borderTopAccordionWrapper = "none";
   }
 
   const _borderBottomAccordionWrapper =
-    numsOfLessonPartsThatAreExpanded.find((num) => num == lsnNum) || isExpanded
+    numsOfLessonPartsThatAreExpanded.find((num) => num == lsnNumParsed) ||
+    isExpanded
       ? highlightedBorder
       : "none";
   const accordionStyleAccordionWrapper = {
@@ -357,6 +354,7 @@ const LessonPart = ({
                               width: "150px",
                               backgroundColor: "#212529",
                               textAlign: "center",
+                              zIndex: 0,
                             }}
                             pointerContainerStyle={{ zIndex: 1 }}
                           >
@@ -433,6 +431,7 @@ const LessonPart = ({
                             width: "150px",
                             backgroundColor: "#212529",
                             textAlign: "center",
+                            zIndex: 0,
                           }}
                           pointerContainerStyle={{ zIndex: 1 }}
                         >
@@ -533,8 +532,8 @@ const LessonPart = ({
                       ? _links?.[0]?.url ?? ""
                       : _links?.[1]?.url ?? "";
                   const isTeacherItem = itemTitle
-                    .toLowerCase()
-                    .includes("teacher");
+                    ? itemTitle.toLowerCase().includes("teacher")
+                    : false;
                   let blurTxt = "";
                   let btnTxt = "Sign in";
                   let handleBtnClick = handleSignInBtnClick;
@@ -543,6 +542,15 @@ const LessonPart = ({
                     blurTxt = "You must be a teacher to view this item.";
                     btnTxt = "Update Profile";
                     handleBtnClick = handleUpdateProfileBtnClick;
+                  }
+
+                  let filePreviewImgLink = "";
+
+                  if (isTeacherItem && isUserTeacher) {
+                    filePreviewImgLink =
+                      typeof imgLink === "string"
+                        ? imgLink
+                        : imgLink?.[0] ?? "";
                   }
 
                   return (
@@ -600,7 +608,11 @@ const LessonPart = ({
                                         <div className="d-flex justify-content-center  align-items-sm-center">
                                           {!!url && (
                                             <Link
-                                              href={url}
+                                              href={
+                                                typeof url === "string"
+                                                  ? url
+                                                  : url?.[0] ?? ""
+                                              }
                                               target="_blank"
                                               rel="noopener noreferrer"
                                               className={`${
@@ -628,7 +640,11 @@ const LessonPart = ({
                                         <div className="d-flex justify-content-center align-items-center ps-2">
                                           {!!url && (
                                             <a
-                                              href={url}
+                                              href={
+                                                typeof url === "string"
+                                                  ? url
+                                                  : url[0]
+                                              }
                                               target="_blank"
                                               rel="noopener noreferrer"
                                               className={`${
@@ -652,13 +668,7 @@ const LessonPart = ({
                               <section className="pt-1 ps-sm-1 ps-md-4 d-flex col-3">
                                 <div className="border align-content-start my-auto">
                                   <a
-                                    href={
-                                      isTeacherItem
-                                        ? isUserTeacher
-                                          ? imgLink
-                                          : ""
-                                        : imgLink
-                                    }
+                                    href={filePreviewImgLink}
                                     target="_blank"
                                     className={`${
                                       isTeacherItem

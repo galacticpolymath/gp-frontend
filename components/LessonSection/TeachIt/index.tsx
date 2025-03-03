@@ -36,6 +36,7 @@ import {
   IResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
+import { IItemForClient } from "../../../types/global";
 
 const GRADE_VARIATION_ID = "gradeVariation";
 
@@ -488,7 +489,7 @@ const TeachIt = (props: TeachItProps) => {
                     lsn !== "last" ? targetLessonInDataLesson?.learningObj : []
                   }
                   partsFieldName="lessons"
-                  itemList={itemList}
+                  itemList={itemList as IItemForClient[]}
                   isAccordionExpandable={part.status !== UNVIEWABLE_LESSON_STR}
                   accordionBtnStyle={
                     part.status === UNVIEWABLE_LESSON_STR
