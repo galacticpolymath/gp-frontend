@@ -4,7 +4,7 @@ import RichText from '../../RichText';
 
 const Chunk = ({
   chunkTitle,
-  steps = [],
+  steps,
   chunkNum,
   chunkDur,
   durList,
@@ -27,7 +27,7 @@ const Chunk = ({
         />
       </div>
       <div className='border-l'>
-        {steps.map((step, index) => {
+        {(steps ?? []).map((step, index) => {
           const stepId = `${step.StepTitle.split(" ").join("-")}-${index}`.replace("'", "");
 
           console.log("stepId, yo there: ", stepId);

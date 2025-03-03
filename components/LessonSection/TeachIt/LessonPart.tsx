@@ -26,13 +26,20 @@ import {
   ILesson,
   ILsnExt,
   IResource,
+  IStep,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import { IItemForClient, TUseStateReturnVal } from "../../../types/global";
 import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
-const SignInSuggestion = ({ children, txt }) => {
+const SignInSuggestion = ({
+  children,
+  txt,
+}: {
+  children: ReactNode;
+  txt?: string;
+}) => {
   if (!txt) {
     txt = "For teachers guides, sign in with a free account!";
   }
@@ -714,8 +721,8 @@ const LessonPart = ({
                   chunkDur={durList[i]}
                   durList={durList}
                   lessonNum={lsnNum}
-                  partInfo={resources?.[partsFieldName]?.[lsnNum - 1]}
-                  {...chunk}
+                  chunkTitle={chunk.chunkTitle}
+                  steps={chunk.steps as IStep[]}
                 />
               ))}
             </div>
@@ -738,12 +745,17 @@ const LessonPart = ({
                 {lsnExt.map(
                   ({ itemTitle, itemDescription, item, itemLink }) => {
                     console.log("itemTitle, yo there: ", itemTitle);
-                    const itemClassNameRoot = itemTitle
-                      .split(" ")
-                      .join("-")
-                      .replace(/[^a-zA-Z]/g, "");
-                    const itemClassNameTitle = `${itemClassNameRoot}-title`;
-                    const itemClassNameDescription = `${itemClassNameRoot}-description`;
+                    let itemClassNameTitle = "";
+                    let itemClassNameDescription = "";
+
+                    if (itemTitle) {
+                      const itemClassNameRoot = itemTitle
+                        .split(" ")
+                        .join("-")
+                        .replace(/[^a-zA-Z]/g, "");
+                      itemClassNameTitle = `${itemClassNameRoot}-title`;
+                      itemClassNameDescription = `${itemClassNameRoot}-description`;
+                    }
 
                     return (
                       <li

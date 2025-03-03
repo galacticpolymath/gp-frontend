@@ -220,6 +220,8 @@ const LessonDetails = ({ lesson, lessonFromDb }) => {
     );
   }
 
+  // TODO: this needs to be deleted when the schema is updated (ABOVE).
+
   sectionComps = useMemo(() => {
     if (!sectionComps?.length) {
       return [];
