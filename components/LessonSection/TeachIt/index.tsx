@@ -36,7 +36,7 @@ import {
   IResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
-import { IItemForClient } from "../../../types/global";
+import { IItemForClient, ILessonForUI } from "../../../types/global";
 
 const GRADE_VARIATION_ID = "gradeVariation";
 
@@ -143,7 +143,9 @@ const TeachIt = (props: TeachItProps) => {
   }, []);
   const gradeVariations = Data?.classroom?.resources ?? [];
   const [selectedGrade, setSelectedGrade] = useState(
-    gradeVariations?.length ? gradeVariations[0] : ({} as IResource)
+    gradeVariations?.length
+      ? gradeVariations[0]
+      : ({} as IResource<ILessonForUI>)
   );
   const [selectedEnvironment, setSelectedEnvironment] = useState(
     environments[0]
@@ -181,7 +183,7 @@ const TeachIt = (props: TeachItProps) => {
     setArrowContainer({ isInView: true, canTakeOffDom: true });
   };
 
-  const handleOnChange = (selectedGrade: IResource) => {
+  const handleOnChange = (selectedGrade: IResource<ILessonForUI>) => {
     setSelectedGradeResources(selectedGrade.links as ILink);
     setSelectedGrade(selectedGrade);
   };

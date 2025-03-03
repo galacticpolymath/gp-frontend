@@ -26,16 +26,16 @@ export interface IGradeVariantNote {
     lsnGradeVarNotes: string | null;
 }
 
-export interface IResource {
+export interface IResource<TLesson = ILesson> {
     grades: string | null;
     gradePrefix: string | null;
     links: ILink | null;
-    lessons: ILessonForUI[] | null;
+    lessons: TLesson[] | null;
 }
 
-export interface IClassroom {
+export interface IClassroom<TLesson = ILesson> {
     gradeVariantNotes: IGradeVariantNote[] | null;
-    resources: IResource[] | null;
+    resources: IResource<TLesson>[] | null;
 }
 
 export interface IStep {
@@ -93,11 +93,11 @@ export interface IGatheredVocab {
     result: IVocab[] | null;
 }
 
-export interface ITeachingMaterialsData {
+export interface ITeachingMaterialsData<TLesson = ILesson> {
     lessonPreface: string | null;
     lessonDur: string | null;
-    classroom: IClassroom | null;
-    remote: IClassroom | null;
+    classroom: IClassroom<TLesson> | null;
+    remote: IClassroom<TLesson> | null;
     lesson: ILessonDetail[] | null;
     gatheredVocab: IGatheredVocab | null;
 }
