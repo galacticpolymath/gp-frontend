@@ -15,8 +15,11 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "react-bootstrap";
-import { ModalContext } from "../../../providers/ModalProvider";
-import { UserContext } from "../../../providers/UserProvider";
+import {
+  ModalContext,
+  useModalContext,
+} from "../../../providers/ModalProvider";
+import { UserContext, useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
   IItem,
@@ -91,8 +94,8 @@ const LessonPart = ({
   accordionBtnStyle = {},
   isAccordionExpandable = true,
 }: ILessonPartProps) => {
-  const { _isLoginModalDisplayed } = useContext(ModalContext);
-  const { _isUserTeacher } = useContext(UserContext);
+  const { _isUserTeacher } = useUserContext();
+  const { _isLoginModalDisplayed } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const router = useRouter();
@@ -108,7 +111,7 @@ const LessonPart = ({
     : chunks && chunks.map(({ chunkDur }) => chunkDur);
   let _itemList = itemList;
   console.log("sup there meng, resources: ", resources);
-  const targetLessonsResources = resources.lessons?.find(
+  const targetLessonsResources = resources?.lessons?.find(
     (lesson) => lesson?.lsn == lsnNum
   );
   let { tags: allTags, itemList: linkResources } = targetLessonsResources ?? {};
@@ -133,10 +136,29 @@ const LessonPart = ({
 
     if (
       lessonPartIdInUrl === `lesson_${_accordionId}` &&
-      !ComingSoonLessonEmailSignUp
+      !ComingSoonLessonEmailSignUp &&
+      typeof lsnNum === "string" &&
+      lsnNum === "last"
     ) {
-      const previousLessonPartNum =
-        lsnNum === "last" ? partsArr.length - 1 : lsnNum - 1;
+      const previousLessonPartNum = partsArr.length - 1;
+
+      setNumsOfLessonPartsThatAreExpanded((prevState) => {
+        if (!isExpanded) {
+          return previousLessonPartNum
+            ? [...prevState, previousLessonPartNum]
+            : prevState;
+        }
+
+        return prevState.filter((num) => num !== previousLessonPartNum);
+      });
+      setIsExpanded(true);
+    } else if (
+      lessonPartIdInUrl === `lesson_${_accordionId}` &&
+      !ComingSoonLessonEmailSignUp &&
+      typeof lsnNum === "string" &&
+      !isNaN(Number(lsnNum))
+    ) {
+      const previousLessonPartNum = parseInt(lsnNum) - 1;
 
       setNumsOfLessonPartsThatAreExpanded((prevState) => {
         if (!isExpanded) {
@@ -251,6 +273,9 @@ const LessonPart = ({
   return (
     <div style={accordionStyleAccordionWrapper}>
       <Accordion
+        handleOnClick={undefined}
+        highlighted={undefined}
+        setContentId={undefined}
         buttonClassName={`w-100 text-start border-0 p-0 ${
           isExpanded ? "" : "bg-white"
         }`}
@@ -263,8 +288,7 @@ const LessonPart = ({
         id={_accordionId}
         accordionChildrenClasses="px-3 pb-2 w-100 accordion-transition"
         style={accordionStyle}
-        dataBsToggle={{}}
-        accordionContentStyle={{ display: isExpanded ? "block" : "none" }}
+        dataBsToggle={undefined}
         initiallyExpanded={isExpanded}
         button={
           <div

@@ -1,5 +1,5 @@
 import { ReactNode, CSSProperties } from "react";
-import { ILesson } from "../backend/models/Unit/types/teachingMaterials";
+import { IItem, ILesson } from "../backend/models/Unit/types/teachingMaterials";
 
 // front-end
 interface IComponent {
@@ -23,9 +23,13 @@ interface ISectionDot {
   sectionDotId: string;
 }
 
+interface IItemForClient extends IItem{
+  filePreviewImg: string
+}
+
 interface ISectionDots {
   clickedSectionId: string | null;
   dots: ISectionDot[];
 }
 
-export { IComponent, ILessonForUI, TUseStateReturnVal, TSetter, ISectionDot, ISectionDots };
+export { IComponent, ILessonForUI, TUseStateReturnVal, TSetter, ISectionDot, ISectionDots, IItemForClient };
