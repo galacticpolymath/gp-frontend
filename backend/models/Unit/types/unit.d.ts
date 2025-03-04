@@ -1,3 +1,39 @@
+import { IAcknowledgments } from "../Acknowledgments";
+import { IUnitPreview } from "../Preview";
+import { TGeneralSection } from "../Section";
+import { IStandard } from "../Standards";
+import { ITeachingMaterials } from "../TeachingMaterials";
+import { IVersionNotes } from "../VersionNotes";
+import { IOverview } from "./overview";
+
+export interface ILsnStatus {
+    lsn: number;
+    status: string;
+    updated_date: string;
+    new_date: string;
+    sort_by_date: string;
+    unit_release_date: string;
+}
+
+export interface IFeatureName {
+        first: string;
+        middle: string;
+        last: string;
+        prefix: string;
+    }
+export interface IFeatureLocation {
+    instition: string;
+    department: string;
+    city: string;
+    state: string;
+    country: string;
+}
+export interface IFeaturing {
+    name: IFeatureName;
+    location: IFeatureLocation;
+    links: string[];
+}
+
 export interface IUnit {
     _id: string;
     numID: number;
@@ -52,17 +88,17 @@ export interface IUnit {
     CoverImage: {
         url: string | null;
     } | null;
-    Section: {
-        overview: Overview | null;
-        preview: UnitPreview | null;
-        teachingMaterials: TeachingMaterialsSchema | null;
-        feedback: GeneralSection | null;
-        background: GeneralSection | null;
-        bonusContent: GeneralSection | null;
-        standards: StandardsSchema | null;
-        credits: GeneralSection | null;
-        acknowledgements: Acknowledgments | null;
-        versionNotes: VersionNotes | null;
+    Sections: {
+        overview: IOverview | null;
+        preview: IUnitPreview | null;
+        teachingMaterials: ITeachingMaterials | null;
+        feedback: TGeneralSection | null;
+        background: TGeneralSection | null;
+        bonusContent: TGeneralSection | null;
+        standards: IStandard | null;
+        credits: TGeneralSection | null;
+        acknowledgements: IAcknowledgments | null;
+        versionNotes: IVersionNotes | null;
     } | null;
     LsnStatuses: LsnStatusSchema[] | null;
     ShortURL: string | null;

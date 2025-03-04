@@ -10,6 +10,7 @@ export interface IContentObj{
     Content: string | null
 } 
 
+export type TGeneralSection = IUnitSectionObj & IContentObj;
 
 export const unitSectionObj = {
   __component: String,

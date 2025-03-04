@@ -1,4 +1,4 @@
-import { unitSectionObj } from "./Section";
+import { IUnitSectionObj, unitSectionObj } from "./Section";
 import { Schema } from "mongoose";
 import { IChunk, IClassroom, IGatheredVocab, IGradeVariantNote, IItem, ILesson, ILessonDetail, ILink, ILsnExt, ILsnPrep, IResource, IStep, ITeachingMaterialsData, IVocab } from "./types/teachingMaterials";
 
@@ -104,7 +104,11 @@ const TeachingMaterialsData = new Schema<ITeachingMaterialsData>({
     gatheredVocab: GatheredVocabSchema
 }, { _id: false });
 
-export const TeachingMaterialsSchema = new Schema({
+export interface ITeachingMaterials extends IUnitSectionObj  {
+    Data: ITeachingMaterialsData;
+}
+
+export const TeachingMaterialsSchema = new Schema<ITeachingMaterials>({
     ...unitSectionObj,
     Data: TeachingMaterialsData
 }, { _id: false });

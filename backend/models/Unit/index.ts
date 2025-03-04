@@ -5,11 +5,13 @@ import { TeachingMaterialsSchema } from "./TeachingMaterials";
 import { GeneralSection } from "./Section";
 import { Acknowledgments } from "./Acknowledgments";
 import { VersionNotes } from "./VersionNotes";
+import { IFeatureLocation, IFeatureName, IFeaturing, ILsnStatus, IUnit } from "./types/unit";
+import { StandardsSchema } from "./Standards";
 
-let Units = model?.units;
+let Units = (model as any)?.units;
 
 if (!Units) {
-    const LsnStatusSchema = new Schema({
+    const LsnStatusSchema = new Schema<ILsnStatus>({
         lsn: { type: Number, required: true },
         status: String,
         updated_date: String,
@@ -17,27 +19,33 @@ if (!Units) {
         sort_by_date: String,
         unit_release_date: String,
     });
-    const FeatureNameSchema = new Schema({
+    const FeatureNameSchema = new Schema<IFeatureName>({
         first: String,
         middle: String,
         last: String,
         prefix: String,
     });
-    const FeatureLocationSchema = new Schema({
+    const FeatureLocationSchema = new Schema<IFeatureLocation>({
         instition: String,
         department: String,
         city: String,
         state: String,
         country: String,
     });
-    const FeaturingSchema = new Schema({
+    const FeaturingSchema = new Schema<IFeaturing>({
         name: FeatureNameSchema,
         location: FeatureLocationSchema,
         links: [String],
     });
-    const UnitSchema = new Schema({
+    const UnitSchema = new Schema<IUnit>({
         _id: { type: String, required: true },
         numID: { type: Number, required: true },
+        locale: { type: String, required: true },
+        Title: { type: String, required: true },
+        TargetStandardsCodes: {
+            type: [Object],
+            required: true,
+        },
         ShortTitle: String,
         PublicationStatus: String,
         Language: String,
@@ -50,12 +58,7 @@ if (!Units) {
         MediumTitle: String,
         lang: String,
         lng: String,
-        locale: { type: String, required: true },
         TemplateVer: String,
-        TargetStandardsCodes: {
-            type: [Object],
-            required: true,
-        },
         galacticPubsVer: String,
         isTestRepo: Boolean,
         DefaultLocale: String,
@@ -75,7 +78,6 @@ if (!Units) {
         GdriveDirURL: String,
         RebuildAllMaterials: Boolean,
         ReleaseDate: Date,
-        Title: { type: String, required: true },
         Subtitle: String,
         SponsorName: [String],
         SponsoredBy: String,
@@ -92,7 +94,7 @@ if (!Units) {
         CoverImage: {
             url: String,
         },
-        Section: {
+        Sections: {
             overview: Overview,
             preview: UnitPreview,
             teachingMaterials: TeachingMaterialsSchema,

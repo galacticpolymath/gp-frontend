@@ -1,6 +1,6 @@
-import { RootFieldToRetrieve } from '../RootFieldsToRetrieve';
+import { IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFieldsToRetrieve';
+import mongoose from 'mongoose'
 
-const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 // WHEN RETRIEVING THE UNIT FROM THE DB for the ui, get the following fields from the root of the document:
@@ -11,20 +11,37 @@ function getOverviewSecPropsFromRoot() {
 }
 
 // Define the schema for a tag
-const TagSchema = new Schema({
+export interface ITag {
+    Value: string;
+}
+
+const TagSchema = new Schema<ITag>({
     Value: String
 }, { _id: false });
 
-// Define the schema for accessibility
-const AccessibilitySchema = new Schema({
+export interface IAccessibility {
+    Type: string;
+    Description: string;
+    Abbrev_Descr: string;
+    Link: string;
+}
+
+const AccessibilitySchema = new Schema<IAccessibility>({
     Type: String,
     Description: String,
     Abbrev_Descr: String,
     Link: String
 }, { _id: false });
 
-// Define the schema for a sub-release
-const SubReleaseSchema = new Schema({
+export interface ISubRelease {
+    version: string;
+    date: string;
+    summary: string;
+    notes: string;
+    acknowledgments: string;
+}
+
+const SubReleaseSchema = new Schema<ISubRelease>({
     version: String,
     date: String,
     summary: String,
@@ -33,13 +50,29 @@ const SubReleaseSchema = new Schema({
 }, { _id: false });
 
 // Define the schema for a version
-const VersionSchema = new Schema({
+export interface IVersion {
+    major_release: string;
+    sub_releases: ISubRelease[];
+}
+
+const VersionSchema = new Schema<IVersion>({
     major_release: String,
     sub_releases: [SubReleaseSchema]
 }, { _id: false });
 
-export const Overview = new Schema({
-    ...unitSectionObj,
+export interface IOverview {
+    LearningSummary: string;
+    EstLessonTime: string;
+    Text: string;
+    SteamEpaulette: string;
+    SteamEpaulette_vert: string;
+    Accessibility: IAccessibility[];
+    Tags: ITag[];
+    versions: IVersion[];
+    rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
+}
+
+export const Overview = new Schema<IOverview>({
     LearningSummary: String,
     EstLessonTime: String,
     Text: String,
@@ -86,9 +119,8 @@ export const Overview = new Schema({
                 },
             ]
 
-            return rootFields.map(({ name, as }) => new RootFieldToRetrieve({
-                name, as
-            }))
+            return rootFields;
         }
     },
 }, { _id: false });
+
