@@ -92,7 +92,7 @@ const AboutUserModal = () => {
   const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
   const nameDefault = {
     first: typeof localStorage === "undefined" ? "" : (JSON.parse(localStorage.getItem("userAccount"))?.name?.first ?? ""),
-    last: typeof localStorage === "undefined" ? "" : (JSON.parse(localStorage.getItem("userAccount"))?.name?.last ?? "")
+    last: typeof localStorage === "undefined" ? "" : (JSON.parse(localStorage.getItem("userAccount"))?.name?.last ?? ""),
   };
   const [name, setName] = useState(nameDefault);
   const modalBodyRef = useRef(null);
@@ -308,7 +308,7 @@ const AboutUserModal = () => {
           const url = router.asPath;
           router.replace(url.split("?")[0]);
         }, 250);
-        setName(nameDefault)
+        setName(nameDefault);
       }}
       dialogClassName="border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center"
       contentClassName="about-me-modal user-modal-color rounded-0"

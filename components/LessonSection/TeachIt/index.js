@@ -96,8 +96,6 @@ const TeachIt = ({
   const areThereMoreThan1Resource = Data?.classroom?.resources.length > 1;
   ForGrades = areThereMoreThan1Resource ? selectedGrade.grades : ForGrades;
   const isPartsObjPresent = !areThereMoreThan1Resource && Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object');
-  console.log("Data?.classroom?.resources?.[0]: ", Data?.classroom?.resources?.[0]);
-  console.log("what is up there, 'parts' in Data.classroom.resources[0]: ", 'parts' in (Data?.classroom?.resources?.[0] ?? {}));
   const partsFieldName = ((Data?.classroom?.resources?.[0] && (typeof Data?.classroom?.resources?.[0] === 'object')) && ('parts' in (Data?.classroom?.resources?.[0] ?? {}))) ? 'parts' : 'lessons';
   const dataLesson = Data.lesson;
   let parts = [];

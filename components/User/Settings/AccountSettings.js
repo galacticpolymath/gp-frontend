@@ -43,7 +43,7 @@ const AccountSettings = () => {
     const session = useSession();
     const { token } = session?.data ?? {};
     const { email, name } = session?.data?.user ?? {};
-    const [errors, setErrors] = useState(new Map());
+    const [, setErrors] = useState(new Map());
     const [didServerErrOccur, setDidServerErrOccur] = useState(false);
     const router = useRouter();
     const [, setNotifyModal] = _notifyModal;
@@ -55,18 +55,6 @@ const AccountSettings = () => {
     const handleOnHide = () => {
         setIsAccountSettingModalDisplayed(false);
         setDidServerErrOccur(false);
-    };
-
-    const handleOnInputChange = (event) => {
-        setErrors((state) => {
-            state.delete(event.target.name);
-
-            return state;
-        });
-        setAccountForm((state) => ({
-            ...state,
-            [event.target.name]: event.target.value,
-        }));
     };
 
     const handleOnShow = () => {

@@ -236,18 +236,18 @@ const SubmitAboutUserFormBtn = ({
             const { ageGroupsTaught, selection } = gradesOrYears ?? {};
             const errors = new Map();
 
-            if (name.first.trim().length === 0) { 
+            if (name.first.trim().length === 0) {
                 errors.set('firstName', 'This field is required.');
             }
 
-            if (name.last.trim().length === 0) { 
+            if (name.last.trim().length === 0) {
                 errors.set('lastName', 'This field is required.');
             }
 
             aboutUserFormClone = {
                 ...aboutUserFormClone,
-                name
-            }
+                name,
+            };
 
             if (!ageGroupsTaught?.length || !isTeacher) {
                 aboutUserFormClone = {
