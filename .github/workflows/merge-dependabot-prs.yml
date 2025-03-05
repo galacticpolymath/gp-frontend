@@ -2,6 +2,11 @@ name: Merge dependabot PR into main
 
 run-name: ${{ github.actor }} made pr. 
 on: [pull_request]
+
+permissions:
+  pull-requests: write
+  contents: write
+
 jobs:
   Explore-GitHub-Actions:
     if: github.actor == 'dependabot[bot]' 
@@ -57,5 +62,7 @@ jobs:
     
     - name: Merge PR
       uses: "pascalgn/automerge-action@v0.16.4"
-      env:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        merge-method: 'squash'
+        target: 'minor'

@@ -103,7 +103,7 @@ export const sendAboutUserFormToServer = async (
         const zipCodeStr = ((typeof zipCode === 'string') && Number.isInteger(+zipCode)) ? zipCode.trim() : "";
 
         if (isTeacher && !isTeacherConfirmed) {
-            errors.set('isTeacherConfirmationErr', 'This field is required');
+            errors.set('isTeacherConfirmationErr', 'This field is required.');
         }
 
         if ((country?.toLowerCase() === 'united states') && (!zipCodeStr || (zipCodeStr?.length == 0))) {
@@ -192,13 +192,19 @@ export const sendAboutUserFormToServer = async (
     }
 };
 
-const SubmitAboutUserFormBtn = ({ setErrors, countryNames, _wasBtnClicked }) => {
+const SubmitAboutUserFormBtn = ({
+    setErrors,
+    countryNames,
+    _wasBtnClicked,
+    _name,
+}) => {
     const { _aboutUserForm } = useContext(UserContext);
     const { _notifyModal, _isAboutMeFormModalDisplayed } = useContext(ModalContext);
     const { data, update } = useSession();
     /** @type { [import("../../../providers/UserProvider").TAboutUserForm] } */
     const [aboutUserForm] = _aboutUserForm;
     const [wasBtnClicked, setWasBtnClicked] = _wasBtnClicked;
+    const [name] = _name;
     const [, setIsAboutUserModalDisplayed] = _isAboutMeFormModalDisplayed;
     const [, setNotifyModal] = _notifyModal;
     const { user, token } = data ?? {};
@@ -229,6 +235,19 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames, _wasBtnClicked }) => 
             } = aboutUserFormClone;
             const { ageGroupsTaught, selection } = gradesOrYears ?? {};
             const errors = new Map();
+
+            if (name.first.trim().length === 0) { 
+                errors.set('firstName', 'This field is required.');
+            }
+
+            if (name.last.trim().length === 0) { 
+                errors.set('lastName', 'This field is required.');
+            }
+
+            aboutUserFormClone = {
+                ...aboutUserFormClone,
+                name
+            }
 
             if (!ageGroupsTaught?.length || !isTeacher) {
                 aboutUserFormClone = {
@@ -277,11 +296,11 @@ const SubmitAboutUserFormBtn = ({ setErrors, countryNames, _wasBtnClicked }) => 
             const zipCodeStr = ((typeof zipCode === 'string') && Number.isInteger(+zipCode)) ? zipCode.trim() : "";
 
             if (isTeacher && !isTeacherConfirmed) {
-                errors.set('isTeacherConfirmationErr', '*This field is required');
+                errors.set('isTeacherConfirmationErr', '*This field is required.');
             }
 
             if ((country?.toLowerCase() === 'united states') && (!zipCodeStr || (zipCodeStr?.length == 0))) {
-                errors.set('zipCode', 'This field is required');
+                errors.set('zipCode', 'This field is required.');
             } else if ((country.toLowerCase() === 'united states') && (zipCode < 0)) {
                 errors.set('zipCode', 'Cannot be a negative number.');
             } else if ((country.toLowerCase() === 'united states') && (((zipCodeStr?.length > 0) && (zipCodeStr?.length < 5)) || (zipCodeStr.length > 5))) {
