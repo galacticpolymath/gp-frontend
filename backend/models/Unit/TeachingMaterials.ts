@@ -1,6 +1,22 @@
 import { IUnitSectionObj, unitSectionObj } from "./Section";
 import { Schema } from "mongoose";
-import { IChunk, IClassroom, IGatheredVocab, IGradeVariantNote, IItem, ILesson, ILessonDetail, ILink, ILsnExt, ILsnPrep, IResource, IStep, ITeachingMaterialsData, IVocab } from "./types/teachingMaterials";
+import { 
+    IChunk, 
+    IClassroom, 
+    IClassroomOld, 
+    IGatheredVocab, 
+    IGradeVariantNote, 
+    IItem, 
+    ILesson, 
+    ILessonDetail, 
+    ILink, 
+    ILsnExt, 
+    ILsnPrep, 
+    IResource, 
+    IStep, 
+    ITeachingMaterialsData, 
+    IVocab 
+} from "./types/teachingMaterials";
 
 // Schemas
 const LinkSchema = new Schema<ILink>({
@@ -36,8 +52,11 @@ const ResourceSchema = new Schema<IResource>({
     lessons: [LessonSchema]
 }, { _id: false });
 
-const ClassroomSchema = new Schema<IClassroom>({
+const ClassroomSchemaOld = new Schema<IClassroomOld>({
     gradeVariantNotes: [GradeVariantNoteSchema],
+    resources: [ResourceSchema]
+}, { _id: false });
+const ClassroomSchema = new Schema<IClassroom>({
     resources: [ResourceSchema]
 }, { _id: false });
 
@@ -89,7 +108,6 @@ const VocabSchema = new Schema<IVocab>({
     term: String,
     definition: String
 }, { _id: false });
-
 const GatheredVocabSchema = new Schema<IGatheredVocab>({
     success: Boolean,
     expr: String,
@@ -100,13 +118,24 @@ const TeachingMaterialsData = new Schema<ITeachingMaterialsData>({
     lessonPreface: String,
     lessonDur: String,
     classroom: ClassroomSchema,
-    lesson: [LessonDetailSchema],
     gatheredVocab: GatheredVocabSchema
 }, { _id: false });
 
 export interface ITeachingMaterials extends IUnitSectionObj  {
     Data: ITeachingMaterialsData;
 }
+
+const teachingMaterials: ITeachingMaterials = {
+    __component: "teaching-materials.teaching-materials",
+    SectionTitle: "Teaching Materials",
+    Data: {
+        lessonPreface: null,
+        lessonDur: null,
+        classroom: null,
+        gatheredVocab: null
+    }
+};
+
 
 export const TeachingMaterialsSchema = new Schema<ITeachingMaterials>({
     ...unitSectionObj,

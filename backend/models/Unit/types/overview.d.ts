@@ -1,4 +1,5 @@
 import { IRootFieldToRetrieve } from "../RootFieldsToRetrieve";
+import { IUnitSectionObj } from "../Section";
 
 export interface ITag {
     Value: string;
@@ -24,7 +25,7 @@ export interface IVersion {
     sub_releases: ISubRelease[];
 }
 
-export interface IOverview {
+export interface IOverview extends IUnitSectionObj {
     LearningSummary: string;
     EstLessonTime: string;
     Text: string;
@@ -35,3 +36,5 @@ export interface IOverview {
     versions: IVersion[];
     rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
 }
+
+

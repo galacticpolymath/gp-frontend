@@ -2,11 +2,11 @@ import { Schema } from 'mongoose';
 import { IUnitSectionObj, unitSectionObj } from './Section';
 
 interface ISubRelease {
-    version: string;
-    date: string;
-    summary: string;
-    notes: string;
-    acknowledgments: string;
+    version: string | null;
+    date: string | null;
+    summary: string | null;
+    notes: string | null;
+    acknowledgments: string | null;
 }
 
 const SubReleaseSchema = new Schema<ISubRelease>({

@@ -34,7 +34,7 @@ export interface IFeaturing {
     links: string[];
 }
 
-export interface IUnit {
+export interface IUnitOld {
     _id: string;
     numID: number;
     ShortTitle: string | null;
@@ -103,3 +103,5 @@ export interface IUnit {
     LsnStatuses: LsnStatusSchema[] | null;
     ShortURL: string | null;
 }
+
+export interface IUnit extends Omit<IUnitOld, "LsnStatuses"> {}

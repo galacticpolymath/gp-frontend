@@ -1,5 +1,6 @@
 import { IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFieldsToRetrieve';
 import mongoose from 'mongoose'
+import { IOverview } from './types/overview';
 
 const { Schema } = mongoose;
 
@@ -60,19 +61,12 @@ const VersionSchema = new Schema<IVersion>({
     sub_releases: [SubReleaseSchema]
 }, { _id: false });
 
-export interface IOverview {
-    LearningSummary: string;
-    EstLessonTime: string;
-    Text: string;
-    SteamEpaulette: string;
-    SteamEpaulette_vert: string;
-    Accessibility: IAccessibility[];
-    Tags: ITag[];
-    versions: IVersion[];
-    rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
-}
 
 export const Overview = new Schema<IOverview>({
+    __component: String,
+    InitiallyExpanded: Boolean,
+    SectionTitle: String,
+    sortOrder: Number,
     LearningSummary: String,
     EstLessonTime: String,
     Text: String,

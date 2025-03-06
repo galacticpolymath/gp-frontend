@@ -32,7 +32,9 @@ import { CustomNotifyModalFooter } from "../../../../components/Modals/Notify";
 import { getUserAccountData } from "../../../account";
 import axios from "axios";
 import { UserContext } from "../../../../providers/UserProvider";
-import { ISectionDot, ISectionDots } from "../../../../types/global";
+import { ILessonForUI, ISectionDot, ISectionDots } from "../../../../types/global";
+import { ILesson } from "../../../../backend/models/Unit/types/teachingMaterials";
+import { IUnit, IUnitOld } from "../../../../backend/models/Unit/types/unit";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -598,15 +600,15 @@ const getGoogleDriveFileIdFromUrl = (url) => {
 };
 
 const updateLessonWithGoogleDriveFiledPreviewImg = (
-  lesson,
-  lessonToDisplayOntoUi
+  lesson: ILessonForUI,
+  unit: IUnitOld
 ) => {
-  let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
+  let lessonObjUpdated: ILessonForUI = JSON.parse(JSON.stringify(lesson));
 
   // getting the thumbnails for the google drive file handouts for each lesson
   if (lesson?.itemList?.length) {
     const itemListUpdated = lesson.itemList.map((itemObj) => {
-      const googleDriveFileId = itemObj?.links[0]?.url
+      const googleDriveFileId = itemObj?.links?.[0]?.url
         ? getGoogleDriveFileIdFromUrl(itemObj.links[0].url)
         : null;
 
@@ -626,11 +628,13 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (
     };
   }
 
+
+
   // getting the status for each lesson
   let lsnStatus =
-    Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) &&
-    lessonToDisplayOntoUi?.LsnStatuses?.length
-      ? lessonToDisplayOntoUi.LsnStatuses.find(
+    Array.isArray(unit?.LsnStatuses) &&
+    unit?.LsnStatuses?.length
+      ? unit.LsnStatuses.find(
           (lsnStatus) => lsnStatus?.lsn == lesson.lsn
         )
       : null;
@@ -648,7 +652,7 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (
   };
 };
 
-export const getStaticProps = async (arg) => {
+export const getStaticProps = async (arg: { params: { id: string; loc: string } }) => {
   try {
     const {
       params: { id, loc },

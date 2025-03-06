@@ -11,14 +11,6 @@ import { StandardsSchema } from "./Standards";
 let Units = (model as any)?.units;
 
 if (!Units) {
-    const LsnStatusSchema = new Schema<ILsnStatus>({
-        lsn: { type: Number, required: true },
-        status: String,
-        updated_date: String,
-        new_date: String,
-        sort_by_date: String,
-        unit_release_date: String,
-    });
     const FeatureNameSchema = new Schema<IFeatureName>({
         first: String,
         middle: String,
@@ -105,7 +97,6 @@ if (!Units) {
             acknowledgements: Acknowledgments,
             versionNotes: VersionNotes
         },
-        LsnStatuses: [LsnStatusSchema],
         ShortURL: String,
     })
 

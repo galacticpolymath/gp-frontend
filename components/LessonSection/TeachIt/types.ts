@@ -1,4 +1,4 @@
-import { ITeachingMaterialsData } from "../../../backend/models/Unit/types/teachingMaterials";
+import { ITeachingMaterialsData, ITeachingMaterialsDataForUI } from "../../../backend/models/Unit/types/teachingMaterials";
 import { IUnit } from "../../../backend/models/Unit/types/unit";
 import { IComponent, ILessonForUI, ISectionDots, TUseStateReturnVal } from "../../../types/global";
 
@@ -8,7 +8,7 @@ type TTargetUnitProps<TKey extends TTargetUnitKeys = TTargetUnitKeys> = {
 };
 
 export interface TeachItProps extends Pick<IComponent, "index">, TTargetUnitProps{
-    Data: ITeachingMaterialsData<ILessonForUI> | null,
+    Data: ITeachingMaterialsDataForUI<ILessonForUI> | null,
     _sectionDots: TUseStateReturnVal<ISectionDots>,
     SectionTitle: string
 }
