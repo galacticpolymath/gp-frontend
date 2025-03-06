@@ -116,7 +116,7 @@ export interface ITeachingMaterialsData<TLesson = ILesson> extends IUnitSectionO
 
 }
 export interface ITeachingMaterialsDataForUI<TLesson = ILesson> extends IUnitSectionObj {
-    lessonPreface: string | null;
+    lessonPreface: string | null;   
     lessonDur: string | null;
     classroom: IClassroom<TLesson> | null;
     remote: IClassroom<TLesson> | null;
