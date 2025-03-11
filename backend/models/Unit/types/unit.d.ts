@@ -16,23 +16,25 @@ export interface ILsnStatus {
 }
 
 export interface IFeatureName {
-        first: string;
-        middle: string;
-        last: string;
-        prefix: string;
-    }
+    first: string;
+    middle: string;
+    last: string;
+    prefix: string;
+}
+
 export interface IFeatureLocation {
     instition: string;
     department: string;
     city: string;
     state: string;
     country: string;
-}
+};
+
 export interface IFeaturing {
     name: IFeatureName;
     location: IFeatureLocation;
     links: string[];
-}
+};
 
 export interface IUnitOld {
     _id: string;
@@ -45,7 +47,7 @@ export interface IUnitOld {
     DefaultCountry: string | null;
     LastUpdated: Date | null;
     FirstPublicationDate: Date | null;
-    featuring: FeaturingSchema[] | null;
+    featuring: IFeaturing[] | null;
     MediumTitle: string | null;
     lang: string | null;
     lng: string | null;

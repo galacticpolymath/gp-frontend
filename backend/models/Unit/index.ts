@@ -29,6 +29,7 @@ if (!Units) {
         location: FeatureLocationSchema,
         links: [String],
     });
+    
     const UnitSchema = new Schema<IUnit>({
         _id: { type: String, required: true },
         numID: { type: Number, required: true },

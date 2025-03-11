@@ -381,7 +381,7 @@ const TeachIt = (props: TeachItProps) => {
                 dataLesson.every((val) => val !== null)
               ) {
                 targetLessonInDataLesson = dataLesson.find(
-                  ({ lsnNum }) => lsnNum == lsn
+                  ({ lsnNum }) => lsnNum != null && lsnNum.toString() == lsn
                 );
               }
 
