@@ -151,8 +151,8 @@ export async function listFilesOfGoogleDriveFolder(
 export async function shareFilesWithRetries(files, userEmail, googleService, tries = 0) {
     try {
         console.log("Current try: ", tries);
-        console.log("Files to shared: ", files.length);
-        if (tries > 7) {
+        console.log("Files to share: ", files.length);
+        if (tries > 8) {
             return { wasSuccessful: false };
         }
 
@@ -183,22 +183,18 @@ export async function shareFilesWithRetries(files, userEmail, googleService, tri
             const result = sharedFilesResults[resultIndex];
 
             if (result.status === "rejected") {
-                failedShareFilesIndices.add(resultIndex);
+                failedShareFilesIndices.add(parseInt(resultIndex));
             }
         }
 
-        console.log("Files failed to share length: ", failedShareFilesIndices.size);
 
         if (failedShareFilesIndices.size) {
-            const failedFilesToShare = files.filter((_, index) =>
-                failedShareFilesIndices.has(index)
-            );
-            tries = waitWithExponentialBackOff(tries);
+            const failedFilesToShare = files.filter((_, index) => failedShareFilesIndices.has(index));
+            console.log("failedFilesToShare: ", failedFilesToShare.length);
+            tries = await waitWithExponentialBackOff(tries, [1000, 7_000]);
 
-            return await shareFilesWithRetries(failedFilesToShare, userEmail, tries);
+            return await shareFilesWithRetries(failedFilesToShare, userEmail, googleService, tries);
         }
-
-        console.log("Successfully shared all files.");
 
         return { wasSuccessful: true };
     } catch (error) {
@@ -260,7 +256,7 @@ export async function copyFiles(files, createdFolders, accessToken, tries = 0) {
         const result = copiedFilesResult[resultIndex];
 
         if (result.status === "rejected") {
-            failedCopiedFilesIndices.add(resultIndex);
+            failedCopiedFilesIndices.add(parseInt(resultIndex));
         }
     }
 
@@ -269,7 +265,9 @@ export async function copyFiles(files, createdFolders, accessToken, tries = 0) {
     if (failedCopiedFilesIndices.size) {
         console.error("Failed to copy files length: ", failedCopiedFilesIndices.size);
         const failedCopiedFiles = files.filter((_, index) => failedCopiedFilesIndices.has(index));
-        tries = waitWithExponentialBackOff(tries);
+        console.log("files to copy, after failure: ", failedCopiedFiles.length);
+        tries = await waitWithExponentialBackOff(tries);
+
 
         return await copyFiles(failedCopiedFiles, createdFolders, accessToken, tries);
     }

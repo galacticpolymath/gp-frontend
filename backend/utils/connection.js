@@ -12,8 +12,6 @@ export const createConnectionUri = (dbType) => {
   if (process.env.NEXT_PUBLIC_VERCEL_ENV === "production") {
     dbName = MONGODB_DB_PROD;
   }
-  console.log("dbType: ", dbType);
-  console.log("dbName: ", dbName);
 
   if (dbType === "production") {
     dbName = MONGODB_DB_PROD;
@@ -41,8 +39,6 @@ export const connectToMongodb = async (
   dbType
 ) => {
   try {
-    console.log("will connect to MongoDB...");
-
     if (isConnectedToDb && !dbType) {
       console.log("Already connected to DB.");
       return { wasSuccessful: true };

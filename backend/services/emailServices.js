@@ -236,7 +236,6 @@ export const getMailingListContact = async (email) => {
         return body;
     } catch (error) {
         console.error("Unable to find the target user. Reason: ", error);
-        console.log("error.name, sup there: ", error?.name)
 
         if (error.name === "FetchError" || error.name === "TypeError") {
             console.error("Failed to get the target user. Fetch error.");
@@ -286,7 +285,6 @@ export const getAllBrevoMailingListContacts = async (offset = 0, allContacts = [
 
         const allContactsClone = structuredClone(allContacts);
         console.log("allContactsClone: ", allContactsClone.length);
-        console.log("tries, sup there: ", tries);
         const brevoMailingListContacts = await getBrevoMailingListContacts([MAILING_LIST_ID], offset);
 
         if (!brevoMailingListContacts && (typeof brevoMailingListContacts === 'object')) {

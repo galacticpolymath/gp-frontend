@@ -28,6 +28,8 @@ This README provides instructions on how to access the API documentation for thi
 
 ## Accessing the API Documentation
 
+For the online version: [https://gp-yauu.readme.io/reference/](http://localhost:3000/api/docs)
+
 Once your local development server is running, you can access the API documentation by following these steps:
 
 1. Open your web browser.

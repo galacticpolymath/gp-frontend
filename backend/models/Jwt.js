@@ -7,7 +7,7 @@ if (!JwtModel) {
   JwtModel = new Schema({
     _id: String,
     refresh: String,
-    access: String,
+    access: { type: String, required: true },
     expireAt: {
       type: Date,
       default: Date.now(),

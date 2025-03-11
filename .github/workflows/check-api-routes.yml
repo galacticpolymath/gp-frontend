@@ -8,6 +8,7 @@ on:
 jobs:
   integration-tests-and-deploy:
     name: Run Integration Tests
+    if: github.actor != 'dependabot[bot]'
     environment: Preview
     runs-on: ubuntu-latest
 

@@ -98,8 +98,6 @@ export default async function handler(request, response) {
       throw new CustomError("Failed to update user.", 500);
     }
 
-    console.log("updated user, sup there: ", updatedUserFromDb);
-
     cache.set(payload.email, updatedUserFromDb);
 
     return response.status(200).json({ msg: "User updated successfully." });

@@ -13,6 +13,7 @@ const DB_ADMIN_ROUTES = [
 ];
 const USER_ACCOUNT_ROUTES = [
   "/api/save-about-user-form",
+  "/api/copy-files",
   "/api/update-user",
   "/api/get-user-account-data",
   "/api/delete-user",
@@ -173,9 +174,6 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
-    // print something 
-    console.log("Yo there meng...")
-
     if (!authorizationStr) {
       console.log("No auth string was provided.");
       return new NextResponse("No authorization header was provided.", {
@@ -188,9 +186,6 @@ export async function middleware(request) {
     console.log("yo there token: ", token)
     console.log("token length after trim: ", token.trim().length)
     const payload = await verifyJwt(token);
-
-    // print the payload
-    console.log("payload sup there: ", payload);
 
     if (payload?.payload?.accessibleRoutes?.length && !payload.payload.accessibleRoutes.includes(nextUrl.pathname)) {
       console.error("The client does not have access to this route.");
@@ -216,7 +211,25 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
-    // put this into an array and search via the pathname field
+    if ((nextUrl.pathname === "/api/copy-files") && (method === "POST") && headers.has("GDrive-Token")) {
+      console.log("will check if the auth string is valid.");
+      const { errResponse } = await getAuthorizeReqResult(
+        authorizationStr,
+        false
+      );
+
+      if (errResponse) {
+        return errResponse
+      }
+
+      console.log("The GDrive-Token was provided.");
+
+      return NextResponse.next();
+    } else if ((nextUrl.pathname === "/api/copy-files") && (method === "POST")) {
+      console.error("No GDrive-Token was provided, bacon yo there.");
+      return new NextResponse("No GDrive-Token was provided.", { status: 400 });
+    }
+
     if (
       (nextUrl.pathname == "/api/update-lessons" &&
         method === "PUT" &&
@@ -336,6 +349,7 @@ export const config = {
     "/api/update-user",
     "/api/user-confirms-mailing-list-sub",
     "/api/get-users",
+    "/api/copy-files",
     "/api/get-signed-in-user-brevo-status"
   ],
 };
