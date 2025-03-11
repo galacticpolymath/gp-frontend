@@ -1,11 +1,13 @@
 name: Check for dead links
 
-on: push
+on: 
+  push: 
+    branches-ignore:
+      - dependabot/**
 
 jobs:
   dead-links-check:
     environment: Preview
-    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
 
     steps:
