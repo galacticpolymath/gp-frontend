@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-empty */
 
+import { nanoid } from 'nanoid';
 import { createPasswordResetEmail } from '../../backend/emailTemplates/passwordReset';
 import { sendEmail } from '../../backend/services/emailServices';
 import { getUserByEmail } from '../../backend/services/userServices';
@@ -34,8 +35,8 @@ export default async function handler(request, response) {
 
         console.log('will send password recover email');
 
-        // TODO: insert the jwt into the db, and have it expire in 5 minutes
         const resetPasswordToken = await signJwt({ email, accessibleRoutes: ['/api/updated-password'] }, process.env.NEXTAUTH_SECRET, '5 minutes');
+        const code = nanoid();
         const resetPasswordLink = `${request.headers.origin}/password-reset/?${PASSWORD_RESET_TOKEN_VAR_NAME}=${resetPasswordToken}`;
         const { wasSuccessful } = await sendEmail({
             from: 'shared@galacticpolymath.com',
