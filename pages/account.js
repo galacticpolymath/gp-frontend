@@ -240,9 +240,6 @@ const AccountPg = () => {
                         }
                     }
 
-                    // print userAccountForClient
-                    console.log('userAccountForClient, sup there: ', userAccountForClient);
-
                     userAccountForClient.isTeacher = isTeacher ?? false;
 
                     localStorage.setItem('userAccount', JSON.stringify(userAccount));

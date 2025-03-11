@@ -167,8 +167,6 @@ const SignUpModal = () => {
         // put the request that updates the mailing list logic for the target user into a global component
         const callbackUrl = `${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`;
 
-        console.log("callBackUrl: ", callbackUrl);
-
         if (createAccountForm.isOnMailingList) {
             localStorage.setItem('isOnMailingList', JSON.stringify(true));
         } else {

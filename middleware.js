@@ -187,9 +187,6 @@ export async function middleware(request) {
     console.log("token length after trim: ", token.trim().length)
     const payload = await verifyJwt(token);
 
-    // print the payload
-    console.log("payload sup there: ", payload);
-
     if (payload?.payload?.accessibleRoutes?.length && !payload.payload.accessibleRoutes.includes(nextUrl.pathname)) {
       console.error("The client does not have access to this route.");
 
@@ -214,17 +211,12 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
-    console.log("headers, yo there: ", headers);
-    console.log("nextUrl.pathName, sup there: ", nextUrl.pathname);
-
     if ((nextUrl.pathname === "/api/copy-files") && (method === "POST") && headers.has("GDrive-Token")) {
       console.log("will check if the auth string is valid.");
       const { errResponse } = await getAuthorizeReqResult(
         authorizationStr,
         false
       );
-
-      console.log("errResponse, sup there: ", errResponse);
 
       if (errResponse) {
         return errResponse
