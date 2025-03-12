@@ -25,7 +25,7 @@
                 port: 587,
                 secure: false,
                 auth: {
-                    user: "gtorion97work@gmail.com",
+                    user: "techguy@galacticpolymath.com",
                     pass: process.env.DEADLINKS_CHECK_EMAIL_PASSWORD
                 },
             };

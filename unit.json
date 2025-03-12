@@ -1,5 +1,5 @@
 {
-  "_id": "5",
+  "_id": "unit_5_en-US",
   "numID": 5,
   "ShortTitle": "ILikeThat",
   "PublicationStatus": "Live",
@@ -9,7 +9,7 @@
   "DefaultCountry": "United States",
   "LastUpdated": "2023-05-06 17:13:08",
   "FirstPublicationDate": "2022-07-11 21:10:05",
-  "featuring": [
+  "featured_people": [
     {
       "name": {
         "first": "John",
@@ -18,7 +18,7 @@
         "prefix": "Dr."
       },
       "location": {
-        "instition": "Harvard University",
+        "institution": "Harvard University",
         "department": "Computer Science",
         "city": "Cambridge",
         "state": "MA",
@@ -86,8 +86,6 @@
   "isTestRepo": false,
   "DefaultLocale": "en-US",
   "URL": "https://galacticpolymath.com/lessons/5",
-  "GPCatalogURL": "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/LESSON.json",
-  "GitHubURL": "git@github.com:galacticpolymath/ILikeThat_en-US.git",
   "GdriveHome": "GP-LIVE",
   "GdriveDirName": "ILikeThat_en-US",
   "GdriveTeachMatPath": "GalacticPolymath/'I Like That!' |Science| G5-9 (en-US)",
@@ -113,7 +111,7 @@
     "assets/_banners_logos_etc/NSF_4-Color_bitmap_Logo@0.25x.png",
     "assets/_banners_logos_etc/UMBC-vertical-logo-RGB-195x300.png"
   ],
-  "LessonBanner": "assets/_banners_logos_etc/banner-100.jpg",
+  "UnitBanner": "assets/_banners_logos_etc/banner-100.jpg",
   "TargetSubject": "Science",
   "LessonEnvir": "Classroom",
   "ForGrades": "5-9",
@@ -123,9 +121,6 @@
       "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/NSF_4-Color_bitmap_Logo@0.25x.png",
       "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/UMBC-vertical-logo-RGB-195x300.png"
     ]
-  },
-  "CoverImage": {
-    "url": "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/banner-100.jpg"
   },
   "Sections": {
     "overview": {
