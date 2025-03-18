@@ -67,8 +67,8 @@ export const Overview = new Schema<IOverview>({
     InitiallyExpanded: Boolean,
     SectionTitle: String,
     sortOrder: Number,
-    LearningSummary: String,
-    EstLessonTime: String,
+    UnitSummary: String,
+    EstUnitTime: String,
     Text: String,
     SteamEpaulette: String,
     SteamEpaulette_vert: String,
@@ -80,12 +80,12 @@ export const Overview = new Schema<IOverview>({
         default: () => {
             let rootFields = [
                 {
-                    name: "LessonBanner",
+                    name: "unitBanner",
                     as: "lessonBannerUrl"
                 },
                 {
                     name: "Title",
-                    as: "lessonTitle"
+                    as: "unitTitle"
                 },
                 {
                     name: "ForGrades",

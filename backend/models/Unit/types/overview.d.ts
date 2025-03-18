@@ -26,8 +26,8 @@ export interface IVersion {
 }
 
 export interface IOverview extends IUnitSectionObj {
-    LearningSummary: string;
-    EstLessonTime: string;
+    UnitSummary: string;
+    EstUnitTime: string;
     Text: string;
     SteamEpaulette: string;
     SteamEpaulette_vert: string;
