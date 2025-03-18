@@ -9,7 +9,7 @@
   "DefaultCountry": "United States",
   "LastUpdated": "2023-05-06 17:13:08",
   "FirstPublicationDate": "2022-07-11 21:10:05",
-  "featured_people": [
+  "FeaturedPeople": [
     {
       "name": {
         "first": "John",
@@ -99,6 +99,20 @@
   "GdriveDirURL": "https://drive.google.com/drive/folders/1Nxy1V4pf21NhElAUdqVZpdinqCPi1oh3",
   "RebuildAllMaterials": false,
   "ReleaseDate": "2022-10-31",
+  "FeaturedMultimedia": [
+    {
+      "order": "1",
+      "type": "video",
+      "forLsn": "Lesson 1",
+      "title": "Example Video Title",
+      "description": "This is a description of the video.",
+      "lessonRelevance": "Relevant to the lesson content.",
+      "by": "Author Name",
+      "byLink": "http://authorlink.com",
+      "mainLink": "http://videolink.com",
+      "otherLink": "http://otherlink.com"
+    }
+  ],
   "Title": "I Like That!",
   "Subtitle": "How perception, emotion, and cognition shape our preferences",
   "SponsorName": [
@@ -116,6 +130,7 @@
   "LessonEnvir": "Classroom",
   "ForGrades": "5-9",
   "GradesOrYears": "Grades",
+  "UnitCard": "Grades",
   "SponsorImage": {
     "url": [
       "https://gp-catalog.vercel.app/lessons/ILikeThat_en-US/NSF_4-Color_bitmap_Logo@0.25x.png",
@@ -162,45 +177,22 @@
           ]
         }
       ],
-      "rootFieldsToRetrieveForUI": [
-        {
-          "name": "LearningSummary",
-          "as": "LearningSummary"
-        },
-        {
-          "name": "EstLessonTime",
-          "as": "estLessonTime"
-        }
-      ]
+      "rootFieldsToRetrieveForUI": []
     },
     "preview": {
       "__component": "exampleComponent",
       "SectionTitle": "Example Section Title",
       "sortOrder": 1,
       "InitiallyExpanded": true,
-      "QuickPrep": "This is a quick preparation note.",
-      "Multimedia": [
-        {
-          "order": "1",
-          "type": "video",
-          "forLsn": "Lesson 1",
-          "title": "Example Video Title",
-          "description": "This is a description of the video.",
-          "lessonRelevance": "Relevant to the lesson content.",
-          "by": "Author Name",
-          "byLink": "http://authorlink.com",
-          "mainLink": "http://videolink.com",
-          "otherLink": "http://otherlink.com"
-        }
-      ]
+      "QuickPrep": "This is a quick preparation note."
     },
     "teachingMaterials": {
-      "lessonPreface": "This is a placeholder for now. It will be replaced with actual content once it is developed.",
+      "unitPreface": "This is a placeholder for now. It will be replaced with actual content once it is developed.",
       "__component": "components/teachingMaterials",
       "sortOrder": 4,
       "InitiallyExpanded": true,
       "SectionTitle": "Sample Teaching Materials",
-      "lessonDur": "45 mins",
+      "unitDur": "45 mins",
       "gatheredVocab": {
         "success": true,
         "expr": "test",
