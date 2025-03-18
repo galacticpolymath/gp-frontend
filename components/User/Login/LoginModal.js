@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable quotes */
 import { useContext, useState } from "react";
-import { CloseButton, Modal, ModalHeader, Spinner } from "react-bootstrap";
+import { CloseButton, Modal, ModalHeader, Spinner, } from "react-bootstrap";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { ModalContext } from "../../../providers/ModalProvider";
@@ -201,16 +201,14 @@ const LoginModal = () => {
                 />
               </label>
               <CustomInput
-                inputContainerCss={`no-outline position-relative rounded w-75 login-modal-input-container ${
-                  errors.has("email") ? "border-red" : ""
-                }`}
+                inputContainerCss={`no-outline position-relative rounded w-75 login-modal-input-container ${errors.has("email") ? "border-red" : ""
+                  }`}
                 inputName="email"
                 inputId="email-id"
                 inputType="email"
                 placeholder="Enter email"
-                inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-transparent w-100 ${
-                  errors.has("email") ? "text-danger" : ""
-                }`}
+                inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-transparent w-100 ${errors.has("email") ? "text-danger" : ""
+                  }`}
                 onChange={handleOnInputChange}
                 autoFocus
                 onKeyUp={(event) => {
@@ -242,9 +240,8 @@ const LoginModal = () => {
                 />
               </label>
               <CustomInput
-                inputContainerCss={`no-outline position-relative rounded w-75 bg-light-blue ${
-                  errors.has("password") ? "border-red text-danger" : ""
-                }`}
+                inputContainerCss={`no-outline position-relative rounded w-75 bg-light-blue ${errors.has("password") ? "border-red text-danger" : ""
+                  }`}
                 isPasswordInput
                 inputStyle={{
                   width: "90%",
