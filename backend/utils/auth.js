@@ -1,6 +1,6 @@
-const { SignJWT } = require('jose');
-const { v4 } = require("uuid")
-const { JWT } = require('google-auth-library');
+import { SignJWT } from 'jose';
+import { v4 } from 'uuid';
+import { JWT } from 'google-auth-library';
 
 /**
  * Creates a JSON Web Token.
@@ -35,8 +35,4 @@ const getGoogleAuthJwt = (keyFile, scopes) => {
   return serviceAccountJwt;
 };
 
-// Exporting the functions using CommonJS
-module.exports = {
-  signJwt,
-  getGoogleAuthJwt,
-};
+export { getGoogleAuthJwt, signJwt }
