@@ -142,8 +142,8 @@
       "__component": "Overview",
       "SectionTitle": "Overview",
       "sortOrder": 0,
-      "LearningSummary": "This is a test for the overview section",
-      "EstLessonTime": "1 hour",
+      "UnitSummary": "This is a test for the overview section",
+      "EstUnitTime": "1 hour",
       "Text": "The text for the overview section",
       "SteamEpaulette": "https://example.com/steam-epaulette.png",
       "SteamEpaulette_vert": "https://example.com/steam-epaulette-vert.png",
@@ -177,7 +177,40 @@
           ]
         }
       ],
-      "rootFieldsToRetrieveForUI": []
+      "rootFieldsToRetrieveForUI": [
+        {
+          "name": "unitBanner",
+          "as": "unitBannerUrl"
+        },
+        {
+          "name": "Title",
+          "as": "unitTitle"
+        },
+        {
+          "name": "ForGrades",
+          "as": "ForGrades"
+        },
+        {
+          "name": "TargetSubject",
+          "as": "TargetSubject"
+        },
+        {
+          "name": "GradesOrYears",
+          "as": "GradesOrYears"
+        },
+        {
+          "name": "numID",
+          "as": "numID"
+        },
+        {
+          "name": "locale",
+          "as": "locale"
+        },
+        {
+          "name": "Subtitle",
+          "as": "Subtitle"
+        }
+      ]
     },
     "preview": {
       "__component": "exampleComponent",
