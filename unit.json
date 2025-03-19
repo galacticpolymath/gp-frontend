@@ -142,7 +142,7 @@
       "__component": "Overview",
       "SectionTitle": "Overview",
       "sortOrder": 0,
-      "UnitSummary": "This is a test for the overview section",
+      "TheGist": "This is a test for the overview section",
       "EstUnitTime": "1 hour",
       "Text": "The text for the overview section",
       "SteamEpaulette": "https://example.com/steam-epaulette.png",
@@ -227,14 +227,7 @@
       "SectionTitle": "Sample Teaching Materials",
       "unitDur": "45 mins",
       "gatheredVocab": {
-        "success": true,
-        "expr": "test",
-        "result": [
-          {
-            "term": "test",
-            "definition": "test"
-          }
-        ]
+        "expr": "test"
       },
       "classroom": {
         "resources": [
