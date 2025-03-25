@@ -1,4 +1,6 @@
 /* eslint-disable react/jsx-indent */
+/* eslint-disable quotes */
+
 import { useEffect } from "react";
 import { ModalProvider } from "../providers/ModalProvider";
 import { LessonsCarouselProvider } from "../providers/LessonsCarouselProvider";
@@ -19,7 +21,6 @@ import { UserProvider } from "../providers/UserProvider";
 import { CookiesProvider } from "react-cookie";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
-
   useEffect(() => {
     import("bootstrap/dist/js/bootstrap");
   }, []);

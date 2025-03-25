@@ -1,7 +1,8 @@
-const { default: axios } = require("axios");
-const { SignJWT } = require("jose");
-const { v4 } = require("uuid");
-require("dotenv").config();
+import axios from "axios";
+import * as jose from "jose";
+import { v4 } from "uuid";
+import dotenv from "dotenv";
+dotenv.config();
 
 const signJwt = async (
     jwtPayload,
@@ -10,7 +11,7 @@ const signJwt = async (
 ) => {
     const issueAtTime = Math.floor(Date.now() / 1000); // issued at time
 
-    return new SignJWT(jwtPayload)
+    return new jose.SignJWT(jwtPayload)
         .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
         .setExpirationTime(expirationTime)
         .setIssuedAt(issueAtTime)
