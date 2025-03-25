@@ -19,6 +19,8 @@ export const createConnectionUri = (dbType) => {
     dbName = MONGODB_DB_NAME;
   }
 
+  console.log("dbName: ", dbName);
+
   const connectionUri = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster0.tynope2.mongodb.net/${dbName}`;
 
   return connectionUri;
@@ -26,9 +28,9 @@ export const createConnectionUri = (dbType) => {
 
 /**
  * Connects to MongoDB.
- * @param {number} [serverSelectionTimeoutMS=15_000] - The server selection timeout in ms.
- * @param {number} [tries=0] - The number of times the function has been retried.
- * @param {boolean} [isRetryable=false] - Whether the function should retry if connecting to MongoDB fails.
+ * @param {number} [serverSelectionTimeoutMS] - The server selection timeout in ms.
+ * @param {number} [tries] - The number of times the function has been retried.
+ * @param {boolean} [isRetryable] - Whether the function should retry if connecting to MongoDB fails.
  * @param {"dev" | "production" | undefined} [dbType] - The type of database to connect to. Can be "dev" or "production".
  * @returns {Promise<{wasSuccessful: boolean}>} - A promise that resolves to an object with a "wasSuccessful" property that indicates whether the connection was successful.
  */

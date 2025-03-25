@@ -195,7 +195,7 @@ const TeachIt = ({
         </div>
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
-            <h3 className='fs-5'>Available {GradesOrYears} Bands</h3>
+            <h3 className='fs-5'>Available Grade Bands</h3>
             {!!gradeVariations.length && gradeVariations.map((variation, i) => (
               <label
                 key={i}
