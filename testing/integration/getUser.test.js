@@ -1,6 +1,22 @@
 const { default: axios } = require("axios");
-const { signJwt } = require("../../backend/utils/auth");
+const { SignJWT } = require("jose");
+const { v4 } = require("uuid");
 require("dotenv").config();
+
+const signJwt = async (
+    jwtPayload,
+    secret,
+    expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60
+) => {
+    const issueAtTime = Math.floor(Date.now() / 1000); // issued at time
+
+    return new SignJWT(jwtPayload)
+        .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
+        .setExpirationTime(expirationTime)
+        .setIssuedAt(issueAtTime)
+        .setJti(v4())
+        .sign(new TextEncoder().encode(secret));
+};
 
 /**
  * Makes a request to the server to get all users from the database, including their
