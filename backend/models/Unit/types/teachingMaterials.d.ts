@@ -109,8 +109,8 @@ export interface IGatheredVocab {
 }
 
 export interface ITeachingMaterialsData<TLesson = ILesson> extends IUnitSectionObj {
-    lessonPreface: string | null;
-    lessonDur: string | null;
+    unitPreface: string | null;
+    unitDur: string | null;
     classroom: IClassroom<TLesson> | null;
     gatheredVocab: IGatheredVocab | null;
 

@@ -115,8 +115,8 @@ const GatheredVocabSchema = new Schema<IGatheredVocab>({
 }, { _id: false });
 
 const TeachingMaterialsData = new Schema<ITeachingMaterialsData>({
-    lessonPreface: String,
-    lessonDur: String,
+    unitPreface: String,
+    unitDur: String,
     classroom: ClassroomSchema,
     gatheredVocab: GatheredVocabSchema
 }, { _id: false });
@@ -129,8 +129,8 @@ const teachingMaterials: ITeachingMaterials = {
     __component: "teaching-materials.teaching-materials",
     SectionTitle: "Teaching Materials",
     Data: {
-        lessonPreface: null,
-        lessonDur: null,
+        unitPreface: null,
+        unitDur: null,
         classroom: null,
         gatheredVocab: null
     }
