@@ -12,7 +12,6 @@ getLessons.js
 credentials.json
 credentials2.json
 googleDriveSecret.json
-unit.json
 
 # dependencies
 /node_modules
