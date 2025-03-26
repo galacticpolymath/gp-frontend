@@ -1,7 +1,7 @@
 /** @type {import('jest').Config} */
 const config = {
     verbose: true,
-    setupFiles: ['dotenv/config']
+    setupFiles: ['dotenv/config'],
 };
 
 module.exports = config;

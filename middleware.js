@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 import { NextResponse } from "next/server";
 import { getAuthorizeReqResult, getChunks, verifyJwt } from "./nondependencyFns";
-import { PASSWORD_RESET_TOKEN_VAR_NAME } from "./globalVars";
+import { PASSWORD_RESET_CODE_VAR_NAME } from "./globalVars";
 
 const DB_ADMIN_ROUTES = [
   "/api/insert-lesson",
@@ -45,7 +45,7 @@ export async function middleware(request) {
       const searchPathnamesChunks = getChunks(searchPathnamesSplitted, 2);
       const isPasswordResetTokenPresent = searchPathnamesChunks.find(
         ([urlVarName, token]) => {
-          return urlVarName === PASSWORD_RESET_TOKEN_VAR_NAME && token;
+          return urlVarName === PASSWORD_RESET_CODE_VAR_NAME && token;
         }
       );
 

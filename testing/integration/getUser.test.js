@@ -1,6 +1,24 @@
-const { default: axios } = require("axios");
-const { signJwt } = require("../../backend/utils/auth");
-require("dotenv").config();
+const axios = require("axios");
+const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
+
+dotenv.config();
+
+const signJwt = async (
+    jwtPayload,
+    secret,
+) => {
+
+    const token = jwt.sign(
+        {
+            ...jwtPayload,
+        },
+        secret,
+        { algorithm: "HS256" }
+    );
+
+    return token;
+};
 
 /**
  * Makes a request to the server to get all users from the database, including their

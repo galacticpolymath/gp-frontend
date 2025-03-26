@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 
-export const PASSWORD_RESET_TOKEN_VAR_NAME = "password_reset_token";
+export const PASSWORD_RESET_CODE_VAR_NAME = "password_reset_code";
 export const isProd = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 export const supportEmail = "mailto:feedback@galacticpolymath.com";
 export const SHOWABLE_LESSONS_STATUSES = ["Live", "Beta"];

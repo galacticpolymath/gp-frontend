@@ -266,7 +266,6 @@ const LessonDetails = ({ lesson }) => {
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
     []
   );
-
   const _dots = useMemo(
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []

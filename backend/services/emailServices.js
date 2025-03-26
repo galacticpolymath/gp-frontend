@@ -33,7 +33,6 @@ export const sendEmail = async (mailOpts) => {
             host: 'smtp.gmail.com',
             port: 465,
             secure: true,
-            // send the email using your own email
             auth: {
                 privateKey,
                 type: 'OAuth2',

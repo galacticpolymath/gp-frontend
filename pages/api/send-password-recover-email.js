@@ -10,7 +10,8 @@ import { getUserByEmail } from '../../backend/services/userServices';
 import { signJwt } from '../../backend/utils/auth';
 import { connectToMongodb } from '../../backend/utils/connection';
 import { CustomError } from '../../backend/utils/errors';
-import { PASSWORD_RESET_TOKEN_VAR_NAME } from '../../globalVars';
+import { PASSWORD_RESET_CODE_VAR_NAME } from '../../globalVars';
+import JwtModel from '../../backend/models/Jwt';
 
 export default async function handler(request, response) {
     try {
@@ -38,7 +39,11 @@ export default async function handler(request, response) {
 
         const resetPasswordToken = await signJwt({ email, accessibleRoutes: ['/api/updated-password'] }, process.env.NEXTAUTH_SECRET, '5 minutes');
         const code = nanoid();
-        const resetPasswordLink = `${request.headers.origin}/password-reset/?${PASSWORD_RESET_TOKEN_VAR_NAME}=${resetPasswordToken}`;
+        const jwtModel = new JwtModel({
+            _id: code,
+            access: resetPasswordToken,
+        });
+        const resetPasswordLink = `${request.headers.origin}/password-reset/?${PASSWORD_RESET_CODE_VAR_NAME}=${resetPasswordToken}`;
         const { wasSuccessful } = await sendEmail({
             from: 'shared@galacticpolymath.com',
             to: email,
