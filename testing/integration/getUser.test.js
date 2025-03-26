@@ -1,22 +1,23 @@
-import axios from "axios";
-import * as jose from "jose";
-import { v4 } from "uuid";
-import dotenv from "dotenv";
+const axios = require("axios");
+const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
+
 dotenv.config();
 
 const signJwt = async (
     jwtPayload,
     secret,
-    expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60
 ) => {
-    const issueAtTime = Math.floor(Date.now() / 1000); // issued at time
 
-    return new jose.SignJWT(jwtPayload)
-        .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
-        .setExpirationTime(expirationTime)
-        .setIssuedAt(issueAtTime)
-        .setJti(v4())
-        .sign(new TextEncoder().encode(secret));
+    const token = jwt.sign(
+        {
+            ...jwtPayload,
+        },
+        secret,
+        { algorithm: "HS256" }
+    );
+
+    return token;
 };
 
 /**
