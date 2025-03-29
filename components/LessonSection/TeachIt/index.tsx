@@ -143,16 +143,15 @@ const TeachIt = (props: TeachItProps) => {
 
     return environments;
   }, []);
-  let gradesVariations: IResource<ILessonForUI>[];
+  let gradeVariations: IResource<ILessonForUI>[] | undefined;
   let newUnitGradesVariations: IUnitResource[] = [];
 
   if ("classroom" in Data) {
-    gradesVariations = Data?.classroom?.resources ?? [];
+    gradeVariations = Data?.classroom?.resources ?? [];
   } else {
     newUnitGradesVariations = Data.resources ?? [];
   }
 
-  const gradeVariations = Data?.classroom?.resources ?? [];
   const [selectedGrade, setSelectedGrade] = useState(
     gradeVariations?.length
       ? gradeVariations[0]
