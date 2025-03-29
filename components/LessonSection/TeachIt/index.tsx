@@ -114,7 +114,6 @@ const DisplayLessonTile = ({
 
 const TeachIt = (props: TeachItProps) => {
   let { Data, _sectionDots, SectionTitle, ForGrades, GradesOrYears } = props;
-  console.log("TeachIt props: ", props);
   const { _isDownloadModalInfoOn } = useModalContext();
   const { handleRestrictedItemBtnClick, session } =
     useCanUserAccessMaterial(false);
