@@ -42,7 +42,7 @@ const Overview = ({
           typeof val.Description === "string" && typeof val.Link === "string"
       )
     );
-  });
+  }, []);
 
   return (
     <div
