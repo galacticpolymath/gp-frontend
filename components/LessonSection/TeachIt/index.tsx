@@ -34,6 +34,7 @@ import { TeachItProps } from "./types";
 import {
   ILink,
   IResource,
+  IUnitResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import { IItemForClient, ILessonForUI } from "../../../types/global";
@@ -142,6 +143,15 @@ const TeachIt = (props: TeachItProps) => {
 
     return environments;
   }, []);
+  let gradesVariations: IResource<ILessonForUI>[];
+  let newUnitGradesVariations: IUnitResource[] = [];
+
+  if ("classroom" in Data) {
+    gradesVariations = Data?.classroom?.resources ?? [];
+  } else {
+    newUnitGradesVariations = Data.resources ?? [];
+  }
+
   const gradeVariations = Data?.classroom?.resources ?? [];
   const [selectedGrade, setSelectedGrade] = useState(
     gradeVariations?.length
