@@ -1,4 +1,4 @@
-import { ITeachingMaterialsData, ITeachingMaterialsDataForUI, IUnitTeachingMaterials } from "../../../backend/models/Unit/types/teachingMaterials";
+import { ITeachingMaterialsDataForUI, IUnitTeachingMaterials } from "../../../backend/models/Unit/types/teachingMaterials";
 import { IUnit } from "../../../backend/models/Unit/types/unit";
 import { IComponent, ILessonForUI, ISectionDots, TUseStateReturnVal } from "../../../types/global";
 

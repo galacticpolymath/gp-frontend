@@ -123,3 +123,75 @@ export interface ITeachingMaterialsDataForUI<TLesson = ILesson> extends IUnitSec
     gatheredVocab: IGatheredVocab | null;
     lesson: ILessonDetail[]
 }
+
+interface IUnitLesson {
+  title: string;
+  lsn: number;
+  status: string;
+  updated_date: null;
+  new_date: string;
+  sort_by_date: string;
+  unit_status: string;
+  unit_release_date: string;
+  tags: string[];
+  gradeVarNote: null;
+  preface: string;
+  tile: null;
+  itemList: {
+    itemTitle: string;
+    itemDescription: string;
+    itemCat: string;
+    links: {
+      linkText: string;
+      url: string;
+    }[];
+  }[];
+  lsnDur: number;
+  lsnPreface: string;
+  learningObj: string[];
+  lsnPrep: {
+    prepTitle: string;
+    prepDur: number | null;
+    prepQuickDescription: string;
+    prepDetails: string | null;
+    prepVariantNotes: null;
+    prepTeachingTips: null;
+  };
+  chunks: {
+    chunkTitle: string;
+    chunkStart: number;
+    chunkDur: number;
+    steps: {
+      Step: number;
+      StepTitle: string;
+      StepQuickDescription: string;
+      StepDetails: string | null;
+      Vocab: string | null;
+      VariantNotes: null;
+      TeachingTips: string | null;
+    }[];
+  }[];
+  goingFurther: null;
+}
+
+interface IUnitResource {
+  grades: string;
+  gradePrefix: string;
+  links: {
+    linkText: string;
+    url: string;
+  };
+  lessons: IUnitLesson[];
+}
+
+interface IUnitTeachingMaterials extends IUnitSectionObj {
+  unitDur: string;
+  unitPreface: string;
+  gatheredVocab: {
+    term: string;
+    definition: string;
+  }[];
+  classroom: {
+    resources: IUnitResource[];
+  };
+}
