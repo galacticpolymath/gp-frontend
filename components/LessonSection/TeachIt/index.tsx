@@ -147,12 +147,9 @@ const TeachIt = (props: TeachItProps) => {
     return environments;
   }, []);
   let gradeVariations: IResource<ILessonForUI>[] | undefined;
-  let newUnitGradesVariations: IResource[] = [];
 
   if ("classroom" in Data) {
     gradeVariations = Data?.classroom?.resources ?? [];
-  } else {
-    newUnitGradesVariations = Data.resources ?? [];
   }
 
   const [selectedGrade, setSelectedGrade] = useState(
@@ -284,10 +281,12 @@ const TeachIt = (props: TeachItProps) => {
     <TeachItUI<ILessonForUI>
       ref={ref}
       ForGrades={ForGrades}
-      lessonDur={Data}
+      lessonDur={"lessonDur" in Data ? Data.lessonDur : null}
+      lessonPreface={"lessonPreface" in Data ? Data.lessonPreface : null}
       SectionTitle={SectionTitle}
       _sectionDots={_sectionDots}
       selectedGrade={selectedGrade}
+      gradeVariations={gradeVariations}
       handleOnChange={handleOnChange}
       environments={environments}
       selectedEnvironment={selectedEnvironment}

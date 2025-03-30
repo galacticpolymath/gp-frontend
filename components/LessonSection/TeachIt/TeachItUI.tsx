@@ -41,7 +41,7 @@ interface TeachItUIProps<
   ref: RefObject<null>;
   lessonDur: string | null;
   lessonPreface: string | null;
-  gradeVariations: IResource<TLesson>[];
+  gradeVariations?: IResource<TLesson>[];
   resources?: IResource<ILesson>;
   selectedGrade: IResource<TLesson>;
   handleOnChange: (selectedGrade: IResource<TLesson>) => void;
@@ -75,12 +75,9 @@ const TeachItUI = <TLesson extends ILesson>({
   GradesOrYears,
 }: TeachItUIProps<TLesson>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
-  const areThereGradeBands = useMemo(
-    () =>
-      !!gradeVariations.length &&
-      gradeVariations.every((variation) => !!variation.grades),
-    []
-  );
+  const areThereGradeBands =
+    !!gradeVariations?.length &&
+    gradeVariations.every((variation) => !!variation.grades);
   const [arrowContainer, setArrowContainer] = useState({
     isInView: true,
     canTakeOffDom: false,
