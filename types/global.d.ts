@@ -10,7 +10,7 @@ interface IComponent {
 }
 type TSetter<TData> = React.Dispatch<React.SetStateAction<TData>>;
 type TUseStateReturnVal<TData> = [TData, TSetter<TData>];
-interface ILessonForUI extends ILesson {
+export interface ILessonForUI extends ILesson {
   lsn: string;
   status: string;
 }

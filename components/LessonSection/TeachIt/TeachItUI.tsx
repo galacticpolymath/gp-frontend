@@ -55,7 +55,7 @@ interface TeachItUIProps<
   ForGrades: string | null;
 }
 
-const TeachItUI: React.FC<TeachItUIProps> = ({
+const TeachItUI = <TLesson extends ILesson>({
   ForGrades,
   resources,
   SectionTitle,
@@ -73,7 +73,7 @@ const TeachItUI: React.FC<TeachItUIProps> = ({
   parts,
   dataLesson,
   GradesOrYears,
-}) => {
+}: TeachItUIProps<TLesson>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
   const areThereGradeBands = useMemo(
     () =>
