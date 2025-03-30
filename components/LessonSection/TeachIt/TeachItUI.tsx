@@ -1,18 +1,121 @@
-import React, { RefObject } from "react";
+import React, {
+  Dispatch,
+  ReactNode,
+  RefObject,
+  SetStateAction,
+  useMemo,
+  useState,
+} from "react";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
-import { ISectionDots, TUseStateReturnVal } from "../../../types/global";
+import {
+  IItemForClient,
+  ILessonForUI,
+  ISectionDots,
+  TUseStateReturnVal,
+} from "../../../types/global";
+import RichText from "../../RichText";
+import { DisplayLessonTile, GRADE_VARIATION_ID } from ".";
+import {
+  ILesson,
+  ILessonDetail,
+  ILink,
+  IResource,
+} from "../../../backend/models/Unit/types/teachingMaterials";
+import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
+import Button from "../../General/Button";
+import { AiOutlineQuestionCircle } from "react-icons/ai";
+import { useModalContext } from "../../../providers/ModalProvider";
+import LessonPart from "./LessonPart";
+import ClickMeArrow from "../../ClickMeArrow";
+import throttle from "lodash.throttle";
+import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
+import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
+import Link from "next/link";
 
-interface TeachItUIProps {
+interface TeachItUIProps<
+  TLesson extends ILesson = ILesson,
+  TParts extends ILesson = ILessonForUI
+> {
   SectionTitle: string;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
   ref: RefObject<null>;
+  lessonDur: string | null;
+  lessonPreface: string | null;
+  gradeVariations: IResource<TLesson>[];
+  resources?: IResource<ILesson>;
+  selectedGrade: IResource<TLesson>;
+  handleOnChange: (selectedGrade: IResource<TLesson>) => void;
+  environments: ("classroom" | "remote")[];
+  selectedEnvironment: "classroom" | "remote";
+  setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
+  selectedGradeResources: ILink;
+  parts: TParts[];
+  dataLesson: ILessonDetail[];
+  GradesOrYears: string | null;
+  ForGrades: string | null;
 }
 
 const TeachItUI: React.FC<TeachItUIProps> = ({
+  ForGrades,
+  resources,
   SectionTitle,
   _sectionDots,
   ref,
+  lessonDur,
+  lessonPreface,
+  gradeVariations,
+  selectedGrade,
+  handleOnChange,
+  environments,
+  selectedEnvironment,
+  setSelectedEnvironment,
+  selectedGradeResources,
+  parts,
+  dataLesson,
+  GradesOrYears,
 }) => {
+  const { _isDownloadModalInfoOn } = useModalContext();
+  const areThereGradeBands = useMemo(
+    () =>
+      !!gradeVariations.length &&
+      gradeVariations.every((variation) => !!variation.grades),
+    []
+  );
+  const [arrowContainer, setArrowContainer] = useState({
+    isInView: true,
+    canTakeOffDom: false,
+  });
+  const [
+    numsOfLessonPartsThatAreExpanded,
+    setNumsOfLessonPartsThatAreExpanded,
+  ] = useState<number[]>([]);
+  const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
+  const { handleRestrictedItemBtnClick, session } =
+    useCanUserAccessMaterial(false);
+
+  const removeClickToSeeMoreTxt = () => {
+    setArrowContainer({ isInView: true, canTakeOffDom: true });
+  };
+
+  const handleIconClick = () => {
+    setIsDownloadModalInfoOn(true);
+  };
+
+  let timer: NodeJS.Timeout;
+
+  const handleElementVisibility = (inViewPort: boolean) =>
+    throttle(() => {
+      clearTimeout(timer);
+
+      if (inViewPort) {
+        setArrowContainer((state) => ({ ...state, isInView: true }));
+
+        timer = setTimeout(() => {
+          setArrowContainer((state) => ({ ...state, isInView: false }));
+        }, 3500);
+      }
+    }, 200)();
+
   return (
     <CollapsibleLessonSection
       SectionTitle={SectionTitle}
@@ -22,17 +125,17 @@ const TeachItUI: React.FC<TeachItUIProps> = ({
     >
       <div ref={ref}>
         <div className="container-fluid mt-4">
-          {!!Data.lessonDur && (
+          {!!lessonDur && (
             <div className="row">
               <div className="row mx-auto justify-content-center">
                 <div className="infobox rounded-3 p-2 fs-5 my-2 fw-light w-auto">
                   <h3 className="fs-5">
                     <i className="bi-alarm fs-5 me-2" />
-                    {Data.lessonDur}
+                    {lessonDur}
                   </h3>
-                  {!!Data.lessonPreface && (
+                  {!!lessonPreface && (
                     <RichText
-                      content={Data.lessonPreface}
+                      content={lessonPreface}
                       className="flex-column d-flex justify-content-center quickPrep"
                     />
                   )}
@@ -44,10 +147,9 @@ const TeachItUI: React.FC<TeachItUIProps> = ({
         <div className="container row mx-auto py-4">
           <div className="col w-1/2">
             <h3 id={GRADE_VARIATION_ID} className="fs-5">
-              Available {GradesOrYears} Bands
+              Available Grade Bands
             </h3>
-            {!!gradeVariations.length &&
-              gradeVariations.every((variation) => !!variation.grades) &&
+            {areThereGradeBands &&
               gradeVariations.map((variation, i) => (
                 <label key={i} className="text-capitalize d-block mb-1">
                   <input

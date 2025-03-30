@@ -37,12 +37,11 @@ import {
   ILink,
   IResource,
   ITeachingMaterialsDataForUI,
-  IUnitResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import { IItemForClient, ILessonForUI } from "../../../types/global";
 
-const GRADE_VARIATION_ID = "gradeVariation";
+export const GRADE_VARIATION_ID = "gradeVariation";
 
 export interface ILessonTileProps {
   lessonTileUrl: string;
@@ -86,7 +85,7 @@ interface IDisplayLessonTileProps {
   id?: { id: string };
 }
 
-const DisplayLessonTile = ({
+export const DisplayLessonTile = ({
   status,
   imgContainerClassNameStr,
   lessonTileUrl,
@@ -147,7 +146,7 @@ const TeachIt = (props: TeachItProps) => {
     return environments;
   }, []);
   let gradeVariations: IResource<ILessonForUI>[] | undefined;
-  let newUnitGradesVariations: IUnitResource[] = [];
+  let newUnitGradesVariations: IResource[] = [];
 
   if ("classroom" in Data) {
     gradeVariations = Data?.classroom?.resources ?? [];
