@@ -32,8 +32,10 @@ import throttle from "lodash.throttle";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import { TeachItProps } from "./types";
 import {
+  IClassroom,
   ILink,
   IResource,
+  ITeachingMaterialsDataForUI,
   IUnitResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
@@ -160,9 +162,23 @@ const TeachIt = (props: TeachItProps) => {
   const [selectedEnvironment, setSelectedEnvironment] = useState(
     environments[0]
   );
-  const allResources = Data?.[selectedEnvironment]?.resources
-    ? Data[selectedEnvironment].resources
-    : [];
+
+  let allResources: IResource<ILessonForUI>[] = [];
+
+  if (
+    ("classroom" in Data || "remote" in Data) &&
+    typeof (Data as ITeachingMaterialsDataForUI<ILessonForUI>)[
+      selectedEnvironment
+    ] === "object" &&
+    (Data as ITeachingMaterialsDataForUI<ILessonForUI>)[selectedEnvironment] !=
+      null &&
+    (Data as ITeachingMaterialsDataForUI<ILessonForUI>)[selectedEnvironment]
+      ?.resources?.length
+  ) {
+    allResources = (Data as ITeachingMaterialsDataForUI<ILessonForUI>)[
+      selectedEnvironment
+    ]?.resources as IResource<ILessonForUI>[];
+  }
   const [selectedGradeResources, setSelectedGradeResources] = useState(
     allResources?.[0]?.links ?? ({} as ILink)
   );
@@ -178,9 +194,16 @@ const TeachIt = (props: TeachItProps) => {
 
   console.log("resources, yo there: ", resources);
 
-  const areThereMoreThan1Resource = Data.classroom?.resources?.length
-    ? Data.classroom?.resources?.length > 1
-    : false;
+  let areThereMoreThan1Resource = false;
+
+  if (
+    "classroom" in Data &&
+    Data.classroom?.resources?.length &&
+    Data.classroom?.resources?.length > 1
+  ) {
+    areThereMoreThan1Resource = true;
+  }
+
   ForGrades = areThereMoreThan1Resource ? selectedGrade.grades : ForGrades;
   const dataLesson = Data.lesson;
   let parts = selectedGrade.lessons ?? [];
