@@ -33,6 +33,7 @@ import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMater
 import { TeachItProps } from "./types";
 import {
   IClassroom,
+  ILessonDetail,
   ILink,
   IResource,
   ITeachingMaterialsDataForUI,
@@ -205,7 +206,12 @@ const TeachIt = (props: TeachItProps) => {
   }
 
   ForGrades = areThereMoreThan1Resource ? selectedGrade.grades : ForGrades;
-  const dataLesson = Data.lesson;
+  let dataLesson: ILessonDetail[] = [];
+
+  if ("lesson" in Data) {
+    dataLesson = Data.lesson;
+  }
+
   let parts = selectedGrade.lessons ?? [];
 
   const handleIconClick = () => {
