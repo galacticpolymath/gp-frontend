@@ -174,13 +174,6 @@ interface IUnitLesson {
   goingFurther: null;
 }
 
-interface IUnitResource {
-  grades: string | null;
-  gradePrefix: string | null;
-  links: ILink | null;
-  lessons: IUnitLesson[] | null;
-}
-
 export interface IUnitTeachingMaterials extends IUnitSectionObj {
   unitDur: string;
   unitPreface: string;
