@@ -33,7 +33,7 @@ import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import Link from "next/link";
 
 interface TeachItUIProps<
-  TLesson extends ILesson = ILesson,
+  TLesson = ILesson,
   TParts extends ILesson = ILessonForUI
 > {
   SectionTitle: string;

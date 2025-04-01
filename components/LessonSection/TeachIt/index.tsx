@@ -33,10 +33,12 @@ import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMater
 import { TeachItProps } from "./types";
 import {
   IClassroom,
+  ILesson,
   ILessonDetail,
   ILink,
   IResource,
   ITeachingMaterialsDataForUI,
+  IUnitLesson,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import { IItemForClient, ILessonForUI } from "../../../types/global";
@@ -117,8 +119,15 @@ export const DisplayLessonTile = ({
 };
 
 const TeachIt = (props: TeachItProps) => {
-  let { _sectionDots, SectionTitle, ForGrades, GradesOrYears, classroom } =
-    props;
+  let {
+    _sectionDots,
+    SectionTitle,
+    ForGrades,
+    GradesOrYears,
+    classroom,
+    unitDur,
+    unitPreface,
+  } = props;
   let Data = props.Data ?? classroom;
   const { _isDownloadModalInfoOn } = useModalContext();
   const { handleRestrictedItemBtnClick, session } =
@@ -277,16 +286,38 @@ const TeachIt = (props: TeachItProps) => {
     }
   }, []);
 
-  return (
+  return "lessonDur" in Data ? (
     <TeachItUI<ILessonForUI>
       ref={ref}
       ForGrades={ForGrades}
-      lessonDur={"lessonDur" in Data ? Data.lessonDur : null}
-      lessonPreface={"lessonPreface" in Data ? Data.lessonPreface : null}
+      lessonDur={Data.lessonDur}
+      lessonPreface={Data.lessonPreface}
       SectionTitle={SectionTitle}
       _sectionDots={_sectionDots}
       selectedGrade={selectedGrade}
       gradeVariations={gradeVariations}
+      handleOnChange={handleOnChange}
+      environments={environments}
+      selectedEnvironment={selectedEnvironment}
+      setSelectedEnvironment={setSelectedEnvironment}
+      selectedGradeResources={selectedGradeResources}
+      parts={parts}
+      dataLesson={dataLesson}
+      GradesOrYears={GradesOrYears}
+      resources={resources}
+    />
+  ) : (
+    <TeachItUI<
+      IUnitLesson & Pick<ILesson, "_id" | "dur" | "obj" | "prep" | "ext">
+    >
+      ref={ref}
+      ForGrades={ForGrades}
+      lessonDur={unitDur}
+      lessonPreface={unitPreface}
+      SectionTitle={SectionTitle}
+      _sectionDots={_sectionDots}
+      selectedGrade={selectedGrade}
+      gradeVariations={classroom.resources}
       handleOnChange={handleOnChange}
       environments={environments}
       selectedEnvironment={selectedEnvironment}
