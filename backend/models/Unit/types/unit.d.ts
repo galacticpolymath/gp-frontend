@@ -4,7 +4,10 @@ import { TGeneralSection } from "../Section";
 import { IStandard } from "../Standards";
 import { ITeachingMaterials } from "../TeachingMaterials";
 import { IVersionNotes } from "../VersionNotes";
-import { IOverview } from "./overview";
+import { IOverview, IUnitOverview } from "./overview";
+import { IPreview } from "./preview";
+import { IStandardsSec } from "./standards";
+import { IUnitTeachingMaterials } from "./teachingMaterials";
 
 export interface ILsnStatus {
     lsn: number;
@@ -107,3 +110,86 @@ export interface IUnitOld {
 }
 
 export interface IUnit extends Omit<IUnitOld, "LsnStatuses"> {}
+
+interface INewUnitSchema {
+    _id: string;
+    numID: number;
+    ShortTitle: string;
+    PublicationStatus: string;
+    Language: string;
+    Country: string;
+    DefaultLanguage: string;
+    DefaultCountry: string;
+    LastUpdated: string;
+    LastUpdated_web: string | null;
+    ReleaseDate: string;
+    isTestRepo: boolean;
+    FirstPublicationDate: string;
+    LsnCount: number;
+    FeaturedPeople: null;
+    FeaturedMultimedia: {
+        code: string;
+        type: string;
+        order: string;
+        forLsn: string | null;
+        title: string;
+        lessonRelevance: string;
+        description: string | null;
+        by: string | null;
+        byLink: string | null;
+        mainLink: string;
+        otherLink: string | null;
+    }[];
+    MediumTitle: string;
+    lang: string;
+    lng: string;
+    locale: string;
+    DefaultLocale: string;
+    TemplateVer: string;
+    galacticPubsVer: string;
+    URL: string;
+    ShortURL: string;
+    GdriveHome: string;
+    GdriveDirName: string;
+    GdriveTeachMatPath: string;
+    GdriveTeachMatID: string | null;
+    GdrivePublicID: string;
+    GdriveDirID: string;
+    GdriveMetaID: string;
+    GdriveTeachItID: string;
+    GdriveStandardsID: string;
+    GdrivePublishedID: string;
+    GdriveTeachItPermissions: string;
+    GdriveDirURL: string;
+    RebuildAllMaterials: boolean;
+    Title: string;
+    Subtitle: string;
+    SponsorName: string[];
+    SponsoredBy: string;
+    SponsorLogo: string[];
+    UnitBanner: string;
+    UnitCard: string;
+    QRcode: string;
+    TargetSubject: string;
+    TargetStandardsCodes: {
+        subject: string;
+        code: string;
+        set: string;
+        dim: string;
+    }[];
+    LessonEnvir: string;
+    ForGrades: string;
+    GradesOrYears: string;
+    Section: {
+        overview: IUnitOverview;
+        preview: IPreview;
+        teachingMaterials: IUnitTeachingMaterials;
+        feedback: TGeneralSection;
+        extensions: TGeneralSection;
+        bonus: TGeneralSection;
+        background: TGeneralSection;
+        standards: IStandardsSec;
+        credits: TGeneralSection;
+        acknowledgments: TAcknowledgments;
+    };
+}

@@ -31,10 +31,18 @@ import {
 import { CustomNotifyModalFooter } from "../../../../components/Modals/Notify";
 import { getUserAccountData } from "../../../account";
 import axios from "axios";
-import { UserContext } from "../../../../providers/UserProvider";
-import { ILessonForUI, ISectionDot, ISectionDots } from "../../../../types/global";
+import {
+  UserContext,
+  useUserContext,
+} from "../../../../providers/UserProvider";
+import {
+  ILessonForUI,
+  ISectionDot,
+  ISectionDots,
+} from "../../../../types/global";
 import { ILesson } from "../../../../backend/models/Unit/types/teachingMaterials";
-import { IUnit, IUnitOld } from "../../../../backend/models/Unit/types/unit";
+import { IOldUnit } from "../../../../backend/models/Unit/types/oldUnit";
+import { INewUnitSchema } from "../../../../backend/models/Unit/types/unit";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -86,13 +94,19 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
   });
 };
 
+interface IProps {
+  lesson: IOldUnit;
+  lessonFromDb: any;
+  unit?: INewUnitSchema;
+}
+
 // with the updated schema, the sections will accessed via lesson.Sections
 
 const LessonDetails = ({ lesson, lessonFromDb }) => {
   console.log("the lesson itself: ", lesson);
   console.log("the lesson itself, yo there: ", lessonFromDb);
   const router = useRouter();
-  const { _isUserTeacher } = useContext(UserContext);
+  const { _isUserTeacher } = useUserContext();
   const { status, data } = useSession();
   const { token } = data ?? {};
   const statusRef = useRef(status);
@@ -601,7 +615,7 @@ const getGoogleDriveFileIdFromUrl = (url) => {
 
 const updateLessonWithGoogleDriveFiledPreviewImg = (
   lesson: ILessonForUI,
-  unit: IUnitOld
+  unit: IOldUnit
 ) => {
   let lessonObjUpdated: ILessonForUI = JSON.parse(JSON.stringify(lesson));
 
@@ -628,15 +642,10 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (
     };
   }
 
-
-
   // getting the status for each lesson
   let lsnStatus =
-    Array.isArray(unit?.LsnStatuses) &&
-    unit?.LsnStatuses?.length
-      ? unit.LsnStatuses.find(
-          (lsnStatus) => lsnStatus?.lsn == lesson.lsn
-        )
+    Array.isArray(unit?.LsnStatuses) && unit?.LsnStatuses?.length
+      ? unit.LsnStatuses.find((lsnStatus) => lsnStatus?.lsn == lesson.lsn)
       : null;
 
   if (!lesson.tile && lsnStatus?.status === "Upcoming") {
@@ -652,7 +661,9 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (
   };
 };
 
-export const getStaticProps = async (arg: { params: { id: string; loc: string } }) => {
+export const getStaticProps = async (arg: {
+  params: { id: string; loc: string };
+}) => {
   try {
     const {
       params: { id, loc },
