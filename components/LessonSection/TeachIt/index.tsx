@@ -228,10 +228,12 @@ const TeachIt = (props: TeachItProps) => {
     setArrowContainer({ isInView: true, canTakeOffDom: true });
   };
 
-  const handleOnChange = (selectedGrade: IResource<ILessonForUI>) => {
-    setSelectedGradeResources(selectedGrade.links as ILink);
-    setSelectedGrade(selectedGrade);
-  };
+  const handleOnChange =
+    <T extends IResource<ILessonForUI> = IResource<ILessonForUI>>() =>
+    (selectedGrade: T) => {
+      setSelectedGradeResources(selectedGrade.links as ILink);
+      setSelectedGrade(selectedGrade);
+    };
 
   let timer: NodeJS.Timeout;
 
@@ -296,7 +298,7 @@ const TeachIt = (props: TeachItProps) => {
       _sectionDots={_sectionDots}
       selectedGrade={selectedGrade}
       gradeVariations={gradeVariations}
-      handleOnChange={handleOnChange}
+      handleOnChange={handleOnChange()}
       environments={environments}
       selectedEnvironment={selectedEnvironment}
       setSelectedEnvironment={setSelectedEnvironment}
@@ -307,12 +309,7 @@ const TeachIt = (props: TeachItProps) => {
       resources={resources}
     />
   ) : (
-    <TeachItUI<
-      IUnitLesson & Pick<ILesson, "_id" | "dur" | "obj" | "prep" | "ext">,
-      IResource<
-        IUnitLesson & Pick<ILesson, "_id" | "dur" | "obj" | "prep" | "ext">
-      >
-    >
+    <TeachItUI<IUnitLesson>
       ref={ref}
       ForGrades={ForGrades}
       lessonDur={unitDur}
@@ -321,7 +318,7 @@ const TeachIt = (props: TeachItProps) => {
       _sectionDots={_sectionDots}
       selectedGrade={selectedGrade}
       gradeVariations={classroom.resources}
-      handleOnChange={handleOnChange}
+      handleOnChange={handleOnChange()}
       environments={environments}
       selectedEnvironment={selectedEnvironment}
       setSelectedEnvironment={setSelectedEnvironment}
