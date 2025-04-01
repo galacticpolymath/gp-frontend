@@ -20,6 +20,7 @@ import {
   ILessonDetail,
   ILink,
   IResource,
+  IUnitLesson,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import Button from "../../General/Button";
@@ -50,7 +51,7 @@ interface TeachItUIProps<
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
   selectedGradeResources: ILink;
-  parts: TPart[];
+  parts: (ILessonForUI | IUnitLesson)[];
   dataLesson: ILessonDetail[];
   GradesOrYears: string | null;
   ForGrades: string | null;
@@ -270,6 +271,7 @@ const TeachItUI = <
                       return (
                         lsnNumDataLesson &&
                         lsn != null &&
+                        typeof lsn === "string" &&
                         !isNaN(Number(lsn)) &&
                         parseInt(lsn) == lsnNumDataLesson
                       );
@@ -290,6 +292,7 @@ const TeachItUI = <
                 part &&
                 typeof part === "object" &&
                 "status" in part &&
+                typeof part.status === "string" &&
                 tile &&
                 typeof tile === "string"
               ) {

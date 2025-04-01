@@ -160,6 +160,7 @@ const TeachIt = (props: TeachItProps) => {
   const [unitLessonResources, setUnitLessonResources] = useState(
     classroom?.resources?.[0] ?? {}
   );
+  const xsdf = unitLessonResources?.lessons?.[0];
   const handleOnChangeForNewUnitResources = (
     selectedGrade: IResource<IUnitLesson>
   ) => {
@@ -293,7 +294,7 @@ const TeachIt = (props: TeachItProps) => {
       resources={resources}
     />
   ) : (
-    <TeachItUI<IUnitLesson>
+    <TeachItUI<IUnitLesson, IResource<ILessonForUI>>
       ref={ref}
       ForGrades={ForGrades}
       lessonDur={unitDur}
@@ -307,7 +308,7 @@ const TeachIt = (props: TeachItProps) => {
       selectedEnvironment={selectedEnvironment}
       setSelectedEnvironment={setSelectedEnvironment}
       selectedGradeResources={selectedGradeResources}
-      parts={parts}
+      parts={unitLessonResources.lessons ?? []}
       dataLesson={dataLesson}
       GradesOrYears={GradesOrYears}
       resources={resources}

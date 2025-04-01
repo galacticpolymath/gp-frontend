@@ -13,8 +13,10 @@ export interface IItem {
   links: ILink[] | null;
 }
 
+// contains the props of the old database schema
 export interface ILesson {
   _id: string | null;
+  lsn: string | null;
   title: string | null;
   tags: string[] | null;
   preface: string | null;
@@ -31,6 +33,16 @@ export interface ILesson {
   prep: ILsnPrep | null;
   chunks: IChunk[] | null;
   ext: ILsnExt[] | null;
+}
+
+export interface IOldLesson{
+  lsn: string | null;
+  title: string | null;
+  tags: string[][] | null;
+  preface: string | null;
+  tile: string | null;
+  itemList: IItem[] | null;
+  status: string | null;
 }
 
 export interface IGradeVariantNote {
@@ -152,43 +164,30 @@ interface IChunk {
 }
 
 interface IUnitLesson {
-  title: string;
-  lsn: number;
-  status: string;
-  updated_date: null;
-  new_date: string;
-  sort_by_date: string;
-  unit_status: string;
-  unit_release_date: string;
-  tags: string[];
-  gradeVarNote: null;
-  preface: string;
-  tile: null;
-  itemList: {
-    itemTitle: string;
-    itemDescription: string;
-    itemCat: string;
-    links: ILink[];
-  }[];
-  lsnDur: number;
-  lsnPreface: string;
-  learningObj: string[];
-  lsnPrep: ILsnPrep;
+  title: string | null;
+  lsn: number | null;
+  status: string | null;
+  updated_date: string | null;
+  new_date: string | null;
+  sort_by_date: string | null;
+  unit_status: string | null;
+  unit_release_date: string | null;
+  tags: string[] | null;
+  gradeVarNote: string | null;
+  preface: string | null;
+  tile: string | null;
+  itemList: IItem[] | null;
+  lsnDur: number | null;
+  lsnPreface: string | null;
+  learningObj: string[] | null;
+  lsnPrep: ILsnPrep | null;
   chunks: {
-    chunkTitle: string;
-    chunkStart: number;
-    chunkDur: number;
-    steps: {
-      Step: number;
-      StepTitle: string;
-      StepQuickDescription: string;
-      StepDetails: string | null;
-      Vocab: string | null;
-      VariantNotes: null;
-      TeachingTips: string | null;
-    }[];
-  }[];
-  goingFurther: null;
+    chunkTitle: string | null;
+    chunkStart: number | null;
+    chunkDur: number | null;
+    steps: IChunkStep[] | null;
+  }[] | null;
+  goingFurther: string | null;
 }
 
 export interface IUnitTeachingMaterials extends IUnitSectionObj {
