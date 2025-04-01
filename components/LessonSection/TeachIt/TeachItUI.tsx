@@ -34,7 +34,7 @@ import Link from "next/link";
 
 interface TeachItUIProps<
   TResourceVal extends object = ILesson,
-  TParts extends ILesson = ILessonForUI,
+  TPart extends ILesson = ILessonForUI,
   TSelectedGrade extends object = IResource<ILessonForUI>
 > {
   SectionTitle: string;
@@ -50,7 +50,7 @@ interface TeachItUIProps<
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
   selectedGradeResources: ILink;
-  parts: TParts[];
+  parts: TPart[];
   dataLesson: ILessonDetail[];
   GradesOrYears: string | null;
   ForGrades: string | null;
@@ -58,7 +58,8 @@ interface TeachItUIProps<
 
 const TeachItUI = <
   TLesson extends object,
-  TSelectedGrade extends IResource<ILessonForUI> = IResource<ILessonForUI>
+  TSelectedGrade extends IResource<ILessonForUI> = IResource<ILessonForUI>,
+  TPart extends ILessonForUI = ILessonForUI
 >({
   ForGrades,
   resources,
@@ -77,7 +78,7 @@ const TeachItUI = <
   parts,
   dataLesson,
   GradesOrYears,
-}: TeachItUIProps<TLesson, ILessonForUI, TSelectedGrade>) => {
+}: TeachItUIProps<TLesson, TPart, TSelectedGrade>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
   const areThereGradeBands =
     !!gradeVariations?.length &&

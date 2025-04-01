@@ -23,11 +23,6 @@ import useLessonElementInView from "../../../customHooks/useLessonElementInView"
 import RichText from "../../RichText";
 import Image from "next/image";
 import Pill from "../../Pill";
-import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
-import Link from "next/link";
-import Button from "../../General/Button";
-import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
-import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import { TeachItProps } from "./types";
@@ -161,11 +156,30 @@ const TeachIt = (props: TeachItProps) => {
     gradeVariations = Data?.classroom?.resources ?? [];
   }
 
+  // for the new schema
+  const [unitLessonResources, setUnitLessonResources] = useState(
+    classroom?.resources?.[0] ?? {}
+  );
+  const handleOnChangeForNewUnitResources = (
+    selectedGrade: IResource<IUnitLesson>
+  ) => {
+    setSelectedGradeResources(selectedGrade.links as ILink);
+    setUnitLessonResources(selectedGrade);
+  };
+  // the above is based on the new schema
+
+  // TODO: will cease to be used when the new schema is implemented
   const [selectedGrade, setSelectedGrade] = useState(
     gradeVariations?.length
       ? gradeVariations[0]
       : ({} as IResource<ILessonForUI>)
   );
+  const handleOnChange = (selectedGrade: IResource<ILessonForUI>) => {
+    setSelectedGradeResources(selectedGrade.links as ILink);
+    setSelectedGrade(selectedGrade);
+  };
+  // The above will be ceased to be used when the new schema is implemented
+
   const [selectedEnvironment, setSelectedEnvironment] = useState(
     environments[0]
   );
@@ -220,36 +234,6 @@ const TeachIt = (props: TeachItProps) => {
 
   let parts = selectedGrade.lessons ?? [];
 
-  const handleIconClick = () => {
-    setIsDownloadModalInfoOn(true);
-  };
-
-  const removeClickToSeeMoreTxt = () => {
-    setArrowContainer({ isInView: true, canTakeOffDom: true });
-  };
-
-  const handleOnChange =
-    <T extends IResource<ILessonForUI> = IResource<ILessonForUI>>() =>
-    (selectedGrade: T) => {
-      setSelectedGradeResources(selectedGrade.links as ILink);
-      setSelectedGrade(selectedGrade);
-    };
-
-  let timer: NodeJS.Timeout;
-
-  const handleElementVisibility = (inViewPort: boolean) =>
-    throttle(() => {
-      clearTimeout(timer);
-
-      if (inViewPort) {
-        setArrowContainer((state) => ({ ...state, isInView: true }));
-
-        timer = setTimeout(() => {
-          setArrowContainer((state) => ({ ...state, isInView: false }));
-        }, 3500);
-      }
-    }, 200)();
-
   useEffect(() => {
     const lessonPartPath = window.location.href.split("#").at(-1);
     let lessonPartNum: number | null = null;
@@ -298,7 +282,7 @@ const TeachIt = (props: TeachItProps) => {
       _sectionDots={_sectionDots}
       selectedGrade={selectedGrade}
       gradeVariations={gradeVariations}
-      handleOnChange={handleOnChange()}
+      handleOnChange={handleOnChange}
       environments={environments}
       selectedEnvironment={selectedEnvironment}
       setSelectedEnvironment={setSelectedEnvironment}
@@ -318,7 +302,7 @@ const TeachIt = (props: TeachItProps) => {
       _sectionDots={_sectionDots}
       selectedGrade={selectedGrade}
       gradeVariations={classroom.resources}
-      handleOnChange={handleOnChange()}
+      handleOnChange={handleOnChangeForNewUnitResources}
       environments={environments}
       selectedEnvironment={selectedEnvironment}
       setSelectedEnvironment={setSelectedEnvironment}
