@@ -34,17 +34,19 @@ import Link from "next/link";
 
 interface TeachItUIProps<
   TLesson = ILesson,
-  TParts extends ILesson = ILessonForUI
+  TParts extends ILesson = ILessonForUI,
+  TSelectedGrade extends object = IResource<ILessonForUI>,
+  TResourceVal extends ILesson = ILesson
 > {
   SectionTitle: string;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
   ref: RefObject<null>;
   lessonDur: string | null;
   lessonPreface: string | null;
-  gradeVariations?: IResource<TLesson>[];
+  gradeVariations?: IResource<TResourceVal>[];
   resources?: IResource<ILesson>;
-  selectedGrade: IResource<TLesson>;
-  handleOnChange: (selectedGrade: IResource<TLesson>) => void;
+  selectedGrade: TSelectedGrade;
+  handleOnChange: (selectedGrade: IResource<TResourceVal>) => void;
   environments: ("classroom" | "remote")[];
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
@@ -55,7 +57,10 @@ interface TeachItUIProps<
   ForGrades: string | null;
 }
 
-const TeachItUI = <TLesson extends ILesson>({
+const TeachItUI = <
+  TLesson extends ILesson,
+  TSelectedGrade extends IResource<ILessonForUI> = IResource<ILessonForUI>
+>({
   ForGrades,
   resources,
   SectionTitle,
@@ -73,7 +78,7 @@ const TeachItUI = <TLesson extends ILesson>({
   parts,
   dataLesson,
   GradesOrYears,
-}: TeachItUIProps<TLesson>) => {
+}: TeachItUIProps<TLesson, ILessonForUI, TSelectedGrade>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
   const areThereGradeBands =
     !!gradeVariations?.length &&

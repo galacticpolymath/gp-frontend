@@ -33,7 +33,6 @@ import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMater
 import { TeachItProps } from "./types";
 import {
   IClassroom,
-  ILesson,
   ILessonDetail,
   ILink,
   IResource,
@@ -43,6 +42,7 @@ import {
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import { IItemForClient, ILessonForUI } from "../../../types/global";
 import TeachItUI from "./TeachItUI";
+import { ILesson } from "../../../backend/models/Unit/types/teachingMaterials";
 
 export const GRADE_VARIATION_ID = "gradeVariation";
 
@@ -308,7 +308,10 @@ const TeachIt = (props: TeachItProps) => {
     />
   ) : (
     <TeachItUI<
-      IUnitLesson & Pick<ILesson, "_id" | "dur" | "obj" | "prep" | "ext">
+      IUnitLesson & Pick<ILesson, "_id" | "dur" | "obj" | "prep" | "ext">,
+      IResource<
+        IUnitLesson & Pick<ILesson, "_id" | "dur" | "obj" | "prep" | "ext">
+      >
     >
       ref={ref}
       ForGrades={ForGrades}
