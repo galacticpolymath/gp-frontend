@@ -38,7 +38,7 @@ export interface IGradeVariantNote {
   lsnGradeVarNotes: string | null;
 }
 
-export interface IResource<TLesson = ILesson> {
+export interface IResource<TLesson extends object = ILesson> {
   grades: string | null;
   gradePrefix: string | null;
   links: ILink | null;

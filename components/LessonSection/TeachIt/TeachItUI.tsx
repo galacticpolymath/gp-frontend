@@ -33,10 +33,9 @@ import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import Link from "next/link";
 
 interface TeachItUIProps<
-  TLesson = ILesson,
+  TResourceVal extends object = ILesson,
   TParts extends ILesson = ILessonForUI,
-  TSelectedGrade extends object = IResource<ILessonForUI>,
-  TResourceVal extends ILesson = ILesson
+  TSelectedGrade extends object = IResource<ILessonForUI>
 > {
   SectionTitle: string;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
@@ -58,7 +57,7 @@ interface TeachItUIProps<
 }
 
 const TeachItUI = <
-  TLesson extends ILesson,
+  TLesson extends object,
   TSelectedGrade extends IResource<ILessonForUI> = IResource<ILessonForUI>
 >({
   ForGrades,
