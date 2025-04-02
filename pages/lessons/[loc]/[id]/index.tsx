@@ -43,6 +43,7 @@ import {
 import { ILesson } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { IOldUnit } from "../../../../backend/models/Unit/types/oldUnit";
 import { INewUnitSchema } from "../../../../backend/models/Unit/types/unit";
+import { Session } from "next-auth";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -100,15 +101,13 @@ interface IProps {
   unit?: INewUnitSchema;
 }
 
-// with the updated schema, the sections will accessed via lesson.Sections
-
-const LessonDetails = ({ lesson, lessonFromDb }) => {
+const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
   console.log("the lesson itself: ", lesson);
   console.log("the lesson itself, yo there: ", lessonFromDb);
   const router = useRouter();
   const { _isUserTeacher } = useUserContext();
   const { status, data } = useSession();
-  const { token } = data ?? {};
+  const { token } = data ?? ({} as Session);
   const statusRef = useRef(status);
   const {
     _notifyModal,

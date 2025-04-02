@@ -7,6 +7,7 @@ interface IRecord {
     affiliation: string;
     location: string;
 }
+
 interface IAcknowledgementsData {
     role: string;
     def: string;

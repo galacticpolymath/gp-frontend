@@ -1,18 +1,6 @@
 import mongoose from 'mongoose';
 import { IUnitSectionObj, unitSectionObj } from './Section';
-
-interface IRecord {
-    name: string;
-    url: string;
-    title: string;
-    affiliation: string;
-    location: string;
-}
-interface IAcknowledgementsData {
-    role: string;
-    def: string;
-    records: IRecord[];
-}
+import { IAcknowledgementsData, IRecord } from './types/acknowledgments';
 
 const RecordSchema = new mongoose.Schema<IRecord>({
     name: String,
