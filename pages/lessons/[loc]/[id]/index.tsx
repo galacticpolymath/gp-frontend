@@ -147,13 +147,13 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
     lesson?.Section &&
     typeof lesson?.Section === "object" &&
     lesson?.Section !== null
-      ? Object.values(lesson.Section).filter(section => {
-        if("SectionTitle" in section){
-          return section.SectionTitle !== "Procedure";
-        }
+      ? Object.values(lesson.Section).filter((section) => {
+          if ("SectionTitle" in section) {
+            return section.SectionTitle !== "Procedure";
+          }
 
-        return false;
-      })
+          return false;
+        })
       : null;
 
   if (sectionComps?.length) {
@@ -177,7 +177,7 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
 
         return lessonStandards;
       })
-      .reduce((lessonStandardObj, lessonStandardsAccumulatedObj) => {
+      .reduce((lessonStandardObj: any, lessonStandardsAccumulatedObj: any) => {
         let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
 
         if (
@@ -198,7 +198,7 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
           !lessonStandardsAccumulatedObj.Footnote &&
           "Footnote" in lessonStandardObj &&
           lessonStandardObj.Footnote &&
-          typeof lessonStandardObj.Footnote === "string" &&
+          typeof lessonStandardObj.Footnote === "string"
         ) {
           _lessonStandardsAccumulated = {
             ..._lessonStandardsAccumulated,
@@ -215,23 +215,37 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
       __component: "lesson-plan.standards",
       InitiallyExpanded: true,
     };
-    sectionComps = sectionComps.filter(
-      (_, index) => !lessonStandardsIndexesToFilterOut?.includes(index)
-    );
-    let lessonsStandardsSectionIndex = sectionComps.findIndex(
-      ({ SectionTitle }) => SectionTitle === "Background"
-    );
+    sectionComps = sectionComps
+      ? sectionComps.filter(
+          (_, index) => !lessonStandardsIndexesToFilterOut?.includes(index)
+        )
+      : [];
+    let lessonsStandardsSectionIndex = sectionComps.findIndex((section) => {
+      if ("SectionTitle" in section) {
+        return section.SectionTitle === "Background";
+      }
+
+      return false;
+    });
 
     if (lessonsStandardsSectionIndex === -1) {
-      lessonsStandardsSectionIndex = sectionComps.findIndex(
-        ({ SectionTitle }) => SectionTitle === "Bonus Content"
-      );
+      lessonsStandardsSectionIndex = sectionComps.findIndex((section) => {
+        if ("SectionTitle" in section) {
+          return section.SectionTitle === "Bonus Content";
+        }
+
+        return false;
+      });
     }
 
     if (lessonsStandardsSectionIndex === -1) {
-      lessonsStandardsSectionIndex = sectionComps.findIndex(
-        ({ SectionTitle }) => SectionTitle === "Teaching Materials"
-      );
+      lessonsStandardsSectionIndex = sectionComps.findIndex((section) => {
+        if ("SectionTitle" in section) {
+          return section.SectionTitle === "Teaching Materials";
+        }
+
+        return false;
+      });
     }
 
     if (lessonsStandardsSectionIndex === -1) {
@@ -271,6 +285,9 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
   }, []);
 
   sectionComps = useMemo(() => {
+    if (!sectionComps?.length) {
+      return [];
+    }
     const sectionCompsCopy = structuredClone(sectionComps);
     const teachingMaterialsSecIndex = sectionCompsCopy.findIndex(
       (sectionComp) => {
