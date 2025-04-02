@@ -41,6 +41,7 @@ import {
   ISectionDot,
   ISectionDots,
   IUserSession,
+  TSetter,
 } from "../../../../types/global";
 import { ILesson } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { IOldUnit } from "../../../../backend/models/Unit/types/oldUnit";
@@ -96,6 +97,12 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
     return section;
   });
 };
+
+interface IUserMouseEvent extends MouseEvent {
+  target: {
+    classList: DOMTokenList;
+  } & EventTarget;
+}
 
 interface IProps {
   lesson: IOldUnit;
@@ -291,6 +298,10 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
     const sectionCompsCopy = structuredClone(sectionComps);
     const teachingMaterialsSecIndex = sectionCompsCopy.findIndex(
       (sectionComp) => {
+        if (!("SectionTitle" in sectionComp)) {
+          return false;
+        }
+
         const sectionTitle = sectionComp.SectionTitle.replace(
           /[0-9.]/g,
           ""
@@ -300,6 +311,10 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
       }
     );
     const feedbackSecIndex = sectionCompsCopy.findIndex((sectionComp) => {
+      if (!("SectionTitle" in sectionComp)) {
+        return false;
+      }
+
       const sectionTitle = sectionComp.SectionTitle.replace(
         /[0-9.]/g,
         ""
@@ -352,7 +367,7 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
   const [isScrollListenerOn, setIsScrollListenerOn] =
     useScrollHandler(setSectionDots);
 
-  const scrollSectionIntoView = (sectionId) => {
+  const scrollSectionIntoView = (sectionId: string) => {
     const targetSection = document.getElementById(sectionId);
     let url = router.asPath;
 
@@ -365,9 +380,9 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
     }
   };
 
-  const handleDocumentClick = (event) => {
+  const handleDocumentClick = () => (event: MouseEvent) => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some((className) =>
-      event.target.classList.contains(className)
+      (event as IUserMouseEvent).target?.classList.contains(className)
     );
     const viewPortWidth = Math.max(
       document.documentElement.clientWidth || 0,
@@ -393,22 +408,23 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
     setCustomModalFooter(null);
   };
 
-  const handleIsUserEntryModalDisplayed = (setIsModalOn) => () => {
-    setNotifyModal((state) => ({ ...state, isDisplayed: false }));
+  const handleIsUserEntryModalDisplayed =
+    (setIsModalOn: TSetter<boolean>) => () => {
+      setNotifyModal((state) => ({ ...state, isDisplayed: false }));
 
-    setTimeout(() => {
-      handleUserNeedsAnAccountHideModal();
-      setIsModalOn(true);
-    }, 250);
-  };
+      setTimeout(() => {
+        handleUserNeedsAnAccountHideModal();
+        setIsModalOn(true);
+      }, 250);
+    };
 
-  const handleBonusContentDocumentClick = (event) => {
+  const handleBonusContentDocumentClick = (event: MouseEvent) => {
     const isWithinBonusContentSec = getIsWithinParentElement(
       event.target,
       "Bonus_Content",
       "className"
     );
-    const { tagName, origin } = event.target ?? {};
+    const { tagName, origin } = event.target ?? ({} as EventTarget);
 
     if (
       statusRef.current !== "authenticated" &&
@@ -491,12 +507,12 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
   }, [status]);
 
   useEffect(() => {
-    document.body.addEventListener("click", handleDocumentClick);
+    document.body.addEventListener("click", handleDocumentClick());
 
     document.body.addEventListener("click", handleBonusContentDocumentClick);
 
     return () => {
-      document.body.removeEventListener("click", handleDocumentClick);
+      document.body.removeEventListener("click", handleDocumentClick());
       document.body.removeEventListener(
         "click",
         handleBonusContentDocumentClick
