@@ -48,7 +48,7 @@ export interface IOldUnit {
     };
     Section: {
         overview: {
-            __component: string;
+            __component?: string;
             LearningSummary: string;
             EstLessonTime: string;
             GradesOrYears: string;
@@ -86,7 +86,7 @@ export interface IOldUnit {
             }[];
         };
         preview: {
-            __component: string;
+            __component?: string;
             SectionTitle: string;
             QuickPrep: string;
             Multimedia: {
@@ -104,7 +104,7 @@ export interface IOldUnit {
             InitiallyExpanded: boolean;
         };
         "teaching-materials": {
-            __component: string;
+            __component?: string;
             SectionTitle: string;
             Data: {
                 lessonPreface: string;
@@ -187,24 +187,24 @@ export interface IOldUnit {
             };
         };
         background: {
-            __component: string;
+            __component?: string;
             SectionTitle: string;
             Content: string;
             InitiallyExpanded: boolean;
         };
         "standards-header": {
-            __component: string;
+            __component?: string;
             SectionTitle: string;
         };
         "learning-chart": {
-            __component: string;
+            __component?: string;
             Title: string;
             Description: string;
             Footnote: string;
             Badge: string;
         };
         standards: {
-            __component: string;
+            __component?: string;
             Data: {
                 subject: string;
                 target: boolean;
@@ -227,19 +227,19 @@ export interface IOldUnit {
             }[];
         };
         feedback: {
-            __component: string;
+            __component?: string;
             SectionTitle: string;
             Content: string;
             InitiallyExpanded: boolean;
         };
         credits: {
-            __component: string;
+            __component?: string;
             SectionTitle: string;
             Content: string;
             InitiallyExpanded: boolean;
         };
         acknowledgments: {
-            __component: string;
+            __component?: string;
             SectionTitle: string;
             Data: {
                 role: string;
@@ -254,7 +254,7 @@ export interface IOldUnit {
             }[];
         };
         versions: {
-            __component: string;
+            __component?: string;
             SectionTitle: string;
             Data: {
                 major_release: string;

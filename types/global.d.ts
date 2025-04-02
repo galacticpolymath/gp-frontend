@@ -14,6 +14,9 @@ export interface ILessonForUI extends ILesson {
   lsn: string;
   status: string;
 }
+export interface IUserSession extends Session{
+  token: string
+}
 
 // For the unit page
 interface ISectionDot {

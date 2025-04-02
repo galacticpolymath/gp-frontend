@@ -27,6 +27,7 @@ import { useSession } from "next-auth/react";
 import {
   defautlNotifyModalVal,
   ModalContext,
+  useModalContext,
 } from "../../../../providers/ModalProvider";
 import { CustomNotifyModalFooter } from "../../../../components/Modals/Notify";
 import { getUserAccountData } from "../../../account";
@@ -39,6 +40,7 @@ import {
   ILessonForUI,
   ISectionDot,
   ISectionDots,
+  IUserSession,
 } from "../../../../types/global";
 import { ILesson } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { IOldUnit } from "../../../../backend/models/Unit/types/oldUnit";
@@ -107,14 +109,14 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
   const router = useRouter();
   const { _isUserTeacher } = useUserContext();
   const { status, data } = useSession();
-  const { token } = data ?? ({} as Session);
+  const { token } = (data ?? {}) as unknown as IUserSession;
   const statusRef = useRef(status);
   const {
     _notifyModal,
     _isLoginModalDisplayed,
     _isCreateAccountModalDisplayed,
     _customModalFooter,
-  } = useContext(ModalContext);
+  } = useModalContext();
   const [, setIsUserTeacher] = _isUserTeacher;
   const [, setNotifyModal] = _notifyModal;
   const [, setCustomModalFooter] = _customModalFooter;
@@ -124,7 +126,7 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
   const lessonSectionObjEntries = lesson?.Section
     ? Object.entries(lesson.Section)
     : [];
-  let lessonStandardsIndexesToFilterOut = [];
+  let lessonStandardsIndexesToFilterOut: number[] = [];
   let lessonStandardsSections = lessonSectionObjEntries.filter(
     ([sectionName], index) => {
       if (
@@ -145,9 +147,13 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
     lesson?.Section &&
     typeof lesson?.Section === "object" &&
     lesson?.Section !== null
-      ? Object.values(lesson.Section).filter(
-          ({ SectionTitle }) => SectionTitle !== "Procedure"
-        )
+      ? Object.values(lesson.Section).filter(section => {
+        if("SectionTitle" in section){
+          return section.SectionTitle !== "Procedure";
+        }
+
+        return false;
+      })
       : null;
 
   if (sectionComps?.length) {
@@ -159,12 +165,13 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
     !isTheLessonSectionInOneObj &&
     lessonStandardsSections?.length
   ) {
-    lessonStandardsSections = structuredClone(
+    const lessonStandardsSectionsObjs = structuredClone(
       lessonStandardsSections.map(
         ([, lessonStandardsObj]) => lessonStandardsObj
       )
     );
-    let lessonStandardsObj = lessonStandardsSections
+    type TLessonStandardsSectionsObj = typeof lessonStandardsSectionsObjs;
+    let lessonStandardsObj = lessonStandardsSectionsObjs
       .map((lessonStandards) => {
         delete lessonStandards.__component;
 
@@ -174,8 +181,11 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
         let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
 
         if (
+          // check if SectionTitle exist
+          "SectionTitle" in lessonStandardsAccumulatedObj &&
           !lessonStandardsAccumulatedObj.SectionTitle &&
-          lessonStandardObj.SectionTitle
+          "SectionTitle" in lessonStandardObj &&
+          typeof lessonStandardObj.SectionTitle === "string"
         ) {
           _lessonStandardsAccumulated = {
             ..._lessonStandardsAccumulated,
@@ -184,8 +194,11 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
         }
 
         if (
+          "Footnote" in lessonStandardsAccumulatedObj &&
           !lessonStandardsAccumulatedObj.Footnote &&
-          lessonStandardObj.Footnote
+          "Footnote" in lessonStandardObj &&
+          lessonStandardObj.Footnote &&
+          typeof lessonStandardObj.Footnote === "string" &&
         ) {
           _lessonStandardsAccumulated = {
             ..._lessonStandardsAccumulated,
@@ -194,7 +207,7 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
         }
 
         return _lessonStandardsAccumulated;
-      }, {});
+      }, {} as TLessonStandardsSectionsObj);
 
     // create the stanards section section
     lessonStandardsObj = {
