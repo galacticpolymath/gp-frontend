@@ -92,7 +92,7 @@ const createDbFilter = (filterObjKeyAndValPairs: [string, unknown[]][]) => {
           return {
             errMsg:
               error && typeof error === "object" && "message" in error
-                ? error.message
+                ? error.message as string
                 : errMsgStr,
           };
         }

@@ -40,6 +40,9 @@ export default async function handler(
     const dbFilter: unknown =
       typeof filterObj === "string" ? JSON.parse(filterObj) : filterObj;
 
+    // print dbFilter
+    console.log("dbFilter: ", dbFilter);
+
     if (
       dbProjections &&
       ((typeof dbProjections !== "object" && dbProjections === null) ||
@@ -63,17 +66,25 @@ export default async function handler(
         400
       );
     }
-    const dbFilterEntries = Object.entries(
-      dbFilter as Record<string, unknown[]>
-    );
-    const dbFilterCreationResult =
-      dbFilter && Object.keys(dbFilter).length
-        ? createDbFilter(dbFilterEntries)
-        : null;
 
-    if (dbFilterCreationResult?.errMsg) {
-      throw new CustomError(dbFilterCreationResult.errMsg, 400);
+    let dbFilterCreationResult: { filterObj?: Record<string, unknown> | undefined, errMsg?: string | undefined | unknown } = {
+      filterObj: {} as Record<string, unknown>,
+      errMsg: ""
     }
+
+    if(dbFilter && typeof dbFilter === "object"){
+      const dbFilterEntries = Object.entries(
+        dbFilter as Record<string, unknown[]>
+      );
+      dbFilterCreationResult =
+      dbFilter && Object.keys(dbFilter).length
+      ? createDbFilter(dbFilterEntries)
+      : dbFilterCreationResult;
+      
+      if (dbFilterCreationResult?.errMsg) {
+        throw new CustomError(dbFilterCreationResult.errMsg, 400);
+      }
+    };
 
     const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
       15_000,
@@ -86,15 +97,15 @@ export default async function handler(
     }
 
     const { data, errMsg } = await retrieveUnits(
-      dbFilterCreationResult?.filterObj as Record<keyof IUnit, unknown>,
-      dbProjections as TProjections
+      (dbFilterCreationResult?.filterObj ?? {}) as Record<keyof IUnit, unknown>,
+      (dbProjections ?? {}) as TProjections
     );
 
     if (errMsg) {
       throw new CustomError(errMsg, 500);
     }
 
-    return response.status(200).json({ lessons: data });
+    return response.status(200).json({ units: data });
   } catch (error: unknown) {
     const {
       code: errorCode,
