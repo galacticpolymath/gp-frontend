@@ -1,17 +1,17 @@
 import { model, Schema } from "mongoose";
 import {
+  IFeaturedMultimedia,
   IFeatureLocation,
   IFeatureName,
   IFeaturing,
   INewUnitSchema,
 } from "./types/unit";
-import { Overview } from "./Overview";
 import { UnitPreview } from "./Preview";
 import { TeachingMaterialsSchema } from "./TeachingMaterials";
 import { GeneralSection } from "./Section";
 import { StandardsSchema } from "./Standards";
 import { Acknowledgments } from './Acknowledgments';
-import { VersionNotes } from "./VersionNotes";
+import { UnitOverview } from "./Overview";
 
 let Units = ("units" in model) ? model("units") : null;
 
@@ -33,6 +33,19 @@ if (!Units) {
     name: FeatureNameSchema,
     location: FeatureLocationSchema,
     links: [String],
+  });
+  const FeaturedMultimedia = new Schema<IFeaturedMultimedia>({
+    code: String,
+    type: String,
+    order: String,
+    forLsn: String,
+    title: String,
+    lessonRelevance: String,
+    description: String,
+    by: String,
+    byLink: String,
+    mainLink: String,
+    otherLink: String,
   });
   const Unit = new Schema<INewUnitSchema>({
     _id: { type: String, required: true },
@@ -80,7 +93,7 @@ if (!Units) {
     UnitCard: String,
     UnitBanner: String,
     LastUpdated_web: Date,
-    FeaturedMultimedia: [Null],
+    FeaturedMultimedia: [FeaturedMultimedia],
     LsnCount: Number,
     QRcode: String,
     GdriveTeachItPermissions: String,
@@ -89,7 +102,7 @@ if (!Units) {
     ForGrades: String,
     GradesOrYears: String,
     Sections: {
-      overview: Overview,
+      overview: UnitOverview,
       preview: UnitPreview,
       teachingMaterials: TeachingMaterialsSchema,
       feedback: GeneralSection,
@@ -97,7 +110,6 @@ if (!Units) {
       standards: StandardsSchema,
       credits: GeneralSection,
       acknowledgements: Acknowledgments,
-      versionNotes: VersionNotes,
     },
     ShortURL: String,
   });

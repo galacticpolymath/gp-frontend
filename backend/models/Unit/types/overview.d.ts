@@ -37,7 +37,7 @@ export interface IOverview extends IUnitSectionObj {
   rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
 }
 
-interface IVerions {
+export interface IUnitVersions {
   major_release: string | null;
   sub_releases: {
     version: string | null;
@@ -47,7 +47,7 @@ interface IVerions {
     acknowledgments: string | null;
   };
 }
-interface IAccessibility {
+export interface IUnitAccessibility {
   Type: string | null;
   Description: string | null;
   Abbrev_Descr: string | null;
@@ -64,13 +64,11 @@ export interface IUnitOverview {
   Text: string | null;
   SteamEpaulette: string | null;
   SteamEpaulette_vert: string | null;
-  Accessibility:
-    IAccessibility[]
-    | null;
+  Accessibility: IUnitAccessibility[] | null;
   Tags:
     | {
         Value: string | null;
       }[]
     | null;
-  versions: IVerions[] | null;
+  versions: IUnitVersions[] | null;
 }
