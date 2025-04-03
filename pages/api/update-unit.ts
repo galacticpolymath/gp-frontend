@@ -1,23 +1,23 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToMongodb } from '../../backend/utils/connection';
 import { CustomError } from '../../backend/utils/errors';
-import { createDbFilter, retrieveUnits, TProjections } from '../../backend/services/unitServices';
-import { IUnit } from '../../backend/models/Unit/types/unit';
+import { createDbFilter, updateUnit } from '../../backend/services/unitServices';
+import { INewUnitSchema } from '../../backend/models/Unit/types/unit';
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
   try {
     const { method, query } = request;
 
-    if (method !== 'GET') {
+    if (method !== 'POST') {
       throw new CustomError('This route only accepts GET requests.', 404);
     }
 
-    const { filterObj, projectionsObj } = (query ?? {}) as { filterObj: string, projectionsObj: string  };
+    const { filterObj, keysAndUpdatedValsObj } = (query ?? {}) as { filterObj: string, keysAndUpdatedValsObj: string  };
 
-    const dbProjections: unknown = (typeof projectionsObj === 'string') ? JSON.parse(projectionsObj) : projectionsObj;
+    const valsToUpdate: Partial<INewUnitSchema> = (typeof keysAndUpdatedValsObj === 'string') ? JSON.parse(keysAndUpdatedValsObj) : keysAndUpdatedValsObj;
     const dbFilter: unknown = (typeof filterObj === 'string') ? JSON.parse(filterObj) : filterObj;
 
-    if (dbProjections && ((typeof dbProjections !== 'object') && (dbProjections === null) || Array.isArray(dbProjections) || (typeof dbProjections !== 'object'))) {
+    if (valsToUpdate && ((typeof valsToUpdate !== 'object') && (valsToUpdate === null) || Array.isArray(valsToUpdate) || (typeof valsToUpdate !== 'object'))) {
       throw new CustomError('`projectionsObj` must be an non-array object.', 400);
     }
 
@@ -41,13 +41,14 @@ export default async function handler(request: NextApiRequest, response: NextApi
       throw new CustomError('Failed to connect to the database.', 500);
     }
 
-    const { data, errMsg } = await retrieveUnits(dbFilterCreationResult?.filterObj as Record<keyof IUnit, unknown>, dbProjections as TProjections);
 
-    if (errMsg) {
+    const { wasSuccessful, errMsg } = await updateUnit(dbFilterCreationResult?.filterObj as Record<keyof INewUnitSchema, unknown>, valsToUpdate);
+
+    if (!wasSuccessful || errMsg) {
       throw new CustomError(errMsg, 500);
     }
 
-    return response.status(200).json({ lessons: data });
+    return response.status(200).json({ msg: "Successfully updated the target unit" });
   } catch (error: unknown) {
     const { code: errorCode, message: errorMessage }: { code?: number, message?: string } = error ?? {};
     const code = errorCode ?? 500;

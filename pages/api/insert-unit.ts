@@ -11,6 +11,8 @@ export default async function handler(request: NextApiRequest, response: NextApi
       (request?.body?.unit && (typeof request?.body?.unit === 'object') && !Object.keys(request?.body?.unit)?.length) ||
       (typeof request?.body?.unit !== 'object')
     ) {
+      console.error('Invalid request: The `request.body.unit` is either empty or not of the correct data type.');
+
       return response.status(400).json({ msg: 'The `request.body.unit` is empty or the wrong data type.' });
     }
 

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { INewUnitSchema } from "../models/Unit/types/unit";
+import { INewUnitSchema, IUnit } from "../models/Unit/types/unit";
 import Unit from "../models/Unit/Unit";
 
 const insertUnit = async (unit: INewUnitSchema) => {
@@ -56,7 +56,7 @@ const deleteUnit = async (unitId: string) => {
   }
 };
 
-const createFilterObj = (filterObjKeyAndValPairs: [string, unknown[]][]) => {
+const createDbFilter = (filterObjKeyAndValPairs: [string, unknown[]][]) => {
   try {
     const areFilterValuesValid = filterObjKeyAndValPairs.every(
       ([, filterVal]) => Array.isArray(filterVal)
@@ -110,11 +110,16 @@ const createFilterObj = (filterObjKeyAndValPairs: [string, unknown[]][]) => {
   }
 };
 
-const retrieveLessons = async (
-  filterObj = {},
-  projectionObj = {},
-  limit = 0,
-  sort = {}
+type TSort = {
+    [key in keyof IUnit]: "asc" | "desc" | "ascending" | "descending" | 1 | -1;
+}
+export type TProjections = { [key in keyof IUnit]: 0 | 1 }
+
+const retrieveUnits = async (
+  filterObj: { [key in keyof IUnit]: unknown },
+  projectionObj: TProjections,
+  limit: number = 0,
+  sort?: TSort
 ) => {
   try {
     if (!Unit) {
@@ -124,7 +129,7 @@ const retrieveLessons = async (
     }
 
     const units = await Unit.find(filterObj, projectionObj)
-      .sort(sort)
+      .sort(sort ?? {})
       .limit(limit)
       .lean();
 
@@ -132,13 +137,16 @@ const retrieveLessons = async (
   } catch (error) {
     const errMsg = `Failed to get the lesson from the database. Error message: ${error}.`;
 
-    console.error("errMsg in the `retrieveLessons` function: ", errMsg);
+    console.error("errMsg in the `retrieveUnits` function: ", errMsg);
 
     return { wasSuccessful: false, errMsg: errMsg };
   }
 };
 
-const updateLesson = async (filterObj = {}, updatedLessonsKeysAndValsObj: any) => {
+const updateUnit = async (
+  filterObj: { [key in keyof INewUnitSchema]: unknown },
+  updatedProps: Partial<INewUnitSchema>
+) => {
   try {
     // an example of lesson being updated:
     // section.participants[0].name = "John Doe"
@@ -148,9 +156,9 @@ const updateLesson = async (filterObj = {}, updatedLessonsKeysAndValsObj: any) =
       );
     }
 
-    await Unit.updateMany(filterObj, { $set: updatedLessonsKeysAndValsObj });
+    const { modifiedCount } = await Unit.updateMany(filterObj, { $set: updatedProps }).lean();
 
-    return { wasSuccessful: true };
+    return { wasSuccessful: modifiedCount === 1 };
   } catch (error) {
     const errMsg = `Failed to update the target lesson. Error message: ${error}.`;
 
@@ -160,10 +168,4 @@ const updateLesson = async (filterObj = {}, updatedLessonsKeysAndValsObj: any) =
   }
 };
 
-export {
-  insertUnit,
-  deleteUnit,
-  retrieveLessons,
-  updateLesson,
-  createFilterObj,
-};
+export { insertUnit, deleteUnit, retrieveUnits, updateUnit, createDbFilter };
