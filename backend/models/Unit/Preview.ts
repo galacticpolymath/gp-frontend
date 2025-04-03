@@ -37,13 +37,11 @@ const MultimediaSchema = new Schema<IMultimedia>({
 
 export interface IUnitPreview extends IUnitSectionObj {
     QuickPrep: string;
-    Multimedia: IMultimedia[];
     InitiallyExpanded: boolean;
 }
 
 export const UnitPreview = new Schema<IUnitPreview>({
     ...unitSectionObj,
     QuickPrep: String,
-    Multimedia: [MultimediaSchema],
     InitiallyExpanded: Boolean,
 }, { _id: false });

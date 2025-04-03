@@ -10,7 +10,7 @@ import { UnitPreview } from "./Preview";
 import { TeachingMaterialsSchema } from "./TeachingMaterials";
 import { GeneralSection } from "./Section";
 import { StandardsSchema } from "./Standards";
-import { Acknowledgments } from "./Acknowledgments";
+import { Acknowledgments } from './Acknowledgments';
 import { VersionNotes } from "./VersionNotes";
 
 let Units = ("units" in model) ? model("units") : null;
@@ -78,6 +78,12 @@ if (!Units) {
     SponsoredBy: String,
     SponsorLogo: [String],
     UnitCard: String,
+    UnitBanner: String,
+    LastUpdated_web: Date,
+    FeaturedMultimedia: [Null],
+    LsnCount: Number,
+    QRcode: String,
+    GdriveTeachItPermissions: String,
     TargetSubject: String,
     LessonEnvir: String,
     ForGrades: String,

@@ -64,7 +64,7 @@ const VersionSchema = new Schema<IVersion>({
 
 export const Overview = new Schema<IOverview>({
     __component: String,
-    initiallyExpanded: Boolean,
+    InitiallyExpanded: Boolean,
     SectionTitle: String,
     UnitSummary: String,
     EstUnitTime: String,
