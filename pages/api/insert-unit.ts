@@ -1,7 +1,6 @@
 /* eslint-disable quotes */
 
 import { NextApiRequest, NextApiResponse } from "next";
-import { insertLesson } from "../../backend/services/lessonsServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
