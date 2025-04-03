@@ -9,6 +9,8 @@ const DB_ADMIN_ROUTES = [
   "/api/insert-lesson",
   "/api/delete-lesson",
   "/api/update-lessons",
+  "/api/delete-unit",
+  "/api/update-unit",
   "/api/get-users",
 ];
 const USER_ACCOUNT_ROUTES = [
@@ -350,6 +352,8 @@ export const config = {
     "/api/user-confirms-mailing-list-sub",
     "/api/get-users",
     "/api/copy-files",
-    "/api/get-signed-in-user-brevo-status"
+    "/api/get-signed-in-user-brevo-status",
+    "/api/delete-unit",
+    "/api/update-unit",
   ],
 };

@@ -103,6 +103,8 @@ export default async function handler(
     const code = errorCode ?? 500;
     const message = errorMessage ?? "An error has occurred on the server.";
 
+    console.error("Error in the `getUnits` API route:", error);
+
     return response
       .status(code ?? 500)
       .json({
