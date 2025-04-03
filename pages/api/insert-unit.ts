@@ -5,6 +5,7 @@ import { insertLesson } from "../../backend/services/lessonsServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
+import { insertUnit } from "../../backend/services/unitServices";
 
 export default async function handler(
   request: NextApiRequest,
@@ -34,7 +35,7 @@ export default async function handler(
       throw new CustomError("Failed to connect to the database.", 500);
     }
 
-    const { status, msg } = await insertLesson(newUnit);
+    const { status, msg } = await insertUnit(newUnit);
 
     if (status !== 200) {
       throw new CustomError(msg, status);
