@@ -22,11 +22,9 @@ export default async function handler(
         "Invalid request: The `request.body.unit` is either empty or not of the correct data type."
       );
 
-      return response
-        .status(400)
-        .json({
-          msg: "The `request.body.unit` is empty or the wrong data type.",
-        });
+      return response.status(400).json({
+        msg: "The `request.body.unit` is empty or the wrong data type.",
+      });
     }
 
     const newUnit: INewUnitSchema = request?.body?.unit;

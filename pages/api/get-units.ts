@@ -1,4 +1,6 @@
 /* eslint-disable quotes */
+/* eslint-disable no-console */
+/* eslint-disable indent */
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectToMongodb } from "../../backend/utils/connection";
@@ -69,8 +71,8 @@ export default async function handler(
 
     let dbFilterCreationResult: { filterObj?: Record<string, unknown> | undefined, errMsg?: string | undefined | unknown } = {
       filterObj: {} as Record<string, unknown>,
-      errMsg: ""
-    }
+      errMsg: "",
+    };
 
     if(dbFilter && typeof dbFilter === "object"){
       const dbFilterEntries = Object.entries(
