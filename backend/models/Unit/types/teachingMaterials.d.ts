@@ -147,12 +147,12 @@ interface ILsnPrep {
 }
 
 interface IChunkStep {
-  Step: number;
-  StepTitle: string;
-  StepQuickDescription: string;
+  Step: number | null;
+  StepTitle: string | null;
+  StepQuickDescription: string | null;
   StepDetails: string | null;
   Vocab: string | null;
-  VariantNotes: null;
+  VariantNotes: string |null;
   TeachingTips: string | null;
 }
 
@@ -163,7 +163,7 @@ interface IChunk {
   steps: IChunkStep[];
 }
 
-interface IUnitLesson {
+interface INewUnitLesson {
   title: string | null;
   lsn: number | null;
   status: string | null;
@@ -190,14 +190,19 @@ interface IUnitLesson {
   goingFurther: string | null;
 }
 
+
+
+export interface IVocab {
+  term: string;
+  definition: string;
+}
+
+
 export interface IUnitTeachingMaterials extends IUnitSectionObj {
   unitDur: string;
   unitPreface: string;
-  gatheredVocab: {
-    term: string;
-    definition: string;
-  }[];
+  gatheredVocab: IVocab[];
   classroom: {
-    resources: IResource<IUnitLesson>[];
+    resources: IResource<INewUnitLesson>[];
   };
 }
