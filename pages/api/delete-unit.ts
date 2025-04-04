@@ -13,22 +13,14 @@ export default async function handler(
 ) {
   try {
     const { _id, key, val } = request.query;
+    // log the parameters
+    console.log({
+      _id, key, val
+    })
     let queryPair: [string, unknown] | undefined;
 
     if (typeof key === "string" && typeof val === "string") {
       queryPair = [key, val];
-    }
-
-    const numID = typeof _id === "string" ? parseInt(_id as string) : null;
-
-    if (
-      typeof _id === "string" &&
-      ((typeof numID === "number" && isNaN(numID)) || numID == null)
-    ) {
-      throw new CustomError(
-        `Must provide a valid value for numID of the unit to delete. Required type: number. Retrieved value: ${_id}`,
-        400
-      );
     }
 
     const { wasSuccessful } = await connectToMongodb(15_000, 0, true);
@@ -37,9 +29,7 @@ export default async function handler(
       throw new CustomError("Failed to connect to the database.", 500);
     }
 
-    console.log("numID, yo there: ", numID);
-
-    const { status, msg } = await deleteUnit(numID, queryPair);
+    const { status, msg } = await deleteUnit(_id as (string | undefined), queryPair);
 
     return response.status(status).json({ msg });
   } catch (error) {

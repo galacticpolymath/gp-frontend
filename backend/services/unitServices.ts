@@ -33,12 +33,12 @@ const insertUnit = async (unit: INewUnitSchema) => {
 };
 
 const deleteUnit = async (
-  unitId: number | null,
+  _id?: string,
   queryPair?: [string, unknown]
 ) => {
   try {
     console.log(
-      `Attempting to delete unit with id ${unitId} and queryPair ${JSON.stringify(
+      `Attempting to delete unit with id ${_id} and queryPair ${JSON.stringify(
         queryPair
       )}`
     );
@@ -50,7 +50,7 @@ const deleteUnit = async (
       );
     }
 
-    if (!unitId && !queryPair) {
+    if (!_id && !queryPair) {
       return {
         status: 500,
         msg: "Both `unitId` and `queryPair` are falsy. At least one of them must have a value.",
@@ -63,7 +63,7 @@ const deleteUnit = async (
       const [key, val] = queryPair;
       deletionResult = await Unit.deleteOne({ [key]: val });
     } else {
-      deletionResult = await Unit.deleteOne({ numID: unitId });
+      deletionResult = await Unit.deleteOne({ _id });
     }
 
     if (deletionResult.deletedCount === 0) {
