@@ -240,7 +240,16 @@ export async function middleware(request) {
       (nextUrl.pathname == "/api/insert-lesson" &&
         method === "POST" &&
         authorizationStr) ||
+      (nextUrl.pathname == "/api/insert-unit" &&
+        method === "POST" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/update-unit" &&
+        method === "PUT" &&
+        authorizationStr) ||
       (nextUrl.pathname == "/api/delete-lesson" &&
+        method === "DELETE" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/delete-unit" &&
         method === "DELETE" &&
         authorizationStr) ||
       (nextUrl.pathname == "/api/delete-user" &&
