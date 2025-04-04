@@ -15,8 +15,10 @@ export default async function handler(
     const { _id, key, val } = request.query;
     // log the parameters
     console.log({
-      _id, key, val
-    })
+      _id,
+      key,
+      val,
+    });
     let queryPair: [string, unknown] | undefined;
 
     if (typeof key === "string" && typeof val === "string") {
@@ -29,7 +31,10 @@ export default async function handler(
       throw new CustomError("Failed to connect to the database.", 500);
     }
 
-    const { status, msg } = await deleteUnit(_id as (string | undefined), queryPair);
+    const { status, msg } = await deleteUnit(
+      _id as string | undefined,
+      queryPair
+    );
 
     return response.status(status).json({ msg });
   } catch (error) {
