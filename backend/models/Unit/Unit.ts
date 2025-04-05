@@ -12,7 +12,6 @@ import { GeneralSection } from "./Section";
 import { StandardsSchema } from "./Standards";
 import { Acknowledgments } from "./Acknowledgments";
 import { UnitOverview } from "./Overview";
-import { Model } from "mongoose";
 
 const FeatureNameSchema = new Schema<IFeatureName>({
   first: String,
