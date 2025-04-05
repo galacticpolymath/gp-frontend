@@ -12,6 +12,16 @@ function checkIfElementHasTxt(identifier) {
     });
 }
 
+function checkIfElementHasChildren(identifier) {
+    cy.get(identifier).should(($elements) => {
+        $elements.each((index, element) => {
+            const hasChildren = Cypress.$(element).children().length > 0; // Check child count
+            console.log(`Element at index ${index} has children: ${hasChildren}`);
+            expect(hasChildren).to.be.true; // Assert that the element has children
+        });
+    });
+}
+
 // create a functoin that will check if a element is visible
 function checkIfElementIsVisible(identifier) {
     cy.get(identifier).should("be.visible");
@@ -101,7 +111,21 @@ describe("Check unit page formatting", () => {
 
         checkIfElementHasTxt(".lesson-step-teaching-tips-testing");
 
+        checkIfElementHasTxt(".subject-header-testing");
+
+        checkIfElementHasTxt(".subject-name");
+
+        checkIfElementHasTxt(".statement-txt-testing");
+
+        checkIfElementHasTxt(".alignment-notes-testing");
+
+        checkIfElementHasTxt(".ack-role-testing");
+
+        checkIfElementHasTxt(".ack-affiliation-testing");
+
         checkIfElementIsVisible("#teach-it-sec")
+
+        checkIfElementHasChildren(".section-testing")
 
         cy.get("#materials-title").should(($element) => {
             const headingTxt = $element.text();

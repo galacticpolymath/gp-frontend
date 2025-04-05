@@ -58,10 +58,15 @@ const getSectionDotsDefaultVal = (sectionComps) =>
   });
 
 const getLessonSections = (sectionComps) =>
-  sectionComps.map((section, index) => ({
-    ...section,
-    SectionTitle: `${index}. ${section.SectionTitle}`,
-  }));
+  sectionComps.map((section, index) => {
+    const sectionClassNameForTesting = "section-testing";
+
+    return {
+      ...section,
+      sectionClassNameForTesting,
+      SectionTitle: `${index}. ${section.SectionTitle}`,
+    };
+  });
 const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
   return sectionComps.map((section) => {
     if (section?.SectionTitle?.includes("Teaching Materials")) {

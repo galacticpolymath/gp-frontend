@@ -12,9 +12,11 @@ const CollapsibleRichTextSection = ({
   InitiallyExpanded,
   ...props
 }) => {
-  const { _sectionDots, SectionTitle } = props;
+  const { _sectionDots, SectionTitle, sectionClassNameForTesting } = props;
   const ref = useRef();
   const sectionTitle = SectionTitle.split(' ').slice(1).join('_');
+  const className = props.className ? `${props.className} ${sectionClassNameForTesting}` : sectionClassNameForTesting;
+  props = { ...props, className };
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
