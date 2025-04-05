@@ -37,6 +37,8 @@ import {
   useUserContext,
 } from "../../../../providers/UserProvider";
 import { IUserSession, TSetter } from "../../../../types/global";
+import { INewUnitSchema as IUnit } from "../../../../backend/models/Unit/types/unit";
+import Units from "../../../../backend/models/Unit";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -99,9 +101,10 @@ const addGradesOrYearsProperty = (
 
 interface IProps {
   lesson: any;
+  unit?: IUnit;
 }
 
-const LessonDetails = ({ lesson }: IProps) => {
+const LessonDetails = ({ lesson, unit }: IProps) => {
   const router = useRouter();
   const { _isUserTeacher } = useUserContext();
   const { status, data } = useSession();
@@ -663,7 +666,9 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (
   };
 };
 
-export const getStaticProps = async (arg) => {
+export const getStaticProps = async (arg: {
+  params: { id: string; loc: string };
+}) => {
   try {
     const {
       params: { id, loc },
@@ -675,7 +680,11 @@ export const getStaticProps = async (arg) => {
       throw new Error("Failed to connect to the database.");
     }
 
+    const targetUnits = await Units.find({ numID: id }, { __v: 0 }).lean();
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
+
+    console.log("targetUnits: ", targetUnits);
+
     let lessonToDisplayOntoUi = targetLessons.find(
       ({ numID, locale }) => numID === parseInt(id) && locale === loc
     );
@@ -743,7 +752,9 @@ export const getStaticProps = async (arg) => {
                 url && isWebResource ? await getLinkPreviewObj(url) : null;
 
               if (
-                webAppPreview?.images?.length &&
+                webAppPreview &&
+                "images" in webAppPreview &&
+                webAppPreview?.images &&
                 typeof webAppPreview.images[0] === "string"
               ) {
                 itemListUpdated.push({
@@ -786,7 +797,7 @@ export const getStaticProps = async (arg) => {
         lessonParts.push(resourceLessons);
       }
 
-      lessonParts = lessonParts.filter((lesson) => {
+      lessonParts = lessonParts.filter((lesson: any) => {
         if (lesson.title === "Assessments") {
           return true;
         }
@@ -795,18 +806,20 @@ export const getStaticProps = async (arg) => {
       });
 
       lessonParts.forEach((lessonPartsArr, index) => {
-        lessonToDisplayOntoUi.Section[
-          "teaching-materials"
-        ].Data.classroom.resources[index].lessons = lessonPartsArr;
+        if (lessonToDisplayOntoUi) {
+          lessonToDisplayOntoUi.Section[
+            "teaching-materials"
+          ].Data.classroom.resources[index].lessons = lessonPartsArr;
+        }
       });
     } else if (
       resources?.length > 1 &&
-      resources?.every(({ lessons }) => lessons)
+      resources?.every((resource: any) => resource?.lessons)
     ) {
       lessonToDisplayOntoUi.Section[
         "teaching-materials"
-      ].Data.classroom.resources = resources.map((resource) => {
-        const lessonsUpdated = resource.lessons.map((lesson) =>
+      ].Data.classroom.resources = resources.map((resource: any) => {
+        const lessonsUpdated = resource.lessons.map((lesson: any) =>
           updateLessonWithGoogleDriveFiledPreviewImg(
             lesson,
             lessonToDisplayOntoUi
@@ -852,11 +865,11 @@ export const getStaticProps = async (arg) => {
     };
 
     const multiMediaFalsyValsFilteredOut = multiMediaArr?.length
-      ? multiMediaArr.filter((multiMedia) => multiMedia?.mainLink)
+      ? multiMediaArr.filter((multiMedia: any) => multiMedia?.mainLink)
       : [];
     const isVidOrWebAppPresent = multiMediaFalsyValsFilteredOut?.length
       ? multiMediaFalsyValsFilteredOut.some(
-          ({ type }) => type === "web-app" || type === "video"
+          ({ type }: { type: string }) => type === "web-app" || type === "video"
         )
       : false;
 
@@ -879,9 +892,9 @@ export const getStaticProps = async (arg) => {
         }
 
         if (multiMediaItem.type === "web-app" && multiMediaItem?.mainLink) {
-          const { errMsg, images, title } = await getLinkPreviewObj(
+          const { errMsg, images, title } = (await getLinkPreviewObj(
             multiMediaItem?.mainLink
-          );
+          )) as { errMsg: string; images: string[]; title: string };
 
           if (errMsg && !images?.length) {
             console.error(
