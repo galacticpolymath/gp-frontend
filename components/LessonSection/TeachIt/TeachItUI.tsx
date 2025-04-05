@@ -19,8 +19,8 @@ import {
   ILesson,
   ILessonDetail,
   ILink,
+  INewUnitLesson,
   IResource,
-  IUnitLesson,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import Button from "../../General/Button";
@@ -51,7 +51,7 @@ interface TeachItUIProps<
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
   selectedGradeResources: ILink;
-  parts: (ILessonForUI | IUnitLesson)[];
+  parts: (ILessonForUI | INewUnitLesson)[];
   dataLesson: ILessonDetail[];
   GradesOrYears: string | null;
   ForGrades: string | null;

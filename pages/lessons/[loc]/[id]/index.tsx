@@ -304,11 +304,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
     []
   );
-<<<<<<< HEAD:pages/lessons/[loc]/[id]/index.tsx
   // print _sections
   console.log("_sections, yo there: ", _sections);
-=======
->>>>>>> backend-development:pages/lessons/[loc]/[id]/index.js
   const _dots = useMemo(
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []

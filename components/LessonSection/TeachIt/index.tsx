@@ -28,9 +28,9 @@ import {
   IClassroom,
   ILessonDetail,
   ILink,
+  INewUnitLesson,
   IResource,
   ITeachingMaterialsDataForUI,
-  IUnitLesson,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import { IItemForClient, ILessonForUI } from "../../../types/global";
@@ -159,7 +159,7 @@ const TeachIt = (props: TeachItProps) => {
     classroom?.resources?.[0] ?? {}
   );
   const handleOnChangeForNewUnitResources = (
-    selectedGrade: IResource<IUnitLesson>
+    selectedGrade: IResource<INewUnitLesson>
   ) => {
     setSelectedGradeResources(selectedGrade.links as ILink);
     setUnitLessonResources(selectedGrade);
@@ -291,7 +291,7 @@ const TeachIt = (props: TeachItProps) => {
       resources={resources}
     />
   ) : (
-    <TeachItUI<IUnitLesson, IResource<ILessonForUI>>
+    <TeachItUI<INewUnitLesson, IResource<ILessonForUI>>
       ref={ref}
       ForGrades={ForGrades}
       lessonDur={unitDur}
