@@ -36,7 +36,7 @@ import {
   UserContext,
   useUserContext,
 } from "../../../../providers/UserProvider";
-import { TSetter } from "../../../../types/global";
+import { IUserSession, TSetter } from "../../../../types/global";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -48,8 +48,8 @@ const NAV_CLASSNAMES = [
   "sectionTitleSpan",
 ];
 
-const getSectionDotsDefaultVal = (sectionComps) =>
-  sectionComps.map((section, index) => {
+const getSectionDotsDefaultVal = (sectionComps: any) =>
+  sectionComps.map((section: any, index: number) => {
     const _sectionTitle = `${index}. ${section.SectionTitle}`;
     const sectionId = _sectionTitle.replace(/[\s!]/gi, "_").toLowerCase();
 
@@ -62,8 +62,8 @@ const getSectionDotsDefaultVal = (sectionComps) =>
     };
   });
 
-const getLessonSections = (sectionComps) =>
-  sectionComps.map((section, index) => {
+const getLessonSections = (sectionComps: any) =>
+  sectionComps.map((section: any, index: number) => {
     const sectionClassNameForTesting = "section-testing";
 
     return {
@@ -72,8 +72,12 @@ const getLessonSections = (sectionComps) =>
       SectionTitle: `${index}. ${section.SectionTitle}`,
     };
   });
-const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
-  return sectionComps.map((section) => {
+const addGradesOrYearsProperty = (
+  sectionComps: any,
+  ForGrades: string,
+  GradesOrYears: string
+) => {
+  return sectionComps.map((section: any) => {
     if (section?.SectionTitle?.includes("Teaching Materials")) {
       return {
         ...section,
@@ -93,11 +97,15 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
   });
 };
 
-const LessonDetails = ({ lesson }) => {
+interface IProps {
+  lesson: any;
+}
+
+const LessonDetails = ({ lesson }: IProps) => {
   const router = useRouter();
   const { _isUserTeacher } = useUserContext();
   const { status, data } = useSession();
-  const { token } = data ?? {};
+  const { token } = (data ?? {}) as IUserSession;
   const statusRef = useRef(status);
   const {
     _notifyModal,
@@ -539,23 +547,19 @@ const LessonDetails = ({ lesson }) => {
       )}
       <LessonsSecsNavDots
         _sectionDots={[sectionDots, setSectionDots]}
-        setWillGoToTargetSection={setWillGoToTargetSection}
         setIsScrollListenerOn={setIsScrollListenerOn}
         isScrollListenerOn={isScrollListenerOn}
-        setWasDotClicked={setWasDotClicked}
       />
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container">
         <div className="p-sm-3 pt-0">
-          {_sections.map((section, index) => (
+          {_sections.map((section: any, index: number) => (
             <ParentLessonSection
               key={index}
               section={section}
               ForGrades={lesson.ForGrades}
               index={index}
               _sectionDots={[sectionDots, setSectionDots]}
-              _wasDotClicked={[wasDotClicked, setWasDotClicked]}
-              _isScrollListenerOn={[isScrollListenerOn, setIsScrollListenerOn]}
             />
           ))}
         </div>
@@ -587,7 +591,7 @@ export const getStaticPaths = async () => {
   }
 };
 
-const getGoogleDriveFileIdFromUrl = (url) => {
+const getGoogleDriveFileIdFromUrl = (url: string) => {
   if (typeof url !== "string") {
     return null;
   }
@@ -609,14 +613,14 @@ const getGoogleDriveFileIdFromUrl = (url) => {
 };
 
 const updateLessonWithGoogleDriveFiledPreviewImg = (
-  lesson,
-  lessonToDisplayOntoUi
+  lesson: any,
+  lessonToDisplayOntoUi: any
 ) => {
   let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
 
   // getting the thumbnails for the google drive file handouts for each lesson
   if (lesson?.itemList?.length) {
-    const itemListUpdated = lesson.itemList.map((itemObj) => {
+    const itemListUpdated = lesson.itemList.map((itemObj: any) => {
       const googleDriveFileId = itemObj?.links[0]?.url
         ? getGoogleDriveFileIdFromUrl(itemObj.links[0].url)
         : null;
@@ -642,7 +646,7 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (
     Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) &&
     lessonToDisplayOntoUi?.LsnStatuses?.length
       ? lessonToDisplayOntoUi.LsnStatuses.find(
-          (lsnStatus) => lsnStatus?.lsn == lesson.lsn
+          (lsnStatus: any) => lsnStatus?.lsn == lesson.lsn
         )
       : null;
 
@@ -693,7 +697,7 @@ export const getStaticProps = async (arg) => {
       lessonToDisplayOntoUi?.Section?.["teaching-materials"]?.Data?.classroom
         ?.resources;
 
-    if (resources?.every((resource) => resource.lessons)) {
+    if (resources?.every((resource: any) => resource.lessons)) {
       lessonParts = [];
 
       // get all of preview images of google drive files
@@ -715,13 +719,13 @@ export const getStaticProps = async (arg) => {
 
               if (itemObj?.links?.length) {
                 itemObj.links = links.filter(
-                  ({ linkText, url }) =>
+                  ({ linkText, url }: { linkText: string; url: string }) =>
                     linkText !== "Not shareable on GDrive" || url
                 );
               }
 
               const isWebResource = itemCat === "web resource";
-              const url = links.find((link) => link?.url)?.url;
+              const url = links.find((link: any) => link?.url)?.url;
               const googleDriveFileId =
                 url && !isWebResource ? getGoogleDriveFileIdFromUrl(url) : null;
 
