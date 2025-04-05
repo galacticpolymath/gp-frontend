@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, models } from "mongoose";
 import { Overview } from "./Overview";
 import { UnitPreview } from "./Preview";
 import { TeachingMaterialsSchema } from "./TeachingMaterials";
@@ -101,7 +101,7 @@ if (!Units) {
         ShortURL: String,
     })
 
-    Units = model('units', UnitSchema);
+    Units = models.units ?? model("units", UnitSchema);
 }
 
 export default Units;

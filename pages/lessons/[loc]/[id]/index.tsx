@@ -38,7 +38,7 @@ import {
 } from "../../../../providers/UserProvider";
 import { IUserSession, TSetter } from "../../../../types/global";
 import { INewUnitSchema as IUnit } from "../../../../backend/models/Unit/types/unit";
-import Units from "../../../../backend/models/Unit";
+import Units from "../../../../backend/models/Unit/Unit";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -777,7 +777,7 @@ export const getStaticProps = async (arg: {
             Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) &&
             lessonToDisplayOntoUi?.LsnStatuses?.length
               ? lessonToDisplayOntoUi.LsnStatuses.find(
-                  (lsnStatus) => lsnStatus?.lsn == lesson.lsn
+                  (lsnStatus: any) => lsnStatus?.lsn == lesson.lsn
                 )
               : null;
 
