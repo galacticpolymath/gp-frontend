@@ -1,4 +1,6 @@
-import { IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFieldsToRetrieve';
+import { {
+    
+} RootFieldToRetrieve } from './RootFieldsToRetrieve';
 import mongoose from 'mongoose'
 import { IOverview, IUnitAccessibility, IUnitOverview, IUnitVersions } from './types/overview';
 
@@ -67,60 +69,6 @@ const VersionSchema = new Schema<IUnitVersions>({
     sub_releases: [SubReleaseSchema]
 }, { _id: false });
 
-export const Overview = new Schema<IOverview>({
-    __component: String,
-    InitiallyExpanded: Boolean,
-    SectionTitle: String,
-    UnitSummary: String,
-    EstUnitTime: String,
-    Text: String,
-    SteamEpaulette: String,
-    SteamEpaulette_vert: String,
-    Accessibility: [UnitAccessibilitySchema],
-    Tags: [TagSchema],
-    versions: [VersionSchema],
-    rootFieldsToRetrieveForUI: {
-        type: [RootFieldToRetrieve],
-        default: () => {
-            let rootFields = [
-                {
-                    name: "unitBanner",
-                    as: "lessonBannerUrl"
-                },
-                {
-                    name: "Title",
-                    as: "unitTitle"
-                },
-                {
-                    name: "ForGrades",
-                    as: "ForGrades"
-                },
-                {
-                    name: "TargetSubject",
-                    as: "TargetSubject"
-                },
-                {
-                    name: "GradesOrYears",
-                    as: "GradesOrYears"
-                },
-                {
-                    name: "numID",
-                    as: "numID"
-                },
-                {
-                    name: "locale",
-                    as: "locale"
-                },
-                {
-                    name: "Subtitle",
-                    as: "Subtitle"
-                },
-            ]
-
-            return rootFields;
-        }
-    },
-}, { _id: false });
 
 export const UnitOverview = new Schema<IUnitOverview>({
     __component: String,
@@ -135,4 +83,7 @@ export const UnitOverview = new Schema<IUnitOverview>({
     Accessibility: [AccessibilitySchema],
     Tags: [TagSchema],
     versions: [VersionSchema],
+    rootFieldsToRetrieveForUI: {
+        
+    }
 })

@@ -2,7 +2,7 @@
 
 import { DeleteResult } from "mongoose";
 import { INewUnitSchema, IUnit } from "../models/Unit/types/unit";
-import Unit from "../models/Unit/Unit";
+import Unit from "../models/Unit";
 
 const insertUnit = async (unit: INewUnitSchema) => {
   try {

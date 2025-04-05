@@ -680,7 +680,7 @@ export const getStaticProps = async (arg: {
       throw new Error("Failed to connect to the database.");
     }
 
-    const targetUnits = await Units.find<>({ numID: id }, { __v: 0 }).lean();
+    const targetUnits = await Units.find({ numID: id }, { __v: 0 }).lean();
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
 
     if (!targetUnits?.length) {

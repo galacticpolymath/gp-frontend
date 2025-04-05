@@ -1,14 +1,14 @@
-import { Schema, model, models } from "mongoose";
-import { Overview } from "./Overview";
+import { Model, Schema, model, models } from "mongoose";
+import { UnitOverview } from "./Overview";
 import { UnitPreview } from "./Preview";
 import { TeachingMaterialsSchema } from "./TeachingMaterials";
 import { GeneralSection } from "./Section";
 import { Acknowledgments } from "./Acknowledgments";
 import { VersionNotes } from "./VersionNotes";
-import { IFeatureLocation, IFeatureName, IFeaturing, ILsnStatus, INewUnitSchema } from "./types/unit";
+import { IFeaturedMultimedia, IFeatureLocation, IFeatureName, IFeaturing, ILsnStatus, INewUnitSchema } from "./types/unit";
 import { StandardsSchema } from "./Standards";
 
-let Units = models.units as I;
+let Units = models.units as Model<INewUnitSchema, {}, {}, {}, any, any>;
 
 if (!Units) {
     const FeatureNameSchema = new Schema<IFeatureName>({
@@ -16,6 +16,19 @@ if (!Units) {
         middle: String,
         last: String,
         prefix: String,
+    });
+    const FeaturedMultimedia = new Schema<IFeaturedMultimedia>({
+      code: String,
+      type: String,
+      order: String,
+      forLsn: String,
+      title: String,
+      lessonRelevance: String,
+      description: String,
+      by: String,
+      byLink: String,
+      mainLink: String,
+      otherLink: String,
     });
     const FeatureLocationSchema = new Schema<IFeatureLocation>({
         instition: String,
@@ -85,7 +98,7 @@ if (!Units) {
       ForGrades: String,
       GradesOrYears: String,
       Sections: {
-        overview: Overview,
+        overview: UnitOverview,
         preview: UnitPreview,
         teachingMaterials: TeachingMaterialsSchema,
         feedback: GeneralSection,

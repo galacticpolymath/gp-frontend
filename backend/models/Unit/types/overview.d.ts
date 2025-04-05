@@ -71,4 +71,5 @@ export interface IUnitOverview {
       }[]
     | null;
   versions: IUnitVersions[] | null;
+  rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
 }

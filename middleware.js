@@ -361,10 +361,10 @@ export const config = {
     "/api/update-user",
     "/api/user-confirms-mailing-list-sub",
     "/api/get-users",
-    "/api/insert-unit",
     "/api/copy-files",
     "/api/get-signed-in-user-brevo-status",
-    "/api/delete-unit",
+    // "/api/insert-unit",
+    // "/api/delete-unit",
     "/api/update-unit",
   ],
 };
