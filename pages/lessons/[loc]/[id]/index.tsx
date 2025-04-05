@@ -27,11 +27,15 @@ import { useSession } from "next-auth/react";
 import {
   defautlNotifyModalVal,
   ModalContext,
+  useModalContext,
 } from "../../../../providers/ModalProvider";
 import { CustomNotifyModalFooter } from "../../../../components/Modals/Notify";
 import { getUserAccountData } from "../../../account";
 import axios from "axios";
-import { UserContext } from "../../../../providers/UserProvider";
+import {
+  UserContext,
+  useUserContext,
+} from "../../../../providers/UserProvider";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -90,7 +94,7 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
 
 const LessonDetails = ({ lesson }) => {
   const router = useRouter();
-  const { _isUserTeacher } = useContext(UserContext);
+  const { _isUserTeacher } = useUserContext();
   const { status, data } = useSession();
   const { token } = data ?? {};
   const statusRef = useRef(status);
@@ -99,7 +103,7 @@ const LessonDetails = ({ lesson }) => {
     _isLoginModalDisplayed,
     _isCreateAccountModalDisplayed,
     _customModalFooter,
-  } = useContext(ModalContext);
+  } = useModalContext();
   const [, setIsUserTeacher] = _isUserTeacher;
   const [, setNotifyModal] = _notifyModal;
   const [, setCustomModalFooter] = _customModalFooter;
@@ -108,7 +112,7 @@ const LessonDetails = ({ lesson }) => {
   const lessonSectionObjEntries = lesson?.Section
     ? Object.entries(lesson.Section)
     : [];
-  let lessonStandardsIndexesToFilterOut = [];
+  let lessonStandardsIndexesToFilterOut: number[] = [];
   let lessonStandardsSections = lessonSectionObjEntries.filter(
     ([sectionName], index) => {
       if (
@@ -121,21 +125,23 @@ const LessonDetails = ({ lesson }) => {
 
       return false;
     }
-  );
+  ) as any;
   const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length
     ? lessonStandardsSections?.length === 1
     : false;
-  let sectionComps =
+  let sectionComps = (
     lesson?.Section &&
     typeof lesson?.Section === "object" &&
     lesson?.Section !== null
-      ? Object.values(lesson.Section).filter(
-          ({ SectionTitle }) => SectionTitle !== "Procedure"
-        )
-      : null;
+      ? Object.values(lesson.Section).filter((section) => {
+          return (section as any).SectionTitle !== "Procedure";
+        })
+      : null
+  ) as any;
 
   if (sectionComps?.length) {
-    sectionComps[0] = { ...sectionComps[0], SectionTitle: "Overview" };
+    const firstSection = sectionComps[0] as any;
+    sectionComps[0] = { ...firstSection, SectionTitle: "Overview" };
   }
 
   if (
@@ -144,17 +150,19 @@ const LessonDetails = ({ lesson }) => {
     lessonStandardsSections?.length
   ) {
     lessonStandardsSections = structuredClone(
-      lessonStandardsSections.map(
-        ([, lessonStandardsObj]) => lessonStandardsObj
-      )
+      lessonStandardsSections.map((section: any) => {
+        const [, lessonStandardsObj] = section;
+
+        return lessonStandardsObj;
+      })
     );
     let lessonStandardsObj = lessonStandardsSections
-      .map((lessonStandards) => {
+      .map((lessonStandards: any) => {
         delete lessonStandards.__component;
 
         return lessonStandards;
       })
-      .reduce((lessonStandardObj, lessonStandardsAccumulatedObj) => {
+      .reduce((lessonStandardObj: any, lessonStandardsAccumulatedObj: any) => {
         let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
 
         if (
@@ -186,9 +194,12 @@ const LessonDetails = ({ lesson }) => {
       __component: "lesson-plan.standards",
       InitiallyExpanded: true,
     };
-    sectionComps = sectionComps.filter(
-      (_, index) => !lessonStandardsIndexesToFilterOut?.includes(index)
-    );
+    sectionComps = sectionComps
+      ? sectionComps.filter(
+          (_: any, index: number) =>
+            !lessonStandardsIndexesToFilterOut?.includes(index)
+        )
+      : [];
     let lessonsStandardsSectionIndex = sectionComps.findIndex(
       ({ SectionTitle }) => SectionTitle === "Background"
     );
