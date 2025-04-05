@@ -10,7 +10,7 @@ import {
   retrieveUnits,
   TProjections,
 } from "../../backend/services/unitServices";
-import { IUnit } from "../../backend/models/Unit/types/unit";
+import { INewUnitSchema, IUnit } from "../../backend/models/Unit/types/unit";
 
 export default async function handler(
   request: NextApiRequest,
@@ -39,8 +39,8 @@ export default async function handler(
       typeof projectionsObj === "string"
         ? JSON.parse(projectionsObj)
         : projectionsObj;
-    const dbFilter: unknown =
-      typeof filterObj === "string" ? JSON.parse(filterObj) : filterObj;
+    const dbFilter: Record<keyof INewUnitSchema, unknown> | null =
+      typeof filterObj === "string" ? JSON.parse(filterObj) : null;
 
     // print dbFilter
     console.log("dbFilter: ", dbFilter);
@@ -69,25 +69,6 @@ export default async function handler(
       );
     }
 
-    let dbFilterCreationResult: { filterObj?: Record<string, unknown> | undefined, errMsg?: string | undefined | unknown } = {
-      filterObj: {} as Record<string, unknown>,
-      errMsg: "",
-    };
-
-    if(dbFilter && typeof dbFilter === "object"){
-      const dbFilterEntries = Object.entries(
-        dbFilter as Record<string, unknown[]>
-      );
-      dbFilterCreationResult =
-      dbFilter && Object.keys(dbFilter).length
-      ? createDbFilter(dbFilterEntries)
-      : dbFilterCreationResult;
-      
-      if (dbFilterCreationResult?.errMsg) {
-        throw new CustomError(dbFilterCreationResult.errMsg, 400);
-      }
-    };
-
     const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
       15_000,
       0,
@@ -99,7 +80,7 @@ export default async function handler(
     }
 
     const { data, errMsg } = await retrieveUnits(
-      (dbFilterCreationResult?.filterObj ?? {}) as Record<keyof IUnit, unknown>,
+      (dbFilter ?? {}) as Record<keyof IUnit, unknown>,
       (dbProjections ?? {}) as TProjections
     );
 
