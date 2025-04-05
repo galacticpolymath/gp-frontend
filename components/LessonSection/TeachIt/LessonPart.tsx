@@ -86,7 +86,6 @@ const LessonPart = ({
   lsnExt,
   itemList,
   learningObjectives,
-  partsFieldName,
   partsArr,
   chunks = [],
   resources,
@@ -375,7 +374,10 @@ const LessonPart = ({
                     </div>
                     {lessonTileForMobile}
                     <div className="d-flex mt-2">
-                      <RichText className="text-start" content={lsnPreface} />
+                      <RichText
+                        className="text-start lesson-preface-testing"
+                        content={lsnPreface}
+                      />
                     </div>
                     {!!previewTags?.length && (
                       <div className="d-flex tagPillContainer flex-wrap">
@@ -393,6 +395,7 @@ const LessonPart = ({
                                 color: LESSON_PART_BTN_COLOR,
                                 fontWeight: 450,
                               }}
+                              className="tag-testing"
                             >
                               {tag}
                             </span>
@@ -469,6 +472,7 @@ const LessonPart = ({
                 >
                   <span
                     style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }}
+                    className="tag-testing"
                   >
                     {tag}
                   </span>
@@ -490,7 +494,10 @@ const LessonPart = ({
                 {learningObjectives.map((objectiveStr, index) => (
                   // check if the given li is not empty, it should have text in it.
                   <li id={`objective-${lsnNum}-${index}`} key={index}>
-                    <RichText content={objectiveStr} />
+                    <RichText
+                      className="lesson-learning-obj"
+                      content={objectiveStr}
+                    />
                   </li>
                 ))}
               </ol>
@@ -507,7 +514,10 @@ const LessonPart = ({
               <p className="lead mb-0">Students will be able to...</p>
               <ol className="mt-0">
                 <li id={`objective-${lsnNum}-0`}>
-                  <RichText content={learningObjectives} />
+                  <RichText
+                    className="lesson-learning-obj"
+                    content={learningObjectives}
+                  />
                 </li>
               </ol>
             </div>

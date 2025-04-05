@@ -23,6 +23,22 @@ describe('Check unit page formatting', () => {
             expect(targetSubjectTxt.length > 0).to.equal(true);
         })
 
+        cy.get("#overview_sec").should("exist")
+
+        cy.get(".lesson-preface-testing").should($elements => {
+            const lessonPrefaceElements = Array.from($elements);
+            const areTxtsPresent = lessonPrefaceElements.every(element => element.textContent.length > 0)
+
+            expect(areTxtsPresent).to.equal(true);
+        })
+
+        cy.get(".tag-testing").should($elements => {
+            const tagElement = Array.from($elements);
+            const areTagTxtPresent = tagElement.every(element => element.textContent.length > 0)
+
+            expect(areTagTxtPresent).to.equal(true);
+        })
+
         cy.get("#unit-learning-summary").should(($element) => {
             const unitLearningSummaryTxt = $element.text();
 
