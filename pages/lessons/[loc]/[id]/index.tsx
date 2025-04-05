@@ -100,7 +100,7 @@ const addGradesOrYearsProperty = (
 };
 
 interface IProps {
-  lesson: any;
+  lesson?: any;
   unit?: IUnit;
 }
 
@@ -680,10 +680,18 @@ export const getStaticProps = async (arg: {
       throw new Error("Failed to connect to the database.");
     }
 
-    const targetUnits = await Units.find({ numID: id }, { __v: 0 }).lean();
+    const targetUnits = await Units.find<>({ numID: id }, { __v: 0 }).lean();
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
 
-    console.log("targetUnits: ", targetUnits);
+    if (!targetUnits?.length) {
+      const targetUnit = targetUnits.find(
+        ({ numID, locale }) => numID === parseInt(id) && locale === loc
+      );
+
+      if (!targetUnit) {
+        throw new Error("Lesson is not found.");
+      }
+    }
 
     let lessonToDisplayOntoUi = targetLessons.find(
       ({ numID, locale }) => numID === parseInt(id) && locale === loc

@@ -5,10 +5,10 @@ import { TeachingMaterialsSchema } from "./TeachingMaterials";
 import { GeneralSection } from "./Section";
 import { Acknowledgments } from "./Acknowledgments";
 import { VersionNotes } from "./VersionNotes";
-import { IFeatureLocation, IFeatureName, IFeaturing, ILsnStatus, IUnit } from "./types/unit";
+import { IFeatureLocation, IFeatureName, IFeaturing, ILsnStatus, INewUnitSchema } from "./types/unit";
 import { StandardsSchema } from "./Standards";
 
-let Units = models.units;
+let Units = models.units as I;
 
 if (!Units) {
     const FeatureNameSchema = new Schema<IFeatureName>({
@@ -30,7 +30,7 @@ if (!Units) {
         links: [String],
     });
     
-    const UnitSchema = new Schema<IUnit>({
+    const UnitSchema = new Schema<INewUnitSchema>({
         _id: { type: String, required: true },
         numID: { type: Number, required: true },
         locale: { type: String, required: true },
