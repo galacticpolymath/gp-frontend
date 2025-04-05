@@ -15,21 +15,19 @@ const LessonStep = ({
   className,
   id
 }) => {
-  const stepTitleClassNameForTesting = `${StepTitle.split(" ").join("-").replace("'", "")}`;
-
   return (
     // Desktop Step Header
     <div id={id} className={`${className}`}>
       <div className='d-none d-sm-flex align-items-center gap-2 fs-5 mb-1'>
         <h6 className='m-0 d-flex fw-semibold align-items-start'>
-          <span className='d-inline me-1'>{`${Step}.`}</span>
+          <span className='d-inline me-1 step-num-testing'>{`${Step}.`}</span>
           <RichText className={`d-inline-block lesson-step-title`} content={StepTitle} />
         </h6>
       </div>
       {/* Mobile Step Header*/}
       <div className='d-flex d-sm-none gap-2 fs-5 mb-1 ml-2 w-100'>
         <h6 className='m-0 d-inline-block fw-bold'>
-          <span className='d-inline me-1'>{`${Step}.`}</span>
+          <span className='d-inline me-1 step-num-testing'>{`${Step}.`}</span>
           <RichText className='d-inline-block lesson-step-title' content={StepTitle} />
         </h6>
       </div>
@@ -50,7 +48,6 @@ const LessonStep = ({
           )}
           {Vocab && (
             <div className="bg-white vocab px-2 py-2 mb-2 border border-gray shadow-sm rounded">
-              {/* <h6>Vocab</h6> */}
               <RichText className={`m-0 p-0 vocabTxt lesson-step-vocab`} content={Vocab} />
             </div>
           )}
@@ -70,7 +67,7 @@ const LessonStep = ({
                 <HiLightBulb style={{ fontSize: 22 }} />
               </div>
               <div>
-                <RichText content={TeachingTips} className={`lesson-step-teaching-tips`} />
+                <RichText content={TeachingTips} className='lesson-step-teaching-tips-testing' />
               </div>
             </div>
           )}

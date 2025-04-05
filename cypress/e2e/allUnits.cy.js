@@ -12,6 +12,11 @@ function checkIfElementHasTxt(identifier) {
     });
 }
 
+// create a functoin that will check if a element is visible
+function checkIfElementIsVisible(identifier) {
+    cy.get(identifier).should("be.visible");
+}
+
 function checkIfElementsExist(identifier) {
     cy.get(identifier).should(($elements) => {
         expect($elements.length).to.be.greaterThan(0);
@@ -44,6 +49,7 @@ describe("Check unit page formatting", () => {
         });
 
         cy.get("#overview_sec").should("exist");
+        cy.get("#overview_sec").should("be.visible");
 
         cy.get(".lesson-preface-testing").should(($elements) => {
             const lessonPrefaceElements = Array.from($elements);
@@ -63,10 +69,39 @@ describe("Check unit page formatting", () => {
             expect(areTagTxtPresent).to.equal(true);
         });
 
+
         checkIfElementHasTxt(".lesson-learning-obj");
+
+        checkIfElementHasTxt(".lessons-preface-testing");
+
+        cy.get(".grade-variation-testing").should(($elements) => {
+            $elements.each((index, element) => {
+                const hasValue = Cypress.$(element).val().length > 0;
+                expect(hasValue).to.equal(true);
+            });
+        })
+
         checkIfElementHasTxt(".lesson-item-title");
+
         checkIfElementHasTxt("#unit-learning-summary");
+
         checkIfElementHasTxt(".lesson-item-description");
+
+        checkIfElementHasTxt(".step-num-testing");
+
+        checkIfElementHasTxt(".lesson-step-title");
+
+        checkIfElementHasTxt(".lesson-step-description");
+
+        checkIfElementHasTxt(".lesson-step-details");
+
+        checkIfElementHasTxt(".lesson-step-vocab");
+
+        checkIfElementHasTxt(".lesson-step-variant-notes");
+
+        checkIfElementHasTxt(".lesson-step-teaching-tips-testing");
+
+        checkIfElementIsVisible("#teach-it-sec")
 
         cy.get("#materials-title").should(($element) => {
             const headingTxt = $element.text();
@@ -76,5 +111,27 @@ describe("Check unit page formatting", () => {
         });
 
         checkIfElementsExist(".lesson-file-img-testing")
+
+        cy.get(".chunk-graph-testing").should(($elements) => {
+            $elements.each((index, element) => {
+                const hasChildren = Cypress.$(element).children().length > 0; // Check child count
+                console.log(`Element at index ${index} has children: ${hasChildren}`);
+                expect(hasChildren).to.be.true; // Assert that the element has children
+            });
+        });
+
+        cy.get("#unit-preview-id").should(($element) => {
+            const text = $element.text();
+            // print the text 
+            console.log("text: ", text);
+        });
+
+        // it must be visible and must have children
+        cy.get("#unit-preview-container").should(($element) => {
+            const hasChildren = Cypress.$($element).children().length > 0;
+            console.log(`Element has children: ${hasChildren}`);
+            expect(hasChildren).to.be.true;
+            expect($element.is(":visible")).to.be.true;
+        })
     });
 });

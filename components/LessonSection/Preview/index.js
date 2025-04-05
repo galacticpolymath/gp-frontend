@@ -18,14 +18,19 @@ const Preview = ({
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
+  // the preview must be:
+  // -visible
+  // -must have children
+
   return (
     <CollapsibleLessonSection
       index={index}
       SectionTitle={SectionTitle}
+      SectionTitleId='unit-preview-id'
       initiallyExpanded={InitiallyExpanded !== false}
       _sectionDots={_sectionDots}
     >
-      <div ref={ref} className='row mx-auto pb-4 justify-content-center pt-4'>
+      <div id="unit-preview-container" ref={ref} className='row mx-auto pb-4 justify-content-center pt-4'>
         {Multimedia?.[0] && <LessonsCarousel mediaItems={Multimedia} />}
       </div>
     </CollapsibleLessonSection>

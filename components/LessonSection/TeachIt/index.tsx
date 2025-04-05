@@ -20,10 +20,8 @@ import {
 import PropTypes from "prop-types";
 import LessonPart from "./LessonPart";
 import useLessonElementInView from "../../../customHooks/useLessonElementInView";
-import RichText from "../../RichText";
 import Image from "next/image";
 import Pill from "../../Pill";
-import throttle from "lodash.throttle";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import { TeachItProps } from "./types";
 import {
@@ -160,7 +158,6 @@ const TeachIt = (props: TeachItProps) => {
   const [unitLessonResources, setUnitLessonResources] = useState(
     classroom?.resources?.[0] ?? {}
   );
-  const xsdf = unitLessonResources?.lessons?.[0];
   const handleOnChangeForNewUnitResources = (
     selectedGrade: IResource<IUnitLesson>
   ) => {

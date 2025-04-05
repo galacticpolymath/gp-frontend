@@ -126,7 +126,7 @@ const TeachItUI = <
       initiallyExpanded
       _sectionDots={_sectionDots}
     >
-      <div ref={ref}>
+      <div id="teach-it-sec" ref={ref}>
         <div className="container-fluid mt-4">
           {!!lessonDur && (
             <div className="row">
@@ -139,7 +139,7 @@ const TeachItUI = <
                   {!!lessonPreface && (
                     <RichText
                       content={lessonPreface}
-                      className="flex-column d-flex justify-content-center quickPrep"
+                      className="flex-column d-flex justify-content-center quickPrep lessons-preface-testing"
                     />
                   )}
                 </div>
@@ -156,7 +156,7 @@ const TeachItUI = <
               gradeVariations.map((variation, i) => (
                 <label key={i} className="text-capitalize d-block mb-1">
                   <input
-                    className="form-check-input me-2"
+                    className="form-check-input me-2 grade-variation-testing"
                     type="radio"
                     name="gradeVariation"
                     id={variation.grades as string}

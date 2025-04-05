@@ -2,7 +2,14 @@
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-max-props-per-line */
 import PropTypes from "prop-types";
-import { ReactElement, ReactNode, useMemo, useRef } from "react";
+import {
+  DetailedHTMLProps,
+  HTMLAttributes,
+  ReactElement,
+  ReactNode,
+  useMemo,
+  useRef,
+} from "react";
 import useLessonElementInView from "../customHooks/useLessonElementInView";
 import Accordion from "./Accordion";
 import CopyableTxt from "./CopyableTxt";
@@ -17,6 +24,8 @@ import { ISectionDots, TUseStateReturnVal } from "../types/global";
 
 interface CollapsibleLessonSectionProps {
   SectionTitle?: string;
+  SectionTitleClassName?: string;
+  SectionTitleId?: string;
   className?: string;
   children: ReactElement;
   initiallyExpanded?: boolean;
@@ -35,9 +44,10 @@ const CollapsibleLessonSection = ({
   initiallyExpanded = false,
   accordionId,
   _sectionDots,
-  isAvailLocsMoreThan1,
+  SectionTitleId,
   highlighted = false,
   scrollToTranslateVal = "translateY(-90px)",
+  SectionTitleClassName = "",
   accordionStyleObj = {},
 }: CollapsibleLessonSectionProps) => {
   const ref = useRef(null);
@@ -115,6 +125,18 @@ const CollapsibleLessonSection = ({
         .join("_"),
     []
   );
+  const sectionTitleAttributes = {
+    ref,
+    id: SectionTitleId,
+    className: `m-0 ${SectionTitleClassName}`,
+    style: {
+      width: "100%",
+      overflowWrap: "break-word",
+    },
+  } as DetailedHTMLProps<
+    HTMLAttributes<HTMLHeadingElement>,
+    HTMLHeadingElement
+  >;
 
   return (
     <Accordion
@@ -144,13 +166,7 @@ const CollapsibleLessonSection = ({
             "_"
           ).toLowerCase()} container position-relative text-black d-flex justify-content-between align-items-center py-1`}
         >
-          <h2
-            ref={ref}
-            className="m-0"
-            style={{ width: "100%", overflowWrap: "break-word" }}
-          >
-            {SectionTitle}
-          </h2>
+          <h2 {...sectionTitleAttributes}>{SectionTitle}</h2>
           <div className="d-flex">
             {isAccordionContentOpen ? (
               <i

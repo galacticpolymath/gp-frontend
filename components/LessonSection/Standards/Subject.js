@@ -39,7 +39,7 @@ const Subject = ({
       initiallyExpanded={initiallyExpanded}
       buttonClassName={`w-100 border-0 text-start bg-${subjectSlug} text-white`}
       button={(
-        <h5 onClick={handleSubjectAccordionBtnClick} className='mb-0 p-2 d-flex justify-content-between align-items-center'>
+        <h5 onClick={handleSubjectAccordionBtnClick} className='mb-0 p-2 d-flex justify-content-between align-items-center subject-header-testing'>
           {subject} - {sets[0].name}
           <div className='position-relative'>
             {((index == 0) && !areThereTargetStandards) && (

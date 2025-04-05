@@ -46,6 +46,7 @@ export const CustomCloseButton = ({
 const ModalContainers = () => {
     const { _selectedJob } = useContext(ModalContext);
     const [selectedJob] = _selectedJob;
+    // only have the modals be rendered based on where the user is at on the page
 
     return (
         <>
