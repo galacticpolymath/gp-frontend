@@ -36,6 +36,7 @@ import {
   UserContext,
   useUserContext,
 } from "../../../../providers/UserProvider";
+import { TSetter } from "../../../../types/global";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -201,19 +202,21 @@ const LessonDetails = ({ lesson }) => {
         )
       : [];
     let lessonsStandardsSectionIndex = sectionComps.findIndex(
-      ({ SectionTitle }) => SectionTitle === "Background"
+      (section: any) => {
+        return section.SectionTitle === "Background";
+      }
     );
 
     if (lessonsStandardsSectionIndex === -1) {
-      lessonsStandardsSectionIndex = sectionComps.findIndex(
-        ({ SectionTitle }) => SectionTitle === "Bonus Content"
-      );
+      lessonsStandardsSectionIndex = sectionComps.findIndex((section: any) => {
+        return section.SectionTitle === "Bonus Content";
+      });
     }
 
     if (lessonsStandardsSectionIndex === -1) {
-      lessonsStandardsSectionIndex = sectionComps.findIndex(
-        ({ SectionTitle }) => SectionTitle === "Teaching Materials"
-      );
+      lessonsStandardsSectionIndex = sectionComps.findIndex((section: any) => {
+        return section.SectionTitle === "Teaching Materials";
+      });
     }
 
     if (lessonsStandardsSectionIndex === -1) {
@@ -235,7 +238,7 @@ const LessonDetails = ({ lesson }) => {
       return [];
     }
 
-    sectionComps = sectionComps.filter((section) => {
+    sectionComps = sectionComps.filter((section: any) => {
       if ("Data" in section && !section["Data"]) {
         return false;
       }
@@ -253,7 +256,7 @@ const LessonDetails = ({ lesson }) => {
   sectionComps = useMemo(() => {
     const sectionCompsCopy = structuredClone(sectionComps);
     const teachingMaterialsSecIndex = sectionCompsCopy.findIndex(
-      (sectionComp) => {
+      (sectionComp: any) => {
         const sectionTitle = sectionComp.SectionTitle.replace(
           /[0-9.]/g,
           ""
@@ -262,7 +265,7 @@ const LessonDetails = ({ lesson }) => {
         return sectionTitle === "Teaching Materials";
       }
     );
-    const feedbackSecIndex = sectionCompsCopy.findIndex((sectionComp) => {
+    const feedbackSecIndex = sectionCompsCopy.findIndex((sectionComp: any) => {
       const sectionTitle = sectionComp.SectionTitle.replace(
         /[0-9.]/g,
         ""
@@ -296,7 +299,10 @@ const LessonDetails = ({ lesson }) => {
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []
   );
-  const [sectionDots, setSectionDots] = useState({
+  const [sectionDots, setSectionDots] = useState<{
+    dots: any;
+    clickedSectionId: null | string;
+  }>({
     dots: _dots,
     clickedSectionId: null,
   });
@@ -305,7 +311,7 @@ const LessonDetails = ({ lesson }) => {
   const [isScrollListenerOn, setIsScrollListenerOn] =
     useScrollHandler(setSectionDots);
 
-  const scrollSectionIntoView = (sectionId) => {
+  const scrollSectionIntoView = (sectionId: string) => {
     const targetSection = document.getElementById(sectionId);
     let url = router.asPath;
 
@@ -318,10 +324,12 @@ const LessonDetails = ({ lesson }) => {
     }
   };
 
-  const handleDocumentClick = (event) => {
-    const wasANavDotElementClicked = NAV_CLASSNAMES.some((className) =>
-      event.target.classList.contains(className)
-    );
+  const handleDocumentClick = (event: MouseEvent) => {
+    const wasANavDotElementClicked = NAV_CLASSNAMES.some((className) => {
+      if (event.target && "classList" in event.target) {
+        (event.target.classList as DOMTokenList).contains(className);
+      }
+    });
     const viewPortWidth = Math.max(
       document.documentElement.clientWidth || 0,
       window.innerWidth || 0
@@ -331,7 +339,7 @@ const LessonDetails = ({ lesson }) => {
       setSectionDots((sectionDots) => {
         return {
           ...sectionDots,
-          dots: sectionDots?.dots.map((sectionDot) => {
+          dots: sectionDots?.dots.map((sectionDot: any) => {
             return {
               ...sectionDot,
               willShowTitle: false,
@@ -346,22 +354,26 @@ const LessonDetails = ({ lesson }) => {
     setCustomModalFooter(null);
   };
 
-  const handleIsUserEntryModalDisplayed = (setIsModalOn) => () => {
-    setNotifyModal((state) => ({ ...state, isDisplayed: false }));
+  const handleIsUserEntryModalDisplayed =
+    (setIsModalOn: TSetter<boolean>) => () => {
+      setNotifyModal((state) => ({ ...state, isDisplayed: false }));
 
-    setTimeout(() => {
-      handleUserNeedsAnAccountHideModal();
-      setIsModalOn(true);
-    }, 250);
-  };
+      setTimeout(() => {
+        handleUserNeedsAnAccountHideModal();
+        setIsModalOn(true);
+      }, 250);
+    };
 
-  const handleBonusContentDocumentClick = (event) => {
+  const handleBonusContentDocumentClick = (event: MouseEvent) => {
     const isWithinBonusContentSec = getIsWithinParentElement(
       event.target,
       "Bonus_Content",
       "className"
     );
-    const { tagName, origin } = event.target ?? {};
+    const { tagName, origin } = (event.target ?? {}) as {
+      tagName: string;
+      origin: string;
+    } & EventTarget;
 
     if (
       statusRef.current !== "authenticated" &&
@@ -397,12 +409,13 @@ const LessonDetails = ({ lesson }) => {
             setCustomModalFooter(null);
           }, 250);
         },
+        bodyTxt: "",
       });
     }
   };
 
   useEffect(() => {
-    if (willGoToTargetSection) {
+    if (willGoToTargetSection && sectionDots.clickedSectionId) {
       scrollSectionIntoView(sectionDots.clickedSectionId);
       setWillGoToTargetSection(false);
     }

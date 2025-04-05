@@ -18,7 +18,7 @@ const notoSansLight = Noto_Sans({
 
 export default function Layout({
   title,
-  keywords,
+  keywords = undefined,
   description,
   children,
   imgSrc,
@@ -52,7 +52,7 @@ export default function Layout({
         )}
         {imgAlt && <meta property="og:image:alt" content={imgAlt} />}
         <meta property="og:url" content={url} />
-        <meta property='og:keywords' name='keywords' content={keywords} />
+        {keywords && <meta property='og:keywords' name='keywords' content={keywords} />}
         <meta property='og:viewport' name='viewport' content='width=device-width, initial-scale=1' />
         <meta property="twitter:title" content={title} />
         <meta name="twitter:card" content="summary_large_image" />
