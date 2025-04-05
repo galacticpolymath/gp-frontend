@@ -66,6 +66,7 @@ export const getAboutUserFormForClient = userAccount => {
         country,
         occupation,
         isTeacher,
+        name,
     } = userAccount;
 
     if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
@@ -100,6 +101,10 @@ export const getAboutUserFormForClient = userAccount => {
 
     if (occupation) {
         userAccountForClient.occupation = occupation;
+    }
+
+    if (name) {
+        userAccountForClient.name = name;
     }
 
     userAccountForClient.isTeacher = isTeacher ?? false;

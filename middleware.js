@@ -3,12 +3,15 @@
 /* eslint-disable no-console */
 import { NextResponse } from "next/server";
 import { getAuthorizeReqResult, getChunks, verifyJwt } from "./nondependencyFns";
-import { PASSWORD_RESET_TOKEN_VAR_NAME } from "./globalVars";
+import { PASSWORD_RESET_CODE_VAR_NAME } from "./globalVars";
 
 const DB_ADMIN_ROUTES = [
   "/api/insert-lesson",
   "/api/delete-lesson",
   "/api/update-lessons",
+  "/api/delete-unit",
+  "/api/update-unit",
+  "/api/insert-unit",
   "/api/get-users",
 ];
 const USER_ACCOUNT_ROUTES = [
@@ -45,7 +48,7 @@ export async function middleware(request) {
       const searchPathnamesChunks = getChunks(searchPathnamesSplitted, 2);
       const isPasswordResetTokenPresent = searchPathnamesChunks.find(
         ([urlVarName, token]) => {
-          return urlVarName === PASSWORD_RESET_TOKEN_VAR_NAME && token;
+          return urlVarName === PASSWORD_RESET_CODE_VAR_NAME && token;
         }
       );
 
@@ -187,9 +190,6 @@ export async function middleware(request) {
     console.log("token length after trim: ", token.trim().length)
     const payload = await verifyJwt(token);
 
-    // print the payload
-    console.log("payload sup there: ", payload);
-
     if (payload?.payload?.accessibleRoutes?.length && !payload.payload.accessibleRoutes.includes(nextUrl.pathname)) {
       console.error("The client does not have access to this route.");
 
@@ -214,17 +214,12 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
-    console.log("headers, yo there: ", headers);
-    console.log("nextUrl.pathName, sup there: ", nextUrl.pathname);
-
     if ((nextUrl.pathname === "/api/copy-files") && (method === "POST") && headers.has("GDrive-Token")) {
       console.log("will check if the auth string is valid.");
       const { errResponse } = await getAuthorizeReqResult(
         authorizationStr,
         false
       );
-
-      console.log("errResponse, sup there: ", errResponse);
 
       if (errResponse) {
         return errResponse
@@ -245,7 +240,16 @@ export async function middleware(request) {
       (nextUrl.pathname == "/api/insert-lesson" &&
         method === "POST" &&
         authorizationStr) ||
+      (nextUrl.pathname == "/api/insert-unit" &&
+        method === "POST" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/update-unit" &&
+        method === "PUT" &&
+        authorizationStr) ||
       (nextUrl.pathname == "/api/delete-lesson" &&
+        method === "DELETE" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/delete-unit" &&
         method === "DELETE" &&
         authorizationStr) ||
       (nextUrl.pathname == "/api/delete-user" &&
@@ -357,7 +361,10 @@ export const config = {
     "/api/update-user",
     "/api/user-confirms-mailing-list-sub",
     "/api/get-users",
+    "/api/insert-unit",
     "/api/copy-files",
-    "/api/get-signed-in-user-brevo-status"
+    "/api/get-signed-in-user-brevo-status",
+    "/api/delete-unit",
+    "/api/update-unit",
   ],
 };

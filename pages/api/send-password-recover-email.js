@@ -1,14 +1,17 @@
 /* eslint-disable indent */
 /* eslint-disable no-console */
 /* eslint-disable no-empty */
+/* eslint-disable no-unused-vars */
 
+import { nanoid } from 'nanoid';
 import { createPasswordResetEmail } from '../../backend/emailTemplates/passwordReset';
 import { sendEmail } from '../../backend/services/emailServices';
 import { getUserByEmail } from '../../backend/services/userServices';
 import { signJwt } from '../../backend/utils/auth';
 import { connectToMongodb } from '../../backend/utils/connection';
 import { CustomError } from '../../backend/utils/errors';
-import { PASSWORD_RESET_TOKEN_VAR_NAME } from '../../globalVars';
+import { PASSWORD_RESET_CODE_VAR_NAME } from '../../globalVars';
+import JwtModel from '../../backend/models/Jwt';
 
 export default async function handler(request, response) {
     try {
@@ -34,9 +37,13 @@ export default async function handler(request, response) {
 
         console.log('will send password recover email');
 
-        // TODO: insert the jwt into the db, and have it expire in 5 minutes
         const resetPasswordToken = await signJwt({ email, accessibleRoutes: ['/api/updated-password'] }, process.env.NEXTAUTH_SECRET, '5 minutes');
-        const resetPasswordLink = `${request.headers.origin}/password-reset/?${PASSWORD_RESET_TOKEN_VAR_NAME}=${resetPasswordToken}`;
+        const code = nanoid();
+        const jwtModel = new JwtModel({
+            _id: code,
+            access: resetPasswordToken,
+        });
+        const resetPasswordLink = `${request.headers.origin}/password-reset/?${PASSWORD_RESET_CODE_VAR_NAME}=${resetPasswordToken}`;
         const { wasSuccessful } = await sendEmail({
             from: 'shared@galacticpolymath.com',
             to: email,

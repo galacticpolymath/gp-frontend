@@ -167,8 +167,6 @@ const SignUpModal = () => {
         // put the request that updates the mailing list logic for the target user into a global component
         const callbackUrl = `${(typeof window !== 'undefined') ? window.location.origin : ''}/account?show_about_user_form=true`;
 
-        console.log("callBackUrl: ", callbackUrl);
-
         if (createAccountForm.isOnMailingList) {
             localStorage.setItem('isOnMailingList', JSON.stringify(true));
         } else {
@@ -204,7 +202,7 @@ const SignUpModal = () => {
                     Sign up
                 </h5>
             </ModalHeader>
-            <ModalBody className='pt-1 px-1 pb-1'>
+            <ModalBody className='pt-1 px-1 pb-1 overflow-hidden'>
                 <div className='border-bottom py-2'>
                     <section className='p-0 row w-100 m-0 mb-1'>
                         <div className='w-100 d-flex justify-content-center align-items-center'>
@@ -446,7 +444,7 @@ const SignUpModal = () => {
                             </section>
                         </div>
                     </div>
-                    <ModalFooter className='pt-3 d-flex justify-content-center align-items-center py-1 mt-3 mb-2 row'>
+                    <ModalFooter className='pt-3 d-flex justify-content-center align-items-center py-1 mt-3 mb-2 row mx-0 px-0'>
                         <Button
                             handleOnClick={handleSubmitCredentialsBtnClick}
                             classNameStr="bg-primary rounded border-0 py-2 col-11 col-sm-10 col-lg-7 text-white underline-on-hover sign-up-btn"

@@ -1,88 +1,38 @@
-import { IUnitSectionObj, unitSectionObj } from "./Section";
 import { Schema } from "mongoose";
 import {
-  IChunk,
-  IClassroom,
-  IClassroomOld,
-  IGatheredVocab,
-  IGradeVariantNote,
+  IChunkStep,
   IItem,
-  ILesson,
-  ILessonDetail,
   ILink,
-  ILsnExt,
   ILsnPrep,
+  INewUnitLesson,
   IResource,
-  IStep,
-  ITeachingMaterialsData,
+  IUnitTeachingMaterials,
   IVocab,
 } from "./types/teachingMaterials";
 
-// Schemas
-const LinkSchema = new Schema<ILink>(
-  {
+const GatheredVocabSchema = new Schema<IVocab>({
+    definition: String,
+    term: String, 
+}, { _id: false })
+const LinkSchema = new Schema<ILink>({
     linkText: String,
     url: [String],
-  },
-  { _id: false }
-);
-
-const ItemSchema = new Schema<IItem>(
-  {
+}, { _id: false })
+const ItemSchema = new Schema<IItem>({
     itemTitle: String,
     itemDescription: String,
     itemCat: String,
     links: [LinkSchema],
-  },
-  { _id: false }
-);
-
-const LessonSchema = new Schema<ILesson>(
-  {
-    lsn: String,
-    title: String,
-    tags: [[String]],
-    preface: String,
-    tile: String,
-    itemList: [ItemSchema],
-  },
-  { _id: false }
-);
-
-const GradeVariantNoteSchema = new Schema<IGradeVariantNote>(
-  {
-    lsn: String,
-    lsnGradeVarNotes: String,
-  },
-  { _id: false }
-);
-
-const ResourceSchema = new Schema<IResource>(
-  {
-    grades: String,
-    gradePrefix: String,
-    links: LinkSchema,
-    lessons: [LessonSchema],
-  },
-  { _id: false }
-);
-
-const ClassroomSchemaOld = new Schema<IClassroomOld>(
-  {
-    gradeVariantNotes: [GradeVariantNoteSchema],
-    resources: [ResourceSchema],
-  },
-  { _id: false }
-);
-const ClassroomSchema = new Schema<IClassroom>(
-  {
-    resources: [ResourceSchema],
-  },
-  { _id: false }
-);
-
-const StepSchema = new Schema<IStep>(
-  {
+}, { _id: false });
+const LsngPrepSchema = new Schema<ILsnPrep>({
+    title: String ,
+    dur: Number ,
+    quickDescription: String ,
+    details: String ,
+    variantNotes: String ,
+    teachingTips: String ,
+}, { _id: false });
+const ChuckStepSchema = new Schema<IChunkStep>({
     Step: Number,
     StepTitle: String,
     StepQuickDescription: String,
@@ -90,101 +40,50 @@ const StepSchema = new Schema<IStep>(
     Vocab: String,
     VariantNotes: String,
     TeachingTips: String,
-  },
-  { _id: false }
-);
-
-const ChunkSchema = new Schema<IChunk>(
-  {
-    chunkTitle: String,
-    chunkStart: Number,
-    chunkDur: Number,
-    steps: [StepSchema],
-  },
-  { _id: false }
-);
-
-const LsnPrepSchema = new Schema<ILsnPrep>(
-  {
-    prepTitle: String,
-    prepDur: Number,
-    prepQuickDescription: String,
-    prepDetails: String,
-    prepVariantNotes: String,
-    prepTeachingTips: String,
-  },
-  { _id: false }
-);
-
-const LsnExtSchema = new Schema<ILsnExt>(
-  {
-    item: Number,
-    itemTitle: String,
-    itemDescription: String,
-    itemLink: String,
-  },
-  { _id: false }
-);
-
-const LessonDetailSchema = new Schema<ILessonDetail>(
-  {
-    lsnNum: Number,
-    lsnTitle: String,
+}, { _id: false });
+const NewUnitLessonSchema = new Schema<INewUnitLesson>({
+    title: String,
+    lsn: Number,
+    status: String,
+    updated_date: String,
+    new_date: String,
+    sort_by_date: String,
+    unit_status: String,
+    unit_release_date: String,
+    tags: [String],
+    gradeVarNote: String,
+    preface: String,
+    tile: String,
+    itemList: [ItemSchema],
     lsnDur: Number,
     lsnPreface: String,
     learningObj: [String],
-    lsnPrep: LsnPrepSchema,
-    chunks: [ChunkSchema],
-    lsnExt: [LsnExtSchema],
-  },
-  { _id: false }
-);
-
-const VocabSchema = new Schema<IVocab>(
+    lsnPrep: LsngPrepSchema,
+    chunks: [{
+        chunkTitle: String,
+        chunkStart: Number,
+        chunkDur: Number,
+        steps: [ChuckStepSchema],
+    }],
+    goingFurther: String,
+}, { _id: false })
+const ResourcesSchema = new Schema<IResource<INewUnitLesson>>({
+    grades: String,
+    gradePrefix: String,
+    links: LinkSchema,
+    lessons: [NewUnitLessonSchema],
+}, { _id: false })
+export const TeachingMaterialsSchema = new Schema<IUnitTeachingMaterials>(
   {
-    term: String,
-    definition: String,
-  },
-  { _id: false }
-);
-const GatheredVocabSchema = new Schema<IGatheredVocab>(
-  {
-    success: Boolean,
-    expr: String,
-    result: [VocabSchema],
-  },
-  { _id: false }
-);
-
-const TeachingMaterialsData = new Schema<ITeachingMaterialsData>(
-  {
-    unitPreface: String,
     unitDur: String,
-    classroom: ClassroomSchema,
-    gatheredVocab: GatheredVocabSchema,
-  },
-  { _id: false }
-);
-
-export interface ITeachingMaterials extends IUnitSectionObj {
-  Data: ITeachingMaterialsData;
-}
-
-const teachingMaterials: ITeachingMaterials = {
-  __component: "teaching-materials.teaching-materials",
-  SectionTitle: "Teaching Materials",
-  Data: {
-    unitPreface: null,
-    unitDur: null,
-    classroom: null,
-    gatheredVocab: null,
-  },
-};
-
-export const TeachingMaterialsSchema = new Schema<ITeachingMaterials>(
-  {
-    ...unitSectionObj,
-    Data: TeachingMaterialsData,
+    unitPreface: String,
+    gatheredVocab: [GatheredVocabSchema],
+    classroom: {
+        resources: [ResourcesSchema]
+    },
+    __component: String,
+    InitiallyExpanded: Boolean, 
+    SectionTitle: String
   },
   { _id: false }
 );

@@ -25,9 +25,12 @@ import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from "react-icons/io";
 import { BiCheckbox, BiCheckboxChecked } from "react-icons/bi";
 import { ErrorTxt } from "../formElements";
 import { useRouter } from "next/router";
+import _ from "lodash";
 import Link from "next/link";
 import { TROUBLE_LOGGING_IN_LINK } from "../../../globalVars";
 import CheckBoxInput from "../../CheckBoxInput";
+
+const INPUT_MAX_WIDTH = "400px";
 
 const AccordionToggleBtn = ({
   children = <></>,
@@ -87,7 +90,31 @@ const AboutUserModal = () => {
   /**
    * @type {[import('../../../providers/UserProvider').TAboutUserForm, import('react').Dispatch<import('react').SetStateAction<import('../../../providers/UserProvider').TAboutUserForm>>]} */
   const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
-  const modalBodyRef = useRef();
+  const nameDefault = {
+    first: typeof localStorage === "undefined" ? "" : (JSON.parse(localStorage.getItem("userAccount"))?.name?.first ?? ""),
+    last: typeof localStorage === "undefined" ? "" : (JSON.parse(localStorage.getItem("userAccount"))?.name?.last ?? ""),
+  };
+  const [name, setName] = useState(nameDefault);
+  const modalBodyRef = useRef(null);
+
+  const handleOnNameInputChange = (event) => {
+    const { name, value } = event.target;
+
+    if (errors.has(name)) {
+      setErrors((state) => {
+        const stateClone = structuredClone(state);
+
+        stateClone.delete(name);
+
+        return stateClone;
+      });
+    }
+
+    setName((state) => ({
+      ...state,
+      [name]: value,
+    }));
+  };
 
   const handleIsTeacherConfirmationCheckBoxClick = () => {
     if (errors.has("isTeacherConfirmationErr")) {
@@ -220,18 +247,22 @@ const AboutUserModal = () => {
   };
 
   const handleOnInputChange = (event) => {
-    if (errors.has(event.target.name)) {
+    const { name, value } = event.target;
+    if (errors.has(name)) {
       const errorsClone = structuredClone(errors);
 
-      errorsClone.delete(event.target.name);
+      errorsClone.delete(name);
 
       setErrors(errorsClone);
     }
 
-    setAboutUserForm((state) => ({
-      ...state,
-      [event.target.name]: event.target.value,
-    }));
+    setAboutUserForm((state) => {
+      const stateClone = structuredClone(state);
+
+      _.set(stateClone, name, value);
+
+      return stateClone;
+    });
   };
 
   useEffect(() => {
@@ -277,6 +308,7 @@ const AboutUserModal = () => {
           const url = router.asPath;
           router.replace(url.split("?")[0]);
         }, 250);
+        setName(nameDefault);
       }}
       dialogClassName="border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center"
       contentClassName="about-me-modal user-modal-color rounded-0"
@@ -300,6 +332,63 @@ const AboutUserModal = () => {
       >
         <form className="position-relative  h-100 w-100">
           <section className="row d-flex flex-column flex-lg-row">
+            <section className="d-flex flex-column col-12 col-sm-8 col-lg-4">
+              <label
+                htmlFor="country-input"
+                className={`${errors.has("firstName") ? "text-danger" : ""}`}
+              >
+                *First name:
+              </label>
+              <input
+                name="first"
+                onChange={handleOnNameInputChange}
+                placeholder="First name"
+                value={name.first ?? ""}
+                defaultValue={name.first ?? ""}
+                style={{ maxWidth: INPUT_MAX_WIDTH }}
+                className={`account-settings-input no-outline pt-1 ${errors.has("firstName") ? "text-danger border-danger" : ""
+                  }`}
+              />
+              <span
+                style={{ height: "25px", fontSize: "16px" }}
+                className="text-danger"
+              >
+                {errors.get("firstName") ?? ""}
+              </span>
+            </section>
+            <section className="d-flex flex-column col-12 col-sm-8 col-lg-4">
+              <label
+                htmlFor="last-name"
+                className={`${errors.has("lastName") ? "text-danger" : ""}`}
+              >
+                *Last name:
+              </label>
+              <input
+                placeholder="Last name"
+                name="last"
+                id="last-name"
+                value={name.last ?? ""}
+                defaultValue={name.last ?? ""}
+                onChange={handleOnNameInputChange}
+                style={{
+                  outline: "none",
+                  borderTop: "none",
+                  borderRight: "none",
+                  borderLeft: "none",
+                  maxWidth: INPUT_MAX_WIDTH,
+                }}
+                className={`account-settings-input pt-1 ${errors.has("lastName") ? "border-danger" : ""
+                  }`}
+              />
+              <span
+                style={{ height: "25px", fontSize: "16px" }}
+                className="text-danger"
+              >
+                {errors.get("lastName") ?? ""}
+              </span>
+            </section>
+          </section>
+          <section className="row d-flex flex-column flex-lg-row mt-2">
             <section className="d-flex flex-column col-12 col-sm-8 col-lg-4">
               <label
                 htmlFor="country-input"
@@ -527,8 +616,8 @@ const AboutUserModal = () => {
                   <section className="d-flex flex-column mt-2">
                     <label
                       className={`${errors.has("isTeacherConfirmationErr")
-                          ? "text-danger"
-                          : ""
+                        ? "text-danger"
+                        : ""
                         } pointer`}
                     >
                       *Teacher Confirmation:
@@ -540,17 +629,17 @@ const AboutUserModal = () => {
                         }
                         isChecked={aboutUserForm.isTeacherConfirmed}
                         txtClassName={`${errors.has("isTeacherConfirmationErr")
-                            ? "text-danger"
-                            : ""
+                          ? "text-danger"
+                          : ""
                           } pointer`}
                         checkBoxInputClassName={`pb-1 me-1 ${errors.has("isTeacherConfirmationErr")
-                            ? "border-danger"
-                            : ""
+                          ? "border-danger"
+                          : ""
                           }`}
                         txtStyle={{ fontSize: "18px" }}
                       >
-                        I solemnly swear I{"'"}m not a student just trying to get
-                        the answer key🤨
+                        I solemnly swear I{"'"}m not a student just trying to
+                        get the answer key🤨
                       </CheckBoxInput>
                     </section>
                     <section style={{ height: "28px" }}>
@@ -659,6 +748,7 @@ const AboutUserModal = () => {
               setErrors={setErrors}
               countryNames={countryNames}
               _wasBtnClicked={[wasBtnClicked, setWasBtnClicked]}
+              _name={[name, setName]}
             />
           </section>
         </form>

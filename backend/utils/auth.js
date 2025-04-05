@@ -1,5 +1,5 @@
 import { SignJWT } from 'jose';
-import { v4 } from "uuid"
+import { v4 } from 'uuid';
 import { JWT } from 'google-auth-library';
 
 /**
@@ -35,7 +35,4 @@ const getGoogleAuthJwt = (keyFile, scopes) => {
   return serviceAccountJwt;
 };
 
-export {
-  signJwt,
-  getGoogleAuthJwt,
-};
+export { getGoogleAuthJwt, signJwt }

@@ -1,6 +1,6 @@
 import { IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFieldsToRetrieve';
 import mongoose from 'mongoose'
-import { IOverview } from './types/overview';
+import { IOverview, IUnitAccessibility, IUnitOverview, IUnitVersions } from './types/overview';
 
 const { Schema } = mongoose;
 
@@ -33,6 +33,12 @@ const AccessibilitySchema = new Schema<IAccessibility>({
     Abbrev_Descr: String,
     Link: String
 }, { _id: false });
+const UnitAccessibilitySchema = new Schema<IUnitAccessibility>({
+    Type: String,
+    Description: String,
+    Abbrev_Descr: String,
+    Link: String
+}, { _id: false });
 
 export interface ISubRelease {
     version: string;
@@ -56,23 +62,21 @@ export interface IVersion {
     sub_releases: ISubRelease[];
 }
 
-const VersionSchema = new Schema<IVersion>({
+const VersionSchema = new Schema<IUnitVersions>({
     major_release: String,
     sub_releases: [SubReleaseSchema]
 }, { _id: false });
-
 
 export const Overview = new Schema<IOverview>({
     __component: String,
     InitiallyExpanded: Boolean,
     SectionTitle: String,
-    sortOrder: Number,
     UnitSummary: String,
     EstUnitTime: String,
     Text: String,
     SteamEpaulette: String,
     SteamEpaulette_vert: String,
-    Accessibility: [AccessibilitySchema],
+    Accessibility: [UnitAccessibilitySchema],
     Tags: [TagSchema],
     versions: [VersionSchema],
     rootFieldsToRetrieveForUI: {
@@ -118,3 +122,17 @@ export const Overview = new Schema<IOverview>({
     },
 }, { _id: false });
 
+export const UnitOverview = new Schema<IUnitOverview>({
+    __component: String,
+    TheGist: String,
+    EstUnitTime: String,
+    GradesOrYears: String,
+    ForGrades: String,
+    TargetSubject: String,
+    Text: String,
+    SteamEpaulette: String,
+    SteamEpaulette_vert: String,
+    Accessibility: [AccessibilitySchema],
+    Tags: [TagSchema],
+    versions: [VersionSchema],
+})

@@ -37,6 +37,23 @@ export interface IOverview extends IUnitSectionObj {
   rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
 }
 
+export interface IUnitVersions {
+  major_release: string | null;
+  sub_releases: {
+    version: string | null;
+    date: string | null;
+    summary: string | null;
+    notes: string | null;
+    acknowledgments: string | null;
+  };
+}
+export interface IUnitAccessibility {
+  Type: string | null;
+  Description: string | null;
+  Abbrev_Descr: string | null;
+  Link: string | null;
+}
+
 export interface IUnitOverview {
   __component: string | null;
   TheGist: string | null;
@@ -47,23 +64,11 @@ export interface IUnitOverview {
   Text: string | null;
   SteamEpaulette: string | null;
   SteamEpaulette_vert: string | null;
-  Accessibility: {
-    Type: string | null;
-    Description: string | null;
-    Abbrev_Descr: string | null;
-    Link: string | null;
-  }[] | null;
-  Tags: {
-    Value: string | null;
-  }[] | null;
-  versions: {
-    major_release: string | null;
-    sub_releases: {
-      version: string | null;
-      date: string | null;
-      summary: string | null;
-      notes: string | null;
-      acknowledgments: string | null;
-    }[] | null;
-  }[] | null;
+  Accessibility: IUnitAccessibility[] | null;
+  Tags:
+    | {
+        Value: string | null;
+      }[]
+    | null;
+  versions: IUnitVersions[] | null;
 }

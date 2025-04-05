@@ -135,7 +135,6 @@ export default async function handler(request, response) {
             throw new CustomError('The access token is not valid.', 400);
         }
 
-
         if (!gdriveAccessToken) {
             throw new CustomError('The gdrive access token was not provided.', 400);
         }

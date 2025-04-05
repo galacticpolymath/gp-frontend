@@ -1,0 +1,67 @@
+name: Merge dependabot PR into main
+
+run-name: ${{ github.actor }} made pr. 
+on: [pull_request]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  Explore-GitHub-Actions:
+    if: github.actor == 'dependabot[bot]' 
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.6.0'
+    
+    - name: Install dependencies
+      run: npm install --legacy-peer-deps
+    
+    - name: Create the .env file
+      run: |
+        touch .env
+        echo MONGODB_USER=${{ secrets.MONGODB_USER }} >> .env
+        echo MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }} >> .env
+        echo MONGODB_DB_NAME=${{ secrets.MONGODB_DB_NAME }} >> .env
+        echo MONGODB_DB_PROD=${{ secrets.MONGODB_DB_PROD }} >> .env
+        echo MONGODB_PROJECT_ID=${{ secrets.MONGODB_PROJECT_ID }} >> .env
+        echo MONGODB_PROJECT_PRIVATE_KEY=${{ secrets.MONGODB_PROJECT_PRIVATE_KEY }}  >> .env
+        echo MONGODB_PROJECT_PUBLIC_KEY=${{ secrets.MONGODB_PROJECT_PUBLIC_KEY }}  >> .env
+        echo AUTH_CLIENT_ID=${{ secrets.AUTH_CLIENT_ID }} >> .env
+        echo AUTH_CLIENT_SECRET=${{ secrets.AUTH_CLIENT_SECRET }} >> .env
+        echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> .env
+        echo EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID=${{ secrets.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID }} >> .env
+        echo EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY=${{ secrets.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY }} >> .env
+        echo BREVO_API_KEY=${{ secrets.BREVO_API_KEY }} >> .env
+    
+    - name: Build app
+      run: npm run build
+    
+    - name: Detect if the build failed
+      if: ${{ failure() }}
+      run: |
+        echo "The build has failed."
+        exit 1
+    
+    - name: Run the integration tests
+      run: npm run ci
+
+    - name: Detect if the integration test failed.
+      if: ${{ failure() }}
+      run: |
+        echo "The build has failed."
+        exit 1
+    
+    - name: Merge PR
+      uses: "pascalgn/automerge-action@v0.16.4"
+      with:
+        github-token: ${{secrets.DEPENDABOT_TOKEN}}
+        merge-method: 'squash'
+        target: 'minor'

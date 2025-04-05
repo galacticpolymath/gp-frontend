@@ -123,10 +123,6 @@ export const useUserEntry = () => {
             errors.set("confirmPassword", "This field is required.");
         }
 
-        if (!isUserTeacher) {
-            errors.set('isUserTeacherErr', true);
-        }
-
         if (isCredentialsAccountCreation && !firstName) {
             errors.set("firstName", "This field is required.");
         }
@@ -142,6 +138,9 @@ export const useUserEntry = () => {
         } else if (isCredentialsAccountCreation && !validateEmail(email)) {
             errors.set("email", "Invalid email.");
         }
+
+        console.log("errors, hey there: ", errors);
+
 
         return errors;
     };

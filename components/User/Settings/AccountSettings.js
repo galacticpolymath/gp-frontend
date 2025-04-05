@@ -43,7 +43,7 @@ const AccountSettings = () => {
     const session = useSession();
     const { token } = session?.data ?? {};
     const { email, name } = session?.data?.user ?? {};
-    const [errors, setErrors] = useState(new Map());
+    const [, setErrors] = useState(new Map());
     const [didServerErrOccur, setDidServerErrOccur] = useState(false);
     const router = useRouter();
     const [, setNotifyModal] = _notifyModal;
@@ -55,18 +55,6 @@ const AccountSettings = () => {
     const handleOnHide = () => {
         setIsAccountSettingModalDisplayed(false);
         setDidServerErrOccur(false);
-    };
-
-    const handleOnInputChange = (event) => {
-        setErrors((state) => {
-            state.delete(event.target.name);
-
-            return state;
-        });
-        setAccountForm((state) => ({
-            ...state,
-            [event.target.name]: event.target.value,
-        }));
     };
 
     const handleOnShow = () => {
@@ -247,65 +235,10 @@ const AccountSettings = () => {
             <ModalBody
                 style={{ maxWidth: "1800px" }}
                 ref={modalBodyRef}
-                className="about-me-modal-body w-100 d-flex flex-column"
+                className="about-me-modal-body w-100 d-flex flex-column pt-0"
             >
-                <form className="h-100 px-1 px-sm-4 position-relative d-flex flex-column justify-content-between">
+                <form className="h-100 px-1 px-sm-4 position-relative d-flex flex-column">
                     <section className="d-flex flex-column">
-                        <section className="row d-flex flex-column flex-lg-row px-sm-3">
-                            <section className="d-flex flex-column col-12 col-sm-8 col-lg-6">
-                                <label
-                                    htmlFor="country-input"
-                                    className={`${errors.has("firstName") ? "text-danger" : ""}`}
-                                >
-                                    First name:
-                                </label>
-                                <input
-                                    name="firstName"
-                                    onChange={handleOnInputChange}
-                                    placeholder="First name"
-                                    value={accountForm.firstName}
-                                    defaultValue={accountForm.firstName}
-                                    className={`account-settings-input no-outline pt-1 ${errors.has("firstName") ? "text-danger border-danger" : ""
-                                        }`}
-                                />
-                                <span
-                                    style={{ height: "25px", fontSize: "16px" }}
-                                    className="text-danger"
-                                >
-                                    {errors.get("firstName") ?? ""}
-                                </span>
-                            </section>
-                            <section className="d-flex flex-column col-12 col-sm-8 col-lg-6">
-                                <label
-                                    htmlFor="last-name"
-                                    className={`${errors.has("lastName") ? "text-danger" : ""}`}
-                                >
-                                    Last name:
-                                </label>
-                                <input
-                                    placeholder="Last name"
-                                    name="lastName"
-                                    id="last-name"
-                                    value={accountForm.lastName}
-                                    defaultValue={accountForm.lastName}
-                                    onChange={handleOnInputChange}
-                                    style={{
-                                        outline: "none",
-                                        borderTop: "none",
-                                        borderRight: "none",
-                                        borderLeft: "none",
-                                    }}
-                                    className={`account-settings-input pt-1 ${errors.has("lastName") ? "border-danger" : ""
-                                        }`}
-                                />
-                                <span
-                                    style={{ height: "25px", fontSize: "16px" }}
-                                    className="text-danger"
-                                >
-                                    {errors.get("lastName") ?? ""}
-                                </span>
-                            </section>
-                        </section>
                         <section className="row d-flex flex-column flex-lg-row px-sm-3 mt-3">
                             <CheckBox
                                 isChecked={accountForm.isOnMailingList}

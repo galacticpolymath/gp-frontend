@@ -3,7 +3,7 @@ import { Schema } from "mongoose";
 export interface IUnitSectionObj {
   __component?: string | null;
   SectionTitle: string | null;
-  initiallyExpanded: boolean | null
+  InitiallyExpanded: boolean | null
 }
 export interface IContentObj{
     Content: string | null
