@@ -625,7 +625,7 @@ const LessonPart = ({
                                         className="mb-0 d-flex"
                                         key={linkIndex}
                                       >
-                                        <div className="d-flex justify-content-center  align-items-sm-center">
+                                        <div className="d-flex justify-content-center align-items-sm-center">
                                           {!!url && (
                                             <Link
                                               href={
