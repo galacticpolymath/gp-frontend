@@ -6,7 +6,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 import {
-  createDbFilter,
   retrieveUnits,
   TProjections,
 } from "../../backend/services/unitServices";
