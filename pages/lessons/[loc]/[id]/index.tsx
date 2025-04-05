@@ -37,7 +37,10 @@ import {
   useUserContext,
 } from "../../../../providers/UserProvider";
 import { IUserSession, TSetter } from "../../../../types/global";
-import { INewUnitSchema as IUnit } from "../../../../backend/models/Unit/types/unit";
+import {
+  INewUnitSchema,
+  INewUnitSchema as IUnit,
+} from "../../../../backend/models/Unit/types/unit";
 import Units from "../../../../backend/models/Unit";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
@@ -680,7 +683,10 @@ export const getStaticProps = async (arg: {
       throw new Error("Failed to connect to the database.");
     }
 
-    const targetUnits = await Units.find({ numID: id }, { __v: 0 }).lean();
+    const targetUnits = (await Units.find<INewUnitSchema>(
+      { numID: id },
+      { __v: 0 }
+    ).lean()) as INewUnitSchema[];
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
 
     if (!targetUnits?.length) {
