@@ -84,6 +84,44 @@ export const UnitOverview = new Schema<IUnitOverview>({
     Tags: [TagSchema],
     versions: [VersionSchema],
     rootFieldsToRetrieveForUI: {
-        
-    }
+        type: [RootFieldToRetrieve],
+        default: () => {
+            let rootFields = [
+                {
+                    name: "unitBanner",
+                    as: "lessonBannerUrl"
+                },
+                {
+                    name: "Title",
+                    as: "unitTitle"
+                },
+                {
+                    name: "ForGrades",
+                    as: "ForGrades"
+                },
+                {
+                    name: "TargetSubject",
+                    as: "TargetSubject"
+                },
+                {
+                    name: "GradesOrYears",
+                    as: "GradesOrYears"
+                },
+                {
+                    name: "numID",
+                    as: "numID"
+                },
+                {
+                    name: "locale",
+                    as: "locale"
+                },
+                {
+                    name: "Subtitle",
+                    as: "Subtitle"
+                },
+            ]
+
+            return rootFields;
+        }
+    },
 })
