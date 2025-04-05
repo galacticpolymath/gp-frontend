@@ -73,7 +73,7 @@ const Overview = ({
                 width={30}
               />
               <h5 className="d-inline-flex">The Gist:</h5>
-              <div>
+              <div id="unit-learning-summary">
                 <RichText content={LearningSummary} />
               </div>
             </div>
@@ -86,7 +86,7 @@ const Overview = ({
                   Target Subject:{" "}
                 </h5>
               </span>
-              <div>{TargetSubject}</div>
+              <div id="unit-target-subject">{TargetSubject}</div>
             </div>
             <div className="d-none d-sm-grid g-col g-col-6 g-col-sm-4 bg-white p-3 rounded-3 ">
               <span>

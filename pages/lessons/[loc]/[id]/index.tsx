@@ -27,26 +27,11 @@ import { useSession } from "next-auth/react";
 import {
   defautlNotifyModalVal,
   ModalContext,
-  useModalContext,
 } from "../../../../providers/ModalProvider";
 import { CustomNotifyModalFooter } from "../../../../components/Modals/Notify";
 import { getUserAccountData } from "../../../account";
 import axios from "axios";
-import {
-  UserContext,
-  useUserContext,
-} from "../../../../providers/UserProvider";
-import {
-  ILessonForUI,
-  ISectionDot,
-  ISectionDots,
-  IUserSession,
-  TSetter,
-} from "../../../../types/global";
-import { ILesson } from "../../../../backend/models/Unit/types/teachingMaterials";
-import { IOldUnit } from "../../../../backend/models/Unit/types/oldUnit";
-import { INewUnitSchema } from "../../../../backend/models/Unit/types/unit";
-import { Session } from "next-auth";
+import { UserContext } from "../../../../providers/UserProvider";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -98,42 +83,27 @@ const addGradesOrYearsProperty = (sectionComps, ForGrades, GradesOrYears) => {
   });
 };
 
-interface IUserMouseEvent extends MouseEvent {
-  target: {
-    classList: DOMTokenList;
-  } & EventTarget;
-}
-
-interface IProps {
-  lesson: IOldUnit;
-  lessonFromDb: any;
-  unit?: INewUnitSchema;
-}
-
-const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
-  console.log("the lesson itself: ", lesson);
-  console.log("the lesson itself, yo there: ", lessonFromDb);
+const LessonDetails = ({ lesson }) => {
   const router = useRouter();
-  const { _isUserTeacher } = useUserContext();
+  const { _isUserTeacher } = useContext(UserContext);
   const { status, data } = useSession();
-  const { token } = (data ?? {}) as unknown as IUserSession;
+  const { token } = data ?? {};
   const statusRef = useRef(status);
   const {
     _notifyModal,
     _isLoginModalDisplayed,
     _isCreateAccountModalDisplayed,
     _customModalFooter,
-  } = useModalContext();
+  } = useContext(ModalContext);
   const [, setIsUserTeacher] = _isUserTeacher;
   const [, setNotifyModal] = _notifyModal;
   const [, setCustomModalFooter] = _customModalFooter;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
-  // TODO: this needs to be deleted when the schema is updated (BELOW).
   const lessonSectionObjEntries = lesson?.Section
     ? Object.entries(lesson.Section)
     : [];
-  let lessonStandardsIndexesToFilterOut: number[] = [];
+  let lessonStandardsIndexesToFilterOut = [];
   let lessonStandardsSections = lessonSectionObjEntries.filter(
     ([sectionName], index) => {
       if (
@@ -154,13 +124,9 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
     lesson?.Section &&
     typeof lesson?.Section === "object" &&
     lesson?.Section !== null
-      ? Object.values(lesson.Section).filter((section) => {
-          if ("SectionTitle" in section) {
-            return section.SectionTitle !== "Procedure";
-          }
-
-          return false;
-        })
+      ? Object.values(lesson.Section).filter(
+          ({ SectionTitle }) => SectionTitle !== "Procedure"
+        )
       : null;
 
   if (sectionComps?.length) {
@@ -172,27 +138,23 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
     !isTheLessonSectionInOneObj &&
     lessonStandardsSections?.length
   ) {
-    const lessonStandardsSectionsObjs = structuredClone(
+    lessonStandardsSections = structuredClone(
       lessonStandardsSections.map(
         ([, lessonStandardsObj]) => lessonStandardsObj
       )
     );
-    type TLessonStandardsSectionsObj = typeof lessonStandardsSectionsObjs;
-    let lessonStandardsObj = lessonStandardsSectionsObjs
+    let lessonStandardsObj = lessonStandardsSections
       .map((lessonStandards) => {
         delete lessonStandards.__component;
 
         return lessonStandards;
       })
-      .reduce((lessonStandardObj: any, lessonStandardsAccumulatedObj: any) => {
+      .reduce((lessonStandardObj, lessonStandardsAccumulatedObj) => {
         let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
 
         if (
-          // check if SectionTitle exist
-          "SectionTitle" in lessonStandardsAccumulatedObj &&
           !lessonStandardsAccumulatedObj.SectionTitle &&
-          "SectionTitle" in lessonStandardObj &&
-          typeof lessonStandardObj.SectionTitle === "string"
+          lessonStandardObj.SectionTitle
         ) {
           _lessonStandardsAccumulated = {
             ..._lessonStandardsAccumulated,
@@ -201,11 +163,8 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
         }
 
         if (
-          "Footnote" in lessonStandardsAccumulatedObj &&
           !lessonStandardsAccumulatedObj.Footnote &&
-          "Footnote" in lessonStandardObj &&
-          lessonStandardObj.Footnote &&
-          typeof lessonStandardObj.Footnote === "string"
+          lessonStandardObj.Footnote
         ) {
           _lessonStandardsAccumulated = {
             ..._lessonStandardsAccumulated,
@@ -214,7 +173,7 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
         }
 
         return _lessonStandardsAccumulated;
-      }, {} as TLessonStandardsSectionsObj);
+      }, {});
 
     // create the stanards section section
     lessonStandardsObj = {
@@ -222,37 +181,23 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
       __component: "lesson-plan.standards",
       InitiallyExpanded: true,
     };
-    sectionComps = sectionComps
-      ? sectionComps.filter(
-          (_, index) => !lessonStandardsIndexesToFilterOut?.includes(index)
-        )
-      : [];
-    let lessonsStandardsSectionIndex = sectionComps.findIndex((section) => {
-      if ("SectionTitle" in section) {
-        return section.SectionTitle === "Background";
-      }
-
-      return false;
-    });
+    sectionComps = sectionComps.filter(
+      (_, index) => !lessonStandardsIndexesToFilterOut?.includes(index)
+    );
+    let lessonsStandardsSectionIndex = sectionComps.findIndex(
+      ({ SectionTitle }) => SectionTitle === "Background"
+    );
 
     if (lessonsStandardsSectionIndex === -1) {
-      lessonsStandardsSectionIndex = sectionComps.findIndex((section) => {
-        if ("SectionTitle" in section) {
-          return section.SectionTitle === "Bonus Content";
-        }
-
-        return false;
-      });
+      lessonsStandardsSectionIndex = sectionComps.findIndex(
+        ({ SectionTitle }) => SectionTitle === "Bonus Content"
+      );
     }
 
     if (lessonsStandardsSectionIndex === -1) {
-      lessonsStandardsSectionIndex = sectionComps.findIndex((section) => {
-        if ("SectionTitle" in section) {
-          return section.SectionTitle === "Teaching Materials";
-        }
-
-        return false;
-      });
+      lessonsStandardsSectionIndex = sectionComps.findIndex(
+        ({ SectionTitle }) => SectionTitle === "Teaching Materials"
+      );
     }
 
     if (lessonsStandardsSectionIndex === -1) {
@@ -268,8 +213,6 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
       lessonStandardsObj
     );
   }
-
-  // TODO: this needs to be deleted when the schema is updated (ABOVE).
 
   sectionComps = useMemo(() => {
     if (!sectionComps?.length) {
@@ -292,16 +235,9 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
   }, []);
 
   sectionComps = useMemo(() => {
-    if (!sectionComps?.length) {
-      return [];
-    }
     const sectionCompsCopy = structuredClone(sectionComps);
     const teachingMaterialsSecIndex = sectionCompsCopy.findIndex(
       (sectionComp) => {
-        if (!("SectionTitle" in sectionComp)) {
-          return false;
-        }
-
         const sectionTitle = sectionComp.SectionTitle.replace(
           /[0-9.]/g,
           ""
@@ -311,10 +247,6 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
       }
     );
     const feedbackSecIndex = sectionCompsCopy.findIndex((sectionComp) => {
-      if (!("SectionTitle" in sectionComp)) {
-        return false;
-      }
-
       const sectionTitle = sectionComp.SectionTitle.replace(
         /[0-9.]/g,
         ""
@@ -322,7 +254,6 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
 
       return sectionTitle === "Feedback";
     });
-
     if (teachingMaterialsSecIndex === -1 || feedbackSecIndex === -1) {
       console.error(
         "Can't find the Teacher Materials section or the feedback section."
@@ -338,36 +269,25 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
 
     return sectionCompsCopy;
   }, []);
+
   let _sections = useMemo(
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
     []
   );
-
-  console.log("_sections, hey there: ", _sections);
-
   const _dots = useMemo(
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []
   );
-
-  // Get the lesson from the database, compare each section, and view what fields do not appear in the original
-  // object found in the database
-
-  const [sectionDots, setSectionDots] = useState<ISectionDots>({
+  const [sectionDots, setSectionDots] = useState({
     dots: _dots,
     clickedSectionId: null,
   });
-
-  useEffect(() => {
-    console.log("sectionDots, yo there: ", sectionDots);
-  }, []);
-
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
   const [wasDotClicked, setWasDotClicked] = useState(false);
   const [isScrollListenerOn, setIsScrollListenerOn] =
     useScrollHandler(setSectionDots);
 
-  const scrollSectionIntoView = (sectionId: string) => {
+  const scrollSectionIntoView = (sectionId) => {
     const targetSection = document.getElementById(sectionId);
     let url = router.asPath;
 
@@ -380,9 +300,9 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
     }
   };
 
-  const handleDocumentClick = () => (event: MouseEvent) => {
+  const handleDocumentClick = (event) => {
     const wasANavDotElementClicked = NAV_CLASSNAMES.some((className) =>
-      (event as IUserMouseEvent).target?.classList.contains(className)
+      event.target.classList.contains(className)
     );
     const viewPortWidth = Math.max(
       document.documentElement.clientWidth || 0,
@@ -408,23 +328,22 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
     setCustomModalFooter(null);
   };
 
-  const handleIsUserEntryModalDisplayed =
-    (setIsModalOn: TSetter<boolean>) => () => {
-      setNotifyModal((state) => ({ ...state, isDisplayed: false }));
+  const handleIsUserEntryModalDisplayed = (setIsModalOn) => () => {
+    setNotifyModal((state) => ({ ...state, isDisplayed: false }));
 
-      setTimeout(() => {
-        handleUserNeedsAnAccountHideModal();
-        setIsModalOn(true);
-      }, 250);
-    };
+    setTimeout(() => {
+      handleUserNeedsAnAccountHideModal();
+      setIsModalOn(true);
+    }, 250);
+  };
 
-  const handleBonusContentDocumentClick = (event: MouseEvent) => {
+  const handleBonusContentDocumentClick = (event) => {
     const isWithinBonusContentSec = getIsWithinParentElement(
       event.target,
       "Bonus_Content",
       "className"
     );
-    const { tagName, origin } = event.target ?? ({} as EventTarget);
+    const { tagName, origin } = event.target ?? {};
 
     if (
       statusRef.current !== "authenticated" &&
@@ -507,12 +426,12 @@ const LessonDetails = ({ lesson, lessonFromDb, unit }: IProps) => {
   }, [status]);
 
   useEffect(() => {
-    document.body.addEventListener("click", handleDocumentClick());
+    document.body.addEventListener("click", handleDocumentClick);
 
     document.body.addEventListener("click", handleBonusContentDocumentClick);
 
     return () => {
-      document.body.removeEventListener("click", handleDocumentClick());
+      document.body.removeEventListener("click", handleDocumentClick);
       document.body.removeEventListener(
         "click",
         handleBonusContentDocumentClick
@@ -659,15 +578,15 @@ const getGoogleDriveFileIdFromUrl = (url) => {
 };
 
 const updateLessonWithGoogleDriveFiledPreviewImg = (
-  lesson: ILessonForUI,
-  unit: IOldUnit
+  lesson,
+  lessonToDisplayOntoUi
 ) => {
-  let lessonObjUpdated: ILessonForUI = JSON.parse(JSON.stringify(lesson));
+  let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
 
   // getting the thumbnails for the google drive file handouts for each lesson
   if (lesson?.itemList?.length) {
     const itemListUpdated = lesson.itemList.map((itemObj) => {
-      const googleDriveFileId = itemObj?.links?.[0]?.url
+      const googleDriveFileId = itemObj?.links[0]?.url
         ? getGoogleDriveFileIdFromUrl(itemObj.links[0].url)
         : null;
 
@@ -689,8 +608,11 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (
 
   // getting the status for each lesson
   let lsnStatus =
-    Array.isArray(unit?.LsnStatuses) && unit?.LsnStatuses?.length
-      ? unit.LsnStatuses.find((lsnStatus) => lsnStatus?.lsn == lesson.lsn)
+    Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) &&
+    lessonToDisplayOntoUi?.LsnStatuses?.length
+      ? lessonToDisplayOntoUi.LsnStatuses.find(
+          (lsnStatus) => lsnStatus?.lsn == lesson.lsn
+        )
       : null;
 
   if (!lesson.tile && lsnStatus?.status === "Upcoming") {
@@ -706,9 +628,7 @@ const updateLessonWithGoogleDriveFiledPreviewImg = (
   };
 };
 
-export const getStaticProps = async (arg: {
-  params: { id: string; loc: string };
-}) => {
+export const getStaticProps = async (arg) => {
   try {
     const {
       params: { id, loc },
@@ -724,7 +644,6 @@ export const getStaticProps = async (arg: {
     let lessonToDisplayOntoUi = targetLessons.find(
       ({ numID, locale }) => numID === parseInt(id) && locale === loc
     );
-    const lessonFromDb = structuredClone(lessonToDisplayOntoUi);
 
     if (!lessonToDisplayOntoUi || typeof lessonToDisplayOntoUi !== "object") {
       throw new Error("Lesson is not found.");
@@ -746,7 +665,7 @@ export const getStaticProps = async (arg: {
     if (resources?.every((resource) => resource.lessons)) {
       lessonParts = [];
 
-      // get all of preview images of google drive files for the teaching materials section
+      // get all of preview images of google drive files
       for (const resource of resources) {
         const resourceLessons = [];
         for (const lesson of resource.lessons) {
@@ -971,7 +890,6 @@ export const getStaticProps = async (arg: {
     return {
       props: {
         lesson: JSON.parse(JSON.stringify(lessonToDisplayOntoUi)),
-        lessonFromDb: JSON.parse(JSON.stringify(lessonFromDb)),
         availLocs: targetLessonLocales,
       },
       revalidate: 30,
