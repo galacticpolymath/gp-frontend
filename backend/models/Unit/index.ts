@@ -8,7 +8,7 @@ import { VersionNotes } from "./VersionNotes";
 import { IFeatureLocation, IFeatureName, IFeaturing, ILsnStatus, IUnit } from "./types/unit";
 import { StandardsSchema } from "./Standards";
 
-let Units = (model as any)?.units;
+let Units = models.units;
 
 if (!Units) {
     const FeatureNameSchema = new Schema<IFeatureName>({
@@ -101,7 +101,7 @@ if (!Units) {
         ShortURL: String,
     })
 
-    Units = models.units ?? model("units", UnitSchema);
+    Units = model("units", UnitSchema);
 }
 
 export default Units;
