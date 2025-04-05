@@ -592,7 +592,7 @@ const LessonPart = ({
                           <strong>
                             <RichText
                               content={itemTitle}
-                              className={`item-title-${lsnNum}-${itemIndex}`}
+                              className={`item-title-${lsnNum}-${itemIndex} lesson-item-title`}
                             />
                           </strong>
                           <section
@@ -609,7 +609,10 @@ const LessonPart = ({
                                 className="fst-italic mb-1"
                                 style={{ color: "#353637" }}
                               >
-                                <RichText content={itemDescription} />
+                                <RichText
+                                  className="lesson-item-description"
+                                  content={itemDescription}
+                                />
                               </div>
                               <ul
                                 style={{ listStyle: "none" }}
@@ -698,7 +701,7 @@ const LessonPart = ({
                                     <img
                                       src={filePreviewImg}
                                       alt="lesson_tile"
-                                      className="h-auto w-auto"
+                                      className="h-auto w-auto lesson-file-img-testing"
                                       style={{
                                         objectFit: "contain",
                                         maxHeight: "100px",

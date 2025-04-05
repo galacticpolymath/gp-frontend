@@ -21,7 +21,7 @@ const Chunk = ({
       </h6>
       <div className='d-col col-12 col-lg-7'>
         <ChunkGraph
-          className={`mt-0 chunk-graph-${lessonNum}-${chunkNum}`}
+          className={`mt-0 chunk-graph-${lessonNum}-${chunkNum} chunk-graph-testing`}
           durList={durList}
           chunkNum={chunkNum}
         />
