@@ -185,9 +185,6 @@ export async function middleware(request) {
     }
 
     const token = authorizationStr.split(' ')[1].trim();
-    console.log("token length before trim: ", token.length)
-    console.log("yo there token: ", token)
-    console.log("token length after trim: ", token.trim().length)
     const payload = await verifyJwt(token);
 
     if (payload?.payload?.accessibleRoutes?.length && !payload.payload.accessibleRoutes.includes(nextUrl.pathname)) {
@@ -229,7 +226,6 @@ export async function middleware(request) {
 
       return NextResponse.next();
     } else if ((nextUrl.pathname === "/api/copy-files") && (method === "POST")) {
-      console.error("No GDrive-Token was provided, bacon yo there.");
       return new NextResponse("No GDrive-Token was provided.", { status: 400 });
     }
 

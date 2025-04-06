@@ -4,6 +4,11 @@ export interface IRootFieldToRetrieve {
     as: string;
 }
 
+export interface ICustomProp<T>{
+    type: any,
+    default: () => T    
+}
+
 export const RootFieldToRetrieve = new Schema<IRootFieldToRetrieve>({
     name: String,
     as: String

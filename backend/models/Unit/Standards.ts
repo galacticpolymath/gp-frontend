@@ -1,52 +1,9 @@
-import { IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFieldsToRetrieve';
+import { ICustomProp, IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFieldsToRetrieve';
 import { IUnitSectionObj, unitSectionObj } from './Section';
 import mongoose from 'mongoose';
+import { IDimension, ISet, IStandard, IStandards, IStandardsGroup, ISubject } from './types/standards';
 
 const { Schema } = mongoose;
-
-// Define the interface for a single standard
-export interface IStandard {
-    lessons: string[];
-    codes: string;
-    grades: string[];
-    statements: string;
-    alignmentNotes: string;
-    subcat: string;
-}
-
-// Define the interface for a standards group
-export interface IStandardsGroup {
-    slug: string;
-    name: string;
-    standardsGroup: IStandard[];
-}
-
-// Define the interface for a dimension
-export interface IDimension {
-    slug: string;
-    name: string;
-    standardsGroup: IStandardsGroup[];
-}
-
-// Define the interface for a set
-export interface ISet {
-    slug: string;
-    name: string;
-    dimensions: IDimension[];
-}
-
-// Define the interface for a subject
-export interface ISubject {
-    subject: string;
-    target: boolean;
-    sets: ISet[];
-}
-
-// Define the interface for the standards schema
-export interface IStandards extends IUnitSectionObj {
-    Data: ISubject[],
-    rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
-}
 
 // Define the schema for a single standard
 const StandardSchema = new Schema<IStandard>({
@@ -86,7 +43,7 @@ const SubjectSchema = new Schema<ISubject>({
     sets: [SetSchema]
 }, { _id: false });
 
-export const StandardsSchema = new Schema<IStandards>({
+export const StandardsSchema = new Schema<Omit<IStandards, "rootFieldsToRetrieveForUI"> & { rootFieldsToRetrieveForUI: ICustomProp<IRootFieldToRetrieve[]> }>({
     ...unitSectionObj,
     Data: [SubjectSchema],
     rootFieldsToRetrieveForUI: {

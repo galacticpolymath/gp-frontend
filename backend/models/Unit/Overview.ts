@@ -1,8 +1,6 @@
-import { {
-    
-} RootFieldToRetrieve } from './RootFieldsToRetrieve';
 import mongoose from 'mongoose'
 import { IOverview, IUnitAccessibility, IUnitOverview, IUnitVersions } from './types/overview';
+import { ICustomProp, IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFieldsToRetrieve';
 
 const { Schema } = mongoose;
 
@@ -70,7 +68,7 @@ const VersionSchema = new Schema<IUnitVersions>({
 }, { _id: false });
 
 
-export const UnitOverview = new Schema<IUnitOverview>({
+export const UnitOverview = new Schema<Omit<IUnitOverview, "rootFieldsToRetrieveForUI"> & { rootFieldsToRetrieveForUI: ICustomProp<IRootFieldToRetrieve[]> }>({
     __component: String,
     TheGist: String,
     EstUnitTime: String,
@@ -89,7 +87,7 @@ export const UnitOverview = new Schema<IUnitOverview>({
             let rootFields = [
                 {
                     name: "unitBanner",
-                    as: "lessonBannerUrl"
+                    as: "unitBanner"
                 },
                 {
                     name: "Title",
@@ -124,4 +122,4 @@ export const UnitOverview = new Schema<IUnitOverview>({
             return rootFields;
         }
     },
-})
+}, { _id: false })

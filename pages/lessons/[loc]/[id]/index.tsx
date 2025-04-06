@@ -308,7 +308,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     []
   );
   // print _sections
-  console.log("_sections, yo there: ", _sections);
   const _dots = useMemo(
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []
@@ -321,7 +320,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     clickedSectionId: null,
   });
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
-  const [wasDotClicked, setWasDotClicked] = useState(false);
   const [isScrollListenerOn, setIsScrollListenerOn] =
     useScrollHandler(setSectionDots);
 
@@ -689,7 +687,7 @@ export const getStaticProps = async (arg: {
     ).lean()) as INewUnitSchema[];
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
 
-    if (!targetUnits?.length) {
+    if (targetUnits?.length) {
       const targetUnit = targetUnits.find(
         ({ numID, locale }) => numID === parseInt(id) && locale === loc
       );
@@ -697,6 +695,17 @@ export const getStaticProps = async (arg: {
       if (!targetUnit) {
         throw new Error("Lesson is not found.");
       }
+
+      // get the root fields for the sections that has rootFieldsToRetrieveForUI field
+      // get all of preview images of google drive files
+      // preview image for all of the web apps and external videos
+      // get the preview image for the shorts
+
+      console.log("targetUnit: ", targetUnit);
+      // get classroom?.resources
+      const resources =
+        targetUnit.Sections?.teachingMaterials?.classroom?.resources;
+      resources?.[0].lessons?.[0].itemList?.[0].links;
     }
 
     let lessonToDisplayOntoUi = targetLessons.find(
@@ -726,6 +735,7 @@ export const getStaticProps = async (arg: {
       // get all of preview images of google drive files
       for (const resource of resources) {
         const resourceLessons = [];
+
         for (const lesson of resource.lessons) {
           let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
 
@@ -747,6 +757,7 @@ export const getStaticProps = async (arg: {
                 );
               }
 
+              // get the image preview link for the lesson documents
               const isWebResource = itemCat === "web resource";
               const url = links.find((link: any) => link?.url)?.url;
               const googleDriveFileId =
@@ -887,6 +898,7 @@ export const getStaticProps = async (arg: {
         )
       : false;
 
+    // preview image for all of the web apps and external videos
     if (isVidOrWebAppPresent) {
       const multiMediaArrUpdated = [];
 
@@ -940,6 +952,7 @@ export const getStaticProps = async (arg: {
       };
     }
 
+    // get the preview image for the shorts
     if (lessonToDisplayOntoUi?.Section?.preview?.Multimedia?.length) {
       for (const multiMedia of lessonToDisplayOntoUi.Section.preview
         .Multimedia) {

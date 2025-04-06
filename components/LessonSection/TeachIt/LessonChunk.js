@@ -10,7 +10,6 @@ const Chunk = ({
   durList,
   lessonNum
 }) => {
-  console.log("steps, yo there: ", steps);
   return (
     <div className='mb-3'>
       <h6 className='fw-bold mb-0 text-primary ms-1'>
@@ -29,8 +28,6 @@ const Chunk = ({
       <div className='border-l'>
         {(steps ?? []).map((step, index) => {
           const stepId = `${step.StepTitle.split(" ").join("-")}-${index}`.replace("'", "");
-
-          console.log("stepId, yo there: ", stepId);
 
           return <LessonStep key={step.Step} className={`mt-3 ms-sm-1 d-grid align-items-center`} id={stepId} {...step} />
         })}

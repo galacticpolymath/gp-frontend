@@ -211,8 +211,6 @@ const TeachIt = (props: TeachItProps) => {
     return <div>No lessons to display.</div>;
   }
 
-  console.log("resources, yo there: ", resources);
-
   let areThereMoreThan1Resource = false;
 
   if (

@@ -22,14 +22,14 @@ interface IRelease {
     sub_releases: ISubRelease[];
 }
 
+export interface IVersionNotes extends IUnitSectionObj {
+    Data: IRelease[];
+}
+
 const ReleaseSchema = new Schema<IRelease>({
     major_release: String,
     sub_releases: [SubReleaseSchema]
 }, { _id: false });
-
-export interface IVersionNotes extends IUnitSectionObj {
-    Data: IRelease[];
-}
 
 export const VersionNotes = new Schema<IVersionNotes>({
     ...unitSectionObj,

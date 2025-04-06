@@ -71,5 +71,18 @@ export interface IUnitOverview {
       }[]
     | null;
   versions: IUnitVersions[] | null;
-  rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
+  rootFieldsToRetrieveForUI: IRootFieldToRetrieve;
 }
+
+export interface IUnitOverviewPropsForUI {
+    unitBanner: INewUnitSchema["UnitBanner"];
+    unitTitle: INewUnitSchema["Title"];
+    ForGrades: INewUnitSchema["ForGrades"];
+    TargetSubject: INewUnitSchema["TargetSubject"];
+    GradesOrYears: INewUnitSchema["GradesOrYears"];
+    numID: INewUnitSchema["numID"];
+    locale: INewUnitSchema["locale"];
+    Subtitle: INewUnitSchema["Subtitle"];
+}
+
+type TOverviewForUI = Omit<IUnitOverview, "rootFieldsToRetrieveForUI"> & IUnitOverviewPropsForUI;

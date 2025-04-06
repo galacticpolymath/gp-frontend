@@ -117,7 +117,6 @@ const LessonPart = ({
     ? null
     : chunks && chunks.map(({ chunkDur }) => chunkDur);
   let _itemList = itemList;
-  console.log("sup there meng, resources: ", resources);
   const targetLessonsResources = resources?.lessons?.find(
     (lesson) => lesson?.lsn == lsnNum
   );
@@ -757,7 +756,6 @@ const LessonPart = ({
               <ol className="mt-2">
                 {lsnExt.map(
                   ({ itemTitle, itemDescription, item, itemLink }) => {
-                    console.log("itemTitle, yo there: ", itemTitle);
                     let itemClassNameTitle = "";
                     let itemClassNameDescription = "";
 

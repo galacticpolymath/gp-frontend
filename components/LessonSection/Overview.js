@@ -27,7 +27,6 @@ const Overview = ({
   Accessibility,
   ...titleProps
 }) => {
-  console.log("hey there, titleProps: ", titleProps)
   const ref = useRef();
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
   const _h2Id = SectionTitle.toLowerCase()
