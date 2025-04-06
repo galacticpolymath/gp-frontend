@@ -33,6 +33,12 @@ function checkIfElementsExist(identifier) {
     });
 }
 
+function checkIfIFrameLoaded(identifier) {
+    cy.get(identifier).should($element => {
+        console.log("the iframe, element: ", $element);
+    });
+}
+
 describe("Check unit page formatting", () => {
     it("Will check ui of the unit page", () => {
         console.log("The test is running...");
@@ -115,6 +121,10 @@ describe("Check unit page formatting", () => {
         checkIfElementIsVisible("#teach-it-sec")
 
         checkIfElementHasChildren(".section-testing")
+
+        checkIfIFrameLoaded(".media-testing")
+
+        // checkIfElementIsVisible(".media-img-testing")
 
         cy.get("#materials-title").should(($element) => {
             const headingTxt = $element.text();

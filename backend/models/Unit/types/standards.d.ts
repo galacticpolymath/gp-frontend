@@ -45,6 +45,6 @@ export interface IStandards extends IUnitSectionObj {
     rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
 }
 
-export type TStandardsForUI = Omit<IStandards, "rootFieldsToRetrieveForUI"> & Pick<INewUnitSchema, "GradesOrYears"> 
+export type TStandardsForUI = Omit<IStandards, "rootFieldsToRetrieveForUI"> & Partial<Pick<INewUnitSchema, "GradesOrYears">> 
 
 export { IStandardsSec, TStandardsForUI }

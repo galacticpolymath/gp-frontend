@@ -4,10 +4,10 @@ import { TGeneralSection } from "../Section";
 import { IStandard } from "../Standards";
 import { ITeachingMaterials } from "../TeachingMaterials";
 import { IVersionNotes } from "../VersionNotes";
-import { IOverview, IUnitOverview } from "./overview";
+import { IOverview, IUnitOverview, TOverviewForUI } from "./overview";
 import { IPreview } from "./preview";
-import { IStandardsSec } from "./standards";
-import { IUnitTeachingMaterials } from "./teachingMaterials";
+import { IStandards, IStandardsSec, TStandardsForUI } from "./standards";
+import { IUnitTeachingMaterials, IUnitTeachingMaterialsForUI } from "./teachingMaterials";
 
 export interface ILsnStatus {
   lsn: number;
@@ -125,7 +125,7 @@ interface IFeaturedMultimedia {
 
 export interface IUnit extends Omit<IUnitOld, "LsnStatuses"> {}
 
-interface INewUnitSchema {
+interface INewUnitSchema<TSection = ISections> {
   _id: string | null;
   numID: number | null;
   ShortTitle: string | null;
@@ -184,16 +184,25 @@ interface INewUnitSchema {
   LessonEnvir: string | null;
   ForGrades: string | null;
   GradesOrYears: string | null;
-  Sections: {
-    overview: IUnitOverview | null;
-    preview: IPreview | null;
-    teachingMaterials: IUnitTeachingMaterials | null;
-    feedback: TGeneralSection | null;
-    extensions: TGeneralSection | null;
-    bonus: TGeneralSection | null;
-    background: TGeneralSection | null;
-    standards: IStandardsSec | null;
-    credits: TGeneralSection | null;
-    acknowledgments: TAcknowledgments | null;
-  } | null;
+  Sections: TSection | null;
 }
+
+interface ISections<
+  TOverview extends IUnitOverview = IUnitOverview,
+  TStandardsSec extends IStandards = IStandards,
+  TTeachingMaterials extends IUnitTeachingMaterials = IUnitTeachingMaterials
+> {
+  overview: TOverview | null;
+  preview: IPreview | null;
+  teachingMaterials: TTeachingMaterials | null;
+  feedback: TGeneralSection | null;
+  extensions: TGeneralSection | null;
+  bonus: TGeneralSection | null;
+  background: TGeneralSection | null;
+  standards: TStandardsSec | null;
+  credits: TGeneralSection | null;
+  acknowledgments: TAcknowledgments | null;
+}
+
+export type TSectionsForUI = ISections<TOverviewForUI, TStandardsForUI, IUnitTeachingMaterialsForUI>; 
+export type TUnitForUI = INewUnitSchema<TSectionsForUI>;

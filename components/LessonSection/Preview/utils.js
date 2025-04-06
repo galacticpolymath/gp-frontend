@@ -19,7 +19,7 @@ export const getMediaComponent = ({
         style={iframeStyle}
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        className={iframeClassName}
+        className={`${iframeClassName} media-testing`}
       />
     );
   } else if (type === 'pdf') {
@@ -30,7 +30,7 @@ export const getMediaComponent = ({
         height="500"
         style={{ zIndex: 11100, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
         allow="autoplay"
-        className='pdf-media'
+        className='pdf-media media-testing'
       />
     );
   } else if ((type === 'web-app') && webAppPreviewImg) {
@@ -43,7 +43,7 @@ export const getMediaComponent = ({
           src={webAppPreviewImg}
           alt={webAppImgAlt}
           fill
-          className='lesson-media position-absolute top-0 start-0 h-100 w-100'
+          className='lesson-media position-absolute top-0 start-0 h-100 w-100 media-img-testing'
         />
       </Link>
     );

@@ -40,9 +40,15 @@ import { IUserSession, TSetter } from "../../../../types/global";
 import {
   INewUnitSchema,
   INewUnitSchema as IUnit,
+  TUnitForUI,
 } from "../../../../backend/models/Unit/types/unit";
 import Units from "../../../../backend/models/Unit";
-import { IUnitTeachingMaterialsForUI } from "../../../../backend/models/Unit/types/teachingMaterials";
+import {
+  IItemForUI,
+  INewUnitLesson,
+  IResource,
+  IUnitTeachingMaterialsForUI,
+} from "../../../../backend/models/Unit/types/teachingMaterials";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -710,33 +716,84 @@ export const getStaticProps = async (arg: {
       // get classroom?.resources
       const resources =
         targetUnit.Sections?.teachingMaterials?.classroom?.resources;
-      console.log("resource, hey there: ", resources);
+      const targetUnitForUI: TUnitForUI = targetUnit;
 
-      if (resources?.length) {
-        // get all of the item images for the resources
-        const itemDocPreviewImgAndIndexPair: [string, number][] = [];
+      if (
+        targetUnitForUI.Sections?.teachingMaterials?.classroom?.resources
+          ?.length &&
+        resources?.length
+      ) {
         const resourcesForUIPromises = resources.map(async (resource) => {
-          const lessons = resource.lessons?.map(async (lesson) => {
-            const itemList = lesson.itemList?.map(async (item) => {
-              const { links, itemCat } = item;
-              const url = links?.[0].url?.[0];
-              let filePreviewImg = "";
+          const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
+            async (lesson) => {
+              const itemListWithFilePreviewImgsPromises = lesson.itemList?.map(
+                async (item) => {
+                  const { links, itemCat } = item;
+                  const url = links?.[0].url?.[0];
 
-              if (itemCat === "web resource") {
-                const linkPreviewObj = await getLinkPreviewObj(url);
-                const filePreviewImg =
-                  "images" in linkPreviewObj
-                    ? linkPreviewObj.images?.[0]
+                  if (itemCat === "web resource") {
+                    const linkPreviewObj = await getLinkPreviewObj(url);
+                    const filePreviewImg =
+                      "images" in linkPreviewObj
+                        ? linkPreviewObj.images?.[0]
+                        : null;
+
+                    return {
+                      ...item,
+                      filePreviewImg,
+                    } as IItemForUI;
+                  }
+
+                  const googleDriveFileId = url
+                    ? getGoogleDriveFileIdFromUrl(url)
                     : null;
+
+                  if (googleDriveFileId) {
+                    const filePreviewImg = `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`;
+
+                    return {
+                      ...item,
+                      filePreviewImg,
+                    } as IItemForUI;
+                  }
+
+                  return item as IItemForUI;
+                }
+              );
+
+              if (itemListWithFilePreviewImgsPromises) {
+                const itemListWithFilePreviewImgs = await Promise.all(
+                  itemListWithFilePreviewImgsPromises
+                );
+
+                return {
+                  ...lesson,
+                  itemList: itemListWithFilePreviewImgs,
+                } as INewUnitLesson<IItemForUI>;
               }
 
-              return {
-                ...item,
-                filePreviewImg,
-              };
-            });
-          });
+              return lesson as INewUnitLesson<IItemForUI>;
+            }
+          );
+
+          if (lessonsWithFilePreviewImgsPromises) {
+            const lessonsWithFilePreviewImgs = await Promise.all(
+              lessonsWithFilePreviewImgsPromises
+            );
+
+            return {
+              ...resource,
+              lessons: lessonsWithFilePreviewImgs,
+            } as IResource<INewUnitLesson<IItemForUI>>;
+          }
+
+          return resource as IResource<INewUnitLesson<IItemForUI>>;
         });
+
+        const resourcesForUI = await Promise.all(resourcesForUIPromises);
+
+        targetUnitForUI.Sections.teachingMaterials.classroom.resources =
+          resourcesForUI;
       }
     }
 
