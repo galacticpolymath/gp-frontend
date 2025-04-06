@@ -13,8 +13,12 @@ export interface IItem {
   links: ILink[] | null;
 }
 
+export interface IItemForUI extends IItem{
+  filePreviewImg?: string
+}
+
 // contains the props of the old database schema
-export interface ILesson {
+export interface ILesson<TItem extends IItem = IItem> {
   _id: string | null;
   lsn: string | null;
   title: string | null;
@@ -60,6 +64,7 @@ export interface IResource<TLesson extends object = ILesson> {
 export interface IClassroom<TLesson = ILesson> {
   resources: IResource<TLesson>[] | null;
 }
+
 export interface IClassroomOld<TLesson = ILesson> {
   gradeVariantNotes: IGradeVariantNote[] | null;
   resources: IResource<TLesson>[] | null;
@@ -163,7 +168,7 @@ interface IChunk {
   steps: IChunkStep[];
 }
 
-interface INewUnitLesson {
+interface INewUnitLesson<TItem extends IItem = IItem> {
   title: string | null;
   lsn: number | null;
   status: string | null;
@@ -198,11 +203,20 @@ export interface IVocab {
 }
 
 
-export interface IUnitTeachingMaterials extends IUnitSectionObj {
+interface ITeachingMaterialsPreviewInfo{
   unitDur: string;
   unitPreface: string;
   gatheredVocab: IVocab[];
+}
+
+export interface IUnitTeachingMaterials extends IUnitSectionObj, ITeachingMaterialsPreviewInfo {
   classroom: {
     resources: IResource<INewUnitLesson>[];
+  };
+}
+
+export interface IUnitTeachingMaterialsForUI extends IUnitSectionObj, ITeachingMaterialsPreviewInfo {
+  classroom: {
+    resources: IResource<INewUnitLesson<IItemForUI>>[];
   };
 }

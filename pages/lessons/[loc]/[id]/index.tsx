@@ -42,6 +42,7 @@ import {
   INewUnitSchema as IUnit,
 } from "../../../../backend/models/Unit/types/unit";
 import Units from "../../../../backend/models/Unit";
+import { IUnitTeachingMaterialsForUI } from "../../../../backend/models/Unit/types/teachingMaterials";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -697,15 +698,46 @@ export const getStaticProps = async (arg: {
       }
 
       // get the root fields for the sections that has rootFieldsToRetrieveForUI field
-      // get all of preview images of google drive files
+
+      // get all of preview images of google drive files for all of the lessons
+
       // preview image for all of the web apps and external videos
+
       // get the preview image for the shorts
 
       console.log("targetUnit: ", targetUnit);
+
       // get classroom?.resources
       const resources =
         targetUnit.Sections?.teachingMaterials?.classroom?.resources;
-      resources?.[0].lessons?.[0].itemList?.[0].links;
+      console.log("resource, hey there: ", resources);
+
+      if (resources?.length) {
+        // get all of the item images for the resources
+        const itemDocPreviewImgAndIndexPair: [string, number][] = [];
+        const resourcesForUIPromises = resources.map(async (resource) => {
+          const lessons = resource.lessons?.map(async (lesson) => {
+            const itemList = lesson.itemList?.map(async (item) => {
+              const { links, itemCat } = item;
+              const url = links?.[0].url?.[0];
+              let filePreviewImg = "";
+
+              if (itemCat === "web resource") {
+                const linkPreviewObj = await getLinkPreviewObj(url);
+                const filePreviewImg =
+                  "images" in linkPreviewObj
+                    ? linkPreviewObj.images?.[0]
+                    : null;
+              }
+
+              return {
+                ...item,
+                filePreviewImg,
+              };
+            });
+          });
+        });
+      }
     }
 
     let lessonToDisplayOntoUi = targetLessons.find(
@@ -765,11 +797,14 @@ export const getStaticProps = async (arg: {
 
               if (googleDriveFileId) {
                 const filePreviewImg = `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`;
-
-                itemListUpdated.push({
+                const itemObjUpdated = {
                   ...itemObj,
                   filePreviewImg,
-                });
+                };
+
+                console.log("itemObjUpdated, yo there! ", itemObjUpdated);
+
+                itemListUpdated.push(itemObjUpdated);
                 continue;
               }
 
