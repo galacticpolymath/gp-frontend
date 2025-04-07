@@ -39,7 +39,10 @@ import {
 import { IUserSession, TSetter } from "../../../../types/global";
 import {
   INewUnitSchema,
+  ISections,
   INewUnitSchema as IUnit,
+  TKeysSectionsForUI,
+  TSectionsForUI,
   TUnitForUI,
 } from "../../../../backend/models/Unit/types/unit";
 import Units from "../../../../backend/models/Unit";
@@ -111,8 +114,21 @@ const addGradesOrYearsProperty = (
 
 interface IProps {
   lesson?: any;
-  unit?: IUnit;
+  unit?: TUnitForUI;
 }
+
+const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
+  overview: 0,
+  preview: 1,
+  teachingMaterials: 2,
+  feedback: 3,
+  extensions: 4,
+  bonus: 5,
+  background: 6,
+  standards: 7,
+  credits: 8,
+  acknowledgments: 9,
+};
 
 const LessonDetails = ({ lesson, unit }: IProps) => {
   const router = useRouter();
@@ -314,7 +330,27 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
     []
   );
-  // print _sections
+
+  console.log("_sections: ", _sections);
+  console.log("unit, sup there: ", unit);
+  const unitSectionAndTitlePairs = Object.entries(unit?.Sections ?? {}) as [
+    keyof TSectionsForUI,
+    any
+  ][];
+
+  unitSectionAndTitlePairs.sort(([sectionAName], [sectionBName]) => {
+    const sectionASortNum = SECTION_SORT_ORDER[sectionAName];
+    const sectionBSortNum = SECTION_SORT_ORDER[sectionBName];
+
+    return sectionASortNum - sectionBSortNum;
+  });
+
+  const unitSections: TSectionsForUI[] = unitSectionAndTitlePairs.map(
+    ([, section]) => section
+  );
+
+  console.log("unitSectionAndTitlePairs, hey there: ", unitSections);
+
   const _dots = useMemo(
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []
@@ -693,6 +729,7 @@ export const getStaticProps = async (arg: {
       { __v: 0 }
     ).lean()) as INewUnitSchema[];
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
+    let targetUnitForUI: TUnitForUI | undefined = undefined;
 
     if (targetUnits?.length) {
       const targetUnit = targetUnits.find(
@@ -703,21 +740,78 @@ export const getStaticProps = async (arg: {
         throw new Error("Lesson is not found.");
       }
 
-      // get the root fields for the sections that has rootFieldsToRetrieveForUI field
-
-      // get all of preview images of google drive files for all of the lessons
-
-      // preview image for all of the web apps and external videos
-
-      // get the preview image for the shorts
-
-      console.log("targetUnit: ", targetUnit);
-
-      // get classroom?.resources
       const resources =
         targetUnit.Sections?.teachingMaterials?.classroom?.resources;
-      const targetUnitForUI: TUnitForUI = targetUnit;
+      targetUnitForUI = targetUnit;
 
+      if (targetUnitForUI.FeaturedMultimedia) {
+        targetUnitForUI.FeaturedMultimedia =
+          targetUnitForUI.FeaturedMultimedia.map((multiMedia) => {
+            if (multiMedia?.mainLink?.includes("www.youtube.com/shorts")) {
+              multiMedia.mainLink = multiMedia.mainLink.replace(
+                "shorts",
+                "embed"
+              );
+            }
+
+            return multiMedia;
+          });
+      }
+
+      const isVidOrWebAppPresent = targetUnitForUI?.FeaturedMultimedia?.length
+        ? targetUnitForUI.FeaturedMultimedia.some((multiMedia) => {
+            return multiMedia.type === "web-app" || multiMedia.type === "video";
+          })
+        : false;
+
+      // preview images for all of the multimedia content
+      if (isVidOrWebAppPresent && targetUnitForUI.FeaturedMultimedia) {
+        const featuredMultimediaWithImgPreviewsPromises =
+          targetUnitForUI.FeaturedMultimedia.map(async (multiMediaItem) => {
+            if (
+              multiMediaItem.type === "video" &&
+              multiMediaItem?.mainLink?.includes("drive.google")
+            ) {
+              const videoId = multiMediaItem.mainLink.split("/").at(-2);
+              multiMediaItem = {
+                ...multiMediaItem,
+                webAppPreviewImg: `https://drive.google.com/thumbnail?id=${videoId}`,
+                webAppImgAlt: `'${multiMediaItem.title}' video`,
+              };
+            }
+
+            if (multiMediaItem.type === "web-app" && multiMediaItem?.mainLink) {
+              const { errMsg, images, title } = (await getLinkPreviewObj(
+                multiMediaItem?.mainLink
+              )) as { errMsg: string; images: string[]; title: string };
+
+              if (errMsg && !images?.length) {
+                console.error(
+                  "Failed to get the image preview of web app. Error message: ",
+                  errMsg
+                );
+              }
+
+              multiMediaItem = {
+                ...multiMediaItem,
+                webAppPreviewImg: errMsg || !images?.length ? null : images[0],
+                webAppImgAlt:
+                  errMsg || !images?.length ? null : `${title}'s preview image`,
+              };
+
+              return multiMediaItem;
+            }
+
+            return multiMediaItem;
+          });
+        const featuredMultimediaWithImgPreviews = await Promise.all(
+          featuredMultimediaWithImgPreviewsPromises
+        );
+
+        targetUnitForUI.FeaturedMultimedia = featuredMultimediaWithImgPreviews;
+      }
+
+      // get the preview image for the google drive files and check the status of the lesson
       if (
         targetUnitForUI.Sections?.teachingMaterials?.classroom?.resources
           ?.length &&
@@ -726,6 +820,18 @@ export const getStaticProps = async (arg: {
         const resourcesForUIPromises = resources.map(async (resource) => {
           const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
             async (lesson) => {
+              if (!lesson.tile && lesson.status === "Upcoming") {
+                lesson = {
+                  ...lesson,
+                  tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
+                };
+              }
+
+              lesson = {
+                ...lesson,
+                status: lesson.status ?? "Proto",
+              };
+
               const itemListWithFilePreviewImgsPromises = lesson.itemList?.map(
                 async (item) => {
                   const { links, itemCat } = item;
@@ -794,6 +900,63 @@ export const getStaticProps = async (arg: {
 
         targetUnitForUI.Sections.teachingMaterials.classroom.resources =
           resourcesForUI;
+
+        const sectionsEntries = Object.entries(targetUnitForUI.Sections) as [
+          keyof ISections,
+          any
+        ][];
+        // print the length
+        console.log(
+          "sectionsEntries, sup there, the length: ",
+          sectionsEntries.length
+        );
+        // get the root fields for specific sections that required them
+        const sectionsUpdated = sectionsEntries.reduce(
+          (sectionsAccum, [sectionKey, section]) => {
+            if (
+              targetUnitForUI &&
+              typeof section === "object" &&
+              section &&
+              section?.rootFieldsToRetrieveForUI &&
+              Array.isArray(section.rootFieldsToRetrieveForUI)
+            ) {
+              for (const rootFieldToRetrieveForUI of section.rootFieldsToRetrieveForUI) {
+                if (
+                  rootFieldToRetrieveForUI?.name &&
+                  typeof rootFieldToRetrieveForUI.name === "string" &&
+                  rootFieldToRetrieveForUI?.as &&
+                  typeof rootFieldToRetrieveForUI.as === "string" &&
+                  targetUnitForUI[
+                    rootFieldToRetrieveForUI?.name as keyof TUnitForUI
+                  ]
+                ) {
+                  const val =
+                    targetUnitForUI[
+                      rootFieldToRetrieveForUI.name as keyof TUnitForUI
+                    ];
+
+                  section = {
+                    ...section,
+                    [rootFieldToRetrieveForUI.as as string]: val,
+                  };
+                }
+              }
+
+              return {
+                ...sectionsAccum,
+                [sectionKey]: section,
+              };
+            }
+
+            return {
+              ...sectionsAccum,
+              [sectionKey]: section,
+            };
+          },
+          {} as Record<keyof ISections, any>
+        );
+
+        targetUnitForUI.Sections = sectionsUpdated;
       }
     }
 
@@ -1057,6 +1220,7 @@ export const getStaticProps = async (arg: {
     return {
       props: {
         lesson: JSON.parse(JSON.stringify(lessonToDisplayOntoUi)),
+        unit: JSON.parse(JSON.stringify(targetUnitForUI)),
         availLocs: targetLessonLocales,
       },
       revalidate: 30,

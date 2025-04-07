@@ -123,9 +123,14 @@ interface IFeaturedMultimedia {
   otherLink: string | null;
 }
 
+export type TFeaturedMultimediaForUI = Partial<{
+  webAppPreviewImg: string | null;
+  webAppImgAlt: string | null;
+}> & IFeaturedMultimedia;
+
 export interface IUnit extends Omit<IUnitOld, "LsnStatuses"> {}
 
-interface INewUnitSchema<TSection = ISections> {
+interface INewUnitSchema<TSection extends ISections = ISections, TFeaturedMultimedia extends IFeaturedMultimedia = TFeaturedMultimediaForUI> {
   _id: string | null;
   numID: number | null;
   ShortTitle: string | null;
@@ -141,7 +146,7 @@ interface INewUnitSchema<TSection = ISections> {
   FirstPublicationDate: Date | null;
   LsnCount: number | null;
   FeaturedPeople: IFeaturing | null;
-  FeaturedMultimedia: IFeaturedMultimedia[] | null;
+  FeaturedMultimedia: TFeaturedMultimedia[] | null;
   MediumTitle: string | null;
   lang: string | null;
   lng: string | null;
@@ -205,4 +210,5 @@ interface ISections<
 }
 
 export type TSectionsForUI = ISections<TOverviewForUI, TStandardsForUI, IUnitTeachingMaterialsForUI>; 
-export type TUnitForUI = INewUnitSchema<TSectionsForUI>;
+type TKeysSectionsForUI = keyof ISections;
+export type TUnitForUI = INewUnitSchema<TSectionsForUI, TFeaturedMultimediaForUI>;

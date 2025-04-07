@@ -71,7 +71,7 @@ export interface IUnitOverview {
       }[]
     | null;
   versions: IUnitVersions[] | null;
-  rootFieldsToRetrieveForUI: IRootFieldToRetrieve;
+  rootFieldsToRetrieveForUI?: IRootFieldToRetrieve | null;
 }
 
 export type TUnitOverviewPropsForUI = Partial<{
@@ -85,5 +85,5 @@ export type TUnitOverviewPropsForUI = Partial<{
   Subtitle: INewUnitSchema["Subtitle"];
 }>;
 
-export type TOverviewForUI = Omit<IUnitOverview, "rootFieldsToRetrieveForUI"> &
+export type TOverviewForUI = IUnitOverview &
   TUnitOverviewPropsForUI;
