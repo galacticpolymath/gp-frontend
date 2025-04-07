@@ -61,9 +61,9 @@ interface ILessonPartProps {
   removeClickToSeeMoreTxt: () => void;
   ClickToSeeMoreComp?: ReactNode;
   FeedbackComp?: ReactNode;
-  partsArr: ILesson[];
+  partsArr: any[];
   _numsOfLessonPartsThatAreExpanded: TUseStateReturnVal<number[]>;
-  lsnNum?: string | null;
+  lsnNum?: string | null | number;
   learningObjectives?: string[] | null;
   partsFieldName?: string;
   chunks?: IChunk[] | null;
@@ -101,6 +101,7 @@ const LessonPart = ({
   accordionBtnStyle = {},
   isAccordionExpandable = true,
 }: ILessonPartProps) => {
+  console.log("chunks, LessonPart: ", chunks);
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
@@ -117,9 +118,12 @@ const LessonPart = ({
     ? null
     : chunks && chunks.map(({ chunkDur }) => chunkDur);
   let _itemList = itemList;
-  const targetLessonsResources = resources?.lessons?.find(
-    (lesson) => lesson?.lsn == lsnNum
-  );
+  const targetLessonsResources = resources?.lessons?.find((lesson) => {
+    console.log("lesson, LessonPart: ", lesson);
+    console.log("lsnNum, LessonPart: ", lsnNum);
+
+    return lesson?.lsn == lsnNum;
+  });
   let { tags: allTags, itemList: linkResources } = targetLessonsResources ?? {};
   _itemList = (_itemList ?? linkResources) as IItemForClient[];
   let previewTags = null;
@@ -128,6 +132,8 @@ const LessonPart = ({
 
   if (typeof lsnNum === "string" && !isNaN(Number(lsnNum))) {
     lsnNumParsed = parseInt(lsnNum);
+  } else if (typeof lsnNum === "number" && !isNaN(Number(lsnNum))) {
+    lsnNumParsed = lsnNum;
   }
 
   const _accordionId = `part_${lsnNum}`;

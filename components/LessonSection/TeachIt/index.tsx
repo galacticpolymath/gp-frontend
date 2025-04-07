@@ -118,29 +118,20 @@ const TeachIt = (props: TeachItProps) => {
     ForGrades,
     GradesOrYears,
     classroom,
+    remote,
+    index,
     unitDur,
     unitPreface,
   } = props;
-  console.log("props teach it, yo there: ", props);
-  let Data = props.Data ?? classroom;
-  const { _isDownloadModalInfoOn } = useModalContext();
-  const { handleRestrictedItemBtnClick, session } =
-    useCanUserAccessMaterial(false);
-  const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
-  const [arrowContainer, setArrowContainer] = useState({
-    isInView: true,
-    canTakeOffDom: false,
-  });
-  const [
-    numsOfLessonPartsThatAreExpanded,
-    setNumsOfLessonPartsThatAreExpanded,
-  ] = useState<number[]>([]);
+  // print the props
+  console.log("props, TeachIt: ", props);
+  let Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;
   const ref = useRef(null);
+
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   const environments = useMemo(() => {
-    console.log("Data, yo there: ", Data);
     const dataKeys = Data && typeof Data === "object" ? Object.keys(Data) : [];
     const environments = dataKeys.length
       ? (["classroom", "remote"] as const).filter((setting) =>

@@ -161,7 +161,7 @@ interface IChunkStep {
   TeachingTips: string | null;
 }
 
-interface IChunk {
+export interface IChunk {
   chunkTitle: string;
   chunkStart: number;
   chunkDur: number;
@@ -209,10 +209,13 @@ interface ITeachingMaterialsPreviewInfo{
   gatheredVocab: IVocab[];
 }
 
+interface IResourceObj<TLesson extends INewUnitLesson = INewUnitLesson>{
+  resources: IResource<INewUnitLesson>[]
+}
+
 export interface IUnitTeachingMaterials extends IUnitSectionObj, ITeachingMaterialsPreviewInfo {
-  classroom: {
-    resources: IResource<INewUnitLesson>[];
-  };
+  classroom: IResourceObj;
+  remote?: IResourceObj;
 }
 
 export interface IUnitTeachingMaterialsForUI extends IUnitSectionObj, ITeachingMaterialsPreviewInfo {
