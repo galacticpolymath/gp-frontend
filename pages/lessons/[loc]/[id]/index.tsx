@@ -65,12 +65,12 @@ const NAV_CLASSNAMES = [
 
 const getSectionDotsDefaultVal = (sectionComps: any) =>
   sectionComps.map((section: any, index: number) => {
-    const _sectionTitle = `${index}. ${section.SectionTitle}`;
+    const _sectionTitle = `${index}. ${section.SectionTitle ?? "Overview"}`;
     const sectionId = _sectionTitle.replace(/[\s!]/gi, "_").toLowerCase();
 
     return {
       isInView: index === 0,
-      sectionTitleForDot: section.SectionTitle,
+      sectionTitleForDot: section.SectionTitle ?? "Overview",
       sectionId: sectionId,
       willShowTitle: false,
       sectionDotId: `sectionDot-${sectionId}`,
@@ -348,18 +348,29 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   const unitSections: TSectionsForUI[] = unitSectionAndTitlePairs.map(
     ([, section]) => section
   );
-
-  console.log("unitSectionAndTitlePairs, hey there: ", unitSections);
-
+  const unitDots = useMemo(
+    () => (unitSections?.length ? getSectionDotsDefaultVal(unitSections) : []),
+    []
+  );
   const _dots = useMemo(
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []
   );
+  // BELOW: will be deleted
   const [sectionDots, setSectionDots] = useState<{
     dots: any;
     clickedSectionId: null | string;
   }>({
     dots: _dots,
+    clickedSectionId: null,
+  });
+  // ABOVE: will be deleted
+
+  const [unitSectionDots, setUnitSectionDots] = useState<{
+    dots: any;
+    clickedSectionId: null | string;
+  }>({
+    dots: unitDots,
     clickedSectionId: null,
   });
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
