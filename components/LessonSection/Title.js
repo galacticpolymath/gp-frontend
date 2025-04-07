@@ -109,6 +109,7 @@ const Title = ({
                       width={1500}
                       height={450}
                       priority
+                      id="unit-banner-id"
                       style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
                     />
                   </div>

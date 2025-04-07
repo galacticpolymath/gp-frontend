@@ -22,7 +22,7 @@ function checkIfElementHasChildren(identifier) {
     });
 }
 
-// create a functoin that will check if a element is visible
+// create a function that will check if a element is visible
 function checkIfElementIsVisible(identifier) {
     cy.get(identifier).should("be.visible");
 }
@@ -119,6 +119,10 @@ describe("Check unit page formatting", () => {
         checkIfElementHasTxt(".ack-affiliation-testing");
 
         checkIfElementIsVisible("#teach-it-sec")
+
+        checkIfElementIsVisible("#unit-banner-id")
+
+        checkIfElementIsVisible(".sponsor-img")
 
         checkIfElementHasChildren(".section-testing")
 

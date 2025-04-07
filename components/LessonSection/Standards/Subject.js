@@ -29,6 +29,7 @@ const Subject = ({
   const index = accordionId.split("-").at(-1);
   const subjectSlug = subject.toLowerCase().replace(/\s/g, "");
   const subjectDimensions = sets[0].dimensions;
+  console.log("subjectDimensions, sup there: ", subjectDimensions)
 
   let subjectSlugIds;
 
@@ -72,12 +73,15 @@ const Subject = ({
       }
     >
       <>
-        {subjectDimensions.map(({ name, standardsGroup }, subjectDimIndex) => {
+        {subjectDimensions.map((subjectDimension, subjectDimIndex) => {
+          console.log("subjectDimension, yo there: ", subjectDimension);
+          const { name, standardsGroup } = subjectDimension;
           let subjectSlugIdName = subjectSlug;
 
           if (subjectDimensions.length > 1) {
             subjectSlugIdName = subjectSlugIds[subjectDimIndex];
           }
+          console.log("standardsGroup, yo there: ", standardsGroup);
 
           return (
             <div

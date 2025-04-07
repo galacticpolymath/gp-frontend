@@ -6,20 +6,13 @@ import { IDimension, ISet, IStandard, IStandards, IStandardsGroup, ISubject } fr
 const { Schema } = mongoose;
 
 // Define the schema for a single standard
-const StandardSchema = new Schema<IStandard>({
+const StandardsGroupSchema = new Schema<IStandard>({
     lessons: [String],
     codes: String,
     grades: [String],
     statements: String,
     alignmentNotes: String,
     subcat: String
-}, { _id: false });
-
-// Define the schema for a standards group
-const StandardsGroupSchema = new Schema<IStandardsGroup>({
-    slug: String,
-    name: String,
-    standardsGroup: [StandardSchema]
 }, { _id: false });
 
 // Define the schema for a dimension

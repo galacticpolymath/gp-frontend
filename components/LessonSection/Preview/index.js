@@ -7,20 +7,18 @@ import useLessonElementInView from '../../../customHooks/useLessonElementInView'
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';
 import LessonsCarousel from './LessonsCarousel';
 
-const Preview = ({
-  index,
-  SectionTitle,
-  InitiallyExpanded,
-  Multimedia,
-  _sectionDots,
-}) => {
+const Preview = (props) => {
+  console.log("preview props, yo there: ", props);
+  const {
+    index,
+    SectionTitle,
+    InitiallyExpanded,
+    Multimedia,
+    _sectionDots,
+  } = props;
   const ref = useRef();
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
-
-  // the preview must be:
-  // -visible
-  // -must have children
 
   return (
     <CollapsibleLessonSection

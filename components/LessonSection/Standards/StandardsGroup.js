@@ -45,17 +45,19 @@ export const formatAlignmentNotes = (text) => {
   return text.replace(/•/g, "-").replace(/\^2/g, "²");
 };
 
-const StandardsGroup = ({
-  id,
-  codes,
-  grades,
-  GradesOrYears,
-  alignmentNotes,
-  statements,
-  willShowArrow,
-  _arrowContainer,
-  handleElementVisibility,
-}) => {
+const StandardsGroup = (props) => {
+  console.log("props, sup there, StandardsGroup: ", props)
+  const {
+    id,
+    codes,
+    grades,
+    GradesOrYears,
+    alignmentNotes,
+    statements,
+    willShowArrow,
+    _arrowContainer,
+    handleElementVisibility,
+  } = props;
   const index = id.split("-").at(-1);
   const _grades = Array.isArray(grades) ? grades.join(",") : grades;
   const [contentId, setContentId] = useState("");
@@ -163,7 +165,8 @@ const StandardsGroup = ({
                       className="mb-0 inline-block standards-txt-container"
                       key={i}
                     >
-                      <strong>{code}:</strong> <span className="statement-txt-testing">{statement}</span>
+                      <strong>{code}:</strong>{" "}
+                      <span className="statement-txt-testing">{statement}</span>
                     </div>
                   );
                 })}
@@ -176,7 +179,10 @@ const StandardsGroup = ({
           <h6 className="my-1 bold pb-1 mb-1">
             How does the lesson address this standard?
           </h6>
-          <RichText className="alignment-notes-testing" content={formatAlignmentNotes(alignmentNotes)} />
+          <RichText
+            className="alignment-notes-testing"
+            content={alignmentNotes ? formatAlignmentNotes(alignmentNotes) : ''}
+          />
         </div>
       </Accordion>
     </div>

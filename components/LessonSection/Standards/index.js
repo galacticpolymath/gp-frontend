@@ -15,6 +15,8 @@ const Standards = ({
     setArrowContainer({ isInView: false, canTakeOffDom: true });
   };
 
+  console.log("Data, yo there: ", Data);
+
   return (
     <div className='container mb-4 px-0'>
       {/* if there are no target standards, then show the arrow for the first section for the connected standars */}

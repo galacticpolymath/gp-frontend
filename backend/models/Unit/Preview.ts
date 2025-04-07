@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { IUnitSectionObj, unitSectionObj } from './Section';
+import { IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFieldsToRetrieve';
 
 const { Schema } = mongoose;
 
@@ -38,10 +39,22 @@ const MultimediaSchema = new Schema<IMultimedia>({
 export interface IUnitPreview extends IUnitSectionObj {
     QuickPrep: string;
     InitiallyExpanded: boolean;
+    rootFieldsToRetrieveForUI?: IRootFieldToRetrieve | null;
 }
 
 export const UnitPreview = new Schema<IUnitPreview>({
     ...unitSectionObj,
     QuickPrep: String,
     InitiallyExpanded: Boolean,
+    rootFieldsToRetrieveForUI: {
+        type: [RootFieldToRetrieve],
+        default: () => {
+            return [
+                {
+                    name: 'FeaturedMultimedia',
+                    as: 'Multimedia'
+                }
+            ]
+        }
+    }
 }, { _id: false });

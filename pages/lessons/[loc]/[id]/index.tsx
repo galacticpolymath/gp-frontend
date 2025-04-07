@@ -77,7 +77,7 @@ const getSectionDotsDefaultVal = (sectionComps: any) =>
     };
   });
 
-const getLessonSections = (sectionComps: any) =>
+const getLessonSections = (sectionComps: any): any[] =>
   sectionComps.map((section: any, index: number) => {
     const sectionClassNameForTesting = "section-testing";
 
@@ -333,20 +333,33 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
   console.log("_sections: ", _sections);
   console.log("unit, sup there: ", unit);
-  const unitSectionAndTitlePairs = Object.entries(unit?.Sections ?? {}) as [
-    keyof TSectionsForUI,
-    any
-  ][];
 
-  unitSectionAndTitlePairs.sort(([sectionAName], [sectionBName]) => {
-    const sectionASortNum = SECTION_SORT_ORDER[sectionAName];
-    const sectionBSortNum = SECTION_SORT_ORDER[sectionBName];
+  const unitSections: TSectionsForUI[] = useMemo(() => {
+    const unitSectionAndTitlePairs = Object.entries(unit?.Sections ?? {}) as [
+      keyof TSectionsForUI,
+      any
+    ][];
 
-    return sectionASortNum - sectionBSortNum;
-  });
+    unitSectionAndTitlePairs.sort(([sectionAName], [sectionBName]) => {
+      const sectionASortNum = SECTION_SORT_ORDER[sectionAName];
+      const sectionBSortNum = SECTION_SORT_ORDER[sectionBName];
 
-  const unitSections: TSectionsForUI[] = unitSectionAndTitlePairs.map(
-    ([, section]) => section
+      return sectionASortNum - sectionBSortNum;
+    });
+
+    return unitSectionAndTitlePairs.map(([, section]) => section);
+  }, []);
+
+  const _unitSections = useMemo(() => {
+    const unitSectionsWithTitles = unitSections?.length
+      ? getLessonSections(unitSections)
+      : [];
+
+    return unitSectionsWithTitles;
+  }, []);
+  // print _unitSections
+  const standard = _unitSections.find(
+    (section: any) => section.__component === "lesson-plan.standards"
   );
   const unitDots = useMemo(
     () => (unitSections?.length ? getSectionDotsDefaultVal(unitSections) : []),
@@ -365,6 +378,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     clickedSectionId: null,
   });
   // ABOVE: will be deleted
+  console.log("sectionDots, sup there: ", sectionDots);
 
   const [unitSectionDots, setUnitSectionDots] = useState<{
     dots: any;
@@ -604,14 +618,18 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         />
       )}
       <LessonsSecsNavDots
-        _sectionDots={[sectionDots, setSectionDots]}
+        _sectionDots={
+          unit
+            ? [unitSectionDots, setUnitSectionDots]
+            : [sectionDots, setSectionDots]
+        }
         setIsScrollListenerOn={setIsScrollListenerOn}
         isScrollListenerOn={isScrollListenerOn}
       />
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container">
         <div className="p-sm-3 pt-0">
-          {_sections.map((section: any, index: number) => (
+          {_unitSections.map((section: any, index: number) => (
             <ParentLessonSection
               key={index}
               section={section}
