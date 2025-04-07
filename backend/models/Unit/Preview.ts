@@ -42,6 +42,12 @@ export interface IUnitPreview extends IUnitSectionObj {
     rootFieldsToRetrieveForUI?: IRootFieldToRetrieve | null;
 }
 
+
+export interface IUnitPreviewForUI extends Omit<IUnitPreview, "rootFieldsToRetrieveForUI"> {
+    QuickPrep: string;
+    InitiallyExpanded: boolean;
+}
+
 export const UnitPreview = new Schema<IUnitPreview>({
     ...unitSectionObj,
     QuickPrep: String,

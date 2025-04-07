@@ -357,10 +357,9 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
     return unitSectionsWithTitles;
   }, []);
-  // print _unitSections
-  const standard = _unitSections.find(
-    (section: any) => section.__component === "lesson-plan.standards"
-  );
+
+  console.log("_unitSections: ", _unitSections);
+
   const unitDots = useMemo(
     () => (unitSections?.length ? getSectionDotsDefaultVal(unitSections) : []),
     []
@@ -629,15 +628,17 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container">
         <div className="p-sm-3 pt-0">
-          {_unitSections.map((section: any, index: number) => (
-            <ParentLessonSection
-              key={index}
-              section={section}
-              ForGrades={lesson.ForGrades}
-              index={index}
-              _sectionDots={[sectionDots, setSectionDots]}
-            />
-          ))}
+          {(unit ? _unitSections : _sections).map(
+            (section: any, index: number) => (
+              <ParentLessonSection
+                key={index}
+                section={section}
+                ForGrades={lesson.ForGrades}
+                index={index}
+                _sectionDots={[sectionDots, setSectionDots]}
+              />
+            )
+          )}
         </div>
       </div>
     </Layout>

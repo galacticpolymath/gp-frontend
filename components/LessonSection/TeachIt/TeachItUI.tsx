@@ -81,6 +81,7 @@ const TeachItUI = <
   GradesOrYears,
 }: TeachItUIProps<TLesson, TPart, TSelectedGrade>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
+  console.log("environments, sup there: ", environments);
   const areThereGradeBands =
     !!gradeVariations?.length &&
     gradeVariations.every((variation) => !!variation.grades);
@@ -174,7 +175,7 @@ const TeachItUI = <
               environments.map((env) => (
                 <label className="text-capitalize d-block mb-1" key={env}>
                   <input
-                    className="form-check-input me-2"
+                    className="form-check-input me-2 teaching-environment-testing"
                     type="radio"
                     name="environment"
                     id={env}

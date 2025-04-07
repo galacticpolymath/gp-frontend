@@ -121,6 +121,7 @@ const TeachIt = (props: TeachItProps) => {
     unitDur,
     unitPreface,
   } = props;
+  console.log("props teach it, yo there: ", props);
   let Data = props.Data ?? classroom;
   const { _isDownloadModalInfoOn } = useModalContext();
   const { handleRestrictedItemBtnClick, session } =
@@ -139,6 +140,7 @@ const TeachIt = (props: TeachItProps) => {
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   const environments = useMemo(() => {
+    console.log("Data, yo there: ", Data);
     const dataKeys = Data && typeof Data === "object" ? Object.keys(Data) : [];
     const environments = dataKeys.length
       ? (["classroom", "remote"] as const).filter((setting) =>

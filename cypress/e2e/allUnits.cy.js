@@ -122,6 +122,8 @@ describe("Check unit page formatting", () => {
 
         checkIfElementIsVisible("#unit-banner-id")
 
+        checkIfElementIsVisible(".teaching-environment-testing")
+
         checkIfElementIsVisible(".sponsor-img")
 
         checkIfElementHasChildren(".section-testing")
