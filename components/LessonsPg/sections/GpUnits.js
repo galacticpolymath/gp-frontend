@@ -4,6 +4,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
+import { AiOutlineConsoleSql } from 'react-icons/ai';
 import UnitIconSvg from '../../../assets/img/gp-unit-icon.svg';
 import { UNVIEWABLE_LESSON_STR } from '../../../globalVars';
 import Pill from '../../Pill';
@@ -17,11 +18,11 @@ const getLessonImgSrc = lesson => {
         return "https://storage.googleapis.com/gp-cloud/icons/coming-soon_Banner.png";
     }
 
-    if (LessonBanner && !(CoverImage && CoverImage.url)) {
+    if (LessonBanner && !(CoverImage && CoverImage?.url)) {
         return LessonBanner;
     }
 
-    return CoverImage.url;
+    return CoverImage?.url ?? LessonBanner;
 };
 
 const UnshowableLesson = () => (
@@ -66,6 +67,10 @@ const GpUnits = ({
                         } else if ((lesson.PublicationStatus === "Beta") || (lesson.PublicationStatus === "Draft")) {
                             PillComp = <Pill />;
                         }
+
+                        console.log("lesson title, sup there: ", lesson.Title)
+                        console.log("lesson object: ", lesson)
+                        console.log("lessonImgSrc, sup there: ", getLessonImgSrc(lesson))
 
                         return (
                             (lesson.PublicationStatus === 'Proto') ?

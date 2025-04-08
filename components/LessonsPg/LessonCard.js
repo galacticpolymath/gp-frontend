@@ -45,7 +45,7 @@ const LessonCard = ({ lesson, PillComp = null, lessonImgSrc }) => {
     >
       <div className="position-relative">
         <Image
-          src={lessonImgSrc}
+          src={lessonImgSrc ?? "/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_whiteBG.jpg"}
           alt={Subtitle}
           width={15}
           height={4.5}

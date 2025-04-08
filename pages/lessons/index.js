@@ -35,13 +35,15 @@ const handleJobVizCardClick = () => {
 
 const THIRTY_SEVEN_DAYS = 1_000 * 60 * 60 * 24 * 37;
 
-const LessonsPage = ({
-  units,
-  lessonsObj,
-  gpVideosObj,
-  webAppsObj,
-  didErrorOccur,
-}) => {
+const LessonsPage = (props) => {
+  const {
+    units,
+    lessonsObj,
+    gpVideosObj,
+    webAppsObj,
+    didErrorOccur,
+  } = props;
+  console.log("props, yo there: ", props);
   console.log("units, hey there: ", units);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedGpWebApp, setSelectedGpWebApp] = useState(null);
