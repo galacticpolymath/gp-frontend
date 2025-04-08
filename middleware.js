@@ -357,6 +357,7 @@ export const config = {
     "/api/update-user",
     "/api/user-confirms-mailing-list-sub",
     "/api/get-users",
+    "/api/insert-unit",
     "/api/copy-files",
     "/api/get-signed-in-user-brevo-status",
     // "/api/insert-unit",

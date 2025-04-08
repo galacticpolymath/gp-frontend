@@ -64,7 +64,6 @@ export interface IResource<TLesson extends object = ILesson> {
 export interface IClassroom<TLesson = ILesson> {
   resources: IResource<TLesson>[] | null;
 }
-
 export interface IClassroomOld<TLesson = ILesson> {
   gradeVariantNotes: IGradeVariantNote[] | null;
   resources: IResource<TLesson>[] | null;

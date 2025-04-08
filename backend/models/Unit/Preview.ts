@@ -4,12 +4,6 @@ import { IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFieldsToRetriev
 
 const { Schema } = mongoose;
 
-function getMultiMediaWebAppPreviewImgs() {
-    // There fields will be as follows:
-    // webAppPreviewImg: String,
-    // webAppImgAlt: String
-}
-
 export interface IMultimedia {
     order: string;
     type: string;

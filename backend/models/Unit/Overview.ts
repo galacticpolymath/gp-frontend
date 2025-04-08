@@ -4,13 +4,6 @@ import { ICustomProp, IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFi
 
 const { Schema } = mongoose;
 
-// WHEN RETRIEVING THE UNIT FROM THE DB for the ui, get the following fields from the root of the document:
-// -Must get the availLocals for the specific unit, when retrieving the unit from the database
-// -get the SponsorLogo, get the first value from the array, the first value, store as sponsorLogoImgUrl
-function getOverviewSecPropsFromRoot() {
-
-}
-
 // Define the schema for a tag
 export interface ITag {
     Value: string;
