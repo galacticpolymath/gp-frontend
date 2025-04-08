@@ -16,6 +16,7 @@ import {
 import RichText from "../../RichText";
 import { DisplayLessonTile, GRADE_VARIATION_ID } from ".";
 import {
+  IItem,
   ILesson,
   ILessonDetail,
   ILink,
@@ -33,9 +34,11 @@ import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import Link from "next/link";
 
+export type THandleOnChange<TResourceVal extends object = ILesson> = (
+  selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
+) => void;
 interface TeachItUIProps<
   TResourceVal extends object = ILesson,
-  TPart extends ILesson = ILessonForUI,
   TSelectedGrade extends object = IResource<ILessonForUI>
 > {
   SectionTitle: string;
@@ -43,10 +46,12 @@ interface TeachItUIProps<
   ref: RefObject<null>;
   lessonDur: string | null;
   lessonPreface: string | null;
-  gradeVariations?: IResource<TResourceVal>[];
+  gradeVariations?:
+    | IResource<TResourceVal>[]
+    | IResource<INewUnitLesson<IItem>>[];
   resources?: IResource<ILesson>;
   selectedGrade: TSelectedGrade;
-  handleOnChange: (selectedGrade: IResource<TResourceVal>) => void;
+  handleOnChange: THandleOnChange<TResourceVal>;
   environments: ("classroom" | "remote")[];
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
@@ -79,7 +84,7 @@ const TeachItUI = <
   parts,
   dataLesson,
   GradesOrYears,
-}: TeachItUIProps<TLesson, TPart, TSelectedGrade>) => {
+}: TeachItUIProps<TLesson, TSelectedGrade>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
   console.log("environments, sup there: ", environments);
   const areThereGradeBands =
@@ -251,7 +256,13 @@ const TeachItUI = <
           {!!parts.length &&
             parts.every((part) => part !== null) &&
             parts.map((part, index, self) => {
-              let { lsn, title, preface, itemList, tile } = part;
+              let learningObjs: string[] | null = [];
+
+              if ("learningObj" in part) {
+                learningObjs = part.learningObj;
+              }
+
+              let { lsn, title, preface, itemList, tile, chunks } = part;
               let targetLessonInDataLesson = null;
 
               if (
@@ -261,6 +272,7 @@ const TeachItUI = <
                 targetLessonInDataLesson = dataLesson.find(
                   ({ lsnNum }) => lsnNum != null && lsnNum.toString() == lsn
                 );
+                learningObjs = targetLessonInDataLesson?.learningObj ?? null;
               }
 
               let lsnExt = null;
@@ -364,12 +376,12 @@ const TeachItUI = <
                   lsnPreface={preface}
                   lsnExt={lsnExt}
                   chunks={
-                    lsn !== "last" ? targetLessonInDataLesson?.chunks : []
+                    lsn !== "last"
+                      ? targetLessonInDataLesson?.chunks ?? chunks
+                      : []
                   }
                   ForGrades={ForGrades}
-                  learningObjectives={
-                    lsn !== "last" ? targetLessonInDataLesson?.learningObj : []
-                  }
+                  learningObjectives={lsn !== "last" ? learningObjs ?? [] : []}
                   partsFieldName="lessons"
                   itemList={itemList as IItemForClient[]}
                   isAccordionExpandable={part.status !== UNVIEWABLE_LESSON_STR}

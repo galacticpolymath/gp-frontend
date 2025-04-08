@@ -159,6 +159,7 @@ interface IChunkStep {
   Vocab: string | null;
   VariantNotes: string |null;
   TeachingTips: string | null;
+  
 }
 
 export interface IChunk {

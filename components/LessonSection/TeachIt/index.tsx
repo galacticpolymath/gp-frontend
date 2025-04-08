@@ -26,6 +26,7 @@ import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMater
 import { TeachItProps } from "./types";
 import {
   IClassroom,
+  IItem,
   ILessonDetail,
   ILink,
   INewUnitLesson,
@@ -34,7 +35,7 @@ import {
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import { IItemForClient, ILessonForUI } from "../../../types/global";
-import TeachItUI from "./TeachItUI";
+import TeachItUI, { THandleOnChange } from "./TeachItUI";
 import { ILesson } from "../../../backend/models/Unit/types/teachingMaterials";
 
 export const GRADE_VARIATION_ID = "gradeVariation";
@@ -141,7 +142,10 @@ const TeachIt = (props: TeachItProps) => {
 
     return environments;
   }, []);
-  let gradeVariations: IResource<ILessonForUI>[] | undefined;
+  let gradeVariations:
+    | IResource<ILessonForUI>[]
+    | undefined
+    | IResource<INewUnitLesson<IItem>>[];
 
   if ("classroom" in Data) {
     gradeVariations = Data?.classroom?.resources ?? [];
@@ -262,16 +266,16 @@ const TeachIt = (props: TeachItProps) => {
   }, []);
 
   return "lessonDur" in Data ? (
-    <TeachItUI<ILessonForUI>
+    <TeachItUI<ILessonForUI, IResource<ILessonForUI>>
       ref={ref}
       ForGrades={ForGrades}
       lessonDur={Data.lessonDur}
       lessonPreface={Data.lessonPreface}
       SectionTitle={SectionTitle}
       _sectionDots={_sectionDots}
-      selectedGrade={selectedGrade}
+      selectedGrade={selectedGrade as IResource<ILessonForUI>}
       gradeVariations={gradeVariations}
-      handleOnChange={handleOnChange}
+      handleOnChange={handleOnChange as THandleOnChange<ILessonForUI>}
       environments={environments}
       selectedEnvironment={selectedEnvironment}
       setSelectedEnvironment={setSelectedEnvironment}
@@ -289,7 +293,7 @@ const TeachIt = (props: TeachItProps) => {
       lessonPreface={unitPreface}
       SectionTitle={SectionTitle}
       _sectionDots={_sectionDots}
-      selectedGrade={selectedGrade}
+      selectedGrade={selectedGrade as IResource<ILessonForUI>}
       gradeVariations={classroom.resources}
       handleOnChange={handleOnChangeForNewUnitResources}
       environments={environments}
