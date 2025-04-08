@@ -12,7 +12,9 @@ import Title, { ITitleProps } from "./Title";
 import { ISectionDots, TUseStateReturnVal } from "../../types/global";
 import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
 
-interface IOverviewProps extends ITitleProps, Pick<TOverviewForUI, "TheGist"> {
+interface IOverviewProps
+  extends ITitleProps,
+    Pick<TOverviewForUI, "TheGist" | "EstUnitTime"> {
   Accessibility: TOverviewForUI["Accessibility"];
   Description: string;
   EstLessonTime: string;
@@ -42,6 +44,7 @@ const Overview = ({
   _sectionDots,
   SectionTitle,
   TheGist,
+  EstUnitTime,
   Accessibility,
   ...titleProps
 }: IOverviewProps) => {
@@ -117,7 +120,7 @@ const Overview = ({
               <span>
                 <i className="fs-3 mb-2 me-2 bi-alarm"></i>
                 <h5 className="d-inline-block">Estimated Time: </h5>
-                <div>{EstLessonTime}</div>
+                <div id="est-time-testing">{EstLessonTime ?? EstUnitTime}</div>
               </span>
             </div>
             <div className="d-sm-none g-col-12 align-items-center justify-content-center">

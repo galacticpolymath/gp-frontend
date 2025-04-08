@@ -768,9 +768,12 @@ export const getStaticProps = async (arg: {
     let targetUnitForUI: TUnitForUI | undefined = undefined;
 
     if (targetUnits?.length) {
-      const targetUnit = targetUnits.find(
-        ({ numID, locale }) => numID === parseInt(id) && locale === loc
-      );
+      const availLocs = targetUnits
+        .map(({ locale }) => locale)
+        .filter(Boolean) as string[];
+      const targetUnit = targetUnits.find(({ numID, locale }) => {
+        return numID === parseInt(id) && locale === loc;
+      });
 
       if (!targetUnit) {
         throw new Error("Lesson is not found.");
@@ -941,13 +944,8 @@ export const getStaticProps = async (arg: {
           keyof ISections,
           any
         ][];
-        // print the length
-        console.log(
-          "sectionsEntries, sup there, the length: ",
-          sectionsEntries.length
-        );
         // get the root fields for specific sections that required them
-        const sectionsUpdated = sectionsEntries.reduce(
+        let sectionsUpdated = sectionsEntries.reduce(
           (sectionsAccum, [sectionKey, section]) => {
             if (
               targetUnitForUI &&
@@ -990,8 +988,14 @@ export const getStaticProps = async (arg: {
             };
           },
           {} as Record<keyof ISections, any>
-        );
-
+        ) as TSectionsForUI;
+        sectionsUpdated = {
+          ...sectionsUpdated,
+          overview: {
+            ...sectionsUpdated.overview,
+            availLocs,
+          },
+        };
         targetUnitForUI.Sections = sectionsUpdated;
       }
     }

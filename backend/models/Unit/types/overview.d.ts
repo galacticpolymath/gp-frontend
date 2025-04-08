@@ -83,7 +83,8 @@ export type TUnitOverviewPropsForUI = Partial<{
   numID: INewUnitSchema["numID"];
   locale: INewUnitSchema["locale"];
   Subtitle: INewUnitSchema["Subtitle"];
+  availLocs: string[]; 
 }>;
 
-export type TOverviewForUI = IUnitOverview &
-  TUnitOverviewPropsForUI;
+export type TOverviewForUI = Partial<IUnitOverview &
+  TUnitOverviewPropsForUI>;

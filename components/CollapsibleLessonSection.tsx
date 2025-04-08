@@ -34,6 +34,7 @@ interface CollapsibleLessonSectionProps {
   isAvailLocsMoreThan1?: boolean;
   highlighted?: boolean;
   scrollToTranslateVal?: string;
+  accordionChildrenClasses?: string;
   accordionStyleObj?: React.CSSProperties;
 }
 
@@ -45,6 +46,7 @@ const CollapsibleLessonSection = ({
   accordionId,
   _sectionDots,
   SectionTitleId,
+  accordionChildrenClasses = "",
   highlighted = false,
   scrollToTranslateVal = "translateY(-90px)",
   SectionTitleClassName = "",
@@ -142,6 +144,7 @@ const CollapsibleLessonSection = ({
     <Accordion
       setContentId={null}
       initiallyExpanded={initiallyExpanded}
+      accordionChildrenClasses={accordionChildrenClasses}
       id={_accordionId}
       className={`SectionHeading ${cssSectionClassName} ${SectionTitle.replace(
         /[\s!]/gi,

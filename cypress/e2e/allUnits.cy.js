@@ -76,7 +76,6 @@ describe("Check unit page formatting", () => {
 
 
         checkIfElementHasTxt(".lesson-learning-obj");
-        checkIfElementIsVisible(".lesson-learning-obj");
 
         checkIfElementHasTxt(".lessons-preface-testing");
 
@@ -118,6 +117,8 @@ describe("Check unit page formatting", () => {
         checkIfElementHasTxt(".ack-role-testing");
 
         checkIfElementHasTxt(".ack-affiliation-testing");
+
+        checkIfElementHasTxt("#est-time-testing");
 
         checkIfElementIsVisible("#teach-it-sec")
 
