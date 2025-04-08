@@ -628,22 +628,28 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
             ? [unitSectionDots, setUnitSectionDots]
             : [sectionDots, setSectionDots]
         }
-        setIsScrollListenerOn={setIsScrollListenerOn}
-        isScrollListenerOn={isScrollListenerOn}
+        setIsScrollListenerOn={setIsScrollListenerOn as TSetter<boolean>}
+        isScrollListenerOn={isScrollListenerOn as boolean}
       />
       <ShareWidget {...shareWidgetFixedProps} />
-      <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container">
+      <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container min-vh-100">
         <div className="p-sm-3 pt-0">
-          {(unit ? _unitSections : _sections).map(
-            (section: any, index: number) => (
-              <ParentLessonSection
-                key={index}
-                section={section}
-                ForGrades={lesson.ForGrades}
-                index={index}
-                _sectionDots={[sectionDots, setSectionDots]}
-              />
+          {(unit ? _unitSections : _sections).length ? (
+            (unit ? _unitSections : _sections).map(
+              (section: any, index: number) => (
+                <ParentLessonSection
+                  key={index}
+                  section={section}
+                  ForGrades={lesson.ForGrades}
+                  index={index}
+                  _sectionDots={[sectionDots, setSectionDots]}
+                />
+              )
             )
+          ) : (
+            <span className="mt-5">
+              DEVELOPMENT ERROR: No sections to display.
+            </span>
           )}
         </div>
       </div>

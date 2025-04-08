@@ -85,7 +85,6 @@ const NewUnitLessonSchema = new Schema<INewUnitLesson>(
     lsnPreface: String,
     learningObj: [String],
     lsnPrep: LsngPrepSchema,
-<<<<<<< HEAD
     chunks: [ChuckSchema],
     goingFurther: String,
   },
@@ -93,47 +92,24 @@ const NewUnitLessonSchema = new Schema<INewUnitLesson>(
 );
 const ResourcesSchema = new Schema<IResource<INewUnitLesson>>(
   {
-=======
-    chunks: [{
-        chunkTitle: String,
-        chunkStart: Number,
-        chunkDur: Number,
-        steps: [ChuckStepSchema],
-    }],
-    goingFurther: String,
-}, { _id: false })
-const ResourcesSchema = new Schema<IResource<INewUnitLesson>>({
->>>>>>> backend-development
     grades: String,
     gradePrefix: String,
     links: LinkSchema,
     lessons: [NewUnitLessonSchema],
-<<<<<<< HEAD
   },
   { _id: false }
 );
-=======
-}, { _id: false })
->>>>>>> backend-development
 export const TeachingMaterialsSchema = new Schema<IUnitTeachingMaterials>(
   {
     unitDur: String,
     unitPreface: String,
     gatheredVocab: [GatheredVocabSchema],
     classroom: {
-<<<<<<< HEAD
       resources: [ResourcesSchema],
     },
     __component: String,
     InitiallyExpanded: Boolean,
     SectionTitle: String,
-=======
-        resources: [ResourcesSchema]
-    },
-    __component: String,
-    InitiallyExpanded: Boolean, 
-    SectionTitle: String
->>>>>>> backend-development
   },
   { _id: false }
 );

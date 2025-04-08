@@ -362,6 +362,6 @@ export const config = {
     "/api/get-signed-in-user-brevo-status",
     // "/api/insert-unit",
     // "/api/delete-unit",
-    "/api/update-unit",
+    // "/api/update-unit",
   ],
 };
