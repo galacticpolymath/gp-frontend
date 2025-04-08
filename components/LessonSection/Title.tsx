@@ -12,13 +12,14 @@ import {
 } from "../../backend/models/Unit/types/overview";
 
 const getLatestSubRelease = (versions?: IUnitVersions[]) => {
-  if (!versions || !Array.isArray(versions) || versions.length === 0) {
+  if (!versions || !Array.isArray(versions)) {
     return null;
   }
 
-  const lastRelease = versions[versions.length - 1].sub_releases;
+  const lastRelease = versions?.at(-1)?.sub_releases;
+  const lastSubRelease = lastRelease?.at(-1);
 
-  return lastRelease;
+  return lastSubRelease;
 };
 
 export interface ITitleProps extends Partial<TUnitOverviewPropsForUI> {
@@ -27,7 +28,7 @@ export interface ITitleProps extends Partial<TUnitOverviewPropsForUI> {
   lessonTitle?: string;
   versions?: IUnitVersions[];
   lessonBannerUrl?: string;
-  sponsorLogoImgUrl?: string;
+  sponsorLogoImgUrl?: string | string[];
   lessonUrl: string;
 }
 
@@ -46,7 +47,8 @@ const Title = (props: ITitleProps) => {
     sponsorLogoImgUrl,
     lessonUrl,
   } = props;
-  console.log("props, yo there, Title: ", props);
+  // print the props
+  console.log("props, yo there: ", props);
   const router = useRouter();
   let sponsors = useMemo(() => {
     let sponsorsLinkTxts = [];
@@ -98,9 +100,6 @@ const Title = (props: ITitleProps) => {
 
   const lastSubRelease = useMemo(() => getLatestSubRelease(versions), []);
 
-  useEffect(() => {
-    console.log("lastSubRelease, sup there: ", lastSubRelease);
-  });
   let UnitBanner = null;
 
   if (lessonBannerUrl) {

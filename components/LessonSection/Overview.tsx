@@ -12,7 +12,7 @@ import Title, { ITitleProps } from "./Title";
 import { ISectionDots, TUseStateReturnVal } from "../../types/global";
 import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
 
-interface IOverviewProps extends ITitleProps {
+interface IOverviewProps extends ITitleProps, Pick<TOverviewForUI, "TheGist"> {
   Accessibility: TOverviewForUI["Accessibility"];
   Description: string;
   EstLessonTime: string;
@@ -41,11 +41,12 @@ const Overview = ({
   GradesOrYears,
   _sectionDots,
   SectionTitle,
+  TheGist,
   Accessibility,
   ...titleProps
 }: IOverviewProps) => {
   const ref = useRef(null);
-  const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
+  const { h2Id } = useLessonElementInView(_sectionDots, "0. Overview", ref);
   const _h2Id = SectionTitle.toLowerCase()
     .replace(/[0-9.]/g, "")
     .trim()
@@ -79,7 +80,7 @@ const Overview = ({
       <Title {...titleProps} />
       <div className="d-flex flex-column flex-xxl-row mt-sm-4 mt-md-0 mt-xxl-2 container px-0 mx-0">
         <div className="col-xxl-12 bg-light-gray px-4 py-2 rounded-3 text-center">
-          {LearningSummary && (
+          {(LearningSummary || TheGist) && (
             <div className="g-col-12 bg-white p-3 rounded-3 mt-2 text-start  align-items-center">
               <Image
                 src="/imgs/gp_logo_gradient_transBG.png"
@@ -91,7 +92,7 @@ const Overview = ({
               />
               <h5 className="d-inline-flex">The Gist:</h5>
               <div id="unit-learning-summary">
-                <RichText content={LearningSummary} />
+                <RichText content={LearningSummary ?? TheGist} />
               </div>
             </div>
           )}

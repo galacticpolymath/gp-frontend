@@ -86,7 +86,7 @@ export const UnitOverview = new Schema<Omit<IUnitOverview, "rootFieldsToRetrieve
         default: () => {
             let rootFields = [
                 {
-                    name: "unitBanner",
+                    name: "UnitBanner",
                     as: "unitBanner"
                 },
                 {
@@ -116,6 +116,14 @@ export const UnitOverview = new Schema<Omit<IUnitOverview, "rootFieldsToRetrieve
                 {
                     name: "Subtitle",
                     as: "Subtitle"
+                },
+                {
+                    name: "SponsorLogo",
+                    as: "sponsorLogoImgUrl"
+                },
+                {
+                    name: "SponsoredBy",
+                    as: "SponsoredBy"
                 },
             ]
 

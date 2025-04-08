@@ -226,7 +226,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         return _lessonStandardsAccumulated;
       }, {});
 
-    // create the stanards section section
+    // create the standards section
     lessonStandardsObj = {
       ...lessonStandardsObj,
       __component: "lesson-plan.standards",
@@ -386,6 +386,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     dots: unitDots,
     clickedSectionId: null,
   });
+  console.log("unitSectionDots, yo there: ", unitSectionDots);
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
   const [isScrollListenerOn, setIsScrollListenerOn] =
     useScrollHandler(setSectionDots);
@@ -552,6 +553,11 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   if (!lesson && typeof window === "undefined") {
     return null;
   }
+
+  // print both lesson and _sections
+  console.log("lesson: ", lesson);
+  console.log("_sections: ", _sections);
+  debugger;
 
   if (!lesson || !_sections?.length) {
     router.replace("/error");
@@ -1250,7 +1256,9 @@ export const getStaticProps = async (arg: {
     return {
       props: {
         lesson: JSON.parse(JSON.stringify(lessonToDisplayOntoUi)),
-        unit: JSON.parse(JSON.stringify(targetUnitForUI)),
+        unit: targetUnitForUI
+          ? JSON.parse(JSON.stringify(targetUnitForUI))
+          : null,
         availLocs: targetLessonLocales,
       },
       revalidate: 30,
