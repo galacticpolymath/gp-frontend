@@ -4,12 +4,29 @@
 /* eslint-disable comma-dangle */
 
 import Link from "next/link";
-import PropTypes from "prop-types";
 import Image from "next/image";
 import RichText from "../RichText";
 import { useMemo, useRef } from "react";
 import useLessonElementInView from "../../customHooks/useLessonElementInView";
-import Title from "./Title";
+import Title, { ITitleProps } from "./Title";
+import { ISectionDots, TUseStateReturnVal } from "../../types/global";
+import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
+
+interface IOverviewProps extends ITitleProps {
+  Accessibility: TOverviewForUI["Accessibility"];
+  Description: string;
+  EstLessonTime: string;
+  ForGrades: string[];
+  GradesOrYears: string[];
+  LearningSummary: string;
+  SectionTitle: string;
+  SteamEpaulette: string;
+  SteamEpaulette_vert: string;
+  Tags: TOverviewForUI["Tags"];
+  TargetSubject: string;
+  Text: string;
+  _sectionDots: TUseStateReturnVal<ISectionDots>;
+}
 
 const Overview = ({
   LearningSummary,
@@ -26,8 +43,8 @@ const Overview = ({
   SectionTitle,
   Accessibility,
   ...titleProps
-}) => {
-  const ref = useRef();
+}: IOverviewProps) => {
+  const ref = useRef(null);
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
   const _h2Id = SectionTitle.toLowerCase()
     .replace(/[0-9.]/g, "")
@@ -201,8 +218,8 @@ const Overview = ({
             </div>
           </section>
           <ul className="ps-2">
-            {Accessibility.map((accessibility, index) => {
-              return (
+            {Accessibility?.map((accessibility, index) => {
+              return accessibility.Link ? (
                 <li key={index} className="ms-sm-4">
                   <Link
                     target="_blank"
@@ -215,24 +232,13 @@ const Overview = ({
                     {accessibility.Description}
                   </Link>
                 </li>
-              );
+              ) : null;
             })}
           </ul>
         </section>
       )}
     </div>
   );
-};
-
-Overview.propTypes = {
-  index: PropTypes.number,
-  Description: PropTypes.string,
-  EstLessonTime: PropTypes.string,
-  ForGrades: PropTypes.string,
-  TargetSubject: PropTypes.string,
-  SteamEpaulette: PropTypes.string,
-  Text: PropTypes.string,
-  Tags: PropTypes.array,
 };
 
 export default Overview;

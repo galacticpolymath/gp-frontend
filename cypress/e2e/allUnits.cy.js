@@ -123,6 +123,8 @@ describe("Check unit page formatting", () => {
 
         checkIfElementIsVisible("#unit-banner-id")
 
+        checkIfElementIsVisible(".versions-btn-testing")
+
         checkIfElementIsVisible(".teaching-environment-testing")
 
         checkIfElementIsVisible(".sponsor-img")

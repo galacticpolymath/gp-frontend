@@ -45,7 +45,7 @@ export interface IUnitVersions {
     summary: string | null;
     notes: string | null;
     acknowledgments: string | null;
-  };
+  }[];
 }
 export interface IUnitAccessibility {
   Type: string | null;
