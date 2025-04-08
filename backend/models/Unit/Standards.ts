@@ -11,7 +11,7 @@ const StandardsGroupSchema = new Schema<IStandard>({
     codes: String,
     grades: [String],
     statements: String,
-    alignmentNotes: String,
+    alignmentNotes: String, 
     subcat: String
 }, { _id: false });
 
