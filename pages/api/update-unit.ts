@@ -14,14 +14,14 @@ export default async function handler(
   response: NextApiResponse
 ) {
   try {
-    const { method, query } = request;
+    const { method, body } = request;
 
-    if (method !== "POST") {
+    if (method !== "PUT") {
       throw new CustomError("This route only accepts GET requests.", 404);
     }
 
-    const { filterObj, keysAndUpdatedValsObj } = (query ?? {}) as {
-      filterObj: string;
+    const { unitId, keysAndUpdatedValsObj } = (body ?? {}) as {
+      unitId: string;
       keysAndUpdatedValsObj: string;
     };
 
@@ -29,8 +29,6 @@ export default async function handler(
       typeof keysAndUpdatedValsObj === "string"
         ? JSON.parse(keysAndUpdatedValsObj)
         : keysAndUpdatedValsObj;
-    const dbFilter: unknown =
-      typeof filterObj === "string" ? JSON.parse(filterObj) : filterObj;
 
     if (
       valsToUpdate &&
@@ -44,28 +42,6 @@ export default async function handler(
       );
     }
 
-    if (
-      dbFilter &&
-      ((typeof dbFilter !== "object" && dbFilter === null) ||
-        Array.isArray(dbFilter) ||
-        typeof dbFilter !== "object")
-    ) {
-      throw new CustomError(
-        "`dbFilter` must be an non-array object. Example: { numID: [1,2,3,4] }",
-        400
-      );
-    }
-    const dbFilterEntries = Object.entries(
-      dbFilter as Record<string, unknown[]>
-    );
-    const dbFilterCreationResult =
-      dbFilter && Object.keys(dbFilter).length
-        ? createDbFilter(dbFilterEntries)
-        : null;
-
-    if (dbFilterCreationResult?.errMsg) {
-      throw new CustomError(dbFilterCreationResult.errMsg, 400);
-    }
 
     const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
       15_000,
@@ -78,10 +54,7 @@ export default async function handler(
     }
 
     const { wasSuccessful, errMsg } = await updateUnit(
-      dbFilterCreationResult?.filterObj as Record<
-        keyof INewUnitSchema,
-        unknown
-      >,
+      { _id: unitId as unknown },
       valsToUpdate
     );
 

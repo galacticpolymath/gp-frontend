@@ -177,7 +177,7 @@ const retrieveUnits = async (
 };
 
 const updateUnit = async (
-  filterObj: { [key in keyof INewUnitSchema]: unknown },
+  filterObj: Partial<{ [key in keyof INewUnitSchema]: unknown }>,
   updatedProps: Partial<INewUnitSchema>
 ) => {
   try {
