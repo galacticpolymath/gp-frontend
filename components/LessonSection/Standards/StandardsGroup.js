@@ -86,7 +86,7 @@ const StandardsGroup = (props) => {
         dataBsToggle={{}}
         setContentId={setContentId}
         buttonClassName="w-100 text-start bg-white border-0 p-2 pb-1 default-cursor pb-3 position-relative"
-        button={
+        button={(
           <>
             <CopyableTxt
               copyTxtModalDefaultStyleObj={{
@@ -179,7 +179,7 @@ const StandardsGroup = (props) => {
               </div>
             </div>
           </>
-        }
+        )}
       >
         <div className="p-3 selected-standard mx-2">
           <h6 className="my-1 bold pb-1 mb-1">

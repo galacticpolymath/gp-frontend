@@ -43,8 +43,6 @@ const LessonsPage = (props) => {
     webAppsObj,
     didErrorOccur,
   } = props;
-  console.log("props, yo there: ", props);
-  console.log("units, hey there: ", units);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedGpWebApp, setSelectedGpWebApp] = useState(null);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);

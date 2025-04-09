@@ -72,14 +72,12 @@ const Subject = ({
     >
       <>
         {subjectDimensions.map((subjectDimension, subjectDimIndex) => {
-          console.log("subjectDimension, yo there: ", subjectDimension);
           const { name, standardsGroup } = subjectDimension;
           let subjectSlugIdName = subjectSlug;
 
           if (subjectDimensions.length > 1) {
             subjectSlugIdName = subjectSlugIds[subjectDimIndex];
           }
-          console.log("standardsGroup, yo there: ", standardsGroup);
 
           return (
             <div

@@ -141,8 +141,6 @@ test(
 
         const userResult = userResults[0];
 
-        console.log("userResult, yo there: ", userResult);
-
         expect(areResultsConstant).toBe(true);
         expect(doAllUsersHaveMailingListStatusField).toBe(true);
     },

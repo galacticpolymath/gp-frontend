@@ -139,9 +139,6 @@ export const useUserEntry = () => {
             errors.set("email", "Invalid email.");
         }
 
-        console.log("errors, hey there: ", errors);
-
-
         return errors;
     };
 

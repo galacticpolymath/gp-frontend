@@ -1,26 +1,13 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-max-props-per-line */
-import PropTypes from "prop-types";
-import {
-  DetailedHTMLProps,
-  HTMLAttributes,
-  ReactElement,
-  ReactNode,
-  useMemo,
-  useRef,
-} from "react";
+import React, { DetailedHTMLProps, HTMLAttributes, ReactElement, useMemo, useRef, useState } from "react";
 import useLessonElementInView from "../customHooks/useLessonElementInView";
 import Accordion from "./Accordion";
 import CopyableTxt from "./CopyableTxt";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import { Collapse } from "react-bootstrap";
 import { ISectionDots, TUseStateReturnVal } from "../types/global";
-
-/**
- * A styled collapsible section of the Lesson Plan.
- */
 
 interface CollapsibleLessonSectionProps {
   SectionTitle?: string;
@@ -52,9 +39,9 @@ const CollapsibleLessonSection = ({
   SectionTitleClassName = "",
   accordionStyleObj = {},
 }: CollapsibleLessonSectionProps) => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLHeadingElement>(null);
   const router = useRouter();
-  const [isAccordionContentOpen, setIsAccordionContentOpen] = useState(true);
+  const [isAccordionContentOpen, setIsAccordionContentOpen] = useState(initiallyExpanded);
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
   const _h2Id = SectionTitle.toLowerCase()
     .replace(/[0-9.]/g, "")
@@ -162,7 +149,7 @@ const CollapsibleLessonSection = ({
       }
       handleOnClick={handleAccordionBtnClick}
       style={accordionStyleObj}
-      button={
+      button={(
         <div
           className={`SectionHeading ${SectionTitle.replace(
             /[\s!]/gi,
@@ -217,20 +204,11 @@ const CollapsibleLessonSection = ({
             className="position-absolute"
           />
         </div>
-      }
+      )}
     >
       <Collapse in={isAccordionContentOpen}>{children}</Collapse>
     </Accordion>
   );
-};
-
-CollapsibleLessonSection.propTypes = {
-  index: PropTypes.number,
-  SectionTitle: PropTypes.string,
-  className: PropTypes.string,
-  children: PropTypes.object,
-  initiallyExpanded: PropTypes.bool,
-  accordionId: PropTypes.string,
 };
 
 export default CollapsibleLessonSection;

@@ -388,7 +388,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     dots: unitDots,
     clickedSectionId: null,
   });
-  console.log("unitSectionDots, yo there: ", unitSectionDots);
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
   const [isScrollListenerOn, setIsScrollListenerOn] =
     useScrollHandler(setSectionDots);
@@ -1069,8 +1068,6 @@ export const getStaticProps = async (arg: {
                   ...itemObj,
                   filePreviewImg,
                 };
-
-                console.log("itemObjUpdated, yo there! ", itemObjUpdated);
 
                 itemListUpdated.push(itemObjUpdated);
                 continue;
