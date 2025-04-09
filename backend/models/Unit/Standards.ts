@@ -29,7 +29,6 @@ const SetSchema = new Schema<ISet>({
     dimensions: [DimensionSchema]
 }, { _id: false });
 
-// Define the schema for a subject
 const SubjectSchema = new Schema<ISubject>({
     subject: String,
     target: Boolean,

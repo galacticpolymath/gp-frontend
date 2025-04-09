@@ -39,11 +39,20 @@ export interface ISubject {
     sets: ISet[];
 }
 
+export interface IItem {
+  itemTitle: string | null;
+  itemDescription: string | null;
+  itemCat: string | null;
+  links: ILink[] | null;
+}
+
 // Define the interface for the standards schema
 export interface IStandards extends IUnitSectionObj {
     Data: ISubject[],
     rootFieldsToRetrieveForUI?: IRootFieldToRetrieve[];
 }
+
+
 
 export type TStandardsForUI = IStandards & Partial<Pick<INewUnitSchema, "GradesOrYears">> 
 

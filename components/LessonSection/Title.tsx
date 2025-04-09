@@ -49,7 +49,6 @@ const Title = (props: ITitleProps) => {
     sponsorLogoImgUrl,
     lessonUrl,
   } = props;
-  console.log("props, sup there title: ", props);
   const router = useRouter();
   let sponsors = useMemo(() => {
     let sponsorsLinkTxts = [];
