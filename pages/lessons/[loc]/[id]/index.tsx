@@ -65,28 +65,41 @@ const NAV_CLASSNAMES = [
   "sectionTitleSpan",
 ];
 
-const getSectionDotsDefaultVal = (sectionComps: any) =>
-  sectionComps.map((section: any, index: number) => {
-    const _sectionTitle = `${index}. ${section.SectionTitle ?? "Overview"}`;
+const getSectionDotsDefaultVal = <T extends TSectionsForUI>(
+  sectionComps: (T | null)[]
+) =>
+  sectionComps.map((section, index: number) => {
+    const _sectionTitle = `${index}. ${
+      section && "SectionTitle" in section ? section.SectionTitle : "Overview"
+    }`;
     const sectionId = _sectionTitle.replace(/[\s!]/gi, "_").toLowerCase();
 
     return {
       isInView: index === 0,
-      sectionTitleForDot: section.SectionTitle ?? "Overview",
+      sectionTitleForDot:
+        section && "SectionTitle" in section
+          ? section.SectionTitle
+          : "Overview",
       sectionId: sectionId,
       willShowTitle: false,
       sectionDotId: `sectionDot-${sectionId}`,
     };
   });
 
-const getLessonSections = (sectionComps: any): any[] =>
-  sectionComps.map((section: any, index: number) => {
+const getLessonSections = <T extends TSectionsForUI>(
+  sectionComps: (T | null)[]
+): any[] =>
+  sectionComps.map((section: TSectionsForUI | null, index: number) => {
     const sectionClassNameForTesting = "section-testing";
+
+    console.log("section, sup there: ", section);
 
     return {
       ...section,
       sectionClassNameForTesting,
-      SectionTitle: `${index}. ${section.SectionTitle}`,
+      SectionTitle: `${index}. ${
+        section && "SectionTitle" in section ? section.SectionTitle : "Overview"
+      }`,
     };
   });
 const addGradesOrYearsProperty = (
@@ -337,10 +350,10 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
     []
   );
-  const unitSections: TSectionsForUI[] = useMemo(() => {
+  const unitSections: (TSectionsForUI | null)[] = useMemo(() => {
     const unitSectionAndTitlePairs = Object.entries(unit?.Sections ?? {}) as [
       keyof TSectionsForUI,
-      any
+      any | null
     ][];
 
     unitSectionAndTitlePairs.sort(([sectionAName], [sectionBName]) => {
@@ -354,14 +367,18 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   }, []);
 
   const _unitSections = useMemo(() => {
+    console.log("unitSections, sup there: ", unitSections);
     const unitSectionsWithTitles = unitSections?.length
-      ? getLessonSections(unitSections)
+      ? getLessonSections(unitSections.filter(Boolean))
       : [];
 
     return unitSectionsWithTitles;
   }, []);
   const unitDots = useMemo(
-    () => (unitSections?.length ? getSectionDotsDefaultVal(unitSections) : []),
+    () =>
+      unitSections?.length
+        ? getSectionDotsDefaultVal(unitSections.filter(Boolean))
+        : [],
     []
   );
   const _dots = useMemo(

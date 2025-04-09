@@ -192,6 +192,7 @@ interface INewUnitLesson<TItem extends IItem = IItem> {
     chunkDur: number | null;
     steps: IChunkStep[] | null;
   }[] | null;
+  // BUG OCCURING HERE WHEN INSERTING THE UNIT INTO THE DB
   goingFurther: string | null;
 }
 
