@@ -132,6 +132,11 @@ const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
   acknowledgments: 9,
 };
 
+const UNIT_DOCUMENT_ORIGINS = new Set([
+  "https://storage.googleapis.com",
+  "https://docs.google.com",
+]);
+
 const LessonDetails = ({ lesson, unit }: IProps) => {
   const router = useRouter();
   const { _isUserTeacher } = useUserContext();
@@ -332,10 +337,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
     []
   );
-
-  console.log("_sections: ", _sections);
-  console.log("unit, sup there: ", unit);
-
   const unitSections: TSectionsForUI[] = useMemo(() => {
     const unitSectionAndTitlePairs = Object.entries(unit?.Sections ?? {}) as [
       keyof TSectionsForUI,
@@ -359,9 +360,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
     return unitSectionsWithTitles;
   }, []);
-
-  console.log("_unitSections: ", _unitSections);
-
   const unitDots = useMemo(
     () => (unitSections?.length ? getSectionDotsDefaultVal(unitSections) : []),
     []
@@ -456,11 +454,13 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       origin: string;
     } & EventTarget;
 
+    console.log("origin: ", origin);
+
     if (
       statusRef.current !== "authenticated" &&
       isWithinBonusContentSec &&
       tagName === "A" &&
-      origin === "https://storage.googleapis.com"
+      UNIT_DOCUMENT_ORIGINS.has(origin)
     ) {
       event.preventDefault();
       setCustomModalFooter(

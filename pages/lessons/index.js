@@ -532,6 +532,7 @@ export async function getStaticProps() {
     gpVideosFirstPg = gpVideosFirstPg?.length
       ? gpVideosFirstPg.map((vid) => ({ ...vid, id: nanoid() }))
       : gpVideosFirstPg;
+
     return {
       props: {
         units,

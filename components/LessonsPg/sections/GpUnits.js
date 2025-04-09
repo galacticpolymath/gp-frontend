@@ -73,10 +73,6 @@ const GpUnits = ({ units, didErrorOccur }) => {
               PillComp = <Pill />;
             }
 
-            console.log("lesson title, sup there: ", lesson.Title);
-            console.log("lesson object: ", lesson);
-            console.log("lessonImgSrc, sup there: ", getLessonImgSrc(lesson));
-
             return lesson.PublicationStatus === "Proto" ? (
               <UnshowableLesson key={index} />
             ) : (
