@@ -1,9 +1,13 @@
+/* eslint-disable quotes */
+/* eslint-disable indent */
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable no-unused-vars */
+
 import React, {
   Dispatch,
   ReactNode,
   RefObject,
   SetStateAction,
-  useMemo,
   useState,
 } from "react";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
@@ -64,8 +68,7 @@ interface TeachItUIProps<
 
 const TeachItUI = <
   TLesson extends object,
-  TSelectedGrade extends IResource<ILessonForUI> = IResource<ILessonForUI>,
-  TPart extends ILessonForUI = ILessonForUI
+  TSelectedGrade extends IResource<ILessonForUI> = IResource<ILessonForUI>
 >({
   ForGrades,
   resources,

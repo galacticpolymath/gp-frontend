@@ -1,6 +1,9 @@
 /* eslint-disable no-debugger */
+/* eslint-disable quotes */
+/* eslint-disable indent */
+
 import { format } from "date-fns";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import RichText from "../RichText";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -161,7 +164,11 @@ const Title = (props: ITitleProps) => {
                 </button>
               )}
             {availLocs && (
-              <LocDropdown availLocs={availLocs} loc={locale} id={numID} />
+              <LocDropdown 
+                availLocs={availLocs} 
+                loc={locale} 
+                id={numID} 
+              />
             )}
           </div>
           <div className="d-flex flex-column flex-xxl-row">

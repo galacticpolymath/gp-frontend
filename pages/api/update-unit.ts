@@ -41,7 +41,6 @@ export default async function handler(
       );
     }
 
-
     const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
       15_000,
       0,

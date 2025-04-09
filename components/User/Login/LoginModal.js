@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable quotes */
 import { useContext, useState } from "react";
-import { CloseButton, Modal, ModalHeader, Spinner, } from "react-bootstrap";
+import { CloseButton, Modal, ModalHeader, Spinner } from "react-bootstrap";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 import { ModalContext } from "../../../providers/ModalProvider";
