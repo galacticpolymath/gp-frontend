@@ -29,8 +29,6 @@ const Subject = ({
   const index = accordionId.split("-").at(-1);
   const subjectSlug = subject.toLowerCase().replace(/\s/g, "");
   const subjectDimensions = sets[0].dimensions;
-  console.log("subjectDimensions, sup there: ", subjectDimensions)
-
   let subjectSlugIds;
 
   if (subjectDimensions.length > 1) {
@@ -44,7 +42,7 @@ const Subject = ({
       id={accordionId}
       initiallyExpanded={initiallyExpanded}
       buttonClassName={`w-100 border-0 text-start bg-${subjectSlug} text-white`}
-      button={
+      button={(
         <h5
           onClick={handleSubjectAccordionBtnClick}
           className="mb-0 p-2 d-flex justify-content-between align-items-center"
@@ -70,7 +68,7 @@ const Subject = ({
             <i className="fs-5 bi-chevron-up"></i>
           </div>
         </h5>
-      }
+      )}
     >
       <>
         {subjectDimensions.map((subjectDimension, subjectDimIndex) => {

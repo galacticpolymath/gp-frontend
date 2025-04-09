@@ -3,13 +3,9 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-import { AiOutlineQuestionCircle } from "react-icons/ai";
+/* eslint-disable indent */
+
 import {
-  ModalContext,
-  useModalContext,
-} from "../../../providers/ModalProvider";
-import {
-  useContext,
   useState,
   useRef,
   useEffect,
@@ -18,14 +14,11 @@ import {
   CSSProperties,
 } from "react";
 import PropTypes from "prop-types";
-import LessonPart from "./LessonPart";
 import useLessonElementInView from "../../../customHooks/useLessonElementInView";
 import Image from "next/image";
 import Pill from "../../Pill";
-import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import { TeachItProps } from "./types";
 import {
-  IClassroom,
   IItem,
   ILessonDetail,
   ILink,
@@ -33,10 +26,8 @@ import {
   IResource,
   ITeachingMaterialsDataForUI,
 } from "../../../backend/models/Unit/types/teachingMaterials";
-import CollapsibleLessonSection from "../../CollapsibleLessonSection";
-import { IItemForClient, ILessonForUI } from "../../../types/global";
+import { ILessonForUI } from "../../../types/global";
 import TeachItUI, { THandleOnChange } from "./TeachItUI";
-import { ILesson } from "../../../backend/models/Unit/types/teachingMaterials";
 
 export const GRADE_VARIATION_ID = "gradeVariation";
 
@@ -119,8 +110,6 @@ const TeachIt = (props: TeachItProps) => {
     ForGrades,
     GradesOrYears,
     classroom,
-    remote,
-    index,
     unitDur,
     unitPreface,
   } = props;
@@ -155,25 +144,6 @@ const TeachIt = (props: TeachItProps) => {
   const [unitLessonResources, setUnitLessonResources] = useState(
     classroom?.resources?.[0] ?? {}
   );
-  const handleOnChangeForNewUnitResources = (
-    selectedGrade: IResource<INewUnitLesson>
-  ) => {
-    setSelectedGradeResources(selectedGrade.links as ILink);
-    setUnitLessonResources(selectedGrade);
-  };
-  // the above is based on the new schema
-
-  // TODO: will cease to be used when the new schema is implemented
-  const [selectedGrade, setSelectedGrade] = useState(
-    gradeVariations?.length
-      ? gradeVariations[0]
-      : ({} as IResource<ILessonForUI>)
-  );
-  const handleOnChange = (selectedGrade: IResource<ILessonForUI>) => {
-    setSelectedGradeResources(selectedGrade.links as ILink);
-    setSelectedGrade(selectedGrade);
-  };
-  // The above will be ceased to be used when the new schema is implemented
 
   const [selectedEnvironment, setSelectedEnvironment] = useState(
     environments[0]
@@ -198,15 +168,31 @@ const TeachIt = (props: TeachItProps) => {
   const [selectedGradeResources, setSelectedGradeResources] = useState(
     allResources?.[0]?.links ?? ({} as ILink)
   );
+  const handleOnChangeForNewUnitResources = (
+    selectedGrade: IResource<INewUnitLesson>
+  ) => {
+    setSelectedGradeResources(selectedGrade.links as ILink);
+    setUnitLessonResources(selectedGrade);
+  };
+  // the above is based on the new schema
+
+  // TODO: will cease to be used when the new schema is implemented
+  const [selectedGrade, setSelectedGrade] = useState(
+    gradeVariations?.length
+      ? gradeVariations[0]
+      : ({} as IResource<ILessonForUI>)
+  );
+  const handleOnChange = (selectedGrade: IResource<ILessonForUI>) => {
+    setSelectedGradeResources(selectedGrade.links as ILink);
+    setSelectedGrade(selectedGrade);
+  };
+  // The above will be ceased to be used when the new schema is implemented
+
   let resources = allResources?.length
     ? allResources.find(
         ({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix
       )
     : ({} as IResource);
-
-  if (!Data) {
-    return <div>No lessons to display.</div>;
-  }
 
   let areThereMoreThan1Resource = false;
 
@@ -264,6 +250,10 @@ const TeachIt = (props: TeachItProps) => {
       }));
     }
   }, []);
+
+  if (!Data) {
+    return <div>No lessons to display.</div>;
+  }
 
   return "lessonDur" in Data ? (
     <TeachItUI<ILessonForUI, IResource<ILessonForUI>>

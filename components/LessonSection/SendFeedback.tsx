@@ -11,7 +11,7 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 
-import { CSSProperties, useState } from "react";
+import React, { CSSProperties, useState } from "react";
 import { HiOutlineXMark } from "react-icons/hi2";
 import Link from "next/link";
 import Button from "../General/Button";

@@ -8,8 +8,10 @@
 /* eslint-disable semi */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
+/* eslint-disable indent */
+
 import Layout from "../../../../components/Layout";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ParentLessonSection from "../../../../components/LessonSection/ParentLessonSection";
 import LessonsSecsNavDots from "../../../../components/LessonSection/LessonSecsNavDots";
 import ShareWidget from "../../../../components/AboutPgComps/ShareWidget";

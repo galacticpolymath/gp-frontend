@@ -1,5 +1,9 @@
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable no-console */
+/* eslint-disable quotes */
+/* eslint-disable indent */
+/* eslint-disable semi */
+
 import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import RichText from "../../RichText";
@@ -37,8 +41,9 @@ const formatGrades = (grades, gradesOrYears = "Grades") => {
     return `${gradesOrYears.slice(0, -1)}: ${parsedGrades[0]}`;
   }
 
-  return `${gradesOrYears}: ${parsedGrades[0]}-${parsedGrades[parsedGrades.length - 1]
-    }`;
+  return `${gradesOrYears}: ${parsedGrades[0]}-${
+    parsedGrades[parsedGrades.length - 1]
+  }`;
 };
 
 export const formatAlignmentNotes = (text) => {
@@ -46,7 +51,7 @@ export const formatAlignmentNotes = (text) => {
 };
 
 const StandardsGroup = (props) => {
-  console.log("props, sup there, StandardsGroup: ", props)
+  console.log("props, sup there, StandardsGroup: ", props);
   const {
     id,
     codes,
@@ -118,11 +123,12 @@ const StandardsGroup = (props) => {
                 data-bs-target={`#content_${contentId}`}
               >
                 <h6
-                  className={`text-muted w-100 d-flex ${(Array.isArray(grades) && grades.length > 0) ||
+                  className={`text-muted w-100 d-flex ${
+                    (Array.isArray(grades) && grades.length > 0) ||
                     (typeof grades === "string" && grades.length > 0)
-                    ? "justify-content-between"
-                    : "justify-content-end"
-                    }`}
+                      ? "justify-content-between"
+                      : "justify-content-end"
+                  }`}
                 >
                   {formatGrades(_grades, GradesOrYears)}
                   <div className="d-flex justify-content-center flex-column h-100 position-relative">
@@ -181,7 +187,7 @@ const StandardsGroup = (props) => {
           </h6>
           <RichText
             className="alignment-notes-testing"
-            content={alignmentNotes ? formatAlignmentNotes(alignmentNotes) : ''}
+            content={alignmentNotes ? formatAlignmentNotes(alignmentNotes) : ""}
           />
         </div>
       </Accordion>

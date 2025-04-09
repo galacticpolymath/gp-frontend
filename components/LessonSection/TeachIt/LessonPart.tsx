@@ -8,22 +8,17 @@ import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
 import RichText from "../../RichText";
-import { CSSProperties, memo, ReactNode, useContext, useState } from "react";
+import { CSSProperties, memo, ReactNode, useState } from "react";
 import Link from "next/link";
 import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "react-bootstrap";
-import {
-  ModalContext,
-  useModalContext,
-} from "../../../providers/ModalProvider";
-import { UserContext, useUserContext } from "../../../providers/UserProvider";
+import { useModalContext } from "../../../providers/ModalProvider";
+import { useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
-  IItem,
-  ILesson,
   ILsnExt,
   IResource,
   IStep,
@@ -393,7 +388,7 @@ const LessonPart = ({
                               border: `solid .5px ${LESSON_PART_BTN_COLOR}`,
                             }}
                             id={`${lsnNum}-${tag.split(" ").join("-")}`}
-                            className={`rounded-pill badge bg-white p-2 mt-2`}
+                            className="rounded-pill badge bg-white p-2 mt-2"
                           >
                             <span
                               style={{

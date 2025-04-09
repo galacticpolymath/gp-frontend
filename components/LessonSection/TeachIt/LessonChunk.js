@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+
 import ChunkGraph from './ChunkGraph';
 import LessonStep from './LessonStep';
 import RichText from '../../RichText';
@@ -8,7 +10,7 @@ const Chunk = ({
   chunkNum,
   chunkDur,
   durList,
-  lessonNum
+  lessonNum,
 }) => {
   return (
     <div className='mb-3'>
@@ -29,7 +31,14 @@ const Chunk = ({
         {(steps ?? []).map((step, index) => {
           const stepId = `${step.StepTitle.split(" ").join("-")}-${index}`.replace("'", "");
 
-          return <LessonStep key={step.Step} className={`mt-3 ms-sm-1 d-grid align-items-center`} id={stepId} {...step} />
+          return (
+            <LessonStep
+              key={step.Step}
+              className='mt-3 ms-sm-1 d-grid align-items-center'
+              id={stepId}
+              {...step}
+            />
+          );
         })}
       </div>
     </div>
