@@ -7,6 +7,7 @@ import { Acknowledgments } from "./Acknowledgments";
 import { VersionNotes } from "./VersionNotes";
 import { IFeaturedMultimedia, IFeatureLocation, IFeatureName, IFeaturing, ILsnStatus, INewUnitSchema } from "./types/unit";
 import { StandardsSchema } from "./Standards";
+import { ITargetStandardsCode } from "./types/standards";
 
 let Units = models.units as Model<INewUnitSchema, {}, {}, {}, any, any>;
 
@@ -16,7 +17,7 @@ if (!Units) {
         middle: String,
         last: String,
         prefix: String,
-    });
+    }, { _id: false });
     const FeaturedMultimedia = new Schema<IFeaturedMultimedia>({
       code: String,
       type: String,
@@ -29,29 +30,31 @@ if (!Units) {
       byLink: String,
       mainLink: String,
       otherLink: String,
-    });
+    }, { _id: false });
     const FeatureLocationSchema = new Schema<IFeatureLocation>({
         instition: String,
         department: String,
         city: String,
         state: String,
         country: String,
-    });
+    }, { _id: false });
     const FeaturingSchema = new Schema<IFeaturing>({
         name: FeatureNameSchema,
         location: FeatureLocationSchema,
         links: [String],
-    });
-    
+    }, { _id: false });
+    const TargetStarndardsCodeSchema = new Schema<ITargetStandardsCode>({
+      code: String,
+      subject: String,
+      set: String,
+      dim: String,
+    }, { _id: false });
     const Unit = new Schema<INewUnitSchema>({
       _id: { type: String, required: true },
       numID: { type: Number, required: true },
       locale: { type: String, required: true },
       Title: { type: String, required: true },
-      TargetStandardsCodes: {
-        type: [Object],
-        required: true,
-      },
+      TargetStandardsCodes: [TargetStarndardsCodeSchema],
       ShortTitle: String,
       PublicationStatus: String,
       Language: String,

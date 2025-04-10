@@ -6,7 +6,7 @@ import { ITeachingMaterials } from "../TeachingMaterials";
 import { IVersionNotes } from "../VersionNotes";
 import { IOverview, IUnitOverview, TOverviewForUI } from "./overview";
 import { IPreview } from "./preview";
-import { IStandards, IStandardsSec, TStandardsForUI } from "./standards";
+import { IStandards, IStandardsSec, ITargetStandardsCode, TStandardsForUI } from "./standards";
 import { IUnitTeachingMaterials, IUnitTeachingMaterialsForUI } from "./teachingMaterials";
 
 export interface ILsnStatus {
@@ -179,12 +179,7 @@ interface INewUnitSchema<TSection extends ISections = ISections, TFeaturedMultim
   QRcode: string | null;
   TargetSubject: string | null;
   TargetStandardsCodes:
-    | {
-        subject: string | null;
-        code: string | null;
-        set: string | null;
-        dim: string | null;
-      }[]
+    | ITargetStandardsCode[]
     | null;
   LessonEnvir: string | null;
   ForGrades: string | null;

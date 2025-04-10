@@ -46,6 +46,13 @@ export interface IItem {
   links: ILink[] | null;
 }
 
+export interface ITargetStandardsCode{
+    subject: string,
+    code: string,
+    set: string,
+    dim: string,
+}
+
 // Define the interface for the standards schema
 export interface IStandards extends IUnitSectionObj {
     Data: ISubject[],
