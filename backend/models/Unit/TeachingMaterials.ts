@@ -70,9 +70,9 @@ const ChuckSchema = new Schema<IChunk>(
 const GoingFurtherSchema = new Schema<IGoingFurtherVal>(
   {
     item: Number,
-    itemLink: String,
+    itemTitle: String,
     itemDescription: String,
-    itemTitle: String
+    itemLink: String,
   },
   {
     _id: false,

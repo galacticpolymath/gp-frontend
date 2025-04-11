@@ -110,6 +110,7 @@ export async function middleware(request) {
       nextUrl?.pathname?.split("/")?.filter((val) => val)?.length == 3 &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
+      // checking if the unit exist
       const receivedLocale = nextUrl.pathname.split("/").at(-2);
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
@@ -122,6 +123,7 @@ export async function middleware(request) {
 
       const getUnitsRes = await fetch(url);
       const { msg, lessons } = (await getUnitsRes.json()) ?? {};
+
 
       if (msg || !lessons?.length) {
         console.log(
