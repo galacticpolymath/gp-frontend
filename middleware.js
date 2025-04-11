@@ -114,18 +114,28 @@ export async function middleware(request) {
       const receivedLocale = nextUrl.pathname.split("/").at(-2);
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
+      const getUnitsUrl = new URL(`${nextUrl.origin}/api/get-units`);
 
       url.searchParams.set(
         "projectionObj",
         JSON.stringify({ locale: 1, DefaultLocale: 1 })
       );
+
       url.searchParams.set("filterObj", JSON.stringify({ numID: [unitNum] }));
 
-      const getUnitsRes = await fetch(url);
-      const { msg, lessons } = (await getUnitsRes.json()) ?? {};
+      getUnitsUrl.searchParams.set(
+        "projectionObj",
+        JSON.stringify({ locale: 1, DefaultLocale: 1 })
+      );
 
+      getUnitsUrl.searchParams.set("filterObj", JSON.stringify({ numID: [unitNum] }));
 
-      if (msg || !lessons?.length) {
+      const getLessonsRes = await fetch(url);
+      const { msg, lessons } = (await getLessonsRes.json()) ?? {};
+      const getUnitsRes = await fetch(getUnitsUrl);
+      const { msg: errMsgUnitsRetrieval, units } = (await getUnitsRes.json()) ?? {};
+
+      if ((msg || !lessons?.length) && (!units?.length || errMsgUnitsRetrieval)) {
         console.log(
           !lessons?.length
             ? "The unit does not exist."
@@ -135,19 +145,26 @@ export async function middleware(request) {
         return NextResponse.redirect(`${nextUrl.origin}/error`);
       }
 
-      const targetLesson = lessons.find(
+      let targetUnit = units.find(
         ({ numID, locale }) => locale === receivedLocale && numID == unitNum
       );
 
-      if (targetLesson) {
-        console.log("The unit does exist.");
+      if (!targetUnit) {
+        targetUnit = lessons.find(
+          ({ numID, locale }) => locale === receivedLocale && numID == unitNum
+        );
+      }
+
+      if (targetUnit) {
+        console.log("Unit exists with the given locale.");
         return NextResponse.next();
       }
 
-      console.log("The unit does not exist.");
+      console.log("The unit does not exist. Will use the default locale.");
+      const defaultUnit = units?.length ? units[0] : lessons[0];
 
       return NextResponse.redirect(
-        `${nextUrl.origin}/lessons/${lessons[0].DefaultLocale}/${unitNum}`
+        `${nextUrl.origin}/lessons/${defaultUnit.DefaultLocale}/${unitNum}`
       );
     } else if (
       !nextUrl.href.includes("api") &&
