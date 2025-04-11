@@ -577,16 +577,22 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   console.log("_sections: ", _sections);
   debugger;
 
-  if (unit && (!lesson || !_sections?.length)) {
+  if (!unit && (!lesson || !_sections?.length)) {
     router.replace("/error");
     return null;
   }
 
-  const { CoverImage, LessonBanner } = lesson;
-  const lessonBannerUrl = CoverImage?.url ?? LessonBanner;
+  let unitBanner = unit?.UnitBanner ?? "";
+
+  if (!unit && typeof lesson === "object" && !lesson) {
+    const { CoverImage, LessonBanner } = lesson;
+    unitBanner = (CoverImage?.url ?? LessonBanner) || "";
+  }
+
+  const _unit = unit ?? lesson;
   const shareWidgetFixedProps = IS_ON_PROD
     ? {
-        pinterestMedia: lessonBannerUrl,
+        pinterestMedia: unitBanner,
         shareWidgetStyle: {
           borderTopRightRadius: "1rem",
           borderBottomRightRadius: "1rem",
@@ -597,8 +603,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         },
       }
     : {
-        pinterestMedia: lessonBannerUrl,
-        developmentUrl: `${lesson.URL}/`,
+        pinterestMedia: unitBanner,
+        developmentUrl: `${_unit.URL}/`,
         shareWidgetStyle: {
           borderTopRightRadius: "1rem",
           borderBottomRightRadius: "1rem",
@@ -609,22 +615,24 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         },
       };
   const layoutProps = {
-    title: `Mini-Unit: ${lesson.Title}`,
-    description: lesson?.Section?.overview?.LearningSummary
-      ? removeHtmlTags(lesson.Section.overview.LearningSummary)
-      : `Description for ${lesson.Title}.`,
-    imgSrc: lessonBannerUrl,
-    url: lesson.URL,
-    imgAlt: `${lesson.Title} cover image`,
+    title: `Mini-Unit: ${_unit.Title}`,
+    description: _unit?.Section?.overview?.LearningSummary
+      ? removeHtmlTags(_unit.Section.overview.LearningSummary)
+      : `Description for ${_unit.Title}.`,
+    imgSrc: unitBanner,
+    url: _unit.URL,
+    imgAlt: `${_unit.Title} cover image`,
     className: "overflow-hidden",
-    canonicalLink: `https://www.galacticpolymath.com/lessons/${lesson.numID}`,
-    defaultLink: `https://www.galacticpolymath.com/lessons/${lesson.numID}`,
-    langLinks: lesson.headLinks,
+    canonicalLink: `https://www.galacticpolymath.com/lessons/${_unit.numID}`,
+    defaultLink: `https://www.galacticpolymath.com/lessons/${_unit.numID}`,
+    langLinks: _unit.headLinks ?? [],
   };
+
+  console.log("layoutProps, sup there: ", layoutProps);
 
   return (
     <Layout {...layoutProps}>
-      {lesson.PublicationStatus === "Beta" && (
+      {_unit.PublicationStatus === "Beta" && (
         <SendFeedback
           closeBtnDynamicStyles={{
             position: "absolute",
@@ -658,7 +666,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
                 <ParentLessonSection
                   key={index}
                   section={section}
-                  ForGrades={lesson.ForGrades}
+                  ForGrades={_unit.ForGrades}
                   index={index}
                   _sectionDots={[sectionDots, setSectionDots]}
                 />
