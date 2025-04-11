@@ -2,6 +2,7 @@ import { Schema } from "mongoose";
 import {
   IChunk,
   IChunkStep,
+  IGoingFurtherVal,
   IItem,
   ILink,
   ILsnPrep,
@@ -66,6 +67,17 @@ const ChuckSchema = new Schema<IChunk>(
   },
   { _id: false }
 );
+const GoingFurtherSchema = new Schema<IGoingFurtherVal>(
+  {
+    item: Number,
+    itemLink: String,
+    itemDescription: String,
+    itemTitle: String
+  },
+  {
+    _id: false,
+  }
+);
 const NewUnitLessonSchema = new Schema<INewUnitLesson>(
   {
     title: String,
@@ -86,7 +98,7 @@ const NewUnitLessonSchema = new Schema<INewUnitLesson>(
     learningObj: [String],
     lsnPrep: LsngPrepSchema,
     chunks: [ChuckSchema],
-    goingFurther: String,
+    goingFurther: [GoingFurtherSchema],
   },
   { _id: false }
 );

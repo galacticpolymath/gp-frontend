@@ -13,6 +13,11 @@ export interface IItem {
   links: ILink[] | null;
 }
 
+export interface IGoingFurtherVal extends Omit<IItem, "links" | "itemCat">{
+  item: number
+  itemLink: string
+}
+
 export interface IItemForUI extends IItem{
   filePreviewImg?: string
 }
@@ -192,7 +197,7 @@ interface INewUnitLesson<TItem extends IItem = IItem> {
     chunkDur: number | null;
     steps: IChunkStep[] | null;
   }[] | null;
-  goingFurther: IItem[] | null;
+  goingFurther: IGoingFurtherVal[] | null;
 }
 
 export interface IVocab {
