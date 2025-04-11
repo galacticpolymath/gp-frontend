@@ -577,7 +577,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   console.log("_sections: ", _sections);
   debugger;
 
-  if (!lesson || !_sections?.length) {
+  if (unit && (!lesson || !_sections?.length)) {
     router.replace("/error");
     return null;
   }
@@ -679,13 +679,22 @@ export const getStaticPaths = async () => {
   try {
     await connectToMongodb(15_000, 0, true);
 
-    const lessons = await Lessons.find(
-      {},
-      { numID: 1, defaultLocale: 1, _id: 0, locale: 1 }
-    ).lean();
+    const units = [
+      await Units.find(
+        {},
+        { numID: 1, DefaultLocale: 1, _id: 0, locale: 1 }
+      ).lean(),
+      await Lessons.find(
+        {},
+        { numID: 1, defaultLocale: 1, _id: 0, locale: 1 }
+      ).lean(),
+    ].flat();
+
+    // print units
+    console.log("units, sup there: ", units);
 
     return {
-      paths: lessons.map(({ numID, locale }) => ({
+      paths: units.map(({ numID, locale }) => ({
         params: { id: `${numID}`, loc: `${locale ?? ""}` },
       })),
       fallback: false,
@@ -788,6 +797,9 @@ export const getStaticProps = async (arg: {
       { numID: id },
       { __v: 0 }
     ).lean()) as INewUnitSchema[];
+    const availUnitLocales = targetUnits
+      .map(({ locale }) => locale)
+      .filter(Boolean) as string[];
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     let targetUnitForUI: TUnitForUI | undefined = undefined;
 
@@ -1028,10 +1040,29 @@ export const getStaticProps = async (arg: {
       ({ numID, locale }) => numID === parseInt(id) && locale === loc
     );
 
-    if (!lessonToDisplayOntoUi || typeof lessonToDisplayOntoUi !== "object") {
-      throw new Error("Lesson is not found.");
-    }
+    console.log("targetUnitForUI: ", targetUnitForUI);
 
+    if (
+      !targetUnitForUI &&
+      (!lessonToDisplayOntoUi || typeof lessonToDisplayOntoUi !== "object")
+    ) {
+      throw new Error("Lesson is not found.");
+    } else if (
+      !lessonToDisplayOntoUi ||
+      typeof lessonToDisplayOntoUi !== "object"
+    ) {
+      console.log("Only the target unit is available.");
+      return {
+        props: {
+          lesson: null,
+          unit: targetUnitForUI
+            ? JSON.parse(JSON.stringify(targetUnitForUI))
+            : null,
+          availLocs: availUnitLocales,
+        },
+        revalidate: 30,
+      };
+    }
     const headLinks = targetLessons.map(({ locale, numID }) => [
       `https://www.galacticpolymath.com/lessons/${locale}/${numID}`,
       locale,
