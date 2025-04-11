@@ -62,7 +62,6 @@ export default async function handler(
         Array.isArray(dbFilter) ||
         typeof dbFilter !== "object")
     ) {
-      console.error("Wrong dbFilter value. Retrieved: ", dbFilter)
       throw new CustomError(
         "`dbFilter` must be an non-array object. Example: { numID: [1,2,3,4] }",
         400

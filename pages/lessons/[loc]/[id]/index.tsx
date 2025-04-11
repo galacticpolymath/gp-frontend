@@ -568,14 +568,9 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     };
   }, []);
 
-  if (!lesson && typeof window === "undefined") {
+  if (!unit && !lesson && typeof window === "undefined") {
     return null;
   }
-
-  // print both lesson and _sections
-  console.log("lesson: ", lesson);
-  console.log("_sections: ", _sections);
-  debugger;
 
   if (!unit && (!lesson || !_sections?.length)) {
     router.replace("/error");
@@ -628,8 +623,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     langLinks: _unit.headLinks ?? [],
   };
 
-  console.log("layoutProps, sup there: ", layoutProps);
-
   return (
     <Layout {...layoutProps}>
       {_unit.PublicationStatus === "Beta" && (
@@ -660,7 +653,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container min-vh-100">
         <div className="p-sm-3 pt-0">
-          {(unit ? _unitSections : _sections).length ? (
+          {(unit ? _unitSections : _sections) ? (
             (unit ? _unitSections : _sections).map(
               (section: any, index: number) => (
                 <ParentLessonSection
@@ -697,9 +690,6 @@ export const getStaticPaths = async () => {
         { numID: 1, defaultLocale: 1, _id: 0, locale: 1 }
       ).lean(),
     ].flat();
-
-    // print units
-    console.log("units, sup there: ", units);
 
     return {
       paths: units.map(({ numID, locale }) => ({
