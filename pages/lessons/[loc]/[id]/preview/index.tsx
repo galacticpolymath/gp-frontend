@@ -23,12 +23,26 @@ import QRCode from "react-qr-code";
 import { getLatestSubRelease } from "../../../../../helperFns/getLatestSubRelease";
 import Logo from "../../../../../assets/img/galactic_polymath_white.png";
 import CustomLink from "../../../../../components/CustomLink";
+import Units from "../../../../../backend/models/Unit";
+import { retrieveUnits } from "../../../../../backend/services/unitServices";
+import {
+  INewUnitSchema,
+  ISections,
+  TFeaturedMultimediaForUI,
+} from "../../../../../backend/models/Unit/types/unit";
+import { IUnitOverview } from "../../../../../backend/models/Unit/types/overview";
+import { IStandards } from "../../../../../backend/models/Unit/types/standards";
+import { IUnitTeachingMaterials } from "../../../../../backend/models/Unit/types/teachingMaterials";
 
 interface IProps {
-  lesson: any;
+  lesson?: any;
+  unit?: INewUnitSchema<
+    ISections<IUnitOverview, IStandards, IUnitTeachingMaterials>,
+    TFeaturedMultimediaForUI
+  >;
 }
 
-const LessonPreview = ({ lesson }: IProps) => {
+const LessonPreview = ({ lesson, unit }: IProps) => {
   const latestSubRelease = lesson?.Section
     ? getLatestSubRelease(lesson?.Section)
     : {};
@@ -64,11 +78,11 @@ const LessonPreview = ({ lesson }: IProps) => {
     });
   }
 
-  if (!lesson && typeof window === "undefined") {
+  if (!unit && !lesson && typeof window === "undefined") {
     return null;
   }
 
-  if (!lesson) {
+  if (!unit && !lesson) {
     router.replace("/error");
     return null;
   }
@@ -345,9 +359,10 @@ export const getStaticPaths = async () => {
       {},
       { numID: 1, locale: 1, _id: 0 }
     ).lean();
+    const units = await Units.find({}, { numID: 1, locale: 1, _id: 0 }).lean();
 
     return {
-      paths: lessons.map(({ numID, locale }) => ({
+      paths: [...units, ...lessons].map(({ numID, locale }) => ({
         params: { id: `${numID}`, loc: `${locale}` },
       })),
       fallback: false,
@@ -391,8 +406,16 @@ export const getStaticProps = async ({
       };
     }
 
-    // add projections, get the target fields for the UI.
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
+    const { data: targetUnits } = await retrieveUnits(
+      { numID: id },
+      { __v: 0 },
+      1
+    );
+
+    if (targetUnits) {
+    }
+
     const targetLessonLocales = targetLessons.map(({ locale }) => locale);
     let lessonToDisplayOntoUi = targetLessons.find(
       ({ numID, locale }) => numID === parseInt(id) && locale === loc

@@ -146,11 +146,11 @@ const createDbFilter = (filterObjKeyAndValPairs: [string, unknown[]][]) => {
 type TSort = {
   [key in keyof IUnit]: "asc" | "desc" | "ascending" | "descending" | 1 | -1;
 };
-export type TProjections = { [key in keyof IUnit]: 0 | 1 };
+export type TProjections = { [key in keyof IUnit | "__v"]: 0 | 1 };
 
 const retrieveUnits = async (
-  filterObj: { [key in keyof IUnit]: unknown },
-  projectionObj: TProjections,
+  filterObj: Partial<{ [key in keyof IUnit]: unknown }>,
+  projectionObj: Partial<TProjections>,
   limit: number = 0,
   sort?: TSort
 ) => {
@@ -166,7 +166,7 @@ const retrieveUnits = async (
       .limit(limit)
       .lean();
 
-    return { wasSuccessful: true, data: units };
+    return { wasSuccessful: true, data: units as INewUnitSchema[] };
   } catch (error) {
     const errMsg = `Failed to get the lesson from the database. Error message: ${error}.`;
 
