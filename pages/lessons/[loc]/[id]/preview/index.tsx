@@ -51,7 +51,17 @@ const LessonPreview = ({ lesson }: IProps) => {
       sectionComps[0] = { ...sectionComps[0], SectionTitle: "Overview" };
     }
 
-    sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle);
+    sectionComps = sectionComps.filter((sectionComp) => {
+      if (
+        sectionComp &&
+        typeof sectionComp === "object" &&
+        "SectionTitle" in sectionComp
+      ) {
+        return sectionComp.SectionTitle;
+      }
+
+      return true;
+    });
   }
 
   if (!lesson && typeof window === "undefined") {

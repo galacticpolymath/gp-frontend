@@ -7,7 +7,7 @@ import Link from 'next/link';
 const CustomLink = ({
     hrefStr = '',
     children,
-    fontSize,
+    fontSize = undefined,
     targetLinkStr = '_self',
     color = '',
     style = {},
