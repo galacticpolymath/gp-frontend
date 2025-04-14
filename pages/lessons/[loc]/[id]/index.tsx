@@ -167,6 +167,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   const [, setCustomModalFooter] = _customModalFooter;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
+  // TODO: delete the below when all units are using the new db schema
   const lessonSectionObjEntries = lesson?.Section
     ? Object.entries(lesson.Section)
     : [];
