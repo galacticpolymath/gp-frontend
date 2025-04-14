@@ -39,10 +39,18 @@ const LessonPreview = ({ lesson }: IProps) => {
   let sectionComps = null;
 
   if (lesson) {
-    sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => {
-      return SectionTitle !== "Procedure";
+    sectionComps = Object.values(lesson.Section).filter((section) => {
+      if (section && typeof section === "object" && "SectionTitle" in section) {
+        return section.SectionTitle !== "Procedure";
+      }
+
+      return true;
     });
-    sectionComps[0] = { ...sectionComps[0], SectionTitle: "Overview" };
+
+    if (sectionComps[0] && typeof sectionComps[0] === "object") {
+      sectionComps[0] = { ...sectionComps[0], SectionTitle: "Overview" };
+    }
+
     sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle);
   }
 
