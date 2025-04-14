@@ -103,7 +103,13 @@ const LessonPreview = ({ lesson }: IProps) => {
   }
 
   if (lessonParts?.length) {
-    lessonParts = lessonParts.filter(({ lsn }) => lsn !== "last");
+    lessonParts = lessonParts.filter((lessonPart: unknown) => {
+      if (lessonPart && typeof lessonPart === "object" && "lsn" in lessonPart) {
+        return lessonPart.lsn !== "last";
+      }
+
+      return true;
+    });
   }
 
   return (
@@ -286,10 +292,10 @@ const LessonPreview = ({ lesson }: IProps) => {
           gridTemplateRows: "repeat(3, auto)",
         }}
       >
-        {lessonParts.map((lessonPart, index) => {
-          let { lsn, title, preface, tile, tags } = lessonPart;
+        {lessonParts.map((lessonPart: any, index: number) => {
+          let { lsn, title, preface, tile, tags } = lessonPart ?? {};
           tags = tags?.length && Array.isArray(tags[0]) ? tags[0] : tags;
-          tags = tags?.length ? tags.filter((tag) => tag) : [];
+          tags = tags?.length ? tags.filter((tag: string | null) => tag) : [];
 
           const previewTagsProp = tags.length ? { previewTags: tags } : {};
 
