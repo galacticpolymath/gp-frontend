@@ -225,8 +225,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
 
         if (
-          !lessonStandardsAccumulatedObj.SectionTitle &&
-          lessonStandardObj.SectionTitle
+          !lessonStandardsAccumulatedObj?.SectionTitle &&
+          lessonStandardObj?.SectionTitle
         ) {
           _lessonStandardsAccumulated = {
             ..._lessonStandardsAccumulated,
