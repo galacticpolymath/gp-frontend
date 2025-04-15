@@ -14,7 +14,7 @@ import {
   TUnitOverviewPropsForUI,
 } from "../../backend/models/Unit/types/overview";
 
-const getLatestSubRelease = (versions?: IUnitVersions[]) => {
+export const getLatestSubRelease = (versions?: IUnitVersions[]) => {
   if (!versions || !Array.isArray(versions)) {
     return null;
   }

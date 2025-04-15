@@ -33,6 +33,7 @@ import {
 import { IUnitOverview } from "../../../../../backend/models/Unit/types/overview";
 import { IStandards } from "../../../../../backend/models/Unit/types/standards";
 import { IUnitTeachingMaterials } from "../../../../../backend/models/Unit/types/teachingMaterials";
+import UnitPreviewUI from "../../../../../components/UnitPreview/UnitPreviewUI";
 
 interface IProps {
   lesson?: any;
@@ -85,6 +86,36 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
   if (!unit && !lesson) {
     router.replace("/error");
     return null;
+  }
+
+  if (unit) {
+    const latestSubRelease = getLatestSubRelease(
+      unit.Sections?.overview?.versions
+    );
+
+    return (
+      <UnitPreviewUI
+        latestSubRelease={latestSubRelease}
+        Title={unit?.Title}
+        Subtitle={unit?.Subtitle}
+        URL={unit?.URL}
+        lessonBannerUrl={unit?.UnitBanner}
+        EstLessonTime={unit?.Sections?.overview?.EstUnitTime}
+        ForGrades={unit?.ForGrades}
+        LearningSummary={unit?.Sections?.overview?.TheGist}
+        TargetSubject={unit?.TargetSubject}
+        SteamEpaulette={unit?.Sections?.overview?.SteamEpaulette}
+        SteamEpaulette_vert={unit?.Sections?.overview?.SteamEpaulette_vert}
+        lessonUrl={unit?.URL}
+        shortUrl={unit?.ShortURL}
+        isLesson4={isLesson4}
+        SponsoredBy={unit?.SponsoredBy}
+        sponsorLogoImgUrl={unit?.SponsorLogo}
+        lessonParts={
+          unit?.Sections?.teachingMaterials?.classroom?.resources?.[0]?.lessons
+        }
+      />
+    );
   }
 
   const { CoverImage, LessonBanner } = lesson;
