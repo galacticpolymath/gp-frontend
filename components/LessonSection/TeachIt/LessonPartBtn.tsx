@@ -6,12 +6,12 @@ const LESSON_PART_BTN_COLOR = "#2C83C3";
 
 interface ILessonPartBtnProps {
   parentDivProps: any;
-  lsnNum: number;
-  lsnTitle: string;
+  lsnNum?: number;
+  lsnTitle?: string | null;
   isExpanded?: boolean;
   highlightedBorderColor?: string;
-  lessonTileUrl: string;
-  lsnPreface: string;
+  lessonTileUrl?: string | null;
+  lsnPreface?: string | null;
   previewTags?: string[];
   isOnAssessments?: boolean;
   isLessonPreview: boolean;
