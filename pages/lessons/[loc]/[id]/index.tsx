@@ -43,6 +43,7 @@ import {
   INewUnitSchema,
   ISections,
   INewUnitSchema as IUnit,
+  TFeaturedMultimediaForUI,
   TKeysSectionsForUI,
   TSectionsForUI,
   TUnitForUI,
@@ -52,8 +53,11 @@ import {
   IItemForUI,
   INewUnitLesson,
   IResource,
+  IUnitTeachingMaterials,
   IUnitTeachingMaterialsForUI,
 } from "../../../../backend/models/Unit/types/teachingMaterials";
+import { IUnitOverview } from "../../../../backend/models/Unit/types/overview";
+import { IStandards } from "../../../../backend/models/Unit/types/standards";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -817,7 +821,7 @@ export const getStaticProps = async (arg: {
 
       const resources =
         targetUnit.Sections?.teachingMaterials?.classroom?.resources;
-      targetUnitForUI = targetUnit;
+      targetUnitForUI = targetUnit as TUnitForUI;
 
       if (targetUnitForUI.FeaturedMultimedia) {
         targetUnitForUI.FeaturedMultimedia =
@@ -1310,18 +1314,24 @@ export const getStaticProps = async (arg: {
       }
     }
 
-    if (lessonToDisplayOntoUi.Section && (typeof lessonToDisplayOntoUi.Section === "object")) {
+    if (
+      lessonToDisplayOntoUi.Section &&
+      typeof lessonToDisplayOntoUi.Section === "object"
+    ) {
       const sectionEntries = Object.entries(lessonToDisplayOntoUi.Section);
-      lessonToDisplayOntoUi.Section = sectionEntries.reduce((sectionAccum, [sectionKey, sectionVal])=> {
-        if(!sectionVal){
-          return sectionAccum;
-        }
+      lessonToDisplayOntoUi.Section = sectionEntries.reduce(
+        (sectionAccum, [sectionKey, sectionVal]) => {
+          if (!sectionVal) {
+            return sectionAccum;
+          }
 
-        return {
-          ...sectionAccum,
-          [sectionKey]: sectionVal
-        }
-      }, {})
+          return {
+            ...sectionAccum,
+            [sectionKey]: sectionVal,
+          };
+        },
+        {}
+      );
     }
 
     return {

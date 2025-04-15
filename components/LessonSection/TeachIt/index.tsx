@@ -24,7 +24,6 @@ import {
   ILink,
   INewUnitLesson,
   IResource,
-  IResourceObj,
   ITeachingMaterialsDataForUI,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import { ILessonForUI } from "../../../types/global";
