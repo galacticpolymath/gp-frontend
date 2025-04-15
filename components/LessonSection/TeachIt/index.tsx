@@ -284,7 +284,7 @@ const TeachIt = (props: TeachItProps) => {
       SectionTitle={SectionTitle}
       _sectionDots={_sectionDots}
       selectedGrade={selectedGrade as IResource<ILessonForUI>}
-      gradeVariations={classroom.resources}
+      gradeVariations={classroom?.resources}
       handleOnChange={handleOnChangeForNewUnitResources}
       environments={environments}
       selectedEnvironment={selectedEnvironment}

@@ -803,6 +803,7 @@ export const getStaticProps = async (arg: {
     let targetUnitForUI: TUnitForUI | undefined = undefined;
 
     if (targetUnits?.length) {
+      // TODO: filter out all null sections
       const availLocs = targetUnits
         .map(({ locale }) => locale)
         .filter(Boolean) as string[];
@@ -1307,6 +1308,20 @@ export const getStaticProps = async (arg: {
           multiMedia.mainLink = multiMedia.mainLink.replace("shorts", "embed");
         }
       }
+    }
+
+    if (lessonToDisplayOntoUi.Section && (typeof lessonToDisplayOntoUi.Section === "object")) {
+      const sectionEntries = Object.entries(lessonToDisplayOntoUi.Section);
+      lessonToDisplayOntoUi.Section = sectionEntries.reduce((sectionAccum, [sectionKey, sectionVal])=> {
+        if(!sectionVal){
+          return sectionAccum;
+        }
+
+        return {
+          ...sectionAccum,
+          [sectionKey]: sectionVal
+        }
+      }, {})
     }
 
     return {
