@@ -880,6 +880,26 @@ export const getStaticProps = async (arg) => {
       }
     }
 
+    if (
+      lessonToDisplayOntoUi.Section &&
+      typeof lessonToDisplayOntoUi.Section === "object"
+    ) {
+      const sectionEntries = Object.entries(lessonToDisplayOntoUi.Section);
+      lessonToDisplayOntoUi.Section = sectionEntries.reduce(
+        (sectionAccum, [sectionKey, sectionVal]) => {
+          if (!sectionVal) {
+            return sectionAccum;
+          }
+
+          return {
+            ...sectionAccum,
+            [sectionKey]: sectionVal,
+          };
+        },
+        {}
+      );
+    }
+
     return {
       props: {
         lesson: JSON.parse(JSON.stringify(lessonToDisplayOntoUi)),
