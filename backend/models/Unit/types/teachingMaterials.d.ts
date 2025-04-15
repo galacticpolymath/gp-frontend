@@ -217,7 +217,7 @@ interface IResourceObj<TLesson extends INewUnitLesson = INewUnitLesson>{
 }
 
 export interface IUnitTeachingMaterials extends IUnitSectionObj, ITeachingMaterialsPreviewInfo {
-  classroom: IResourceObj;
+  classroom: IResourceObj | null;
   remote?: IResourceObj;
 }
 

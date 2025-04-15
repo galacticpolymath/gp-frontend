@@ -52,7 +52,8 @@ interface TeachItUIProps<
   lessonPreface: string | null;
   gradeVariations?:
     | IResource<TResourceVal>[]
-    | IResource<INewUnitLesson<IItem>>[];
+    | IResource<INewUnitLesson<IItem>>[]
+    | null;
   resources?: IResource<ILesson>;
   selectedGrade: TSelectedGrade;
   handleOnChange: THandleOnChange<TResourceVal>;

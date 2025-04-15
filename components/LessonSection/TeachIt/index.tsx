@@ -24,6 +24,7 @@ import {
   ILink,
   INewUnitLesson,
   IResource,
+  IResourceObj,
   ITeachingMaterialsDataForUI,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import { ILessonForUI } from "../../../types/global";
@@ -142,7 +143,7 @@ const TeachIt = (props: TeachItProps) => {
 
   // for the new schema
   const [unitLessonResources, setUnitLessonResources] = useState(
-    classroom?.resources?.[0] ?? {}
+    classroom?.resources?.[0] ?? ({} as IResource<INewUnitLesson<IItem>>)
   );
 
   const [selectedEnvironment, setSelectedEnvironment] = useState(
