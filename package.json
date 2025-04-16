@@ -90,7 +90,7 @@
     "url": "^0.11.4",
     "urllib": "^4.5.1",
     "uuid": "^11.1.0",
-    "validator": "^13.12.0",
+    "validator": "^13.15.0",
     "wait-on": "^8.0.2"
   },
   "devDependencies": {
