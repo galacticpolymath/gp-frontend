@@ -22,56 +22,90 @@ import { FiExternalLink } from 'react-icons/fi';
 import QRCode from "react-qr-code";
 import { getLatestSubRelease } from '../../../../../helperFns/getLatestSubRelease';
 import Logo from '../../../../../assets/img/galactic_polymath_white.png';
-import { useState, useEffect } from 'react';
 import CustomLink from '../../../../../components/CustomLink';
 
 const LessonPreview = ({ lesson }) => {
-  const latestSubRelease = lesson?.Section ? getLatestSubRelease(lesson?.Section) : {};
+  const latestSubRelease = lesson?.Section
+    ? getLatestSubRelease(lesson?.Section)
+    : {};
   const router = useRouter();
-  const [linkUrlDomain, setLinkUrlDomain] = useState('')
-  const isLesson4 = router.query.id === '4';
+  const linkUrlDomain =
+    typeof window === "undefined" ? "" : window.location.origin;
+  const isLesson4 = router.query.id === "4";
   let sectionComps = null;
 
-  useEffect(() => {
-    setLinkUrlDomain(window.location.origin)
-  }, []);
-
   if (lesson) {
-    sectionComps = Object.values(lesson.Section).filter(({ SectionTitle }) => SectionTitle !== 'Procedure');
-    sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
-    sectionComps = sectionComps.filter(({ SectionTitle }) => !!SectionTitle)
+    sectionComps = Object.values(lesson.Section).filter((section) => {
+      if (section && typeof section === "object" && "SectionTitle" in section) {
+        return section.SectionTitle !== "Procedure";
+      }
+
+      return true;
+    });
+
+    if (sectionComps[0] && typeof sectionComps[0] === "object") {
+      sectionComps[0] = { ...sectionComps[0], SectionTitle: "Overview" };
+    }
+
+    sectionComps = sectionComps.filter((sectionComp) => {
+      if (
+        sectionComp &&
+        typeof sectionComp === "object" &&
+        "SectionTitle" in sectionComp
+      ) {
+        return sectionComp.SectionTitle;
+      }
+
+      return true;
+    });
   }
 
-  if (!lesson && (typeof window === "undefined")) {
+  if (!lesson && typeof window === "undefined") {
     return null;
   }
 
   if (!lesson) {
-    router.replace('/error');
+    router.replace("/error");
     return null;
   }
 
   const { CoverImage, LessonBanner } = lesson;
   const lessonBannerUrl = CoverImage?.url ?? LessonBanner;
-  const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length ? lesson?.SponsorImage?.url : lesson.SponsorLogo
-  let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]?.lessons;
+  const sponsorLogoImgUrl = lesson?.SponsorImage?.url?.length
+    ? lesson?.SponsorImage?.url
+    : lesson.SponsorLogo;
+  let lessonParts =
+    lesson?.Section?.["teaching-materials"]?.Data?.classroom?.resources?.[0]
+      ?.lessons;
 
-  if ((typeof window === 'undefined') && (!lesson || !lessonParts)) {
+  if (typeof window === "undefined" && (!lesson || !lessonParts)) {
     return null;
   }
 
   if (!lesson || !lessonParts) {
-    router.replace('/error');
+    router.replace("/error");
     return null;
   }
 
-  if ((typeof lessonParts === 'object') && (lessonParts !== null) && !Array.isArray(lessonParts)) {
-    const _lessonParts = Object.entries(lessonParts).filter(([key]) => !Number.isNaN(parseInt(key)));
+  if (
+    typeof lessonParts === "object" &&
+    lessonParts !== null &&
+    !Array.isArray(lessonParts)
+  ) {
+    const _lessonParts = Object.entries(lessonParts).filter(
+      ([key]) => !Number.isNaN(parseInt(key))
+    );
     lessonParts = _lessonParts.map(([, lessonPart]) => lessonPart);
   }
 
   if (lessonParts?.length) {
-    lessonParts = lessonParts.filter(({ lsn }) => lsn !== 'last');
+    lessonParts = lessonParts.filter((lessonPart) => {
+      if (lessonPart && typeof lessonPart === "object" && "lsn" in lessonPart) {
+        return lessonPart.lsn !== "last";
+      }
+
+      return true;
+    });
   }
 
   return (

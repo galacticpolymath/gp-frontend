@@ -1,10 +1,10 @@
 import { useCookies } from "react-cookie";
 
 export const useCustomCookies = (keys = ["token"]) => {
-    const [cookies, setCookie, removeCookie] = useCookies(keys)
+    const [cookiesStore, setCookie, removeCookie] = useCookies(keys)
 
     const clearCookies = () => {
-        const cookies = Object.keys(cookies);
+        const cookies = Object.keys(cookiesStore);
 
         for (const cookieKey of cookies) {
             removeCookie(cookieKey);
@@ -12,7 +12,7 @@ export const useCustomCookies = (keys = ["token"]) => {
     }
 
     return {
-        cookies,
+        cookies: cookiesStore,
         setCookie,
         removeCookie,
         clearCookies
