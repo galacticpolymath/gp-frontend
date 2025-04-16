@@ -808,7 +808,6 @@ export const getStaticProps = async (arg: {
     let targetUnitForUI: TUnitForUI | undefined = undefined;
 
     if (targetUnits?.length) {
-      // TODO: filter out all null sections
       const availLocs = targetUnits
         .map(({ locale }) => locale)
         .filter(Boolean) as string[];
