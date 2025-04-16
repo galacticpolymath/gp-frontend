@@ -409,8 +409,9 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     clickedSectionId: null,
   });
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
-  const [isScrollListenerOn, setIsScrollListenerOn] =
-    useScrollHandler(setSectionDots);
+  const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(
+    unit ? setUnitSectionDots : setSectionDots
+  );
 
   const scrollSectionIntoView = (sectionId: string) => {
     const targetSection = document.getElementById(sectionId);
@@ -914,7 +915,13 @@ export const getStaticProps = async (arg: {
               const itemListWithFilePreviewImgsPromises = lesson.itemList?.map(
                 async (item) => {
                   const { links, itemCat } = item;
-                  const url = links?.[0].url?.[0];
+                  console.log("links, sup there: ", links);
+                  const linkObj = links?.[0];
+                  const url = linkObj?.url?.[0];
+
+                  if (!url) {
+                    return item;
+                  }
 
                   if (itemCat === "web resource") {
                     const linkPreviewObj = await getLinkPreviewObj(url);
@@ -929,9 +936,7 @@ export const getStaticProps = async (arg: {
                     } as IItemForUI;
                   }
 
-                  const googleDriveFileId = url
-                    ? getGoogleDriveFileIdFromUrl(url)
-                    : null;
+                  const googleDriveFileId = getGoogleDriveFileIdFromUrl(url);
 
                   if (googleDriveFileId) {
                     const filePreviewImg = `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`;
