@@ -155,6 +155,7 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 ]);
 
 const LessonDetails = ({ lesson, unit }: IProps) => {
+  console.log("unit, sup there: ", unit);
   const router = useRouter();
   const { _isUserTeacher } = useUserContext();
   const { status, data } = useSession();
@@ -991,6 +992,17 @@ export const getStaticProps = async (arg: {
         // get the root fields for specific sections that required them
         let sectionsUpdated = sectionsEntries.reduce(
           (sectionsAccum, [sectionKey, section]) => {
+            // if the section.Content is null, then return the sectionsAccum
+            if (
+              !section ||
+              (typeof section === "object" &&
+                section &&
+                (("Content" in section && !section.Content) ||
+                  ("Data" in section && !section.Data)))
+            ) {
+              return sectionsAccum;
+            }
+
             if (
               targetUnitForUI &&
               typeof section === "object" &&

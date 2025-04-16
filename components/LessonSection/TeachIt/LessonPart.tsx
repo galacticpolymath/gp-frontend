@@ -481,7 +481,7 @@ const LessonPart = ({
             </div>
           )}
           {FeedbackComp}
-          {Array.isArray(learningObjectives) && learningObjectives.length && (
+          {Array.isArray(learningObjectives) && !!learningObjectives.length && (
             <div className="mt-4 d-col col-12 col-lg-8">
               <div className="d-flex align-items-start">
                 <h5 className="fw-bold">
