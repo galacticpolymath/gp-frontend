@@ -68,7 +68,9 @@ const Overview = ({
     <div
       id="overview_sec"
       ref={ref}
-      className="SectionHeading container mb-4 px-0 position-relative"
+      className={`SectionHeading container mb-4 px-0 position-relative ${
+        SectionTitle?.replace(/[\s!]/gi, "_")?.toLowerCase() ?? ""
+      }`}
     >
       <div
         id={h2Id}

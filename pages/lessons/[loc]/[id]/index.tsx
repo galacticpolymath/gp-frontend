@@ -998,7 +998,8 @@ export const getStaticProps = async (arg: {
               (typeof section === "object" &&
                 section &&
                 (("Content" in section && !section.Content) ||
-                  ("Data" in section && !section.Data)))
+                  ("Data" in section && !section.Data))) ||
+              (sectionKey === "preview" && !targetUnitForUI?.FeaturedMultimedia)
             ) {
               return sectionsAccum;
             }
@@ -1024,6 +1025,10 @@ export const getStaticProps = async (arg: {
                     targetUnitForUI[
                       rootFieldToRetrieveForUI.name as keyof TUnitForUI
                     ];
+
+                  if (!val) {
+                    continue;
+                  }
 
                   section = {
                     ...section,

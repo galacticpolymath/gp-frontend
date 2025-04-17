@@ -563,7 +563,12 @@ const LessonPart = ({
 
                   let filePreviewImgLink = "";
 
-                  if (isTeacherItem && isUserTeacher) {
+                  if (
+                    !isTeacherItem ||
+                    (isTeacherItem &&
+                      isUserTeacher &&
+                      status === "authenticated")
+                  ) {
                     filePreviewImgLink =
                       typeof imgLink === "string"
                         ? imgLink

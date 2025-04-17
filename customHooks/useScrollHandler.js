@@ -35,7 +35,7 @@ const useScrollHandler = setSectionDots => {
       if (elem.classList[elem.classList.length - 1] === 'lessonTitleId') {
         liNavDotId = 'lessonTitleId';
       }
-
+      // console.log("elem.classList, sup there: ", elem.classList);
       for (let index = 0; index < elem.classList.length; index++) {
         const className = elem.classList[index];
         if (/\d+\./.test(className)) {
@@ -43,6 +43,8 @@ const useScrollHandler = setSectionDots => {
           break;
         }
       }
+
+      console.log("liNavDotId: ", liNavDotId);
 
       const percent = getPercentageSeen(elem);
       const _percentageInViewPort = ((percent === 100) || (percent === 0)) ? 0 : percent;
@@ -52,6 +54,8 @@ const useScrollHandler = setSectionDots => {
     viewPortPercentOfElems = viewPortPercentOfElems.filter(({ percentageInViewPort }) => ((percentageInViewPort > 0) && (percentageInViewPort < 100)));
     const elemsThatAreInView = viewPortPercentOfElems.filter(({ elemId }) => elemId);
     const elemTakingUpMostOfViewport = elemsThatAreInView.reduce((prev, curr) => (prev.percentageInViewPort > curr.percentageInViewPort) ? prev : curr);
+
+    console.log("elemTakingUpMostOfViewport, sup there: ", elemTakingUpMostOfViewport);
 
     setSectionDots(sectionDots => {
       return {
