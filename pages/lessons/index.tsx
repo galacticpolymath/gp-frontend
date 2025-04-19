@@ -28,6 +28,10 @@ import { GiShipWheel } from "react-icons/gi";
 import LessonSvg from "../../assets/img/gp-lesson-icon.svg";
 import UnitIconSvg from "../../assets/img/gp-unit-icon.svg";
 import Image from "next/image.js";
+import Units from "../../backend/models/Unit";
+import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
+import { retrieveUnits } from "../../backend/services/unitServices";
+import { createDbProjections } from "../../constants/functions";
 
 const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
@@ -307,6 +311,21 @@ const PROJECTED_LESSONS_FIELDS = [
   "ForGrades",
   "GradesOrYears",
 ];
+const PROJECTED_UNITS_FIELDS: Partial<keyof INewUnitSchema>[] = [
+  "UnitBanner",
+  "Subtitle",
+  "Title",
+  "Sections",
+  "ReleaseDate",
+  "locale",
+  "_id",
+  "numID",
+  "PublicationStatus",
+  "TargetSubject",
+  "ForGrades",
+  "GradesOrYears",
+  "FeaturedMultimedia",
+];
 const WEB_APP_PATHS = [
   {
     name: "dark",
@@ -335,7 +354,38 @@ export async function getStaticProps() {
       throw new Error("Failed to connect to the database.");
     }
 
+    // const units = await
+    const { data: retrievedUnits } = await retrieveUnits(
+      {},
+      createDbProjections(PROJECTED_UNITS_FIELDS),
+      0,
+      { ReleaseDate: -1 }
+    );
+
+    if (retrievedUnits?.length) {
+      // GOAL: get all of the vide
+    }
+
+    // GOAL: draw from the units collection from the database
+    // notes:
+
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS)
+      .sort({ ReleaseDate: -1 })
+      .lean();
+
+    if (!lessons?.length) {
+      throw new Error("No lessons were retrieved from the database.");
+    }
+
+    let gpVideos = getGpVids(lessons);
+    gpVideos = gpVideos.map((vid) =>
+      vid?.ReleaseDate
+        ? { ...vid, ReleaseDate: JSON.stringify(vid.ReleaseDate) }
+        : vid
+    );
+    let lessonPartsForUI = [];
+    let webApps: any[] = [];
+    UNITSlessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS)
       .sort({ ReleaseDate: -1 })
       .lean();
 

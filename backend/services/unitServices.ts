@@ -143,9 +143,9 @@ const createDbFilter = (filterObjKeyAndValPairs: [string, unknown[]][]) => {
   }
 };
 
-type TSort = {
+type TSort = Partial<{
   [key in keyof IUnit]: "asc" | "desc" | "ascending" | "descending" | 1 | -1;
-};
+}>;
 export type TProjections = { [key in keyof IUnit | "__v"]: 0 | 1 };
 
 const retrieveUnits = async (
