@@ -62,19 +62,19 @@ const LessonCard = ({ lesson, PillComp = null, lessonImgSrc }) => {
       <div className="pt-2 ps-sm-3 d-grid">
         <h3
           style={{ textDecoration: "none" }}
-          className="w-light text-black mb-0 no-underline-on-hover"
+          className="w-light text-black mb-0 no-underline-on-hover unit-txt-test"
         >
           {Title}
         </h3>
         <p
           style={{ fontWeight: 400, textDecoration: "none" }}
-          className="text-black no-underline-on-hover"
+          className="text-black no-underline-on-hover unit-txt-test"
         >
           {Subtitle}
         </p>
         <section className="d-flex flex-wrap gap-1 align-self-end">
           <span
-            className={`badge me-1 lessonSubject no-underline-on-hover bg-${Section.overview.TargetSubject.toLowerCase().replace(
+            className={`badge me-1 lessonSubject no-underline-on-hover unit-txt-test bg-${Section.overview.TargetSubject.toLowerCase().replace(
               /\s/g,
               " "
             )}`}
@@ -105,7 +105,7 @@ const LessonCard = ({ lesson, PillComp = null, lessonImgSrc }) => {
                 <span
                   key={index}
                   style={{ fontWeight: 300 }}
-                  className="list-item"
+                  className="list-item unit-txt-test"
                 >
                   {local}
                 </span>

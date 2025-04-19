@@ -32,10 +32,10 @@ const GpWebApps = ({
                                 />
                             </div>
                             <section className="d-flex justify-content-center align-items-left flex-column">
-                                <h4 className='fw-light text-black mb-0 pb-1 text-left mt-2'>
+                                <h4 className='fw-light text-black mb-0 pb-1 text-left mt-2 web-app-test-txt'>
                                     {webApp.title}
                                 </h4>
-                                <span style={{ lineHeight: '20px', transform: 'translateY(5px)' }} className="text-black text-left mt-1 mt-sm-0">
+                                <span style={{ lineHeight: '20px', transform: 'translateY(5px)' }} className="web-app-test-txt text-black text-left mt-1 mt-sm-0">
                                     {webApp.description}
                                 </span>
                             </section>

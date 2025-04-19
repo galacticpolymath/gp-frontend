@@ -65,7 +65,7 @@ const VideoCard = ({
                 </div>
                 <Button handleOnClick={handleOnClick} classNameStr='no-btn-styles w-100 d-flex'>
                     <CardTitle
-                        className='text-start mt-3 vid-card-heading-txt w-light text-black mb-0 no-underline-on-hover'
+                        className='text-start mt-3 vid-card-heading-txt w-light text-black mb-0 no-underline-on-hover video-card-test-text'
                     >
                         {videoObj.videoTitle}
                     </CardTitle>
@@ -73,7 +73,7 @@ const VideoCard = ({
                 {videoObj?.description && (
                     <Button handleOnClick={handleOnClick} classNameStr='no-btn-styles w-100 d-flex'>
                         <EllipsisTxt
-                            className='pointer text-start'
+                            className='pointer text-start video-card-description'
                             ellipsisTxtNum={2}
                             style={{ marginTop: '6px' }}
                         >

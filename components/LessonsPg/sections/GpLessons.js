@@ -72,7 +72,7 @@ const GpLessons = ({
                                 <Spinner className='text-black' />
                             </span>
                             :
-                            <span className='d-inline-flex w-100 h-100 justify-content-center'>
+                            <span className='d-inline-flex w-100 h-100 justify-content-center see-more-btn-txt'>
                                 {btnTxt}
                             </span>
                         }

@@ -35,14 +35,13 @@ const handleJobVizCardClick = () => {
 
 const THIRTY_SEVEN_DAYS = 1_000 * 60 * 60 * 24 * 37;
 
-const LessonsPage = (props) => {
-  const {
-    units,
-    lessonsObj,
-    gpVideosObj,
-    webAppsObj,
-    didErrorOccur,
-  } = props;
+interface IProps {
+  oldUnits: any;
+}
+
+const LessonsPage = (props: IProps) => {
+  const { units, lessonsObj, gpVideosObj, webAppsObj, didErrorOccur } =
+    props.oldUnits;
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedGpWebApp, setSelectedGpWebApp] = useState(null);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
@@ -193,7 +192,10 @@ const LessonsPage = (props) => {
         <div className="lessons-pg-sec lessons-pg-sec-max-width">
           <GpUnits units={units} didErrorOccur={didErrorOccur} />
           <section className="my-4 my-md-3 d-flex justify-content-center align-items-center img-background-container lessons-section-border-top lessons-section-border-bottom">
-            <div style={{ width: '86%', maxWidth: '1240px' }} className="sponsors-container-lessons">
+            <div
+              style={{ width: "86%", maxWidth: "1240px" }}
+              className="sponsors-container-lessons"
+            >
               <h4 className="text-muted mb-3 mb-sm-5 text-left mt-2 mt-sm-4 pe-lg-5">
                 Made open access by these funding organizations and research
                 institutions:
@@ -234,7 +236,7 @@ const LessonsPage = (props) => {
                       style={{ height: "205px" }}
                       className="imgSec d-flex justify-content-center align-items-center"
                     >
-                      <JobVizIcon />
+                      <JobVizIcon isOnJobVizPg={false} />
                     </section>
                     <section className="d-flex justify-content-center align-items-left flex-column ps-3">
                       <h4 className="fw-light text-black mb-0 pb-1 text-left mt-1 mt-sm-2 my-2">
@@ -365,8 +367,8 @@ export async function getStaticProps() {
         : [];
       const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length
         ? multiMediaWebAppNoFalsyVals.some(
-          ({ type }) => type === "web-app" || type === "video"
-        )
+            ({ type }) => type === "web-app" || type === "video"
+          )
         : false;
 
       // retrieve the web apps of the units
@@ -444,9 +446,9 @@ export async function getStaticProps() {
           const isLessonInLessonPartsForUIArr =
             lessonPartsForUI.length && lessonPart
               ? lessonPartsForUI.some(
-                ({ lessonPartTitle }) =>
-                  lessonPartTitle === lessonPart.lsnTitle
-              )
+                  ({ lessonPartTitle }) =>
+                    lessonPartTitle === lessonPart.lsnTitle
+                )
               : false;
 
           if (lessonPart && !isLessonInLessonPartsForUIArr) {
@@ -523,11 +525,11 @@ export async function getStaticProps() {
 
     let gpVideosFirstPg = gpVideos?.length
       ? gpVideos
-        .sort(
-          (videoA, videoB) =>
-            JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)
-        )
-        .slice(0, DATA_PER_PG)
+          .sort(
+            (videoA, videoB) =>
+              JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)
+          )
+          .slice(0, DATA_PER_PG)
       : [];
     gpVideosFirstPg = gpVideosFirstPg?.length
       ? gpVideosFirstPg.map((vid) => ({ ...vid, id: nanoid() }))
@@ -535,24 +537,26 @@ export async function getStaticProps() {
 
     return {
       props: {
-        units,
-        lessonsObj: {
-          data: firstPgOfLessons,
-          isLast: lessonPartsForUI.length < DATA_PER_PG,
-          nextPgNumStartingVal: 1,
-          totalItemsNum: lessonPartsForUI.length,
-        },
-        gpVideosObj: {
-          data: gpVideosFirstPg,
-          isLast: gpVideos.length < DATA_PER_PG,
-          nextPgNumStartingVal: 1,
-          totalItemsNum: gpVideos.length,
-        },
-        webAppsObj: {
-          data: webApps,
-          isLast: webApps.length < DATA_PER_PG,
-          nextPgNumStartingVal: 1,
-          totalItemsNum: webApps.length,
+        oldUnits: {
+          units,
+          lessonsObj: {
+            data: firstPgOfLessons,
+            isLast: lessonPartsForUI.length < DATA_PER_PG,
+            nextPgNumStartingVal: 1,
+            totalItemsNum: lessonPartsForUI.length,
+          },
+          gpVideosObj: {
+            data: gpVideosFirstPg,
+            isLast: gpVideos.length < DATA_PER_PG,
+            nextPgNumStartingVal: 1,
+            totalItemsNum: gpVideos.length,
+          },
+          webAppsObj: {
+            data: webApps,
+            isLast: webApps.length < DATA_PER_PG,
+            nextPgNumStartingVal: 1,
+            totalItemsNum: webApps.length,
+          },
         },
       },
       revalidate: 30,
@@ -565,11 +569,13 @@ export async function getStaticProps() {
 
     return {
       props: {
-        units: null,
-        lessonsObj: null,
-        gpVideosObj: null,
-        webAppsObj: null,
-        didErrorOccur: true,
+        oldUnits: {
+          units: null,
+          units: null,
+          lessonsObj: null,
+          gpVideosObj: null,
+          webAppsObj: null,
+        },
       },
       revalidate: 30,
     };

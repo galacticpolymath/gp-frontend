@@ -18,7 +18,7 @@ const notoSansLight = Noto_Sans({
 
 export default function Layout({
   title,
-  keywords = undefined,
+  keywords = '',
   description,
   children,
   imgSrc,
