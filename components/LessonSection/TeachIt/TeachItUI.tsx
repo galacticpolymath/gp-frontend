@@ -67,6 +67,8 @@ interface TeachItUIProps<
   ForGrades: string | null;
 }
 
+const ASSESSMENTS_ID = 100;
+
 const TeachItUI = <
   TLesson extends object,
   TSelectedGrade extends IResource<ILessonForUI> = IResource<ILessonForUI>
@@ -90,7 +92,8 @@ const TeachItUI = <
   GradesOrYears,
 }: TeachItUIProps<TLesson, TSelectedGrade>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
-  console.log("environments, sup there: ", environments);
+  // log the parts
+  console.log("parts, sup there: ", parts);
   const areThereGradeBands =
     !!gradeVariations?.length &&
     gradeVariations.every((variation) => !!variation.grades);
@@ -382,12 +385,14 @@ const TeachItUI = <
                   lsnPreface={preface}
                   lsnExt={lsnExt}
                   chunks={
-                    lsn !== "last"
+                    lsn !== ASSESSMENTS_ID
                       ? targetLessonInDataLesson?.chunks ?? chunks
                       : []
                   }
                   ForGrades={ForGrades}
-                  learningObjectives={lsn !== "last" ? learningObjs ?? [] : []}
+                  learningObjectives={
+                    lsn !== ASSESSMENTS_ID ? learningObjs ?? [] : []
+                  }
                   partsFieldName="lessons"
                   itemList={itemList as IItemForClient[]}
                   isAccordionExpandable={part.status !== UNVIEWABLE_LESSON_STR}

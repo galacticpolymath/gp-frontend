@@ -205,7 +205,6 @@ export interface IVocab {
   definition: string;
 }
 
-
 interface ITeachingMaterialsPreviewInfo{
   unitDur: string;
   unitPreface: string;
