@@ -27,9 +27,9 @@ export default function Layout({
   className = '',
   type = 'article',
   style = {},
-  canonicalLink,
-  defaultLink,
-  langLinks,
+  canonicalLink = '',
+  defaultLink = '',
+  langLinks = [],
 }) {
   const isOnProd = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
 
@@ -69,9 +69,9 @@ export default function Layout({
         {imgAlt && <meta name="twitter:image:alt" content={imgAlt} />}
         <meta name="twitter:domain" content="galacticpolymath.com" />
         <meta name="twitter:url" content={url} />
-        {(isOnProd && (typeof canonicalLink === 'string')) && <link rel="canonical" href={canonicalLink} />}
+        {(isOnProd && !!canonicalLink) && <link rel="canonical" href={canonicalLink} />}
         {(isOnProd && langLinks?.length) && langLinks.map(([href, hrefLang], index) => <link key={index} rel="alternate" hrefLang={hrefLang} href={href} />)}
-        {(isOnProd && (typeof defaultLink === 'string')) && <link rel="alternate" hrefLang='x-default' href={defaultLink} />}
+        {(isOnProd && !!defaultLink) && <link rel="alternate" hrefLang='x-default' href={defaultLink} />}
       </Head>
       <div style={{ height: "50px" }}>
         <Navbar />

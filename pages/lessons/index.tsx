@@ -43,11 +43,11 @@ const LessonsPage = (props: IProps) => {
   const { units, lessonsObj, gpVideosObj, webAppsObj, didErrorOccur } =
     props.oldUnits;
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [selectedGpWebApp, setSelectedGpWebApp] = useState(null);
+  const [selectedGpWebApp, setSelectedGpWebApp] = useState<null | object>(null);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
   const [isWebAppModalShown, setIsWebAppModalShown] = useState(false);
 
-  const handleGpWebAppCardClick = (app) => () => {
+  const handleGpWebAppCardClick = (app: object) => () => {
     setSelectedGpWebApp(app);
     setIsWebAppModalShown(true);
   };
@@ -56,6 +56,8 @@ const LessonsPage = (props: IProps) => {
 
   return (
     <Layout
+      url="https://www.galacticpolymath.com/lessons"
+      style={{}}
       title="Galactic Polymath Mini-Unit Releases"
       description="We strive to create mind-expanding learning experiences that a non-specialist can teach in any G5-12 classroom with 15 minutes of prep time!"
       imgSrc="https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png"
@@ -317,7 +319,7 @@ const WEB_APP_PATHS = [
 ];
 const DATA_PER_PG = 6;
 
-function getIsUnitNew(releaseDate, now) {
+function getIsUnitNew(releaseDate: Date, now: number) {
   const releaseDateMilliseconds = new Date(releaseDate).getTime();
   const endDateOfNewReleaseMs = releaseDateMilliseconds + THIRTY_SEVEN_DAYS;
   const isNew = now > releaseDateMilliseconds && now < endDateOfNewReleaseMs;
@@ -348,7 +350,7 @@ export async function getStaticProps() {
         : vid
     );
     let lessonPartsForUI = [];
-    let webApps = [];
+    let webApps: any[] = [];
     const todaysDate = new Date();
     const now = todaysDate.getTime();
 
@@ -363,11 +365,12 @@ export async function getStaticProps() {
 
       const multiMediaArr = lesson.Section?.preview?.Multimedia;
       const multiMediaWebAppNoFalsyVals = multiMediaArr?.length
-        ? multiMediaArr.filter((multiMedia) => multiMedia)
+        ? multiMediaArr.filter((multiMedia: any) => multiMedia)
         : [];
       const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length
         ? multiMediaWebAppNoFalsyVals.some(
-            ({ type }) => type === "web-app" || type === "video"
+            ({ type }: { type: string }) =>
+              type === "web-app" || type === "video"
           )
         : false;
 
@@ -385,17 +388,31 @@ export async function getStaticProps() {
               continue;
             }
 
-            const { errMsg, images, title } = await getLinkPreviewObj(
+            const linkPreviewObj = await getLinkPreviewObj(
               multiMediaItem.mainLink
             );
 
-            if (errMsg && !images?.length) {
+            if (
+              "errMsg" in linkPreviewObj &&
+              linkPreviewObj.errMsg &&
+              "images" in linkPreviewObj &&
+              Array.isArray(linkPreviewObj.images) &&
+              linkPreviewObj.images.length
+            ) {
               console.error(
                 "Failed to get the image preview of web app. Error message: ",
-                errMsg
+                linkPreviewObj.errMsg
               );
               continue;
             }
+
+            const images =
+              "images" in linkPreviewObj && Array.isArray(linkPreviewObj.images)
+                ? linkPreviewObj.images
+                : [];
+            const errMsg =
+              "errMsg" in linkPreviewObj ? linkPreviewObj.errMsg : "";
+            const title = "title" in linkPreviewObj ? linkPreviewObj.title : "";
 
             multiMediaItem = {
               lessonIdStr: multiMediaItem.forLsn,
@@ -441,7 +458,7 @@ export async function getStaticProps() {
           }
 
           const lessonPart = lessonParts.find(
-            ({ lsnNum }) => lsnNum === lsnStatus.lsn
+            (lessonPart: any) => lessonPart.lsnNum === lsnStatus.lsn
           );
           const isLessonInLessonPartsForUIArr =
             lessonPartsForUI.length && lessonPart
@@ -453,12 +470,12 @@ export async function getStaticProps() {
 
           if (lessonPart && !isLessonInLessonPartsForUIArr) {
             const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(
-              ({ lsn }) => lsn == lsnStatus.lsn
+              (lessonPart: any) => lessonPart.lsn == lsnStatus.lsn
             );
             let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0])
               ? lessonPartFromClassroomObj?.tags.flat()
               : lessonPartFromClassroomObj?.tags;
-            tags = tags?.length ? tags.filter((tag) => tag) : tags;
+            tags = tags?.length ? tags.filter((tag: any) => tag) : tags;
             const lessonPartForUI = {
               tags: tags ?? null,
               lessonPartPath: `/lessons/${lesson.locale}/${lesson.numID}#lesson_part_${lessonPart.lsnNum}`,
@@ -484,7 +501,9 @@ export async function getStaticProps() {
 
     const units = getShowableUnits(lessons).map((lesson) => {
       const individualLessonsNum = lesson?.LsnStatuses?.length
-        ? lesson.LsnStatuses.filter(({ status }) => status !== "Hidden")?.length
+        ? lesson.LsnStatuses.filter(
+            ({ status }: { status: string }) => status !== "Hidden"
+          )?.length
         : 0;
       const lessonObj = {
         ...lesson,
@@ -503,8 +522,8 @@ export async function getStaticProps() {
       firstPgOfLessons = firstPgOfLessons
         .sort(
           (
-            { sort_by_date: sortByDateLessonA },
-            { sort_by_date: sortByDateLessonB }
+            { sort_by_date: sortByDateLessonA }: any,
+            { sort_by_date: sortByDateLessonB }: any
           ) => {
             let _sortByDateLessonA = new Date(sortByDateLessonA);
             let _sortByDateLessonB = new Date(sortByDateLessonB);
@@ -564,13 +583,12 @@ export async function getStaticProps() {
   } catch (error) {
     console.error(
       "An error has occurred while fetching for lessons. Error message: ",
-      error.message
+      error
     );
 
     return {
       props: {
         oldUnits: {
-          units: null,
           units: null,
           lessonsObj: null,
           gpVideosObj: null,
