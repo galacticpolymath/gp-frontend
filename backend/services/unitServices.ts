@@ -3,6 +3,12 @@
 import { DeleteResult } from "mongoose";
 import { INewUnitSchema, IUnit } from "../models/Unit/types/unit";
 import Unit from "../models/Unit";
+import { IMultiMediaItemForUI, IUnitLesson, IWebAppLink } from "../../types/global";
+import { getVideoThumb } from "../../components/LessonSection/Preview/utils";
+import { STATUSES_OF_SHOWABLE_LESSONS, WEB_APP_PATHS } from "../../globalVars";
+import { getLinkPreviewObj, getShowableUnits } from "../../globalFns";
+import moment from "moment";
+import { getLiveUnits } from "../../constants/functions";
 
 const insertUnit = async (unit: INewUnitSchema) => {
   try {
@@ -32,19 +38,15 @@ const insertUnit = async (unit: INewUnitSchema) => {
   }
 };
 
-const deleteUnit = async (
-  _id?: string,
-  queryPair?: [string, unknown]
-) => {
+const deleteUnit = async (_id?: string, queryPair?: [string, unknown]) => {
   try {
     console.log(
       `Attempting to delete unit with id ${_id} and queryPair ${JSON.stringify(
         queryPair
       )}`
     );
-    
-    if (!Unit) {
 
+    if (!Unit) {
       throw new Error(
         "Failed to connect to the database. `Units` collections does not exist."
       );
@@ -80,7 +82,7 @@ const deleteUnit = async (
       msg: `Unit was successfully deleted from the database!`,
     };
   } catch (error) {
-    console.error("`deleteUnit` error: ", error);    
+    console.error("`deleteUnit` error: ", error);
 
     return {
       status: 500,
@@ -203,4 +205,213 @@ const updateUnit = async (
   }
 };
 
-export { insertUnit, deleteUnit, retrieveUnits, updateUnit, createDbFilter };
+const getGpMultiMedia = (units: INewUnitSchema[]) => {
+  const gpVideos: IMultiMediaItemForUI[] = [];
+
+  for (const unit of units) {
+    if (!unit.FeaturedMultimedia) {
+      continue;
+    }
+
+    const { Title, ReleaseDate, numID } = unit;
+
+    for (const mediaItem of unit.FeaturedMultimedia) {
+      const isTargetGpVidPresent = gpVideos?.length
+        ? gpVideos.some(
+            ({ mainLink: gpVidMainLink }) =>
+              gpVidMainLink === mediaItem.mainLink
+          )
+        : false;
+
+      if (
+        !isTargetGpVidPresent &&
+        mediaItem.by === "Galactic Polymath" &&
+        mediaItem.type === "video" &&
+        typeof mediaItem.mainLink === "string" &&
+        mediaItem.mainLink.includes("youtube")
+      ) {
+        gpVideos.push({
+          ReleaseDate: ReleaseDate,
+          lessonUnitTitle: Title,
+          videoTitle: mediaItem.title,
+          mainLink: mediaItem.mainLink,
+          description: mediaItem.description ?? mediaItem.lessonRelevance,
+          thumbnail: getVideoThumb(mediaItem.mainLink),
+          unitNumId: numID,
+          lessonNumId:
+            mediaItem.forLsn && Number.isInteger(+mediaItem.forLsn)
+              ? parseInt(mediaItem.forLsn)
+              : null,
+        });
+      }
+    }
+  }
+
+  return gpVideos;
+};
+
+const getGpWebApps = async (units: INewUnitSchema[]) => {
+  const webApps: IWebAppLink[] = [];
+
+  for (const unit of units) {
+    if (!unit.FeaturedMultimedia) {
+      continue;
+    }
+
+    for (const multiMediaItem of unit.FeaturedMultimedia) {
+      const isPresentInWebApps = webApps.find(
+        (webApp) => webApp.webAppLink === multiMediaItem.mainLink
+      );
+
+      if (isPresentInWebApps || !multiMediaItem.mainLink) {
+        continue;
+      }
+
+      const linkPreviewObj = await getLinkPreviewObj(multiMediaItem.mainLink);
+
+      if (
+        "errMsg" in linkPreviewObj &&
+        linkPreviewObj.errMsg &&
+        "images" in linkPreviewObj &&
+        Array.isArray(linkPreviewObj.images) &&
+        linkPreviewObj.images.length
+      ) {
+        console.error(
+          "Failed to get the image preview of web app. Error message: ",
+          linkPreviewObj.errMsg
+        );
+        continue;
+      }
+
+      const images =
+        "images" in linkPreviewObj && Array.isArray(linkPreviewObj.images)
+          ? linkPreviewObj.images
+          : [];
+      const errMsg = "errMsg" in linkPreviewObj ? linkPreviewObj.errMsg : "";
+      const title = "title" in linkPreviewObj ? linkPreviewObj.title : "";
+      let pathToFile = null;
+
+      if (typeof multiMediaItem?.title === "string") {
+        pathToFile =
+          WEB_APP_PATHS.find(({ name }) =>
+            (multiMediaItem.title as string).toLowerCase().includes(name)
+          )?.path ?? (images?.length ? images[0] : null);
+      }
+
+      const webApp = {
+        lessonIdStr: multiMediaItem.forLsn,
+        unitNumID: unit.numID,
+        webAppLink: multiMediaItem.mainLink,
+        title: multiMediaItem.title,
+        unitTitle: unit.Title,
+        description: multiMediaItem.lessonRelevance,
+        webAppPreviewImg: errMsg || !images?.length ? null : images[0],
+        webAppImgAlt:
+          errMsg || !images?.length ? null : `${title}'s preview image`,
+        pathToFile,
+      };
+
+      webApps.push(webApp);
+    }
+  }
+
+  return webApps;
+};
+
+const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
+  const todaysDate = new Date();
+  const unitLessons: IUnitLesson[] = [];
+
+  for (const unit of retrievedUnits) {
+    const wasUnitReleased =
+      moment(todaysDate).format("YYYY-MM-DD") >
+      moment(unit.ReleaseDate).format("YYYY-MM-DD");
+
+    if (!wasUnitReleased) {
+      continue;
+    }
+
+    const resources = unit?.Sections?.teachingMaterials?.classroom?.resources;
+
+    if (!resources) {
+      continue;
+    }
+
+    for (const resource of resources) {
+      if (!resource.lessons) {
+        continue;
+      }
+
+      for (const lesson of resource.lessons) {
+        const unitLesson = {
+          tags: lesson.tags ?? null,
+          lessonPartPath: `/lessons/${unit.locale}/${unit.numID}#lesson_part_${lesson.lsn}`,
+          tile:
+            lesson?.tile ??
+            "https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png",
+          lessonPartTitle: lesson.title,
+          dur: lesson.lsnDur,
+          preface: lesson.lsnPreface,
+          lessonPartNum: lesson.lsn,
+          unitTitle: unit.Title,
+          subject: unit.TargetSubject,
+          grades: unit.ForGrades,
+          gradesOrYears: unit.GradesOrYears,
+          status: lesson.status,
+          sortByDate: lesson.sort_by_date
+        };
+
+        unitLessons.push(unitLesson);
+      }
+    }
+  } 
+
+  return unitLessons;
+};
+
+const getIsUnitNew = (releaseDate: Date, now: number) => {
+  const releaseDateMilliseconds = new Date(releaseDate).getTime();
+  const endDateOfNewReleaseMs = releaseDateMilliseconds + 1_000 * 60 * 60 * 24 * 37; // 37 days
+  const isNew = now > releaseDateMilliseconds && now < endDateOfNewReleaseMs;
+
+  return isNew;
+}
+
+const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number) => {
+  return getLiveUnits(units).map((unit) => {
+        if(!unit.ReleaseDate){
+          console.error("unit.ReleaseDate is not presesnt.");
+
+          return unit;
+        }
+
+        const individualLessonsNum = unit?.Sections?.teachingMaterials?.classroom?.resources?.reduce((totalLiveLessons, resource) => {
+          if(!resource.lessons?.length){
+            return totalLiveLessons;
+          }
+          const liveLessonsNum = resource.lessons.filter((lesson) => lesson?.status ? STATUSES_OF_SHOWABLE_LESSONS.includes(lesson?.status) : false).length;
+
+          return totalLiveLessons + liveLessonsNum;
+        }, 0) ?? 0;
+        const lessonObj = {
+          ...unit,
+          individualLessonsNum,
+          ReleaseDate: moment(unit.ReleaseDate).format("YYYY-MM-DD"),
+          isNew: getIsUnitNew(new Date(unit.ReleaseDate), nowMs),
+        };
+    
+        return lessonObj;
+      });
+}
+
+export {
+  insertUnit,
+  deleteUnit,
+  filterInShowableUnits,
+  retrieveUnits,
+  updateUnit,
+  createDbFilter,
+  getGpMultiMedia,
+  getGpWebApps,
+  getUnitLessons
+};

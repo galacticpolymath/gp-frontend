@@ -5,7 +5,7 @@
 /* eslint-disable indent */
 import moment from "moment";
 import { getVideoThumb } from "./components/LessonSection/Preview/utils";
-import { SHOWABLE_LESSONS_STATUSES } from "./globalVars";
+import { SHOWABLE_LESSONS_STATUSES, STATUSES_OF_SHOWABLE_LESSONS } from "./globalVars";
 import { getLinkPreview } from "link-preview-js";
 
 export const createPaginationArr = (arr) => {
@@ -165,8 +165,6 @@ export const getGpLessons = (lessons) => {
 
     return lessonParts;
 };
-
-export const STATUSES_OF_SHOWABLE_LESSONS = ["Live", "Beta", "Upcoming"];
 
 export const getShowableUnits = (units) => {
     let uniqueUnits = [];

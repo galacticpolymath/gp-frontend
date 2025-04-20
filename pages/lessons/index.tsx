@@ -17,7 +17,6 @@ import GpVideos from "../../components/LessonsPg/sections/GpVideos.js";
 import GpUnits from "../../components/LessonsPg/sections/GpUnits.js";
 import GpLessons from "../../components/LessonsPg/sections/GpLessons.js";
 import {
-  STATUSES_OF_SHOWABLE_LESSONS,
   getGpVids,
   getLinkPreviewObj,
   getShowableUnits,
@@ -30,8 +29,15 @@ import UnitIconSvg from "../../assets/img/gp-unit-icon.svg";
 import Image from "next/image.js";
 import Units from "../../backend/models/Unit";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
-import { retrieveUnits } from "../../backend/services/unitServices";
+import {
+  filterInShowableUnits,
+  getGpMultiMedia,
+  getGpWebApps,
+  getUnitLessons,
+  retrieveUnits,
+} from "../../backend/services/unitServices";
 import { createDbProjections } from "../../constants/functions";
+import { STATUSES_OF_SHOWABLE_LESSONS } from "../../globalVars";
 
 const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
@@ -363,29 +369,51 @@ export async function getStaticProps() {
     );
 
     if (retrievedUnits?.length) {
-      // GOAL: get all of the vide
-    }
+      const lessons = getUnitLessons(retrievedUnits);
+      const webApps = await getGpWebApps(retrievedUnits);
+      const gpMultiMedia = getGpMultiMedia(retrievedUnits);
+      let gpVideosFirstPg = gpMultiMedia?.length
+        ? gpMultiMedia
+            .filter((mediaItem) => typeof mediaItem.ReleaseDate === "string")
+            .sort(
+              (multiMediaItemA, multiMediaItemB) =>
+                JSON.parse(multiMediaItemB.ReleaseDate as string) -
+                JSON.parse(multiMediaItemA.ReleaseDate as string)
+            )
+            .slice(0, DATA_PER_PG)
+        : [];
+      gpVideosFirstPg = gpVideosFirstPg?.length
+        ? gpVideosFirstPg.map((vid) => ({ ...vid, id: nanoid() }))
+        : gpVideosFirstPg;
 
-    // GOAL: draw from the units collection from the database
-    // notes:
+      gpVideosFirstPg = gpMultiMedia.slice(0, DATA_PER_PG);
+
+      const unitsForUI = filterInShowableUnits(retrievedUnits, Date.now());
+      const lessonsFor1stPg = lessons
+        .filter((lesson) => typeof lesson.sortByDate === "string")
+        .sort(
+          (
+            { sortByDate: sortByDateLessonA },
+            { sortByDate: sortByDateLessonB }
+          ) => {
+            let _sortByDateLessonA = new Date(sortByDateLessonA as string);
+            let _sortByDateLessonB = new Date(sortByDateLessonB as string);
+
+            if (_sortByDateLessonA > _sortByDateLessonB) {
+              return -1;
+            }
+
+            if (_sortByDateLessonA < _sortByDateLessonB) {
+              return 1;
+            }
+
+            return 0;
+          }
+        )
+        .slice(0, DATA_PER_PG);
+    }
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS)
-      .sort({ ReleaseDate: -1 })
-      .lean();
-
-    if (!lessons?.length) {
-      throw new Error("No lessons were retrieved from the database.");
-    }
-
-    let gpVideos = getGpVids(lessons);
-    gpVideos = gpVideos.map((vid) =>
-      vid?.ReleaseDate
-        ? { ...vid, ReleaseDate: JSON.stringify(vid.ReleaseDate) }
-        : vid
-    );
-    let lessonPartsForUI = [];
-    let webApps: any[] = [];
-    UNITSlessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS)
       .sort({ ReleaseDate: -1 })
       .lean();
 
@@ -615,7 +643,7 @@ export async function getStaticProps() {
             totalItemsNum: lessonPartsForUI.length,
           },
           gpVideosObj: {
-            data: gpVideosFirstPg,
+            data: JSON.parse(JSON.stringify(gpVideosFirstPg)),
             isLast: gpVideos.length < DATA_PER_PG,
             nextPgNumStartingVal: 1,
             totalItemsNum: gpVideos.length,
@@ -649,5 +677,4 @@ export async function getStaticProps() {
     };
   }
 }
-
 export default LessonsPage;

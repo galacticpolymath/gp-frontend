@@ -1,5 +1,6 @@
 import { ReactNode, CSSProperties } from "react";
 import { IItem, ILesson } from "../backend/models/Unit/types/teachingMaterials";
+import { IFeaturedMultimedia, INewUnitSchema } from "../backend/models/Unit/types/unit";
 
 // front-end
 interface IComponent {
@@ -36,4 +37,48 @@ interface ISectionDots {
   dots: ISectionDot[];
 }
 
-export { IComponent, ILessonForUI, TUseStateReturnVal, TSetter, ISectionDot, ISectionDots, IItemForClient };
+// for the units page
+interface IMultiMediaItemForUI
+  extends Pick<INewUnitSchema, "ReleaseDate">,
+    Pick<IFeaturedMultimedia, "description" | "mainLink"> {
+  lessonUnitTitle: string | null;
+  videoTitle: string | null;
+  thumbnail: string;
+  unitNumId: number | null;
+  lessonNumId: number | null;
+}
+
+export interface IWebAppLink {
+  lessonIdStr: string | null;
+  unitNumID: INewUnitSchema["numID"];
+  webAppLink: string;
+  title: string | null;
+  unitTitle: INewUnitSchema["Title"] | null;
+  description: string | null;
+  webAppPreviewImg: string | null;
+  webAppImgAlt: string | null;
+  pathToFile: string | null;
+}
+
+export interface IUnitLesson {
+  tags: string[] | null;
+  lessonPartPath: string | null;
+  tile: string | null;
+  lessonPartTitle: string | null;
+  dur: number | null;
+  preface: string | null;
+  lessonPartNum: number | null;
+  unitTitle: INewUnitSchema["Title"];
+  subject: INewUnitSchema["TargetSubject"];
+  grades: INewUnitSchema["ForGrades"];
+  gradesOrYears: INewUnitSchema["GradesOrYears"];
+  status: string | null;
+  sortByDate: string | null;
+}
+
+export interface IUnitForUnitsPg extends INewUnitSchema{
+  locals?: string[] | null
+}
+
+
+export { IComponent, ILessonForUI, IUnitLesson, IWebAppLink, IMultiMediaItemForUI, TUseStateReturnVal, TSetter, ISectionDot, ISectionDots, IItemForClient };
