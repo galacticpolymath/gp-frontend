@@ -61,25 +61,25 @@ const GpUnits = ({ units, didErrorOccur }) => {
       </div>
       {!!units?.length && (
         <div className="mx-auto grid pb-1 p-4 gap-3 pt-3 pb-5">
-          {units.map((lesson, index) => {
+          {units.map((unit, index) => {
             let PillComp = null;
 
-            if (lesson.isNew) {
+            if (unit.isNew) {
               PillComp = <Pill txt="NEW" color="#0085C9" />;
             } else if (
-              lesson.PublicationStatus === "Beta" ||
-              lesson.PublicationStatus === "Draft"
+              unit.PublicationStatus === "Beta" ||
+              unit.PublicationStatus === "Draft"
             ) {
               PillComp = <Pill />;
             }
 
-            return lesson.PublicationStatus === "Proto" ? (
+            return unit.PublicationStatus === "Proto" ? (
               <UnshowableLesson key={index} />
             ) : (
               <LessonCard
-                key={lesson._id}
-                lesson={lesson}
-                lessonImgSrc={getLessonImgSrc(lesson)}
+                key={unit._id}
+                lesson={unit}
+                lessonImgSrc={getLessonImgSrc(unit)}
                 PillComp={PillComp}
               />
             );
@@ -89,7 +89,7 @@ const GpUnits = ({ units, didErrorOccur }) => {
       {(didErrorOccur || !units?.length) && (
         <div className="px-4 pb-4 error-message-container">
           <p className="text-center text-sm-start">
-            An error has occurred. Couldn&apos;t retrieve lessons. Please try
+            An error has occurred. Couldn&apos;t retrieve units. Please try
             again by refreshing the page.
           </p>
         </div>

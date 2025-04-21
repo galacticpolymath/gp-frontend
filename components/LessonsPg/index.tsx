@@ -3,6 +3,7 @@ import UnitIconSvg from "../../assets/img/gp-unit-icon.svg";
 import LessonSvg from "../../assets/img/gp-lesson-icon.svg";
 import Layout from "../Layout";
 import GpUnits from "./sections/GpUnits";
+import ErrorSec from "./sections/ErrorSec";
 
 const LessonsPg: React.FC = () => {
   return (
@@ -202,11 +203,13 @@ const LessonsPg: React.FC = () => {
                     </section>
                   </section>
                 </div>
-                {webAppsObj?.data?.length && (
+                {webAppsObj?.data?.length ? (
                   <GpWebApps
                     webApps={webAppsObj.data}
                     handleGpWebAppCardClick={handleGpWebAppCardClick}
                   />
+                ) : (
+                  <ErrorSec gpData="web apps" />
                 )}
               </section>
             </section>

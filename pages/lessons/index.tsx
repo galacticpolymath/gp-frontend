@@ -38,6 +38,13 @@ import {
 } from "../../backend/services/unitServices";
 import { createDbProjections } from "../../constants/functions";
 import { STATUSES_OF_SHOWABLE_LESSONS } from "../../globalVars";
+import {
+  ICurrentUnits,
+  IMultiMediaItemForUI,
+  IUnitForUnitsPg,
+  IUnitLesson,
+  IWebAppLink,
+} from "../../types/global";
 
 const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
@@ -46,12 +53,13 @@ const handleJobVizCardClick = () => {
 const THIRTY_SEVEN_DAYS = 1_000 * 60 * 60 * 24 * 37;
 
 interface IProps {
-  oldUnits?: any;
+  oldUnits: any;
+  currentUnits: ICurrentUnits;
 }
 
 const LessonsPage = (props: IProps) => {
   const { units, lessonsObj, gpVideosObj, webAppsObj, didErrorOccur } =
-    props.oldUnits;
+    props?.oldUnits ?? {};
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedGpWebApp, setSelectedGpWebApp] = useState<null | object>(null);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
@@ -261,12 +269,10 @@ const LessonsPage = (props: IProps) => {
                     </section>
                   </section>
                 </div>
-                {webAppsObj?.data?.length && (
-                  <GpWebApps
-                    webApps={webAppsObj.data}
-                    handleGpWebAppCardClick={handleGpWebAppCardClick}
-                  />
-                )}
+                <GpWebApps
+                  webApps={webAppsObj?.data}
+                  handleGpWebAppCardClick={handleGpWebAppCardClick}
+                />
               </section>
             </section>
           </section>
@@ -416,11 +422,11 @@ export async function getStaticProps() {
         props: {
           oldUnits: null,
           currentUnits: {
-            units: unitsForUI,
-            lessons: lessonsFor1stPg,
-            webApps,
-            gpVideos: gpVideosFirstPg,
-          },
+            units: JSON.parse(JSON.stringify(unitsForUI)),
+            lessons: JSON.parse(JSON.stringify(lessonsFor1stPg)),
+            webApps: JSON.parse(JSON.stringify(webApps)),
+            gpVideos: JSON.parse(JSON.stringify(gpVideosFirstPg)),
+          } as ICurrentUnits,
         },
         revalidate: 30,
       };

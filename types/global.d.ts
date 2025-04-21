@@ -80,5 +80,17 @@ export interface IUnitForUnitsPg extends INewUnitSchema{
   locals?: string[] | null
 }
 
+interface ICurrentUnits {
+  units: IUnitForUnitsPg[];
+  lessons: IUnitLesson[];
+  webApps: IWebAppLink[];
+  gpVideos: IMultiMediaItemForUI[];
+}
 
-export { IComponent, ILessonForUI, IUnitLesson, IWebAppLink, IMultiMediaItemForUI, TUseStateReturnVal, TSetter, ISectionDot, ISectionDots, IItemForClient };
+interface IGpUnitsItemsPg<TData extends object>{
+  isLast: boolean;
+  data: TData[];
+  totalItemsNum: number;
+}
+
+export { IGpUnitsItemsPg, IComponent, ILessonForUI, IUnitLesson, IWebAppLink, IMultiMediaItemForUI, TUseStateReturnVal, TSetter, ISectionDot, ISectionDots, IItemForClient, ICurrentUnits };
