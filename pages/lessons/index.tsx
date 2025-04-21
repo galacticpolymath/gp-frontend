@@ -418,18 +418,34 @@ export async function getStaticProps() {
         )
         .slice(0, DATA_PER_PG);
 
-      return {
-        props: {
-          oldUnits: null,
-          currentUnits: {
-            units: JSON.parse(JSON.stringify(unitsForUI)),
-            lessons: JSON.parse(JSON.stringify(lessonsFor1stPg)),
-            webApps: JSON.parse(JSON.stringify(webApps)),
-            gpVideos: JSON.parse(JSON.stringify(gpVideosFirstPg)),
-          } as ICurrentUnits,
-        },
-        revalidate: 30,
-      };
+      // return {
+      //   props: {
+      //     oldUnits: null,
+      //     currentUnits: {
+      //       units: {
+      //         isLast: unitsForUI.length <= DATA_PER_PG,
+      //         data: JSON.parse(JSON.stringify(unitsForUI)),
+      //         totalItemsNum: unitsForUI.length,
+      //       },
+      //       lessons: {
+      //         isLast: lessons.length <= DATA_PER_PG,
+      //         data: JSON.parse(JSON.stringify(lessonsFor1stPg)),
+      //         totalItemsNum: lessons.length,
+      //       },
+      //       webApps: {
+      //         isLast: webApps.length <= DATA_PER_PG,
+      //         data: JSON.parse(JSON.stringify(webApps)),
+      //         totalItemsNum: webApps.length,
+      //       },
+      //       gpVideos: {
+      //         isLast: gpMultiMedia.length <= DATA_PER_PG,
+      //         data: JSON.parse(JSON.stringify(gpVideosFirstPg)),
+      //         totalItemsNum: gpMultiMedia.length,
+      //       },
+      //     },
+      //   },
+      //   revalidate: 30,
+      // };
     }
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS)

@@ -81,10 +81,10 @@ export interface IUnitForUnitsPg extends INewUnitSchema{
 }
 
 interface ICurrentUnits {
-  units: IUnitForUnitsPg[];
-  lessons: IUnitLesson[];
-  webApps: IWebAppLink[];
-  gpVideos: IMultiMediaItemForUI[];
+  units: IGpUnitsItemsPg<IUnitForUnitsPg>;
+  lessons: IGpUnitsItemsPg<IUnitLesson>;
+  webApps: IGpUnitsItemsPg<IWebAppLink>;
+  gpVideos: IGpUnitsItemsPg<IMultiMediaItemForUI>;
 }
 
 interface IGpUnitsItemsPg<TData extends object>{

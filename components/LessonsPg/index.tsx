@@ -4,8 +4,38 @@ import LessonSvg from "../../assets/img/gp-lesson-icon.svg";
 import Layout from "../Layout";
 import GpUnits from "./sections/GpUnits";
 import ErrorSec from "./sections/ErrorSec";
+import GpWebApps from "./sections/GpWebApps";
+import { GiShipWheel } from "react-icons/gi";
+import { ICurrentUnits } from "../../types/global";
+import Sponsors from "../Sponsors";
+import JobVizIcon from "../JobViz/JobVizIcon";
+import { useState } from "react";
+import GpVideos from "./sections/GpVideos";
+import GpLessons from "./sections/GpLessons";
+import SelectedGpVideo from "./modals/SelectedGpVideo";
+import SelectedGpWebApp from "../Modals/SelectedGpWebApp";
 
-const LessonsPg: React.FC = () => {
+const handleJobVizCardClick = () => {
+  window.location.href = "/jobviz";
+};
+
+const LessonsPg: React.FC<ICurrentUnits & { didErrorOccur: boolean }> = ({
+  units,
+  gpVideos,
+  lessons,
+  webApps,
+  didErrorOccur,
+}) => {
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [selectedGpWebApp, setSelectedGpWebApp] = useState<null | object>(null);
+  const [isWebAppModalShown, setIsWebAppModalShown] = useState(false);
+  const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
+
+  const handleGpWebAppCardClick = (app: object) => () => {
+    setSelectedGpWebApp(app);
+    setIsWebAppModalShown(true);
+  };
+
   return (
     <Layout
       url="https://www.galacticpolymath.com/lessons"
@@ -203,34 +233,32 @@ const LessonsPg: React.FC = () => {
                     </section>
                   </section>
                 </div>
-                {webAppsObj?.data?.length ? (
+                {webApps?.data?.length && (
                   <GpWebApps
-                    webApps={webAppsObj.data}
+                    webApps={webApps.data}
                     handleGpWebAppCardClick={handleGpWebAppCardClick}
                   />
-                ) : (
-                  <ErrorSec gpData="web apps" />
                 )}
               </section>
             </section>
           </section>
           <GpVideos
-            isLast={gpVideosObj?.isLast}
-            startingGpVids={gpVideosObj?.data}
-            nextPgNumStartingVal={gpVideosObj?.nextPgNumStartingVal}
+            isLast={gpVideos?.isLast}
+            startingGpVids={gpVideos?.data}
+            nextPgNumStartingVal={1}
             setIsGpVideoModalShown={setIsGpVideoModalShown}
             setSelectedVideo={setSelectedVideo}
-            totalVidsNum={gpVideosObj?.totalItemsNum}
+            totalVidsNum={gpVideos?.totalItemsNum}
           />
         </div>
       </section>
       <section className="d-flex justify-content-center align-items-center">
         <GpLessons
-          isLast={lessonsObj?.isLast}
-          startingLessonsToShow={lessonsObj?.data}
-          nextPgNumStartingVal={lessonsObj?.nextPgNumStartingVal}
+          isLast={lessons?.isLast}
+          startingLessonsToShow={lessons?.data}
+          nextPgNumStartingVal={1}
           didErrorOccur={didErrorOccur}
-          totalGpLessonsNum={lessonsObj?.totalItemsNum}
+          totalGpLessonsNum={lessons?.totalItemsNum}
         />
       </section>
       <SelectedGpVideo
