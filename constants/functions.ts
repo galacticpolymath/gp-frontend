@@ -1,8 +1,6 @@
 import moment from "moment";
-import {
-  INewUnitSchema,
-} from "../backend/models/Unit/types/unit";
-import { IUnitForUnitsPg } from "../types/global";
+import { INewUnitSchema } from "../backend/models/Unit/types/unit";
+import { IUnitForUnitsPg, TLiveUnit } from "../types/global";
 import { STATUSES_OF_SHOWABLE_LESSONS } from "../globalVars";
 
 export const createDbProjections = (fields: string[]) => {
@@ -46,12 +44,12 @@ export const getLiveUnits = (units: INewUnitSchema[]) => {
       if (unit.locale && targetUnit?.locals && targetUnit.locale) {
         targetUnit = {
           ...targetUnit,
-          locals: [...targetUnit?.locals, unit.locale]
+          locals: [...targetUnit?.locals, unit.locale],
         };
       } else if (unit.locale && targetUnit.locale) {
         targetUnit = {
           ...targetUnit,
-          locals: [targetUnit.locale, unit.locale]
+          locals: [targetUnit.locale, unit.locale],
         };
       }
 
@@ -60,4 +58,30 @@ export const getLiveUnits = (units: INewUnitSchema[]) => {
   }
 
   return uniqueUnits;
+};
+
+export const getTotalUnitLessons = (unit: INewUnitSchema) => {
+  const individualLessonsNum =
+    unit?.Sections?.teachingMaterials?.classroom?.resources?.reduce(
+      (totalLiveLessons, resource) => {
+        if (!resource.lessons?.length) {
+          return totalLiveLessons;
+        }
+        const liveLessonsNum = resource.lessons.filter((lesson) =>
+          lesson?.status
+            ? STATUSES_OF_SHOWABLE_LESSONS.includes(lesson?.status)
+            : false
+        ).length;
+
+        return totalLiveLessons + liveLessonsNum;
+      },
+      0
+    ) ?? 0;
+  const unitObjUpdated = {
+    ...unit,
+    individualLessonsNum,
+    ReleaseDate: moment(unit.ReleaseDate).format("YYYY-MM-DD"),
+  } as TLiveUnit;
+
+  return unitObjUpdated;
 };
