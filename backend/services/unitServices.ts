@@ -263,7 +263,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
         (webApp) => webApp.webAppLink === multiMediaItem.mainLink
       );
 
-      if (isPresentInWebApps || !multiMediaItem.mainLink) {
+      if (isPresentInWebApps || !multiMediaItem.mainLink || multiMediaItem.type !== "web-app") {
         continue;
       }
 
@@ -378,7 +378,11 @@ const getIsUnitNew = (releaseDate: Date, now: number) => {
 }
 
 const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number) => {
-  return getLiveUnits(units).map((unit) => {
+  const liveUnits = getLiveUnits(units);
+
+  console.log("Number of live units: ", liveUnits.length);
+
+  return liveUnits.map((unit) => {
         if(!unit.ReleaseDate){
           console.error("unit.ReleaseDate is not presesnt.");
 

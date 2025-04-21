@@ -19,7 +19,7 @@ const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
 };
 
-const LessonsPg: React.FC<ICurrentUnits & { didErrorOccur: boolean }> = ({
+const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
   units,
   gpVideos,
   lessons,
@@ -30,6 +30,7 @@ const LessonsPg: React.FC<ICurrentUnits & { didErrorOccur: boolean }> = ({
   const [selectedGpWebApp, setSelectedGpWebApp] = useState<null | object>(null);
   const [isWebAppModalShown, setIsWebAppModalShown] = useState(false);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
 
   const handleGpWebAppCardClick = (app: object) => () => {
     setSelectedGpWebApp(app);
@@ -174,7 +175,7 @@ const LessonsPg: React.FC<ICurrentUnits & { didErrorOccur: boolean }> = ({
       </section>
       <section className="d-flex justify-content-center align-items-center">
         <div className="lessons-pg-sec lessons-pg-sec-max-width">
-          <GpUnits units={units} didErrorOccur={didErrorOccur} />
+          <GpUnits units={units.data} didErrorOccur={didErrorOccur} />
           <section className="my-4 my-md-3 d-flex justify-content-center align-items-center img-background-container lessons-section-border-top lessons-section-border-bottom">
             <div
               style={{ width: "86%", maxWidth: "1240px" }}
@@ -273,4 +274,4 @@ const LessonsPg: React.FC<ICurrentUnits & { didErrorOccur: boolean }> = ({
   );
 };
 
-export default LessonsPg;
+export default UnitsPg;

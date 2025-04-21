@@ -45,6 +45,7 @@ import {
   IUnitLesson,
   IWebAppLink,
 } from "../../types/global";
+import UnitsPg from "../../components/LessonsPg";
 
 const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
@@ -71,6 +72,20 @@ const LessonsPage = (props: IProps) => {
   };
 
   const origin = typeof window === "undefined" ? "" : window.location.origin;
+
+  if (props.currentUnits) {
+    const { gpVideos, lessons, units, webApps } = props.currentUnits;
+    console.log("units, sup there: ", units);
+    return (
+      <UnitsPg
+        units={units}
+        gpVideos={gpVideos}
+        lessons={lessons}
+        webApps={webApps}
+        didErrorOccur
+      />
+    );
+  }
 
   return (
     <Layout
@@ -418,34 +433,34 @@ export async function getStaticProps() {
         )
         .slice(0, DATA_PER_PG);
 
-      // return {
-      //   props: {
-      //     oldUnits: null,
-      //     currentUnits: {
-      //       units: {
-      //         isLast: unitsForUI.length <= DATA_PER_PG,
-      //         data: JSON.parse(JSON.stringify(unitsForUI)),
-      //         totalItemsNum: unitsForUI.length,
-      //       },
-      //       lessons: {
-      //         isLast: lessons.length <= DATA_PER_PG,
-      //         data: JSON.parse(JSON.stringify(lessonsFor1stPg)),
-      //         totalItemsNum: lessons.length,
-      //       },
-      //       webApps: {
-      //         isLast: webApps.length <= DATA_PER_PG,
-      //         data: JSON.parse(JSON.stringify(webApps)),
-      //         totalItemsNum: webApps.length,
-      //       },
-      //       gpVideos: {
-      //         isLast: gpMultiMedia.length <= DATA_PER_PG,
-      //         data: JSON.parse(JSON.stringify(gpVideosFirstPg)),
-      //         totalItemsNum: gpMultiMedia.length,
-      //       },
-      //     },
-      //   },
-      //   revalidate: 30,
-      // };
+      return {
+        props: {
+          oldUnits: null,
+          currentUnits: {
+            units: {
+              isLast: unitsForUI.length <= DATA_PER_PG,
+              data: JSON.parse(JSON.stringify(unitsForUI)),
+              totalItemsNum: unitsForUI.length,
+            },
+            lessons: {
+              isLast: lessons.length <= DATA_PER_PG,
+              data: JSON.parse(JSON.stringify(lessonsFor1stPg)),
+              totalItemsNum: lessons.length,
+            },
+            webApps: {
+              isLast: webApps.length <= DATA_PER_PG,
+              data: JSON.parse(JSON.stringify(webApps)),
+              totalItemsNum: webApps.length,
+            },
+            gpVideos: {
+              isLast: gpMultiMedia.length <= DATA_PER_PG,
+              data: JSON.parse(JSON.stringify(gpVideosFirstPg)),
+              totalItemsNum: gpMultiMedia.length,
+            },
+          },
+        },
+        revalidate: 30,
+      };
     }
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS)

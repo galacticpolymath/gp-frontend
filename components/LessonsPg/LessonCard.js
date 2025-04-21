@@ -74,12 +74,12 @@ const LessonCard = ({ lesson, PillComp = null, lessonImgSrc }) => {
         </p>
         <section className="d-flex flex-wrap gap-1 align-self-end">
           <span
-            className={`badge me-1 lessonSubject no-underline-on-hover unit-txt-test bg-${Section.overview.TargetSubject.toLowerCase().replace(
+            className={`badge me-1 lessonSubject no-underline-on-hover unit-txt-test bg-${Section?.overview.TargetSubject.toLowerCase().replace(
               /\s/g,
               " "
             )}`}
           >
-            {Section.overview.TargetSubject}
+            {Section?.overview.TargetSubject}
           </span>
           <span
             style={{ whiteSpace: "normal" }}
