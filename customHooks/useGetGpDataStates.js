@@ -5,9 +5,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 // typeStr = 'videos' | 'lessons' | 'units'
-const getGpUnitData = async (typeStr, pageNum, urlStr) => {
+const getGpUnitData = async (typeStr, pageNum) => {
     try {
-        const response = await axios.get(`${urlStr}/cached-gp-data`, { params: { pageNum: pageNum, type: typeStr }, timeout: 5_000 });
+        const response = await axios.get(`${window.location.origin}/api/cached-gp-data`, { params: { pageNum: pageNum, type: typeStr }, timeout: 5_000 });
 
         return { data: response.data.data, isLast: response.data.isLast, totalItemsNum: response.data.totalItemsNum };
     } catch (error) {
@@ -35,9 +35,7 @@ export const useGetGpDataStates = (dataDefaultVal, isLast, nextPgNumStartingVal,
     const handleOnClick = async () => {
         try {
             setBtnTxt('Loading');
-            const gpVideosResponse = await getGpUnitData(gpDataTypeStr, gpDataObj.nextPgNum, `${window.location.origin}/api`);
-
-
+            const gpVideosResponse = await getGpUnitData(gpDataTypeStr, gpDataObj.nextPgNum);
 
             if (gpVideosResponse.errType === 'timeout') {
                 alert(`Failed to get ${gpDataTypeStr}. Please refesh the page and try again.`);
