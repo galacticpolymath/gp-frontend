@@ -3,7 +3,7 @@
 import { DeleteResult } from "mongoose";
 import { INewUnitSchema, IUnit } from "../models/Unit/types/unit";
 import Unit from "../models/Unit";
-import { IMultiMediaItemForUI, IUnitLesson, IWebAppLink } from "../../types/global";
+import { ILiveUnit, IMultiMediaItemForUI, IUnitLesson, IWebAppLink } from "../../types/global";
 import { getVideoThumb } from "../../components/LessonSection/Preview/utils";
 import { STATUSES_OF_SHOWABLE_LESSONS, WEB_APP_PATHS } from "../../globalVars";
 import { getLinkPreviewObj, getShowableUnits } from "../../globalFns";
@@ -378,17 +378,9 @@ const getIsUnitNew = (releaseDate: Date, now: number) => {
 }
 
 const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number) => {
-  const liveUnits = getLiveUnits(units);
-
-  console.log("Number of live units: ", liveUnits.length);
+  const liveUnits = getLiveUnits(units).filter((unit) => unit?.ReleaseDate);
 
   return liveUnits.map((unit) => {
-        if(!unit.ReleaseDate){
-          console.error("unit.ReleaseDate is not presesnt.");
-
-          return unit;
-        }
-
         const individualLessonsNum = unit?.Sections?.teachingMaterials?.classroom?.resources?.reduce((totalLiveLessons, resource) => {
           if(!resource.lessons?.length){
             return totalLiveLessons;
@@ -401,10 +393,10 @@ const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number) => {
           ...unit,
           individualLessonsNum,
           ReleaseDate: moment(unit.ReleaseDate).format("YYYY-MM-DD"),
-          isNew: getIsUnitNew(new Date(unit.ReleaseDate), nowMs),
+          isNew: getIsUnitNew(new Date(unit.ReleaseDate as string), nowMs),
         };
     
-        return lessonObj;
+        return lessonObj as ILiveUnit;
       });
 }
 

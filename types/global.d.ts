@@ -93,4 +93,9 @@ interface IGpUnitsItemsPg<TData extends object>{
   totalItemsNum: number;
 }
 
-export { IGpUnitsItemsPg, IComponent, ILessonForUI, IUnitLesson, IWebAppLink, IMultiMediaItemForUI, TUseStateReturnVal, TSetter, ISectionDot, ISectionDots, IItemForClient, ICurrentUnits };
+interface ILiveUnit extends INewUnitSchema {
+  individualLessonsNum: number;
+  isNew: boolean;
+}
+
+export { IGpUnitsItemsPg, ILiveUnit, IComponent, ILessonForUI, IUnitLesson, IWebAppLink, IMultiMediaItemForUI, TUseStateReturnVal, TSetter, ISectionDot, ISectionDots, IItemForClient, ICurrentUnits };
