@@ -46,7 +46,7 @@ const handleJobVizCardClick = () => {
 const THIRTY_SEVEN_DAYS = 1_000 * 60 * 60 * 24 * 37;
 
 interface IProps {
-  oldUnits: any;
+  oldUnits?: any;
 }
 
 const LessonsPage = (props: IProps) => {
@@ -411,6 +411,19 @@ export async function getStaticProps() {
           }
         )
         .slice(0, DATA_PER_PG);
+
+      return {
+        props: {
+          oldUnits: null,
+          currentUnits: {
+            units: unitsForUI,
+            lessons: lessonsFor1stPg,
+            webApps,
+            gpVideos: gpVideosFirstPg,
+          },
+        },
+        revalidate: 30,
+      };
     }
 
     let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS)
