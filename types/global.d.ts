@@ -80,8 +80,13 @@ export interface IUnitForUnitsPg extends INewUnitSchema{
   locals?: string[] | null
 }
 
+interface ILiveUnit extends INewUnitSchema, Pick<IUnitForUnitsPg, "locals"> {
+  individualLessonsNum: number;
+  isNew: boolean;
+}
+
 interface ICurrentUnits {
-  units: IGpUnitsItemsPg<IUnitForUnitsPg>;
+  units: IGpUnitsItemsPg<ILiveUnit>;
   lessons: IGpUnitsItemsPg<IUnitLesson>;
   webApps: IGpUnitsItemsPg<IWebAppLink>;
   gpVideos: IGpUnitsItemsPg<IMultiMediaItemForUI>;
@@ -91,11 +96,6 @@ interface IGpUnitsItemsPg<TData extends object>{
   isLast: boolean;
   data: TData[];
   totalItemsNum: number;
-}
-
-interface ILiveUnit extends INewUnitSchema {
-  individualLessonsNum: number;
-  isNew: boolean;
 }
 
 export { IGpUnitsItemsPg, ILiveUnit, IComponent, ILessonForUI, IUnitLesson, IWebAppLink, IMultiMediaItemForUI, TUseStateReturnVal, TSetter, ISectionDot, ISectionDots, IItemForClient, ICurrentUnits };

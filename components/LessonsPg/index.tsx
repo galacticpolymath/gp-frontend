@@ -14,6 +14,7 @@ import GpVideos from "./sections/GpVideos";
 import GpLessons from "./sections/GpLessons";
 import SelectedGpVideo from "./modals/SelectedGpVideo";
 import SelectedGpWebApp from "../Modals/SelectedGpWebApp";
+import CurrentGpUnits from "./sections/CurrentGpUnits";
 
 const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
@@ -175,7 +176,7 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
       </section>
       <section className="d-flex justify-content-center align-items-center">
         <div className="lessons-pg-sec lessons-pg-sec-max-width">
-          <GpUnits units={units.data} didErrorOccur={didErrorOccur} />
+          <CurrentGpUnits units={units.data} didErrorOccur={!!didErrorOccur} />
           <section className="my-4 my-md-3 d-flex justify-content-center align-items-center img-background-container lessons-section-border-top lessons-section-border-bottom">
             <div
               style={{ width: "86%", maxWidth: "1240px" }}

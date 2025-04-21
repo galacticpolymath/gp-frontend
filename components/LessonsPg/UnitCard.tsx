@@ -8,7 +8,14 @@ import React, { JSX } from "react";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 import { ILiveUnit } from "../../types/global";
 
-const Tag = ({
+interface ITagProps {
+  children: React.ReactNode;
+  className?: string;
+  color?: string;
+  style?: React.CSSProperties;
+}
+
+const Tag: React.FC<ITagProps> = ({
   children,
   className = "",
   color = "gray",
@@ -26,27 +33,23 @@ const Tag = ({
 
 interface IUnitCardProps {
   unit: ILiveUnit;
-  PillComp?: JSX.Element;
-  lessonImgSrc?: string;
+  PillComp: JSX.Element | null;
+  unitImgSrc?: string;
 }
 
-const UnitCard: React.FC<IUnitCardProps> = ({
-  unit,
-  PillComp,
-  lessonImgSrc,
-}) => {
+const UnitCard: React.FC<IUnitCardProps> = ({ unit, PillComp, unitImgSrc }) => {
   const {
     _id,
     locale,
     numID,
     Subtitle,
     Title,
-    Sections,
+    GradesOrYears,
+    ForGrades,
     individualLessonsNum,
-    willScrollIntoView,
     locals,
+    TargetSubject,
   } = unit;
-  const ref = useScrollCardIntoView(willScrollIntoView);
 
   return (
     <Link
@@ -54,15 +57,14 @@ const UnitCard: React.FC<IUnitCardProps> = ({
       href={`/lessons/${locale}/${numID}`}
       className="w-100 pointer 
       disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg"
-      ref={ref}
     >
       <div className="position-relative">
         <Image
           src={
-            lessonImgSrc ??
+            unitImgSrc ??
             "/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_whiteBG.jpg"
           }
-          alt={Subtitle}
+          alt={Subtitle ?? ""}
           width={15}
           height={4.5}
           sizes="100vw"
@@ -90,18 +92,18 @@ const UnitCard: React.FC<IUnitCardProps> = ({
         </p>
         <section className="d-flex flex-wrap gap-1 align-self-end">
           <span
-            className={`badge me-1 lessonSubject no-underline-on-hover unit-txt-test bg-${Section?.overview.TargetSubject.toLowerCase().replace(
+            className={`badge me-1 lessonSubject no-underline-on-hover unit-txt-test bg-${TargetSubject?.toLowerCase().replace(
               /\s/g,
               " "
             )}`}
           >
-            {Section?.overview.TargetSubject}
+            {TargetSubject}
           </span>
           <span
             style={{ whiteSpace: "normal" }}
             className="no-underline-on-hover badge rounded-pill bg-gray ml-3"
           >
-            {`${Section.overview.GradesOrYears}: ${Section.overview.ForGrades}`}
+            {`${GradesOrYears}: ${ForGrades}`}
           </span>
           <span
             style={{ whiteSpace: "normal" }}
@@ -121,7 +123,7 @@ const UnitCard: React.FC<IUnitCardProps> = ({
                 <span
                   key={index}
                   style={{ fontWeight: 300 }}
-                  className="list-item unit-txt-test"
+                  className="list-item locals-unit-txt-test"
                 >
                   {local}
                 </span>

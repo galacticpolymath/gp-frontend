@@ -55,6 +55,7 @@ describe("Check unit page formatting", () => {
 
         cy.get("#overview_sec").should("exist");
         cy.get("#overview_sec").should("be.visible");
+        cy.get(".locals-unit-txt-test").should("be.visible");
 
         cy.get(".lesson-preface-testing").should(($elements) => {
             const lessonPrefaceElements = Array.from($elements);

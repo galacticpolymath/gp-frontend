@@ -42,9 +42,6 @@ import { IUserSession, TSetter } from "../../../../types/global";
 import {
   INewUnitSchema,
   ISections,
-  INewUnitSchema as IUnit,
-  TFeaturedMultimediaForUI,
-  TKeysSectionsForUI,
   TSectionsForUI,
   TUnitForUI,
 } from "../../../../backend/models/Unit/types/unit";
@@ -53,11 +50,7 @@ import {
   IItemForUI,
   INewUnitLesson,
   IResource,
-  IUnitTeachingMaterials,
-  IUnitTeachingMaterialsForUI,
 } from "../../../../backend/models/Unit/types/teachingMaterials";
-import { IUnitOverview } from "../../../../backend/models/Unit/types/overview";
-import { IStandards } from "../../../../backend/models/Unit/types/standards";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -95,8 +88,6 @@ const getLessonSections = <T extends TSectionsForUI>(
 ): any[] =>
   sectionComps.map((section: TSectionsForUI | null, index: number) => {
     const sectionClassNameForTesting = "section-testing";
-
-    console.log("section, sup there: ", section);
 
     return {
       ...section,

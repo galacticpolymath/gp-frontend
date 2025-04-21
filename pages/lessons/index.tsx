@@ -82,7 +82,6 @@ const LessonsPage = (props: IProps) => {
         gpVideos={gpVideos}
         lessons={lessons}
         webApps={webApps}
-        didErrorOccur
       />
     );
   }
@@ -381,7 +380,6 @@ export async function getStaticProps() {
       throw new Error("Failed to connect to the database.");
     }
 
-    // const units = await
     const { data: retrievedUnits } = await retrieveUnits(
       {},
       createDbProjections(PROJECTED_UNITS_FIELDS),
