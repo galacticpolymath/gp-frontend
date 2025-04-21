@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@as-integrations/next": "^3.2.0",
-    "@auth/mongodb-adapter": "^3.7.4",
+    "@auth/mongodb-adapter": "^3.9.0",
     "@fortawesome/fontawesome-free": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@getbrevo/brevo": "^2.2.0",
