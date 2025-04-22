@@ -304,8 +304,6 @@ const TeachItUI = <
                 lsnExt = lsnExtBackup;
               }
 
-              console.log("lsnExt, yo there: ", lsnExt);
-
               let lessonTilesObj: {
                 lessonTileForDesktop: ReactNode | null;
                 lessonTileForMobile: ReactNode | null;

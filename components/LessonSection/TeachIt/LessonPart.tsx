@@ -99,7 +99,6 @@ const LessonPart = ({
   accordionBtnStyle = {},
   isAccordionExpandable = true,
 }: ILessonPartProps) => {
-  console.log("chunks, LessonPart: ", chunks);
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
