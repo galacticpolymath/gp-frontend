@@ -366,7 +366,7 @@ function getIsUnitNew(releaseDate: Date, now: number) {
   return isNew;
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   try {
     const { wasSuccessful } = await connectToMongodb(15_000, 7, true);
 
@@ -451,7 +451,6 @@ export async function getStaticProps() {
             },
           },
         },
-        revalidate: 30,
       };
     }
 
@@ -696,7 +695,6 @@ export async function getStaticProps() {
           },
         },
       },
-      revalidate: 30,
     };
   } catch (error) {
     console.error(
@@ -713,7 +711,6 @@ export async function getStaticProps() {
           webAppsObj: null,
         },
       },
-      revalidate: 30,
     };
   }
 }
