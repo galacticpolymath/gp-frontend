@@ -2,7 +2,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import { NextResponse } from "next/server";
-import { getAuthorizeReqResult, getChunks, verifyJwt } from "./nondependencyFns";
+import {
+  getAuthorizeReqResult,
+  getChunks,
+  verifyJwt,
+} from "./nondependencyFns";
 import { PASSWORD_RESET_CODE_VAR_NAME } from "./globalVars";
 
 const DB_ADMIN_ROUTES = [
@@ -21,7 +25,7 @@ const USER_ACCOUNT_ROUTES = [
   "/api/get-user-account-data",
   "/api/delete-user",
   "/api/user-confirms-mailing-list-sub",
-  "/api/get-signed-in-user-brevo-status"
+  "/api/get-signed-in-user-brevo-status",
 ];
 
 const getUnitNum = (pathName) =>
@@ -63,15 +67,28 @@ export async function middleware(request) {
       });
     }
 
+    let x = nextUrl?.pathname?.split("/")?.filter((val) => val);
+    console.log("x, sup there: ", x);
+
     if (
       !nextUrl.href.includes("api") &&
       nextUrl.pathname.includes("lessons") &&
       nextUrl?.pathname?.split("/")?.filter((val) => val)?.length == 2 &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
-      // put this into a service
+      // checking if the unit exist
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
+      const getUnitsUrl = new URL(`${nextUrl.origin}/api/get-units`);
+      getUnitsUrl.searchParams.set(
+        "projectionObj",
+        JSON.stringify({ locale: 1, DefaultLocale: 1 })
+      );
+
+      getUnitsUrl.searchParams.set(
+        "filterObj",
+        JSON.stringify({ numID: [unitNum] })
+      );
 
       url.searchParams.set(
         "projectionObj",
@@ -82,6 +99,22 @@ export async function middleware(request) {
       const getUnitsRes = await fetch(url);
       const { msg, lessons } = (await getUnitsRes.json()) ?? {};
       const locale = lessons?.[0]?.DefaultLocale;
+      const getCurrentUnitsRes = await fetch(getUnitsUrl);
+      const { msg: errMsg, lessons: units } =
+        (await getCurrentUnitsRes.json()) ?? {};
+      const unitLocale = units?.[0]?.DefaultLocale;
+
+      if (units && !unitLocale) {
+        console.error(
+          "Failed to retrieve the units from the db. Reason: ",
+          errMsg
+        );
+        return NextResponse.redirect(`${nextUrl.origin}/error`);
+      } else if (units && unitLocale) {
+        return NextResponse.redirect(
+          `${nextUrl.origin}/lessons/${unitLocale}/${unitNum}`
+        );
+      }
 
       if (
         !Array.isArray(lessons) ||
@@ -114,7 +147,6 @@ export async function middleware(request) {
       const receivedLocale = nextUrl.pathname.split("/").at(-2);
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
-      const getUnitsUrl = new URL(`${nextUrl.origin}/api/get-units`);
 
       url.searchParams.set(
         "projectionObj",
@@ -123,19 +155,27 @@ export async function middleware(request) {
 
       url.searchParams.set("filterObj", JSON.stringify({ numID: [unitNum] }));
 
+      const getUnitsUrl = new URL(`${nextUrl.origin}/api/get-units`);
       getUnitsUrl.searchParams.set(
         "projectionObj",
         JSON.stringify({ locale: 1, DefaultLocale: 1 })
       );
 
-      getUnitsUrl.searchParams.set("filterObj", JSON.stringify({ numID: [unitNum] }));
+      getUnitsUrl.searchParams.set(
+        "filterObj",
+        JSON.stringify({ numID: [unitNum] })
+      );
 
       const getLessonsRes = await fetch(url);
       const { msg, lessons } = (await getLessonsRes.json()) ?? {};
       const getUnitsRes = await fetch(getUnitsUrl);
-      const { msg: errMsgUnitsRetrieval, units } = (await getUnitsRes.json()) ?? {};
+      const { msg: errMsgUnitsRetrieval, units } =
+        (await getUnitsRes.json()) ?? {};
 
-      if ((msg || !lessons?.length) && (!units?.length || errMsgUnitsRetrieval)) {
+      if (
+        (msg || !lessons?.length) &&
+        (!units?.length || errMsgUnitsRetrieval)
+      ) {
         console.log(
           !lessons?.length
             ? "The unit does not exist."
@@ -203,13 +243,16 @@ export async function middleware(request) {
       });
     }
 
-    const token = authorizationStr.split(' ')[1].trim();
+    const token = authorizationStr.split(" ")[1].trim();
     const payload = await verifyJwt(token);
 
-    if (payload?.payload?.accessibleRoutes?.length && !payload.payload.accessibleRoutes.includes(nextUrl.pathname)) {
+    if (
+      payload?.payload?.accessibleRoutes?.length &&
+      !payload.payload.accessibleRoutes.includes(nextUrl.pathname)
+    ) {
       console.error("The client does not have access to this route.");
 
-      return new NextResponse("Unauthorized.", { status: 401 })
+      return new NextResponse("Unauthorized.", { status: 401 });
     }
 
     if (!nextUrl.pathname) {
@@ -230,7 +273,11 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
-    if ((nextUrl.pathname === "/api/copy-files") && (method === "POST") && headers.has("GDrive-Token")) {
+    if (
+      nextUrl.pathname === "/api/copy-files" &&
+      method === "POST" &&
+      headers.has("GDrive-Token")
+    ) {
       console.log("will check if the auth string is valid.");
       const { errResponse } = await getAuthorizeReqResult(
         authorizationStr,
@@ -238,13 +285,13 @@ export async function middleware(request) {
       );
 
       if (errResponse) {
-        return errResponse
+        return errResponse;
       }
 
       console.log("The GDrive-Token was provided.");
 
       return NextResponse.next();
-    } else if ((nextUrl.pathname === "/api/copy-files") && (method === "POST")) {
+    } else if (nextUrl.pathname === "/api/copy-files" && method === "POST") {
       return new NextResponse("No GDrive-Token was provided.", { status: 400 });
     }
 
@@ -313,16 +360,12 @@ export async function middleware(request) {
         );
       }
 
-      if (
-        ["/api/save-about-user-form"].includes(
-          nextUrl.pathname
-        )
-      ) {
+      if (["/api/save-about-user-form"].includes(nextUrl.pathname)) {
         const { isAuthorize, errResponse } = await getAuthorizeReqResult(
           authorizationStr,
           willCheckIfUserIsDbAdmin,
           willCheckForValidEmail,
-          clientEmail,
+          clientEmail
         );
 
         return isAuthorize ? errResponse : NextResponse.next();
@@ -345,7 +388,7 @@ export async function middleware(request) {
   } catch (error) {
     const errMsg = `An error has occurred in the middleware: ${error}`;
 
-    console.error("Middleware errror: ", errMsg)
+    console.error("Middleware errror: ", errMsg);
 
     if (
       (typeof request?.nextUrl === "string" &&
