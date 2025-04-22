@@ -40,10 +40,10 @@ const Accordion = ({
   if (isExpandability) {
     dataBsToggle = {
       'data-bs-toggle': 'collapse',
-      'data-bs-target': `#content_${willUseGetId ? contentId?.current : id}`
+      'data-bs-target': `#content_${willUseGetId ? contentId?.current : id}`,
     };
   } else {
-    dataBsToggle = {}
+    dataBsToggle = {};
   }
 
   useEffect(() => {
