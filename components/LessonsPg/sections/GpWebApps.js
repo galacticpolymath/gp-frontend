@@ -3,15 +3,11 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-import ErrorSec from "../../LessonsPg/sections/ErrorSec"
-
 
 const GpWebApps = ({
     webApps,
     handleGpWebAppCardClick = app => { },
 }) => {
-    console.log("webApps: ", webApps);
-
     return (
         <>
             {
@@ -46,10 +42,9 @@ const GpWebApps = ({
                                 </section>
                             </section>
                         </div>
-                    )
-
+                    );
                 })
-            }
+            };
         </>
     );
 };

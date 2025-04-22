@@ -282,8 +282,6 @@ const TeachItUI = <
                 learningObjs = targetLessonInDataLesson?.learningObj ?? null;
               }
 
-              console.log("learningObjs: ", learningObjs);
-
               let lsnExt = null;
 
               if (dataLesson?.length) {

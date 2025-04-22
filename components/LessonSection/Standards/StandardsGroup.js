@@ -3,6 +3,7 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
 /* eslint-disable semi */
+/* eslint-disable react/jsx-indent */
 
 import PropTypes from "prop-types";
 import Accordion from "../../Accordion";

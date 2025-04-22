@@ -82,10 +82,10 @@ export const getCachedGpUnitData = async <TGpUnitsData extends IUnitLesson | IMu
     }
 
     let gpDataArr = cache.get(type) as [TGpUnitsData][];
-    const totalItemsNum = gpDataArr?.length ? gpDataArr?.flat()?.length : null;
+    let totalItemsNum = gpDataArr?.length ? gpDataArr?.flat()?.length : null;
 
     if (!gpDataArr?.length) {
-      let { data: units, errMsg  } = await retrieveUnits({}, {});
+      let { data: units, errMsg  } = await retrieveUnits({}, {}, 0, { ReleaseDate: -1 });
 
       if (!units?.length) {
         console.error("Failed to get the units from the database. Reason: ", errMsg);
@@ -98,10 +98,11 @@ export const getCachedGpUnitData = async <TGpUnitsData extends IUnitLesson | IMu
 
       const liveUnits = getLiveUnits(units);
       const targetGpDataArr = getGpData(liveUnits);
+      totalItemsNum = targetGpDataArr.length
       gpDataArr = createPaginationArr(targetGpDataArr);
       cache.set(type, gpDataArr, GP_DATA_EXPIRATION_TIME_MS);
     }
-
+    console.log(`getCachedGpUnitData: pageNum: ${pageNum}, its type: (${typeof pageNum})`);
     const pageQueriedByClient = gpDataArr[+pageNum];
 
     if (!pageQueriedByClient) {

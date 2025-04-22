@@ -8,13 +8,9 @@ import { TGpData } from "../types/global";
 export type TGpUnitDataType = "videos" | "lessons" | "units";
 type TGpDataRetrievalPaths = "cached-gp-data" | "cached-gp-units-data";
 
-const getGpUnitData = async (
-  typeStr: TGpUnitDataType,
-  pageNum: number,
-  path: TGpDataRetrievalPaths
-) => {
+const getGpUnitData = async (typeStr: TGpUnitDataType, pageNum: number) => {
   try {
-    const response = await axios.get(`${window.location.origin}/api/${path}`, {
+    const response = await axios.get("/api/cached-gp-units-data", {
       params: { pageNum: pageNum, type: typeStr },
       timeout: 5_000,
     });
@@ -42,8 +38,7 @@ export const useGetGpDataStates = <TData extends TGpData>(
   isLast: boolean,
   nextPgNumStartingVal: number,
   gpDataType: TGpUnitDataType,
-  totalGpDataItems: number,
-  path: TGpDataRetrievalPaths
+  totalGpDataItems: number
 ) => {
   const itemsToShowStartingNum = totalGpDataItems - dataDefaultVal?.length;
   const [btnTxt, setBtnTxt] = useState<string | null>(
@@ -60,9 +55,10 @@ export const useGetGpDataStates = <TData extends TGpData>(
       setBtnTxt("Loading");
       const gpVideosResponse = await getGpUnitData(
         gpDataType,
-        gpDataObj.nextPgNum,
-        path
+        gpDataObj.nextPgNum
       );
+
+      console.log("gpVideosResponse, sup there: ", gpVideosResponse);
 
       if (gpVideosResponse.errType === "timeout") {
         alert(

@@ -4,7 +4,7 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import { NextApiRequest, NextApiResponse } from "next";
-import { getCachedGpData, cacheGpUnitData } from "../../backend/services/cachedGpDataServices";
+import { cacheGpUnitData } from "../../backend/services/cachedGpDataServices";
 import cache from "../../backend/utils/cache";
 import { CustomError } from "../../backend/utils/errors";
 import { getCachedGpUnitData } from "../../backend/services/cachedGpUnitDataServerices";
@@ -24,13 +24,15 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
         // get data from the cache
         if (request.method === 'GET') {
-            const { errMsg, errorStatusCode, data, isLast, totalItemsNum } = await getCachedGpUnitData(
+            const result = await getCachedGpUnitData(
                 {
                     type: request.query.type as Exclude<TGpUnitDataType, "units">,
                     pageNum: parseInt(request.query.pageNum as string),
                 },
                 cache
             )
+            console.log('result, sup there: ', result);
+            const { errMsg, errorStatusCode, data, isLast, totalItemsNum } = result
 
             if (errMsg) {
                 throw new CustomError(errMsg, errorStatusCode);

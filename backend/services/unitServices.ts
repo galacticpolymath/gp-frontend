@@ -3,12 +3,18 @@
 import { DeleteResult } from "mongoose";
 import { INewUnitSchema, IUnit } from "../models/Unit/types/unit";
 import Unit from "../models/Unit";
-import { ILiveUnit, IMultiMediaItemForUI, IUnitLesson, IWebAppLink } from "../../types/global";
+import {
+  ILiveUnit,
+  IMultiMediaItemForUI,
+  IUnitLesson,
+  IWebAppLink,
+} from "../../types/global";
 import { getVideoThumb } from "../../components/LessonSection/Preview/utils";
 import { STATUSES_OF_SHOWABLE_LESSONS, WEB_APP_PATHS } from "../../globalVars";
 import { getLinkPreviewObj, getShowableUnits } from "../../globalFns";
 import moment from "moment";
 import { getLiveUnits } from "../../constants/functions";
+import { nanoid } from "nanoid";
 
 const insertUnit = async (unit: INewUnitSchema) => {
   try {
@@ -231,6 +237,7 @@ const getGpMultiMedia = (units: INewUnitSchema[]) => {
         mediaItem.mainLink.includes("youtube")
       ) {
         gpVideos.push({
+          id: nanoid(),
           ReleaseDate: ReleaseDate,
           lessonUnitTitle: Title,
           videoTitle: mediaItem.title,
@@ -263,7 +270,11 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
         (webApp) => webApp.webAppLink === multiMediaItem.mainLink
       );
 
-      if (isPresentInWebApps || !multiMediaItem.mainLink || multiMediaItem.type !== "web-app") {
+      if (
+        isPresentInWebApps ||
+        !multiMediaItem.mainLink ||
+        multiMediaItem.type !== "web-app"
+      ) {
         continue;
       }
 
@@ -343,6 +354,19 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
       }
 
       for (const lesson of resource.lessons) {
+        // check if the lesson part is a the assessments
+        if (lesson.lsn === 100) {
+          continue;
+        }
+
+        const wasLessonFounded = unitLessons.find(unitLesson => {
+          unitLesson.lessonPartTitle === lesson.title
+        })
+
+        if(wasLessonFounded){
+          continue;
+        }
+
         const unitLesson = {
           tags: lesson.tags ?? null,
           lessonPartPath: `/lessons/${unit.locale}/${unit.numID}#lesson_part_${lesson.lsn}`,
@@ -358,47 +382,56 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
           grades: unit.ForGrades,
           gradesOrYears: unit.GradesOrYears,
           status: lesson.status,
-          sortByDate: lesson.sort_by_date
+          sortByDate: lesson.sort_by_date,
         };
 
         unitLessons.push(unitLesson);
       }
     }
-  } 
+  }
 
   return unitLessons;
 };
 
 const getIsUnitNew = (releaseDate: Date, now: number) => {
   const releaseDateMilliseconds = new Date(releaseDate).getTime();
-  const endDateOfNewReleaseMs = releaseDateMilliseconds + 1_000 * 60 * 60 * 24 * 37; // 37 days
+  const endDateOfNewReleaseMs =
+    releaseDateMilliseconds + 1_000 * 60 * 60 * 24 * 37; // 37 days
   const isNew = now > releaseDateMilliseconds && now < endDateOfNewReleaseMs;
 
   return isNew;
-}
+};
 
 const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number) => {
   const liveUnits = getLiveUnits(units).filter((unit) => unit?.ReleaseDate);
 
   return liveUnits.map((unit) => {
-        const individualLessonsNum = unit?.Sections?.teachingMaterials?.classroom?.resources?.reduce((totalLiveLessons, resource) => {
-          if(!resource.lessons?.length){
+    const individualLessonsNum =
+      unit?.Sections?.teachingMaterials?.classroom?.resources?.reduce(
+        (totalLiveLessons, resource) => {
+          if (!resource.lessons?.length) {
             return totalLiveLessons;
           }
-          const liveLessonsNum = resource.lessons.filter((lesson) => lesson?.status ? STATUSES_OF_SHOWABLE_LESSONS.includes(lesson?.status) : false).length;
+          const liveLessonsNum = resource.lessons.filter((lesson) =>
+            lesson?.status
+              ? STATUSES_OF_SHOWABLE_LESSONS.includes(lesson?.status)
+              : false
+          ).length;
 
           return totalLiveLessons + liveLessonsNum;
-        }, 0) ?? 0;
-        const lessonObj = {
-          ...unit,
-          individualLessonsNum,
-          ReleaseDate: moment(unit.ReleaseDate).format("YYYY-MM-DD"),
-          isNew: getIsUnitNew(new Date(unit.ReleaseDate as string), nowMs),
-        };
-    
-        return lessonObj as ILiveUnit;
-      });
-}
+        },
+        0
+      ) ?? 0;
+    const lessonObj = {
+      ...unit,
+      individualLessonsNum,
+      ReleaseDate: moment(unit.ReleaseDate).format("YYYY-MM-DD"),
+      isNew: getIsUnitNew(new Date(unit.ReleaseDate as string), nowMs),
+    };
+
+    return lessonObj as ILiveUnit;
+  });
+};
 
 export {
   insertUnit,
@@ -409,5 +442,5 @@ export {
   createDbFilter,
   getGpMultiMedia,
   getGpWebApps,
-  getUnitLessons
+  getUnitLessons,
 };

@@ -4,6 +4,8 @@
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
+/* eslint-disable indent */
+
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import JobVizIcon from "../../components/JobViz/JobVizIcon";
@@ -27,7 +29,6 @@ import { GiShipWheel } from "react-icons/gi";
 import LessonSvg from "../../assets/img/gp-lesson-icon.svg";
 import UnitIconSvg from "../../assets/img/gp-unit-icon.svg";
 import Image from "next/image.js";
-import Units from "../../backend/models/Unit";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 import {
   filterInShowableUnits,
@@ -38,13 +39,7 @@ import {
 } from "../../backend/services/unitServices";
 import { createDbProjections } from "../../constants/functions";
 import { STATUSES_OF_SHOWABLE_LESSONS } from "../../globalVars";
-import {
-  ICurrentUnits,
-  IMultiMediaItemForUI,
-  IUnitForUnitsPg,
-  IUnitLesson,
-  IWebAppLink,
-} from "../../types/global";
+import { ICurrentUnits } from "../../types/global";
 import UnitsPg from "../../components/LessonsPg";
 
 const handleJobVizCardClick = () => {
@@ -58,9 +53,9 @@ interface IProps {
   currentUnits: ICurrentUnits;
 }
 
-const LessonsPage = (props: IProps) => {
+const LessonsPage = ({ oldUnits, currentUnits }:IProps) => {
   const { units, lessonsObj, gpVideosObj, webAppsObj, didErrorOccur } =
-    props?.oldUnits ?? {};
+    oldUnits ?? {};
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedGpWebApp, setSelectedGpWebApp] = useState<null | object>(null);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
@@ -73,8 +68,8 @@ const LessonsPage = (props: IProps) => {
 
   const origin = typeof window === "undefined" ? "" : window.location.origin;
 
-  if (props.currentUnits) {
-    const { gpVideos, lessons, units, webApps } = props.currentUnits;
+  if (currentUnits) {
+    const { gpVideos, lessons, units, webApps } = currentUnits;
     console.log("units, sup there: ", units);
     return (
       <UnitsPg
@@ -560,8 +555,6 @@ export async function getStaticProps() {
           }
         }
       }
-
-      console.log("webApps, bacon: ", webApps.length);
 
       let lessonParts = lesson?.Section?.["teaching-materials"]?.Data?.lesson;
       let lessonPartsFromClassRoomObj =

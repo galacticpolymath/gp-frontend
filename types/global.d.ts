@@ -1,6 +1,9 @@
 import { ReactNode, CSSProperties } from "react";
 import { IItem, ILesson } from "../backend/models/Unit/types/teachingMaterials";
-import { IFeaturedMultimedia, INewUnitSchema } from "../backend/models/Unit/types/unit";
+import {
+  IFeaturedMultimedia,
+  INewUnitSchema,
+} from "../backend/models/Unit/types/unit";
 
 // front-end
 interface IComponent {
@@ -15,8 +18,8 @@ export interface ILessonForUI extends ILesson {
   lsn: string;
   status: string;
 }
-export interface IUserSession extends Session{
-  token: string
+export interface IUserSession extends Session {
+  token: string;
 }
 
 // For the unit page
@@ -28,8 +31,8 @@ interface ISectionDot {
   sectionDotId: string;
 }
 
-interface IItemForClient extends IItem{
-  filePreviewImg: string
+interface IItemForClient extends IItem {
+  filePreviewImg: string;
 }
 
 interface ISectionDots {
@@ -41,6 +44,7 @@ interface ISectionDots {
 interface IMultiMediaItemForUI
   extends Pick<INewUnitSchema, "ReleaseDate">,
     Pick<IFeaturedMultimedia, "description" | "mainLink"> {
+  id: string;
   lessonUnitTitle: string | null;
   videoTitle: string | null;
   thumbnail: string;
@@ -76,14 +80,14 @@ export interface IUnitLesson {
   sortByDate: string | null;
 }
 
-export interface IUnitForUnitsPg extends INewUnitSchema{
-  locals?: string[] | null
+export interface IUnitForUnitsPg extends INewUnitSchema {
+  locals?: string[] | null;
 }
 
 type TLiveUnit = INewUnitSchema & {
   individualLessonsNum: number;
   isNew?: boolean;
-}
+};
 
 interface ILiveUnit extends Pick<IUnitForUnitsPg, "locals">, TLiveUnit {}
 
@@ -94,12 +98,29 @@ interface ICurrentUnits {
   gpVideos: IGpUnitsItemsPg<IMultiMediaItemForUI>;
 }
 
-type TGpData = ILiveUnit | IUnitLesson | IWebAppLink | IMultiMediaItemForUI
+type TGpData = ILiveUnit | IUnitLesson | IWebAppLink | IMultiMediaItemForUI;
 
-interface IGpUnitsItemsPg<TData extends object>{
+interface IGpUnitsItemsPg<TData extends object> {
   isLast: boolean;
   data: TData[];
   totalItemsNum: number;
+  didErrorOccur: boolean;
 }
 
-export { IGpUnitsItemsPg, TLiveUnit, TGpData, ILiveUnit, IComponent, ILessonForUI, IUnitLesson, IWebAppLink, IMultiMediaItemForUI, TUseStateReturnVal, TSetter, ISectionDot, ISectionDots, IItemForClient, ICurrentUnits };
+export {
+  IGpUnitsItemsPg,
+  TLiveUnit,
+  TGpData,
+  ILiveUnit,
+  IComponent,
+  ILessonForUI,
+  IUnitLesson,
+  IWebAppLink,
+  IMultiMediaItemForUI,
+  TUseStateReturnVal,
+  TSetter,
+  ISectionDot,
+  ISectionDots,
+  IItemForClient,
+  ICurrentUnits,
+};

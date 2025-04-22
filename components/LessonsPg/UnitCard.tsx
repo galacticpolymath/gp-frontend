@@ -1,11 +1,10 @@
 /* eslint-disable quotes */
+/* eslint-disable react/jsx-indent */
 
 import Image from "next/image";
 import Link from "next/link";
 import { BsGlobe } from "react-icons/bs";
-import { useScrollCardIntoView } from "../../customHooks/useScrollCardIntoView";
 import React, { JSX } from "react";
-import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 import { ILiveUnit } from "../../types/global";
 
 interface ITagProps {

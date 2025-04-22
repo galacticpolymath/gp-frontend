@@ -2,16 +2,14 @@ import Image from "next/image";
 import UnitIconSvg from "../../assets/img/gp-unit-icon.svg";
 import LessonSvg from "../../assets/img/gp-lesson-icon.svg";
 import Layout from "../Layout";
-import GpUnits from "./sections/GpUnits";
-import ErrorSec from "./sections/ErrorSec";
 import GpWebApps from "./sections/GpWebApps";
 import { GiShipWheel } from "react-icons/gi";
 import { ICurrentUnits } from "../../types/global";
 import Sponsors from "../Sponsors";
 import JobVizIcon from "../JobViz/JobVizIcon";
-import { useState } from "react";
-import GpVideos from "./sections/GpVideos";
-import GpLessons from "./sections/GpLessons";
+import React, { useState } from "react";
+import GpUnitVideos from "./sections/GpUnitVideos";
+import GpUnitLessons from "./sections/GpUnitLessons";
 import SelectedGpVideo from "./modals/SelectedGpVideo";
 import SelectedGpWebApp from "../Modals/SelectedGpWebApp";
 import CurrentGpUnits from "./sections/CurrentGpUnits";
@@ -244,23 +242,22 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
               </section>
             </section>
           </section>
-          <GpVideos
+          <GpUnitVideos
             isLast={gpVideos?.isLast}
-            startingGpVids={gpVideos?.data}
-            nextPgNumStartingVal={1}
+            data={gpVideos?.data}
             setIsGpVideoModalShown={setIsGpVideoModalShown}
             setSelectedVideo={setSelectedVideo}
-            totalVidsNum={gpVideos?.totalItemsNum}
+            totalItemsNum={gpVideos?.totalItemsNum}
+            didErrorOccur={!!didErrorOccur}
           />
         </div>
       </section>
       <section className="d-flex justify-content-center align-items-center">
-        <GpLessons
+        <GpUnitLessons
           isLast={lessons?.isLast}
-          startingLessonsToShow={lessons?.data}
-          nextPgNumStartingVal={1}
-          didErrorOccur={didErrorOccur}
-          totalGpLessonsNum={lessons?.totalItemsNum}
+          data={lessons?.data}
+          didErrorOccur={!!didErrorOccur}
+          totalItemsNum={lessons?.totalItemsNum}
         />
       </section>
       <SelectedGpVideo
