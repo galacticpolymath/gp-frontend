@@ -359,9 +359,7 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
           continue;
         }
 
-        const wasLessonFounded = unitLessons.find(unitLesson => {
-          unitLesson.lessonPartTitle === lesson.title
-        })
+        const wasLessonFounded = !!unitLessons.find(unitLesson => unitLesson.lessonPartTitle === lesson.title)
 
         if(wasLessonFounded){
           continue;
