@@ -11,7 +11,7 @@ const GpWebApps = ({
     return (
         <>
             {
-                webApps.map((webApp, index) => {
+                webApps?.map((webApp, index) => {
                     return (
                         <div
                             key={index}

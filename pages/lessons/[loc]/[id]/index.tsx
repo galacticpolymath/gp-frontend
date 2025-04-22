@@ -783,7 +783,7 @@ export const getStaticProps = async (arg: {
       params: { id, loc },
     } = arg;
 
-    const { wasSuccessful } = await connectToMongodb(15_000, 0, true);
+    const { wasSuccessful } = await connectToMongodb(15_000, 7, true);
 
     if (!wasSuccessful) {
       throw new Error("Failed to connect to the database.");

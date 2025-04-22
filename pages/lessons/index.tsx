@@ -368,7 +368,7 @@ function getIsUnitNew(releaseDate: Date, now: number) {
 
 export async function getStaticProps() {
   try {
-    const { wasSuccessful } = await connectToMongodb();
+    const { wasSuccessful } = await connectToMongodb(15_000, 7, true);
 
     if (!wasSuccessful) {
       throw new Error("Failed to connect to the database.");
@@ -463,7 +463,7 @@ export async function getStaticProps() {
       throw new Error("No lessons were retrieved from the database.");
     }
 
-    let gpVideos = getGpVids(lessons);
+    let gpVideos = getGpVids(lessons) ?? [];
     gpVideos = gpVideos.map((vid) =>
       vid?.ReleaseDate
         ? { ...vid, ReleaseDate: JSON.stringify(vid.ReleaseDate) }
@@ -617,7 +617,7 @@ export async function getStaticProps() {
       }
     }
 
-    const units = getShowableUnits(lessons).map((lesson) => {
+    const units = getShowableUnits(lessons)?.map((lesson) => {
       const individualLessonsNum = lesson?.LsnStatuses?.length
         ? lesson.LsnStatuses.filter(
             ({ status }: { status: string }) => status !== "Hidden"
