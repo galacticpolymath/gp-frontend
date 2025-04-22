@@ -284,7 +284,11 @@ const TeachItUI = <
 
               let lsnExt = null;
 
-              if (dataLesson?.length) {
+              console.log("part: ", part);
+
+              if ("goingFurther" in part) {
+                lsnExt = part.goingFurther;
+              } else if (dataLesson?.length) {
                 const { lsnExt: lsnExtBackup } =
                   Object.values(dataLesson).find(
                     ({ lsnNum: lsnNumDataLesson }) => {
@@ -299,6 +303,8 @@ const TeachItUI = <
                   ) ?? {};
                 lsnExt = lsnExtBackup;
               }
+
+              console.log("lsnExt, yo there: ", lsnExt);
 
               let lessonTilesObj: {
                 lessonTileForDesktop: ReactNode | null;

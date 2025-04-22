@@ -19,6 +19,7 @@ import { useModalContext } from "../../../providers/ModalProvider";
 import { useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
+  IGoingFurtherVal,
   ILsnExt,
   IResource,
   IStep,
@@ -69,6 +70,7 @@ interface ILessonPartProps {
   ForGrades?: string | null;
   lsnPreface?: string | null;
   lsnExt?: ILsnExt[] | null;
+  goingFurther?: IGoingFurtherVal[] | null;
   itemList?: IItemForClient[] | null;
   isAccordionExpandable: boolean;
   accordionBtnStyle?: CSSProperties;
@@ -80,6 +82,7 @@ const LessonPart = ({
   lsnPreface,
   lsnExt,
   itemList,
+  goingFurther,
   learningObjectives,
   partsArr,
   chunks = [],
@@ -742,7 +745,7 @@ const LessonPart = ({
               ))}
             </div>
           )}
-          {!!lsnExt?.length && (
+          {(!!lsnExt?.length || !!goingFurther?.length) && (
             <div className="d-col col-12 col-lg-9">
               <div>
                 <div className="d-flex align-items-start ">
@@ -757,7 +760,7 @@ const LessonPart = ({
                 />
               </div>
               <ol className="mt-2">
-                {lsnExt.map(
+                {(lsnExt || goingFurther)?.map(
                   ({ itemTitle, itemDescription, item, itemLink }) => {
                     let itemClassNameTitle = "";
                     let itemClassNameDescription = "";

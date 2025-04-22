@@ -395,7 +395,6 @@ export async function getServerSideProps() {
     if (!wasSuccessful) {
       throw new Error("Failed to connect to the database.");
     }
-
     const gpData = cache.get<IGpData>("gpData");
 
     if (gpData) {
