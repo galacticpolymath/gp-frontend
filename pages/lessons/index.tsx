@@ -53,7 +53,7 @@ interface IProps {
   currentUnits: ICurrentUnits;
 }
 
-const LessonsPage = ({ oldUnits, currentUnits }:IProps) => {
+const LessonsPage = ({ oldUnits, currentUnits }: IProps) => {
   const { units, lessonsObj, gpVideosObj, webAppsObj, didErrorOccur } =
     oldUnits ?? {};
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -70,7 +70,6 @@ const LessonsPage = ({ oldUnits, currentUnits }:IProps) => {
 
   if (currentUnits) {
     const { gpVideos, lessons, units, webApps } = currentUnits;
-    console.log("units, sup there: ", units);
     return (
       <UnitsPg
         units={units}

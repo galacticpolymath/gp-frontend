@@ -891,6 +891,7 @@ export const getStaticProps = async (arg: {
         const resourcesForUIPromises = resources.map(async (resource) => {
           const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
             async (lesson) => {
+              console.log("lesson status: ", lesson.status);
               if (!lesson.tile && lesson.status === "Upcoming") {
                 lesson = {
                   ...lesson,

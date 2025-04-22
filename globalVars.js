@@ -33,6 +33,7 @@ export const ERROR_INPUT_BORDER_COLOR = "solid 1px red";
 export const UNITS_WITH_NEW_SCHEMAS = [15];
 
 // for the ui:
+export const COMING_SOON_IMG = "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png";
 export const WEB_APP_PATHS = [
     {
         name: "dark",

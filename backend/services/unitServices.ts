@@ -254,6 +254,11 @@ const getGpMultiMedia = (units: INewUnitSchema[]) => {
     }
   }
 
+  const testUnits = units.filter(({ Title }) => Title === "TEST");
+
+  console.log(`Length of testUnits: ${testUnits.length}`);
+
+
   return gpVideos;
 };
 
