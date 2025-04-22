@@ -270,6 +270,7 @@ const LessonPart = ({
     borderTop: _borderTopAccordionWrapper,
     borderBottom: _borderBottomAccordionWrapper,
     boxShadow: isExpanded ? highlightedGlow : "none",
+    pointerEvent: "none",
   };
 
   return (
