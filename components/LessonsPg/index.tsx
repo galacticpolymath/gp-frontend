@@ -65,7 +65,7 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
         </div>
       </section>
       <section className='mb-3 mt-4 d-flex justify-content-center align-items-center'>
-        <div 
+        <div
           className='border-top border-bottom w-100'
           style={{ backgroundColor: '#F0F4FF' }}
         >

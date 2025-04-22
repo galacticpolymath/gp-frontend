@@ -24,7 +24,7 @@ import {
   getShowableUnits,
 } from "../../globalFns.js";
 import SelectedGpWebApp from "../../components/Modals/SelectedGpWebApp.js";
-import GpWebApps from "../../components/LessonsPg/sections/GpWebApps.js";
+import GpWebApps from "../../components/LessonsPg/sections/GpWebApps";
 import { GiShipWheel } from "react-icons/gi";
 import LessonSvg from "../../assets/img/gp-lesson-icon.svg";
 import UnitIconSvg from "../../assets/img/gp-unit-icon.svg";

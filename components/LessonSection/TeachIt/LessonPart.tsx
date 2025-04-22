@@ -114,9 +114,6 @@ const LessonPart = ({
     : chunks && chunks.map(({ chunkDur }) => chunkDur);
   let _itemList = itemList;
   const targetLessonsResources = resources?.lessons?.find((lesson) => {
-    console.log("lesson, LessonPart: ", lesson);
-    console.log("lsnNum, LessonPart: ", lsnNum);
-
     return lesson?.lsn == lsnNum;
   });
   let { tags: allTags, itemList: linkResources } = targetLessonsResources ?? {};
