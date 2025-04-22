@@ -11,6 +11,7 @@ import useLessonElementInView from "../../customHooks/useLessonElementInView";
 import Title, { ITitleProps } from "./Title";
 import { ISectionDots, TUseStateReturnVal } from "../../types/global";
 import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
+import { SIGN_UP_FOR_EMAIL_LINK } from "./SendFeedback";
 
 interface IOverviewProps
   extends ITitleProps,

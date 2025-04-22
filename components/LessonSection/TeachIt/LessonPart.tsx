@@ -276,6 +276,7 @@ const LessonPart = ({
   return (
     <div style={accordionStyleAccordionWrapper}>
       <Accordion
+        isExpandability={isAccordionExpandable}
         handleOnClick={undefined}
         highlighted={undefined}
         setContentId={undefined}

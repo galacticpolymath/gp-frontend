@@ -28,16 +28,11 @@ import {
 import { useSession } from "next-auth/react";
 import {
   defautlNotifyModalVal,
-  ModalContext,
   useModalContext,
 } from "../../../../providers/ModalProvider";
 import { CustomNotifyModalFooter } from "../../../../components/Modals/Notify";
-import { getUserAccountData } from "../../../account";
 import axios from "axios";
-import {
-  UserContext,
-  useUserContext,
-} from "../../../../providers/UserProvider";
+import { useUserContext } from "../../../../providers/UserProvider";
 import { IUserSession, TSetter } from "../../../../types/global";
 import {
   INewUnitSchema,
@@ -51,7 +46,6 @@ import {
   INewUnitLesson,
   IResource,
 } from "../../../../backend/models/Unit/types/teachingMaterials";
-import cache from "../../../../backend/utils/cache";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";

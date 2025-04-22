@@ -439,6 +439,7 @@ const TeachItUI = <
                                 style={{ wordWrap: "break-word" }}
                                 className="no-link-decoration text-decoration-underline"
                                 href={SIGN_UP_FOR_EMAIL_LINK}
+                                target="_blank"
                               >
                                 Sign up for emails
                               </Link>{" "}

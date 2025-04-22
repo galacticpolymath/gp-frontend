@@ -32,9 +32,19 @@ const Accordion = ({
   setContentId,
   dataBsToggle = { 'data-bs-toggle': 'collapse' },
   handleOnClick,
+  isExpandability = true,
   ariaExpanded = 'true',
 }) => {
   const contentId = useRef();
+
+  if (isExpandability) {
+    dataBsToggle = {
+      'data-bs-toggle': 'collapse',
+      'data-bs-target': `#content_${willUseGetId ? contentId?.current : id}`
+    };
+  } else {
+    dataBsToggle = {}
+  }
 
   useEffect(() => {
     if (!contentId.current && willUseGetId) {
@@ -59,7 +69,6 @@ const Accordion = ({
               type="button"
               style={btnStyle}
               {...dataBsToggle}
-              data-bs-target={`#content_${willUseGetId ? contentId?.current : id}`}
               aria-expanded={ariaExpanded}
               aria-controls="collapseOne"
               onClick={handleOnClick}
