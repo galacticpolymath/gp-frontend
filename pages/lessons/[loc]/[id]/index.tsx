@@ -51,6 +51,7 @@ import {
   INewUnitLesson,
   IResource,
 } from "../../../../backend/models/Unit/types/teachingMaterials";
+import cache from "../../../../backend/utils/cache";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -782,7 +783,6 @@ export const getStaticProps = async (arg: {
     const {
       params: { id, loc },
     } = arg;
-
     const { wasSuccessful } = await connectToMongodb(15_000, 7, true);
 
     if (!wasSuccessful) {

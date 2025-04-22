@@ -39,8 +39,14 @@ import {
 } from "../../backend/services/unitServices";
 import { createDbProjections } from "../../constants/functions";
 import { STATUSES_OF_SHOWABLE_LESSONS } from "../../globalVars";
-import { ICurrentUnits } from "../../types/global";
+import {
+  ICurrentUnits,
+  ILiveUnit,
+  IMultiMediaItemForUI,
+  IUnitLesson,
+} from "../../types/global";
 import UnitsPg from "../../components/LessonsPg";
+import cache from "../../backend/utils/cache";
 
 const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
@@ -366,6 +372,22 @@ function getIsUnitNew(releaseDate: Date, now: number) {
   return isNew;
 }
 
+interface IGpData {
+  units: ILiveUnit[];
+  lessons: {
+    firstPg: IUnitLesson[];
+    total: number;
+  };
+  multiMedia: {
+    firstPg: IMultiMediaItemForUI[];
+    total: number;
+  };
+  webApps: {
+    firstPg: IMultiMediaItemForUI[];
+    total: number;
+  };
+}
+
 export async function getServerSideProps() {
   try {
     const { wasSuccessful } = await connectToMongodb(15_000, 7, true);
@@ -374,6 +396,39 @@ export async function getServerSideProps() {
       throw new Error("Failed to connect to the database.");
     }
 
+    const gpData = cache.get<IGpData>("gpData");
+
+    if (gpData) {
+      const { lessons, units, webApps, multiMedia } = gpData;
+
+      return {
+        props: {
+          oldUnits: null,
+          currentUnits: {
+            units: {
+              isLast: units.length <= DATA_PER_PG,
+              data: JSON.parse(JSON.stringify(units)),
+              totalItemsNum: units.length,
+            },
+            lessons: {
+              isLast: lessons.total <= DATA_PER_PG,
+              data: JSON.parse(JSON.stringify(lessons.firstPg)),
+              totalItemsNum: lessons.total,
+            },
+            webApps: {
+              isLast: webApps.total <= DATA_PER_PG,
+              data: JSON.parse(JSON.stringify(webApps.firstPg)),
+              totalItemsNum: webApps.total,
+            },
+            gpVideos: {
+              isLast: multiMedia.total <= DATA_PER_PG,
+              data: JSON.parse(JSON.stringify(multiMedia.firstPg)),
+              totalItemsNum: multiMedia.total,
+            },
+          },
+        },
+      };
+    }
     const { data: retrievedUnits } = await retrieveUnits(
       {},
       createDbProjections(PROJECTED_UNITS_FIELDS),
@@ -424,6 +479,26 @@ export async function getServerSideProps() {
           }
         )
         .slice(0, DATA_PER_PG);
+
+      cache.set(
+        "gpData",
+        {
+          units: unitsForUI,
+          lessons: {
+            firstPg: lessonsFor1stPg,
+            total: lessons.length,
+          },
+          multiMedia: {
+            firstPg: gpVideosFirstPg,
+            total: gpMultiMedia.length,
+          },
+          webApps: {
+            firstPg: webApps,
+            total: webApps.length,
+          },
+        },
+        3_600
+      );
 
       return {
         props: {
