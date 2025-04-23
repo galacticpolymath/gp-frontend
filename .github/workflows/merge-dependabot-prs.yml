@@ -61,7 +61,8 @@ jobs:
     
     - name: Merge PR
       uses: "pascalgn/automerge-action@v0.16.4"
+      env:
+        github-token: ${{secrets.GITHUB_TOKEN}}
       with:
-        github-token: ${{secrets.DEPENDABOT_TOKEN}}
         merge-method: 'squash'
         target: 'minor'
