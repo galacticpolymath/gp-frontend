@@ -388,7 +388,7 @@ interface IGpData {
   };
 }
 
-export async function getStaticPaths() {
+export async function getStaticProps() {
   try {
     const { wasSuccessful } = await connectToMongodb(15_000, 7, true);
 
