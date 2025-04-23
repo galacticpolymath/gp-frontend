@@ -388,45 +388,12 @@ interface IGpData {
   };
 }
 
-export async function getServerSideProps() {
+export async function getStaticPaths() {
   try {
     const { wasSuccessful } = await connectToMongodb(15_000, 7, true);
 
     if (!wasSuccessful) {
       throw new Error("Failed to connect to the database.");
-    }
-    const gpData = cache.get<IGpData>("gpData");
-
-    if (gpData) {
-      const { lessons, units, webApps, multiMedia } = gpData;
-
-      return {
-        props: {
-          oldUnits: null,
-          currentUnits: {
-            units: {
-              isLast: units.length <= DATA_PER_PG,
-              data: JSON.parse(JSON.stringify(units)),
-              totalItemsNum: units.length,
-            },
-            lessons: {
-              isLast: lessons.total <= DATA_PER_PG,
-              data: JSON.parse(JSON.stringify(lessons.firstPg)),
-              totalItemsNum: lessons.total,
-            },
-            webApps: {
-              isLast: webApps.total <= DATA_PER_PG,
-              data: JSON.parse(JSON.stringify(webApps.firstPg)),
-              totalItemsNum: webApps.total,
-            },
-            gpVideos: {
-              isLast: multiMedia.total <= DATA_PER_PG,
-              data: JSON.parse(JSON.stringify(multiMedia.firstPg)),
-              totalItemsNum: multiMedia.total,
-            },
-          },
-        },
-      };
     }
     const { data: retrievedUnits } = await retrieveUnits(
       {},
@@ -478,26 +445,6 @@ export async function getServerSideProps() {
           }
         )
         .slice(0, DATA_PER_PG);
-
-      cache.set(
-        "gpData",
-        {
-          units: unitsForUI,
-          lessons: {
-            firstPg: lessonsFor1stPg,
-            total: lessons.length,
-          },
-          multiMedia: {
-            firstPg: gpVideosFirstPg,
-            total: gpMultiMedia.length,
-          },
-          webApps: {
-            firstPg: webApps,
-            total: webApps.length,
-          },
-        },
-        3_600
-      );
 
       return {
         props: {
