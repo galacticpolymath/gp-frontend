@@ -321,22 +321,6 @@ const LessonsPage = ({ oldUnits, currentUnits }: IProps) => {
   );
 };
 
-const PROJECTED_LESSONS_FIELDS = [
-  "CoverImage",
-  "Subtitle",
-  "Title",
-  "Section",
-  "ReleaseDate",
-  "locale",
-  "_id",
-  "numID",
-  "PublicationStatus",
-  "LessonBanner",
-  "LsnStatuses",
-  "TargetSubject",
-  "ForGrades",
-  "GradesOrYears",
-];
 const PROJECTED_UNITS_FIELDS: Partial<keyof INewUnitSchema>[] = [
   "UnitBanner",
   "Subtitle",
@@ -352,41 +336,7 @@ const PROJECTED_UNITS_FIELDS: Partial<keyof INewUnitSchema>[] = [
   "GradesOrYears",
   "FeaturedMultimedia",
 ];
-const WEB_APP_PATHS = [
-  {
-    name: "dark",
-    path: "/into-the-dark.png",
-  },
-  {
-    name: "echo",
-    path: "/echo-sim.png",
-  },
-];
 const DATA_PER_PG = 6;
-
-function getIsUnitNew(releaseDate: Date, now: number) {
-  const releaseDateMilliseconds = new Date(releaseDate).getTime();
-  const endDateOfNewReleaseMs = releaseDateMilliseconds + THIRTY_SEVEN_DAYS;
-  const isNew = now > releaseDateMilliseconds && now < endDateOfNewReleaseMs;
-
-  return isNew;
-}
-
-interface IGpData {
-  units: ILiveUnit[];
-  lessons: {
-    firstPg: IUnitLesson[];
-    total: number;
-  };
-  multiMedia: {
-    firstPg: IMultiMediaItemForUI[];
-    total: number;
-  };
-  webApps: {
-    firstPg: IMultiMediaItemForUI[];
-    total: number;
-  };
-}
 
 export async function getStaticProps() {
   try {
@@ -470,256 +420,16 @@ export async function getStaticProps() {
               data: JSON.parse(JSON.stringify(gpVideosFirstPg)),
               totalItemsNum: gpMultiMedia.length,
             },
+            revalidate: 30,
           },
         },
       };
     }
 
-    let lessons = await Lessons.find({}, PROJECTED_LESSONS_FIELDS)
-      .sort({ ReleaseDate: -1 })
-      .lean();
-
-    if (!lessons?.length) {
-      throw new Error("No lessons were retrieved from the database.");
-    }
-
-    let gpVideos = getGpVids(lessons) ?? [];
-    gpVideos = gpVideos.map((vid) =>
-      vid?.ReleaseDate
-        ? { ...vid, ReleaseDate: JSON.stringify(vid.ReleaseDate) }
-        : vid
-    );
-    let lessonPartsForUI = [];
-    let webApps: any[] = [];
-    const todaysDate = new Date();
-    const now = todaysDate.getTime();
-
-    // getting the lessons and web-apps from each unit
-    for (let lesson of lessons) {
-      if (
-        !lesson?.LsnStatuses?.length ||
-        !STATUSES_OF_SHOWABLE_LESSONS.includes(lesson.PublicationStatus)
-      ) {
-        continue;
-      }
-
-      const multiMediaArr = lesson.Section?.preview?.Multimedia;
-      const multiMediaWebAppNoFalsyVals = multiMediaArr?.length
-        ? multiMediaArr.filter((multiMedia: any) => multiMedia)
-        : [];
-      const isThereAWebApp = multiMediaWebAppNoFalsyVals?.length
-        ? multiMediaWebAppNoFalsyVals.some(
-            ({ type }: { type: string }) =>
-              type === "web-app" || type === "video"
-          )
-        : false;
-
-      // retrieve the web apps of the units
-      if (isThereAWebApp) {
-        for (let index = 0; index < multiMediaArr.length; index++) {
-          let multiMediaItem = multiMediaArr[index];
-
-          if (multiMediaItem?.type === "web-app") {
-            const isPresentInWebApps = webApps.find(
-              (webApp) => webApp.webAppLink === multiMediaItem.mainLink
-            );
-
-            if (isPresentInWebApps) {
-              continue;
-            }
-
-            const linkPreviewObj = await getLinkPreviewObj(
-              multiMediaItem.mainLink
-            );
-
-            if (
-              "errMsg" in linkPreviewObj &&
-              linkPreviewObj.errMsg &&
-              "images" in linkPreviewObj &&
-              Array.isArray(linkPreviewObj.images) &&
-              linkPreviewObj.images.length
-            ) {
-              console.error(
-                "Failed to get the image preview of web app. Error message: ",
-                linkPreviewObj.errMsg
-              );
-              continue;
-            }
-
-            const images =
-              "images" in linkPreviewObj && Array.isArray(linkPreviewObj.images)
-                ? linkPreviewObj.images
-                : [];
-            const errMsg =
-              "errMsg" in linkPreviewObj ? linkPreviewObj.errMsg : "";
-            const title = "title" in linkPreviewObj ? linkPreviewObj.title : "";
-
-            multiMediaItem = {
-              lessonIdStr: multiMediaItem.forLsn,
-              unitNumID: lesson.numID,
-              webAppLink: multiMediaItem.mainLink,
-              title: multiMediaItem.title,
-              unitTitle: lesson.Title,
-              description: multiMediaItem.lessonRelevance,
-              webAppPreviewImg: errMsg || !images?.length ? null : images[0],
-              webAppImgAlt:
-                errMsg || !images?.length ? null : `${title}'s preview image`,
-              pathToFile:
-                WEB_APP_PATHS.find(({ name }) =>
-                  multiMediaItem.title.toLowerCase().includes(name)
-                )?.path ?? (images?.length ? images[0] : null),
-            };
-
-            webApps.push(multiMediaItem);
-          }
-        }
-      }
-
-      let lessonParts = lesson?.Section?.["teaching-materials"]?.Data?.lesson;
-      let lessonPartsFromClassRoomObj =
-        lesson?.Section?.["teaching-materials"]?.Data?.classroom?.resources?.[0]
-          ?.lessons;
-
-      // retrieve the individual lessons
-      if (lessonParts?.length) {
-        for (let lsnStatus of lesson.LsnStatuses) {
-          const wasLessonReleased =
-            moment(todaysDate).format("YYYY-MM-DD") >
-            moment(lsnStatus.unit_release_date).format("YYYY-MM-DD");
-
-          if (!wasLessonReleased) {
-            continue;
-          }
-
-          if (!STATUSES_OF_SHOWABLE_LESSONS.includes(lsnStatus.status)) {
-            continue;
-          }
-
-          const lessonPart = lessonParts.find(
-            (lessonPart: any) => lessonPart.lsnNum === lsnStatus.lsn
-          );
-          const isLessonInLessonPartsForUIArr =
-            lessonPartsForUI.length && lessonPart
-              ? lessonPartsForUI.some(
-                  ({ lessonPartTitle }) =>
-                    lessonPartTitle === lessonPart.lsnTitle
-                )
-              : false;
-
-          if (lessonPart && !isLessonInLessonPartsForUIArr) {
-            const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(
-              (lessonPart: any) => lessonPart.lsn == lsnStatus.lsn
-            );
-            let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0])
-              ? lessonPartFromClassroomObj?.tags.flat()
-              : lessonPartFromClassroomObj?.tags;
-            tags = tags?.length ? tags.filter((tag: any) => tag) : tags;
-            const lessonPartForUI = {
-              tags: tags ?? null,
-              lessonPartPath: `/lessons/${lesson.locale}/${lesson.numID}#lesson_part_${lessonPart.lsnNum}`,
-              tile:
-                lessonPartFromClassroomObj?.tile ??
-                "https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png",
-              lessonPartTitle: lessonPart.lsnTitle,
-              dur: lessonPart.lsnDur,
-              preface: lessonPart.lsnPreface,
-              lessonPartNum: lessonPart.lsnNum,
-              lessonTitle: lesson.Title,
-              subject: lesson.TargetSubject,
-              grades: lesson.ForGrades,
-              gradesOrYears: lesson.GradesOrYears,
-              status: lsnStatus.status,
-            };
-
-            lessonPartsForUI.push(lessonPartForUI);
-          }
-        }
-      }
-    }
-
-    const units = getShowableUnits(lessons)?.map((lesson) => {
-      const individualLessonsNum = lesson?.LsnStatuses?.length
-        ? lesson.LsnStatuses.filter(
-            ({ status }: { status: string }) => status !== "Hidden"
-          )?.length
-        : 0;
-      const lessonObj = {
-        ...lesson,
-        individualLessonsNum,
-        ReleaseDate: moment(lesson.ReleaseDate).format("YYYY-MM-DD"),
-        isNew: getIsUnitNew(lesson.ReleaseDate, now),
-      };
-
-      delete lessonObj.LsnStatuses;
-
-      return lessonObj;
-    });
-    let firstPgOfLessons = structuredClone(lessonPartsForUI);
-
-    if (firstPgOfLessons?.length) {
-      firstPgOfLessons = firstPgOfLessons
-        .sort(
-          (
-            { sort_by_date: sortByDateLessonA }: any,
-            { sort_by_date: sortByDateLessonB }: any
-          ) => {
-            let _sortByDateLessonA = new Date(sortByDateLessonA);
-            let _sortByDateLessonB = new Date(sortByDateLessonB);
-
-            if (_sortByDateLessonA > _sortByDateLessonB) {
-              return -1;
-            }
-
-            if (_sortByDateLessonA < _sortByDateLessonB) {
-              return 1;
-            }
-
-            return 0;
-          }
-        )
-        .slice(0, DATA_PER_PG);
-    }
-
-    let gpVideosFirstPg = gpVideos?.length
-      ? gpVideos
-          .sort(
-            (videoA, videoB) =>
-              JSON.parse(videoB.ReleaseDate) - JSON.parse(videoA.ReleaseDate)
-          )
-          .slice(0, DATA_PER_PG)
-      : [];
-    gpVideosFirstPg = gpVideosFirstPg?.length
-      ? gpVideosFirstPg.map((vid) => ({ ...vid, id: nanoid() }))
-      : gpVideosFirstPg;
-
-    return {
-      props: {
-        oldUnits: {
-          units,
-          lessonsObj: {
-            data: firstPgOfLessons,
-            isLast: lessonPartsForUI.length < DATA_PER_PG,
-            nextPgNumStartingVal: 1,
-            totalItemsNum: lessonPartsForUI.length,
-          },
-          gpVideosObj: {
-            data: JSON.parse(JSON.stringify(gpVideosFirstPg)),
-            isLast: gpVideos.length < DATA_PER_PG,
-            nextPgNumStartingVal: 1,
-            totalItemsNum: gpVideos.length,
-          },
-          webAppsObj: {
-            data: webApps,
-            isLast: webApps.length < DATA_PER_PG,
-            nextPgNumStartingVal: 1,
-            totalItemsNum: webApps.length,
-          },
-        },
-      },
-    };
+    throw new Error("Failed to fetch for units.");
   } catch (error) {
     console.error(
-      "An error has occurred while fetching for lessons. Error message: ",
+      "An error has occurred while fetching for units. Error message: ",
       error
     );
 
@@ -732,6 +442,7 @@ export async function getStaticProps() {
           webAppsObj: null,
         },
       },
+      revalidate: 30,
     };
   }
 }
