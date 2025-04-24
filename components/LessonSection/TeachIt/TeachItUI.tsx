@@ -261,6 +261,7 @@ const TeachItUI = <
           {!!parts.length &&
             parts.every((part) => part !== null) &&
             parts.map((part, index, self) => {
+              console.log("part, yo there: ", part);
               let learningObjs: string[] | null = [];
 
               if ("learningObj" in part) {
