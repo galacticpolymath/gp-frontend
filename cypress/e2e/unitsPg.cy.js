@@ -32,7 +32,6 @@ describe("Check unit page formatting", () => {
             const elementsArr = Array.from($elements);
             const areTxtsPresent = elementsArr.every((element) => {
                 const txt = element.textContent;
-                console.log("txt, yo there: ", txt);
                 const isNum = /^\d+$/.test(txt);
                 return isNum;
             });

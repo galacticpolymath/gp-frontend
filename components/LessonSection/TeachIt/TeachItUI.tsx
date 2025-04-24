@@ -92,8 +92,6 @@ const TeachItUI = <
   GradesOrYears,
 }: TeachItUIProps<TLesson, TSelectedGrade>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
-  // log the parts
-  console.log("parts, sup there: ", parts);
   const areThereGradeBands =
     !!gradeVariations?.length &&
     gradeVariations.every((variation) => !!variation.grades);

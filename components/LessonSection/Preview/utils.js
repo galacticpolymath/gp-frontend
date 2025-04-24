@@ -12,7 +12,6 @@ export const getMediaComponent = ({
   iframeClassName = 'lesson-media',
 }) => {
   if (type === 'video') {
-    console.log('mainLink, sup there: ', mainLink);
     return (
       <iframe
         onClick={handleIFrameOnClick}

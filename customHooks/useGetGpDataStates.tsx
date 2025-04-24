@@ -58,8 +58,6 @@ export const useGetGpDataStates = <TData extends TGpData>(
         gpDataObj.nextPgNum
       );
 
-      console.log("gpVideosResponse, sup there: ", gpVideosResponse);
-
       if (gpVideosResponse.errType === "timeout") {
         alert(
           `Failed to get ${gpDataType}. Please refesh the page and try again.`

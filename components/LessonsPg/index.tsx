@@ -33,7 +33,6 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
 
   const handleGpWebAppCardClick = (app: object) => () => {
     setSelectedGpWebApp(app);
-    setIsWebAppModalShown(true);
   };
 
   return (
@@ -174,7 +173,7 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
       </section>
       <section className='d-flex justify-content-center align-items-center'>
         <div className='lessons-pg-sec lessons-pg-sec-max-width'>
-          <CurrentGpUnits units={units.data} didErrorOccur={!!didErrorOccur} />
+          <CurrentGpUnits units={units?.data ?? []} didErrorOccur={!!didErrorOccur} />
           <section className='my-4 my-md-3 d-flex justify-content-center align-items-center img-background-container lessons-section-border-top lessons-section-border-bottom'>
             <div
               style={{ width: '86%', maxWidth: '1240px' }}
@@ -254,10 +253,10 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
       </section>
       <section className='d-flex justify-content-center align-items-center'>
         <GpUnitLessons
-          isLast={lessons?.isLast}
-          data={lessons?.data}
+          isLast={!!lessons?.isLast}
+          data={lessons?.data ?? []}
           didErrorOccur={!!didErrorOccur}
-          totalItemsNum={lessons?.totalItemsNum}
+          totalItemsNum={lessons?.totalItemsNum ?? 0}
         />
       </section>
       <SelectedGpVideo

@@ -181,19 +181,14 @@ export const getShowableUnits = (units) => {
             continue;
         }
 
-        console.log("unit, sup there, unit.numID, before: ", unit.numID);
-        console.log("unit.PublicationStatus: ", unit.PublicationStatus);
-
         if (
             STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) &&
             uniqueUnits.some((uniqueUnit) => unit.numID == uniqueUnit.numID)
         ) {
-            console.log("unit, sup there, unit.numID: ", unit.numID);
             const targetUnitIndex = uniqueUnits.findIndex(
                 (uniqueUnit) => unit.numID == uniqueUnit.numID
             );
             let targetUnit = uniqueUnits[targetUnitIndex];
-            console.log("targetUnit, yo there: ", targetUnit)
 
             targetUnit = {
                 ...targetUnit,

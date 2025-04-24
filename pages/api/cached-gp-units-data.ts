@@ -31,7 +31,6 @@ export default async function handler(request: NextApiRequest, response: NextApi
                 },
                 cache
             )
-            console.log('result, sup there: ', result);
             const { errMsg, errorStatusCode, data, isLast, totalItemsNum } = result
 
             if (errMsg) {

@@ -21,7 +21,7 @@ interface IProps extends IGpUnitsItemsPg<IMultiMediaItemForUI> {
   setSelectedVideo: TSetter<any>;
 }
 
-const GpVideos: React.FC<IProps> = ({
+const GpVideos: React.FC<Partial<IProps>> = ({
   data,
   isLast,
   totalItemsNum,
@@ -29,11 +29,11 @@ const GpVideos: React.FC<IProps> = ({
   setSelectedVideo,
 }) => {
   const { btnTxt, gpDataObj, handleOnClick } = useGetGpDataStates(
-    data,
-    isLast,
+    data ?? [],
+    !!isLast,
     1,
     "videos",
-    totalItemsNum
+    totalItemsNum ?? 0
   );
 
   return (
@@ -86,7 +86,7 @@ const GpVideos: React.FC<IProps> = ({
           </div>
         )}
       </div>
-      {gpDataObj.data?.length && !gpDataObj.isLast && (
+      {!!gpDataObj.data?.length && !gpDataObj.isLast && (
         <SeeMoreBtnSec btnTxt={btnTxt} handleOnClick={handleOnClick}>
           {btnTxt === "Loading" ? (
             <span
