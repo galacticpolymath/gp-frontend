@@ -24,13 +24,13 @@ import { GiShipWheel } from "react-icons/gi";
 import LessonSvg from "@/assets/img/gp-lesson-icon.svg";
 import UnitIconSvg from "@/assets/img/gp-unit-icon.svg";
 import Image from "next/image";
-import {
-  filterInShowableUnits,
-  getGpMultiMedia,
-  getGpWebApps,
-  getUnitLessons,
-  retrieveUnits,
-} from "@/backend/services/unitServices";
+// import {
+//   filterInShowableUnits,
+//   getGpMultiMedia,
+//   getGpWebApps,
+//   getUnitLessons,
+//   retrieveUnits,
+// } from "@/backend/services/unitServices";
 import { createDbProjections } from "@/constants/functions";
 import { STATUSES_OF_SHOWABLE_LESSONS } from "@/globalVars";
 import {
@@ -41,6 +41,13 @@ import {
 } from "../gl";
 import GpWebApps from "../components/LessonsPg/sections/GpWebApps";
 import UnitsPg from "../components/LessonsPg";
+import {
+  filterInShowableUnits,
+  getGpMultiMedia,
+  getGpWebApps,
+  getUnitLessons,
+  retrieveUnits,
+} from "../backend/services/unitServices";
 
 const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
