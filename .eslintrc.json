@@ -14,7 +14,11 @@
   },
   "env": {
     "browser": true,
-    "es6": true
+    "es6": true,
+    "node": true
+  },
+  "globals": {
+    "NodeJS": true
   },
   "rules": {
     "@next/next/no-img-element": "off",

@@ -4,11 +4,12 @@ import CustomMarkdownView from './CustomMarkdownView';
 
 import styles from './index.module.scss';
 
-const RichText = ({ content, className = '', style = {}, sectionName }) => {
+const RichText = ({ content, className = '', style = {}, sectionName = '' }) => {
 
   if (!content) {
     return null;
   }
+
   let customCssClass = `${className}`;
 
   if (sectionName === 'Bonus_Content') {

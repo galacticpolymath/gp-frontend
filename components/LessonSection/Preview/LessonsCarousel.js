@@ -85,7 +85,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                         className="autoCarouselSlider mt-0"
                         style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
                     >
-                        {mediaItems && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => {
+                        {mediaItems?.length && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => {
                             return (
                                 <LessonSlide
                                     key={index}

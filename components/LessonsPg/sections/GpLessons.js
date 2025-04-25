@@ -19,7 +19,8 @@ const GpLessons = ({
     nextPgNumStartingVal,
     totalGpLessonsNum,
 }) => {
-    const { handleOnClick, btnTxt, gpDataObj } = useGetGpDataStates(startingLessonsToShow, isLast, nextPgNumStartingVal, 'lessons', totalGpLessonsNum);
+    const { handleOnClick, btnTxt, gpDataObj } =
+        useGetGpDataStates(startingLessonsToShow, isLast, nextPgNumStartingVal, 'lessons', totalGpLessonsNum);
 
     return (
         <div className='lessons-pg-sec lessons-section-border-top lessons-pg-sec-max-width'>
@@ -72,7 +73,7 @@ const GpLessons = ({
                                 <Spinner className='text-black' />
                             </span>
                             :
-                            <span className='d-inline-flex w-100 h-100 justify-content-center'>
+                            <span className='d-inline-flex w-100 h-100 justify-content-center see-more-btn-txt'>
                                 {btnTxt}
                             </span>
                         }

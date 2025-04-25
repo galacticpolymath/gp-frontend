@@ -60,7 +60,6 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
             onHide={handleOnHide}
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='selected-gp-web-app-content'
-
         >
             <div className='modal-content-wrapper-gp-web-app'>
                 <div className='modal-content-sub-wrapper-gp-web-app position-relative'>
@@ -115,7 +114,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                         style={{ borderTop: 'solid 1.5px rgb(222, 226, 230)' }}
                         className='px-3 px-sm-5 pt-3 d-flex flex-column pb-5 position-relative'
                     >
-                        <Title>
+                        <Title id='selected-gp-web-app-modal-title'>
                             {selectedGpWebApp?.title}
                         </Title>
                         <span className='mt-2'>{selectedGpWebApp?.description}</span>

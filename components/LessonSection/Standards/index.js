@@ -1,4 +1,6 @@
 /* eslint-disable no-console */
+/* eslint-disable quotes */
+
 import PropTypes from 'prop-types';
 import Subject from './Subject';
 import { useArrowContainer } from '../../../customHooks/useArrowContainer';

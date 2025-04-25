@@ -4,6 +4,7 @@ const { Schema, models, model } = Mongoose;
 let Lessons = models?.lessons;
 
 if (!Lessons) {
+
   const LsnStatusSchema = new Schema({
     lsn: { type: Number, required: true },
     status: String,

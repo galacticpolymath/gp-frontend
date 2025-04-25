@@ -12,7 +12,7 @@ const ForLessonTxtWrapper = ({
             {Icon}
         </div>
         <div className='d-flex justify-content-center ps-1'>
-            <span>
+            <span className='for-lesson-text-test'>
                 {txt}
             </span>
         </div>

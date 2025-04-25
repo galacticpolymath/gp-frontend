@@ -2,13 +2,20 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import { NextResponse } from "next/server";
-import { getAuthorizeReqResult, getChunks, verifyJwt } from "./nondependencyFns";
+import {
+  getAuthorizeReqResult,
+  getChunks,
+  verifyJwt,
+} from "./nondependencyFns";
 import { PASSWORD_RESET_CODE_VAR_NAME } from "./globalVars";
 
 const DB_ADMIN_ROUTES = [
   "/api/insert-lesson",
   "/api/delete-lesson",
   "/api/update-lessons",
+  "/api/delete-unit",
+  "/api/update-unit",
+  "/api/insert-unit",
   "/api/get-users",
 ];
 const USER_ACCOUNT_ROUTES = [
@@ -18,7 +25,7 @@ const USER_ACCOUNT_ROUTES = [
   "/api/get-user-account-data",
   "/api/delete-user",
   "/api/user-confirms-mailing-list-sub",
-  "/api/get-signed-in-user-brevo-status"
+  "/api/get-signed-in-user-brevo-status",
 ];
 
 const getUnitNum = (pathName) =>
@@ -66,9 +73,19 @@ export async function middleware(request) {
       nextUrl?.pathname?.split("/")?.filter((val) => val)?.length == 2 &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
-      // put this into a service
+      // checking if the unit exist
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
+      const getUnitsUrl = new URL(`${nextUrl.origin}/api/get-units`);
+      getUnitsUrl.searchParams.set(
+        "projectionObj",
+        JSON.stringify({ locale: 1, DefaultLocale: 1 })
+      );
+
+      getUnitsUrl.searchParams.set(
+        "filterObj",
+        JSON.stringify({ numID: [unitNum] })
+      );
 
       url.searchParams.set(
         "projectionObj",
@@ -79,6 +96,22 @@ export async function middleware(request) {
       const getUnitsRes = await fetch(url);
       const { msg, lessons } = (await getUnitsRes.json()) ?? {};
       const locale = lessons?.[0]?.DefaultLocale;
+      const getCurrentUnitsRes = await fetch(getUnitsUrl);
+      const { msg: errMsg, lessons: units } =
+        (await getCurrentUnitsRes.json()) ?? {};
+      const unitLocale = units?.[0]?.DefaultLocale;
+
+      if (units && !unitLocale) {
+        console.error(
+          "Failed to retrieve the units from the db. Reason: ",
+          errMsg
+        );
+        return NextResponse.redirect(`${nextUrl.origin}/error`);
+      } else if (units && unitLocale) {
+        return NextResponse.redirect(
+          `${nextUrl.origin}/lessons/${unitLocale}/${unitNum}`
+        );
+      }
 
       if (
         !Array.isArray(lessons) ||
@@ -107,6 +140,7 @@ export async function middleware(request) {
       nextUrl?.pathname?.split("/")?.filter((val) => val)?.length == 3 &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
+      // checking if the unit exist
       const receivedLocale = nextUrl.pathname.split("/").at(-2);
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
@@ -115,12 +149,30 @@ export async function middleware(request) {
         "projectionObj",
         JSON.stringify({ locale: 1, DefaultLocale: 1 })
       );
+
       url.searchParams.set("filterObj", JSON.stringify({ numID: [unitNum] }));
 
-      const getUnitsRes = await fetch(url);
-      const { msg, lessons } = (await getUnitsRes.json()) ?? {};
+      const getUnitsUrl = new URL(`${nextUrl.origin}/api/get-units`);
+      getUnitsUrl.searchParams.set(
+        "projectionObj",
+        JSON.stringify({ locale: 1, DefaultLocale: 1 })
+      );
 
-      if (msg || !lessons?.length) {
+      getUnitsUrl.searchParams.set(
+        "filterObj",
+        JSON.stringify({ numID: [unitNum] })
+      );
+
+      const getLessonsRes = await fetch(url);
+      const { msg, lessons } = (await getLessonsRes.json()) ?? {};
+      const getUnitsRes = await fetch(getUnitsUrl);
+      const { msg: errMsgUnitsRetrieval, units } =
+        (await getUnitsRes.json()) ?? {};
+
+      if (
+        (msg || !lessons?.length) &&
+        (!units?.length || errMsgUnitsRetrieval)
+      ) {
         console.log(
           !lessons?.length
             ? "The unit does not exist."
@@ -130,19 +182,26 @@ export async function middleware(request) {
         return NextResponse.redirect(`${nextUrl.origin}/error`);
       }
 
-      const targetLesson = lessons.find(
+      let targetUnit = units.find(
         ({ numID, locale }) => locale === receivedLocale && numID == unitNum
       );
 
-      if (targetLesson) {
-        console.log("The unit does exist.");
+      if (!targetUnit) {
+        targetUnit = lessons.find(
+          ({ numID, locale }) => locale === receivedLocale && numID == unitNum
+        );
+      }
+
+      if (targetUnit) {
+        console.log("Unit exists with the given locale.");
         return NextResponse.next();
       }
 
-      console.log("The unit does not exist.");
+      console.log("The unit does not exist. Will use the default locale.");
+      const defaultUnit = units?.length ? units[0] : lessons[0];
 
       return NextResponse.redirect(
-        `${nextUrl.origin}/lessons/${lessons[0].DefaultLocale}/${unitNum}`
+        `${nextUrl.origin}/lessons/${defaultUnit.DefaultLocale}/${unitNum}`
       );
     } else if (
       !nextUrl.href.includes("api") &&
@@ -181,16 +240,16 @@ export async function middleware(request) {
       });
     }
 
-    const token = authorizationStr.split(' ')[1].trim();
-    console.log("token length before trim: ", token.length)
-    console.log("yo there token: ", token)
-    console.log("token length after trim: ", token.trim().length)
+    const token = authorizationStr.split(" ")[1].trim();
     const payload = await verifyJwt(token);
 
-    if (payload?.payload?.accessibleRoutes?.length && !payload.payload.accessibleRoutes.includes(nextUrl.pathname)) {
+    if (
+      payload?.payload?.accessibleRoutes?.length &&
+      !payload.payload.accessibleRoutes.includes(nextUrl.pathname)
+    ) {
       console.error("The client does not have access to this route.");
 
-      return new NextResponse("Unauthorized.", { status: 401 })
+      return new NextResponse("Unauthorized.", { status: 401 });
     }
 
     if (!nextUrl.pathname) {
@@ -211,7 +270,11 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
-    if ((nextUrl.pathname === "/api/copy-files") && (method === "POST") && headers.has("GDrive-Token")) {
+    if (
+      nextUrl.pathname === "/api/copy-files" &&
+      method === "POST" &&
+      headers.has("GDrive-Token")
+    ) {
       console.log("will check if the auth string is valid.");
       const { errResponse } = await getAuthorizeReqResult(
         authorizationStr,
@@ -219,14 +282,13 @@ export async function middleware(request) {
       );
 
       if (errResponse) {
-        return errResponse
+        return errResponse;
       }
 
       console.log("The GDrive-Token was provided.");
 
       return NextResponse.next();
-    } else if ((nextUrl.pathname === "/api/copy-files") && (method === "POST")) {
-      console.error("No GDrive-Token was provided, bacon yo there.");
+    } else if (nextUrl.pathname === "/api/copy-files" && method === "POST") {
       return new NextResponse("No GDrive-Token was provided.", { status: 400 });
     }
 
@@ -237,7 +299,16 @@ export async function middleware(request) {
       (nextUrl.pathname == "/api/insert-lesson" &&
         method === "POST" &&
         authorizationStr) ||
+      (nextUrl.pathname == "/api/insert-unit" &&
+        method === "POST" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/update-unit" &&
+        method === "PUT" &&
+        authorizationStr) ||
       (nextUrl.pathname == "/api/delete-lesson" &&
+        method === "DELETE" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/delete-unit" &&
         method === "DELETE" &&
         authorizationStr) ||
       (nextUrl.pathname == "/api/delete-user" &&
@@ -286,16 +357,12 @@ export async function middleware(request) {
         );
       }
 
-      if (
-        ["/api/save-about-user-form"].includes(
-          nextUrl.pathname
-        )
-      ) {
+      if (["/api/save-about-user-form"].includes(nextUrl.pathname)) {
         const { isAuthorize, errResponse } = await getAuthorizeReqResult(
           authorizationStr,
           willCheckIfUserIsDbAdmin,
           willCheckForValidEmail,
-          clientEmail,
+          clientEmail
         );
 
         return isAuthorize ? errResponse : NextResponse.next();
@@ -318,7 +385,7 @@ export async function middleware(request) {
   } catch (error) {
     const errMsg = `An error has occurred in the middleware: ${error}`;
 
-    console.error("Middleware errror: ", errMsg)
+    console.error("Middleware errror: ", errMsg);
 
     if (
       (typeof request?.nextUrl === "string" &&
@@ -349,7 +416,11 @@ export const config = {
     "/api/update-user",
     "/api/user-confirms-mailing-list-sub",
     "/api/get-users",
+    "/api/insert-unit",
     "/api/copy-files",
-    "/api/get-signed-in-user-brevo-status"
+    "/api/get-signed-in-user-brevo-status",
+    // "/api/insert-unit",
+    // "/api/delete-unit",
+    // "/api/update-unit",
   ],
 };

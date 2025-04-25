@@ -67,7 +67,7 @@ const GpVideos = ({
                         );
                     })
                 ) : (
-                    <div className="pb-4">
+                    <div className="pb-4 error-message-container">
                         <p className="text-center text-sm-start">
                             An error has occurred. Couldn&apos;t retrieve videos. Please try
                             again by refreshing the page.

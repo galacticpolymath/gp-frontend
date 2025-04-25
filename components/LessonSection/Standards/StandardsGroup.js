@@ -1,13 +1,18 @@
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable no-console */
-import PropTypes from 'prop-types';
-import Accordion from '../../Accordion';
-import RichText from '../../RichText';
-import { useState } from 'react';
-import CopyableTxt from '../../CopyableTxt';
-import ClickMeArrow from '../../ClickMeArrow';
+/* eslint-disable quotes */
+/* eslint-disable indent */
+/* eslint-disable semi */
+/* eslint-disable react/jsx-indent */
 
-const CopyIcon = ({ color = 'white' }) => (
+import PropTypes from "prop-types";
+import Accordion from "../../Accordion";
+import RichText from "../../RichText";
+import { useState } from "react";
+import CopyableTxt from "../../CopyableTxt";
+import ClickMeArrow from "../../ClickMeArrow";
+
+const CopyIcon = ({ color = "white" }) => (
   <svg
     style={{ color }}
     xmlns="http://www.w3.org/2000/svg"
@@ -24,39 +29,44 @@ const CopyIcon = ({ color = 'white' }) => (
   </svg>
 );
 
-const formatGrades = (grades, gradesOrYears = 'Grades') => {
+const formatGrades = (grades, gradesOrYears = "Grades") => {
   if (!grades) {
-    return '';
+    return "";
   }
 
-  const parsedGrades = (Array.isArray(grades) ? grades : grades.split(',')).map((x) => x.replace(/^0/, ''));
+  const parsedGrades = (Array.isArray(grades) ? grades : grades.split(",")).map(
+    (x) => x.replace(/^0/, "")
+  );
 
   if (parsedGrades.length === 1) {
     return `${gradesOrYears.slice(0, -1)}: ${parsedGrades[0]}`;
   }
 
-  return `${gradesOrYears}: ${parsedGrades[0]}-${parsedGrades[parsedGrades.length - 1]}`;
+  return `${gradesOrYears}: ${parsedGrades[0]}-${parsedGrades[parsedGrades.length - 1]
+    }`;
 };
 
 export const formatAlignmentNotes = (text) => {
-  return text.replace(/•/g, '-').replace(/\^2/g, '²');
+  return text.replace(/•/g, "-").replace(/\^2/g, "²");
 };
 
-const StandardsGroup = ({
-  id,
-  codes,
-  grades,
-  GradesOrYears,
-  alignmentNotes,
-  statements,
-  willShowArrow,
-  _arrowContainer,
-  handleElementVisibility,
-}) => {
-  const index = id.split('-').at(-1);
-  const _grades = Array.isArray(grades) ? grades.join(',') : grades;
-  const [contentId, setContentId] = useState('');
-  const [isAccordionContentDisplayed, setIsAccordionContentDisplayed] = useState(false);
+const StandardsGroup = (props) => {
+  const {
+    id,
+    codes,
+    grades,
+    GradesOrYears,
+    alignmentNotes,
+    statements,
+    willShowArrow,
+    _arrowContainer,
+    handleElementVisibility,
+  } = props;
+  const index = id.split("-").at(-1);
+  const _grades = Array.isArray(grades) ? grades.join(",") : grades;
+  const [contentId, setContentId] = useState("");
+  const [isAccordionContentDisplayed, setIsAccordionContentDisplayed] =
+    useState(false);
   const [arrowContainer, setArrowContainer] = _arrowContainer;
   const handleClickToCopyTxt = (event, txt) => {
     event.stopPropagation();
@@ -65,74 +75,88 @@ const StandardsGroup = ({
 
   const handleOnClick = () => {
     setArrowContainer({ isInView: false, canTakeOffDom: true });
-    setIsAccordionContentDisplayed(prevState => !prevState);
+    setIsAccordionContentDisplayed((prevState) => !prevState);
   };
 
   return (
-    <div className='border-bottom border-gray'>
+    <div className="border-bottom border-gray">
       <Accordion
         id={id}
         dataBsToggle={{}}
         setContentId={setContentId}
-        buttonClassName='w-100 text-start bg-white border-0 p-2 pb-1 default-cursor pb-3 position-relative'
+        buttonClassName="w-100 text-start bg-white border-0 p-2 pb-1 default-cursor pb-3 position-relative"
         button={(
           <>
             <CopyableTxt
               copyTxtModalDefaultStyleObj={{
-                position: 'fixed',
-                width: '110px',
-                backgroundColor: '#212529',
-                textAlign: 'center',
+                position: "fixed",
+                width: "110px",
+                backgroundColor: "#212529",
+                textAlign: "center",
                 zIndex: 150,
               }}
-              implementLogicOnClick={event => handleClickToCopyTxt(event, `${codes}: ${statements}`)}
+              implementLogicOnClick={(event) =>
+                handleClickToCopyTxt(event, `${codes}: ${statements}`)
+              }
             >
               <div
-                role='button'
+                role="button"
                 style={{
-                  background: '#7F7F7F',
-                  border: 'none',
+                  background: "#7F7F7F",
+                  border: "none",
                   width: 32,
                   height: 32,
-                  right: '5px',
-                  top: '45px',
+                  right: "5px",
+                  top: "45px",
                 }}
-                className='d-flex justify-content-center align-items-center rounded-circle position-absolute'
+                className="d-flex justify-content-center align-items-center rounded-circle position-absolute"
               >
                 <CopyIcon />
               </div>
             </CopyableTxt>
             <div>
               <div
-                role='button'
+                role="button"
                 onClick={handleOnClick}
-                data-bs-toggle='collapse'
+                data-bs-toggle="collapse"
                 data-bs-target={`#content_${contentId}`}
               >
-                <h6 className={`text-muted w-100 d-flex ${(Array.isArray(grades) && (grades.length > 0) || ((typeof grades === 'string') && (grades.length > 0))) ? 'justify-content-between' : 'justify-content-end'}`}>
+                <h6
+                  className={`text-muted w-100 d-flex ${(Array.isArray(grades) && grades.length > 0) ||
+                    (typeof grades === "string" && grades.length > 0)
+                    ? "justify-content-between"
+                    : "justify-content-end"
+                    }`}
+                >
                   {formatGrades(_grades, GradesOrYears)}
-                  <div
-                    className="d-flex justify-content-center flex-column h-100 position-relative"
-                  >
-                    {((index == 0) && willShowArrow) ? (
+                  <div className="d-flex justify-content-center flex-column h-100 position-relative">
+                    {index == 0 && willShowArrow ? (
                       <ClickMeArrow
                         handleElementVisibility={handleElementVisibility}
                         willShowArrow={arrowContainer.isInView}
-                        containerStyle={{ zIndex: 1000, bottom: '70px', right: '35px', display: arrowContainer.canTakeOffDom ? 'none' : 'block' }}
-                        arrowTxt='Click for Details'
+                        containerStyle={{
+                          zIndex: 1000,
+                          bottom: "70px",
+                          right: "35px",
+                          display: arrowContainer.canTakeOffDom
+                            ? "none"
+                            : "block",
+                        }}
+                        arrowTxt="Click for Details"
                       />
-                    )
-                      :
-                      null
-                    }
+                    ) : null}
                     <i
                       color="#7A8489"
-                      style={{ display: isAccordionContentDisplayed ? 'none' : 'block' }}
+                      style={{
+                        display: isAccordionContentDisplayed ? "none" : "block",
+                      }}
                       className="fs-5 bi-chevron-down"
                     />
                     <i
                       color="#7A8489"
-                      style={{ display: isAccordionContentDisplayed ? 'block' : 'none' }}
+                      style={{
+                        display: isAccordionContentDisplayed ? "block" : "none",
+                      }}
                       className="fs-5 bi-chevron-up"
                     />
                   </div>
@@ -141,9 +165,12 @@ const StandardsGroup = ({
                   const statement = [].concat(statements)[i];
 
                   return (
-                    <div className='mb-0 inline-block standards-txt-container' key={i}>
-                      <strong>{code}:</strong>{' '}
-                      {statement}
+                    <div
+                      className="mb-0 inline-block standards-txt-container"
+                      key={i}
+                    >
+                      <strong>{code}:</strong>{" "}
+                      <span className="statement-txt-testing">{statement}</span>
                     </div>
                   );
                 })}
@@ -152,9 +179,14 @@ const StandardsGroup = ({
           </>
         )}
       >
-        <div className='p-3 selected-standard mx-2'>
-          <h6 className='my-1 bold pb-1 mb-1'>How does the lesson address this standard?</h6>
-          <RichText content={formatAlignmentNotes(alignmentNotes)} />
+        <div className="p-3 selected-standard mx-2">
+          <h6 className="my-1 bold pb-1 mb-1">
+            How does the lesson address this standard?
+          </h6>
+          <RichText
+            className="alignment-notes-testing"
+            content={alignmentNotes ? formatAlignmentNotes(alignmentNotes) : ""}
+          />
         </div>
       </Accordion>
     </div>

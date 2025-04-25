@@ -44,6 +44,8 @@ const useScrollHandler = setSectionDots => {
         }
       }
 
+      console.log("liNavDotId: ", liNavDotId);
+
       const percent = getPercentageSeen(elem);
       const _percentageInViewPort = ((percent === 100) || (percent === 0)) ? 0 : percent;
       return { percentageInViewPort: _percentageInViewPort, elemId: elem.id, sectionDotId: `sectionDot-${liNavDotId}` };

@@ -48,7 +48,4 @@ yarn-error.log*
 
 # vercel
 .vercel
-
-cypress
-
-cypress.config.js
+unit.json

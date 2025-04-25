@@ -1,17 +1,19 @@
+/* eslint-disable quotes */
+
 import ChunkGraph from './ChunkGraph';
 import LessonStep from './LessonStep';
 import RichText from '../../RichText';
 
 const Chunk = ({
   chunkTitle,
-  steps = [],
+  steps,
   chunkNum,
   chunkDur,
   durList,
+  lessonNum,
 }) => {
   return (
     <div className='mb-3'>
-      {/* <div className='bg-light-gray p-3 mt-4 mx-0 mb-3 rounded'> */}
       <h6 className='fw-bold mb-0 text-primary ms-1'>
         <span>
           <i className='bi bi-hourglass-split pe-1'></i>
@@ -20,14 +22,24 @@ const Chunk = ({
       </h6>
       <div className='d-col col-12 col-lg-7'>
         <ChunkGraph
-          className='mt-0'
+          className={`mt-0 chunk-graph-${lessonNum}-${chunkNum} chunk-graph-testing`}
           durList={durList}
           chunkNum={chunkNum}
         />
       </div>
-      {/* </div> */}
       <div className='border-l'>
-        {steps.map(step => <LessonStep key={step.Step} {...step} />)}
+        {(steps ?? []).map((step, index) => {
+          const stepId = `${step.StepTitle.split(" ").join("-")}-${index}`.replace("'", "");
+
+          return (
+            <LessonStep
+              key={step.Step}
+              className='mt-3 ms-sm-1 d-grid align-items-center'
+              id={stepId}
+              {...step}
+            />
+          );
+        })}
       </div>
     </div>
   );

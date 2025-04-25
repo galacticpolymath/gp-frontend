@@ -44,8 +44,8 @@ const BTN_TXT = "Check out this lesson!";
 
 const ShareWidget = ({
     pinterestMedia,
-    developmentUrl,
-    shareWidgetStyle = {},
+    developmentUrl = typeof window !== 'undefined' ? window.location.href : '',
+    shareWidgetStyle,
     widgetParentCss = 'share-widget gap-2 d-none d-md-flex position-fixed flex-column bg-white py-2 shadow start-0',
 }) => {
     const url = IS_ON_PRODUCTION ? ((typeof window !== 'undefined') && window?.location?.href) : developmentUrl;
@@ -55,7 +55,7 @@ const ShareWidget = ({
     }
 
     return (
-        <div style={shareWidgetStyle} className={widgetParentCss}>
+        <div style={shareWidgetStyle ?? {}} className={widgetParentCss}>
             <FacebookShareButton
                 url={url}
                 quote={BTN_TXT}
