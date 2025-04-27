@@ -6,29 +6,8 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
 
-import React, { useState } from "react";
-import Layout from "../../components/Layout";
-import JobVizIcon from "../../components/JobViz/JobVizIcon";
-import Lessons from "../../backend/models/lesson.js";
-import moment from "moment/moment";
-import Sponsors from "../../components/Sponsors.js";
-import { connectToMongodb } from "../../backend/utils/connection";
-import SelectedGpVideo from "../../components/LessonsPg/modals/SelectedGpVideo.js";
+import React from "react";
 import { nanoid } from "nanoid";
-import GpVideos from "../../components/LessonsPg/sections/GpVideos.js";
-import GpUnits from "../../components/LessonsPg/sections/GpUnits.js";
-import GpLessons from "../../components/LessonsPg/sections/GpLessons.js";
-import {
-  getGpVids,
-  getLinkPreviewObj,
-  getShowableUnits,
-} from "../../globalFns.js";
-import SelectedGpWebApp from "../../components/Modals/SelectedGpWebApp.js";
-import GpWebApps from "../../components/LessonsPg/sections/GpWebApps";
-import { GiShipWheel } from "react-icons/gi";
-import LessonSvg from "../../assets/img/gp-lesson-icon.svg";
-import UnitIconSvg from "../../assets/img/gp-unit-icon.svg";
-import Image from "next/image.js";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 import {
   filterInShowableUnits,

@@ -89,7 +89,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                             return (
                                 <LessonSlide
                                     key={index}
-                                    forLsn={lessonDocument.forLsn ?? lessonDocument.forPart}
+                                    forLsn={lessonDocument?.forLsn ?? lessonDocument.forPart}
                                     {...lessonDocument}
                                 />
                             );

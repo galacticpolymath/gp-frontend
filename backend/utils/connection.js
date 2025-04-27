@@ -41,6 +41,8 @@ export const connectToMongodb = async (
   dbType
 ) => {
   try {
+    console.log("dbType: ", dbType);
+
     if (isConnectedToDb && !dbType) {
       console.log("Already connected to DB.");
       return { wasSuccessful: true };
