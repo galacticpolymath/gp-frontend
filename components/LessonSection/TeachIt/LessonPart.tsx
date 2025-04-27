@@ -738,8 +738,8 @@ const LessonPart = ({
                   key={i}
                   chunkNum={i}
                   chunkDur={durList[i]}
-                  durList={durList}
-                  lessonNum={lsnNum}
+                  durList={durList.filter((dur) => dur != null)}
+                  lessonNum={lsnNum as number}
                   chunkTitle={chunk.chunkTitle}
                   steps={chunk.steps as IStep[]}
                 />

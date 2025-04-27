@@ -166,13 +166,6 @@ interface IChunkStep {
   
 }
 
-export interface IChunk {
-  chunkTitle: string;
-  chunkStart: number;
-  chunkDur: number;
-  steps: IChunkStep[];
-}
-
 interface INewUnitLesson<TItem extends IItem = IItem> {
   title: string | null;
   lsn: number | null;
