@@ -41,6 +41,8 @@ export const connectToMongodb = async (
   dbType
 ) => {
   try {
+    console.log("dbType: ", dbType);
+
     if (isConnectedToDb && !dbType) {
       console.log("Already connected to DB.");
       return { wasSuccessful: true };
@@ -131,3 +133,18 @@ export const connectToDbWithoutRetries = async (dbType) => {
     return false;
   }
 };
+
+await (async () => {
+  try {
+    const result = await connectToMongodb(15_000, 15, true)
+
+    if (!result.wasSuccessful) {
+      throw new Error("Failed to connect to the database.");
+    }
+
+    console.log("Initial connection made. Connected to DB.");
+    isConnectedToDb = true;
+  } catch (error) {
+    console.error("Connection error: ", error);
+  }
+})();

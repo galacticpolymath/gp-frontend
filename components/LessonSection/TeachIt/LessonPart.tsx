@@ -508,7 +508,7 @@ const LessonPart = ({
             <div className="mt-4 d-col col-12 col-lg-8">
               <div className="d-flex align-items-start">
                 <h5 className="fw-bold">
-                  <i className="bi bi-emoji-sunglasses me-2"></i>
+                  <i className="bi bi-emoji-sunglasses me-2" />
                   Learning Objectives
                 </h5>
               </div>
@@ -738,8 +738,8 @@ const LessonPart = ({
                   key={i}
                   chunkNum={i}
                   chunkDur={durList[i]}
-                  durList={durList}
-                  lessonNum={lsnNum}
+                  durList={durList.filter((dur) => dur != null)}
+                  lessonNum={lsnNum as number}
                   chunkTitle={chunk.chunkTitle}
                   steps={chunk.steps as IStep[]}
                 />

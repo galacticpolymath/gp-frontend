@@ -92,10 +92,10 @@ type TLiveUnit = INewUnitSchema & {
 interface ILiveUnit extends Pick<IUnitForUnitsPg, "locals">, TLiveUnit {}
 
 interface ICurrentUnits {
-  units: IGpUnitsItemsPg<ILiveUnit>;
-  lessons: IGpUnitsItemsPg<IUnitLesson>;
-  webApps: IGpUnitsItemsPg<IWebAppLink>;
-  gpVideos: IGpUnitsItemsPg<IMultiMediaItemForUI>;
+  units: IGpUnitsItemsPg<ILiveUnit> | null;
+  lessons: IGpUnitsItemsPg<IUnitLesson> | null;
+  webApps: IGpUnitsItemsPg<IWebAppLink> | null;
+  gpVideos: IGpUnitsItemsPg<IMultiMediaItemForUI> | null;
 }
 
 type TGpData = ILiveUnit | IUnitLesson | IWebAppLink | IMultiMediaItemForUI;

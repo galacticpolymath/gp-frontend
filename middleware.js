@@ -67,9 +67,6 @@ export async function middleware(request) {
       });
     }
 
-    let x = nextUrl?.pathname?.split("/")?.filter((val) => val);
-    console.log("x, sup there: ", x);
-
     if (
       !nextUrl.href.includes("api") &&
       nextUrl.pathname.includes("lessons") &&

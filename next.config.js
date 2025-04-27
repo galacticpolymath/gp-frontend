@@ -12,6 +12,10 @@ const cspHeader = `
 `;
 
 module.exports = {
+  env: {
+    MONGODB_URI: process.env.MONGODB_URI,
+    MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
+  },
   reactStrictMode: true,
   swcMinify: true,
   images: {

@@ -141,7 +141,6 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 ]);
 
 const LessonDetails = ({ lesson, unit }: IProps) => {
-  console.log("unit, sup there: ", unit);
   const router = useRouter();
   const { _isUserTeacher } = useUserContext();
   const { status, data } = useSession();
@@ -359,7 +358,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   }, []);
 
   const _unitSections = useMemo(() => {
-    console.log("unitSections, sup there: ", unitSections);
     const unitSectionsWithTitles = unitSections?.length
       ? getLessonSections(unitSections.filter(Boolean))
       : [];
@@ -386,7 +384,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     clickedSectionId: null,
   });
   // ABOVE: will be deleted
-  console.log("sectionDots, sup there: ", sectionDots);
 
   const [unitSectionDots, setUnitSectionDots] = useState<{
     dots: any;
@@ -901,7 +898,6 @@ export const getStaticProps = async (arg: {
               const itemListWithFilePreviewImgsPromises = lesson.itemList?.map(
                 async (item) => {
                   const { links, itemCat } = item;
-                  console.log("links, sup there: ", links);
                   const linkObj = links?.[0];
                   const url = linkObj?.url?.[0];
 
@@ -1050,8 +1046,6 @@ export const getStaticProps = async (arg: {
     let lessonToDisplayOntoUi = targetLessons.find(
       ({ numID, locale }) => numID === parseInt(id) && locale === loc
     );
-
-    console.log("targetUnitForUI: ", targetUnitForUI);
 
     if (
       !targetUnitForUI &&

@@ -44,7 +44,6 @@ interface IProps {
 }
 
 const LessonPreview = ({ lesson, unit }: IProps) => {
-  console.log("unit, yo there: ", unit);
   const latestSubRelease = lesson?.Section
     ? getLatestSubRelease(lesson?.Section)
     : {};
@@ -439,14 +438,11 @@ export const getStaticProps = async ({
     }
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
-    console.log("id, sup there: ", id);
     const { data: targetUnits } = await retrieveUnits(
       { numID: parseInt(id) },
       { __v: 0 },
       1
     );
-    // print targetUnits
-    console.log("targetUnits: ", targetUnits);
 
     if (targetUnits?.length) {
       return {
