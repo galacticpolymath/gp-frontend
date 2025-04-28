@@ -5,17 +5,17 @@
 import { useContext, useState } from "react";
 import Button from "../../../General/Button";
 import { UserContext } from "../../../../providers/UserProvider";
+import countryNames from "../../../../data/User/countryNames.json";
 
 /**
  * 
  * @param {{
  *  setErrors: Function,
- *  countryNames: string[],
  *  errorMsg: string,
  *  setIsInputFocused: Function
  * }} param
  */
-const CountrySection = ({ countryNames, _errors, setIsInputFocused }) => {
+const CountrySection = ({ _errors, setIsInputFocused }) => {
     const [searchResults, setSearchResults] = useState([]);
     const [isCountriesInputFocused, setIsCountriesInputFocused] = useState(false);
     const { _aboutUserForm } = useContext(UserContext);
