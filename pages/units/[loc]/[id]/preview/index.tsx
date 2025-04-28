@@ -34,6 +34,7 @@ import { IUnitOverview } from "../../../../../backend/models/Unit/types/overview
 import { IStandards } from "../../../../../backend/models/Unit/types/standards";
 import { IUnitTeachingMaterials } from "../../../../../backend/models/Unit/types/teachingMaterials";
 import UnitPreviewUI from "../../../../../components/UnitPreview/UnitPreviewUI";
+import { UNITS_URL_PATH } from "../../../../../shared/constants";
 
 interface IProps {
   lesson?: any;
@@ -353,7 +354,7 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
                   className="fs-5 fw-bold px-sm-0"
                 >
                   <Link
-                    href={`${linkUrlDomain}/lessons/${router.query.loc}/${router.query.id}#lesson_part_${lsn}`}
+                    href={`${linkUrlDomain}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}#lesson_part_${lsn}`}
                     target="_blank"
                     style={{ fontWeight: 700 }}
                   >

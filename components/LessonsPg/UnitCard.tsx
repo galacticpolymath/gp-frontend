@@ -6,6 +6,7 @@ import Link from "next/link";
 import { BsGlobe } from "react-icons/bs";
 import React, { JSX } from "react";
 import { ILiveUnit } from "../../types/global";
+import { UNITS_URL_PATH } from "../../shared/constants";
 
 interface ITagProps {
   children: React.ReactNode;
@@ -53,7 +54,7 @@ const UnitCard: React.FC<IUnitCardProps> = ({ unit, PillComp, unitImgSrc }) => {
   return (
     <Link
       key={_id}
-      href={`/lessons/${locale}/${numID}`}
+      href={`/${UNITS_URL_PATH}/${locale}/${numID}`}
       className="w-100 pointer 
       disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg"
     >

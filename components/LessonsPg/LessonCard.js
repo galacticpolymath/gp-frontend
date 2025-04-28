@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BsGlobe } from "react-icons/bs";
+import { UNITS_URL_PATH } from "../../shared/constants";
 
 const Tag = ({
   children,
@@ -35,7 +36,7 @@ const LessonCard = ({ lesson, PillComp = null, lessonImgSrc }) => {
   return (
     <Link
       key={_id}
-      href={`/lessons/${locale}/${numID}`}
+      href={`/${UNITS_URL_PATH}/${locale}/${numID}`}
       className="w-100 pointer 
       disable-underline-a-tags g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow cardsOnLessonPg"
     >

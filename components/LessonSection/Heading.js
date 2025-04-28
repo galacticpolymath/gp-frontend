@@ -6,6 +6,7 @@ import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 import CopyableTxt from '../CopyableTxt';
 import { useRouter } from 'next/router';
+import { UNITS_URL_PATH } from '../../shared/constants';
 
 const Heading = ({ SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) => {
   const ref = useRef();
@@ -17,7 +18,7 @@ const Heading = ({ SectionTitle, _sectionDots, isAvailLocsMoreThan1 }) => {
     const currentSectionInView = router.asPath.split("#").at(-1);
 
     if (!(currentSectionInView === h2Id)) {
-      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${h2Id}`;
+      url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}#${h2Id}`;
     }
 
     navigator.clipboard.writeText(url);

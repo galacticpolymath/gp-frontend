@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import CustomLink from '../CustomLink';
 import ForLessonTxt from '../LessonsPg/ForLessonTxt';
 import ForLessonTxtWrapper from '../LessonsPg/ForLessonTxtWrapper';
+import { UNITS_URL_PATH } from '../../shared/constants';
 
 const { Title } = Modal;
 
@@ -129,7 +130,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                         </CustomLink>
                         <CustomLink
                             style={{ width: 'fit-content' }}
-                            hrefStr={`/lessons/en-US/${selectedGpWebApp?.unitNumID}`}
+                            hrefStr={`/${UNITS_URL_PATH}/en-US/${selectedGpWebApp?.unitNumID}`}
                             className='mt-2 no-link-decoration underline-on-hover d-flex'
                             color='#75757D'
                         >

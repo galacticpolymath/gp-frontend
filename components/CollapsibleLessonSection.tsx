@@ -1,13 +1,21 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-max-props-per-line */
-import React, { DetailedHTMLProps, HTMLAttributes, ReactElement, useMemo, useRef, useState } from "react";
+import React, {
+  DetailedHTMLProps,
+  HTMLAttributes,
+  ReactElement,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import useLessonElementInView from "../customHooks/useLessonElementInView";
 import Accordion from "./Accordion";
 import CopyableTxt from "./CopyableTxt";
 import { useRouter } from "next/router";
 import { Collapse } from "react-bootstrap";
 import { ISectionDots, TUseStateReturnVal } from "../types/global";
+import { UNITS_URL_PATH } from "../shared/constants";
 
 interface CollapsibleLessonSectionProps {
   SectionTitle?: string;
@@ -41,7 +49,8 @@ const CollapsibleLessonSection = ({
 }: CollapsibleLessonSectionProps) => {
   const ref = useRef<HTMLHeadingElement>(null);
   const router = useRouter();
-  const [isAccordionContentOpen, setIsAccordionContentOpen] = useState(initiallyExpanded);
+  const [isAccordionContentOpen, setIsAccordionContentOpen] =
+    useState(initiallyExpanded);
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
   const _h2Id = SectionTitle.toLowerCase()
     .replace(/[0-9.]/g, "")
@@ -56,7 +65,7 @@ const CollapsibleLessonSection = ({
     const currentSectionInView = router.asPath.split("#").at(-1);
 
     if (!(currentSectionInView === _accordionId)) {
-      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#${_h2Id}`;
+      url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}#${_h2Id}`;
     }
 
     navigator.clipboard.writeText(url);
