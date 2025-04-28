@@ -7,6 +7,7 @@ import moment from "moment";
 import { getVideoThumb } from "./components/LessonSection/Preview/utils";
 import { SHOWABLE_LESSONS_STATUSES, STATUSES_OF_SHOWABLE_LESSONS } from "./globalVars";
 import { getLinkPreview } from "link-preview-js";
+import { UNITS_URL_PATH } from "./shared/constants";
 
 export const createPaginationArr = (arr) => {
     let pgsArr = [];
@@ -118,7 +119,7 @@ export const getGpLessons = (lessons) => {
                     tags = tags?.length ? tags.filter((tag) => tag) : tags;
                     const lessonPartForUI = {
                         tags: tags ?? null,
-                        lessonPartPath: `/lessons/${lesson.locale}/${lesson.numID}#lesson_part_${lessonPart.lsnNum}`,
+                        lessonPartPath: `/${UNITS_URL_PATH}/${lesson.locale}/${lesson.numID}#lesson_part_${lessonPart.lsnNum}`,
                         tile:
                             lessonPartFromClassroomObj?.tile ??
                             "https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png",

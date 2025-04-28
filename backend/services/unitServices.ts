@@ -15,6 +15,7 @@ import { getLinkPreviewObj, getShowableUnits } from "../../globalFns";
 import moment from "moment";
 import { nanoid } from "nanoid";
 import { getLiveUnits } from "../../shared/fns";
+import { UNITS_URL_PATH } from "../../shared/constants";
 
 const insertUnit = async (unit: INewUnitSchema) => {
   try {
@@ -372,7 +373,7 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
 
         const unitLesson = {
           tags: lesson.tags ?? null,
-          lessonPartPath: `/lessons/${unit.locale}/${unit.numID}#lesson_part_${lesson.lsn}`,
+          lessonPartPath: `/${UNITS_URL_PATH}/${unit.locale}/${unit.numID}#lesson_part_${lesson.lsn}`,
           tile:
             lesson?.tile ??
             "https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png",
