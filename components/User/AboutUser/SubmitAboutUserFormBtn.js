@@ -313,7 +313,7 @@ const SubmitAboutUserFormBtn = ({
 
             if (country?.length <= 0) {
                 errors.set('country', '*This field is required.');
-            } else if (!countryNames?.includes(country)) {
+            } else if (![]?.includes(country)) {
                 errors.set('country', '*Invalid country name.');
             }
 

@@ -284,6 +284,8 @@ const AboutUserModal = () => {
         );
         const responseBodyData = await response.json();
 
+        console.log("responseBodyData, sup there: ", responseBodyData);
+
         if (responseBodyData?.length) {
           const countryNamesReceived = responseBodyData.map(
             (country) => country.name.common
@@ -417,7 +419,7 @@ const AboutUserModal = () => {
             </section>
             <CountrySection
               setIsInputFocused={setIsInputFocused}
-              countryNames={countryNames}
+              countryNames={[]}
               _errors={[errors, setErrors]}
             />
             <section className="d-flex flex-column col-12 col-sm-8 col-lg-2">
