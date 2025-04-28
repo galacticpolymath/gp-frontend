@@ -16,9 +16,9 @@ import {
   getUnitLessons,
   retrieveUnits,
 } from "../../backend/services/unitServices";
-import { createDbProjections } from "../../constants/functions";
 import { ICurrentUnits } from "../../types/global";
 import UnitsPg from "../../components/LessonsPg";
+import { createDbProjections } from "../../shared/fns";
 
 interface IProps {
   oldUnits: any;

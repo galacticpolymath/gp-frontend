@@ -18,7 +18,7 @@ import {
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";
 import UnitsPg from "../components/LessonsPg";
 import { ICurrentUnits } from "../types/global";
-import { createDbProjections } from "../constants/functions";
+import { createDbProjections } from "../shared/fns";
 
 interface IProps {
   currentUnits: ICurrentUnits | null;

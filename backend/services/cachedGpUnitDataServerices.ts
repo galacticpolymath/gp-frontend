@@ -7,10 +7,10 @@ import { getUnits } from "../helperFns/lessonsFns";
 import { CustomError } from "../utils/errors";
 import cache from "../utils/cache";
 import { getGpMultiMedia, getUnitLessons, retrieveUnits } from "./unitServices";
-import { getLiveUnits, getTotalUnitLessons } from "../../constants/functions";
 import NodeCache from "node-cache";
 import { IMultiMediaItemForUI, IUnitLesson } from "../../types/global";
 import { TGpUnitDataType } from "../../customHooks/useGetGpDataStates";
+import { getLiveUnits, getTotalUnitLessons } from "../../shared/fns";
 
 const GP_DATA_EXPIRATION_TIME_MS = 3_600_000 * 12;
 

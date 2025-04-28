@@ -13,8 +13,8 @@ import { getVideoThumb } from "../../components/LessonSection/Preview/utils";
 import { STATUSES_OF_SHOWABLE_LESSONS, WEB_APP_PATHS } from "../../globalVars";
 import { getLinkPreviewObj, getShowableUnits } from "../../globalFns";
 import moment from "moment";
-import { getLiveUnits } from "../../constants/functions";
 import { nanoid } from "nanoid";
+import { getLiveUnits } from "../../shared/fns";
 
 const insertUnit = async (unit: INewUnitSchema) => {
   try {
