@@ -73,7 +73,6 @@ export async function middleware(request) {
       nextUrl?.pathname?.split("/")?.filter((val) => val)?.length == 2 &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
-      // checking if the unit exist
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
       const getUnitsUrl = new URL(`${nextUrl.origin}/api/get-units`);
