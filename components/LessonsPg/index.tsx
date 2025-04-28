@@ -31,8 +31,10 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
   const origin = typeof window === 'undefined' ? '' : window.location.origin;
 
-  const handleGpWebAppCardClick = (app: object) => () => {
+  const handleGpWebAppCardClick = (app: object) => {
+    console.log('app, sup there: ', app);
     setSelectedGpWebApp(app);
+    setIsWebAppModalShown(true);
   };
 
   return (
@@ -173,7 +175,10 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
       </section>
       <section className='d-flex justify-content-center align-items-center'>
         <div className='lessons-pg-sec lessons-pg-sec-max-width'>
-          <CurrentGpUnits units={units?.data ?? []} didErrorOccur={!!didErrorOccur} />
+          <CurrentGpUnits
+            units={units?.data ?? []}
+            didErrorOccur={!!didErrorOccur}
+          />
           <section className='my-4 my-md-3 d-flex justify-content-center align-items-center img-background-container lessons-section-border-top lessons-section-border-bottom'>
             <div
               style={{ width: '86%', maxWidth: '1240px' }}
