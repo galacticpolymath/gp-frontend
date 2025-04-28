@@ -452,7 +452,13 @@ const AccountPg = () => {
                 </section>
                 <section className='row mt-4'>
                     <section className='col-12 d-flex flex-column align-items-center justify-center'>
-                        <BootstrapButton onClick={() => router.push('/')} variant="primary" size="sm" className='p-1' style={{ width: '210px' }}>
+                        <BootstrapButton
+                            onClick={() => router.push('/')}
+                            variant="primary"
+                            size="sm"
+                            className='p-1'
+                            style={{ width: '210px' }}
+                        >
                             <span style={{ fontSize: '18px', textTransform: 'none' }} className=''>Explore Lessons</span>
                         </BootstrapButton>
                     </section>

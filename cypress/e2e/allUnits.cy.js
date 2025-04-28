@@ -42,7 +42,7 @@ function checkIfIFrameLoaded(identifier) {
 }
 
 function testUIOfUnit(unitNumID, locale) {
-    cy.visit(`http://localhost:3000/lessons/${locale}/${unitNumID}`);
+    cy.visit(`http://localhost:3000/units/${locale}/${unitNumID}`);
 
     cy.wait(2500);
 
