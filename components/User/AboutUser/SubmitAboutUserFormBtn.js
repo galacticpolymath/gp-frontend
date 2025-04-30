@@ -13,6 +13,7 @@ import { CustomError } from "../../../backend/utils/errors";
 import { convertMapToObj, getIsParsableToVal, sleep } from "../../../globalFns";
 import { ModalContext } from "../../../providers/ModalProvider";
 import { Spinner } from "react-bootstrap";
+import { COUNTRY_NAMES } from "../../../shared/constants";
 
 /** 
  * @function
@@ -33,7 +34,6 @@ export const sendAboutUserFormToServer = async (
     setIsAboutUserModalDisplayed,
     setNotifyModal,
     email,
-    countryNames,
     token,
 ) => {
     setWasBtnClicked(true);
@@ -120,7 +120,7 @@ export const sendAboutUserFormToServer = async (
 
         if (country?.length <= 0) {
             errors.set('country', '*This field is required.');
-        } else if (!countryNames?.includes(country)) {
+        } else if (!COUNTRY_NAMES.has(country)) {
             errors.set('country', '*Invalid country name.');
         }
 
@@ -194,7 +194,6 @@ export const sendAboutUserFormToServer = async (
 
 const SubmitAboutUserFormBtn = ({
     setErrors,
-    countryNames,
     _wasBtnClicked,
     _name,
 }) => {
@@ -313,7 +312,7 @@ const SubmitAboutUserFormBtn = ({
 
             if (country?.length <= 0) {
                 errors.set('country', '*This field is required.');
-            } else if (!countryNames?.includes(country)) {
+            } else if (!COUNTRY_NAMES.has(country)) {
                 errors.set('country', '*Invalid country name.');
             }
 

@@ -8,7 +8,7 @@ import { IWebAppLink } from '../../../types/global';
 
 interface IProps {
   webApps?: IWebAppLink[];
-  handleGpWebAppCardClick?: (app: IWebAppLink) => void;
+  handleGpWebAppCardClick: (app: IWebAppLink) => void;
 }
 
 const GpWebApps = ({ webApps, handleGpWebAppCardClick }: IProps) => {
@@ -19,9 +19,7 @@ const GpWebApps = ({ webApps, handleGpWebAppCardClick }: IProps) => {
           <div
             key={index}
             onClick={() => {
-              if (handleGpWebAppCardClick) {
-                handleGpWebAppCardClick(webApp);
-              }
+              handleGpWebAppCardClick(webApp);
             }}
             className='position-relative pointer g-col-12 g-col-lg-6 g-col-xl-4 mx-md-auto d-grid p-3 bg-white rounded-3 lessonsPgShadow jobVizCardOnLessonsPg'
           >
@@ -52,7 +50,6 @@ const GpWebApps = ({ webApps, handleGpWebAppCardClick }: IProps) => {
           </div>
         );
       })}
-      ;
     </>
   );
 };

@@ -82,7 +82,6 @@ const AboutUserModal = () => {
   const [isAboutMeFormModalDisplayed, setIsAboutMeFormModalDisplayed] =
     _isAboutMeFormModalDisplayed;
   const [textareaMaxHeight, setTextareaMaxHeight] = useState(0);
-  const [countryNames, setCountryNames] = useState([]);
   const [errors, setErrors] = useState(new Map());
   const [, setIsInputFocused] = useState(false);
   const [wasBtnClicked, setWasBtnClicked] = useState(false);
@@ -276,29 +275,6 @@ const AboutUserModal = () => {
     }
   }, [isAboutMeFormModalDisplayed]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await fetch(
-          "https://restcountries.com/v3.1/all?fields=name,flags"
-        );
-        const responseBodyData = await response.json();
-
-        if (responseBodyData?.length) {
-          const countryNamesReceived = responseBodyData.map(
-            (country) => country.name.common
-          );
-
-          countryNamesReceived.sort();
-
-          setCountryNames(countryNamesReceived);
-        }
-      } catch (error) {
-        console.error("Failed to retrieve countries. Reason: ", error);
-      }
-    })();
-  }, []);
-
   return (
     <Modal
       show={isAboutMeFormModalDisplayed}
@@ -417,7 +393,6 @@ const AboutUserModal = () => {
             </section>
             <CountrySection
               setIsInputFocused={setIsInputFocused}
-              countryNames={countryNames}
               _errors={[errors, setErrors]}
             />
             <section className="d-flex flex-column col-12 col-sm-8 col-lg-2">
@@ -746,7 +721,6 @@ const AboutUserModal = () => {
             </Link>
             <SubmitAboutUserFormBtn
               setErrors={setErrors}
-              countryNames={countryNames}
               _wasBtnClicked={[wasBtnClicked, setWasBtnClicked]}
               _name={[name, setName]}
             />

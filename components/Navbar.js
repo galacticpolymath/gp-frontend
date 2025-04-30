@@ -65,20 +65,6 @@ export default function Navbar() {
                     Home
                   </Link>
                 </li>
-                {[
-                  ['/lessons', 'Lessons'],
-                  ['/hire-us', 'Hire Us'],
-                  ['/about', 'About'],
-                ].map(([url, title]) => (
-                  <li key={url} className='nav-item my-auto'>
-                    <Link
-                      href={url}
-                      className={`nav-link ${router.pathname.includes(url) ? 'fw-bold active' : 'fw-light'}`}
-                    >
-                      {title}
-                    </Link>
-                  </li>
-                ))}
               </ul>
               {(!router.asPath.includes('/account') || (session.status === 'authenticated')) && <LoginContainerForNavbar className='login-container' _modalAnimation={[modalAnimation, setModalAnimation]} />}
             </div>

@@ -6,43 +6,21 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
 
-import React, { useState } from "react";
-import Layout from "../../components/Layout";
-import JobVizIcon from "../../components/JobViz/JobVizIcon";
-import Lessons from "../../backend/models/lesson.js";
-import moment from "moment/moment";
-import Sponsors from "../../components/Sponsors.js";
-import { connectToMongodb } from "../../backend/utils/connection";
-import SelectedGpVideo from "../../components/LessonsPg/modals/SelectedGpVideo.js";
+import React from "react";
 import { nanoid } from "nanoid";
-import GpVideos from "../../components/LessonsPg/sections/GpVideos.js";
-import GpUnits from "../../components/LessonsPg/sections/GpUnits.js";
-import GpLessons from "../../components/LessonsPg/sections/GpLessons.js";
-import {
-  getGpVids,
-  getLinkPreviewObj,
-  getShowableUnits,
-} from "../../globalFns.js";
-import SelectedGpWebApp from "../../components/Modals/SelectedGpWebApp.js";
-import GpWebApps from "../../components/LessonsPg/sections/GpWebApps";
-import { GiShipWheel } from "react-icons/gi";
-import LessonSvg from "../../assets/img/gp-lesson-icon.svg";
-import UnitIconSvg from "../../assets/img/gp-unit-icon.svg";
-import Image from "next/image.js";
-import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 import {
   filterInShowableUnits,
   getGpMultiMedia,
   getGpWebApps,
   getUnitLessons,
   retrieveUnits,
-} from "../../backend/services/unitServices";
-import { createDbProjections } from "../../constants/functions";
-import { ICurrentUnits } from "../../types/global";
-import UnitsPg from "../../components/LessonsPg";
+} from "../backend/services/unitServices";
+import { INewUnitSchema } from "../backend/models/Unit/types/unit";
+import UnitsPg from "../components/LessonsPg";
+import { ICurrentUnits } from "../types/global";
+import { createDbProjections } from "../shared/fns";
 
 interface IProps {
-  oldUnits: any;
   currentUnits: ICurrentUnits | null;
 }
 
@@ -129,7 +107,6 @@ export async function getStaticProps() {
 
       return {
         props: {
-          oldUnits: null,
           currentUnits: {
             units: {
               isLast: unitsForUI.length <= DATA_PER_PG,
@@ -166,7 +143,7 @@ export async function getStaticProps() {
 
     return {
       props: {
-        oldUnits: {
+        currentUnits: {
           units: null,
           lessonsObj: null,
           gpVideosObj: null,

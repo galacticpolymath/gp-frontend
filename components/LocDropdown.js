@@ -10,6 +10,7 @@ import Fade from "./Fade";
 import { AiOutlineClose } from "react-icons/ai";
 import { Spinner } from "react-bootstrap";
 import { useRouter } from 'next/router';
+import { UNITS_URL_PATH } from "../shared/constants";
 
 const locToCountry = {
   "en-US": "US",
@@ -58,7 +59,7 @@ const LocDropdown = ({ id, availLocs, loc }) => {
 
     if ((typeof router.query.loc === 'string') && (locDest !== router.query.loc)) {
       setIsSpinnerDisplayed(true);
-      window.location = `/lessons/${locDest}/${id}`;
+      window.location = `/${UNITS_URL_PATH}/${locDest}/${id}`;
     }
   };
 

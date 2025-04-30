@@ -28,7 +28,8 @@ export default async function handler(
     }
 
     const newUnit: INewUnitSchema = request?.body?.unit;
-    const { wasSuccessful } = await connectToMongodb(15_000, 0, true);
+    const { wasSuccessful } = 
+      await connectToMongodb(15_000, 0, true, request.body.dbType);
 
     if (!wasSuccessful) {
       throw new CustomError("Failed to connect to the database.", 500);

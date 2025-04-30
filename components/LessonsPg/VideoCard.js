@@ -11,6 +11,7 @@ import { useEffect, useRef } from 'react';
 import Button from '../General/Button';
 import ForLessonTxtWrapper from './ForLessonTxtWrapper';
 import ForLessonTxt from './ForLessonTxt';
+import { UNITS_URL_PATH } from '../../shared/constants';
 
 const VideoCard = ({
     videoObj,
@@ -19,7 +20,7 @@ const VideoCard = ({
     cardClassName = 'd-flex flex-column justify-content-between py-3 px-4 position-relative w-100 g-col-sm-12 g-col-md-6 g-col-lg-6 g-col-xl-4 mx-auto d-grid rounded-3 bg-white lessonsPgShadow',
     style = {},
 }) => {
-    let href = videoObj.lessonNumId ? `/lessons/en-US/${videoObj.unitNumId}#lesson_part_${videoObj.lessonNumId}` : `/lessons/en-US/${videoObj.unitNumId}`;
+    let href = videoObj.lessonNumId ? `/${UNITS_URL_PATH}/en-US/${videoObj.unitNumId}#lesson_part_${videoObj.lessonNumId}` : `/${UNITS_URL_PATH}/en-US/${videoObj.unitNumId}`;
     const videoCardRef = useRef();
     const unitTitle = ['.', '!'].includes(videoObj.lessonUnitTitle.split('').at(-1)) ? videoObj.lessonUnitTitle : `${videoObj.lessonUnitTitle}.`;
 

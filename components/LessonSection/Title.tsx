@@ -13,6 +13,7 @@ import {
   IUnitVersions,
   TUnitOverviewPropsForUI,
 } from "../../backend/models/Unit/types/overview";
+import { UNITS_URL_PATH } from "../../shared/constants";
 
 export const getLatestSubRelease = (versions?: IUnitVersions[]) => {
   if (!versions || !Array.isArray(versions)) {
@@ -95,7 +96,7 @@ const Title = (props: ITitleProps) => {
       }
     }
 
-    window.location.href = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#version-notes`;
+    window.location.href = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}#version-notes`;
   };
 
   const lastSubRelease = useMemo(() => getLatestSubRelease(versions), []);

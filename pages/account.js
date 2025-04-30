@@ -18,6 +18,7 @@ import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
 import { getAllUrlVals, getChunks, getIsParsable, resetUrl } from '../globalFns';
 import { FaUserAlt } from 'react-icons/fa';
+import BootstrapButton from 'react-bootstrap/Button';
 
 export const getUserAccountData = async (token, email, customProjections = []) => {
     try {
@@ -139,7 +140,6 @@ const AccountPg = () => {
     const [, setNotifyModal] = _notifyModal;
     const { status, data } = useSession();
     const { user, token } = data ?? {};
-    console.log("token: ", token);
     const { email, image, name } = user ?? {};
     const occupation = typeof localStorage === 'undefined' ? null : JSON.parse(localStorage.getItem('userAccount') ?? '{}').occupation;
     const firstName = aboutUserForm?.name?.first || (name?.first ?? '')
@@ -425,8 +425,9 @@ const AccountPg = () => {
                     </section>
                     <section className='col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2'>
                         <Button
+                            defaultStyleObj={{ width: '210px' }}
                             handleOnClick={handleViewAboutMeFormBtnClick}
-                            classNameStr='rounded px-3 border shadow mt-2'
+                            classNameStr='rounded border shadow mt-2'
                         >
                             <span
                                 style={{ fontWeight: 410 }}
@@ -436,8 +437,9 @@ const AccountPg = () => {
                             </span>
                         </Button>
                         <Button
+                            defaultStyleObj={{ width: '210px' }}
                             handleOnClick={handleAccontSettingsBtnClick}
-                            classNameStr='rounded px-3 border shadow mt-2'
+                            classNameStr='rounded border shadow mt-2'
                         >
                             <span
                                 style={{ fontWeight: 410 }}
@@ -446,6 +448,19 @@ const AccountPg = () => {
                                 Account Settings
                             </span>
                         </Button>
+                    </section>
+                </section>
+                <section className='row mt-4'>
+                    <section className='col-12 d-flex flex-column align-items-center justify-center'>
+                        <BootstrapButton
+                            onClick={() => router.push('/')}
+                            variant="primary"
+                            size="sm"
+                            className='p-1'
+                            style={{ width: '210px' }}
+                        >
+                            <span style={{ fontSize: '18px', textTransform: 'none' }} className=''>Explore Lessons</span>
+                        </BootstrapButton>
                     </section>
                 </section>
             </div>

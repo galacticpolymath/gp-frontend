@@ -283,8 +283,6 @@ const TeachItUI = <
 
               let lsnExt = null;
 
-              console.log("part: ", part);
-
               if ("goingFurther" in part) {
                 lsnExt = part.goingFurther;
               } else if (dataLesson?.length) {

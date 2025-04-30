@@ -1,9 +1,9 @@
 User-agent: *
-Disallow: /lessons/en-US/999
+Disallow: /units/en-US/999
 
 User-agent: Googlebot
 Disallow: *.dev/*
 
 User-agent: AdsBot-Google
-Disallow: /lessons/en-US/999
+Disallow: /units/en-US/999
 

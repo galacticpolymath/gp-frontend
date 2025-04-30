@@ -26,6 +26,7 @@ import {
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import { IItemForClient, TUseStateReturnVal } from "../../../types/global";
 import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
+import { LAST_LESSON_NUM_ID, UNITS_URL_PATH } from "../../../shared/constants";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -137,7 +138,7 @@ const LessonPart = ({
     const currentSectionInView = router.asPath.split("#").at(-1);
 
     if (!(currentSectionInView === _accordionId)) {
-      url = `${window.location.origin}/lessons/${router.query.loc}/${router.query.id}#lesson_${_accordionId}`;
+      url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}#lesson_${_accordionId}`;
     }
 
     navigator.clipboard.writeText(url);
@@ -150,7 +151,7 @@ const LessonPart = ({
       lessonPartIdInUrl === `lesson_${_accordionId}` &&
       !ComingSoonLessonEmailSignUp &&
       typeof lsnNum === "string" &&
-      lsnNum === "last"
+      lsnNum === LAST_LESSON_NUM_ID.toString()
     ) {
       const previousLessonPartNum = partsArr.length - 1;
 
@@ -194,7 +195,7 @@ const LessonPart = ({
 
     if (!checkIfElementClickedWasClipboard(event.target)) {
       const previousLessonPartNum =
-        lsnNum === "last" ? partsArr.length - 1 : lsnNumParsed - 1;
+        lsnNum === LAST_LESSON_NUM_ID ? partsArr.length - 1 : lsnNumParsed - 1;
 
       setNumsOfLessonPartsThatAreExpanded((prevState) => {
         if (!isExpanded) {
@@ -230,9 +231,7 @@ const LessonPart = ({
 
   if (isExpanded && lsnNumParsed == 1) {
     _borderTop = "none";
-  }
-
-  if (!isExpanded && lsnNumParsed == 1) {
+  } else if (!isExpanded && lsnNumParsed == 1) {
     _borderTop = defaultBorder;
   }
 
@@ -276,7 +275,7 @@ const LessonPart = ({
   return (
     <div style={accordionStyleAccordionWrapper}>
       <Accordion
-        isExpandability={isAccordionExpandable}
+        isExpandability={false}
         handleOnClick={undefined}
         highlighted={undefined}
         setContentId={undefined}
@@ -738,8 +737,8 @@ const LessonPart = ({
                   key={i}
                   chunkNum={i}
                   chunkDur={durList[i]}
-                  durList={durList}
-                  lessonNum={lsnNum}
+                  durList={durList.filter((dur) => dur != null)}
+                  lessonNum={lsnNum as number}
                   chunkTitle={chunk.chunkTitle}
                   steps={chunk.steps as IStep[]}
                 />

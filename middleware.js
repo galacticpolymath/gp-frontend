@@ -37,6 +37,7 @@ const getUnitNum = (pathName) =>
           !Number.isNaN(parseInt(val)) && typeof parseInt(val) === "number"
       )
   );
+const UNITS_PATH_NAME = "units";
 
 export async function middleware(request) {
   try {
@@ -67,16 +68,19 @@ export async function middleware(request) {
       });
     }
 
+    console.log(`middleware: headers are present, so we are allowing the request to continue...`);
+
     if (
       !nextUrl.href.includes("api") &&
-      nextUrl.pathname.includes("lessons") &&
+      nextUrl.pathname.includes(UNITS_PATH_NAME) &&
       nextUrl?.pathname?.split("/")?.filter((val) => val)?.length == 2 &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
-      // checking if the unit exist
+      console.log(`middleware: /units route was detected, so we are redirecting to /units/[unitNum]`);
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
       const getUnitsUrl = new URL(`${nextUrl.origin}/api/get-units`);
+
       getUnitsUrl.searchParams.set(
         "projectionObj",
         JSON.stringify({ locale: 1, DefaultLocale: 1 })
@@ -109,7 +113,7 @@ export async function middleware(request) {
         return NextResponse.redirect(`${nextUrl.origin}/error`);
       } else if (units && unitLocale) {
         return NextResponse.redirect(
-          `${nextUrl.origin}/lessons/${unitLocale}/${unitNum}`
+          `${nextUrl.origin}/${UNITS_PATH_NAME}/${unitLocale}/${unitNum}`
         );
       }
 
@@ -131,12 +135,12 @@ export async function middleware(request) {
 
       console.log("redirecting the user to the units page...");
       return NextResponse.redirect(
-        `${nextUrl.origin}/lessons/${locale}/${unitNum}`
+        `${nextUrl.origin}/${UNITS_PATH_NAME}/${locale}/${unitNum}`
       );
     } else if (
       // unit with a locale value is present in the url
       !nextUrl.href.includes("api") &&
-      nextUrl.pathname.includes("lessons") &&
+      nextUrl.pathname.includes(UNITS_PATH_NAME) &&
       nextUrl?.pathname?.split("/")?.filter((val) => val)?.length == 3 &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
@@ -201,11 +205,11 @@ export async function middleware(request) {
       const defaultUnit = units?.length ? units[0] : lessons[0];
 
       return NextResponse.redirect(
-        `${nextUrl.origin}/lessons/${defaultUnit.DefaultLocale}/${unitNum}`
+        `${nextUrl.origin}/${UNITS_PATH_NAME}/${defaultUnit.DefaultLocale}/${unitNum}`
       );
     } else if (
       !nextUrl.href.includes("api") &&
-      nextUrl.pathname.includes("lessons")
+      nextUrl.pathname.includes(UNITS_PATH_NAME)
     ) {
       console.log("Not on a specific unit.");
 
@@ -410,7 +414,7 @@ export const config = {
     "/api/get-about-user-form",
     "/api/update-password",
     "/password-reset",
-    "/lessons/:path*",
+    "/units/:path*",
     "/api/delete-user",
     "/api/get-user-account-data",
     "/api/update-user",
@@ -419,8 +423,7 @@ export const config = {
     "/api/insert-unit",
     "/api/copy-files",
     "/api/get-signed-in-user-brevo-status",
-    // "/api/insert-unit",
-    // "/api/delete-unit",
-    // "/api/update-unit",
+    "/api/delete-unit",
+    "/api/update-unit",
   ],
 };

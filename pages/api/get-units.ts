@@ -29,9 +29,10 @@ export default async function handler(
       throw new CustomError("This route only accepts GET requests.", 404);
     }
 
-    const { filterObj, projectionsObj } = (query ?? {}) as {
+    const { filterObj, projectionsObj, dbType } = (query ?? {}) as {
       filterObj: string;
       projectionsObj: string;
+      dbType?: "dev" | "production";
     };
 
     const dbProjections: unknown =
@@ -71,7 +72,8 @@ export default async function handler(
     const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
       15_000,
       0,
-      true
+      true,
+      dbType
     );
 
     if (!wasConnectionSuccessful) {

@@ -46,6 +46,7 @@ import {
   INewUnitLesson,
   IResource,
 } from "../../../../backend/models/Unit/types/teachingMaterials";
+import { UNITS_URL_PATH } from "../../../../shared/constants";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -608,8 +609,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     url: _unit.URL,
     imgAlt: `${_unit.Title} cover image`,
     className: "overflow-hidden",
-    canonicalLink: `https://www.galacticpolymath.com/lessons/${_unit.numID}`,
-    defaultLink: `https://www.galacticpolymath.com/lessons/${_unit.numID}`,
+    canonicalLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
+    defaultLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
     langLinks: _unit.headLinks ?? [],
   };
 
@@ -1069,7 +1070,7 @@ export const getStaticProps = async (arg: {
       };
     }
     const headLinks = targetLessons.map(({ locale, numID }) => [
-      `https://www.galacticpolymath.com/lessons/${locale}/${numID}`,
+      `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${locale}/${numID}`,
       locale,
     ]);
     lessonToDisplayOntoUi = {

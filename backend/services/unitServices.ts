@@ -13,8 +13,9 @@ import { getVideoThumb } from "../../components/LessonSection/Preview/utils";
 import { STATUSES_OF_SHOWABLE_LESSONS, WEB_APP_PATHS } from "../../globalVars";
 import { getLinkPreviewObj, getShowableUnits } from "../../globalFns";
 import moment from "moment";
-import { getLiveUnits } from "../../constants/functions";
 import { nanoid } from "nanoid";
+import { getLiveUnits } from "../../shared/fns";
+import { UNITS_URL_PATH } from "../../shared/constants";
 
 const insertUnit = async (unit: INewUnitSchema) => {
   try {
@@ -215,7 +216,7 @@ const getGpMultiMedia = (units: INewUnitSchema[]) => {
   const gpVideos: IMultiMediaItemForUI[] = [];
 
   for (const unit of units) {
-    if (!unit.FeaturedMultimedia) {
+    if (!unit.FeaturedMultimedia || !unit) {
       continue;
     }
 
@@ -246,7 +247,7 @@ const getGpMultiMedia = (units: INewUnitSchema[]) => {
           thumbnail: getVideoThumb(mediaItem.mainLink),
           unitNumId: numID,
           lessonNumId:
-            mediaItem.forLsn && Number.isInteger(+mediaItem.forLsn)
+            mediaItem?.forLsn && Number.isInteger(+mediaItem?.forLsn)
               ? parseInt(mediaItem.forLsn)
               : null,
         });
@@ -315,7 +316,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
       }
 
       const webApp = {
-        lessonIdStr: multiMediaItem.forLsn,
+        lessonIdStr: multiMediaItem?.forLsn,
         unitNumID: unit.numID,
         webAppLink: multiMediaItem.mainLink,
         title: multiMediaItem.title,
@@ -372,7 +373,7 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
 
         const unitLesson = {
           tags: lesson.tags ?? null,
-          lessonPartPath: `/lessons/${unit.locale}/${unit.numID}#lesson_part_${lesson.lsn}`,
+          lessonPartPath: `/${UNITS_URL_PATH}/${unit.locale}/${unit.numID}#lesson_part_${lesson.lsn}`,
           tile:
             lesson?.tile ??
             "https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png",

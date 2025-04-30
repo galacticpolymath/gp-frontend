@@ -11,6 +11,7 @@ import GistCard from '../LessonSection/GistCard';
 import { ISubRelease } from '../../backend/models/Unit/Overview';
 import { useRouter } from 'next/router';
 import { INewUnitLesson } from '../../backend/models/Unit/types/teachingMaterials';
+import { UNITS_URL_PATH } from '../../shared/constants';
 
 interface ILessonPreviewUIProps {
   latestSubRelease: ISubRelease | null;
@@ -255,7 +256,7 @@ const UnitPreviewUI = ({
                     className='fs-5 fw-bold px-sm-0'
                   >
                     <Link
-                      href={`${linkUrlDomain}/lessons/${router.query.loc}/${router.query.id}#lesson_part_${lsn}`}
+                      href={`${linkUrlDomain}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}#lesson_part_${lsn}`}
                       target='_blank'
                       style={{ fontWeight: 700 }}
                     >
