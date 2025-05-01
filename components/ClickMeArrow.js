@@ -12,7 +12,7 @@ const ClickMeArrow = ({
     willShowArrow,
     containerStyle = {},
     clickToSeeMoreStyle = { transform: 'translateY(11px)', fontSize: 'clamp(17px, 2vw, 18px)', color: 'black' },
-    arrowTxt = "CLICK TO SEE MORE!",
+    children = <>CLICK TO SEE MORE!</>,
 }) => {
     const arrowContainerRef = useRef();
     const { inViewport } = useInViewport(arrowContainerRef);
@@ -31,7 +31,7 @@ const ClickMeArrow = ({
             className={`position-absolute ${willShowArrow ? 'fade-in' : 'fade-out'}`}
         >
             <span style={clickToSeeMoreStyle} className='p-1 d-block fw-bold text-nowrap'>
-                {arrowTxt}
+                {children}
             </span>
             <Arrow className='down-arrow jump-infinite-animate' />
         </div>

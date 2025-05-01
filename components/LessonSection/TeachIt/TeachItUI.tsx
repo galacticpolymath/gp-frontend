@@ -2,12 +2,14 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-unused-vars */
-
+import Sparkle from "react-sparkle";
 import React, {
   Dispatch,
   ReactNode,
   RefObject,
   SetStateAction,
+  useEffect,
+  useRef,
   useState,
 } from "react";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
@@ -116,17 +118,19 @@ const TeachItUI = <
   };
 
   let timer: NodeJS.Timeout;
+  const wasSeenRef = useRef(false);
 
   const handleElementVisibility = (inViewPort: boolean) =>
     throttle(() => {
       clearTimeout(timer);
 
-      if (inViewPort) {
+      if (inViewPort && !wasSeenRef.current) {
+        wasSeenRef.current = true;
         setArrowContainer((state) => ({ ...state, isInView: true }));
 
         timer = setTimeout(() => {
           setArrowContainer((state) => ({ ...state, isInView: false }));
-        }, 3500);
+        }, 15000);
       }
     }, 200)();
 
@@ -261,7 +265,6 @@ const TeachItUI = <
           {!!parts.length &&
             parts.every((part) => part !== null) &&
             parts.map((part, index, self) => {
-              console.log("part, yo there: ", part);
               let learningObjs: string[] | null = [];
 
               if ("learningObj" in part) {
@@ -355,7 +358,22 @@ const TeachItUI = <
                             ? "none"
                             : "block",
                         }}
-                      />
+                      >
+                        <>
+                          <Sparkle
+                            color="#ffd700"
+                            count={25}
+                            minSize={8}
+                            maxSize={10}
+                            overflowPx={20}
+                            fadeOutSpeed={80}
+                            newSparkleOnFadeOut={true}
+                            flicker={true}
+                            flickerSpeed={"slowest"}
+                          />
+                          CLICK TO SEE MORE!
+                        </>
+                      </ClickMeArrow>
                     ) : null
                   }
                   FeedbackComp={

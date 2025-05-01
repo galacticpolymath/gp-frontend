@@ -80,6 +80,7 @@
     "react-scroll-parallax": "^3.4.5",
     "react-share": "^5.2.2",
     "react-showdown": "^2.3.1",
+    "react-sparkle": "^2.0.0",
     "sharp": "^0.33.5",
     "start-server-and-test": "^2.0.11",
     "styled-components": "^6.1.16",

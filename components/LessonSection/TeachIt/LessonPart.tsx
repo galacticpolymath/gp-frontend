@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable indent */
-
+import Sparkle from "react-sparkle";
 import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
@@ -125,6 +125,8 @@ const LessonPart = ({
   let restOfTags = null;
   let lsnNumParsed = NaN;
 
+  // if the use hovers over a lesson part, then show the click me arrow with the sparkle when the user mouse is
+
   if (typeof lsnNum === "string" && !isNaN(Number(lsnNum))) {
     lsnNumParsed = parseInt(lsnNum);
   } else if (typeof lsnNum === "number" && !isNaN(Number(lsnNum))) {
@@ -132,6 +134,16 @@ const LessonPart = ({
   }
 
   const _accordionId = `part_${lsnNum}`;
+
+  const handleMouseMouse = () => {
+    console.log("mouse entering");
+    localStorage.setItem("isOverLessonPart", JSON.stringify(true));
+  };
+
+  const handleMouseLeave = () => {
+    console.log("mouse leaving");
+    localStorage.setItem("isOverLessonPart", JSON.stringify(false));
+  };
 
   const handleClipBoardIconClick = () => {
     let url = window.location.href;
@@ -298,7 +310,7 @@ const LessonPart = ({
             onClick={
               isAccordionExpandable ? handleAccordionBtnOnClick : () => {}
             }
-            className="position-relative"
+            className="position-relative lesson-part-btn"
           >
             <div
               style={{

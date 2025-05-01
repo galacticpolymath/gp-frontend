@@ -21,6 +21,7 @@ import Lessons from "../../../../backend/models/lesson";
 import { connectToMongodb } from "../../../../backend/utils/connection";
 import SendFeedback from "../../../../components/LessonSection/SendFeedback";
 import {
+  getIsParsableToVal,
   getIsWithinParentElement,
   getLinkPreviewObj,
   removeHtmlTags,
@@ -47,6 +48,8 @@ import {
   IResource,
 } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { UNITS_URL_PATH } from "../../../../shared/constants";
+import Sparkle from "react-sparkle";
+import { getIsMouseInsideElement } from "../../../../shared/fns";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -147,17 +150,76 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   const { status, data } = useSession();
   const { token } = (data ?? {}) as IUserSession;
   const statusRef = useRef(status);
+  useMemo(() => {
+    if (typeof localStorage !== "undefined") {
+      localStorage.removeItem("isOverLessonPart");
+    }
+  }, []);
   const {
     _notifyModal,
     _isLoginModalDisplayed,
     _isCreateAccountModalDisplayed,
     _customModalFooter,
   } = useModalContext();
+  const [clickToSeeMore, setClickToSeeMore] =
+    useState<React.JSX.Element | null>(null);
   const [, setIsUserTeacher] = _isUserTeacher;
   const [, setNotifyModal] = _notifyModal;
   const [, setCustomModalFooter] = _customModalFooter;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
+
+  useEffect(() => {
+    let lessonPartBtns: Element[] = [];
+
+    window.addEventListener("resize", () => {
+      lessonPartBtns = Array.from(
+        document.querySelectorAll(".lesson-part-btn")
+      );
+    });
+
+    window.addEventListener("mousemove", (event) => {
+      lessonPartBtns = Array.from(
+        document.querySelectorAll(".lesson-part-btn")
+      );
+      if (lessonPartBtns.length) {
+        const isUserWithinALessonPartBtn = lessonPartBtns.some(
+          (lessonPartBtn) => {
+            return getIsMouseInsideElement(lessonPartBtn as HTMLElement, {
+              xCordinate: event.pageX,
+              yCordinate: event.pageY,
+            });
+          }
+        );
+        // setClickToSeeMore(
+        //   <div
+        //     id="click-to-see-more"
+        //     style={{
+        //       position: "fixed",
+        //       top: event.clientY + -20,
+        //       left: event.clientX + 10,
+        //       zIndex: 100,
+        //     }}
+        //   >
+        //     <Sparkle
+        //       color="#ffd700"
+        //       count={25}
+        //       minSize={8}
+        //       maxSize={10}
+        //       overflowPx={20}
+        //       fadeOutSpeed={80}
+        //       newSparkleOnFadeOut={true}
+        //       flicker={true}
+        //       flickerSpeed="slowest"
+        //     />
+        //     CLICK TO SEE MORE!
+        //   </div>
+        // );
+      } else {
+        setClickToSeeMore(null);
+      }
+    });
+  }, []);
   // TODO: delete the below when all units are using the new db schema
   const lessonSectionObjEntries = lesson?.Section
     ? Object.entries(lesson.Section)
@@ -616,6 +678,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
   return (
     <Layout {...layoutProps}>
+      {clickToSeeMore}
       {_unit.PublicationStatus === "Beta" && (
         <SendFeedback
           closeBtnDynamicStyles={{
