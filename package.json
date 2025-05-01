@@ -96,7 +96,7 @@
     "@types/d3": "^7.4.3",
     "@types/lodash.throttle": "^4.1.9",
     "cypress": "^14.3.2",
-    "eslint": "9.16.0",
+    "eslint": "9.25.1",
     "eslint-config-next": "^15.1.7",
     "eslint-plugin-react": "^7.37.5",
     "jest-puppeteer": "^11.0.0",
