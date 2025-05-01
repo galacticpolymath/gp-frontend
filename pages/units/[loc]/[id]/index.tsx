@@ -11,7 +11,7 @@
 /* eslint-disable indent */
 
 import Layout from "../../../../components/Layout";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { JSX, useEffect, useMemo, useRef, useState } from "react";
 import ParentLessonSection from "../../../../components/LessonSection/ParentLessonSection";
 import LessonsSecsNavDots from "../../../../components/LessonSection/LessonSecsNavDots";
 import ShareWidget from "../../../../components/AboutPgComps/ShareWidget";
@@ -171,26 +171,31 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
   useEffect(() => {
     let lessonPartBtns: Element[] = [];
+    lessonPartBtns = Array.from(document.querySelectorAll(".lesson-part-btn"));
 
-    window.addEventListener("resize", () => {
-      lessonPartBtns = Array.from(
-        document.querySelectorAll(".lesson-part-btn")
-      );
-    });
+    for (const lessonPartBtn of lessonPartBtns) {
+      lessonPartBtn.addEventListener("mousemove", (event) => {
+        console.log("enter into element");
+      });
+      lessonPartBtn.addEventListener("mouseleave", (event) => {
+        console.log("left element");
+      });
+    }
 
     window.addEventListener("mousemove", (event) => {
       lessonPartBtns = Array.from(
         document.querySelectorAll(".lesson-part-btn")
       );
       if (lessonPartBtns.length) {
-        const isUserWithinALessonPartBtn = lessonPartBtns.some(
-          (lessonPartBtn) => {
-            return getIsMouseInsideElement(lessonPartBtn as HTMLElement, {
-              xCordinate: event.pageX,
-              yCordinate: event.pageY,
-            });
-          }
-        );
+        // for (const lessonPartBtn of lessonPartBtns) {
+        //   lessonPartBtn.addEventListener("mousemove", (event) => {
+        //     console.log("enter into element");
+        //   });
+        //   lessonPartBtn.addEventListener("mouseleave", (event) => {
+        //     console.log("left element");
+        //   });
+        // }
+        // console.log("isWithinLessonPart: ", isWithinLessonPart);
         // setClickToSeeMore(
         //   <div
         //     id="click-to-see-more"
@@ -678,7 +683,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
   return (
     <Layout {...layoutProps}>
-      {clickToSeeMore}
       {_unit.PublicationStatus === "Beta" && (
         <SendFeedback
           closeBtnDynamicStyles={{

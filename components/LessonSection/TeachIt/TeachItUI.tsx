@@ -125,7 +125,7 @@ const TeachItUI = <
       clearTimeout(timer);
 
       if (inViewPort && !wasSeenRef.current) {
-        wasSeenRef.current = true;
+        // wasSeenRef.current = true;
         setArrowContainer((state) => ({ ...state, isInView: true }));
 
         timer = setTimeout(() => {
