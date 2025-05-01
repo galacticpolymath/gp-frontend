@@ -3,7 +3,6 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable indent */
-import Sparkle from "react-sparkle";
 import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
@@ -134,16 +133,6 @@ const LessonPart = ({
   }
 
   const _accordionId = `part_${lsnNum}`;
-
-  const handleMouseMouse = () => {
-    console.log("mouse entering");
-    localStorage.setItem("isOverLessonPart", JSON.stringify(true));
-  };
-
-  const handleMouseLeave = () => {
-    console.log("mouse leaving");
-    localStorage.setItem("isOverLessonPart", JSON.stringify(false));
-  };
 
   const handleClipBoardIconClick = () => {
     let url = window.location.href;

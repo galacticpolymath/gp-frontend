@@ -369,7 +369,7 @@ const TeachItUI = <
                             fadeOutSpeed={80}
                             newSparkleOnFadeOut={true}
                             flicker={true}
-                            flickerSpeed={"slowest"}
+                            flickerSpeed="slowest"
                           />
                           CLICK TO SEE MORE!
                         </>

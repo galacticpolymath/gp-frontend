@@ -161,8 +161,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     _isCreateAccountModalDisplayed,
     _customModalFooter,
   } = useModalContext();
-  const [clickToSeeMore, setClickToSeeMore] =
-    useState<React.JSX.Element | null>(null);
   const [, setIsUserTeacher] = _isUserTeacher;
   const [, setNotifyModal] = _notifyModal;
   const [, setCustomModalFooter] = _customModalFooter;
@@ -170,62 +168,17 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
 
   useEffect(() => {
-    let lessonPartBtns: Element[] = [];
-    lessonPartBtns = Array.from(document.querySelectorAll(".lesson-part-btn"));
-
-    for (const lessonPartBtn of lessonPartBtns) {
-      lessonPartBtn.addEventListener("mousemove", (event) => {
-        console.log("enter into element");
+    const lessonsContainer = document.querySelector(".lessonsPartContainer");
+    if (lessonsContainer) {
+      lessonsContainer.addEventListener("mousemove", (event) => {
+        localStorage.setItem("isWithinLessons", "true");
       });
-      lessonPartBtn.addEventListener("mouseleave", (event) => {
+      lessonsContainer.addEventListener("mouseleave", (event) => {
         console.log("left element");
+        localStorage.setItem("isWithinLessons", "false");
       });
     }
-
-    window.addEventListener("mousemove", (event) => {
-      lessonPartBtns = Array.from(
-        document.querySelectorAll(".lesson-part-btn")
-      );
-      if (lessonPartBtns.length) {
-        // for (const lessonPartBtn of lessonPartBtns) {
-        //   lessonPartBtn.addEventListener("mousemove", (event) => {
-        //     console.log("enter into element");
-        //   });
-        //   lessonPartBtn.addEventListener("mouseleave", (event) => {
-        //     console.log("left element");
-        //   });
-        // }
-        // console.log("isWithinLessonPart: ", isWithinLessonPart);
-        // setClickToSeeMore(
-        //   <div
-        //     id="click-to-see-more"
-        //     style={{
-        //       position: "fixed",
-        //       top: event.clientY + -20,
-        //       left: event.clientX + 10,
-        //       zIndex: 100,
-        //     }}
-        //   >
-        //     <Sparkle
-        //       color="#ffd700"
-        //       count={25}
-        //       minSize={8}
-        //       maxSize={10}
-        //       overflowPx={20}
-        //       fadeOutSpeed={80}
-        //       newSparkleOnFadeOut={true}
-        //       flicker={true}
-        //       flickerSpeed="slowest"
-        //     />
-        //     CLICK TO SEE MORE!
-        //   </div>
-        // );
-      } else {
-        setClickToSeeMore(null);
-      }
-    });
   }, []);
-  // TODO: delete the below when all units are using the new db schema
   const lessonSectionObjEntries = lesson?.Section
     ? Object.entries(lesson.Section)
     : [];
