@@ -38,6 +38,7 @@ export default async function handler(request, response) {
         console.log('will send password recover email');
 
         const resetPasswordToken = await signJwt({ email, accessibleRoutes: ['/api/updated-password'] }, process.env.NEXTAUTH_SECRET, '5 minutes');
+        // store the token into the database
         const code = nanoid();
         const jwtModel = new JwtModel({
             _id: code,

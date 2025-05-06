@@ -130,7 +130,7 @@ const TeachItUI = <
 
         timer = setTimeout(() => {
           setArrowContainer((state) => ({ ...state, isInView: false }));
-        }, 15000);
+        }, 6_000);
       }
     }, 200)();
 
@@ -361,7 +361,7 @@ const TeachItUI = <
                       >
                         <>
                           <Sparkle
-                            color="#ffd700"
+                            color="#6812D1"
                             count={25}
                             minSize={8}
                             maxSize={10}
