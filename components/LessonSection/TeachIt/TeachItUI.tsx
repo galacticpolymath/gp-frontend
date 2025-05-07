@@ -39,6 +39,7 @@ import throttle from "lodash.throttle";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import Link from "next/link";
+import Sparkles from "../../SparklesAnimation";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -360,18 +361,19 @@ const TeachItUI = <
                         }}
                       >
                         <>
-                          <Sparkle
-                            color="#6812D1"
-                            count={25}
-                            minSize={8}
-                            maxSize={10}
-                            overflowPx={20}
-                            fadeOutSpeed={80}
-                            newSparkleOnFadeOut={true}
-                            flicker={true}
-                            flickerSpeed="slowest"
-                          />
-                          CLICK TO SEE MORE!
+                          <Sparkles
+                            sparkleWrapperStyle={{
+                              height: 40,
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                            color="purple"
+                          >
+                            <p style={{ transform: "translateY(20px)" }}>
+                              CLICK TO SEE MORE!
+                            </p>
+                          </Sparkles>
                         </>
                       </ClickMeArrow>
                     ) : null

@@ -38,6 +38,12 @@ h4.words {
   }
 }
 
+.styled-svg {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: spin 600ms linear forwards;
+  }
+}
+
 html,
 body {
   padding: 0;

@@ -3,9 +3,7 @@ import { INewUnitSchema } from "../backend/models/Unit/types/unit";
 import { IUnitForUnitsPg, TLiveUnit } from "../types/global";
 import { STATUSES_OF_SHOWABLE_LESSONS } from "../globalVars";
 
-export const random = (min: number, max: number) => (
-  Math.floor(Math.random() * (max - min)) + min
-);
+export const random = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
 
 export function getIsMouseInsideElement(element: HTMLElement, { xCordinate, yCordinate }: { xCordinate: number, yCordinate: number }) {
   const rect = element.getBoundingClientRect();;
