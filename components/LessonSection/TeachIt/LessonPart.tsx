@@ -26,6 +26,7 @@ import {
 import { IItemForClient, TUseStateReturnVal } from "../../../types/global";
 import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
 import { LAST_LESSON_NUM_ID, UNITS_URL_PATH } from "../../../shared/constants";
+import useHandleElementVisibility from "../../../customHooks/useHandleElementVisiblity";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -123,8 +124,6 @@ const LessonPart = ({
   let previewTags = null;
   let restOfTags = null;
   let lsnNumParsed = NaN;
-
-  // if the use hovers over a lesson part, then show the click me arrow with the sparkle when the user mouse is
 
   if (typeof lsnNum === "string" && !isNaN(Number(lsnNum))) {
     lsnNumParsed = parseInt(lsnNum);
