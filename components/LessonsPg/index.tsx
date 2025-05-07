@@ -41,6 +41,7 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
     <Layout
       url='https://www.galacticpolymath.com/lessons'
       style={{}}
+      langLinks={[]}
       title='Galactic Polymath Mini-Unit Releases'
       description='We strive to create mind-expanding learning experiences that a non-specialist can teach in any G5-12 classroom with 15 minutes of prep time!'
       imgSrc='https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png'
