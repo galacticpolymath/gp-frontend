@@ -65,4 +65,3 @@ jobs:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}      
       with:
         merge-method: 'squash'
-        target: 'minor'
