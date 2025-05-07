@@ -18,26 +18,19 @@ export default function Navbar() {
     >
       <div className="navbar navbar-expand-lg w-100 navbar-dark bg-dark position-relative">
         <div style={{ zIndex: 10000 }} className='w-100 container'>
-          <Link
-            href="/"
-            passHref
-            className='flex-grow-1'
-          >
-            <Image
-              className='object-fit-contain'
-              alt="Galactic Polymath"
-              src={Logo}
-              height={68}
-              width={841}
-              style={{
-                maxHeight: '60px',
-                // maxWidth: '75vw',
-                width: 'auto',
-                height: 'auto',
-              }}
-            />
-
-          </Link>
+          <Image
+            className='object-fit-contain'
+            alt="Galactic Polymath"
+            src={Logo}
+            height={68}
+            width={841}
+            style={{
+              maxHeight: '60px',
+              // maxWidth: '75vw',
+              width: 'auto',
+              height: 'auto',
+            }}
+          />
           {/* filler */}
           <div style={{ color: 'white' }} className='flex-grow-1 white' />
           <button
