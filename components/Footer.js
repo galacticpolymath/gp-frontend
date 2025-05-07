@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 /* eslint-disable react/jsx-max-props-per-line */
 const SOCIAL_MEDIA_ITEMS = [
- 
+
   {
     link: 'https://www.linkedin.com/company/galactic-polymath/',
     icon: <i className='bi bi-linkedin' />,
@@ -29,6 +29,14 @@ const SOCIAL_MEDIA_ITEMS = [
     link: 'https://www.teacherspayteachers.com/Store/Galactic-Polymath',
     icon: <Image src={svg} style={{ height: 'fit-content' }} alt='teachers pay teachers Galactic Polymath link' />,
   },
+  {
+    link: 'https://www.galacticpolymath.com/blog',
+    icon: <p className='text-white text-lg text-nowrap fw-normal'>Blog</p>,
+  },
+  {
+    link: 'https://www.galacticpolymath.com',
+    icon: <p className='text-white text-lg text-nowrap fw-normal'>Main Site</p>,
+  },
 ];
 
 export default function Footer() {
@@ -41,7 +49,7 @@ export default function Footer() {
           <p>We translate current research into creative interdisciplinary lessons for grades 5+ that are <em>free for everyone.</em></p>
           <div className="d-flex flex-wrap gap-1">
             {SOCIAL_MEDIA_ITEMS.map(({ link, icon, color }, index) => (
-              <div key={index} className='linkHover rounded-circle p-1'>
+              <div key={index} className='rounded-circle p-1'>
                 <Link
                   style={{ fontSize: '21px', color: color ?? '#2D83C3', width: 40, height: 40 }}
                   className="d-flex justify-content-center align-items-center"

@@ -38,6 +38,10 @@ h4.words {
   }
 }
 
+.text-lg {
+  font-size: 18px;
+}
+
 html,
 body {
   padding: 0;
@@ -432,7 +436,7 @@ ol li {
   }
 
   @media (max-width: 991px) {
-    height: 100vh;  
+    height: 100vh;
   }
 }
 
