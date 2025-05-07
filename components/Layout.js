@@ -29,7 +29,7 @@ export default function Layout({
   style = {},
   canonicalLink = '',
   defaultLink = '',
-  langLinks = [],
+  langLinks,
 }) {
   const isOnProd = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
 

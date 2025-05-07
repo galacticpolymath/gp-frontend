@@ -595,7 +595,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     unitBanner = (CoverImage?.url ?? LessonBanner) || "";
   }
 
-  const _unit = unit ?? lesson;
+  const _unit = (unit ?? lesson) as TUnitForUI;
   const shareWidgetFixedProps = IS_ON_PROD
     ? {
         pinterestMedia: unitBanner,
@@ -622,8 +622,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       };
   const layoutProps = {
     title: `Mini-Unit: ${_unit.Title}`,
-    description: _unit?.Section?.overview?.LearningSummary
-      ? removeHtmlTags(_unit.Section.overview.LearningSummary)
+    description: _unit?.Sections?.overview?.TheGist
+      ? removeHtmlTags(_unit.Sections.overview.TheGist)
       : `Description for ${_unit.Title}.`,
     imgSrc: unitBanner,
     url: _unit.URL,
@@ -631,8 +631,10 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     className: "overflow-hidden",
     canonicalLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
     defaultLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
-    langLinks: _unit.headLinks ?? [],
+    langLinks: _unit.headLinks ?? ([] as TUnitForUI["headLinks"]),
   };
+
+  console.log("_unit.headLinks: ", _unit.headLinks);
 
   return (
     <Layout {...layoutProps}>
@@ -695,10 +697,6 @@ export const getStaticPaths = async () => {
       await Units.find(
         {},
         { numID: 1, DefaultLocale: 1, _id: 0, locale: 1 }
-      ).lean(),
-      await Lessons.find(
-        {},
-        { numID: 1, defaultLocale: 1, _id: 0, locale: 1 }
       ).lean(),
     ].flat();
 
@@ -823,9 +821,19 @@ export const getStaticProps = async (arg: {
         throw new Error("Lesson is not found.");
       }
 
+      const headLinks = targetUnits
+        .filter(({ locale, numID }) => locale && numID)
+        .map(({ locale, numID }) => [
+          `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${locale}/${numID}`,
+          locale,
+        ]) as [string, string][];
       const resources =
         targetUnit.Sections?.teachingMaterials?.classroom?.resources;
       targetUnitForUI = targetUnit as TUnitForUI;
+      targetUnitForUI = {
+        ...targetUnitForUI,
+        headLinks,
+      };
 
       if (targetUnitForUI.FeaturedMultimedia) {
         targetUnitForUI.FeaturedMultimedia =
