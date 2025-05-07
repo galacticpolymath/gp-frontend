@@ -26,7 +26,6 @@ import {
 import { IItemForClient, TUseStateReturnVal } from "../../../types/global";
 import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
 import { LAST_LESSON_NUM_ID, UNITS_URL_PATH } from "../../../shared/constants";
-import useHandleElementVisibility from "../../../customHooks/useHandleElementVisiblity";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
