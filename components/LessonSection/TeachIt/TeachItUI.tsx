@@ -98,10 +98,6 @@ const TeachItUI = <
   const areThereGradeBands =
     !!gradeVariations?.length &&
     gradeVariations.every((variation) => !!variation.grades);
-  const [arrowContainer, setArrowContainer] = useState({
-    isInView: true,
-    canTakeOffDom: false,
-  });
   const [
     numsOfLessonPartsThatAreExpanded,
     setNumsOfLessonPartsThatAreExpanded,
@@ -110,12 +106,17 @@ const TeachItUI = <
   const { handleRestrictedItemBtnClick, session } =
     useCanUserAccessMaterial(false);
 
-  const removeClickToSeeMoreTxt = () => {
-    setArrowContainer({ isInView: true, canTakeOffDom: true });
-  };
-
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
+  };
+
+  const [arrowContainer, setArrowContainer] = useState({
+    isInView: true,
+    canTakeOffDom: false,
+  });
+
+  const removeClickToSeeMoreTxt = () => {
+    setArrowContainer({ isInView: true, canTakeOffDom: true });
   };
 
   let timer: NodeJS.Timeout;
