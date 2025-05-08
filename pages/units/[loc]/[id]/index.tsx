@@ -11,7 +11,7 @@
 /* eslint-disable indent */
 
 import Layout from "../../../../components/Layout";
-import { JSX, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ParentLessonSection from "../../../../components/LessonSection/ParentLessonSection";
 import LessonsSecsNavDots from "../../../../components/LessonSection/LessonSecsNavDots";
 import ShareWidget from "../../../../components/AboutPgComps/ShareWidget";
@@ -21,7 +21,6 @@ import Lessons from "../../../../backend/models/lesson";
 import { connectToMongodb } from "../../../../backend/utils/connection";
 import SendFeedback from "../../../../components/LessonSection/SendFeedback";
 import {
-  getIsParsableToVal,
   getIsWithinParentElement,
   getLinkPreviewObj,
   removeHtmlTags,
@@ -48,8 +47,6 @@ import {
   IResource,
 } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { UNITS_URL_PATH } from "../../../../shared/constants";
-import Sparkle from "react-sparkle";
-import { getIsMouseInsideElement } from "../../../../shared/fns";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";

@@ -2,13 +2,11 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-unused-vars */
-import Sparkle from "react-sparkle";
 import React, {
   Dispatch,
   ReactNode,
   RefObject,
   SetStateAction,
-  useEffect,
   useRef,
   useState,
 } from "react";
