@@ -12,6 +12,8 @@ import { useUserEntry } from "../../../customHooks/useUserEntry";
 import { CustomInput } from "../formElements";
 import { FcGoogle } from "react-icons/fc";
 import { Spinner } from "react-bootstrap";
+import Link from "next/link";
+import { TROUBLE_LOGGING_IN_LINK } from "../../../globalVars";
 
 const LoginUI = ({
   className = "",
@@ -67,7 +69,18 @@ const LoginUI = ({
           height={75}
         />
       </div>
-      <h5 className={headingTitleClassName}>GP Sign In</h5>
+      <h1
+        style={{ fontWeight: 600 }}
+        className={`${headingTitleClassName} fs-4`}
+      >
+        GP Teacher Portal Sign In
+      </h1>
+      <h5
+        className={`${headingTitleClassName} mt-4`}
+        style={{ fontWeight: 400 }}
+      >
+        Get free access to 100+ free STEM resources!
+      </h5>
       <section className="d-flex justify-content-center align-items-center pt-3 pb-4 mt-4">
         <GoogleSignIn
           callbackUrl={
@@ -136,9 +149,8 @@ const LoginUI = ({
         <form>
           <div className="mt-3 d-flex justify-content-center align-items-center flex-column">
             <label
-              className={`d-flex p-0 position-relative ${inputFieldClassName} ${
-                userEntryErrors.has("email") ? "text-danger" : ""
-              }  fw-bold pb-2`}
+              className={`d-flex p-0 position-relative ${inputFieldClassName} ${userEntryErrors.has("email") ? "text-danger" : ""
+                }  fw-bold pb-2`}
               htmlFor="email-input"
             >
               Email:
@@ -148,9 +160,8 @@ const LoginUI = ({
                 handleOnInputChange(event);
               }}
               inputStyle={{ width: "100%", height: "45px", fontSize: "20px" }}
-              inputContainerCss={`${inputFieldClassName} rounded position-relative bg-light-blue ${
-                userEntryErrors.has("email") ? "border-danger" : "border"
-              }`}
+              inputContainerCss={`${inputFieldClassName} rounded position-relative bg-light-blue ${userEntryErrors.has("email") ? "border-danger" : "border"
+                }`}
               inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-light-blue`}
               inputId="email-input"
               inputName="email"
@@ -170,9 +181,8 @@ const LoginUI = ({
           </div>
           <div className="mt-4 d-flex justify-content-center align-items-center flex-column">
             <label
-              className={`d-flex p-0 position-relative ${
-                userEntryErrors.has("password") ? "text-danger" : ""
-              } ${inputFieldClassName} fw-bold pb-2`}
+              className={`d-flex p-0 position-relative ${userEntryErrors.has("password") ? "text-danger" : ""
+                } ${inputFieldClassName} fw-bold pb-2`}
               htmlFor="password-input"
             >
               Password:
@@ -197,11 +207,10 @@ const LoginUI = ({
                 borderBottomRightRadius: "6.75px",
               }}
               iconContainerClassName="h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue"
-              inputContainerCss={`${inputFieldClassName} ${
-                userEntryErrors.has("password")
-                  ? "border-danger text-danger"
-                  : "border"
-              } rounded position-relative`}
+              inputContainerCss={`${inputFieldClassName} ${userEntryErrors.has("password")
+                ? "border-danger text-danger"
+                : "border"
+                } rounded position-relative`}
               inputClassName="px-1 py-2 position-relative no-outline border-0 bg-light-blue"
               inputId="password-input"
               inputName="password"
@@ -220,7 +229,7 @@ const LoginUI = ({
               </span>
             </div>
           </div>
-          <div className="d-flex justify-content-center align-items-center px-2 px-sm-0 py-2 mt-3 row">
+          <div className="px-2 px-sm-0 py-2 mt-3 row d-flex justify-content-center align-items-center">
             <Button
               handleOnClick={handleLoginBtnClick}
               defaultStyleObj={{ borderRadius: "5px" }}
@@ -238,7 +247,7 @@ const LoginUI = ({
               )}
             </Button>
           </div>
-          <div className="d-flex justify-content-center align-items-center mt-3 mb-4">
+          <div className="d-flex justify-content-center align-items-center mt-3 mb-2">
             <Button
               color="#3C719F"
               defaultStyleObj={{
@@ -258,6 +267,14 @@ const LoginUI = ({
                 Forgot your password?
               </span>
             </Button>
+          </div>
+          <div className="d-flex justify-content-center align-items-center mb-4">
+            <Link
+              href={TROUBLE_LOGGING_IN_LINK}
+              className="no-link-decoration underline-on-hover ms-1 mt-2 p-2 text-primary"
+            >
+              Trouble logging in?
+            </Link>
           </div>
         </form>
       </section>

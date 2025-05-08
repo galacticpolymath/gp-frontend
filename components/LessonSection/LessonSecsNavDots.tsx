@@ -239,7 +239,6 @@ const LessonsSecsNavDots = ({
             EnticementArrow={
               index === 0 ? (
                 <ClickMeArrow
-                  arrowTxt="Skip to Section"
                   handleElementVisibility={handleElementVisibility}
                   willShowArrow={arrowContainer.isInView}
                   containerStyle={{
@@ -253,7 +252,9 @@ const LessonsSecsNavDots = ({
                     transform: "translateY(10px)",
                     color: "black",
                   }}
-                />
+                >
+                  <>Skip to Section</>
+                </ClickMeArrow>
               ) : undefined
             }
             fns={liNavDotFns}

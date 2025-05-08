@@ -3,7 +3,6 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable indent */
-
 import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
@@ -298,7 +297,7 @@ const LessonPart = ({
             onClick={
               isAccordionExpandable ? handleAccordionBtnOnClick : () => {}
             }
-            className="position-relative"
+            className="position-relative lesson-part-btn"
           >
             <div
               style={{

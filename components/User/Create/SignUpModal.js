@@ -186,7 +186,7 @@ const SignUpModal = () => {
             dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
             contentClassName='create-account-ui-modal pt-2 box-shadow-login-ui-modal'
         >
-            <ModalHeader style={{ height: "60px" }} className='d-flex flex-column'>
+            <ModalHeader style={{}} className='d-flex flex-column'>
                 <CloseButton onClick={handleOnHide} className='position-absolute top-0 end-0 me-1 mt-1' />
                 <img
                     className='position-absolute top-0 start-0 me-5 mt-1'
@@ -198,8 +198,8 @@ const SignUpModal = () => {
                         transform: 'translate(17%, 6%)',
                     }}
                 />
-                <h5 className="text-black text-center mt-2 my-0">
-                    Sign up
+                <h5 style={{ maxWidth: '80%' }} className="text-black text-center">
+                    Create your teacher portal account to access 100+ free STEM resources!
                 </h5>
             </ModalHeader>
             <ModalBody className='pt-1 px-1 pb-1 overflow-hidden'>
