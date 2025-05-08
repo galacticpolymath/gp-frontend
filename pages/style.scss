@@ -38,10 +38,8 @@ h4.words {
   }
 }
 
-.styled-svg {
-  @media (prefers-reduced-motion: no-preference) {
-    animation: spin 600ms linear forwards;
-  }
+.text-lg {
+  font-size: 18px;
 }
 
 html,
