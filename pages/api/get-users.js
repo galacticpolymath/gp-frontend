@@ -5,7 +5,6 @@
 import { getAllBrevoMailingListContacts } from "../../backend/services/emailServices";
 import { findMailingListConfirmationsByEmails } from "../../backend/services/mailingListConfirmationServices";
 import {
-    getUserMailingListStatusWithRetries,
     getUsers,
 } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 /* eslint-disable quotes */
+import { NextApiRequest, NextApiResponse } from "next";
 import { cache } from "../../backend/authOpts/authOptions";
 import {
   addUserToEmailList,
@@ -10,8 +11,9 @@ import { updateUser } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 import { getJwtPayloadPromise } from "../../nondependencyFns";
+import { IUpdatedUserReqBody } from "../../types/global";
 
-export default async function handler(request, response) {
+export default async function handler(request: NextApiRequest, response: NextApiResponse) {
   try {
     if (typeof request.headers?.authorization !== 'string') {
       throw new Error("'authorization' header is not present in the request.");
@@ -56,7 +58,7 @@ export default async function handler(request, response) {
       clientUrl,
       willUpdateMailingListStatusOnly,
       willSendEmailListingSubConfirmationEmail,
-    } = request.body;
+    } = request.body as IUpdatedUserReqBody;
     const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
       15_000,
       0,
@@ -78,7 +80,7 @@ export default async function handler(request, response) {
       console.log("Was user added to mailing list: ", wasSuccessful);
     } else if (willSendEmailListingSubConfirmationEmail === false) {
       console.log("will delete the user  from the mailing list...");
-      const { wasSuccessful } = await deleteUserFromMailingList(payload.email);
+      const { wasSuccessful } = await deleteUserFromMailingList(payload.email as string);
 
       console.log("Was user successfully deleted? ", wasSuccessful);
     }
@@ -87,7 +89,6 @@ export default async function handler(request, response) {
       return response.status(200).json({ msg: "User updated successfully." });
     }
 
-    console.log("payload.email: ", payload.email);
     const { updatedUser: updatedUserFromDb, wasSuccessful } = await updateUser(
       { email: payload.email },
       updatedUser,
@@ -101,7 +102,7 @@ export default async function handler(request, response) {
     cache.set(payload.email, updatedUserFromDb);
 
     return response.status(200).json({ msg: "User updated successfully." });
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       "An error has occurred, failed to update user. Reason: ",
       error

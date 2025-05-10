@@ -4,6 +4,10 @@
 /* eslint-disable quotes */
 import { createContext, useContext, useState } from "react";
 import { TUseStateReturnVal } from "../types/global";
+import {
+  IAgeGroupsSelection,
+  TAboutUserForm,
+} from "../backend/models/User/types";
 
 /**
  * @typedef {Object} TGradesOrYears
@@ -23,34 +27,39 @@ import { TUseStateReturnVal } from "../types/global";
  * @property {{ [key: string]: string }} reasonsForSiteVisit
  */
 
-export interface IAgeGroupsSelection {
-  selection: "grades" | "years";
-  ageGroupsTaught: string[];
-}
+export const SCHOOL_TYPES = [
+  "public",
+  "private",
+  "homeschool",
+  "afterschool",
+] as const;
+export const SCHOOL_TYPES_SET = new Set(SCHOOL_TYPES);
 
-export type TAboutUserForm = {
-  gradesOrYears: IAgeGroupsSelection;
-  country: string;
-  occupation: string;
-  isTeacherConfirmed: boolean;
-  zipCode: number | null;
-  classroomSize: { num: number; isNotTeaching: boolean };
-  subjects: Map<string, string>;
-  reasonsForSiteVisit: Map<string, string>;
-  name: { first: string; last: string };
-};
+export type TSchoolType = (typeof SCHOOL_TYPES)[number];
 
-export type TUserAccount = Omit<TAboutUserForm, "isTeacherConfirmed"> & {
+export type TUserAccount = Omit<
+  TAboutUserForm<Map<string, string>>,
+  "isTeacherConfirmed"
+> & {
   isTeacher: boolean;
   isOnMailingList: boolean;
 };
+export type TAboutUserFormForUI = {
+  isTeacherConfirmed: boolean;
+} & TAboutUserForm<Map<string, string>>;
 
-export const userAccountDefault: TAboutUserForm = {
+export const userAccountDefault: TAboutUserFormForUI = {
+  schoolTypeDefaultSelection: null,
+  schoolTypeOther: null,
+  siteVisitReasonsCustom: null,
+  subjectsTaughtCustom: undefined,
+  institution: "",
   gradesOrYears: {
-    selection: "grades",
+    selection: "U.S.",
     ageGroupsTaught: [],
   },
   country: "",
+  gradesType: "U.S.",
   occupation: "",
   isTeacherConfirmed: false,
   zipCode: null,
@@ -67,7 +76,7 @@ export const userAccountDefault: TAboutUserForm = {
 };
 
 export type TUserProviderValue = {
-  _aboutUserForm: TUseStateReturnVal<TAboutUserForm>;
+  _aboutUserForm: TUseStateReturnVal<TAboutUserFormForUI>;
   _isUserTeacher: TUseStateReturnVal<boolean>;
   _accountForm: TUseStateReturnVal<TAccountForm>;
 };

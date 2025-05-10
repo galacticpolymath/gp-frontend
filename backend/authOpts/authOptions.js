@@ -9,13 +9,13 @@ import JwtModel from '../models/Jwt';
 import { connectToMongodb } from '../utils/connection';
 import { signJwt } from '../utils/auth';
 import { createIterations, createSalt, getIsPasswordCorrect, hashPassword } from '../utils/security';
-import User from '../models/user';
 import { createDocument } from '../db/utils';
 import { AuthError, CustomError, SignInError } from '../utils/errors';
 import { v4 as uuidv4 } from 'uuid';
 import { createUser, deleteUser, getUser, getUserByEmail, getUserWithRetries, updateUser } from '../services/userServices';
 import NodeCache from 'node-cache';
 import { addUserToEmailList } from '../services/emailServices';
+import User from '../models/User/index';
 
 const VALID_FORMS = ['createAccount', 'login'];
 export const cache = new NodeCache({ stdTTL: 100 });
@@ -176,7 +176,7 @@ export const authOptions = {
             isOnMailingList,
             clientUrl,
           } = credentials;
-          /** @type { import('../models/user').TUserSchema } */
+          /** @type { import('../models/User').TUserSchema } */
           const dbUser = await getUserByEmail(email);
           const callbackUrl = credentials.callbackUrl.includes('?') ? credentials.callbackUrl.split('?')[0] : credentials.callbackUrl;
 
@@ -217,14 +217,13 @@ export const authOptions = {
           console.log('Creating the new user...');
 
           const hashedPassword = hashPassword(password, createSalt(), createIterations());
+          // TODO: using the firstName and lastName fields instead of the name field
           const userDocumentToCreate = {
             _id: uuidv4(),
             email: email,
             password: hashedPassword,
-            name: {
-              first: firstName,
-              last: lastName,
-            },
+            firstName,
+            lastName,
             provider: 'credentials',
             roles: ['user'],
             totalSignIns: 1,
@@ -411,10 +410,6 @@ export const authOptions = {
         if (wasUserCreated && (account.provider === 'google') && !dbUser) {
           console.log('creating the target google user...');
           const { picture, given_name, family_name } = profile ?? {};
-          const name = {
-            first: given_name,
-            last: family_name,
-          };
           const { wasSuccessful } = await updateUser(
             {
               providerAccountId: providerAccountId,
@@ -422,7 +417,8 @@ export const authOptions = {
             {
               email: userEmail,
               picture: picture ?? '',
-              name: name,
+              firstName: given_name,
+              lastName: family_name,
               totalSignIns: 1,
               lastSignIn: new Date(),
             }
@@ -504,7 +500,7 @@ export const authOptions = {
        * @type {{ email: string, roles: string[], name: { first: string, last: string }, picture: string }}
        */
       let { email, roles, name, picture } = token.payload;
-      /** @type { import('../models/user').TUserSchema } */
+      /** @type { import('../models/User').TUserSchema } */
       const targetUser = cache.get(email) ?? {};
       console.log('cached target user: ', targetUser);
       let isTeacher = false;
@@ -512,7 +508,10 @@ export const authOptions = {
 
       if (targetUser && targetUser.occupation && targetUser.name) {
         occupation = targetUser.occupation;
-        name = targetUser.name;
+        name = {
+          first: targetUser.firstName ?? targetUser?.name?.first,
+          last: targetUser.lastName ?? targetUser?.name?.last,
+        };
         isTeacher = targetUser.isTeacher;
       } else {
         await connectToMongodb(
@@ -528,7 +527,7 @@ export const authOptions = {
         }
 
         occupation = dbUser.occupation ?? null;
-        name = dbUser.name ?? name;
+        name = { first: dbUser.firstName ?? dbUser?.name?.first, last: dbUser.lastName ?? dbUser?.name?.last } ?? name;
         isTeacher = dbUser.isTeacher;
 
         delete dbUser.password;

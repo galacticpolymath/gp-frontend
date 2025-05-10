@@ -373,7 +373,7 @@ export const convertMapToObj = (map) => Object.fromEntries(map.entries());
  *  @param {string} urlField
  *  @returns {string[]}
  * */
-export const getAllUrlVals = (router, willCreateSubTuples) => {
+export const getAllUrlVals = (router, willCreateSubTuples = false) => {
     const pathsStr = router.asPath.split("?")[1];
     let urlKeysAndVals = pathsStr?.split("&");
 

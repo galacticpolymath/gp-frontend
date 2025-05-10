@@ -142,6 +142,10 @@ body {
   font-size: 18px;
 }
 
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
 .default-cursor {
   cursor: auto !important;
 }

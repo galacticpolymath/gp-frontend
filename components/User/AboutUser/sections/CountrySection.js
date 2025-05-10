@@ -7,14 +7,6 @@ import Button from "../../../General/Button";
 import { UserContext } from "../../../../providers/UserProvider";
 import countryNames from "../../../../data/User/countryNames.json";
 
-/**
- * 
- * @param {{
- *  setErrors: Function,
- *  errorMsg: string,
- *  setIsInputFocused: Function
- * }} param
- */
 const CountrySection = ({ _errors, setIsInputFocused }) => {
     const [searchResults, setSearchResults] = useState([]);
     const [isCountriesInputFocused, setIsCountriesInputFocused] = useState(false);

@@ -3,12 +3,17 @@
 /* eslint-disable indent */
 
 import { getMailingListContact } from "../../backend/services/emailServices";
-import { getUserByEmail } from "../../backend/services/userServices";
+import { getUserByEmail, handleUserDeprecatedV1Fields } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
-import { verifyJwt } from "../../backend/utils/security";
+import { NextApiRequest, NextApiResponse } from "next";
+import { verifyJwt } from "../../nondependencyFns";
+import { IUserSchema, TUserSchemaForClient } from "../../backend/models/User/types";
 
-export default async function handler(request, response) {
+export default async function handler(
+  request: NextApiRequest,
+  response: NextApiResponse
+) {
   try {
     const authorization = request?.headers?.['authorization'] ?? '';
     const authSplit = authorization.split(' ');
@@ -18,7 +23,7 @@ export default async function handler(request, response) {
     }
 
     const { email } = (await verifyJwt(authSplit[1])).payload;
-    let projections = {
+    const projections: Partial<Record<keyof IUserSchema, number>> = {
       gradesOrYears: 1,
       reasonsForSiteVisit: 1,
       subjects: 1,
@@ -27,22 +32,24 @@ export default async function handler(request, response) {
       zipCode: 1,
       occupation: 1,
       isTeacher: 1,
+      firstName: 1,
+      lastName: 1,
       name: 1,
+      referredByDefault: 1,
+      referredByOther: 1,
+      schoolTypeDefaultSelection: 1,
+      schoolTypeOther: 1,
+      classSize: 1,
+      subjectsTaughtDefault: 1,
+      institution: 1,
+      subjectsTaughtCustom: 1,
+      siteVisitReasonsCustom: 1,
+      siteVisitReasonsDefault: 1,
+      isNotTeaching: 1,
+      gradesTaught: 1,
+      gradesType: 1,
       _id: 0,
     };
-
-    if (request.query?.custom_projections?.length) {
-      const customProjections = request.query?.custom_projections.split(", ");
-      projections = Object.fromEntries(
-        customProjections
-          .filter((projection) => projection)
-          .map((projection) => [projection, 1])
-      );
-      projections = {
-        ...projections,
-        _id: 0,
-      };
-    }
 
     const { wasSuccessful } = await connectToMongodb(
       15_000,
@@ -54,7 +61,7 @@ export default async function handler(request, response) {
       throw new CustomError("Failed to connect to the database.", 500);
     }
 
-    const getUserAccountPromise = getUserByEmail(
+    const getUserAccountPromise = getUserByEmail<TUserSchemaForClient>(
       email,
       projections
     );
@@ -77,8 +84,8 @@ export default async function handler(request, response) {
       };
     }
 
-    return response.status(200).json(userAccount);
-  } catch (error) {
+    return response.status(200).json(handleUserDeprecatedV1Fields(userAccount));
+  } catch (error: any) {
     const { code, message } = error ?? {};
 
     console.error(
