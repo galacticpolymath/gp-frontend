@@ -2,12 +2,12 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-unused-vars */
-
 import React, {
   Dispatch,
   ReactNode,
   RefObject,
   SetStateAction,
+  useRef,
   useState,
 } from "react";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
@@ -37,6 +37,7 @@ import throttle from "lodash.throttle";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import Link from "next/link";
+import Sparkles from "../../SparklesAnimation";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -95,10 +96,6 @@ const TeachItUI = <
   const areThereGradeBands =
     !!gradeVariations?.length &&
     gradeVariations.every((variation) => !!variation.grades);
-  const [arrowContainer, setArrowContainer] = useState({
-    isInView: true,
-    canTakeOffDom: false,
-  });
   const [
     numsOfLessonPartsThatAreExpanded,
     setNumsOfLessonPartsThatAreExpanded,
@@ -107,26 +104,33 @@ const TeachItUI = <
   const { handleRestrictedItemBtnClick, session } =
     useCanUserAccessMaterial(false);
 
-  const removeClickToSeeMoreTxt = () => {
-    setArrowContainer({ isInView: true, canTakeOffDom: true });
-  };
-
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
   };
 
+  const [arrowContainer, setArrowContainer] = useState({
+    isInView: true,
+    canTakeOffDom: false,
+  });
+
+  const removeClickToSeeMoreTxt = () => {
+    setArrowContainer({ isInView: true, canTakeOffDom: true });
+  };
+
   let timer: NodeJS.Timeout;
+  const wasSeenRef = useRef(false);
 
   const handleElementVisibility = (inViewPort: boolean) =>
     throttle(() => {
       clearTimeout(timer);
 
-      if (inViewPort) {
+      if (inViewPort && !wasSeenRef.current) {
+        // wasSeenRef.current = true;
         setArrowContainer((state) => ({ ...state, isInView: true }));
 
         timer = setTimeout(() => {
           setArrowContainer((state) => ({ ...state, isInView: false }));
-        }, 3500);
+        }, 6_000);
       }
     }, 200)();
 
@@ -261,7 +265,6 @@ const TeachItUI = <
           {!!parts.length &&
             parts.every((part) => part !== null) &&
             parts.map((part, index, self) => {
-              console.log("part, yo there: ", part);
               let learningObjs: string[] | null = [];
 
               if ("learningObj" in part) {
@@ -355,7 +358,23 @@ const TeachItUI = <
                             ? "none"
                             : "block",
                         }}
-                      />
+                      >
+                        <>
+                          <Sparkles
+                            sparkleWrapperStyle={{
+                              height: 40,
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                            color="purple"
+                          >
+                            <p style={{ transform: "translateY(20px)" }}>
+                              CLICK TO SEE MORE!
+                            </p>
+                          </Sparkles>
+                        </>
+                      </ClickMeArrow>
                     ) : null
                   }
                   FeedbackComp={
