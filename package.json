@@ -21,7 +21,7 @@
     "@google-cloud/iam": "^2.0.1",
     "@google-cloud/local-auth": "^3.0.1",
     "@google-cloud/resource-manager": "^6.0.1",
-    "@google-cloud/storage": "^7.15.2",
+    "@google-cloud/storage": "^7.16.0",
     "@popperjs/core": "^2.11.8",
     "@radix-ui/react-accordion": "^1.2.10",
     "@react-hook/window-size": "^3.1.1",
