@@ -100,7 +100,7 @@
     "eslint-config-next": "^15.1.7",
     "eslint-plugin-react": "^7.37.5",
     "jest-puppeteer": "^11.0.0",
-    "sass": "^1.85.0",
+    "sass": "^1.88.0",
     "typescript": "^5.8.2"
   },
   "browser": {
