@@ -206,4 +206,4 @@ interface ISections<
 
 export type TSectionsForUI = ISections<TOverviewForUI, TStandardsForUI, IUnitTeachingMaterialsForUI>; 
 type TKeysSectionsForUI = keyof ISections;
-export type TUnitForUI = INewUnitSchema<TSectionsForUI, TFeaturedMultimediaForUI>;
+export type TUnitForUI = INewUnitSchema<TSectionsForUI, TFeaturedMultimediaForUI> & { headLinks?: [string, string][] };

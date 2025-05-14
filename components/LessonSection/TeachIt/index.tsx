@@ -113,8 +113,6 @@ const TeachIt = (props: TeachItProps) => {
     unitDur,
     unitPreface,
   } = props;
-  // print the props
-  console.log("props, TeachIt: ", props);
   let Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;
   const ref = useRef(null);

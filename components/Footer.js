@@ -31,11 +31,11 @@ const SOCIAL_MEDIA_ITEMS = [
   },
   {
     link: 'https://www.galacticpolymath.com/blog',
-    icon: <p className='text-white text-lg text-nowrap fw-normal'>Blog</p>,
+    icon: <p className='mb-0 text-lg text-nowrap fw-normal text-white'>Blog</p>,
   },
   {
     link: 'https://www.galacticpolymath.com',
-    icon: <p className='text-white text-lg text-nowrap fw-normal'>Main Site</p>,
+    icon: <p className='mb-0 text-lg text-nowrap fw-normal text-white'>Main Site</p>,
   },
 ];
 
@@ -48,18 +48,20 @@ export default function Footer() {
           <h4 className="fs-5">Galactic Polymath</h4>
           <p>We translate current research into creative interdisciplinary lessons for grades 5+ that are <em>free for everyone.</em></p>
           <div className="d-flex flex-wrap gap-1">
-            {SOCIAL_MEDIA_ITEMS.map(({ link, icon, color }, index) => (
-              <div key={index} className='rounded-circle p-1'>
-                <Link
-                  style={{ fontSize: '21px', color: color ?? '#2D83C3', width: 40, height: 40 }}
-                  className="d-flex justify-content-center align-items-center"
-                  href={link}
-                  target="_blank"
-                >
-                  {icon}
-                </Link>
-              </div>
-            ))}
+            {SOCIAL_MEDIA_ITEMS.map(({ link, icon, color }, index) => {
+              return (
+                <div key={index} className={`${icon.type === 'p' ? '' : 'rounded-circle linkHover'} p-2`}>
+                  <Link
+                    style={{ fontSize: '21px', color: color ?? '#2D83C3', width: 45, height: 45 }}
+                    className="d-flex justify-content-center align-items-center"
+                    href={link}
+                    target="_blank"
+                  >
+                    {icon}
+                  </Link>
+                </div>
+              );
+            })}
           </div>
         </div>
         <div className="col-12 col-lg-3">
