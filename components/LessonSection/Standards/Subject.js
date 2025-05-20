@@ -72,7 +72,7 @@ const Subject = ({
     >
       <>
         {subjectDimensions.map((subjectDimension, subjectDimIndex) => {
-          const { name, standardsGroup } = subjectDimension;
+          const { name, standardsGroup, slug } = subjectDimension;
           let subjectSlugIdName = subjectSlug;
 
           if (subjectDimensions.length > 1) {
@@ -84,7 +84,7 @@ const Subject = ({
               className={`bg-${subjectSlug}-light p-2  mx-1`}
               key={subjectDimIndex}
             >
-              <p className="mb-1 p-1">
+              <p id={slug} className="mb-1 p-1">
                 <strong>Dimension:</strong>
                 <span className="subject-name ms-1">
                   {name ?? ""}

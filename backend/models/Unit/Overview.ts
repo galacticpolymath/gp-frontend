@@ -118,6 +118,10 @@ export const UnitOverview = new Schema<Omit<IUnitOverview, "rootFieldsToRetrieve
                     name: "SponsoredBy",
                     as: "SponsoredBy"
                 },
+                {
+                    name: "TargetStandardsCodes",
+                    as: "TargetStandardsCodes"
+                },
             ]
 
             return rootFields;

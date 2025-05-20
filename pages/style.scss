@@ -42,6 +42,10 @@ h4.words {
   font-size: 18px;
 }
 
+.no-list-style {
+  list-style-type: none;
+}
+
 html,
 body {
   padding: 0;
@@ -1069,5 +1073,19 @@ img {
       max-width: 20px;
       border-color: red;
     }
+  }
+}
+
+.bounce-animation {
+  animation: bounce 0.4s ease infinite alternate;
+}
+
+@keyframes bounce {
+  0% {
+    text-shadow: 0 5px 0 #ccc, 0 2px 3px rgba(0, 0, 0, 1);
+  }
+  100% {
+    transform: translateY(-20px);
+    text-shadow: 0 50px 0 rgba(0, 0, 0, 1) k, 0 0px 20px rgba(0, 0, 0, 0.8);
   }
 }
