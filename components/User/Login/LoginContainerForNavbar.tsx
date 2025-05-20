@@ -5,12 +5,11 @@
 /* eslint-disable react/jsx-indent-props */
 
 import { FaUserAlt } from "react-icons/fa";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { UserContext, useUserContext } from "../../../providers/UserProvider";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import { TUseStateReturnVal } from "../../../types/global";
 import { useGetAboutUserForm } from "../../../customHooks/useGetAboutUserForm";
