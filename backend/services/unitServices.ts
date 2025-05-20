@@ -185,9 +185,12 @@ const retrieveUnits = async (
   }
 };
 
+export type TCustomUpdate = Record<string, { [key in keyof INewUnitSchema]: unknown }>
+
 const updateUnit = async (
   filterObj: Partial<{ [key in keyof INewUnitSchema]: unknown }>,
-  updatedProps: Partial<INewUnitSchema>
+  updatedProps: Partial<INewUnitSchema>,
+  customUpdate?: TCustomUpdate
 ) => {
   try {
     // an example of lesson being updated:
@@ -198,11 +201,29 @@ const updateUnit = async (
       );
     }
 
-    const { modifiedCount } = await Unit.updateMany(filterObj, {
+    if(customUpdate){
+      console.log("Making a custom update.");
+
+      const result = await Unit.updateMany(filterObj, customUpdate).lean();
+
+      if(result.matchedCount === 0){
+        return { errMsg: "No matching units were found in the database." }
+      }
+
+      console.log("result: ", result);
+
+      return { wasSuccessful: result.modifiedCount >= 1 };
+    }
+
+    const { modifiedCount, matchedCount } = await Unit.updateMany(filterObj, {
       $set: updatedProps,
     }).lean();
 
-    return { wasSuccessful: modifiedCount === 1 };
+    if(matchedCount === 0){
+      return { errMsg: "No matching units were found in the database." }
+    }
+
+    return { wasSuccessful: modifiedCount >= 1 };
   } catch (error) {
     const errMsg = `Failed to update the target lesson. Error message: ${error}.`;
 

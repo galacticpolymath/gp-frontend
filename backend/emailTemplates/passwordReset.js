@@ -505,7 +505,7 @@ export const createPasswordResetEmail = (recipientName, passwordResetUrl, imgOri
                                     </td>
                                 </tr>
                                 </table>
-                                <p>If you did not request a password reset or if you don't use an email and password to access your GP account, please ignore this email or <a href="${CONTACT_SUPPORT_EMAIL}">contact support</a> if you have questions.</p>
+                                <p>If you did not request a password reset or <strong>if you don't use an email and password to access your GP account<strong>, please ignore this email or <a href="${CONTACT_SUPPORT_EMAIL}">contact support</a> if you have questions.</p>
                                 <p>Thanks,
                                 <br>The Galactic Polymath Team</p>
                                 <!-- Sub copy -->

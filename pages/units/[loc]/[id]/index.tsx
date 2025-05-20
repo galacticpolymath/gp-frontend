@@ -142,6 +142,7 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 ]);
 
 const LessonDetails = ({ lesson, unit }: IProps) => {
+  console.log("unit, yo there: ", unit);
   const router = useRouter();
   const { _isUserTeacher } = useUserContext();
   const { status, data } = useSession();
@@ -359,6 +360,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
     []
   );
+
   const unitSections: (TSectionsForUI | null)[] = useMemo(() => {
     const unitSectionAndTitlePairs = Object.entries(unit?.Sections ?? {}) as [
       keyof TSectionsForUI,
