@@ -57,7 +57,7 @@
     "nextjs-google-analytics": "^2.3.7",
     "node-cache": "^5.1.2",
     "nodemailer": "^7.0.2",
-    "npm-check-updates": "^17.1.18",
+    "npm-check-updates": "^18.0.1",
     "passive-events-support": "^1.1.0",
     "pbkdf2": "^3.1.2",
     "prop-types": "^15.8.1",
