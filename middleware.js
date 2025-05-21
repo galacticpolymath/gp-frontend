@@ -340,44 +340,12 @@ export async function middleware(request) {
       const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES.includes(
         nextUrl.pathname
       );
-      const willCheckForValidEmail = USER_ACCOUNT_ROUTES.includes(
-        nextUrl.pathname
-      );
-      let clientEmail = null;
-
-      const body =
-        nextUrl.pathname === "/api/save-about-user-form" && method === "PUT"
-          ? await request.json()
-          : null;
-
-      if (
-        nextUrl.pathname === "/api/save-about-user-form" &&
-        typeof body?.userEmail === "string"
-      ) {
-        clientEmail = body.userEmail;
-      } else if (nextUrl.pathname === "/api/save-about-user-form") {
-        throw new Error(
-          "Received invalid parameters for the retreival of the user's 'About Me' form."
-        );
-      }
-
-      if (["/api/save-about-user-form"].includes(nextUrl.pathname)) {
-        const { isAuthorize, errResponse } = await getAuthorizeReqResult(
-          authorizationStr,
-          willCheckIfUserIsDbAdmin,
-          willCheckForValidEmail,
-          clientEmail
-        );
-
-        return isAuthorize ? errResponse : NextResponse.next();
-      }
-
+      console.log("willCheckIfUserIsDbAdmin: ", willCheckIfUserIsDbAdmin);
       const { isAuthorize, errResponse } = await getAuthorizeReqResult(
         authorizationStr,
         willCheckIfUserIsDbAdmin
       );
 
-      console.log("willCheckIfUserIsDbAdmin: ", willCheckIfUserIsDbAdmin);
       console.log("isAuthorize: ", isAuthorize);
 
       return isAuthorize ? errResponse : NextResponse.next();

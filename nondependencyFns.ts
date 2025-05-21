@@ -1,12 +1,12 @@
 /* eslint-disable indent */
 
-import { jwtVerify } from 'jose';
+import { JWTPayload, jwtVerify } from 'jose';
 import { NextResponse } from 'next/server';
 import { AuthMiddlewareError } from './backend/utils/errors';
 
 
 
-export const getChunks = (arr, chunkSize) => {
+export const getChunks = (arr: unknown[], chunkSize: number) => {
     const chunks = [];
     let chunkWindow = [];
 
@@ -28,41 +28,32 @@ export const getChunks = (arr, chunkSize) => {
     return chunks;
 };
 
-/**
- * 
- * @param {string} token 
- */
-export const verifyJwt = async (token) => {
+interface JWTPayloadCustom extends JWTPayload {
+    roles: string[],
+    email: string
+}
+
+export const verifyJwt = async (token: string) => {
     /**
      * @type {import('jose').JWTVerifyResult}
      */
-    const jwtVerifyResult = await jwtVerify(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
+    const jwtVerifyResult = await jwtVerify<JWTPayloadCustom>(token, new TextEncoder().encode(process.env.NEXTAUTH_SECRET));
 
     return jwtVerifyResult;
 };
 
-export const getDoesUserHaveSpecifiedRole = (userRoles, targetRole = 'user') => !!userRoles.find(role => role === targetRole);
+export const getDoesUserHaveSpecifiedRole = (userRoles: string[], targetRole = 'user') => !!userRoles.find(role => role === targetRole);
 
-/**
-* @param {string} authorizationStr 
-* @param {boolean} willCheckIfUserIsDbAdmin 
-* @param {boolean} willCheckForValidEmail 
-* @param {string} emailToValidate 
-* @returns
-*/
 export const getAuthorizeReqResult = async (
-    authorizationStr,
-    willCheckIfUserIsDbAdmin,
-    willCheckForValidEmail,
-    emailToValidate
+    authorizationStr: string,
+    willCheckIfUserIsDbAdmin: boolean,
+    willCheckForValidEmail: boolean,
+    emailToValidate: string
 ) => {
     try {
         const token = authorizationStr.split(' ')[1].trim();
         const verifyJwtResult = await verifyJwt(token);
-        /** 
-         * @type {TJwtPayload}
-        */
-        const payload = verifyJwtResult.payload;
+        const payload = verifyJwtResult.payload as JWTPayloadCustom;
 
         if (!payload) {
             const errMsg = 'You are not authorized to access this service.';
@@ -73,7 +64,7 @@ export const getAuthorizeReqResult = async (
 
         const { exp: expTimeSeconds, roles, email } = payload;
         const currentMiliseconds = Date.now();
-        const expTimeMiliseconds = expTimeSeconds * 1_000;
+        const expTimeMiliseconds = expTimeSeconds ? expTimeSeconds * 1_000 : null;
 
         if (!roles.includes('user')) {
             const errMsg = 'You are not authorized to access this service. Invalid token.';
@@ -84,7 +75,7 @@ export const getAuthorizeReqResult = async (
             throw new AuthMiddlewareError(false, response, 'You are not authorized to access this service. Invalid token.');
         }
 
-        if (currentMiliseconds > expTimeMiliseconds) {
+        if (expTimeMiliseconds && (currentMiliseconds > expTimeMiliseconds)) {
             const errMsg = 'The json web token has expired.';
             const response = new NextResponse(errMsg, { status: 498 });
 
@@ -111,7 +102,7 @@ export const getAuthorizeReqResult = async (
         }
 
         return { isAuthorize: true };
-    } catch (error) {
+    } catch (error: any) {
         const { errResponse, msg } = error ?? {};
 
         console.error('Error message: ', msg ?? 'Failed to validate jwt.');

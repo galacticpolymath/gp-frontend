@@ -3,22 +3,19 @@
 /* eslint-disable no-empty */
 /* eslint-disable indent */
 
+import { NextApiRequest, NextApiResponse } from "next";
 import { cache } from "../../backend/authOpts/authOptions";
-import { getUserByEmail, updateUser } from "../../backend/services/userServices";
+import { IUserSchema } from "../../backend/models/User/types";
+import { getUserByEmail, updateUser } from '../../backend/services/userServices';
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 import { getJwtPayloadPromise } from "../../nondependencyFns";
+import { IUpdatedAboutUserForm } from "../../types/global";
 
-/**
- * @typedef {Object} ReqBody
- * @property {import("../../providers/UserProvider").TUserForm} aboutUserForm 
- */
-
-/**
- * Will save the 'AboutUser' form for the the target user. Must be a 'PUT' request.
- * @param {{ body: ReqBody }} request
- * */
-export default async function handler(request, response) {
+export default async function handler(
+  request: NextApiRequest,
+  response: NextApiResponse
+) {
     try {
         if (typeof request.headers?.authorization !== 'string') {
             throw new Error("'authorization' header is not present in the request.");
@@ -52,7 +49,7 @@ export default async function handler(request, response) {
             throw new CustomError("Received a empty object for the 'aboutUserForm' field.", 400);
         }
 
-        const { aboutUserForm } = request.body;
+        const { aboutUserForm } = request.body as IUpdatedAboutUserForm;
         const aboutUserFormKeyVals = Object.entries(aboutUserForm);
 
         if (!aboutUserFormKeyVals?.length) {
@@ -62,7 +59,6 @@ export default async function handler(request, response) {
         const { wasSuccessful: isDbConnected } = await connectToMongodb(
             15_000,
             0,
-            true,
             true,
         );
 
@@ -76,30 +72,25 @@ export default async function handler(request, response) {
             throw new CustomError('The user email does not exist in the database.', 404);
         }
 
-        /** 
-         * @type {import("../../providers/UserProvider").TAboutUserForm}
-        */
-        const updatedUserProperties = aboutUserFormKeyVals.reduce((accumObj, [key, val]) => {
-            const accumObjUpdated = {
-                ...accumObj,
-                [key]: val,
-            };
-
-            return accumObjUpdated;
-        }, {});
-
-        const { wasSuccessful, updatedUser, errMsg } = await updateUser({ email: payload.payload.email }, updatedUserProperties) ?? {};
+        const { wasSuccessful, updatedUser, errMsg } = await updateUser(
+            { 
+                email: payload.payload.email, 
+            }, 
+            aboutUserForm
+        );
 
         if (!wasSuccessful) {
             throw new CustomError(errMsg, 500);
         }
 
-        delete updatedUser.password;
+        if(updatedUser && (updatedUser as Partial<IUserSchema>).password){
+            delete (updatedUser as Partial<IUserSchema>).password;
+        }
 
         cache.set(payload.payload.email, updatedUser);
 
         return response.status(200).json({ msg: "Successfully saved the 'aboutUser' form into the db." });
-    } catch (error) {
+    } catch (error: any) {
         const { message, code } = error ?? {};
         console.error('Failed to save the "AboutUser" form. Reason: ', error);
 

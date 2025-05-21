@@ -2,9 +2,9 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
 import Logo from '../assets/img/logo.png';
-import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
 
 export default function Navbar() {
   const router = useRouter();

@@ -1,9 +1,12 @@
 import { ReactNode, CSSProperties } from "react";
 import { IItem, ILesson } from "../backend/models/Unit/types/teachingMaterials";
+import { REFERRED_BY_OPTS } from '../shared/constants';
 import {
   IFeaturedMultimedia,
   INewUnitSchema,
 } from "../backend/models/Unit/types/unit";
+import { Session } from "next-auth";
+import { TAboutUserForm } from "../backend/models/User/types";
 
 // front-end
 interface IComponent {
@@ -107,7 +110,41 @@ interface IGpUnitsItemsPg<TData extends object> {
   didErrorOccur: boolean;
 }
 
+type TInputType = 
+  | "button"
+  | "checkbox"
+  | "color"
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "file"
+  | "hidden"
+  | "image"
+  | "month"
+  | "number"
+  | "password"
+  | "radio"
+  | "range"
+  | "reset"
+  | "search"
+  | "submit"
+  | "tel"
+  | "text"
+type TReferredByOpt = (typeof REFERRED_BY_OPTS)[number];
+
+export interface IUpdatedUserReqBody{
+  updatedUser: Partial<Omit<IUserSchema, "password" | "_id">>
+  clientUrl: string
+  willUpdateMailingListStatusOnly?: boolean
+  willSendEmailListingSubConfirmationEmail?: boolean
+} 
+
+export interface IUpdatedAboutUserForm{
+aboutUserForm: TAboutUserForm<Map>
+}
+
 export {
+  TReferredByOpt,
   IGpUnitsItemsPg,
   TLiveUnit,
   TGpData,
@@ -122,5 +159,6 @@ export {
   ISectionDot,
   ISectionDots,
   IItemForClient,
+  TInputType,
   ICurrentUnits,
 };

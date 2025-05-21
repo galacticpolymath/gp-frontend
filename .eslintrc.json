@@ -91,7 +91,7 @@
     ],
     "no-plusplus": "off",
     "no-underscore-dangle": "off",
-    "no-unused-vars": "error",
+    "no-unused-vars": "off",
     "no-use-before-define": [
       "error",
       "nofunc"

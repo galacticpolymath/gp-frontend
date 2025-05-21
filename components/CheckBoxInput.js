@@ -6,6 +6,7 @@ const CheckBoxInput = ({
   checkBoxInputClassName,
   handleCheckboxOnchange,
   txtStyle = {},
+  handleOnTxtClick = () => { },
 }) => {
   return (
     <section className="d-flex">
@@ -15,9 +16,13 @@ const CheckBoxInput = ({
         value={isChecked}
         onChange={handleCheckboxOnchange}
         checked={isChecked}
-        className={checkBoxInputClassName}
+        className={`${checkBoxInputClassName} pointer`}
       />
-      <span style={txtStyle} className={txtClassName}>
+      <span
+        onClick={handleOnTxtClick}
+        style={txtStyle}
+        className={txtClassName}
+      >
         {children}
       </span>
     </section>

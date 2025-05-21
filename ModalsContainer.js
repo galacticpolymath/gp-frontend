@@ -54,7 +54,6 @@ const ModalContainers = () => {
             <DownloadTipModal />
             <LoginModal />
             <SignUpModal />
-            <AboutUserModal />
             <AccountModal />
             <Notify />
             <PasswordResetModal />

@@ -24,9 +24,6 @@ export default async function handler(request, response) {
             throw new CustomError('Failed to connect to the database.', 500);
         }
 
-        /** 
-         * @type { import('../../backend/models/user').TUserSchema}
-         */
         const dbUser = await getUserByEmail(email);
 
         if (!dbUser) {
