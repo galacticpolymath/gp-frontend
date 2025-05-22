@@ -386,6 +386,11 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
           continue;
         }
 
+        if(lesson?.status?.toLowerCase() === "upcoming"){
+          console.log("The lesson is upcoming. Skipping...");
+          continue;
+        }
+
         const wasLessonFounded = !!unitLessons.find(unitLesson => unitLesson.lessonPartTitle === lesson.title)
 
         if(wasLessonFounded){

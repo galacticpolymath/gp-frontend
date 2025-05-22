@@ -340,10 +340,12 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
       return sectionTitle === "Feedback";
     });
+
     if (teachingMaterialsSecIndex === -1 || feedbackSecIndex === -1) {
       console.error(
         "Can't find the Teacher Materials section or the feedback section."
       );
+
       return sectionCompsCopy;
     }
 
