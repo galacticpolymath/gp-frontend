@@ -3,6 +3,7 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable indent */
+import { PiArrowsSplit } from "react-icons/pi";
 import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
@@ -74,6 +75,7 @@ interface ILessonPartProps {
   itemList?: IItemForClient[] | null;
   isAccordionExpandable: boolean;
   accordionBtnStyle?: CSSProperties;
+  gradeVarNote?: string | null;
 }
 
 const LessonPart = ({
@@ -89,6 +91,7 @@ const LessonPart = ({
   resources,
   ForGrades,
   GradesOrYears,
+  gradeVarNote,
   _numsOfLessonPartsThatAreExpanded,
   removeClickToSeeMoreTxt,
   lessonTileForDesktop = null,
@@ -725,10 +728,22 @@ const LessonPart = ({
                 })}
             </ol>
           </div>
+          {/* put grade var notes here */}
+          {gradeVarNote && (
+            <div className="mt-4">
+              <h5 className="d-flex align-items-start fw-bold mb-1">
+                <PiArrowsSplit className="me-2" />
+                Grade Variant Notes
+              </h5>
+              <section className="pe-5 ps-2">
+                <RichText content={gradeVarNote} />
+              </section>
+            </div>
+          )}
           {!isOnAssessments && durList && chunks && (
             <div className="mt-4">
               <h5 className="d-flex align-items-start fw-bold mb-3">
-                <i className="bi bi-stars me-2"></i>
+                <i className="bi bi-stars me-2" />
                 Steps &amp; Flow
               </h5>
               {chunks.map((chunk, i) => (
@@ -749,7 +764,7 @@ const LessonPart = ({
               <div>
                 <div className="d-flex align-items-start ">
                   <h5 className="fw-bold">
-                    <i className="bi bi-rocket-takeoff me-2"></i>
+                    <i className="bi bi-rocket-takeoff me-2" />
                     Going Further
                   </h5>
                 </div>

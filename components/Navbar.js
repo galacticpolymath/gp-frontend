@@ -1,10 +1,13 @@
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
-import Logo from '../assets/img/logo.png';
+import logo from '../assets/img/logo.png';
+import mobileLogo from '../assets/img/mobile_logo.png';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
+
+// TODO: suppress all lessons that has the upcoming status
 
 export default function Navbar() {
   const router = useRouter();
@@ -19,19 +22,29 @@ export default function Navbar() {
       <div className="navbar navbar-expand-lg w-100 navbar-dark bg-dark position-relative">
         <div style={{ zIndex: 10000 }} className='w-100 container'>
           <Image
-            className='object-fit-contain'
+            className='object-fit-contain d-none d-sm-block'
             alt="Galactic Polymath"
-            src={Logo}
+            src={logo}
             height={68}
             width={841}
             style={{
               maxHeight: '60px',
-              // maxWidth: '75vw',
               width: 'auto',
               height: 'auto',
             }}
           />
-          {/* filler */}
+          <Image
+            className='object-fit-contain d-block d-sm-none'
+            alt="Galactic Polymath"
+            src={mobileLogo}
+            height={68}
+            width={150}
+            style={{
+              maxHeight: '60px',
+              width: 'auto',
+              height: 'auto',
+            }}
+          />
           <div style={{ color: 'white' }} className='flex-grow-1 white' />
           <button
             className='navbar-toggler m-2'
