@@ -3,6 +3,7 @@
 /* eslint-disable quotes */
 /* eslint-disable comma-dangle */
 
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import RichText from "../RichText";
@@ -11,6 +12,9 @@ import useLessonElementInView from "../../customHooks/useLessonElementInView";
 import Title, { ITitleProps } from "./Title";
 import { ISectionDots, TUseStateReturnVal } from "../../types/global";
 import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
+import { TUnitForUI } from "../../backend/models/Unit/types/unit";
+import Standards from "./Standards";
+import { ITargetStandardsCode } from "../../backend/models/Unit/types/standards";
 
 interface IOverviewProps
   extends ITitleProps,
@@ -22,6 +26,7 @@ interface IOverviewProps
   GradesOrYears: string[];
   LearningSummary: string;
   SectionTitle: string;
+  TargetStandardsCodes?: TUnitForUI["TargetStandardsCodes"];
   SteamEpaulette: string;
   SteamEpaulette_vert: string;
   Tags: TOverviewForUI["Tags"];
@@ -45,9 +50,87 @@ const Overview = ({
   SectionTitle,
   TheGist,
   EstUnitTime,
+  TargetStandardsCodes,
   Accessibility,
   ...titleProps
 }: IOverviewProps) => {
+  console.log("TargetStandardsCodes: ", TargetStandardsCodes);
+
+  const areTargetStandardsValid = TargetStandardsCodes?.every(
+    (standard) =>
+      typeof standard?.code === "string" &&
+      typeof standard?.dim === "string" &&
+      typeof standard?.set === "string" &&
+      typeof standard?.subject === "string"
+  );
+  let standards: Record<string, Omit<ITargetStandardsCode, "set">[]> = {};
+
+  const handleLinkClick = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    descriptor: Omit<ITargetStandardsCode, "set">
+  ) => {
+    event.preventDefault();
+    const code = (event.target as HTMLAnchorElement).href.split("#")[1];
+    console.log("code: ", code);
+    console.log("descriptor: ", descriptor);
+    const el = document.getElementById(descriptor.code);
+
+    if (el) {
+      el.scrollIntoView({
+        behavior: "smooth",
+        block: "center", // This centers the element vertically in the viewport
+      });
+      el.className += " bounce-animation";
+      setTimeout(() => {
+        el.className = el.className.replace(" bounce-animation", "");
+      }, 3500);
+      return;
+    }
+
+    const elementDim = document.getElementById(descriptor.dim);
+
+    if (elementDim) {
+      elementDim.scrollIntoView({
+        behavior: "smooth",
+        block: "center", // This centers the element vertically in the viewport
+      });
+      elementDim.className += " bounce-animation";
+      setTimeout(() => {
+        elementDim.className = elementDim.className.replace(
+          " bounce-animation",
+          ""
+        );
+      }, 3500);
+      return;
+    }
+
+    console.log("code: ", code);
+  };
+
+  if (areTargetStandardsValid && TargetStandardsCodes) {
+    standards = TargetStandardsCodes.reduce(
+      (accum, stardardCodesProp, index) => {
+        console.log("index, yo there: ", index);
+        console.log("stardardCodesProp: ", stardardCodesProp);
+
+        const { set, code, dim, subject } = stardardCodesProp;
+
+        if (set in accum) {
+          return {
+            ...accum,
+            [set]: [...accum[set], { code, dim, subject }],
+          };
+        }
+
+        return {
+          ...accum,
+          [set]: [{ code, dim, subject }],
+        };
+      },
+      standards
+    );
+  }
+
   const ref = useRef(null);
   const { h2Id } = useLessonElementInView(_sectionDots, "0. Overview", ref);
   const _h2Id = SectionTitle.toLowerCase()
@@ -195,7 +278,6 @@ const Overview = ({
         </div>
       </div>
       <RichText className="mt-4" content={Text} />
-
       <h5 className="mt-4">Keywords:</h5>
       {!!Tags?.length &&
         Tags.map((tag) => (

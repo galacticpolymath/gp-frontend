@@ -166,6 +166,7 @@ const StandardsGroup = (props) => {
 
                   return (
                     <div
+                      id={code}
                       className="mb-0 inline-block standards-txt-container"
                       key={i}
                     >

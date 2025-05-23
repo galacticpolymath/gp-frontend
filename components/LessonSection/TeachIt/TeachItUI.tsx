@@ -263,12 +263,17 @@ const TeachItUI = <
         )}
         <div className="container lessonsPartContainer px-0 pe-sm-1 px-md-2 pb-4">
           {!!parts.length &&
-            parts.every((part) => part !== null) &&
-            parts.map((part, index, self) => {
+            parts.filter(Boolean).map((part, index, self) => {
               let learningObjs: string[] | null = [];
 
               if ("learningObj" in part) {
                 learningObjs = part.learningObj;
+              }
+
+              let gradeVarNote: string | null = null;
+
+              if ("gradeVarNote" in part && part.gradeVarNote) {
+                gradeVarNote = part.gradeVarNote;
               }
 
               let { lsn, title, preface, itemList, tile, chunks } = part;
@@ -342,6 +347,7 @@ const TeachItUI = <
               return (
                 <LessonPart
                   {...lessonTilesObj}
+                  gradeVarNote={gradeVarNote}
                   GradesOrYears={GradesOrYears}
                   removeClickToSeeMoreTxt={removeClickToSeeMoreTxt}
                   key={`${index}_part`}

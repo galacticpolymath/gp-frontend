@@ -142,6 +142,7 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 ]);
 
 const LessonDetails = ({ lesson, unit }: IProps) => {
+  console.log("unit, yo there: ", unit);
   const router = useRouter();
   const { _isUserTeacher } = useUserContext();
   const { status, data } = useSession();
@@ -339,10 +340,12 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
       return sectionTitle === "Feedback";
     });
+
     if (teachingMaterialsSecIndex === -1 || feedbackSecIndex === -1) {
       console.error(
         "Can't find the Teacher Materials section or the feedback section."
       );
+
       return sectionCompsCopy;
     }
 
@@ -359,6 +362,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
     []
   );
+
   const unitSections: (TSectionsForUI | null)[] = useMemo(() => {
     const unitSectionAndTitlePairs = Object.entries(unit?.Sections ?? {}) as [
       keyof TSectionsForUI,

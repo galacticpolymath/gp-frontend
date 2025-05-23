@@ -49,7 +49,7 @@ export default async function handler(request, response) {
             from: 'shared@galacticpolymath.com',
             to: email,
             subject: 'Galactic Polymath Password Reset',
-            html: createPasswordResetEmail(user.name.first, resetPasswordLink, clientOrigin),
+            html: createPasswordResetEmail(user?.firstName ?? user.name.first, resetPasswordLink, clientOrigin),
         });
 
         if (!wasSuccessful) {
