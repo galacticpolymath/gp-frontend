@@ -20,7 +20,7 @@
      */
     const sendEmail = async (mailOpts) => {
         try {
-            const privateKey = process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, '\n');;
+            const privateKey = process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, '\n');
             const emailTransport = {
                 host: 'smtp.gmail.com',
                 port: 465,
