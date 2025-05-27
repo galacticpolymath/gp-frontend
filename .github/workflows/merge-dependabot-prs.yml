@@ -63,5 +63,6 @@ jobs:
       uses: "pascalgn/automerge-action@v0.16.4"
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}      
-      with:
-        merge-method: 'squash'
+        MERGE_LABELS: "autosquash"
+        MERGE_METHOD: "squash"
+        MERGE_RETRIES: "5"
