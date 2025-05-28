@@ -277,38 +277,7 @@ const Overview = ({
           )}
         </div>
       </div>
-      {TargetStandardsCodes && areTargetStandardsValid && (
-        <section className="d-flex flex-column">
-          <h3>Target standards: </h3>
-          {Object.entries(standards).map(([stardard, standardDescriptors]) => {
-            return (
-              <>
-                <h5>{stardard}</h5>
-                <ul className="row row-cols-1 row-cols-sm-2">
-                  {standardDescriptors.map((standardDescriptor, index) => {
-                    console.log("standardDescriptor: ", standardDescriptor);
-
-                    return (
-                      <li key={index} className="col">
-                        <Link
-                          href={`#${standardDescriptor.dim}`}
-                          onClick={(event) =>
-                            handleLinkClick(event, standardDescriptor)
-                          }
-                        >
-                          {standardDescriptor.code}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </>
-            );
-          })}
-        </section>
-      )}
       <RichText className="mt-4" content={Text} />
-
       <h5 className="mt-4">Keywords:</h5>
       {!!Tags?.length &&
         Tags.map((tag) => (
