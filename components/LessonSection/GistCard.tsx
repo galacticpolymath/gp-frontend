@@ -2,17 +2,18 @@ import Image from "next/image";
 import Link from "next/link";
 import RichText from "../RichText";
 import SubjectBreakDown from "./SubjectBreakdown";
+import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
 
-interface IProps {
-  LearningSummary: string;
-  TargetSubject: string;
-  ForGrades: string;
-  EstLessonTime: string;
-  SteamEpaulette: string;
-  SteamEpaulette_vert: string;
+type TProps = {
+  LearningSummary: TOverviewForUI["TheGist"];
+  TargetSubject: TOverviewForUI["TargetSubject"];
+  ForGrades: TOverviewForUI["ForGrades"];
+  EstLessonTime: TOverviewForUI["EstUnitTime"];
+  SteamEpaulette: TOverviewForUI["SteamEpaulette"];
+  SteamEpaulette_vert: TOverviewForUI["SteamEpaulette_vert"];
   isOnPreview: boolean;
   className?: string;
-}
+};
 
 const GistCard = ({
   LearningSummary,
@@ -23,7 +24,7 @@ const GistCard = ({
   SteamEpaulette_vert,
   isOnPreview,
   className,
-}: IProps) => {
+}: TProps) => {
   return (
     <div className={className}>
       {LearningSummary && (
