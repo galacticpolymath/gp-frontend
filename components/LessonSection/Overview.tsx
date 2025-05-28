@@ -176,6 +176,9 @@ const Overview = ({
           SteamEpaulette_vert={SteamEpaulette_vert}
           TargetSubject={TargetSubject}
           isOnPreview={false}
+          standards={standards}
+          areTargetStandardsValid={!!areTargetStandardsValid}
+          TargetStandardsCodes={TargetStandardsCodes}
           className="col-xxl-12 bg-light-gray px-4 py-2 rounded-3 text-center"
         />
       </div>

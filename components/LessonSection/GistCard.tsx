@@ -3,6 +3,8 @@ import Link from "next/link";
 import RichText from "../RichText";
 import SubjectBreakDown from "./SubjectBreakdown";
 import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
+import { ITargetStandardsCode } from "../../backend/models/Unit/types/standards";
+import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 
 type TProps = {
   LearningSummary: TOverviewForUI["TheGist"];
@@ -11,20 +13,66 @@ type TProps = {
   EstLessonTime: TOverviewForUI["EstUnitTime"];
   SteamEpaulette: TOverviewForUI["SteamEpaulette"];
   SteamEpaulette_vert: TOverviewForUI["SteamEpaulette_vert"];
+  TargetStandardsCodes?: INewUnitSchema["TargetStandardsCodes"];
   isOnPreview: boolean;
+  areTargetStandardsValid: boolean;
+  standards: Record<string, Omit<ITargetStandardsCode, "set">[]>;
   className?: string;
 };
 
 const GistCard = ({
   LearningSummary,
+  standards,
   TargetSubject,
   ForGrades,
   EstLessonTime,
   SteamEpaulette,
   SteamEpaulette_vert,
   isOnPreview,
+  areTargetStandardsValid,
+  TargetStandardsCodes,
   className,
 }: TProps) => {
+  const handleLinkClick = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    descriptor: Omit<ITargetStandardsCode, "set">
+  ) => {
+    event.preventDefault();
+    const code = (event.target as HTMLAnchorElement).href.split("#")[1];
+    const el = document.getElementById(descriptor.code);
+
+    if (el) {
+      el.scrollIntoView({
+        behavior: "smooth",
+        block: "center", // This centers the element vertically in the viewport
+      });
+      el.className += " bounce-animation";
+      setTimeout(() => {
+        el.className = el.className.replace(" bounce-animation", "");
+      }, 3500);
+      return;
+    }
+
+    const elementDim = document.getElementById(descriptor.dim);
+
+    if (elementDim) {
+      elementDim.scrollIntoView({
+        behavior: "smooth",
+        block: "center", // This centers the element vertically in the viewport
+      });
+      elementDim.className += " bounce-animation";
+      setTimeout(() => {
+        elementDim.className = elementDim.className.replace(
+          " bounce-animation",
+          ""
+        );
+      }, 3500);
+      return;
+    }
+
+    console.log("code: ", code);
+  };
+
   return (
     <div className={className}>
       {LearningSummary && (
@@ -83,11 +131,11 @@ const GistCard = ({
       </div>
       {TargetStandardsCodes && areTargetStandardsValid && (
         <section className="d-flex flex-column">
-          <h3>Target standards: </h3>
+          <h3 className="text-start">Target standards: </h3>
           {Object.entries(standards).map(([stardard, standardDescriptors]) => {
             return (
               <>
-                <h5>{stardard}</h5>
+                <h5 className="text-start">{stardard}</h5>
                 <ul className="row row-cols-1 row-cols-sm-2">
                   {standardDescriptors.map((standardDescriptor, index) => {
                     console.log("standardDescriptor: ", standardDescriptor);
