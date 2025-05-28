@@ -208,6 +208,7 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
               </div>
             )}
             <GistCard
+              className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center"
               isOnPreview
               EstLessonTime={lesson?.Section?.overview?.EstLessonTime}
               ForGrades={lesson.ForGrades}
