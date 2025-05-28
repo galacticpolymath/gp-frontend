@@ -167,16 +167,18 @@ const Overview = ({
         className="position-absolute"
       />
       <Title {...titleProps} />
-      <GistCard
-        LearningSummary={TheGist}
-        EstLessonTime={EstUnitTime}
-        ForGrades={ForGrades}
-        SteamEpaulette={SteamEpaulette}
-        SteamEpaulette_vert={SteamEpaulette_vert}
-        TargetSubject={TargetSubject}
-        isOnPreview={false}
-        className=""
-      />
+      <div className="d-flex flex-column flex-xxl-row mt-sm-4 mt-md-0 mt-xxl-2 container px-0 mx-0">
+        <GistCard
+          LearningSummary={TheGist}
+          EstLessonTime={EstUnitTime}
+          ForGrades={ForGrades}
+          SteamEpaulette={SteamEpaulette}
+          SteamEpaulette_vert={SteamEpaulette_vert}
+          TargetSubject={TargetSubject}
+          isOnPreview={false}
+          className="col-xxl-12 bg-light-gray px-4 py-2 rounded-3 text-center"
+        />
+      </div>
       <RichText className="mt-4" content={Text} />
       <h5 className="mt-4">Keywords:</h5>
       {!!Tags?.length &&
