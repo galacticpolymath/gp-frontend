@@ -218,6 +218,13 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
               SteamEpaulette_vert={
                 lesson?.Section?.overview?.SteamEpaulette_vert
               }
+              areTargetStandardsValid={
+                lesson?.Section?.overview?.TargetStandardsCodes?.length > 0
+              }
+              standards={lesson?.Section?.overview?.TargetStandardsCodes}
+              TargetStandardsCodes={
+                lesson?.Section?.overview?.TargetStandardsCodes
+              }
             />
           </div>
         </div>

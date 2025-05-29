@@ -69,8 +69,6 @@ const GistCard = ({
       }, 3500);
       return;
     }
-
-    console.log("code: ", code);
   };
 
   return (
@@ -136,23 +134,23 @@ const GistCard = ({
             return (
               <>
                 <h5 className="text-start">{stardard}</h5>
-                <ul className="row row-cols-1 row-cols-sm-2">
-                  {standardDescriptors.map((standardDescriptor, index) => {
-                    console.log("standardDescriptor: ", standardDescriptor);
-
-                    return (
-                      <li key={index} className="col">
+                <ul className="row row-cols-3">
+                  {standardDescriptors.map(
+                    (standardDescriptor, index, self) => (
+                      <li key={index} className="col text-start ps-1 d-inline">
                         <Link
                           href={`#${standardDescriptor.dim}`}
                           onClick={(event) =>
                             handleLinkClick(event, standardDescriptor)
                           }
+                          className="text-dark underline-on-hover pointer fw-normal"
                         >
                           {standardDescriptor.code}
                         </Link>
+                        {self.length - 1 !== index ? "," : ""}
                       </li>
-                    );
-                  })}
+                    )
+                  )}
                 </ul>
               </>
             );
