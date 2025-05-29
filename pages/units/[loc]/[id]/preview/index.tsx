@@ -96,6 +96,11 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
 
     return (
       <UnitPreviewUI
+        areTargetStandardsValid={
+          lesson?.Section?.overview?.TargetStandardsCodes?.length > 0
+        }
+        standards={lesson?.Section?.overview?.TargetStandardsCodes}
+        TargetStandardsCodes={lesson?.Section?.overview?.TargetStandardsCodes}
         latestSubRelease={latestSubRelease}
         Title={unit?.Title}
         Subtitle={unit?.Subtitle}

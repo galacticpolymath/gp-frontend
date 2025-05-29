@@ -9,8 +9,6 @@ const Standards = ({
   Data,
   GradesOrYears,
 }) => {
-  console.log("Data, yo there: ", Data);
-
   const areThereTargetStandards = Data?.some(({ target }) => target);
   const { _arrowContainer, handleElementVisibility } = useArrowContainer();
   const [arrowContainer, setArrowContainer] = _arrowContainer;
