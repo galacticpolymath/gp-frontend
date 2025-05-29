@@ -128,28 +128,38 @@ const GistCard = ({
         </div>
       </div>
       {TargetStandardsCodes && areTargetStandardsValid && (
-        <section className="d-flex flex-column">
+        <section className="d-flex flex-column pb-2">
           <h3 className="text-start">Target standards: </h3>
           {Object.entries(standards).map(([stardard, standardDescriptors]) => {
             return (
               <>
                 <h5 className="text-start">{stardard}</h5>
-                <ul className="row row-cols-3">
+                <ul className="row g-0 m-0 p-0 list-unstyled w-75">
                   {standardDescriptors.map(
-                    (standardDescriptor, index, self) => (
-                      <li key={index} className="col text-start ps-1 d-inline">
-                        <Link
-                          href={`#${standardDescriptor.dim}`}
-                          onClick={(event) =>
-                            handleLinkClick(event, standardDescriptor)
-                          }
-                          className="text-dark underline-on-hover pointer fw-normal"
+                    (standardDescriptor, index, self) => {
+                      console.log(
+                        "standardDescriptor, yo there: ",
+                        standardDescriptor
+                      );
+                      return (
+                        <li
+                          key={index}
+                          className="col-auto pt-0 pb-0 pr-0 ps-2 m-0 text-start"
+                          style={{ lineHeight: "1.5" }}
                         >
-                          {standardDescriptor.code}
-                        </Link>
-                        {self.length - 1 !== index ? "," : ""}
-                      </li>
-                    )
+                          <Link
+                            href={`#${standardDescriptor.dim}`}
+                            onClick={(event) =>
+                              handleLinkClick(event, standardDescriptor)
+                            }
+                            className="text-dark underline-on-hover pointer fw-normal"
+                          >
+                            {standardDescriptor.code}
+                          </Link>
+                          {index !== self.length - 1 ? "," : ""}
+                        </li>
+                      );
+                    }
                   )}
                 </ul>
               </>
