@@ -4,14 +4,13 @@
 
 .env
 
-dummyReq.js
 creds.json
-creds2.json
-
 getLessons.js
+secrets.js
+users.json
 credentials.json
-credentials2.json
-googleDriveSecret.json
+failedMigratedUsers.json
+usersWithDeprecatedFields.json
 
 # dependencies
 /node_modules

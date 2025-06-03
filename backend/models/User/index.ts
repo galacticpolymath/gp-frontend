@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 import Mongoose from "mongoose";
-import { IUserSchema } from "./types";
+import { IUserSchema, TUserSchemaV2 } from "./types";
 
 class StringValidator {
   validate: (val: string) => boolean;
@@ -22,8 +22,7 @@ class StringValidator {
 const { Schema, models, model } = Mongoose;
 let User = models.users;
 
-
-export const UserSchema = new Schema<IUserSchema>(
+export const UserSchemaDeprecatedV1 = new Schema<IUserSchema>(
   {
     _id: { type: String, required: true },
     email: { type: String, required: true },
@@ -36,6 +35,10 @@ export const UserSchema = new Schema<IUserSchema>(
     provider: String,
     isTeacher: { type: Boolean, required: true, default: () => false },
     providerAccountId: String,
+    name: {
+      first: {  type: String, required: false },
+      last: { type: String, required: false },
+    },
     emailVerified: { type: Date, required: false },
     firstName: {
         type: String,
@@ -78,6 +81,61 @@ export const UserSchema = new Schema<IUserSchema>(
       num: { type: Number, required: false, default: () => 0 },
       isNotTeaching: { type: Boolean, required: false, default: () => false },
     },
+    roles: { type: [String], required: true },
+    totalSignIns: { type: Number, required: false, default: () => 0 },
+    lastSignIn: { type: Date, required: false },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+
+export const UserSchema = new Schema<TUserSchemaV2>(
+  {
+    _id: { type: String, required: true },
+    email: { type: String, required: true },
+    mailingListConfirmationEmailId: { type: String, required: false },
+    password: {
+      hash: { type: String, required: false },
+      salt: { type: String, required: false },
+      iterations: { type: Number, required: false },
+    },
+    provider: String,
+    isTeacher: { type: Boolean, required: true, default: () => false },
+    providerAccountId: String,
+    emailVerified: { type: Date, required: false },
+    firstName: {
+        type: String,
+        required: false,
+        validator: new StringValidator(
+          "First name is required and must be a string."
+        ),
+      },
+    lastName: {
+        type: String,
+        required: false,
+        validator: new StringValidator(
+          "Last name is required and must be a string."
+        ),
+      },
+    picture: { type: String, required: false },
+    occupation: { type: String, required: false },
+    country: { type: String, required: false },
+    zipCode: { type: String, required: false },
+    institution: String,
+    gradesType: String, 
+    gradesTaught: [String], 
+    schoolTypeOther: String,
+    schoolTypeDefaultSelection: String,
+    referredByDefault: String,
+    referredByOther: String,
+    subjectsTaughtDefault: [String],
+    subjectsTaughtCustom: [String],
+    classSize: Number,
+    isNotTeaching: Boolean,
+    siteVisitReasonsDefault: [String],
+    siteVisitReasonsCustom: String,
     roles: { type: [String], required: true },
     totalSignIns: { type: Number, required: false, default: () => 0 },
     lastSignIn: { type: Date, required: false },

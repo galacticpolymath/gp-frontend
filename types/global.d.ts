@@ -131,7 +131,7 @@ type TInputType =
   | "tel"
   | "text"
 type TReferredByOpt = (typeof REFERRED_BY_OPTS)[number];
-
+export type TEnvironment = "dev" | "production"
 export interface IUpdatedUserReqBody{
   updatedUser: Partial<Omit<IUserSchema, "password" | "_id">>
   clientUrl: string

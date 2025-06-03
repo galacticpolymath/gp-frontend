@@ -1,6 +1,7 @@
 import { SUBJECTS_OPTIONS } from "../../../components/User/AboutUser/AboutUserModal";
 import { TSchoolType } from "../../../providers/UserProvider";
 import { TReferredByOpt } from "../../../types/global";
+import { TAboutUserFormDeprecated } from "./deprecated";
 
 export type TAgeGroupSelection = "U.S." | "Outside U.S.";
 
@@ -25,48 +26,20 @@ interface IAboutUserFormNewFieldsV1{
   schoolTypeOther: string | null;
   referredByDefault?: TReferredByOpt | null,
   referredByOther?: string | null,
+  siteVisitReasonsDefault?: string[] | null;
+  siteVisitReasonsCustom?: string | null;
 }
 
-export interface TAboutUserForm<TMutableObj extends object = Record<string, unknown>> extends IAboutUserFormNewFieldsV1 {
-  /**
-   * @deprecated
-   * Use `gradesType` and `gradesTaught` instead
-   */
-  gradesOrYears: IAgeGroupsSelection;
+export interface TAboutUserFormBaseProps extends IAboutUserFormNewFieldsV1{
   country: string;
   occupation: string;
   zipCode: string | null | number;
   isTeacher?: boolean;
-  /**
-   * @deprecated
-   * Use `firstName` and `lastName` instead
-   */
-  name: {
-    first: string;
-    last: string;
-  };
-  /**
-   * @deprecated Use `siteVisitReasonsDefault` and `siteVisitReasonsCustom` instead
-   */
-  reasonsForSiteVisit?: TMutableObj;
-  siteVisitReasonsDefault?: string[] | null;
-  siteVisitReasonsCustom?: string | null;
-  /**
-   * @deprecated
-   * Use `subjectsTaughtDefault` and `subjectsTaughtCustom` instead
-   */
-  subjects?: TMutableObj;
-  /**
-   * @deprecated
-   * Use `classSize: number` and `isNotTeaching: boolean` instead
-   */
-  classroomSize: {
-    num: number;
-    isNotTeaching: boolean;
-  };
 }
 
-export interface IUserSchema extends TAboutUserForm {
+export interface TAboutUserForm<TMutableObj extends object = Record<string, unknown>> extends TAboutUserFormDeprecated<TMutableObj>, TAboutUserFormBaseProps {}
+
+export interface IUserSchemaBaseProps{
   _id: string;
   email: string;
   mailingListConfirmationEmailId?: string;
@@ -76,16 +49,18 @@ export interface IUserSchema extends TAboutUserForm {
     iterations: number;
   };
   provider: string;
-  isTeacher: boolean;
   providerAccountId?: string;
   emailVerified?: Date;
   picture?: string;
-  occupation?: string;
-  country?: string;
   roles: string[];
   totalSignIns: number;
   lastSignIn?: Date;
 }
 
+// user schema v1, has the deprecated fields and the v2 fields
+export interface IUserSchema extends TAboutUserForm, IUserSchemaBaseProps {}
+
+// does not contain the deprecated props, only the v2 fields
+export type TUserSchemaV2 = IUserSchemaBaseProps & TAboutUserFormBaseProps
 
 export type TUserSchemaForClient = IUserSchema & { isOnMailingList?: boolean };
