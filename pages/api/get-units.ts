@@ -82,7 +82,7 @@ export default async function handler(
 
     const { data, errMsg } = await retrieveUnits(
       (dbFilter ?? {}) as Record<keyof IUnit, unknown>,
-      (dbProjections ?? {}) as TProjections
+      dbProjections ?? {}
     );
 
     if (errMsg) {
@@ -100,12 +100,10 @@ export default async function handler(
 
     console.error("Error in the `getUnits` API route:", error);
 
-    return response
-      .status(code ?? 500)
-      .json({
-        msg: `Error message: ${
-          message ?? "An error has occurred on the server."
-        }`,
-      });
+    return response.status(code ?? 500).json({
+      msg: `Error message: ${
+        message ?? "An error has occurred on the server."
+      }`,
+    });
   }
 }

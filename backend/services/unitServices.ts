@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { DeleteResult } from "mongoose";
+import { DeleteResult, ProjectionType } from "mongoose";
 import { INewUnitSchema, IUnit } from "../models/Unit/types/unit";
 import Unit from "../models/Unit";
 import {
@@ -159,7 +159,7 @@ export type TProjections = { [key in keyof IUnit | "__v"]: 0 | 1 };
 
 const retrieveUnits = async (
   filterObj: Partial<{ [key in keyof IUnit]: unknown }>,
-  projectionObj: Partial<TProjections>,
+  projectionObj: ProjectionType<Partial<TProjections>>,
   limit: number = 0,
   sort?: TSort
 ) => {
