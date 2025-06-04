@@ -95,7 +95,7 @@
   "devDependencies": {
     "@types/d3": "^7.4.3",
     "@types/lodash.throttle": "^4.1.9",
-    "cypress": "^14.4.0",
+    "cypress": "^14.4.1",
     "eslint": "9.28.0",
     "eslint-config-next": "^15.3.3",
     "eslint-plugin-react": "^7.37.5",
