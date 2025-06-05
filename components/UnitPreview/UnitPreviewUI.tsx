@@ -12,8 +12,12 @@ import { ISubRelease } from '../../backend/models/Unit/Overview';
 import { useRouter } from 'next/router';
 import { INewUnitLesson } from '../../backend/models/Unit/types/teachingMaterials';
 import { UNITS_URL_PATH } from '../../shared/constants';
+import { ITargetStandardsCode } from '../../backend/models/Unit/types/standards';
 
 interface ILessonPreviewUIProps {
+  areTargetStandardsValid: boolean;
+  TargetStandardsCodes: ITargetStandardsCode[];
+  standards: Record<string, Omit<ITargetStandardsCode, 'set'>[]>;
   latestSubRelease: ISubRelease | null;
   Title: string | null;
   Subtitle: string | null;
@@ -43,6 +47,9 @@ const UnitPreviewUI = ({
   LearningSummary,
   TargetSubject,
   SteamEpaulette,
+  standards,
+  areTargetStandardsValid,
+  TargetStandardsCodes,
   lessonUrl,
   SteamEpaulette_vert,
   shortUrl,
@@ -114,6 +121,11 @@ const UnitPreviewUI = ({
               TargetSubject={TargetSubject}
               SteamEpaulette={SteamEpaulette}
               SteamEpaulette_vert={SteamEpaulette_vert}
+              areTargetStandardsValid={!!areTargetStandardsValid}
+              TargetStandardsCodes={TargetStandardsCodes}
+              standards={
+                standards as Record<string, Omit<ITargetStandardsCode, 'set'>[]>
+              }
             />
           </div>
         </div>

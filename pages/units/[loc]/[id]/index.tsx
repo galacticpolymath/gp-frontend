@@ -142,7 +142,6 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 ]);
 
 const LessonDetails = ({ lesson, unit }: IProps) => {
-  console.log("unit, yo there: ", unit);
   const router = useRouter();
   const { _isUserTeacher } = useUserContext();
   const { status, data } = useSession();

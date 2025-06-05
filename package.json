@@ -83,7 +83,6 @@
     "sharp": "^0.34.2",
     "start-server-and-test": "^2.0.12",
     "styled-components": "^6.1.18",
-    "swagger-ui-react": "^5.22.0",
     "swr": "^2.3.3",
     "tls": "^0.0.1",
     "url": "^0.11.4",

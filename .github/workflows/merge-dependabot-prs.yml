@@ -56,7 +56,7 @@ jobs:
     - name: Detect if the integration test failed.
       if: ${{ failure() }}
       run: |
-        echo "The build has failed."
+        echo "Integration tests have failed."
         exit 1
     
     - name: Merge PR

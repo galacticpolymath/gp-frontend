@@ -96,6 +96,11 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
 
     return (
       <UnitPreviewUI
+        areTargetStandardsValid={
+          lesson?.Section?.overview?.TargetStandardsCodes?.length > 0
+        }
+        standards={lesson?.Section?.overview?.TargetStandardsCodes}
+        TargetStandardsCodes={lesson?.Section?.overview?.TargetStandardsCodes}
         latestSubRelease={latestSubRelease}
         Title={unit?.Title}
         Subtitle={unit?.Subtitle}
@@ -208,6 +213,7 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
               </div>
             )}
             <GistCard
+              className="bg-light-gray px-4 py-2 mt-4 rounded-3 text-center"
               isOnPreview
               EstLessonTime={lesson?.Section?.overview?.EstLessonTime}
               ForGrades={lesson.ForGrades}
@@ -216,6 +222,13 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
               SteamEpaulette={lesson?.Section?.overview?.SteamEpaulette}
               SteamEpaulette_vert={
                 lesson?.Section?.overview?.SteamEpaulette_vert
+              }
+              areTargetStandardsValid={
+                lesson?.Section?.overview?.TargetStandardsCodes?.length > 0
+              }
+              standards={lesson?.Section?.overview?.TargetStandardsCodes}
+              TargetStandardsCodes={
+                lesson?.Section?.overview?.TargetStandardsCodes
               }
             />
           </div>
