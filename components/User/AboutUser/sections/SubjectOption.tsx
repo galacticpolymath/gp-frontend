@@ -34,15 +34,12 @@ const SubjectOption = ({
   const [subjectsTaughtCustom, setSubjectsTaughtCustom] = _subjectsTaughtCustom;
   let isChecked = aboutUserForm?.subjects?.has(subjectFieldNameForMapTracker);
 
-  console.log("subjectsTaughtCustom: ", subjectsTaughtCustom);
-
   if (subject !== "other:" && aboutUserForm?.subjectsTaughtDefault) {
     isChecked = aboutUserForm?.subjectsTaughtDefault.includes(
       subject as TDefaultSubject
     );
   } else if (subject === "other:" && aboutUserForm?.subjectsTaughtCustom) {
     isChecked = subjectsTaughtCustom.has(`other-subject-${index}`);
-    console.log("yo there meng, isChecked: ", isChecked);
   }
 
   const handleCheckboxOnchange = ({

@@ -13,7 +13,6 @@ import Title, { ITitleProps } from "./Title";
 import { ISectionDots, TUseStateReturnVal } from "../../types/global";
 import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
 import { TUnitForUI } from "../../backend/models/Unit/types/unit";
-import Standards from "./Standards";
 import { ITargetStandardsCode } from "../../backend/models/Unit/types/standards";
 import GistCard from "./GistCard";
 
@@ -110,10 +109,7 @@ const Overview = ({
 
   if (areTargetStandardsValid && TargetStandardsCodes) {
     standards = TargetStandardsCodes.reduce(
-      (accum, stardardCodesProp, index) => {
-        console.log("index, yo there: ", index);
-        console.log("stardardCodesProp: ", stardardCodesProp);
-
+      (accum, stardardCodesProp) => {
         const { set, code, dim, subject } = stardardCodesProp;
 
         if (set in accum) {

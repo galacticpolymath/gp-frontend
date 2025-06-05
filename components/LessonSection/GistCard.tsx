@@ -129,12 +129,12 @@ const GistCard = ({
         </div>
       </div>
       {TargetStandardsCodes && areTargetStandardsValid && (
-        <section className='d-flex flex-column pb-2'>
-          <h3 className='text-start'>Target standards: </h3>
+        <section className='d-flex flex-column pb-2 pt-1'>
+          <h5 className='text-start'>Target standards: </h5>
           {Object.entries(standards).map(([stardard, standardDescriptors]) => {
             return (
               <>
-                <h5 className='text-start'>{stardard}</h5>
+                <h6 className='text-start fw-normal'>{stardard}</h6>
                 <ul className='row g-0 m-0 p-0 list-unstyled w-75'>
                   {standardDescriptors.map(
                     (standardDescriptor, index, self) => {
@@ -164,21 +164,23 @@ const GistCard = ({
           })}
         </section>
       )}
-      {SteamEpaulette &&
-        SteamEpaulette_vert &&
-        (isOnPreview ? (
-          <SubjectBreakDown
-            SteamEpaulette={SteamEpaulette}
-            SteamEpaulette_vert={SteamEpaulette_vert}
-          />
-        ) : (
-          <Link passHref href='#learning_standards'>
+      <section className='pb-2 pt-3'>
+        {SteamEpaulette &&
+          SteamEpaulette_vert &&
+          (isOnPreview ? (
             <SubjectBreakDown
               SteamEpaulette={SteamEpaulette}
               SteamEpaulette_vert={SteamEpaulette_vert}
             />
-          </Link>
-        ))}
+          ) : (
+            <Link passHref href='#learning_standards'>
+              <SubjectBreakDown
+                SteamEpaulette={SteamEpaulette}
+                SteamEpaulette_vert={SteamEpaulette_vert}
+              />
+            </Link>
+          ))}
+      </section>
     </div>
   );
 };

@@ -60,8 +60,6 @@ const InstitutionAndSchoolType = ({
     }));
   };
 
-  console.log('yo there meng, sup there: ', aboutUserForm);
-
   const isNotTeaching =
     typeof aboutUserForm.isNotTeaching === 'boolean'
       ? aboutUserForm.isNotTeaching
