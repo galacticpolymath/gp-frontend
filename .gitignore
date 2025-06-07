@@ -11,6 +11,7 @@ users.json
 credentials.json
 failedMigratedUsers.json
 usersWithDeprecatedFields.json
+notes.txt
 
 # dependencies
 /node_modules
