@@ -1,17 +1,17 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { insertUsers } from "../../../backend/services/userServices";
-import { CustomError } from "../../../backend/utils/errors";
-import { IUserSchema } from "../../../backend/models/User/types";
-import { connectToMongodb } from "../../../backend/utils/connection";
-import { TEnvironment } from "../../../types/global";
+import { NextApiRequest, NextApiResponse } from 'next';
+import { insertUsers } from '../../../backend/services/userServices';
+import { CustomError } from '../../../backend/utils/errors';
+import { IUserSchema } from '../../../backend/models/User/types';
+import { connectToMongodb } from '../../../backend/utils/connection';
+import { TEnvironment } from '../../../types/global';
 
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
   try {
-    if (request.method !== "POST") {
-      throw new CustomError("This route only accepts POST requests.", 405);
+    if (request.method !== 'POST') {
+      throw new CustomError('This route only accepts POST requests.', 405);
     }
 
     const body = JSON.parse(request.body);
@@ -20,7 +20,7 @@ export default async function handler(
 
     if (!users || !Array.isArray(users)) {
       throw new CustomError(
-        "The request body must contain a 'users' array.",
+        'The request body must contain a \'users\' array.',
         400
       );
     }
@@ -29,27 +29,22 @@ export default async function handler(
       15_000,
       0,
       true,
-      dbType ?? "dev"
+      dbType ?? 'dev'
     );
 
     if (!isDbConnected) {
-      console.error("Failed to connect to the database.");
-      throw new CustomError("Failed to connect to the database.", 500);
+      throw new CustomError('Failed to connect to the database.', 500);
     }
 
     const result = await insertUsers(users);
 
-    console.log("Insert users result:", result);
-
     if (result.errMsg) {
-      console.error("Error inserting users:", result.errMsg);
-
       return response.status(500).json({ errMsg: result.errMsg });
     }
 
     return response.status(200).json({ wasSuccessful: result.wasSuccessful });
   } catch (error: any) {
-    console.log("Error, hey there: ", error);
+    console.log('Error, hey there: ', error);
     const errMsg = `Failed to insert users into the db. Reason: ${error}`;
 
     return response.status(error?.code ?? 500).json({ errMsg });
