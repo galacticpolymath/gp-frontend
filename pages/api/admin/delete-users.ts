@@ -15,8 +15,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const deletionResult = await User.deleteMany({ _id: { $in: userIds } });
 
-    console.log("deletionResult, yo there: ", deletionResult);
-
     if(deletionResult.deletedCount === 0) {
       throw new CustomError("Failed to delete the target users.", 500);
     }

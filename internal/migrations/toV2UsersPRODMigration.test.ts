@@ -308,13 +308,6 @@ test("Will perform user test migration to v2", async () => {
                 (user) => user._id === userThatNeedToBeMigrated._id
               )
             ) {
-              console.log(
-                "userThatNeedToBeMigrated, sup there: ",
-                userThatNeedToBeMigrated
-              );
-
-              console.log("keyOfValToMigrate, yo there: ", keyOfValToMigrate);
-
               failedMigratedUsers.push(userThatNeedToBeMigrated);
             }
             continue;
@@ -328,9 +321,6 @@ test("Will perform user test migration to v2", async () => {
               >
             ];
 
-          console.log("migratedVal: ", migratedVal);
-          console.log("valToMigrate: ", valToMigrate);
-
           if (
             Array.isArray(migratedVal) &&
             Array.isArray(valToMigrate) &&
@@ -338,17 +328,11 @@ test("Will perform user test migration to v2", async () => {
               migratedVal.includes(val as TDefaultSubject)
             )
           ) {
-            console.log("yo there, userMigrationFields: ", userMigrationFields);
             if (
               !failedMigratedUsers.find(
                 (user) => user._id === userThatNeedToBeMigrated._id
               )
             ) {
-              console.log(
-                "userThatNeedToBeMigrated, hi: ",
-                userThatNeedToBeMigrated
-              );
-
               failedMigratedUsers.push(userThatNeedToBeMigrated);
             }
             continue;

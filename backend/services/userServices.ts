@@ -421,8 +421,6 @@ export const getUserByEmail = async <TUser extends IUserSchema>(
       projectionsObj
     ).lean();
 
-    console.log("targetUser, sup there: ", targetUser);
-
     return targetUser as TUser;
   } catch (error) {
     console.error(

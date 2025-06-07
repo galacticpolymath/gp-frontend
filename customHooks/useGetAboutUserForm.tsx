@@ -243,8 +243,6 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             gradesType,
           } = userAccount;
 
-          console.log("userAccount, sup there: ", userAccount);
-
           if (
             reasonsForSiteVisit &&
             Object.entries(reasonsForSiteVisit).length > 0

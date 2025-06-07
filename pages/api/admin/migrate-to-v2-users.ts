@@ -100,11 +100,8 @@ export default async function handler(
       );
     }
 
-    console.log("migration result, yo there: ", migrationResult);
-
     console.log("Successfully migrated all users from v1 to v2.");
     console.log("Will remove the deprecated fields.");
-
 
     response.status(200).json({
       message: "Successfully migrated all users from v1 to v2.",
