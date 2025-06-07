@@ -14,6 +14,8 @@ getLessons.js
 credentials.json
 credentials2.json
 googleDriveSecret.json
+failedMigratedUsers.json
+usersWithDeprecatedFields.json
 
 # dependencies
 /node_modules
