@@ -495,6 +495,9 @@ export const waitWithExponentialBackOff = async (
     const randomNumMs = Math.floor(Math.random() * (max - min + 1)) + 1000;
     const waitTime = randomNumMs + num * 1_000;
 
+    console.log(`Waiting for ${waitTime}ms...`);
+
+
     await sleep(waitTime);
 
     return num + 1;

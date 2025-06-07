@@ -66,6 +66,8 @@ export const getAuthorizeReqResult = async (
         const currentMiliseconds = Date.now();
         const expTimeMiliseconds = expTimeSeconds ? expTimeSeconds * 1_000 : null;
 
+        console.log("roles: ", roles)
+
         if (!roles.includes('user')) {
             const errMsg = 'You are not authorized to access this service. Invalid token.';
             const response = new NextResponse(errMsg, { status: 498 });
@@ -134,3 +136,4 @@ export const getJwtPayloadPromise = (authorization = '') => {
 
     return verifyJwt(authSplit[1]);
 }
+

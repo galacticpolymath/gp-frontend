@@ -17,7 +17,11 @@ const DB_ADMIN_ROUTES = [
   "/api/update-unit",
   "/api/insert-unit",
   "/api/get-users",
+  "/api/admin/migrate-to-v2-users",
+  "/api/admin/insert-users",
+  "/api/admin/delete-users",
 ];
+const DB_ADMIN_ROUTES_SET = new Set(DB_ADMIN_ROUTES);
 const USER_ACCOUNT_ROUTES = [
   "/api/save-about-user-form",
   "/api/copy-files",
@@ -245,6 +249,7 @@ export async function middleware(request) {
     }
 
     const token = authorizationStr.split(" ")[1].trim();
+    console.log("Token has been extracted and is ready for verification.");
     const payload = await verifyJwt(token);
 
     if (
@@ -300,6 +305,15 @@ export async function middleware(request) {
       (nextUrl.pathname == "/api/update-lessons" &&
         method === "PUT" &&
         authorizationStr) ||
+      (nextUrl.pathname == "/api/admin/delete-users" &&
+        method === "DELETE" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/admin/insert-users" &&
+        method === "POST" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/admin/migrate-to-v2-users" &&
+        method === "PUT" &&
+        authorizationStr) ||
       (nextUrl.pathname == "/api/insert-lesson" &&
         method === "POST" &&
         authorizationStr) ||
@@ -337,19 +351,18 @@ export async function middleware(request) {
         method === "GET" &&
         authorizationStr)
     ) {
-      const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES.includes(
+      const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES_SET.has(
         nextUrl.pathname
       );
-      console.log("willCheckIfUserIsDbAdmin: ", willCheckIfUserIsDbAdmin);
       const { isAuthorize, errResponse } = await getAuthorizeReqResult(
         authorizationStr,
         willCheckIfUserIsDbAdmin
       );
 
-      console.log("isAuthorize: ", isAuthorize);
-
-      return isAuthorize ? errResponse : NextResponse.next();
+      return isAuthorize ? NextResponse.next() : errResponse
     }
+
+    console.error("Invalid request path. Retrieved: ", nextUrl.pathname);
 
     return new NextResponse("Invalid request parameters, body, or method.", {
       status: 400,
@@ -393,5 +406,8 @@ export const config = {
     "/api/get-signed-in-user-brevo-status",
     "/api/delete-unit",
     "/api/update-unit",
+    "/api/admin/migrate-to-v2-users",
+    "/api/admin/insert-users",
+    "/api/admin/delete-users",
   ],
 };

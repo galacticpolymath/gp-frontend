@@ -63,11 +63,11 @@ const InstitutionAndSchoolType = ({
   const isNotTeaching =
     typeof aboutUserForm.isNotTeaching === 'boolean'
       ? aboutUserForm.isNotTeaching
-      : !!aboutUserForm.classroomSize.isNotTeaching;
+      : !!aboutUserForm?.classroomSize?.isNotTeaching;
   const classSize =
     typeof aboutUserForm.classSize === 'number'
       ? aboutUserForm.classSize
-      : aboutUserForm.classroomSize.num ?? 0;
+      : aboutUserForm.classroomSize?.num ?? 0;
 
   return (
     <section className='d-flex flex-column col-12 col-lg-6 mt-2 mt-sm-0'>
