@@ -134,7 +134,12 @@ const GistCard = ({
           {Object.entries(standards).map(([stardard, standardDescriptors]) => {
             return (
               <>
-                <h6 className='text-start fw-normal'>{stardard}</h6>
+                <div className='d-flex'>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <h6 className='fw-bold p-0 m-0'>{stardard}</h6>
+                  </div>
+                  <div style={{ transform: 'translateY(-1.5px)'  }} className='d-flex justify-content-center fw-bold p-0'>|</div>
+                </div>
                 <ul className='row g-0 m-0 p-0 list-unstyled w-75'>
                   {standardDescriptors.map(
                     (standardDescriptor, index, self) => {

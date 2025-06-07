@@ -202,6 +202,7 @@ interface ISections<
   standards: TStandardsSec | null;
   credits: TGeneralSection | null;
   acknowledgments: TAcknowledgments | null;
+  versions: IVersionNotes | null;
 }
 
 export type TSectionsForUI = ISections<TOverviewForUI, TStandardsForUI, IUnitTeachingMaterialsForUI>; 
