@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 
 
-export function createDocument(documentObj, Model) {
+export const createDocument = (documentObj, Model) => {
     try {
         /** @type {import('mongoose').Document} */
         const document = new Model(documentObj);

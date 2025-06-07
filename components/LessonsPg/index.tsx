@@ -32,7 +32,6 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
   const origin = typeof window === 'undefined' ? '' : window.location.origin;
 
   const handleGpWebAppCardClick = (app: object) => {
-    console.log('app, sup there: ', app);
     setSelectedGpWebApp(app);
     setIsWebAppModalShown(true);
   };

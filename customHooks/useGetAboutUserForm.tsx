@@ -166,8 +166,8 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
   if (firstName || lastName) {
     userAccountForClient = {
       ...userAccountForClient,
-      firstName: firstName ?? name.first,
-      lastName: lastName ?? name.first,
+      firstName: firstName ?? name?.first,
+      lastName: lastName ?? name?.first,
     };
   } else if (name?.first && name?.last) {
     userAccountForClient.name = {
@@ -242,8 +242,6 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             gradesTaught,
             gradesType,
           } = userAccount;
-
-          console.log("userAccount, sup there: ", userAccount);
 
           if (
             reasonsForSiteVisit &&
@@ -389,7 +387,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
           if (
             userAccount &&
             (Object.entries(userAccount).length === 0 ||
-              !gradesOrYears.selection ||
+              !gradesOrYears?.selection ||
               !gradesOrYears?.ageGroupsTaught?.length)
           ) {
             userAccount.gradesOrYears = {
@@ -413,8 +411,8 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
           if (firstName || lastName) {
             userAccountForClient = {
               ...userAccountForClient,
-              firstName: firstName ?? name.first,
-              lastName: lastName ?? name.first,
+              firstName: firstName ?? name?.first,
+              lastName: lastName ?? name?.first,
             };
           } else if (name?.first && name?.last) {
             userAccountForClient.name = {
