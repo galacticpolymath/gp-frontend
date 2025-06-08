@@ -134,6 +134,7 @@ const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
   standards: 7,
   credits: 8,
   acknowledgments: 9,
+  versions: 10,
 };
 
 const UNIT_DOCUMENT_ORIGINS = new Set([
