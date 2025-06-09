@@ -7,8 +7,6 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
 
-// TODO: suppress all lessons that has the upcoming status
-
 export default function Navbar() {
   const router = useRouter();
   const session = useSession();
@@ -17,12 +15,12 @@ export default function Navbar() {
   return (
     <nav
       style={{ zIndex: 1000 }}
-      className='position-fixed w-100 navbar-expand-lg py-0'
+      className="position-fixed w-100 navbar-expand-lg py-0"
     >
       <div className="navbar navbar-expand-lg w-100 navbar-dark bg-dark position-relative">
-        <div style={{ zIndex: 10000 }} className='w-100 container'>
+        <div style={{ zIndex: 10000 }} className="w-100 container">
           <Image
-            className='object-fit-contain d-none d-sm-block'
+            className="object-fit-contain d-none d-sm-block"
             alt="Galactic Polymath"
             src={logo}
             height={68}
@@ -34,7 +32,7 @@ export default function Navbar() {
             }}
           />
           <Image
-            className='object-fit-contain d-block d-sm-none'
+            className="object-fit-contain d-block d-sm-none"
             alt="Galactic Polymath"
             src={mobileLogo}
             height={68}
@@ -45,34 +43,45 @@ export default function Navbar() {
               height: 'auto',
             }}
           />
-          <div style={{ color: 'white' }} className='flex-grow-1 white' />
+          <div style={{ color: 'white' }} className="flex-grow-1 white" />
           <button
-            className='navbar-toggler m-2'
-            type='button'
-            data-bs-toggle='collapse'
-            data-bs-target='#navbarSupportedContent'
-            aria-controls='navbarSupportedContent'
-            aria-expanded='false'
-            aria-label='Toggle navigation'
+            className="navbar-toggler m-2"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
             onClick={() => {
               setModalAnimation('fade-out-quick');
             }}
           >
-            <span className='navbar-toggler-icon'></span>
+            <span className="navbar-toggler-icon"></span>
           </button>
           <div>
-            <div className='collapse navbar-collapse' id='navbarSupportedContent'>
-              <ul className='navbar-nav fs-5 text-uppercase'>
-                <li className='nav-item my-auto'>
+            <div
+              className="collapse navbar-collapse"
+              id="navbarSupportedContent"
+            >
+              <ul className="navbar-nav fs-5 text-uppercase">
+                <li className="nav-item my-auto">
                   <Link
-                    href='/'
-                    className={`nav-link ${router.pathname === '/' ? 'fw-bold active' : 'fw-light'}`}
+                    href="/"
+                    className={`nav-link ${
+                      router.pathname === '/' ? 'fw-bold active' : 'fw-light'
+                    }`}
                   >
                     Home
                   </Link>
                 </li>
               </ul>
-              {(!router.asPath.includes('/account') || (session.status === 'authenticated')) && <LoginContainerForNavbar className='login-container' _modalAnimation={[modalAnimation, setModalAnimation]} />}
+              {(!router.asPath.includes('/account') ||
+                session.status === 'authenticated') && (
+                  <LoginContainerForNavbar
+                    className="login-container"
+                    _modalAnimation={[modalAnimation, setModalAnimation]}
+                  />
+              )}
             </div>
           </div>
         </div>

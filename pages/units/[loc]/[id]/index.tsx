@@ -695,10 +695,7 @@ export const getStaticPaths = async () => {
     await connectToMongodb(15_000, 0, true);
 
     const units = [
-      await Units.find(
-        {},
-        { numID: 1, DefaultLocale: 1, _id: 0, locale: 1 }
-      ).lean(),
+      await Units.find({}, { numID: 1, _id: 0, locale: 1 }).lean(),
     ].flat();
 
     return {
@@ -807,7 +804,6 @@ export const getStaticProps = async (arg: {
     const availUnitLocales = targetUnits
       .map(({ locale }) => locale)
       .filter(Boolean) as string[];
-    const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     let targetUnitForUI: TUnitForUI | undefined = undefined;
 
     if (targetUnits?.length) {
@@ -819,7 +815,7 @@ export const getStaticProps = async (arg: {
       });
 
       if (!targetUnit) {
-        throw new Error("Lesson is not found.");
+        throw new Error("Unit is not found.");
       }
 
       const headLinks = targetUnits
@@ -1069,10 +1065,27 @@ export const getStaticProps = async (arg: {
             availLocs,
           },
         };
+        const versionsSection = sectionsUpdated.overview?.versions
+          ? {
+              __component: "lesson-plan.versions",
+              SectionTitle: "Version notes",
+              InitiallyExpanded: true,
+              Data: sectionsUpdated.overview?.versions,
+            }
+          : null;
+
+        if (versionsSection) {
+          sectionsUpdated = {
+            ...sectionsUpdated,
+            versions: versionsSection,
+          };
+        }
+
         targetUnitForUI.Sections = sectionsUpdated;
       }
     }
 
+    const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
     let lessonToDisplayOntoUi = targetLessons.find(
       ({ numID, locale }) => numID === parseInt(id) && locale === loc
     );

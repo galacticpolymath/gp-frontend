@@ -10,6 +10,8 @@ import Head from 'next/head';
 import Footer from './Footer';
 import Navbar from './Navbar';
 import { Noto_Sans } from 'next/font/google';
+import Script from 'next/script';
+import { useEffect } from 'react';
 
 const notoSansLight = Noto_Sans({
   subsets: ['latin'],
@@ -32,6 +34,38 @@ export default function Layout({
   langLinks,
 }) {
   const isOnProd = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
+
+  useEffect(() => {
+    // Find the <header> element
+    const header = document.querySelector('header');
+
+    if (!header) {
+      return;
+    };
+
+    // Create the config script
+    const configScript = document.createElement('script');
+    configScript.type = 'text/javascript';
+    configScript.text = `
+      var o_options = {
+        domain: 'galactic-polymath.outseta.com',
+        load: 'auth,customForm,emailList,leadCapture,nocode,profile,support'
+      };
+    `;
+    header.appendChild(configScript);
+
+    // Create the Outseta loader script
+    const outsetaScript = document.createElement('script');
+    outsetaScript.src = 'https://cdn.outseta.com/outseta.min.js';
+    outsetaScript.setAttribute('data-options', 'o_options');
+    header.appendChild(outsetaScript);
+
+    // Optional: Clean up scripts on unmount
+    return () => {
+      header.removeChild(configScript);
+      header.removeChild(outsetaScript);
+    };
+  }, []);
 
   return (
     <div style={style} className={`${notoSansLight.className} ${className}`}>

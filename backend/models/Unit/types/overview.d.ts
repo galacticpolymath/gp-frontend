@@ -1,5 +1,6 @@
 import { IRootFieldToRetrieve } from "../RootFieldsToRetrieve";
 import { IUnitSectionObj } from "../Section";
+import { IRelease } from "../VersionNotes";
 
 export interface ITag {
   Value: string;
@@ -70,7 +71,7 @@ export interface IUnitOverview {
         Value: string | null;
       }[]
     | null;
-  versions: IUnitVersions[] | null;
+  versions: IRelease[] | null;
   rootFieldsToRetrieveForUI?: IRootFieldToRetrieve | null;
 }
 
