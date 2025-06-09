@@ -7,7 +7,7 @@ import { GiShipWheel } from 'react-icons/gi';
 import { ICurrentUnits } from '../../types/global';
 import Sponsors from '../Sponsors';
 import JobVizIcon from '../JobViz/JobVizIcon';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GpUnitVideos from './sections/GpUnitVideos';
 import GpUnitLessons from './sections/GpUnitLessons';
 import SelectedGpVideo from './modals/SelectedGpVideo';

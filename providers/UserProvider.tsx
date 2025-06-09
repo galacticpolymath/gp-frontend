@@ -7,6 +7,7 @@ import { TUseStateReturnVal } from "../types/global";
 import {
   IAgeGroupsSelection,
   TAboutUserForm,
+  TUserSchemaV2,
 } from "../backend/models/User/types";
 
 /**
@@ -46,10 +47,13 @@ export type TUserAccount = Omit<
 };
 export type TAboutUserFormForUI = {
   isTeacherConfirmed: boolean;
-} & TAboutUserForm<Map<string, string>>;
+} & TAboutUserForm<Map<string, string>> &
+  Pick<TUserSchemaV2, "outsetaPersonEmail" | "isGpPlusMember">;
 
 export const userAccountDefault: TAboutUserFormForUI = {
   schoolTypeDefaultSelection: null,
+  outsetaPersonEmail: "",
+  isGpPlusMember: false,
   schoolTypeOther: null,
   siteVisitReasonsCustom: null,
   subjectsTaughtCustom: undefined,
