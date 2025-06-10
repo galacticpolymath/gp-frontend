@@ -12,9 +12,34 @@
 /* eslint-disable no-console */
 
 import { useMemo, useState } from "react";
-import { getNavDotIconStyles } from "../../../helperFns/getNavDotIconStyles";
 
-const LiNavDot = ({ section, fns, index, isOnDesktop, EnticementArrow = <></> }) => {
+const getNavDotIconStyles = (isHighlighted, sectionId, isScrollListenerOff) => {
+    const isTeachingMaterialsId = sectionId?.includes('teaching_materials');
+    let bgColor = isHighlighted ? (isTeachingMaterialsId ? '#cb1f8e' : 'rgba(44, 131, 195, 0.6)') : 'rgba(0,0,0,.1)';
+    let borderColor = isHighlighted ? (isTeachingMaterialsId ? '#cb1f8e' : '#2c83c3') : (isTeachingMaterialsId ? '#cb1f8e' : '#bebebe');
+
+    if (isScrollListenerOff) {
+        bgColor = 'rgba(0,0,0,.1)'
+        borderColor = '#bebebe'
+    }
+
+    return {
+        backgroundColor: bgColor,
+        height: '10px',
+        width: '10px',
+        borderRadius: '50%',
+        display: 'inline-block',
+        margin: '0 5px',
+        border: '2px solid',
+        borderColor: borderColor,
+        padding: '4px',
+        opacity: 1,
+        transition: 'all .15s ease-in',
+        transitionProperty: 'background-color, border-color',
+    };
+};
+
+const LiNavDot = ({ section, fns, index, isOnDesktop, EnticementArrow = <></>, isScrollListenerOn }) => {
     const { isInView, sectionId, sectionTitleForDot: title, willShowTitle, sectionDotId } = section;
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
     const { goToSection, handleDotClick } = fns;
@@ -28,7 +53,7 @@ const LiNavDot = ({ section, fns, index, isOnDesktop, EnticementArrow = <></> })
         setWillChangeIconColor(false);
     }
 
-    const iconStyles = useMemo(() => getNavDotIconStyles((isInView || willChangeIconColor), sectionId), [willChangeIconColor, isInView, sectionId]);
+    const iconStyles = useMemo(() => getNavDotIconStyles(isInView || willChangeIconColor, sectionId), [willChangeIconColor, isInView, sectionId], !isScrollListenerOn);
 
     return (
         <>

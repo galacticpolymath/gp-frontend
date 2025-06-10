@@ -57,6 +57,7 @@ const NAV_CLASSNAMES = [
   "sectionTitleLi",
   "sectionTitleSpan",
 ];
+const NAV_CLASSNAMES_SET = new Set(NAV_CLASSNAMES);
 
 const getSectionDotsDefaultVal = <T extends TSectionsForUI>(
   sectionComps: (T | null)[]
@@ -399,15 +400,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
     []
   );
-  // BELOW: will be deleted
-  const [sectionDots, setSectionDots] = useState<{
-    dots: any;
-    clickedSectionId: null | string;
-  }>({
-    dots: _dots,
-    clickedSectionId: null,
-  });
-  // ABOVE: will be deleted
 
   const [unitSectionDots, setUnitSectionDots] = useState<{
     dots: any;
@@ -423,9 +415,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   });
 
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
-  const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(
-    unit ? setUnitSectionDots : setSectionDots
-  );
+  const [isScrollListenerOn, setIsScrollListenerOn] =
+    useScrollHandler(setUnitSectionDots);
 
   const scrollSectionIntoView = (sectionId: string) => {
     const targetSection = document.getElementById(sectionId);
@@ -441,22 +432,21 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   };
 
   const handleDocumentClick = (event: MouseEvent) => {
-    const wasANavDotElementClicked = NAV_CLASSNAMES.some((className) => {
-      if (event.target && "classList" in event.target) {
-        (event.target.classList as DOMTokenList).contains(className);
-      }
-    });
     const viewPortWidth = Math.max(
       document.documentElement.clientWidth || 0,
       window.innerWidth || 0
     );
 
-    console.log("wasANavDotElementClicked: ", wasANavDotElementClicked);
     console.log("viewPortWidth: ", viewPortWidth);
+    const isNavElementClicked = NAV_CLASSNAMES_SET.has(
+      (event.target as HTMLElement).className
+    );
 
-    if (!wasANavDotElementClicked && viewPortWidth <= 767) {
+    console.log("isNavElementClicked: ", isNavElementClicked);
+
+    if (!isNavElementClicked && viewPortWidth <= 767) {
       console.log("will make updates");
-      setSectionDots((sectionDots) => {
+      setUnitSectionDots((sectionDots) => {
         const _sectionDots = {
           ...sectionDots,
           dots: sectionDots?.dots.map((sectionDot: any) => {
@@ -541,8 +531,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   };
 
   useEffect(() => {
-    if (willGoToTargetSection && sectionDots.clickedSectionId) {
-      scrollSectionIntoView(sectionDots.clickedSectionId);
+    if (willGoToTargetSection && unitSectionDots.clickedSectionId) {
+      scrollSectionIntoView(unitSectionDots.clickedSectionId);
       setWillGoToTargetSection(false);
     }
   }, [willGoToTargetSection]);
@@ -672,11 +662,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         />
       )}
       <LessonsSecsNavDots
-        _sectionDots={
-          unit
-            ? [unitSectionDots, setUnitSectionDots]
-            : [sectionDots, setSectionDots]
-        }
+        _sectionDots={[unitSectionDots, setUnitSectionDots]}
         setIsScrollListenerOn={setIsScrollListenerOn as TSetter<boolean>}
         isScrollListenerOn={isScrollListenerOn as boolean}
       />
@@ -691,7 +677,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
                   section={section}
                   ForGrades={_unit.ForGrades}
                   index={index}
-                  _sectionDots={[sectionDots, setSectionDots]}
+                  _sectionDots={[unitSectionDots, setUnitSectionDots]}
                 />
               )
             )

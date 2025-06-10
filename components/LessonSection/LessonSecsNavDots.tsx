@@ -128,7 +128,6 @@ const LessonsSecsNavDots = ({
               isInView: true,
             };
           }
-
           return {
             ...dot,
             isInView: false,
@@ -136,7 +135,7 @@ const LessonsSecsNavDots = ({
         }),
       }));
       setIsScrollListenerOn(true);
-    }, 950);
+    }, 1300);
     setIsScrollListenerOn(false);
     setWillScrollElemIntoView(true);
     setSectionDots((sectionDots) => {
@@ -222,10 +221,6 @@ const LessonsSecsNavDots = ({
       }
     }, 200)();
 
-  useEffect(() => {
-    console.log("sectionDots, LesonSecsNavDots: ", sectionDots);
-  });
-
   return (
     <div
       style={{ transform: "translateY(8%)" }}
@@ -245,6 +240,7 @@ const LessonsSecsNavDots = ({
         {sectionDots.dots.map((section, index) => (
           <LiNavDot
             key={index}
+            isScrollListenerOn={isScrollListenerOn}
             EnticementArrow={
               index === 0 ? (
                 <ClickMeArrow
@@ -284,6 +280,7 @@ const LessonsSecsNavDots = ({
       >
         {sectionDots.dots.map((section, index) => (
           <LiNavDot
+            isScrollListenerOn={isScrollListenerOn}
             key={index}
             fns={liNavDotFns}
             section={section}
