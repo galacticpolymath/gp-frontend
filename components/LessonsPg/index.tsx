@@ -7,7 +7,7 @@ import { GiShipWheel } from 'react-icons/gi';
 import { ICurrentUnits } from '../../types/global';
 import Sponsors from '../Sponsors';
 import JobVizIcon from '../JobViz/JobVizIcon';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GpUnitVideos from './sections/GpUnitVideos';
 import GpUnitLessons from './sections/GpUnitLessons';
 import SelectedGpVideo from './modals/SelectedGpVideo';
@@ -35,6 +35,21 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
     setSelectedGpWebApp(app);
     setIsWebAppModalShown(true);
   };
+
+  useEffect(() => {
+    const widgetEl = document.createElement('div');
+
+    widgetEl.setAttribute('data-o-auth', '1');
+    widgetEl.setAttribute('data-widget-mode', 'register');
+    widgetEl.setAttribute('data-plan-uid', 'rmkkjamg');
+    widgetEl.setAttribute('data-plan-payment-term', 'month');
+    widgetEl.setAttribute('data-skip-plan-options', 'true');
+    widgetEl.setAttribute('data-mode', 'embed');
+
+    const parent = document.getElementById('outseta-sign-up');
+
+    parent?.appendChild(widgetEl);
+  }, []);
 
   return (
     <Layout

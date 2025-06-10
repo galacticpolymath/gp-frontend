@@ -19,7 +19,6 @@ export default async function handler(
       return response.status(410).json({ error: 'Migration already done' });
     }
 
-    console.log('hey there, migrating users!');
     if (request.method !== 'PUT') {
       return response.status(405).json({ error: 'Method not allowed' });
     }
@@ -29,8 +28,6 @@ export default async function handler(
     const { errMsg, users: oldUsers } = await getUsers<
       TUserSchemaV2 & IUserSchema
     >();
-
-    console.log(`The length of oldUsers is ${oldUsers?.length}.`);
 
     if (!oldUsers?.length || errMsg) {
       return response
