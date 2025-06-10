@@ -31,6 +31,7 @@ const LessonsSecsNavDots = ({
   isScrollListenerOn,
 }: IProps) => {
   const [sectionDots, setSectionDots] = _sectionDots;
+  console.log("sectionDots: ", sectionDots);
   const [targetSec, setTargetSec] = useState<null | {
     element: HTMLElement;
     id: string;
@@ -43,6 +44,7 @@ const LessonsSecsNavDots = ({
   const router = useRouter();
 
   const handleMouseEnter = () => {
+    console.log("yo there meng, handleMouseEnter");
     setArrowContainer({ isInView: false, canTakeOffDom: true });
 
     setSectionDots((sectionDots) => {
@@ -59,6 +61,7 @@ const LessonsSecsNavDots = ({
   };
 
   const handleMouseLeave = () => {
+    console.log("sup there, handleMouseLeave");
     setSectionDots((sectionDots) => {
       return {
         ...sectionDots,
@@ -113,6 +116,7 @@ const LessonsSecsNavDots = ({
   let timerForHandleDotClick: NodeJS.Timeout;
 
   const handleDotClick = (sectionId: string) => {
+    console.log("handleDotClick, yo there!");
     clearTimeout(timerForHandleDotClick);
     timerForHandleDotClick = setTimeout(() => {
       setSectionDots((sectionDots) => ({
@@ -152,6 +156,7 @@ const LessonsSecsNavDots = ({
   let timerForGoToSectionFn: NodeJS.Timeout;
 
   const goToSection = (sectionId: string) => {
+    console.log("goToSection, yo there!");
     clearTimeout(timerForGoToSectionFn);
     timerForGoToSectionFn = setTimeout(() => {
       setSectionDots((sectionDots) => {
@@ -216,6 +221,10 @@ const LessonsSecsNavDots = ({
         }, 3500);
       }
     }, 200)();
+
+  useEffect(() => {
+    console.log("sectionDots, LesonSecsNavDots: ", sectionDots);
+  });
 
   return (
     <div

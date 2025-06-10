@@ -416,6 +416,12 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     dots: unitDots,
     clickedSectionId: null,
   });
+
+  useEffect(() => {
+    console.log("unitSectionDots, sup there, unitDots: ", unitDots);
+    console.log("unitSectionDots, sup there: ", unitSectionDots);
+  });
+
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
   const [isScrollListenerOn, setIsScrollListenerOn] = useScrollHandler(
     unit ? setUnitSectionDots : setSectionDots
@@ -445,9 +451,13 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       window.innerWidth || 0
     );
 
+    console.log("wasANavDotElementClicked: ", wasANavDotElementClicked);
+    console.log("viewPortWidth: ", viewPortWidth);
+
     if (!wasANavDotElementClicked && viewPortWidth <= 767) {
+      console.log("will make updates");
       setSectionDots((sectionDots) => {
-        return {
+        const _sectionDots = {
           ...sectionDots,
           dots: sectionDots?.dots.map((sectionDot: any) => {
             return {
@@ -456,6 +466,10 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
             };
           }),
         };
+
+        console.log("_sectionDots: ", _sectionDots);
+
+        return _sectionDots;
       });
     }
   };
