@@ -148,11 +148,13 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   const { status, data } = useSession();
   const { token } = (data ?? {}) as IUserSession;
   const statusRef = useRef(status);
+
   useMemo(() => {
     if (typeof localStorage !== "undefined") {
       localStorage.removeItem("isOverLessonPart");
     }
   }, []);
+
   const {
     _notifyModal,
     _isLoginModalDisplayed,
