@@ -114,29 +114,12 @@ const LessonsSecsNavDots = ({
   }, [targetSec]);
 
   let timerForHandleDotClick: NodeJS.Timeout;
+  const [sectionId, setSectionId] = useState("");
 
   const handleDotClick = (sectionId: string) => {
     console.log("handleDotClick, yo there!");
-    clearTimeout(timerForHandleDotClick);
-    timerForHandleDotClick = setTimeout(() => {
-      setSectionDots((sectionDots) => ({
-        clickedSectionId: sectionId,
-        dots: sectionDots.dots.map((dot) => {
-          if (dot.sectionDotId === `sectionDot-${sectionId}`) {
-            return {
-              ...dot,
-              isInView: true,
-            };
-          }
-          return {
-            ...dot,
-            isInView: false,
-          };
-        }),
-      }));
-      setIsScrollListenerOn(true);
-    }, 1300);
     setIsScrollListenerOn(false);
+    setSectionId(sectionId);
     setWillScrollElemIntoView(true);
     setSectionDots((sectionDots) => {
       return {
@@ -200,10 +183,33 @@ const LessonsSecsNavDots = ({
 
   useEffect(() => {
     if (willScrollElemIntoView && sectionDots.clickedSectionId) {
+      clearTimeout(timerForGoToSectionFn);
       scrollSectionIntoView(sectionDots.clickedSectionId);
       setWillScrollElemIntoView(false);
+      setSectionDots((sectionDots) => {
+        return {
+          clickedSectionId: sectionId,
+          dots: sectionDots.dots.map((dot) => {
+            if (dot.sectionDotId === `sectionDot-${sectionId}`) {
+              return {
+                ...dot,
+                isInView: true,
+              };
+            }
+
+            return {
+              ...dot,
+              isInView: false,
+            };
+          }),
+        };
+      });
+
+      timerForGoToSectionFn = setTimeout(() => {
+        setIsScrollListenerOn(true);
+      }, 1_000);
     }
-  }, [willScrollElemIntoView, isScrollListenerOn]);
+  }, [willScrollElemIntoView]);
 
   const liNavDotFns = { goToSection, handleDotClick, setSectionDots };
   let elementVisibililtyTimer: NodeJS.Timeout;
