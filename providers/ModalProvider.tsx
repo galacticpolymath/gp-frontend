@@ -17,7 +17,7 @@ import { IComponent, TUseStateReturnVal } from "../types/global";
 export const ModalContext = createContext<IModalProviderValue | null>(null);
 export interface INotifyModalVal {
   isDisplayed: boolean;
-  bodyTxt: string;
+  bodyTxt: string | ReactNode;
   headerTxt: string;
   handleOnHide: () => void;
 }

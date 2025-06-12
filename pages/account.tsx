@@ -9,6 +9,7 @@
 import Layout from "../components/Layout";
 import LoginUI from "../components/User/Login/LoginUI";
 import Button from "../components/General/Button";
+import BootstrapBtn from "react-bootstrap/Button";
 import { useEffect } from "react";
 import { NextRouter, useRouter } from "next/router";
 import { useModalContext } from "../providers/ModalProvider";
@@ -85,10 +86,6 @@ const AccountPg = () => {
   /**
    * @type {[import('../providers/UserProvider').TUserAccount, import('react').Dispatch<import('react').SetStateAction<import('../providers/UserProvider').TUserAccount>>]} */
   const [, setNotifyModal] = _notifyModal;
-  const occupation =
-    typeof localStorage === "undefined"
-      ? null
-      : JSON.parse(localStorage.getItem("userAccount") ?? "{}").occupation;
   const { _aboutUserForm, status, token, user, _isRetrievingUserData } =
     useGetAboutUserForm();
   const { email, image } = user ?? {};
@@ -340,15 +337,17 @@ const AccountPg = () => {
             <span>{email}</span>
           </section>
           <section className="col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2">
-            <span className="d-inline-flex justify-content-center align-tiems-center">
-              Occupation:{" "}
-            </span>
-            <span
-              style={{ fontStyle: "italic" }}
-              className="d-inline-flex justify-content-center align-tiems-center "
-            >
-              {occupation ?? "UNANSWERED"}
-            </span>
+            {!aboutUserForm.isGpPlusMember && (
+              <BootstrapBtn
+                onClick={() => {
+                  router.push("/gp-plus");
+                }}
+                variant="secondary"
+                size="sm"
+              >
+                Upgrade To GP Plus+!
+              </BootstrapBtn>
+            )}
           </section>
           <section className="col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2">
             <Button

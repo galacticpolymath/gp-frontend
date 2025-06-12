@@ -224,6 +224,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             zipCode,
             country,
             occupation,
+            isGpPlusMember,
             isTeacher,
             name,
             firstName,
@@ -260,6 +261,13 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             userAccountForClient = {
               ...userAccountForClient,
               referredByOther,
+            };
+          }
+
+          if (typeof isGpPlusMember === "boolean") {
+            userAccountForClient = {
+              ...userAccountForClient,
+              isGpPlusMember,
             };
           }
 

@@ -3,8 +3,14 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import axios from 'axios';
+import { TUserSchemaV2 } from '../../backend/models/User/types';
 
-export const updateUser = async (query = {}, updatedUser = {}, additionalReqBodyProps = {}, token) => {
+export const updateUser = async (
+    query: Omit<Partial<TUserSchemaV2>, "password"> = {}, 
+    updatedUser: Omit<Partial<TUserSchemaV2>, "password"> = {}, 
+    additionalReqBodyProps: Record<string, unknown> = {}, 
+    token: string
+) => {
     try {
         if ((Object.keys(query).length <= 0) || (Object.keys(updatedUser).length <= 0)) {
             throw new Error('The "query" and "updatedUser" parameters cannot be empty objects.');
@@ -27,7 +33,7 @@ export const updateUser = async (query = {}, updatedUser = {}, additionalReqBody
             "Content-Type": "application/json",
         };
         const responseBody = { ...query, updatedUser, ...additionalReqBodyProps };
-        const response = await axios.put('/api/update-user', responseBody, { headers });
+        const response = await axios.put<{ wasSuccessful: boolean, msg: string }>('/api/update-user', responseBody, { headers });
 
         if (response.status !== 200) {
             throw new Error('Failed to update user.');
@@ -47,7 +53,7 @@ export const updateUser = async (query = {}, updatedUser = {}, additionalReqBody
  * @return {Promise<{ wasSuccessful: boolean }>} A promise that resolves to an object with a boolean indicating whether the operation was successful.
  * @throws An error has occurred if the server responds with a status code that is not 200 or the wrong parameter type is passed.
  */
-export const sendDeleteUserReq = async (email, token) => {
+export const sendDeleteUserReq = async (email: string, token: string) => {
     try {
         if (typeof email !== 'string') {
             throw new Error('The "userId" parameter must be a string.');

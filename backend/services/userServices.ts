@@ -36,13 +36,15 @@ export const getUsers = async <
   }
 };
 
-export const getUser = async (queryObj = {}, projectionObj = {}) => {
+export const getUser = async <
+  TUser extends TUserSchemaV2 = TUserSchemaV2,
+  TUserKey extends keyof TUser = keyof TUser
+>(queryObj: Omit<Partial<TUser>, "password">, projectionObj: Partial<Record<TUserKey, number>> = {}) => {
   try {
     const user = await User.findOne(queryObj, projectionObj)
-      .maxTimeMS(7_000)
       .lean();
 
-    return { user };
+    return { user: user as Pick<TUser, TUserKey> };
   } catch (error: any) {
     console.error("An error has occurred in getting the target user: ", error);
     console.log(error);
@@ -433,22 +435,19 @@ export const getUserByEmail = async <TUser extends IUserSchema>(
 };
 
 export const updateUser = async (
-  filterQuery = {},
-  updatedUserProperties: Omit<Partial<IUserSchema>, "password">,
-  updatedUserPropsToFilterOut?: (keyof IUserSchema)[]
+  filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
+  updatedUserProperties: Partial<Omit<TUserSchemaV2, "password">>,
+  updatedUserPropsToFilterOut?: (keyof TUserSchemaV2)[]
 ) => {
   try {
     if (updatedUserProperties.isTeacher === false) {
       updatedUserProperties = {
         ...updatedUserProperties,
-        gradesOrYears: {
-          ageGroupsTaught: [],
-          selection: null,
-        },
         isNotTeaching: true,
         gradesTaught: [],
       };
     }
+    
     const updatedUser = await User.findOneAndUpdate(
       filterQuery,
       updatedUserProperties,
@@ -464,11 +463,11 @@ export const updateUser = async (
     }
 
     if (updatedUserPropsToFilterOut?.length) {
-      const entries = Object.entries(updatedUser as Partial<IUserSchema>);
+      const entries = Object.entries(updatedUser as Partial<TUserSchemaV2>);
 
       const updateUserWithProjectedProps = entries.reduce(
         (updatedUserWithProjectedPropsAccum, [key, value]) => {
-          if (updatedUserPropsToFilterOut?.includes(key as keyof IUserSchema)) {
+          if (updatedUserPropsToFilterOut?.includes(key as keyof TUserSchemaV2)) {
             return updatedUserWithProjectedPropsAccum;
           }
 
@@ -485,7 +484,7 @@ export const updateUser = async (
 
     return {
       wasSuccessful: true,
-      updatedUser: updatedUser as Partial<IUserSchema>,
+      updatedUser: updatedUser as Partial<TUserSchemaV2>,
     };
   } catch (error) {
     const { message } = error as { message?: string };

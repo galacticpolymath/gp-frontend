@@ -8,7 +8,7 @@ import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyJwt } from "../../nondependencyFns";
-import { IUserSchema, TUserSchemaForClient } from "../../backend/models/User/types";
+import { IUserSchema, TUserSchemaForClient, TUserSchemaV2 } from "../../backend/models/User/types";
 
 export default async function handler(
   request: NextApiRequest,
@@ -23,7 +23,9 @@ export default async function handler(
     }
 
     const { email } = (await verifyJwt(authSplit[1])).payload;
-    const projections: Partial<Record<keyof IUserSchema, number>> = {
+    const projections: Partial<Record<keyof (TUserSchemaV2 & IUserSchema), number>> = {
+      isGpPlusMember: 1,
+      outsetaPersonEmail: 1,
       gradesOrYears: 1,
       reasonsForSiteVisit: 1,
       subjects: 1,
@@ -48,6 +50,7 @@ export default async function handler(
       isNotTeaching: 1,
       gradesTaught: 1,
       gradesType: 1,
+      
       _id: 0,
     };
 
