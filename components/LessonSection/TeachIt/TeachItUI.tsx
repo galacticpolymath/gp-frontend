@@ -38,6 +38,7 @@ import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import Link from "next/link";
 import Sparkles from "../../SparklesAnimation";
+import { useUserContext } from "../../../providers/UserProvider";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -93,6 +94,7 @@ const TeachItUI = <
   GradesOrYears,
 }: TeachItUIProps<TLesson, TSelectedGrade>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
+  const { _isGpPlusMember } = useUserContext();
   const areThereGradeBands =
     !!gradeVariations?.length &&
     gradeVariations.every((variation) => !!variation.grades);
@@ -101,8 +103,22 @@ const TeachItUI = <
     setNumsOfLessonPartsThatAreExpanded,
   ] = useState<number[]>([]);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
+  const [isGpPlusMember] = _isGpPlusMember;
   const { handleRestrictedItemBtnClick, session } =
     useCanUserAccessMaterial(false);
+
+  const copyUnits = () => {
+    // the user must be a gp plus member (isGpPlsMember: true)
+    // LOGIC FOR THIS FUNCTION:
+    // show the progress units ui to the user
+    // display a toast to notify the user of the progress of the copying of the units
+    // STEPS:
+    // -send the request to the backend to start copying the unit
+    // -send events back to the client to update of the progress
+  };
+
+  // if the user is not a gp plus member, then take the user to the sign up page
+  const takeUserToSignUpPg = () => {};
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
@@ -208,7 +224,7 @@ const TeachItUI = <
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={handleRestrictedItemBtnClick}
+                onClick={isGpPlusMember ? copyUnits : takeUserToSignUpPg}
                 style={{
                   pointerEvents: session.status === "loading" ? "none" : "auto",
                 }}
@@ -229,7 +245,7 @@ const TeachItUI = <
                     style={{ lineHeight: "23px" }}
                     className="d-none d-sm-inline"
                   >
-                    {selectedGradeResources.linkText}
+                    BECOME A MEMBER TO {selectedGradeResources.linkText}
                   </span>
                   <span
                     style={{ lineHeight: "17px", fontSize: "14px" }}

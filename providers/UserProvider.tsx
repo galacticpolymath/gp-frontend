@@ -83,6 +83,7 @@ export type TUserProviderValue = {
   _aboutUserForm: TUseStateReturnVal<TAboutUserFormForUI>;
   _isUserTeacher: TUseStateReturnVal<boolean>;
   _accountForm: TUseStateReturnVal<TAccountForm>;
+  _isGpPlusMember: TUseStateReturnVal<boolean>;
 };
 export interface TAccountForm {
   firstName: string;
@@ -100,10 +101,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     isOnMailingList: true,
   });
   const [isUserTeacher, setIsUserTeacher] = useState(false);
+  const [isGpPlusMember, setIsGpPlusMember] = useState(false);
   const value: TUserProviderValue = {
     _aboutUserForm: [aboutUserForm, setAboutUserForm],
     _isUserTeacher: [isUserTeacher, setIsUserTeacher],
     _accountForm: [accountForm, setAccountForm],
+    _isGpPlusMember: [isGpPlusMember, setIsGpPlusMember],
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

@@ -6,27 +6,30 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 /* eslint-disable no-multiple-empty-lines */
-import { google, drive_v3 } from 'googleapis';
-import { CustomError } from '../../backend/utils/errors';
-import axios from 'axios';
-import { copyFiles, FileMetaData, generateGoogleAuthJwt, getGooglDriveFolders, shareFilesWithRetries } from '../../backend/services/googleDriveServices';
-import { ConnectionPoolClosedEvent } from 'mongodb';
-import { getJwtPayloadPromise, verifyJwt } from '../../nondependencyFns';
+import { google, drive_v3 } from "googleapis";
+import { CustomError } from "../../backend/utils/errors";
+import axios from "axios";
+import {
+    copyFiles,
+    FileMetaData,
+    generateGoogleAuthJwt,
+    getGooglDriveFolders,
+    shareFilesWithRetries,
+} from "../../backend/services/googleDriveServices";
+import { getJwtPayloadPromise } from "../../nondependencyFns";
 
-const getUserDriveFiles = (accessToken, nextPageToken) => axios.get(
-    'https://www.googleapis.com/drive/v3/files',
-    {
+const getUserDriveFiles = (accessToken, nextPageToken) =>
+    axios.get("https://www.googleapis.com/drive/v3/files", {
         params: {
             includeItemsFromAllDrives: true,
             supportsAllDrives: true,
-            ...(nextPageToken ? { pageToken: nextPageToken } : {})
+            ...(nextPageToken ? { pageToken: nextPageToken } : {}),
         },
-        headers:
-        {
+        headers: {
             Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-        }
-    })
+            "Content-Type": "application/json",
+        },
+    });
 
 /**
  * Get all of the files for the target user.
@@ -34,65 +37,79 @@ const getUserDriveFiles = (accessToken, nextPageToken) => axios.get(
  * @param{drive_v3.Drive} service google drive service object
  * @return{Promise< any[] | null>} An object contain the results and optional message.
  * */
-const listAllUserFiles = async (accessToken, nextPageToken, startingFiles = []) => {
+const listAllUserFiles = async (
+    accessToken,
+    nextPageToken,
+    startingFiles = []
+) => {
     try {
-        const response = await getUserDriveFiles(accessToken, nextPageToken)
+        const response = await getUserDriveFiles(accessToken, nextPageToken);
         const { status, data } = response;
         let files = data.files;
-        files = startingFiles?.length ? [...startingFiles, ...files] : files
+        files = startingFiles?.length ? [...startingFiles, ...files] : files;
 
         if (status !== 200) {
-            throw new CustomError('Failed to get user google drive files.', status)
+            throw new CustomError("Failed to get user google drive files.", status);
         }
 
         if (data.nextPageToken) {
             files = await listAllUserFiles(accessToken, nextPageToken, files);
         }
 
-
         return files;
     } catch (error) {
-        console.error('An error has occurred in listing all of the user files: ', error)
+        console.error(
+            "An error has occurred in listing all of the user files: ",
+            error
+        );
 
         return null;
     }
-}
+};
 
-const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFolderIds = []) => {
+const createGoogleDriveFolderForUser = async (
+    folderName,
+    accessToken,
+    parentFolderIds = []
+) => {
     try {
         const folderMetadata = new FileMetaData(folderName, parentFolderIds);
         const response = await axios.post(
-            'https://www.googleapis.com/drive/v3/files?fields=id',
+            "https://www.googleapis.com/drive/v3/files?fields=id",
             folderMetadata,
             {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                }
+                    "Content-Type": "application/json",
+                },
             }
         );
 
         if (response.status !== 200) {
-            throw new CustomError(response.data ?? 'Failed to create a lesson folder.', response.status)
+            throw new CustomError(
+                response.data ?? "Failed to create a lesson folder.",
+                response.status
+            );
         }
 
-        return { wasSuccessful: true, folderId: response.data.id }
+        return { wasSuccessful: true, folderId: response.data.id };
     } catch (error) {
-        console.error("Error object: ", error.response.data.error)
-        const errMsg = `Failed to create folder for the user. Reason: ${error.response.data.error}`
-        console.log('errMsg: ', errMsg)
+        console.error("Error object: ", error.response.data.error);
+        const errMsg = `Failed to create folder for the user. Reason: ${error.response.data.error}`;
+        console.log("errMsg: ", errMsg);
 
-        return { wasSuccessful: false, errMsg: errMsg }
+        return { wasSuccessful: false, errMsg: errMsg };
     }
-}
-
+};
 
 /**
  * @swagger
  * /api/copy-files:
  *   post:
  *     summary: Copy user files to a specified folder.
+ *
  *     description: The user must authenticate with their Google account to copy files.
+ *
  *     security:
  *       - Bearer: []
  *     requestBody:
@@ -123,155 +140,213 @@ const createGoogleDriveFolderForUser = async (folderName, accessToken, parentFol
  *                   type: string
  *                   description: The error message if the copy operation was not successful.
  *     externalDocs:
- *       url: https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=${site_url}/google-drive-auth-result/&prompt=consent&response_type=token&client_id=1038023225572-3ir2sqrlbtfcpl3ves15847tbu5li2gv.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/drive
- *       description: The google authentication url.
+ *       url: https://accounts.google.com/o/oauth2/auth?client_id=1038023225572-6jo0d0eoq9603be7sj6er6lf8ukpn93a.apps.googleusercontent.com&redirect_uri=${rediret_uri}/&scope=https://www.googleapis.com/auth/drive&response_type=token
+ *       redirect_uri: Possible values: http://localhost:3000/google-drive-auth-result, https://teach.galacticpolymath.com/google-drive-auth-result, https://dev.galacticpolymath.com/google-drive-auth-result
+ *       description: The google authentication url. CHANGE the `client_id` to the official Galactic Polymath client id.
  */
 export default async function handler(request, response) {
     try {
-        const gdriveAccessToken = request.headers['gdrive-token'];
-        const jwtPayload = await getJwtPayloadPromise(request.headers.authorization);
+        // GOAL:
+        // -send the unit id of the google drive to the backend
+
+        const gdriveAccessToken = request.headers["gdrive-token"];
+        const jwtPayload = await getJwtPayloadPromise(
+            request.headers.authorization
+        );
 
         if (!jwtPayload || !jwtPayload?.payload?.email) {
-            throw new CustomError('The access token is not valid.', 400);
+            throw new CustomError("The access token is not valid.", 400);
         }
 
         if (!gdriveAccessToken) {
-            throw new CustomError('The gdrive access token was not provided.', 400);
+            throw new CustomError("The gdrive access token was not provided.", 400);
         }
 
         const email = jwtPayload.payload.email;
 
         if (!request.body.unitDriveId) {
-            throw new CustomError('The id of the drive was not provided.', 400);
+            throw new CustomError("The id of the drive was not provided.", 400);
         }
 
         if (!request.body.unitName) {
-            throw new CustomError('The the name of the unit was not provided.', 400);
+            throw new CustomError("The the name of the unit was not provided.", 400);
         }
 
-        const googleAuthJwt = generateGoogleAuthJwt()
-        const googleService = google.drive({ version: 'v3', auth: googleAuthJwt });
-        const rootDriveFolders = await getGooglDriveFolders(googleService, request.body.unitDriveId)
+        const googleAuthJwt = generateGoogleAuthJwt();
+        const googleService = google.drive({ version: "v3", auth: googleAuthJwt });
+        const rootDriveFolders = await getGooglDriveFolders(
+            googleService,
+            request.body.unitDriveId
+        );
 
         if (!rootDriveFolders?.length) {
-            console.error('The root of the drive folder is empty.')
-            return response.status(500).json({ wasCopySuccessful: false, msg: `Failed to download GP lessons. Either the root drive of the gp folder is empty or the access token is invalid.` });
+            console.error("The root of the drive folder is empty.");
+            return response
+                .status(500)
+                .json({
+                    wasCopySuccessful: false,
+                    msg: `Failed to download GP lessons. Either the root drive of the gp folder is empty or the access token is invalid.`,
+                });
         }
 
         /** @type {{ id: string, name: string, pathToFile: string, mimeType: string, parentFolderId?: string, wasCreated?: boolean }[]} */
         // all of the folders for the target unit
-        let unitFolders = [...rootDriveFolders.map(folder => ({ name: folder.name, id: folder.id, mimeType: folder.mimeType, pathToFile: '' }))]
+        let unitFolders = [
+            ...rootDriveFolders.map((folder) => ({
+                name: folder.name,
+                id: folder.id,
+                mimeType: folder.mimeType,
+                pathToFile: "",
+            })),
+        ];
 
         // get all of the folders of the target unit folder
         for (const unitFolder of unitFolders) {
-            const parentFolderAlternativeName = unitFolder.alternativeName
+            const parentFolderAlternativeName = unitFolder.alternativeName;
 
-            if (unitFolder.mimeType.includes("folder") && (unitFolder.pathToFile && (unitFolder.pathToFile !== ''))) {
+            if (
+                unitFolder.mimeType.includes("folder") &&
+                unitFolder.pathToFile &&
+                unitFolder.pathToFile !== ""
+            ) {
                 const folderDataResponse = await googleService.files.list({
-                    corpora: 'drive',
+                    corpora: "drive",
                     includeItemsFromAllDrives: true,
                     supportsAllDrives: true,
                     driveId: process.env.GOOGLE_DRIVE_ID,
-                    q: `'${unitFolder.id}' in parents`
+                    q: `'${unitFolder.id}' in parents`,
                 });
-                const folders = folderDataResponse.data.files.filter(file => file.mimeType.includes('folder'))
+                const folders = folderDataResponse.data.files.filter((file) =>
+                    file.mimeType.includes("folder")
+                );
                 /** @type {{ [key: string]: any[] } | null} */
                 let foldersOccurrenceObj = null;
 
                 if (folders.length) {
-                    foldersOccurrenceObj = folders.reduce((allFoldersObj, folderA, _, self) => {
-                        const foldersWithTheSameName = self.filter(folderB => folderA.name === folderB.name)
-                        allFoldersObj[folderA.name] = foldersWithTheSameName;
+                    foldersOccurrenceObj = folders.reduce(
+                        (allFoldersObj, folderA, _, self) => {
+                            const foldersWithTheSameName = self.filter(
+                                (folderB) => folderA.name === folderB.name
+                            );
+                            allFoldersObj[folderA.name] = foldersWithTheSameName;
 
-                        return allFoldersObj
-                    }, {})
+                            return allFoldersObj;
+                        },
+                        {}
+                    );
 
                     // if a folder has duplicate names, give it a alternative name in order to differentiate it from the rest of the folders
-                    for (const folderNameAndOccurrences of Object.entries(foldersOccurrenceObj)) {
+                    for (const folderNameAndOccurrences of Object.entries(
+                        foldersOccurrenceObj
+                    )) {
                         let [folderName, occurrences] = folderNameAndOccurrences;
 
                         if (occurrences.length === 1) {
-                            continue
+                            continue;
                         }
 
-                        foldersOccurrenceObj[folderName] = occurrences.map((folderOccurrence, index) => ({
-                            ...folderOccurrence,
-                            alternativeName: `${folderOccurrence.name} ${index + 1}`
-                        }))
+                        foldersOccurrenceObj[folderName] = occurrences.map(
+                            (folderOccurrence, index) => ({
+                                ...folderOccurrence,
+                                alternativeName: `${folderOccurrence.name} ${index + 1}`,
+                            })
+                        );
                     }
                 }
 
-                const childFolderAndFilesOfFolder = folderDataResponse.data.files.map(file => {
-                    if (!file.mimeType.includes('folder') || !foldersOccurrenceObj || !foldersOccurrenceObj?.[file.name] || (foldersOccurrenceObj?.[file.name]?.length === 1)) {
+                const childFolderAndFilesOfFolder = folderDataResponse.data.files.map(
+                    (file) => {
+                        if (
+                            !file.mimeType.includes("folder") ||
+                            !foldersOccurrenceObj ||
+                            !foldersOccurrenceObj?.[file.name] ||
+                            foldersOccurrenceObj?.[file.name]?.length === 1
+                        ) {
+                            return {
+                                ...file,
+                                name: file.name,
+                                id: file.id,
+                                // get the id of the folder in order to copy the file or folder into the specific folder of the user's drive
+                                mimeType: file.mimeType,
+                                parentFolderId: unitFolder.id,
+                                pathToFile: `${unitFolder.pathToFile}/${unitFolder.name}`,
+                                parentFolderAlternativeName,
+                            };
+                        }
+                        const targetFolderOccurrences = foldersOccurrenceObj[file.name];
+                        const targetFolder = targetFolderOccurrences.find(
+                            (folder) => folder.id === file.id
+                        );
+
                         return {
                             ...file,
                             name: file.name,
                             id: file.id,
-                            // get the id of the folder in order to copy the file or folder into the specific folder of the user's drive 
                             mimeType: file.mimeType,
+                            folderAlternativeName: targetFolder.alternativeName,
                             parentFolderId: unitFolder.id,
                             pathToFile: `${unitFolder.pathToFile}/${unitFolder.name}`,
-                            parentFolderAlternativeName
-                        }
+                            parentFolderAlternativeName,
+                        };
                     }
-                    const targetFolderOccurrences = foldersOccurrenceObj[file.name]
-                    const targetFolder = targetFolderOccurrences.find(folder => folder.id === file.id)
+                );
 
-                    return {
-                        ...file,
-                        name: file.name,
-                        id: file.id,
-                        mimeType: file.mimeType,
-                        folderAlternativeName: targetFolder.alternativeName,
-                        parentFolderId: unitFolder.id,
-                        pathToFile: `${unitFolder.pathToFile}/${unitFolder.name}`,
-                        parentFolderAlternativeName
-                    }
-                })
-
-                unitFolders.push(...childFolderAndFilesOfFolder)
-                continue
+                unitFolders.push(...childFolderAndFilesOfFolder);
+                continue;
             }
 
             if (unitFolder.mimeType.includes("folder")) {
                 const folderDataResponse = await googleService.files.list({
-                    corpora: 'drive',
+                    corpora: "drive",
                     includeItemsFromAllDrives: true,
                     supportsAllDrives: true,
                     driveId: process.env.GOOGLE_DRIVE_ID,
-                    q: `'${unitFolder.id}' in parents`
+                    q: `'${unitFolder.id}' in parents`,
                 });
 
-                const folders = folderDataResponse.data.files.filter(file => file.mimeType.includes('folder'))
+                const folders = folderDataResponse.data.files.filter((file) =>
+                    file.mimeType.includes("folder")
+                );
                 /** @type {{ [key: string]: any[] } | null} */
                 let foldersOccurrenceObj = null;
 
                 if (folders.length) {
-                    foldersOccurrenceObj = folders.reduce((allFoldersObj, folderA, _, self) => {
-                        const foldersWithTheSameName = self.filter(folderB => folderA.name === folderB.name)
-                        allFoldersObj[folderA.name] = foldersWithTheSameName;
+                    foldersOccurrenceObj = folders.reduce(
+                        (allFoldersObj, folderA, _, self) => {
+                            const foldersWithTheSameName = self.filter(
+                                (folderB) => folderA.name === folderB.name
+                            );
+                            allFoldersObj[folderA.name] = foldersWithTheSameName;
 
-                        return allFoldersObj
-                    }, {})
+                            return allFoldersObj;
+                        },
+                        {}
+                    );
 
                     // if a folder has duplicate names, give it a alternative name in order to differentiate it from the rest of the folders
-                    for (const folderNameAndOccurrences of Object.entries(foldersOccurrenceObj)) {
+                    for (const folderNameAndOccurrences of Object.entries(
+                        foldersOccurrenceObj
+                    )) {
                         let [folderName, occurrences] = folderNameAndOccurrences;
 
                         if (occurrences.length === 1) {
-                            continue
+                            continue;
                         }
 
-                        foldersOccurrenceObj[folderName] = occurrences.map((folderOccurrence, index) => ({
-                            ...folderOccurrence,
-                            alternativeName: `${folderOccurrence.name} ${index + 1}`
-                        }))
+                        foldersOccurrenceObj[folderName] = occurrences.map(
+                            (folderOccurrence, index) => ({
+                                ...folderOccurrence,
+                                alternativeName: `${folderOccurrence.name} ${index + 1}`,
+                            })
+                        );
                     }
                 }
 
-                const folderData = folderDataResponse.data.files.map(file => {
-                    const targetFolderOccurrences = foldersOccurrenceObj?.[file.name]
-                    const targetFolder = targetFolderOccurrences ? targetFolderOccurrences.find(folder => folder.id === file.id) : null;
+                const folderData = folderDataResponse.data.files.map((file) => {
+                    const targetFolderOccurrences = foldersOccurrenceObj?.[file.name];
+                    const targetFolder = targetFolderOccurrences
+                        ? targetFolderOccurrences.find((folder) => folder.id === file.id)
+                        : null;
 
                     if (targetFolder) {
                         return {
@@ -282,8 +357,8 @@ export default async function handler(request, response) {
                             mimeType: file.mimeType,
                             pathToFile: unitFolder.name,
                             parentFolderId: unitFolder.id,
-                            parentFolderAlternativeName
-                        }
+                            parentFolderAlternativeName,
+                        };
                     }
 
                     return {
@@ -293,93 +368,113 @@ export default async function handler(request, response) {
                         mimeType: file.mimeType,
                         parentFolderId: unitFolder.id,
                         pathToFile: unitFolder.name,
-                        parentFolderAlternativeName
-
-                    }
-                })
-                unitFolders.push(...folderData)
-                continue
+                        parentFolderAlternativeName,
+                    };
+                });
+                unitFolders.push(...folderData);
+                continue;
             }
 
-            const isFilePresent = unitFolders.some(folder => folder.name === unitFolder.name)
+            const isFilePresent = unitFolders.some(
+                (folder) => folder.name === unitFolder.name
+            );
 
             if (!isFilePresent) {
                 const file = {
                     ...unitFolder,
                     name: unitFolder.name,
                     id: unitFolder.id,
-                    // get the id of the folder in order to copy the file or folder into the specific folder of the user's drive 
+                    // get the id of the folder in order to copy the file or folder into the specific folder of the user's drive
                     mimeType: unitFolder.mimeType,
                     parentFolderId: unitFolder.id,
-                    pathToFile: unitFolder.pathToFile ? `${unitFolder.pathToFile}/${unitFolder.name}` : unitFolder.name,
-                    parentFolderAlternativeName
-                }
+                    pathToFile: unitFolder.pathToFile
+                        ? `${unitFolder.pathToFile}/${unitFolder.name}`
+                        : unitFolder.name,
+                    parentFolderAlternativeName,
+                };
 
-                unitFolders.push(file)
+                unitFolders.push(file);
             }
         }
 
-        // give the user the ability to name the folder where the files will be copied to. 
-        const { folderId: unitFolderId, errMsg } = await createGoogleDriveFolderForUser(`${request.body.unitName} COPY`, gdriveAccessToken)
+        console.log("gdriveAccessToken, sup there: ", gdriveAccessToken)
+
+        // give the user the ability to name the folder where the files will be copied to.
+        const { folderId: unitFolderId, errMsg } =
+            await createGoogleDriveFolderForUser(
+                `${request.body.unitName} COPY`,
+                gdriveAccessToken
+            );
 
         if (errMsg) {
             console.error("Failed to create the target folder.");
-            throw new CustomError(errMsg, 500)
+            throw new CustomError(errMsg, 500);
         }
 
         console.log("The target folder was created.");
 
         let foldersFailedToCreate = [];
         /** @type {{ id: string, name: string, pathToFile: string, parentFolderId: string, gpFolderId: string }[]} */
-        let createdFolders = []
+        let createdFolders = [];
         /** @type {{ fileId: string, pathToFile: string, parentFolderId: string, name: string }[]} */
         // get only the chlid folders of the target unit folder
-        let folderPaths = unitFolders
-            .filter(folder => folder.mimeType.includes('folder'))
-            .map(folder => {
+        const folderPaths = unitFolders
+            .filter((folder) => folder.mimeType.includes("folder"))
+            .map((folder) => {
                 return {
                     name: folder.name,
                     mimeType: folder.mimeType,
                     fileId: folder.id,
                     pathToFile: folder.pathToFile,
-                    parentFolderId: folder.parentFolderId
-                }
-            })
+                    parentFolderId: folder.parentFolderId,
+                };
+            });
 
-        // create the google sub folders 
+        // create the google sub folders
         for (const folderToCreate of folderPaths) {
             // if the folder is at the root
-            if (folderToCreate.pathToFile === '') {
-                const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderToCreate.name, gdriveAccessToken, [unitFolderId])
+            if (folderToCreate.pathToFile === "") {
+                const { folderId, wasSuccessful } =
+                    await createGoogleDriveFolderForUser(
+                        folderToCreate.name,
+                        gdriveAccessToken,
+                        [unitFolderId]
+                    );
 
                 if (!wasSuccessful) {
-                    foldersFailedToCreate.push(folderToCreate.name)
+                    foldersFailedToCreate.push(folderToCreate.name);
                 } else {
                     createdFolders.push({
                         id: folderId,
                         gpFolderId: folderToCreate.fileId,
                         name: folderToCreate.name,
-                        pathToFile: '',
-                        parentFolderId: folderToCreate.parentFolderId
-                    })
+                        pathToFile: "",
+                        parentFolderId: folderToCreate.parentFolderId,
+                    });
                 }
 
-                continue
+                continue;
             }
 
             // the id of the parent folder that was just created in the previous iteration
-            const parentFolderId = createdFolders.find(folder => folder.gpFolderId === folderToCreate.parentFolderId)?.id
+            const parentFolderId = createdFolders.find(
+                (folder) => folder.gpFolderId === folderToCreate.parentFolderId
+            )?.id;
 
             if (!parentFolderId) {
-                foldersFailedToCreate.push(folderToCreate.name)
-                continue
+                foldersFailedToCreate.push(folderToCreate.name);
+                continue;
             }
 
-            const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(folderToCreate.name, gdriveAccessToken, [parentFolderId])
+            const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(
+                folderToCreate.name,
+                gdriveAccessToken,
+                [parentFolderId]
+            );
 
             if (!wasSuccessful) {
-                foldersFailedToCreate.push(folderToCreate.name)
-                continue
+                foldersFailedToCreate.push(folderToCreate.name);
+                continue;
             }
 
             createdFolders.push({
@@ -387,22 +482,30 @@ export default async function handler(request, response) {
                 gpFolderId: folderToCreate.fileId,
                 name: folderToCreate.name,
                 pathToFile: folderToCreate.pathToFile,
-                parentFolderId: folderToCreate.parentFolderId
-            })
+                parentFolderId: folderToCreate.parentFolderId,
+            });
         }
 
-        const files = unitFolders.filter(folder => !folder.mimeType.includes('folder'))
+        const files = unitFolders.filter(
+            (folder) => !folder.mimeType.includes("folder")
+        );
         console.log("Will share the target files with the target user.");
-        const { wasSuccessful: wasSharesSuccessful } =
-            await shareFilesWithRetries(files, email, googleService)
+        const { wasSuccessful: wasSharesSuccessful } = await shareFilesWithRetries(
+            files,
+            email,
+            googleService
+        );
 
-        console.log("Was files share successful, wasSharesSuccessful: ", wasSharesSuccessful);
+        console.log(
+            "Was files share successful, wasSharesSuccessful: ",
+            wasSharesSuccessful
+        );
 
         if (!wasSharesSuccessful) {
             console.error("Failed to share at least one file.");
             return response.status(500).json({
                 wasCopySuccessful: false,
-                msg: 'At least one file failed to be shared.',
+                msg: "At least one file failed to be shared.",
             });
         }
 
@@ -418,13 +521,18 @@ export default async function handler(request, response) {
             console.error("Failed to copy at least one file.");
             return response.status(500).json({
                 wasCopySuccessful: false,
-                msg: 'At least one file failed to be copied.',
+                msg: "At least one file failed to be copied.",
             });
         }
 
         return response.json({ wasCopySuccessful: true });
     } catch (error) {
-        console.error('An error has occurred. Error: ', error)
-        return response.status(500).json({ wasCopySuccessful: false, msg: `Failed to download GP lessons. Reason: ${error}` });
+        console.error("An error has occurred. Error: ", error);
+        return response
+            .status(500)
+            .json({
+                wasCopySuccessful: false,
+                msg: `Failed to download GP lessons. Reason: ${error}`,
+            });
     }
 }
