@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import GpPlusSignUp from "../components/GpPlus/SignUp";
-import { Button, Modal } from "react-bootstrap";
+import { Button } from "react-bootstrap";
+import Modal from "../components/Modal";
 
 function injectOutsetaScripts() {
   const existingConfig = document.querySelector(
@@ -153,8 +154,7 @@ const GpPlus: React.FC = () => {
           outsetaModalContent?.appendChild(outseta);
         }}
         onBackdropClick={handleOnHide}
-        dialogClassName="selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center"
-        contentClassName="pt-1 gp-sign-up-modal pb-3"
+        className="pt-1 gp-sign-up-modal pb-3"
       >
         <div id="outseta-sign-up-modal-content" />
       </Modal>

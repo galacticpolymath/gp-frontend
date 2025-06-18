@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "react-bootstrap";
+import { Button, Modal as BootstrapModal } from "react-bootstrap";
 
 // Simple modal styles
 export const modalStyles: React.CSSProperties = {
@@ -55,9 +55,10 @@ const Modal = ({
   className,
 }: ModalProps) => {
   return (
-    <Modal
+    <BootstrapModal
       show={show}
       style={style}
+      dialogClassName="vw-100"
       onHide={onHide}
       onShow={onShow}
       onBackdropClick={onBackdropClick}
@@ -72,7 +73,7 @@ const Modal = ({
         &times;
       </Button>
       {children}
-    </Modal>
+    </BootstrapModal>
   );
 };
 
