@@ -138,38 +138,11 @@ const TeachItUI = <
       "gdrive-token": gdriveAccessToken,
       method: "POST",
     };
-    const url = "/api/copy-files";
-    const request = new XMLHttpRequest();
-
-    request.open("POST", url, true);
-
-    for (const key in headers) {
-      const value = headers[key as keyof typeof headers];
-
-      request.setRequestHeader(key, value);
-    }
-
-    let lastIndex = 0;
-
-    request.onprogress = () => {
-      // Parse new SSE messages from responseText
-      const newText = request.responseText.slice(lastIndex);
-
-      lastIndex = request.responseText.length;
-
-      // Example: log raw SSE data
-      console.log("SSE chunk: ", newText);
-      console.log("SSE chunk typeof: ", typeof newText);
-
-      // TODO: Parse SSE events from newText if needed
-    };
-
-    request.send(
-      JSON.stringify({
-        unitName: "My GP Unit",
-        unitDriveId: "15KK-qNwPUbw2d1VBDvsjHfreCSBpwMiw",
-      })
-    );
+    const path = "/api/copy-files";
+    const request = new EventSourcePolyfill(path, {
+      headers,
+      withCredentials: true,
+    });
   };
 
   // if the user is not a gp plus member, then take the user to the sign up page
