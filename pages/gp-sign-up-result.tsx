@@ -26,6 +26,8 @@ const GpSignUpResult: React.FC = () => {
   const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
 
   if (status === "authenticated" && access_token && gpPlusFeatureLocation) {
+    console.log("gpPlusFeatureLocation, yo there: ", gpPlusFeatureLocation);
+
     resultJsx = (
       <>
         <p className="mt-2 text-center">
@@ -34,12 +36,12 @@ const GpSignUpResult: React.FC = () => {
         <p className="mt-2 text-center">Thank you!</p>
         <p className="mt-2 text-center">
           Click{" "}
-          <CustomLink
-            hrefStr={gpPlusFeatureLocation}
+          <a
+            href={gpPlusFeatureLocation}
             className="text-primary underline-on-hover"
           >
             here
-          </CustomLink>{" "}
+          </a>{" "}
           to use it.
         </p>
       </>

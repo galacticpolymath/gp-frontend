@@ -4,7 +4,7 @@ import GpPlusSignUp from "../components/GpPlus/SignUp";
 import { Button } from "react-bootstrap";
 import Modal from "../components/Modal";
 
-function injectOutsetaScripts() {
+export function injectOutsetaScripts() {
   const existingConfig = document.querySelector(
     'script[data-outseta="config"]'
   );
@@ -17,7 +17,6 @@ function injectOutsetaScripts() {
 
   if (existingMain) existingMain.remove();
 
-  // Inject new config script
   const configScript = document.createElement("script");
   configScript.type = "text/javascript";
   configScript.setAttribute("data-outseta", "config");
@@ -34,7 +33,6 @@ function injectOutsetaScripts() {
   `;
   document.body.appendChild(configScript);
 
-  // Inject new main script
   const mainScript = document.createElement("script");
   mainScript.src = "https://cdn.outseta.com/outseta.min.js";
   mainScript.setAttribute("data-options", "o_options");
@@ -44,7 +42,6 @@ function injectOutsetaScripts() {
 }
 
 const GpPlus: React.FC = () => {
-  const [signUpElement, setSignUpElement] = useState<HTMLElement | null>(null);
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
   const [signUpModalOpacity, setSignUpModalOpacity] = useState(1);
 
@@ -74,6 +71,8 @@ const GpPlus: React.FC = () => {
         outsetaSignUp.setAttribute("data-plan-payment-term", "month");
         outsetaSignUp.setAttribute("data-skip-plan-options", "false");
         outsetaSignUp.setAttribute("data-mode", "embed");
+        outsetaSignUp.style.display = "block";
+        outsetaSignUp.style.pointerEvents = "none";
 
         outsetaContainer?.appendChild(outsetaSignUp);
       }
@@ -115,26 +114,12 @@ const GpPlus: React.FC = () => {
           SIGN UP
         </Button>
       </div>
-      <div id="outseta-container">
-        <div
-          id="outseta-sign-up"
-          style={{
-            display: "none",
-            pointerEvents: "none",
-          }}
-          data-o-auth="1"
-          data-widget-mode="register"
-          data-plan-uid="rmkkjamg"
-          data-plan-payment-term="month"
-          data-skip-plan-options="false"
-          data-mode="embed"
-        />
-      </div>
       <Modal
         show={isSignupModalDisplayed}
         style={{ opacity: signUpModalOpacity }}
         onHide={handleOnHide}
         onShow={() => {
+          injectOutsetaScripts();
           setSignUpModalOpacity(1);
           const outsetaModalContent = document.getElementById(
             "outseta-sign-up-modal-content"
@@ -148,15 +133,20 @@ const GpPlus: React.FC = () => {
             return;
           }
 
-          outseta.style.display = "block";
-          outseta.style.pointerEvents = "auto";
-
           outsetaModalContent?.appendChild(outseta);
         }}
         onBackdropClick={handleOnHide}
         className="pt-1 gp-sign-up-modal pb-3"
       >
-        <div id="outseta-sign-up-modal-content" />
+        <div
+          id="outseta-sign-up"
+          data-o-auth="1"
+          data-widget-mode="register"
+          data-plan-uid="rmkkjamg"
+          data-plan-payment-term="month"
+          data-skip-plan-options="false"
+          data-mode="embed"
+        />
       </Modal>
     </Layout>
   );

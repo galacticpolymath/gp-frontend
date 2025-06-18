@@ -146,9 +146,6 @@ const createGoogleDriveFolderForUser = async (
  */
 export default async function handler(request, response) {
     try {
-        // GOAL:
-        // -send the unit id of the google drive to the backend
-
         const gdriveAccessToken = request.headers["gdrive-token"];
         const jwtPayload = await getJwtPayloadPromise(
             request.headers.authorization
@@ -171,6 +168,16 @@ export default async function handler(request, response) {
         if (!request.body.unitName) {
             throw new CustomError("The the name of the unit was not provided.", 400);
         }
+
+        response.setHeader("Content-Type", "text/event-stream");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setHeader("Connection", "kee-alive");
+
+        const data = JSON.stringify({ msg: "Files are being copied" });
+
+        response.write(`data: ${data}\n\n`)
+
+        return response.status(200).json({ wasSuccessful: true });
 
         const googleAuthJwt = generateGoogleAuthJwt();
         const googleService = google.drive({ version: "v3", auth: googleAuthJwt });

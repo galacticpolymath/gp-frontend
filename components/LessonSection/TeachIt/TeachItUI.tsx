@@ -112,6 +112,7 @@ const TeachItUI = <
   const router = useRouter();
 
   const copyUnit = () => {
+    console.log("will copy unit...");
     // check if the user has a google drive token, check the cookies
     // the user must be a gp plus member (isGpPlsMember: true)
     // LOGIC FOR THIS FUNCTION:
@@ -126,7 +127,11 @@ const TeachItUI = <
   const takeUserToSignUpPg = () => {
     setLocalStorageItem(
       "gpPlusFeatureLocation",
-      window.location.host + window.location.pathname
+      window.location.protocol +
+        "//" +
+        window.location.host +
+        window.location.pathname +
+        "#teaching-materials"
     );
 
     router.push("/gp-plus");
@@ -250,7 +255,9 @@ const TeachItUI = <
                     style={{ lineHeight: "23px" }}
                     className="d-none d-sm-inline"
                   >
-                    BECOME A MEMBER TO {selectedGradeResources.linkText}
+                    {isGpPlusMember
+                      ? "Copy Unit"
+                      : `BECOME A MEMBER TO ${selectedGradeResources.linkText}`}
                   </span>
                   <span
                     style={{ lineHeight: "17px", fontSize: "14px" }}
