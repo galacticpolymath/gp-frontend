@@ -2,25 +2,29 @@ import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import GpPlusSignUp from "../components/GpPlus/SignUp";
 import { Button } from "react-bootstrap";
+import Modal, {
+  closeButtonStyles,
+  modalContentStyles,
+  modalStyles,
+} from "../components/Modal";
 
 const GpPlus: React.FC = () => {
   // make a request to the backend, within getServerSideProps to determine if the user is GpPlusMember
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
 
   useEffect(() => {
-    // Wait until Outseta is loaded, then render widgets
-    if (
-      window &&
-      typeof window === "object" &&
-      "Outseta" in window &&
-      typeof window.Outseta === "object" &&
-      window.Outseta &&
-      "renderWidgets" in window.Outseta &&
-      typeof window.Outseta.renderWidgets === "function"
-    ) {
-      console.log("will execute renderWidgets");
-      window.Outseta.renderWidgets();
-    }
+    const widgetEl = document.createElement("div");
+
+    widgetEl.setAttribute("data-o-auth", "1");
+    widgetEl.setAttribute("data-widget-mode", "register");
+    widgetEl.setAttribute("data-plan-uid", "rmkkjamg");
+    widgetEl.setAttribute("data-plan-payment-term", "month");
+    widgetEl.setAttribute("data-skip-plan-options", "true");
+    widgetEl.setAttribute("data-mode", "embed");
+
+    const parent = document.getElementById("outseta-sign-up");
+
+    parent?.appendChild(widgetEl);
   }, []);
 
   return (
@@ -42,15 +46,7 @@ const GpPlus: React.FC = () => {
           SIGN UP
         </Button>
       </div>
-      <div
-        data-o-auth="1"
-        data-widget-mode="register"
-        data-plan-uid="rmkkjamg"
-        data-plan-payment-term="month"
-        data-skip-plan-options="true"
-        data-mode="embed"
-      ></div>
-
+      {/* <div id="outseta-sign-up"></div> */}
       <GpPlusSignUp
         _isSignupModalDisplayed={[
           isSignupModalDisplayed,

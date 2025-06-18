@@ -13,6 +13,7 @@ import "../styles/pages/Lessons/lessons.scss";
 import "../styles/pages/JobViz/jobviz-page.scss";
 import "../styles/icons/icons.scss";
 import "../styles/comps/carousel.scss";
+import "../styles/comps/modal.scss";
 import "../styles/pages/home.scss";
 import "../styles/pages/About/about.scss";
 import "../styles/modals/signUp.scss";

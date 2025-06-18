@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import { Noto_Sans } from 'next/font/google';
 import Script from 'next/script';
 import useOutsetaInputValidation from '../customHooks/useOutsetaInputValidation';
+import { useEffect } from 'react';
 
 const notoSansLight = Noto_Sans({
   subsets: ['latin'],
@@ -32,11 +33,17 @@ export default function Layout({
     const configScript = document.createElement("script");
     configScript.type = "text/javascript";
     configScript.text = `
+      var currentOrigin = window.location.origin;
       var o_options = {
         domain: 'galactic-polymath.outseta.com',
-        load: 'auth,customForm,emailList,leadCapture,nocode,profile,support'
+        load: 'auth,customForm,emailList,leadCapture,nocode,profile,support',
+        auth: {
+          authenticationCallbackUrl: currentOrigin + '/gp-sign-up-result',
+          registrationConfirmationUrl: currentOrigin + '/gp-plus-set-password',
+        }
       };
     `;
+
     document.body.appendChild(configScript);
 
     // 2. Create the main Outseta script
@@ -129,35 +136,6 @@ export default function Layout({
           />
         )}
       </Head>
-      <Script id='outseta-config' strategy='beforeInteractive'>
-        {`
-          var currentOrigin = window.location.origin;
-          var o_options = {
-            domain: 'galactic-polymath.outseta.com',
-            load: 'auth,customForm,emailList,leadCapture,nocode,profile,support',
-            auth: {
-              authenticationCallbackUrl: currentOrigin + '/gp-sign-up-result',
-              registrationConfirmationUrl: currentOrigin + '/gp-plus-set-password',
-            }
-          };
-        `}
-      </Script>
-      <Script
-        src='https://cdn.outseta.com/outseta.min.js'
-        strategy='afterInteractive'
-        id='outseta-script'
-      >
-        {`
-        fetch('/api/test', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(Outseta),
-        });
-        `}
-      </Script>
-
       <div style={{ height: '50px' }}>
         <Navbar />
       </div>
