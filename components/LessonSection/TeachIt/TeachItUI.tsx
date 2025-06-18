@@ -7,9 +7,11 @@ import React, {
   ReactNode,
   RefObject,
   SetStateAction,
+  useEffect,
   useRef,
   useState,
 } from "react";
+import { EventSourcePolyfill } from "event-source-polyfill";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import {
   IItemForClient,
@@ -41,7 +43,11 @@ import Link from "next/link";
 import Sparkles from "../../SparklesAnimation";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useRouter } from "next/router";
-import { setLocalStorageItem } from "../../../shared/fns";
+import { createGDriveAuthUrl, setLocalStorageItem } from "../../../shared/fns";
+import { TCopyFilesMsg } from "../../../pages/api/copy-files";
+import { useSession } from "next-auth/react";
+import useSiteSession from "../../../customHooks/useSiteSession";
+import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -107,20 +113,63 @@ const TeachItUI = <
   ] = useState<number[]>([]);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const [isGpPlusMember] = _isGpPlusMember;
-  const { handleRestrictedItemBtnClick, session } =
-    useCanUserAccessMaterial(false);
+  useEffect(() => {
+    console.log("teach it, isGpPlusMember, sup there: ", isGpPlusMember);
+  });
+  const session = useSiteSession();
+  const { cookies } = useCustomCookies(["token", "gdriveAccessToken"]);
+  const { session: siteSession, status, token } = session;
+
+  const { handleRestrictedItemBtnClick } = useCanUserAccessMaterial(false);
   const router = useRouter();
 
   const copyUnit = () => {
-    console.log("will copy unit...");
-    // check if the user has a google drive token, check the cookies
-    // the user must be a gp plus member (isGpPlsMember: true)
-    // LOGIC FOR THIS FUNCTION:
-    // show the progress units ui to the user
-    // display a toast to notify the user of the progress of the copying of the units
-    // STEPS:
-    // -send the request to the backend to start copying the unit
-    // -send events back to the client to update of the progress
+    const gdriveAccessToken = cookies.gdriveAccessToken;
+
+    if (!gdriveAccessToken) {
+      const url = createGDriveAuthUrl();
+      window.location.href = url;
+      return;
+    }
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      "gdrive-token": gdriveAccessToken,
+      method: "POST",
+    };
+    const url = "/api/copy-files";
+    const request = new XMLHttpRequest();
+
+    request.open("POST", url, true);
+
+    for (const key in headers) {
+      const value = headers[key as keyof typeof headers];
+
+      request.setRequestHeader(key, value);
+    }
+
+    let lastIndex = 0;
+
+    request.onprogress = () => {
+      // Parse new SSE messages from responseText
+      const newText = request.responseText.slice(lastIndex);
+
+      lastIndex = request.responseText.length;
+
+      // Example: log raw SSE data
+      console.log("SSE chunk: ", newText);
+      console.log("SSE chunk typeof: ", typeof newText);
+
+      // TODO: Parse SSE events from newText if needed
+    };
+
+    request.send(
+      JSON.stringify({
+        unitName: "My GP Unit",
+        unitDriveId: "15KK-qNwPUbw2d1VBDvsjHfreCSBpwMiw",
+      })
+    );
   };
 
   // if the user is not a gp plus member, then take the user to the sign up page
@@ -255,9 +304,13 @@ const TeachItUI = <
                     style={{ lineHeight: "23px" }}
                     className="d-none d-sm-inline"
                   >
-                    {isGpPlusMember
-                      ? "Copy Unit"
-                      : `BECOME A MEMBER TO ${selectedGradeResources.linkText}`}
+                    {isGpPlusMember &&
+                      !cookies.gdriveAccessToken &&
+                      "Authenticate w/ Google Drive & Copy Unit"}
+                    {isGpPlusMember && cookies.gdriveAccessToken && "Copy Unit"}
+                    {!isGpPlusMember &&
+                      !cookies.gdriveAccessToken &&
+                      `BECOME A MEMBER TO ${selectedGradeResources.linkText}`}
                   </span>
                   <span
                     style={{ lineHeight: "17px", fontSize: "14px" }}

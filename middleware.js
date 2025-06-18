@@ -279,6 +279,9 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
+    console.log("nextUrl.pathname: ", nextUrl.pathname)
+    console.log("method: ", method)
+
     if (
       nextUrl.pathname === "/api/copy-files" &&
       method === "POST" &&

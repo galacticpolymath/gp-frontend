@@ -17,6 +17,8 @@ import {
     shareFilesWithRetries,
 } from "../../backend/services/googleDriveServices";
 import { getJwtPayloadPromise } from "../../nondependencyFns";
+import { NextApiRequest, NextApiResponse } from "next";
+import { sleep, waitWithExponentialBackOff } from "../../globalFns";
 
 const getUserDriveFiles = (accessToken, nextPageToken) =>
     axios.get("https://www.googleapis.com/drive/v3/files", {
@@ -102,6 +104,17 @@ const createGoogleDriveFolderForUser = async (
     }
 };
 
+export type TCopyFilesMsg = Partial<{
+    msg: string
+    isJobDone: boolean
+}>
+
+const sendMessage = <TMsg extends object = TCopyFilesMsg>(response: NextApiResponse, msg: TMsg) => {
+    const data = JSON.stringify(msg);
+
+    response.write(`data: ${data}\n\n`)
+}
+
 /**
  * @swagger
  * /api/copy-files:
@@ -144,7 +157,7 @@ const createGoogleDriveFolderForUser = async (
  *       redirect_uri: Possible values: http://localhost:3000/google-drive-auth-result, https://teach.galacticpolymath.com/google-drive-auth-result, https://dev.galacticpolymath.com/google-drive-auth-result
  *       description: The google authentication url. CHANGE the `client_id` to the official Galactic Polymath client id.
  */
-export default async function handler(request, response) {
+export default async function handler(request: NextApiRequest, response: NextApiResponse) {
     try {
         const gdriveAccessToken = request.headers["gdrive-token"];
         const jwtPayload = await getJwtPayloadPromise(
@@ -173,9 +186,17 @@ export default async function handler(request, response) {
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("Connection", "kee-alive");
 
-        const data = JSON.stringify({ msg: "Files are being copied" });
+        sendMessage(response, { msg: "started" });
 
-        response.write(`data: ${data}\n\n`)
+        
+        let i = 0;
+        
+        while (i < 5) {
+            sendMessage(response, { msg: `yo there! ${i}` });
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            i++;
+        }
+
 
         return response.status(200).json({ wasSuccessful: true });
 

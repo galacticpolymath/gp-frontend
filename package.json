@@ -33,6 +33,7 @@
     "d3": "^7.9.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
+    "event-source-polyfill": "^1.0.31",
     "font-awesome": "^4.7.0",
     "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",
@@ -92,6 +93,7 @@
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
+    "@types/event-source-polyfill": "^1.0.5",
     "@types/jest": "^29.5.14",
     "@types/lodash.throttle": "^4.1.9",
     "cypress": "^14.4.1",

@@ -1,7 +1,17 @@
 import { useCookies } from "react-cookie";
 
-export const useCustomCookies = (keys = ["token"]) => {
-  const [cookiesStore, setCookie, removeCookie] = useCookies(keys);
+interface IAppCookies {
+  gdriveAccessToken: string;
+  token: string;
+}
+
+export const useCustomCookies = (
+  keys: Exclude<keyof IAppCookies, number>[]
+) => {
+  const [cookiesStore, setCookie, removeCookie] = useCookies<
+    string,
+    IAppCookies
+  >(keys);
 
   const clearCookies = () => {
     const cookies = Object.keys(cookiesStore);
