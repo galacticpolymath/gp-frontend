@@ -140,7 +140,11 @@ export interface IUpdatedUserReqBody{
 } 
 
 export interface IUpdatedAboutUserForm{
-aboutUserForm: TAboutUserForm<Map>
+  aboutUserForm: TAboutUserForm<Map>
+}
+
+export interface ILocalStorage{
+  gpPlusFeatureLocation: string
 }
 
 export {

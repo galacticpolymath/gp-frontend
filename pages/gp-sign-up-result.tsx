@@ -1,9 +1,10 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import CustomLink from '../components/CustomLink';
-import { CONTACT_SUPPORT_EMAIL } from '../globalVars';
-import Layout from '../components/Layout';
-import { useSession } from 'next-auth/react';
+import React from "react";
+import { useRouter } from "next/router";
+import CustomLink from "../components/CustomLink";
+import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
+import Layout from "../components/Layout";
+import { useSession } from "next-auth/react";
+import { getLocalStorageItem } from "../shared/fns";
 
 const GpSignUpResult: React.FC = () => {
   const { status } = useSession();
@@ -12,35 +13,46 @@ const GpSignUpResult: React.FC = () => {
   let resultJsx = (
     <>
       <p>Unable to determine if GP Plus sign up was successful.</p>
-      <p className='mt-1'>Please contact our support team: </p>
+      <p className="mt-1">Please contact our support team: </p>
       <CustomLink
         hrefStr={CONTACT_SUPPORT_EMAIL}
-        className='ms-1 mt-2 text-break'
+        className="ms-1 mt-2 text-break"
       >
         feedback@galacticpolymath.com
       </CustomLink>
       .
     </>
   );
+  const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
 
-  if (status === 'authenticated' && access_token) {
+  if (status === "authenticated" && access_token && gpPlusFeatureLocation) {
     resultJsx = (
       <>
-        <p className='mt-2 text-center'>
+        <p className="mt-2 text-center">
           Congratulations! You have successfully subscribed to GP Plus.
         </p>
-        <p className='mt-2 text-center'>Thank you!</p>
+        <p className="mt-2 text-center">Thank you!</p>
+        <p className="mt-2 text-center">
+          Click{" "}
+          <CustomLink
+            hrefStr={gpPlusFeatureLocation}
+            className="text-primary underline-on-hover"
+          >
+            here
+          </CustomLink>{" "}
+          to use it.
+        </p>
       </>
     );
   }
 
-  if (status === 'unauthenticated' && access_token) {
+  if (status === "unauthenticated" && access_token) {
     resultJsx = (
       <>
-        <p className='mt-2 text-center'>
+        <p className="mt-2 text-center">
           Congratulations! You have successfully subscribed to GP Plus.
         </p>
-        <p className='mt-2 text-center'>
+        <p className="mt-2 text-center">
           Please <p>login</p> to use your GP Plus account.
         </p>
       </>
@@ -49,14 +61,14 @@ const GpSignUpResult: React.FC = () => {
 
   return (
     <Layout
-      title='GP Plus Sign Up Result'
-      description='GP Plus sign up result page.'
-      url='/gp-sign-up-result'
-      imgSrc='/assets/img/galactic_polymath_logo.png'
-      imgAlt='Galactic Polymath Logo'
+      title="GP Plus Sign Up Result"
+      description="GP Plus sign up result page."
+      url="/gp-sign-up-result"
+      imgSrc="/assets/img/galactic_polymath_logo.png"
+      imgAlt="Galactic Polymath Logo"
       langLinks={[]}
     >
-      <div className='mt-5 min-vh-100 min-vw-100 ps-5'>{resultJsx}</div>
+      <div className="mt-5 min-vh-100 min-vw-100 ps-5">{resultJsx}</div>
     </Layout>
   );
 };

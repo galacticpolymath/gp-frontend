@@ -29,6 +29,7 @@ import {
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import Button from "../../General/Button";
+import BootstrapBtn from "react-bootstrap/Button";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import { useModalContext } from "../../../providers/ModalProvider";
 import LessonPart from "./LessonPart";
@@ -39,6 +40,8 @@ import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import Link from "next/link";
 import Sparkles from "../../SparklesAnimation";
 import { useUserContext } from "../../../providers/UserProvider";
+import { useRouter } from "next/router";
+import { setLocalStorageItem } from "../../../shared/fns";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -106,8 +109,10 @@ const TeachItUI = <
   const [isGpPlusMember] = _isGpPlusMember;
   const { handleRestrictedItemBtnClick, session } =
     useCanUserAccessMaterial(false);
+  const router = useRouter();
 
-  const copyUnits = () => {
+  const copyUnit = () => {
+    // check if the user has a google drive token, check the cookies
     // the user must be a gp plus member (isGpPlsMember: true)
     // LOGIC FOR THIS FUNCTION:
     // show the progress units ui to the user
@@ -118,7 +123,14 @@ const TeachItUI = <
   };
 
   // if the user is not a gp plus member, then take the user to the sign up page
-  const takeUserToSignUpPg = () => {};
+  const takeUserToSignUpPg = () => {
+    setLocalStorageItem(
+      "gpPlusFeatureLocation",
+      window.location.host + window.location.pathname
+    );
+
+    router.push("/gp-plus");
+  };
 
   const handleIconClick = () => {
     setIsDownloadModalInfoOn(true);
@@ -221,18 +233,11 @@ const TeachItUI = <
         {selectedGradeResources && (
           <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11">
             <div className="row flex-nowrap align-items-center justify-content-center col-md-8 position-relative">
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={isGpPlusMember ? copyUnits : takeUserToSignUpPg}
+              <BootstrapBtn
+                onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
                 style={{
                   pointerEvents: session.status === "loading" ? "none" : "auto",
                 }}
-                href={
-                  session.status === "authenticated"
-                    ? selectedGradeResources?.url?.[0]
-                    : ""
-                }
                 className={`btn btn-primary px-3 py-2 col-8 col-md-12 ${
                   session.status === "loading" ? "opacity-25" : "opacity-100"
                 }`}
@@ -254,7 +259,7 @@ const TeachItUI = <
                     {selectedGradeResources.linkText}
                   </span>
                 </div>
-              </a>
+              </BootstrapBtn>
               <div
                 style={{ width: "2rem" }}
                 className="p-0 ms-1 mt-0 d-flex justify-content-center align-items-center"

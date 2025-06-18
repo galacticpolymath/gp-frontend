@@ -1,6 +1,6 @@
 import moment from "moment";
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";
-import { IUnitForUnitsPg, TLiveUnit } from "../types/global";
+import { ILocalStorage, IUnitForUnitsPg, TLiveUnit } from "../types/global";
 import { STATUSES_OF_SHOWABLE_LESSONS } from "../globalVars";
 
 export const random = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
@@ -128,3 +128,25 @@ export const getTotalUnitLessons = (unit: INewUnitSchema) => {
 
   return unitObjUpdated;
 };
+
+export const setLocalStorageItem = <TKey extends keyof ILocalStorage,
+  TVal extends ILocalStorage[TKey]>(key: TKey, val: TVal) => {
+    localStorage.setItem(key, JSON.stringify(val)); 
+}
+
+export const getLocalStorageItem = <TKey extends keyof ILocalStorage,
+  TVal extends ILocalStorage[TKey]>(key: TKey): TVal | null => {
+    try {
+      const parsableVal = localStorage.getItem(key);
+
+      if (!parsableVal) {
+        return null;
+      }
+
+      return JSON.parse(parsableVal) as TVal; 
+    } catch(error){
+      console.error("Failed to retrieve the target item. Reason: ", error);
+
+      return null;
+    }
+}
