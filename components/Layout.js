@@ -27,6 +27,32 @@ export default function Layout({
 }) {
   const isOnProd = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
 
+  useEffect(() => {
+    // 1. Create the config script
+    const configScript = document.createElement("script");
+    configScript.type = "text/javascript";
+    configScript.text = `
+      var o_options = {
+        domain: 'galactic-polymath.outseta.com',
+        load: 'auth,customForm,emailList,leadCapture,nocode,profile,support'
+      };
+    `;
+    document.body.appendChild(configScript);
+
+    // 2. Create the main Outseta script
+    const mainScript = document.createElement("script");
+    mainScript.src = "https://cdn.outseta.com/outseta.min.js";
+    mainScript.setAttribute("data-options", "o_options");
+    mainScript.async = true;
+    document.body.appendChild(mainScript);
+
+    // 3. Cleanup on unmount
+    return () => {
+      document.body.removeChild(configScript);
+      document.body.removeChild(mainScript);
+    };
+  }, []);
+
   useOutsetaInputValidation();
 
   return (
