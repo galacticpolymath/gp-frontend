@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "react-bootstrap";
 
 // Simple modal styles
 export const modalStyles: React.CSSProperties = {
@@ -35,27 +36,43 @@ export const closeButtonStyles: React.CSSProperties = {
 };
 
 export interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  show: boolean;
+  onHide: () => void;
+  onShow: () => void;
+  onBackdropClick: () => void;
+  style: React.CSSProperties;
   children: React.ReactNode;
+  className?: string;
 }
 
-const Modal = ({ isOpen, onClose, children }: ModalProps) => {
-  if (!isOpen) return null;
-
+const Modal = ({
+  show,
+  onBackdropClick,
+  children,
+  onHide,
+  onShow,
+  style,
+  className,
+}: ModalProps) => {
   return (
-    <div style={modalStyles} onClick={onClose}>
-      <div style={modalContentStyles} onClick={(e) => e.stopPropagation()}>
-        <button
-          style={closeButtonStyles}
-          onClick={onClose}
-          aria-label="Close modal"
-        >
-          &times;
-        </button>
-        {children}
-      </div>
-    </div>
+    <Modal
+      show={show}
+      style={style}
+      onHide={onHide}
+      onShow={onShow}
+      onBackdropClick={onBackdropClick}
+      className={className}
+    >
+      <Button
+        variant="secondary"
+        className="close-button"
+        onClick={onHide}
+        style={closeButtonStyles}
+      >
+        &times;
+      </Button>
+      {children}
+    </Modal>
   );
 };
 

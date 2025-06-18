@@ -3,6 +3,45 @@ import Layout from "../components/Layout";
 import GpPlusSignUp from "../components/GpPlus/SignUp";
 import { Button, Modal } from "react-bootstrap";
 
+function injectOutsetaScripts() {
+  const existingConfig = document.querySelector(
+    'script[data-outseta="config"]'
+  );
+
+  if (existingConfig) existingConfig.remove();
+
+  const existingMain = document.querySelector(
+    'script[src="https://cdn.outseta.com/outseta.min.js"]'
+  );
+
+  if (existingMain) existingMain.remove();
+
+  // Inject new config script
+  const configScript = document.createElement("script");
+  configScript.type = "text/javascript";
+  configScript.setAttribute("data-outseta", "config");
+  configScript.text = `
+    var currentOrigin = window.location.origin;
+    var o_options = {
+      domain: 'galactic-polymath.outseta.com',
+      load: 'auth,customForm,emailList,leadCapture,nocode,profile,support',
+      auth: {
+        authenticationCallbackUrl: currentOrigin + '/gp-sign-up-result',
+        registrationConfirmationUrl: currentOrigin + '/gp-plus-set-password',
+      }
+    };
+  `;
+  document.body.appendChild(configScript);
+
+  // Inject new main script
+  const mainScript = document.createElement("script");
+  mainScript.src = "https://cdn.outseta.com/outseta.min.js";
+  mainScript.setAttribute("data-options", "o_options");
+  mainScript.async = true;
+
+  document.body.appendChild(mainScript);
+}
+
 const GpPlus: React.FC = () => {
   const [signUpElement, setSignUpElement] = useState<HTMLElement | null>(null);
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
@@ -15,11 +54,26 @@ const GpPlus: React.FC = () => {
       const outsetaModalContent = document.getElementById(
         "outseta-sign-up-modal-content"
       );
-      const outsetaSignUp =
+      const _outsetaSignUp =
         outsetaModalContent?.firstChild as HTMLElement | null;
-      const outsetaContainer = document.getElementById("outseta-container");
+      const outsetaContainer = document.getElementById(
+        "outseta-container"
+      ) as HTMLElement | null;
 
-      if (outsetaSignUp) {
+      if (_outsetaSignUp) {
+        _outsetaSignUp.remove();
+
+        injectOutsetaScripts();
+
+        const outsetaSignUp = document.createElement("div");
+
+        outsetaSignUp.setAttribute("data-o-auth", "1");
+        outsetaSignUp.setAttribute("data-widget-mode", "register");
+        outsetaSignUp.setAttribute("data-plan-uid", "rmkkjamg");
+        outsetaSignUp.setAttribute("data-plan-payment-term", "month");
+        outsetaSignUp.setAttribute("data-skip-plan-options", "false");
+        outsetaSignUp.setAttribute("data-mode", "embed");
+
         outsetaContainer?.appendChild(outsetaSignUp);
       }
 
@@ -87,17 +141,20 @@ const GpPlus: React.FC = () => {
           const outseta = document.getElementById("outseta-container")
             ?.firstChild as HTMLElement | null;
 
+          console.log("outseta, sup there: ", outseta);
+
           if (!outseta) {
             return;
           }
 
           outseta.style.display = "block";
           outseta.style.pointerEvents = "auto";
+
           outsetaModalContent?.appendChild(outseta);
         }}
         onBackdropClick={handleOnHide}
         dialogClassName="selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center"
-        contentClassName="create-account-ui-modal pt-2 box-shadow-login-ui-modal"
+        contentClassName="pt-1 gp-sign-up-modal pb-3"
       >
         <div id="outseta-sign-up-modal-content" />
       </Modal>
