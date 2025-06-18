@@ -1,30 +1,44 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import GpPlusSignUp from "../components/GpPlus/SignUp";
-import { Button } from "react-bootstrap";
-import Modal, {
-  closeButtonStyles,
-  modalContentStyles,
-  modalStyles,
-} from "../components/Modal";
+import { Button, Modal } from "react-bootstrap";
 
 const GpPlus: React.FC = () => {
-  // make a request to the backend, within getServerSideProps to determine if the user is GpPlusMember
+  const [signUpElement, setSignUpElement] = useState<HTMLElement | null>(null);
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
+  const [signUpModalOpacity, setSignUpModalOpacity] = useState(1);
+
+  const handleOnHide = () => {
+    setSignUpModalOpacity(0);
+
+    setTimeout(() => {
+      const outsetaModalContent = document.getElementById(
+        "outseta-sign-up-modal-content"
+      );
+      const outsetaSignUp =
+        outsetaModalContent?.firstChild as HTMLElement | null;
+      const outsetaContainer = document.getElementById("outseta-container");
+
+      if (outsetaSignUp) {
+        outsetaContainer?.appendChild(outsetaSignUp);
+      }
+
+      setIsSignupModalDisplayed(false);
+    }, 200);
+  };
 
   useEffect(() => {
-    const widgetEl = document.createElement("div");
+    const outsetaModalContent = document.getElementById(
+      "outseta-sign-up-modal-content"
+    );
+    console.log("outsetaModalContent: ", outsetaModalContent);
+    const outseta = document.getElementById("outseta-sign-up");
 
-    widgetEl.setAttribute("data-o-auth", "1");
-    widgetEl.setAttribute("data-widget-mode", "register");
-    widgetEl.setAttribute("data-plan-uid", "rmkkjamg");
-    widgetEl.setAttribute("data-plan-payment-term", "month");
-    widgetEl.setAttribute("data-skip-plan-options", "true");
-    widgetEl.setAttribute("data-mode", "embed");
+    console.log("outseta: ", outseta);
 
-    const parent = document.getElementById("outseta-sign-up");
-
-    parent?.appendChild(widgetEl);
+    if (outseta) {
+      outsetaModalContent?.appendChild(outseta);
+    }
   }, []);
 
   return (
@@ -46,13 +60,47 @@ const GpPlus: React.FC = () => {
           SIGN UP
         </Button>
       </div>
-      {/* <div id="outseta-sign-up"></div> */}
-      <GpPlusSignUp
-        _isSignupModalDisplayed={[
-          isSignupModalDisplayed,
-          setIsSignupModalDisplayed,
-        ]}
-      />
+      <div id="outseta-container">
+        <div
+          id="outseta-sign-up"
+          style={{
+            display: "none",
+            pointerEvents: "none",
+          }}
+          data-o-auth="1"
+          data-widget-mode="register"
+          data-plan-uid="rmkkjamg"
+          data-plan-payment-term="month"
+          data-skip-plan-options="false"
+          data-mode="embed"
+        />
+      </div>
+      <Modal
+        show={isSignupModalDisplayed}
+        style={{ opacity: signUpModalOpacity }}
+        onHide={handleOnHide}
+        onShow={() => {
+          setSignUpModalOpacity(1);
+          const outsetaModalContent = document.getElementById(
+            "outseta-sign-up-modal-content"
+          );
+          const outseta = document.getElementById("outseta-container")
+            ?.firstChild as HTMLElement | null;
+
+          if (!outseta) {
+            return;
+          }
+
+          outseta.style.display = "block";
+          outseta.style.pointerEvents = "auto";
+          outsetaModalContent?.appendChild(outseta);
+        }}
+        onBackdropClick={handleOnHide}
+        dialogClassName="selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center"
+        contentClassName="create-account-ui-modal pt-2 box-shadow-login-ui-modal"
+      >
+        <div id="outseta-sign-up-modal-content" />
+      </Modal>
     </Layout>
   );
 };

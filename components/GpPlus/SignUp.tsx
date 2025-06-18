@@ -1,4 +1,5 @@
 import React, { FC, useEffect } from "react";
+import { Modal as BootstrapModal } from "react-bootstrap";
 import { TUseStateReturnVal } from "../../types/global";
 
 interface IProps {
@@ -61,16 +62,10 @@ const GpPlusSignUp: FC<IProps> = ({ _isSignupModalDisplayed }) => {
   }, []);
 
   return (
-    <Modal isOpen={isLoginModalDisplayed} onClose={handleOnHide}>
-      <div
-        data-o-auth="1"
-        data-widget-mode="register"
-        data-plan-uid="rmkkjamg"
-        data-plan-payment-term="month"
-        data-skip-plan-options="false"
-        data-mode="embed"
-      ></div>
-    </Modal>
+    <BootstrapModal
+      show={isLoginModalDisplayed}
+      onHide={handleOnHide}
+    ></BootstrapModal>
   );
 };
 
