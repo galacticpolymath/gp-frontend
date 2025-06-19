@@ -35,6 +35,7 @@ const InstitutionAndSchoolType = ({
 
     setAboutUserForm((state) => ({
       ...state,
+      classSize: 0,
       isNotTeaching: !state.isNotTeaching,
     }));
   };
