@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 
-import React from 'react';
+import React from "react";
 import { TAboutUserFormForUI } from "../../../../providers/UserProvider";
 import { TUseStateReturnVal } from "../../../../types/global";
 import { TDefaultSubject } from "../../../../backend/models/User/types";

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TAboutUserFormForUI } from '../../../../providers/UserProvider';
 import { TUseStateReturnVal } from '../../../../types/global';
 import { ErrorsSec } from '../AboutUserModal';
@@ -35,6 +35,7 @@ const InstitutionAndSchoolType = ({
 
     setAboutUserForm((state) => ({
       ...state,
+      classSize: 0,
       isNotTeaching: !state.isNotTeaching,
     }));
   };
@@ -68,6 +69,10 @@ const InstitutionAndSchoolType = ({
     typeof aboutUserForm.classSize === 'number'
       ? aboutUserForm.classSize
       : aboutUserForm.classroomSize?.num ?? 0;
+
+  useEffect(() => {
+    console.log('aboutUserForm.institution: ', aboutUserForm.institution);
+  });
 
   return (
     <section className='d-flex flex-column col-12 col-lg-6 mt-2 mt-sm-0'>

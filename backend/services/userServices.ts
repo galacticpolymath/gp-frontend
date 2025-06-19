@@ -433,22 +433,26 @@ export const getUserByEmail = async <TUser extends IUserSchema>(
 };
 
 export const updateUser = async (
-  filterQuery = {},
-  updatedUserProperties: Omit<Partial<IUserSchema>, "password">,
-  updatedUserPropsToFilterOut?: (keyof IUserSchema)[]
+  filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
+  updatedUserProperties: Omit<Partial<TUserSchemaV2>, "password">,
+  updatedUserPropsToFilterOut?: (keyof TUserSchemaV2)[]
 ) => {
   try {
     if (updatedUserProperties.isTeacher === false) {
       updatedUserProperties = {
         ...updatedUserProperties,
-        gradesOrYears: {
-          ageGroupsTaught: [],
-          selection: null,
-        },
-        isNotTeaching: true,
-        gradesTaught: [],
+        classSize: 0,
+        isTeacher: false
       };
     }
+
+    if(updatedUserProperties.isNotTeaching === true){
+      updatedUserProperties = {
+        ...updatedUserProperties,
+        classSize: 0,
+      };
+    }
+
     const updatedUser = await User.findOneAndUpdate(
       filterQuery,
       updatedUserProperties,
@@ -464,11 +468,11 @@ export const updateUser = async (
     }
 
     if (updatedUserPropsToFilterOut?.length) {
-      const entries = Object.entries(updatedUser as Partial<IUserSchema>);
+      const entries = Object.entries(updatedUser as Partial<TUserSchemaV2>);
 
       const updateUserWithProjectedProps = entries.reduce(
         (updatedUserWithProjectedPropsAccum, [key, value]) => {
-          if (updatedUserPropsToFilterOut?.includes(key as keyof IUserSchema)) {
+          if (updatedUserPropsToFilterOut?.includes(key as keyof TUserSchemaV2)) {
             return updatedUserWithProjectedPropsAccum;
           }
 
