@@ -110,7 +110,12 @@ const AboutUserModal = () => {
   const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
   const [subjectsTaughtCustom, setSubjectsTaughtCustom] = useState<
     Map<string, string>
-  >(new Map());
+  >(
+    new Map([
+      ["other-subject-0", ""],
+      ["other-subject-1", ""],
+    ])
+  );
 
   const createNameDefault = () => {
     if (typeof localStorage === "undefined") {
@@ -126,6 +131,7 @@ const AboutUserModal = () => {
       last: userAccountSaved?.lastName ?? userAccountSaved?.name?.last ?? "",
     } as { first: string; last: string };
   };
+
   const [name, setName] = useState(createNameDefault());
   const modalBodyRef = useRef<HTMLDivElement>(null);
 
@@ -190,7 +196,17 @@ const AboutUserModal = () => {
     }
 
     setErrors(new Map());
-    setSubjectsTaughtCustom(new Map());
+
+    const _subjectsTaughtCustom = aboutUserForm?.subjectsTaughtCustom?.length
+      ? aboutUserForm.subjectsTaughtCustom?.map(
+          (subject, index) => [`other-subject-${index}`, subject] as const
+        )
+      : null;
+
+    setSubjectsTaughtCustom(
+      new Map(_subjectsTaughtCustom ? _subjectsTaughtCustom : [])
+    );
+
     setIsAboutMeFormModalDisplayed(false);
   };
 
@@ -273,9 +289,17 @@ const AboutUserModal = () => {
         const subjectsTaughtCustomDefault = new Map<string, string>();
 
         if (aboutUserForm?.subjectsTaughtCustom) {
-          aboutUserForm?.subjectsTaughtCustom.forEach((subject, index) => {
-            subjectsTaughtCustomDefault.set(`other-subject-${index}`, subject);
-          });
+          for (const index in aboutUserForm.subjectsTaughtCustom) {
+            const subjectTaughtCustom =
+              aboutUserForm.subjectsTaughtCustom[index];
+
+            if (subjectTaughtCustom) {
+              subjectsTaughtCustomDefault.set(
+                `other-subject-${index}`,
+                subjectTaughtCustom
+              );
+            }
+          }
         } else if (aboutUserForm.subjects) {
           const subjectEntries = Array.from(aboutUserForm.subjects.entries());
 
