@@ -756,7 +756,7 @@ const AboutUserModal = () => {
               setAboutUserForm((aboutUserForm) => {
                 return {
                   ...aboutUserForm,
-                  referredByOther: event.target.value.toLowerCase(),
+                  referredByOther: event.target.value,
                 };
               });
             }}

@@ -305,7 +305,9 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             };
           }
 
-          if (institution) {
+          console.log("institution, sup there: ", institution);
+
+          if (institution || institution == null) {
             userAccountForClient = {
               ...userAccountForClient,
               institution,
@@ -411,11 +413,6 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
               ...userAccountForClient,
               firstName: firstName ?? name?.first,
               lastName: lastName ?? name?.first,
-            };
-          } else if (name?.first && name?.last) {
-            userAccountForClient.name = {
-              first: name.first,
-              last: name.last,
             };
           }
 
