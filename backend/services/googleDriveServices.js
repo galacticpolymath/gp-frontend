@@ -55,7 +55,7 @@ export class Credentials {
  * @param{drive_v3.Drive} googleService google drive service object
  * @return{Promise<[] | null>} An array of the permission ids if successful. Otherwise, it will return null.
  * */
-export const getGooglDriveFolders = async (googleService, folderId) => {
+export const getGoogleDriveFolders = async (googleService, folderId) => {
     try {
         const response = await googleService.files.list({
             corpora: "drive",

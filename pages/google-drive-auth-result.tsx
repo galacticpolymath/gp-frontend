@@ -10,6 +10,8 @@ import { Cookies } from "../globalClasses";
 import { useCustomCookies } from "../customHooks/useCustomCookies";
 import { useEffect } from "react";
 import useSiteSession from "../customHooks/useSiteSession";
+import { getLocalStorageItem } from "../shared/fns";
+import { Spinner } from "react-bootstrap";
 
 const getAccessTokenObjFromUrl = (url: string) => {
   const tokenInfoStr = url.split("#").at(-1);
@@ -30,6 +32,7 @@ const getAccessTokenObjFromUrl = (url: string) => {
 const GoogleDriveAuthResult = () => {
   const { status } = useSiteSession();
   const { setCookie } = useCustomCookies(["gdriveAccessToken", "token"]);
+  const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
 
   useEffect(() => {
     console.log("yo there useEffect");
@@ -53,12 +56,29 @@ const GoogleDriveAuthResult = () => {
         });
       }
     }
+
+    if (gpPlusFeatureLocation) {
+      setTimeout(() => {
+        window.location.href = gpPlusFeatureLocation;
+      }, 1000);
+    }
   }, [status]);
 
   return (
     <Layout>
-      <div className="min-vh-100 pt-3 ps-3">
+      <div className="min-vh-100 pt-5 ps-5 d-flex flex-column">
         <span>GP now has access to your google drive!</span>
+        {gpPlusFeatureLocation && (
+          <div
+            style={{ width: "fit-content" }}
+            className="d-flex justify-content-center d-flex flex-column mt-2"
+          >
+            <span>We are now redirecting you, please wait...</span>
+            <div className="w-100 d-flex justify-content-center mt-1">
+              <Spinner size="sm" className="text-black" />
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );

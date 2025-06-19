@@ -284,7 +284,7 @@ export async function middleware(request) {
 
     if (
       nextUrl.pathname === "/api/copy-files" &&
-      method === "POST" &&
+      method === "GET" &&
       headers.has("GDrive-Token")
     ) {
       console.log("will check if the auth string is valid.");
