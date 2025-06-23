@@ -120,7 +120,7 @@ const TeachItUI = <
   const { cookies } = useCustomCookies(["token", "gdriveAccessToken"]);
   const { session: siteSession, status, token } = session;
 
-  const { handleRestrictedItemBtnClick } = useCanUserAccessMaterial(false);
+  const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
   const router = useRouter();
 
   const copyUnit = () => {
@@ -169,6 +169,12 @@ const TeachItUI = <
 
   // if the user is not a gp plus member, then take the user to the sign up page
   const takeUserToSignUpPg = () => {
+    console.log("status, takeUserToSignUpPg: ", status);
+    if (status === "unauthenticated") {
+      openCanAccessContentModal();
+      return;
+    }
+
     setLocalStorageItem(
       "gpPlusFeatureLocation",
       window.location.protocol +
@@ -317,7 +323,7 @@ const TeachItUI = <
                         "Copy Unit"}
                       {!isGpPlusMember &&
                         !cookies.gdriveAccessToken &&
-                        `BECOME A MEMBER TO ${selectedGradeResources.linkText}`}
+                        `BECOME A GP+ MEMBER TO ${selectedGradeResources.linkText}`}
                     </span>
                     <span
                       style={{ lineHeight: "17px", fontSize: "14px" }}
