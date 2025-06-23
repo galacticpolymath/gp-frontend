@@ -20,7 +20,7 @@ import { getJwtPayloadPromise } from "../../nondependencyFns";
 import { NextApiRequest, NextApiResponse } from "next";
 import { sleep, waitWithExponentialBackOff } from "../../globalFns";
 
-const getUserDriveFiles = (accessToken, nextPageToken) =>
+const getUserDriveFiles = (accessToken: string, nextPageToken: string) =>
   axios.get("https://www.googleapis.com/drive/v3/files", {
     params: {
       includeItemsFromAllDrives: true,
@@ -33,46 +33,10 @@ const getUserDriveFiles = (accessToken, nextPageToken) =>
     },
   });
 
-/**
- * Get all of the files for the target user.
- * @param{string} accessToken The client side user's access token.
- * @param{drive_v3.Drive} service google drive service object
- * @return{Promise< any[] | null>} An object contain the results and optional message.
- * */
-const listAllUserFiles = async (
-  accessToken,
-  nextPageToken,
-  startingFiles = []
-) => {
-  try {
-    const response = await getUserDriveFiles(accessToken, nextPageToken);
-    const { status, data } = response;
-    let files = data.files;
-    files = startingFiles?.length ? [...startingFiles, ...files] : files;
-
-    if (status !== 200) {
-      throw new CustomError("Failed to get user google drive files.", status);
-    }
-
-    if (data.nextPageToken) {
-      files = await listAllUserFiles(accessToken, nextPageToken, files);
-    }
-
-    return files;
-  } catch (error) {
-    console.error(
-      "An error has occurred in listing all of the user files: ",
-      error
-    );
-
-    return null;
-  }
-};
-
 const createGoogleDriveFolderForUser = async (
-  folderName,
-  accessToken,
-  parentFolderIds = []
+  folderName: string,
+  accessToken: string,
+  parentFolderIds: string[] = []
 ) => {
   try {
     const folderMetadata = new FileMetaData(folderName, parentFolderIds);
@@ -95,9 +59,9 @@ const createGoogleDriveFolderForUser = async (
     }
 
     return { wasSuccessful: true, folderId: response.data.id };
-  } catch (error) {
-    console.error("Error object: ", error.response.data.error);
-    const errMsg = `Failed to create folder for the user. Reason: ${error.response.data.error}`;
+  } catch (error: any) {
+    console.error("Error object: ", error?.response?.data?.error);
+    const errMsg = `Failed to create folder for the user. Reason: ${error?.response?.data?.error}`;
     console.log("errMsg: ", errMsg);
 
     return { wasSuccessful: false, errMsg: errMsg };
@@ -279,20 +243,25 @@ export default async function handler(
         unitFolder.pathToFile &&
         unitFolder.pathToFile !== ""
       ) {
-        const folderDataResponse = await googleService.files.list({
+        const { data } = await googleService.files.list({
           corpora: "drive",
           includeItemsFromAllDrives: true,
           supportsAllDrives: true,
           driveId: process.env.GOOGLE_DRIVE_ID,
           q: `'${unitFolder.id}' in parents`,
         });
-        const folders = folderDataResponse.data?.files.filter((file) =>
+
+        if(!data.files){
+          continue
+        }
+
+        const folders = data?.files.filter((file) =>
           file?.mimeType?.includes("folder")
         );
         sendMessage(response, {
              
         });
-        let foldersOccurrenceObj: { [key: string]: any[] } | null = null;
+        let foldersOccurrenceObj: drive_v3.Schema$File & { [key: string]: any } | null = null;
 
         if (folders.length) {
           foldersOccurrenceObj = folders.reduce(
@@ -300,30 +269,20 @@ export default async function handler(
               const foldersWithTheSameName = self.filter(
                 (folderB) => folderA.name === folderB.name
               );
-              allFoldersObj[folderA.name] = foldersWithTheSameName;
 
-              return allFoldersObj;
+              if(!folderA.name){
+                return allFoldersObj;
+              }
+
+              const _allFoldersObj = {
+                ...allFoldersObj,
+                [folderA.name]: foldersWithTheSameName
+              }
+
+              return _allFoldersObj;
             },
-            {}
+            {} as drive_v3.Schema$File & { [key: string]: string }
           );
-
-          // if a folder has duplicate names, give it a alternative name in order to differentiate it from the rest of the folders
-          for (const folderNameAndOccurrences of Object.entries(
-            foldersOccurrenceObj
-          )) {
-            let [folderName, occurrences] = folderNameAndOccurrences;
-
-            if (occurrences.length === 1) {
-              continue;
-            }
-
-            foldersOccurrenceObj[folderName] = occurrences.map(
-              (folderOccurrence, index) => ({
-                ...folderOccurrence,
-                alternativeName: `${folderOccurrence.name} ${index + 1}`,
-              })
-            );
-          }
         }
 
         const childFolderAndFilesOfFolder = folderDataResponse.data.files.map(
