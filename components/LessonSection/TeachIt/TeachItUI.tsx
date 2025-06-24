@@ -44,7 +44,7 @@ import Sparkles from "../../SparklesAnimation";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useRouter } from "next/router";
 import { createGDriveAuthUrl, setLocalStorageItem } from "../../../shared/fns";
-import { TCopyFilesMsg } from "../../../pages/api/copy-files";
+import { TCopyFilesMsg } from "../../../pages/api/gp-plus/copy-unit";
 import { useSession } from "next-auth/react";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
@@ -138,7 +138,7 @@ const TeachItUI = <
       "gdrive-token": gdriveAccessToken,
       method: "POST",
     };
-    const url = new URL(window.location.origin + "/api/copy-files");
+    const url = new URL(window.location.origin + "/api/gp-plus/copy-unit");
 
     url.searchParams.append("unitDriveId", "15KK-qNwPUbw2d1VBDvsjHfreCSBpwMiw");
     url.searchParams.append("unitName", "My GP Unit");

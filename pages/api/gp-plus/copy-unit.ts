@@ -7,7 +7,7 @@
 /* eslint-disable indent */
 /* eslint-disable no-multiple-empty-lines */
 import { google, drive_v3 } from "googleapis";
-import { CustomError } from "../../backend/utils/errors";
+import { CustomError } from "../../../backend/utils/errors";
 import axios from "axios";
 import {
   copyFiles,
@@ -15,10 +15,9 @@ import {
   generateGoogleAuthJwt,
   getGoogleDriveFolders,
   shareFilesWithRetries,
-} from "../../backend/services/googleDriveServices";
-import { getJwtPayloadPromise } from "../../nondependencyFns";
+} from "../../../backend/services/googleDriveServices";
 import { NextApiRequest, NextApiResponse } from "next";
-import { sleep, waitWithExponentialBackOff } from "../../globalFns";
+import { getJwtPayloadPromise } from "../../../nondependencyFns";
 
 const getUserDriveFiles = (accessToken: string, nextPageToken: string) =>
   axios.get("https://www.googleapis.com/drive/v3/files", {
