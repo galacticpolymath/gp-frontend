@@ -59,7 +59,7 @@ const GoogleDriveAuthResult = () => {
 
     if (gpPlusFeatureLocation) {
       setTimeout(() => {
-        window.location.href = gpPlusFeatureLocation;
+        // window.location.href = gpPlusFeatureLocation;
       }, 1000);
     }
   }, [status]);

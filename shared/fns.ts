@@ -152,9 +152,8 @@ export const getLocalStorageItem = <TKey extends keyof ILocalStorage,
 }
 
 export const createGDriveAuthUrl = () => {
-  const url = `https://accounts.google.com/o/oauth2/auth?client_id=1038023225572-6jo0d0eoq9603be7sj6er6lf8ukpn93a.apps.googleusercontent.com&redirect_uri=${window.location.origin}/google-drive-auth-result/&scope=https://www.googleapis.com/auth/drive&response_type=token`;
-
-  // url.searchParams.append("redirect_uri", 'http://localhost:3000/google-drive-auth-result')
+  // add the login_hint to set the current user's email as the default
+  const url = `https://accounts.google.com/o/oauth2/auth?client_id=1038023225572-6jo0d0eoq9603be7sj6er6lf8ukpn93a.apps.googleusercontent.com&redirect_uri=${window.location.origin}/google-drive-auth-result/&scope=https://www.googleapis.com/auth/drive&response_type=code`;
 
   return url;
 }

@@ -166,7 +166,7 @@ const sendMessage = <TMsg extends object = TCopyFilesMsg>(
  *                   type: string
  *                   description: The error message if the copy operation was not successful.
  *     externalDocs:
- *       url: https://accounts.google.com/o/oauth2/auth?client_id=1038023225572-6jo0d0eoq9603be7sj6er6lf8ukpn93a.apps.googleusercontent.com&redirect_uri=${rediret_uri}/&scope=https://www.googleapis.com/auth/drive&response_type=code
+ *       url: https://accounts.google.com/o/oauth2/auth?client_id=1095510414161-7v7mlrakupjs18n2ml9brjoqs0rjkg4v.apps.googleusercontent.com&redirect_uri=http://localhost:3000/google-drive-auth-result&scope=https://www.googleapis.com/auth/drive&response_type=code
  *       redirect_uri: Possible values: http://localhost:3000/google-drive-auth-result, https://teach.galacticpolymath.com/google-drive-auth-result, https://dev.galacticpolymath.com/google-drive-auth-result
  *       description: The google authentication url. CHANGE the `client_id` to the official Galactic Polymath client id.
  */
