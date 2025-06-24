@@ -19,7 +19,11 @@ import "../styles/pages/About/about.scss";
 import "../styles/modals/signUp.scss";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { UserProvider } from "../providers/UserProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import { CookiesProvider } from "react-cookie";
+
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   useEffect(() => {
@@ -33,10 +37,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         <LessonsCarouselProvider>
           <UserProvider>
             <ModalProvider>
-              <CookiesProvider>
-                <Component {...pageProps} />
-                <ModalsContainer />
-              </CookiesProvider>
+              <QueryClientProvider client={queryClient}>
+                <CookiesProvider>
+                  <Component {...pageProps} />
+                  <ModalsContainer />
+                </CookiesProvider>
+              </QueryClientProvider>
             </ModalProvider>
           </UserProvider>
         </LessonsCarouselProvider>

@@ -5,68 +5,133 @@
 /* eslint-disable semi */
 /* eslint-disable indent */
 import Layout from "../components/Layout";
-import { createObj } from "../globalFns";
-import { Cookies } from "../globalClasses";
+import { useQuery } from "@tanstack/react-query";
 import { useCustomCookies } from "../customHooks/useCustomCookies";
-import { useEffect } from "react";
 import useSiteSession from "../customHooks/useSiteSession";
-import { getLocalStorageItem } from "../shared/fns";
-import { Spinner } from "react-bootstrap";
-
-const getAccessTokenObjFromUrl = (url: string) => {
-  const tokenInfoStr = url.split("#").at(-1);
-  let tokenAttributes: string | string[][] | string[] | undefined =
-    tokenInfoStr?.split("&");
-  console.log("tokenAttributes, sup there: ", tokenAttributes);
-  tokenAttributes = tokenAttributes
-    ? tokenAttributes.map((tokenAttribute) => tokenAttribute.split("="))
-    : undefined;
-
-  if (!tokenAttributes) {
-    return null;
-  }
-
-  return createObj(tokenAttributes) as Record<string, string>;
-};
+import { createGDriveAuthUrl, getLocalStorageItem } from "../shared/fns";
+import { Button, Spinner } from "react-bootstrap";
+import { authenticateUserWithGDrive } from "../apiServices/user/crudFns";
+import CustomLink from "../components/CustomLink";
+import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
+import { useRef } from "react";
 
 const GoogleDriveAuthResult = () => {
   const { status } = useSiteSession();
-  const { setCookie } = useCustomCookies(["gdriveAccessToken", "token"]);
+  const { setAppCookie } = useCustomCookies();
   const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
-
-  useEffect(() => {
-    console.log("yo there useEffect");
-    if (status === "authenticated") {
-      const accessTokenObj = getAccessTokenObjFromUrl(window.location.href);
-
-      console.log("accessTokenObj: ", accessTokenObj);
-
-      if (accessTokenObj?.expires_in) {
-        const expiresIn =
-          new Date().getTime() + parseInt(accessTokenObj.expires_in) * 1_000;
-
-        Object.entries(accessTokenObj).forEach(([key, val]) => {
-          console.log("hey there! setting cookies.");
-          const _key = key === "access_token" ? "gdriveAccessToken" : key;
-          console.log("yo there key: ", _key);
-
-          setCookie(_key, val, {
-            expires: new Date(expiresIn),
-          });
-        });
+  const didRetrieveToken = useRef(false);
+  const { isError, isFetching } = useQuery({
+    retry: 1,
+    refetchOnWindowFocus: false,
+    queryKey: ["authToken"],
+    queryFn: async () => {
+      if (status !== "authenticated") {
+        throw new Error("userUnauthenticated");
       }
-    }
 
-    if (gpPlusFeatureLocation) {
-      setTimeout(() => {
-        // window.location.href = gpPlusFeatureLocation;
-      }, 1000);
-    }
-  }, [status]);
+      if (didRetrieveToken.current) {
+        return true;
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+
+      if (!code) {
+        throw new Error("codeNotFound");
+      }
+
+      const responseBody = await authenticateUserWithGDrive(code);
+
+      console.log("responseBody, sup there, meng: ", responseBody);
+
+      if (
+        !responseBody ||
+        !responseBody.access_token ||
+        !responseBody.refresh_token ||
+        !responseBody.expires_at
+      ) {
+        throw new Error(
+          "No response body found or the tokens weren't found. Please try again."
+        );
+      }
+
+      if ("errType" in responseBody) {
+        console.error(`errType: ${responseBody?.errType}`);
+
+        throw new Error("Authorization has failed.");
+      }
+
+      setAppCookie("gdriveAccessToken", responseBody.access_token, {
+        expires: new Date(responseBody.expires_at),
+        httpOnly: true,
+        sameSite: true,
+        secure: true,
+      });
+      setAppCookie("gdriveRefreshToken", responseBody.refresh_token, {
+        expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
+        httpOnly: true,
+        sameSite: true,
+        secure: true,
+      });
+      setAppCookie("gdriveAccessTokenExp", responseBody.expires_at, {
+        expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
+        httpOnly: true,
+        sameSite: true,
+        secure: true,
+      });
+
+      didRetrieveToken.current = true;
+
+      return true;
+    },
+  });
+
+  if (isFetching) {
+    return (
+      <Layout>
+        <div className="min-vh-100 pt-5 ps-2 pe-2 pe-sm-0 ps-sm-5 d-flex flex-column w-sm-25">
+          <span className="text-center text-sm-start">
+            Authenticating with Google Drive...
+          </span>
+          <div className="d-flex justify-content-center mt-2">
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  const authUrl = createGDriveAuthUrl();
+
+  if (isError) {
+    return (
+      <Layout>
+        <div className="min-vh-100 pt-5 ps-2 pe-2 pe-sm-0 ps-sm-5 d-flex flex-column w-sm-25">
+          <span>We failed to authenticated you with Google Drive</span>
+          <span className="mt-2">
+            Click
+            <CustomLink hrefStr={authUrl} className="ms-1 mt-2 text-break">
+              here
+            </CustomLink>{" "}
+            to try again. If this error persist, please contact{" "}
+            <CustomLink
+              hrefStr={CONTACT_SUPPORT_EMAIL}
+              className="ms-1 mt-2 text-break"
+            >
+              support
+            </CustomLink>
+            .
+          </span>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
-      <div className="min-vh-100 pt-5 ps-5 d-flex flex-column">
+      <div className="min-vh-100 pt-5 ps-2 pe-2 pe-sm-0 ps-sm-5 d-flex flex-column w-sm-25">
         <span>GP now has access to your google drive!</span>
         {gpPlusFeatureLocation && (
           <div

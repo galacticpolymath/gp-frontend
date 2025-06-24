@@ -85,13 +85,17 @@ export const sendDeleteUserReq = async (email: string, token: string) => {
 
 export const authenticateUserWithGDrive = async (code: string) => {
     try {
-        const { status, data } = await axios.post<IErr | IGoogleDriveAuthResBody>('/api/gp-plus/auth', { code });
+        const { status, data } = await axios.post<IErr | { data: IGoogleDriveAuthResBody}>('/api/gp-plus/auth', { code });
 
         if (status !== 200) {
             throw new Error(`Failed to authenticate user with Google Drive. Status code: ${status}. Data: ${data}`);
         }
 
-        return data;
+        if("errType" in data) {
+            throw new Error(data.errMsg || "Failed to authenticate user with Google Drive.");
+        }
+
+        return { ...data.data };
     } catch(error){
         console.error("Failed to authenticate user with Google Drive. Reason: ", error);
 

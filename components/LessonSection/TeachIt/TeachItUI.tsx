@@ -8,6 +8,7 @@ import React, {
   RefObject,
   SetStateAction,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -119,14 +120,31 @@ const TeachItUI = <
   const session = useSiteSession();
   const { cookies } = useCustomCookies(["token", "gdriveAccessToken"]);
   const { session: siteSession, status, token } = session;
+  const _didGDriveTokenExpire = useMemo(() => {
+    if (cookies.gdriveAccessTokenExp) {
+      return (
+        new Date().getTime() > new Date(cookies.gdriveAccessTokenExp).getTime()
+      );
+    }
+
+    return false;
+  }, []);
+  const [didGDriveTokenExpire, setDidGDriveTokenExpire] = useState(
+    _didGDriveTokenExpire
+  );
 
   const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
   const router = useRouter();
 
-  const copyUnit = () => {
-    const gdriveAccessToken = cookies.gdriveAccessToken;
+  useEffect(() => {
+    if (didGDriveTokenExpire) {
+      // TODO: refresh the token here
+      setDidGDriveTokenExpire(false);
+    }
+  }, [didGDriveTokenExpire]);
 
-    if (!gdriveAccessToken) {
+  const copyUnit = () => {
+    if (!cookies.gdriveAccessToken) {
       const url = createGDriveAuthUrl();
       window.location.href = url;
       return;
@@ -135,8 +153,8 @@ const TeachItUI = <
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-      "gdrive-token": gdriveAccessToken,
-      method: "POST",
+      "gdrive-token": cookies.gdriveAccessToken,
+      "gdrive-token-refresh": cookies.gdriveRefreshToken,
     };
     const url = new URL(window.location.origin + "/api/gp-plus/copy-unit");
 

@@ -1,7 +1,7 @@
 import moment from "moment";
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";
 import { ILocalStorage, IUnitForUnitsPg, TLiveUnit } from "../types/global";
-import { STATUSES_OF_SHOWABLE_LESSONS } from "../globalVars";
+import { GOOGLE_DRIVE_PROJECT_CLIENT_ID, STATUSES_OF_SHOWABLE_LESSONS } from "../globalVars";
 
 export const random = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
 
@@ -152,8 +152,33 @@ export const getLocalStorageItem = <TKey extends keyof ILocalStorage,
 }
 
 export const createGDriveAuthUrl = () => {
-  // add the login_hint to set the current user's email as the default
-  const url = `https://accounts.google.com/o/oauth2/auth?client_id=1038023225572-6jo0d0eoq9603be7sj6er6lf8ukpn93a.apps.googleusercontent.com&redirect_uri=${window.location.origin}/google-drive-auth-result/&scope=https://www.googleapis.com/auth/drive&response_type=code`;
+  const authUrl = new URL("https://accounts.google.com/o/oauth2/auth");
+  // protects against CSRF attacks
+  const state = Math.random().toString(36).substring(7);
+  const _redirectUri = new URL(`${window.location.origin}/google-drive-auth-result`);
 
-  return url;
+
+  console.log("_redirectUri: ", _redirectUri.href);
+
+  const scopes =
+    "https://www.googleapis.com/auth/drive";
+  const params = [
+    ["state", state],
+    [
+      "client_id",
+      GOOGLE_DRIVE_PROJECT_CLIENT_ID,
+    ],
+    ["redirect_uri", _redirectUri.href],
+    ["scope", scopes],
+    ["response_type", "code"],
+    ["access_type", "offline"],
+    ["include_granted_scopes", "true"],
+    ["prompt", "consent"],
+  ];
+
+  for (const [key, val] of params) {
+    authUrl.searchParams.append(key.trim(), val.trim());
+  }
+
+  return authUrl.href;
 }
