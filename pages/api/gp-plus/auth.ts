@@ -19,7 +19,7 @@ export default async function handler(
     const origin = request.headers.origin;
     const reqBody = request.body as IResBody;
     const googleDriveAuthReqBody = {
-      client_id: reqBody.code,
+      client_id: '1095510414161-7v7mlrakupjs18n2ml9brjoqs0rjkg4v.apps.googleusercontent.com',
       client_secret: process.env.GOOGLE_DRIVE_AUTH_SECRET,
       redirect_uri: `${origin}/google-drive-auth-result`,
       code: reqBody.code,
@@ -30,6 +30,8 @@ export default async function handler(
             'Content-Type': 'application/json'
         }
     })
+
+    console.log('GP Plus auth response data:', data);    
 
     if (status !== 200) {
       throw new Error(`GP Plus auth failed. Status code: ${status}`);

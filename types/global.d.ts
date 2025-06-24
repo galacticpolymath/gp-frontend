@@ -147,7 +147,13 @@ export interface ILocalStorage{
   gpPlusFeatureLocation: string
 }
 
+interface IErr<TErrType extends string = string>{
+  errType: TErrType,
+  errMsg: string
+}
+
 export {
+  IErr,
   TReferredByOpt,
   IGpUnitsItemsPg,
   TLiveUnit,
