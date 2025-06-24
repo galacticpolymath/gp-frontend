@@ -229,7 +229,7 @@ const getCopyFilePromise = (accessToken, folderIds, fileId) => {
     )
 }
 
-export async function copyFiles(files, createdFolders, accessToken, tries = 0) {
+export async function copyFiles(files, createdFolders, accessToken, tries = 0, updateClient) {
     if (tries > 10) {
         console.error("Failed to copy files. Reached max tries.");
         return { wasSuccessful: false };
@@ -252,12 +252,19 @@ export async function copyFiles(files, createdFolders, accessToken, tries = 0) {
     const copiedFilesResult = await Promise.allSettled(copiedFilesPromises);
     const failedCopiedFilesIndices = new Set();
 
-    for (const resultIndex in copiedFilesResult) {
-        const result = copiedFilesResult[resultIndex];
+    for (const index in copiedFilesResult) {
+        const result = copiedFilesResult[index];
 
         if (result.status === "rejected") {
-            failedCopiedFilesIndices.add(parseInt(resultIndex));
+            failedCopiedFilesIndices.add(parseInt(index));
+            continue;
         }
+
+        const file = files[index];
+
+        console.log("file: ", file);
+
+        updateClient({ fileCopied: file.name })
     }
 
     console.log("failedCopiedFilesIndices: ", failedCopiedFilesIndices)

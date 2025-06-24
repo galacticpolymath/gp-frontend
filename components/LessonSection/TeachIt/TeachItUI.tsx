@@ -153,6 +153,10 @@ const TeachItUI = <
         const dataParsable = event.data as string;
         const data = JSON.parse(dataParsable) as TCopyFilesMsg;
 
+        if (data.isJobDone) {
+          eventSource.close();
+        }
+
         console.log("data: ", data);
       } catch (error) {
         console.error(
