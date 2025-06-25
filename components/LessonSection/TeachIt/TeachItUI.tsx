@@ -93,6 +93,7 @@ const toastMethods = {
   ) => {
     return toast.success(message, {
       ...options,
+      className: "bg-white text-dark",
       style: {
         width: "350px",
         height: "80px",
