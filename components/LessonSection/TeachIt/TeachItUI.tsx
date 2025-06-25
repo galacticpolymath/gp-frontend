@@ -4,6 +4,7 @@
 /* eslint-disable no-unused-vars */
 import React, {
   Dispatch,
+  JSX,
   ReactNode,
   RefObject,
   SetStateAction,
@@ -54,6 +55,7 @@ import { TCopyFilesMsg } from "../../../pages/api/gp-plus/copy-unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import { v4 as uuidv4 } from "uuid";
+import { Spinner } from "react-bootstrap";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -86,6 +88,9 @@ interface TeachItUIProps<
 
 const ASSESSMENTS_ID = 100;
 const toastMethods = {
+  custom: (children: JSX.Element, options?: ToastOptions) => {
+    return toast.custom(children, options);
+  },
   success: (
     message: string,
     options?: ToastOptions,
@@ -94,6 +99,7 @@ const toastMethods = {
     return toast.success(message, {
       ...options,
       className: "bg-white text-dark",
+      icon: null,
       style: {
         width: "350px",
         height: "80px",
@@ -123,6 +129,7 @@ const toastMethods = {
   ) => {
     return toast.error(message, {
       ...options,
+      icon: null,
       style: {
         width: "350px",
         height: "80px",
@@ -148,6 +155,8 @@ const toastMethods = {
   loading: (message: string, options?: ToastOptions) => {
     return toast.loading(message, {
       ...options,
+      className: "bg-white text-dark",
+      icon: null,
       style: {
         width: "350px",
         height: "80px",
@@ -234,13 +243,6 @@ const TeachItUI = <
     }
   }, [didGDriveTokenExpire]);
 
-  useEffect(() => {
-    toastMethods.success("hi there", {
-      id: uuidv4(),
-      position: "bottom-right",
-    });
-  });
-
   const copyUnit = () => {
     console.log("Copy unit function called");
 
@@ -316,9 +318,9 @@ const TeachItUI = <
         // Update progress based on the message type
         let progressMessage = "Copying unit...";
         if (data.folderCreated) {
-          progressMessage = `Creating folder: ${data.folderCreated}`;
+          progressMessage = `Folder '${data.folderCreated}' was created.`;
         } else if (data.fileCopied) {
-          progressMessage = `Copying file: ${data.fileCopied}`;
+          progressMessage = `File '${data.fileCopied}' has been copied.`;
         } else if (data.foldersToCopy) {
           progressMessage = `Will copy ${data.foldersToCopy} folders`;
         } else if (data.filesToCopy) {
