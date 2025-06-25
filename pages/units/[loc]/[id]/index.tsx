@@ -145,6 +145,7 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 ]);
 
 const LessonDetails = ({ lesson, unit }: IProps) => {
+  console.log("unit: ", unit);
   const router = useRouter();
   const { _isUserTeacher, _isGpPlusMember } = useUserContext();
   const { status, data } = useSession();
@@ -411,11 +412,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     clickedSectionId: null,
   });
 
-  useEffect(() => {
-    console.log("unitSectionDots, sup there, unitDots: ", unitDots);
-    console.log("unitSectionDots, sup there: ", unitSectionDots);
-  });
-
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
   const [isScrollListenerOn, setIsScrollListenerOn] =
     useScrollHandler(setUnitSectionDots);
@@ -458,8 +454,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
             };
           }),
         };
-
-        console.log("_sectionDots: ", _sectionDots);
 
         return _sectionDots;
       });
@@ -643,8 +637,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     defaultLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
     langLinks: _unit.headLinks ?? ([] as TUnitForUI["headLinks"]),
   };
-
-  console.log("_unit.headLinks: ", _unit.headLinks);
 
   return (
     <Layout {...layoutProps}>
@@ -1083,6 +1075,14 @@ export const getStaticProps = async (arg: {
           sectionsUpdated = {
             ...sectionsUpdated,
             versions: versionsSection,
+          };
+        }
+
+        if (sectionsUpdated.teachingMaterials) {
+          console.log("sup there! yo");
+          sectionsUpdated.teachingMaterials = {
+            ...sectionsUpdated.teachingMaterials,
+            unitTitle: sectionsUpdated.overview?.unitTitle,
           };
         }
 

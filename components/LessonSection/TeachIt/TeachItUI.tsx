@@ -183,25 +183,29 @@ const toastMethods = {
 const TeachItUI = <
   TLesson extends object,
   TSelectedGrade extends IResource<ILessonForUI> = IResource<ILessonForUI>
->({
-  ForGrades,
-  resources,
-  SectionTitle,
-  _sectionDots,
-  ref,
-  lessonDur,
-  lessonPreface,
-  gradeVariations,
-  selectedGrade,
-  handleOnChange,
-  environments,
-  selectedEnvironment,
-  setSelectedEnvironment,
-  selectedGradeResources,
-  parts,
-  dataLesson,
-  GradesOrYears,
-}: TeachItUIProps<TLesson, TSelectedGrade>) => {
+>(
+  props: TeachItUIProps<TLesson, TSelectedGrade>
+) => {
+  const {
+    ForGrades,
+    resources,
+    SectionTitle,
+    _sectionDots,
+    ref,
+    lessonDur,
+    lessonPreface,
+    gradeVariations,
+    selectedGrade,
+    handleOnChange,
+    environments,
+    selectedEnvironment,
+    setSelectedEnvironment,
+    selectedGradeResources,
+    parts,
+    dataLesson,
+    GradesOrYears,
+  } = props;
+  console.log("props, sup there: ", props);
   const { _isDownloadModalInfoOn } = useModalContext();
   const { _isGpPlusMember } = useUserContext();
   const areThereGradeBands =
@@ -243,19 +247,65 @@ const TeachItUI = <
     }
   }, [didGDriveTokenExpire]);
 
+  const [toastMsg, setToastMsg] = useState("Copying file 'Heard that bird...'");
+
+  const displayToast = () => {
+    toastMethods.custom(
+      <div
+        style={{
+          width: "375px",
+          height: "135px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          wordWrap: "break-word",
+          wordBreak: "break-word",
+          fontSize: "14px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+          background: "#e2f0fd",
+        }}
+        className="text-dark d-flex flex-column"
+      >
+        <section className="h-100 w-100 d-flex justify-content-center align-items-center">
+          {/* the name of the unit that is being copied */}
+          Copying
+        </section>
+        <section className="h-100 w-75">
+          <p
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              margin: 0,
+              fontSize: "14px",
+            }}
+            className="text-dark"
+          >
+            {toastMsg}
+          </p>
+        </section>
+        <section>{/* the progress bar or the loading spinner */}</section>
+      </div>,
+      {
+        position: "bottom-right",
+        duration: Infinity,
+      }
+    );
+  };
+
+  useEffect(() => {
+    displayToast();
+  });
+
   const copyUnit = () => {
     console.log("Copy unit function called");
 
     // Show loading toast when starting the copy job
     const position: ToastPosition = "bottom-right";
     const removeDelay = Infinity;
-    const loadingToast = toast.loading("Starting copy process...", {
-      position,
-      removeDelay,
-    });
 
     if (!gdriveAccessToken) {
-      toast.dismiss(loadingToast);
       setLocalStorageItem(
         "gpPlusFeatureLocation",
         window.location.protocol +
@@ -285,6 +335,33 @@ const TeachItUI = <
       headers,
       withCredentials: true,
     });
+
+    toastMethods.custom(
+      <div
+        style={{
+          width: "350px",
+          height: "80px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          wordWrap: "break-word",
+          wordBreak: "break-word",
+          fontSize: "14px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+        }}
+        className="bg-white text-dark"
+      >
+        <section className="h-100 w-25 d-flex justify-content-center align-items-center bg-danger">
+          <Spinner animation="border" />
+        </section>
+        <section className="h-100 w-75"></section>
+      </div>,
+      {
+        position: "bottom-right",
+        duration: Infinity,
+      }
+    );
 
     eventSource.onmessage = (event) => {
       try {

@@ -1,5 +1,6 @@
 import { ILessonForUI } from "../../../../types/global";
 import { IUnitSectionObj } from "../Section";
+import { IOverview, IUnitOverview, TUnitOverviewPropsForUI } from "./overview";
 
 export interface ILink {
   linkText: string | null;
@@ -213,7 +214,7 @@ export interface IUnitTeachingMaterials extends IUnitSectionObj, ITeachingMateri
   remote?: IResourceObj;
 }
 
-export interface IUnitTeachingMaterialsForUI extends IUnitSectionObj, ITeachingMaterialsPreviewInfo {
+export interface IUnitTeachingMaterialsForUI extends IUnitSectionObj, ITeachingMaterialsPreviewInfo, Partial<Pick<TUnitOverviewPropsForUI, "unitTitle">> {
   classroom: {
     resources: IResource<INewUnitLesson<IItemForUI>>[];
   };
