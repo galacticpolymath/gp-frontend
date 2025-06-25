@@ -19,19 +19,6 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 
-const getUserDriveFiles = (accessToken: string, nextPageToken: string) =>
-  axios.get("https://www.googleapis.com/drive/v3/files", {
-    params: {
-      includeItemsFromAllDrives: true,
-      supportsAllDrives: true,
-      ...(nextPageToken ? { pageToken: nextPageToken } : {}),
-    },
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-
 const createGoogleDriveFolderForUser = async (
   folderName: string,
   accessToken: string,
@@ -71,6 +58,7 @@ export type TCopyFilesMsg = Partial<{
   msg: string;
   msgs: string[];
   isJobDone: boolean;
+  didJobStart: boolean;
   wasSuccessful: boolean;
   showSupportTxt: boolean;
   foldersToCopy: number;

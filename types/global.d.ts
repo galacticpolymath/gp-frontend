@@ -144,7 +144,8 @@ export interface IUpdatedAboutUserForm{
 }
 
 export interface ILocalStorage{
-  gpPlusFeatureLocation: string
+  gpPlusFeatureLocation: string;
+  didGpSignInAttemptOccur: boolean
 }
 
 interface IErr<TErrType extends string = string>{

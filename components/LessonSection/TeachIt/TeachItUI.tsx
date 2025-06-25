@@ -44,7 +44,11 @@ import Link from "next/link";
 import Sparkles from "../../SparklesAnimation";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useRouter } from "next/router";
-import { createGDriveAuthUrl, setLocalStorageItem } from "../../../shared/fns";
+import {
+  createGDriveAuthUrl,
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from "../../../shared/fns";
 import { TCopyFilesMsg } from "../../../pages/api/gp-plus/copy-unit";
 import { useSession } from "next-auth/react";
 import useSiteSession from "../../../customHooks/useSiteSession";
@@ -118,13 +122,17 @@ const TeachItUI = <
   const [isGpPlusMember] = _isGpPlusMember;
   const [isToastOpen, setIsToastOpen] = useState(false);
   const session = useSiteSession();
-  const { cookies } = useCustomCookies(["token", "gdriveAccessToken"]);
+  const { getCookies } = useCustomCookies(["token", "gdriveAccessToken"]);
+  const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
+    getCookies([
+      "gdriveAccessToken",
+      "gdriveAccessTokenExp",
+      "gdriveRefreshToken",
+    ]);
   const { session: siteSession, status, token } = session;
   const _didGDriveTokenExpire = useMemo(() => {
-    if (cookies.gdriveAccessTokenExp) {
-      return (
-        new Date().getTime() > new Date(cookies.gdriveAccessTokenExp).getTime()
-      );
+    if (gdriveAccessTokenExp) {
+      return new Date().getTime() > new Date(gdriveAccessTokenExp).getTime();
     }
 
     return false;
@@ -144,8 +152,17 @@ const TeachItUI = <
   }, [didGDriveTokenExpire]);
 
   const copyUnit = () => {
-    if (!cookies.gdriveAccessToken) {
+    if (!gdriveAccessToken) {
+      setLocalStorageItem(
+        "gpPlusFeatureLocation",
+        window.location.protocol +
+          "//" +
+          window.location.host +
+          window.location.pathname +
+          "#teaching-materials"
+      );
       const url = createGDriveAuthUrl();
+      removeLocalStorageItem("didGpSignInAttemptOccur");
       window.location.href = url;
       return;
     }
@@ -153,8 +170,8 @@ const TeachItUI = <
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-      "gdrive-token": cookies.gdriveAccessToken,
-      "gdrive-token-refresh": cookies.gdriveRefreshToken,
+      "gdrive-token": gdriveAccessToken,
+      "gdrive-token-refresh": gdriveRefreshToken as string,
     };
     const url = new URL(window.location.origin + "/api/gp-plus/copy-unit");
 
@@ -197,7 +214,7 @@ const TeachItUI = <
       return;
     }
 
-    setLocalStorageItem(
+    localStorage.setLocalStorageItem(
       "gpPlusFeatureLocation",
       window.location.protocol +
         "//" +
@@ -273,14 +290,6 @@ const TeachItUI = <
               <h3 id={GRADE_VARIATION_ID} className="fs-5">
                 Available Grade Bands
               </h3>
-              <button
-                type="button"
-                className="btn btn-primary"
-                id="liveToastBtn"
-                onClick={() => setIsToastOpen((state) => !state)}
-              >
-                Show live toast
-              </button>
               {areThereGradeBands &&
                 gradeVariations.map((variation, i) => (
                   <label key={i} className="text-capitalize d-block mb-1">
@@ -338,13 +347,11 @@ const TeachItUI = <
                       className="d-none d-sm-inline"
                     >
                       {isGpPlusMember &&
-                        !cookies.gdriveAccessToken &&
+                        !gdriveAccessToken &&
                         "Authenticate w/ Google Drive & Copy Unit"}
-                      {isGpPlusMember &&
-                        cookies.gdriveAccessToken &&
-                        "Copy Unit"}
+                      {isGpPlusMember && gdriveAccessToken && "Copy Unit"}
                       {!isGpPlusMember &&
-                        !cookies.gdriveAccessToken &&
+                        !gdriveAccessToken &&
                         `BECOME A GP+ MEMBER TO ${selectedGradeResources.linkText}`}
                     </span>
                     <span

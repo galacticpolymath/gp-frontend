@@ -129,6 +129,10 @@ export const getTotalUnitLessons = (unit: INewUnitSchema) => {
   return unitObjUpdated;
 };
 
+export const removeLocalStorageItem = (key: keyof ILocalStorage) => {
+    localStorage.removeItem(key);
+}
+
 export const setLocalStorageItem = <TKey extends keyof ILocalStorage,
   TVal extends ILocalStorage[TKey]>(key: TKey, val: TVal) => {
     localStorage.setItem(key, JSON.stringify(val)); 
@@ -137,6 +141,10 @@ export const setLocalStorageItem = <TKey extends keyof ILocalStorage,
 export const getLocalStorageItem = <TKey extends keyof ILocalStorage,
   TVal extends ILocalStorage[TKey]>(key: TKey): TVal | null => {
     try {
+      if(typeof localStorage === "undefined") {
+        return null;
+      }
+
       const parsableVal = localStorage.getItem(key);
 
       if (!parsableVal) {
