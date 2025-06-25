@@ -1,5 +1,6 @@
 /* eslint-disable quotes */
 
+import { TUnitOverviewPropsForUI } from "../../../backend/models/Unit/types/overview";
 import {
   ITeachingMaterialsDataForUI,
   IUnitTeachingMaterials,
@@ -20,7 +21,7 @@ type TTargetUnitProps<TKey extends TTargetUnitKeys = TTargetUnitKeys> = {
 export interface TeachItProps
   extends Pick<IComponent, "index">,
     TTargetUnitProps,
-    IUnitTeachingMaterials {
+    IUnitTeachingMaterials, Partial<Pick<TUnitOverviewPropsForUI, "unitTitle">> {
   Data: ITeachingMaterialsDataForUI<ILessonForUI> | null;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
   SectionTitle: string;

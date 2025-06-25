@@ -34,8 +34,6 @@ const useOutsetaInputValidation = () => {
       }
     }
 
-    console.log("hi there!");
-
     if (isGpPlusSignUpModalDisplayed) {
       const _emailInput = document.querySelector(
         'input[name="Person.Email"]'

@@ -184,12 +184,12 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
 export const useGetAboutUserForm = (willGetData: boolean = true) => {
   const { status, data } = useSession();
   const { _aboutUserForm } = useUserContext();
-  const [, setAboutUserForm] = _aboutUserForm;
+  const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
   const { user, token } = (data ?? {}) as IUserSession;
   const [isRetrievingUserData, setIsRetrievingUserData] = useState(true);
 
   useEffect(() => {
-    if (!willGetData) {
+    if (!willGetData && Object.keys(aboutUserForm).length) {
       return;
     }
 

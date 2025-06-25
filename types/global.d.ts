@@ -140,10 +140,21 @@ export interface IUpdatedUserReqBody{
 } 
 
 export interface IUpdatedAboutUserForm{
-aboutUserForm: TAboutUserForm<Map>
+  aboutUserForm: TAboutUserForm<Map>
+}
+
+export interface ILocalStorage{
+  gpPlusFeatureLocation: string;
+  didGpSignInAttemptOccur: boolean
+}
+
+interface IErr<TErrType extends string = string>{
+  errType: TErrType,
+  errMsg: string
 }
 
 export {
+  IErr,
   TReferredByOpt,
   IGpUnitsItemsPg,
   TLiveUnit,

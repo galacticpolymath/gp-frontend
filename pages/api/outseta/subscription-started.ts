@@ -1,5 +1,6 @@
 import { NextApiRequest } from 'next';
 import { getUser, updateUser } from '../../../backend/services/userServices';
+import cache from '../../../backend/utils/cache';
 
 interface IReqBody {
   PrimaryContact: {
@@ -22,7 +23,7 @@ export default async function handler(req: NextApiRequest) {
     const body = req.body as IReqBody;
     const targetUser = await getUser(
       { outsetaPersonEmail: body.PrimaryContact.Email },
-      { isGpPlusMember: 1, _id: 1 }
+      { password: 0 }
     );
 
     if (!targetUser || targetUser.errType || !targetUser.user) {
@@ -43,6 +44,13 @@ export default async function handler(req: NextApiRequest) {
       );
       return;
     }
+
+    const userCached = {
+      ...targetUser.user,
+      isGpPlusMember: true,
+    }
+
+    cache.set(targetUser.user.email, userCached, 60 * 60 * 3)
 
     const updateUserResult = await updateUser(
       { _id: targetUser.user._id },

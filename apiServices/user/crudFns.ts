@@ -4,6 +4,8 @@
 /* eslint-disable indent */
 import axios from 'axios';
 import { TUserSchemaV2 } from '../../backend/models/User/types';
+import { IErr } from '../../types/global';
+import { IGoogleDriveAuthResBody } from '../../pages/api/gp-plus/auth';
 
 export const updateUser = async (
     query: Omit<Partial<TUserSchemaV2>, "password"> = {}, 
@@ -80,3 +82,23 @@ export const sendDeleteUserReq = async (email: string, token: string) => {
         return { wasSuccessful: false };
     }
 };
+
+export const authenticateUserWithGDrive = async (code: string) => {
+    try {
+        const { status, data } = await axios.post<IErr | { data: IGoogleDriveAuthResBody}>('/api/gp-plus/auth', { code });
+
+        if (status !== 200) {
+            throw new Error(`Failed to authenticate user with Google Drive. Status code: ${status}. Data: ${data}`);
+        }
+
+        if("errType" in data) {
+            throw new Error(data.errMsg || "Failed to authenticate user with Google Drive.");
+        }
+
+        return { ...data.data };
+    } catch(error){
+        console.error("Failed to authenticate user with Google Drive. Reason: ", error);
+
+        return null;
+    }
+}

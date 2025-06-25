@@ -10,20 +10,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { verifyJwt } from "../../nondependencyFns";
 import { IUserSchema, TUserSchemaForClient, TUserSchemaV2 } from "../../backend/models/User/types";
 
-export default async function handler(
-  request: NextApiRequest,
-  response: NextApiResponse
-) {
-  try {
-    const authorization = request?.headers?.['authorization'] ?? '';
-    const authSplit = authorization.split(' ');
+export type TUserAccountData = Pick<ReturnType<typeof handleUserDeprecatedV1Fields>, Exclude<keyof typeof PROJECTIONS, "_id">>
 
-    if (authSplit.length !== 2) {
-      throw new CustomError('The authorization string is in a invalid format.', 422);
-    }
-
-    const { email } = (await verifyJwt(authSplit[1])).payload;
-    const projections: Partial<Record<keyof (TUserSchemaV2 & IUserSchema), number>> = {
+const PROJECTIONS: Partial<Record<keyof (TUserSchemaV2 & IUserSchema), number>> = {
       isGpPlusMember: 1,
       outsetaPersonEmail: 1,
       gradesOrYears: 1,
@@ -50,10 +39,23 @@ export default async function handler(
       isNotTeaching: 1,
       gradesTaught: 1,
       gradesType: 1,
-      
       _id: 0,
-    };
+    } as const;
 
+
+export default async function handler(
+  request: NextApiRequest,
+  response: NextApiResponse
+) {
+  try {
+    const authorization = request?.headers?.['authorization'] ?? '';
+    const authSplit = authorization.split(' ');
+
+    if (authSplit.length !== 2) {
+      throw new CustomError('The authorization string is in a invalid format.', 422);
+    }
+
+    const { email } = (await verifyJwt(authSplit[1])).payload;
     const { wasSuccessful } = await connectToMongodb(
       15_000,
       0,
@@ -66,7 +68,7 @@ export default async function handler(
 
     const getUserAccountPromise = getUserByEmail<TUserSchemaForClient>(
       email,
-      projections
+      PROJECTIONS
     );
     const getMailingListContactPromise = getMailingListContact(
       email

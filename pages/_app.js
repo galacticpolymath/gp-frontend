@@ -7,18 +7,24 @@ import { LessonsCarouselProvider } from "../providers/LessonsCarouselProvider";
 import ModalsContainer from "../ModalsContainer";
 import { GoogleAnalytics } from "nextjs-google-analytics";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "react-hot-toast";
 import "./style.scss";
 import "../styles/pages/HireUs/hireUs.scss";
 import "../styles/pages/Lessons/lessons.scss";
 import "../styles/pages/JobViz/jobviz-page.scss";
 import "../styles/icons/icons.scss";
 import "../styles/comps/carousel.scss";
+import "../styles/comps/modal.scss";
 import "../styles/pages/home.scss";
 import "../styles/pages/About/about.scss";
 import "../styles/modals/signUp.scss";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { UserProvider } from "../providers/UserProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import { CookiesProvider } from "react-cookie";
+
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   useEffect(() => {
@@ -32,10 +38,13 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         <LessonsCarouselProvider>
           <UserProvider>
             <ModalProvider>
-              <CookiesProvider>
-                <Component {...pageProps} />
-                <ModalsContainer />
-              </CookiesProvider>
+              <QueryClientProvider client={queryClient}>
+                <CookiesProvider>
+                  <Toaster />
+                  <Component {...pageProps} />
+                  <ModalsContainer />
+                </CookiesProvider>
+              </QueryClientProvider>
             </ModalProvider>
           </UserProvider>
         </LessonsCarouselProvider>

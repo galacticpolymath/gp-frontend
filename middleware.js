@@ -8,6 +8,8 @@ import {
   verifyJwt,
 } from "./nondependencyFns";
 import { PASSWORD_RESET_CODE_VAR_NAME } from "./globalVars";
+import axios from "axios";
+import { Next } from "react-bootstrap/esm/PageItem";
 
 const DB_ADMIN_ROUTES = [
   "/api/insert-lesson",
@@ -22,6 +24,12 @@ const DB_ADMIN_ROUTES = [
   "/api/admin/delete-users",
 ];
 const DB_ADMIN_ROUTES_SET = new Set(DB_ADMIN_ROUTES);
+const GP_PLUS_ROUTES = [
+  "/api/gp-plus/auth",
+  "/api/gp-plus/copy-unit",
+  "/api/gp-plus/get-is-member",
+];
+const GP_PLUS_ROUTES_SET = new Set(GP_PLUS_ROUTES);
 const USER_ACCOUNT_ROUTES = [
   "/api/save-about-user-form",
   "/api/copy-files",
@@ -30,6 +38,7 @@ const USER_ACCOUNT_ROUTES = [
   "/api/delete-user",
   "/api/user-confirms-mailing-list-sub",
   "/api/get-signed-in-user-brevo-status",
+  ...GP_PLUS_ROUTES,
 ];
 
 const getUnitNum = (pathName) =>
@@ -72,7 +81,9 @@ export async function middleware(request) {
       });
     }
 
-    console.log(`middleware: headers are present, so we are allowing the request to continue...`);
+    console.log(
+      `middleware: headers are present, so we are allowing the request to continue...`
+    );
 
     if (
       !nextUrl.href.includes("api") &&
@@ -80,7 +91,9 @@ export async function middleware(request) {
       nextUrl?.pathname?.split("/")?.filter((val) => val)?.length == 2 &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
-      console.log(`middleware: /units route was detected, so we are redirecting to /units/[unitNum]`);
+      console.log(
+        `middleware: /units route was detected, so we are redirecting to /units/[unitNum]`
+      );
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
       const getUnitsUrl = new URL(`${nextUrl.origin}/api/get-units`);
@@ -279,9 +292,53 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
+    console.log("nextUrl.pathname: ", nextUrl.pathname);
+    console.log("method: ", method);
+
+    if (GP_PLUS_ROUTES_SET.has(nextUrl.pathname)) {
+      console.log("This is a GP Plus route.");
+      const { isAuthorize, errResponse } = await getAuthorizeReqResult(
+        authorizationStr,
+        true
+      );
+
+      if (!isAuthorize) {
+        console.error("The user is not authorized.");
+
+        return errResponse;
+      }
+
+      const { data, status } = axios.get("/api/gp-plus/get-is-member", {
+        headers: {
+          authorization: authorizationStr,
+        },
+      });
+      const { errType, isGpPlusMember } = data ?? {};
+
+      console.log("Status, get is user a gp plus member: ", status);
+
+      if (errType || !isGpPlusMember) {
+        const response = NextResponse.json({
+          errType,
+          message: "The user is not a GP Plus member.",
+        }).status(401);
+
+        return response;
+      }
+
+      if (pathname === "/api/gp-plus/get-is-member") {
+        console.log("isGpPlusMember: ", isGpPlusMember);
+        return NextResponse.json({ isGpPlusMember }).status(200);
+      }
+
+      console.log("User is a GP Plus member. Will allow request to proceed.");
+
+      return NextResponse.next();
+    }
+
     if (
-      nextUrl.pathname === "/api/copy-files" &&
-      method === "POST" &&
+      nextUrl.pathname === "/api/gp-plus/copy-unit" &&
+      method === "GET" &&
       headers.has("GDrive-Token")
     ) {
       console.log("will check if the auth string is valid.");
@@ -297,7 +354,10 @@ export async function middleware(request) {
       console.log("The GDrive-Token was provided.");
 
       return NextResponse.next();
-    } else if (nextUrl.pathname === "/api/copy-files" && method === "POST") {
+    } else if (
+      nextUrl.pathname === "/api/gp-plus/copy-unit" &&
+      method === "GET"
+    ) {
       return new NextResponse("No GDrive-Token was provided.", { status: 400 });
     }
 
@@ -359,7 +419,7 @@ export async function middleware(request) {
         willCheckIfUserIsDbAdmin
       );
 
-      return isAuthorize ? NextResponse.next() : errResponse
+      return isAuthorize ? NextResponse.next() : errResponse;
     }
 
     console.error("Invalid request path. Retrieved: ", nextUrl.pathname);

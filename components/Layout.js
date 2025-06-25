@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import { Noto_Sans } from 'next/font/google';
 import Script from 'next/script';
 import useOutsetaInputValidation from '../customHooks/useOutsetaInputValidation';
+import { useEffect } from 'react';
 
 const notoSansLight = Noto_Sans({
   subsets: ['latin'],
@@ -26,6 +27,38 @@ export default function Layout({
   langLinks,
 }) {
   const isOnProd = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
+
+  useEffect(() => {
+    // 1. Create the config script
+    const configScript = document.createElement("script");
+    configScript.type = "text/javascript";
+    configScript.text = `
+      var currentOrigin = window.location.origin;
+      var o_options = {
+        domain: 'galactic-polymath.outseta.com',
+        load: 'auth,customForm,emailList,leadCapture,nocode,profile,support',
+        auth: {
+          authenticationCallbackUrl: currentOrigin + '/gp-sign-up-result',
+          registrationConfirmationUrl: currentOrigin + '/gp-plus-set-password',
+        }
+      };
+    `;
+
+    document.body.appendChild(configScript);
+
+    // 2. Create the main Outseta script
+    const mainScript = document.createElement("script");
+    mainScript.src = "https://cdn.outseta.com/outseta.min.js";
+    mainScript.setAttribute("data-options", "o_options");
+    mainScript.async = true;
+    document.body.appendChild(mainScript);
+
+    // 3. Cleanup on unmount
+    return () => {
+      document.body.removeChild(configScript);
+      document.body.removeChild(mainScript);
+    };
+  }, []);
 
   useOutsetaInputValidation();
 
@@ -103,35 +136,6 @@ export default function Layout({
           />
         )}
       </Head>
-      <Script id='outseta-config' strategy='beforeInteractive'>
-        {`
-          var currentOrigin = window.location.origin;
-          var o_options = {
-            domain: 'galactic-polymath.outseta.com',
-            load: 'auth,customForm,emailList,leadCapture,nocode,profile,support',
-            auth: {
-              authenticationCallbackUrl: currentOrigin + '/gp-sign-up-result',
-              registrationConfirmationUrl: currentOrigin + '/gp-plus-set-password',
-            }
-          };
-        `}
-      </Script>
-      <Script
-        src='https://cdn.outseta.com/outseta.min.js'
-        strategy='afterInteractive'
-        id='outseta-script'
-      >
-        {`
-        fetch('/api/test', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(Outseta),
-        });
-        `}
-      </Script>
-
       <div style={{ height: '50px' }}>
         <Navbar />
       </div>

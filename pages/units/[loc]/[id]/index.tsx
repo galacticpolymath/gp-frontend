@@ -47,6 +47,7 @@ import {
   IResource,
 } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { UNITS_URL_PATH } from "../../../../shared/constants";
+import { TUserAccountData } from "../../../api/get-user-account-data";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -144,8 +145,9 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 ]);
 
 const LessonDetails = ({ lesson, unit }: IProps) => {
+  console.log("unit: ", unit);
   const router = useRouter();
-  const { _isUserTeacher } = useUserContext();
+  const { _isUserTeacher, _isGpPlusMember } = useUserContext();
   const { status, data } = useSession();
   const { token } = (data ?? {}) as IUserSession;
   const statusRef = useRef(status);
@@ -163,6 +165,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     _customModalFooter,
   } = useModalContext();
   const [, setIsUserTeacher] = _isUserTeacher;
+  const [, setIsGpPlusMember] = _isGpPlusMember;
   const [, setNotifyModal] = _notifyModal;
   const [, setCustomModalFooter] = _customModalFooter;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
@@ -409,11 +412,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     clickedSectionId: null,
   });
 
-  useEffect(() => {
-    console.log("unitSectionDots, sup there, unitDots: ", unitDots);
-    console.log("unitSectionDots, sup there: ", unitSectionDots);
-  });
-
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
   const [isScrollListenerOn, setIsScrollListenerOn] =
     useScrollHandler(setUnitSectionDots);
@@ -456,8 +454,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
             };
           }),
         };
-
-        console.log("_sectionDots: ", _sectionDots);
 
         return _sectionDots;
       });
@@ -553,7 +549,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
             },
           };
           const origin = window.location.origin;
-          const { status, data } = await axios.get(
+          const { status, data } = await axios.get<TUserAccountData>(
             `${origin}/api/get-user-account-data`,
             paramsAndHeaders
           );
@@ -565,6 +561,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
           }
 
           setIsUserTeacher(!!data?.isTeacher);
+          setIsGpPlusMember(!!data?.isGpPlusMember);
         } catch (error) {
           console.error("An error has occurred: ", error);
         }
@@ -640,8 +637,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     defaultLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
     langLinks: _unit.headLinks ?? ([] as TUnitForUI["headLinks"]),
   };
-
-  console.log("_unit.headLinks: ", _unit.headLinks);
 
   return (
     <Layout {...layoutProps}>
@@ -1080,6 +1075,14 @@ export const getStaticProps = async (arg: {
           sectionsUpdated = {
             ...sectionsUpdated,
             versions: versionsSection,
+          };
+        }
+
+        if (sectionsUpdated.teachingMaterials) {
+          console.log("sup there! yo");
+          sectionsUpdated.teachingMaterials = {
+            ...sectionsUpdated.teachingMaterials,
+            unitTitle: sectionsUpdated.overview?.unitTitle,
           };
         }
 

@@ -1,7 +1,7 @@
 import moment from "moment";
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";
-import { IUnitForUnitsPg, TLiveUnit } from "../types/global";
-import { STATUSES_OF_SHOWABLE_LESSONS } from "../globalVars";
+import { ILocalStorage, IUnitForUnitsPg, TLiveUnit } from "../types/global";
+import { GOOGLE_DRIVE_PROJECT_CLIENT_ID, STATUSES_OF_SHOWABLE_LESSONS } from "../globalVars";
 
 export const random = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
 
@@ -128,3 +128,65 @@ export const getTotalUnitLessons = (unit: INewUnitSchema) => {
 
   return unitObjUpdated;
 };
+
+export const removeLocalStorageItem = (key: keyof ILocalStorage) => {
+    localStorage.removeItem(key);
+}
+
+export const setLocalStorageItem = <TKey extends keyof ILocalStorage,
+  TVal extends ILocalStorage[TKey]>(key: TKey, val: TVal) => {
+    localStorage.setItem(key, JSON.stringify(val)); 
+}
+
+export const getLocalStorageItem = <TKey extends keyof ILocalStorage,
+  TVal extends ILocalStorage[TKey]>(key: TKey): TVal | null => {
+    try {
+      if(typeof localStorage === "undefined") {
+        return null;
+      }
+
+      const parsableVal = localStorage.getItem(key);
+
+      if (!parsableVal) {
+        return null;
+      }
+
+      return JSON.parse(parsableVal) as TVal; 
+    } catch(error){
+      console.error("Failed to retrieve the target item. Reason: ", error);
+
+      return null;
+    }
+}
+
+export const createGDriveAuthUrl = () => {
+  const authUrl = new URL("https://accounts.google.com/o/oauth2/auth");
+  // protects against CSRF attacks
+  const state = Math.random().toString(36).substring(7);
+  const _redirectUri = new URL(`${window.location.origin}/google-drive-auth-result`);
+
+
+  console.log("_redirectUri: ", _redirectUri.href);
+
+  const scopes =
+    "https://www.googleapis.com/auth/drive";
+  const params = [
+    ["state", state],
+    [
+      "client_id",
+      GOOGLE_DRIVE_PROJECT_CLIENT_ID,
+    ],
+    ["redirect_uri", _redirectUri.href],
+    ["scope", scopes],
+    ["response_type", "code"],
+    ["access_type", "offline"],
+    ["include_granted_scopes", "true"],
+    ["prompt", "consent"],
+  ];
+
+  for (const [key, val] of params) {
+    authUrl.searchParams.append(key.trim(), val.trim());
+  }
+
+  return authUrl.href;
+}

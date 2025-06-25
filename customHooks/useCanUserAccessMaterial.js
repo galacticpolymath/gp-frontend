@@ -137,6 +137,7 @@ const useCanUserAccessMaterial = (willListenForRestrictedItemClick) => {
     return {
         handleRestrictedItemBtnClick,
         session,
+        openCanAccessContentModal
     };
 };
 

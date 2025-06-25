@@ -39,7 +39,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const { image, name } = data?.user ?? {};
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
   const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
-  const { clearCookies } = useCustomCookies();
+  const { clearCookies } = useCustomCookies(["gdriveAccessToken", "token"]);
   const firstName =
     userAccountSaved?.firstName ??
     aboutUserForm?.firstName ??
@@ -53,6 +53,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
 
   const handleSignOutBtnClick = () => {
     localStorage.clear();
+    sessionStorage.clear();
     setIsLoadingSpinnerOn(true);
     clearCookies();
     signOut();

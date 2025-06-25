@@ -104,6 +104,7 @@ export const DisplayLessonTile = ({
 };
 
 const TeachIt = (props: TeachItProps) => {
+  console.log("props, sup there: ", props);
   let {
     _sectionDots,
     SectionTitle,

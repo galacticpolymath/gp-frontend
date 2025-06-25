@@ -1,7 +1,20 @@
 import { useCookies } from "react-cookie";
 
-export const useCustomCookies = (keys = ["token"]) => {
-  const [cookiesStore, setCookie, removeCookie] = useCookies(keys);
+interface IAppCookies {
+  gdriveAccessToken: string;
+  gdriveRefreshToken: string;
+  gdriveAccessTokenExp: number;
+  isSignedInAsGpPlusUser: boolean;
+  token: string;
+}
+
+export const useCustomCookies = (
+  keys: Exclude<keyof IAppCookies, number>[] = []
+) => {
+  const [cookiesStore, setCookie, removeCookie] = useCookies<
+    string,
+    IAppCookies
+  >(keys);
 
   const clearCookies = () => {
     const cookies = Object.keys(cookiesStore);
@@ -11,10 +24,44 @@ export const useCustomCookies = (keys = ["token"]) => {
     }
   };
 
+  const getCookies = <TKey extends keyof IAppCookies>(
+    keys: TKey[]
+  ): Partial<Pick<IAppCookies, TKey>> => {
+    let cookies: Partial<Pick<IAppCookies, TKey>> = {};
+
+    for (const key of keys) {
+      cookies = {
+        ...cookies,
+        [key]: cookiesStore[key],
+      };
+    }
+
+    return cookies;
+  };
+
+  const setAppCookie = <
+    TKey extends keyof IAppCookies,
+    TVal extends IAppCookies[TKey]
+  >(
+    key: TKey,
+    val: TVal,
+    options?: Parameters<typeof setCookie>[2]
+  ) => {
+    setCookie(key, val, options);
+  };
+
+  const removeAppCookies = (keys: (keyof IAppCookies)[]) => {
+    for (const key of keys) {
+      removeCookie(key);
+    }
+  };
+
   return {
     cookies: cookiesStore,
-    setCookie,
     removeCookie,
     clearCookies,
+    setAppCookie,
+    removeAppCookies,
+    getCookies,
   };
 };

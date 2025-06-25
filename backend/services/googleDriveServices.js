@@ -55,7 +55,7 @@ export class Credentials {
  * @param{drive_v3.Drive} googleService google drive service object
  * @return{Promise<[] | null>} An array of the permission ids if successful. Otherwise, it will return null.
  * */
-export const getGooglDriveFolders = async (googleService, folderId) => {
+export const getGoogleDriveFolders = async (googleService, folderId) => {
     try {
         const response = await googleService.files.list({
             corpora: "drive",
@@ -229,7 +229,7 @@ const getCopyFilePromise = (accessToken, folderIds, fileId) => {
     )
 }
 
-export async function copyFiles(files, createdFolders, accessToken, tries = 0) {
+export async function copyFiles(files, createdFolders, accessToken, tries = 0, updateClient) {
     if (tries > 10) {
         console.error("Failed to copy files. Reached max tries.");
         return { wasSuccessful: false };
@@ -252,12 +252,19 @@ export async function copyFiles(files, createdFolders, accessToken, tries = 0) {
     const copiedFilesResult = await Promise.allSettled(copiedFilesPromises);
     const failedCopiedFilesIndices = new Set();
 
-    for (const resultIndex in copiedFilesResult) {
-        const result = copiedFilesResult[resultIndex];
+    for (const index in copiedFilesResult) {
+        const result = copiedFilesResult[index];
 
         if (result.status === "rejected") {
-            failedCopiedFilesIndices.add(parseInt(resultIndex));
+            failedCopiedFilesIndices.add(parseInt(index));
+            continue;
         }
+
+        const file = files[index];
+
+        console.log("file: ", file);
+
+        updateClient({ fileCopied: file.name })
     }
 
     console.log("failedCopiedFilesIndices: ", failedCopiedFilesIndices)
