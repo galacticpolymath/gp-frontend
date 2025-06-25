@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+
 import React, { FC, useEffect } from "react";
 import { Modal as BootstrapModal } from "react-bootstrap";
 import { TUseStateReturnVal } from "../../types/global";
@@ -65,7 +67,8 @@ const GpPlusSignUp: FC<IProps> = ({ _isSignupModalDisplayed }) => {
     <BootstrapModal
       show={isLoginModalDisplayed}
       onHide={handleOnHide}
-    ></BootstrapModal>
+    >
+    </BootstrapModal>
   );
 };
 

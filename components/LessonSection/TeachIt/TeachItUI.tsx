@@ -2,6 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-unused-vars */
+
 import React, {
   Dispatch,
   JSX,
@@ -308,11 +309,7 @@ const TeachItUI = <
     if (!gdriveAccessToken) {
       setLocalStorageItem(
         "gpPlusFeatureLocation",
-        window.location.protocol +
-          "//" +
-          window.location.host +
-          window.location.pathname +
-          "#teaching-materials"
+        `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
       );
       const url = createGDriveAuthUrl();
       removeLocalStorageItem("didGpSignInAttemptOccur");
@@ -326,7 +323,7 @@ const TeachItUI = <
       "gdrive-token": gdriveAccessToken,
       "gdrive-token-refresh": gdriveRefreshToken as string,
     };
-    const url = new URL(window.location.origin + "/api/gp-plus/copy-unit");
+    const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
 
     url.searchParams.append("unitDriveId", "15KK-qNwPUbw2d1VBDvsjHfreCSBpwMiw");
     url.searchParams.append("unitName", "My GP Unit");
@@ -371,23 +368,23 @@ const TeachItUI = <
         if (data.isJobDone) {
           eventSource.close();
           if (data.wasSuccessful) {
-            toastMethods.success(
-              "Unit copied successfully!",
-              {
-                id: loadingToast,
-                position,
-              },
-              Infinity
-            );
+            // toastMethods.success(
+            //   "Unit copied successfully!",
+            //   {
+            //     id: loadingToast,
+            //     position,
+            //   },
+            //   Infinity
+            // );
           } else {
-            toastMethods.error(
-              "Failed to copy unit",
-              {
-                id: loadingToast,
-                position,
-              },
-              Infinity
-            );
+            // toastMethods.error(
+            //   "Failed to copy unit",
+            //   {
+            //     id: loadingToast,
+            //     position,
+            //   },
+            //   Infinity
+            // );
           }
           return;
         }
@@ -409,10 +406,10 @@ const TeachItUI = <
         // Truncate message if it's too long
         const truncatedMessage =
           progressMessage.length > 50
-            ? progressMessage.substring(0, 47) + "..."
+            ? `${progressMessage.substring(0, 47)}...`
             : progressMessage;
 
-        toastMethods.loading(truncatedMessage, { id: loadingToast, position });
+        // toastMethods.loading(truncatedMessage, { id: loadingToast, position });
 
         console.log("data: ", data);
       } catch (error) {
@@ -425,10 +422,10 @@ const TeachItUI = <
 
     eventSource.onerror = (event) => {
       console.log("error event: ", event);
-      toastMethods.error("Error occurred while copying unit", {
-        id: loadingToast,
-        position,
-      });
+      // toastMethods.error("Error occurred while copying unit", {
+      //   id: loadingToast,
+      //   position,
+      // });
     };
   };
 
@@ -442,11 +439,7 @@ const TeachItUI = <
 
     localStorage.setLocalStorageItem(
       "gpPlusFeatureLocation",
-      window.location.protocol +
-        "//" +
-        window.location.host +
-        window.location.pathname +
-        "#teaching-materials"
+      `${window.location.protocol}://${window.location.host}${window.location.pathname}#teaching-materials`
     );
 
     router.push("/gp-plus");

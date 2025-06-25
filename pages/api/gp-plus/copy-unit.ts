@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable quotes */
 /* eslint-disable comma-dangle */
 /* eslint-disable semi */
@@ -6,6 +7,8 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 /* eslint-disable no-multiple-empty-lines */
+
+
 import { google, drive_v3 } from "googleapis";
 import { CustomError } from "../../../backend/utils/errors";
 import axios from "axios";

@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   getUser,

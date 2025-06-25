@@ -1,6 +1,7 @@
+/* eslint-disable quotes */
+
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import GpPlusSignUp from "../components/GpPlus/SignUp";
 import { Button } from "react-bootstrap";
 import Modal from "../components/Modal";
 
@@ -9,13 +10,17 @@ export function injectOutsetaScripts() {
     'script[data-outseta="config"]'
   );
 
-  if (existingConfig) existingConfig.remove();
+  if (existingConfig) {
+    existingConfig.remove();
+  }
 
   const existingMain = document.querySelector(
     'script[src="https://cdn.outseta.com/outseta.min.js"]'
   );
 
-  if (existingMain) existingMain.remove();
+  if (existingMain) {
+    existingMain.remove();
+  }
 
   const configScript = document.createElement("script");
   configScript.type = "text/javascript";

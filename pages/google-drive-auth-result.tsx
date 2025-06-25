@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
@@ -168,7 +169,11 @@ const GoogleDriveAuthResult = () => {
                 ? "Authenticating with Google Drive..."
                 : "Loading, please wait..."}
               <span className="d-inline-flex align-items-center justify-content-center">
-                <Spinner animation="border" role="status" className="mt-2">
+                <Spinner 
+                  animation="border" 
+                  role="status" 
+                  className="mt-2"
+                >
                   <span className="visually-hidden">Loading...</span>
                 </Spinner>
               </span>

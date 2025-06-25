@@ -48,9 +48,9 @@ export default async function handler(req: NextApiRequest) {
     const userCached = {
       ...targetUser.user,
       isGpPlusMember: true,
-    }
+    };
 
-    cache.set(targetUser.user.email, userCached, 60 * 60 * 3)
+    cache.set(targetUser.user.email, userCached, 60 * 60 * 3);
 
     const updateUserResult = await updateUser(
       { _id: targetUser.user._id },

@@ -42,7 +42,6 @@ const PROJECTIONS: Partial<Record<keyof (TUserSchemaV2 & IUserSchema), number>> 
       _id: 0,
     } as const;
 
-
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse

@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../../globalVars";

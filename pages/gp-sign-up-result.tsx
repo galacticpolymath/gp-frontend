@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+
 import React from "react";
 import { useRouter } from "next/router";
 import CustomLink from "../components/CustomLink";

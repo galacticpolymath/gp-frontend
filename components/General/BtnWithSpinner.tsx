@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+import React from "react";
 import { Button, Spinner } from "react-bootstrap";
 
 interface IProps {
