@@ -13,6 +13,7 @@ import React, {
   useState,
 } from "react";
 import { EventSourcePolyfill } from "event-source-polyfill";
+import toast, { ToastOptions, ToastPosition } from "react-hot-toast";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import {
   IItemForClient,
@@ -50,11 +51,9 @@ import {
   setLocalStorageItem,
 } from "../../../shared/fns";
 import { TCopyFilesMsg } from "../../../pages/api/gp-plus/copy-unit";
-import { useSession } from "next-auth/react";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
-import { event } from "cypress/types/jquery";
-import Toast from "../../General/Toast";
+import { v4 as uuidv4 } from "uuid";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -86,6 +85,90 @@ interface TeachItUIProps<
 }
 
 const ASSESSMENTS_ID = 100;
+const toastMethods = {
+  success: (
+    message: string,
+    options?: ToastOptions,
+    duration: number = 4_000
+  ) => {
+    return toast.success(message, {
+      ...options,
+      style: {
+        width: "350px",
+        height: "80px",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        wordWrap: "break-word",
+        wordBreak: "break-word",
+        background: "#4CAF50",
+        color: "white",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "14px",
+        padding: "12px",
+        borderRadius: "8px",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+        ...options?.style,
+      },
+      duration,
+    });
+  },
+  error: (
+    message: string,
+    options?: ToastOptions,
+    duration: number = 4_000
+  ) => {
+    return toast.error(message, {
+      ...options,
+      style: {
+        width: "350px",
+        height: "80px",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        wordWrap: "break-word",
+        wordBreak: "break-word",
+        background: "#f44336",
+        color: "white",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "14px",
+        padding: "12px",
+        borderRadius: "8px",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+        ...options?.style,
+      },
+      duration,
+    });
+  },
+  loading: (message: string, options?: ToastOptions) => {
+    return toast.loading(message, {
+      ...options,
+      style: {
+        width: "350px",
+        height: "80px",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        wordWrap: "break-word",
+        wordBreak: "break-word",
+        background: "#2196F3",
+        color: "white",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "14px",
+        padding: "12px",
+        borderRadius: "8px",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+        ...options?.style,
+      },
+    });
+  },
+};
 
 const TeachItUI = <
   TLesson extends object,
@@ -120,7 +203,6 @@ const TeachItUI = <
   ] = useState<number[]>([]);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const [isGpPlusMember] = _isGpPlusMember;
-  const [isToastOpen, setIsToastOpen] = useState(false);
   const session = useSiteSession();
   const { getCookies } = useCustomCookies(["token", "gdriveAccessToken"]);
   const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
@@ -151,8 +233,26 @@ const TeachItUI = <
     }
   }, [didGDriveTokenExpire]);
 
+  useEffect(() => {
+    toastMethods.success("hi there", {
+      id: uuidv4(),
+      position: "bottom-right",
+    });
+  });
+
   const copyUnit = () => {
+    console.log("Copy unit function called");
+
+    // Show loading toast when starting the copy job
+    const position: ToastPosition = "bottom-right";
+    const removeDelay = Infinity;
+    const loadingToast = toast.loading("Starting copy process...", {
+      position,
+      removeDelay,
+    });
+
     if (!gdriveAccessToken) {
+      toast.dismiss(loadingToast);
       setLocalStorageItem(
         "gpPlusFeatureLocation",
         window.location.protocol +
@@ -190,7 +290,49 @@ const TeachItUI = <
 
         if (data.isJobDone) {
           eventSource.close();
+          if (data.wasSuccessful) {
+            toastMethods.success(
+              "Unit copied successfully!",
+              {
+                id: loadingToast,
+                position,
+              },
+              Infinity
+            );
+          } else {
+            toastMethods.error(
+              "Failed to copy unit",
+              {
+                id: loadingToast,
+                position,
+              },
+              Infinity
+            );
+          }
+          return;
         }
+
+        // Update progress based on the message type
+        let progressMessage = "Copying unit...";
+        if (data.folderCreated) {
+          progressMessage = `Creating folder: ${data.folderCreated}`;
+        } else if (data.fileCopied) {
+          progressMessage = `Copying file: ${data.fileCopied}`;
+        } else if (data.foldersToCopy) {
+          progressMessage = `Will copy ${data.foldersToCopy} folders`;
+        } else if (data.filesToCopy) {
+          progressMessage = `Will copy ${data.filesToCopy} files.`;
+        } else if (data.msg) {
+          progressMessage = data.msg;
+        }
+
+        // Truncate message if it's too long
+        const truncatedMessage =
+          progressMessage.length > 50
+            ? progressMessage.substring(0, 47) + "..."
+            : progressMessage;
+
+        toastMethods.loading(truncatedMessage, { id: loadingToast, position });
 
         console.log("data: ", data);
       } catch (error) {
@@ -203,6 +345,10 @@ const TeachItUI = <
 
     eventSource.onerror = (event) => {
       console.log("error event: ", event);
+      toastMethods.error("Error occurred while copying unit", {
+        id: loadingToast,
+        position,
+      });
     };
   };
 
@@ -603,15 +749,6 @@ const TeachItUI = <
           </div>
         </div>
       </CollapsibleLessonSection>
-      <Toast
-        animation
-        autoHide="false"
-        show={isToastOpen}
-        title="Copying unit..."
-        onClose={() => setIsToastOpen(false)}
-      >
-        hi there!
-      </Toast>
     </>
   );
 };

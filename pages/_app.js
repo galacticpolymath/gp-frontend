@@ -7,6 +7,7 @@ import { LessonsCarouselProvider } from "../providers/LessonsCarouselProvider";
 import ModalsContainer from "../ModalsContainer";
 import { GoogleAnalytics } from "nextjs-google-analytics";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "react-hot-toast";
 import "./style.scss";
 import "../styles/pages/HireUs/hireUs.scss";
 import "../styles/pages/Lessons/lessons.scss";
@@ -39,6 +40,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
             <ModalProvider>
               <QueryClientProvider client={queryClient}>
                 <CookiesProvider>
+                  <Toaster />
                   <Component {...pageProps} />
                   <ModalsContainer />
                 </CookiesProvider>

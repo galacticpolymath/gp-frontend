@@ -68,6 +68,7 @@
     "react-dom": "^19.1.0",
     "react-flags-select": "^2.4.0",
     "react-highlight-words": "^0.21.0",
+    "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "react-iframe": "^1.8.5",
     "react-in-viewport": "^1.0.0-beta.6",
