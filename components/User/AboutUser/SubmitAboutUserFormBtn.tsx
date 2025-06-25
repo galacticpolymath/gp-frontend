@@ -5,7 +5,7 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 
-import React from 'react';
+import React from "react";
 import { useUserContext } from "../../../providers/UserProvider";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -120,7 +120,7 @@ const SubmitAboutUserFormBtn = ({
         errors.set("schoolType", "This field is required.");
       }
 
-      console.log("subjectsTaughtCustom: ", subjectsTaughtCustom);
+      console.log("subjectsTaughtCustom, sup there: ", subjectsTaughtCustom);
 
       if (!gradesType) {
         errors.set(
@@ -227,23 +227,43 @@ const SubmitAboutUserFormBtn = ({
         throw new CustomError(errMsg, undefined, "invalidAboutUserForm.");
       }
 
-      if (isTeacher && subjectsTaughtCustom.size) {
-        console.log("subjectsTaughtCustom: ", subjectsTaughtCustom);
-        const subjectsTaughtCustomArr = Array.from(subjectsTaughtCustom);
+      const _subjectsTaughtCustom = structuredClone(subjectsTaughtCustom);
 
-        console.log("subjectsTaughtCustomArr: ", subjectsTaughtCustomArr);
+      if (
+        _subjectsTaughtCustom.has("other-subject-0") &&
+        !_subjectsTaughtCustom.has("other-subject-1")
+      ) {
+        _subjectsTaughtCustom.set("other-subject-1", "");
+      }
+
+      if (
+        !_subjectsTaughtCustom.has("other-subject-0") &&
+        _subjectsTaughtCustom.has("other-subject-1")
+      ) {
+        _subjectsTaughtCustom.set("other-subject-0", "");
+      }
+
+      if (isTeacher && _subjectsTaughtCustom.size) {
+        console.log("_subjectsTaughtCustom: ", _subjectsTaughtCustom);
+        const subjectsTaughtCustomArr = Array.from(_subjectsTaughtCustom);
 
         subjectsTaughtCustomArr.sort(
           (subjectsKeyValAPair, subjectsKeyValBPair) =>
             subjectsKeyValAPair[0].localeCompare(subjectsKeyValBPair[0])
         );
-        const subjectsTaughtCustomArrForServer = subjectsTaughtCustomArr
-          .filter(([_, subject]) => subject.length)
-          .map((subject) => subject[1]);
+
+        const subjectsTaughtCustomArrForServer = subjectsTaughtCustomArr.map(
+          (subject) => subject[1].trim()
+        );
 
         aboutUserFormClone = {
           ...aboutUserFormClone,
           subjectsTaughtCustom: subjectsTaughtCustomArrForServer,
+        };
+      } else if (isTeacher && !_subjectsTaughtCustom.size) {
+        aboutUserFormClone = {
+          ...aboutUserFormClone,
+          subjectsTaughtCustom: [],
         };
       }
 
@@ -256,6 +276,8 @@ const SubmitAboutUserFormBtn = ({
               : (zipCode as string),
         };
       }
+
+      console.log("aboutUserFormClone: ", aboutUserFormClone);
 
       const responseBody: IUpdatedAboutUserForm = {
         aboutUserForm: aboutUserFormClone,

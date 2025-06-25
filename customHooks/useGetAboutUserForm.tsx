@@ -73,6 +73,8 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
     };
   }
 
+  console.log("institution, sup there: ", institution);
+
   if (institution) {
     userAccountForClient = {
       ...userAccountForClient,
@@ -101,12 +103,10 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
     };
   }
 
-  if (isNotTeaching) {
-    userAccountForClient = {
-      ...userAccountForClient,
-      isNotTeaching,
-    };
-  }
+  userAccountForClient = {
+    ...userAccountForClient,
+    isNotTeaching: !!isNotTeaching,
+  };
 
   if (gradesTaught) {
     userAccountForClient = {
@@ -285,12 +285,10 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             };
           }
 
-          if (typeof isNotTeaching === "undefined") {
-            userAccountForClient = {
-              ...userAccountForClient,
-              isNotTeaching,
-            };
-          }
+          userAccountForClient = {
+            ...userAccountForClient,
+            isNotTeaching: !!isNotTeaching,
+          };
 
           if (typeof classSize === "number") {
             userAccountForClient = {
@@ -315,7 +313,9 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             };
           }
 
-          if (institution) {
+          console.log("institution, sup there: ", institution);
+
+          if (institution || institution == null) {
             userAccountForClient = {
               ...userAccountForClient,
               institution,
@@ -422,12 +422,9 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
               firstName: firstName ?? name?.first,
               lastName: lastName ?? name?.first,
             };
-          } else if (name?.first && name?.last) {
-            userAccountForClient.name = {
-              first: name.first,
-              last: name.last,
-            };
           }
+
+          console.log("userAccountForClient: ", userAccountForClient);
 
           userAccountForClient.isTeacher = isTeacher ?? false;
 

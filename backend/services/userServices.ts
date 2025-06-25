@@ -436,18 +436,25 @@ export const getUserByEmail = async <TUser extends IUserSchema>(
 
 export const updateUser = async (
   filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
-  updatedUserProperties: Partial<Omit<TUserSchemaV2, "password">>,
+  updatedUserProperties: Omit<Partial<TUserSchemaV2>, "password">,
   updatedUserPropsToFilterOut?: (keyof TUserSchemaV2)[]
 ) => {
   try {
     if (updatedUserProperties.isTeacher === false) {
       updatedUserProperties = {
         ...updatedUserProperties,
-        isNotTeaching: true,
-        gradesTaught: [],
+        classSize: 0,
+        isTeacher: false
       };
     }
-    
+
+    if(updatedUserProperties.isNotTeaching === true){
+      updatedUserProperties = {
+        ...updatedUserProperties,
+        classSize: 0,
+      };
+    }
+
     const updatedUser = await User.findOneAndUpdate(
       filterQuery,
       updatedUserProperties,

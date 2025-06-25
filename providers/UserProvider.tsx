@@ -57,7 +57,7 @@ export const userAccountDefault: TAboutUserFormForUI = {
   schoolTypeOther: null,
   siteVisitReasonsCustom: null,
   subjectsTaughtCustom: undefined,
-  institution: "",
+  institution: null,
   gradesOrYears: {
     selection: "U.S.",
     ageGroupsTaught: [],
@@ -67,16 +67,10 @@ export const userAccountDefault: TAboutUserFormForUI = {
   occupation: "",
   isTeacherConfirmed: false,
   zipCode: null,
-  classroomSize: {
-    num: 0,
-    isNotTeaching: false,
-  },
   subjects: new Map(),
   reasonsForSiteVisit: new Map(),
-  name: {
-    first: "",
-    last: "",
-  },
+  firstName: "",
+  lastName: "",
 };
 
 export type TUserProviderValue = {
