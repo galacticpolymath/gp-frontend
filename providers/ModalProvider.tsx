@@ -40,12 +40,14 @@ export interface IModalProviderValue {
   _isCreateAccountModalDisplayed: TUseStateReturnVal<boolean>;
   _isAboutMeFormModalDisplayed: TUseStateReturnVal<boolean>;
   _notifyModal: TUseStateReturnVal<INotifyModalVal>;
+  _isCreatingGpPlusAccount: TUseStateReturnVal<boolean>;
   _isAccountSettingModalOn: TUseStateReturnVal<boolean>;
 }
 
 export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [isJobModalOn, setIsJobModalOn] = useState(false);
+  const [isCreatingGpPlusAccount, setIsCreatingGpPlusAccount] = useState(false);
   const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
   const [isLoginModalDisplayed, setIsLoginModalDisplayed] = useState(false);
   const [notifyModal, setNotifyModal] = useState(defautlNotifyModalVal);
@@ -83,6 +85,10 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
       setIsAboutMeFormModalDisplayed,
     ],
     _notifyModal: [notifyModal, setNotifyModal],
+    _isCreatingGpPlusAccount: [
+      isCreatingGpPlusAccount,
+      setIsCreatingGpPlusAccount,
+    ],
     _isAccountSettingModalOn: [
       isAccountSettingModalOn,
       setIsAccountSettingsModalOn,

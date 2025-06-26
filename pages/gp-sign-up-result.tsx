@@ -27,7 +27,7 @@ const GpSignUpResult: React.FC = () => {
   );
   const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
 
-  if (status === "authenticated" && access_token && gpPlusFeatureLocation) {
+  if (status === "authenticated" && access_token) {
     console.log("gpPlusFeatureLocation, yo there: ", gpPlusFeatureLocation);
 
     resultJsx = (
@@ -36,16 +36,18 @@ const GpSignUpResult: React.FC = () => {
           Congratulations! You have successfully subscribed to GP Plus.
         </p>
         <p className="mt-2 text-center">Thank you!</p>
-        <p className="mt-2 text-center">
-          Click{" "}
-          <a
-            href={gpPlusFeatureLocation}
-            className="text-primary underline-on-hover"
-          >
-            here
-          </a>{" "}
-          to use it.
-        </p>
+        {gpPlusFeatureLocation && (
+          <p className="mt-2 text-center">
+            Click{" "}
+            <a
+              href={gpPlusFeatureLocation}
+              className="text-primary underline-on-hover"
+            >
+              here
+            </a>{" "}
+            to use it.
+          </p>
+        )}
       </>
     );
   }
