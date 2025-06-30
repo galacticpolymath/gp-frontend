@@ -17,7 +17,7 @@
     "@as-integrations/next": "^3.2.0",
     "@fortawesome/fontawesome-free": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@getbrevo/brevo": "^2.2.0",
+    "@getbrevo/brevo": "^2.5.0",
     "@google-cloud/iam": "^2.2.0",
     "@google-cloud/local-auth": "^3.0.1",
     "@google-cloud/resource-manager": "^6.1.0",
