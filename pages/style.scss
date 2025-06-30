@@ -310,6 +310,18 @@ ol li {
   border: solid 1px red;
 }
 
+.gp-plus-member-modal {
+  width: 90vw;
+
+  @media (min-width: 576px) {
+    width: 35vw;
+  }
+}
+
+.input-read-only {
+  pointer-events: none;
+}
+
 .login-ui-modal {
   width: 35vw;
 
