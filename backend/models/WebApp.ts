@@ -2,7 +2,7 @@ import { Model, Schema, models, model } from "mongoose";
 import { IWebAppLink } from "../../types/global";
 
 
-type TDbWebApp = Pick<IWebAppLink, "description" | "lessonIdStr" | "pathToFile" | "title" | "unitNumID" | "webAppLink">
+type TDbWebApp = Pick<IWebAppLink, "description" | "lessonIdStr" | "pathToFile" | "title" | "unitNumID" | "webAppLink" | "secondaryLink">;
 let webApp = models.webApps as Model<TDbWebApp, {}, {}, {}, any, any>;
 
 if(!webApp){   
@@ -12,6 +12,7 @@ if(!webApp){
         webAppLink: String,
         title: String,
         pathToFile: String,
+        secondaryLink: String,
         description: String
     })
 

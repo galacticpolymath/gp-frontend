@@ -387,6 +387,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
         webAppImgAlt:
           errMsg || !images?.length ? null : `${title}'s preview image`,
         pathToFile,
+        secondaryLink: null,
       };
 
       webApps.push(webApp);
@@ -413,7 +414,8 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
       pathToFile: dbWebApp.pathToFile,
       unitTitle: null,
       webAppPreviewImg: null,
-      webAppImgAlt: null
+      webAppImgAlt: null,
+      secondaryLink: dbWebApp.secondaryLink
     };
 
     if (dbUnits?.length) {
