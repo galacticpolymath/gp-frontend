@@ -57,7 +57,7 @@ interface IMultiMediaItemForUI
 
 export interface IWebAppLink {
   lessonIdStr: string | null;
-  unitNumID: INewUnitSchema["numID"];
+  unitNumID: INewUnitSchema["numID"] | null;
   webAppLink: string;
   title: string | null;
   unitTitle: INewUnitSchema["Title"] | null;

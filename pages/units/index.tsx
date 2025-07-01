@@ -6,7 +6,7 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { nanoid } from "nanoid";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 import {
@@ -26,6 +26,10 @@ interface IProps {
 }
 
 const LessonsPage = ({ currentUnits }: IProps) => {
+  useEffect(() => {
+    console.log("currentUnits?.webApps: ", currentUnits?.webApps);
+  });
+
   return (
     <UnitsPg
       units={currentUnits?.units ?? null}
