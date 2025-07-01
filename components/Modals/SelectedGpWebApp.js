@@ -128,19 +128,21 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }) => {
                         >
                             Open in new window
                         </CustomLink>
-                        {(selectedGpWebApp?.lessonIdStr && selectedGpWebApp?.unitTitle) && (<CustomLink
-                            style={{ width: 'fit-content' }}
-                            hrefStr={`/${UNITS_URL_PATH}/en-US/${selectedGpWebApp?.unitNumID}`}
-                            className='mt-2 no-link-decoration underline-on-hover d-flex'
-                            color='#75757D'
-                        >
-                            <ForLessonTxtWrapper>
-                                <ForLessonTxt
-                                    lessonNumId={selectedGpWebApp?.lessonIdStr}
-                                    unitTitle={selectedGpWebApp?.unitTitle}
-                                />
-                            </ForLessonTxtWrapper>
-                        </CustomLink>)}
+                        {(selectedGpWebApp?.lessonIdStr && selectedGpWebApp?.unitTitle) && (
+                            <CustomLink
+                                style={{ width: 'fit-content' }}
+                                hrefStr={`/${UNITS_URL_PATH}/en-US/${selectedGpWebApp?.unitNumID}`}
+                                className='mt-2 no-link-decoration underline-on-hover d-flex'
+                                color='#75757D'
+                            >
+                                <ForLessonTxtWrapper>
+                                    <ForLessonTxt
+                                        lessonNumId={selectedGpWebApp?.lessonIdStr}
+                                        unitTitle={selectedGpWebApp?.unitTitle}
+                                    />
+                                </ForLessonTxtWrapper>
+                            </CustomLink>
+                        )}
                     </div>
                 </div>
             </div>
