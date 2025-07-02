@@ -52,12 +52,13 @@ import {
   removeLocalStorageItem,
   setLocalStorageItem,
 } from "../../../shared/fns";
-import { TCopyFilesMsg } from "../../../pages/api/gp-plus/copy-unit";
+import { TCopyFilesMsg, TCopyUnitJobResult } from "../../../pages/api/gp-plus/copy-unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import { v4 as uuidv4 } from "uuid";
 import { Spinner } from "react-bootstrap";
 import CopyingUnitToast from "../../CopyingUnitToast";
+import { set } from "cypress/types/lodash";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -181,7 +182,7 @@ const toastMethods = {
       },
     });
   },
-};
+}; 
 
 const TeachItUI = <
   TLesson extends object,
@@ -251,10 +252,16 @@ const TeachItUI = <
   }, [didGDriveTokenExpire]);
 
   const [toastMsg, setToastMsg] = useState("Copying file 'Heard that bird...'");
+  const [copyUnitJobResult, setCopyUnitJobResult] =
+    useState<TCopyUnitJobResult>("ongoing");
   const [toastId, setToastId] = useState<string | null>(null);
   const [toastSubtitle, setToastSubtitle] = useState(
     "Gathering files and folders..."
   );
+  const [totalItemsToCopy, setItemsToCopy] = useState({
+    copied: 0,
+    totalCopied: 0,
+  });
   const [showProgressBar, setShowProgressBar] = useState(false);
 
   const stopCopyUnitJob = () => {};
@@ -262,6 +269,7 @@ const TeachItUI = <
   const displayToast = () => {
     const toastId = toastMethods.custom(
       <CopyingUnitToast
+        jobStatus={copyUnitJobResult}
         title="Copying unit..."
         subtitle={toastSubtitle}
         showProgressBar={showProgressBar}
@@ -287,10 +295,9 @@ const TeachItUI = <
 
   const copyUnit = () => {
     console.log("Copy unit function called");
+    setItemsToCopy({ copied: 0, totalCopied: 0 });
+    setCopyUnitJobResult("ongoing");
 
-    // Show loading toast when starting the copy job
-    const position: ToastPosition = "bottom-right";
-    const removeDelay = Infinity;
 
     if (!gdriveAccessToken) {
       setLocalStorageItem(
@@ -319,32 +326,7 @@ const TeachItUI = <
       withCredentials: true,
     });
 
-    toastMethods.custom(
-      <div
-        style={{
-          width: "350px",
-          height: "80px",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          wordWrap: "break-word",
-          wordBreak: "break-word",
-          fontSize: "14px",
-          borderRadius: "8px",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        }}
-        className="bg-white text-dark"
-      >
-        <section className="h-100 w-25 d-flex justify-content-center align-items-center bg-danger">
-          <Spinner animation="border" />
-        </section>
-        <section className="h-100 w-75"></section>
-      </div>,
-      {
-        position: "bottom-right",
-        duration: Infinity,
-      }
-    );
+    displayToast();
 
     eventSource.onmessage = (event) => {
       try {
@@ -353,25 +335,8 @@ const TeachItUI = <
 
         if (data.isJobDone) {
           eventSource.close();
-          if (data.wasSuccessful) {
-            // toastMethods.success(
-            //   "Unit copied successfully!",
-            //   {
-            //     id: loadingToast,
-            //     position,
-            //   },
-            //   Infinity
-            // );
-          } else {
-            // toastMethods.error(
-            //   "Failed to copy unit",
-            //   {
-            //     id: loadingToast,
-            //     position,
-            //   },
-            //   Infinity
-            // );
-          }
+          setCopyUnitJobResult(data.wasSuccessful ? "success" : "failure");
+          setToastSubtitle(data.wasSuccessful ? "Copied successfully." : "An error has occurred. Please try again.");
           return;
         }
 
@@ -379,23 +344,37 @@ const TeachItUI = <
         let progressMessage = "Copying unit...";
         if (data.folderCreated) {
           progressMessage = `Folder '${data.folderCreated}' was created.`;
+          setItemsToCopy((state) => ({
+            ...state,
+            copied: state.copied + 1,
+          }));
         } else if (data.fileCopied) {
           progressMessage = `File '${data.fileCopied}' has been copied.`;
+          setItemsToCopy((state) => ({
+            ...state,
+            copied: state.copied + 1,
+          }));
         } else if (data.foldersToCopy) {
           progressMessage = `Will copy ${data.foldersToCopy} folders`;
+          setItemsToCopy((state) => ({
+            ...state,
+            totalCopied: state.totalCopied + (data.foldersToCopy as number),
+          }));
         } else if (data.filesToCopy) {
           progressMessage = `Will copy ${data.filesToCopy} files.`;
+          setItemsToCopy((state) => ({
+            ...state,
+            totalCopied: state.totalCopied + (data.filesToCopy as number),
+          }));
         } else if (data.msg) {
           progressMessage = data.msg;
         }
 
-        // Truncate message if it's too long
-        const truncatedMessage =
-          progressMessage.length > 50
-            ? `${progressMessage.substring(0, 47)}...`
-            : progressMessage;
+        if (data.didRetrieveAllItems) {
+          setShowProgressBar(true);
+        }
 
-        // toastMethods.loading(truncatedMessage, { id: loadingToast, position });
+        setToastSubtitle(progressMessage);
 
         console.log("data: ", data);
       } catch (error) {
@@ -495,18 +474,6 @@ const TeachItUI = <
               <h3 id={GRADE_VARIATION_ID} className="fs-5">
                 Available Grade Bands
               </h3>
-              <button
-                onClick={() => {
-                  if (!toastId) {
-                    displayToast();
-                    return;
-                  }
-
-                  closeToast();
-                }}
-              >
-                show toast
-              </button>
               {areThereGradeBands &&
                 gradeVariations.map((variation, i) => (
                   <label key={i} className="text-capitalize d-block mb-1">

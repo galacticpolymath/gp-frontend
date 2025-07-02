@@ -1,10 +1,12 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Spinner } from "react-bootstrap";
+import { TCopyUnitJobResult } from "../pages/api/gp-plus/copy-unit";
 
 interface CopyingUnitToastProps {
   title?: string;
   subtitle?: string;
   showProgressBar?: boolean;
+  jobStatus: TCopyUnitJobResult,
   progress: number; // current progress value
   total: number; // total value
   onCancel: () => void;
@@ -63,11 +65,19 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
   progress,
   showProgressBar = false,
   total,
+  jobStatus,
   onCancel,
 }) => {
   // Calculate percent for progress bar
   const percent =
     total > 0 ? Math.min(100, Math.round((progress / total) * 100)) : 0;
+  let JobStatusIcon: ReactNode | string = <Spinner animation="border" size="sm" className="me-2" />;
+
+  if (jobStatus === "success"){
+    JobStatusIcon = "✅";
+  } else if (jobStatus === "failure") {
+    JobStatusIcon = "❌";
+  }
 
   return (
     <div
@@ -91,13 +101,25 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
           alignItems: "center",
         }}
       >
-        <Spinner animation="border" size="sm" className="me-2" />
+        {JobStatusIcon}
         {title}
       </div>
       <div className="d-flex flex-column gap-2 py-2">
         <div
-          style={{ fontSize: "18px", marginBottom: 8 }}
-          className={`${!showProgressBar ? "text-center" : ""}`}
+          style={{
+            fontSize: "18px",
+            marginBottom: 8,
+            ...(jobStatus === "ongoing"
+              ? {
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  wordWrap: "break-word",
+                  wordBreak: "break-word",
+                }
+              : {}),
+          }}
+          className={`${!showProgressBar ? "text-center" : ""} w-100`}
         >
           {subtitle}
         </div>

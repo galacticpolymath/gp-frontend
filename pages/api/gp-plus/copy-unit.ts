@@ -68,6 +68,7 @@ export type TCopyFilesMsg = Partial<{
   folderCreated: string;
   fileCopied: string;
   filesToCopy: number;
+  didRetrieveAllItems: boolean
 }>;
 
 export interface IGdriveItem {
@@ -87,6 +88,7 @@ type TUnitFolder = {
   pathToFile: string;
   parentFolderId?: string;
 };
+export type TCopyUnitJobResult = "success" | "failure" | "ongoing";
 
 const sendMessage = <TMsg extends object = TCopyFilesMsg>(
   response: NextApiResponse,
@@ -452,22 +454,24 @@ export default async function handler(
       }
     }
 
-    sendMessage(response, { foldersToCopy: unitFolders.length });
+    sendMessage(response, { foldersToCopy: unitFolders.length + 1 });
 
+    
     console.log("gdriveAccessToken, sup there: ", gdriveAccessToken);
-
+    
     // give the user the ability to name the folder where the files will be copied to.
     const { folderId: unitFolderId, errMsg } =
-      await createGoogleDriveFolderForUser(
-        `${request.query.unitName} COPY`,
-        gdriveAccessToken as string
-      );
-
+    await createGoogleDriveFolderForUser(
+      `${request.query.unitName} COPY`,
+      gdriveAccessToken as string
+    );
+    
     if (errMsg) {
       console.error("Failed to create the target folder.");
       throw new CustomError(errMsg, 500);
     }
-
+    sendMessage(response, { didRetrieveAllItems: true, folderCreated: `${request.query.unitName} COPY`  });
+    
     console.log("The target folder was created.");
 
     let foldersFailedToCreate = [];
@@ -502,7 +506,7 @@ export default async function handler(
           foldersFailedToCreate.push(folderToCreate.name);
         } else {
           sendMessage(response, { folderCreated: folderToCreate.name });
-          
+
           createdFolders.push({
             id: folderId,
             gpFolderId: folderToCreate.fileId,
