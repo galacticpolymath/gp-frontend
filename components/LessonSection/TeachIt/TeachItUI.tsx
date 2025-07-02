@@ -92,6 +92,7 @@ const toastMethods = {
   custom: (children: JSX.Element, options?: ToastOptions) => {
     return toast.custom(children, options);
   },
+
   success: (
     message: string,
     options?: ToastOptions,
@@ -249,12 +250,13 @@ const TeachItUI = <
   }, [didGDriveTokenExpire]);
 
   const [toastMsg, setToastMsg] = useState("Copying file 'Heard that bird...'");
+  const [toastId, setToastId] = useState<string | null>(null);
 
   const displayToast = () => {
-    toastMethods.custom(
+    const toastId = toastMethods.custom(
       <div
         style={{
-          width: "375px",
+          width: "30vw",
           height: "135px",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -264,15 +266,15 @@ const TeachItUI = <
           fontSize: "14px",
           borderRadius: "8px",
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-          background: "#e2f0fd",
         }}
-        className="text-dark d-flex flex-column"
+        className="text-dark d-flex flex-column bg-white"
       >
-        <section className="h-100 w-100 d-flex justify-content-center align-items-center">
-          {/* the name of the unit that is being copied */}
-          Copying
+        <section className="p-2">
+          <h6 className="h-100 w-100 d-flex fw-normal">
+            Copying Heard That Bird
+          </h6>
         </section>
-        <section className="h-100 w-75">
+        <section className="h-100 w-75 p-2">
           <p
             style={{
               overflow: "hidden",
@@ -293,11 +295,16 @@ const TeachItUI = <
         duration: Infinity,
       }
     );
+    setToastId(toastId);
   };
 
-  useEffect(() => {
-    displayToast();
-  });
+  const closeToast = () => {
+    if (!toastId) {
+      return;
+    }
+    toast.dismiss(toastId);
+    setToastId(null);
+  };
 
   const copyUnit = () => {
     console.log("Copy unit function called");
@@ -509,6 +516,18 @@ const TeachItUI = <
               <h3 id={GRADE_VARIATION_ID} className="fs-5">
                 Available Grade Bands
               </h3>
+              <button
+                onClick={() => {
+                  if (!toastId) {
+                    displayToast();
+                    return;
+                  }
+
+                  closeToast();
+                }}
+              >
+                show toast
+              </button>
               {areThereGradeBands &&
                 gradeVariations.map((variation, i) => (
                   <label key={i} className="text-capitalize d-block mb-1">
