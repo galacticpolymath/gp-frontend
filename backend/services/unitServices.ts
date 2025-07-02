@@ -416,6 +416,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
       webAppPreviewImg: null,
       webAppImgAlt: null,
       aboutWebAppLinkType: dbWebApp.aboutWebAppLinkType,
+      aboutWebAppLink: dbWebApp.aboutWebAppLink
     };
 
     if (dbUnits?.length) {
@@ -432,6 +433,14 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
     webApp = {
       ...webApp,
       ...webAppImg
+    }
+
+    if(dbWebApp.aboutWebAppLinkType === "blog" && dbWebApp.aboutWebAppLink){
+      const resBody = await getLinkPreviewObj(dbWebApp.aboutWebAppLink)
+      webApp = {
+        ...webApp,
+        blogPostTitle: "title" in resBody ? resBody.title : null 
+      }
     }
 
     webApps.push(webApp as TWebAppForUI);

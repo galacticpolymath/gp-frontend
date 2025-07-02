@@ -7,6 +7,7 @@ import {
 } from "../backend/models/Unit/types/unit";
 import { Session } from "next-auth";
 import { TAboutUserForm } from "../backend/models/User/types";
+import { TWebAppForUI } from "../backend/models/WebApp";
 
 // front-end
 interface IComponent {
@@ -97,11 +98,11 @@ interface ILiveUnit extends Pick<IUnitForUnitsPg, "locals">, TLiveUnit {}
 interface ICurrentUnits {
   units: IGpUnitsItemsPg<ILiveUnit> | null;
   lessons: IGpUnitsItemsPg<IUnitLesson> | null;
-  webApps: IGpUnitsItemsPg<IWebAppLink> | null;
+  webApps: IGpUnitsItemsPg<TWebAppForUI> | null;
   gpVideos: IGpUnitsItemsPg<IMultiMediaItemForUI> | null;
 }
 
-type TGpData = ILiveUnit | IUnitLesson | IWebAppLink | IMultiMediaItemForUI;
+type TGpData = ILiveUnit | IUnitLesson | TWebAppForUI | IMultiMediaItemForUI;
 
 interface IGpUnitsItemsPg<TData extends object> {
   isLast: boolean;

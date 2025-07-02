@@ -4,11 +4,11 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 
-import { IWebAppLink } from '../../../types/global';
+import { TWebAppForUI } from '../../../backend/models/WebApp';
 
 interface IProps {
-  webApps?: IWebAppLink[];
-  handleGpWebAppCardClick: (app: IWebAppLink) => void;
+  webApps?: TWebAppForUI[];
+  handleGpWebAppCardClick: (app: TWebAppForUI) => void;
 }
 
 const GpWebApps = ({ webApps, handleGpWebAppCardClick }: IProps) => {

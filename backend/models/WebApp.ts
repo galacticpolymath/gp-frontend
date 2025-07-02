@@ -9,6 +9,7 @@ export type TWebAppForUI = {
   unitTitle?: string | null;
   webAppPreviewImg?: string | null;
   webAppImgAlt?: string | null;
+  blogPostTitle?: string | null;
 } & TDbWebApp;
 export type TDbWebApp = Pick<
   IWebAppLink,
