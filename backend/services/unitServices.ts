@@ -7,15 +7,15 @@ import {
   ILiveUnit,
   IMultiMediaItemForUI,
   IUnitLesson,
-  IWebAppLink,
 } from "../../types/global";
 import { getVideoThumb } from "../../components/LessonSection/Preview/utils";
 import { STATUSES_OF_SHOWABLE_LESSONS, WEB_APP_PATHS } from "../../globalVars";
-import { getLinkPreviewObj, getShowableUnits } from "../../globalFns";
+import { getLinkPreviewObj } from "../../globalFns";
 import moment from "moment";
 import { nanoid } from "nanoid";
 import { getLiveUnits } from "../../shared/fns";
 import { UNITS_URL_PATH } from "../../shared/constants";
+import dbWebApps, { TWebAppForUI } from "../models/WebApp";
 
 const insertUnit = async (unit: INewUnitSchema) => {
   try {
@@ -185,7 +185,10 @@ const retrieveUnits = async (
   }
 };
 
-export type TCustomUpdate = Record<string, { [key in keyof INewUnitSchema]: unknown }>
+export type TCustomUpdate = Record<
+  string,
+  { [key in keyof INewUnitSchema]: unknown }
+>;
 
 const updateUnit = async (
   filterObj: Partial<{ [key in keyof INewUnitSchema]: unknown }>,
@@ -201,13 +204,13 @@ const updateUnit = async (
       );
     }
 
-    if(customUpdate){
+    if (customUpdate) {
       console.log("Making a custom update.");
 
       const result = await Unit.updateMany(filterObj, customUpdate).lean();
 
-      if(result.matchedCount === 0){
-        return { errMsg: "No matching units were found in the database." }
+      if (result.matchedCount === 0) {
+        return { errMsg: "No matching units were found in the database." };
       }
 
       console.log("result: ", result);
@@ -219,8 +222,8 @@ const updateUnit = async (
       $set: updatedProps,
     }).lean();
 
-    if(matchedCount === 0){
-      return { errMsg: "No matching units were found in the database." }
+    if (matchedCount === 0) {
+      return { errMsg: "No matching units were found in the database." };
     }
 
     return { wasSuccessful: modifiedCount >= 1 };
@@ -280,12 +283,48 @@ const getGpMultiMedia = (units: INewUnitSchema[]) => {
 
   console.log(`Length of testUnits: ${testUnits.length}`);
 
-
   return gpVideos;
 };
 
+type TWebAppImg = {
+  webAppPreviewImg: string | null
+  webAppImgAlt: string | null
+}
+
+const handleGetLinkPreviewObj = async (link: string): Promise<Partial<TWebAppImg>>  => {
+  const linkPreviewObj = await getLinkPreviewObj(link);
+
+  if (
+    "errMsg" in linkPreviewObj &&
+    linkPreviewObj.errMsg &&
+    "images" in linkPreviewObj &&
+    Array.isArray(linkPreviewObj.images) &&
+    linkPreviewObj.images.length
+  ) {
+    console.error(
+      "Failed to get the image preview of web app. Error message: ",
+      linkPreviewObj.errMsg
+    );
+    return {};
+  }
+
+  const images =
+    "images" in linkPreviewObj && Array.isArray(linkPreviewObj.images)
+      ? linkPreviewObj.images
+      : [];
+  const errMsg = "errMsg" in linkPreviewObj ? linkPreviewObj.errMsg : "";
+  const title = "title" in linkPreviewObj ? linkPreviewObj.title : "";
+
+  const webApp = {
+    webAppPreviewImg: errMsg || !images?.length ? null : images[0],
+    webAppImgAlt: errMsg || !images?.length ? null : `${title}'s preview image`,
+  };
+
+  return webApp;
+};
+
 const getGpWebApps = async (units: INewUnitSchema[]) => {
-  const webApps: IWebAppLink[] = [];
+  const webApps: TWebAppForUI[] = [];
 
   for (const unit of units) {
     if (!unit.FeaturedMultimedia) {
@@ -336,7 +375,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
           )?.path ?? (images?.length ? images[0] : null);
       }
 
-      const webApp = {
+      const webApp: TWebAppForUI = {
         lessonIdStr: multiMediaItem?.forLsn,
         unitNumID: unit.numID,
         webAppLink: multiMediaItem.mainLink,
@@ -345,12 +384,66 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
         description: multiMediaItem.lessonRelevance,
         webAppPreviewImg: errMsg || !images?.length ? null : images[0],
         webAppImgAlt:
-          errMsg || !images?.length ? null : `${title}'s preview image`,
-        pathToFile,
+          errMsg || !images?.length ? null : `${title}'s preview image`,        
+        aboutWebAppLink: null,
+        aboutWebAppLinkType: "unit",
+        pathToFile
       };
 
       webApps.push(webApp);
     }
+  }
+
+  const allDbWebApps = await dbWebApps.find({}, { _id: 0, __v: 0 }).lean();
+  const unitNumIds = allDbWebApps
+    .map((webApp) => webApp.unitNumID)
+    .filter(Boolean);
+  let dbUnits: INewUnitSchema[] | undefined = undefined;
+
+  if (unitNumIds.length) {
+    dbUnits = (await retrieveUnits({ numID: { $in: unitNumIds } }, {})).data;
+  }
+
+  for (const dbWebApp of allDbWebApps) {
+    let webApp: TWebAppForUI = {
+      lessonIdStr: dbWebApp?.lessonIdStr,
+      unitNumID: dbWebApp.unitNumID,
+      webAppLink: dbWebApp.webAppLink,
+      title: dbWebApp.title,
+      description: dbWebApp.description,
+      pathToFile: dbWebApp.pathToFile,
+      unitTitle: null,
+      webAppPreviewImg: null,
+      webAppImgAlt: null,
+      aboutWebAppLinkType: dbWebApp.aboutWebAppLinkType,
+      aboutWebAppLink: dbWebApp.aboutWebAppLink
+    };
+
+    if (dbUnits?.length) {
+      webApp = {
+        ...webApp,
+        unitTitle:
+          dbUnits.find((unit) => unit.numID === dbWebApp.unitNumID)?.Title ??
+          null,
+      };
+    }
+
+    const webAppImg = await handleGetLinkPreviewObj(dbWebApp.webAppLink);
+
+    webApp = {
+      ...webApp,
+      ...webAppImg
+    }
+
+    if(dbWebApp.aboutWebAppLinkType === "blog" && dbWebApp.aboutWebAppLink){
+      const resBody = await getLinkPreviewObj(dbWebApp.aboutWebAppLink)
+      webApp = {
+        ...webApp,
+        blogPostTitle: "title" in resBody ? resBody.title : null 
+      }
+    }
+
+    webApps.push(webApp as TWebAppForUI);
   }
 
   return webApps;
@@ -386,14 +479,16 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
           continue;
         }
 
-        if(lesson?.status?.toLowerCase() === "upcoming"){
+        if (lesson?.status?.toLowerCase() === "upcoming") {
           console.log("The lesson is upcoming. Skipping...");
           continue;
         }
 
-        const wasLessonFounded = !!unitLessons.find(unitLesson => unitLesson.lessonPartTitle === lesson.title)
+        const wasLessonFounded = !!unitLessons.find(
+          (unitLesson) => unitLesson.lessonPartTitle === lesson.title
+        );
 
-        if(wasLessonFounded){
+        if (wasLessonFounded) {
           continue;
         }
 

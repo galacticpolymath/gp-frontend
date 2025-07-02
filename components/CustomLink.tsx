@@ -2,7 +2,19 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-indent-props */
 
+import React from 'react';
 import Link from 'next/link';
+import { ReactNode } from 'react';
+
+interface IProps {
+    hrefStr?: string;
+    children?: ReactNode;
+    fontSize?: string | number;
+    targetLinkStr?: string;
+    color?: string;
+    style?: React.CSSProperties;
+    className?: string;
+}
 
 const CustomLink = ({
     hrefStr = '',
@@ -12,7 +24,7 @@ const CustomLink = ({
     color = '',
     style = {},
     className = 'no-link-decoration',
-}) => {
+}: IProps) => {
     if (color) {
         style.color = color;
     }

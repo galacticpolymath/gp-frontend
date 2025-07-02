@@ -13,6 +13,7 @@ import GpUnitLessons from './sections/GpUnitLessons';
 import SelectedGpVideo from './modals/SelectedGpVideo';
 import SelectedGpWebApp from '../Modals/SelectedGpWebApp';
 import CurrentGpUnits from './sections/CurrentGpUnits';
+import { TWebAppForUI } from '../../backend/models/WebApp';
 
 const handleJobVizCardClick = () => {
   window.location.href = '/jobviz';
@@ -25,31 +26,20 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
   webApps,
   didErrorOccur,
 }) => {
+  useEffect(() => {
+    console.log({ webApps });
+  });
+
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [selectedGpWebApp, setSelectedGpWebApp] = useState<null | object>(null);
+  const [selectedGpWebApp, setSelectedGpWebApp] = useState<null | TWebAppForUI>(null);
   const [isWebAppModalShown, setIsWebAppModalShown] = useState(false);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
   const origin = typeof window === 'undefined' ? '' : window.location.origin;
 
-  const handleGpWebAppCardClick = (app: object) => {
+  const handleGpWebAppCardClick = (app: TWebAppForUI) => {
     setSelectedGpWebApp(app);
     setIsWebAppModalShown(true);
   };
-
-  useEffect(() => {
-    const widgetEl = document.createElement('div');
-
-    widgetEl.setAttribute('data-o-auth', '1');
-    widgetEl.setAttribute('data-widget-mode', 'register');
-    widgetEl.setAttribute('data-plan-uid', 'rmkkjamg');
-    widgetEl.setAttribute('data-plan-payment-term', 'month');
-    widgetEl.setAttribute('data-skip-plan-options', 'true');
-    widgetEl.setAttribute('data-mode', 'embed');
-
-    const parent = document.getElementById('outseta-sign-up');
-
-    parent?.appendChild(widgetEl);
-  }, []);
 
   return (
     <Layout
