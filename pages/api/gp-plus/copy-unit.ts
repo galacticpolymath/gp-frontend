@@ -8,7 +8,6 @@
 /* eslint-disable indent */
 /* eslint-disable no-multiple-empty-lines */
 
-
 import { google, drive_v3 } from "googleapis";
 import { CustomError } from "../../../backend/utils/errors";
 import axios from "axios";
@@ -68,7 +67,7 @@ export type TCopyFilesMsg = Partial<{
   folderCreated: string;
   fileCopied: string;
   filesToCopy: number;
-  didRetrieveAllItems: boolean
+  didRetrieveAllItems: boolean;
 }>;
 
 export interface IGdriveItem {
@@ -456,22 +455,24 @@ export default async function handler(
 
     sendMessage(response, { foldersToCopy: unitFolders.length + 1 });
 
-    
     console.log("gdriveAccessToken, sup there: ", gdriveAccessToken);
-    
+
     // give the user the ability to name the folder where the files will be copied to.
     const { folderId: unitFolderId, errMsg } =
-    await createGoogleDriveFolderForUser(
-      `${request.query.unitName} COPY`,
-      gdriveAccessToken as string
-    );
-    
+      await createGoogleDriveFolderForUser(
+        `${request.query.unitName} COPY`,
+        gdriveAccessToken as string
+      );
+
     if (errMsg) {
       console.error("Failed to create the target folder.");
       throw new CustomError(errMsg, 500);
     }
-    sendMessage(response, { didRetrieveAllItems: true, folderCreated: `${request.query.unitName} COPY`  });
-    
+    sendMessage(response, {
+      didRetrieveAllItems: true,
+      folderCreated: `${request.query.unitName} COPY`,
+    });
+
     console.log("The target folder was created.");
 
     let foldersFailedToCreate = [];

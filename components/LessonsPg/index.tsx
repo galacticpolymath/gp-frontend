@@ -1,19 +1,21 @@
-import Image from 'next/image';
-import UnitIconSvg from '../../assets/img/gp-unit-icon.svg';
-import LessonSvg from '../../assets/img/gp-lesson-icon.svg';
-import Layout from '../Layout';
-import GpWebApps from './sections/GpWebApps';
-import { GiShipWheel } from 'react-icons/gi';
-import { ICurrentUnits } from '../../types/global';
-import Sponsors from '../Sponsors';
-import JobVizIcon from '../JobViz/JobVizIcon';
-import React, { useEffect, useState } from 'react';
-import GpUnitVideos from './sections/GpUnitVideos';
-import GpUnitLessons from './sections/GpUnitLessons';
-import SelectedGpVideo from './modals/SelectedGpVideo';
-import SelectedGpWebApp from '../Modals/SelectedGpWebApp';
-import CurrentGpUnits from './sections/CurrentGpUnits';
-import { TWebAppForUI } from '../../backend/models/WebApp';
+/* eslint-disable quotes */
+
+import Image from "next/image";
+import UnitIconSvg from "../../assets/img/gp-unit-icon.svg";
+import LessonSvg from "../../assets/img/gp-lesson-icon.svg";
+import Layout from "../Layout";
+import GpWebApps from "./sections/GpWebApps";
+import { GiShipWheel } from "react-icons/gi";
+import { ICurrentUnits } from "../../types/global";
+import Sponsors from "../Sponsors";
+import JobVizIcon from "../JobViz/JobVizIcon";
+import React, { useEffect, useState } from "react";
+import GpUnitVideos from "./sections/GpUnitVideos";
+import GpUnitLessons from "./sections/GpUnitLessons";
+import SelectedGpVideo from "./modals/SelectedGpVideo";
+import SelectedGpWebApp from "../Modals/SelectedGpWebApp";
+import CurrentGpUnits from "./sections/CurrentGpUnits";
+import { TWebAppForUI } from "../../backend/models/WebApp";
 
 const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
@@ -31,7 +33,9 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
   });
 
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [selectedGpWebApp, setSelectedGpWebApp] = useState<null | TWebAppForUI>(null);
+  const [selectedGpWebApp, setSelectedGpWebApp] = useState<null | TWebAppForUI>(
+    null
+  );
   const [isWebAppModalShown, setIsWebAppModalShown] = useState(false);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
   const origin = typeof window === "undefined" ? "" : window.location.origin;

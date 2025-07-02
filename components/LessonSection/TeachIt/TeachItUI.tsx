@@ -58,7 +58,6 @@ import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import { v4 as uuidv4 } from "uuid";
 import { Spinner } from "react-bootstrap";
 import CopyingUnitToast from "../../CopyingUnitToast";
-import { set } from "cypress/types/lodash";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -297,7 +296,6 @@ const TeachItUI = <
     console.log("Copy unit function called");
     setItemsToCopy({ copied: 0, totalCopied: 0 });
     setCopyUnitJobResult("ongoing");
-
 
     if (!gdriveAccessToken) {
       setLocalStorageItem(

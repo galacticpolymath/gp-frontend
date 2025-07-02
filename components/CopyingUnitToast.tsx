@@ -1,3 +1,7 @@
+/* eslint-disable quotes */
+/* eslint-disable indent */
+/* eslint-disable object-curly-spacing */
+
 import React, { ReactNode } from "react";
 import { Spinner } from "react-bootstrap";
 import { TCopyUnitJobResult } from "../pages/api/gp-plus/copy-unit";
@@ -6,7 +10,7 @@ interface CopyingUnitToastProps {
   title?: string;
   subtitle?: string;
   showProgressBar?: boolean;
-  jobStatus: TCopyUnitJobResult,
+  jobStatus: TCopyUnitJobResult;
   progress: number; // current progress value
   total: number; // total value
   onCancel: () => void;
@@ -71,9 +75,15 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
   // Calculate percent for progress bar
   const percent =
     total > 0 ? Math.min(100, Math.round((progress / total) * 100)) : 0;
-  let JobStatusIcon: ReactNode | string = <Spinner animation="border" size="sm" className="me-2" />;
+  let JobStatusIcon: ReactNode | string = (
+    <Spinner 
+      animation="border" 
+      size="sm" 
+      className="me-2" 
+    />
+  );
 
-  if (jobStatus === "success"){
+  if (jobStatus === "success") {
     JobStatusIcon = "✅";
   } else if (jobStatus === "failure") {
     JobStatusIcon = "❌";
@@ -131,7 +141,11 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
           />
         ) : (
           <div className="text-center">
-            <Spinner animation="border" size="sm" className="me-2" />
+            <Spinner 
+              animation="border" 
+              size="sm" 
+              className="me-2" 
+            />
           </div>
         )}
       </div>
