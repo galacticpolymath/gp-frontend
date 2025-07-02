@@ -8,7 +8,7 @@ const ForLessonTxtWrapper = ({
     children: txt,
 }) => (
     <>
-        <div style={{ paddingTop: 2 }} className='d-flex justify-content-center'>
+        <div style={{ paddingTop: 4 }} className='d-flex justify-content-center'>
             {Icon}
         </div>
         <div className='d-flex justify-content-center ps-1'>
