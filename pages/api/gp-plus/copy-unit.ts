@@ -502,6 +502,7 @@ export default async function handler(
           foldersFailedToCreate.push(folderToCreate.name);
         } else {
           sendMessage(response, { folderCreated: folderToCreate.name });
+          
           createdFolders.push({
             id: folderId,
             gpFolderId: folderToCreate.fileId,

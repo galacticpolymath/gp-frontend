@@ -57,6 +57,7 @@ import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import { v4 as uuidv4 } from "uuid";
 import { Spinner } from "react-bootstrap";
+import CopyingUnitToast from "../../CopyingUnitToast";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -251,45 +252,23 @@ const TeachItUI = <
 
   const [toastMsg, setToastMsg] = useState("Copying file 'Heard that bird...'");
   const [toastId, setToastId] = useState<string | null>(null);
+  const [toastSubtitle, setToastSubtitle] = useState(
+    "Gathering files and folders..."
+  );
+  const [showProgressBar, setShowProgressBar] = useState(false);
+
+  const stopCopyUnitJob = () => {};
 
   const displayToast = () => {
     const toastId = toastMethods.custom(
-      <div
-        style={{
-          width: "30vw",
-          height: "135px",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          wordWrap: "break-word",
-          wordBreak: "break-word",
-          fontSize: "14px",
-          borderRadius: "8px",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        }}
-        className="text-dark d-flex flex-column bg-white"
-      >
-        <section className="p-2">
-          <h6 className="h-100 w-100 d-flex fw-normal">
-            Copying Heard That Bird
-          </h6>
-        </section>
-        <section className="h-100 w-75 p-2">
-          <p
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              margin: 0,
-              fontSize: "14px",
-            }}
-            className="text-dark"
-          >
-            {toastMsg}
-          </p>
-        </section>
-        <section>{/* the progress bar or the loading spinner */}</section>
-      </div>,
+      <CopyingUnitToast
+        title="Copying unit..."
+        subtitle={toastSubtitle}
+        showProgressBar={showProgressBar}
+        progress={0}
+        total={100}
+        onCancel={stopCopyUnitJob}
+      />,
       {
         position: "bottom-right",
         duration: Infinity,
