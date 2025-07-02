@@ -7,7 +7,6 @@ import {
   ILiveUnit,
   IMultiMediaItemForUI,
   IUnitLesson,
-  IWebAppLink,
 } from "../../types/global";
 import { getVideoThumb } from "../../components/LessonSection/Preview/utils";
 import { STATUSES_OF_SHOWABLE_LESSONS, WEB_APP_PATHS } from "../../globalVars";
@@ -16,7 +15,7 @@ import moment from "moment";
 import { nanoid } from "nanoid";
 import { getLiveUnits } from "../../shared/fns";
 import { UNITS_URL_PATH } from "../../shared/constants";
-import dbWebApps from "../models/WebApp";
+import dbWebApps, { TWebAppForUI } from "../models/WebApp";
 
 const insertUnit = async (unit: INewUnitSchema) => {
   try {
@@ -325,7 +324,7 @@ const handleGetLinkPreviewObj = async (link: string): Promise<Partial<TWebAppImg
 };
 
 const getGpWebApps = async (units: INewUnitSchema[]) => {
-  const webApps: IWebAppLink[] = [];
+  const webApps: TWebAppForUI[] = [];
 
   for (const unit of units) {
     if (!unit.FeaturedMultimedia) {
@@ -376,7 +375,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
           )?.path ?? (images?.length ? images[0] : null);
       }
 
-      const webApp = {
+      const webApp: TWebAppForUI = {
         lessonIdStr: multiMediaItem?.forLsn,
         unitNumID: unit.numID,
         webAppLink: multiMediaItem.mainLink,
@@ -385,9 +384,10 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
         description: multiMediaItem.lessonRelevance,
         webAppPreviewImg: errMsg || !images?.length ? null : images[0],
         webAppImgAlt:
-          errMsg || !images?.length ? null : `${title}'s preview image`,
-        pathToFile,
-        secondaryLink: null,
+          errMsg || !images?.length ? null : `${title}'s preview image`,        
+        aboutWebAppLink: null,
+        aboutWebAppLinkType: "unit",
+        pathToFile
       };
 
       webApps.push(webApp);
@@ -405,7 +405,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
   }
 
   for (const dbWebApp of allDbWebApps) {
-    let webApp: IWebAppLink = {
+    let webApp: TWebAppForUI = {
       lessonIdStr: dbWebApp?.lessonIdStr,
       unitNumID: dbWebApp.unitNumID,
       webAppLink: dbWebApp.webAppLink,
@@ -415,7 +415,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
       unitTitle: null,
       webAppPreviewImg: null,
       webAppImgAlt: null,
-      secondaryLink: dbWebApp.secondaryLink
+      aboutWebAppLinkType: dbWebApp.aboutWebAppLinkType,
     };
 
     if (dbUnits?.length) {
@@ -434,7 +434,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
       ...webAppImg
     }
 
-    webApps.push(webApp as IWebAppLink);
+    webApps.push(webApp as TWebAppForUI);
   }
 
   return webApps;

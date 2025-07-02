@@ -65,7 +65,6 @@ export interface IWebAppLink {
   webAppPreviewImg: string | null;
   webAppImgAlt: string | null;
   pathToFile: string | null;
-  secondaryLink: string | null;
 }
 
 export interface IUnitLesson {
