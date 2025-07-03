@@ -82,7 +82,7 @@
     "sharp": "^0.34.2",
     "start-server-and-test": "^2.0.12",
     "styled-components": "^6.1.19",
-    "swr": "^2.3.3",
+    "swr": "^2.3.4",
     "tls": "^0.0.1",
     "url": "^0.11.4",
     "urllib": "^4.6.12",
