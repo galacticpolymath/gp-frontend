@@ -4,7 +4,7 @@
 /** @type {import('next').NextConfig} */
 
 const cspHeader = `
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com/ https://cdn.outseta.com/ https://js.stripe.com;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com/ https://cdn.outseta.com/ https://js.stripe.com https://auth.magic.link/sdk;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     object-src 'none';
     base-uri 'self';

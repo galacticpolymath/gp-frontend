@@ -4,9 +4,10 @@ import Head from 'next/head';
 import Footer from './Footer';
 import Navbar from './Navbar';
 import { Noto_Sans } from 'next/font/google';
-import Script from 'next/script';
 import useOutsetaInputValidation from '../customHooks/useOutsetaInputValidation';
 import { useEffect } from 'react';
+import { Magic } from 'magic-sdk';
+import { OAuthExtension } from '@magic-ext/oauth';
 
 const notoSansLight = Noto_Sans({
   subsets: ['latin'],
@@ -54,10 +55,15 @@ export default function Layout({
     document.body.appendChild(mainScript);
 
     const magicLink = document.createElement("script");
-    magicLink.src = "https://auth.magic.link/pnp/login";
-    magicLink.setAttribute("data-magic-publishable-api-key", "pk_live_C11C2F44453877F6");
+    magicLink.src = "https://auth.magic.link/sdk";
     magicLink.async = true;
     document.body.appendChild(magicLink);
+
+    const magic = new Magic("pk_live_C11C2F44453877F6", {
+      extensions: [
+        new OAuthExtension(),
+      ],
+    });
 
     return () => {
       document.body.removeChild(configScript);
@@ -87,7 +93,12 @@ export default function Layout({
             <meta property='og:image:height' content='630' />
           </>
         )}
-        {imgAlt && <meta property='og:image:alt' content={imgAlt} />}
+        {imgAlt && (
+          <meta
+            property='og:image:alt'
+            content={imgAlt} 
+          />
+        )}
         <meta property='og:url' content={url} />
         {keywords && (
           <meta
@@ -118,8 +129,14 @@ export default function Layout({
         )}
         {imgSrc && <meta name='twitter:image' content={imgSrc} />}
         {imgAlt && <meta name='twitter:image:alt' content={imgAlt} />}
-        <meta name='twitter:domain' content='galacticpolymath.com' />
-        <meta name='twitter:url' content={url} />
+        <meta
+          name='twitter:domain'
+          content='galacticpolymath.com' 
+        />
+        <meta
+          name='twitter:url'
+          content={url} 
+        />
         {isOnProd && !!canonicalLink && (
           <link rel='canonical' href={canonicalLink} />
         )}
