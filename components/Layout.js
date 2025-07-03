@@ -53,6 +53,12 @@ export default function Layout({
     mainScript.async = true;
     document.body.appendChild(mainScript);
 
+    const magicLink = document.createElement("script");
+    magicLink.src = "https://auth.magic.link/pnp/login";
+    magicLink.setAttribute("data-magic-publishable-api-key", "pk_live_C11C2F44453877F6");
+    magicLink.async = true;
+    document.body.appendChild(magicLink);
+
     return () => {
       document.body.removeChild(configScript);
       document.body.removeChild(mainScript);
