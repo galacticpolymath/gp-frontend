@@ -10,6 +10,7 @@
 
 import { google, drive_v3 } from "googleapis";
 import { CustomError } from "../../../backend/utils/errors";
+import { setTimeout as pause } from "node:timers/promises";
 import axios from "axios";
 import {
   copyFiles,
@@ -20,6 +21,7 @@ import {
 } from "../../../backend/services/googleDriveServices";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
+import { waitWithExponentialBackOff } from "../../../globalFns";
 
 const createGoogleDriveFolderForUser = async (
   folderName: string,
@@ -66,6 +68,7 @@ export type TCopyFilesMsg = Partial<{
   foldersToCopy: number;
   folderCreated: string;
   fileCopied: string;
+  folderCopyId: string;
   filesToCopy: number;
   didRetrieveAllItems: boolean;
 }>;
@@ -197,7 +200,7 @@ export default async function handler(
     response.setHeader("Connection", "kee-alive");
     response.setHeader("Content-Encoding", "none");
 
-    sendMessage(response, { msg: "started" });
+    sendMessage(response, { msg: "Copying unit is in progress..." });
 
     request.on("close", () => {
       console.log("Client closed the connection.");
@@ -263,18 +266,6 @@ export default async function handler(
           file?.mimeType?.includes("folder")
         );
         const filesToCopy = data?.files.length - folders.length;
-
-        console.log("filesToCopy:", filesToCopy);
-        console.log("foldersToCopy:", folders.length);
-
-        if (filesToCopy && !folders.length) {
-          sendMessage(response, { filesToCopy: filesToCopy });
-        } else {
-          sendMessage(response, {
-            filesToCopy: folders.length,
-            foldersToCopy: folders.length,
-          });
-        }
 
         let foldersOccurrenceObj:
           | (drive_v3.Schema$File & { [key: string]: any })
@@ -453,17 +444,34 @@ export default async function handler(
       }
     }
 
-    sendMessage(response, { foldersToCopy: unitFolders.length + 1 });
+    const totalFoldersToCreate = unitFolders.filter(unit => {
+      console.log("unit.mimeType, sup there: ", unit.mimeType)
 
+      return unit.mimeType.includes('folder')
+    }).length
+    const totalFilesToCopy = unitFolders.filter(unit => {
+      console.log("unit.mimeType, sup there: ", unit.mimeType)
+
+      return !unit.mimeType.includes('folder')
+    }).length
+
+    // pause(1_000);
+
+    sendMessage(response, { foldersToCopy: totalFoldersToCreate + 1 });
+
+    
+    
     console.log("gdriveAccessToken, sup there: ", gdriveAccessToken);
-
+    
     // give the user the ability to name the folder where the files will be copied to.
     const { folderId: unitFolderId, errMsg } =
-      await createGoogleDriveFolderForUser(
-        `${request.query.unitName} COPY`,
-        gdriveAccessToken as string
-      );
+    await createGoogleDriveFolderForUser(
+      `${request.query.unitName} COPY`,
+      gdriveAccessToken as string
+    );
 
+    
+    sendMessage(response, { filesToCopy: totalFilesToCopy });
     if (errMsg) {
       console.error("Failed to create the target folder.");
       throw new CustomError(errMsg, 500);
@@ -471,6 +479,7 @@ export default async function handler(
     sendMessage(response, {
       didRetrieveAllItems: true,
       folderCreated: `${request.query.unitName} COPY`,
+      folderCopyId: unitFolderId
     });
 
     console.log("The target folder was created.");
@@ -608,7 +617,7 @@ export default async function handler(
       {
         isJobDone: true,
         msg: "Successful copied files and created folders.",
-        wasSuccessful: false,
+        wasSuccessful: true,
       },
       true
     );

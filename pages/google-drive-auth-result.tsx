@@ -111,7 +111,7 @@ const GoogleDriveAuthResult = () => {
         secure: true,
       });
       setAppCookie("gdriveAccessToken", responseBody.access_token, {
-        expires: new Date(responseBody.expires_at),
+        expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
         secure: true,
       });
       setAppCookie("gdriveRefreshToken", responseBody.refresh_token, {
@@ -169,11 +169,7 @@ const GoogleDriveAuthResult = () => {
                 ? "Authenticating with Google Drive..."
                 : "Loading, please wait..."}
               <span className="d-inline-flex align-items-center justify-content-center">
-                <Spinner 
-                  animation="border" 
-                  role="status" 
-                  className="mt-2"
-                >
+                <Spinner animation="border" role="status" className="mt-2">
                   <span className="visually-hidden">Loading...</span>
                 </Spinner>
               </span>

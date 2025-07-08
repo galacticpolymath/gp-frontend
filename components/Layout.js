@@ -59,7 +59,7 @@ export default function Layout({
     magicLink.async = true;
     document.body.appendChild(magicLink);
 
-    const magic = new Magic("pk_live_C11C2F44453877F6", {
+    new Magic("pk_live_C11C2F44453877F6", {
       extensions: [
         new OAuthExtension(),
       ],

@@ -5,15 +5,18 @@
 import React, { ReactNode } from "react";
 import { Spinner } from "react-bootstrap";
 import { TCopyUnitJobResult } from "../pages/api/gp-plus/copy-unit";
+import CustomLink from "./CustomLink";
 
 interface CopyingUnitToastProps {
-  title?: string;
-  subtitle?: string;
+  title: string;
+  subtitle: string;
   showProgressBar?: boolean;
   jobStatus: TCopyUnitJobResult;
-  progress: number; // current progress value
-  total: number; // total value
+  progress?: number;
+  total?: number;
+  targetFolderId?: string;
   onCancel: () => void;
+  onCancelBtnTxt?: "CANCEL" | "Close";
 }
 
 type TCopyItemProgressBarProps = Pick<
@@ -57,7 +60,7 @@ const CopyingItemsProgressBar: React.FC<TCopyItemProgressBarProps> = ({
           textAlign: "right",
         }}
       >
-        {progress}/{total} files
+        {progress}/{total} items
       </div>
     </div>
   );
@@ -70,17 +73,19 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
   showProgressBar = false,
   total,
   jobStatus,
+  targetFolderId,
   onCancel,
+  onCancelBtnTxt = "CANCEL",
 }) => {
-  // Calculate percent for progress bar
-  const percent =
-    total > 0 ? Math.min(100, Math.round((progress / total) * 100)) : 0;
+  let percent: number | null = null;
+
+  if (typeof total === "number" && typeof progress === "number") {
+    percent =
+      total > 0 ? Math.min(100, Math.round((progress / total) * 100)) : 0;
+  }
+
   let JobStatusIcon: ReactNode | string = (
-    <Spinner 
-      animation="border" 
-      size="sm" 
-      className="me-2" 
-    />
+    <Spinner animation="border" size="sm" className="me-2" />
   );
 
   if (jobStatus === "success") {
@@ -93,9 +98,10 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
     <div
       style={{
         // maxWidth: 400,
-        width: "29vw",
+        width: "35vw",
         background: "#212529",
         borderRadius: 10,
+        minHeight: "280px",
         boxShadow: "0 4px 16px rgba(44, 62, 80, 0.18)",
         padding: "24px 32px 24px 24px",
         color: "#fff",
@@ -133,19 +139,44 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
         >
           {subtitle}
         </div>
-        {showProgressBar ? (
-          <CopyingItemsProgressBar
-            progress={progress}
-            total={total}
-            percent={percent}
-          />
+        {showProgressBar &&
+        typeof percent === "number" &&
+        typeof total === "number" ? (
+          <>
+            {targetFolderId && (
+              <div
+                style={{
+                  fontSize: "18px",
+                  width: "100%",
+                  display: "inline-block",
+                  wordBreak: "break-all",
+                  overflowWrap: "break-word",
+                }}
+              >
+                Link to folder:{" "}
+                <CustomLink
+                  hrefStr={`https://drive.google.com/drive/folders/${targetFolderId}`}
+                  className="under-on-hover pointer flex-wrap"
+                  style={{
+                    wordBreak: "break-all",
+                    overflowWrap: "break-word",
+                  }}
+                  targetLinkStr="_blank"
+                >
+                  {`https://drive.google.com/drive/folders/${targetFolderId}`}
+                </CustomLink>
+              </div>
+            )}
+
+            <CopyingItemsProgressBar
+              progress={progress}
+              total={total}
+              percent={percent}
+            />
+          </>
         ) : (
           <div className="text-center">
-            <Spinner 
-              animation="border" 
-              size="sm" 
-              className="me-2" 
-            />
+            <Spinner animation="border" size="sm" className="me-2" />
           </div>
         )}
       </div>
@@ -166,7 +197,7 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
             transition: "background 0.2s",
           }}
         >
-          Cancel
+          {onCancelBtnTxt}
         </button>
       </div>
     </div>

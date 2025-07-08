@@ -52,11 +52,12 @@ import {
   removeLocalStorageItem,
   setLocalStorageItem,
 } from "../../../shared/fns";
-import { TCopyFilesMsg, TCopyUnitJobResult } from "../../../pages/api/gp-plus/copy-unit";
+import {
+  TCopyFilesMsg,
+  TCopyUnitJobResult,
+} from "../../../pages/api/gp-plus/copy-unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
-import { v4 as uuidv4 } from "uuid";
-import { Spinner } from "react-bootstrap";
 import CopyingUnitToast from "../../CopyingUnitToast";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
@@ -181,7 +182,7 @@ const toastMethods = {
       },
     });
   },
-}; 
+};
 
 const TeachItUI = <
   TLesson extends object,
@@ -209,6 +210,7 @@ const TeachItUI = <
     GradesOrYears,
   } = props;
   console.log("props, sup there: ", props);
+  const didInitialRenderOccur = useRef(false);
   const { _isDownloadModalInfoOn } = useModalContext();
   const { _isGpPlusMember } = useUserContext();
   const areThereGradeBands =
@@ -229,26 +231,13 @@ const TeachItUI = <
       "gdriveRefreshToken",
     ]);
   const { session: siteSession, status, token } = session;
-  const _didGDriveTokenExpire = useMemo(() => {
-    if (gdriveAccessTokenExp) {
-      return new Date().getTime() > new Date(gdriveAccessTokenExp).getTime();
-    }
-
-    return false;
-  }, []);
-  const [didGDriveTokenExpire, setDidGDriveTokenExpire] = useState(
-    _didGDriveTokenExpire
-  );
 
   const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
   const router = useRouter();
 
   useEffect(() => {
-    if (didGDriveTokenExpire) {
-      // TODO: refresh the token here
-      setDidGDriveTokenExpire(false);
-    }
-  }, [didGDriveTokenExpire]);
+    didInitialRenderOccur.current = true;
+  }, []);
 
   const [toastMsg, setToastMsg] = useState("Copying file 'Heard that bird...'");
   const [copyUnitJobResult, setCopyUnitJobResult] =
@@ -263,25 +252,25 @@ const TeachItUI = <
   });
   const [showProgressBar, setShowProgressBar] = useState(false);
 
-  const stopCopyUnitJob = () => {};
+  const displayToast = (
+    copyingUnitToastCompProps: Parameters<typeof CopyingUnitToast>["0"],
+    toastId?: string
+  ) => {
+    const options: ToastOptions = toastId
+      ? {
+          position: "bottom-right",
+          duration: Infinity,
+          id: toastId,
+        }
+      : {
+          position: "bottom-right",
+          duration: Infinity,
+        };
 
-  const displayToast = () => {
-    const toastId = toastMethods.custom(
-      <CopyingUnitToast
-        jobStatus={copyUnitJobResult}
-        title="Copying unit..."
-        subtitle={toastSubtitle}
-        showProgressBar={showProgressBar}
-        progress={0}
-        total={100}
-        onCancel={stopCopyUnitJob}
-      />,
-      {
-        position: "bottom-right",
-        duration: Infinity,
-      }
+    return toast.custom(
+      <CopyingUnitToast {...copyingUnitToastCompProps} />,
+      options
     );
-    setToastId(toastId);
   };
 
   const closeToast = () => {
@@ -324,55 +313,100 @@ const TeachItUI = <
       withCredentials: true,
     });
 
-    displayToast();
+    const stopJob = () => {
+      console.log("Will stop job.");
+      eventSource.close();
+    };
+
+    const toastId = displayToast({
+      jobStatus: "ongoing",
+      onCancel: stopJob,
+      title: "Copying unit...",
+      subtitle: "Gathering files and folders...",
+    });
+    let filesCopied = 0;
+    let foldersCreated = 0;
+    let totalItemsToCopy = 0;
+    let showProgressBar = false;
+    let targetFolderId: string | undefined = undefined;
 
     eventSource.onmessage = (event) => {
       try {
         const dataParsable = event.data as string;
         const data = JSON.parse(dataParsable) as TCopyFilesMsg;
 
+        console.log("message retrieved, sup there: ", data);
+
         if (data.isJobDone) {
           eventSource.close();
-          setCopyUnitJobResult(data.wasSuccessful ? "success" : "failure");
-          setToastSubtitle(data.wasSuccessful ? "Copied successfully." : "An error has occurred. Please try again.");
+          const jobStatus = data.wasSuccessful ? "success" : "failure";
+          const title = data.wasSuccessful
+            ? "Unit successfuly copied"
+            : "Failed to copy unit";
+          const subtitle = data.wasSuccessful
+            ? "Successfully copied unit into your drive."
+            : "An error has occurred. Please try again.";
+
+          displayToast(
+            {
+              jobStatus,
+              onCancel: stopJob,
+              title,
+              subtitle,
+              progress: filesCopied + foldersCreated,
+              total: totalItemsToCopy,
+              showProgressBar,
+              onCancelBtnTxt: "Close",
+              targetFolderId,
+            },
+            toastId
+          );
           return;
         }
 
         // Update progress based on the message type
         let progressMessage = "Copying unit...";
         if (data.folderCreated) {
-          progressMessage = `Folder '${data.folderCreated}' was created.`;
-          setItemsToCopy((state) => ({
-            ...state,
-            copied: state.copied + 1,
-          }));
+          progressMessage = `Folder created: '${data.folderCreated}'.`;
+          foldersCreated += 1;
         } else if (data.fileCopied) {
-          progressMessage = `File '${data.fileCopied}' has been copied.`;
-          setItemsToCopy((state) => ({
-            ...state,
-            copied: state.copied + 1,
-          }));
+          progressMessage = `File copied: '${data.fileCopied}'.`;
+          filesCopied += 1;
         } else if (data.foldersToCopy) {
           progressMessage = `Will copy ${data.foldersToCopy} folders`;
-          setItemsToCopy((state) => ({
-            ...state,
-            totalCopied: state.totalCopied + (data.foldersToCopy as number),
-          }));
+          totalItemsToCopy += data.foldersToCopy;
         } else if (data.filesToCopy) {
           progressMessage = `Will copy ${data.filesToCopy} files.`;
-          setItemsToCopy((state) => ({
-            ...state,
-            totalCopied: state.totalCopied + (data.filesToCopy as number),
-          }));
+          totalItemsToCopy += data.filesToCopy;
         } else if (data.msg) {
           progressMessage = data.msg;
         }
 
-        if (data.didRetrieveAllItems) {
-          setShowProgressBar(true);
+        console.log("toastSubtitle, yo there: ", toastSubtitle);
+
+        console.log("progressMessage: ", progressMessage);
+
+        if (!showProgressBar) {
+          showProgressBar = !!data.didRetrieveAllItems;
         }
 
-        setToastSubtitle(progressMessage);
+        if (!targetFolderId && data.folderCopyId) {
+          targetFolderId = data.folderCopyId;
+        }
+
+        displayToast(
+          {
+            jobStatus: "ongoing",
+            onCancel: stopJob,
+            title: "Copying unit...",
+            subtitle: progressMessage,
+            progress: filesCopied + foldersCreated,
+            total: totalItemsToCopy,
+            showProgressBar: showProgressBar,
+            targetFolderId,
+          },
+          toastId
+        );
 
         console.log("data: ", data);
       } catch (error) {
@@ -524,18 +558,20 @@ const TeachItUI = <
                     <div className="d-flex justify-content-center align-items-center">
                       <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{" "}
                     </div>
-                    <span
-                      style={{ lineHeight: "23px" }}
-                      className="d-none d-sm-inline"
-                    >
-                      {isGpPlusMember &&
-                        !gdriveAccessToken &&
-                        "Authenticate w/ Google Drive & Copy Unit"}
-                      {isGpPlusMember && gdriveAccessToken && "Copy Unit"}
-                      {!isGpPlusMember &&
-                        !gdriveAccessToken &&
-                        `BECOME A GP+ MEMBER TO ${selectedGradeResources.linkText}`}
-                    </span>
+                    {didInitialRenderOccur.current && (
+                      <span
+                        style={{ lineHeight: "23px" }}
+                        className="d-none d-sm-inline"
+                      >
+                        {isGpPlusMember &&
+                          !gdriveAccessToken &&
+                          "Authenticate w/ Google Drive & Copy Unit"}
+                        {isGpPlusMember && gdriveAccessToken && "Copy Unit"}
+                        {!isGpPlusMember &&
+                          !gdriveAccessToken &&
+                          `BECOME A GP+ MEMBER TO ${selectedGradeResources.linkText}`}
+                      </span>
+                    )}
                     <span
                       style={{ lineHeight: "17px", fontSize: "14px" }}
                       className="d-inline d-sm-none"
