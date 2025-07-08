@@ -59,6 +59,7 @@ import {
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import CopyingUnitToast from "../../CopyingUnitToast";
+import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -223,7 +224,10 @@ const TeachItUI = <
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const [isGpPlusMember] = _isGpPlusMember;
   const session = useSiteSession();
-  const { getCookies } = useCustomCookies(["token", "gdriveAccessToken"]);
+  const { getCookies, setAppCookie } = useCustomCookies([
+    "token",
+    "gdriveAccessToken",
+  ]);
   const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
     getCookies([
       "gdriveAccessToken",
@@ -281,7 +285,7 @@ const TeachItUI = <
     setToastId(null);
   };
 
-  const copyUnit = () => {
+  const copyUnit = async () => {
     console.log("Copy unit function called");
     setItemsToCopy({ copied: 0, totalCopied: 0 });
     setCopyUnitJobResult("ongoing");
@@ -297,10 +301,51 @@ const TeachItUI = <
       return;
     }
 
+    // Check if token is about to expire (less than 5 minutes)
+    let currentAccessToken = gdriveAccessToken;
+    if (gdriveAccessTokenExp && gdriveRefreshToken) {
+      const currentTime = new Date().getTime();
+      const fiveMinutesInMs = 5 * 60 * 1000;
+      const timeUntilExpiry = gdriveAccessTokenExp - currentTime;
+
+      if (timeUntilExpiry < fiveMinutesInMs) {
+        console.log("Token expires soon, refreshing...");
+        const refreshResult = await refreshGDriveToken(gdriveRefreshToken);
+
+        if (refreshResult) {
+          currentAccessToken = refreshResult.access_token;
+          // Update cookies with new token and expiry
+          setAppCookie("gdriveAccessToken", refreshResult.access_token, {
+            expires: new Date(
+              new Date().getTime() + 1_000 * 60 * 60 * 24 * 180
+            ),
+            secure: true,
+          });
+          setAppCookie("gdriveAccessTokenExp", refreshResult.expires_at, {
+            expires: new Date(
+              new Date().getTime() + 1_000 * 60 * 60 * 24 * 180
+            ),
+            secure: true,
+          });
+          console.log("Token refreshed successfully");
+        } else {
+          console.error("Failed to refresh token, redirecting to auth");
+          setLocalStorageItem(
+            "gpPlusFeatureLocation",
+            `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+          );
+          const url = createGDriveAuthUrl();
+          removeLocalStorageItem("didGpSignInAttemptOccur");
+          window.location.href = url;
+          return;
+        }
+      }
+    }
+
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-      "gdrive-token": gdriveAccessToken,
+      "gdrive-token": currentAccessToken,
       "gdrive-token-refresh": gdriveRefreshToken as string,
     };
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
@@ -553,6 +598,7 @@ const TeachItUI = <
                   className={`btn btn-primary px-3 py-2 col-8 col-md-12 ${
                     session.status === "loading" ? "opacity-25" : "opacity-100"
                   }`}
+                  disabled={!didInitialRenderOccur.current}
                 >
                   <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2 ">
                     <div className="d-flex justify-content-center align-items-center">

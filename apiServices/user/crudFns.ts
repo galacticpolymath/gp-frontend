@@ -102,3 +102,20 @@ export const authenticateUserWithGDrive = async (code: string) => {
         return null;
     }
 }
+
+export const refreshGDriveToken = async (refreshToken: string) => {
+    try {
+        const { status, data } = await axios.post('/api/gp-plus/refresh-token', { 
+            refresh_token: refreshToken 
+        });
+
+        if (status !== 200) {
+            throw new Error(`Failed to refresh Google Drive token. Status code: ${status}`);
+        }
+
+        return data;
+    } catch(error) {
+        console.error("Failed to refresh Google Drive token. Reason: ", error);
+        return null;
+    }
+};
