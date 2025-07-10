@@ -12,7 +12,6 @@ import Layout from "../components/Layout";
 import { Button } from "react-bootstrap";
 import Modal from "../components/Modal";
 import magic from "magic-sdk";
-import "../styles/pages/gpPlus.scss";
 
 export function injectOutsetaScripts() {
   const existingConfig = document.querySelector(

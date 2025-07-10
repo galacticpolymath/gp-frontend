@@ -8,6 +8,7 @@ import ModalsContainer from "../ModalsContainer";
 import { GoogleAnalytics } from "nextjs-google-analytics";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
+import "../styles/pages/gpPlus.scss";
 import "./style.scss";
 import "../styles/pages/HireUs/hireUs.scss";
 import "../styles/pages/Lessons/lessons.scss";

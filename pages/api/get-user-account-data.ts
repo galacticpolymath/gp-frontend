@@ -64,7 +64,7 @@ export default async function handler(
       throw new CustomError("Failed to connect to the database.", 500);
     }
 
-    const gpPlusMembershipStatus = await getGpPlusMembershipStatus(email);
+    const gpPlusMembershipStatusPromise = getGpPlusMembershipStatus(email);
     const getUserAccountPromise = getUserByEmail<TUserSchemaForClient>(
       email,
       PROJECTIONS
@@ -72,20 +72,25 @@ export default async function handler(
     const getMailingListContactPromise = getMailingListContact(
       email
     );
-    let [userAccount, mailingListContact] = await Promise.all([
+    let [userAccount, mailingListContact, gpPlusMembershipStatus] = await Promise.all([
       getUserAccountPromise,
       getMailingListContactPromise,
+      gpPlusMembershipStatusPromise
     ]);
 
     if (!userAccount) {
       throw new CustomError("User not found.", 404);
     }
 
+    console.log("gpPlusMembershipStatus: ", gpPlusMembershipStatus);
+
+
     if (!request.query.willNotRetrieveMailingListStatus) {
-      userAccount = {
-        ...userAccount,
-        isOnMailingList: gpPlusMembershipStatus === "Subscribing",
-      };
+        userAccount = {
+          ...userAccount,
+          isOnMailingList: !!mailingListContact,
+          isGpPlusMember: gpPlusMembershipStatus === "Subscribing",
+        };
     }
 
     return response.status(200).json(handleUserDeprecatedV1Fields(userAccount));
