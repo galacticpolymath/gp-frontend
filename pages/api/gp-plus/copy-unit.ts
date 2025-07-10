@@ -14,9 +14,11 @@ import { setTimeout as pause } from "node:timers/promises";
 import axios from "axios";
 import {
   copyFiles,
+  deleteGoogleDriveItem,
   FileMetaData,
   generateGoogleAuthJwt,
   getGoogleDriveFolders,
+  refreshAuthToken,
   shareFilesWithRetries,
 } from "../../../backend/services/googleDriveServices";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -26,7 +28,10 @@ import { waitWithExponentialBackOff } from "../../../globalFns";
 const createGoogleDriveFolderForUser = async (
   folderName: string,
   accessToken: string,
-  parentFolderIds: string[] = []
+  parentFolderIds: string[] = [],
+  tries: number,
+  refreshToken: string,
+  origin: string
 ) => {
   try {
     const folderMetadata = new FileMetaData(folderName, parentFolderIds);
@@ -54,7 +59,32 @@ const createGoogleDriveFolderForUser = async (
     const errMsg = `Failed to create folder for the user. Reason: ${error?.response?.data?.error}`;
     console.log("errMsg: ", errMsg);
 
-    return { wasSuccessful: false, errMsg: errMsg };
+    if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
+      tries -= 1;
+
+      const { data } = (await refreshAuthToken(refreshToken, origin)) ?? {};
+
+      console.log("Refresh token response data:", data);
+
+      if (!data?.access_token) {
+        throw new Error("Failed to refresh access token");
+      }
+
+      return await createGoogleDriveFolderForUser(
+        folderName,
+        data?.access_token,
+        parentFolderIds,
+        tries,
+        refreshToken,
+        origin
+      );
+    }
+
+    return {
+      wasSuccessful: false,
+      errMsg: errMsg,
+      status: error?.response?.data?.error?.status,
+    };
   }
 };
 
@@ -71,6 +101,8 @@ export type TCopyFilesMsg = Partial<{
   folderCopyId: string;
   filesToCopy: number;
   didRetrieveAllItems: boolean;
+  refreshToken: string;
+  errStatus: string;
 }>;
 
 export interface IGdriveItem {
@@ -90,7 +122,7 @@ type TUnitFolder = {
   pathToFile: string;
   parentFolderId?: string;
 };
-export type TCopyUnitJobResult = "success" | "failure" | "ongoing";
+export type TCopyUnitJobResult = "success" | "failure" | "ongoing" | "canceled";
 
 const sendMessage = <TMsg extends object = TCopyFilesMsg>(
   response: NextApiResponse,
@@ -168,44 +200,81 @@ export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
+  let copyDestinationFolderId = '';
+  let gdriveAccessToken = '';
+
   try {
-    const gdriveAccessToken = request.headers["gdrive-token"];
-    const jwtPayload = await getJwtPayloadPromise(
-      request.headers.authorization
-    );
-
-    if (!jwtPayload || !jwtPayload?.payload?.email) {
-      throw new CustomError("The access token is not valid.", 400);
-    }
-
-    if (!gdriveAccessToken || Array.isArray(gdriveAccessToken)) {
-      throw new CustomError("The gdrive access token was not provided.", 400);
-    }
-
-    const email = jwtPayload.payload.email;
-
-    if (
-      !request.query.unitDriveId ||
-      Array.isArray(request.query.unitDriveId)
-    ) {
-      throw new CustomError("The id of the drive was not provided.", 400);
-    }
-
-    if (!request.query.unitName) {
-      throw new CustomError("The the name of the unit was not provided.", 400);
-    }
+    const origin = new URL(request.headers.referer ?? "").origin;
 
     response.setHeader("Content-Type", "text/event-stream");
     response.setHeader("Cache-Control", "no-cache");
     response.setHeader("Connection", "kee-alive");
     response.setHeader("Content-Encoding", "none");
 
-    sendMessage(response, { msg: "Copying unit is in progress..." });
+    let isStreamOpen = true;
 
-    request.on("close", () => {
-      console.log("Client closed the connection.");
-      response.end();
+    response.on("close", () => {
+      isStreamOpen = false
     });
+
+    if (!origin) {
+      sendMessage(response, {
+        msg: "Origin is not present",
+        isJobDone: true,
+        wasSuccessful: false,
+      });
+      return;
+    }
+
+    const _gdriveAccessToken = request.headers["gdrive-token"];
+    const gdriveRefreshToken = request.headers["gdrive-token-refresh"];
+    const jwtPayload = await getJwtPayloadPromise(
+      request.headers.authorization
+    );
+
+    if (!jwtPayload || !jwtPayload?.payload?.email) {
+      sendMessage(response, {
+        msg: "The access token is not valid.",
+        isJobDone: true,
+        wasSuccessful: false,
+      });
+      return;
+    }
+
+    if (!_gdriveAccessToken || Array.isArray(_gdriveAccessToken)) {
+      sendMessage(response, {
+        msg: "The gdrive access token was not provided.",
+        isJobDone: true,
+        wasSuccessful: false,
+      });
+      return;
+    }
+
+    const email = jwtPayload.payload.email;
+    gdriveAccessToken = _gdriveAccessToken;
+
+    if (
+      !request.query.unitDriveId ||
+      Array.isArray(request.query.unitDriveId)
+    ) {
+      sendMessage(response, {
+        msg: "The id of the drive was not provided.",
+        isJobDone: true,
+        wasSuccessful: false,
+      });
+      return;
+    }
+
+    if (!request.query.unitName) {
+      sendMessage(response, {
+        msg: "The name of the unit was not provided.",
+        isJobDone: true,
+        wasSuccessful: false,
+      });
+      return;
+    }
+
+    sendMessage(response, { msg: "Copying unit..." });
 
     const googleAuthJwt = generateGoogleAuthJwt();
 
@@ -444,34 +513,38 @@ export default async function handler(
       }
     }
 
-    const totalFoldersToCreate = unitFolders.filter(unit => {
-      console.log("unit.mimeType, sup there: ", unit.mimeType)
+    const totalFoldersToCreate = unitFolders.filter((unit) => {
+      console.log("unit.mimeType, sup there: ", unit.mimeType);
 
-      return unit.mimeType.includes('folder')
-    }).length
-    const totalFilesToCopy = unitFolders.filter(unit => {
-      console.log("unit.mimeType, sup there: ", unit.mimeType)
+      return unit.mimeType.includes("folder");
+    }).length;
+    const totalFilesToCopy = unitFolders.filter((unit) => {
+      console.log("unit.mimeType, sup there: ", unit.mimeType);
 
-      return !unit.mimeType.includes('folder')
-    }).length
+      return !unit.mimeType.includes("folder");
+    }).length;
 
     // pause(1_000);
 
     sendMessage(response, { foldersToCopy: totalFoldersToCreate + 1 });
 
-    
-    
     console.log("gdriveAccessToken, sup there: ", gdriveAccessToken);
-    
+
     // give the user the ability to name the folder where the files will be copied to.
     const { folderId: unitFolderId, errMsg } =
-    await createGoogleDriveFolderForUser(
-      `${request.query.unitName} COPY`,
-      gdriveAccessToken as string
-    );
+      await createGoogleDriveFolderForUser(
+        `${request.query.unitName} COPY`,
+        gdriveAccessToken as string,
+        undefined,
+        3,
+        gdriveRefreshToken as string,
+        origin
+      );
 
-    
+    copyDestinationFolderId = unitFolderId;
+
     sendMessage(response, { filesToCopy: totalFilesToCopy });
+
     if (errMsg) {
       console.error("Failed to create the target folder.");
       throw new CustomError(errMsg, 500);
@@ -479,7 +552,7 @@ export default async function handler(
     sendMessage(response, {
       didRetrieveAllItems: true,
       folderCreated: `${request.query.unitName} COPY`,
-      folderCopyId: unitFolderId
+      folderCopyId: unitFolderId,
     });
 
     console.log("The target folder was created.");
@@ -509,7 +582,10 @@ export default async function handler(
           await createGoogleDriveFolderForUser(
             folderToCreate.name,
             gdriveAccessToken,
-            [unitFolderId]
+            [unitFolderId],
+            3,
+            gdriveRefreshToken as string,
+            origin
           );
 
         if (!wasSuccessful) {
@@ -542,7 +618,10 @@ export default async function handler(
       const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(
         folderToCreate.name,
         gdriveAccessToken,
-        [parentFolderId]
+        [parentFolderId],
+        3,
+        gdriveRefreshToken as string,
+        origin
       );
 
       if (!wasSuccessful) {
@@ -591,15 +670,24 @@ export default async function handler(
     }
 
     console.log("Will copy files...");
+
     const { wasSuccessful: wasCopiesSuccessful } = await copyFiles(
       files,
       createdFolders,
       gdriveAccessToken,
-      0,
+      4,
       (data: TCopyFilesMsg) => {
         sendMessage(response, data);
-      }
+      },
     );
+
+    if(!isStreamOpen){
+      const result = await deleteGoogleDriveItem(unitFolderId, gdriveAccessToken)
+      console.log("A failure has occurred. Delete google  drive item result: ", result);
+      response.end();
+      return;
+    }
+
     console.log("Attempted to copy files. Result: ", wasCopiesSuccessful);
 
     if (!wasCopiesSuccessful) {
@@ -609,6 +697,11 @@ export default async function handler(
         { isJobDone: true, msg: "Failed to copy files.", wasSuccessful: false },
         true
       );
+      response.end();
+
+      const result = await deleteGoogleDriveItem(unitFolderId, gdriveAccessToken)
+
+      console.log("A failure has occurred. Delete google  drive item result: ", result);
       return;
     }
 
@@ -621,6 +714,8 @@ export default async function handler(
       },
       true
     );
+
+    response.end();
   } catch (error) {
     console.error("An error has occurred. Error: ", error);
     sendMessage(
@@ -628,5 +723,9 @@ export default async function handler(
       { isJobDone: true, msg: "Failed to copy files.", wasSuccessful: false },
       true
     );
+
+    const result = await deleteGoogleDriveItem(copyDestinationFolderId, gdriveAccessToken)
+
+    console.log("Result, yo there: ", result)
   }
 }
