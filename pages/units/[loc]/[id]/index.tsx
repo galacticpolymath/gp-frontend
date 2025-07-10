@@ -1079,7 +1079,6 @@ export const getStaticProps = async (arg: {
         }
 
         if (sectionsUpdated.teachingMaterials) {
-          console.log("sup there! yo");
           sectionsUpdated.teachingMaterials = {
             ...sectionsUpdated.teachingMaterials,
             unitTitle: sectionsUpdated.overview?.unitTitle,

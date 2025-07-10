@@ -214,6 +214,7 @@ export default async function handler(
     let isStreamOpen = true;
 
     response.on("close", () => {
+      console.log("The user closed the stream.");
       isStreamOpen = false
     });
 

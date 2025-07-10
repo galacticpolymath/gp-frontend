@@ -2,28 +2,28 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-indent-props */
 
-import React from "react";
-import Link from "next/link";
-import { ReactNode } from "react";
+import React from 'react';
+import Link from 'next/link';
+import { ReactNode } from 'react';
 
 interface IProps {
   hrefStr?: string;
   children?: ReactNode;
   fontSize?: string | number;
-  targetLinkStr?: "_self" | "_blank" | "_parent" | "_top";
+  targetLinkStr?: '_self' | '_blank' | '_parent' | '_top';
   color?: string;
   style?: React.CSSProperties;
   className?: string;
 }
 
 const CustomLink = ({
-  hrefStr = "",
+  hrefStr = '',
   children,
   fontSize = undefined,
-  targetLinkStr = "_self",
-  color = "",
+  targetLinkStr = '_self',
+  color = '',
   style = {},
-  className = "no-link-decoration",
+  className = 'no-link-decoration',
 }: IProps) => {
   if (color) {
     style.color = color;
@@ -37,7 +37,7 @@ const CustomLink = ({
       style={style}
       href={hrefStr}
       target={targetLinkStr}
-      rel="noopener noreferrer"
+      rel='noopener noreferrer'
       className={className}
     >
       {children}

@@ -27,7 +27,7 @@ export default async function handler(
 
     if (!refresh_token) {
       return response.status(400).json({ 
-        error: "Refresh token is required" 
+        error: "Refresh token is required", 
       });
     }
 
