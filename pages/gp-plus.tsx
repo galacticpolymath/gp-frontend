@@ -1,10 +1,17 @@
 /* eslint-disable quotes */
 
-import React, { useEffect, useState } from "react";
+import {
+  Dialog,
+  Transition,
+  TransitionChild,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
+import React, { Fragment, useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import { Button } from "react-bootstrap";
 import Modal from "../components/Modal";
-import magic from 'magic-sdk';
+import magic from "magic-sdk";
 
 export function injectOutsetaScripts() {
   const existingConfig = document.querySelector(
@@ -99,6 +106,8 @@ const GpPlus: React.FC = () => {
     if (outseta) {
       outsetaModalContent?.appendChild(outseta);
     }
+
+    injectOutsetaScripts();
   }, []);
 
   return (
@@ -120,8 +129,71 @@ const GpPlus: React.FC = () => {
           SIGN UP
         </Button>
       </div>
-      <Modal
-        show={isSignupModalDisplayed}
+      {/* <div
+        id="outseta-sign-up"
+        data-o-auth="1"
+        data-widget-mode="register"
+        data-plan-uid="rmkkjamg"
+        data-plan-payment-term="month"
+        data-skip-plan-options="false"
+        data-mode="embed"
+        // className= F"d-none"
+      /> */}
+      {/* <Transition appear={false} show={true} as={Fragment} transition> */}
+      <div
+        id="signup-modal-div"
+        style={{
+          zIndex: 1000000,
+          width: "100vw",
+          height: "100vh",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+        className={`position-fixed ${
+          isSignupModalDisplayed ? "visible" : "invisible"
+        }`}
+      >
+        <div className="position-relative w-100 h-100">
+          <div
+            id="success-modal-close-btn"
+            className={`position-absolute top-0 start-0 w-100 h-100 bg-dark ${
+              isSignupModalDisplayed ? "d-block fade-backdrop-in" : "d-none"
+            }`}
+            onClick={() => {
+              setIsSignupModalDisplayed(false);
+            }}
+          />
+          <div
+            style={{
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              borderRadius: ".5em",
+              zIndex: isSignupModalDisplayed ? 1000 : -1000,
+              maxHeight: "95vh",
+            }}
+            className={`position-absolute w-50 rounded-lg shadow-lg overflow-scroll bg-white ${
+              isSignupModalDisplayed
+                ? "visible fade-modal-in-short"
+                : "fade-modal-out-short"
+            }`}
+          >
+            <div
+              id="outseta-sign-up"
+              data-o-auth="1"
+              data-widget-mode="register"
+              data-plan-uid="rmkkjamg"
+              data-plan-payment-term="month"
+              data-skip-plan-options="false"
+              data-mode="embed"
+            />
+          </div>
+        </div>
+      </div>
+      {/* </Transition> */}
+      {/* <Modal
+        show={true}
         style={{ opacity: signUpModalOpacity }}
         onHide={handleOnHide}
         onShow={() => {
@@ -153,7 +225,7 @@ const GpPlus: React.FC = () => {
           data-skip-plan-options="false"
           data-mode="embed"
         />
-      </Modal>
+      </Modal> */}
     </Layout>
   );
 };

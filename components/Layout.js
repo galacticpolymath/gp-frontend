@@ -31,8 +31,6 @@ export default function Layout({
 }) {
   const isOnProd = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
 
-  useOutsetaInputValidation();
-
   return (
     <div style={style} className={`${notoSansLight.className} ${className}`}>
       <Head>

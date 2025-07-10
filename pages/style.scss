@@ -97,6 +97,50 @@ body {
   }
 }
 
+.fade-backdrop-in{
+  animation: fadeBackdropIn 250ms forwards;
+  opacity: .25;
+}
+
+@keyframes fadeBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: .25;
+  }
+}
+
+.fade-modal-in-short{
+  animation: fadeModalInShort 250ms forwards;
+  opacity: 1;
+}
+
+@keyframes fadeModalInShort {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-modal-out-short{
+  animation: fadeModalOutShort 250ms forwards;
+  opacity: 1;
+  visibility: hidden;
+}
+
+@keyframes fadeModalOutShort {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    // visibility: hidden;
+  }
+}
+
 .fade-in-quick {
   animation: fadeInQuick 0.5s forwards;
   opacity: 1;
