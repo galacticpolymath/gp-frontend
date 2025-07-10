@@ -697,27 +697,33 @@ export const createUser = async (
   }
 };
 
-const MEMBERSHIP_STATUS = {
-  0: "NotFound",
-  3: "Subscribing",
-  4: "Cancelling",
-  5: "Expired",
-  7: "PastDue",
-};
-
 export interface IOutsetaAuthTokenResBody {
   access_token: string;
   expires_in: number;
   token_type: string;
 }
 
-export const getGpPlusMembershipStatus = async (email: string) => {
+
+type TAccountStageLabel = "Subscribing" | "Cancelling" | "Past due" | "Expired"
+
+export interface IOutsetaUser{
+  Name: string, 
+  AccountStageLabel: TAccountStageLabel
+  [key: string]: unknown
+}
+
+export interface IOutsetaPagination<TData extends object = IOutsetaUser>{
+  metadata: Record<"limit" | "offset" | "total", number>,
+  items: TData[] | null
+}
+
+export const getGpPlusMembershipStatus = async (email: string): Promise<TAccountStageLabel | "NonMember" | "Err"> => {
   try {
     const url = new URL(`${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`);
 
     url.searchParams.append("Name", email);
     
-    const { status, data } = await axios.get(
+    const { status, data } = await axios.get<IOutsetaPagination>(
       url.href,
       {
         headers: {
@@ -733,10 +739,16 @@ export const getGpPlusMembershipStatus = async (email: string) => {
       throw new Error("accountRetrievalErr");
     }
 
-    return data;
+    const targetUser = data.items?.length ? data.items?.find(outsetaUser => outsetaUser.Name === email) : undefined;
+
+    if (!targetUser){
+      return "NonMember"
+    }
+
+    return targetUser.AccountStageLabel;
   } catch (error: any) {
     console.error("Failed to retrieve the outseta status for the target user. Error: " , error?.response);
 
-    return null;
+    return "Err";
   }
 };

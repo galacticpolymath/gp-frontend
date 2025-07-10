@@ -64,10 +64,7 @@ export default async function handler(
       throw new CustomError("Failed to connect to the database.", 500);
     }
 
-    const userGpPlusMembershipStatus = await getGpPlusMembershipStatus(email);
-
-    console.log("userGpPlusMembershipStatus: ", userGpPlusMembershipStatus);
-
+    const gpPlusMembershipStatus = await getGpPlusMembershipStatus(email);
     const getUserAccountPromise = getUserByEmail<TUserSchemaForClient>(
       email,
       PROJECTIONS
@@ -87,7 +84,7 @@ export default async function handler(
     if (!request.query.willNotRetrieveMailingListStatus) {
       userAccount = {
         ...userAccount,
-        isOnMailingList: !!mailingListContact,
+        isOnMailingList: gpPlusMembershipStatus === "Subscribing",
       };
     }
 

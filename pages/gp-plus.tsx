@@ -12,6 +12,7 @@ import Layout from "../components/Layout";
 import { Button } from "react-bootstrap";
 import Modal from "../components/Modal";
 import magic from "magic-sdk";
+import "../styles/pages/gpPlus.scss";
 
 export function injectOutsetaScripts() {
   const existingConfig = document.querySelector(
@@ -57,6 +58,13 @@ export function injectOutsetaScripts() {
 const GpPlus: React.FC = () => {
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
   const [signUpModalOpacity, setSignUpModalOpacity] = useState(1);
+  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
+    "monthly"
+  );
+
+  const handleToggle = () => {
+    setBillingPeriod((prev) => (prev === "monthly" ? "yearly" : "monthly"));
+  };
 
   const handleOnHide = () => {
     setSignUpModalOpacity(0);
@@ -97,7 +105,7 @@ const GpPlus: React.FC = () => {
   const handleSignUpBtnClick = () => {
     // GOAL: check if the user has an outseta account when the user clicks on this button
     setIsSignupModalDisplayed(true);
-  }
+  };
 
   useEffect(() => {
     const outsetaModalContent = document.getElementById(
@@ -121,7 +129,7 @@ const GpPlus: React.FC = () => {
     // GOAL: show the log in button for the user to sign in the user clicks on the sign up button
 
     // CASE: the user is signed in, but is not a gp plus member
-    // GOAL: present the sign up modal 
+    // GOAL: present the sign up modal
 
     // GOAL: make a request to the outseta to determine if the user has an outseta account
   }, []);
@@ -135,15 +143,84 @@ const GpPlus: React.FC = () => {
       imgAlt="Galactic Polymath Logo"
       url="/gp-plus"
     >
-      <div className="min-vh-100 min-vw-100 pt-5 ps-5">
+      <div className="gpplus-pricing-section">
         <h1>GP+</h1>
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={handleSignUpBtnClick}
-        >
-          SIGN UP
-        </Button>
+        <div className="gpplus-toggle-row">
+          <span className={billingPeriod === "monthly" ? "active" : ""}>
+            Monthly
+          </span>
+          <label className="gpplus-switch">
+            <input
+              type="checkbox"
+              checked={billingPeriod === "yearly"}
+              onChange={handleToggle}
+            />
+            <span className="gpplus-slider" />
+          </label>
+          <span className={billingPeriod === "yearly" ? "active" : ""}>
+            Yearly
+          </span>
+        </div>
+        <div className="gpplus-cards-wrapper">
+          <div className="gpplus-card lite">
+            <div className="gpplus-card-header">Lite</div>
+            <div className="gpplus-card-subheader">INDIVIDUAL</div>
+            <ul className="gpplus-features">
+              <li>+ 1 user</li>
+              <li>+ 15 STEM units</li>
+              <li>+ 50 STEM lessons</li>
+              <li>+ Access to future lessons</li>
+              <li>+ View-Only access</li>
+            </ul>
+            <div className="gpplus-price">
+              $0 <span>/ {billingPeriod}</span>
+            </div>
+            <button className="gpplus-signup-btn lite">Sign up free</button>
+          </div>
+          <div className="gpplus-card plus highlighted">
+            <div className="gpplus-card-header">Plus</div>
+            <div className="gpplus-card-subheader">INDIVIDUAL</div>
+            <ul className="gpplus-features">
+              <li>+ 1 user</li>
+              <li>+ 15 STEM units</li>
+              <li>+ 50 STEM lessons</li>
+              <li>+ Access to future lessons</li>
+              <li>+ Bulk GDrive export of entire units</li>
+              <li>+ Editable lessons</li>
+              <li>+ Autograding</li>
+              <li className="gpplus-bonus">
+                Bonus access to:
+                <br />
+                JobViz App, Classroom Activator, STEM Vocabulary Flashcards
+              </li>
+            </ul>
+            <div className="gpplus-price">
+              {billingPeriod === "monthly" ? "$10" : "$60"}{" "}
+              <span>/ {billingPeriod === "monthly" ? "month" : "year"}</span>
+            </div>
+            <button
+              className="gpplus-signup-btn plus"
+              onClick={handleSignUpBtnClick}
+            >
+              Sign up
+            </button>
+          </div>
+          <div className="gpplus-card group">
+            <div className="gpplus-card-header">Group</div>
+            <div className="gpplus-card-subheader">SCHOOL & DISTRICT</div>
+            <ul className="gpplus-features">
+              <li>+ 10 users</li>
+              <li>+ 15 STEM units</li>
+              <li>+ 50 STEM lessons</li>
+              <li>+ Access to future lessons</li>
+              <li>+ Bulk GDrive export of entire units</li>
+              <li>+ Fully editable lessons</li>
+              <li>+ Autograding</li>
+            </ul>
+            <div className="gpplus-price">Request a quote</div>
+            <button className="gpplus-signup-btn group">Request a quote</button>
+          </div>
+        </div>
       </div>
       <div
         id="signup-modal-div"

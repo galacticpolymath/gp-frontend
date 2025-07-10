@@ -1,0 +1,202 @@
+.gpplus-pricing-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gpplus-toggle-row {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0 2.5rem 0;
+  font-size: 1.1rem;
+  gap: 1rem;
+  .active {
+    color: #96195f;
+    font-weight: bold;
+  }
+}
+
+.gpplus-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+}
+.gpplus-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #e0e0e0;
+  border-radius: 26px;
+  transition: background 0.2s;
+}
+.gpplus-switch input:checked + .gpplus-slider {
+  background: #96195f;
+}
+.gpplus-slider:before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.gpplus-switch input:checked + .gpplus-slider:before {
+  transform: translateX(22px);
+}
+
+.gpplus-cards-wrapper {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.gpplus-card {
+  background: #ffeded;
+  border-radius: 1.3em;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  min-width: 270px;
+  max-width: 340px;
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  position: relative;
+  border: 2px solid transparent;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+.gpplus-card.lite {
+  border-color: #3e0d55;
+}
+.gpplus-card.plus {
+  border-color: #96195f;
+}
+.gpplus-card.group {
+  border-color: #1ca9e5;
+}
+.gpplus-card.highlighted {
+  box-shadow: 0 4px 32px rgba(150, 25, 95, 0.15);
+  border-width: 3px;
+  z-index: 2;
+}
+.gpplus-card-header {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+.gpplus-card-subheader {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  background: #3e0d55;
+  border-radius: 0.5em;
+  padding: 0.2em 1em;
+  margin-bottom: 1.2rem;
+}
+.gpplus-card.plus .gpplus-card-subheader {
+  background: #96195f;
+}
+.gpplus-card.group .gpplus-card-subheader {
+  background: #1ca9e5;
+}
+.gpplus-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  width: 100%;
+  li {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+    line-height: 1.5;
+  }
+  .gpplus-bonus {
+    color: #96195f;
+    font-size: 0.95rem;
+    margin-top: 0.7rem;
+    font-weight: 500;
+  }
+}
+.gpplus-price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #96195f;
+  margin-bottom: 1.2rem;
+  span {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 400;
+  }
+}
+.gpplus-signup-btn {
+  width: 100%;
+  padding: 0.7em 0;
+  border: none;
+  border-radius: 0.5em;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: #3e0d55;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.gpplus-signup-btn.plus {
+  background: #96195f;
+}
+.gpplus-signup-btn.group {
+  background: #1ca9e5;
+}
+.gpplus-signup-btn.lite {
+  background: #3e0d55;
+}
+.gpplus-signup-btn:hover {
+  filter: brightness(0.95);
+}
+
+@media (max-width: 900px) {
+  .gpplus-cards-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .gpplus-card {
+    max-width: 95vw;
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .gpplus-pricing-section {
+    padding: 1rem 0.2rem;
+  }
+  .gpplus-card {
+    padding: 1.2rem 0.7rem 1rem 0.7rem;
+  }
+  .gpplus-card-header {
+    font-size: 1.3rem;
+  }
+  .gpplus-price {
+    font-size: 1.3rem;
+  }
+}
