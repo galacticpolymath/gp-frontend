@@ -13,6 +13,11 @@ import {
 import User from "../models/User/index";
 import { AnyBulkWriteOperation } from "mongoose";
 import { waitWithExponentialBackOff } from "../../globalFns.js";
+import axios from "axios";
+import qs from 'qs';
+
+const OUTSETA_API_ORIGIN = "https://galactic-polymath.outseta.com";
+const OUTSETA_API_VERSION_PATH = "api/v1";
 
 export const getUsers = async <
   TUsers extends IUserSchemaBaseProps = IUserSchema
@@ -39,10 +44,12 @@ export const getUsers = async <
 export const getUser = async <
   TUser extends TUserSchemaV2 = TUserSchemaV2,
   TUserKey extends keyof TUser = keyof TUser
->(queryObj: Omit<Partial<TUser>, "password">, projectionObj: Partial<Record<TUserKey, number>> = {}) => {
+>(
+  queryObj: Omit<Partial<TUser>, "password">,
+  projectionObj: Partial<Record<TUserKey, number>> = {}
+) => {
   try {
-    const user = await User.findOne(queryObj, projectionObj)
-      .lean();
+    const user = await User.findOne(queryObj, projectionObj).lean();
 
     return { user: user as TUser };
   } catch (error: any) {
@@ -236,20 +243,29 @@ export const handleUserDeprecatedV1Fields = (user: TUserSchemaForClient) => {
 export const migrateUserToV2 = (user: TUserSchemaForClient) => {
   let migratedVals: Partial<IAboutUserFormNewFieldsV1> = {};
 
-  if (typeof user.classroomSize?.num === 'number' && typeof user.classSize === "undefined") {
+  if (
+    typeof user.classroomSize?.num === "number" &&
+    typeof user.classSize === "undefined"
+  ) {
     migratedVals = {
       classSize: user.classroomSize.num ?? 0,
     };
   }
 
-  if (typeof user.classroomSize?.isNotTeaching === 'boolean' && typeof user.isNotTeaching === "undefined") {
+  if (
+    typeof user.classroomSize?.isNotTeaching === "boolean" &&
+    typeof user.isNotTeaching === "undefined"
+  ) {
     migratedVals = {
       ...migratedVals,
       isNotTeaching: user.classroomSize.isNotTeaching,
     };
   }
 
-  if (user.gradesOrYears?.selection && (typeof user.gradesType === "undefined" || !user.gradesType)) {
+  if (
+    user.gradesOrYears?.selection &&
+    (typeof user.gradesType === "undefined" || !user.gradesType)
+  ) {
     migratedVals = {
       ...migratedVals,
       gradesType: user.gradesOrYears.selection ?? null,
@@ -257,7 +273,11 @@ export const migrateUserToV2 = (user: TUserSchemaForClient) => {
     console.log("migratedVals, gradesType: ", migratedVals);
   }
 
-  if (user.gradesOrYears?.ageGroupsTaught && ((typeof user.gradesTaught === "undefined") || (user.gradesTaught?.length === 0))) {
+  if (
+    user.gradesOrYears?.ageGroupsTaught &&
+    (typeof user.gradesTaught === "undefined" ||
+      user.gradesTaught?.length === 0)
+  ) {
     migratedVals = {
       ...migratedVals,
       gradesTaught: user.gradesOrYears.ageGroupsTaught ?? null,
@@ -280,10 +300,12 @@ export const migrateUserToV2 = (user: TUserSchemaForClient) => {
 
   if (
     user.reasonsForSiteVisit &&
-    ((typeof user.siteVisitReasonsDefault === "undefined") || (user.siteVisitReasonsDefault?.length === 0))
+    (typeof user.siteVisitReasonsDefault === "undefined" ||
+      user.siteVisitReasonsDefault?.length === 0)
   ) {
-    
-    const defaultSelectionsEntries = Object.entries(user.reasonsForSiteVisit).filter(([key, _]) => {
+    const defaultSelectionsEntries = Object.entries(
+      user.reasonsForSiteVisit
+    ).filter(([key, _]) => {
       const keySplitted = key.split("-");
       const lastChar = keySplitted.at(-1);
 
@@ -309,7 +331,8 @@ export const migrateUserToV2 = (user: TUserSchemaForClient) => {
   if (
     user.reasonsForSiteVisit &&
     user.reasonsForSiteVisit["reason-for-visit-custom"] &&
-    (typeof user.siteVisitReasonsCustom === "undefined" || (user.siteVisitReasonsCustom === ""))
+    (typeof user.siteVisitReasonsCustom === "undefined" ||
+      user.siteVisitReasonsCustom === "")
   ) {
     migratedVals = {
       ...migratedVals,
@@ -319,7 +342,11 @@ export const migrateUserToV2 = (user: TUserSchemaForClient) => {
     };
   }
 
-  if (user.subjects && ((typeof user.subjectsTaughtDefault === "undefined") || (user.subjectsTaughtDefault?.length === 0))) {
+  if (
+    user.subjects &&
+    (typeof user.subjectsTaughtDefault === "undefined" ||
+      user.subjectsTaughtDefault?.length === 0)
+  ) {
     const subjectEntries = Object.entries(
       user.subjects as Record<string, string>
     );
@@ -383,9 +410,12 @@ export const executeUserCrudOperations = async (
 export const executeUserCrudOperationsWithRetries = async (
   crudOperations: AnyBulkWriteOperation<TUserSchemaV2>[],
   tries: number
-): Promise<ReturnType<(typeof User.bulkWrite)> | {
-    isOk: () => boolean;
-}> => {
+): Promise<
+  | ReturnType<typeof User.bulkWrite>
+  | {
+      isOk: () => boolean;
+    }
+> => {
   console.log("current try: ", tries);
   if (tries <= 0) {
     return { isOk: () => false };
@@ -395,12 +425,19 @@ export const executeUserCrudOperationsWithRetries = async (
     const result = await User.bulkWrite(crudOperations);
 
     if (result.hasWriteErrors()) {
-      const writeErrorsIndices = new Set(result.getWriteErrors().map(error => error.index));
-      const _crudOperations = crudOperations.filter((_, index) => writeErrorsIndices.has(index));
+      const writeErrorsIndices = new Set(
+        result.getWriteErrors().map((error) => error.index)
+      );
+      const _crudOperations = crudOperations.filter((_, index) =>
+        writeErrorsIndices.has(index)
+      );
 
       await waitWithExponentialBackOff(tries);
-      
-      return await executeUserCrudOperationsWithRetries(_crudOperations, tries - 1);
+
+      return await executeUserCrudOperationsWithRetries(
+        _crudOperations,
+        tries - 1
+      );
     }
 
     console.log("Bulk write operation has succeeded. Will return.");
@@ -444,11 +481,11 @@ export const updateUser = async (
       updatedUserProperties = {
         ...updatedUserProperties,
         classSize: 0,
-        isTeacher: false
+        isTeacher: false,
       };
     }
 
-    if(updatedUserProperties.isNotTeaching === true){
+    if (updatedUserProperties.isNotTeaching === true) {
       updatedUserProperties = {
         ...updatedUserProperties,
         classSize: 0,
@@ -474,7 +511,9 @@ export const updateUser = async (
 
       const updateUserWithProjectedProps = entries.reduce(
         (updatedUserWithProjectedPropsAccum, [key, value]) => {
-          if (updatedUserPropsToFilterOut?.includes(key as keyof TUserSchemaV2)) {
+          if (
+            updatedUserPropsToFilterOut?.includes(key as keyof TUserSchemaV2)
+          ) {
             return updatedUserWithProjectedPropsAccum;
           }
 
@@ -656,5 +695,50 @@ export const createUser = async (
     console.error(errMsg);
 
     return { wasSuccessful: false, msg: errMsg };
+  }
+};
+
+const MEMBERSHIP_STATUS = {
+  0: "NotFound",
+  3: "Subscribing",
+  4: "Cancelling",
+  5: "Expired",
+  7: "PastDue",
+};
+
+export interface IOutsetaAuthTokenResBody {
+  access_token: string;
+  expires_in: number;
+  token_type: string;
+}
+
+export const getGpPlusMembershipStatus = async (email: string) => {
+  try {
+    // TODO: query the user via their email
+    const url = `${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`;
+
+    console.log("url: ", url);
+
+    console.log("oauthToken: ", email);
+    
+    
+    const { status, data } = await axios.get(
+      url,
+      {
+        headers: {
+          Authorization: `Outseta ${process.env.OUTSETA_API_KEY}:${process.env.OUTSETA_API_SECRET}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log('data, gp plus users: ', data)
+
+    if(status !== 200){
+      throw new Error("accountRetrievalErr");
+    }
+
+  } catch (error: any) {
+    console.error("Failed to retrieve the outseta status for the target user. Error: " , error?.response);
   }
 };
