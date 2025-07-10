@@ -2,21 +2,29 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 
-import React, { ReactNode } from "react";
+import React, {
+  ReactNode,
+  Ref,
+  RefAttributes,
+  RefObject,
+  useState,
+} from "react";
 import { Spinner } from "react-bootstrap";
 import { TCopyUnitJobResult } from "../pages/api/gp-plus/copy-unit";
 import CustomLink from "./CustomLink";
+import { BtnWithSpinner } from "./General/BtnWithSpinner";
 
 interface CopyingUnitToastProps {
   title: string;
   subtitle: string;
   showProgressBar?: boolean;
   jobStatus: TCopyUnitJobResult;
+  ref: RefObject<HTMLDivElement | null>;
   progress?: number;
   total?: number;
   targetFolderId?: string;
   onCancel: () => void;
-  onCancelBtnTxt?: "CANCEL" | "Close";
+  onCancelBtnTxt?: "CANCEL" | "Close" | "RETRY";
 }
 
 type TCopyItemProgressBarProps = Pick<
@@ -73,11 +81,13 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
   showProgressBar = false,
   total,
   jobStatus,
+  ref,
   targetFolderId,
   onCancel,
   onCancelBtnTxt = "CANCEL",
 }) => {
   let percent: number | null = null;
+  const [wasCancelBtnClicked, setWasCancelBtnClicked] = useState(false);
 
   if (typeof total === "number" && typeof progress === "number") {
     percent =
@@ -85,20 +95,19 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
   }
 
   let JobStatusIcon: ReactNode | string = (
-    <Spinner animation="border" size="sm" className="me-2" />
+    <Spinner animation="border" className="me-2" />
   );
 
   if (jobStatus === "success") {
     JobStatusIcon = "✅";
-  } else if (jobStatus === "failure") {
+  } else if (jobStatus === "failure" || jobStatus === "canceled") {
     JobStatusIcon = "❌";
   }
 
   return (
     <div
+      ref={ref}
       style={{
-        // maxWidth: 400,
-        width: "35vw",
         background: "#212529",
         borderRadius: 10,
         minHeight: "280px",
@@ -107,98 +116,100 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
         color: "#fff",
         fontFamily: "Segoe UI, Arial, sans-serif",
       }}
+      className="col-xl-5 col-sm-8"
     >
-      <div
-        style={{
-          fontWeight: 500,
-          fontSize: "20px",
-          marginBottom: 8,
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        {JobStatusIcon}
-        {title}
-      </div>
-      <div className="d-flex flex-column gap-2 py-2">
+      <div className="position-relative h-100">
         <div
           style={{
-            fontSize: "18px",
+            fontWeight: 500,
+            fontSize: "20px",
             marginBottom: 8,
-            ...(jobStatus === "ongoing"
-              ? {
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                  wordWrap: "break-word",
-                  wordBreak: "break-word",
-                }
-              : {}),
+            display: "flex",
+            alignItems: "center",
           }}
-          className={`${!showProgressBar ? "text-center" : ""} w-100`}
         >
-          {subtitle}
+          {JobStatusIcon} {title}
         </div>
-        {showProgressBar &&
-        typeof percent === "number" &&
-        typeof total === "number" ? (
-          <>
-            {targetFolderId && (
-              <div
-                style={{
-                  fontSize: "18px",
-                  width: "100%",
-                  display: "inline-block",
-                  wordBreak: "break-all",
-                  overflowWrap: "break-word",
-                }}
-              >
-                Link to folder:{" "}
-                <CustomLink
-                  hrefStr={`https://drive.google.com/drive/folders/${targetFolderId}`}
-                  className="under-on-hover pointer flex-wrap"
+        <div className="d-flex flex-column gap-2 py-2">
+          <div
+            style={{
+              fontSize: "18px",
+              marginBottom: 8,
+              ...(jobStatus === "ongoing"
+                ? {
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    wordWrap: "break-word",
+                    wordBreak: "break-word",
+                  }
+                : {}),
+            }}
+            className={`${!showProgressBar ? "text-center" : ""} w-100`}
+          >
+            {subtitle}
+          </div>
+          {showProgressBar &&
+          typeof percent === "number" &&
+          typeof total === "number" ? (
+            <>
+              {targetFolderId && (
+                <div
                   style={{
+                    fontSize: "18px",
+                    width: "100%",
+                    display: "inline-block",
                     wordBreak: "break-all",
                     overflowWrap: "break-word",
                   }}
-                  targetLinkStr="_blank"
                 >
-                  {`https://drive.google.com/drive/folders/${targetFolderId}`}
-                </CustomLink>
-              </div>
-            )}
+                  Link to folder:{" "}
+                  <CustomLink
+                    hrefStr={`https://drive.google.com/drive/folders/${targetFolderId}`}
+                    className="under-on-hover pointer flex-wrap"
+                    style={{
+                      wordBreak: "break-all",
+                      overflowWrap: "break-word",
+                    }}
+                    targetLinkStr="_blank"
+                  >
+                    {`https://drive.google.com/drive/folders/${targetFolderId}`}
+                  </CustomLink>
+                </div>
+              )}
 
-            <CopyingItemsProgressBar
-              progress={progress}
-              total={total}
-              percent={percent}
-            />
-          </>
-        ) : (
-          <div className="text-center">
-            <Spinner animation="border" size="sm" className="me-2" />
-          </div>
-        )}
-      </div>
-      <div
-        style={{ display: "flex", justifyContent: "flex-end", marginTop: 18 }}
-      >
-        <button
-          onClick={onCancel}
-          style={{
-            background: "#333438",
-            color: "#fff",
-            border: "none",
-            borderRadius: 4,
-            padding: "8px 28px",
-            fontSize: 15,
-            cursor: "pointer",
-            fontWeight: 500,
-            transition: "background 0.2s",
-          }}
-        >
-          {onCancelBtnTxt}
-        </button>
+              <CopyingItemsProgressBar
+                progress={progress}
+                total={total}
+                percent={percent}
+              />
+            </>
+          ) : jobStatus === "ongoing" ? (
+            <div className="text-center">
+              <Spinner animation="border" className="me-2" />
+            </div>
+          ) : null}
+        </div>
+        <div className="position-absolute w-100 bottom-0 d-flex justify-content-end">
+          <BtnWithSpinner
+            onClick={onCancel}
+            wasClicked={wasCancelBtnClicked}
+            style={{
+              background: "#333438",
+              color: "#fff",
+              border: "none",
+              width: "175px",
+              borderRadius: 4,
+              padding: "8px 28px",
+              fontSize: 15,
+              cursor: "pointer",
+              fontWeight: 500,
+              transition: "background 0.2s",
+            }}
+          >
+            {onCancelBtnTxt}
+          </BtnWithSpinner>
+        </div>
       </div>
     </div>
   );
