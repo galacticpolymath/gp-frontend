@@ -60,6 +60,8 @@ import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import CopyingUnitToast from "../../CopyingUnitToast";
 import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
+import { nanoid } from "nanoid";
+import { Spinner } from "react-bootstrap";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -91,99 +93,6 @@ interface TeachItUIProps<
 }
 
 const ASSESSMENTS_ID = 100;
-const toastMethods = {
-  custom: (children: JSX.Element, options?: ToastOptions) => {
-    return toast.custom(children, options);
-  },
-
-  success: (
-    message: string,
-    options?: ToastOptions,
-    duration: number = 4_000
-  ) => {
-    return toast.success(message, {
-      ...options,
-      className: "bg-white text-dark",
-      icon: null,
-      style: {
-        width: "350px",
-        height: "80px",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        whiteSpace: "nowrap",
-        wordWrap: "break-word",
-        wordBreak: "break-word",
-        background: "#4CAF50",
-        color: "white",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "14px",
-        padding: "12px",
-        borderRadius: "8px",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        ...options?.style,
-      },
-      duration,
-    });
-  },
-  error: (
-    message: string,
-    options?: ToastOptions,
-    duration: number = 4_000
-  ) => {
-    return toast.error(message, {
-      ...options,
-      icon: null,
-      style: {
-        width: "350px",
-        height: "80px",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        whiteSpace: "nowrap",
-        wordWrap: "break-word",
-        wordBreak: "break-word",
-        background: "#f44336",
-        color: "white",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "14px",
-        padding: "12px",
-        borderRadius: "8px",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        ...options?.style,
-      },
-      duration,
-    });
-  },
-  loading: (message: string, options?: ToastOptions) => {
-    return toast.loading(message, {
-      ...options,
-      className: "bg-white text-dark",
-      icon: null,
-      style: {
-        width: "350px",
-        height: "80px",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        whiteSpace: "nowrap",
-        wordWrap: "break-word",
-        wordBreak: "break-word",
-        background: "#2196F3",
-        color: "white",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "14px",
-        padding: "12px",
-        borderRadius: "8px",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        ...options?.style,
-      },
-    });
-  },
-};
 
 const TeachItUI = <
   TLesson extends object,
@@ -212,6 +121,7 @@ const TeachItUI = <
   } = props;
   console.log("props, sup there: ", props);
   const didInitialRenderOccur = useRef(false);
+  const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const { _isDownloadModalInfoOn } = useModalContext();
   const { _isGpPlusMember } = useUserContext();
   const areThereGradeBands =
@@ -228,14 +138,15 @@ const TeachItUI = <
     "token",
     "gdriveAccessToken",
   ]);
+  const queriedCookies = getCookies([
+    "gdriveAccessToken",
+    "gdriveAccessTokenExp",
+    "gdriveRefreshToken",
+  ]);
   const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
-    getCookies([
-      "gdriveAccessToken",
-      "gdriveAccessTokenExp",
-      "gdriveRefreshToken",
-    ]);
+    queriedCookies;
   const { session: siteSession, status, token } = session;
-
+  const [isCopyingUnit, setIsCopyingUnit] = useState(false);
   const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
   const router = useRouter();
 
@@ -243,18 +154,8 @@ const TeachItUI = <
     didInitialRenderOccur.current = true;
   }, []);
 
-  const [toastMsg, setToastMsg] = useState("Copying file 'Heard that bird...'");
-  const [copyUnitJobResult, setCopyUnitJobResult] =
-    useState<TCopyUnitJobResult>("ongoing");
   const [toastId, setToastId] = useState<string | null>(null);
-  const [toastSubtitle, setToastSubtitle] = useState(
-    "Gathering files and folders..."
-  );
-  const [totalItemsToCopy, setItemsToCopy] = useState({
-    copied: 0,
-    totalCopied: 0,
-  });
-  const [showProgressBar, setShowProgressBar] = useState(false);
+  const toastRef = useRef<HTMLDivElement>(null);
 
   const displayToast = (
     copyingUnitToastCompProps: Parameters<typeof CopyingUnitToast>["0"],
@@ -277,18 +178,8 @@ const TeachItUI = <
     );
   };
 
-  const closeToast = () => {
-    if (!toastId) {
-      return;
-    }
-    toast.dismiss(toastId);
-    setToastId(null);
-  };
-
   const copyUnit = async () => {
     console.log("Copy unit function called");
-    setItemsToCopy({ copied: 0, totalCopied: 0 });
-    setCopyUnitJobResult("ongoing");
 
     if (!gdriveAccessToken) {
       setLocalStorageItem(
@@ -301,9 +192,12 @@ const TeachItUI = <
       return;
     }
 
-    // Check if token is about to expire (less than 5 minutes)
+    setIsCopyingUnit(true);
+
     let currentAccessToken = gdriveAccessToken;
+
     if (gdriveAccessTokenExp && gdriveRefreshToken) {
+      // Check if token is about to expire (less than 5 minutes)
       const currentTime = new Date().getTime();
       const fiveMinutesInMs = 5 * 60 * 1000;
       const timeUntilExpiry = gdriveAccessTokenExp - currentTime;
@@ -335,7 +229,9 @@ const TeachItUI = <
             `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
           );
           const url = createGDriveAuthUrl();
+
           removeLocalStorageItem("didGpSignInAttemptOccur");
+
           window.location.href = url;
           return;
         }
@@ -348,6 +244,7 @@ const TeachItUI = <
       "gdrive-token": currentAccessToken,
       "gdrive-token-refresh": gdriveRefreshToken as string,
     };
+    console.log("Request headers: ", headers);
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
 
     url.searchParams.append("unitDriveId", "15KK-qNwPUbw2d1VBDvsjHfreCSBpwMiw");
@@ -358,17 +255,45 @@ const TeachItUI = <
       withCredentials: true,
     });
 
+    const _toastId = toastId ?? nanoid();
+
+    setToastId(_toastId);
+
     const stopJob = () => {
       console.log("Will stop job.");
       eventSource.close();
+
+      const closeToast = () => {
+        toastRef.current?.remove();
+        toast.dismiss(_toastId);
+        setToastId(null);
+      };
+
+      setIsCopyingUnit(false);
+
+      displayToast(
+        {
+          jobStatus: "canceled",
+          onCancel: closeToast,
+          title: "Job CANCELED.",
+          subtitle: "Job has been canceled.",
+          onCancelBtnTxt: "Close",
+          ref: toastRef,
+        },
+        _toastId
+      );
     };
 
-    const toastId = displayToast({
-      jobStatus: "ongoing",
-      onCancel: stopJob,
-      title: "Copying unit...",
-      subtitle: "Gathering files and folders...",
-    });
+    displayToast(
+      {
+        jobStatus: "ongoing",
+        onCancel: stopJob,
+        title: "Copying unit...",
+        subtitle: "Gathering files and folders...",
+        ref: toastRef,
+      },
+      _toastId
+    );
     let filesCopied = 0;
     let foldersCreated = 0;
     let totalItemsToCopy = 0;
@@ -391,21 +316,31 @@ const TeachItUI = <
           const subtitle = data.wasSuccessful
             ? "Successfully copied unit into your drive."
             : "An error has occurred. Please try again.";
+          const btnTxt = "Close";
+
+          const handleBtnClick = () => {
+            console.log("_toastId, sup there: ", _toastId);
+            toastRef.current?.remove();
+            toast.dismiss(_toastId);
+            setToastId(null);
+          };
 
           displayToast(
             {
               jobStatus,
-              onCancel: stopJob,
+              onCancel: handleBtnClick,
               title,
               subtitle,
               progress: filesCopied + foldersCreated,
               total: totalItemsToCopy,
               showProgressBar,
-              onCancelBtnTxt: "Close",
+              onCancelBtnTxt: btnTxt,
               targetFolderId,
+              ref: toastRef,
             },
-            toastId
+            _toastId
           );
+          setIsCopyingUnit(false);
           return;
         }
 
@@ -427,8 +362,6 @@ const TeachItUI = <
           progressMessage = data.msg;
         }
 
-        console.log("toastSubtitle, yo there: ", toastSubtitle);
-
         console.log("progressMessage: ", progressMessage);
 
         if (!showProgressBar) {
@@ -439,7 +372,7 @@ const TeachItUI = <
           targetFolderId = data.folderCopyId;
         }
 
-        displayToast(
+        const toastIdNew = displayToast(
           {
             jobStatus: "ongoing",
             onCancel: stopJob,
@@ -449,9 +382,13 @@ const TeachItUI = <
             total: totalItemsToCopy,
             showProgressBar: showProgressBar,
             targetFolderId,
+            ref: toastRef,
           },
-          toastId
+          _toastId
         );
+
+        console.log("_toastId: ", _toastId);
+        console.log("toastIdNew: ", toastIdNew);
 
         console.log("data: ", data);
       } catch (error) {
@@ -464,10 +401,7 @@ const TeachItUI = <
 
     eventSource.onerror = (event) => {
       console.log("error event: ", event);
-      // toastMethods.error("Error occurred while copying unit", {
-      //   id: loadingToast,
-      //   position,
-      // });
+      // toast.dismiss();
     };
   };
 
@@ -590,41 +524,58 @@ const TeachItUI = <
             <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11">
               <div className="row flex-nowrap align-items-center justify-content-center col-md-8 position-relative">
                 <BootstrapBtn
+                  ref={copyUnitBtnRef}
                   onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
                   style={{
                     pointerEvents:
                       session.status === "loading" ? "none" : "auto",
+                    minHeight: "51px",
                   }}
                   className={`btn btn-primary px-3 py-2 col-8 col-md-12 ${
                     session.status === "loading" ? "opacity-25" : "opacity-100"
                   }`}
-                  disabled={!didInitialRenderOccur.current}
+                  disabled={!didInitialRenderOccur.current || isCopyingUnit}
                 >
-                  <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2 ">
-                    <div className="d-flex justify-content-center align-items-center">
-                      <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{" "}
-                    </div>
-                    {didInitialRenderOccur.current && (
-                      <span
-                        style={{ lineHeight: "23px" }}
-                        className="d-none d-sm-inline"
+                  {isCopyingUnit && (
+                    <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2">
+                      <div
+                        className="spinner-border spinner-border-sm text-light"
+                        role="status"
                       >
-                        {isGpPlusMember &&
-                          !gdriveAccessToken &&
-                          "Authenticate w/ Google Drive & Copy Unit"}
-                        {isGpPlusMember && gdriveAccessToken && "Copy Unit"}
-                        {!isGpPlusMember &&
-                          !gdriveAccessToken &&
-                          `BECOME A GP+ MEMBER TO ${selectedGradeResources.linkText}`}
-                      </span>
-                    )}
-                    <span
-                      style={{ lineHeight: "17px", fontSize: "14px" }}
-                      className="d-inline d-sm-none"
-                    >
-                      {selectedGradeResources.linkText}
-                    </span>
-                  </div>
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                    </div>
+                  )}
+                  {!isCopyingUnit && (
+                    <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2">
+                      {!didInitialRenderOccur.current ? (
+                        <div
+                          className="spinner-border spinner-border-sm text-light"
+                          role="status"
+                        >
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="d-flex justify-content-center align-items-center">
+                            <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{" "}
+                          </div>
+                          <span
+                            style={{ lineHeight: "23px" }}
+                            className="d-inline"
+                          >
+                            {isGpPlusMember &&
+                              !gdriveAccessToken &&
+                              "Authenticate w/ Google Drive & Copy Unit"}
+                            {isGpPlusMember && gdriveAccessToken && "Copy Unit"}
+                            {!isGpPlusMember &&
+                              !gdriveAccessToken &&
+                              `BECOME A GP+ MEMBER TO ${selectedGradeResources.linkText}`}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </BootstrapBtn>
                 <div
                   style={{ width: "2rem" }}
