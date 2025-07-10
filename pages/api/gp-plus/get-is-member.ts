@@ -2,6 +2,7 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import {
+  getGpPlusMembershipStatus,
   getUser,
   getUserByEmail,
 } from "../../../backend/services/userServices";
@@ -19,7 +20,12 @@ export default async function handler(
   }
 
   try {
+    console.log("yo there meng!");
+
     const authHeader = request.headers["authorization"];
+    let outsetaAuthToken = request.headers["outseta-auth-token"] as
+      | string
+      | undefined;
 
     if (!authHeader) {
       return response.status(401).json({
@@ -48,20 +54,28 @@ export default async function handler(
       jwtVerificationResult.payload.email
     );
 
-    if (userCached && "isGpPlusMember" in userCached) {
-      return response.status(200).json({
-        isGpPlusMember: userCached.isGpPlusMember,
-      });
+    if (userCached && "outsetaPersonEmail" in userCached && !outsetaAuthToken) {
+      const membership = await getGpPlusMembershipStatus(userCached.outsetaPersonEmail);
+
+      console.log("membership: ", membership);
     }
 
     let user = await getUserByEmail(jwtVerificationResult.payload.email, {
-      password: 0,
+      outsetaPersonEmail: 1,
+      _id: 0,
     });
 
     if (!user) {
       return response
         .status(404)
         .json({ message: "User not found", errType: "userNotFound" });
+    }
+
+    if(!user.outsetaPersonEmail){
+
+      const membership = await getGpPlusMembershipStatus(user.outsetaPersonEmail);
+
+      console.log("membership: ", membership);
     }
 
     user = {
