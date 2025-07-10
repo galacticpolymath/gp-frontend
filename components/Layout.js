@@ -31,46 +31,6 @@ export default function Layout({
 }) {
   const isOnProd = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
 
-  useEffect(() => {
-    const configScript = document.createElement("script");
-    configScript.type = "text/javascript";
-    configScript.text = `
-      var currentOrigin = window.location.origin;
-      var o_options = {
-        domain: 'galactic-polymath.outseta.com',
-        load: 'auth,customForm,emailList,leadCapture,nocode,profile,support',
-        auth: {
-          authenticationCallbackUrl: currentOrigin + '/gp-sign-up-result',
-          registrationConfirmationUrl: currentOrigin + '/gp-plus-set-password',
-        }
-      };
-    `;
-
-    document.body.appendChild(configScript);
-
-    const mainScript = document.createElement("script");
-    mainScript.src = "https://cdn.outseta.com/outseta.min.js";
-    mainScript.setAttribute("data-options", "o_options");
-    mainScript.async = true;
-    document.body.appendChild(mainScript);
-
-    const magicLink = document.createElement("script");
-    magicLink.src = "https://auth.magic.link/sdk";
-    magicLink.async = true;
-    document.body.appendChild(magicLink);
-
-    new Magic("pk_live_C11C2F44453877F6", {
-      extensions: [
-        new OAuthExtension(),
-      ],
-    });
-
-    return () => {
-      document.body.removeChild(configScript);
-      document.body.removeChild(mainScript);
-    };
-  }, []);
-
   useOutsetaInputValidation();
 
   return (
