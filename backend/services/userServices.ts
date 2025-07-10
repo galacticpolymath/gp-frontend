@@ -14,7 +14,6 @@ import User from "../models/User/index";
 import { AnyBulkWriteOperation } from "mongoose";
 import { waitWithExponentialBackOff } from "../../globalFns.js";
 import axios from "axios";
-import qs from 'qs';
 
 const OUTSETA_API_ORIGIN = "https://galactic-polymath.outseta.com";
 const OUTSETA_API_VERSION_PATH = "api/v1";
@@ -714,16 +713,12 @@ export interface IOutsetaAuthTokenResBody {
 
 export const getGpPlusMembershipStatus = async (email: string) => {
   try {
-    // TODO: query the user via their email
-    const url = `${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`;
+    const url = new URL(`${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`);
 
-    console.log("url: ", url);
-
-    console.log("oauthToken: ", email);
-    
+    url.searchParams.append("Name", email);
     
     const { status, data } = await axios.get(
-      url,
+      url.href,
       {
         headers: {
           Authorization: `Outseta ${process.env.OUTSETA_API_KEY}:${process.env.OUTSETA_API_SECRET}`,
@@ -738,7 +733,10 @@ export const getGpPlusMembershipStatus = async (email: string) => {
       throw new Error("accountRetrievalErr");
     }
 
+    return data;
   } catch (error: any) {
     console.error("Failed to retrieve the outseta status for the target user. Error: " , error?.response);
+
+    return null;
   }
 };

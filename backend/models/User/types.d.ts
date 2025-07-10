@@ -62,10 +62,9 @@ export interface IUserSchema extends TAboutUserForm, IUserSchemaBaseProps {}
 
 export type TOutseta = {
   outsetaPersonEmail: string;
-  isGpPlusMember: boolean;
 }
 
 // does not contain the deprecated props, only the v2 fields
 export type TUserSchemaV2 = IUserSchemaBaseProps & TAboutUserFormBaseProps & TOutseta;
 
-export type TUserSchemaForClient = IUserSchema & { isOnMailingList?: boolean };
+export type TUserSchemaForClient = IUserSchema & { isOnMailingList?: boolean, isGpPlusMember?: boolean };

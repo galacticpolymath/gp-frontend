@@ -3,7 +3,7 @@
 /* eslint-disable indent */
 
 import { getMailingListContact } from "../../backend/services/emailServices";
-import { getUserByEmail, handleUserDeprecatedV1Fields } from "../../backend/services/userServices";
+import { getGpPlusMembershipStatus, getUserByEmail, handleUserDeprecatedV1Fields } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -13,7 +13,6 @@ import { IUserSchema, TUserSchemaForClient, TUserSchemaV2 } from "../../backend/
 export type TUserAccountData = Pick<ReturnType<typeof handleUserDeprecatedV1Fields>, Exclude<keyof typeof PROJECTIONS, "_id">>
 
 const PROJECTIONS: Partial<Record<keyof (TUserSchemaV2 & IUserSchema), number>> = {
-      isGpPlusMember: 1,
       outsetaPersonEmail: 1,
       gradesOrYears: 1,
       reasonsForSiteVisit: 1,
@@ -64,6 +63,10 @@ export default async function handler(
     if (!wasSuccessful) {
       throw new CustomError("Failed to connect to the database.", 500);
     }
+
+    const userGpPlusMembershipStatus = await getGpPlusMembershipStatus(email);
+
+    console.log("userGpPlusMembershipStatus: ", userGpPlusMembershipStatus);
 
     const getUserAccountPromise = getUserByEmail<TUserSchemaForClient>(
       email,

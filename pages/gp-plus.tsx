@@ -94,11 +94,18 @@ const GpPlus: React.FC = () => {
     }, 200);
   };
 
+  const handleSignUpBtnClick = () => {
+    // GOAL: check if the user has an outseta account when the user clicks on this button
+    setIsSignupModalDisplayed(true);
+  }
+
   useEffect(() => {
     const outsetaModalContent = document.getElementById(
       "outseta-sign-up-modal-content"
     );
+
     console.log("outsetaModalContent: ", outsetaModalContent);
+
     const outseta = document.getElementById("outseta-sign-up");
 
     console.log("outseta: ", outseta);
@@ -108,6 +115,15 @@ const GpPlus: React.FC = () => {
     }
 
     injectOutsetaScripts();
+
+    // TODO:
+    // CASE: the user is not signed in
+    // GOAL: show the log in button for the user to sign in the user clicks on the sign up button
+
+    // CASE: the user is signed in, but is not a gp plus member
+    // GOAL: present the sign up modal 
+
+    // GOAL: make a request to the outseta to determine if the user has an outseta account
   }, []);
 
   return (
@@ -124,22 +140,11 @@ const GpPlus: React.FC = () => {
         <Button
           variant="primary"
           size="sm"
-          onClick={() => setIsSignupModalDisplayed(true)}
+          onClick={handleSignUpBtnClick}
         >
           SIGN UP
         </Button>
       </div>
-      {/* <div
-        id="outseta-sign-up"
-        data-o-auth="1"
-        data-widget-mode="register"
-        data-plan-uid="rmkkjamg"
-        data-plan-payment-term="month"
-        data-skip-plan-options="false"
-        data-mode="embed"
-        // className= F"d-none"
-      /> */}
-      {/* <Transition appear={false} show={true} as={Fragment} transition> */}
       <div
         id="signup-modal-div"
         style={{
@@ -191,41 +196,6 @@ const GpPlus: React.FC = () => {
           </div>
         </div>
       </div>
-      {/* </Transition> */}
-      {/* <Modal
-        show={true}
-        style={{ opacity: signUpModalOpacity }}
-        onHide={handleOnHide}
-        onShow={() => {
-          injectOutsetaScripts();
-          setSignUpModalOpacity(1);
-          const outsetaModalContent = document.getElementById(
-            "outseta-sign-up-modal-content"
-          );
-          const outseta = document.getElementById("outseta-container")
-            ?.firstChild as HTMLElement | null;
-
-          console.log("outseta, sup there: ", outseta);
-
-          if (!outseta) {
-            return;
-          }
-
-          outsetaModalContent?.appendChild(outseta);
-        }}
-        onBackdropClick={handleOnHide}
-        className="pt-1 gp-sign-up-modal pb-3"
-      >
-        <div
-          id="outseta-sign-up"
-          data-o-auth="1"
-          data-widget-mode="register"
-          data-plan-uid="rmkkjamg"
-          data-plan-payment-term="month"
-          data-skip-plan-options="false"
-          data-mode="embed"
-        />
-      </Modal> */}
     </Layout>
   );
 };

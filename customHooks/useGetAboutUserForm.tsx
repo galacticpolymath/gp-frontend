@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { IUserSession } from "../types/global";
 import axios from "axios";
 import {
+  TAboutUserFormForUI,
   TUserAccount,
   userAccountDefault,
   useUserContext,
@@ -201,7 +202,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
               Authorization: `Bearer ${token}`,
             },
           };
-          const response = await axios.get<TAboutUserForm>(
+          const response = await axios.get<TAboutUserFormForUI>(
             "/api/get-user-account-data",
             paramsAndHeaders
           );

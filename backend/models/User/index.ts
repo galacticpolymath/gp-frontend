@@ -96,7 +96,6 @@ export const UserSchema = new Schema<TUserSchemaV2>(
     _id: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     outsetaPersonEmail: { type: String, unique: true },
-    isGpPlusMember: Boolean,
     mailingListConfirmationEmailId: { type: String, required: false },
     password: {
       hash: { type: String, required: false },

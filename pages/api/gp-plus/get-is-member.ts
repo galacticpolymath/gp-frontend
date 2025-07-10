@@ -8,24 +8,20 @@ import {
 } from "../../../backend/services/userServices";
 import { verifyJwt } from "../../../nondependencyFns";
 import cache from "../../../backend/utils/cache";
-import { TUserSchemaV2 } from "../../../backend/models/User/types";
+import { TUserSchemaForClient, TUserSchemaV2 } from "../../../backend/models/User/types";
 
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
   if (request.method !== "GET") {
-    response.status(405).json({ message: "Method not allowed" });
-    return;
+    return response.status(405).json({ message: "Method not allowed" });
   }
 
   try {
     console.log("yo there meng!");
 
     const authHeader = request.headers["authorization"];
-    let outsetaAuthToken = request.headers["outseta-auth-token"] as
-      | string
-      | undefined;
 
     if (!authHeader) {
       return response.status(401).json({
@@ -54,13 +50,13 @@ export default async function handler(
       jwtVerificationResult.payload.email
     );
 
-    if (userCached && "outsetaPersonEmail" in userCached && !outsetaAuthToken) {
+    if (userCached && "outsetaPersonEmail" in userCached) {
       const membership = await getGpPlusMembershipStatus(userCached.outsetaPersonEmail);
 
       console.log("membership: ", membership);
     }
 
-    let user = await getUserByEmail(jwtVerificationResult.payload.email, {
+    let user = await getUserByEmail<TUserSchemaForClient>(jwtVerificationResult.payload.email, {
       outsetaPersonEmail: 1,
       _id: 0,
     });
@@ -72,7 +68,6 @@ export default async function handler(
     }
 
     if(!user.outsetaPersonEmail){
-
       const membership = await getGpPlusMembershipStatus(user.outsetaPersonEmail);
 
       console.log("membership: ", membership);
