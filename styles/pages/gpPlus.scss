@@ -1,3 +1,7 @@
+$gpPlusCardBorderWidth: 2.5px;
+$gpLite: #1827bc;
+$gpPlus: #e93daa;
+
 .gpplus-pricing-section {
   width: 100%;
   max-width: 1200px;
@@ -16,7 +20,7 @@
   font-size: 1.1rem;
   gap: 1rem;
   .active {
-    color: #96195f;
+    color: $gpPlus;
     font-weight: bold;
   }
 }
@@ -44,7 +48,7 @@
   transition: background 0.2s;
 }
 .gpplus-switch input:checked + .gpplus-slider {
-  background: #96195f;
+  background: $gpPlus;
 }
 .gpplus-slider:before {
   content: "";
@@ -95,17 +99,17 @@
 }
 
 .gpplus-card.lite {
-  border-color: #3e0d55;
+  border: $gpPlusCardBorderWidth $gpLite solid;
 }
 .gpplus-card.plus {
-  border-color: #96195f;
+  border: $gpPlusCardBorderWidth $gpPlus solid;
 }
 .gpplus-card.group {
   border-color: #1ca9e5;
 }
 .gpplus-card.highlighted {
   box-shadow: 0 4px 32px rgba(150, 25, 95, 0.15);
-  border-width: 3px;
+  border-width: 4.8px;
   z-index: 2;
 }
 .gpplus-card-header {
@@ -118,18 +122,18 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: #fff;
-  background: #3e0d55;
+  background: $gpLite;
   padding: 0.2em 1em;
   margin-bottom: 1.2rem;
 }
 .gpplus-card.plus .gpplus-card-subheader {
-  background: #96195f;
+  background: $gpPlus;
 }
 .gpplus-card.group .gpplus-card-subheader {
   background: #1ca9e5;
 }
 .bonus-content {
-  color: #96195f;
+  color: $gpPlus;
   font-size: 0.95rem;
   margin-top: 0.7rem;
   font-weight: 500;
@@ -148,7 +152,7 @@
     text-align: center;
   }
   .gpplus-bonus {
-    color: #96195f;
+    color: $gpPlus;
     font-size: 0.95rem;
     font-weight: 500;
   }
@@ -156,7 +160,6 @@
 .gpplus-price {
   font-size: 2rem;
   font-weight: 700;
-  color: #96195f;
   margin-bottom: 1.2rem;
   margin-top: 1.2rem;
   span {
@@ -178,13 +181,13 @@
   transition: background 0.2s;
 }
 .gpplus-signup-btn.plus {
-  background: #96195f;
+  background: $gpPlus;
 }
 .gpplus-signup-btn.group {
   background: #1ca9e5;
 }
 .gpplus-signup-btn.lite {
-  background: #3e0d55;
+  background: $gpLite;
 }
 .gpplus-signup-btn:hover {
   filter: brightness(0.95);
@@ -206,9 +209,6 @@
 @media (max-width: 600px) {
   .gpplus-pricing-section {
     padding: 1rem 0.2rem;
-  }
-  .gpplus-card {
-    padding: 1.2rem 0.7rem 1rem 0.7rem;
   }
 
   .gpplus-card-header {

@@ -12,6 +12,8 @@ import Layout from "../components/Layout";
 import { Button } from "react-bootstrap";
 import Modal from "../components/Modal";
 import magic from "magic-sdk";
+import Image from "next/image";
+import Logo from "../assets/img/logo.ico";
 
 export function injectOutsetaScripts() {
   const existingConfig = document.querySelector(
@@ -161,7 +163,7 @@ const GpPlus: React.FC = () => {
           </span>
         </div>
         <div className="gpplus-cards-wrapper">
-          <div className="gpplus-card lite">
+          <div className="gpplus-card lite position-relative">
             <div>
               <div className="gpplus-card-header">Lite</div>
             </div>
@@ -179,16 +181,25 @@ const GpPlus: React.FC = () => {
                 <li>+ View-Only access</li>
               </ul>
             </div>
-            <div>
-              <div className="gpplus-price d-flex justify-content-center align-items-center">
-                $0 <span className="ms-1 mt-1">/ {billingPeriod}</span>
+            <div
+              style={{ height: "155px" }}
+              className="w-100 d-flex justify-content-center align-items-center mt-2"
+            >
+              <div className="position-absolute bottom-0 mb-4 w-75">
+                <div>
+                  <div className="gpplus-price d-flex justify-content-center align-items-center">
+                    $0 <span className="ms-1 mt-1">/ {billingPeriod}</span>
+                  </div>
+                </div>
+                <div>
+                  <button className="gpplus-signup-btn lite">
+                    Sign up free
+                  </button>
+                </div>
               </div>
             </div>
-            <div>
-              <button className="gpplus-signup-btn lite">Sign up free</button>
-            </div>
           </div>
-          <div className="gpplus-card plus highlighted">
+          <div className="gpplus-card plus highlighted position-relative">
             <div>
               <div className="gpplus-card-header">Plus</div>
             </div>
@@ -213,26 +224,53 @@ const GpPlus: React.FC = () => {
                 BONUS ACCESS TO:{" "}
               </div>
               <ul className="gpplus-features pt-2">
-                <li className="gpplus-bonus">+ JobViz App</li>
-                <li className="gpplus-bonus">+ Classroom Activator</li>
-                <li className="gpplus-bonus">+ STEM Vocabulary Flashcards</li>
+                <li className="gpplus-bonus d-flex justify-content-center align-items-center">
+                  <div className="d-flex">
+                    <div className="d-flex justify-content-center align-items-center">
+                      <Image
+                        alt="site_logo"
+                        width={25}
+                        height={25}
+                        src={Logo}
+                      />
+                    </div>
+                    <div className="d-flex justify-content-center align-items-center ms-1">
+                      JobViz App
+                    </div>
+                  </div>
+                </li>
+                <li className="gpplus-bonus">
+                  <div></div>
+                  <div>+ Classroom Activator</div>
+                </li>
+                <li className="gpplus-bonus">
+                  <div></div>
+                  <div>+ STEM Vocabulary Flashcards</div>
+                </li>
               </ul>
             </div>
-            <div>
-              <div className="gpplus-price d-flex justify-content-center align-items-center">
-                {billingPeriod === "monthly" ? "$10" : "$60"}{" "}
-                <span className="ms-1 mt-1">
-                  / {billingPeriod === "monthly" ? "month" : "year"}
-                </span>
+            <div
+              style={{ height: "155px" }}
+              className="w-100 d-flex justify-content-center align-items-center mt-2"
+            >
+              <div className="position-absolute bottom-0 mb-4 w-75">
+                <div>
+                  <div className="gpplus-price d-flex justify-content-center align-items-center">
+                    {billingPeriod === "monthly" ? "$10" : "$60"}{" "}
+                    <span className="ms-1 mt-1">
+                      / {billingPeriod === "monthly" ? "month" : "year"}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    className="gpplus-signup-btn plus"
+                    onClick={handleSignUpBtnClick}
+                  >
+                    Sign up
+                  </button>
+                </div>
               </div>
-            </div>
-            <div>
-              <button
-                className="gpplus-signup-btn plus"
-                onClick={handleSignUpBtnClick}
-              >
-                Sign up
-              </button>
             </div>
           </div>
           <div className="gpplus-card group">
@@ -255,10 +293,15 @@ const GpPlus: React.FC = () => {
                 <li>+ Autograding</li>
               </ul>
             </div>
-            <div>
-              <button className="gpplus-signup-btn group">
-                Request a quote
-              </button>
+            <div
+              style={{ height: "155px" }}
+              className="w-100 d-flex justify-content-center align-items-center mt-2"
+            >
+              <div className="position-absolute bottom-0 mb-4 w-75">
+                <button className="gpplus-signup-btn group">
+                  Request a quote
+                </button>
+              </div>
             </div>
           </div>
         </div>
