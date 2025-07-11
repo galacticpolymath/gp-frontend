@@ -51,12 +51,12 @@ export function injectOutsetaScripts() {
   document.body.appendChild(mainScript);
 }
 
-const LiContentWithImg: React.FC<{txt: string}> = ({ txt }) => {
+const LiContentWithImg: React.FC<{ txt: string }> = ({ txt }) => {
   return (
     <>
       <div className="d-flex">
         <div className="d-flex justify-content-center align-items-center">
-          <Image alt="site_logo" width={25} height={25} src={Logo} />
+          <img alt="site_logo" width={25} height={25} src={Logo.src} />
         </div>
         <div className="d-flex justify-content-center align-items-center ms-1">
           {txt}
@@ -64,7 +64,7 @@ const LiContentWithImg: React.FC<{txt: string}> = ({ txt }) => {
       </div>
     </>
   );
-}
+};
 
 const GpPlus: React.FC = () => {
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
@@ -154,219 +154,237 @@ const GpPlus: React.FC = () => {
       imgAlt="Galactic Polymath Logo"
       url="/gp-plus"
     >
-      <div className="gpplus-pricing-section">
-        <h1>GP+</h1>
-        <div className="gpplus-toggle-row">
-          <span className={billingPeriod === "monthly" ? "active" : ""}>
-            Monthly
-          </span>
-          <label className="gpplus-switch">
-            <input
-              type="checkbox"
-              checked={billingPeriod === "yearly"}
-              onChange={handleToggle}
-            />
-            <span className="gpplus-slider" />
-          </label>
-          <span className={billingPeriod === "yearly" ? "active" : ""}>
-            Yearly
-          </span>
-        </div>
-        <div className="gpplus-cards-wrapper">
-          <div className="gpplus-card lite position-relative">
-            <div className="w-100 d-flex justify-content-center align-items-center">
-              <Image alt="lite_logo" src={Logo} width={ICON_DIMENSION} height={ICON_DIMENSION} />
-            </div>
-            <div className="pt-3 pb-1">
-              <div className="gpplus-card-header">Lite</div>
-            </div>
-            <div>
-              <div className="gpplus-card-subheader mt-2 text-center">
-                INDIVIDUAL
-              </div>
-            </div>
-            <div>
-              <ul className="gpplus-features">
-                <li>+ 1 user</li>
-                <li>+ 15 STEM units</li>
-                <li>+ 50 STEM lessons</li>
-                <li>+ Access to future lessons</li>
-                <li>+ View-Only access</li>
-              </ul>
-            </div>
-            <div
-              style={{ height: "155px" }}
-              className="w-100 d-flex justify-content-center align-items-center mt-2"
-            >
-              <div className="position-absolute bottom-0 mb-4 w-75">
+      <div style={{ height: 'fit-content'}} className="">
+        <div className="gpplus-pricing-section">
+          <h1>GP+</h1>
+          <div className="gpplus-toggle-row">
+            <span className={billingPeriod === "monthly" ? "active" : ""}>
+              Monthly
+            </span>
+            <label className="gpplus-switch">
+              <input
+                type="checkbox"
+                checked={billingPeriod === "yearly"}
+                onChange={handleToggle}
+              />
+              <span className="gpplus-slider" />
+            </label>
+            <span className={billingPeriod === "yearly" ? "active" : ""}>
+              Yearly
+            </span>
+          </div>
+          <div style={{ height: 'fit-content' }} className="gpplus-cards-wrapper">
+            <div className="gpplus-card lite position-relative">
+              <div className="d-flex flex-column align-items-center bg-white h-100">
+                <div className="w-100 d-flex justify-content-center align-items-center">
+                  <Image
+                    alt="lite_logo"
+                    src={Logo}
+                    width={ICON_DIMENSION}
+                    height={ICON_DIMENSION}
+                  />
+                </div>
+                <div className="pt-3 pb-1">
+                  <div className="gpplus-card-header">Lite</div>
+                </div>
                 <div>
-                  <div className="gpplus-price d-flex justify-content-center align-items-center">
-                    $0 <span className="ms-1 mt-1">/ {billingPeriod}</span>
+                  <div className="gpplus-card-subheader mt-2 text-center">
+                    INDIVIDUAL
                   </div>
                 </div>
                 <div>
-                  <button
-                    onClick={handleSignUpBtnClick}
-                    className="gpplus-signup-btn lite"
-                  >
-                    Sign up free
-                  </button>
+                  <ul className="gpplus-features">
+                    <li>+ 1 user</li>
+                    <li>+ 15 STEM units</li>
+                    <li>+ 50 STEM lessons</li>
+                    <li>+ Access to future lessons</li>
+                    <li>+ View-Only access</li>
+                  </ul>
+                </div>
+                <div
+                  style={{ height: "155px" }}
+                  className="w-100 d-flex justify-content-center align-items-center mt-2"
+                >
+                  <div className="position-absolute bottom-0 mb-4 w-75">
+                    <div>
+                      <div className="gpplus-price d-flex justify-content-center align-items-center">
+                        $0 <span className="ms-1 mt-1">/ {billingPeriod}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        onClick={handleSignUpBtnClick}
+                        className="gpplus-signup-btn lite"
+                      >
+                        Sign up free
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="gpplus-card plus highlighted position-relative">
+              <div className="d-flex flex-column align-items-center bg-white">
+                <div className="w-100 d-flex justify-content-center align-items-center">
+                  <img
+                    alt="gp_plus_logo"
+                    src="/imgs/gp-logos/gp_plus.png"
+                    width={ICON_DIMENSION}
+                    height={ICON_DIMENSION}
+                  />
+                </div>
+                <div className="pt-3 pb-1">
+                  <div className="gpplus-card-header">Plus</div>
+                </div>
+                <div>
+                  <div className="gpplus-card-subheader mt-2 text-center">
+                    INDIVIDUAL
+                  </div>
+                </div>
+                <div>
+                  <ul className="gpplus-features">
+                    <li>+ 1 user</li>
+                    <li>+ 15 STEM units</li>
+                    <li>+ 50 STEM lessons</li>
+                    <li>+ Access to future lessons</li>
+                    <li>+ Bulk GDrive export of entire units</li>
+                    <li>+ Editable lessons</li>
+                    <li>+ Autograding</li>
+                  </ul>
+                </div>
+                <div>
+                  <div className="bonus-content w-100 text-center text-decoration-underline">
+                    BONUS ACCESS TO:{" "}
+                  </div>
+                  <ul className="gpplus-features pt-2">
+                    <li className="gpplus-bonus d-flex justify-content-center align-items-center">
+                      <LiContentWithImg txt="JobViz App" />
+                    </li>
+                    <li className="gpplus-bonus d-flex justify-content-center align-items-center">
+                      <LiContentWithImg txt="Classroom Activator" />
+                    </li>
+                    <li className="gpplus-bonus d-flex justify-content-center align-items-center">
+                      <LiContentWithImg txt="STEM Vocabulary Flashcards" />
+                    </li>
+                  </ul>
+                </div>
+                <div
+                  style={{ height: "155px" }}
+                  className="w-100 d-flex justify-content-center align-items-center mt-2"
+                >
+                  <div className="position-absolute bottom-0 mb-4 w-75">
+                    <div>
+                      <div className="gpplus-price d-flex justify-content-center align-items-center">
+                        {billingPeriod === "monthly" ? "$10" : "$60"}{" "}
+                        <span className="ms-1 mt-1">
+                          / {billingPeriod === "monthly" ? "month" : "year"}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        className="gpplus-signup-btn plus"
+                        onClick={handleSignUpBtnClick}
+                      >
+                        Sign up
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="gpplus-card group">
+              <div className="d-flex flex-column align-items-center bg-white h-100">
+                <div className="w-100 d-flex justify-content-center align-items-center">
+                  <Image
+                    alt="lite_logo"
+                    src={Logo}
+                    width={ICON_DIMENSION}
+                    height={ICON_DIMENSION}
+                  />
+                </div>
+                <div className="pt-3 pb-1">
+                  <div className="gpplus-card-header">Group</div>
+                </div>
+                <div>
+                  <div className="gpplus-card-subheader mt-2 text-center">
+                    SCHOOL & DISTRICT
+                  </div>
+                </div>
+                <div>
+                  <ul className="gpplus-features">
+                    <li>+ 10 users</li>
+                    <li>+ 15 STEM units</li>
+                    <li>+ 50 STEM lessons</li>
+                    <li>+ Access to future lessons</li>
+                    <li>+ Bulk GDrive export of entire units</li>
+                    <li>+ Fully editable lessons</li>
+                    <li>+ Autograding</li>
+                  </ul>
+                </div>
+                <div
+                  style={{ height: "155px" }}
+                  className="w-100 d-flex justify-content-center align-items-center mt-2"
+                >
+                  <div className="position-absolute bottom-0 mb-4 w-75">
+                    <button className="gpplus-signup-btn group">
+                      Request a quote
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="gpplus-card plus highlighted position-relative">
-            <div className="w-100 d-flex justify-content-center align-items-center">
-              <Image
-                alt="gp_plus_logo"
-                src="/imgs/gp-logos/gp_plus.png"
-                width={ICON_DIMENSION}
-                height={ICON_DIMENSION}
+        </div>
+        <div
+          id="signup-modal-div"
+          style={{
+            zIndex: 1000000,
+            width: "100vw",
+            height: "100vh",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+          className={`position-fixed ${
+            isSignupModalDisplayed ? "visible" : "invisible"
+          }`}
+        >
+          <div className="position-relative w-100 h-100">
+            <div
+              id="success-modal-close-btn"
+              className={`position-absolute top-0 start-0 w-100 h-100 bg-dark ${
+                isSignupModalDisplayed ? "d-block fade-backdrop-in" : "d-none"
+              }`}
+              onClick={() => {
+                setIsSignupModalDisplayed(false);
+              }}
+            />
+            <div
+              style={{
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                borderRadius: ".5em",
+                zIndex: isSignupModalDisplayed ? 1000 : -1000,
+                maxHeight: "95vh",
+              }}
+              className={`position-absolute w-50 rounded-lg shadow-lg overflow-scroll bg-white ${
+                isSignupModalDisplayed
+                  ? "visible fade-modal-in-short"
+                  : "fade-modal-out-short"
+              }`}
+            >
+              <div
+                id="outseta-sign-up"
+                data-o-auth="1"
+                data-widget-mode="register"
+                data-plan-uid="rmkkjamg"
+                data-plan-payment-term="month"
+                data-skip-plan-options="false"
+                data-mode="embed"
               />
             </div>
-            <div className="pt-3 pb-1">
-              <div className="gpplus-card-header">Plus</div>
-            </div>
-            <div>
-              <div className="gpplus-card-subheader mt-2 text-center">
-                INDIVIDUAL
-              </div>
-            </div>
-            <div>
-              <ul className="gpplus-features">
-                <li>+ 1 user</li>
-                <li>+ 15 STEM units</li>
-                <li>+ 50 STEM lessons</li>
-                <li>+ Access to future lessons</li>
-                <li>+ Bulk GDrive export of entire units</li>
-                <li>+ Editable lessons</li>
-                <li>+ Autograding</li>
-              </ul>
-            </div>
-            <div>
-              <div className="bonus-content w-100 text-center text-decoration-underline">
-                BONUS ACCESS TO:{" "}
-              </div>
-              <ul className="gpplus-features pt-2">
-                <li className="gpplus-bonus d-flex justify-content-center align-items-center">
-                  <LiContentWithImg txt="JobViz App" />
-                </li>
-                <li className="gpplus-bonus d-flex justify-content-center align-items-center">
-                  <LiContentWithImg txt="Classroom Activator" />
-                </li>
-                <li className="gpplus-bonus d-flex justify-content-center align-items-center">
-                  <LiContentWithImg txt="STEM Vocabulary Flashcards" />
-                </li>
-              </ul>
-            </div>
-            <div
-              style={{ height: "155px" }}
-              className="w-100 d-flex justify-content-center align-items-center mt-2"
-            >
-              <div className="position-absolute bottom-0 mb-4 w-75">
-                <div>
-                  <div className="gpplus-price d-flex justify-content-center align-items-center">
-                    {billingPeriod === "monthly" ? "$10" : "$60"}{" "}
-                    <span className="ms-1 mt-1">
-                      / {billingPeriod === "monthly" ? "month" : "year"}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <button
-                    className="gpplus-signup-btn plus"
-                    onClick={handleSignUpBtnClick}
-                  >
-                    Sign up
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="gpplus-card group">
-            <div className="w-100 d-flex justify-content-center align-items-center">
-              <Image alt="lite_logo" src={Logo} width={ICON_DIMENSION} height={ICON_DIMENSION} />
-            </div>
-            <div className="pt-3 pb-1">
-              <div className="gpplus-card-header">Group</div>
-            </div>
-            <div>
-              <div className="gpplus-card-subheader mt-2 text-center">
-                SCHOOL & DISTRICT
-              </div>
-            </div>
-            <div>
-              <ul className="gpplus-features">
-                <li>+ 10 users</li>
-                <li>+ 15 STEM units</li>
-                <li>+ 50 STEM lessons</li>
-                <li>+ Access to future lessons</li>
-                <li>+ Bulk GDrive export of entire units</li>
-                <li>+ Fully editable lessons</li>
-                <li>+ Autograding</li>
-              </ul>
-            </div>
-            <div
-              style={{ height: "155px" }}
-              className="w-100 d-flex justify-content-center align-items-center mt-2"
-            >
-              <div className="position-absolute bottom-0 mb-4 w-75">
-                <button className="gpplus-signup-btn group">
-                  Request a quote
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        id="signup-modal-div"
-        style={{
-          zIndex: 1000000,
-          width: "100vw",
-          height: "100vh",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-        className={`position-fixed ${
-          isSignupModalDisplayed ? "visible" : "invisible"
-        }`}
-      >
-        <div className="position-relative w-100 h-100">
-          <div
-            id="success-modal-close-btn"
-            className={`position-absolute top-0 start-0 w-100 h-100 bg-dark ${
-              isSignupModalDisplayed ? "d-block fade-backdrop-in" : "d-none"
-            }`}
-            onClick={() => {
-              setIsSignupModalDisplayed(false);
-            }}
-          />
-          <div
-            style={{
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-              borderRadius: ".5em",
-              zIndex: isSignupModalDisplayed ? 1000 : -1000,
-              maxHeight: "95vh",
-            }}
-            className={`position-absolute w-50 rounded-lg shadow-lg overflow-scroll bg-white ${
-              isSignupModalDisplayed
-                ? "visible fade-modal-in-short"
-                : "fade-modal-out-short"
-            }`}
-          >
-            <div
-              id="outseta-sign-up"
-              data-o-auth="1"
-              data-widget-mode="register"
-              data-plan-uid="rmkkjamg"
-              data-plan-payment-term="month"
-              data-skip-plan-options="false"
-              data-mode="embed"
-            />
           </div>
         </div>
       </div>
