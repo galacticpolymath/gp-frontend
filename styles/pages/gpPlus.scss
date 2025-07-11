@@ -83,11 +83,15 @@
   position: relative;
   border: 2px solid transparent;
   transition: box-shadow 0.2s, border 0.2s;
-  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  padding: 1.5rem 0rem 1.5rem 0rem;
 }
 
-.gpplus-card > section:not(:nth-child(2)){
-  border: solid 10px pink !important;
+.gpplus-card > div {
+  width: 100%;
+}
+
+.gpplus-card > div:not(:nth-child(2)) {
+  padding: 0rem 1.5rem 0rem 1.5rem;
 }
 
 .gpplus-card.lite {
@@ -115,7 +119,6 @@
   font-weight: 600;
   color: #fff;
   background: #3e0d55;
-  border-radius: 0.5em;
   padding: 0.2em 1em;
   margin-bottom: 1.2rem;
 }
@@ -125,7 +128,7 @@
 .gpplus-card.group .gpplus-card-subheader {
   background: #1ca9e5;
 }
-.bonus-content{
+.bonus-content {
   color: #96195f;
   font-size: 0.95rem;
   margin-top: 0.7rem;
@@ -134,13 +137,15 @@
 .gpplus-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 .5rem 0;
+  margin: 0 0 0.5rem 0;
   width: 100%;
   li {
     font-size: 1rem;
     margin-bottom: 0.5rem;
     color: #333;
     line-height: 1.5;
+    width: 100%;
+    text-align: center;
   }
   .gpplus-bonus {
     color: #96195f;
@@ -153,6 +158,7 @@
   font-weight: 700;
   color: #96195f;
   margin-bottom: 1.2rem;
+  margin-top: 1.2rem;
   span {
     font-size: 1rem;
     color: #333;

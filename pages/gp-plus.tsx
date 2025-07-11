@@ -162,63 +162,104 @@ const GpPlus: React.FC = () => {
         </div>
         <div className="gpplus-cards-wrapper">
           <div className="gpplus-card lite">
-            <div className="gpplus-card-header">Lite</div>
-            <div className="gpplus-card-subheader">INDIVIDUAL</div>
-            <ul className="gpplus-features">
-              <li>+ 1 user</li>
-              <li>+ 15 STEM units</li>
-              <li>+ 50 STEM lessons</li>
-              <li>+ Access to future lessons</li>
-              <li>+ View-Only access</li>
-            </ul>
-            <div className="gpplus-price">
-              $0 <span>/ {billingPeriod}</span>
+            <div>
+              <div className="gpplus-card-header">Lite</div>
             </div>
-            <button className="gpplus-signup-btn lite">Sign up free</button>
+            <div>
+              <div className="gpplus-card-subheader mt-2 text-center">
+                INDIVIDUAL
+              </div>
+            </div>
+            <div>
+              <ul className="gpplus-features">
+                <li>+ 1 user</li>
+                <li>+ 15 STEM units</li>
+                <li>+ 50 STEM lessons</li>
+                <li>+ Access to future lessons</li>
+                <li>+ View-Only access</li>
+              </ul>
+            </div>
+            <div>
+              <div className="gpplus-price d-flex justify-content-center align-items-center">
+                $0 <span className="ms-1 mt-1">/ {billingPeriod}</span>
+              </div>
+            </div>
+            <div>
+              <button className="gpplus-signup-btn lite">Sign up free</button>
+            </div>
           </div>
           <div className="gpplus-card plus highlighted">
-            <div className="gpplus-card-header">Plus</div>
-            <div className="gpplus-card-subheader">INDIVIDUAL</div>
-            <ul className="gpplus-features">
-              <li>+ 1 user</li>
-              <li>+ 15 STEM units</li>
-              <li>+ 50 STEM lessons</li>
-              <li>+ Access to future lessons</li>
-              <li>+ Bulk GDrive export of entire units</li>
-              <li>+ Editable lessons</li>
-              <li>+ Autograding</li>
-            </ul>
-            <div className="bonus-content w-100">Bonus access to: </div>
-            <ul className="gpplus-features pt-1 ps-2">
-              <li className="gpplus-bonus">+ JobViz App</li>
-              <li className="gpplus-bonus">+ Classroom Activator</li>
-              <li className="gpplus-bonus">+ STEM Vocabulary Flashcards</li>
-            </ul>
-            <div className="gpplus-price">
-              {billingPeriod === "monthly" ? "$10" : "$60"}{" "}
-              <span>/ {billingPeriod === "monthly" ? "month" : "year"}</span>
+            <div>
+              <div className="gpplus-card-header">Plus</div>
             </div>
-            <button
-              className="gpplus-signup-btn plus"
-              onClick={handleSignUpBtnClick}
-            >
-              Sign up
-            </button>
+            <div>
+              <div className="gpplus-card-subheader mt-2 text-center">
+                INDIVIDUAL
+              </div>
+            </div>
+            <div>
+              <ul className="gpplus-features">
+                <li>+ 1 user</li>
+                <li>+ 15 STEM units</li>
+                <li>+ 50 STEM lessons</li>
+                <li>+ Access to future lessons</li>
+                <li>+ Bulk GDrive export of entire units</li>
+                <li>+ Editable lessons</li>
+                <li>+ Autograding</li>
+              </ul>
+            </div>
+            <div>
+              <div className="bonus-content w-100 text-center text-decoration-underline">
+                BONUS ACCESS TO:{" "}
+              </div>
+              <ul className="gpplus-features pt-2">
+                <li className="gpplus-bonus">+ JobViz App</li>
+                <li className="gpplus-bonus">+ Classroom Activator</li>
+                <li className="gpplus-bonus">+ STEM Vocabulary Flashcards</li>
+              </ul>
+            </div>
+            <div>
+              <div className="gpplus-price d-flex justify-content-center align-items-center">
+                {billingPeriod === "monthly" ? "$10" : "$60"}{" "}
+                <span className="ms-1 mt-1">
+                  / {billingPeriod === "monthly" ? "month" : "year"}
+                </span>
+              </div>
+            </div>
+            <div>
+              <button
+                className="gpplus-signup-btn plus"
+                onClick={handleSignUpBtnClick}
+              >
+                Sign up
+              </button>
+            </div>
           </div>
           <div className="gpplus-card group">
-            <div className="gpplus-card-header">Group</div>
-            <div className="gpplus-card-subheader">SCHOOL & DISTRICT</div>
-            <ul className="gpplus-features">
-              <li>+ 10 users</li>
-              <li>+ 15 STEM units</li>
-              <li>+ 50 STEM lessons</li>
-              <li>+ Access to future lessons</li>
-              <li>+ Bulk GDrive export of entire units</li>
-              <li>+ Fully editable lessons</li>
-              <li>+ Autograding</li>
-            </ul>
-            <div className="gpplus-price">Request a quote</div>
-            <button className="gpplus-signup-btn group">Request a quote</button>
+            <div>
+              <div className="gpplus-card-header">Group</div>
+            </div>
+            <div>
+              <div className="gpplus-card-subheader mt-2 text-center">
+                SCHOOL & DISTRICT
+              </div>
+            </div>
+            <div>
+              <ul className="gpplus-features">
+                <li>+ 10 users</li>
+                <li>+ 15 STEM units</li>
+                <li>+ 50 STEM lessons</li>
+                <li>+ Access to future lessons</li>
+                <li>+ Bulk GDrive export of entire units</li>
+                <li>+ Fully editable lessons</li>
+                <li>+ Autograding</li>
+              </ul>
+            </div>
+            <div>
+              <button className="gpplus-signup-btn group">
+                Request a quote
+              </button>
+            </div>
           </div>
         </div>
       </div>
