@@ -73,7 +73,6 @@
   background: #fff;
   border-radius: 1.3em;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
-  padding: 2rem 1.5rem 1.5rem 1.5rem;
   min-width: 270px;
   max-width: 340px;
   flex: 1 1 300px;
@@ -84,7 +83,13 @@
   position: relative;
   border: 2px solid transparent;
   transition: box-shadow 0.2s, border 0.2s;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
 }
+
+.gpplus-card > section:not(:nth-child(2)){
+  border: solid 10px pink !important;
+}
+
 .gpplus-card.lite {
   border-color: #3e0d55;
 }
@@ -199,6 +204,7 @@
   .gpplus-card {
     padding: 1.2rem 0.7rem 1rem 0.7rem;
   }
+
   .gpplus-card-header {
     font-size: 1.3rem;
   }
