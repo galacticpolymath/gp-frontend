@@ -1,12 +1,5 @@
 /* eslint-disable quotes */
 
-import {
-  Dialog,
-  Transition,
-  TransitionChild,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import { Button } from "react-bootstrap";
@@ -14,6 +7,8 @@ import Modal from "../components/Modal";
 import magic from "magic-sdk";
 import Image from "next/image";
 import Logo from "../assets/img/logo.ico";
+
+const ICON_DIMENSION = 100;
 
 export function injectOutsetaScripts() {
   const existingConfig = document.querySelector(
@@ -179,7 +174,10 @@ const GpPlus: React.FC = () => {
         </div>
         <div className="gpplus-cards-wrapper">
           <div className="gpplus-card lite position-relative">
-            <div>
+            <div className="w-100 d-flex justify-content-center align-items-center">
+              <Image alt="lite_logo" src={Logo} width={ICON_DIMENSION} height={ICON_DIMENSION} />
+            </div>
+            <div className="pt-3 pb-1">
               <div className="gpplus-card-header">Lite</div>
             </div>
             <div>
@@ -218,7 +216,15 @@ const GpPlus: React.FC = () => {
             </div>
           </div>
           <div className="gpplus-card plus highlighted position-relative">
-            <div>
+            <div className="w-100 d-flex justify-content-center align-items-center">
+              <Image
+                alt="gp_plus_logo"
+                src="/imgs/gp-logos/gp_plus.png"
+                width={ICON_DIMENSION}
+                height={ICON_DIMENSION}
+              />
+            </div>
+            <div className="pt-3 pb-1">
               <div className="gpplus-card-header">Plus</div>
             </div>
             <div>
@@ -278,7 +284,10 @@ const GpPlus: React.FC = () => {
             </div>
           </div>
           <div className="gpplus-card group">
-            <div>
+            <div className="w-100 d-flex justify-content-center align-items-center">
+              <Image alt="lite_logo" src={Logo} width={ICON_DIMENSION} height={ICON_DIMENSION} />
+            </div>
+            <div className="pt-3 pb-1">
               <div className="gpplus-card-header">Group</div>
             </div>
             <div>

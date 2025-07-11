@@ -1,6 +1,7 @@
 $gpPlusCardBorderWidth: 2.5px;
 $gpLite: #1827bc;
 $gpPlus: #e93daa;
+$gpGroup:  #1ca9e5;
 
 .gpplus-pricing-section {
   width: 100%;
@@ -94,7 +95,7 @@ $gpPlus: #e93daa;
   width: 100%;
 }
 
-.gpplus-card > div:not(:nth-child(2)) {
+.gpplus-card > div:not(:nth-child(3)) {
   padding: 0rem 1.5rem 0rem 1.5rem;
 }
 
@@ -105,7 +106,7 @@ $gpPlus: #e93daa;
   border: $gpPlusCardBorderWidth $gpPlus solid;
 }
 .gpplus-card.group {
-  border-color: #1ca9e5;
+  border: $gpPlusCardBorderWidth $gpGroup solid;
 }
 .gpplus-card.highlighted {
   box-shadow: 0 4px 32px rgba(150, 25, 95, 0.15);
@@ -130,7 +131,7 @@ $gpPlus: #e93daa;
   background: $gpPlus;
 }
 .gpplus-card.group .gpplus-card-subheader {
-  background: #1ca9e5;
+  background: $gpGroup; 
 }
 .bonus-content {
   color: $gpPlus;
@@ -184,7 +185,7 @@ $gpPlus: #e93daa;
   background: $gpPlus;
 }
 .gpplus-signup-btn.group {
-  background: #1ca9e5;
+  background: $gpGroup; 
 }
 .gpplus-signup-btn.lite {
   background: $gpLite;
