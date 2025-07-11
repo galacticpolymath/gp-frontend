@@ -120,10 +120,16 @@
 .gpplus-card.group .gpplus-card-subheader {
   background: #1ca9e5;
 }
+.bonus-content{
+  color: #96195f;
+  font-size: 0.95rem;
+  margin-top: 0.7rem;
+  font-weight: 500;
+}
 .gpplus-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 .5rem 0;
   width: 100%;
   li {
     font-size: 1rem;
@@ -134,7 +140,6 @@
   .gpplus-bonus {
     color: #96195f;
     font-size: 0.95rem;
-    margin-top: 0.7rem;
     font-weight: 500;
   }
 }

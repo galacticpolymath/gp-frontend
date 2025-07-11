@@ -187,11 +187,12 @@ const GpPlus: React.FC = () => {
               <li>+ Bulk GDrive export of entire units</li>
               <li>+ Editable lessons</li>
               <li>+ Autograding</li>
-              <li className="gpplus-bonus">
-                Bonus access to:
-                <br />
-                JobViz App, Classroom Activator, STEM Vocabulary Flashcards
-              </li>
+            </ul>
+            <div className="bonus-content w-100">Bonus access to: </div>
+            <ul className="gpplus-features pt-1 ps-2">
+              <li className="gpplus-bonus">+ JobViz App</li>
+              <li className="gpplus-bonus">+ Classroom Activator</li>
+              <li className="gpplus-bonus">+ STEM Vocabulary Flashcards</li>
             </ul>
             <div className="gpplus-price">
               {billingPeriod === "monthly" ? "$10" : "$60"}{" "}
