@@ -56,7 +56,12 @@ const LiContentWithImg: React.FC<{ txt: string }> = ({ txt }) => {
     <>
       <div className="d-flex">
         <div className="d-flex justify-content-center align-items-center">
-          <img alt="site_logo" width={25} height={25} src={Logo.src} />
+          <img 
+            alt="site_logo" 
+            width={25} 
+            height={25} 
+            src={Logo.src} 
+          />
         </div>
         <div className="d-flex justify-content-center align-items-center ms-1">
           {txt}
@@ -154,7 +159,7 @@ const GpPlus: React.FC = () => {
       imgAlt="Galactic Polymath Logo"
       url="/gp-plus"
     >
-      <div style={{ height: 'fit-content'}} className="">
+      <div style={{ height: "fit-content" }} className="">
         <div className="gpplus-pricing-section">
           <h1>GP+</h1>
           <div className="gpplus-toggle-row">
@@ -173,7 +178,10 @@ const GpPlus: React.FC = () => {
               Yearly
             </span>
           </div>
-          <div style={{ height: 'fit-content' }} className="gpplus-cards-wrapper">
+          <div
+            style={{ height: "fit-content" }}
+            className="gpplus-cards-wrapper"
+          >
             <div className="gpplus-card lite position-relative">
               <div className="d-flex flex-column align-items-center bg-white h-100">
                 <div className="w-100 d-flex justify-content-center align-items-center">

@@ -75,7 +75,7 @@ export default async function handler(
     let [userAccount, mailingListContact, gpPlusMembershipStatus] = await Promise.all([
       getUserAccountPromise,
       getMailingListContactPromise,
-      gpPlusMembershipStatusPromise
+      gpPlusMembershipStatusPromise,
     ]);
 
     if (!userAccount) {
@@ -83,7 +83,6 @@ export default async function handler(
     }
 
     console.log("gpPlusMembershipStatus: ", gpPlusMembershipStatus);
-
 
     if (!request.query.willNotRetrieveMailingListStatus) {
         userAccount = {

@@ -48,6 +48,7 @@ import {
 } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { UNITS_URL_PATH } from "../../../../shared/constants";
 import { TUserAccountData } from "../../../api/get-user-account-data";
+import { TUserSchemaForClient } from "../../../../backend/models/User/types";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -549,7 +550,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
             },
           };
           const origin = window.location.origin;
-          const { status, data } = await axios.get<TUserAccountData>(
+          const { status, data } = await axios.get<TUserSchemaForClient>(
             `${origin}/api/get-user-account-data`,
             paramsAndHeaders
           );
