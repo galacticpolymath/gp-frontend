@@ -9,6 +9,7 @@ import { CustomError } from "../../backend/utils/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyJwt } from "../../nondependencyFns";
 import { IUserSchema, TUserSchemaForClient, TUserSchemaV2 } from "../../backend/models/User/types";
+import { Magic } from "magic-sdk";
 
 export type TUserAccountData = Pick<ReturnType<typeof handleUserDeprecatedV1Fields>, Exclude<keyof typeof PROJECTIONS, "_id">>
 
@@ -63,8 +64,7 @@ export default async function handler(
     if (!wasSuccessful) {
       throw new CustomError("Failed to connect to the database.", 500);
     }
-
-    const gpPlusMembershipStatusPromise = getGpPlusIndividualMembershipStatus(email);
+;
     const getUserAccountPromise = getUserByEmail<TUserSchemaForClient>(
       email,
       PROJECTIONS
@@ -72,23 +72,28 @@ export default async function handler(
     const getMailingListContactPromise = getMailingListContact(
       email
     );
-    let [userAccount, mailingListContact, gpPlusMembershipStatus] = await Promise.all([
+    let [userAccount, mailingListContact] = await Promise.all([
       getUserAccountPromise,
       getMailingListContactPromise,
-      gpPlusMembershipStatusPromise,
     ]);
 
     if (!userAccount) {
       throw new CustomError("User not found.", 404);
     }
 
-    console.log("gpPlusMembershipStatus: ", gpPlusMembershipStatus);
+    if(userAccount.outsetaPersonEmail){
+      const gpPlusMembershipStatus = await getGpPlusIndividualMembershipStatus(userAccount.outsetaPersonEmail);
+      userAccount = {
+        ...userAccount, 
+        isGpPlusMember: gpPlusMembershipStatus.AccountStageLabel === "Subscribing" || gpPlusMembershipStatus.AccountStageLabel === "Canceling",
+        gpPlusSubscription: gpPlusMembershipStatus,
+      };
+    }
 
     if (!request.query.willNotRetrieveMailingListStatus) {
         userAccount = {
           ...userAccount,
           isOnMailingList: !!mailingListContact,
-          isGpPlusMember: gpPlusMembershipStatus === "Subscribing",
         };
     }
 

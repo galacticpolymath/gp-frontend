@@ -11,6 +11,7 @@ export default function Document() {
               var o_options = {
                 domain: 'galactic-polymath.outseta.com',
                 load: 'auth,customForm,emailList,leadCapture,nocode,profile,support',
+                monitorDom: true,
               };
             `,
           }}
@@ -18,10 +19,6 @@ export default function Document() {
         <script
           src="https://cdn.outseta.com/outseta.min.js"
           data-options="o_options"
-          async
-        />
-        <script
-          src="https://auth.magic.link/sdk"
           async
         />
       </Head>

@@ -54,14 +54,14 @@ import {
 } from "../../../shared/fns";
 import {
   TCopyFilesMsg,
-  TCopyUnitJobResult,
 } from "../../../pages/api/gp-plus/copy-unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import CopyingUnitToast from "../../CopyingUnitToast";
 import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 import { nanoid } from "nanoid";
-import { Spinner } from "react-bootstrap";
+import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
+import { TeachItProps } from "./types";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -69,7 +69,7 @@ export type THandleOnChange<TResourceVal extends object = ILesson> = (
 interface TeachItUIProps<
   TResourceVal extends object = ILesson,
   TSelectedGrade extends object = IResource<ILessonForUI>
-> {
+> extends Partial<Pick<INewUnitSchema, "GdrivePublicID" | "Title">> {
   SectionTitle: string;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
   ref: RefObject<null>;
@@ -118,8 +118,9 @@ const TeachItUI = <
     parts,
     dataLesson,
     GradesOrYears,
+    GdrivePublicID,
+    Title,
   } = props;
-  console.log("props, sup there: ", props);
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const { _isDownloadModalInfoOn } = useModalContext();

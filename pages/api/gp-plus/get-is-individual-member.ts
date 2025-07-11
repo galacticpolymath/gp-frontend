@@ -2,13 +2,18 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import {
+  getBillingType,
   getGpPlusIndividualMembershipStatus,
   getUser,
   getUserByEmail,
+  TGpPlusMembershipRetrieved,
 } from "../../../backend/services/userServices";
 import { verifyJwt } from "../../../nondependencyFns";
 import cache from "../../../backend/utils/cache";
 import { TUserSchemaForClient, TUserSchemaV2 } from "../../../backend/models/User/types";
+
+type x = (ReturnType<typeof getBillingType>)[0];
+export type TGpPlusMembershipForClient = TGpPlusMembershipRetrieved;
 
 export default async function handler(
   request: NextApiRequest,
@@ -49,9 +54,10 @@ export default async function handler(
     const userCached = cache.get<TUserSchemaV2>(
       jwtVerificationResult.payload.email
     );
+    let membership: TGpPlusMembershipRetrieved | undefined = undefined;
 
     if (userCached && "outsetaPersonEmail" in userCached) {
-      const membership = await getGpPlusIndividualMembershipStatus(userCached.outsetaPersonEmail);
+      membership = await getGpPlusIndividualMembershipStatus(userCached.outsetaPersonEmail) as TGpPlusMembershipRetrieved;
 
       console.log("membership: ", membership);
     }
@@ -69,20 +75,24 @@ export default async function handler(
 
     if(user.outsetaPersonEmail){
       console.log("The user has a outseta person email: ", user.outsetaPersonEmail);
-      
-      const membership = await getGpPlusIndividualMembershipStatus(user.outsetaPersonEmail);
 
-      console.log("membership: ", membership);
+      membership = await getGpPlusIndividualMembershipStatus(user.outsetaPersonEmail) as TGpPlusMembershipRetrieved;
     }
 
     user = {
       ...user,
-      isGpPlusMember: !!user.isGpPlusMember,
+      isGpPlusMember: membership?.AccountStageLabel === "Subscribing",
+      gpPlusSubscription: membership,
     };
 
     cache.set(jwtVerificationResult.payload.email, user, 60 * 3);
 
-    response.status(200).json({ isGpPlusMember: user?.isGpPlusMember });
+    const membershipForClient = {
+      ...membership,
+      BillingRenewalTerm:  membership?.BillingRenewalTerm ? getBillingType(membership?.BillingRenewalTerm)?.[0] : null,
+    };
+
+    response.status(200).json({ membership: membershipForClient });
   } catch (error) {
     console.error(error);
     response

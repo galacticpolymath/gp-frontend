@@ -54,9 +54,9 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const handleSignOutBtnClick = () => {
     localStorage.clear();
     sessionStorage.clear();
-    setIsLoadingSpinnerOn(true);
     clearCookies();
     signOut();
+    setIsLoadingSpinnerOn(true);
   };
 
   const handleAccountBtnClick = () => {

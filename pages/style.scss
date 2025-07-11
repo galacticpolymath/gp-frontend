@@ -111,6 +111,10 @@ body {
   }
 }
 
+.o--tab-profile{
+  display: none !important;
+}
+
 .fade-modal-in-short{
   animation: fadeModalInShort 250ms forwards;
   opacity: 1;
@@ -129,6 +133,10 @@ body {
   animation: fadeModalOutShort 250ms forwards;
   opacity: 1;
   visibility: hidden;
+}
+
+.no-children-border-radius *{
+  border-radius: 0%;
 }
 
 @keyframes fadeModalOutShort {

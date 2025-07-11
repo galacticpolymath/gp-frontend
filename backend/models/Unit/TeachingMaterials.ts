@@ -11,6 +11,11 @@ import {
   IUnitTeachingMaterials,
   IVocab,
 } from "./types/teachingMaterials";
+import {
+  ICustomProp,
+  IRootFieldToRetrieve,
+  RootFieldToRetrieve,
+} from "./RootFieldsToRetrieve";
 
 const GatheredVocabSchema = new Schema<IVocab>(
   {
@@ -111,7 +116,11 @@ const ResourcesSchema = new Schema<IResource<INewUnitLesson>>(
   },
   { _id: false }
 );
-export const TeachingMaterialsSchema = new Schema<IUnitTeachingMaterials>(
+export const TeachingMaterialsSchema = new Schema<
+  IUnitTeachingMaterials & {
+    rootFieldsToRetrieveForUI: ICustomProp<IRootFieldToRetrieve[]>;
+  }
+>(
   {
     unitDur: String,
     unitPreface: String,
@@ -122,6 +131,19 @@ export const TeachingMaterialsSchema = new Schema<IUnitTeachingMaterials>(
     __component: String,
     InitiallyExpanded: Boolean,
     SectionTitle: String,
+    rootFieldsToRetrieveForUI: {
+      type: [RootFieldToRetrieve],
+      default: () => [
+          {
+            name: "Title",
+            as: "Title",
+          },
+          {
+            name: "GdrivePublicID",
+            as: "GdrivePublicID",
+          },
+        ]
+    },
   },
   { _id: false }
 );

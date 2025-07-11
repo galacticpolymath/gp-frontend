@@ -207,7 +207,7 @@ const updateUnit = async (
     if (customUpdate) {
       console.log("Making a custom update.");
 
-      const result = await Unit.updateMany(filterObj, customUpdate).lean();
+      const result = await Unit.updateMany(filterObj, customUpdate);
 
       if (result.matchedCount === 0) {
         return { errMsg: "No matching units were found in the database." };
@@ -220,7 +220,7 @@ const updateUnit = async (
 
     const { modifiedCount, matchedCount } = await Unit.updateMany(filterObj, {
       $set: updatedProps,
-    }).lean();
+    });
 
     if (matchedCount === 0) {
       return { errMsg: "No matching units were found in the database." };

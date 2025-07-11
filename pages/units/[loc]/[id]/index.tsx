@@ -88,6 +88,8 @@ const getLessonSections = <T extends TSectionsForUI>(
   sectionComps.map((section: TSectionsForUI | null, index: number) => {
     const sectionClassNameForTesting = "section-testing";
 
+    console.log("section, sup there: ", section)
+
     return {
       ...section,
       sectionClassNameForTesting,
@@ -400,10 +402,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         : [],
     []
   );
-  const _dots = useMemo(
-    () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
-    []
-  );
 
   const [unitSectionDots, setUnitSectionDots] = useState<{
     dots: any;
@@ -665,8 +663,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container min-vh-100">
         <div className="p-sm-3 pt-0">
-          {(unit ? _unitSections : _sections) ? (
-            (unit ? _unitSections : _sections).map(
+          {_unitSections ? (
+            _unitSections.map(
               (section: any, index: number) => (
                 <ParentLessonSection
                   key={index}
@@ -990,104 +988,103 @@ export const getStaticProps = async (arg: {
 
         targetUnitForUI.Sections.teachingMaterials.classroom.resources =
           resourcesForUI;
+      }
 
-        const sectionsEntries = Object.entries(targetUnitForUI.Sections) as [
-          keyof ISections,
-          any
-        ][];
-        // get the root fields for specific sections that required them
-        let sectionsUpdated = sectionsEntries.reduce(
-          (sectionsAccum, [sectionKey, section]) => {
-            // if the section.Content is null, then return the sectionsAccum
-            if (
-              !section ||
-              (typeof section === "object" &&
-                section &&
-                (("Content" in section && !section.Content) ||
-                  ("Data" in section && !section.Data))) ||
-              (sectionKey === "preview" && !targetUnitForUI?.FeaturedMultimedia)
-            ) {
-              return sectionsAccum;
-            }
-
-            if (
-              targetUnitForUI &&
-              typeof section === "object" &&
+      const sectionsEntries = Object.entries(targetUnitForUI.Sections ?? {}) as [
+        keyof ISections,
+        any
+      ][];
+      // get the root fields for specific sections that required them
+      let sectionsUpdated = sectionsEntries.reduce(
+        (sectionsAccum, [sectionKey, section]) => {
+          // if the section.Content is null, then return the sectionsAccum
+          console.log("sectionKey, sup there: ", sectionKey)
+          console.log("section, yo there: ", section);
+          if (
+            !section ||
+            (typeof section === "object" &&
               section &&
-              section?.rootFieldsToRetrieveForUI &&
-              Array.isArray(section.rootFieldsToRetrieveForUI)
-            ) {
-              for (const rootFieldToRetrieveForUI of section.rootFieldsToRetrieveForUI) {
-                if (
-                  rootFieldToRetrieveForUI?.name &&
-                  typeof rootFieldToRetrieveForUI.name === "string" &&
-                  rootFieldToRetrieveForUI?.as &&
-                  typeof rootFieldToRetrieveForUI.as === "string" &&
+              (("Content" in section && !section.Content) ||
+                ("Data" in section && !section.Data))) ||
+            (sectionKey === "preview" && !targetUnitForUI?.FeaturedMultimedia)
+          ) {
+            return sectionsAccum;
+          }
+
+          if (
+            targetUnitForUI &&
+            typeof section === "object" &&
+            section &&
+            section?.rootFieldsToRetrieveForUI &&
+            Array.isArray(section.rootFieldsToRetrieveForUI)
+          ) {
+            for (const rootFieldToRetrieveForUI of section.rootFieldsToRetrieveForUI) {
+              if (
+                rootFieldToRetrieveForUI?.name &&
+                typeof rootFieldToRetrieveForUI.name === "string" &&
+                rootFieldToRetrieveForUI?.as &&
+                typeof rootFieldToRetrieveForUI.as === "string" &&
+                targetUnitForUI[
+                  rootFieldToRetrieveForUI?.name as keyof TUnitForUI
+                ]
+              ) {
+                const val =
                   targetUnitForUI[
-                    rootFieldToRetrieveForUI?.name as keyof TUnitForUI
-                  ]
-                ) {
-                  const val =
-                    targetUnitForUI[
-                      rootFieldToRetrieveForUI.name as keyof TUnitForUI
-                    ];
+                    rootFieldToRetrieveForUI.name as keyof TUnitForUI
+                  ];
 
-                  if (!val) {
-                    continue;
-                  }
-
-                  section = {
-                    ...section,
-                    [rootFieldToRetrieveForUI.as as string]: val,
-                  };
+                if (!val) {
+                  continue;
                 }
-              }
 
-              return {
-                ...sectionsAccum,
-                [sectionKey]: section,
-              };
+                section = {
+                  ...section,
+                  [rootFieldToRetrieveForUI.as as string]: val,
+                };
+              }
             }
+
+            console.log(`section ${sectionKey} after updates: `, section)
+
+            delete section.rootFieldsToRetrieveForUI;
 
             return {
               ...sectionsAccum,
               [sectionKey]: section,
             };
-          },
-          {} as Record<keyof ISections, any>
-        ) as TSectionsForUI;
+          }
+
+          return {
+            ...sectionsAccum,
+            [sectionKey]: section,
+          };
+        },
+        {} as Record<keyof ISections, any>
+      ) as TSectionsForUI;
+      sectionsUpdated = {
+        ...sectionsUpdated,
+        overview: {
+          ...sectionsUpdated.overview,
+          availLocs,
+        },
+      };
+      const versionsSection = sectionsUpdated.overview?.versions
+        ? {
+            __component: "lesson-plan.versions",
+            SectionTitle: "Version notes",
+            InitiallyExpanded: true,
+            Data: sectionsUpdated.overview?.versions,
+          }
+        : null;
+
+      if (versionsSection) {
         sectionsUpdated = {
           ...sectionsUpdated,
-          overview: {
-            ...sectionsUpdated.overview,
-            availLocs,
-          },
+          versions: versionsSection,
         };
-        const versionsSection = sectionsUpdated.overview?.versions
-          ? {
-              __component: "lesson-plan.versions",
-              SectionTitle: "Version notes",
-              InitiallyExpanded: true,
-              Data: sectionsUpdated.overview?.versions,
-            }
-          : null;
-
-        if (versionsSection) {
-          sectionsUpdated = {
-            ...sectionsUpdated,
-            versions: versionsSection,
-          };
-        }
-
-        if (sectionsUpdated.teachingMaterials) {
-          sectionsUpdated.teachingMaterials = {
-            ...sectionsUpdated.teachingMaterials,
-            unitTitle: sectionsUpdated.overview?.unitTitle,
-          };
-        }
-
-        targetUnitForUI.Sections = sectionsUpdated;
       }
+
+      targetUnitForUI.Sections = sectionsUpdated;
     }
 
     const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
@@ -1096,15 +1093,17 @@ export const getStaticProps = async (arg: {
     );
 
     if (
-      !targetUnitForUI &&
-      (!lessonToDisplayOntoUi || typeof lessonToDisplayOntoUi !== "object")
+      (!targetUnitForUI &&
+        (!lessonToDisplayOntoUi ||
+          typeof lessonToDisplayOntoUi !== "object")) ||
+      !lessonToDisplayOntoUi
     ) {
       throw new Error("Lesson is not found.");
-    } else if (
-      !lessonToDisplayOntoUi ||
-      typeof lessonToDisplayOntoUi !== "object"
-    ) {
-      console.log("Only the target unit is available.");
+    } else if (targetUnitForUI) {
+      console.log(
+        "Only the target unit is available. Sections: ",
+        targetUnitForUI.Sections
+      );
       return {
         props: {
           lesson: null,

@@ -1,57 +1,24 @@
 /* eslint-disable quotes */
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../components/Layout";
-import { Button } from "react-bootstrap";
-import Modal from "../components/Modal";
-import magic from "magic-sdk";
+import { Spinner } from "react-bootstrap";
 import Image from "next/image";
 import Logo from "../assets/img/logo.ico";
 import useSiteSession from "../customHooks/useSiteSession";
-import { getIndividualGpPlusSubscription } from "../apiServices/user/crudFns";
+import {
+  updateUser,
+} from "../apiServices/user/crudFns";
+import useOutsetaInputValidation from "../customHooks/useOutsetaInputValidation";
+import {
+  defautlNotifyModalVal,
+  useModalContext,
+} from "../providers/ModalProvider";
+import CustomLink from "../components/CustomLink";
+import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
+import useHandleOpeningGpPlusAccount from "../customHooks/useHandleOpeningGpPlusAccount";
 
 const ICON_DIMENSION = 125;
-
-export const injectOutsetaScripts = () => {
-  const existingConfig = document.querySelector(
-    'script[data-outseta="config"]'
-  );
-
-  if (existingConfig) {
-    existingConfig.remove();
-  }
-
-  const existingMain = document.querySelector(
-    'script[src="https://cdn.outseta.com/outseta.min.js"]'
-  );
-
-  if (existingMain) {
-    existingMain.remove();
-  }
-
-  const configScript = document.createElement("script");
-  configScript.type = "text/javascript";
-  configScript.setAttribute("data-outseta", "config");
-  configScript.text = `
-    var currentOrigin = window.location.origin;
-    var o_options = {
-      domain: 'galactic-polymath.outseta.com',
-      load: 'auth,customForm,emailList,leadCapture,nocode,profile,support',
-      auth: {
-        authenticationCallbackUrl: currentOrigin + '/gp-sign-up-result',
-        registrationConfirmationUrl: currentOrigin + '/gp-plus-set-password',
-      }
-    };
-  `;
-  document.body.appendChild(configScript);
-
-  const mainScript = document.createElement("script");
-  mainScript.src = "https://cdn.outseta.com/outseta.min.js";
-  mainScript.setAttribute("data-options", "o_options");
-  mainScript.async = true;
-
-  document.body.appendChild(mainScript);
-};
 
 const LiContentWithImg: React.FC<{ txt: string }> = ({ txt }) => {
   return (
@@ -75,90 +42,221 @@ const LiContentWithImg: React.FC<{ txt: string }> = ({ txt }) => {
 };
 
 const GpPlus: React.FC = () => {
-  const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
-  const [signUpModalOpacity, setSignUpModalOpacity] = useState(1);
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
     "monthly"
   );
-  const { token, status } = useSiteSession();
+  const {
+    _notifyModal,
+    _isCreateAccountModalDisplayed,
+    _isLoginModalDisplayed,
+  } = useModalContext();
+  const [, setNotifyModal] = _notifyModal;
+  const { token, status, user, logUserOut } = useSiteSession();
+  const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
+  const {
+    _wasGpPlusBtnClicked,
+    handleGpPlusAccountBtnClick,
+    anchorElement,
+    gpPlusSubscription,
+    isFetching,
+    _wasGpPlusSubRetrieved,
+  } = useHandleOpeningGpPlusAccount(true);
+  const [wasGpPlusSubRetrieved] = _wasGpPlusSubRetrieved;
+  const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = _wasGpPlusBtnClicked;
+  const outsetaSignUpLinkRef = useRef<HTMLAnchorElement | null>(null);
+  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
+
+  useOutsetaInputValidation();
+
+  console.log("gpPlusSubscription, in GP+ component: ", gpPlusSubscription);
+
+  // TODO: if the user is a member, then show the profile modal to the user telling the user to select a membership to buy or if the user chose a membership that they are
+  // -tell the user that.
+
+  // Calculate savings percentage (yearly: $60, monthly: $10 * 12 = $120, savings: 50%)
+  const yearlySavings = 50; // 50% savings
+  const monthlyPrice = 10;
+  const yearlyPrice = 60;
+  const monthlyEquivalent = yearlyPrice / 12; // $5/month when paid yearly
+  const gpPlusBtnTxt = useMemo(() => {
+    console.log("gpPlusSubscription, sup there: ", gpPlusSubscription);
+
+    if (
+      gpPlusSubscription?.membership?.AccountStageLabel === "Cancelling" ||
+      gpPlusSubscription?.membership?.AccountStageLabel === "Subscribing" ||
+      gpPlusSubscription?.membership?.AccountStageLabel === "Past due"
+    ) {
+      return "Manage account";
+    }
+
+    return "Sign up";
+  }, [gpPlusSubscription, isFetching]);
+  const gpLiteBtnTxt = useMemo(() => {
+    console.log("gpPlusSubscription, sup there: ", gpPlusSubscription);
+
+    if (status === "authenticated") {
+      return "ACCOUNT CREATED";
+    }
+
+    return "Sign up for free";
+  }, [status]);
 
   const handleToggle = () => {
     setBillingPeriod((prev) => (prev === "monthly" ? "yearly" : "monthly"));
   };
-  const handleOnHide = () => {
-    setSignUpModalOpacity(0);
+  const handleSignUpGpPlusBtnClick = async () => {
+    if (
+      gpPlusSubscription?.membership?.AccountStageLabel === "Cancelling" ||
+      gpPlusSubscription?.membership?.AccountStageLabel === "Subscribing" ||
+      gpPlusSubscription?.membership?.AccountStageLabel === "Past due"
+    ) {
+      await handleGpPlusAccountBtnClick();
+      return;
+    }
+
+    setWasGpPlusBtnClicked(true);
+
+    if (status === "unauthenticated") {
+      setIsLoginModalDisplayed(true);
+      setTimeout(() => {
+        setWasGpPlusBtnClicked(false);
+      }, 500);
+      return;
+    }
 
     setTimeout(() => {
-      const outsetaModalContent = document.getElementById(
-        "outseta-sign-up-modal-content"
-      );
-      const _outsetaSignUp =
-        outsetaModalContent?.firstChild as HTMLElement | null;
-      const outsetaContainer = document.getElementById(
-        "outseta-container"
-      ) as HTMLElement | null;
+      setIsSignupModalDisplayed(true);
+      setWasGpPlusBtnClicked(false);
+    }, 500);
+  };
+  const handleSignUpLiteBtnClick = async () => {
+    setIsLoginModalDisplayed(true);
+  };
 
-      if (_outsetaSignUp) {
-        _outsetaSignUp.remove();
+  useEffect(() => {
+    if (isSignupModalDisplayed) {
+      console.log("sign up modal displayed");
 
-        injectOutsetaScripts();
+      const continueToCheckoutBtn = document.querySelector(
+        ".o--Register--nextButton"
+      ) as HTMLButtonElement | null;
+      const payPeriodToggle = document.querySelector(
+        ".o--HorizontalToggle--displayMode-auto"
+      ) as HTMLButtonElement | null;
+      const monthlyOption = payPeriodToggle?.firstChild?.firstChild
+        ?.firstChild as HTMLElement | undefined;
+      const yearlyOption = payPeriodToggle?.firstChild?.lastChild
+        ?.firstChild as HTMLElement | undefined;
 
-        const outsetaSignUp = document.createElement("div");
-
-        outsetaSignUp.setAttribute("data-o-auth", "1");
-        outsetaSignUp.setAttribute("data-widget-mode", "register");
-        outsetaSignUp.setAttribute("data-plan-uid", "rmkkjamg");
-        outsetaSignUp.setAttribute("data-plan-payment-term", "month");
-        outsetaSignUp.setAttribute("data-skip-plan-options", "false");
-        outsetaSignUp.setAttribute("data-mode", "embed");
-        outsetaSignUp.style.display = "block";
-        outsetaSignUp.style.pointerEvents = "none";
-
-        outsetaContainer?.appendChild(outsetaSignUp);
+      if (billingPeriod === "monthly" && monthlyOption) {
+        monthlyOption.click();
+      } else if (billingPeriod === "yearly" && yearlyOption) {
+        yearlyOption.click();
       }
 
-      setIsSignupModalDisplayed(false);
-    }, 200);
-  };
-  const handleSignUpBtnClick = () => {
-    // GOAL: check if the user has an outseta account when the user clicks on this button
-    setIsSignupModalDisplayed(true);
-  };
-  const getGpPlusMembership = async () => {
-    const gpPlusSubscription = await getIndividualGpPlusSubscription(token);
+      console.log("continueToCheckoutBtn: ", continueToCheckoutBtn);
 
-    console.log("gpPlusSubscription: ", gpPlusSubscription);
-  };
+      continueToCheckoutBtn?.addEventListener("click", async (event) => {
+        console.log("The continue button was clicked...");
 
-  useEffect(() => {
-    const outsetaModalContent = document.getElementById(
-      "outseta-sign-up-modal-content"
-    );
+        if ((event.target as HTMLButtonElement).disabled) {
+          console.log("The button is disabled.");
+          return;
+        }
 
-    console.log("outsetaModalContent: ", outsetaModalContent);
+        const emailInput = document.querySelector('[name="Person.Email"]');
+        const outsetaEmail = emailInput
+          ? (emailInput as HTMLInputElement).value
+          : "";
 
-    const outseta = document.getElementById("outseta-sign-up");
+        console.log("outsetaEmail, sup there: ", outsetaEmail);
 
-    console.log("outseta: ", outseta);
+        if (!outsetaEmail) {
+          setNotifyModal({
+            headerTxt: "An error has occurred",
+            bodyTxt: (
+              <>
+                Unable to start your checkout session. If this error persists,
+                please contact{" "}
+                <CustomLink
+                  hrefStr={CONTACT_SUPPORT_EMAIL}
+                  className="ms-1 mt-2 text-break"
+                >
+                  feedback@galacticpolymath.com
+                </CustomLink>
+                .
+              </>
+            ),
+            isDisplayed: true,
+            handleOnHide() {
+              setNotifyModal(defautlNotifyModalVal);
+              window.location.reload();
+            },
+          });
+          setIsSignupModalDisplayed(false);
+          return;
+        }
 
-    if (outseta) {
-      outsetaModalContent?.appendChild(outseta);
+        if (!user?.email || !token) {
+          setNotifyModal({
+            headerTxt: "An error has occurred",
+            bodyTxt: (
+              <>
+                Unable to start your checkout session. You are not logged in.
+                The page will refresh after you close this modal.
+              </>
+            ),
+            isDisplayed: true,
+            handleOnHide() {
+              setNotifyModal(defautlNotifyModalVal);
+              logUserOut();
+              window.location.reload();
+            },
+          });
+          setIsSignupModalDisplayed(false);
+          return;
+        }
+
+        console.log(
+          "Will save the email the user inputted. Email: ",
+          outsetaEmail
+        );
+
+        const updateUserResponse = await updateUser(
+          { email: user.email },
+          { outsetaPersonEmail: outsetaEmail },
+          {},
+          token
+        );
+
+        if (!updateUserResponse?.wasSuccessful) {
+          setNotifyModal({
+            headerTxt: "An error has occurred",
+            bodyTxt: (
+              <>
+                An error has occurred while trying to update the user's email.
+                If this error persists, please contact{" "}
+                <CustomLink
+                  hrefStr={CONTACT_SUPPORT_EMAIL}
+                  className="ms-1 mt-2 text-break"
+                >
+                  feedback@galacticpolymath.com
+                </CustomLink>
+                .
+              </>
+            ),
+            isDisplayed: true,
+            handleOnHide() {
+              setNotifyModal(defautlNotifyModalVal);
+              window.location.reload();
+            },
+          });
+          setIsSignupModalDisplayed(false);
+          return;
+        }
+      });
     }
-
-    injectOutsetaScripts();
-  }, []);
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      getGpPlusMembership();
-      // TODO:
-      // CASE: the user is not signed in
-      // GOAL: show the log in button for the user to sign in the user clicks on the sign up button
-      // CASE: the user is signed in, but is not a gp plus member
-      // GOAL: present the sign up modal
-      // GOAL: make a request to the outseta to determine if the user has an outseta account
-    }
-  }, [status]);
+  }, [isSignupModalDisplayed]);
 
   return (
     <Layout
@@ -172,21 +270,38 @@ const GpPlus: React.FC = () => {
       <div style={{ height: "fit-content" }} className="">
         <div className="gpplus-pricing-section">
           <h1>GP+</h1>
-          <div className="gpplus-toggle-row">
-            <span className={billingPeriod === "monthly" ? "active" : ""}>
-              Monthly
-            </span>
-            <label className="gpplus-switch">
-              <input
-                type="checkbox"
-                checked={billingPeriod === "yearly"}
-                onChange={handleToggle}
-              />
-              <span className="gpplus-slider" />
-            </label>
-            <span className={billingPeriod === "yearly" ? "active" : ""}>
-              Yearly
-            </span>
+          <div className="gpplus-toggle-row w-100 d-flex justify-content-center align-items-center">
+            <div className="d-flex w-75 justify-content-center align-items-center">
+              <div className="p-3">
+                <span className={billingPeriod === "monthly" ? "active" : ""}>
+                  Monthly&nbsp;
+                </span>
+              </div>
+              <label className="gpplus-switch">
+                <input
+                  type="checkbox"
+                  checked={billingPeriod === "yearly"}
+                  onChange={handleToggle}
+                />
+                <span className="gpplus-slider" />
+              </label>
+              <div className="d-flex flex-column p-3">
+                <span
+                  className={`${
+                    billingPeriod === "yearly" ? "active" : ""
+                  } text-center`}
+                >
+                  &nbsp;Yearly{" "}
+                </span>
+                <span
+                  className={`${
+                    billingPeriod === "yearly" ? "active" : ""
+                  } text-center`}
+                >
+                  &nbsp;(Save 50%)
+                </span>
+              </div>
+            </div>
           </div>
           <div
             style={{ height: "fit-content" }}
@@ -223,21 +338,40 @@ const GpPlus: React.FC = () => {
                   </ul>
                 </div>
                 <div
-                  style={{ height: "155px" }}
+                  style={{ height: "195px" }}
                   className="w-100 d-flex justify-content-center align-items-center mt-2"
                 >
                   <div className="position-absolute bottom-0 mb-4 w-75">
                     <div>
-                      <div className="gpplus-price d-flex justify-content-center align-items-center">
+                      <div className="gpplus-price mb-2 d-flex justify-content-center align-items-center">
                         $0 <span className="ms-1 mt-1">/ {billingPeriod}</span>
                       </div>
                     </div>
                     <div>
                       <button
-                        onClick={handleSignUpBtnClick}
-                        className="gpplus-signup-btn lite"
+                        onClick={handleSignUpLiteBtnClick}
+                        disabled={
+                          wasGpPlusSubRetrieved
+                            ? status === "authenticated"
+                            : true
+                        }
+                        className={`gpplus-signup-btn lite ${
+                          wasGpPlusSubRetrieved
+                            ? status === "authenticated"
+                              ? "opacity-25"
+                              : ""
+                            : "opacity-25"
+                        }`}
+                        style={{
+                          height: "65px",
+                          cursor: wasGpPlusSubRetrieved
+                            ? status === "authenticated"
+                              ? "not-allowed"
+                              : "pointer"
+                            : "not-allowed",
+                        }}
                       >
-                        Sign up free
+                        {wasGpPlusSubRetrieved ? gpLiteBtnTxt : <Spinner />}
                       </button>
                     </div>
                   </div>
@@ -292,24 +426,65 @@ const GpPlus: React.FC = () => {
                   </ul>
                 </div>
                 <div
-                  style={{ height: "155px" }}
+                  style={{ height: "195px" }}
                   className="w-100 d-flex justify-content-center align-items-center mt-2"
                 >
                   <div className="position-absolute bottom-0 mb-4 w-75">
-                    <div>
-                      <div className="gpplus-price d-flex justify-content-center align-items-center">
-                        {billingPeriod === "monthly" ? "$10" : "$60"}{" "}
+                    <div
+                      className={`${billingPeriod === "yearly" ? "mb-2" : ""}`}
+                    >
+                      <div
+                        className={`gpplus-price ${
+                          billingPeriod === "monthly" ? "mb-2" : ""
+                        } d-flex justify-content-center align-items-center`}
+                      >
+                        {billingPeriod === "monthly"
+                          ? `$${monthlyPrice}`
+                          : `$${yearlyPrice}`}{" "}
                         <span className="ms-1 mt-1">
                           / {billingPeriod === "monthly" ? "month" : "year"}
                         </span>
                       </div>
+                      {billingPeriod === "yearly" && (
+                        <>
+                          <div className="d-flex justify-content-center align-items-center text-muted">
+                            OR
+                          </div>
+                          <div className="gpplus-price d-flex justify-content-center align-items-center">
+                            <span
+                              style={{ fontSize: "1.5rem" }}
+                              className="text-muted text-decoration-line-through"
+                            >
+                              ${monthlyPrice}
+                            </span>
+                            &nbsp;${monthlyEquivalent}
+                            <span className="ms-1 mt-1">/ month</span>
+                          </div>
+                        </>
+                      )}
                     </div>
                     <div>
                       <button
-                        className="gpplus-signup-btn plus"
-                        onClick={handleSignUpBtnClick}
+                        className={`gpplus-signup-btn plus ${
+                          !wasGpPlusSubRetrieved || wasGpPlusBtnClicked
+                            ? "opacity-25"
+                            : ""
+                        }`}
+                        disabled={!wasGpPlusSubRetrieved || wasGpPlusBtnClicked}
+                        onClick={handleSignUpGpPlusBtnClick}
+                        style={{
+                          height: "65px",
+                          cursor:
+                            !wasGpPlusSubRetrieved || wasGpPlusBtnClicked
+                              ? "not-allowed"
+                              : "pointer",
+                        }}
                       >
-                        Sign up
+                        {!wasGpPlusSubRetrieved || wasGpPlusBtnClicked ? (
+                          <Spinner />
+                        ) : (
+                          gpPlusBtnTxt
+                        )}
                       </button>
                     </div>
                   </div>
@@ -349,11 +524,16 @@ const GpPlus: React.FC = () => {
                   </ul>
                 </div>
                 <div
-                  style={{ height: "155px" }}
+                  style={{ height: "195px" }}
                   className="w-100 d-flex justify-content-center align-items-center mt-2"
                 >
                   <div className="position-absolute bottom-0 mb-4 w-75">
-                    <button className="gpplus-signup-btn group">
+                    <button
+                      className="gpplus-signup-btn group"
+                      style={{
+                        height: "65px",
+                      }}
+                    >
                       Request a quote
                     </button>
                   </div>
@@ -362,6 +542,7 @@ const GpPlus: React.FC = () => {
             </div>
           </div>
         </div>
+        {["Subscribing", "Canceling"].includes(gpPlusSubscription?.membership?.AccountStageLabel ?? "") ? anchorElement : null}
         <div
           id="signup-modal-div"
           style={{

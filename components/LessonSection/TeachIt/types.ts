@@ -5,7 +5,7 @@ import {
   ITeachingMaterialsDataForUI,
   IUnitTeachingMaterials,
 } from "../../../backend/models/Unit/types/teachingMaterials";
-import { IUnit } from "../../../backend/models/Unit/types/unit";
+import { INewUnitSchema, IUnit } from "../../../backend/models/Unit/types/unit";
 import {
   IComponent,
   ILessonForUI,
@@ -21,7 +21,7 @@ type TTargetUnitProps<TKey extends TTargetUnitKeys = TTargetUnitKeys> = {
 export interface TeachItProps
   extends Pick<IComponent, "index">,
     TTargetUnitProps,
-    IUnitTeachingMaterials, Partial<Pick<TUnitOverviewPropsForUI, "unitTitle">> {
+    IUnitTeachingMaterials, Partial<Pick<INewUnitSchema, "GdrivePublicID" | "Title">> {
   Data: ITeachingMaterialsDataForUI<ILessonForUI> | null;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
   SectionTitle: string;

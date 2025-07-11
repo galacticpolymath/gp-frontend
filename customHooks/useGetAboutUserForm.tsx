@@ -8,7 +8,8 @@ import {
   userAccountDefault,
   useUserContext,
 } from "../providers/UserProvider";
-import { TAboutUserForm } from "../backend/models/User/types";
+import { TAboutUserForm, TUserSchemaForClient } from "../backend/models/User/types";
+import { Magic } from "magic-sdk";
 
 export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
   let userAccountForClient = { ...userAccountDefault };
@@ -202,7 +203,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
               Authorization: `Bearer ${token}`,
             },
           };
-          const response = await axios.get<TAboutUserFormForUI>(
+          const response = await axios.get<TUserSchemaForClient>(
             "/api/get-user-account-data",
             paramsAndHeaders
           );
@@ -225,6 +226,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             zipCode,
             country,
             occupation,
+            gpPlusSubscription,
             isGpPlusMember,
             isTeacher,
             name,
@@ -244,6 +246,13 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             gradesTaught,
             gradesType,
           } = userAccount;
+
+          if(gpPlusSubscription?.email){
+            console.log(
+              "process.env.NEXT_PUBLIC_MAGIC_LINK_SK: ",
+              process.env.NEXT_PUBLIC_MAGIC_LINK_PK
+            );
+          }
 
           if (
             reasonsForSiteVisit &&

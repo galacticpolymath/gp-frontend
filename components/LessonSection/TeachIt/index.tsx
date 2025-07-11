@@ -5,7 +5,7 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
 
-import {
+import React, {
   useState,
   useRef,
   useEffect,
@@ -103,8 +103,7 @@ export const DisplayLessonTile = ({
   );
 };
 
-const TeachIt = (props: TeachItProps) => {
-  console.log("props, sup there: ", props);
+const TeachIt: React.FC<TeachItProps> = (props) => {
   let {
     _sectionDots,
     SectionTitle,
@@ -113,6 +112,8 @@ const TeachIt = (props: TeachItProps) => {
     classroom,
     unitDur,
     unitPreface,
+    GdrivePublicID,
+    Title: unitTitle,
   } = props;
   let Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;
@@ -272,6 +273,8 @@ const TeachIt = (props: TeachItProps) => {
       parts={parts}
       dataLesson={dataLesson}
       GradesOrYears={GradesOrYears}
+      GdrivePublicID={GdrivePublicID}
+      Title={unitTitle}
       resources={resources}
     />
   ) : (
@@ -293,14 +296,10 @@ const TeachIt = (props: TeachItProps) => {
       dataLesson={dataLesson}
       GradesOrYears={GradesOrYears}
       resources={resources}
+      GdrivePublicID={GdrivePublicID}
+      Title={unitTitle}
     />
   );
-};
-
-TeachIt.propTypes = {
-  index: PropTypes.number,
-  SectionTitle: PropTypes.string,
-  Data: PropTypes.object,
 };
 
 export default TeachIt;

@@ -6,8 +6,9 @@ import {
   INewUnitSchema,
 } from "../backend/models/Unit/types/unit";
 import { Session } from "next-auth";
-import { TAboutUserForm } from "../backend/models/User/types";
+import { TAboutUserForm, TUserSchemaForClient } from "../backend/models/User/types";
 import { TWebAppForUI } from "../backend/models/WebApp";
+import { TUserAccount } from "../providers/UserProvider";
 
 // front-end
 interface IComponent {
@@ -146,7 +147,8 @@ export interface IUpdatedAboutUserForm{
 
 export interface ILocalStorage{
   gpPlusFeatureLocation: string;
-  didGpSignInAttemptOccur: boolean
+  didGpSignInAttemptOccur: boolean;
+  userAccount: TUserSchemaForClient
 }
 
 interface IErr<TErrType extends string = string>{

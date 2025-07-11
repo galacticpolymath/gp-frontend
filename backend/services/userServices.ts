@@ -703,84 +703,111 @@ export interface IOutsetaAuthTokenResBody {
   token_type: string;
 }
 
+export type TAccountStageLabel = "Subscribing" | "Cancelling" | "Past due" | "Expired" | "NonMember";
 
-type TAccountStageLabel = "Subscribing" | "Cancelling" | "Past due" | "Expired"
-
-export interface IOutsetaUser{
-  Name: string, 
-  AccountStageLabel: TAccountStageLabel
-  [key: string]: unknown
+export interface IOutsetaUser {
+  Name?: string;
+  AccountStageLabel: TAccountStageLabel;
+  CurrentSubscription: {
+    _objectType: "Subscription";
+    StartDate: string;
+    RenewalDate: string;
+    Created: string;
+    /**
+     * `1` = Monthly, `2` = Yearly
+     */
+    BillingRenewalTerm: keyof TBillingRenewalTerm;
+    Rate: TBillingRenewalTerm[keyof TBillingRenewalTerm][1];
+    Plan: {
+      Name: string;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
 }
 
-export interface IOutsetaPagination<TData extends object = IOutsetaUser>{
-  metadata: Record<"limit" | "offset" | "total", number>,
-  items: TData[] | null
+export interface IOutsetaPagination<TData extends object = IOutsetaUser> {
+  metadata: Record<"limit" | "offset" | "total", number>;
+  items: TData[] | null;
 }
 
+/**
+ * Represents billing renewal terms related to Outseta's `BillingRenewalTerm` property of the `CurrentSubscription` object.
+ * The keys correspond to the billing period:
+ * 1 for Monthly and 2 for Yearly.
+ *
+ * Each entry contains a tuple where the first element is the name of the billing period and the second element is charge amount per period.
+ */
 export type TBillingRenewalTerm = {
-  "1": "Monthly",
-  "2": "Yearly"
+  1: ["Monthly", 10];
+  2: ["Yearly", 60];
+};
+
+export interface TOutsetaSubscription {
+  _objectType: "Subscription";
+  BillingRenewalTerm: keyof TBillingRenewalTerm;
 }
 
-export interface TOutsetaSubscription{
-  _objectType: 'Subscription',
-  BillingRenewalTerm: keyof  TBillingRenewalTerm
-}
-
-const getBillingType = (billingTypeNum: keyof TBillingRenewalTerm) => {
+export const getBillingType = (billingTypeNum: keyof TBillingRenewalTerm) => {
   const BILLING_RENEWAL_TERM: TBillingRenewalTerm = {
-    "1": "Monthly",
-    "2": "Yearly"
-  }
+    1: ["Monthly", 10],
+    2: ["Yearly", 60],
+  };
 
-  return BILLING_RENEWAL_TERM[billingTypeNum]
-}
+  return BILLING_RENEWAL_TERM[billingTypeNum];
+};
+
+export type TGpPlusMembershipRetrieved = Awaited<ReturnType<typeof getGpPlusIndividualMembershipStatus>> & { AccountStageLabel: TAccountStageLabel | "NonMember" }
 
 
-
-export const getGpPlusIndividualMembershipStatus = async (email: string): Promise<TAccountStageLabel | "NonMember" | "Err"> => {
+export const getGpPlusIndividualMembershipStatus = async (
+  email: string,
+  fields: string = "CurrentSubscription.*, CurrentSubscription.Plan.*, AccountStageLabel, Name"
+) => {
   try {
-    const url = new URL(`${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`);
-
-    url.searchParams.append("Name", email);
+    console.log(`Attempting to retrieve Outseta GP+ membership status for: ${email}`);
     
-    const { status, data } = await axios.get<IOutsetaPagination>(
-      url.href,
-      {
-        headers: {
-          Authorization: `Outseta ${process.env.OUTSETA_API_KEY}:${process.env.OUTSETA_API_SECRET}`,
-          "Content-Type": "application/json",
-        },
-      }
+
+    const url = new URL(
+      `${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`
     );
 
-    console.log("data, bacon: ", data);
-    
+    url.searchParams.append("Name", email);
+    url.searchParams.append("Fields", fields);
 
-    if(status !== 200){
+    const { status, data } = await axios.get<IOutsetaPagination>(url.href, {
+      headers: {
+        Authorization: `Outseta ${process.env.OUTSETA_API_KEY}:${process.env.OUTSETA_API_SECRET}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const currentSubscription = data.items?.[0];
+
+    console.log("currentSubscription, sup there: ", currentSubscription);
+
+    if (status !== 200 || !currentSubscription) {
       throw new Error("accountRetrievalErr");
     }
 
-    const targetUser = data.items?.length ? data.items?.find(outsetaUser => outsetaUser.Name === email) : undefined;
+    const { AccountStageLabel } = currentSubscription;
+    const { BillingRenewalTerm, Created, Plan, Rate, RenewalDate, StartDate } =
+      currentSubscription.CurrentSubscription;
 
-    if (!targetUser){
-      return "NonMember"
-    }
-
-    console.log("targetUser, yo there: ", targetUser)
-
-    if("Subscriptions" in targetUser){
-      console.log('targetUser subscriptions: ', targetUser.Subscriptions)
-    
-    }
-    if("CurrentSubscription" in targetUser){
-      console.log('targetUser.CurrentSubscription: ', targetUser.CurrentSubscription)
-    }
-
-    return targetUser.AccountStageLabel;
+    return {
+      email: currentSubscription.Name,
+      BillingRenewalTerm,
+      Created, Rate, RenewalDate, StartDate, PlanName: Plan.Name,
+      AccountStageLabel
+    };
   } catch (error: any) {
-    console.error("Failed to retrieve the outseta status for the target user. Error: " , error?.response);
+    console.error(
+      "Failed to retrieve the outseta status for the target user. Error: ",
+      error?.response
+    );
 
-    return "Err";
+    return {
+      AccountStageLabel: "NonMember"
+    };
   }
 };

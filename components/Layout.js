@@ -5,9 +5,6 @@ import Footer from './Footer';
 import Navbar from './Navbar';
 import { Noto_Sans } from 'next/font/google';
 import useOutsetaInputValidation from '../customHooks/useOutsetaInputValidation';
-import { useEffect } from 'react';
-import { Magic } from 'magic-sdk';
-import { OAuthExtension } from '@magic-ext/oauth';
 
 const notoSansLight = Noto_Sans({
   subsets: ['latin'],

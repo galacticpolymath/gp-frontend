@@ -190,3 +190,75 @@ export const createGDriveAuthUrl = () => {
 
   return authUrl.href;
 }
+
+const getIsWithinTargetElements = (selectorName: Set<string>, targetAttributeVal: string) => {
+  const selectorNames = Array.from(selectorName);
+  let isWithinElement = false;
+
+  for (const selectorName of selectorNames) {
+    if(selectorName.includes(targetAttributeVal)){
+      isWithinElement = true;
+
+      return isWithinElement;
+    }
+  }
+
+
+  return isWithinElement;
+}
+
+export const getIsWithinParentElement = (
+  element: HTMLElement,
+  selectorName: string | Set<string>,
+  attributeType: "className" | "id" = "className",
+  comparisonType: "includes" | "strictEquals"
+): boolean => {
+  if (
+    !element?.parentElement ||
+    (element?.parentElement &&
+      attributeType in element.parentElement &&
+      element?.parentElement[attributeType] === undefined)
+  ) {
+    console.log("Reached end of document.");
+    return false;
+  }
+
+  let isWithinParentElement = false;
+
+  // if selectorName is a Set string, then using the value for attributeType query, check if the value appears in the array
+
+  if (comparisonType === "includes" && element.parentElement[attributeType]) {
+    const attributeVal = element.parentElement[attributeType];
+    isWithinParentElement =
+      typeof selectorName === "string"
+        ? element.parentElement[attributeType].includes(selectorName)
+        : getIsWithinTargetElements(selectorName, attributeVal);
+  } else if (
+    comparisonType === "strictEquals" &&
+    element.parentElement[attributeType]
+  ) {
+    const attributeVal = element.parentElement[attributeType];
+    isWithinParentElement =
+      element.parentElement[attributeType] === selectorName;
+    isWithinParentElement =
+      typeof selectorName === "string"
+        ? attributeVal === selectorName
+        : selectorName.has(attributeVal);
+  }
+
+  if (
+    element?.parentElement != null &&
+    typeof element?.parentElement === "object" &&
+    typeof element.parentElement[attributeType] === "string" &&
+    isWithinParentElement
+  ) {
+    return true;
+  }
+
+  return getIsWithinParentElement(
+    element.parentElement,
+    selectorName,
+    attributeType,
+    comparisonType
+  );
+}

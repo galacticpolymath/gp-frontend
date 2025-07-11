@@ -10,11 +10,11 @@ import Layout from "../components/Layout";
 import LoginUI from "../components/User/Login/LoginUI";
 import Button from "../components/General/Button";
 import BootstrapBtn from "react-bootstrap/Button";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NextRouter, useRouter } from "next/router";
 import { useModalContext } from "../providers/ModalProvider";
 import axios from "axios";
-import { Spinner } from "react-bootstrap";
+import { Modal, Spinner } from "react-bootstrap";
 import {
   getAllUrlVals,
   getChunks,
@@ -25,6 +25,11 @@ import { FaUserAlt } from "react-icons/fa";
 import BootstrapButton from "react-bootstrap/Button";
 import { useGetAboutUserForm } from "../customHooks/useGetAboutUserForm";
 import AboutUserModal from "../components/User/AboutUser/AboutUserModal";
+import Image from "next/image";
+import { getIsWithinParentElement, getLocalStorageItem } from "../shared/fns";
+import { Magic } from "magic-sdk";
+import CustomLink from "../components/CustomLink";
+import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 
 export const getUserAccountData = async (
   token: string,
@@ -83,8 +88,7 @@ const AccountPg = () => {
   } = useModalContext();
   const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
   const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;
-  /**
-   * @type {[import('../providers/UserProvider').TUserAccount, import('react').Dispatch<import('react').SetStateAction<import('../providers/UserProvider').TUserAccount>>]} */
+  const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = useState(false);
   const [, setNotifyModal] = _notifyModal;
   const { _aboutUserForm, status, token, user, _isRetrievingUserData } =
     useGetAboutUserForm();
@@ -93,6 +97,87 @@ const AccountPg = () => {
   const [aboutUserForm] = _aboutUserForm;
   const firstName = aboutUserForm.firstName;
   const lastName = aboutUserForm.lastName;
+  const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
+
+  const handleGpPlusAccountBtnClick = async () => {
+    const userAccount = getLocalStorageItem("userAccount");
+    setWasGpPlusBtnClicked(true);
+
+    if (!userAccount?.gpPlusSubscription?.email) {
+      setNotifyModal({
+        isDisplayed: true,
+        headerTxt: "GP Plus data retrieval error",
+        bodyTxt: (
+          <>
+            Unable to retrieve your GP Plus email. If this error persists,
+            please contact{" "}
+            <CustomLink
+              hrefStr={CONTACT_SUPPORT_EMAIL}
+              className="ms-1 mt-2 text-break"
+            >
+              feedback@galacticpolymath.com
+            </CustomLink>
+            .
+          </>
+        ),
+        handleOnHide: () => {
+          setNotifyModal((state) => ({
+            ...state,
+            isDisplayed: false,
+          }));
+        },
+      });
+      setWasGpPlusBtnClicked(false);
+      return;
+    }
+
+    if (!("Outseta" in window)) {
+      setNotifyModal({
+        isDisplayed: true,
+        headerTxt: "GP Plus data retrieval error",
+        bodyTxt: (
+          <>
+            An error in loading your GP Plus data. Please refresh the page. If
+            this error persists, please contact{" "}
+            <CustomLink
+              hrefStr={CONTACT_SUPPORT_EMAIL}
+              className="ms-1 mt-2 text-break"
+            >
+              feedback@galacticpolymath.com
+            </CustomLink>
+            .
+          </>
+        ),
+        handleOnHide: () => {
+          setNotifyModal((state) => ({
+            ...state,
+            isDisplayed: false,
+          }));
+        },
+      });
+      setWasGpPlusBtnClicked(false);
+      return;
+    }
+
+    const outseta = (window as any).Outseta;
+    console.log("outseta, sup there: ", outseta);
+    let idToken = outseta.getAccessToken() as string | null;
+
+    console.log("idToken, yo there: ", idToken);
+
+    if (!idToken) {
+      const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string);
+      idToken = await magic.auth.loginWithMagicLink({
+        email: userAccount?.gpPlusSubscription?.email,
+      });
+      (window as any).Outseta.setMagicLinkIdToken(idToken);
+    }
+
+    setTimeout(() => {
+      gpPlusAnchorElementRef.current?.click();
+      setWasGpPlusBtnClicked(false);
+    }, 500) 
+  };
 
   useEffect(() => {
     if (
@@ -337,15 +422,72 @@ const AccountPg = () => {
             <span>{email}</span>
           </section>
           <section className="col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2">
-            {!aboutUserForm.isGpPlusMember && (
+            {aboutUserForm.isGpPlusMember ? (
+              <>
+                <BootstrapBtn
+                  onClick={handleGpPlusAccountBtnClick}
+                  variant="secondary"
+                  className="d-flex justify-content-center align-items-center border-0 rounded px-2 py-1"
+                  disabled={false}
+                  style={{
+                    backgroundColor: "#2D69D1",
+                    width: "225px",
+                    height: '64px',
+                  }}
+                >
+                  {wasGpPlusBtnClicked ? (
+                    <Spinner className='text-dark' />
+                  ) : (
+                    <>
+                      <span className="text-white">View</span>
+                      <Image
+                        src="/imgs/gp-logos/gp_submark.png"
+                        alt="gp_plus_logo"
+                        width={55}
+                        height={55}
+                        style={{
+                          width: "55px",
+                          height: "55px",
+                          objectFit: "contain",
+                        }}
+                        className="mx-1"
+                      />
+                      <span className="text-white">Account</span>
+                    </>
+                  )}
+                </BootstrapBtn>
+                <a
+                  ref={gpPlusAnchorElementRef}
+                  style={{
+                    zIndex: -10,
+                    opacity: 0,
+                  }}
+                  className="no-underline"
+                  href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
+                >
+                </a>
+              </>
+            ) : (
               <BootstrapBtn
                 onClick={() => {
                   router.push("/gp-plus");
                 }}
                 variant="secondary"
-                size="sm"
+                className="d-flex justify-content-center align-items-center border-0 rounded px-2 py-1"
               >
-                Upgrade To GP Plus+!
+                <span className="text-white">Upgrade To </span>
+                <Image
+                  src="/imgs/gp-logos/gp_submark.png"
+                  alt="gp_plus_logo"
+                  width={55}
+                  height={55}
+                  style={{
+                    width: "55px",
+                    height: "55px",
+                    objectFit: "contain",
+                  }}
+                  className="ms-1"
+                />
               </BootstrapBtn>
             )}
           </section>

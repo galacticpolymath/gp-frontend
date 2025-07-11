@@ -12,6 +12,7 @@ import { updateUser } from "../apiServices/user/crudFns";
 const useOutsetaInputValidation = () => {
   const { _notifyModal } = useModalContext();
   const [, setNotifyModal] = _notifyModal;
+  const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
   const { data, status } = useSession();
   const { user, token } = (data ?? {}) as IUserSession;
   let emailInput = useRef<HTMLInputElement>(null).current;
@@ -23,6 +24,8 @@ const useOutsetaInputValidation = () => {
     for (const mutation of mutationsList) {
       const element = mutation.target as HTMLElement;
 
+      console.log("new element has rendered: ", element);
+
       if (element.childNodes.length) {
         for (const childNode of Array.from(element.childNodes)) {
           if (
@@ -33,6 +36,8 @@ const useOutsetaInputValidation = () => {
         }
       }
     }
+
+    console.log("isGpPlusSignUpModalDisplayed, yo there: ", isGpPlusSignUpModalDisplayed);
 
     if (isGpPlusSignUpModalDisplayed) {
       const _emailInput = document.querySelector(
@@ -63,6 +68,7 @@ const useOutsetaInputValidation = () => {
             window.location.reload();
           },
         });
+        setIsSignupModalDisplayed(false);
         return;
       }
 
@@ -88,6 +94,7 @@ const useOutsetaInputValidation = () => {
             window.location.reload();
           },
         });
+        setIsSignupModalDisplayed(false);
         return;
       }
 
@@ -111,9 +118,28 @@ const useOutsetaInputValidation = () => {
         console.log("outsetaEmail, sup there: ", outsetaEmail);
 
         if (!outsetaEmail) {
-          console.error("outsetaEmail is missing.");
-          localStorage.setItem("didOutsetaErrOccur", "true");
-          window.location.reload();
+          setNotifyModal({
+            headerTxt: "An error has occurred",
+            bodyTxt: (
+              <>
+                Unable to start your checkout session.
+                If this error persists, please contact{" "}
+                <CustomLink
+                  hrefStr={CONTACT_SUPPORT_EMAIL}
+                  className="ms-1 mt-2 text-break"
+                >
+                  feedback@galacticpolymath.com
+                </CustomLink>
+                .
+              </>
+            ),
+            isDisplayed: true,
+            handleOnHide() {
+              setNotifyModal(defautlNotifyModalVal);
+              window.location.reload();
+            },
+          });
+          setIsSignupModalDisplayed(false);
           return;
         }
 
@@ -148,7 +174,7 @@ const useOutsetaInputValidation = () => {
               window.location.reload();
             },
           });
-
+          setIsSignupModalDisplayed(false);
           return;
         }
       });
@@ -159,6 +185,7 @@ const useOutsetaInputValidation = () => {
     let observer: MutationObserver | undefined;
     console.log("The current status: ", status);
     if (status === "authenticated") {
+      console.log("will watch the dom...")
       observer = new MutationObserver(mututationCallback);
       observer.observe(document.body, {
         childList: true,
@@ -172,6 +199,13 @@ const useOutsetaInputValidation = () => {
       }
     };
   }, [status]);
+
+  return {
+    _isSignupModalDisplayed: [
+      isSignupModalDisplayed,
+      setIsSignupModalDisplayed,
+    ],
+  } as const;
 };
 
 export default useOutsetaInputValidation;
