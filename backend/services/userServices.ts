@@ -717,7 +717,28 @@ export interface IOutsetaPagination<TData extends object = IOutsetaUser>{
   items: TData[] | null
 }
 
-export const getGpPlusMembershipStatus = async (email: string): Promise<TAccountStageLabel | "NonMember" | "Err"> => {
+export type TBillingRenewalTerm = {
+  "1": "Monthly",
+  "2": "Yearly"
+}
+
+export interface TOutsetaSubscription{
+  _objectType: 'Subscription',
+  BillingRenewalTerm: keyof  TBillingRenewalTerm
+}
+
+const getBillingType = (billingTypeNum: keyof TBillingRenewalTerm) => {
+  const BILLING_RENEWAL_TERM: TBillingRenewalTerm = {
+    "1": "Monthly",
+    "2": "Yearly"
+  }
+
+  return BILLING_RENEWAL_TERM[billingTypeNum]
+}
+
+
+
+export const getGpPlusIndividualMembershipStatus = async (email: string): Promise<TAccountStageLabel | "NonMember" | "Err"> => {
   try {
     const url = new URL(`${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`);
 
@@ -733,7 +754,8 @@ export const getGpPlusMembershipStatus = async (email: string): Promise<TAccount
       }
     );
 
-    console.log('data, gp plus users: ', data)
+    console.log("data, bacon: ", data);
+    
 
     if(status !== 200){
       throw new Error("accountRetrievalErr");
@@ -743,6 +765,16 @@ export const getGpPlusMembershipStatus = async (email: string): Promise<TAccount
 
     if (!targetUser){
       return "NonMember"
+    }
+
+    console.log("targetUser, yo there: ", targetUser)
+
+    if("Subscriptions" in targetUser){
+      console.log('targetUser subscriptions: ', targetUser.Subscriptions)
+    
+    }
+    if("CurrentSubscription" in targetUser){
+      console.log('targetUser.CurrentSubscription: ', targetUser.CurrentSubscription)
     }
 
     return targetUser.AccountStageLabel;

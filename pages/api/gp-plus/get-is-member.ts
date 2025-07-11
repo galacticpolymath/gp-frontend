@@ -2,7 +2,7 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import {
-  getGpPlusMembershipStatus,
+  getGpPlusIndividualMembershipStatus,
   getUser,
   getUserByEmail,
 } from "../../../backend/services/userServices";
@@ -51,7 +51,7 @@ export default async function handler(
     );
 
     if (userCached && "outsetaPersonEmail" in userCached) {
-      const membership = await getGpPlusMembershipStatus(userCached.outsetaPersonEmail);
+      const membership = await getGpPlusIndividualMembershipStatus(userCached.outsetaPersonEmail);
 
       console.log("membership: ", membership);
     }
@@ -68,7 +68,7 @@ export default async function handler(
     }
 
     if(!user.outsetaPersonEmail){
-      const membership = await getGpPlusMembershipStatus(user.outsetaPersonEmail);
+      const membership = await getGpPlusIndividualMembershipStatus(user.outsetaPersonEmail);
 
       console.log("membership: ", membership);
     }

@@ -56,6 +56,21 @@ export function injectOutsetaScripts() {
   document.body.appendChild(mainScript);
 }
 
+const LiContentWithImg: React.FC<{txt: string}> = ({ txt }) => {
+  return (
+    <>
+      <div className="d-flex">
+        <div className="d-flex justify-content-center align-items-center">
+          <Image alt="site_logo" width={25} height={25} src={Logo} />
+        </div>
+        <div className="d-flex justify-content-center align-items-center ms-1">
+          {txt}
+        </div>
+      </div>
+    </>
+  );
+}
+
 const GpPlus: React.FC = () => {
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
   const [signUpModalOpacity, setSignUpModalOpacity] = useState(1);
@@ -192,7 +207,10 @@ const GpPlus: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <button className="gpplus-signup-btn lite">
+                  <button
+                    onClick={handleSignUpBtnClick}
+                    className="gpplus-signup-btn lite"
+                  >
                     Sign up free
                   </button>
                 </div>
@@ -225,27 +243,13 @@ const GpPlus: React.FC = () => {
               </div>
               <ul className="gpplus-features pt-2">
                 <li className="gpplus-bonus d-flex justify-content-center align-items-center">
-                  <div className="d-flex">
-                    <div className="d-flex justify-content-center align-items-center">
-                      <Image
-                        alt="site_logo"
-                        width={25}
-                        height={25}
-                        src={Logo}
-                      />
-                    </div>
-                    <div className="d-flex justify-content-center align-items-center ms-1">
-                      JobViz App
-                    </div>
-                  </div>
+                  <LiContentWithImg txt="JobViz App" />
                 </li>
-                <li className="gpplus-bonus">
-                  <div></div>
-                  <div>+ Classroom Activator</div>
+                <li className="gpplus-bonus d-flex justify-content-center align-items-center">
+                  <LiContentWithImg txt="Classroom Activator" />
                 </li>
-                <li className="gpplus-bonus">
-                  <div></div>
-                  <div>+ STEM Vocabulary Flashcards</div>
+                <li className="gpplus-bonus d-flex justify-content-center align-items-center">
+                  <LiContentWithImg txt="STEM Vocabulary Flashcards" />
                 </li>
               </ul>
             </div>

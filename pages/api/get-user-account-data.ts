@@ -3,7 +3,7 @@
 /* eslint-disable indent */
 
 import { getMailingListContact } from "../../backend/services/emailServices";
-import { getGpPlusMembershipStatus, getUserByEmail, handleUserDeprecatedV1Fields } from "../../backend/services/userServices";
+import { getGpPlusIndividualMembershipStatus, getUserByEmail, handleUserDeprecatedV1Fields } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -64,7 +64,7 @@ export default async function handler(
       throw new CustomError("Failed to connect to the database.", 500);
     }
 
-    const gpPlusMembershipStatusPromise = getGpPlusMembershipStatus(email);
+    const gpPlusMembershipStatusPromise = getGpPlusIndividualMembershipStatus(email);
     const getUserAccountPromise = getUserByEmail<TUserSchemaForClient>(
       email,
       PROJECTIONS
