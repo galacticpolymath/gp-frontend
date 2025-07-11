@@ -67,7 +67,9 @@ export default async function handler(
         .json({ message: "User not found", errType: "userNotFound" });
     }
 
-    if(!user.outsetaPersonEmail){
+    if(user.outsetaPersonEmail){
+      console.log("The user has a outseta person email: ", user.outsetaPersonEmail);
+      
       const membership = await getGpPlusIndividualMembershipStatus(user.outsetaPersonEmail);
 
       console.log("membership: ", membership);

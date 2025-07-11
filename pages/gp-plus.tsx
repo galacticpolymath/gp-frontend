@@ -7,10 +7,12 @@ import Modal from "../components/Modal";
 import magic from "magic-sdk";
 import Image from "next/image";
 import Logo from "../assets/img/logo.ico";
+import useSiteSession from "../customHooks/useSiteSession";
+import { getIndividualGpPlusSubscription } from "../apiServices/user/crudFns";
 
-const ICON_DIMENSION = 100;
+const ICON_DIMENSION = 125;
 
-export function injectOutsetaScripts() {
+export const injectOutsetaScripts = () => {
   const existingConfig = document.querySelector(
     'script[data-outseta="config"]'
   );
@@ -49,18 +51,19 @@ export function injectOutsetaScripts() {
   mainScript.async = true;
 
   document.body.appendChild(mainScript);
-}
+};
 
 const LiContentWithImg: React.FC<{ txt: string }> = ({ txt }) => {
   return (
     <>
       <div className="d-flex">
         <div className="d-flex justify-content-center align-items-center">
-          <img 
-            alt="site_logo" 
-            width={25} 
-            height={25} 
-            src={Logo.src} 
+          <Image
+            src="/imgs/gp-logos/gp_submark.png"
+            alt="gp_plus_logo"
+            width={55}
+            height={55}
+            style={{ width: "55px", height: "55px", objectFit: "contain" }}
           />
         </div>
         <div className="d-flex justify-content-center align-items-center ms-1">
@@ -77,11 +80,11 @@ const GpPlus: React.FC = () => {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
     "monthly"
   );
+  const { token, status } = useSiteSession();
 
   const handleToggle = () => {
     setBillingPeriod((prev) => (prev === "monthly" ? "yearly" : "monthly"));
   };
-
   const handleOnHide = () => {
     setSignUpModalOpacity(0);
 
@@ -117,10 +120,14 @@ const GpPlus: React.FC = () => {
       setIsSignupModalDisplayed(false);
     }, 200);
   };
-
   const handleSignUpBtnClick = () => {
     // GOAL: check if the user has an outseta account when the user clicks on this button
     setIsSignupModalDisplayed(true);
+  };
+  const getGpPlusMembership = async () => {
+    const gpPlusSubscription = await getIndividualGpPlusSubscription(token);
+
+    console.log("gpPlusSubscription: ", gpPlusSubscription);
   };
 
   useEffect(() => {
@@ -139,16 +146,19 @@ const GpPlus: React.FC = () => {
     }
 
     injectOutsetaScripts();
-
-    // TODO:
-    // CASE: the user is not signed in
-    // GOAL: show the log in button for the user to sign in the user clicks on the sign up button
-
-    // CASE: the user is signed in, but is not a gp plus member
-    // GOAL: present the sign up modal
-
-    // GOAL: make a request to the outseta to determine if the user has an outseta account
   }, []);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      getGpPlusMembership();
+      // TODO:
+      // CASE: the user is not signed in
+      // GOAL: show the log in button for the user to sign in the user clicks on the sign up button
+      // CASE: the user is signed in, but is not a gp plus member
+      // GOAL: present the sign up modal
+      // GOAL: make a request to the outseta to determine if the user has an outseta account
+    }
+  }, [status]);
 
   return (
     <Layout
@@ -190,6 +200,9 @@ const GpPlus: React.FC = () => {
                     src={Logo}
                     width={ICON_DIMENSION}
                     height={ICON_DIMENSION}
+                    style={{
+                      objectFit: "contain",
+                    }}
                   />
                 </div>
                 <div className="pt-3 pb-1">
@@ -234,11 +247,16 @@ const GpPlus: React.FC = () => {
             <div className="gpplus-card plus highlighted position-relative">
               <div className="d-flex flex-column align-items-center bg-white">
                 <div className="w-100 d-flex justify-content-center align-items-center">
-                  <img
+                  <Image
                     alt="gp_plus_logo"
-                    src="/imgs/gp-logos/gp_plus.png"
+                    src="/imgs/gp-logos/gp_submark.png"
                     width={ICON_DIMENSION}
                     height={ICON_DIMENSION}
+                    style={{
+                      objectFit: "contain",
+                      width: ICON_DIMENSION,
+                      height: ICON_DIMENSION,
+                    }}
                   />
                 </div>
                 <div className="pt-3 pb-1">
@@ -270,9 +288,6 @@ const GpPlus: React.FC = () => {
                     </li>
                     <li className="gpplus-bonus d-flex justify-content-center align-items-center">
                       <LiContentWithImg txt="Classroom Activator" />
-                    </li>
-                    <li className="gpplus-bonus d-flex justify-content-center align-items-center">
-                      <LiContentWithImg txt="STEM Vocabulary Flashcards" />
                     </li>
                   </ul>
                 </div>
@@ -309,6 +324,9 @@ const GpPlus: React.FC = () => {
                     src={Logo}
                     width={ICON_DIMENSION}
                     height={ICON_DIMENSION}
+                    style={{
+                      objectFit: "contain",
+                    }}
                   />
                 </div>
                 <div className="pt-3 pb-1">

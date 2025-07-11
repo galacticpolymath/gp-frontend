@@ -119,3 +119,18 @@ export const refreshGDriveToken = async (refreshToken: string) => {
         return null;
     }
 };
+
+export const getIndividualGpPlusSubscription = async (token: string) => {
+    try {
+        const response = await axios.get('/api/gp-plus/get-is-individual-member', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        console.log("Response: ", response.data);
+        
+    } catch (error){
+        console.error("An error has ocurrred. Failed to get subscription: ", error);
+    }
+}

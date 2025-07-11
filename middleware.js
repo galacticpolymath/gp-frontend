@@ -27,7 +27,7 @@ const DB_ADMIN_ROUTES_SET = new Set(DB_ADMIN_ROUTES);
 const GP_PLUS_ROUTES = [
   "/api/gp-plus/auth",
   "/api/gp-plus/copy-unit",
-  "/api/gp-plus/get-is-member",
+  "/api/gp-plus/get-is-individual-member",
 ];
 const GP_PLUS_ROUTES_SET = new Set(GP_PLUS_ROUTES);
 const USER_ACCOUNT_ROUTES = [
@@ -308,7 +308,7 @@ export async function middleware(request) {
         return errResponse;
       }
 
-      const { data, status } = axios.get("/api/gp-plus/get-is-member", {
+      const { data, status } = axios.get("/api/gp-plus/get-is-individual-member", {
         headers: {
           authorization: authorizationStr,
         },
@@ -326,7 +326,7 @@ export async function middleware(request) {
         return response;
       }
 
-      if (pathname === "/api/gp-plus/get-is-member") {
+      if (pathname === "/api/gp-plus/get-is-individual-member") {
         console.log("isGpPlusMember: ", isGpPlusMember);
         return NextResponse.json({ isGpPlusMember }).status(200);
       }
