@@ -247,13 +247,6 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             gradesType,
           } = userAccount;
 
-          if(gpPlusSubscription?.email){
-            console.log(
-              "process.env.NEXT_PUBLIC_MAGIC_LINK_SK: ",
-              process.env.NEXT_PUBLIC_MAGIC_LINK_PK
-            );
-          }
-
           if (
             reasonsForSiteVisit &&
             Object.entries(reasonsForSiteVisit).length > 0
