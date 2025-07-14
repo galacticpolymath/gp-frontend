@@ -69,6 +69,11 @@ export default async function handler(
       // make a earlier return here.
     }
 
+    console.log(
+      "jwtVerificationResult.payload.email: ",
+      jwtVerificationResult.payload.email
+    );
+
     const { wasSuccessful } = await connectToMongodb(15_000, 0, true);
 
     if (!wasSuccessful) {
@@ -79,11 +84,6 @@ export default async function handler(
         message: "Failed to connect to the database",
       });
     }
-
-    console.log(
-      "jwtVerificationResult.payload.email: ",
-      jwtVerificationResult.payload.email
-    );
 
     let user = await getUserByEmail<TUserSchemaForClient>(
       jwtVerificationResult.payload.email,
