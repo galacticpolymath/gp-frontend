@@ -10,9 +10,13 @@ import {
 } from "../../../backend/services/userServices";
 import { verifyJwt } from "../../../nondependencyFns";
 import cache from "../../../backend/utils/cache";
-import { TUserSchemaForClient, TUserSchemaV2 } from "../../../backend/models/User/types";
+import {
+  TUserSchemaForClient,
+  TUserSchemaV2,
+} from "../../../backend/models/User/types";
+import { connectToMongodb } from "../../../backend/utils/connection";
 
-type x = (ReturnType<typeof getBillingType>)[0];
+type x = ReturnType<typeof getBillingType>[0];
 export type TGpPlusMembershipForClient = TGpPlusMembershipRetrieved;
 
 export default async function handler(
@@ -57,17 +61,37 @@ export default async function handler(
     let membership: TGpPlusMembershipRetrieved | undefined = undefined;
 
     if (userCached && "outsetaPersonEmail" in userCached) {
-      membership = await getGpPlusIndividualMembershipStatus(userCached.outsetaPersonEmail) as TGpPlusMembershipRetrieved;
+      membership = (await getGpPlusIndividualMembershipStatus(
+        userCached.outsetaPersonEmail
+      )) as TGpPlusMembershipRetrieved;
 
       console.log("membership: ", membership);
+      // make a earlier return here.
     }
 
-    console.log("jwtVerificationResult.payload.email: ", jwtVerificationResult.payload.email);
+    const { wasSuccessful } = await connectToMongodb(15_000, 0, true);
 
-    let user = await getUserByEmail<TUserSchemaForClient>(jwtVerificationResult.payload.email, {
-      outsetaPersonEmail: 1,
-      _id: 0,
-    });
+    if (!wasSuccessful) {
+      console.error("Failed to connect to the database.");
+
+      return response.status(500).json({
+        errType: "DbConnectionErr",
+        message: "Failed to connect to the database",
+      });
+    }
+
+    console.log(
+      "jwtVerificationResult.payload.email: ",
+      jwtVerificationResult.payload.email
+    );
+
+    let user = await getUserByEmail<TUserSchemaForClient>(
+      jwtVerificationResult.payload.email,
+      {
+        outsetaPersonEmail: 1,
+        _id: 0,
+      }
+    );
 
     if (!user) {
       return response
@@ -75,10 +99,15 @@ export default async function handler(
         .json({ message: "User not found", errType: "userNotFound" });
     }
 
-    if(user.outsetaPersonEmail){
-      console.log("The user has a outseta person email: ", user.outsetaPersonEmail);
+    if (user.outsetaPersonEmail) {
+      console.log(
+        "The user has a outseta person email: ",
+        user.outsetaPersonEmail
+      );
 
-      membership = await getGpPlusIndividualMembershipStatus(user.outsetaPersonEmail) as TGpPlusMembershipRetrieved;
+      membership = (await getGpPlusIndividualMembershipStatus(
+        user.outsetaPersonEmail
+      )) as TGpPlusMembershipRetrieved;
     }
 
     user = {
@@ -91,7 +120,9 @@ export default async function handler(
 
     const membershipForClient = {
       ...membership,
-      BillingRenewalTerm:  membership?.BillingRenewalTerm ? getBillingType(membership?.BillingRenewalTerm)?.[0] : null,
+      BillingRenewalTerm: membership?.BillingRenewalTerm
+        ? getBillingType(membership?.BillingRenewalTerm)?.[0]
+        : null,
     };
 
     response.status(200).json({ membership: membershipForClient });
