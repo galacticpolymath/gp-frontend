@@ -159,8 +159,7 @@ const AccountPg = () => {
       return;
     }
 
-    const outseta = (window as any).Outseta;
-    console.log("outseta, sup there: ", outseta);
+    const outseta = (window as any).Outseta;;
     let idToken = outseta.getAccessToken() as string | null;
 
     console.log("idToken, yo there: ", idToken);

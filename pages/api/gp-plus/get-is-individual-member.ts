@@ -62,6 +62,8 @@ export default async function handler(
       console.log("membership: ", membership);
     }
 
+    console.log("jwtVerificationResult.payload.email: ", jwtVerificationResult.payload.email);
+
     let user = await getUserByEmail<TUserSchemaForClient>(jwtVerificationResult.payload.email, {
       outsetaPersonEmail: 1,
       _id: 0,
