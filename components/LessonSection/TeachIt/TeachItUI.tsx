@@ -124,7 +124,7 @@ const TeachItUI = <
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const { _isDownloadModalInfoOn } = useModalContext();
-  const { _isGpPlusMember } = useUserContext();
+  const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
   const areThereGradeBands =
     !!gradeVariations?.length &&
     gradeVariations.every((variation) => !!variation.grades);
@@ -148,6 +148,7 @@ const TeachItUI = <
     queriedCookies;
   const { session: siteSession, status, token } = session;
   const [isCopyingUnit, setIsCopyingUnit] = useState(false);
+  const [isCopyingUnitBtnDisabled] = _isCopyUnitBtnDisabled;
   const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
   const router = useRouter();
 
@@ -529,15 +530,21 @@ const TeachItUI = <
                   onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
                   style={{
                     pointerEvents:
-                      session.status === "loading" ? "none" : "auto",
+                      isCopyingUnitBtnDisabled || isCopyingUnit
+                        ? "none"
+                        : "auto",
                     minHeight: "51px",
                   }}
                   className={`btn btn-primary px-3 py-2 col-8 col-md-12 ${
                     session.status === "loading" ? "opacity-25" : "opacity-100"
                   }`}
-                  disabled={!didInitialRenderOccur.current || isCopyingUnit}
+                  disabled={
+                    !didInitialRenderOccur.current ||
+                    isCopyingUnitBtnDisabled ||
+                    isCopyingUnit
+                  }
                 >
-                  {isCopyingUnit && (
+                  {/* {(isCopyingUnit || isCopyingUnitBtnDisabled) && (
                     <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2">
                       <div
                         className="spinner-border spinner-border-sm text-light"
@@ -546,8 +553,8 @@ const TeachItUI = <
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     </div>
-                  )}
-                  {!isCopyingUnit && (
+                  )} */}
+                  {(!isCopyingUnit || !isCopyingUnitBtnDisabled) && (
                     <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2">
                       {!didInitialRenderOccur.current ? (
                         <div

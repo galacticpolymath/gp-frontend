@@ -79,6 +79,7 @@ export type TUserProviderValue = {
   _isUserTeacher: TUseStateReturnVal<boolean>;
   _accountForm: TUseStateReturnVal<TAccountForm>;
   _isGpPlusMember: TUseStateReturnVal<boolean>;
+  _isCopyUnitBtnDisabled: TUseStateReturnVal<boolean>;
 };
 export interface TAccountForm {
   firstName: string;
@@ -90,6 +91,7 @@ export const UserContext = createContext<TUserProviderValue | null>(null);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [aboutUserForm, setAboutUserForm] = useState(userAccountDefault);
+  const [isCopyUnitBtnDisabled, setIsCopyUnitBtnDisabled] = useState(true);
   const [accountForm, setAccountForm] = useState({
     firstName: "",
     lastName: "",
@@ -102,6 +104,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     _isUserTeacher: [isUserTeacher, setIsUserTeacher],
     _accountForm: [accountForm, setAccountForm],
     _isGpPlusMember: [isGpPlusMember, setIsGpPlusMember],
+    _isCopyUnitBtnDisabled: [isCopyUnitBtnDisabled, setIsCopyUnitBtnDisabled],
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

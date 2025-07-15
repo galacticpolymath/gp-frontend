@@ -88,7 +88,7 @@ const getLessonSections = <T extends TSectionsForUI>(
   sectionComps.map((section: TSectionsForUI | null, index: number) => {
     const sectionClassNameForTesting = "section-testing";
 
-    console.log("section, sup there: ", section)
+    console.log("section, sup there: ", section);
 
     return {
       ...section,
@@ -150,7 +150,8 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 const LessonDetails = ({ lesson, unit }: IProps) => {
   console.log("unit: ", unit);
   const router = useRouter();
-  const { _isUserTeacher, _isGpPlusMember } = useUserContext();
+  const { _isUserTeacher, _isGpPlusMember, _isCopyUnitBtnDisabled } =
+    useUserContext();
   const { status, data } = useSession();
   const { token } = (data ?? {}) as IUserSession;
   const statusRef = useRef(status);
@@ -170,6 +171,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   const [, setIsUserTeacher] = _isUserTeacher;
   const [, setIsGpPlusMember] = _isGpPlusMember;
   const [, setNotifyModal] = _notifyModal;
+  const [, setIsCopyUnitBtnDisabled] = _isCopyUnitBtnDisabled;
   const [, setCustomModalFooter] = _customModalFooter;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
@@ -538,6 +540,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     (async () => {
       if (status === "authenticated" && token) {
         try {
+          setIsCopyUnitBtnDisabled(true);
           const paramsAndHeaders = {
             params: {
               custom_projections: "isTeacher",
@@ -563,7 +566,11 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
           setIsGpPlusMember(!!data?.isGpPlusMember);
         } catch (error) {
           console.error("An error has occurred: ", error);
+        } finally {
+          setIsCopyUnitBtnDisabled(false);
         }
+      } else if (status === "unauthenticated"){
+          setIsCopyUnitBtnDisabled(false);
       }
     })();
   }, [status]);
@@ -664,17 +671,15 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container min-vh-100">
         <div className="p-sm-3 pt-0">
           {_unitSections ? (
-            _unitSections.map(
-              (section: any, index: number) => (
-                <ParentLessonSection
-                  key={index}
-                  section={section}
-                  ForGrades={_unit.ForGrades}
-                  index={index}
-                  _sectionDots={[unitSectionDots, setUnitSectionDots]}
-                />
-              )
-            )
+            _unitSections.map((section: any, index: number) => (
+              <ParentLessonSection
+                key={index}
+                section={section}
+                ForGrades={_unit.ForGrades}
+                index={index}
+                _sectionDots={[unitSectionDots, setUnitSectionDots]}
+              />
+            ))
           ) : (
             <span className="mt-5">
               DEVELOPMENT ERROR: No sections to display.
@@ -990,15 +995,14 @@ export const getStaticProps = async (arg: {
           resourcesForUI;
       }
 
-      const sectionsEntries = Object.entries(targetUnitForUI.Sections ?? {}) as [
-        keyof ISections,
-        any
-      ][];
+      const sectionsEntries = Object.entries(
+        targetUnitForUI.Sections ?? {}
+      ) as [keyof ISections, any][];
       // get the root fields for specific sections that required them
       let sectionsUpdated = sectionsEntries.reduce(
         (sectionsAccum, [sectionKey, section]) => {
           // if the section.Content is null, then return the sectionsAccum
-          console.log("sectionKey, sup there: ", sectionKey)
+          console.log("sectionKey, sup there: ", sectionKey);
           console.log("section, yo there: ", section);
           if (
             !section ||
@@ -1044,7 +1048,7 @@ export const getStaticProps = async (arg: {
               }
             }
 
-            console.log(`section ${sectionKey} after updates: `, section)
+            console.log(`section ${sectionKey} after updates: `, section);
 
             delete section.rootFieldsToRetrieveForUI;
 
