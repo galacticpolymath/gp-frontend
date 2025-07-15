@@ -273,6 +273,7 @@ const TeachItUI = <
       "gdrive-token-refresh": gdriveRefreshToken as string,
     };
     console.log("Request headers: ", headers);
+    console.log("GdrivePublicID, yo there: ", GdrivePublicID);
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
 
     url.searchParams.append("unitDriveId", GdrivePublicID);

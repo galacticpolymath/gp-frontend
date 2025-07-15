@@ -111,8 +111,9 @@ body {
   }
 }
 
-.o--tab-profile{
-  display: none !important;
+.o--Profile--name,
+.o--Profile--password{
+  display: none;
 }
 
 .fade-modal-in-short{

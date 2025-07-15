@@ -30,6 +30,7 @@ import { getIsWithinParentElement, getLocalStorageItem } from "../shared/fns";
 import { Magic } from "magic-sdk";
 import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
+import useOutsetaEmailInputValidation from "../customHooks/useOutsetaEmailInputValidation";
 
 export const getUserAccountData = async (
   token: string,
@@ -90,14 +91,24 @@ const AccountPg = () => {
   const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = useState(false);
   const [, setNotifyModal] = _notifyModal;
-  const { _aboutUserForm, status, token, user, _isRetrievingUserData } =
-    useGetAboutUserForm();
+  const {
+    _aboutUserForm,
+    status,
+    token,
+    user,
+    _isRetrievingUserData,
+    _gpPlusSub,
+  } = useGetAboutUserForm();
   const { email, image } = user ?? {};
   const [isRetrievingUserData] = _isRetrievingUserData;
   const [aboutUserForm] = _aboutUserForm;
+  const [gpPlusSub, ] = _gpPlusSub;
   const firstName = aboutUserForm.firstName;
   const lastName = aboutUserForm.lastName;
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
+
+  // useOutsetaEmailInputValidation();
+
 
   const handleGpPlusAccountBtnClick = async () => {
     const userAccount = getLocalStorageItem("userAccount");
@@ -169,6 +180,7 @@ const AccountPg = () => {
       idToken = await magic.auth.loginWithMagicLink({
         email: userAccount?.gpPlusSubscription?.email,
       });
+      console.log("idToken: ", idToken);
       (window as any).Outseta.setMagicLinkIdToken(idToken);
     }
 
@@ -179,6 +191,24 @@ const AccountPg = () => {
   };
 
   useEffect(() => {
+    const url = new URL(window.location.href);
+    if (
+      url.searchParams.get("show_gp_plus_account_modal") === "true" &&
+      status === "authenticated" &&
+      (gpPlusSub?.AccountStageLabel === "Subscribing" ||
+        gpPlusSub?.AccountStageLabel === "Cancelling")
+    ) {
+      console.log("hi there will click the gp plus button...");
+      setWasGpPlusBtnClicked(true);
+
+      setTimeout(() => {
+        gpPlusAnchorElementRef?.current?.click();
+        setWasGpPlusBtnClicked(false);
+      }, 500);
+      resetUrl(router);
+      return;
+    }
+
     if (
       status === "unauthenticated" &&
       router.asPath.includes("?") &&
@@ -237,7 +267,7 @@ const AccountPg = () => {
         });
       }, 300);
     }
-  }, [status]);
+  }, [status, gpPlusSub]);
 
   useEffect(() => {
     const urlVals = getAllUrlVals(router, true) as unknown as string[][];

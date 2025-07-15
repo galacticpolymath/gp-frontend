@@ -117,6 +117,8 @@ export const generateGoogleAuthJwt = () => {
         );
 
         return null;
+    } finally {
+        fs.unlinkSync("credentials.json");
     }
 };
 

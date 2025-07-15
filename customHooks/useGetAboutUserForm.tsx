@@ -187,6 +187,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
   const { status, data } = useSession();
   const { _aboutUserForm } = useUserContext();
   const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
+  const [gpPlusSub, setGpPlusSub] = useState<TUserSchemaForClient["gpPlusSubscription"] | null>(null);
   const { user, token } = (data ?? {}) as IUserSession;
   const [isRetrievingUserData, setIsRetrievingUserData] = useState(true);
 
@@ -246,6 +247,10 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             gradesTaught,
             gradesType,
           } = userAccount;
+
+          if(gpPlusSubscription) {
+            setGpPlusSub(gpPlusSubscription);
+          }
 
           if (
             reasonsForSiteVisit &&
@@ -455,5 +460,6 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
     status,
     data,
     token,
-  };
+    _gpPlusSub: [gpPlusSub, setGpPlusSub],
+  } as const;
 };

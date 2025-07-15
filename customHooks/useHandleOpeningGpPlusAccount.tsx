@@ -1,6 +1,6 @@
 import { Magic } from "magic-sdk";
 import { getLocalStorageItem } from "../shared/fns";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useModalContext } from "../providers/ModalProvider";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import CustomLink from "../components/CustomLink";
@@ -28,7 +28,7 @@ const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
         return gpPlusSub;
       }
 
-      if(status === "loading"){
+      if (status === "loading") {
         return null;
       }
 
@@ -146,6 +146,29 @@ const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
       setWasGpPlusBtnClicked(false);
     }, 500);
   }, [isFetching]);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+
+    console.log("status: ", status);
+    console.log("url searchParams: ", url.searchParams.toString());
+    console.log("gpPlusSubscription AccountStageLabel: ", gpPlusSubscription?.membership?.AccountStageLabel);
+
+    if (
+      url.searchParams.get("show_gp_plus_account_modal") === "true" &&
+      status === "authenticated" &&
+      (gpPlusSubscription?.membership?.AccountStageLabel === "Subscribing" ||
+        gpPlusSubscription?.membership?.AccountStageLabel === "Cancelling")
+    ) {
+      console.log("hi there will click the gp plus button...");
+      setWasGpPlusBtnClicked(true);
+
+      setTimeout(() => {
+        outsetaAnchorElement?.current?.click();
+        setWasGpPlusBtnClicked(false);
+      }, 500);
+    }
+  }, [status]);
 
   return {
     handleGpPlusAccountBtnClick,
