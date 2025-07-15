@@ -152,6 +152,7 @@ export async function shareFilesWithRetries(files, userEmail, googleService, tri
     try {
         console.log("Current try: ", tries);
         console.log("Files to share: ", files.length);
+        
         if (tries > 8) {
             return { wasSuccessful: false };
         }
@@ -181,6 +182,8 @@ export async function shareFilesWithRetries(files, userEmail, googleService, tri
 
         for (const resultIndex in sharedFilesResults) {
             const result = sharedFilesResults[resultIndex];
+
+            console.log("Result, yo there: ", result);
 
             if (result.status === "rejected") {
                 failedShareFilesIndices.add(parseInt(resultIndex));
