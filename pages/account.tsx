@@ -184,9 +184,10 @@ const AccountPg = () => {
       (window as any).Outseta.setMagicLinkIdToken(idToken);
     }
 
+    
     setTimeout(() => {
-      gpPlusAnchorElementRef.current?.click();
       setWasGpPlusBtnClicked(false);
+      gpPlusAnchorElementRef.current?.click();
     }, 500) 
   };
 
@@ -461,11 +462,11 @@ const AccountPg = () => {
                   style={{
                     backgroundColor: "#2D69D1",
                     width: "225px",
-                    height: '64px',
+                    height: "64px",
                   }}
                 >
                   {wasGpPlusBtnClicked ? (
-                    <Spinner className='text-dark' />
+                    <Spinner className="text-dark" />
                   ) : (
                     <>
                       <span className="text-white">View</span>
@@ -493,8 +494,7 @@ const AccountPg = () => {
                   }}
                   className="no-underline"
                   href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
-                >
-                </a>
+                ></a>
               </>
             ) : (
               <BootstrapBtn
