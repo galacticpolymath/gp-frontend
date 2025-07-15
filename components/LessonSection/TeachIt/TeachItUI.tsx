@@ -147,8 +147,7 @@ const TeachItUI = <
   const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
     queriedCookies;
   const { session: siteSession, status, token } = session;
-  const [isCopyingUnit, setIsCopyingUnit] = useState(false);
-  const [isCopyingUnitBtnDisabled] = _isCopyUnitBtnDisabled;
+  const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] = _isCopyUnitBtnDisabled;
   const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
   const router = useRouter();
 
@@ -183,6 +182,8 @@ const TeachItUI = <
   const copyUnit = async () => {
     console.log("Copy unit function called");
 
+    setIsCopyingUnitBtnDisabled(true);
+
     if (!gdriveAccessToken) {
       setLocalStorageItem(
         "gpPlusFeatureLocation",
@@ -191,11 +192,36 @@ const TeachItUI = <
       const url = createGDriveAuthUrl();
       removeLocalStorageItem("didGpSignInAttemptOccur");
       window.location.href = url;
+      setIsCopyingUnitBtnDisabled(false);
       return;
     }
 
-    setIsCopyingUnit(true);
+    if (!GdrivePublicID || !Title){
+      const _toastId = toastId ?? nanoid();
 
+      setToastId(_toastId);
+
+      const handleOnCancel = () => {
+        toastRef.current?.remove();
+        toast.dismiss(_toastId);
+        setToastId(null);
+      };
+
+      displayToast(
+        {
+          jobStatus: "failure",
+          onCancel: handleOnCancel,
+          onCancelBtnTxt: "Close",
+          title: "Failed to start job.",
+          subtitle: "Please refresh the page and try again.",
+          ref: toastRef,
+        },
+        _toastId
+      );
+      setIsCopyingUnitBtnDisabled(false);
+      return;
+    } 
+    
     let currentAccessToken = gdriveAccessToken;
 
     if (gdriveAccessTokenExp && gdriveRefreshToken) {
@@ -249,8 +275,8 @@ const TeachItUI = <
     console.log("Request headers: ", headers);
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
 
-    url.searchParams.append("unitDriveId", "15KK-qNwPUbw2d1VBDvsjHfreCSBpwMiw");
-    url.searchParams.append("unitName", "My GP Unit");
+    url.searchParams.append("unitDriveId", GdrivePublicID);
+    url.searchParams.append("unitName", `${Title} COPY`);
 
     const eventSource = new EventSourcePolyfill(url.href, {
       headers,
@@ -271,7 +297,7 @@ const TeachItUI = <
         setToastId(null);
       };
 
-      setIsCopyingUnit(false);
+      setIsCopyingUnitBtnDisabled(false);
 
       displayToast(
         {
@@ -342,7 +368,7 @@ const TeachItUI = <
             },
             _toastId
           );
-          setIsCopyingUnit(false);
+          setIsCopyingUnitBtnDisabled(false);
           return;
         }
 
@@ -529,19 +555,14 @@ const TeachItUI = <
                   ref={copyUnitBtnRef}
                   onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
                   style={{
-                    pointerEvents:
-                      isCopyingUnitBtnDisabled || isCopyingUnit
-                        ? "none"
-                        : "auto",
+                    pointerEvents: isCopyingUnitBtnDisabled ? "none" : "auto",
                     minHeight: "51px",
                   }}
                   className={`btn btn-primary px-3 py-2 col-8 col-md-12 ${
-                    session.status === "loading" ? "opacity-25" : "opacity-100"
+                    isCopyingUnitBtnDisabled ? "opacity-25" : "opacity-100"
                   }`}
                   disabled={
-                    !didInitialRenderOccur.current ||
-                    isCopyingUnitBtnDisabled ||
-                    isCopyingUnit
+                    !didInitialRenderOccur.current || isCopyingUnitBtnDisabled
                   }
                 >
                   {/* {(isCopyingUnit || isCopyingUnitBtnDisabled) && (
@@ -554,9 +575,9 @@ const TeachItUI = <
                       </div>
                     </div>
                   )} */}
-                  {(!isCopyingUnit || !isCopyingUnitBtnDisabled) && (
+                  {didInitialRenderOccur.current ? (
                     <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2">
-                      {!didInitialRenderOccur.current ? (
+                      {isCopyingUnitBtnDisabled ? (
                         <div
                           className="spinner-border spinner-border-sm text-light"
                           role="status"
@@ -582,6 +603,13 @@ const TeachItUI = <
                           </span>
                         </>
                       )}
+                    </div>
+                  ) : (
+                    <div
+                      className="spinner-border spinner-border-sm text-light"
+                      role="status"
+                    >
+                      <span className="visually-hidden">Loading...</span>
                     </div>
                   )}
                 </BootstrapBtn>

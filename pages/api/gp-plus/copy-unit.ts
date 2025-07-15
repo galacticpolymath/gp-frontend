@@ -294,6 +294,8 @@ export default async function handler(
       request.query.unitDriveId
     )) as IGdriveItem[] | null;
 
+    console.log("rootDriveFolders:", rootDriveFolders.length);
+
     if (!rootDriveFolders?.length) {
       console.error("The root of the drive folder is empty.");
       return response.status(500).json({
@@ -301,6 +303,7 @@ export default async function handler(
         msg: `Failed to download GP lessons. Either the root drive of the gp folder is empty or the access token is invalid.`,
       });
     }
+    
     let unitFolders: TUnitFolder[] = [
       ...rootDriveFolders.map((folder) => ({
         name: folder.name,
