@@ -276,8 +276,10 @@ const TeachItUI = <
     console.log("GdrivePublicID, yo there: ", GdrivePublicID);
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
 
-    url.searchParams.append("unitDriveId", GdrivePublicID);
-    url.searchParams.append("unitName", `${Title} COPY`);
+    // url.searchParams.append("unitDriveId", GdrivePublicID);
+    // url.searchParams.append("unitName", `${Title} COPY`);
+    url.searchParams.append("unitDriveId", "15KK-qNwPUbw2d1VBDvsjHfreCSBpwMiw");
+    url.searchParams.append("unitName", "My GP Unit");
 
     const eventSource = new EventSourcePolyfill(url.href, {
       headers,

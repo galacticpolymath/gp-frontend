@@ -1,12 +1,12 @@
-import { SignJWT } from 'jose';
-import { v4 } from 'uuid';
-import { JWT } from 'google-auth-library';
+import { SignJWT } from "jose";
+import { v4 } from "uuid";
+import { JWT } from "google-auth-library";
 
 /**
  * Creates a JSON Web Token.
- * @param {{ email?: string, role?: string[], name?: string, emailConfirmationId?: string, accessibleRoutes?: string[] }} jwtPayload 
- * @param {string | Buffer} secret 
- * @param {string | number} expirationTime 
+ * @param {{ email?: string, role?: string[], name?: string, emailConfirmationId?: string, accessibleRoutes?: string[] }} jwtPayload
+ * @param {string | Buffer} secret
+ * @param {string | number} expirationTime
  * @returns {Promise<string>}
  */
 const signJwt = async (
@@ -17,7 +17,7 @@ const signJwt = async (
   const issueAtTime = Math.floor(Date.now() / 1000); // issued at time
 
   return new SignJWT(jwtPayload)
-    .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
+    .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setExpirationTime(expirationTime)
     .setIssuedAt(issueAtTime)
     .setJti(v4())
@@ -35,4 +35,20 @@ const getGoogleAuthJwt = (keyFile, scopes) => {
   return serviceAccountJwt;
 };
 
-export { getGoogleAuthJwt, signJwt }
+/**
+ * Generates a Google Auth JWT.
+ * @param {string} secret - The secret used to sign the JWT.
+ * @param {string[]} scopes - Scopes required for the JWT.
+ * @returns {JWT}
+ */
+const createGoogleAuthJwt = () => {
+  const serviceAccountJwt = new JWT({
+    clientSecret: process.env.GDRIVE_WORKER_KEY,
+    scopes: ["https://www.googleapis.com/auth/drive"],
+    email: "gdrive-worker@gp-frontend-391915.iam.gserviceaccount.com",
+    client_id: "118385108168850461818"
+  });
+  return serviceAccountJwt;
+};
+
+export { getGoogleAuthJwt, signJwt };

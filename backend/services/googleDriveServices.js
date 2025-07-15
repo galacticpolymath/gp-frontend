@@ -36,7 +36,7 @@ export class Credentials {
 
         this.type = "service_account";
         this.project_id = GOOGLE_SERVICE_ACCOUNT_PROJECT_ID;
-        // this.private_key_id = GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY_ID;
+        this.private_key_id = GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY_ID;
         this.private_key = GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
         this.client_email = GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL;
         this.client_id = GOOGLE_SERVICE_ACCOUNT_CLIENT_ID;
