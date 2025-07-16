@@ -135,17 +135,13 @@ const TeachItUI = <
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const [isGpPlusMember] = _isGpPlusMember;
   const session = useSiteSession();
-  const { getCookies, setAppCookie } = useCustomCookies([
-    "token",
-    "gdriveAccessToken",
-  ]);
+  const { getCookies, setAppCookie } = useCustomCookies();
   const queriedCookies = getCookies([
     "gdriveAccessToken",
     "gdriveAccessTokenExp",
     "gdriveRefreshToken",
   ]);
-  const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
-    queriedCookies;
+  const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } = queriedCookies;
   const { session: siteSession, status, token } = session;
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] = _isCopyUnitBtnDisabled;
   const { openCanAccessContentModal } = useCanUserAccessMaterial(false);

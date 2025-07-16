@@ -1,4 +1,5 @@
 import { useCookies } from "react-cookie";
+import cookies from 'js-cookie';
 
 interface IAppCookies {
   gdriveAccessToken: string;
@@ -8,35 +9,32 @@ interface IAppCookies {
   token: string;
 }
 
-export const useCustomCookies = (
-  keys: Exclude<keyof IAppCookies, number>[] = []
-) => {
-  const [cookiesStore, setCookie, removeCookie] = useCookies<
-    string,
-    IAppCookies
-  >(keys);
-
+export const useCustomCookies = () => {
   const clearCookies = () => {
-    const cookies = Object.keys(cookiesStore);
+    const siteCookieKeys = Object.keys(cookies.get());
 
-    for (const cookieKey of cookies) {
-      removeCookie(cookieKey);
+    console.log("siteCookieKeys, sup there: ", siteCookieKeys);
+
+    for (const cookieKey of siteCookieKeys) {
+      cookies.remove(cookieKey, { path: "" });
     }
+
+    console.log("document.cookie: ", document.cookie);
   };
 
   const getCookies = <TKey extends keyof IAppCookies>(
     keys: TKey[]
   ): Partial<Pick<IAppCookies, TKey>> => {
-    let cookies: Partial<Pick<IAppCookies, TKey>> = {};
+    let siteCookies = (cookies.get() ?? {}) as Partial<Pick<IAppCookies, TKey>> ;
 
     for (const key of keys) {
-      cookies = {
-        ...cookies,
-        [key]: cookiesStore[key],
+      siteCookies = {
+        ...siteCookies,
+        [key]: siteCookies[key],
       };
     }
 
-    return cookies;
+    return siteCookies;
   };
 
   const setAppCookie = <
@@ -45,20 +43,23 @@ export const useCustomCookies = (
   >(
     key: TKey,
     val: TVal,
-    options?: Parameters<typeof setCookie>[2]
+    options?: Parameters<typeof cookies.set>[2]
   ) => {
-    setCookie(key, val, options);
+    cookies.set(
+      key,
+      typeof val === "string" ? val : JSON.stringify(val),
+      options
+    );
   };
 
   const removeAppCookies = (keys: (keyof IAppCookies)[]) => {
     for (const key of keys) {
-      removeCookie(key);
+      cookies.remove(key);
     }
   };
 
   return {
-    cookies: cookiesStore,
-    removeCookie,
+    cookies,
     clearCookies,
     setAppCookie,
     removeAppCookies,

@@ -39,7 +39,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const { image, name } = data?.user ?? {};
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
   const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
-  const { clearCookies } = useCustomCookies(["gdriveAccessToken", "token"]);
+  const { clearCookies } = useCustomCookies();
   const firstName =
     userAccountSaved?.firstName ??
     aboutUserForm?.firstName ??
