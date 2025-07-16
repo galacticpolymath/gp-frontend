@@ -8,33 +8,34 @@ interface IResBody {
   code: string;
 }
 
-interface IGDriveServerAuthRes extends Pick<IGoogleDriveAuthResBody, "access_token" | "refresh_token"> {
+interface IGDriveServerAuthRes
+  extends Pick<IGoogleDriveAuthResBody, "access_token" | "refresh_token"> {
   refresh_token_expires_in: number;
-  expires_in: number
+  expires_in: number;
 }
 
-export class GoogleAuthReqBody{
+export class GoogleAuthReqBody {
   private client_id: string;
   private client_secret: string;
   private redirect_uri: string;
   private refresh_token?: string;
   private code?: string;
-  private grant_type: "authorization_code" | "refresh_token"; 
+  private grant_type: "authorization_code" | "refresh_token";
 
-  constructor(redirectUri: string, code: string, refreshToken: string){
-      this.client_id =  GOOGLE_DRIVE_PROJECT_CLIENT_ID
-      this.client_secret =  process.env.GOOGLE_DRIVE_AUTH_SECRET as string
-      this.redirect_uri = redirectUri
-      
-      if(code){
-        this.code = code;
-        this.grant_type =  "authorization_code"
-        return;
-      } 
+  constructor(redirectUri: string, code: string, refreshToken: string) {
+    this.client_id = GOOGLE_DRIVE_PROJECT_CLIENT_ID;
+    this.client_secret = process.env.GOOGLE_DRIVE_AUTH_SECRET as string;
+    this.redirect_uri = redirectUri;
 
-      this.refresh_token = refreshToken;
-      this.grant_type =  "refresh_token"
+    if (code) {
+      this.code = code;
+      this.grant_type = "authorization_code";
+      return;
     }
+
+    this.refresh_token = refreshToken;
+    this.grant_type = "refresh_token";
+  }
 }
 
 export interface IGoogleDriveAuthResBody {
