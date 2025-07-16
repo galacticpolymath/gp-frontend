@@ -52,11 +52,11 @@ import {
   removeLocalStorageItem,
   setLocalStorageItem,
 } from "../../../shared/fns";
-import {
-  TCopyFilesMsg,
-} from "../../../pages/api/gp-plus/copy-unit";
+import { TCopyFilesMsg } from "../../../pages/api/gp-plus/copy-unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
+import Image from "next/image";
+import GpPlusModal from "../Modals/GpPlusModal";
 import CopyingUnitToast from "../../CopyingUnitToast";
 import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 import { nanoid } from "nanoid";
@@ -141,9 +141,11 @@ const TeachItUI = <
     "gdriveAccessTokenExp",
     "gdriveRefreshToken",
   ]);
-  const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } = queriedCookies;
+  const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
+    queriedCookies;
   const { session: siteSession, status, token } = session;
-  const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] = _isCopyUnitBtnDisabled;
+  const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
+    _isCopyUnitBtnDisabled;
   const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
   const router = useRouter();
 
@@ -153,6 +155,7 @@ const TeachItUI = <
 
   const [toastId, setToastId] = useState<string | null>(null);
   const toastRef = useRef<HTMLDivElement>(null);
+  const [isGpPlusModalOpen, setIsGpPlusModalOpen] = useState(false);
 
   const displayToast = (
     copyingUnitToastCompProps: Parameters<typeof CopyingUnitToast>["0"],
@@ -192,7 +195,7 @@ const TeachItUI = <
       return;
     }
 
-    if (!GdrivePublicID || !Title){
+    if (!GdrivePublicID || !Title) {
       const _toastId = toastId ?? nanoid();
 
       setToastId(_toastId);
@@ -216,8 +219,8 @@ const TeachItUI = <
       );
       setIsCopyingUnitBtnDisabled(false);
       return;
-    } 
-    
+    }
+
     let currentAccessToken = gdriveAccessToken;
 
     if (gdriveAccessTokenExp && gdriveRefreshToken) {
@@ -488,6 +491,43 @@ const TeachItUI = <
       >
         <div id="teach-it-sec" ref={ref}>
           <div className="container-fluid mt-4">
+            {/* GP PLUS Banner */}
+            <div className="gp-plus-banner mb-4">
+              <div className="gp-plus-banner-content">
+                <div className="gp-plus-banner-left">
+                  <div className="gp-plus-banner-logo">
+                    <Image
+                      src="/imgs/gp-logos/gp_submark.png"
+                      alt="GP Plus Logo"
+                      width={48}
+                      height={48}
+                      style={{
+                        objectFit: "contain",
+                      }}
+                    />
+                  </div>
+                  <div className="gp-plus-banner-text">
+                    <h3 className="gp-plus-banner-title">
+                      Unlock the full app library to take this lesson further
+                    </h3>
+                    <p className="gp-plus-banner-subtitle">Get 50% off GP+</p>
+                  </div>
+                </div>
+                <div className="gp-plus-banner-right">
+                  <button
+                    className="gp-plus-upgrade-btn"
+                    onClick={() => setIsGpPlusModalOpen(true)}
+                  >
+                    <i className="bi-plus-circle-fill me-2"></i>
+                    Upgrade to GP PLUS
+                  </button>
+                  <p className="gp-plus-banner-offer">
+                    Get 50% off, valid until July 17
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {!!lessonDur && (
               <div className="row">
                 <div className="row mx-auto justify-content-center">
@@ -853,6 +893,121 @@ const TeachItUI = <
           </div>
         </div>
       </CollapsibleLessonSection>
+
+      {/* GP PLUS Modal */}
+      <GpPlusModal
+        isOpen={isGpPlusModalOpen}
+        onClose={() => setIsGpPlusModalOpen(false)}
+      />
+
+      <style jsx>{`
+        .gp-plus-banner {
+          background: linear-gradient(135deg, #2d69d1 0%, #1e4a8a 100%);
+          border-radius: 12px;
+          padding: 24px;
+          margin: 0 16px;
+          box-shadow: 0 4px 12px rgba(45, 105, 209, 0.2);
+        }
+
+        .gp-plus-banner-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 20px;
+        }
+
+        .gp-plus-banner-left {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          flex: 1;
+        }
+
+        .gp-plus-banner-logo {
+          flex-shrink: 0;
+        }
+
+        .gp-plus-banner-text {
+          color: white;
+        }
+
+        .gp-plus-banner-title {
+          font-size: 20px;
+          font-weight: 600;
+          margin: 0 0 4px 0;
+          line-height: 1.3;
+        }
+
+        .gp-plus-banner-subtitle {
+          font-size: 14px;
+          margin: 0;
+          opacity: 0.9;
+        }
+
+        .gp-plus-banner-right {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .gp-plus-upgrade-btn {
+          background: #2d69d1;
+          color: white;
+          border: 2px solid white;
+          border-radius: 8px;
+          padding: 12px 24px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .gp-plus-upgrade-btn:hover {
+          background: white;
+          color: #2d69d1;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .gp-plus-banner-offer {
+          color: white;
+          font-size: 12px;
+          margin: 0;
+          opacity: 0.8;
+          text-align: center;
+        }
+
+        @media (max-width: 768px) {
+          .gp-plus-banner {
+            margin: 0 8px;
+            padding: 20px;
+          }
+
+          .gp-plus-banner-content {
+            flex-direction: column;
+            text-align: center;
+          }
+
+          .gp-plus-banner-left {
+            flex-direction: column;
+            gap: 12px;
+          }
+
+          .gp-plus-banner-title {
+            font-size: 18px;
+          }
+
+          .gp-plus-upgrade-btn {
+            width: 100%;
+            justify-content: center;
+          }
+        }
+      `}</style>
     </>
   );
 };
