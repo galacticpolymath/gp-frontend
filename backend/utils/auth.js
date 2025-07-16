@@ -35,20 +35,11 @@ const getGoogleAuthJwt = (keyFile, scopes) => {
   return serviceAccountJwt;
 };
 
-/**
- * Generates a Google Auth JWT.
- * @param {string} secret - The secret used to sign the JWT.
- * @param {string[]} scopes - Scopes required for the JWT.
- * @returns {JWT}
- */
-const createGoogleAuthJwt = () => {
-  const serviceAccountJwt = new JWT({
-    clientSecret: process.env.GDRIVE_WORKER_KEY,
-    scopes: ["https://www.googleapis.com/auth/drive"],
-    email: "gdrive-worker@gp-frontend-391915.iam.gserviceaccount.com",
-    client_id: "118385108168850461818"
-  });
-  return serviceAccountJwt;
-};
+const createGoogleAuthJwt = () => new JWT({
+  scopes: ["https://www.googleapis.com/auth/drive"],
+  email: "gabe-948@ethereal-entity-414923.iam.gserviceaccount.com",
+  keyId: "1411138a2e8e7dc451dbbbac8b753c7daddb9778",
+  key: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, '\n')
+});
 
-export { getGoogleAuthJwt, signJwt };
+export { getGoogleAuthJwt, signJwt, createGoogleAuthJwt };

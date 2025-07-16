@@ -13,6 +13,30 @@ interface IGDriveServerAuthRes extends Pick<IGoogleDriveAuthResBody, "access_tok
   expires_in: number
 }
 
+export class GoogleAuthReqBody{
+  private client_id: string;
+  private client_secret: string;
+  private redirect_uri: string;
+  private refresh_token?: string;
+  private code?: string;
+  private grant_type: "authorization_code" | "refresh_token"; 
+
+  constructor(redirectUri: string, code: string, refreshToken: string){
+      this.client_id =  GOOGLE_DRIVE_PROJECT_CLIENT_ID
+      this.client_secret =  process.env.GOOGLE_DRIVE_AUTH_SECRET as string
+      this.redirect_uri = redirectUri
+      
+      if(code){
+        this.code = code;
+        this.grant_type =  "authorization_code"
+        return;
+      } 
+
+      this.refresh_token = refreshToken;
+      this.grant_type =  "refresh_token"
+    }
+}
+
 export interface IGoogleDriveAuthResBody {
   access_token: string;
   refresh_token: string;

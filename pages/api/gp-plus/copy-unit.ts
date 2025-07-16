@@ -24,6 +24,7 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import { waitWithExponentialBackOff } from "../../../globalFns";
+import { createGoogleAuthJwt } from "../../../backend/utils/auth";
 
 const createGoogleDriveFolderForUser = async (
   folderName: string,
@@ -58,13 +59,18 @@ const createGoogleDriveFolderForUser = async (
     console.error("Error object: ", error?.response?.data?.error);
     const errMsg = `Failed to create folder for the user. Reason: ${error?.response?.data?.error}`;
     console.log("errMsg: ", errMsg);
+    console.log("refreshToken: ", refreshToken);
 
     if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
+      console.log("Will refresh the auth token...");
+
       tries -= 1;
+
+      console.log("the user is not authenticated: ", refreshToken);
 
       const { data } = (await refreshAuthToken(refreshToken, origin)) ?? {};
 
-      console.log("Refresh token response data:", data);
+      console.log("Refresh token response data: ", data);
 
       if (!data?.access_token) {
         throw new Error("Failed to refresh access token");
@@ -242,9 +248,25 @@ export default async function handler(
       return;
     }
 
-    if (!_gdriveAccessToken || Array.isArray(_gdriveAccessToken)) {
+    if (!_gdriveAccessToken || Array.isArray(_gdriveAccessToken) || _gdriveAccessToken === "undefined") {
+      console.error("The gdrive access token was not provided. Please provide the `gdrive-token` header.");
+
       sendMessage(response, {
         msg: "The gdrive access token was not provided.",
+        isJobDone: true,
+        wasSuccessful: false,
+      });
+      return;
+    }
+
+    console.log("yo there refresh token: ", gdriveRefreshToken);
+    console.log("yo there refresh token, typeof: ", typeof gdriveRefreshToken);
+
+    if (!gdriveRefreshToken || Array.isArray(gdriveRefreshToken) || gdriveRefreshToken === "undefined") {
+      console.error("The gdrive refresh token was not provided. Please provide the `gdrive-token-refresh` header.");
+
+      sendMessage(response, {
+        msg: "The gdrive refresh token was not provided.",
         isJobDone: true,
         wasSuccessful: false,
       });
@@ -276,8 +298,12 @@ export default async function handler(
     }
 
     sendMessage(response, { msg: "Copying unit..." });
+    
+    console.log("Will create the jwt for google")
 
-    const googleAuthJwt = generateGoogleAuthJwt();
+    const googleAuthJwt = createGoogleAuthJwt();
+
+    console.log("googleAuthJwt:", JSON.stringify(googleAuthJwt));
 
     if (!googleAuthJwt) {
       sendMessage(response, {
@@ -536,6 +562,7 @@ export default async function handler(
     sendMessage(response, { foldersToCopy: totalFoldersToCreate + 1 });
 
     console.log("gdriveAccessToken, sup there: ", gdriveAccessToken);
+    console.log("gdriveRefreshToken, sup there: ", gdriveRefreshToken);
 
     // give the user the ability to name the folder where the files will be copied to.
     const { folderId: unitFolderId, errMsg } =

@@ -7,6 +7,7 @@ import fs from "fs";
 import { getGoogleAuthJwt } from "../utils/auth";
 import { waitWithExponentialBackOff } from "../../globalFns";
 import axios from "axios";
+import { GoogleAuthReqBody } from "../../pages/api/gp-plus/auth";
 
 export class FileMetaData {
     constructor(
@@ -128,11 +129,11 @@ export const generateGoogleAuthJwt = () => {
  * @param{drive_v3.Drive} googleService google drive service object
  * @return{Promise<[] | null>} An array of the permission ids if successful. Otherwise, it will return null.
  * */
-export async function listFilesOfGoogleDriveFolder(
+export const listFilesOfGoogleDriveFolder = (
     googleService,
     driveId,
     queryObj = { q: "" }
-) {
+) => {
     try {
         const files = googleService.files.list({
             corpora: "drive",
@@ -150,11 +151,11 @@ export async function listFilesOfGoogleDriveFolder(
     }
 }
 
-export async function shareFilesWithRetries(files, userEmail, googleService, tries = 0) {
+export const shareFilesWithRetries = async (files, userEmail, googleService, tries = 0) => {
     try {
         console.log("Current try: ", tries);
         console.log("Files to share: ", files.length);
-        
+
         if (tries > 8) {
             return { wasSuccessful: false };
         }
@@ -234,7 +235,7 @@ const getCopyFilePromise = (accessToken, folderIds, fileId) => {
     )
 }
 
-export async function copyFiles(files, createdFolders, accessToken, tries = 0, updateClient) {
+export const copyFiles = async (files, createdFolders, accessToken, tries = 0, updateClient) => {
     if (tries > 10) {
         console.error("Failed to copy files. Reached max tries.");
         return { wasSuccessful: false };
@@ -288,3 +289,64 @@ export async function copyFiles(files, createdFolders, accessToken, tries = 0, u
 
     return { wasSuccessful: true };
 }
+
+export const refreshAuthToken = async (refreshToken, origin) => {
+    try {
+        console.log("Refreshing auth token...");
+
+        const reqBody = new GoogleAuthReqBody(`${origin}/google-drive-auth-result`, undefined, refreshToken);
+        console.log("Refresh auth token request body: ", reqBody);
+        const response = await axios.post('https://oauth2.googleapis.com/token', reqBody);
+
+        return {
+            wasSuccessful: true,
+            accessToken: response.data.access_token
+        };
+    } catch (error) {
+        console.error('Error refreshing access token: ', error.response);
+        console.log("Error dir: ")
+        console.dir(error)
+
+        return {
+            wasSuccessful: false,
+            error: error.message
+        };
+    }
+}
+
+/**
+ * Delete a Google Drive item (file or folder).
+ * @param {string} fileId The id of the file or folder to delete.
+ * @param {string} accessToken The client side user's access token.
+ * @return {Promise<{wasSuccessful: boolean, error?: string}>} An object indicating success or failure.
+ */
+export const deleteGoogleDriveItem = async (fileId, accessToken) => {
+    try {
+        console.log(`Attempting to delete Google Drive item with ID: ${fileId}`);
+
+        await axios.delete(
+            `https://www.googleapis.com/drive/v3/files/${fileId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                params: {
+                    supportsAllDrives: true,
+                }
+            }
+        );
+
+        console.log(`Successfully deleted Google Drive item with ID: ${fileId}`);
+
+        return { wasSuccessful: true };
+    } catch (error) {
+        console.error(`Failed to delete Google Drive item with ID: ${fileId}. Reason:`, error);
+
+        return {
+            wasSuccessful: false,
+            error: error.message
+        };
+    }
+}
+
