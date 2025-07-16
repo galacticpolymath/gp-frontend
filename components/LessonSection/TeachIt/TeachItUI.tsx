@@ -62,6 +62,7 @@ import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 import { nanoid } from "nanoid";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import { TeachItProps } from "./types";
+import GpPlusBanner from "../../GpPlus/GpPlusBanner";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -488,6 +489,7 @@ const TeachItUI = <
         highlighted
         initiallyExpanded
         _sectionDots={_sectionDots}
+        sectionBanner={isGpPlusMember ? <GpPlusBanner /> : null}
       >
         <div id="teach-it-sec" ref={ref}>
           <div className="container-fluid mt-4">
@@ -567,16 +569,6 @@ const TeachItUI = <
                     !didInitialRenderOccur.current || isCopyingUnitBtnDisabled
                   }
                 >
-                  {/* {(isCopyingUnit || isCopyingUnitBtnDisabled) && (
-                    <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2">
-                      <div
-                        className="spinner-border spinner-border-sm text-light"
-                        role="status"
-                      >
-                        <span className="visually-hidden">Loading...</span>
-                      </div>
-                    </div>
-                  )} */}
                   {didInitialRenderOccur.current ? (
                     <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2">
                       {isCopyingUnitBtnDisabled ? (
@@ -638,6 +630,7 @@ const TeachItUI = <
             </div>
           )}
           <div className="container lessonsPartContainer px-0 pe-sm-1 px-md-2 pb-4">
+            <GpPlusBanner className="rounded row py-2 flex-wrap ms-0 me-0" />
             {!!parts.length &&
               parts.filter(Boolean).map((part, index, self) => {
                 let learningObjs: string[] | null = [];

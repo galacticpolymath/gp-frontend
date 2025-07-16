@@ -23,6 +23,7 @@ interface CollapsibleLessonSectionProps {
   SectionTitleId?: string;
   className?: string;
   children: ReactElement;
+  sectionBanner?: ReactElement | null;
   initiallyExpanded?: boolean;
   accordionId?: string;
   _sectionDots?: TUseStateReturnVal<ISectionDots>;
@@ -33,11 +34,12 @@ interface CollapsibleLessonSectionProps {
   accordionStyleObj?: React.CSSProperties;
 }
 
-const CollapsibleLessonSection = ({
+const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
   SectionTitle = "",
   className = "",
   children,
   initiallyExpanded = false,
+  sectionBanner = null,
   accordionId,
   _sectionDots,
   SectionTitleId,
@@ -46,7 +48,7 @@ const CollapsibleLessonSection = ({
   scrollToTranslateVal = "translateY(-90px)",
   SectionTitleClassName = "",
   accordionStyleObj = {},
-}: CollapsibleLessonSectionProps) => {
+}) => {
   const ref = useRef<HTMLHeadingElement>(null);
   const router = useRouter();
   const [isAccordionContentOpen, setIsAccordionContentOpen] =
@@ -142,7 +144,7 @@ const CollapsibleLessonSection = ({
       initiallyExpanded={initiallyExpanded}
       accordionChildrenClasses={accordionChildrenClasses}
       id={_accordionId}
-      className={`bg-danger SectionHeading ${cssSectionClassName} ${SectionTitle.replace(
+      className={`SectionHeading ${cssSectionClassName} ${SectionTitle.replace(
         /[\s!]/gi,
         "_"
       ).toLowerCase()} ${className} collapsibleLessonSection`}
@@ -158,7 +160,7 @@ const CollapsibleLessonSection = ({
       }
       handleOnClick={handleAccordionBtnClick}
       style={accordionStyleObj}
-      button={(
+      button={
         <div
           className={`SectionHeading ${SectionTitle.replace(
             /[\s!]/gi,
@@ -213,10 +215,13 @@ const CollapsibleLessonSection = ({
             className="position-absolute"
           />
         </div>
-      )}
+      }
     >
       <Collapse in={isAccordionContentOpen}>
-        {children}
+        <>
+          {sectionBanner}
+          {children}
+        </>
       </Collapse>
     </Accordion>
   );
