@@ -52,16 +52,17 @@ import {
   removeLocalStorageItem,
   setLocalStorageItem,
 } from "../../../shared/fns";
-import {
-  TCopyFilesMsg,
-} from "../../../pages/api/gp-plus/copy-unit";
+import { TCopyFilesMsg } from "../../../pages/api/gp-plus/copy-unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
+import Image from "next/image";
+import GpPlusModal from "../Modals/GpPlusModal";
 import CopyingUnitToast from "../../CopyingUnitToast";
 import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 import { nanoid } from "nanoid";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import { TeachItProps } from "./types";
+import GpPlusBanner from "../../GpPlus/GpPlusBanner";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -141,9 +142,11 @@ const TeachItUI = <
     "gdriveAccessTokenExp",
     "gdriveRefreshToken",
   ]);
-  const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } = queriedCookies;
+  const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
+    queriedCookies;
   const { session: siteSession, status, token } = session;
-  const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] = _isCopyUnitBtnDisabled;
+  const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
+    _isCopyUnitBtnDisabled;
   const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
   const router = useRouter();
 
@@ -153,6 +156,7 @@ const TeachItUI = <
 
   const [toastId, setToastId] = useState<string | null>(null);
   const toastRef = useRef<HTMLDivElement>(null);
+  const [isGpPlusModalOpen, setIsGpPlusModalOpen] = useState(false);
 
   const displayToast = (
     copyingUnitToastCompProps: Parameters<typeof CopyingUnitToast>["0"],
@@ -192,7 +196,7 @@ const TeachItUI = <
       return;
     }
 
-    if (!GdrivePublicID || !Title){
+    if (!GdrivePublicID || !Title) {
       const _toastId = toastId ?? nanoid();
 
       setToastId(_toastId);
@@ -216,8 +220,8 @@ const TeachItUI = <
       );
       setIsCopyingUnitBtnDisabled(false);
       return;
-    } 
-    
+    }
+
     let currentAccessToken = gdriveAccessToken;
 
     if (gdriveAccessTokenExp && gdriveRefreshToken) {
@@ -485,6 +489,7 @@ const TeachItUI = <
         highlighted
         initiallyExpanded
         _sectionDots={_sectionDots}
+        sectionBanner={isGpPlusMember ? <GpPlusBanner /> : null}
       >
         <div id="teach-it-sec" ref={ref}>
           <div className="container-fluid mt-4">
@@ -564,16 +569,6 @@ const TeachItUI = <
                     !didInitialRenderOccur.current || isCopyingUnitBtnDisabled
                   }
                 >
-                  {/* {(isCopyingUnit || isCopyingUnitBtnDisabled) && (
-                    <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2">
-                      <div
-                        className="spinner-border spinner-border-sm text-light"
-                        role="status"
-                      >
-                        <span className="visually-hidden">Loading...</span>
-                      </div>
-                    </div>
-                  )} */}
                   {didInitialRenderOccur.current ? (
                     <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2">
                       {isCopyingUnitBtnDisabled ? (
@@ -635,6 +630,7 @@ const TeachItUI = <
             </div>
           )}
           <div className="container lessonsPartContainer px-0 pe-sm-1 px-md-2 pb-4">
+            <GpPlusBanner className="rounded row py-2 flex-wrap ms-0 me-0" />
             {!!parts.length &&
               parts.filter(Boolean).map((part, index, self) => {
                 let learningObjs: string[] | null = [];

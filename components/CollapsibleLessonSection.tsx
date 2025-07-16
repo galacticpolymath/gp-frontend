@@ -23,6 +23,7 @@ interface CollapsibleLessonSectionProps {
   SectionTitleId?: string;
   className?: string;
   children: ReactElement;
+  sectionBanner?: ReactElement | null;
   initiallyExpanded?: boolean;
   accordionId?: string;
   _sectionDots?: TUseStateReturnVal<ISectionDots>;
@@ -33,11 +34,12 @@ interface CollapsibleLessonSectionProps {
   accordionStyleObj?: React.CSSProperties;
 }
 
-const CollapsibleLessonSection = ({
+const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
   SectionTitle = "",
   className = "",
   children,
   initiallyExpanded = false,
+  sectionBanner = null,
   accordionId,
   _sectionDots,
   SectionTitleId,
@@ -46,7 +48,7 @@ const CollapsibleLessonSection = ({
   scrollToTranslateVal = "translateY(-90px)",
   SectionTitleClassName = "",
   accordionStyleObj = {},
-}: CollapsibleLessonSectionProps) => {
+}) => {
   const ref = useRef<HTMLHeadingElement>(null);
   const router = useRouter();
   const [isAccordionContentOpen, setIsAccordionContentOpen] =
@@ -104,7 +106,7 @@ const CollapsibleLessonSection = ({
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     const wasClipboardIconClicked = checkIfElementClickedWasClipboard(
-      event.target
+      event.target as unknown
     );
 
     if (wasClipboardIconClicked) {
@@ -215,7 +217,12 @@ const CollapsibleLessonSection = ({
         </div>
       )}
     >
-      <Collapse in={isAccordionContentOpen}>{children}</Collapse>
+      <Collapse in={isAccordionContentOpen}>
+        <>
+          {sectionBanner}
+          {children}
+        </>
+      </Collapse>
     </Accordion>
   );
 };

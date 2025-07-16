@@ -86,6 +86,7 @@
     "react-scroll-parallax": "^3.4.5",
     "react-share": "^5.2.2",
     "react-showdown": "^2.3.1",
+    "react-wavify": "^1.11.1",
     "sharp": "^0.34.3",
     "start-server-and-test": "^2.0.12",
     "styled-components": "^6.1.19",

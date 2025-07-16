@@ -106,9 +106,7 @@ const AccountPg = () => {
   const firstName = aboutUserForm.firstName;
   const lastName = aboutUserForm.lastName;
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
-
-  // useOutsetaEmailInputValidation();
-
+  
   const handleGpPlusAccountBtnClick = async () => {
     const userAccount = getLocalStorageItem("userAccount");
     setWasGpPlusBtnClicked(true);

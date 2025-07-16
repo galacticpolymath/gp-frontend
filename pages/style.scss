@@ -111,6 +111,11 @@ body {
   }
 }
 
+.cover-parent-container{
+  margin-left: calc(-1 * ((100vw - 100%) / 2));
+  margin-right: calc(-1 * ((100vw - 100%) / 2));
+}
+
 .o--Profile--name,
 .o--Profile--password{
   display: none;
