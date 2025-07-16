@@ -491,43 +491,6 @@ const TeachItUI = <
       >
         <div id="teach-it-sec" ref={ref}>
           <div className="container-fluid mt-4">
-            {/* GP PLUS Banner */}
-            <div className="gp-plus-banner mb-4">
-              <div className="gp-plus-banner-content">
-                <div className="gp-plus-banner-left">
-                  <div className="gp-plus-banner-logo">
-                    <Image
-                      src="/imgs/gp-logos/gp_submark.png"
-                      alt="GP Plus Logo"
-                      width={48}
-                      height={48}
-                      style={{
-                        objectFit: "contain",
-                      }}
-                    />
-                  </div>
-                  <div className="gp-plus-banner-text">
-                    <h3 className="gp-plus-banner-title">
-                      Unlock the full app library to take this lesson further
-                    </h3>
-                    <p className="gp-plus-banner-subtitle">Get 50% off GP+</p>
-                  </div>
-                </div>
-                <div className="gp-plus-banner-right">
-                  <button
-                    className="gp-plus-upgrade-btn"
-                    onClick={() => setIsGpPlusModalOpen(true)}
-                  >
-                    <i className="bi-plus-circle-fill me-2"></i>
-                    Upgrade to GP PLUS
-                  </button>
-                  <p className="gp-plus-banner-offer">
-                    Get 50% off, valid until July 17
-                  </p>
-                </div>
-              </div>
-            </div>
-
             {!!lessonDur && (
               <div className="row">
                 <div className="row mx-auto justify-content-center">

@@ -104,7 +104,7 @@ const CollapsibleLessonSection = ({
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     const wasClipboardIconClicked = checkIfElementClickedWasClipboard(
-      event.target
+      event.target as unknown
     );
 
     if (wasClipboardIconClicked) {
@@ -142,7 +142,7 @@ const CollapsibleLessonSection = ({
       initiallyExpanded={initiallyExpanded}
       accordionChildrenClasses={accordionChildrenClasses}
       id={_accordionId}
-      className={`SectionHeading ${cssSectionClassName} ${SectionTitle.replace(
+      className={`bg-danger SectionHeading ${cssSectionClassName} ${SectionTitle.replace(
         /[\s!]/gi,
         "_"
       ).toLowerCase()} ${className} collapsibleLessonSection`}
@@ -215,7 +215,9 @@ const CollapsibleLessonSection = ({
         </div>
       )}
     >
-      <Collapse in={isAccordionContentOpen}>{children}</Collapse>
+      <Collapse in={isAccordionContentOpen}>
+        {children}
+      </Collapse>
     </Accordion>
   );
 };
