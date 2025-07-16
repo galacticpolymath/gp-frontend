@@ -14,6 +14,11 @@ $gpGroup: #1ca9e5;
   background: #f7f7fa;
 }
 
+// .gpPlusModalGradient{
+.gp-plus-modal-gradient {
+  background: linear-gradient(to right, #f5e3f4, #e8e8fa);
+}
+
 .gpplus-toggle-row {
   display: flex;
   align-items: center;
@@ -271,5 +276,142 @@ $gpGroup: #1ca9e5;
   }
   .monthly-equivalent {
     font-size: 0.8rem;
+  }
+}
+
+.gp-plus-modal {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.gp-plus-modal .modal-content {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.gp-plus-modal .modal-header {
+  display: none;
+}
+
+.gp-plus-modal .modal-body {
+  padding: 0;
+}
+
+.gp-plus-modal-header {
+  position: relative;
+  background: linear-gradient(135deg, #e93daa 0%, #f8f9fa 100%);
+  padding: 20px;
+  border-radius: 12px 12px 0 0;
+}
+
+.gp-plus-modal-header-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gp-plus-modal-logo {
+  display: flex;
+  align-items: center;
+}
+
+.gp-plus-modal-close {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  font-size: 18px;
+}
+
+.gp-plus-modal-close:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.gp-plus-modal-content {
+  padding: 30px 25px;
+}
+
+.gp-plus-modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.gp-plus-modal-description {
+  font-size: 18px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.gp-plus-modal-learn-more {
+  color: #e93daa;
+  text-decoration: underline;
+  font-weight: 500;
+  display: block;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.gp-plus-modal-benefits {
+  margin-bottom: 30px;
+}
+
+.gp-plus-modal-benefit {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #333;
+}
+
+.gp-plus-modal-benefit-icon {
+  width: 24px;
+  height: 24px;
+  background: #e3f2fd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  color: #1976d2;
+  font-size: 12px;
+}
+
+.gp-plus-modal-cta {
+  width: 100%;
+  background: #2d69d1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.gp-plus-modal-cta:hover {
+  background: #1e4a8a;
+}
+
+@media (max-width: 768px) {
+  .gp-plus-modal-content {
+    padding: 25px 20px;
+  }
+
+  .gp-plus-modal-title {
+    font-size: 20px;
   }
 }

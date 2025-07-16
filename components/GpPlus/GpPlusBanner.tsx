@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+
 import React, { useState } from "react";
 import { TUnitForUI } from "../../backend/models/Unit/types/unit";
 import Image from "next/image";
@@ -5,7 +7,7 @@ import { Button } from "react-bootstrap";
 import GpPlusModal from "../LessonSection/Modals/GpPlusModal";
 
 interface IProps {
-  className?: string
+  className?: string;
 }
 
 const GpPlusBanner: React.FC<IProps> = ({
@@ -100,7 +102,10 @@ const GpPlusBanner: React.FC<IProps> = ({
           </Button>
         </section>
       </div>
-      <GpPlusModal isOpen={isGpPlusModalDisplayed} onClose={() => setIsGpPlusModalDisplayed(false)} />
+      <GpPlusModal
+        isOpen={isGpPlusModalDisplayed}
+        onClose={() => setIsGpPlusModalDisplayed(false)}
+      />
     </>
   );
 };

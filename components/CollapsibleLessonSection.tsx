@@ -160,7 +160,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
       }
       handleOnClick={handleAccordionBtnClick}
       style={accordionStyleObj}
-      button={
+      button={(
         <div
           className={`SectionHeading ${SectionTitle.replace(
             /[\s!]/gi,
@@ -215,7 +215,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
             className="position-absolute"
           />
         </div>
-      }
+      )}
     >
       <Collapse in={isAccordionContentOpen}>
         <>

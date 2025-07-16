@@ -102,14 +102,11 @@ const AccountPg = () => {
   const { email, image } = user ?? {};
   const [isRetrievingUserData] = _isRetrievingUserData;
   const [aboutUserForm] = _aboutUserForm;
-  const [gpPlusSub, ] = _gpPlusSub;
+  const [gpPlusSub] = _gpPlusSub;
   const firstName = aboutUserForm.firstName;
   const lastName = aboutUserForm.lastName;
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
-
-  // useOutsetaEmailInputValidation();
-
-
+  
   const handleGpPlusAccountBtnClick = async () => {
     const userAccount = getLocalStorageItem("userAccount");
     setWasGpPlusBtnClicked(true);
@@ -170,7 +167,7 @@ const AccountPg = () => {
       return;
     }
 
-    const outseta = (window as any).Outseta;;
+    const outseta = (window as any).Outseta;
     let idToken = outseta.getAccessToken() as string | null;
 
     console.log("idToken, yo there: ", idToken);
@@ -185,11 +182,10 @@ const AccountPg = () => {
       (window as any).Outseta.setMagicLinkIdToken(idToken);
     }
 
-    
     setTimeout(() => {
       setWasGpPlusBtnClicked(false);
       gpPlusAnchorElementRef.current?.click();
-    }, 500) 
+    }, 500);
   };
 
   useEffect(() => {
@@ -495,7 +491,8 @@ const AccountPg = () => {
                   }}
                   className="no-underline"
                   href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
-                ></a>
+                >
+                </a>
               </>
             ) : (
               <BootstrapBtn
