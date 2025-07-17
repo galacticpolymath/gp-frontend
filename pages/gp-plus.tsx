@@ -6,9 +6,7 @@ import { Spinner } from "react-bootstrap";
 import Image from "next/image";
 import Logo from "../assets/img/logo.ico";
 import useSiteSession from "../customHooks/useSiteSession";
-import {
-  updateUser,
-} from "../apiServices/user/crudFns";
+import { updateUser } from "../apiServices/user/crudFns";
 import useOutsetaInputValidation from "../customHooks/useOutsetaInputValidation";
 import {
   defautlNotifyModalVal,
@@ -267,9 +265,31 @@ const GpPlus: React.FC = () => {
       imgAlt="Galactic Polymath Logo"
       url="/gp-plus"
     >
-      <div style={{ height: "fit-content" }} className="">
-        <div className="gpplus-pricing-section">
-          <h1>GP+</h1>
+      <div style={{ height: "fit-content" }}>
+        <div className="gpplus-pricing-section pt-5">
+          <div className="container-fluid">
+            <div className="row justify-content-center mt-sm-3 mt-md-0">
+              <div
+                style={{ height: "80px" }}
+                className="position-relative mt-3 col-sm-11 col-md-12"
+              >
+                <Image
+                  src={"/plus/gp_plus_desktop.png"}
+                  alt="gp_plus_logo"
+                  fill
+                  style={{ objectFit: "contain" }}
+                  className="d-none d-sm-block"
+                />
+                <Image
+                  src={"/plus/gp_plus_mobile.png"}
+                  alt="gp_plus_logo"
+                  fill
+                  style={{ objectFit: "contain" }}
+                  className="d-block d-sm-none"
+                />
+              </div>
+            </div>
+          </div>
           <div className="gpplus-toggle-row w-100 d-flex justify-content-center align-items-center">
             <div className="d-flex w-75 justify-content-center align-items-center">
               <div className="p-3">
@@ -277,7 +297,7 @@ const GpPlus: React.FC = () => {
                   Monthly&nbsp;
                 </span>
               </div>
-              <label className="gpplus-switch">
+              <label style={{ minWidth: '48px' }} className="gpplus-switch">
                 <input
                   type="checkbox"
                   checked={billingPeriod === "yearly"}
@@ -520,7 +540,9 @@ const GpPlus: React.FC = () => {
                 </div>
                 <div>
                   <ul className="gpplus-features">
-                    <li>+ Everything in <b>Plus</b></li>
+                    <li>
+                      + Everything in <b>Plus</b>
+                    </li>
                     <li>+ 10 users</li>
                   </ul>
                 </div>

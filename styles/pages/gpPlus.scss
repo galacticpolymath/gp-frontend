@@ -87,10 +87,6 @@ $gpGroup: #1ca9e5;
   width: 100%;
   flex-wrap: wrap;
 
-  > div > div {
-    min-width: 350px;
-  }
-
   > div:not(:nth-child(2)) > div {
     max-height: 703px;
     height: 80vh;
