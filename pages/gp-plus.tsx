@@ -403,13 +403,9 @@ const GpPlus: React.FC = () => {
                 </div>
                 <div>
                   <ul className="gpplus-features">
-                    <li>+ 1 user</li>
-                    <li>+ 15 STEM units</li>
-                    <li>+ 50 STEM lessons</li>
-                    <li>+ Access to future lessons</li>
+                    <li>+ Everything in Lite</li>
                     <li>+ Bulk GDrive export of entire units</li>
                     <li>+ Editable lessons</li>
-                    <li>+ Autograding</li>
                   </ul>
                 </div>
                 <div>
@@ -514,13 +510,8 @@ const GpPlus: React.FC = () => {
                 </div>
                 <div>
                   <ul className="gpplus-features">
+                    <li>+ Everything in Plus</li>
                     <li>+ 10 users</li>
-                    <li>+ 15 STEM units</li>
-                    <li>+ 50 STEM lessons</li>
-                    <li>+ Access to future lessons</li>
-                    <li>+ Bulk GDrive export of entire units</li>
-                    <li>+ Fully editable lessons</li>
-                    <li>+ Autograding</li>
                   </ul>
                 </div>
                 <div

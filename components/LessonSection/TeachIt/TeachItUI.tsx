@@ -489,7 +489,7 @@ const TeachItUI = <
         highlighted
         initiallyExpanded
         _sectionDots={_sectionDots}
-        sectionBanner={isGpPlusMember ? <GpPlusBanner /> : null}
+        sectionBanner={!isGpPlusMember ? <GpPlusBanner /> : null}
       >
         <div id="teach-it-sec" ref={ref}>
           <div className="container-fluid mt-4">
@@ -630,7 +630,6 @@ const TeachItUI = <
             </div>
           )}
           <div className="container lessonsPartContainer px-0 pe-sm-1 px-md-2 pb-4">
-            <GpPlusBanner className="rounded row py-2 flex-wrap ms-0 me-0" />
             {!!parts.length &&
               parts.filter(Boolean).map((part, index, self) => {
                 let learningObjs: string[] | null = [];

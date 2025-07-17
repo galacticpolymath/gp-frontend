@@ -369,8 +369,6 @@ $gpGroup: #1ca9e5;
 }
 
 .gp-plus-modal-benefit {
-  display: flex;
-  align-items: center;
   margin-bottom: 15px;
   font-size: 18px;
   color: #333;
@@ -391,19 +389,9 @@ $gpGroup: #1ca9e5;
 
 .gp-plus-modal-cta {
   width: 100%;
-  background: #2d69d1;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 16px 24px;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.gp-plus-modal-cta:hover {
-  background: #1e4a8a;
+  @media(min-width: 768px){
+    width: 50%;
+  }  
 }
 
 @media (max-width: 768px) {
