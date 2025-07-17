@@ -40,9 +40,7 @@ const GpPlusBanner: React.FC<IProps> = ({
         </section>
         <section className="col-8 col-sm-10 col-xl-7">
           <div className="w-100 h-100 d-flex justify-content-center align-items-center flex-column">
-            <h3 className="w-100">
-              Download & Edit lessons in one-click
-            </h3>
+            <h3 className="w-100">Download & Edit lessons in one-click</h3>
             <div className="w-100">Get 50% off GP+</div>
           </div>
         </section>

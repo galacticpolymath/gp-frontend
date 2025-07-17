@@ -77,6 +77,7 @@ export const userAccountDefault: TAboutUserFormForUI = {
 export type TUserProviderValue = {
   _aboutUserForm: TUseStateReturnVal<TAboutUserFormForUI>;
   _isUserTeacher: TUseStateReturnVal<boolean>;
+  _didAttemptRetrieveUserData: TUseStateReturnVal<boolean>;
   _accountForm: TUseStateReturnVal<TAccountForm>;
   _isGpPlusMember: TUseStateReturnVal<boolean>;
   _isCopyUnitBtnDisabled: TUseStateReturnVal<boolean>;
@@ -97,6 +98,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     lastName: "",
     isOnMailingList: true,
   });
+  const [didAttemptRetrieveUserData, setDidAttemptRetrieveUserData] = useState(false);
   const [isUserTeacher, setIsUserTeacher] = useState(false);
   const [isGpPlusMember, setIsGpPlusMember] = useState(false);
   const value: TUserProviderValue = {
@@ -105,6 +107,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     _accountForm: [accountForm, setAccountForm],
     _isGpPlusMember: [isGpPlusMember, setIsGpPlusMember],
     _isCopyUnitBtnDisabled: [isCopyUnitBtnDisabled, setIsCopyUnitBtnDisabled],
+    _didAttemptRetrieveUserData: [didAttemptRetrieveUserData, setDidAttemptRetrieveUserData],
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

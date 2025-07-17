@@ -75,9 +75,9 @@ const GpPlusModal: React.FC<GpPlusModalProps> = ({ isOpen, onClose }) => {
           GP+ now includes bulk lesson downloads. Upgrade by August 15th to get
           50% off your first 3 months.
         </p>
-        <a href="#" className="gp-plus-modal-learn-more">
+        <Link href="/gp-plus" className="gp-plus-modal-learn-more">
           Learn More
-        </a>
+        </Link>
         <ul className="d-flex flex-column jusitfy-content-center align-items-center list-unstyled">
           <li className="gp-plus-modal-benefit w-100 d-flex justify-content-center align-items-center">
             <div className="w-75 justify-content-center align-items-center d-flex">

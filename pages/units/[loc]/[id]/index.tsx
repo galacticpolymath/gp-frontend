@@ -49,6 +49,7 @@ import {
 import { UNITS_URL_PATH } from "../../../../shared/constants";
 import { TUserAccountData } from "../../../api/get-user-account-data";
 import { TUserSchemaForClient } from "../../../../backend/models/User/types";
+import { useGpPlusModal } from "../../../../customHooks/useGpPlusModal";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -150,7 +151,7 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 const LessonDetails = ({ lesson, unit }: IProps) => {
   console.log("unit: ", unit);
   const router = useRouter();
-  const { _isUserTeacher, _isGpPlusMember, _isCopyUnitBtnDisabled } =
+  const { _isUserTeacher, _isGpPlusMember, _isCopyUnitBtnDisabled, _didAttemptRetrieveUserData } =
     useUserContext();
   const { status, data } = useSession();
   const { token } = (data ?? {}) as IUserSession;
@@ -169,12 +170,15 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     _customModalFooter,
   } = useModalContext();
   const [, setIsUserTeacher] = _isUserTeacher;
-  const [, setIsGpPlusMember] = _isGpPlusMember;
+  const [isGpPlusMember, setIsGpPlusMember] = _isGpPlusMember;
   const [, setNotifyModal] = _notifyModal;
   const [, setIsCopyUnitBtnDisabled] = _isCopyUnitBtnDisabled;
   const [, setCustomModalFooter] = _customModalFooter;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
+  const [, setDidAttemptRetrieveUserData] = _didAttemptRetrieveUserData;
+  const { _isGpPlusModalDisplayed, GpPlusModal } = useGpPlusModal();
+  const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
 
   useEffect(() => {
     const lessonsContainer = document.querySelector(".lessonsPartContainer");
@@ -524,6 +528,15 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         },
         bodyTxt: "",
       });
+    } else if (
+      statusRef.current === "authenticated" &&
+      isWithinBonusContentSec &&
+      tagName === "A" &&
+      UNIT_DOCUMENT_ORIGINS.has(origin) && 
+      !isGpPlusMember
+    ) {
+      event.preventDefault();
+      setIsGpPlusModalDisplayed(true);
     }
   };
 
@@ -540,6 +553,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     (async () => {
       if (status === "authenticated" && token) {
         try {
+          setDidAttemptRetrieveUserData(false);
           setIsCopyUnitBtnDisabled(true);
           const paramsAndHeaders = {
             params: {
@@ -550,9 +564,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
               Authorization: `Bearer ${token}`,
             },
           };
-          const origin = window.location.origin;
           const { status, data } = await axios.get<TUserSchemaForClient>(
-            `${origin}/api/get-user-account-data`,
+            `/api/get-user-account-data`,
             paramsAndHeaders
           );
 
@@ -564,10 +577,12 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
+          setIsGpPlusMember(false);
         } catch (error) {
           console.error("An error has occurred: ", error);
         } finally {
           setIsCopyUnitBtnDisabled(false);
+          setDidAttemptRetrieveUserData(true);
         }
       } else if (status === "unauthenticated"){
           setIsCopyUnitBtnDisabled(false);
@@ -687,6 +702,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
           )}
         </div>
       </div>
+      {GpPlusModal}
     </Layout>
   );
 };

@@ -125,7 +125,7 @@ const TeachItUI = <
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const { _isDownloadModalInfoOn } = useModalContext();
-  const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
+  const { _isGpPlusMember, _isCopyUnitBtnDisabled, _didAttemptRetrieveUserData } = useUserContext();
   const areThereGradeBands =
     !!gradeVariations?.length &&
     gradeVariations.every((variation) => !!variation.grades);
@@ -135,6 +135,7 @@ const TeachItUI = <
   ] = useState<number[]>([]);
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const [isGpPlusMember] = _isGpPlusMember;
+  const [didAttemptRetrieveUserData] = _didAttemptRetrieveUserData;
   const session = useSiteSession();
   const { getCookies, setAppCookie } = useCustomCookies();
   const queriedCookies = getCookies([
@@ -144,7 +145,7 @@ const TeachItUI = <
   ]);
   const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
     queriedCookies;
-  const { session: siteSession, status, token } = session;
+  const { status, token } = session;
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
     _isCopyUnitBtnDisabled;
   const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
@@ -156,7 +157,6 @@ const TeachItUI = <
 
   const [toastId, setToastId] = useState<string | null>(null);
   const toastRef = useRef<HTMLDivElement>(null);
-  const [isGpPlusModalOpen, setIsGpPlusModalOpen] = useState(false);
 
   const displayToast = (
     copyingUnitToastCompProps: Parameters<typeof CopyingUnitToast>["0"],
@@ -272,14 +272,10 @@ const TeachItUI = <
       "gdrive-token": currentAccessToken,
       "gdrive-token-refresh": gdriveRefreshToken as string,
     };
-    console.log("Request headers: ", headers);
-    console.log("GdrivePublicID, yo there: ", GdrivePublicID);
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
 
-    // url.searchParams.append("unitDriveId", GdrivePublicID);
-    // url.searchParams.append("unitName", `${Title} COPY`);
-    url.searchParams.append("unitDriveId", "15KK-qNwPUbw2d1VBDvsjHfreCSBpwMiw");
-    url.searchParams.append("unitName", "My GP Unit");
+    url.searchParams.append("unitDriveId", GdrivePublicID);
+    url.searchParams.append("unitName", `${Title} COPY`);
 
     const eventSource = new EventSourcePolyfill(url.href, {
       headers,
@@ -489,7 +485,13 @@ const TeachItUI = <
         highlighted
         initiallyExpanded
         _sectionDots={_sectionDots}
-        sectionBanner={!isGpPlusMember ? <GpPlusBanner /> : null}
+        sectionBanner={
+          !isGpPlusMember &&
+          status !== "loading" &&
+          didAttemptRetrieveUserData ? (
+            <GpPlusBanner />
+          ) : null
+        }
       >
         <div id="teach-it-sec" ref={ref}>
           <div className="container-fluid mt-4">
@@ -592,7 +594,6 @@ const TeachItUI = <
                               "Authenticate w/ Google Drive & Copy Unit"}
                             {isGpPlusMember && gdriveAccessToken && "Copy Unit"}
                             {!isGpPlusMember &&
-                              !gdriveAccessToken &&
                               `BECOME A GP+ MEMBER TO ${selectedGradeResources.linkText}`}
                           </span>
                         </>

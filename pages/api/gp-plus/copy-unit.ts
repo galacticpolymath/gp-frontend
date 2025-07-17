@@ -8,12 +8,14 @@
 /* eslint-disable indent */
 /* eslint-disable no-multiple-empty-lines */
 
+import fs from 'fs';
 import { google, drive_v3 } from "googleapis";
 import { CustomError } from "../../../backend/utils/errors";
 import { setTimeout as pause } from "node:timers/promises";
 import axios from "axios";
 import {
   copyFiles,
+  createGoogleAuthJwt,
   deleteGoogleDriveItem,
   FileMetaData,
   generateGoogleAuthJwt,
@@ -24,7 +26,6 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import { waitWithExponentialBackOff } from "../../../globalFns";
-import { createGoogleAuthJwt } from "../../../backend/utils/auth";
 
 const createGoogleDriveFolderForUser = async (
   folderName: string,
@@ -206,8 +207,8 @@ export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  let copyDestinationFolderId = '';
-  let gdriveAccessToken = '';
+  let copyDestinationFolderId = "";
+  let gdriveAccessToken = "";
 
   try {
     const origin = new URL(request.headers.referer ?? "").origin;
@@ -221,7 +222,7 @@ export default async function handler(
 
     response.on("close", () => {
       console.log("The user closed the stream.");
-      isStreamOpen = false
+      isStreamOpen = false;
     });
 
     if (!origin) {
@@ -248,8 +249,14 @@ export default async function handler(
       return;
     }
 
-    if (!_gdriveAccessToken || Array.isArray(_gdriveAccessToken) || _gdriveAccessToken === "undefined") {
-      console.error("The gdrive access token was not provided. Please provide the `gdrive-token` header.");
+    if (
+      !_gdriveAccessToken ||
+      Array.isArray(_gdriveAccessToken) ||
+      _gdriveAccessToken === "undefined"
+    ) {
+      console.error(
+        "The gdrive access token was not provided. Please provide the `gdrive-token` header."
+      );
 
       sendMessage(response, {
         msg: "The gdrive access token was not provided.",
@@ -262,8 +269,14 @@ export default async function handler(
     console.log("yo there refresh token: ", gdriveRefreshToken);
     console.log("yo there refresh token, typeof: ", typeof gdriveRefreshToken);
 
-    if (!gdriveRefreshToken || Array.isArray(gdriveRefreshToken) || gdriveRefreshToken === "undefined") {
-      console.error("The gdrive refresh token was not provided. Please provide the `gdrive-token-refresh` header.");
+    if (
+      !gdriveRefreshToken ||
+      Array.isArray(gdriveRefreshToken) ||
+      gdriveRefreshToken === "undefined"
+    ) {
+      console.error(
+        "The gdrive refresh token was not provided. Please provide the `gdrive-token-refresh` header."
+      );
 
       sendMessage(response, {
         msg: "The gdrive refresh token was not provided.",
@@ -298,12 +311,11 @@ export default async function handler(
     }
 
     sendMessage(response, { msg: "Copying unit..." });
-    
-    console.log("Will create the jwt for google")
 
     const googleAuthJwt = createGoogleAuthJwt();
 
-    console.log("googleAuthJwt:", JSON.stringify(googleAuthJwt));
+    console.log("Google Auth JWT: ", googleAuthJwt);
+
 
     if (!googleAuthJwt) {
       sendMessage(response, {
@@ -320,7 +332,7 @@ export default async function handler(
       request.query.unitDriveId
     )) as IGdriveItem[] | null;
 
-    console.log("rootDriveFolders:", rootDriveFolders?.length);
+    console.log("rootDriveFolders: ", rootDriveFolders?.length);
 
     if (!rootDriveFolders?.length) {
       console.error("The root of the drive folder is empty.");
@@ -330,9 +342,9 @@ export default async function handler(
         wasSuccessful: false,
         showSupportTxt: true,
       });
-      return
+      return;
     }
-    
+
     let unitFolders: TUnitFolder[] = [
       ...rootDriveFolders.map((folder) => ({
         name: folder.name,
@@ -712,12 +724,18 @@ export default async function handler(
       4,
       (data: TCopyFilesMsg) => {
         sendMessage(response, data);
-      },
+      }
     );
 
-    if(!isStreamOpen){
-      const result = await deleteGoogleDriveItem(unitFolderId, gdriveAccessToken)
-      console.log("A failure has occurred. Delete google  drive item result: ", result);
+    if (!isStreamOpen) {
+      const result = await deleteGoogleDriveItem(
+        unitFolderId,
+        gdriveAccessToken
+      );
+      console.log(
+        "A failure has occurred. Delete google  drive item result: ",
+        result
+      );
       response.end();
       return;
     }
@@ -733,9 +751,15 @@ export default async function handler(
       );
       response.end();
 
-      const result = await deleteGoogleDriveItem(unitFolderId, gdriveAccessToken)
+      const result = await deleteGoogleDriveItem(
+        unitFolderId,
+        gdriveAccessToken
+      );
 
-      console.log("A failure has occurred. Delete google  drive item result: ", result);
+      console.log(
+        "A failure has occurred. Delete google  drive item result: ",
+        result
+      );
       return;
     }
 
@@ -758,8 +782,11 @@ export default async function handler(
       true
     );
 
-    const result = await deleteGoogleDriveItem(copyDestinationFolderId, gdriveAccessToken)
+    const result = await deleteGoogleDriveItem(
+      copyDestinationFolderId,
+      gdriveAccessToken
+    );
 
-    console.log("Result, yo there: ", result)
+    console.log("Result, yo there: ", result);
   }
 }

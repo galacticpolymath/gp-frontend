@@ -403,7 +403,9 @@ const GpPlus: React.FC = () => {
                 </div>
                 <div>
                   <ul className="gpplus-features">
-                    <li>+ Everything in Lite</li>
+                    <li>
+                      + Everything in <b>Lite</b>
+                    </li>
                     <li>+ Bulk GDrive export of entire units</li>
                     <li>+ Editable lessons</li>
                   </ul>
@@ -415,9 +417,6 @@ const GpPlus: React.FC = () => {
                   <ul className="gpplus-features pt-2">
                     <li className="gpplus-bonus d-flex justify-content-center align-items-center">
                       <LiContentWithImg txt="JobViz App" />
-                    </li>
-                    <li className="gpplus-bonus d-flex justify-content-center align-items-center">
-                      <LiContentWithImg txt="Classroom Activator" />
                     </li>
                   </ul>
                 </div>
@@ -434,6 +433,15 @@ const GpPlus: React.FC = () => {
                           billingPeriod === "monthly" ? "mb-2" : ""
                         } d-flex justify-content-center align-items-center`}
                       >
+                        {billingPeriod === "yearly" ? (
+                          <span
+                            style={{ fontSize: "1.5rem" }}
+                            className="text-muted text-decoration-line-through"
+                          >
+                            ${monthlyPrice * 12}
+                          </span>
+                        ) : null}
+                        &nbsp;
                         {billingPeriod === "monthly"
                           ? `$${monthlyPrice}`
                           : `$${yearlyPrice}`}{" "}
@@ -491,12 +499,14 @@ const GpPlus: React.FC = () => {
               <div className="d-flex flex-column align-items-center bg-white h-100">
                 <div className="w-100 d-flex justify-content-center align-items-center">
                   <Image
-                    alt="lite_logo"
-                    src={Logo}
+                    alt="gp_plus_logo"
+                    src="/imgs/gp-logos/gp_submark.png"
                     width={ICON_DIMENSION}
                     height={ICON_DIMENSION}
                     style={{
                       objectFit: "contain",
+                      width: ICON_DIMENSION,
+                      height: ICON_DIMENSION,
                     }}
                   />
                 </div>
@@ -510,7 +520,7 @@ const GpPlus: React.FC = () => {
                 </div>
                 <div>
                   <ul className="gpplus-features">
-                    <li>+ Everything in Plus</li>
+                    <li>+ Everything in <b>Plus</b></li>
                     <li>+ 10 users</li>
                   </ul>
                 </div>
@@ -533,7 +543,11 @@ const GpPlus: React.FC = () => {
             </div>
           </div>
         </div>
-        {["Subscribing", "Canceling"].includes(gpPlusSubscription?.membership?.AccountStageLabel ?? "") ? anchorElement : null}
+        {["Subscribing", "Canceling"].includes(
+          gpPlusSubscription?.membership?.AccountStageLabel ?? ""
+        )
+          ? anchorElement
+          : null}
         <div
           id="signup-modal-div"
           style={{
