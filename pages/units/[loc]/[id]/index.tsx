@@ -577,7 +577,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
-          setIsGpPlusMember(false);
         } catch (error) {
           console.error("An error has occurred: ", error);
         } finally {

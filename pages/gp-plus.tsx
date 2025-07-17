@@ -274,14 +274,14 @@ const GpPlus: React.FC = () => {
                 className="position-relative mt-3 col-sm-11 col-md-12"
               >
                 <Image
-                  src={"/plus/gp_plus_desktop.png"}
+                  src="/plus/gp_plus_desktop.png"
                   alt="gp_plus_logo"
                   fill
                   style={{ objectFit: "contain" }}
                   className="d-none d-sm-block"
                 />
                 <Image
-                  src={"/plus/gp_plus_mobile.png"}
+                  src="/plus/gp_plus_mobile.png"
                   alt="gp_plus_logo"
                   fill
                   style={{ objectFit: "contain" }}

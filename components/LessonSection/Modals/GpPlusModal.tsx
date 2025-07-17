@@ -123,7 +123,7 @@ const GpPlusModal: React.FC<GpPlusModalProps> = ({ isOpen, onClose }) => {
         </ul>
         <section className="d-block d-sm-flex justify-content-sm-center align-items-sm-center w-100">
           <Link
-            href={`${typeof window === "undefined" ? "" :  window.location.origin}/gp-plus`}
+            href={`${typeof window === "undefined" ? "" : window.location.origin}/gp-plus`}
             className="no-link-decoration text-decoration-underline gp-plus-modal-cta px-1 py-2"
           >
             <Button style={{ borderRadius: "1em", backgroundColor: "#1c28bd" }} className="w-100">
