@@ -102,55 +102,6 @@ export const getGoogleDriveFolders = async (googleService, folderId) => {
 
 /**
  * Create a service object that will access the company's google drive.
- *  @return {import('google-auth-library').JWT | null} Returns google auth jwt. Else, null will be returned.
- * */
-export const generateGoogleAuthJwt = () => {
-  try {
-    let credentials = new Credentials();
-    credentials = JSON.stringify(credentials);
-    let credentialsSplitted = credentials.split("");
-    let indexesOfValsToDel = [];
-
-    for (let index = 0; index < credentialsSplitted?.length; index++) {
-      const nextVal = credentialsSplitted[index + 1];
-
-      if (nextVal === undefined) {
-        break;
-      }
-
-      const currentVal = credentialsSplitted[index];
-
-      if (currentVal === "\\" && nextVal === "\\") {
-        indexesOfValsToDel.push(index);
-      }
-    }
-
-    credentialsSplitted = credentialsSplitted.filter(
-      (_, index) => !indexesOfValsToDel.includes(index)
-    );
-    credentials = credentialsSplitted.join("");
-
-    fs.writeFileSync("credentials.json", credentials);
-
-    const googleAuthJwt = getGoogleAuthJwt("credentials.json", [
-      "https://www.googleapis.com/auth/drive",
-    ]);
-
-    return googleAuthJwt;
-  } catch (error) {
-    console.error(
-      "Failed to retrieve the google drive service object. Reason: ",
-      error
-    );
-
-    return null;
-  } finally {
-    fs.unlinkSync("credentials.json");
-  }
-};
-
-/**
- * Create a service object that will access the company's google drive.
  *  @return { import('google-auth-library').JWT | null } Returns google auth jwt. Else, null will be returned.
  * */
 export const createGoogleAuthJwt = () => {
