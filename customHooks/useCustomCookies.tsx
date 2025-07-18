@@ -16,7 +16,7 @@ export const useCustomCookies = () => {
     console.log("siteCookieKeys, sup there: ", siteCookieKeys);
 
     for (const cookieKey of siteCookieKeys) {
-      cookies.remove(cookieKey, { path: "" });
+      cookies.remove(cookieKey, { path: "/" });
     }
 
     console.log("document.cookie: ", document.cookie);

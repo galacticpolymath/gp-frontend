@@ -261,6 +261,11 @@ export const getBrevoMailingListContacts = async (listIds = [MAILING_LIST_ID], o
         const response = await fetch(url.href, options);
 
         if (response.status !== 200) {
+            const body = await response.json();
+
+            console.log("Failed to get the mailing list contacts. Response body: ", body);
+            
+
             throw new Error("Failed to get the mailing list contacts.");
         }
 

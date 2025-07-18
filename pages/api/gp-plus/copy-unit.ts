@@ -27,6 +27,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import { waitWithExponentialBackOff } from "../../../globalFns";
 
+export const maxDuration = 300;
+
 const createGoogleDriveFolderForUser = async (
   folderName: string,
   accessToken: string,
@@ -336,7 +338,7 @@ export default async function handler(
       q: `'${request.query.unitDriveId}' in parents`,
     });
     console.log('gdriveResponse.data?.files: ', gdriveResponse.data?.files)
-    
+
     const rootDriveFolders = gdriveResponse.data?.files;
 
     console.log("rootDriveFolders: ", rootDriveFolders?.length);

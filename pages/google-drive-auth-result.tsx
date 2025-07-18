@@ -109,18 +109,22 @@ const GoogleDriveAuthResult = () => {
       setAppCookie("isSignedInAsGpPlusUser", true, {
         expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
         secure: true,
+        path: "/",
       });
       setAppCookie("gdriveAccessToken", responseBody.access_token, {
         expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
         secure: true,
+        path: "/",
       });
       setAppCookie("gdriveRefreshToken", responseBody.refresh_token, {
         expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
         secure: true,
+        path: "/",
       });
       setAppCookie("gdriveAccessTokenExp", responseBody.expires_at, {
         expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
         secure: true,
+        path: "/",
       });
 
       console.log("COOKIES, sup there: ", Object.entries(cookies));
