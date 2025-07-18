@@ -326,6 +326,8 @@ export default async function handler(
 
     sendMessage(response, { msg: "Copying unit..." });
 
+    console.log("will get the files to copy...")
+
     const gdriveResponse = await drive.files.list({
       corpora: "drive",
       includeItemsFromAllDrives: true,
@@ -334,6 +336,8 @@ export default async function handler(
       q: `'${request.query.unitDriveId}' in parents`,
     });
     const rootDriveFolders = gdriveResponse.data?.files;
+
+    console.log("rootDriveFolders: ", rootDriveFolders?.length);
 
     if (!rootDriveFolders?.length) {
       console.error("The root of the drive folder is empty.");
