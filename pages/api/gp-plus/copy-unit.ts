@@ -27,20 +27,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import { waitWithExponentialBackOff } from "../../../globalFns";
 
-const drive = google.drive("v3");
-const creds = new GoogleServiceAccountAuthCreds();
-const auth = new google.auth.GoogleAuth({
-  credentials: {
-    client_email: creds.client_email,
-    client_id: creds.client_id,
-    private_key: creds.private_key.replace(/\\n/g, "\n"),
-  },
-  scopes: ["https://www.googleapis.com/auth/drive"],
-});
-const authClient = await auth.getClient();
-
-google.options({ auth: authClient });
-
 const createGoogleDriveFolderForUser = async (
   folderName: string,
   accessToken: string,
@@ -326,7 +312,21 @@ export default async function handler(
 
     sendMessage(response, { msg: "Copying unit..." });
 
-    console.log("will get the files to copy...")
+    console.log("will get the files to copy...");
+
+    const drive = google.drive("v3");
+    const creds = new GoogleServiceAccountAuthCreds();
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        client_email: creds.client_email,
+        client_id: creds.client_id,
+        private_key: creds.private_key.replace(/\\n/g, "\n"),
+      },
+      scopes: ["https://www.googleapis.com/auth/drive"],
+    });
+    const authClient = await auth.getClient();
+
+    google.options({ auth: authClient });
 
     const gdriveResponse = await drive.files.list({
       corpora: "drive",
