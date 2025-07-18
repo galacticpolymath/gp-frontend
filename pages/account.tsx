@@ -174,11 +174,10 @@ const AccountPg = () => {
 
     if (!idToken) {
       const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string);
-      // TODO: handle the case where the user changes their email, ALWAYS use the person profile of the user's account as the final source of truth
       idToken = await magic.auth.loginWithMagicLink({
         email: userAccount?.gpPlusSubscription?.email,
+        redirectURI: window.location.href,
       });
-      console.log("idToken: ", idToken);
       (window as any).Outseta.setMagicLinkIdToken(idToken);
     }
 

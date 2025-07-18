@@ -137,6 +137,7 @@ const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
       const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string);
       idToken = await magic.auth.loginWithMagicLink({
         email: userAccount?.gpPlusSubscription?.email,
+        redirectURI: window.location.href,
       });
       (window as any).Outseta.setMagicLinkIdToken(idToken);
     }
