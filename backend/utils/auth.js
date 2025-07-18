@@ -36,8 +36,6 @@ const getGoogleAuthJwt = (keyFile, scopes) => {
 };
 
 const createGoogleAuthJwt = () => {
-  console.log("process.env.GDRIVE_WORKER_KEY, sup there: ", process.env.GDRIVE_WORKER_KEY)
-
   return new JWT({
     scopes: ["https://www.googleapis.com/auth/drive"],
     email: "gdrive-worker@gp-frontend-391915.iam.gserviceaccount.com",

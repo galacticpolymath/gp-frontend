@@ -54,11 +54,6 @@ export class Credentials {
 
 export class GoogleServiceAccountAuthCreds {
   constructor() {
-    console.log(
-      "process.env.GDRIVE_WORKER_KEY: ",
-      process.env.GDRIVE_WORKER_KEY
-    );
-
     this.type = "service_account";
     this.project_id = "gp-frontend-391915";
     this.private_key_id = "8dc9a39284181bf8e9b820fc177dc3e470be1a95";
