@@ -315,11 +315,12 @@ export default async function handler(
     const drive = google.drive("v3");
     const creds = new GoogleServiceAccountAuthCreds();
     console.log('creds.private_key: ', creds.private_key)
+    String.raw
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: creds.client_email,
         client_id: creds.client_id,
-        private_key: creds.private_key.replace(/\\n/g, "\n"),
+        private_key: creds.private_key.replace(/\\n/g, "\n").replace(/"/g, ""),
       },
       scopes: ["https://www.googleapis.com/auth/drive"],
     });
@@ -334,6 +335,8 @@ export default async function handler(
       driveId: process.env.GOOGLE_DRIVE_ID,
       q: `'${request.query.unitDriveId}' in parents`,
     });
+    console.log('gdriveResponse.data?.files: ', gdriveResponse.data?.files)
+    
     const rootDriveFolders = gdriveResponse.data?.files;
 
     console.log("rootDriveFolders: ", rootDriveFolders?.length);
