@@ -27,6 +27,20 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import { waitWithExponentialBackOff } from "../../../globalFns";
 
+const drive = google.drive("v3");
+const creds = new GoogleServiceAccountAuthCreds();
+const auth = new google.auth.GoogleAuth({
+  credentials: {
+    client_email: creds.client_email,
+    client_id: creds.client_id,
+    private_key: creds.private_key.replace(/\\n/g, "\n"),
+  },
+  scopes: ["https://www.googleapis.com/auth/drive"],
+});
+const authClient = await auth.getClient();
+
+google.options({ auth: authClient });
+
 const createGoogleDriveFolderForUser = async (
   folderName: string,
   accessToken: string,
@@ -312,49 +326,14 @@ export default async function handler(
 
     sendMessage(response, { msg: "Copying unit..." });
 
-    // const googleAuthJwt = createGoogleAuthJwt();
-
-    // console.log("Google Auth JWT: ", googleAuthJwt);
-
-    // if (!googleAuthJwt) {
-    //   sendMessage(response, {
-    //     msg: "An error has occurred on the server.",
-    //     isJobDone: true,
-    //     showSupportTxt: true,
-    //   });
-    //   return;
-    // }
-
-    const drive = google.drive("v3");
-    const creds = new GoogleServiceAccountAuthCreds();
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: creds.client_email,
-        client_id: creds.client_id,
-        private_key: creds.private_key,
-      },
-      scopes: ["https://www.googleapis.com/auth/drive"],
-    });
-    const authClient = await auth.getClient();
-
-    google.options({ auth: authClient });
-    
     const gdriveResponse = await drive.files.list({
       corpora: "drive",
       includeItemsFromAllDrives: true,
       supportsAllDrives: true,
       driveId: process.env.GOOGLE_DRIVE_ID,
-      q: `'${folderId}' in parents`,
+      q: `'${request.query.unitDriveId}' in parents`,
     });
-
-    console.log("response.data.files: ", gdriveResponse.data?.files?.length);
-
-    sendMessage(response, {
-      msg: "An error has occurred on the server.",
-      isJobDone: true,
-      showSupportTxt: true,
-    });
-    return;
+    const rootDriveFolders = gdriveResponse.data?.files;
 
     if (!rootDriveFolders?.length) {
       console.error("The root of the drive folder is empty.");
@@ -386,7 +365,7 @@ export default async function handler(
         unitFolder.pathToFile &&
         unitFolder.pathToFile !== ""
       ) {
-        const { data } = await googleService.files.list({
+        const { data } = await drive.files.list({
           corpora: "drive",
           includeItemsFromAllDrives: true,
           supportsAllDrives: true,
@@ -479,7 +458,7 @@ export default async function handler(
       }
 
       if (unitFolder.mimeType.includes("folder")) {
-        const folderDataResponse = await googleService.files.list({
+        const folderDataResponse = await drive.files.list({
           corpora: "drive",
           includeItemsFromAllDrives: true,
           supportsAllDrives: true,
@@ -715,7 +694,7 @@ export default async function handler(
     const { wasSuccessful: wasSharesSuccessful } = await shareFilesWithRetries(
       files,
       email,
-      googleService
+      drive
     );
 
     console.log(

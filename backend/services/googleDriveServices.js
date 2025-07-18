@@ -150,7 +150,7 @@ export const listFilesOfGoogleDriveFolder = (
 export const shareFilesWithRetries = async (
   files,
   userEmail,
-  googleService,
+  drive,
   tries = 0
 ) => {
   try {
@@ -164,7 +164,7 @@ export const shareFilesWithRetries = async (
     const shareFilePromises = [];
 
     for (const file of files) {
-      const shareFilePromise = googleService.permissions.create({
+      const shareFilePromise = drive.permissions.create({
         resource: {
           type: "user",
           role: "writer",
@@ -204,7 +204,7 @@ export const shareFilesWithRetries = async (
       return await shareFilesWithRetries(
         failedFilesToShare,
         userEmail,
-        googleService,
+        drive,
         tries
       );
     }
