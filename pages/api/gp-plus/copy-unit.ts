@@ -336,6 +336,8 @@ export default async function handler(
     });
     const rootDriveFolders = gdriveResponse.data?.files;
 
+    console.log("rootDriveFolders: ", rootDriveFolders?.length);
+
     if (!rootDriveFolders?.length) {
       console.error("The root of the drive folder is empty.");
       sendMessage(response, {
