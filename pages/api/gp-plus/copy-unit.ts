@@ -8,7 +8,7 @@
 /* eslint-disable indent */
 /* eslint-disable no-multiple-empty-lines */
 
-import fs from 'fs';
+import fs from "fs";
 import { google, drive_v3 } from "googleapis";
 import { CustomError } from "../../../backend/utils/errors";
 import { setTimeout as pause } from "node:timers/promises";
@@ -19,6 +19,7 @@ import {
   deleteGoogleDriveItem,
   FileMetaData,
   getGoogleDriveFolders,
+  GoogleServiceAccountAuthCreds,
   refreshAuthToken,
   shareFilesWithRetries,
 } from "../../../backend/services/googleDriveServices";
@@ -311,27 +312,49 @@ export default async function handler(
 
     sendMessage(response, { msg: "Copying unit..." });
 
-    const googleAuthJwt = createGoogleAuthJwt();
+    // const googleAuthJwt = createGoogleAuthJwt();
 
-    console.log("Google Auth JWT: ", googleAuthJwt);
+    // console.log("Google Auth JWT: ", googleAuthJwt);
 
+    // if (!googleAuthJwt) {
+    //   sendMessage(response, {
+    //     msg: "An error has occurred on the server.",
+    //     isJobDone: true,
+    //     showSupportTxt: true,
+    //   });
+    //   return;
+    // }
 
-    if (!googleAuthJwt) {
-      sendMessage(response, {
-        msg: "An error has occurred on the server.",
-        isJobDone: true,
-        showSupportTxt: true,
-      });
-      return;
-    }
+    const drive = google.drive("v3");
+    const creds = new GoogleServiceAccountAuthCreds();
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        client_email: creds.client_email,
+        client_id: creds.client_id,
+        private_key: creds.private_key,
+      },
+      scopes: ["https://www.googleapis.com/auth/drive"],
+    });
+    const authClient = await auth.getClient();
 
-    const googleService = google.drive({ version: "v3", auth: googleAuthJwt });
-    const rootDriveFolders = (await getGoogleDriveFolders(
-      googleService,
-      request.query.unitDriveId
-    )) as IGdriveItem[] | null;
+    google.options({ auth: authClient });
+    
+    const gdriveResponse = await drive.files.list({
+      corpora: "drive",
+      includeItemsFromAllDrives: true,
+      supportsAllDrives: true,
+      driveId: process.env.GOOGLE_DRIVE_ID,
+      q: `'${folderId}' in parents`,
+    });
 
-    console.log("rootDriveFolders: ", rootDriveFolders?.length);
+    console.log("response.data.files: ", gdriveResponse.data?.files?.length);
+
+    sendMessage(response, {
+      msg: "An error has occurred on the server.",
+      isJobDone: true,
+      showSupportTxt: true,
+    });
+    return;
 
     if (!rootDriveFolders?.length) {
       console.error("The root of the drive folder is empty.");

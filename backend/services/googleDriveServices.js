@@ -107,35 +107,8 @@ export const getGoogleDriveFolders = async (googleService, folderId) => {
 export const createGoogleAuthJwt = () => {
   try {
     let credentials = new GoogleServiceAccountAuthCreds();
-    credentials = JSON.stringify(credentials);
-    let credentialsSplitted = credentials.split("");
-    let indexesOfValsToDel = [];
-
-    for (let index = 0; index < credentialsSplitted?.length; index++) {
-      const nextVal = credentialsSplitted[index + 1];
-
-      if (nextVal === undefined) {
-        break;
-      }
-
-      const currentVal = credentialsSplitted[index];
-
-      if (currentVal === "\\" && nextVal === "\\") {
-        indexesOfValsToDel.push(index);
-      }
-    }
-
-    credentialsSplitted = credentialsSplitted.filter(
-      (_, index) => !indexesOfValsToDel.includes(index)
-    );
-    credentials = credentialsSplitted.join("");
-
-    fs.writeFileSync("credentials.json", credentials);
-
-    return new JWT({
-      keyFile: "credentials.json",
-      scopes: ["https://www.googleapis.com/auth/drive"],
-    });
+    
+    return
   } catch (error) {
     console.error(
       "Failed to retrieve the google drive service object. Reason: ",
