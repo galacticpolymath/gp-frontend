@@ -320,7 +320,7 @@ export default async function handler(
       credentials: {
         client_email: creds.client_email,
         client_id: creds.client_id,
-        private_key: creds.private_key.replace(/\\n/g, "\n"),
+        private_key: creds.private_key,
       },
       scopes: ["https://www.googleapis.com/auth/drive"],
     });
