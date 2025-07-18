@@ -316,8 +316,6 @@ export default async function handler(
 
     const drive = google.drive("v3");
     const creds = new GoogleServiceAccountAuthCreds();
-    console.log('creds.private_key: ', creds.private_key)
-    String.raw
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: creds.client_email,
