@@ -31,6 +31,7 @@ import { Magic } from "magic-sdk";
 import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import useOutsetaEmailInputValidation from "../customHooks/useOutsetaEmailInputValidation";
+import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
 
 export const getUserAccountData = async (
   token: string,
@@ -106,6 +107,8 @@ const AccountPg = () => {
   const firstName = aboutUserForm.firstName;
   const lastName = aboutUserForm.lastName;
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
+
+  useGpPlusModalInteraction();
   
   const handleGpPlusAccountBtnClick = async () => {
     const userAccount = getLocalStorageItem("userAccount");

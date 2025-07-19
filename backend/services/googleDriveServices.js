@@ -96,25 +96,6 @@ export const getGoogleDriveFolders = async (googleService, folderId) => {
 };
 
 /**
- * Create a service object that will access the company's google drive.
- *  @return { import('google-auth-library').JWT | null } Returns google auth jwt. Else, null will be returned.
- * */
-export const createGoogleAuthJwt = () => {
-  try {
-    let credentials = new GoogleServiceAccountAuthCreds();
-    
-    return
-  } catch (error) {
-    console.error(
-      "Failed to retrieve the google drive service object. Reason: ",
-      error
-    );
-
-    return null;
-  }
-};
-
-/**
  * Share the google drive file with a user.
  * @param{string} driveId The id of the file.
  * @param{drive_v3.Drive} googleService google drive service object
@@ -146,13 +127,13 @@ export const shareFilesWithRetries = async (
   files,
   userEmail,
   drive,
-  tries = 0
+  tries = 3
 ) => {
   try {
     console.log("Current try: ", tries);
     console.log("Files to share: ", files.length);
 
-    if (tries > 8) {
+    if (tries === 0) {
       return { wasSuccessful: false };
     }
 
@@ -194,7 +175,13 @@ export const shareFilesWithRetries = async (
         failedShareFilesIndices.has(index)
       );
       console.log("failedFilesToShare: ", failedFilesToShare.length);
-      tries = await waitWithExponentialBackOff(tries, [1000, 7_000]);
+
+      tries -= 1;
+
+      waitWithExponentialBackOff(tries, [1000, 5_500]);
+
+      console.log('Current tries: ', tries);
+      
 
       return await shareFilesWithRetries(
         failedFilesToShare,

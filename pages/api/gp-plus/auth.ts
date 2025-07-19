@@ -60,7 +60,7 @@ export default async function handler(
       code: reqBody.code,
       grant_type: "authorization_code",
     };
-    let { status, data } = await axios.post<Partial<IGDriveServerAuthRes>>(
+    let res = await axios.post<Partial<IGDriveServerAuthRes>>(
       "https://oauth2.googleapis.com/token",
       googleDriveAuthReqBody,
       {
@@ -69,6 +69,11 @@ export default async function handler(
         },
       }
     );
+
+    console.log('Google drive auth res: ');
+    console.log(res);
+    
+    const { status, data } = res;
 
     if (status !== 200) {
       throw new Error(`GP Plus auth failed. Status code: ${status}`);
@@ -94,12 +99,13 @@ export default async function handler(
   } catch (error: any) {
     console.error("GP Plus auth failed. Error object: ");
     console.error(error);
-    console.error("Error response: ", error?.response);
+    console.error("Error response: ");
+    console.error(error?.response);
 
     return response.status(500).send({
       errType: "authFailed",
       errMsg: "GP Plus auth failed. Server error.",
-      errorObj: error
+      errorObj: error,
     });
   }
 }

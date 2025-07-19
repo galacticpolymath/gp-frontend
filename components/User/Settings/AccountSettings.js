@@ -238,36 +238,6 @@ const AccountSettings = () => {
         className="about-me-modal-body w-100 d-flex flex-column pt-0"
       >
         <form className="h-100 px-1 px-sm-4 position-relative d-flex flex-column">
-          {userAccount?.gpPlusSubscription?.email && (
-            <section className="d-flex flex-wrap px-sm-3 mt-3">
-              <div className="d-flex justify-content-end align-items-end">
-                <Image
-                  src="/imgs/gp-logos/gp_submark.png"
-                  alt="gp_plus_logo"
-                  width={28}
-                  height={28}
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    objectFit: "contain",
-                  }}
-                  className="mx-1"
-                />
-                email:
-              </div>
-              <div className="d-flex justify-content-end align-items-end">
-                <span
-                  className="ms-1"
-                  style={{
-                    wordBreak: "break-all",
-                    minWidth: 0,
-                  }}
-                >
-                  <i>{userAccount?.gpPlusSubscription?.email}</i>
-                </span>
-              </div>
-            </section>
-          )}
           <section className="d-flex flex-column">
             <section className="row d-flex flex-column flex-lg-row px-sm-3 mt-3">
               <CheckBox

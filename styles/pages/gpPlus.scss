@@ -3,6 +3,31 @@ $gpLite: #1827bc;
 $gpPlus: #e93daa;
 $gpGroup: #1ca9e5;
 
+.o--Person-ProfileImageS3Url {
+  display: none;
+}
+
+.o--Select--select .o--tab-profile{
+  border: solid 1px pink;
+  font-size: 0;
+  content: "Email";
+  font-size: 14px;
+}
+
+.o--tab-profile {
+  > a {
+    font-size: 0;
+    position: relative;
+  }
+  > a::before {
+    content: "Email";
+    font-size: 14px;
+  }
+  // &::after {
+  //   content: "Email";
+  // }
+}
+
 .gpplus-pricing-section {
   width: 100%;
   max-width: 1200px;
@@ -385,9 +410,9 @@ $gpGroup: #1ca9e5;
 
 .gp-plus-modal-cta {
   width: 100%;
-  @media(min-width: 768px){
+  @media (min-width: 768px) {
     width: 50%;
-  }  
+  }
 }
 
 @media (max-width: 768px) {
