@@ -629,7 +629,7 @@ export default async function handler(
 
     // create the google sub folders
     for (const folderToCreate of folderPaths) {
-      // if the folder is at the root
+      // if the folder is at the root of the parent folder
       if (folderToCreate.pathToFile === "") {
         const { folderId, wasSuccessful } =
           await createGoogleDriveFolderForUser(

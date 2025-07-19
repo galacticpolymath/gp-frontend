@@ -85,7 +85,7 @@ const GoogleDriveAuthResult = () => {
 
       const responseBody = await authenticateUserWithGDrive(code);
 
-      console.log("responseBody, sup there, meng: ", responseBody);
+      console.log("Authentication, responseBody: ", responseBody);
 
       if (
         !responseBody ||

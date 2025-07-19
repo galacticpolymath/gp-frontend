@@ -92,13 +92,14 @@ export default async function handler(
 
     return response.status(200).json({ data: _data });
   } catch (error: any) {
-    console.error("GP Plus auth failed.", error);
+    console.error("GP Plus auth failed. Error object: ");
+    console.error(error);
     console.error("Error response: ", error?.response);
 
     return response.status(500).send({
       errType: "authFailed",
       errMsg: "GP Plus auth failed. Server error.",
+      errorObj: error
     });
   }
-  // Body is intentionally left empty
 }
