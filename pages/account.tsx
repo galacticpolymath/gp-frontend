@@ -109,7 +109,7 @@ const AccountPg = () => {
   const lastName = aboutUserForm.lastName;
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
 
-  useGpPlusModalInteraction();
+  useGpPlusModalInteraction(!!aboutUserForm.isGpPlusMember);
   useHandleGpPlusLogin();
 
   const handleGpPlusAccountBtnClick = async () => {

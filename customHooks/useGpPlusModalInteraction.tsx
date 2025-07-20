@@ -2,13 +2,11 @@ import { useEffect } from "react";
 import useSiteSession from "./useSiteSession";
 import { useUserContext } from "../providers/UserProvider";
 
-export const useGpPlusModalInteraction = () => {
+export const useGpPlusModalInteraction = (isGpPlusMember: boolean) => {
   const { status } = useSiteSession();
-  const { _aboutUserForm } = useUserContext();
-  const [aboutUserForm] = _aboutUserForm;
 
   useEffect(() => {
-    if (status === "authenticated" && aboutUserForm.isGpPlusMember) {
+    if (status === "authenticated" && isGpPlusMember) {
       const mutationOberserver = new MutationObserver((elements) => {
         for (const element of elements) {
           console.log("Element: ", element);
@@ -38,5 +36,5 @@ export const useGpPlusModalInteraction = () => {
         mutationOberserver.disconnect();
       };
     }
-  }, [status, aboutUserForm]);
+  }, [status, isGpPlusMember]);
 };

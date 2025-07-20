@@ -17,6 +17,7 @@ import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import useHandleOpeningGpPlusAccount from "../customHooks/useHandleOpeningGpPlusAccount";
 import { resetUrl } from "../globalFns";
 import { useRouter } from "next/router";
+import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
 
 const ICON_DIMENSION = 125;
 
@@ -63,10 +64,9 @@ const GpPlus: React.FC = () => {
   } = useHandleOpeningGpPlusAccount(true);
   const [wasGpPlusSubRetrieved] = _wasGpPlusSubRetrieved;
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = _wasGpPlusBtnClicked;
-  const outsetaSignUpLinkRef = useRef<HTMLAnchorElement | null>(null);
-  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const router = useRouter();
 
+  useGpPlusModalInteraction(!!gpPlusSubscription?.membership);
   useOutsetaInputValidation();
 
   console.log("gpPlusSubscription, in GP+ component: ", gpPlusSubscription);
@@ -118,7 +118,6 @@ const GpPlus: React.FC = () => {
     setWasGpPlusBtnClicked(true);
 
     if (status === "unauthenticated") {
-      setIsLoginModalDisplayed(true);
       setTimeout(() => {
         setWasGpPlusBtnClicked(false);
       }, 500);
@@ -131,7 +130,6 @@ const GpPlus: React.FC = () => {
     }, 500);
   };
   const handleSignUpLiteBtnClick = async () => {
-    setIsLoginModalDisplayed(true);
   };
 
   useEffect(() => {
