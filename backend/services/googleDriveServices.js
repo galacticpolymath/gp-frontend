@@ -140,6 +140,7 @@ export const shareFilesWithRetries = async (
     const shareFilePromises = [];
 
     for (const file of files) {
+      console.log("file name: ", file.name)
       const shareFilePromise = drive.permissions.create({
         resource: {
           type: "user",
@@ -163,12 +164,32 @@ export const shareFilesWithRetries = async (
     for (const resultIndex in sharedFilesResults) {
       const result = sharedFilesResults[resultIndex];
 
-      console.log("Result, yo there: ", result);
+      console.log("Share file result: ", result);
+      const targetFile = files[parseInt(resultIndex)]
+      console.log("The target file: ", targetFile);
+      
+      if (result.status == "rejected" && result?.reason?.response?.data?.error?.code === 400) {
+        console.log("Name of restricted file: ", targetFile.name);
 
-      if (result.status === "rejected") {
+        console.error(result?.reason?.response);
+        console.error("result?.reason?.response?.data?.error?.errors: ");
+        console.error(result?.reason?.response?.data?.error?.errors);
+        console.error("This file is restricted. Skipping it.");
+        continue;
+      } else if (result.status === "rejected") {
+        console.log("Failed shared file: ", targetFile.name);
+
+        console.error("Error reasons: ");
+        console.error(result.reason);
+        console.error("Error response: ");
+        console.error(result?.reason?.response);
+        console.error("result?.reason?.response?.data?.error?.errors: ");
+        console.error(result?.reason?.response?.data?.error?.errors);
         failedShareFilesIndices.add(parseInt(resultIndex));
       }
+      console.log("Successful file share: ", targetFile.name);
     }
+
 
     if (failedShareFilesIndices.size) {
       const failedFilesToShare = files.filter((_, index) =>

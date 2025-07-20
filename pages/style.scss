@@ -1043,6 +1043,12 @@ ol li {
   transform: translate(-50%, -50%);
 }
 
+.o--SectionGroup--sectionGroup{
+  > h1{
+    visibility: hidden;
+  }
+}
+
 img {
   image-rendering: -webkit-optimize-contrast;
 }

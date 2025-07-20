@@ -122,6 +122,10 @@ const TeachItUI = <
     GdrivePublicID,
     Title,
   } = props;
+
+  useEffect(() => {
+    console.log("GdrivePublicID: ", GdrivePublicID);
+  })
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const { _isDownloadModalInfoOn } = useModalContext();

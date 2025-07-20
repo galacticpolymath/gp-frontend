@@ -32,6 +32,7 @@ import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import useOutsetaEmailInputValidation from "../customHooks/useOutsetaEmailInputValidation";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
+import { useHandleGpPlusLogin } from "../customHooks/useHandleGpPlusLogin";
 
 export const getUserAccountData = async (
   token: string,
@@ -109,7 +110,8 @@ const AccountPg = () => {
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
 
   useGpPlusModalInteraction();
-  
+  useHandleGpPlusLogin();
+
   const handleGpPlusAccountBtnClick = async () => {
     const userAccount = getLocalStorageItem("userAccount");
     setWasGpPlusBtnClicked(true);
@@ -493,8 +495,7 @@ const AccountPg = () => {
                   }}
                   className="no-underline"
                   href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
-                >
-                </a>
+                ></a>
               </>
             ) : (
               <BootstrapBtn

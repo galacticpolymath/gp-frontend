@@ -18,12 +18,8 @@ const useOutsetaEmailInputValidation = () => {
             ".o--StickyActionRow--forceRow"
           );
           const emailInput = document.querySelector('[name="Person.Email"]') as HTMLInputElement | null;
-        //   console.log("(window as any).Outseta: ", (window as any).Outseta);
           const token = (window as any).Outseta.getAccessToken();
-
-          console.log("token: ", token);
           
-
           if (
             btnsContainer &&
             btnsContainer.firstChild?.nodeName === "BUTTON" &&

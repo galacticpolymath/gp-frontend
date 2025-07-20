@@ -335,7 +335,7 @@ export default async function handler(
       driveId: process.env.GOOGLE_DRIVE_ID,
       q: `'${request.query.unitDriveId}' in parents`,
     });
-    console.log('gdriveResponse.data?.files: ', gdriveResponse.data?.files)
+    console.log("gdriveResponse.data?.files: ", gdriveResponse.data?.files);
 
     const rootDriveFolders = gdriveResponse.data?.files;
 
@@ -422,6 +422,8 @@ export default async function handler(
               (!foldersOccurrenceObj?.[file.name] ||
                 foldersOccurrenceObj?.[file.name]?.length === 1))
           ) {
+            console.log("The file retrieved from the server: ", file);
+
             return {
               ...file,
               name: file.name,
@@ -576,7 +578,7 @@ export default async function handler(
       return !unit.mimeType.includes("folder");
     }).length;
 
-    // pause(1_000);
+    // pause(1_000);  
 
     sendMessage(response, { foldersToCopy: totalFoldersToCreate + 1 });
 
@@ -696,11 +698,17 @@ export default async function handler(
     const files = unitFolders.filter(
       (folder) => !folder.mimeType.includes("folder")
     );
+    const filesSet = new Set(files.map((file) => file.name));
+
+    console.log("Length of the files array: ", files.length);
+    console.log("Size of the files set: ", filesSet.size);
     console.log("Will share the target files with the target user.");
+
     const { wasSuccessful: wasSharesSuccessful } = await shareFilesWithRetries(
       files,
       email,
-      drive
+      drive,
+      4
     );
 
     console.log(
