@@ -14,7 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import { NextRouter, useRouter } from "next/router";
 import { useModalContext } from "../providers/ModalProvider";
 import axios from "axios";
-import { Modal, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import {
   getAllUrlVals,
   getChunks,
@@ -26,11 +26,10 @@ import BootstrapButton from "react-bootstrap/Button";
 import { useGetAboutUserForm } from "../customHooks/useGetAboutUserForm";
 import AboutUserModal from "../components/User/AboutUser/AboutUserModal";
 import Image from "next/image";
-import { getIsWithinParentElement, getLocalStorageItem } from "../shared/fns";
+import { getLocalStorageItem } from "../shared/fns";
 import { Magic } from "magic-sdk";
 import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
-import useOutsetaEmailInputValidation from "../customHooks/useOutsetaEmailInputValidation";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
 import { useHandleGpPlusLogin } from "../customHooks/useHandleGpPlusLogin";
 
@@ -53,11 +52,7 @@ export const getUserAccountData = async (
       },
     };
     const url = `${window.location.origin}/api/get-user-account-data`;
-    console.log("url: ", url);
     const response = await axios.get(url, paramsAndHeaders);
-
-    // print the response
-    console.log("response.data: ", response.data);
 
     if (response.status !== 200) {
       throw new Error("Received a non 200 response from the server.");

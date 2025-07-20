@@ -1043,6 +1043,16 @@ ol li {
   transform: translate(-50%, -50%);
 }
 
+
+.o--tab-profile{
+  visibility: hidden;
+
+  @media(min-width: 600px){
+    visibility: visible;
+  }
+
+}
+
 .o--SectionGroup--sectionGroup{
   > h1{
     visibility: hidden;
