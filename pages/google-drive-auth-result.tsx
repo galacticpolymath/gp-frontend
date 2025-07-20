@@ -65,6 +65,8 @@ const GoogleDriveAuthResult = () => {
         "didGpSignInAttemptOccur"
       );
 
+      console.log("Will Attempt to sign the target user into google drive.")
+
       if (didGpSignInAttemptOccur) {
         setWillRedirectUser(true);
         return true;
@@ -77,6 +79,8 @@ const GoogleDriveAuthResult = () => {
 
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
+
+      console.log("The code from the url: ", code);
 
       if (!code) {
         sessionStorage.setItem(`${window.location.search}`, "true");

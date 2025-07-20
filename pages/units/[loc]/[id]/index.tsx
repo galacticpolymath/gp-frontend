@@ -585,6 +585,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         }
       } else if (status === "unauthenticated"){
           setIsCopyUnitBtnDisabled(false);
+          setDidAttemptRetrieveUserData(true);
       }
     })();
   }, [status]);

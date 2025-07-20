@@ -15,6 +15,8 @@ import {
 import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import useHandleOpeningGpPlusAccount from "../customHooks/useHandleOpeningGpPlusAccount";
+import { resetUrl } from "../globalFns";
+import { useRouter } from "next/router";
 
 const ICON_DIMENSION = 125;
 
@@ -63,6 +65,7 @@ const GpPlus: React.FC = () => {
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = _wasGpPlusBtnClicked;
   const outsetaSignUpLinkRef = useRef<HTMLAnchorElement | null>(null);
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
+  const router = useRouter();
 
   useOutsetaInputValidation();
 
@@ -256,6 +259,17 @@ const GpPlus: React.FC = () => {
     }
   }, [isSignupModalDisplayed]);
 
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const idToken = url.searchParams.get("magic_credential");
+
+    if (idToken){
+      console.log("GP+ page loaded with idToken: ", idToken);
+      (window as any).Outseta.setMagicLinkIdToken(idToken);
+      resetUrl(router);
+    } 
+  }, []);
+
   return (
     <Layout
       title="GP+ - Galactic Polymath"
@@ -297,7 +311,7 @@ const GpPlus: React.FC = () => {
                   Monthly&nbsp;
                 </span>
               </div>
-              <label style={{ minWidth: '48px' }} className="gpplus-switch">
+              <label style={{ minWidth: "48px" }} className="gpplus-switch">
                 <input
                   type="checkbox"
                   checked={billingPeriod === "yearly"}

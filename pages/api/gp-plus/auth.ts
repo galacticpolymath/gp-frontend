@@ -82,17 +82,16 @@ export default async function handler(
     if (
       typeof data.access_token !== "string" ||
       typeof data.refresh_token !== "string" ||
-      typeof data.refresh_token_expires_in !== "number" ||
       typeof data.expires_in !== "number"
     ) {
-      throw new Error(`GP Plus auth failed. Response body received: ${data}`);
+      console.error("Failed to get Google Drive access token. Data retrieved: ");
+      console.error(data);
+      throw new Error(`GP Plus auth failed. Response body received: ${JSON.stringify(data)}`);
     }
 
     const _data = {
       ...data,
       expires_at: new Date().getTime() + data.expires_in * 1_000,
-      refresh_token_expires_at:
-        new Date().getTime() + data.refresh_token_expires_in * 1_000,
     };
 
     return response.status(200).json({ data: _data });
