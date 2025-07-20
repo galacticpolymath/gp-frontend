@@ -20,8 +20,11 @@ export const useGpPlusModalInteraction = (isGpPlusMember: boolean) => {
 
             if (h1?.textContent === "Profile") {
               h1.textContent = "Email";
-              h1.style.visibility = "visible";
-            } else if (h1){
+            } else if (h1?.textContent === "Account") {
+              h1.textContent = "Address";
+            } 
+            
+            if (h1){
               h1.style.visibility = "visible";
             }
 

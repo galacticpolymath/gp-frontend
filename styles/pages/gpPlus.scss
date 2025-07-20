@@ -14,18 +14,48 @@ $gpGroup: #1ca9e5;
   font-size: 14px;
 }
 
-.o--tab-profile {
+.o--Account--address{
+  > h2{
+    display: none;
+  }
+}
+
+
+.o--tab-profile{
+  visibility: hidden;
+
+  @media(min-width: 600px){
+    visibility: visible;
+  }
+
+}
+
+.o--SectionGroup--sectionGroup{
+  > h1{
+    visibility: hidden;
+  }
+}
+
+.o--tab-profile,
+.o--tab-account {
   > a {
     font-size: 0;
     position: relative;
   }
+}
+
+.o--tab-profile {
   > a::before {
     content: "Email";
     font-size: 14px;
   }
-  // &::after {
-  //   content: "Email";
-  // }
+}
+
+.o--tab-account {
+  > a::before {
+    content: "Address";
+    font-size: 14px;
+  }
 }
 
 .gpplus-pricing-section {

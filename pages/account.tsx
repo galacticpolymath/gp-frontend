@@ -108,83 +108,89 @@ const AccountPg = () => {
   useHandleGpPlusLogin();
 
   const handleGpPlusAccountBtnClick = async () => {
-    const userAccount = getLocalStorageItem("userAccount");
-    setWasGpPlusBtnClicked(true);
+    try {
+      const userAccount = getLocalStorageItem("userAccount");
+      setWasGpPlusBtnClicked(true);
 
-    if (!userAccount?.gpPlusSubscription?.email) {
-      setNotifyModal({
-        isDisplayed: true,
-        headerTxt: "GP Plus data retrieval error",
-        bodyTxt: (
-          <>
-            Unable to retrieve your GP Plus email. If this error persists,
-            please contact{" "}
-            <CustomLink
-              hrefStr={CONTACT_SUPPORT_EMAIL}
-              className="ms-1 mt-2 text-break"
-            >
-              feedback@galacticpolymath.com
-            </CustomLink>
-            .
-          </>
-        ),
-        handleOnHide: () => {
-          setNotifyModal((state) => ({
-            ...state,
-            isDisplayed: false,
-          }));
-        },
-      });
+      if (!userAccount?.gpPlusSubscription?.email) {
+        setNotifyModal({
+          isDisplayed: true,
+          headerTxt: "GP Plus data retrieval error",
+          bodyTxt: (
+            <>
+              Unable to retrieve your GP Plus email. If this error persists,
+              please contact{" "}
+              <CustomLink
+                hrefStr={CONTACT_SUPPORT_EMAIL}
+                className="ms-1 mt-2 text-break"
+              >
+                feedback@galacticpolymath.com
+              </CustomLink>
+              .
+            </>
+          ),
+          handleOnHide: () => {
+            setNotifyModal((state) => ({
+              ...state,
+              isDisplayed: false,
+            }));
+          },
+        });
+        setWasGpPlusBtnClicked(false);
+        return;
+      }
+
+      if (!("Outseta" in window)) {
+        setNotifyModal({
+          isDisplayed: true,
+          headerTxt: "GP Plus data retrieval error",
+          bodyTxt: (
+            <>
+              An error in loading your GP Plus data. Please refresh the page. If
+              this error persists, please contact{" "}
+              <CustomLink
+                hrefStr={CONTACT_SUPPORT_EMAIL}
+                className="ms-1 mt-2 text-break"
+              >
+                feedback@galacticpolymath.com
+              </CustomLink>
+              .
+            </>
+          ),
+          handleOnHide: () => {
+            setNotifyModal((state) => ({
+              ...state,
+              isDisplayed: false,
+            }));
+          },
+        });
+        setWasGpPlusBtnClicked(false);
+        return;
+      }
+
+      const outseta = (window as any).Outseta;
+      let idToken = outseta.getAccessToken() as string | null;
+
+      if (!idToken) {
+        const magic = new Magic(
+          process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string
+        );
+        idToken = await magic.auth.loginWithMagicLink({
+          email: userAccount?.gpPlusSubscription?.email,
+          redirectURI: window.location.href,
+        });
+        (window as any).Outseta.setMagicLinkIdToken(idToken);
+      }
+
+      setTimeout(() => {
+        setWasGpPlusBtnClicked(false);
+        gpPlusAnchorElementRef.current?.click();
+      }, 500);
+    } catch (error) {
+      console.error("Failed to display gp plus account modal: ", error);
+    } finally{
       setWasGpPlusBtnClicked(false);
-      return;
     }
-
-    if (!("Outseta" in window)) {
-      setNotifyModal({
-        isDisplayed: true,
-        headerTxt: "GP Plus data retrieval error",
-        bodyTxt: (
-          <>
-            An error in loading your GP Plus data. Please refresh the page. If
-            this error persists, please contact{" "}
-            <CustomLink
-              hrefStr={CONTACT_SUPPORT_EMAIL}
-              className="ms-1 mt-2 text-break"
-            >
-              feedback@galacticpolymath.com
-            </CustomLink>
-            .
-          </>
-        ),
-        handleOnHide: () => {
-          setNotifyModal((state) => ({
-            ...state,
-            isDisplayed: false,
-          }));
-        },
-      });
-      setWasGpPlusBtnClicked(false);
-      return;
-    }
-
-    const outseta = (window as any).Outseta;
-    let idToken = outseta.getAccessToken() as string | null;
-
-    console.log("idToken, yo there: ", idToken);
-
-    if (!idToken) {
-      const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string);
-      idToken = await magic.auth.loginWithMagicLink({
-        email: userAccount?.gpPlusSubscription?.email,
-        redirectURI: window.location.href,
-      });
-      (window as any).Outseta.setMagicLinkIdToken(idToken);
-    }
-
-    setTimeout(() => {
-      setWasGpPlusBtnClicked(false);
-      gpPlusAnchorElementRef.current?.click();
-    }, 500);
   };
 
   useEffect(() => {
