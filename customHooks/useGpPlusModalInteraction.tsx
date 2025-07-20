@@ -28,31 +28,31 @@ export const useGpPlusModalInteraction = (isGpPlusMember: boolean) => {
               h1.style.visibility = "visible";
             }
 
-            if (window.innerWidth < 600){
-              console.log("The user is on a mobile device.");
-              const gpPlusModalElements = Array.from(
-                (element.target as HTMLElement).childNodes
-              ) as HTMLElement[];
-              const gpPlusModalTabOptionsDropDown = gpPlusModalElements.find(
-                (element) => element.className === "o--NavMobile--navMobile"
-              );
-              const gpPlusModalTabOptions =
-                gpPlusModalTabOptionsDropDown?.firstChild?.firstChild
-                  ?.childNodes;
+            // if (window.innerWidth < 600){
+            //   console.log("The user is on a mobile device.");
+            //   const gpPlusModalElements = Array.from(
+            //     (element.target as HTMLElement).childNodes
+            //   ) as HTMLElement[];
+            //   const gpPlusModalTabOptionsDropDown = gpPlusModalElements.find(
+            //     (element) => element.className === "o--NavMobile--navMobile"
+            //   );
+            //   const gpPlusModalTabOptions =
+            //     gpPlusModalTabOptionsDropDown?.firstChild?.firstChild
+            //       ?.childNodes;
 
-              if (gpPlusModalTabOptions) {
-                const profileOptions = (
-                  Array.from(gpPlusModalTabOptions) as HTMLOptionElement[]
-                );
+            //   if (gpPlusModalTabOptions) {
+            //     const profileOptions = (
+            //       Array.from(gpPlusModalTabOptions) as HTMLOptionElement[]
+            //     );
 
-                for(const profileOption of profileOptions){
-                  if (profileOption.className === "o--tab-profile") {
-                    profileOption.textContent = "Email";
-                    profileOption.style.visibility = "visible";
-                  }
-                }                
-              }
-            }
+            //     for(const profileOption of profileOptions){
+            //       if (profileOption.className === "o--tab-profile") {
+            //         profileOption.textContent = "Email";
+            //         profileOption.style.visibility = "visible";
+            //       }
+            //     }                
+            //   }
+            // }
           }
         }
       });

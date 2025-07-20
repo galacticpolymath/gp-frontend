@@ -707,6 +707,7 @@ export type TAccountStageLabel = "Subscribing" | "Cancelling" | "Past due" | "Ex
 
 export interface IOutsetaUser {
   Name?: string;
+  PersonAccount?: { Person: object }[];
   AccountStageLabel: TAccountStageLabel;
   CurrentSubscription: {
     _objectType: "Subscription";
@@ -763,7 +764,7 @@ export type TGpPlusMembershipRetrieved = Awaited<ReturnType<typeof getGpPlusIndi
 
 export const getGpPlusIndividualMembershipStatus = async (
   email: string,
-  fields: string = "CurrentSubscription.*, CurrentSubscription.Plan.*, AccountStageLabel, Name"
+  fields = "CurrentSubscription.*, CurrentSubscription.Plan.*, AccountStageLabel, Name, PersonAccount.Person.*"
 ) => {
   try {
     console.log(`Attempting to retrieve Outseta GP+ membership status for: ${email}`);
@@ -790,6 +791,10 @@ export const getGpPlusIndividualMembershipStatus = async (
       throw new Error("accountRetrievalErr");
     }
 
+    const persons = currentSubscription.PersonAccount
+
+    console.log("persons: ", persons);
+    
     const { AccountStageLabel } = currentSubscription;
     const { BillingRenewalTerm, Created, Plan, Rate, RenewalDate, StartDate } =
       currentSubscription.CurrentSubscription;

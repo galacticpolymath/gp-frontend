@@ -48,8 +48,6 @@ const GpPlus: React.FC = () => {
   );
   const {
     _notifyModal,
-    _isCreateAccountModalDisplayed,
-    _isLoginModalDisplayed,
   } = useModalContext();
   const [, setNotifyModal] = _notifyModal;
   const { token, status, user, logUserOut } = useSiteSession();
