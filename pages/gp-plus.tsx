@@ -21,7 +21,7 @@ import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteract
 
 const ICON_DIMENSION = 80;
 
-const LiContentWithImg: React.FC<{ txt: string }> = ({ txt }) => {
+const LiContentWithImg: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <>
       <div className="d-flex">
@@ -35,7 +35,7 @@ const LiContentWithImg: React.FC<{ txt: string }> = ({ txt }) => {
           />
         </div>
         <div className="d-flex justify-content-center align-items-center ms-1">
-          {txt}
+          {children}
         </div>
       </div>
     </>
@@ -313,7 +313,7 @@ const GpPlus: React.FC = () => {
           <div className="container-fluid">
             <div className="row justify-content-center mt-sm-3 mt-md-0">
               <div
-                style={{ height: "45px" }}
+                style={{ height: "40px" }}
                 className="position-relative mt-1 col-sm-11 col-md-12"
               >
                 <Image
@@ -333,9 +333,9 @@ const GpPlus: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="gpplus-toggle-row w-100 d-flex justify-content-center align-items-center">
+          <div className="gpplus-toggle-row w-100 d-flex justify-content-center align-items-center py-1">
             <div className="d-flex w-75 justify-content-center align-items-center">
-              <div className="p-3">
+              <div className="px-3">
                 <span className={billingPeriod === "monthly" ? "active" : ""}>
                   Monthly&nbsp;
                 </span>
@@ -348,7 +348,7 @@ const GpPlus: React.FC = () => {
                 />
                 <span className="gpplus-slider" />
               </label>
-              <div className="d-flex p-3">
+              <div className="d-flex px-3">
                 <span
                   className={`${
                     billingPeriod === "yearly" ? "active" : ""
@@ -465,12 +465,18 @@ const GpPlus: React.FC = () => {
                   </ul>
                 </div>
                 <div>
+                  <div className="bonus-content w-100 text-center">
+                    (Coming Soon){" "}
+                  </div>
                   <div className="bonus-content w-100 text-center text-decoration-underline">
                     BONUS ACCESS TO:{" "}
                   </div>
                   <ul className="gpplus-features pt-2">
                     <li className="gpplus-bonus d-flex justify-content-center align-items-center">
-                      <LiContentWithImg txt="JobViz App" />
+                      <LiContentWithImg>JobViz App</LiContentWithImg>
+                    </li>
+                    <li className="gpplus-bonus d-flex justify-content-center align-items-center">
+                      <LiContentWithImg>Classroom Activator</LiContentWithImg>
                     </li>
                   </ul>
                 </div>
