@@ -198,7 +198,7 @@ $gpGroup: #1ca9e5;
 }
 .gpplus-card.plus > div {
   border: $gpPlusCardBorderWidth $gpPlus solid;
-  height: 93vh;
+  height: 85vh;
   max-height: 850px;
 }
 .gpplus-card.group > div {
@@ -209,7 +209,7 @@ $gpGroup: #1ca9e5;
   z-index: 2;
 }
 .gpplus-card-header {
-  font-size: 1.75rem;
+  font-size: 1.65rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   text-align: center;
@@ -231,7 +231,6 @@ $gpGroup: #1ca9e5;
 .bonus-content {
   color: $gpPlus;
   font-size: 0.95rem;
-  margin-top: 0.5rem;
   font-weight: 500;
 }
 .gpplus-features {
@@ -241,11 +240,14 @@ $gpGroup: #1ca9e5;
   width: 100%;
   li {
     font-size: 1rem;
-    margin-bottom: 0.5rem;
+    // margin-bottom: 0.5rem;
     color: #333;
     line-height: 1.5;
     width: 100%;
     text-align: center;
+  }
+  li:not(:first-child){
+    margin-top: .15rem;
   }
   .gpplus-bonus {
     color: $gpPlus;
@@ -254,7 +256,7 @@ $gpGroup: #1ca9e5;
   }
 }
 .gpplus-price {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   span {
     font-size: 1rem;
