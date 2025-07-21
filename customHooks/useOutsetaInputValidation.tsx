@@ -198,6 +198,7 @@ const useOutsetaInputValidation = () => {
     };
   }, [status]);
 
+
   return {
     _isSignupModalDisplayed: [
       isSignupModalDisplayed,

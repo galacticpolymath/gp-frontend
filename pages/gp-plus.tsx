@@ -135,6 +135,21 @@ const GpPlus: React.FC = () => {
   };
 
   useEffect(() => {
+    const emailInput = status === "authenticated" ? document.querySelector(
+      '[name="Person.Email"]'
+    ) as HTMLInputElement | null : null;
+
+    if (status === "authenticated" && emailInput) {
+      emailInput.value = user?.email || "";
+      emailInput.dispatchEvent(new Event("input", { bubbles: true }));
+    } else if (status === "authenticated"){
+      console.error(
+        "An error occurred: Email input could not be found despite user being authenticated."
+      );
+    }
+  }, [status]);
+
+  useEffect(() => {
     if (isSignupModalDisplayed) {
       console.log("sign up modal displayed");
 
@@ -142,16 +157,16 @@ const GpPlus: React.FC = () => {
         ".o--Register--nextButton"
       ) as HTMLButtonElement | null;
       const payPeriodToggle = document.querySelector(
-        ".o--HorizontalToggle--displayMode-auto"
+        ".o--HorizontalToggle--horizontalToggle"
       ) as HTMLButtonElement | null;
       const monthlyOption = payPeriodToggle?.firstChild?.firstChild
         ?.firstChild as HTMLElement | undefined;
       const yearlyOption = payPeriodToggle?.firstChild?.lastChild
         ?.firstChild as HTMLElement | undefined;
 
-      console.log("billingPeriod, yo there: ", billingPeriod);
-      console.log("monthlyOption, yo there: ", monthlyOption);
-      console.log("yearlyOption, yo there: ", yearlyOption);
+      console.log("billingPeriod: ", billingPeriod);
+      console.log("monthlyOption: ", monthlyOption);
+      console.log("yearlyOption: ", yearlyOption);
 
       if (billingPeriod === "monthly" && monthlyOption) {
         monthlyOption.click();
@@ -169,7 +184,7 @@ const GpPlus: React.FC = () => {
           return;
         }
 
-        const emailInput = document.querySelector('[name="Person.Email"]');
+        const emailInput = document.querySelector('[name="Person.Email"]') as HTMLInputElement | null;
         const outsetaEmail = emailInput
           ? (emailInput as HTMLInputElement).value
           : "";
