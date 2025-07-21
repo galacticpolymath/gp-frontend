@@ -43,13 +43,13 @@ const LiContentWithImg: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-const CardTitle: React.FC<{ children: ReactNode }> = ({children}) => {
+const CardTitle: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div className="pt-3 pb-1">
       <div className="gpplus-card-header">{children}</div>
     </div>
   );
-}
+};
 
 const GpPlus: React.FC = () => {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
@@ -144,14 +144,15 @@ const GpPlus: React.FC = () => {
   };
 
   useEffect(() => {
-    const emailInput = status === "authenticated" ? document.querySelector(
-      '[name="Person.Email"]'
-    ) as HTMLInputElement | null : null;
+    const emailInput =
+      status === "authenticated"
+        ? (document.querySelector('[name="Person.Email"]') as HTMLInputElement | null)
+        : null;
 
     if (status === "authenticated" && emailInput) {
       emailInput.value = user?.email || "";
       emailInput.dispatchEvent(new Event("input", { bubbles: true }));
-    } else if (status === "authenticated"){
+    } else if (status === "authenticated") {
       console.error(
         "An error occurred: Email input could not be found despite user being authenticated."
       );
@@ -193,7 +194,9 @@ const GpPlus: React.FC = () => {
           return;
         }
 
-        const emailInput = document.querySelector('[name="Person.Email"]') as HTMLInputElement | null;
+        const emailInput = document.querySelector(
+          '[name="Person.Email"]'
+        ) as HTMLInputElement | null;
         const outsetaEmail = emailInput
           ? (emailInput as HTMLInputElement).value
           : "";

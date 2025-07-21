@@ -507,7 +507,8 @@ const AccountPg = () => {
                   }}
                   className="no-underline"
                   href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
-                ></a>
+                >
+                </a>
               </>
             ) : (
               <BootstrapBtn

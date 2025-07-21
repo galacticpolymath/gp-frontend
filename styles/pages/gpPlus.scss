@@ -146,9 +146,17 @@ $gpGroup: #1ca9e5;
     max-height: 703px;
     height: 80vh;
 
+    max-height: 520px;
+    @media (min-width: 576px) {
+      max-height: none;
+    }
     @media (min-width: 1200px) {
       max-width: 340px;
     }
+  }
+
+  > div > div{
+    max-width: 325px;
   }
 
   @media (min-width: 576px) {
@@ -198,8 +206,12 @@ $gpGroup: #1ca9e5;
 }
 .gpplus-card.plus > div {
   border: $gpPlusCardBorderWidth $gpPlus solid;
-  height: 85vh;
-  max-height: 850px;
+  min-height: 635px;
+
+  @media (min-width: 576px) {
+    height: 85vh;
+    max-height: 850px; 
+  }
 }
 .gpplus-card.group > div {
   border: $gpPlusCardBorderWidth $gpGroup solid;

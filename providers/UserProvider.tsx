@@ -54,6 +54,7 @@ export type TAboutUserFormForUI = {
 export const userAccountDefault: TAboutUserFormForUI = {
   schoolTypeDefaultSelection: null,
   outsetaPersonEmail: "",
+  outsetaAccountEmail: "",
   isGpPlusMember: false,
   schoolTypeOther: null,
   siteVisitReasonsCustom: null,
