@@ -19,7 +19,8 @@ import { resetUrl } from "../globalFns";
 import { useRouter } from "next/router";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
 
-const ICON_DIMENSION = 80;
+const ICON_DIMENSION = 70;
+const BTN_HEIGHT = "50px";
 
 const LiContentWithImg: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
@@ -29,9 +30,9 @@ const LiContentWithImg: React.FC<{ children: ReactNode }> = ({ children }) => {
           <Image
             src="/imgs/gp-logos/gp_submark.png"
             alt="gp_plus_logo"
-            width={55}
-            height={55}
-            style={{ width: "55px", height: "55px", objectFit: "contain" }}
+            width={32}
+            height={32}
+            style={{ width: "32px", height: "32px", objectFit: "contain" }}
           />
         </div>
         <div className="d-flex justify-content-center align-items-center ms-1">
@@ -313,7 +314,7 @@ const GpPlus: React.FC = () => {
           <div className="container-fluid">
             <div className="row justify-content-center mt-sm-3 mt-md-0">
               <div
-                style={{ height: "40px" }}
+                style={{ height: "38px" }}
                 className="position-relative mt-1 col-sm-11 col-md-12"
               >
                 <Image
@@ -371,7 +372,7 @@ const GpPlus: React.FC = () => {
             className="gpplus-cards-wrapper"
           >
             <div className="gpplus-card lite position-relative">
-              <div className="d-flex flex-column align-items-center bg-white h-100">
+              <div className="d-flex flex-column align-items-center bg-white">
                 <div className="w-100 d-flex justify-content-center align-items-center">
                   <Image
                     alt="lite_logo"
@@ -400,9 +401,9 @@ const GpPlus: React.FC = () => {
                 </div>
                 <div
                   style={{ height: "195px" }}
-                  className="w-100 d-flex justify-content-center align-items-center mt-2"
+                  className="w-100 d-flex justify-content-center align-items-center"
                 >
-                  <div className="position-absolute bottom-0 mb-4 w-75">
+                  <div className="position-absolute bottom-0 mb-3 w-75">
                     <div>
                       <div className="gpplus-price mb-2 d-flex justify-content-center align-items-center">
                         $0 <span className="ms-1 mt-1">/ {billingPeriod}</span>
@@ -414,13 +415,13 @@ const GpPlus: React.FC = () => {
                         disabled={
                           isGpLiteBtnDisabled || status === "authenticated"
                         }
-                        className={`gpplus-signup-btn lite ${
+                        className={`gpplus-signup-btn d-flex justify-content-center align-items-center lite ${
                           isGpLiteBtnDisabled || status === "authenticated"
                             ? "opacity-25"
                             : ""
                         }`}
                         style={{
-                          height: "65px",
+                          height: BTN_HEIGHT,
                           cursor:
                             isGpLiteBtnDisabled || status === "authenticated"
                               ? "not-allowed"
@@ -481,10 +482,10 @@ const GpPlus: React.FC = () => {
                   </ul>
                 </div>
                 <div
-                  style={{ height: "195px" }}
+                  style={{ height: "180px" }}
                   className="w-100 d-flex justify-content-center align-items-center mt-2"
                 >
-                  <div className="position-absolute bottom-0 mb-4 w-75">
+                  <div className="position-absolute bottom-0 mb-3 w-75">
                     <div
                       className={`${billingPeriod === "yearly" ? "mb-2" : ""}`}
                     >
@@ -537,7 +538,7 @@ const GpPlus: React.FC = () => {
                         disabled={!wasGpPlusSubRetrieved || wasGpPlusBtnClicked}
                         onClick={handleSignUpGpPlusBtnClick}
                         style={{
-                          height: "65px",
+                          height: BTN_HEIGHT,
                           cursor:
                             !wasGpPlusSubRetrieved || wasGpPlusBtnClicked
                               ? "not-allowed"
@@ -556,7 +557,7 @@ const GpPlus: React.FC = () => {
               </div>
             </div>
             <div className="gpplus-card group">
-              <div className="d-flex flex-column align-items-center bg-white h-100">
+              <div className="d-flex flex-column align-items-center bg-white">
                 <div className="w-100 d-flex justify-content-center align-items-center">
                   <Image
                     alt="gp_plus_logo"
@@ -588,11 +589,11 @@ const GpPlus: React.FC = () => {
                   style={{ height: "195px" }}
                   className="w-100 d-flex justify-content-center align-items-center mt-2"
                 >
-                  <div className="position-absolute bottom-0 mb-4 w-75">
+                  <div className="position-absolute bottom-0 mb-3 w-75">
                     <button
                       className="gpplus-signup-btn group"
                       style={{
-                        height: "65px",
+                        height: BTN_HEIGHT,
                       }}
                     >
                       Request a quote

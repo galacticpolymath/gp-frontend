@@ -77,7 +77,7 @@ $gpGroup: #1ca9e5;
 .gpplus-toggle-row {
   display: flex;
   align-items: center;
-  margin: 1rem 0 1rem 0;
+  margin: .8rem 0 .8rem 0;
   font-size: 1.1rem;
   gap: 1rem;
   .active {
@@ -186,7 +186,7 @@ $gpGroup: #1ca9e5;
 }
 
 .gpplus-card > div > div:not(:nth-child(3)) {
-  padding: 0rem 1.5rem 0rem 1.5rem;
+  padding: 0rem .75rem 0rem .75rem;
 }
 
 .gpplus-card > div > div:nth-child(3) {
@@ -198,8 +198,8 @@ $gpGroup: #1ca9e5;
 }
 .gpplus-card.plus > div {
   border: $gpPlusCardBorderWidth $gpPlus solid;
-  height: 103vh;
-  max-height: 800px;
+  height: 93vh;
+  max-height: 850px;
 }
 .gpplus-card.group > div {
   border: $gpPlusCardBorderWidth $gpGroup solid;
@@ -220,7 +220,7 @@ $gpGroup: #1ca9e5;
   color: #fff;
   background: $gpLite;
   padding: 0.2em 1em;
-  margin-bottom: 1.2rem;
+  margin-bottom: .6rem;
 }
 .gpplus-card.plus .gpplus-card-subheader {
   background: $gpPlus;
@@ -231,7 +231,7 @@ $gpGroup: #1ca9e5;
 .bonus-content {
   color: $gpPlus;
   font-size: 0.95rem;
-  margin-top: 0.7rem;
+  margin-top: 0.5rem;
   font-weight: 500;
 }
 .gpplus-features {
@@ -256,8 +256,6 @@ $gpGroup: #1ca9e5;
 .gpplus-price {
   font-size: 1.5rem;
   font-weight: 700;
-  // margin-bottom: 1.2rem;
-  // margin-top: 1.2rem;
   span {
     font-size: 1rem;
     color: #333;
@@ -278,6 +276,9 @@ $gpGroup: #1ca9e5;
   background: #3e0d55;
   color: #fff;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   transition: background 0.2s;
 }
 .gpplus-signup-btn.plus {
