@@ -46,11 +46,11 @@ const GpPlus: React.FC = () => {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
     "monthly"
   );
-  const {
-    _notifyModal,
-  } = useModalContext();
+  const { _notifyModal, _isLoginModalDisplayed } = useModalContext();
   const [, setNotifyModal] = _notifyModal;
+  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const { token, status, user, logUserOut } = useSiteSession();
+  const [wasGpLiteBtnClicked, setWasGpLiteBtnClicked] = useState(false);
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
   const {
     _wasGpPlusBtnClicked,
@@ -68,9 +68,6 @@ const GpPlus: React.FC = () => {
   useOutsetaInputValidation();
 
   console.log("gpPlusSubscription, in GP+ component: ", gpPlusSubscription);
-
-  // TODO: if the user is a member, then show the profile modal to the user telling the user to select a membership to buy or if the user chose a membership that they are
-  // -tell the user that.
 
   // Calculate savings percentage (yearly: $60, monthly: $10 * 12 = $120, savings: 50%)
   const yearlySavings = 50; // 50% savings
@@ -118,16 +115,23 @@ const GpPlus: React.FC = () => {
     if (status === "unauthenticated") {
       setTimeout(() => {
         setWasGpPlusBtnClicked(false);
-      }, 500);
+        setIsLoginModalDisplayed(true);
+      }, 200);
       return;
     }
 
     setTimeout(() => {
       setIsSignupModalDisplayed(true);
       setWasGpPlusBtnClicked(false);
-    }, 500);
+    }, 200);
   };
   const handleSignUpLiteBtnClick = async () => {
+    setWasGpLiteBtnClicked(true);
+
+    setTimeout(() => {
+      setIsLoginModalDisplayed(true);
+      setWasGpLiteBtnClicked(false);
+    }, 300);
   };
 
   useEffect(() => {
@@ -144,6 +148,10 @@ const GpPlus: React.FC = () => {
         ?.firstChild as HTMLElement | undefined;
       const yearlyOption = payPeriodToggle?.firstChild?.lastChild
         ?.firstChild as HTMLElement | undefined;
+
+      console.log("billingPeriod, yo there: ", billingPeriod);
+      console.log("monthlyOption, yo there: ", monthlyOption);
+      console.log("yearlyOption, yo there: ", yearlyOption);
 
       if (billingPeriod === "monthly" && monthlyOption) {
         monthlyOption.click();
@@ -259,12 +267,14 @@ const GpPlus: React.FC = () => {
     const url = new URL(window.location.href);
     const idToken = url.searchParams.get("magic_credential");
 
-    if (idToken){
+    if (idToken) {
       console.log("GP+ page loaded with idToken: ", idToken);
       (window as any).Outseta.setMagicLinkIdToken(idToken);
       resetUrl(router);
-    } 
+    }
   }, []);
+
+  const isGpLiteBtnDisabled = !wasGpPlusSubRetrieved || wasGpLiteBtnClicked;
 
   return (
     <Layout
@@ -381,27 +391,22 @@ const GpPlus: React.FC = () => {
                       <button
                         onClick={handleSignUpLiteBtnClick}
                         disabled={
-                          wasGpPlusSubRetrieved
-                            ? status === "authenticated"
-                            : true
+                          isGpLiteBtnDisabled || status === "authenticated"
                         }
                         className={`gpplus-signup-btn lite ${
-                          wasGpPlusSubRetrieved
-                            ? status === "authenticated"
-                              ? "opacity-25"
-                              : ""
-                            : "opacity-25"
+                          isGpLiteBtnDisabled || status === "authenticated"
+                            ? "opacity-25"
+                            : ""
                         }`}
                         style={{
                           height: "65px",
-                          cursor: wasGpPlusSubRetrieved
-                            ? status === "authenticated"
+                          cursor:
+                            isGpLiteBtnDisabled || status === "authenticated"
                               ? "not-allowed"
-                              : "pointer"
-                            : "not-allowed",
+                              : "pointer",
                         }}
                       >
-                        {wasGpPlusSubRetrieved ? gpLiteBtnTxt : <Spinner />}
+                        {isGpLiteBtnDisabled ? <Spinner /> : gpLiteBtnTxt}
                       </button>
                     </div>
                   </div>

@@ -108,6 +108,8 @@ const AccountPg = () => {
   useHandleGpPlusLogin();
 
   const handleGpPlusAccountBtnClick = async () => {
+    let wasGpPlusAccountRetrievalSuccessful = false;
+    
     try {
       const userAccount = getLocalStorageItem("userAccount");
       setWasGpPlusBtnClicked(true);
@@ -180,13 +182,14 @@ const AccountPg = () => {
         const magic = new Magic(
           process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string
         );
-        console.log("window.location.href: ", window.location.href);
         idToken = await magic.auth.loginWithMagicLink({
           email: userAccount?.gpPlusSubscription?.person?.Email,
-          redirectURI: window.location.href,
+          // redirectURI: window.location.href,
         });
         (window as any).Outseta.setMagicLinkIdToken(idToken);
       }
+
+      wasGpPlusAccountRetrievalSuccessful = true;
 
       setTimeout(() => {
         setWasGpPlusBtnClicked(false);
@@ -194,8 +197,10 @@ const AccountPg = () => {
       }, 500);
     } catch (error) {
       console.error("Failed to display gp plus account modal: ", error);
-    } finally{
-      setWasGpPlusBtnClicked(false);
+    } finally {
+      if (!wasGpPlusAccountRetrievalSuccessful){
+        setWasGpPlusBtnClicked(false);
+      } 
     }
   };
 

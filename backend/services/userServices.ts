@@ -803,7 +803,12 @@ export const getGpPlusIndividualMembershipStatus = async (
     }
 
     const persons = currentSubscription.PersonAccount;
+
+    console.log("PersonAccount: ", currentSubscription.PersonAccount);
+
     const person = persons?.[0]?.Person;
+    console.log("person: ", person);
+
     const { AccountStageLabel } = currentSubscription;
     const { BillingRenewalTerm, Created, Plan, Rate, RenewalDate, StartDate } =
       currentSubscription.CurrentSubscription;
@@ -817,7 +822,7 @@ export const getGpPlusIndividualMembershipStatus = async (
       StartDate,
       PlanName: Plan.Name,
       AccountStageLabel,
-      person
+      person,
     };
   } catch (error: any) {
     console.error(
