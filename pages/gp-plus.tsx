@@ -149,6 +149,8 @@ const GpPlus: React.FC = () => {
         ? (document.querySelector('[name="Person.Email"]') as HTMLInputElement | null)
         : null;
 
+    console.log("user.email: ", user?.email);
+
     if (status === "authenticated" && emailInput) {
       emailInput.value = user?.email || "";
       emailInput.dispatchEvent(new Event("input", { bubbles: true }));
@@ -173,10 +175,6 @@ const GpPlus: React.FC = () => {
         ?.firstChild as HTMLElement | undefined;
       const yearlyOption = payPeriodToggle?.firstChild?.lastChild
         ?.firstChild as HTMLElement | undefined;
-
-      console.log("billingPeriod: ", billingPeriod);
-      console.log("monthlyOption: ", monthlyOption);
-      console.log("yearlyOption: ", yearlyOption);
 
       if (billingPeriod === "monthly" && monthlyOption) {
         monthlyOption.click();
