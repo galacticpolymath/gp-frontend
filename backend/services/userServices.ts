@@ -702,12 +702,21 @@ export interface IOutsetaAuthTokenResBody {
   expires_in: number;
   token_type: string;
 }
+type TPerson = {
+  Email: string;
+  [key: string]: unknown;
+};
 
-export type TAccountStageLabel = "Subscribing" | "Cancelling" | "Past due" | "Expired" | "NonMember";
+export type TAccountStageLabel =
+  | "Subscribing"
+  | "Cancelling"
+  | "Past due"
+  | "Expired"
+  | "NonMember";
 
 export interface IOutsetaUser {
   Name?: string;
-  PersonAccount?: { Person: object }[];
+  PersonAccount?: { Person: TPerson }[];
   AccountStageLabel: TAccountStageLabel;
   CurrentSubscription: {
     _objectType: "Subscription";
@@ -759,16 +768,18 @@ export const getBillingType = (billingTypeNum: keyof TBillingRenewalTerm) => {
   return BILLING_RENEWAL_TERM[billingTypeNum];
 };
 
-export type TGpPlusMembershipRetrieved = Awaited<ReturnType<typeof getGpPlusIndividualMembershipStatus>> & { AccountStageLabel: TAccountStageLabel | "NonMember" }
-
+export type TGpPlusMembershipRetrieved = Awaited<
+  ReturnType<typeof getGpPlusIndividualMembershipStatus>
+> & { AccountStageLabel: TAccountStageLabel | "NonMember" };
 
 export const getGpPlusIndividualMembershipStatus = async (
   email: string,
   fields = "CurrentSubscription.*, CurrentSubscription.Plan.*, AccountStageLabel, Name, PersonAccount.Person.*"
 ) => {
   try {
-    console.log(`Attempting to retrieve Outseta GP+ membership status for: ${email}`);
-    
+    console.log(
+      `Attempting to retrieve Outseta GP+ membership status for: ${email}`
+    );
 
     const url = new URL(
       `${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`
@@ -791,10 +802,8 @@ export const getGpPlusIndividualMembershipStatus = async (
       throw new Error("accountRetrievalErr");
     }
 
-    const persons = currentSubscription.PersonAccount
-
-    console.log("persons: ", persons);
-    
+    const persons = currentSubscription.PersonAccount;
+    const person = persons?.[0]?.Person;
     const { AccountStageLabel } = currentSubscription;
     const { BillingRenewalTerm, Created, Plan, Rate, RenewalDate, StartDate } =
       currentSubscription.CurrentSubscription;
@@ -802,8 +811,13 @@ export const getGpPlusIndividualMembershipStatus = async (
     return {
       email: currentSubscription.Name,
       BillingRenewalTerm,
-      Created, Rate, RenewalDate, StartDate, PlanName: Plan.Name,
-      AccountStageLabel
+      Created,
+      Rate,
+      RenewalDate,
+      StartDate,
+      PlanName: Plan.Name,
+      AccountStageLabel,
+      person
     };
   } catch (error: any) {
     console.error(
@@ -812,7 +826,7 @@ export const getGpPlusIndividualMembershipStatus = async (
     );
 
     return {
-      AccountStageLabel: "NonMember"
+      AccountStageLabel: "NonMember",
     };
   }
 };

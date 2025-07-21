@@ -14,7 +14,6 @@ const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
   const {
     isFetching,
     data: gpPlusSubscription,
-    isFetched,
   } = useQuery({
     retry: 1,
     refetchOnWindowFocus: false,
@@ -122,21 +121,23 @@ const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
     }
 
     const outseta = (window as any).Outseta;
-    console.log("outseta, sup there: ", outseta);
     let idToken = outseta.getAccessToken() as string | null;
 
-    console.log("idToken, yo there: ", idToken);
+    console.log(
+      "userAccount?.gpPlusSubscription, sup there: ",
+      userAccount?.gpPlusSubscription
+    );
 
     if (
       !idToken &&
       userAccount &&
       userAccount.gpPlusSubscription &&
-      "email" in userAccount?.gpPlusSubscription &&
-      userAccount?.gpPlusSubscription.email
+      "person" in userAccount?.gpPlusSubscription &&
+      userAccount?.gpPlusSubscription.person?.Email
     ) {
       const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string);
       idToken = await magic.auth.loginWithMagicLink({
-        email: userAccount?.gpPlusSubscription?.email,
+        email: userAccount?.gpPlusSubscription.person?.Email,
         redirectURI: window.location.href,
       });
       (window as any).Outseta.setMagicLinkIdToken(idToken);

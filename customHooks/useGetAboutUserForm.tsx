@@ -9,7 +9,6 @@ import {
   useUserContext,
 } from "../providers/UserProvider";
 import { TAboutUserForm, TUserSchemaForClient } from "../backend/models/User/types";
-import { Magic } from "magic-sdk";
 
 export const getAboutUserFormForClient = (userAccount: TUserSchemaForClient) => {
   let userAccountForClient = { ...userAccountDefault };

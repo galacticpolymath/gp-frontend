@@ -112,7 +112,12 @@ const AccountPg = () => {
       const userAccount = getLocalStorageItem("userAccount");
       setWasGpPlusBtnClicked(true);
 
-      if (!userAccount?.gpPlusSubscription?.email) {
+      console.log(
+        "userAccount?.gpPlusSubscription: ",
+        userAccount?.gpPlusSubscription
+      );
+
+      if (!userAccount?.gpPlusSubscription?.person?.Email) {
         setNotifyModal({
           isDisplayed: true,
           headerTxt: "GP Plus data retrieval error",
@@ -175,8 +180,9 @@ const AccountPg = () => {
         const magic = new Magic(
           process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string
         );
+        console.log("window.location.href: ", window.location.href);
         idToken = await magic.auth.loginWithMagicLink({
-          email: userAccount?.gpPlusSubscription?.email,
+          email: userAccount?.gpPlusSubscription?.person?.Email,
           redirectURI: window.location.href,
         });
         (window as any).Outseta.setMagicLinkIdToken(idToken);

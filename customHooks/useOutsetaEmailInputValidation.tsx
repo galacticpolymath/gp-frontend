@@ -29,38 +29,38 @@ const useOutsetaEmailInputValidation = () => {
             (btnsContainer.firstChild as HTMLButtonElement).addEventListener(
               "click",
               async (event) => {
-                // event.preventDefault();
-                // const updateUserResponse = await updateUser(
-                //   { email: user.email as string },
-                //   { outsetaPersonEmail: emailInput?.value },
-                //   {},
-                //   token
-                // );
+                event.preventDefault();
+                const updateUserResponse = await updateUser(
+                  { email: user.email as string },
+                  { outsetaAccountEmail: emailInput?.value },
+                  {},
+                  token
+                );
 
-                // if (!updateUserResponse?.wasSuccessful) {
-                //   setNotifyModal({
-                //     headerTxt: "An error has occurred",
-                //     bodyTxt: (
-                //       <>
-                //         An error has occurred while trying to update the user's
-                //         email. If this error persists, please contact{" "}
-                //         <CustomLink
-                //           hrefStr={CONTACT_SUPPORT_EMAIL}
-                //           className="ms-1 mt-2 text-break"
-                //         >
-                //           feedback@galacticpolymath.com
-                //         </CustomLink>
-                //         .
-                //       </>
-                //     ),
-                //     isDisplayed: true,
-                //     handleOnHide() {
-                //       setNotifyModal(defautlNotifyModalVal);
-                //       window.location.reload();
-                //     },
-                //   });
-                //   return;
-                // }
+                if (!updateUserResponse?.wasSuccessful) {
+                  setNotifyModal({
+                    headerTxt: "An error has occurred",
+                    bodyTxt: (
+                      <>
+                        An error has occurred while trying to update the user's
+                        email. If this error persists, please contact{" "}
+                        <CustomLink
+                          hrefStr={CONTACT_SUPPORT_EMAIL}
+                          className="ms-1 mt-2 text-break"
+                        >
+                          feedback@galacticpolymath.com
+                        </CustomLink>
+                        .
+                      </>
+                    ),
+                    isDisplayed: true,
+                    handleOnHide() {
+                      setNotifyModal(defautlNotifyModalVal);
+                      window.location.reload();
+                    },
+                  });
+                  return;
+                }
               }
             );
           } else if (btnsContainer && btnsContainer.firstChild?.nodeName) {
