@@ -2,15 +2,24 @@ import { ILessonForUI } from "../../../../types/global";
 import { IUnitSectionObj } from "../Section";
 import { IOverview, IUnitOverview, TUnitOverviewPropsForUI } from "./overview";
 
-export interface ILink {
+export interface ILink{
   linkText: string | null;
   url: string[] | null;
 }
-
 export interface IItem {
   itemTitle: string | null;
   itemDescription: string | null;
   itemCat: string | null;
+  links: ILink[] | null;
+}
+
+export interface IItemV2 {
+  itemTitle: string | null;
+  itemDescription: string | null;
+  itemCat: string | null;
+  mimeType: string;
+  gdriveRoot: string;
+  isExportable: boolean;
   links: ILink[] | null;
 }
 

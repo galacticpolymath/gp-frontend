@@ -140,9 +140,12 @@ const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
         );
         idToken = await magic.auth.loginWithMagicLink({
           email: userAccount?.gpPlusSubscription.person?.Email,
-          redirectURI: `https://dev.galacticpolymath.com${window.location.pathname}`,
+          redirectURI: window.location.href,
         });
-        (window as any).Outseta.setMagicLinkIdToken(idToken);
+
+        if (idToken){
+          window.Outseta?.setMagicLinkIdToken(idToken);
+        } 
       }
 
       wasGpPlusAccountRetrievalSuccessful = true;

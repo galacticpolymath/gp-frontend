@@ -184,9 +184,12 @@ const AccountPg = () => {
         );
         idToken = await magic.auth.loginWithMagicLink({
           email: userAccount?.gpPlusSubscription?.person?.Email,
-          // redirectURI: window.location.href,
+          redirectURI: window.location.href,
         });
-        (window as any).Outseta.setMagicLinkIdToken(idToken);
+        
+        if(idToken){
+          window.Outseta?.setMagicLinkIdToken(idToken);
+        }
       }
 
       wasGpPlusAccountRetrievalSuccessful = true;
@@ -203,6 +206,8 @@ const AccountPg = () => {
       } 
     }
   };
+
+  // GOAL: add redirect when the user logs into their gp plus account to view their account, magic link
 
   useEffect(() => {
     const url = new URL(window.location.href);

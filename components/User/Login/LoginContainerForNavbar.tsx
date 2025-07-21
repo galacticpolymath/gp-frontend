@@ -51,9 +51,10 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     aboutUserForm?.name?.last ??
     "";
 
-  const handleSignOutBtnClick = () => {
+  const handleSignOutBtnClick = async () => {
     localStorage.clear();
     sessionStorage.clear();
+    await window.Outseta?.logout();
     clearCookies();
     signOut();
     setIsLoadingSpinnerOn(true);
@@ -171,7 +172,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
             View Account
           </Button>
           <Button
-            handleOnClick={handleSignOutBtnClick}
+            handleOnClick={async () => await handleSignOutBtnClick()}
             classNameStr="no-btn-styles  hover txt-underline-on-hover py-2"
           >
             {isLoadingSpinnerOn ? (

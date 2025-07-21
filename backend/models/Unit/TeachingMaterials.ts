@@ -4,6 +4,7 @@ import {
   IChunkStep,
   IGoingFurtherVal,
   IItem,
+  IItemV2,
   ILink,
   ILsnPrep,
   INewUnitLesson,
@@ -36,6 +37,18 @@ const ItemSchema = new Schema<IItem>(
     itemTitle: String,
     itemDescription: String,
     itemCat: String,
+    links: [LinkSchema],
+  },
+  { _id: false }
+);
+const ItemSchemaV2 = new Schema<IItemV2>(
+  {
+    itemTitle: String,
+    itemDescription: String,
+    itemCat: String,
+    mimeType: String,
+    gdriveRoot: String,
+    isExportable: Boolean,
     links: [LinkSchema],
   },
   { _id: false }
@@ -97,7 +110,7 @@ const NewUnitLessonSchema = new Schema<INewUnitLesson>(
     gradeVarNote: String,
     preface: String,
     tile: String,
-    itemList: [ItemSchema],
+    itemList: [ItemSchemaV2],
     lsnDur: Number,
     lsnPreface: String,
     learningObj: [String],

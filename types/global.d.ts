@@ -10,7 +10,14 @@ import { TAboutUserForm, TUserSchemaForClient } from "../backend/models/User/typ
 import { TWebAppForUI } from "../backend/models/WebApp";
 import { TUserAccount } from "../providers/UserProvider";
 
-// front-end
+declare global {
+  interface Window {
+    Outseta?: {
+      logout: () => Promise<void>;
+      setMagicLinkIdToken: (idToken: string) => void;
+    };
+  }
+}
 interface IComponent {
   index: number;
   children: ReactNode;

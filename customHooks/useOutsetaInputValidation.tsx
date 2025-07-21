@@ -15,6 +15,7 @@ const useOutsetaInputValidation = () => {
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
   const { data, status } = useSession();
   const { user, token } = (data ?? {}) as IUserSession;
+  const [didUserSignUp, setDidUserSignUp] = useState(false);
   let emailInput = useRef<HTMLInputElement>(null).current;
   let continueToCheckoutBtn = useRef<HTMLButtonElement>(null).current;
 
@@ -23,8 +24,6 @@ const useOutsetaInputValidation = () => {
 
     for (const mutation of mutationsList) {
       const element = mutation.target as HTMLElement;
-
-      console.log("new element has rendered: ", element);
 
       if (element.childNodes.length) {
         for (const childNode of Array.from(element.childNodes)) {
@@ -120,8 +119,8 @@ const useOutsetaInputValidation = () => {
             headerTxt: "An error has occurred",
             bodyTxt: (
               <>
-                Unable to start your checkout session.
-                If this error persists, please contact{" "}
+                Unable to start your checkout session. If this error persists,
+                please contact{" "}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}
                   className="ms-1 mt-2 text-break"
@@ -183,7 +182,7 @@ const useOutsetaInputValidation = () => {
     let observer: MutationObserver | undefined;
     console.log("The current status: ", status);
     if (status === "authenticated") {
-      console.log("will watch the dom...")
+      console.log("will watch the dom...");
       observer = new MutationObserver(mututationCallback);
       observer.observe(document.body, {
         childList: true,
@@ -198,12 +197,12 @@ const useOutsetaInputValidation = () => {
     };
   }, [status]);
 
-
   return {
     _isSignupModalDisplayed: [
       isSignupModalDisplayed,
       setIsSignupModalDisplayed,
     ],
+    _didUserSignUp: [didUserSignUp, setDidUserSignUp],
   } as const;
 };
 

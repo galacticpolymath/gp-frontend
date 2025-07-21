@@ -58,7 +58,8 @@ const GpPlus: React.FC = () => {
   const { _notifyModal, _isLoginModalDisplayed } = useModalContext();
   const [, setNotifyModal] = _notifyModal;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
-  const { token, status, user, logUserOut } = useSiteSession();
+  const siteSession = useSiteSession();
+  const { token, status, user, logUserOut } = siteSession;
   const [wasGpLiteBtnClicked, setWasGpLiteBtnClicked] = useState(false);
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
   const {
@@ -75,11 +76,10 @@ const GpPlus: React.FC = () => {
 
   useGpPlusModalInteraction(!!gpPlusSubscription?.membership);
   useOutsetaInputValidation();
+  const [didUserSignUp, setDidUserSignUp] = useState(false);
 
   console.log("gpPlusSubscription, in GP+ component: ", gpPlusSubscription);
 
-  // Calculate savings percentage (yearly: $60, monthly: $10 * 12 = $120, savings: 50%)
-  const yearlySavings = 50; // 50% savings
   const monthlyPrice = 10;
   const yearlyPrice = 60;
   const monthlyEquivalent = yearlyPrice / 12; // $5/month when paid yearly
@@ -149,7 +149,7 @@ const GpPlus: React.FC = () => {
         ? (document.querySelector('[name="Person.Email"]') as HTMLInputElement | null)
         : null;
 
-    console.log("user.email: ", user?.email);
+    console.log("siteSession: ", siteSession);
 
     if (status === "authenticated" && emailInput) {
       emailInput.value = user?.email || "";
@@ -160,6 +160,37 @@ const GpPlus: React.FC = () => {
       );
     }
   }, [status]);
+
+  const outsetaEmbeddedRef = useRef<HTMLDivElement | null>(null);
+  const outsetaEmbeddedCallback = () => {
+    const stateRegisterConfirmation = document.querySelector(
+      ".state-registerConfirmation"
+    );
+
+    if (stateRegisterConfirmation){
+      setDidUserSignUp(true);
+    }
+  };
+
+  useEffect(() => {
+    console.log("gpPlusSubscription, yo there! ", gpPlusSubscription);
+    if (
+      !(gpPlusSubscription?.membership?.AccountStageLabel === "Subscribing" ||
+        gpPlusSubscription?.membership?.AccountStageLabel === "Cancelling") &&
+      outsetaEmbeddedRef.current
+    ) {
+      const oberserver = new MutationObserver(outsetaEmbeddedCallback);
+      
+      oberserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+
+      return () => {
+        oberserver.disconnect();
+      };
+    }
+  }, [status, gpPlusSubscription]);
 
   useEffect(() => {
     if (isSignupModalDisplayed) {
@@ -635,6 +666,16 @@ const GpPlus: React.FC = () => {
               }`}
               onClick={() => {
                 setIsSignupModalDisplayed(false);
+
+                console.log("didUserSignUp: ", didUserSignUp);
+
+                if(didUserSignUp){
+                  setWasGpPlusBtnClicked(true);
+                  setWasGpLiteBtnClicked(true);
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 300);
+                }
               }}
             />
             <div
@@ -653,6 +694,7 @@ const GpPlus: React.FC = () => {
               }`}
             >
               <div
+                ref={outsetaEmbeddedRef}
                 id="outseta-sign-up"
                 data-o-auth="1"
                 data-widget-mode="register"
