@@ -77,7 +77,7 @@ $gpGroup: #1ca9e5;
 .gpplus-toggle-row {
   display: flex;
   align-items: center;
-  margin: 2rem 0 2.5rem 0;
+  margin: 1rem 0 1rem 0;
   font-size: 1.1rem;
   gap: 1rem;
   .active {
@@ -180,7 +180,7 @@ $gpGroup: #1ca9e5;
     position: relative;
     border: 2px solid transparent;
     transition: box-shadow 0.2s, border 0.2s;
-    padding: 1.5rem 0rem 1.5rem 0rem;
+    padding: 1rem 0rem 1rem 0rem;
     width: 100%;
   }
 }
@@ -198,6 +198,8 @@ $gpGroup: #1ca9e5;
 }
 .gpplus-card.plus > div {
   border: $gpPlusCardBorderWidth $gpPlus solid;
+  height: 103vh;
+  max-height: 800px;
 }
 .gpplus-card.group > div {
   border: $gpPlusCardBorderWidth $gpGroup solid;
@@ -207,7 +209,7 @@ $gpGroup: #1ca9e5;
   z-index: 2;
 }
 .gpplus-card-header {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   text-align: center;
@@ -252,7 +254,7 @@ $gpGroup: #1ca9e5;
   }
 }
 .gpplus-price {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   // margin-bottom: 1.2rem;
   // margin-top: 1.2rem;

@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../components/Layout";
 import { Spinner } from "react-bootstrap";
 import Image from "next/image";
@@ -19,7 +19,7 @@ import { resetUrl } from "../globalFns";
 import { useRouter } from "next/router";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
 
-const ICON_DIMENSION = 125;
+const ICON_DIMENSION = 80;
 
 const LiContentWithImg: React.FC<{ txt: string }> = ({ txt }) => {
   return (
@@ -41,6 +41,14 @@ const LiContentWithImg: React.FC<{ txt: string }> = ({ txt }) => {
     </>
   );
 };
+
+const CardTitle: React.FC<{ children: ReactNode }> = ({children}) => {
+  return (
+    <div className="pt-3 pb-1">
+      <div className="gpplus-card-header">{children}</div>
+    </div>
+  );
+}
 
 const GpPlus: React.FC = () => {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
@@ -305,8 +313,8 @@ const GpPlus: React.FC = () => {
           <div className="container-fluid">
             <div className="row justify-content-center mt-sm-3 mt-md-0">
               <div
-                style={{ height: "80px" }}
-                className="position-relative mt-3 col-sm-11 col-md-12"
+                style={{ height: "45px" }}
+                className="position-relative mt-1 col-sm-11 col-md-12"
               >
                 <Image
                   src="/plus/gp_plus_desktop.png"
@@ -340,7 +348,7 @@ const GpPlus: React.FC = () => {
                 />
                 <span className="gpplus-slider" />
               </label>
-              <div className="d-flex flex-column p-3">
+              <div className="d-flex p-3">
                 <span
                   className={`${
                     billingPeriod === "yearly" ? "active" : ""
@@ -375,9 +383,7 @@ const GpPlus: React.FC = () => {
                     }}
                   />
                 </div>
-                <div className="pt-3 pb-1">
-                  <div className="gpplus-card-header">Lite</div>
-                </div>
+                <CardTitle>Lite</CardTitle>
                 <div>
                   <div className="gpplus-card-subheader mt-2 text-center">
                     INDIVIDUAL
@@ -443,9 +449,7 @@ const GpPlus: React.FC = () => {
                     }}
                   />
                 </div>
-                <div className="pt-3 pb-1">
-                  <div className="gpplus-card-header">Plus</div>
-                </div>
+                <CardTitle>Plus</CardTitle>
                 <div>
                   <div className="gpplus-card-subheader mt-2 text-center">
                     INDIVIDUAL
@@ -456,8 +460,8 @@ const GpPlus: React.FC = () => {
                     <li>
                       + Everything in <b>Lite</b>
                     </li>
-                    <li>+ Bulk GDrive export of entire units</li>
-                    <li>+ Editable lessons</li>
+                    <li>+ Bulk copy entire units to your GDrive</li>
+                    <li>+ Editable teaching materials</li>
                   </ul>
                 </div>
                 <div>
@@ -560,9 +564,7 @@ const GpPlus: React.FC = () => {
                     }}
                   />
                 </div>
-                <div className="pt-3 pb-1">
-                  <div className="gpplus-card-header">Group</div>
-                </div>
+                <CardTitle>Group</CardTitle>
                 <div>
                   <div className="gpplus-card-subheader mt-2 text-center">
                     SCHOOL & DISTRICT
@@ -573,7 +575,7 @@ const GpPlus: React.FC = () => {
                     <li>
                       + Everything in <b>Plus</b>
                     </li>
-                    <li>+ 10 users</li>
+                    <li>+ Discounts for 10 users</li>
                   </ul>
                 </div>
                 <div
