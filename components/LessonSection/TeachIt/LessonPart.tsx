@@ -545,7 +545,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     itemCat,
                     gdriveRoot,
                     isExportable,
-                    mimeType
+                    mimeType,
                   } = item;
                   const _links = links
                     ? Array.isArray(links)
@@ -631,71 +631,83 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                 style={{ listStyle: "none" }}
                                 className="links-list p-0"
                               >
-                                {!!_links &&
+                                {itemCat === "presentation" && (
+                                  <li className="mb-0 d-flex">
+                                    <div className="d-flex justify-content-center align-items-sm-center">
+                                      <button
+                                        className={`${
+                                          isTeacherItem
+                                            ? isUserTeacher
+                                              ? ""
+                                              : "link-disabled"
+                                            : ""
+                                        } no-btn-styles no-hover-color-change`}
+                                      >
+                                        <i
+                                          style={{ color: "#0273BA" }}
+                                          className="fab fa-google-drive"
+                                        />
+                                      </button>
+                                    </div>
+                                    <div className="d-flex justify-content-center align-items-center ps-2">
+                                      <a
+                                        href={_links?.[1]?.url?.[0] ?? ""}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`${
+                                          isTeacherItem
+                                            ? isUserTeacher
+                                              ? ""
+                                              : "link-disabled"
+                                            : ""
+                                        }`}
+                                      >
+                                        Present
+                                      </a>
+                                    </div>
+                                  </li>
+                                )}
+                                <li className="mb-0 d-flex">
+                                  <div className="d-flex justify-content-center align-items-sm-center">
+                                    <button
+                                      className={`${
+                                        isTeacherItem
+                                          ? isUserTeacher
+                                            ? ""
+                                            : "link-disabled"
+                                          : ""
+                                      } no-btn-styles no-hover-color-change`}
+                                    >
+                                      <i
+                                        style={{ color: "#0273BA" }}
+                                        className="fab fa-google-drive"
+                                      />
+                                    </button>
+                                  </div>
+                                  <div className="d-flex justify-content-center align-items-center ps-2">
+                                    <a
+                                      href={_links?.[1]?.url?.[0] ?? ""}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className={`${
+                                        isTeacherItem
+                                          ? isUserTeacher
+                                            ? ""
+                                            : "link-disabled"
+                                          : ""
+                                      }`}
+                                    >
+                                      Preview/Download
+                                    </a>
+                                  </div>
+                                </li>
+                                {/* {!!_links &&
                                   _links.map(({ url, linkText }, linkIndex) => {
                                     
                                     return (
-                                      <li
-                                        className="mb-0 d-flex"
-                                        key={linkIndex}
-                                      >
-                                        <div className="d-flex justify-content-center align-items-sm-center">
-                                          {!!url && (
-                                            <Link
-                                              href={
-                                                typeof url === "string"
-                                                  ? url
-                                                  : url?.[0] ?? ""
-                                              }
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className={`${
-                                                isTeacherItem
-                                                  ? isUserTeacher
-                                                    ? ""
-                                                    : "link-disabled"
-                                                  : ""
-                                              }`}
-                                            >
-                                              {linkIndex === 0 ? (
-                                                <i
-                                                  style={{ color: "#4498CC" }}
-                                                  className="bi bi-box-arrow-up-right"
-                                                />
-                                              ) : (
-                                                <i
-                                                  style={{ color: "#0273BA" }}
-                                                  className="fab fa-google-drive"
-                                                />
-                                              )}
-                                            </Link>
-                                          )}
-                                        </div>
-                                        <div className="d-flex justify-content-center align-items-center ps-2">
-                                          {!!url && (
-                                            <a
-                                              href={
-                                                typeof url === "string"
-                                                  ? url
-                                                  : url[0]
-                                              }
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className={`${
-                                                isTeacherItem
-                                                  ? isUserTeacher
-                                                    ? ""
-                                                    : "link-disabled"
-                                                  : ""
-                                              }`}
-                                            >
-                                              {linkIndex === 1 ? "Preview/Download" : linkText}
-                                            </a>
-                                          )}
-                                        </div>
-                                      </li>
+                                      
                                     );
-                                  })}
+                                  })} */}
                               </ul>
                             </section>
                             {!!filePreviewImg && (
