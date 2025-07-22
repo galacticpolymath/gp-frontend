@@ -104,10 +104,11 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     isAccordionExpandable = true,
   } = props;
   console.log("props, lessonPart: ", props);
-  const { _isUserTeacher } = useUserContext();
+  const { _isUserTeacher, _isGpPlusMember } = useUserContext();
   const { _isLoginModalDisplayed } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
+  const [isGpPlusMember] = _isGpPlusMember;
   const router = useRouter();
   const { status } = useSession();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -632,6 +633,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                               >
                                 {!!_links &&
                                   _links.map(({ url, linkText }, linkIndex) => {
+                                    
                                     return (
                                       <li
                                         className="mb-0 d-flex"
@@ -687,7 +689,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                                   : ""
                                               }`}
                                             >
-                                              {linkText}
+                                              {linkIndex === 1 ? "Preview/Download" : linkText}
                                             </a>
                                           )}
                                         </div>
