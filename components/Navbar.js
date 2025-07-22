@@ -17,11 +17,11 @@ export default function Navbar() {
 
   return (
     <nav
-      style={{ zIndex: 1000 }}
+      style={{ zIndex: 100 }}
       className="position-fixed w-100 navbar-expand-lg py-0"
     >
       <div className='navbar navbar-expand-lg w-100 navbar-dark bg-dark position-relative'>
-        <div style={{ zIndex: 10000 }} className='w-100 container'>
+        <div className='w-100 container'>
           <Image
             className='object-fit-contain d-none d-sm-block'
             alt='Galactic Polymath'

@@ -480,11 +480,7 @@ ol li {
 .lesson-item-modal {
   width: 100vw;
   height: 100vh;
-
-  @media (max-width: 992px) {
-    border-radius: 0px;
-    height: auto;
-  }
+  border-radius: 0px;
 }
 
 .account-settings-modal,

@@ -13,6 +13,7 @@
 /* eslint-disable react/jsx-indent */
 import { createContext, ReactNode, useContext, useState } from "react";
 import { IComponent, TUseStateReturnVal } from "../types/global";
+import { IItemV2Props } from "../backend/models/Unit/types/teachingMaterials";
 
 export const ModalContext = createContext<IModalProviderValue | null>(null);
 export interface INotifyModalVal {
@@ -47,7 +48,8 @@ export interface IModalProviderValue {
   _notifyModal: TUseStateReturnVal<INotifyModalVal>;
   _isCreatingGpPlusAccount: TUseStateReturnVal<boolean>;
   _isAccountSettingModalOn: TUseStateReturnVal<boolean>;
-  _lessonItemModal: TUseStateReturnVal<TLessonItemModal>;
+  _isGpPlusModalDisplayed: TUseStateReturnVal<boolean>;
+  _lessonItemModal: TUseStateReturnVal<TLessonItemModal & Partial<IItemV2Props>>;
 }
 
 export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
@@ -56,6 +58,7 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
   const [isCreatingGpPlusAccount, setIsCreatingGpPlusAccount] = useState(false);
   const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
   const [isLoginModalDisplayed, setIsLoginModalDisplayed] = useState(false);
+  const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] = useState(false);
   const [notifyModal, setNotifyModal] = useState(defautlNotifyModalVal);
   const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] =
     useState(false);
@@ -72,6 +75,7 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
   );
   const value: IModalProviderValue = {
     _lessonItemModal: [lessonItemModal, setLessonItemModal],
+    _isGpPlusModalDisplayed: [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed],
     _isAccountModalMobileOn: [
       isAccountModalMobileOn,
       setIsAccountModalMobileOn,

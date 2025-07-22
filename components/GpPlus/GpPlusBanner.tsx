@@ -1,10 +1,10 @@
 /* eslint-disable quotes */
 
-import React, { useState } from "react";
-import { TUnitForUI } from "../../backend/models/Unit/types/unit";
+import React from "react";
 import Image from "next/image";
 import { Button } from "react-bootstrap";
 import GpPlusModal from "../LessonSection/Modals/GpPlusModal";
+import { useModalContext } from "../../providers/ModalProvider";
 
 interface IProps {
   className?: string;
@@ -13,7 +13,8 @@ interface IProps {
 const GpPlusBanner: React.FC<IProps> = ({
   className = "cover-parent-container rounded row py-2 flex-wrap",
 }) => {
-  const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] = useState(false);
+  const { _isGpPlusModalDisplayed } = useModalContext();
+  const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
 
   return (
     <>
@@ -100,10 +101,7 @@ const GpPlusBanner: React.FC<IProps> = ({
           </Button>
         </section>
       </div>
-      <GpPlusModal
-        isOpen={isGpPlusModalDisplayed}
-        onClose={() => setIsGpPlusModalDisplayed(false)}
-      />
+      <GpPlusModal />
     </>
   );
 };

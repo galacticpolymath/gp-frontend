@@ -7,6 +7,51 @@ $gpGroup: #1ca9e5;
   display: none;
 }
 
+.gp-plus-btn-icons-lesson-item-modal {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+
+  @media (min-width: 576px) {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+.get-gp-plus-btn{
+  // max-width: 125px;
+
+  @media (min-width: 576px) {
+    max-width: none;
+  }
+}
+
+.gp-plus-btn-lesson-item-modal{
+  min-width: 200px;
+}
+
+.lesson-item-modal-btns-container {
+  button {
+    min-width: 80px;
+
+    @media (min-width: 576px) {
+      min-width: 120px;
+    }
+  }
+}
+
+.gp-plus-logo-lesson-item-modal {
+  width: 65px;
+  height: 65px;
+  min-width: 65px;
+  min-height: 65px;
+  @media (min-width: 576px) {
+    width: 100px;
+    height: 100px;
+  }
+}
+
 .o--Select--select .o--tab-profile {
   border: solid 1px pink;
   font-size: 0;
@@ -14,24 +59,22 @@ $gpGroup: #1ca9e5;
   font-size: 14px;
 }
 
-.o--Account--address{
-  > h2{
+.o--Account--address {
+  > h2 {
     display: none;
   }
 }
 
-
-.o--tab-profile{
+.o--tab-profile {
   visibility: hidden;
 
-  @media(min-width: 600px){
+  @media (min-width: 600px) {
     visibility: visible;
   }
-
 }
 
-.o--SectionGroup--sectionGroup{
-  > h1{
+.o--SectionGroup--sectionGroup {
+  > h1 {
     visibility: hidden;
   }
 }
@@ -77,7 +120,7 @@ $gpGroup: #1ca9e5;
 .gpplus-toggle-row {
   display: flex;
   align-items: center;
-  margin: .8rem 0 .8rem 0;
+  margin: 0.8rem 0 0.8rem 0;
   font-size: 1.1rem;
   gap: 1rem;
   .active {
@@ -155,7 +198,7 @@ $gpGroup: #1ca9e5;
     }
   }
 
-  > div > div{
+  > div > div {
     max-width: 325px;
   }
 
@@ -194,7 +237,7 @@ $gpGroup: #1ca9e5;
 }
 
 .gpplus-card > div > div:not(:nth-child(3)) {
-  padding: 0rem .75rem 0rem .75rem;
+  padding: 0rem 0.75rem 0rem 0.75rem;
 }
 
 .gpplus-card > div > div:nth-child(3) {
@@ -210,7 +253,7 @@ $gpGroup: #1ca9e5;
 
   @media (min-width: 576px) {
     height: 85vh;
-    max-height: 850px; 
+    max-height: 850px;
   }
 }
 .gpplus-card.group > div {
@@ -232,7 +275,7 @@ $gpGroup: #1ca9e5;
   color: #fff;
   background: $gpLite;
   padding: 0.2em 1em;
-  margin-bottom: .6rem;
+  margin-bottom: 0.6rem;
 }
 .gpplus-card.plus .gpplus-card-subheader {
   background: $gpPlus;
@@ -258,8 +301,8 @@ $gpGroup: #1ca9e5;
     width: 100%;
     text-align: center;
   }
-  li:not(:first-child){
-    margin-top: .15rem;
+  li:not(:first-child) {
+    margin-top: 0.15rem;
   }
   .gpplus-bonus {
     color: $gpPlus;

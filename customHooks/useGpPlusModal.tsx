@@ -10,10 +10,7 @@ export const useGpPlusModal = () => {
       setIsGpPlusModalDisplayed,
     ],
     GpPlusModal: (
-      <GpPlusModal
-        isOpen={isGpPlusModalDisplayed}
-        onClose={() => setIsGpPlusModalDisplayed(false)}
-      />
+      <GpPlusModal />
     ),
   } as const;
 };

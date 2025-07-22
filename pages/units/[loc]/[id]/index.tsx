@@ -49,8 +49,8 @@ import {
 import { UNITS_URL_PATH } from "../../../../shared/constants";
 import { TUserAccountData } from "../../../api/get-user-account-data";
 import { TUserSchemaForClient } from "../../../../backend/models/User/types";
-import { useGpPlusModal } from "../../../../customHooks/useGpPlusModal";
 import LessonItemModal from "../../../../components/LessonSection/Modals/LessonItemModal";
+import GpPlusModal from "../../../../components/LessonSection/Modals/GpPlusModal";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -169,6 +169,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     _isLoginModalDisplayed,
     _isCreateAccountModalDisplayed,
     _customModalFooter,
+    _isGpPlusModalDisplayed,
+    _lessonItemModal,
   } = useModalContext();
   const [, setIsUserTeacher] = _isUserTeacher;
   const [isGpPlusMember, setIsGpPlusMember] = _isGpPlusMember;
@@ -178,8 +180,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
   const [, setDidAttemptRetrieveUserData] = _didAttemptRetrieveUserData;
-  const { _isGpPlusModalDisplayed, GpPlusModal } = useGpPlusModal();
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
+  const [, setLessonItemModal] = _lessonItemModal;
 
   useEffect(() => {
     const lessonsContainer = document.querySelector(".lessonsPartContainer");
@@ -602,6 +604,13 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         "click",
         handleBonusContentDocumentClick
       );
+      setIsGpPlusModalDisplayed(false);
+      setLessonItemModal(state => {
+        return {
+          ...state,
+          isDisplayed: false,
+        }
+      });
     };
   }, []);
 
@@ -703,7 +712,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
           )}
         </div>
       </div>
-      {GpPlusModal}
+      <GpPlusModal />
       <LessonItemModal />
     </Layout>
   );

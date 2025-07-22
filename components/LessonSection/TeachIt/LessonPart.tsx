@@ -140,7 +140,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const _accordionId = `part_${lsnNum}`;
 
   const handlePreviewDownloadBtnClick = (item: IItemV2Props) => {
-    setLessonItemModal(state => ({ ...state, isDisplayed: true, docUrl: `${item.gdriveRoot}/preview` }));
+    setLessonItemModal((state) => ({
+      ...state,
+      ...item,
+      isDisplayed: true,
+      docUrl: `${item.gdriveRoot}/preview`,
+    }));
   };
 
   const handleClipBoardIconClick = () => {
@@ -716,7 +721,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                         handlePreviewDownloadBtnClick({
                                           gdriveRoot,
                                           mimeType,
-                                          isExportable
+                                          isExportable,
                                         });
                                       }}
                                     >

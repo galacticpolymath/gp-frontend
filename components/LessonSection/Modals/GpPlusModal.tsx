@@ -8,25 +8,37 @@ import { GrDownload } from "react-icons/gr";
 import { FaUnlockKeyhole } from "react-icons/fa6";
 import { FaEdit } from "react-icons/fa";
 import Link from "next/link";
+import { useModalContext } from "../../../providers/ModalProvider";
 
 interface GpPlusModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 const ICON_COLOR = "#14B1EA";
 
-const GpPlusModal: React.FC<GpPlusModalProps> = ({ isOpen, onClose }) => {
-  const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = useState(false);
+const GpPlusModal: React.FC<GpPlusModalProps> = ({ onClose }) => {
+  const { _isGpPlusModalDisplayed } = useModalContext();
+  const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
+
+  const handleOnClose = () => {
+    if(onClose){
+      onClose();
+    }
+
+    setIsGpPlusModalDisplayed(false);
+  };
 
   return (
     <Modal
-      show={isOpen}
-      onHide={onClose}
+      show={isGpPlusModalDisplayed}
+      onHide={handleOnClose}
       size="lg"
       centered
       className="rounded"
       keyboard={false}
+      style={{
+        zIndex: 10000,
+      }}
     >
       <div>
         <div
@@ -123,10 +135,15 @@ const GpPlusModal: React.FC<GpPlusModalProps> = ({ isOpen, onClose }) => {
         </ul>
         <section className="d-block d-sm-flex justify-content-sm-center align-items-sm-center w-100">
           <Link
-            href={`${typeof window === "undefined" ? "" : window.location.origin}/gp-plus`}
+            href={`${
+              typeof window === "undefined" ? "" : window.location.origin
+            }/gp-plus`}
             className="no-link-decoration text-decoration-underline gp-plus-modal-cta px-1 py-2"
           >
-            <Button style={{ borderRadius: "1em", backgroundColor: "#1c28bd" }} className="w-100">
+            <Button
+              style={{ borderRadius: "1em", backgroundColor: "#1c28bd" }}
+              className="w-100"
+            >
               Upgrade for 50% OFF
             </Button>
           </Link>
