@@ -183,7 +183,7 @@ body {
 }
 
 .fade-out-quick {
-  animation: fadeOutQuick 0.5s forwards;
+  animation: fadeOutQuick 0.250s forwards;
   opacity: 1;
 }
 
@@ -475,6 +475,16 @@ ol li {
 
 .text-shadow-violent {
   text-shadow: 0px 0px 4px #470d29;
+}
+
+.lesson-item-modal {
+  width: 100vw;
+  height: 100vh;
+
+  @media (max-width: 992px) {
+    border-radius: 0px;
+    height: auto;
+  }
 }
 
 .account-settings-modal,

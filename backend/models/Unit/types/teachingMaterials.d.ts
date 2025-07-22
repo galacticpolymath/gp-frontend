@@ -13,13 +13,16 @@ export interface IItem {
   links: ILink[] | null;
 }
 
-export interface IItemV2 {
-  itemTitle: string | null;
-  itemDescription: string | null;
-  itemCat: string | null;
+export interface IItemV2Props{
   mimeType: string;
   gdriveRoot: string;
   isExportable: boolean;
+}
+
+export interface IItemV2 extends IItemV2Props {
+  itemTitle: string | null;
+  itemDescription: string | null;
+  itemCat: string | null;
   links: ILink[] | null;
 }
 

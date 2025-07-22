@@ -17,7 +17,6 @@ import { ModalContext } from "./providers/ModalProvider";
 import SelectedJob from "./components/Modals/SelectedJob";
 import DownloadTipModal from "./components/LessonSection/Modals/DownloadTipModal";
 import LoginModal from "./components/User/Login/LoginModal";
-import AboutUserModal from "./components/User/AboutUser/AboutUserModal";
 import Notify from "./components/Modals/Notify";
 import AccountModal from "./components/User/AccoutModal";
 import Button from "./components/General/Button";
@@ -46,7 +45,6 @@ export const CustomCloseButton = ({
 const ModalContainers = () => {
     const { _selectedJob } = useContext(ModalContext);
     const [selectedJob] = _selectedJob;
-    // only have the modals be rendered based on where the user is at on the page
 
     return (
         <>

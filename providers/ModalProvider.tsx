@@ -29,6 +29,11 @@ export const defautlNotifyModalVal: INotifyModalVal = {
   handleOnHide: () => {},
 };
 
+type TLessonItemModal = {
+  isDisplayed: boolean;
+  docUrl?: string;
+};
+
 export interface IModalProviderValue {
   _customModalFooter: TUseStateReturnVal<null | ReactNode>;
   _isAccountModalMobileOn: TUseStateReturnVal<boolean>;
@@ -42,6 +47,7 @@ export interface IModalProviderValue {
   _notifyModal: TUseStateReturnVal<INotifyModalVal>;
   _isCreatingGpPlusAccount: TUseStateReturnVal<boolean>;
   _isAccountSettingModalOn: TUseStateReturnVal<boolean>;
+  _lessonItemModal: TUseStateReturnVal<TLessonItemModal>;
 }
 
 export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
@@ -57,12 +63,15 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
     useState(false);
   const [isAccountModalMobileOn, setIsAccountModalMobileOn] = useState(false);
   const [isPasswordResetModalOn, setIsPasswordResetModalOn] = useState(false);
+  const [lessonItemModal, setLessonItemModal] =
+    useState<TLessonItemModal>({ isDisplayed: false  });
   const [isAccountSettingModalOn, setIsAccountSettingsModalOn] =
     useState(false);
   const [customModalFooter, setCustomModalFooter] = useState<null | ReactNode>(
     null
   );
   const value: IModalProviderValue = {
+    _lessonItemModal: [lessonItemModal, setLessonItemModal],
     _isAccountModalMobileOn: [
       isAccountModalMobileOn,
       setIsAccountModalMobileOn,

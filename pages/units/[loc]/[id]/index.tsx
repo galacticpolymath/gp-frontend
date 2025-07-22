@@ -50,6 +50,7 @@ import { UNITS_URL_PATH } from "../../../../shared/constants";
 import { TUserAccountData } from "../../../api/get-user-account-data";
 import { TUserSchemaForClient } from "../../../../backend/models/User/types";
 import { useGpPlusModal } from "../../../../customHooks/useGpPlusModal";
+import LessonItemModal from "../../../../components/LessonSection/Modals/LessonItemModal";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -703,6 +704,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         </div>
       </div>
       {GpPlusModal}
+      <LessonItemModal />
     </Layout>
   );
 };

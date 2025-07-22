@@ -20,6 +20,7 @@ import { useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
   IGoingFurtherVal,
+  IItemV2Props,
   ILsnExt,
   IResource,
   IStep,
@@ -103,11 +104,11 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     accordionBtnStyle = {},
     isAccordionExpandable = true,
   } = props;
-  console.log("props, lessonPart: ", props);
   const { _isUserTeacher, _isGpPlusMember } = useUserContext();
-  const { _isLoginModalDisplayed } = useModalContext();
+  const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
+  const [, setLessonItemModal] = _lessonItemModal;
   const [isGpPlusMember] = _isGpPlusMember;
   const router = useRouter();
   const { status } = useSession();
@@ -137,6 +138,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   }
 
   const _accordionId = `part_${lsnNum}`;
+
+  const handlePreviewDownloadBtnClick = (item: IItemV2Props) => {
+    setLessonItemModal(state => ({ ...state, isDisplayed: true, docUrl: `${item.gdriveRoot}/preview` }));
+  };
 
   const handleClipBoardIconClick = () => {
     let url = window.location.href;
@@ -547,6 +552,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     isExportable,
                     mimeType,
                   } = item;
+                  console.log("item: ", item);
                   const _links = links
                     ? Array.isArray(links)
                       ? links
@@ -644,16 +650,19 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                         } no-btn-styles no-hover-color-change`}
                                       >
                                         <i
-                                          style={{ color: "#0273BA" }}
-                                          className="fab fa-google-drive"
+                                          style={{ color: "#4498CC" }}
+                                          className="bi bi-box-arrow-up-right"
                                         />
                                       </button>
                                     </div>
                                     <div className="d-flex justify-content-center align-items-center ps-2">
                                       <a
-                                        href={_links?.[1]?.url?.[0] ?? ""}
+                                        href={`${gdriveRoot}/present`}
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        style={{
+                                          color: "#2c83c3",
+                                        }}
                                         className={`${
                                           isTeacherItem
                                             ? isUserTeacher
@@ -677,6 +686,13 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                             : "link-disabled"
                                           : ""
                                       } no-btn-styles no-hover-color-change`}
+                                      onClick={() => {
+                                        handlePreviewDownloadBtnClick({
+                                          gdriveRoot,
+                                          isExportable,
+                                          mimeType,
+                                        });
+                                      }}
                                     >
                                       <i
                                         style={{ color: "#0273BA" }}
@@ -685,29 +701,29 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                     </button>
                                   </div>
                                   <div className="d-flex justify-content-center align-items-center ps-2">
-                                    <a
-                                      href={_links?.[1]?.url?.[0] ?? ""}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
+                                    <button
+                                      style={{
+                                        color: "#2c83c3",
+                                      }}
                                       className={`${
                                         isTeacherItem
                                           ? isUserTeacher
                                             ? ""
                                             : "link-disabled"
                                           : ""
-                                      }`}
+                                      } fw-bolder no-btn-styles no-hover-color-change underline-on-hover`}
+                                      onClick={() => {
+                                        handlePreviewDownloadBtnClick({
+                                          gdriveRoot,
+                                          mimeType,
+                                          isExportable
+                                        });
+                                      }}
                                     >
                                       Preview/Download
-                                    </a>
+                                    </button>
                                   </div>
                                 </li>
-                                {/* {!!_links &&
-                                  _links.map(({ url, linkText }, linkIndex) => {
-                                    
-                                    return (
-                                      
-                                    );
-                                  })} */}
                               </ul>
                             </section>
                             {!!filePreviewImg && (
