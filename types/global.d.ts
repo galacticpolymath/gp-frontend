@@ -1,5 +1,5 @@
 import { ReactNode, CSSProperties } from "react";
-import { IItem, ILesson } from "../backend/models/Unit/types/teachingMaterials";
+import { IItem, IItemV2, ILesson } from "../backend/models/Unit/types/teachingMaterials";
 import { REFERRED_BY_OPTS } from '../shared/constants';
 import {
   IFeaturedMultimedia,
@@ -43,7 +43,7 @@ interface ISectionDot {
   sectionDotId: string;
 }
 
-interface IItemForClient extends IItem {
+interface IItemForClient extends IItemV2 {
   filePreviewImg: string;
 }
 

@@ -78,30 +78,32 @@ interface ILessonPartProps {
   gradeVarNote?: string | null;
 }
 
-const LessonPart = ({
-  lsnNum,
-  lsnTitle,
-  lsnPreface,
-  lsnExt,
-  itemList,
-  goingFurther,
-  learningObjectives,
-  partsArr,
-  chunks = [],
-  resources,
-  ForGrades,
-  GradesOrYears,
-  gradeVarNote,
-  _numsOfLessonPartsThatAreExpanded,
-  removeClickToSeeMoreTxt,
-  lessonTileForDesktop = null,
-  lessonTileForMobile = null,
-  ClickToSeeMoreComp = null,
-  FeedbackComp = null,
-  ComingSoonLessonEmailSignUp = null,
-  accordionBtnStyle = {},
-  isAccordionExpandable = true,
-}: ILessonPartProps) => {
+const LessonPart: React.FC<ILessonPartProps> = (props) => {
+  const {
+    lsnNum,
+    lsnTitle,
+    lsnPreface,
+    lsnExt,
+    itemList,
+    goingFurther,
+    learningObjectives,
+    partsArr,
+    chunks = [],
+    resources,
+    ForGrades,
+    GradesOrYears,
+    gradeVarNote,
+    _numsOfLessonPartsThatAreExpanded,
+    removeClickToSeeMoreTxt,
+    lessonTileForDesktop = null,
+    lessonTileForMobile = null,
+    ClickToSeeMoreComp = null,
+    FeedbackComp = null,
+    ComingSoonLessonEmailSignUp = null,
+    accordionBtnStyle = {},
+    isAccordionExpandable = true,
+  } = props;
+  console.log("props, lessonPart: ", props);
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
@@ -540,6 +542,9 @@ const LessonPart = ({
                     links,
                     filePreviewImg,
                     itemCat,
+                    gdriveRoot,
+                    isExportable,
+                    mimeType
                   } = item;
                   const _links = links
                     ? Array.isArray(links)

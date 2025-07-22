@@ -653,7 +653,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     imgSrc: unitBanner,
     url: _unit.URL,
     imgAlt: `${_unit.Title} cover image`,
-    className: "overflow-hidden",
+    className: "overflow-hidden selected-unit-pg",
     canonicalLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
     defaultLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
     langLinks: _unit.headLinks ?? ([] as TUnitForUI["headLinks"]),
