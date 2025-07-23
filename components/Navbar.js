@@ -17,7 +17,7 @@ export default function Navbar() {
 
   return (
     <nav
-      style={{ zIndex: 100 }}
+      style={{ zIndex: 1 }}
       className="position-fixed w-100 navbar-expand-lg py-0"
     >
       <div className='navbar navbar-expand-lg w-100 navbar-dark bg-dark position-relative'>

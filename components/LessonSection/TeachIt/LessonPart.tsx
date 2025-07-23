@@ -556,6 +556,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     gdriveRoot,
                     isExportable,
                     mimeType,
+                    externalUrl
                   } = item;
                   console.log("item: ", item);
                   const _links = links
@@ -696,6 +697,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                           gdriveRoot,
                                           isExportable,
                                           mimeType,
+                                          externalUrl,
                                         });
                                       }}
                                     >
@@ -721,6 +723,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                         handlePreviewDownloadBtnClick({
                                           gdriveRoot,
                                           mimeType,
+                                          externalUrl,
                                           isExportable,
                                         });
                                       }}

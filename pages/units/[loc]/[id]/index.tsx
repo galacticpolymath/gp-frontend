@@ -152,8 +152,12 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 const LessonDetails = ({ lesson, unit }: IProps) => {
   console.log("unit: ", unit);
   const router = useRouter();
-  const { _isUserTeacher, _isGpPlusMember, _isCopyUnitBtnDisabled, _didAttemptRetrieveUserData } =
-    useUserContext();
+  const {
+    _isUserTeacher,
+    _isGpPlusMember,
+    _isCopyUnitBtnDisabled,
+    _didAttemptRetrieveUserData,
+  } = useUserContext();
   const { status, data } = useSession();
   const { token } = (data ?? {}) as IUserSession;
   const statusRef = useRef(status);
@@ -535,7 +539,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       statusRef.current === "authenticated" &&
       isWithinBonusContentSec &&
       tagName === "A" &&
-      UNIT_DOCUMENT_ORIGINS.has(origin) && 
+      UNIT_DOCUMENT_ORIGINS.has(origin) &&
       !isGpPlusMember
     ) {
       event.preventDefault();
@@ -586,9 +590,9 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
           setIsCopyUnitBtnDisabled(false);
           setDidAttemptRetrieveUserData(true);
         }
-      } else if (status === "unauthenticated"){
-          setIsCopyUnitBtnDisabled(false);
-          setDidAttemptRetrieveUserData(true);
+      } else if (status === "unauthenticated") {
+        setIsCopyUnitBtnDisabled(false);
+        setDidAttemptRetrieveUserData(true);
       }
     })();
   }, [status]);
@@ -605,11 +609,11 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         handleBonusContentDocumentClick
       );
       setIsGpPlusModalDisplayed(false);
-      setLessonItemModal(state => {
+      setLessonItemModal((state) => {
         return {
           ...state,
           isDisplayed: false,
-        }
+        };
       });
     };
   }, []);
@@ -679,10 +683,9 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
             right: "5px",
             fontSize: "28px",
           }}
+          containerClassName="mt-4"
           parentDivStyles={{
-            position: "relative",
             backgroundColor: "#EBD0FF",
-            zIndex: 100,
             width: "100vw",
           }}
         />
@@ -1118,19 +1121,10 @@ export const getStaticProps = async (arg: {
       targetUnitForUI.Sections = sectionsUpdated;
     }
 
-    const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
-    let lessonToDisplayOntoUi = targetLessons.find(
-      ({ numID, locale }) => numID === parseInt(id) && locale === loc
-    );
+    console.log("targetUnitForUI, yo there meng: ", targetUnitForUI);
 
-    if (
-      (!targetUnitForUI &&
-        (!lessonToDisplayOntoUi ||
-          typeof lessonToDisplayOntoUi !== "object")) ||
-      !lessonToDisplayOntoUi
-    ) {
-      throw new Error("Lesson is not found.");
-    } else if (targetUnitForUI) {
+
+    if (targetUnitForUI) {
       console.log(
         "Only the target unit is available. Sections: ",
         targetUnitForUI.Sections
@@ -1145,6 +1139,20 @@ export const getStaticProps = async (arg: {
         },
         revalidate: 30,
       };
+    }
+
+    const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
+    let lessonToDisplayOntoUi = targetLessons.find(
+      ({ numID, locale }) => numID === parseInt(id) && locale === loc
+    );
+
+    if (
+      (!targetUnitForUI &&
+        (!lessonToDisplayOntoUi ||
+          typeof lessonToDisplayOntoUi !== "object")) ||
+      !lessonToDisplayOntoUi
+    ) {
+      throw new Error("Lesson is not found.");
     }
     const headLinks = targetLessons.map(({ locale, numID }) => [
       `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${locale}/${numID}`,

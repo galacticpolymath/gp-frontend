@@ -47,7 +47,7 @@ export type TSendFeedbackProps = {
   closeBtnDynamicStyles?: CSSProperties;
 };
 
-const SendFeedback = ({
+const SendFeedback: React.FC<TSendFeedbackProps> = ({
   CloseBtnComp = CloseBtn,
   parentDivStyles = {
     position: "absolute",
@@ -104,7 +104,7 @@ const SendFeedback = ({
       className="bi bi-tools d-inline-flex d-sm-none scissor-icon"
     />
   ),
-}: TSendFeedbackProps) => {
+}) => {
   const [willHide, setWillHide] = useState(false);
 
   const handleOnClick = () => {
