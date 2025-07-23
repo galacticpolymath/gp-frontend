@@ -556,7 +556,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     gdriveRoot,
                     isExportable,
                     mimeType,
-                    externalUrl
+                    externalUrl,
                   } = item;
                   console.log("item: ", item);
                   const _links = links
