@@ -578,14 +578,16 @@ export default async function handler(
       return !unit.mimeType.includes("folder");
     }).length;
 
-    // pause(1_000);  
-
     sendMessage(response, { foldersToCopy: totalFoldersToCreate + 1 });
 
     console.log("gdriveAccessToken, sup there: ", gdriveAccessToken);
     console.log("gdriveRefreshToken, sup there: ", gdriveRefreshToken);
 
-    // give the user the ability to name the folder where the files will be copied to.
+    // TODO: get the medium title of the unit from the client and set it as the name of the folder to be copied
+    // TODO: using the id of the user from the client, query the database to get the id of the folder in order to make the copies of the folder
+    // -if not found, then create the folder, and get the id of the folder and set it for the corresponding user
+    // TODO: GOAL: for the parent folder id parameter, the array will consist of the id of the "My GP+ Units" folder 
+
     const { folderId: unitFolderId, errMsg } =
       await createGoogleDriveFolderForUser(
         `${request.query.unitName} COPY`,

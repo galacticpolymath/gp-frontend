@@ -108,7 +108,7 @@ export const getUserWithRetries = async (
   }
 };
 
-export const handleUserDeprecatedV1Fields = (user: TUserSchemaForClient) => {
+export const handleUserDeprecatedV1Fields = (user: TUserSchemaForClient<IUserSchema>) => {
   if (user.classroomSize && typeof user.classSize === "undefined") {
     user = {
       ...user,
@@ -239,7 +239,7 @@ export const handleUserDeprecatedV1Fields = (user: TUserSchemaForClient) => {
   return user;
 };
 
-export const migrateUserToV2 = (user: TUserSchemaForClient) => {
+export const migrateUserToV2 = (user: TUserSchemaForClient<IUserSchema>) => {
   let migratedVals: Partial<IAboutUserFormNewFieldsV1> = {};
 
   if (

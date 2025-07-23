@@ -103,6 +103,7 @@ export const UserSchema = new Schema<TUserSchemaV2>(
       iterations: { type: Number, required: false },
     },
     provider: String,
+    unitCopiesFolderId: String,
     isTeacher: { type: Boolean, required: true, default: () => false },
     providerAccountId: String,
     emailVerified: { type: Date, required: false },

@@ -46,6 +46,7 @@ const ItemSchemaV2 = new Schema<IItemV2>(
     itemTitle: String,
     itemDescription: String,
     itemCat: String,
+    itemType: String,
     mimeType: String,
     gdriveRoot: String,
     isExportable: Boolean,

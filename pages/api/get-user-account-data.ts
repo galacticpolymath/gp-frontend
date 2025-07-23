@@ -16,9 +16,6 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Expired",
   "Past due",
 ] as TAccountStageLabel[]);
-
-export type TUserAccountData = Pick<ReturnType<typeof handleUserDeprecatedV1Fields>, Exclude<keyof typeof PROJECTIONS, "_id">>
-
 const PROJECTIONS: Partial<Record<keyof (TUserSchemaV2 & IUserSchema), number>> = {
       outsetaPersonEmail: 1,
       gradesOrYears: 1,

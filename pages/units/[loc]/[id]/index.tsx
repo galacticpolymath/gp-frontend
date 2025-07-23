@@ -47,7 +47,6 @@ import {
   IResource,
 } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { UNITS_URL_PATH } from "../../../../shared/constants";
-import { TUserAccountData } from "../../../api/get-user-account-data";
 import { TUserSchemaForClient } from "../../../../backend/models/User/types";
 import LessonItemModal from "../../../../components/LessonSection/Modals/LessonItemModal";
 import GpPlusModal from "../../../../components/LessonSection/Modals/GpPlusModal";

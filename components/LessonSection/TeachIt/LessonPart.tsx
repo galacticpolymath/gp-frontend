@@ -561,6 +561,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     isExportable,
                     mimeType,
                     externalUrl,
+                    itemType,
                   } = item;
                   console.log("item: ", item);
                   const _links = links
@@ -704,6 +705,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                           mimeType,
                                           externalUrl,
                                           itemCat,
+                                          itemType,
                                         });
                                       }}
                                     >
@@ -733,10 +735,11 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                           externalUrl,
                                           itemCat,
                                           isExportable,
+                                          itemType,
                                         });
                                       }}
                                     >
-                                      {itemCat === "web resource"
+                                      {itemType === "presentation"
                                         ? "Preview"
                                         : "Preview/Download"}
                                     </button>
@@ -771,6 +774,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                         externalUrl,
                                         itemCat,
                                         isExportable,
+                                        itemType,
                                       });
                                     }}
                                   />

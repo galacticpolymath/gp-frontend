@@ -66,12 +66,13 @@ export type TOutseta = {
   outsetaPersonEmail: string;
 }
 
-// does not contain the deprecated props, only the v2 fields
-export type TUserSchemaV2 = IUserSchemaBaseProps & TAboutUserFormBaseProps & TOutseta;
+export type TUserSchemaV2 = IUserSchemaBaseProps & TAboutUserFormBaseProps & TOutseta & {
+  unitCopiesFolderId: string;
+};
 export type TGpPlusSubscriptionForClient = Omit<Awaited<ReturnType<typeof getGpPlusIndividualMembershipStatus>>, "BillingRenewalTerm" | "AccountStageLabel" | "Account" | "email"> & { BillingRenewalTerm: ReturnType<typeof getBillingType>[0], AccountStageLabel: TAccountStageLabel  };
 export type TUserClientProps = { 
   isOnMailingList?: boolean, 
   isGpPlusMember?: boolean, 
   gpPlusSubscription?: Awaited<ReturnType<typeof getGpPlusIndividualMembershipStatus>>,  
 }
-export type TUserSchemaForClient = IUserSchema & TUserClientProps;
+export type TUserSchemaForClient<TUserSchema extends object = TUserSchemaV2> = TUserSchema & TUserClientProps;

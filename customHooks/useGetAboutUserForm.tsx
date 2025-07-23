@@ -8,9 +8,11 @@ import {
   userAccountDefault,
   useUserContext,
 } from "../providers/UserProvider";
-import { TAboutUserForm, TUserSchemaForClient } from "../backend/models/User/types";
+import { IUserSchema, TAboutUserForm, TUserSchemaForClient, TUserSchemaV2 } from "../backend/models/User/types";
 
-export const getAboutUserFormForClient = (userAccount: TUserSchemaForClient) => {
+export const getAboutUserFormForClient = (
+  userAccount: TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
+) => {
   let userAccountForClient = { ...userAccountDefault };
   const {
     reasonsForSiteVisit,
@@ -246,10 +248,9 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
               Authorization: `Bearer ${token}`,
             },
           };
-          const response = await axios.get<TUserSchemaForClient>(
-            "/api/get-user-account-data",
-            paramsAndHeaders
-          );
+          const response = await axios.get<
+            TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
+          >("/api/get-user-account-data", paramsAndHeaders);
 
           console.log("userAccount data: ", response.data);
 
