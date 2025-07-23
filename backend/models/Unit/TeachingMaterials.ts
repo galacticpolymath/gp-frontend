@@ -49,6 +49,7 @@ const ItemSchemaV2 = new Schema<IItemV2>(
     mimeType: String,
     gdriveRoot: String,
     isExportable: Boolean,
+    externalUrl: String,
     links: [LinkSchema],
   },
   { _id: false }

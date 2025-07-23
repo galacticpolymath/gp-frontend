@@ -733,7 +733,7 @@ export interface IOutsetaUser {
       [key: string]: unknown;
     };
     [key: string]: unknown;
-  };
+  } | null;
   [key: string]: unknown;
 }
 
@@ -798,16 +798,20 @@ export const getGpPlusIndividualMembershipStatus = async (
 
     console.log("currentSubscription, sup there: ", currentSubscription);
 
+    console.log("Status code: ", status);
+
+
     if (status !== 200 || !currentSubscription) {
+      console.error("Failed to retrieve Outseta GP+ membership status.");
+
       throw new Error("accountRetrievalErr");
     }
 
     const persons = currentSubscription.PersonAccount;
     const person = persons?.[0]?.Person;
-
     const { AccountStageLabel } = currentSubscription;
     const { BillingRenewalTerm, Created, Plan, Rate, RenewalDate, StartDate } =
-      currentSubscription.CurrentSubscription;
+      currentSubscription.CurrentSubscription ?? {};
 
     return {
       email: currentSubscription.Name,
@@ -816,7 +820,7 @@ export const getGpPlusIndividualMembershipStatus = async (
       Rate,
       RenewalDate,
       StartDate,
-      PlanName: Plan.Name,
+      PlanName: Plan?.Name ?? null,
       AccountStageLabel,
       person,
     };
@@ -824,6 +828,9 @@ export const getGpPlusIndividualMembershipStatus = async (
     console.error(
       "Failed to retrieve the outseta status for the target user. Error: ",
       error?.response
+    );
+    console.error(
+      "Error object: ", error
     );
 
     return {

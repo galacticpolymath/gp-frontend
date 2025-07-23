@@ -140,7 +140,7 @@ const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
         );
         idToken = await magic.auth.loginWithMagicLink({
           email: userAccount?.gpPlusSubscription.person?.Email,
-          redirectURI: window.location.href,
+          // redirectURI: window.location.href,
         });
 
         if (idToken){

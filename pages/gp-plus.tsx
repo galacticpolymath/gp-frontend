@@ -18,9 +18,15 @@ import useHandleOpeningGpPlusAccount from "../customHooks/useHandleOpeningGpPlus
 import { resetUrl } from "../globalFns";
 import { useRouter } from "next/router";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
+import { TAccountStageLabel } from "../backend/services/userServices";
 
 const ICON_DIMENSION = 70;
 const BTN_HEIGHT = "42px";
+const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
+  "Cancelling",
+  "Subscribing",
+  "Past due",
+] as TAccountStageLabel[]);
 
 const LiContentWithImg: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
@@ -87,9 +93,10 @@ const GpPlus: React.FC = () => {
     console.log("gpPlusSubscription, sup there: ", gpPlusSubscription);
 
     if (
-      gpPlusSubscription?.membership?.AccountStageLabel === "Cancelling" ||
-      gpPlusSubscription?.membership?.AccountStageLabel === "Subscribing" ||
-      gpPlusSubscription?.membership?.AccountStageLabel === "Past due"
+      gpPlusSubscription?.membership?.AccountStageLabel &&
+      HAS_MEMBERSHIP_STATUSES.has(
+        gpPlusSubscription?.membership?.AccountStageLabel
+      )
     ) {
       return "Manage account";
     }
@@ -111,9 +118,8 @@ const GpPlus: React.FC = () => {
   };
   const handleSignUpGpPlusBtnClick = async () => {
     if (
-      gpPlusSubscription?.membership?.AccountStageLabel === "Cancelling" ||
-      gpPlusSubscription?.membership?.AccountStageLabel === "Subscribing" ||
-      gpPlusSubscription?.membership?.AccountStageLabel === "Past due"
+      gpPlusSubscription?.membership?.AccountStageLabel &&
+      HAS_MEMBERSHIP_STATUSES.has(gpPlusSubscription?.membership?.AccountStageLabel)
     ) {
       await handleGpPlusAccountBtnClick();
       return;
@@ -146,7 +152,9 @@ const GpPlus: React.FC = () => {
   useEffect(() => {
     const emailInput =
       status === "authenticated"
-        ? (document.querySelector('[name="Person.Email"]') as HTMLInputElement | null)
+        ? (document.querySelector(
+            '[name="Person.Email"]'
+          ) as HTMLInputElement | null)
         : null;
 
     console.log("siteSession: ", siteSession);
@@ -167,20 +175,23 @@ const GpPlus: React.FC = () => {
       ".state-registerConfirmation"
     );
 
-    if (stateRegisterConfirmation){
+    if (stateRegisterConfirmation) {
       setDidUserSignUp(true);
     }
   };
 
   useEffect(() => {
     console.log("gpPlusSubscription, yo there! ", gpPlusSubscription);
+
     if (
-      !(gpPlusSubscription?.membership?.AccountStageLabel === "Subscribing" ||
-        gpPlusSubscription?.membership?.AccountStageLabel === "Cancelling") &&
+      gpPlusSubscription?.membership?.AccountStageLabel &&
+      HAS_MEMBERSHIP_STATUSES.has(
+        gpPlusSubscription?.membership?.AccountStageLabel
+      ) &&
       outsetaEmbeddedRef.current
     ) {
       const oberserver = new MutationObserver(outsetaEmbeddedCallback);
-      
+
       oberserver.observe(document.body, {
         childList: true,
         subtree: true,
@@ -343,12 +354,9 @@ const GpPlus: React.FC = () => {
     >
       <div style={{ height: "fit-content" }}>
         <div className="gpplus-pricing-section pt-5">
-          <div className="container-fluid">
+          <div className="container-fluid pt-md-0 pt-sm-4">
             <div className="row justify-content-center mt-sm-3 mt-md-0">
-              <div
-                style={{ height: "38px" }}
-                className="position-relative mt-1 col-sm-11 col-md-12"
-              >
+              <div className="position-relative mt-1 col-sm-11 col-md-12 gp-plus-logo-container d-flex justify-content-center align-items-center">
                 <Image
                   src="/plus/gp_plus_desktop.png"
                   alt="gp_plus_logo"
@@ -639,8 +647,9 @@ const GpPlus: React.FC = () => {
             </div>
           </div>
         </div>
-        {["Subscribing", "Canceling"].includes(
-          gpPlusSubscription?.membership?.AccountStageLabel ?? ""
+        {gpPlusSubscription?.membership?.AccountStageLabel &&
+        HAS_MEMBERSHIP_STATUSES.has(
+          gpPlusSubscription?.membership?.AccountStageLabel
         )
           ? anchorElement
           : null}
@@ -669,7 +678,7 @@ const GpPlus: React.FC = () => {
 
                 console.log("didUserSignUp: ", didUserSignUp);
 
-                if(didUserSignUp){
+                if (didUserSignUp) {
                   setWasGpPlusBtnClicked(true);
                   setWasGpLiteBtnClicked(true);
                   setTimeout(() => {

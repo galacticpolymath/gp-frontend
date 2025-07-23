@@ -15,6 +15,9 @@ declare global {
     Outseta?: {
       logout: () => Promise<void>;
       setMagicLinkIdToken: (idToken: string) => void;
+      auth: {
+        close: () => Promise<void>;
+      }
     };
   }
 }

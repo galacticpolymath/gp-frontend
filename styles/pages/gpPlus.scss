@@ -236,9 +236,15 @@ $gpGroup: #1ca9e5;
   }
 }
 
+.gp-plus-logo-container {
+  height: 58px;
+
+  @media (min-width: 576px) {
+    height: 38px;
+  }
+}
+
 .gpplus-card {
-  // min-width: 345px;
-  // max-width: 370px;
   flex: 1 1 300px;
   margin-bottom: 2rem;
   display: flex;
@@ -274,7 +280,7 @@ $gpGroup: #1ca9e5;
 
   @media (min-width: 576px) {
     height: 85vh;
-    max-height: 850px;
+    max-height: 650px;
   }
 }
 .gpplus-card.group > div {

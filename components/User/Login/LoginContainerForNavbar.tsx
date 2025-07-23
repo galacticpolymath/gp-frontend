@@ -54,10 +54,15 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const handleSignOutBtnClick = async () => {
     localStorage.clear();
     sessionStorage.clear();
-    await window.Outseta?.logout();
+    console.log("window.Outseta: ", window.Outseta);
+    window.Outseta?.auth.close();
+    window.Outseta?.logout();
     clearCookies();
-    signOut();
     setIsLoadingSpinnerOn(true);
+    // setTimeout(() => {
+    //   signOut();
+    //   setIsLoadingSpinnerOn(false);
+    // }, 1000)
   };
 
   const handleAccountBtnClick = () => {

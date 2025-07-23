@@ -6,6 +6,7 @@ import {
   getGpPlusIndividualMembershipStatus,
   getUser,
   getUserByEmail,
+  TAccountStageLabel,
   TGpPlusMembershipRetrieved,
 } from "../../../backend/services/userServices";
 import { verifyJwt } from "../../../nondependencyFns";
@@ -16,7 +17,8 @@ import {
 } from "../../../backend/models/User/types";
 import { connectToMongodb } from "../../../backend/utils/connection";
 
-type x = ReturnType<typeof getBillingType>[0];
+export const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set(["Cancelling", "Subscribing", "Expired", "Past due"] as TAccountStageLabel[])
+
 export type TGpPlusMembershipForClient = TGpPlusMembershipRetrieved;
 
 export default async function handler(
@@ -110,9 +112,11 @@ export default async function handler(
       )) as TGpPlusMembershipRetrieved;
     }
 
+    console.log("membership, yo there: ", membership)
+
     user = {
       ...user,
-      isGpPlusMember: membership?.AccountStageLabel === "Subscribing",
+      isGpPlusMember: typeof  membership?.AccountStageLabel === 'string' ? HAS_MEMBERSHIP_STATUSES.has(membership?.AccountStageLabel) : false,
       gpPlusSubscription: membership,
     };
 
