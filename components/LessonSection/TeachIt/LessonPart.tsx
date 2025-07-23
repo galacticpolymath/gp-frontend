@@ -20,6 +20,7 @@ import { useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
   IGoingFurtherVal,
+  IItemV2,
   IItemV2Props,
   ILsnExt,
   IResource,
@@ -139,10 +140,13 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
   const _accordionId = `part_${lsnNum}`;
 
-  const handlePreviewDownloadBtnClick = (item: IItemV2Props) => {
+  const handlePreviewDownloadBtnClick = (
+    item: IItemV2Props & Pick<IItemV2, "itemCat" | "links">
+  ) => {
     setLessonItemModal((state) => ({
       ...state,
       ...item,
+      externalUrl: item.externalUrl ?? item.links?.[0]?.url,
       isDisplayed: true,
       docUrl: `${item.gdriveRoot}/preview`,
     }));
@@ -694,10 +698,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                       } no-btn-styles no-hover-color-change`}
                                       onClick={() => {
                                         handlePreviewDownloadBtnClick({
+                                          links,
                                           gdriveRoot,
                                           isExportable,
                                           mimeType,
                                           externalUrl,
+                                          itemCat,
                                         });
                                       }}
                                     >
@@ -721,14 +727,18 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                       } fw-bolder no-btn-styles no-hover-color-change underline-on-hover`}
                                       onClick={() => {
                                         handlePreviewDownloadBtnClick({
+                                          links,
                                           gdriveRoot,
                                           mimeType,
                                           externalUrl,
+                                          itemCat,
                                           isExportable,
                                         });
                                       }}
                                     >
-                                      Preview/Download
+                                      {itemCat === "web resource"
+                                        ? "Preview"
+                                        : "Preview/Download"}
                                     </button>
                                   </div>
                                 </li>
@@ -737,29 +747,33 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                             {!!filePreviewImg && (
                               <section className="pt-1 ps-sm-1 ps-md-4 d-flex col-3">
                                 <div className="border align-content-start my-auto">
-                                  <a
-                                    href={filePreviewImgLink}
-                                    target="_blank"
-                                    className={`${
-                                      isTeacherItem
+                                  <img
+                                    src={filePreviewImg}
+                                    alt="lesson_tile"
+                                    className="h-auto w-auto lesson-file-img-testing cursor-pointer"
+                                    style={{
+                                      objectFit: "contain",
+                                      maxHeight: "100px",
+                                      maxWidth: "100px",
+                                      cursor: 'pointer',
+                                      border: "1px solid gray",
+                                      pointerEvents: isTeacherItem
                                         ? isUserTeacher
-                                          ? ""
-                                          : "link-disabled"
-                                        : imgLink
-                                    }`}
-                                  >
-                                    <img
-                                      src={filePreviewImg}
-                                      alt="lesson_tile"
-                                      className="h-auto w-auto lesson-file-img-testing"
-                                      style={{
-                                        objectFit: "contain",
-                                        maxHeight: "100px",
-                                        maxWidth: "100px",
-                                        border: "1px solid gray",
-                                      }}
-                                    />
-                                  </a>
+                                          ? "auto"
+                                          : "none"
+                                        : "auto",
+                                    }}
+                                    onClick={() => {
+                                      handlePreviewDownloadBtnClick({
+                                        links,
+                                        gdriveRoot,
+                                        mimeType,
+                                        externalUrl,
+                                        itemCat,
+                                        isExportable,
+                                      });
+                                    }}
+                                  />
                                 </div>
                               </section>
                             )}

@@ -7,6 +7,27 @@ $gpGroup: #1ca9e5;
   display: none;
 }
 
+.gp-plus-logo-btn {
+  object-fit: contain;
+  height: 35px;
+  width: 35px;
+
+  @media (min-width: 576px) {
+    height: 50px;
+    width: 50px;
+  }
+}
+
+.lesson-item-modal-close {
+  top: 5px;
+  left: 5px;
+
+  @media (min-width: 576px) {
+    right: 5px;
+    left: auto;
+  }
+}
+
 .gp-plus-btn-icons-lesson-item-modal {
   width: 30px;
   height: 30px;
@@ -19,7 +40,7 @@ $gpGroup: #1ca9e5;
   }
 }
 
-.get-gp-plus-btn{
+.get-gp-plus-btn {
   // max-width: 125px;
 
   @media (min-width: 576px) {
@@ -27,7 +48,7 @@ $gpGroup: #1ca9e5;
   }
 }
 
-.gp-plus-btn-lesson-item-modal{
+.gp-plus-btn-lesson-item-modal {
   min-width: 200px;
 }
 
