@@ -17,7 +17,7 @@ import {
 } from "../../../backend/models/User/types";
 import { connectToMongodb } from "../../../backend/utils/connection";
 
-export const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
+const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
   "Subscribing",
   "Expired",
