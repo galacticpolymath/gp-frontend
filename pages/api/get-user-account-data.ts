@@ -9,7 +9,6 @@ import { CustomError } from "../../backend/utils/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyJwt } from "../../nondependencyFns";
 import { IUserSchema, TUserSchemaForClient, TUserSchemaV2 } from "../../backend/models/User/types";
-import { Magic } from "magic-sdk";
 
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
