@@ -1,4 +1,5 @@
 /* eslint-disable quotes */
+/* eslint-disable indent */
 
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../components/Layout";
@@ -91,13 +92,9 @@ const GpPlus: React.FC = () => {
   const monthlyEquivalent = yearlyPrice / 12; // $5/month when paid yearly
   const gpPlusBtnTxt = useMemo(() => {
     console.log("gpPlusSubscription, sup there: ", gpPlusSubscription);
+    const hasMemeberhsip = gpPlusSubscription?.membership?.AccountStageLabel && HAS_MEMBERSHIP_STATUSES.has(gpPlusSubscription?.membership?.AccountStageLabel);
 
-    if (
-      gpPlusSubscription?.membership?.AccountStageLabel &&
-      HAS_MEMBERSHIP_STATUSES.has(
-        gpPlusSubscription?.membership?.AccountStageLabel
-      )
-    ) {
+    if (hasMemeberhsip) {
       return "Manage account";
     }
 
@@ -119,7 +116,9 @@ const GpPlus: React.FC = () => {
   const handleSignUpGpPlusBtnClick = async () => {
     if (
       gpPlusSubscription?.membership?.AccountStageLabel &&
-      HAS_MEMBERSHIP_STATUSES.has(gpPlusSubscription?.membership?.AccountStageLabel)
+      HAS_MEMBERSHIP_STATUSES.has(
+        gpPlusSubscription?.membership?.AccountStageLabel
+      )
     ) {
       await handleGpPlusAccountBtnClick();
       return;
