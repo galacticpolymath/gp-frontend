@@ -4,7 +4,11 @@ import { IUserSession } from "../types/global";
 import { useCustomCookies } from "./useCustomCookies";
 
 const useSiteSession = () => {
-  const { data, status } = useSession();
+  const session = useSession();
+  useEffect(() => {
+    console.log("session, yo there: ", session);
+  })
+  const { data, status } = session ?? {};
   const { user, token } = (data ?? {}) as IUserSession;
   const { clearCookies } = useCustomCookies();
 

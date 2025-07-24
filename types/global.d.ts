@@ -36,8 +36,13 @@ export interface ILessonForUI extends ILesson {
   lsn: string;
   status: string;
 }
-export interface IUserSession extends Session {
+
+export interface ICustomUserOfSession extends Session["user"]{
+  userId: string
+}
+export interface IUserSession extends Pick<Session, "expires"> {
   token: string;
+  user: ICustomUserOfSession
 }
 
 // For the unit page

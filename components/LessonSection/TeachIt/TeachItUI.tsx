@@ -56,12 +56,10 @@ import { TCopyFilesMsg } from "../../../pages/api/gp-plus/copy-unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import Image from "next/image";
-import GpPlusModal from "../Modals/GpPlusModal";
 import CopyingUnitToast from "../../CopyingUnitToast";
 import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 import { nanoid } from "nanoid";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
-import { TeachItProps } from "./types";
 import GpPlusBanner from "../../GpPlus/GpPlusBanner";
 import { Spinner } from "react-bootstrap";
 
@@ -155,7 +153,7 @@ const TeachItUI = <
   ]);
   const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
     queriedCookies;
-  const { status, token } = session;
+  const { status, token, user } = session;
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
     _isCopyUnitBtnDisabled;
   const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
@@ -206,7 +204,7 @@ const TeachItUI = <
       return;
     }
 
-    if (!GdrivePublicID || !Title) {
+    if (!GdrivePublicID || !Title || !user.userId || !gdriveRefreshToken) {
       const _toastId = toastId ?? nanoid();
 
       setToastId(_toastId);
@@ -280,18 +278,18 @@ const TeachItUI = <
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
       "gdrive-token": currentAccessToken,
-      "gdrive-token-refresh": gdriveRefreshToken as string,
+      "gdrive-token-refresh": gdriveRefreshToken,
+      "userId": user.userId,
     };
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
 
     url.searchParams.append("unitDriveId", GdrivePublicID);
-    url.searchParams.append("unitName", `${Title} COPY`);
+    url.searchParams.append("unitName", MediumTitle ?? `${Title} COPY`);
 
     const eventSource = new EventSourcePolyfill(url.href, {
       headers,
       withCredentials: true,
     });
-
     const _toastId = toastId ?? nanoid();
 
     setToastId(_toastId);

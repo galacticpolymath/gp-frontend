@@ -287,12 +287,18 @@ export const authOptions = {
       try {
         const { token, secret } = param;
         const { email, name, picture } = token?.payload ?? token;
+        const targetUser = await getUserByEmail(email);
+
+        if (!targetUser) {
+          throw new Error("The target user doesn't exist.");
+        }
+
         const canUserWriteToDb = await getCanUserWriteToDb(email);
 
         // get the user from the db, to get their first name last name, image
         const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
-        const refreshToken = await signJwt({ email, roles: allowedRoles, name, picture }, secret, '1 day');
-        const accessToken = await signJwt({ email, roles: allowedRoles, name, picture }, secret, '12hr');
+        const refreshToken = await signJwt({ email, roles: allowedRoles, name, picture, userId: targetUser._id }, secret, '1 day');
+        const accessToken = await signJwt({ email, roles: allowedRoles, name, picture, userId: targetUser._id }, secret, '12hr');
 
         if (!token?.payload && canUserWriteToDb) {
           console.log("will save jwt to db.");
@@ -505,6 +511,7 @@ export const authOptions = {
       console.log('cached target user: ', targetUser);
       let isTeacher = false;
       let occupation = null;
+      let userId = null;
 
       if (targetUser && targetUser.occupation && targetUser.name) {
         occupation = targetUser.occupation;
@@ -529,6 +536,7 @@ export const authOptions = {
         occupation = dbUser.occupation ?? null;
         name = { first: dbUser.firstName ?? dbUser?.name?.first, last: dbUser.lastName ?? dbUser?.name?.last } ?? name;
         isTeacher = dbUser.isTeacher;
+        userId = dbUser._id;
 
         delete dbUser.password;
 
@@ -551,6 +559,7 @@ export const authOptions = {
       session.refresh = refreshToken;
       session.user = {
         email: email,
+        userId: userId,
         name: name,
         image: picture,
         isTeacher,

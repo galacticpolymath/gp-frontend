@@ -26,6 +26,7 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import { waitWithExponentialBackOff } from "../../../globalFns";
+import { getUserById } from "../../../backend/services/userServices";
 
 export const maxDuration = 300;
 
@@ -238,9 +239,19 @@ export default async function handler(
 
     const _gdriveAccessToken = request.headers["gdrive-token"];
     const gdriveRefreshToken = request.headers["gdrive-token-refresh"];
+    const userId = request.headers["userId"];
     const jwtPayload = await getJwtPayloadPromise(
       request.headers.authorization
     );
+
+    if(!userId){
+      sendMessage(response, {
+        msg: "The 'userId' header is not present.",
+        isJobDone: true,
+        wasSuccessful: false,
+      });
+      return;
+    }
 
     if (!jwtPayload || !jwtPayload?.payload?.email) {
       sendMessage(response, {
@@ -352,14 +363,12 @@ export default async function handler(
       return;
     }
 
-    let unitFolders: TUnitFolder[] = [
-      ...rootDriveFolders.map((folder) => ({
+    let unitFolders: TUnitFolder[] = rootDriveFolders.map((folder) => ({
         name: folder.name,
         id: folder.id,
         mimeType: folder.mimeType,
         pathToFile: "",
-      })),
-    ];
+      }));
 
     // get all of the folders of the target unit folder
     for (const unitFolder of unitFolders) {
@@ -582,17 +591,32 @@ export default async function handler(
 
     console.log("gdriveAccessToken, sup there: ", gdriveAccessToken);
     console.log("gdriveRefreshToken, sup there: ", gdriveRefreshToken);
+    const targetUser = await getUserById(userId, { _id: 1 })
+
+    if(!targetUser){
+      sendMessage(
+        response,
+        {
+          isJobDone: true,
+          msg: "The target user doesn't exist..",
+          wasSuccessful: false,
+        },
+        true
+      );
+      return;
+    }
 
     // TODO: get the medium title of the unit from the client and set it as the name of the folder to be copied
     // TODO: using the id of the user from the client, query the database to get the id of the folder in order to make the copies of the folder
     // -if not found, then create the folder, and get the id of the folder and set it for the corresponding user
+
     // TODO: GOAL: for the parent folder id parameter, the array will consist of the id of the "My GP+ Units" folder 
 
     const { folderId: unitFolderId, errMsg } =
       await createGoogleDriveFolderForUser(
-        `${request.query.unitName} COPY`,
+        request.query.unitName,
         gdriveAccessToken as string,
-        undefined,
+        [targetUser._id],
         3,
         gdriveRefreshToken as string,
         origin

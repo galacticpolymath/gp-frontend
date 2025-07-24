@@ -86,7 +86,8 @@ export const getUserWithRetries = async (
     return { user: user as Partial<IUserSchema> };
   } catch (error: any) {
     console.log("Failed to get the target user.");
-    if (tries <= 3) {
+    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+    if (tries <= 3 && didTimeoutOccur) {
       console.log("Will try again.");
       tries += 1;
       const randomNumMs = Math.floor(Math.random() * (5_500 - 1000 + 1)) + 1000;
@@ -97,7 +98,6 @@ export const getUserWithRetries = async (
       return getUserWithRetries(queryObj, projectionObj, tries);
     }
 
-    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
 
     console.error("An error has occurred in getting the target user: ", error);
     console.log(error);
@@ -465,6 +465,39 @@ export const getUserByEmail = async <TUser extends IUserSchema>(
       "Failed to receive the target user via email. Reason: ",
       error
     );
+
+    return null;
+  }
+};
+
+export const getUserById = async <TUser extends TUserSchemaV2, TProjectionKeys extends keyof TUserSchemaV2 = keyof TUserSchemaV2>(
+  userId: string,
+  projectionsObj?: Record<TProjectionKeys, 0 | 1>,
+  tries = 3
+): Promise<Pick<TUser, TProjectionKeys> | null> => {
+  try {
+    const targetUser = await User.findOne(
+      { _id: userId },
+      projectionsObj
+    ).lean();
+
+    return targetUser as Pick<TUser, TProjectionKeys>;
+  } catch (error: any) {
+    console.error(
+      "Failed to receive the target user via email. Reason: ",
+      error
+    );
+    console.log("Error object: ")
+    console.dir(error, { depth: null });
+
+    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+
+    if(didTimeoutOccur && tries > 0) {
+      await waitWithExponentialBackOff(tries);
+
+      return await getUserById(userId, projectionsObj, tries - 1);
+    }
+
 
     return null;
   }
