@@ -12,6 +12,7 @@ import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 interface IReqBody{
   unitId: string;
   keysAndUpdatedValsObj: string;
+  dbType?: Parameters<typeof connectToMongodb>[3];
   customUpdate?: TCustomUpdate
 }
 
@@ -26,7 +27,7 @@ export default async function handler(
       throw new CustomError("This route only accepts PUT requests.", 404);
     }
 
-    const { unitId, keysAndUpdatedValsObj, customUpdate } = (body ?? {}) as IReqBody;
+    const { unitId, keysAndUpdatedValsObj, customUpdate, dbType } = (body ?? {}) as IReqBody;
 
     const valsToUpdate: Partial<INewUnitSchema> =
       typeof keysAndUpdatedValsObj === "string"
@@ -52,7 +53,8 @@ export default async function handler(
     const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
       15_000,
       0,
-      true
+      true,
+      dbType
     );
 
     if (!wasConnectionSuccessful) {

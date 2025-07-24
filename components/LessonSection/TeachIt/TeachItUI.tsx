@@ -65,13 +65,17 @@ import { TeachItProps } from "./types";
 import GpPlusBanner from "../../GpPlus/GpPlusBanner";
 import { Spinner } from "react-bootstrap";
 
+export type TUnitPropsForTeachItSec = Partial<
+    Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
+  >;
+
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
 ) => void;
 interface TeachItUIProps<
   TResourceVal extends object = ILesson,
   TSelectedGrade extends object = IResource<ILessonForUI>
-> extends Partial<Pick<INewUnitSchema, "GdrivePublicID" | "Title">> {
+> extends TUnitPropsForTeachItSec {
   SectionTitle: string;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
   ref: RefObject<null>;
@@ -122,6 +126,7 @@ const TeachItUI = <
     GradesOrYears,
     GdrivePublicID,
     Title,
+    MediumTitle
   } = props;
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -572,7 +577,7 @@ const TeachItUI = <
                     border: "solid 3px #2339C4",
                     borderRadius: "2em",
                     textTransform: "none",
-                    minWidth: '300px',
+                    minWidth: "300px",
                   }}
                   className={`px-1 py-2 col-8 col-md-12 ${
                     isCopyingUnitBtnDisabled ? "opacity-25" : "opacity-100"

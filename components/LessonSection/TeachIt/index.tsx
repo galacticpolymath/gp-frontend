@@ -73,12 +73,12 @@ interface IDisplayLessonTileProps {
   id?: { id: string };
 }
 
-export const DisplayLessonTile = ({
+export const DisplayLessonTile: React.FC<IDisplayLessonTileProps> = ({
   status,
   imgContainerClassNameStr,
   lessonTileUrl,
   id,
-}: IDisplayLessonTileProps) => {
+}) => {
   const tileId = id ? { id } : {};
 
   if (status === "Beta") {
@@ -114,6 +114,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     unitPreface,
     GdrivePublicID,
     Title: unitTitle,
+    MediumTitle
   } = props;
   let Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;
@@ -275,12 +276,14 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       GradesOrYears={GradesOrYears}
       GdrivePublicID={GdrivePublicID}
       Title={unitTitle}
+      MediumTitle={MediumTitle}
       resources={resources}
     />
   ) : (
     <TeachItUI<INewUnitLesson, IResource<ILessonForUI>>
       ref={ref}
       ForGrades={ForGrades}
+      MediumTitle={MediumTitle}
       lessonDur={unitDur}
       lessonPreface={unitPreface}
       SectionTitle={SectionTitle}
