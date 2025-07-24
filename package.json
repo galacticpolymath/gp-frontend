@@ -16,7 +16,7 @@
   "dependencies": {
     "@as-integrations/next": "^4.0.0",
     "@fortawesome/fontawesome-free": "^7.0.0",
-    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@fortawesome/react-fontawesome": "^0.2.3",
     "@getbrevo/brevo": "^2.5.0",
     "@google-cloud/iam": "^2.3.0",
     "@google-cloud/local-auth": "^3.0.1",
@@ -41,7 +41,7 @@
     "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",
     "google-auth-library": "^10.1.0",
-    "googleapis": "^153.0.0",
+    "googleapis": "^154.0.0",
     "graphql": "^16.9.0",
     "jose": "^6.0.12",
     "js-cookie": "^3.0.5",
@@ -56,7 +56,7 @@
     "mongoose": "^8.16.4",
     "nanoid": "^5.1.5",
     "net": "^1.0.2",
-    "next": "^15.4.2",
+    "next": "^15.4.3",
     "next-auth": "^4.24.10",
     "next-swagger-doc": "^0.4.1",
     "nextjs-google-analytics": "^2.3.7",
@@ -96,7 +96,7 @@
     "urllib": "^4.8.0",
     "uuid": "^11.1.0",
     "validator": "^13.15.15",
-    "wait-on": "^8.0.2"
+    "wait-on": "^8.0.4"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
