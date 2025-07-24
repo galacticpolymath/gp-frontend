@@ -563,7 +563,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     externalUrl,
                     itemType,
                   } = item;
-                  console.log("item: ", item);
+                  console.log("item, hey there: ", item);
                   const _links = links
                     ? Array.isArray(links)
                       ? links

@@ -3,12 +3,10 @@ import { useEffect, useState } from "react";
 import { IUserSession } from "../types/global";
 import axios from "axios";
 import {
-  TAboutUserFormForUI,
-  TUserAccount,
   userAccountDefault,
   useUserContext,
 } from "../providers/UserProvider";
-import { IUserSchema, TAboutUserForm, TUserSchemaForClient, TUserSchemaV2 } from "../backend/models/User/types";
+import { IUserSchema, TUserSchemaForClient, TUserSchemaV2 } from "../backend/models/User/types";
 
 export const getAboutUserFormForClient = (
   userAccount: TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
