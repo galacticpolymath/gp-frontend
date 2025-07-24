@@ -63,6 +63,7 @@ import { nanoid } from "nanoid";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import { TeachItProps } from "./types";
 import GpPlusBanner from "../../GpPlus/GpPlusBanner";
+import { Spinner } from "react-bootstrap";
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -125,7 +126,11 @@ const TeachItUI = <
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const { _isDownloadModalInfoOn } = useModalContext();
-  const { _isGpPlusMember, _isCopyUnitBtnDisabled, _didAttemptRetrieveUserData } = useUserContext();
+  const {
+    _isGpPlusMember,
+    _isCopyUnitBtnDisabled,
+    _didAttemptRetrieveUserData,
+  } = useUserContext();
   const areThereGradeBands =
     !!gradeVariations?.length &&
     gradeVariations.every((variation) => !!variation.grades);
@@ -556,15 +561,20 @@ const TeachItUI = <
           </div>
           {selectedGradeResources && (
             <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11">
-              <div className="row flex-nowrap align-items-center justify-content-center col-md-8 position-relative">
+              <div className="row flex-nowrap align-items-center justify-content-center position-relative">
                 <BootstrapBtn
                   ref={copyUnitBtnRef}
                   onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
                   style={{
                     pointerEvents: isCopyingUnitBtnDisabled ? "none" : "auto",
                     minHeight: "51px",
+                    backgroundColor: "white",
+                    border: "solid 3px #2339C4",
+                    borderRadius: "2em",
+                    textTransform: "none",
+                    minWidth: '300px',
                   }}
-                  className={`btn btn-primary px-3 py-2 col-8 col-md-12 ${
+                  className={`px-1 py-2 col-8 col-md-12 ${
                     isCopyingUnitBtnDisabled ? "opacity-25" : "opacity-100"
                   }`}
                   disabled={
@@ -574,28 +584,51 @@ const TeachItUI = <
                   {didInitialRenderOccur.current ? (
                     <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2">
                       {isCopyingUnitBtnDisabled ? (
-                        <div
-                          className="spinner-border spinner-border-sm text-light"
-                          role="status"
-                        >
-                          <span className="visually-hidden">Loading...</span>
-                        </div>
+                        <Spinner className="text-black" />
                       ) : (
                         <>
-                          <div className="d-flex justify-content-center align-items-center">
-                            <i className="bi-cloud-arrow-down-fill fs-3 lh-1"></i>{" "}
-                          </div>
-                          <span
-                            style={{ lineHeight: "23px" }}
-                            className="d-inline"
+                          <Image
+                            alt="gp_plus_logo"
+                            src="/plus/plus.png"
+                            width={32}
+                            height={32}
+                          />
+                          <div
+                            style={{ lineHeight: "23px", fontSize: "18px" }}
+                            className="d-inline text-black"
                           >
-                            {isGpPlusMember &&
-                              !gdriveAccessToken &&
-                              "Authenticate w/ Google Drive & Copy Unit"}
+                            {isGpPlusMember && !gdriveAccessToken && (
+                              <>
+                                Authenticate w/ Google Drive &nbsp;
+                                <img
+                                  style={{
+                                    objectFit: "contain",
+                                    width: "35px",
+                                    height: "35px",
+                                  }}
+                                  alt="google_drive_logo"
+                                  src="/imgs/google_drive.png"
+                                />
+                                &nbsp; & Copy Unit
+                              </>
+                            )}
                             {isGpPlusMember && gdriveAccessToken && "Copy Unit"}
-                            {!isGpPlusMember &&
-                              `BECOME A GP+ MEMBER TO ${selectedGradeResources.linkText}`}
-                          </span>
+                            {!isGpPlusMember && (
+                              <>
+                                Subscribe to copy this whole unit to &nbsp;
+                                <img
+                                  style={{
+                                    objectFit: "contain",
+                                    width: "35px",
+                                    height: "35px",
+                                  }}
+                                  alt="google_drive_logo"
+                                  src="/imgs/google_drive.png"
+                                />
+                                &nbsp;Google Drive
+                              </>
+                            )}
+                          </div>
                         </>
                       )}
                     </div>

@@ -77,12 +77,12 @@ const LessonItemModal: React.FC = () => {
         <CloseButton
           onClick={handleCloseBtnClick}
           className="lesson-item-modal-close"
-          style={{ position: "absolute", width: ".4rem", height: ".4rem" }}
+          style={{ position: "absolute", width: "1rem", height: "1rem" }}
         />
         <section className="w-100 container-fluid px-0 m-0">
           <div
             style={{ backgroundColor: "#E2F0FD" }}
-            className="w-100 h-100 row m-0 px-0 py-3"
+            className="w-100 h-100 row m-0 ps-0 pe-md-5 py-3"
           >
             <section
               className={`${
