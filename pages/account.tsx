@@ -26,7 +26,7 @@ import BootstrapButton from "react-bootstrap/Button";
 import { useGetAboutUserForm } from "../customHooks/useGetAboutUserForm";
 import AboutUserModal from "../components/User/AboutUser/AboutUserModal";
 import Image from "next/image";
-import { getLocalStorageItem } from "../shared/fns";
+import { getLocalStorageItem, setLocalStorageItem } from "../shared/fns";
 import { Magic } from "magic-sdk";
 import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
@@ -184,7 +184,7 @@ const AccountPg = () => {
         );
         idToken = await magic.auth.loginWithMagicLink({
           email: userAccount?.gpPlusSubscription?.person?.Email,
-          redirectURI: window.location.href,
+          // redirectURI: window.location.href,
         });
         
         if(idToken){
@@ -518,6 +518,7 @@ const AccountPg = () => {
             ) : (
               <BootstrapBtn
                 onClick={() => {
+                  setLocalStorageItem("gpPlusFeatureLocation", window.location.href)
                   router.push("/gp-plus");
                 }}
                 variant="secondary"

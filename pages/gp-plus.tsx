@@ -20,6 +20,7 @@ import { resetUrl } from "../globalFns";
 import { useRouter } from "next/router";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
 import { TAccountStageLabel } from "../backend/services/userServices";
+import { getLocalStorageItem } from "../shared/fns";
 
 const ICON_DIMENSION = 70;
 const BTN_HEIGHT = "42px";
@@ -166,6 +167,27 @@ const GpPlus: React.FC = () => {
       console.error(
         "An error occurred: Email input could not be found despite user being authenticated."
       );
+    }
+
+    if(status === "authenticated"){
+      window.Outseta?.on("signup", () => {
+        console.log("The user has signed up.")
+        const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
+
+        console.log("Will redirect the user to: ", gpPlusFeatureLocation);
+
+        if(gpPlusFeatureLocation){
+          console.log("Will redirect the user.");
+          window.location.href = gpPlusFeatureLocation;
+          
+          return false;
+        }
+        
+        const currentUrl = window.location.href;
+        window.location.href = currentUrl;
+
+        return false;
+      })
     }
   }, [status, isSignupModalDisplayed]);
 
@@ -694,7 +716,7 @@ const GpPlus: React.FC = () => {
                 zIndex: isSignupModalDisplayed ? 1000 : -1000,
                 maxHeight: "95vh",
               }}
-              className={`position-absolute w-50 rounded-lg shadow-lg overflow-scroll bg-white ${
+              className={`position-absolute gp-plus-signup-modal rounded-lg shadow-lg overflow-scroll bg-white ${
                 isSignupModalDisplayed
                   ? "visible fade-modal-in-short"
                   : "fade-modal-out-short"

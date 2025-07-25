@@ -49,6 +49,10 @@ export const useGpPlusModalInteraction = (isGpPlusMember: boolean) => {
                     profileOption.textContent = "Email";
                     profileOption.style.visibility = "visible";
                   }
+                  if (profileOption.className === "o--tab-account") {
+                    profileOption.textContent = "Address";
+                    profileOption.style.visibility = "visible";
+                  }
                 }                
               }
             }

@@ -122,6 +122,14 @@ $gpGroup: #1ca9e5;
   }
 }
 
+.gp-plus-signup-modal{
+  width: 90%;
+
+  @media (min-width: 576px) {
+    width: 50%;;
+  }
+}
+
 .gpplus-pricing-section {
   width: 100%;
   max-width: 1200px;

@@ -20,7 +20,7 @@ declare global {
       auth: {
         close: () => Promise<void>;
       }
-      on: (event: "logout" | "redirect", callback: (...args: unknown[]) => void | boolean | Promise<void | boolean>) => void;
+      on: (event: "logout" | "redirect" | "signup", callback: (...args: unknown[]) => void | boolean | Promise<void | boolean>) => void;
     };
   }
 }
