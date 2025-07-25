@@ -61,6 +61,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
       console.log("Logging the user out.");
       window.Outseta?.setAccessToken(null);
       window.Outseta?.setMagicLinkIdToken("");
+      return false;
     });
     window.Outseta?.on("redirect", async () => {
       console.log("the user is being redirected");

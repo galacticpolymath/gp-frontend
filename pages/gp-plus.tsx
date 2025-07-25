@@ -172,7 +172,7 @@ const GpPlus: React.FC = () => {
 
     if(status === "authenticated"){
       window.Outseta?.on("signup", () => {
-        console.log("The user has signed up.")
+        console.log("The user has signed up.");
         const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
 
         console.log("Will redirect the user to: ", gpPlusFeatureLocation);
@@ -188,7 +188,7 @@ const GpPlus: React.FC = () => {
         window.location.href = currentUrl;
 
         return false;
-      })
+      });
     }
   }, [status, isSignupModalDisplayed]);
 
