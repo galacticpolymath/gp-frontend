@@ -29,6 +29,7 @@ import { waitWithExponentialBackOff } from "../../../globalFns";
 import { getUserById } from "../../../backend/services/userServices";
 
 export const maxDuration = 300;
+const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units"
 
 const createGoogleDriveFolderForUser = async (
   folderName: string,
@@ -36,7 +37,7 @@ const createGoogleDriveFolderForUser = async (
   parentFolderIds: string[] = [],
   tries: number,
   refreshToken: string,
-  origin: string
+  reqOriginForRefreshingToken: string
 ) => {
   try {
     const folderMetadata = new FileMetaData(folderName, parentFolderIds);
@@ -72,7 +73,7 @@ const createGoogleDriveFolderForUser = async (
 
       console.log("the user is not authenticated: ", refreshToken);
 
-      const { data } = (await refreshAuthToken(refreshToken, origin)) ?? {};
+      const { data } = (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ?? {};
 
       console.log("Refresh token response data: ", data);
 
@@ -591,7 +592,8 @@ export default async function handler(
 
     console.log("gdriveAccessToken, sup there: ", gdriveAccessToken);
     console.log("gdriveRefreshToken, sup there: ", gdriveRefreshToken);
-    const targetUser = await getUserById(userId, { _id: 1 })
+    const targetUser = await getUserById(userId, { unitCopiesFolderId: 1, _id: 1 })
+
 
     if(!targetUser){
       sendMessage(
@@ -606,17 +608,48 @@ export default async function handler(
       return;
     }
 
-    // TODO: get the medium title of the unit from the client and set it as the name of the folder to be copied
+
+
     // TODO: using the id of the user from the client, query the database to get the id of the folder in order to make the copies of the folder
     // -if not found, then create the folder, and get the id of the folder and set it for the corresponding user
 
     // TODO: GOAL: for the parent folder id parameter, the array will consist of the id of the "My GP+ Units" folder 
 
+    if(!targetUser.unitCopiesFolderId){
+      const folderCreationResult =
+      await createGoogleDriveFolderForUser(
+        USER_GP_PLUS_PARENT_FOLDER_NAME,
+        gdriveAccessToken as string,
+        undefined,
+        3,
+        gdriveRefreshToken as string,
+        origin
+      );
+      const { folderId: userGpPlusParentFolderId, errMsg } = folderCreationResult;
+
+      if(errMsg){
+        console.error("Failed to create the parent folder for the unit copies. Reason: ", errMsg);
+        
+        sendMessage(
+          response,
+          {
+            isJobDone: true,
+            msg: "Failed to create the parent folder for the unit copies.",
+            wasSuccessful: false,
+          },
+          true
+        );
+        return;
+      }
+
+      targetUser.unitCopiesFolderId = userGpPlusParentFolderId
+    }
+
     const { folderId: unitFolderId, errMsg } =
       await createGoogleDriveFolderForUser(
         request.query.unitName,
         gdriveAccessToken as string,
-        [targetUser._id],
+        [targetUser.unitCopiesFolderId],
         3,
         gdriveRefreshToken as string,
         origin
