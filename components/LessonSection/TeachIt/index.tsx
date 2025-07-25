@@ -114,7 +114,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     unitPreface,
     GdrivePublicID,
     Title: unitTitle,
-    MediumTitle
+    MediumTitle,
   } = props;
   let Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;

@@ -65,6 +65,8 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     window.Outseta?.on("redirect", async () => {
       console.log("the user is being redirected");
       signOut();
+      const currentUrl = window.location.href;
+      window.location.href = currentUrl;
       return false;
     });
 

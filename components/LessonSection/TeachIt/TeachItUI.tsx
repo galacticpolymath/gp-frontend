@@ -208,7 +208,6 @@ const TeachItUI = <
 
     console.log("Starting copy unit job");
     
-
     if (!GdrivePublicID || !Title || !user.userId || !gdriveRefreshToken) {
       console.log(
         "Copy unit function called with all necessary props: user ID, unit title, GDrive public ID, and GDrive refresh token"
@@ -587,7 +586,7 @@ const TeachItUI = <
                     textTransform: "none",
                     minWidth: "300px",
                   }}
-                  className={`px-1 py-2 col-8 col-md-12 ${
+                  className={`px-3 py-2 col-8 col-md-12 ${
                     isCopyingUnitBtnDisabled ? "opacity-25" : "opacity-100"
                   }`}
                   disabled={
@@ -654,25 +653,6 @@ const TeachItUI = <
                     </div>
                   )}
                 </BootstrapBtn>
-                <div
-                  style={{ width: "2rem" }}
-                  className="p-0 ms-1 mt-0 d-flex justify-content-center align-items-center"
-                >
-                  <Button
-                    classNameStr="no-btn-styles d-flex justify-content-center align-items-center"
-                    handleOnClick={handleIconClick}
-                  >
-                    <AiOutlineQuestionCircle
-                      className="downloadTipIcon"
-                      style={{
-                        width: "25px",
-                        height: "25px",
-                        zIndex: -1,
-                        pointerEvents: "none",
-                      }}
-                    />
-                  </Button>
-                </div>
               </div>
             </div>
           )}

@@ -1,17 +1,11 @@
 /* eslint-disable quotes */
 
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Button, Image, Modal, CloseButton } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
 import { TbExternalLink } from "react-icons/tb";
 import { useUserContext } from "../../../providers/UserProvider";
-
-const GpPlusBanner: React.FC = () => {
-  return (
-    <div style={{ backgroundColor: "#F0F4FF" }} className="w-100 h-100"></div>
-  );
-};
 
 const LessonItemModal: React.FC = () => {
   const { _lessonItemModal, _isGpPlusModalDisplayed } = useModalContext();
@@ -141,7 +135,7 @@ const LessonItemModal: React.FC = () => {
                   </section>
                 )}
                 <section className="w-100 d-flex justify-content-center align-items-center justify-content-md-end justify-content-sm-center align-items-sm-center">
-                  {lessonItemModal.isExportable && (
+                  {(lessonItemModal.isExportable && isGpPlusMember) && (
                     <Button
                       style={{ backgroundColor: "white" }}
                       className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-3 flex-column flex-sm-row"
