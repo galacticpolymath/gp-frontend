@@ -30,6 +30,7 @@ import {
   getUserById,
   updateUser,
 } from "../../../backend/services/userServices";
+import { connectToMongodb } from "../../../backend/utils/connection";
 
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
@@ -594,6 +595,8 @@ export default async function handler(
 
     sendMessage(response, { foldersToCopy: totalFoldersToCreate + 1 });
 
+    await connectToMongodb(15_000, 0, true);
+    
     const targetUser = await getUserById(userId, {
       unitCopiesFolderId: 1,
       _id: 1,
@@ -788,10 +791,7 @@ export default async function handler(
       4
     );
 
-    console.log(
-      "Was files share successful: ",
-      wasSharesSuccessful
-    );
+    console.log("Was files share successful: ", wasSharesSuccessful);
 
     if (!wasSharesSuccessful) {
       console.error("Failed to share at least one file.");

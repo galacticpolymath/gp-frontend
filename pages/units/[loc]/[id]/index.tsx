@@ -17,13 +17,13 @@ import LessonsSecsNavDots from "../../../../components/LessonSection/LessonSecsN
 import ShareWidget from "../../../../components/AboutPgComps/ShareWidget";
 import { useRouter } from "next/router";
 import useScrollHandler from "../../../../customHooks/useScrollHandler";
-import Lessons from "../../../../backend/models/lesson";
 import { connectToMongodb } from "../../../../backend/utils/connection";
 import SendFeedback from "../../../../components/LessonSection/SendFeedback";
 import {
   getIsWithinParentElement,
   getLinkPreviewObj,
   removeHtmlTags,
+  resetUrl,
 } from "../../../../globalFns";
 import { useSession } from "next-auth/react";
 import {
@@ -50,6 +50,7 @@ import { UNITS_URL_PATH } from "../../../../shared/constants";
 import { TUserSchemaForClient } from "../../../../backend/models/User/types";
 import LessonItemModal from "../../../../components/LessonSection/Modals/LessonItemModal";
 import GpPlusModal from "../../../../components/LessonSection/Modals/GpPlusModal";
+import ThankYouModal from "../../../../components/GpPlus/ThankYouModal";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -174,7 +175,9 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     _customModalFooter,
     _isGpPlusModalDisplayed,
     _lessonItemModal,
+    _isThankYouModalDisplayed,
   } = useModalContext();
+  const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsUserTeacher] = _isUserTeacher;
   const [isGpPlusMember, setIsGpPlusMember] = _isGpPlusMember;
   const [, setNotifyModal] = _notifyModal;
@@ -583,6 +586,16 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
+
+          const params = new URLSearchParams(window.location.search);
+
+          if (
+            data.isGpPlusMember &&
+            params.get("gp_plus_subscription_bought") === "true"
+          ) {
+            setIsThankYouModalDisplayed(true);
+            resetUrl(router);
+          }
         } catch (error) {
           console.error("An error has occurred: ", error);
         } finally {
@@ -716,6 +729,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       </div>
       <GpPlusModal />
       <LessonItemModal />
+      <ThankYouModal />
     </Layout>
   );
 };

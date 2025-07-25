@@ -32,6 +32,7 @@ import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
 import { useHandleGpPlusLogin } from "../customHooks/useHandleGpPlusLogin";
+import ThankYouModal from "../components/GpPlus/ThankYouModal";
 
 export const getUserAccountData = async (
   token: string,
@@ -83,9 +84,11 @@ const AccountPg = () => {
     _isAboutMeFormModalDisplayed,
     _notifyModal,
     _isAccountSettingModalOn,
+    _isThankYouModalDisplayed,
   } = useModalContext();
+  const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
-  const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;
+  const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;;
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = useState(false);
   const [, setNotifyModal] = _notifyModal;
   const {
@@ -285,6 +288,17 @@ const AccountPg = () => {
           },
         });
       }, 300);
+    }
+
+    const params = new URLSearchParams(window.location.search);
+
+    if (
+      status === "authenticated" &&
+      gpPlusSub &&
+      params.get("gp_plus_subscription_bought") === "true"
+    ) {
+      setIsThankYouModalDisplayed(true);
+      resetUrl(router);
     }
   }, [status, gpPlusSub]);
 
@@ -512,13 +526,15 @@ const AccountPg = () => {
                   }}
                   className="no-underline"
                   href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
-                >
-                </a>
+                ></a>
               </>
             ) : (
               <BootstrapBtn
                 onClick={() => {
-                  setLocalStorageItem("gpPlusFeatureLocation", window.location.href)
+                  setLocalStorageItem(
+                    "gpPlusFeatureLocation",
+                    window.location.href
+                  );
                   router.push("/gp-plus");
                 }}
                 variant="secondary"
@@ -581,6 +597,7 @@ const AccountPg = () => {
         </section>
       </div>
       <AboutUserModal />
+      <ThankYouModal />
     </Layout>
   );
 };

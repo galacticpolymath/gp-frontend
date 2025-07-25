@@ -13,7 +13,10 @@
 /* eslint-disable react/jsx-indent */
 import { createContext, ReactNode, useContext, useState } from "react";
 import { IComponent, TUseStateReturnVal } from "../types/global";
-import { IItemV2, IItemV2Props } from "../backend/models/Unit/types/teachingMaterials";
+import {
+  IItemV2,
+  IItemV2Props,
+} from "../backend/models/Unit/types/teachingMaterials";
 
 export const ModalContext = createContext<IModalProviderValue | null>(null);
 export interface INotifyModalVal {
@@ -49,6 +52,7 @@ export interface IModalProviderValue {
   _isCreatingGpPlusAccount: TUseStateReturnVal<boolean>;
   _isAccountSettingModalOn: TUseStateReturnVal<boolean>;
   _isGpPlusModalDisplayed: TUseStateReturnVal<boolean>;
+  _isThankYouModalDisplayed: TUseStateReturnVal<boolean>;
   _lessonItemModal: TUseStateReturnVal<
     TLessonItemModal & Partial<IItemV2Props & Pick<IItemV2, "itemCat">>
   >;
@@ -61,6 +65,8 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
   const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
   const [isLoginModalDisplayed, setIsLoginModalDisplayed] = useState(false);
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] = useState(false);
+  const [isThankYouModalDisplayed, setIsThankYouModalDisplayed] =
+    useState(false);
   const [notifyModal, setNotifyModal] = useState(defautlNotifyModalVal);
   const [isCreateAccountModalDisplayed, setIsCreateAccountModalDisplayed] =
     useState(false);
@@ -68,8 +74,9 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
     useState(false);
   const [isAccountModalMobileOn, setIsAccountModalMobileOn] = useState(false);
   const [isPasswordResetModalOn, setIsPasswordResetModalOn] = useState(false);
-  const [lessonItemModal, setLessonItemModal] =
-    useState<TLessonItemModal>({ isDisplayed: false  });
+  const [lessonItemModal, setLessonItemModal] = useState<TLessonItemModal>({
+    isDisplayed: false,
+  });
   const [isAccountSettingModalOn, setIsAccountSettingsModalOn] =
     useState(false);
   const [customModalFooter, setCustomModalFooter] = useState<null | ReactNode>(
@@ -77,7 +84,14 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
   );
   const value: IModalProviderValue = {
     _lessonItemModal: [lessonItemModal, setLessonItemModal],
-    _isGpPlusModalDisplayed: [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed],
+    _isGpPlusModalDisplayed: [
+      isGpPlusModalDisplayed,
+      setIsGpPlusModalDisplayed,
+    ],
+    _isThankYouModalDisplayed: [
+      isThankYouModalDisplayed,
+      setIsThankYouModalDisplayed,
+    ],
     _isAccountModalMobileOn: [
       isAccountModalMobileOn,
       setIsAccountModalMobileOn,

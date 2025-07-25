@@ -611,33 +611,13 @@ const TeachItUI = <
                           >
                             {isGpPlusMember && !gdriveAccessToken && (
                               <>
-                                Authenticate w/ Google Drive &nbsp;
-                                <img
-                                  style={{
-                                    objectFit: "contain",
-                                    width: "35px",
-                                    height: "35px",
-                                  }}
-                                  alt="google_drive_logo"
-                                  src="/imgs/google_drive.png"
-                                />
-                                &nbsp; & Copy Unit
+                                Authenticate w/ Google Drive & Copy Unit
                               </>
                             )}
                             {isGpPlusMember && gdriveAccessToken && "Copy Unit"}
                             {!isGpPlusMember && (
                               <>
-                                Subscribe to copy this whole unit to &nbsp;
-                                <img
-                                  style={{
-                                    objectFit: "contain",
-                                    width: "35px",
-                                    height: "35px",
-                                  }}
-                                  alt="google_drive_logo"
-                                  src="/imgs/google_drive.png"
-                                />
-                                &nbsp;Google Drive
+                                Subscribe to copy this whole unit to Google Drive
                               </>
                             )}
                           </div>

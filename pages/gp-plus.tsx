@@ -21,6 +21,7 @@ import { useRouter } from "next/router";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
 import { TAccountStageLabel } from "../backend/services/userServices";
 import { getLocalStorageItem } from "../shared/fns";
+import ThankYouModal from "../components/GpPlus/ThankYouModal";
 
 const ICON_DIMENSION = 70;
 const BTN_HEIGHT = "42px";
@@ -204,6 +205,7 @@ const GpPlus: React.FC = () => {
 
   useEffect(() => {
     if (
+      status === "authenticated" &&
       gpPlusSubscription?.membership?.AccountStageLabel &&
       HAS_MEMBERSHIP_STATUSES.has(
         gpPlusSubscription?.membership?.AccountStageLabel
@@ -736,6 +738,7 @@ const GpPlus: React.FC = () => {
           </div>
         </div>
       </div>
+      <ThankYouModal />
     </Layout>
   );
 };
