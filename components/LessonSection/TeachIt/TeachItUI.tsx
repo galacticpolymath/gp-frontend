@@ -64,8 +64,8 @@ import GpPlusBanner from "../../GpPlus/GpPlusBanner";
 import { Spinner } from "react-bootstrap";
 
 export type TUnitPropsForTeachItSec = Partial<
-    Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
-  >;
+  Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
+>;
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
@@ -124,7 +124,7 @@ const TeachItUI = <
     GradesOrYears,
     GdrivePublicID,
     Title,
-    MediumTitle
+    MediumTitle,
   } = props;
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -193,6 +193,8 @@ const TeachItUI = <
     setIsCopyingUnitBtnDisabled(true);
 
     if (!gdriveAccessToken) {
+      console.log("Redirecting to Google Drive authentication URL");
+
       setLocalStorageItem(
         "gpPlusFeatureLocation",
         `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
@@ -204,7 +206,13 @@ const TeachItUI = <
       return;
     }
 
+    console.log("Starting copy unit job");
+    
+
     if (!GdrivePublicID || !Title || !user.userId || !gdriveRefreshToken) {
+      console.log(
+        "Copy unit function called with all necessary props: user ID, unit title, GDrive public ID, and GDrive refresh token"
+      );
       const _toastId = toastId ?? nanoid();
 
       setToastId(_toastId);
@@ -233,6 +241,8 @@ const TeachItUI = <
     let currentAccessToken = gdriveAccessToken;
 
     if (gdriveAccessTokenExp && gdriveRefreshToken) {
+      console.log("Starting job...");
+      
       // Check if token is about to expire (less than 5 minutes)
       const currentTime = new Date().getTime();
       const fiveMinutesInMs = 5 * 60 * 1000;
@@ -279,7 +289,7 @@ const TeachItUI = <
       Authorization: `Bearer ${token}`,
       "gdrive-token": currentAccessToken,
       "gdrive-token-refresh": gdriveRefreshToken,
-      "userId": user.userId,
+      "user-id": user.userId,
     };
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
 
@@ -448,7 +458,7 @@ const TeachItUI = <
       return;
     }
 
-    localStorage.setLocalStorageItem(
+    setLocalStorageItem(
       "gpPlusFeatureLocation",
       `${window.location.protocol}://${window.location.host}${window.location.pathname}#teaching-materials`
     );

@@ -157,6 +157,7 @@ const GpPlus: React.FC = () => {
         : null;
 
     console.log("siteSession: ", siteSession);
+    console.log("emailInput, yo there: ", emailInput);
 
     if (status === "authenticated" && emailInput) {
       emailInput.value = user?.email || "";
@@ -166,7 +167,7 @@ const GpPlus: React.FC = () => {
         "An error occurred: Email input could not be found despite user being authenticated."
       );
     }
-  }, [status]);
+  }, [status, isSignupModalDisplayed]);
 
   const outsetaEmbeddedRef = useRef<HTMLDivElement | null>(null);
   const outsetaEmbeddedCallback = () => {
@@ -180,8 +181,6 @@ const GpPlus: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("gpPlusSubscription, yo there! ", gpPlusSubscription);
-
     if (
       gpPlusSubscription?.membership?.AccountStageLabel &&
       HAS_MEMBERSHIP_STATUSES.has(

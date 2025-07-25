@@ -152,6 +152,7 @@ export const shareFilesWithRetries = async (
         corpora: "drive",
         includeItemsFromAllDrives: true,
         supportsAllDrives: true,
+        sendNotificationEmail: false,
         driveId: process.env.GOOGLE_DRIVE_ID,
       });
 

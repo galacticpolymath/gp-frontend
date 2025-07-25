@@ -37,7 +37,8 @@ export interface ILessonForUI extends ILesson {
   status: string;
 }
 
-export interface ICustomUserOfSession extends Session["user"]{
+
+export interface ICustomUserOfSession extends NonNullable<Session["user"]>{
   userId: string
 }
 export interface IUserSession extends Pick<Session, "expires"> {

@@ -26,10 +26,13 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import { waitWithExponentialBackOff } from "../../../globalFns";
-import { getUserById } from "../../../backend/services/userServices";
+import {
+  getUserById,
+  updateUser,
+} from "../../../backend/services/userServices";
 
 export const maxDuration = 300;
-const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units"
+const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
 
 const createGoogleDriveFolderForUser = async (
   folderName: string,
@@ -73,7 +76,9 @@ const createGoogleDriveFolderForUser = async (
 
       console.log("the user is not authenticated: ", refreshToken);
 
-      const { data } = (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ?? {};
+      const { data } =
+        (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ??
+        {};
 
       console.log("Refresh token response data: ", data);
 
@@ -238,14 +243,15 @@ export default async function handler(
       return;
     }
 
+    // all keys of the headers will lowercase by default
     const _gdriveAccessToken = request.headers["gdrive-token"];
     const gdriveRefreshToken = request.headers["gdrive-token-refresh"];
-    const userId = request.headers["userId"];
+    const userId = request.headers["user-id"];
     const jwtPayload = await getJwtPayloadPromise(
       request.headers.authorization
     );
 
-    if(!userId){
+    if (!userId) {
       sendMessage(response, {
         msg: "The 'userId' header is not present.",
         isJobDone: true,
@@ -340,6 +346,8 @@ export default async function handler(
 
     google.options({ auth: authClient });
 
+    console.log("Will retrieve files...");
+
     const gdriveResponse = await drive.files.list({
       corpora: "drive",
       includeItemsFromAllDrives: true,
@@ -365,11 +373,11 @@ export default async function handler(
     }
 
     let unitFolders: TUnitFolder[] = rootDriveFolders.map((folder) => ({
-        name: folder.name,
-        id: folder.id,
-        mimeType: folder.mimeType,
-        pathToFile: "",
-      }));
+      name: folder.name,
+      id: folder.id,
+      mimeType: folder.mimeType,
+      pathToFile: "",
+    }));
 
     // get all of the folders of the target unit folder
     for (const unitFolder of unitFolders) {
@@ -578,24 +586,20 @@ export default async function handler(
     }
 
     const totalFoldersToCreate = unitFolders.filter((unit) => {
-      console.log("unit.mimeType, sup there: ", unit.mimeType);
-
       return unit.mimeType.includes("folder");
     }).length;
     const totalFilesToCopy = unitFolders.filter((unit) => {
-      console.log("unit.mimeType, sup there: ", unit.mimeType);
-
       return !unit.mimeType.includes("folder");
     }).length;
 
     sendMessage(response, { foldersToCopy: totalFoldersToCreate + 1 });
 
-    console.log("gdriveAccessToken, sup there: ", gdriveAccessToken);
-    console.log("gdriveRefreshToken, sup there: ", gdriveRefreshToken);
-    const targetUser = await getUserById(userId, { unitCopiesFolderId: 1, _id: 1 })
+    const targetUser = await getUserById(userId, {
+      unitCopiesFolderId: 1,
+      _id: 1,
+    });
 
-
-    if(!targetUser){
+    if (!targetUser) {
       sendMessage(
         response,
         {
@@ -608,16 +612,12 @@ export default async function handler(
       return;
     }
 
+    if (!targetUser.unitCopiesFolderId) {
+      console.log(
+        "The 'unitCopiesFolderId' was not set. Will create the folder."
+      );
 
-
-    // TODO: using the id of the user from the client, query the database to get the id of the folder in order to make the copies of the folder
-    // -if not found, then create the folder, and get the id of the folder and set it for the corresponding user
-
-    // TODO: GOAL: for the parent folder id parameter, the array will consist of the id of the "My GP+ Units" folder 
-
-    if(!targetUser.unitCopiesFolderId){
-      const folderCreationResult =
-      await createGoogleDriveFolderForUser(
+      const folderCreationResult = await createGoogleDriveFolderForUser(
         USER_GP_PLUS_PARENT_FOLDER_NAME,
         gdriveAccessToken as string,
         undefined,
@@ -625,11 +625,18 @@ export default async function handler(
         gdriveRefreshToken as string,
         origin
       );
-      const { folderId: userGpPlusParentFolderId, errMsg } = folderCreationResult;
 
-      if(errMsg){
-        console.error("Failed to create the parent folder for the unit copies. Reason: ", errMsg);
-        
+      console.log("folderCreationResult: ", folderCreationResult);
+
+      const { folderId: userGpPlusParentFolderId, errMsg } =
+        folderCreationResult;
+
+      if (errMsg) {
+        console.error(
+          "Failed to create the parent folder for the unit copies. Reason: ",
+          errMsg
+        );
+
         sendMessage(
           response,
           {
@@ -642,7 +649,22 @@ export default async function handler(
         return;
       }
 
-      targetUser.unitCopiesFolderId = userGpPlusParentFolderId
+      targetUser.unitCopiesFolderId = userGpPlusParentFolderId;
+
+      const updatedUserResult = await updateUser(
+        { _id: userId },
+        { unitCopiesFolderId: userGpPlusParentFolderId },
+        []
+      );
+
+      if (!updatedUserResult.wasSuccessful || updatedUserResult.errMsg) {
+        console.error(
+          "Failed to update the parent folder for the unit copies. Reason: ",
+          updatedUserResult.errMsg
+        );
+      } else {
+        console.log("The parent folder for the unit copies was created.");
+      }
     }
 
     const { folderId: unitFolderId, errMsg } =
@@ -665,7 +687,7 @@ export default async function handler(
     }
     sendMessage(response, {
       didRetrieveAllItems: true,
-      folderCreated: `${request.query.unitName} COPY`,
+      folderCreated: request.query.unitName,
       folderCopyId: unitFolderId,
     });
 
@@ -758,11 +780,7 @@ export default async function handler(
       (folder) => !folder.mimeType.includes("folder")
     );
     const filesSet = new Set(files.map((file) => file.name));
-
-    console.log("Length of the files array: ", files.length);
-    console.log("Size of the files set: ", filesSet.size);
-    console.log("Will share the target files with the target user.");
-
+    console.log("Will share target files...");
     const { wasSuccessful: wasSharesSuccessful } = await shareFilesWithRetries(
       files,
       email,
@@ -771,7 +789,7 @@ export default async function handler(
     );
 
     console.log(
-      "Was files share successful, wasSharesSuccessful: ",
+      "Was files share successful: ",
       wasSharesSuccessful
     );
 
@@ -861,6 +879,6 @@ export default async function handler(
       gdriveAccessToken
     );
 
-    console.log("Result, yo there: ", result);
+    console.log("Google drive item deletion result: ", result);
   }
 }

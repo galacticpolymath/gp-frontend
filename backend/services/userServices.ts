@@ -98,7 +98,6 @@ export const getUserWithRetries = async (
       return getUserWithRetries(queryObj, projectionObj, tries);
     }
 
-
     console.error("An error has occurred in getting the target user: ", error);
     console.log(error);
 
@@ -108,7 +107,9 @@ export const getUserWithRetries = async (
   }
 };
 
-export const handleUserDeprecatedV1Fields = (user: TUserSchemaForClient<IUserSchema>) => {
+export const handleUserDeprecatedV1Fields = (
+  user: TUserSchemaForClient<IUserSchema>
+) => {
   if (user.classroomSize && typeof user.classSize === "undefined") {
     user = {
       ...user,
@@ -470,7 +471,10 @@ export const getUserByEmail = async <TUser extends IUserSchema>(
   }
 };
 
-export const getUserById = async <TUser extends TUserSchemaV2, TProjectionKeys extends keyof TUserSchemaV2 = keyof TUserSchemaV2>(
+export const getUserById = async <
+  TUser extends TUserSchemaV2,
+  TProjectionKeys extends keyof TUserSchemaV2 = keyof TUserSchemaV2
+>(
   userId: string,
   projectionsObj?: Record<TProjectionKeys, 0 | 1>,
   tries = 3
@@ -487,27 +491,35 @@ export const getUserById = async <TUser extends TUserSchemaV2, TProjectionKeys e
       "Failed to receive the target user via email. Reason: ",
       error
     );
-    console.log("Error object: ")
+    console.log("Error object: ");
     console.dir(error, { depth: null });
 
     const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
 
-    if(didTimeoutOccur && tries > 0) {
+    if (didTimeoutOccur && tries > 0) {
       await waitWithExponentialBackOff(tries);
 
       return await getUserById(userId, projectionsObj, tries - 1);
     }
 
-
     return null;
   }
+};
+
+const getCanRetry = (error: any) => {
+  if (error?.error?.codeName === "MaxTimeMSExpired") {
+    return true;
+  }
+
+  return false;
 };
 
 export const updateUser = async (
   filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
   updatedUserProperties: Omit<Partial<TUserSchemaV2>, "password">,
-  updatedUserPropsToFilterOut?: (keyof TUserSchemaV2)[]
-) => {
+  updatedUserPropsToFilterOut?: (keyof TUserSchemaV2)[],
+  tries = 3
+): Promise<{ wasSuccessful: boolean, updatedUser?: Partial<TUserSchemaV2>, errMsg?: string }> => {
   try {
     if (updatedUserProperties.isTeacher === false) {
       updatedUserProperties = {
@@ -554,7 +566,7 @@ export const updateUser = async (
             [key]: value,
           };
         },
-        {}
+        {} as Partial<TUserSchemaV2>
       );
 
       return { wasSuccessful: true, updatedUser: updateUserWithProjectedProps };
@@ -570,6 +582,16 @@ export const updateUser = async (
       message ?? `The target user failed to be updated. Reason: ${error}`;
 
     console.log(errMsg);
+
+    const canRetry = getCanRetry(error);
+
+    if(canRetry && tries > 0){
+      console.error("Failed to update user. Reason: ", error);
+      
+      await waitWithExponentialBackOff(tries);
+
+      return await updateUser(filterQuery, updatedUserProperties, updatedUserPropsToFilterOut, tries - 1);
+    }
 
     return { wasSuccessful: false, errMsg };
   }
@@ -833,7 +855,6 @@ export const getGpPlusIndividualMembershipStatus = async (
 
     console.log("Status code: ", status);
 
-
     if (status !== 200 || !currentSubscription) {
       console.error("Failed to retrieve Outseta GP+ membership status.");
 
@@ -862,9 +883,7 @@ export const getGpPlusIndividualMembershipStatus = async (
       "Failed to retrieve the outseta status for the target user. Error: ",
       error?.response
     );
-    console.error(
-      "Error object: ", error
-    );
+    console.error("Error object: ", error);
 
     return {
       AccountStageLabel: "NonMember",
