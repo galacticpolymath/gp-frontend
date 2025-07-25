@@ -5,7 +5,6 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import RichText from "../RichText";
 import { useMemo, useRef } from "react";
 import useLessonElementInView from "../../customHooks/useLessonElementInView";

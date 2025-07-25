@@ -22,6 +22,7 @@ interface CollapsibleLessonSectionProps {
   SectionTitleClassName?: string;
   SectionTitleId?: string;
   className?: string;
+  btnId?: string;
   children: ReactElement;
   sectionBanner?: ReactElement | null;
   initiallyExpanded?: boolean;
@@ -42,6 +43,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
   sectionBanner = null,
   accordionId,
   _sectionDots,
+  btnId,
   SectionTitleId,
   accordionChildrenClasses = "",
   highlighted = false,
@@ -50,6 +52,14 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
   accordionStyleObj = {},
 }) => {
   const ref = useRef<HTMLHeadingElement>(null);
+  let btnAttributes = {};
+
+  if (btnId) {
+    btnAttributes = {
+      id: btnId,
+    };
+  }
+
   const router = useRouter();
   const [isAccordionContentOpen, setIsAccordionContentOpen] =
     useState(initiallyExpanded);
@@ -162,6 +172,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
       style={accordionStyleObj}
       button={(
         <div
+          {...btnAttributes}
           className={`SectionHeading ${SectionTitle.replace(
             /[\s!]/gi,
             "_"

@@ -15,10 +15,13 @@ import { TUseStateReturnVal } from "../../../types/global";
 import { useGetAboutUserForm } from "../../../customHooks/useGetAboutUserForm";
 import { TAboutUserForm } from "../../../backend/models/User/types";
 import { Spinner } from "react-bootstrap";
+import { getIsWithinParentElement } from "../../../shared/fns";
 
 interface IProps {
-  _modalAnimation: TUseStateReturnVal<string>;
+  _modalAnimation: TUseStateReturnVal<'d-none' | 'fade-out-quick' | 'fade-in-quick'>;
 }
+
+const USER_ACCOUNT_MODAL_ID = "user-account-modal";
 
 const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const router = useRouter();
@@ -38,7 +41,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const { status, data } = useSession();
   const { image, name } = data?.user ?? {};
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
-  const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
+  const [isSigningUserOut, setIsSigningUserOut] = useState(false);
   const { clearCookies } = useCustomCookies();
   const firstName =
     userAccountSaved?.firstName ??
@@ -52,10 +55,12 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     "";
 
   const handleSignOutBtnClick = async () => {
-    setIsLoadingSpinnerOn(true);
+    setIsSigningUserOut(true);
     localStorage.clear();
     sessionStorage.clear();
     clearCookies();
+
+    signOut({ redirect: false });
 
     window.Outseta?.on("logout", async () => {
       console.log("Logging the user out.");
@@ -63,15 +68,29 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
       window.Outseta?.setMagicLinkIdToken("");
       return false;
     });
+
     window.Outseta?.on("redirect", async () => {
       console.log("the user is being redirected");
-      signOut();
       const currentUrl = window.location.href;
       window.location.href = currentUrl;
       return false;
     });
 
     window.Outseta?.logout();
+  };
+
+  const closeModal = () => {
+    setModalAnimation((modalAnimation) => {
+      if (modalAnimation === "fade-out-quick" || modalAnimation === "d-none") {
+        return "fade-in-quick";
+      }
+
+      if (modalAnimation === "fade-in-quick") {
+        return "fade-out-quick";
+      }
+
+      return modalAnimation;
+    });
   };
 
   const handleAccountBtnClick = () => {
@@ -84,20 +103,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     }
 
     if (status === "authenticated") {
-      setModalAnimation((modalAnimation) => {
-        if (
-          modalAnimation === "fade-out-quick" ||
-          modalAnimation === "d-none"
-        ) {
-          return "fade-in-quick";
-        }
-
-        if (modalAnimation === "fade-in-quick") {
-          return "fade-out-quick";
-        }
-
-        return modalAnimation;
-      });
+      closeModal();
       return;
     }
 
@@ -109,6 +115,33 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleOnClickAwayCloseModal = (event: MouseEvent) => {
+    const isWithinModal = getIsWithinParentElement(
+      event.target as HTMLElement,
+      USER_ACCOUNT_MODAL_ID,
+      "id",
+      "strictEquals"
+    );
+
+    console.log("Will close the modal: ", isWithinModal);
+
+    if (isWithinModal) {
+      closeModal();
+    }
+  };
+
+  useEffect(() => {
+    if (modalAnimation === "fade-in-quick"){
+      document.addEventListener("click", handleOnClickAwayCloseModal);
+    } else if (modalAnimation === "fade-out-quick") {
+      document.removeEventListener("click", handleOnClickAwayCloseModal);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleOnClickAwayCloseModal);
+    };
+  }, [modalAnimation]);
 
   if (!mounted) {
     return null;
@@ -155,6 +188,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
           ))}
       </Button>
       <div
+        id={USER_ACCOUNT_MODAL_ID}
         style={{
           display: modalAnimation === "fade-out-quick" ? "none" : "block",
           zIndex: modalAnimation === "fade-out-quick" ? -1000 : 100000,
@@ -167,7 +201,10 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
           style={{ borderBottom: ".5px solid grey" }}
           className="d-flex flex-column justify-content-center align-items-center pb-2"
         >
-          {isRetrievingUserData && !firstName && !lastName ? (
+          {isRetrievingUserData &&
+          !firstName &&
+          !lastName &&
+          !isSigningUserOut ? (
             <Spinner className="text-black" />
           ) : (
             <h5 className="text-black my-3">
@@ -189,7 +226,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
             handleOnClick={async () => await handleSignOutBtnClick()}
             classNameStr="no-btn-styles  hover txt-underline-on-hover py-2"
           >
-            {isLoadingSpinnerOn ? (
+            {isSigningUserOut ? (
               <div
                 className="spinner-border spinner-border-sm text-dark"
                 role="status"

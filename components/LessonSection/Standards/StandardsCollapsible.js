@@ -22,6 +22,7 @@ const StandardsCollapsible = ({
   return (
     <CollapsibleLessonSection
       index={index}
+      btnId='learning_standards'
       SectionTitle={SectionTitle}
       initiallyExpanded
       accordionStyleObj={{ scrollMarginTop: '125px' }}

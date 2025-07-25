@@ -459,7 +459,7 @@ const TeachItUI = <
 
     setLocalStorageItem(
       "gpPlusFeatureLocation",
-      `${window.location.protocol}://${window.location.host}${window.location.pathname}#teaching-materials`
+      `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
     );
 
     router.push("/gp-plus");
