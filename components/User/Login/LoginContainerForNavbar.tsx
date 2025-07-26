@@ -55,12 +55,11 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     "";
 
   const handleSignOutBtnClick = async () => {
+    signOut({ redirect: false });
     setIsSigningUserOut(true);
     localStorage.clear();
     sessionStorage.clear();
     clearCookies();
-
-    signOut({ redirect: false });
 
     window.Outseta?.on("logout", async () => {
       console.log("Logging the user out.");
