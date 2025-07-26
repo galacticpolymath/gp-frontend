@@ -6,6 +6,7 @@ import SubjectBreakDown from './SubjectBreakdown';
 import { TOverviewForUI } from '../../backend/models/Unit/types/overview';
 import { ITargetStandardsCode } from '../../backend/models/Unit/types/standards';
 import { INewUnitSchema } from '../../backend/models/Unit/types/unit';
+import { Button } from 'react-bootstrap';
 
 type TProps = {
   LearningSummary: TOverviewForUI['TheGist'];
@@ -179,12 +180,12 @@ const GistCard = ({
               SteamEpaulette_vert={SteamEpaulette_vert}
             />
           ) : (
-            <Link passHref href="#learning_standards">
+            <Button className='no-btn-styles'>
               <SubjectBreakDown
                 SteamEpaulette={SteamEpaulette}
                 SteamEpaulette_vert={SteamEpaulette_vert}
               />
-            </Link>
+            </Button>
           ))}
       </section>
     </div>

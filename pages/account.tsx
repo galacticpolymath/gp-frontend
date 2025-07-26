@@ -10,7 +10,7 @@ import Layout from "../components/Layout";
 import LoginUI from "../components/User/Login/LoginUI";
 import Button from "../components/General/Button";
 import BootstrapBtn from "react-bootstrap/Button";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NextRouter, useRouter } from "next/router";
 import { useModalContext } from "../providers/ModalProvider";
 import axios from "axios";
@@ -78,7 +78,7 @@ export const getUrlVal = (router: NextRouter, urlField: string) => {
   return null;
 };
 
-const AccountPg = () => {
+const AccountPg: React.FC = () => {
   const router = useRouter();
   const {
     _isAboutMeFormModalDisplayed,
@@ -602,5 +602,12 @@ const AccountPg = () => {
     </Layout>
   );
 };
+
+export const getStaticProps = async (arg: {
+  params: { id: string; loc: string };
+}) => {
+  // GOAL: get the total units
+  // -use getUnitLessons and filterInShowableUnits
+}
 
 export default AccountPg;

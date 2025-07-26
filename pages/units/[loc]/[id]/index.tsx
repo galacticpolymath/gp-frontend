@@ -780,57 +780,6 @@ const getGoogleDriveFileIdFromUrl = (url: string) => {
   return id;
 };
 
-const updateLessonWithGoogleDriveFiledPreviewImg = (
-  lesson: any,
-  lessonToDisplayOntoUi: any
-) => {
-  let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
-
-  // getting the thumbnails for the google drive file handouts for each lesson
-  if (lesson?.itemList?.length) {
-    const itemListUpdated = lesson.itemList.map((itemObj: any) => {
-      const googleDriveFileId = itemObj?.links[0]?.url
-        ? getGoogleDriveFileIdFromUrl(itemObj.links[0].url)
-        : null;
-
-      if (googleDriveFileId) {
-        return {
-          ...itemObj,
-          filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
-        };
-      }
-
-      return itemObj;
-    });
-
-    lessonObjUpdated = {
-      ...lesson,
-      itemList: itemListUpdated,
-    };
-  }
-
-  // getting the status for each lesson
-  let lsnStatus =
-    Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) &&
-    lessonToDisplayOntoUi?.LsnStatuses?.length
-      ? lessonToDisplayOntoUi.LsnStatuses.find(
-          (lsnStatus: any) => lsnStatus?.lsn == lesson.lsn
-        )
-      : null;
-
-  if (!lesson.tile && lsnStatus?.status === "Upcoming") {
-    lessonObjUpdated = {
-      ...lessonObjUpdated,
-      tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
-    };
-  }
-
-  return {
-    ...lessonObjUpdated,
-    status: lsnStatus?.status ?? "Proto",
-  };
-};
-
 export const getStaticProps = async (arg: {
   params: { id: string; loc: string };
 }) => {
