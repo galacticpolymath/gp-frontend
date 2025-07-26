@@ -603,11 +603,4 @@ const AccountPg: React.FC = () => {
   );
 };
 
-export const getStaticProps = async (arg: {
-  params: { id: string; loc: string };
-}) => {
-  // GOAL: get the total units
-  // -use getUnitLessons and filterInShowableUnits
-}
-
 export default AccountPg;
