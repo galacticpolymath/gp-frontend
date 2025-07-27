@@ -34,7 +34,7 @@ inputElementsFocusedDefault.set("email", false);
 inputElementsFocusedDefault.set("firstName", false);
 inputElementsFocusedDefault.set("lastName", false);
 
-const SignUpPage = () => {
+const SignUpPage: React.FC = () => {
   const { _createAccountForm, sendFormToServer, validateForm, _isUserTeacher } =
     useUserEntry();
   const [errors, setErrors] = useState(new Map());
@@ -172,7 +172,7 @@ const SignUpPage = () => {
   };
 
   const handleLoginBtnClick = () => {
-    router.push("/login");
+    router.push("/account");
   };
 
   return (
@@ -185,29 +185,32 @@ const SignUpPage = () => {
       keywords="sign up, teacher portal, galactic polymath, create account"
       langLinks={[]}
     >
-      <div className="min-vh-100 d-flex justify-content-center align-items-center bg-light">
+      <div className="min-vh-100 d-flex justify-content-center align-items-center bg-light py-5">
         <div
           className="bg-white shadow-lg rounded p-4"
-          style={{ maxWidth: "600px", width: "90%" }}
+          style={{ width: "90%" }}
         >
           {/* Header */}
-          <div className="text-center mb-4">
+          <div style={{ height: "70px" }} className="mb-4 position-relative">
             <img
+              className="position-absolute top-0 start-0 me-5 mt-1"
               src="/imgs/gp_logo_gradient_transBG.png"
               alt="gp_logo"
-              width={60}
-              height={60}
-              className="mb-3"
+              width={100}
+              height={100}
+              style={{
+                transform: "translateY(-18%)",
+                top: 0,
+              }}
             />
-            <h4 className="text-black mb-2">GP Sign In</h4>
-            <h5 className="text-black mb-4">
+            <h5 className="text-black text-center w-100 h-100 d-flex justify-content-center align-items-center">
               Create your teacher portal account to access 100+ free STEM
               resources!
             </h5>
           </div>
 
           {/* Mailing List Toggle */}
-          <div className="border-bottom py-3 mb-4">
+          <div className="border-bottom border-top py-4 mb-4 mt-5">
             <div className="d-flex justify-content-center align-items-center">
               <div className="d-flex create-account-toggle-btn-container">
                 <div>

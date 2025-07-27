@@ -210,10 +210,9 @@ const AccountPg: React.FC = () => {
     }
   };
 
-  // GOAL: add redirect when the user logs into their gp plus account to view their account, magic link
-
   useEffect(() => {
     const url = new URL(window.location.href);
+    
     if (
       url.searchParams.get("show_gp_plus_account_modal") === "true" &&
       status === "authenticated" &&
