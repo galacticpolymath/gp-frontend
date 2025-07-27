@@ -10,12 +10,7 @@ import Button from "../General/Button";
 import { signIn } from "next-auth/react";
 
 const GoogleSignIn = ({
-    children = (
-        <>
-            <FcGoogle className="mx-2" />
-            <span style={{ fontSize: "16px" }}>Sign in with Google.</span>
-        </>
-    ),
+    children,
     callbackUrl = "",
     handleGoogleBtnClickCustom,
     style = {},
@@ -24,6 +19,14 @@ const GoogleSignIn = ({
     executeExtraBtnClickLogic = null,
     executeFinallyBlockLogic = null,
 }) => {
+    if (!children) {
+        children = (
+            <>
+                <FcGoogle className="mx-2" />
+                <span style={{ fontSize: "16px" }}>Sign in with Google.</span>
+            </>
+        );
+    }
 
     const handleGoogleBtnClickDefault = (event) => {
         try {

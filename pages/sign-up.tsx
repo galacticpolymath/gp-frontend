@@ -252,11 +252,11 @@ const SignUpPage: React.FC = () => {
                 typeof window !== "undefined" ? window.location.origin : ""
               }/account?show_about_user_form=true`}
               className="rounded shadow position-relative w-100 p-4 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn"
-              style={{ maxWidth: "400px" }}
+              style={{ maxWidth: "600px" }}
             >
               <FcGoogle
                 className="mx-2"
-                size={35}
+                size={45}
                 style={{ opacity: isGoogleLoadingSpinnerOn ? 0 : 1 }}
               />
               {isGoogleLoadingSpinnerOn && (

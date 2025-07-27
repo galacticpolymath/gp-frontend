@@ -146,14 +146,13 @@ export const InputSection = ({
     inputClassName = "border-0 p-1 w-100 py-2",
     inputStyle = { borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' },
     inputElement = null,
-    handleOnInputChange = () => { },
+    handleOnInputChange,
     onKeyUp = () => { },
     onKeyDown = () => { },
     onKeyDownCapture = () => { },
     onKeyUpCapture = () => { },
-    onFocus = () => { },
-    onBlur = () => { },
-
+    onFocus,
+    onBlur,
 }) => {
     return (
         <div className={containerClassName}>
