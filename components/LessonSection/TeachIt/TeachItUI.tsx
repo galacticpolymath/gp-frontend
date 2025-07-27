@@ -210,8 +210,7 @@ const TeachItUI = <
     console.log("GdrivePublicID: ", GdrivePublicID);
     console.log("user.userId: ", user.userId);
     console.log("gdriveRefreshToken: ", gdriveRefreshToken);
-    
-    
+        
     if (!GdrivePublicID || !user.userId || !gdriveRefreshToken) {
       console.log(
         "Copy unit function called with all necessary props: user ID, unit title, GDrive public ID, and GDrive refresh token"
