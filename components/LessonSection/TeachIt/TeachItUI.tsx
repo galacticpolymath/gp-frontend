@@ -153,6 +153,10 @@ const TeachItUI = <
   ]);
   const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
     queriedCookies;
+
+  useEffect(() => {
+    console.log("Session Object: ", session);
+  });
   const { status, token, user } = session;
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
     _isCopyUnitBtnDisabled;
@@ -210,7 +214,7 @@ const TeachItUI = <
     console.log("GdrivePublicID: ", GdrivePublicID);
     console.log("user.userId: ", user.userId);
     console.log("gdriveRefreshToken: ", gdriveRefreshToken);
-        
+
     if (!GdrivePublicID || !user.userId || !gdriveRefreshToken) {
       console.log(
         "Copy unit function called with all necessary props: user ID, unit title, GDrive public ID, and GDrive refresh token"
@@ -244,7 +248,7 @@ const TeachItUI = <
 
     if (gdriveAccessTokenExp && gdriveRefreshToken) {
       console.log("Starting job...");
-      
+
       // Check if token is about to expire (less than 5 minutes)
       const currentTime = new Date().getTime();
       const fiveMinutesInMs = 5 * 60 * 1000;
@@ -294,7 +298,9 @@ const TeachItUI = <
       "user-id": user.userId,
     };
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
-    const unitNum = (new URL(window.location.href)).pathname.split("/").at(-1) as string;
+    const unitNum = new URL(window.location.href).pathname
+      .split("/")
+      .at(-1) as string;
     url.searchParams.append("unitDriveId", GdrivePublicID);
     url.searchParams.append(
       "unitName",
@@ -616,14 +622,15 @@ const TeachItUI = <
                             className="d-inline text-black"
                           >
                             {isGpPlusMember && !gdriveAccessToken && (
-                              <>
-                                Authenticate w/ Google Drive & Copy Unit
-                              </>
+                              <>Authenticate w/ Google Drive & Copy Unit</>
                             )}
-                            {isGpPlusMember && gdriveAccessToken && "Copy Unit to my Google Drive"}
+                            {isGpPlusMember &&
+                              gdriveAccessToken &&
+                              "Copy Unit to my Google Drive"}
                             {!isGpPlusMember && (
                               <>
-                                Subscribe to copy this whole unit to Google Drive
+                                Subscribe to copy this whole unit to Google
+                                Drive
                               </>
                             )}
                           </div>
