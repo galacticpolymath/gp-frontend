@@ -11,6 +11,7 @@ import { ERROR_INPUT_BORDER_COLOR } from "../../globalVars";
 export const CustomInput = ({
     onChange,
     placeholder = '',
+    handleShowPasswordTxtBtnClick,
     inputId,
     inputName,
     autoFocus = false,
@@ -26,9 +27,7 @@ export const CustomInput = ({
     onKeyDown = () => { },
     onKeyDownCapture = () => { },
     onKeyUpCapture = () => { },
-    handleShowPasswordTxtBtnClickCustom,
     noInputBorderColorOnBlur = false,
-    willUseDefaultTxtShowToggle,
 }) => {
     /**
     * @type {[TFocusCss, import('react').Dispatch<import('react').SetStateAction<TFocusCss>>]}
@@ -44,10 +43,6 @@ export const CustomInput = ({
         setFocusCssInput(focusCssInput);
     };
 
-    const handleShowPasswordTxtBtnClickDefault = () => {
-        setIsPasswordTxtShown(state => !state);
-    };
-
     return (
         <div style={inputContainerStyle} className={`${inputContainerCss} ${focusCssInput}`}>
             <input
@@ -57,7 +52,7 @@ export const CustomInput = ({
                 autoFocus={autoFocus}
                 onFocus={handleFocusabilityCss('input-focus-blue')}
                 onBlur={handleFocusabilityCss(noInputBorderColorOnBlur ? '' : 'border-grey-dark')}
-                type={(isPasswordInput && !handleShowPasswordTxtBtnClickCustom) ? (isPasswordTxtShown ? 'text' : 'password') : inputType}
+                type={inputType}
                 onChange={onChange}
                 placeholder={placeholder}
                 className={inputClassName}
@@ -72,12 +67,12 @@ export const CustomInput = ({
                     className={iconContainerClassName}
                 >
                     <div style={{ height: '95%' }} className='ps-1 d-flex justify-content-center align-items-center'>
-                        {(willUseDefaultTxtShowToggle ? isPasswordTxtShown : (inputType === "text")) ?
+                        {inputType === "text" ?
                             (
                                 <IoMdEye
                                     fontSize="25px"
                                     className='pointer'
-                                    onClick={handleShowPasswordTxtBtnClickCustom ?? handleShowPasswordTxtBtnClickDefault}
+                                    onClick={handleShowPasswordTxtBtnClick}
                                 />
                             )
                             :
@@ -85,7 +80,7 @@ export const CustomInput = ({
                                 <IoMdEyeOff
                                     fontSize="25px"
                                     className='pointer'
-                                    onClick={handleShowPasswordTxtBtnClickCustom ?? handleShowPasswordTxtBtnClickDefault}
+                                    onClick={handleShowPasswordTxtBtnClick}
                                 />
                             )
                         }

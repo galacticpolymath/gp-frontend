@@ -423,10 +423,9 @@ const SignUpPage: React.FC = () => {
                 <CustomInput
                   inputId="password"
                   isPasswordInput
-                  handleShowPasswordTxtBtnClickCustom={
+                  handleShowPasswordTxtBtnClick={
                     handlePasswordTxtShowBtnClick
                   }
-                  willUseDefaultTxtShowToggle={false}
                   inputType={passwordInputType}
                   placeholder="Enter your password"
                   inputContainerCss="d-flex flex-column position-relative col-12 p-0"
@@ -467,10 +466,9 @@ const SignUpPage: React.FC = () => {
                 <CustomInput
                   inputId="confirm-password-id"
                   isPasswordInput
-                  handleShowPasswordTxtBtnClickCustom={
+                  handleShowPasswordTxtBtnClick={
                     handlePasswordTxtShowBtnClick
                   }
-                  willUseDefaultTxtShowToggle={false}
                   inputType={passwordInputType}
                   placeholder="Enter your password"
                   inputContainerCss="d-flex flex-column position-relative col-12 p-0"
@@ -531,7 +529,7 @@ const SignUpPage: React.FC = () => {
                 cursor: "pointer",
                 outline: "inherit",
               }}
-              className="d-block no-link-decoration"
+              classNameStr="d-block no-link-decoration"
               handleOnClick={handleLoginBtnClick}
             >
               <span className="text-primary underline-on-hover ms-1">
