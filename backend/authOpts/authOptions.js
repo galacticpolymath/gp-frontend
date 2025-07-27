@@ -512,12 +512,11 @@ export const authOptions = {
        * @type {{ email: string, roles: string[], name: { first: string, last: string }, picture: string }}
        */
       let { email, roles, name, picture } = token.payload;
-      /** @type { import('../models/User').TUserSchema } */
       const targetUser = cache.get(email) ?? {};
       console.log('cached target user: ', targetUser);
       let isTeacher = false;
       let occupation = null;
-      let userId = null;
+      let userId = targetUser?._id ?? null;
 
       if (targetUser && targetUser.occupation && targetUser.name) {
         occupation = targetUser.occupation;
