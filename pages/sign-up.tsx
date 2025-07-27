@@ -184,15 +184,16 @@ const SignUpPage: React.FC = () => {
       keywords="sign up, teacher portal, galactic polymath, create account"
       langLinks={[]}
     >
-      <div className="min-vh-100 d-flex justify-content-center align-items-center bg-light py-5">
+      <div className="min-vh-100 d-flex justify-content-center align-items-center bg-light py-5 mt-md-0 mt-sm-5">
         <div
           className="bg-white shadow-lg rounded p-4"
           style={{ width: "90%" }}
         >
-          {/* Header */}
-          <div style={{ height: "70px" }} className="mb-4 position-relative">
+          <div
+            className="mb-xl-4 position-relative d-flex flex-column flex-xl-row sign-up-header-container"
+          >
             <img
-              className="position-absolute top-0 start-0 me-5 mt-1"
+              className="position-absolute top-0 start-0 me-5 mt-1 d-xl-block d-none"
               src="/imgs/gp_logo_gradient_transBG.png"
               alt="gp_logo"
               width={100}
@@ -202,14 +203,21 @@ const SignUpPage: React.FC = () => {
                 top: 0,
               }}
             />
-            <h5 className="text-black text-center w-100 h-100 d-flex justify-content-center align-items-center">
+            <div className="d-xl-none d-flex w-100 justify-content-center align-items-center">
+              <img
+                src="/imgs/gp_logo_gradient_transBG.png"
+                alt="gp_logo"
+                width={100}
+                height={100}
+              />
+            </div>
+            <h5 className="mt-3 mt-xl-0 text-black text-center w-100 h-100 d-flex justify-content-center align-items-center">
               Create your teacher portal account to access 100+ free STEM
               resources!
             </h5>
           </div>
-
           {/* Mailing List Toggle */}
-          <div className="border-bottom border-top py-4 mb-4 mt-5">
+          <div className="border-bottom border-top py-4 my-3 mb-xl-4 mt-xl-5">
             <div className="d-flex justify-content-center align-items-center">
               <div className="d-flex create-account-toggle-btn-container">
                 <div>
@@ -422,9 +430,7 @@ const SignUpPage: React.FC = () => {
                 <CustomInput
                   inputId="password"
                   isPasswordInput
-                  handleShowPasswordTxtBtnClick={
-                    handlePasswordTxtShowBtnClick
-                  }
+                  handleShowPasswordTxtBtnClick={handlePasswordTxtShowBtnClick}
                   inputType={passwordInputType}
                   placeholder="Enter your password"
                   inputContainerCss="d-flex flex-column position-relative col-12 p-0"
@@ -465,9 +471,7 @@ const SignUpPage: React.FC = () => {
                 <CustomInput
                   inputId="confirm-password-id"
                   isPasswordInput
-                  handleShowPasswordTxtBtnClick={
-                    handlePasswordTxtShowBtnClick
-                  }
+                  handleShowPasswordTxtBtnClick={handlePasswordTxtShowBtnClick}
                   inputType={passwordInputType}
                   placeholder="Enter your password"
                   inputContainerCss="d-flex flex-column position-relative col-12 p-0"
@@ -502,7 +506,7 @@ const SignUpPage: React.FC = () => {
                 </section>
               </div>
             </div>
-            <div className="d-flex justify-content-center align-items-center mb-4">
+            <div className="d-flex justify-content-center align-items-center mb-4 w-100">
               <Button
                 handleOnClick={handleSubmitCredentialsBtnClick}
                 classNameStr="bg-primary rounded border-0 py-2 px-5 text-white underline-on-hover sign-up-btn"
