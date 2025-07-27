@@ -323,6 +323,12 @@ export const authOptions = {
       return decodedToken;
     },
   },
+  events: {
+    signOut: async (param) => {
+      console.log('param.session, signout: ', param)
+      cache.del(param.token.email);
+    }
+  },
   callbacks: {
     async signIn(param) {
       const { user, account, profile, credentials } = param;
