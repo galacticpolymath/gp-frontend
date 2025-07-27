@@ -8,45 +8,8 @@ import { useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { ERROR_INPUT_BORDER_COLOR } from "../../globalVars";
 
-/**
- * @typedef {(
- *   "button" |
- *   "checkbox" |
- *   "color" |
- *   "date" |
- *   "datetime-local" |
- *   "email" |
- *   "file" |
- *   "hidden" |
- *   "image" |
- *   "month" |
- *   "number" |
- *   "password" |
- *   "radio" |
- *   "range" |
- *   "reset" |
- *   "search" |
- *   "submit" |
- *   "tel" |
- *   "text" |
- *   "time" |
- *   "url" |
- *   "week"
- * )} TInputType
-
-/**
- *  @global 
- * * @typedef {'input-focus-blue' | 'border-grey-dark'} TFocusCss
- * 
- */
-
-/**
- * 
- * @param {{ inputType: TInputType }} param0 
- * @returns 
- */
 export const CustomInput = ({
-    onChange = () => { },
+    onChange,
     placeholder = '',
     inputId,
     inputName,

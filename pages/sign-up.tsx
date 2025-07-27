@@ -348,7 +348,6 @@ const SignUpPage: React.FC = () => {
               <InputSection
                 errors={errors}
                 errorsFieldName="lastName"
-                labelHtmlFor="last-name-id"
                 inputId="lastName"
                 inputName="lastName"
                 inputStyle={{
@@ -427,8 +426,8 @@ const SignUpPage: React.FC = () => {
                   handleShowPasswordTxtBtnClickCustom={
                     handlePasswordTxtShowBtnClick
                   }
-                  inputType={passwordInputType as any}
-                  errors={errors}
+                  willUseDefaultTxtShowToggle={false}
+                  inputType={passwordInputType}
                   placeholder="Enter your password"
                   inputContainerCss="d-flex flex-column position-relative col-12 p-0"
                   inputContainerStyle={{ borderRadius: "5px" }}
@@ -471,7 +470,8 @@ const SignUpPage: React.FC = () => {
                   handleShowPasswordTxtBtnClickCustom={
                     handlePasswordTxtShowBtnClick
                   }
-                  inputType={passwordInputType as any}
+                  willUseDefaultTxtShowToggle={false}
+                  inputType={passwordInputType}
                   placeholder="Enter your password"
                   inputContainerCss="d-flex flex-column position-relative col-12 p-0"
                   iconContainerStyle={{
