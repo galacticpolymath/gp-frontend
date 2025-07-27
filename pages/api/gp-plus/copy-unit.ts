@@ -35,6 +35,40 @@ import { connectToMongodb } from "../../../backend/utils/connection";
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
 
+const getGDriveItem = async (fileId: string, accessToken: string, tries = 3) => {
+  try {
+    return await axios.get<{ id: string; [key: string]: unknown }>(
+      `https://www.googleapis.com/drive/v3/files/${fileId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        params: {
+          supportsAllDrives: true,
+        },
+      }
+    );
+  } catch (error) {
+
+    if (error?.response?.data?.error?.code === 404) {
+      return {
+        errType: "notFound",
+      };
+    }
+
+    if(error?.code === "ECONNABORTED" && tries > 0){
+      await waitWithExponentialBackOff(tries, [2_000, 5_000])
+
+      return await getGDriveItem(fileId, accessToken, tries - 1)
+    }
+
+    return {
+      errType: "generalErr",
+    };
+  }
+};
+
 const createGoogleDriveFolderForUser = async (
   folderName: string,
   accessToken: string,
@@ -66,7 +100,7 @@ const createGoogleDriveFolderForUser = async (
     return { wasSuccessful: true, folderId: response.data.id };
   } catch (error: any) {
     console.error("Error object: ", error?.response?.data?.error);
-    const errMsg = `Failed to create folder for the user. Reason: ${error?.response?.data?.error}`;
+    const errMsg = `Failed to create folder for the user. Reason: ${error?.response?.data?.error?.message}`;
     console.log("errMsg: ", errMsg);
     console.log("refreshToken: ", refreshToken);
 
@@ -596,7 +630,7 @@ export default async function handler(
     sendMessage(response, { foldersToCopy: totalFoldersToCreate + 1 });
 
     await connectToMongodb(15_000, 0, true);
-    
+
     const targetUser = await getUserById(userId, {
       unitCopiesFolderId: 1,
       _id: 1,
@@ -614,6 +648,8 @@ export default async function handler(
       );
       return;
     }
+
+    let wasCopyUnitsFolderCreated = false;
 
     if (!targetUser.unitCopiesFolderId) {
       console.log(
@@ -652,6 +688,7 @@ export default async function handler(
         return;
       }
 
+      wasCopyUnitsFolderCreated = true;
       targetUser.unitCopiesFolderId = userGpPlusParentFolderId;
 
       const updatedUserResult = await updateUser(
@@ -672,6 +709,32 @@ export default async function handler(
 
     // check if the folder with 'targetUser.unitCopiesFolderId' exist
 
+    if (!wasCopyUnitsFolderCreated) {
+      // TODO: check if the target folder exist
+      const response = await getGDriveItem(
+        targetUser.unitCopiesFolderId,
+        gdriveAccessToken as string
+      );
+
+      if("errType" in response && response.errType === "notFound") {
+        // TODO: create teh folder here
+        return;
+      } else if (){
+        sendMessage(
+          response,
+          {
+            isJobDone: true,
+            msg: "Failed to create the parent folder for the unit copies.",
+            wasSuccessful: false,
+          },
+          true
+        );
+        return;
+      }
+
+      console.log("gdriveItemRetrievalResponse: ", gdriveItemRetrievalResponse);
+    }
+
     const { folderId: unitFolderId, errMsg } =
       await createGoogleDriveFolderForUser(
         request.query.unitName,
@@ -682,8 +745,6 @@ export default async function handler(
         origin
       );
 
-    copyDestinationFolderId = unitFolderId;
-
     sendMessage(response, { filesToCopy: totalFilesToCopy });
 
     if (errMsg) {
@@ -692,6 +753,9 @@ export default async function handler(
 
       throw new CustomError(errMsg, 500);
     }
+
+    copyDestinationFolderId = unitFolderId;
+
     sendMessage(response, {
       didRetrieveAllItems: true,
       folderCreated: request.query.unitName,
@@ -878,11 +942,13 @@ export default async function handler(
       true
     );
 
-    const result = await deleteGoogleDriveItem(
-      copyDestinationFolderId,
-      gdriveAccessToken
-    );
+    if (copyDestinationFolderId) {
+      const result = await deleteGoogleDriveItem(
+        copyDestinationFolderId,
+        gdriveAccessToken
+      );
 
-    console.log("Google drive item deletion result: ", result);
+      console.log("Google drive item deletion result: ", result);
+    }
   }
 }
