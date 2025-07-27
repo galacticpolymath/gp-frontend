@@ -153,10 +153,6 @@ const TeachItUI = <
   ]);
   const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
     queriedCookies;
-
-  useEffect(() => {
-    console.log("Session Object: ", session);
-  });
   const { status, token, user } = session;
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
     _isCopyUnitBtnDisabled;

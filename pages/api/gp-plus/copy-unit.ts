@@ -670,6 +670,8 @@ export default async function handler(
       }
     }
 
+    // check if the folder with 'targetUser.unitCopiesFolderId' exist
+
     const { folderId: unitFolderId, errMsg } =
       await createGoogleDriveFolderForUser(
         request.query.unitName,
@@ -685,7 +687,9 @@ export default async function handler(
     sendMessage(response, { filesToCopy: totalFilesToCopy });
 
     if (errMsg) {
-      console.error("Failed to create the target folder.");
+      console.error("Failed to create the target folder. Error message: ");
+      console.error(errMsg);
+
       throw new CustomError(errMsg, 500);
     }
     sendMessage(response, {
