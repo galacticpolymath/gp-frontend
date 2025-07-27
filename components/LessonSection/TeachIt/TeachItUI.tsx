@@ -207,8 +207,12 @@ const TeachItUI = <
     }
 
     console.log("Starting copy unit job");
+    console.log("GdrivePublicID: ", GdrivePublicID);
+    console.log("user.userId: ", user.userId);
+    console.log("gdriveRefreshToken: ", gdriveRefreshToken);
     
-    if (!GdrivePublicID || !Title || !user.userId || !gdriveRefreshToken) {
+    
+    if (!GdrivePublicID || !user.userId || !gdriveRefreshToken) {
       console.log(
         "Copy unit function called with all necessary props: user ID, unit title, GDrive public ID, and GDrive refresh token"
       );
@@ -291,9 +295,12 @@ const TeachItUI = <
       "user-id": user.userId,
     };
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
-
+    const unitNum = (new URL(window.location.href)).pathname.split("/").at(-1) as string;
     url.searchParams.append("unitDriveId", GdrivePublicID);
-    url.searchParams.append("unitName", MediumTitle ?? `${Title} COPY`);
+    url.searchParams.append(
+      "unitName",
+      MediumTitle ?? `${Title ?? `Unit ${unitNum}`} copy`
+    );
 
     const eventSource = new EventSourcePolyfill(url.href, {
       headers,
