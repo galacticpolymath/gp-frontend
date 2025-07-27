@@ -6,9 +6,8 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-import { useState } from "react";
+import React, { useState } from "react";
 import { Spinner } from "react-bootstrap";
-import { useUserEntry } from "../customHooks/useUserEntry";
 import Button from "../components/General/Button";
 import CreateAccountWithGoogle from "../components/User/GoogleSignIn";
 import { FcGoogle } from "react-icons/fc";
@@ -23,9 +22,9 @@ import {
   INPUT_FOCUS_BLUE_CLASSNAME,
   USER_INPUT_BACKGROUND_COLOR,
 } from "../globalVars";
-import { validateEmail } from "../globalFns";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
+import { useUserEntry } from "../customHooks/useUserEntry";
 
 export const FONT_SIZE_CHECKBOX = "28px";
 const inputElementsFocusedDefault = new Map();
@@ -79,7 +78,7 @@ const SignUpPage: React.FC = () => {
   };
 
   const handleToAddToMailingListToggleBtnClick = () => {
-    setCreateAccountForm((state: any) => ({
+    setCreateAccountForm((state) => ({
       ...state,
       isOnMailingList: !state.isOnMailingList,
     }));
@@ -133,7 +132,7 @@ const SignUpPage: React.FC = () => {
       });
     }
 
-    setCreateAccountForm((form: any) => ({
+    setCreateAccountForm((form) => ({
       ...form,
       [name]: value,
     }));

@@ -8,13 +8,13 @@ import { useContext, useState } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import GoogleSignIn from "../GoogleSignIn";
-import { useUserEntry } from "../../../customHooks/useUserEntry";
 import { CustomInput } from "../formElements";
 import { FcGoogle } from "react-icons/fc";
 import { Spinner } from "react-bootstrap";
 import Link from "next/link";
 import { TROUBLE_LOGGING_IN_LINK } from "../../../globalVars";
 import { useRouter } from "next/router";
+import { useUserEntry } from "../../../customHooks/useUserEntry";
 
 const LoginUI = ({
   className = "",
@@ -27,7 +27,7 @@ const LoginUI = ({
     _userEntryErrors,
   } = useUserEntry();
   const router = useRouter();
-  const [passwordInputType, setPasswordInputType] = useState("password")
+  const [passwordInputType, setPasswordInputType] = useState("password");
   const { _isCreateAccountModalDisplayed, _isPasswordResetModalOn } =
     useContext(ModalContext);
   const [isGoogleLoginSpinnerDisplayed, setIsGoogleLoginSpinnerDisplayed] =
@@ -59,7 +59,7 @@ const LoginUI = ({
   };
 
   const handleCreateOneBtnClick = () => {
-    router.push('/sign-up')
+    router.push('/sign-up');
   };
 
   return (
@@ -249,7 +249,7 @@ const LoginUI = ({
               handleShowPasswordTxtBtnClick={() => {
                 setPasswordInputType(inputType => {
                   return inputType === "password" ? "text" : "password";
-                })
+                });
               }}
             />
           </div>

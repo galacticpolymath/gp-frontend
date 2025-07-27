@@ -1,4 +1,6 @@
-import React from 'react';
+/* eslint-disable quotes */
+
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import RichText from '../RichText';
@@ -6,7 +8,6 @@ import SubjectBreakDown from './SubjectBreakdown';
 import { TOverviewForUI } from '../../backend/models/Unit/types/overview';
 import { ITargetStandardsCode } from '../../backend/models/Unit/types/standards';
 import { INewUnitSchema } from '../../backend/models/Unit/types/unit';
-import { Button } from 'react-bootstrap';
 
 type TProps = {
   LearningSummary: TOverviewForUI['TheGist'];
@@ -22,7 +23,7 @@ type TProps = {
   className?: string;
 };
 
-const GistCard = ({
+const GistCard: React.FC<TProps> = ({
   LearningSummary,
   standards,
   TargetSubject,
@@ -34,7 +35,7 @@ const GistCard = ({
   areTargetStandardsValid,
   TargetStandardsCodes,
   className,
-}: TProps) => {
+}) => {
   const handleLinkClick = (
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
     descriptor: Omit<ITargetStandardsCode, 'set'>
@@ -71,6 +72,18 @@ const GistCard = ({
       }, 3500);
       return;
     }
+  };
+
+  const learningStandardsRef = useRef<HTMLElement | null>(null);
+
+  const handleEpauletteClick = () => {
+    const learningStandardsCollapsibleBtn = document.getElementById("learning_standards");
+
+    if(!learningStandardsRef.current){
+      learningStandardsRef.current = learningStandardsCollapsibleBtn;
+    }
+
+    learningStandardsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
   return (
@@ -180,12 +193,12 @@ const GistCard = ({
               SteamEpaulette_vert={SteamEpaulette_vert}
             />
           ) : (
-            <Button className='no-btn-styles'>
+            <button onClick={handleEpauletteClick} className='no-btn-styles underline-on-hover text-primary'>
               <SubjectBreakDown
                 SteamEpaulette={SteamEpaulette}
                 SteamEpaulette_vert={SteamEpaulette_vert}
               />
-            </Button>
+            </button>
           ))}
       </section>
     </div>

@@ -55,6 +55,9 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     "";
 
   const handleSignOutBtnClick = async () => {
+    // TODO: determine if the user is logged into their gp plus account as well
+    // -if not, then call the signout function only and clear the cookies and the local storage
+
     await signOut({ redirect: false });
     setIsSigningUserOut(true);
     localStorage.clear();
@@ -106,7 +109,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
       return;
     }
 
-    setIsLoginModalDisplayed(true);
+    router.push("/account");
   };
 
   const [mounted, setMounted] = useState(false);

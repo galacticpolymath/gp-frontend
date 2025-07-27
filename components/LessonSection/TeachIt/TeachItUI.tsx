@@ -614,7 +614,7 @@ const TeachItUI = <
                                 Authenticate w/ Google Drive & Copy Unit
                               </>
                             )}
-                            {isGpPlusMember && gdriveAccessToken && "Copy Unit"}
+                            {isGpPlusMember && gdriveAccessToken && "Copy Unit to my Google Drive"}
                             {!isGpPlusMember && (
                               <>
                                 Subscribe to copy this whole unit to Google Drive

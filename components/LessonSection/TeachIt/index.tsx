@@ -40,14 +40,14 @@ export interface ILessonTileProps {
   id?: { id: string } | {};
 }
 
-const LessonTile = ({
+const LessonTile: React.FC<ILessonTileProps> = ({
   lessonTileUrl,
   imgContainerClassNameStr,
   imgStyle = { objectFit: "contain" },
   imgContainerStyle = { width: 150, height: 150 },
   Pill = null,
   id = {},
-}: ILessonTileProps) => {
+}) => {
   return (
     <div style={imgContainerStyle} className={imgContainerClassNameStr}>
       {Pill}
