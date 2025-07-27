@@ -55,27 +55,27 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     "";
 
   const handleSignOutBtnClick = async () => {
-    signOut({ redirect: false });
+    await signOut({ redirect: false });
     setIsSigningUserOut(true);
     localStorage.clear();
     sessionStorage.clear();
     clearCookies();
 
-    // window.Outseta?.on("logout", async () => {
-    //   console.log("Logging the user out.");
-    //   window.Outseta?.setAccessToken(null);
-    //   window.Outseta?.setMagicLinkIdToken("");
-    //   return false;
-    // });
+    window.Outseta?.on("logout", async () => {
+      console.log("Logging the user out.");
+      window.Outseta?.setAccessToken(null);
+      window.Outseta?.setMagicLinkIdToken("");
+      return false;
+    });
 
-    // window.Outseta?.on("redirect", async () => {
-    //   console.log("the user is being redirected");
-    //   const currentUrl = window.location.href;
-    //   window.location.href = currentUrl;
-    //   return false;
-    // });
+    window.Outseta?.on("redirect", async () => {
+      console.log("the user is being redirected");
+      const currentUrl = window.location.href;
+      window.location.href = currentUrl;
+      return false;
+    });
 
-    // window.Outseta?.logout();
+    window.Outseta?.logout();
   };
 
   const closeModal = () => {
