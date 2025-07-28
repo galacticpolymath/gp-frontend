@@ -25,6 +25,9 @@ interface IProps {
 }
 
 const LessonsPage = ({ currentUnits }: IProps) => {
+  
+  console.log(`Node version: ${process.version}`);
+  
   return (
     <UnitsPg
       units={currentUnits?.units ?? null}
