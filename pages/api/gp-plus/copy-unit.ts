@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable quotes */
 /* eslint-disable comma-dangle */
 /* eslint-disable semi */

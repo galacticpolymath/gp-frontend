@@ -743,9 +743,9 @@ const GpPlus: React.FC = () => {
   );
 };
 
-// export const getStaticPaths = async () => {
+// export const getServerSideProps = async () => {
 //   try {
-//     await connectToMongodb(15_000, 0, true);
+//     await connectToMongod(15_000, 0, true);
 
 //     const units = [
 //       await Units.find({}, { numID: 1, _id: 0, locale: 1 }).lean(),

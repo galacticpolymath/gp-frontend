@@ -69,7 +69,6 @@ const GoogleDriveAuthResult = () => {
 
       console.log("status: ", status);
       
-
       if (didGpSignInAttemptOccur) {
         console.log("Will redirect user because didGpSignInAttemptOccur is true.");
         setWillRedirectUser(true);
