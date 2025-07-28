@@ -296,39 +296,21 @@ export const copyFiles = async (
     console.log("File copy result, result?.value?.data: ", result?.value?.data);
 
     if (
-      !fileCopies?.length &&
-      result?.value?.data.id &&
-      result?.value?.data?.name
-    ) {
-      updateClient({ fileCopied: originalFileObj.name });
-
-      fileCopies.push({
-        id: result?.value?.data?.id,
-        name: result?.value?.data?.name.replace(/Copy of/, ''),
-      });
-
-      continue;
-    }
-
-    if (
       result?.value?.data.id &&
       result?.value?.data?.name &&
-      !fileCopies.find(file => file.id === result?.value?.data.id) 
+      !fileCopies.find((file) => file.id === result?.value?.data.id)
     ) {
-      updateClient({ fileCopied: originalFileObj.name });
-
+      const name = result?.value?.data?.name.replace(/Copy of/, "").trim();
+    
       fileCopies.push({
         id: result?.value?.data?.id,
-        name: result?.value?.data?.name?.replace(/Copy of/, ''),
+        name,
       });
-
-      continue;
     }
 
     updateClient({ fileCopied: originalFileObj.name });
   }
 
-  console.log("failedCopiedFilesIndices: ", failedCopiedFilesIndices);
 
   if (failedCopiedFilesIndices.size) {
     console.error(

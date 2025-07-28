@@ -1143,8 +1143,8 @@ export default async function handler(
       fileCopies?: { id: string; name: string }[];
     };
 
-    console.log("fileCopies length: ", fileCopies?.length);
-    console.log("files length: ", files?.length);
+    console.log("fileCopies length: ", fileCopies);
+    // console.log("files length: ", files?.length);
 
     if (!isStreamOpen) {
       const result = await deleteGoogleDriveItem(
@@ -1184,7 +1184,6 @@ export default async function handler(
 
     console.log("Will rename all files. Deleting the 'Copy of' text.");
 
-    // todo: GOAL: rename the files here
     if (fileCopies?.length) {
       sendMessage(response, {
         msg: "Renaming files.",
