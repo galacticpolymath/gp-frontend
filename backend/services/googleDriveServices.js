@@ -291,7 +291,7 @@ export const copyFiles = async (
 
     const file = files[index];
 
-    console.log("file: ", file);
+    console.log("copy file result: ", file);
 
     updateClient({ fileCopied: file.name });
   }
