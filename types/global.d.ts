@@ -109,7 +109,7 @@ export interface IUnitForUnitsPg extends INewUnitSchema {
 }
 
 type TLiveUnit = INewUnitSchema & {
-  individualLessonsNum: number;
+  individualLessonsNum?: number;
   isNew?: boolean;
 };
 

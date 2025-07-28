@@ -22,7 +22,16 @@ import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteract
 import { TAccountStageLabel } from "../backend/services/userServices";
 import { getLocalStorageItem } from "../shared/fns";
 import ThankYouModal from "../components/GpPlus/ThankYouModal";
+import { connectToMongodb } from "../backend/utils/connection";
+import { filterInShowableUnits, retrieveUnits } from "../backend/services/unitServices";
 
+interface IProps {
+  liveUnitsTotal?: number
+  errType?: string
+  errObj?: object
+}
+
+const DEFAULT_LIVE_UNITS_TOTAL = 17;
 const ICON_DIMENSION = 70;
 const BTN_HEIGHT = "42px";
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
@@ -60,7 +69,11 @@ const CardTitle: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-const GpPlus: React.FC = () => {
+const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
+  console.log("Error object: ", errObj);
+  console.log("Error type: ", errType);
+  console.log("liveUnitsTotal: ", liveUnitsTotal);
+
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
     "monthly"
   );
@@ -94,7 +107,11 @@ const GpPlus: React.FC = () => {
   const monthlyEquivalent = yearlyPrice / 12; // $5/month when paid yearly
   const gpPlusBtnTxt = useMemo(() => {
     console.log("gpPlusSubscription, sup there: ", gpPlusSubscription);
-    const hasMemeberhsip = gpPlusSubscription?.membership?.AccountStageLabel && HAS_MEMBERSHIP_STATUSES.has(gpPlusSubscription?.membership?.AccountStageLabel);
+    const hasMemeberhsip =
+      gpPlusSubscription?.membership?.AccountStageLabel &&
+      HAS_MEMBERSHIP_STATUSES.has(
+        gpPlusSubscription?.membership?.AccountStageLabel
+      );
 
     if (hasMemeberhsip) {
       return "Manage account";
@@ -170,20 +187,22 @@ const GpPlus: React.FC = () => {
       );
     }
 
-    if(status === "authenticated"){
+    if (status === "authenticated") {
       window.Outseta?.on("signup", () => {
         console.log("The user has signed up.");
-        const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
+        const gpPlusFeatureLocation = getLocalStorageItem(
+          "gpPlusFeatureLocation"
+        );
 
         console.log("Will redirect the user to: ", gpPlusFeatureLocation);
 
-        if(gpPlusFeatureLocation){
+        if (gpPlusFeatureLocation) {
           console.log("Will redirect the user.");
           window.location.href = gpPlusFeatureLocation;
-          
+
           return false;
         }
-        
+
         const currentUrl = window.location.href;
         window.location.href = currentUrl;
 
@@ -361,6 +380,7 @@ const GpPlus: React.FC = () => {
       (window as any).Outseta.setMagicLinkIdToken(idToken);
       resetUrl(router);
     }
+    console.log("");
   }, []);
 
   const isGpLiteBtnDisabled = !wasGpPlusSubRetrieved || wasGpLiteBtnClicked;
@@ -446,7 +466,7 @@ const GpPlus: React.FC = () => {
                     }}
                   />
                 </div>
-                <CardTitle>Lite</CardTitle>
+                <CardTitle>Free</CardTitle>
                 <div>
                   <div className="gpplus-card-subheader mt-2 text-center">
                     INDIVIDUAL
@@ -455,10 +475,12 @@ const GpPlus: React.FC = () => {
                 <div>
                   <ul className="gpplus-features">
                     <li>+ 1 user</li>
-                    <li>+ 15 STEM units</li>
-                    <li>+ 50 STEM lessons</li>
+                    <li>+ ALL {liveUnitsTotal} STEM units</li>
+                    <li>+ 50+ STEM lessons</li>
                     <li>+ Access to future lessons</li>
-                    <li>+ View-Only access</li>
+                    <li>
+                      + <i>View-Only</i> teaching materials
+                    </li>
                   </ul>
                 </div>
                 <div
@@ -521,10 +543,12 @@ const GpPlus: React.FC = () => {
                 <div>
                   <ul className="gpplus-features">
                     <li>
-                      + Everything in <b>Lite</b>
+                      + Everything in <b>Free</b>
                     </li>
                     <li>+ Bulk copy entire units to your GDrive</li>
-                    <li>+ Editable teaching materials</li>
+                    <li>
+                      + <i>Editable</i> teaching materials
+                    </li>
                   </ul>
                 </div>
                 <div>
@@ -743,26 +767,42 @@ const GpPlus: React.FC = () => {
   );
 };
 
-// export const getServerSideProps = async () => {
-//   try {
-//     await connectToMongod(15_000, 0, true);
+export const getStaticProps = async () => {
+  try {
+    await connectToMongodb(15_000, 0, true);
 
-//     const units = [
-//       await Units.find({}, { numID: 1, _id: 0, locale: 1 }).lean(),
-//     ].flat();
+    const { wasSuccessful, data: units } = await retrieveUnits({}, {})
 
-//     return {
-//       paths: units.map(({ numID, locale }) => ({
-//         params: { id: `${numID}`, loc: `${locale ?? ""}` },
-//       })),
-//       fallback: false,
-//     };
-//   } catch (error) {
-//     console.error(
-//       "An error has occurred in getting the available paths for the selected lesson page. Error message: ",
-//       error
-//     );
-//   }
-// };
+    if (!wasSuccessful || !units) {
+      return {
+        props: {
+          errType: "unitsRetrievalErr",
+        }
+      };
+    }
+
+    const liveUnits = filterInShowableUnits(units, new Date().getTime(), false);
+
+    return {
+      props: {
+        liveUnitsTotal: liveUnits?.length || DEFAULT_LIVE_UNITS_TOTAL,
+      },
+      revalidate: 30,
+    };
+  } catch (error) {
+    console.error(
+      "An error has occurred in getting the available paths for the selected lesson page. Error message: ",
+      error
+    );
+
+    return {
+      props: {
+        errType: "unitsRetrievalErr",
+        errObj: error,
+      },
+      revalidate: 30,
+    };
+  }
+};
 
 export default GpPlus;

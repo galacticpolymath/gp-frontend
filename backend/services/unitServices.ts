@@ -527,8 +527,12 @@ const getIsUnitNew = (releaseDate: Date, now: number) => {
   return isNew;
 };
 
-const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number) => {
+const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number, willGetUnitMetaData = true) => {
   const liveUnits = getLiveUnits(units).filter((unit) => unit?.ReleaseDate);
+
+  if(!willGetUnitMetaData){
+    return liveUnits as ILiveUnit[];
+  }
 
   return liveUnits.map((unit) => {
     const individualLessonsNum =
