@@ -23,12 +23,15 @@ import { TAccountStageLabel } from "../backend/services/userServices";
 import { getLocalStorageItem } from "../shared/fns";
 import ThankYouModal from "../components/GpPlus/ThankYouModal";
 import { connectToMongodb } from "../backend/utils/connection";
-import { filterInShowableUnits, retrieveUnits } from "../backend/services/unitServices";
+import {
+  filterInShowableUnits,
+  retrieveUnits,
+} from "../backend/services/unitServices";
 
 interface IProps {
-  liveUnitsTotal?: number
-  errType?: string
-  errObj?: object
+  liveUnitsTotal?: number;
+  errType?: string;
+  errObj?: object;
 }
 
 const DEFAULT_LIVE_UNITS_TOTAL = 17;
@@ -416,7 +419,15 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
               </div>
             </div>
           </div>
-          <div className="gpplus-toggle-row w-100 d-flex justify-content-center align-items-center py-1">
+          <div className="d-flex justify-content-center align-items-center mt-2 mb-0">
+            <p style={{ fontSize: "1rem" }}>
+              <i>
+                Help keep this site live & support the free tier by subscribing
+                to GP+
+              </i>
+            </p>
+          </div>
+          <div className="gpplus-toggle-row w-100 d-flex justify-content-center align-items-center pb-1">
             <div className="d-flex flex-column flex-sm-row w-75 justify-content-center align-items-center">
               <div className="px-3 mb-sm-0 mb-1">
                 <span className={billingPeriod === "monthly" ? "active" : ""}>
@@ -771,13 +782,13 @@ export const getStaticProps = async () => {
   try {
     await connectToMongodb(15_000, 0, true);
 
-    const { wasSuccessful, data: units } = await retrieveUnits({}, {})
+    const { wasSuccessful, data: units } = await retrieveUnits({}, {});
 
     if (!wasSuccessful || !units) {
       return {
         props: {
           errType: "unitsRetrievalErr",
-        }
+        },
       };
     }
 
