@@ -28,6 +28,7 @@ import {
 } from "../../../backend/services/userServices";
 import { connectToMongodb } from "../../../backend/utils/connection";
 import { OAuth2Client } from "google-auth-library";
+import { headers } from "next/headers";
 
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
@@ -111,19 +112,18 @@ const createGoogleDriveFolderForUser = async (
 
       console.log("the user is not authenticated: ", refreshToken);
 
-      const { data } =
+      const refreshTokenRes =
         (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ??
         {};
+      const { accessToken } = refreshTokenRes;
 
-      console.log("Refresh token response data: ", data);
-
-      if (!data?.access_token) {
+      if (!accessToken) {
         throw new Error("Failed to refresh access token");
       }
 
       return await createGoogleDriveFolderForUser(
         folderName,
-        data?.access_token,
+        accessToken,
         parentFolderIds,
         tries,
         refreshToken,
@@ -136,6 +136,72 @@ const createGoogleDriveFolderForUser = async (
       errMsg: errMsg,
       status: error?.response?.data?.error?.status,
     };
+  }
+};
+
+interface IFile {
+  title: string;
+  [key: string]: unknown;
+}
+
+const updateFile = async (
+  fileId: string,
+  reqBody: IFile,
+  accessToken: string
+) => {
+  try {
+    const { status, data } = await axios.put<{
+      id: string;
+      [key: string]: unknown;
+    }>(`https://www.googleapis.com/drive/v2/files/${fileId}`, reqBody, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (status !== 200) {
+      throw new CustomError(
+        `Failed to update the target file. Status code: ${status}`,
+        status
+      );
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error(
+      "An error has occurred. Failed to update the target file. Reason: ",
+      error
+    );
+    console.log("updateFile, error?.response?.data: ", error?.response?.data);
+
+    if (error?.response?.data?.error?.code === 404) {
+      return {
+        errType: "notFound",
+        fileId,
+        reqBody,
+      };
+    }
+
+    if (error?.code === "ECONNABORTED") {
+      console.log(
+        "Timeout occurred while updating the target file. Returning timeout error type."
+      );
+
+      return { errType: "timeout", fileId, reqBody };
+    }
+
+    if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
+      console.log(
+        "User is not authenticated. Returning unauthenticated error type."
+      );
+
+      return {
+        errType: "unauthenticated",
+      };
+    }
+
+    return { errType: "generalErr", fileId, reqBody };
   }
 };
 
@@ -203,6 +269,131 @@ const sendMessage = <TMsg extends object = TCopyFilesMsg>(
   }
 
   response.write(`data: ${_data}\n\n`);
+};
+
+const renameFiles = async (
+  fileCopies: { id: string; name: string }[],
+  gdriveAccessToken: string,
+  gdriveRefreshToken: string,
+  origin: string,
+  tries = 5
+) => {
+  try {
+    const fileUpdatesPromises = fileCopies.map((file) => {
+      return updateFile(file.id, { title: file.name }, gdriveAccessToken);
+    });
+    const fileUpdatesResults = await Promise.all(fileUpdatesPromises);
+    const filesUpdateFailedDueToTimeout = fileUpdatesResults.filter(
+      (result) => {
+        return result.errType === "timeout";
+      }
+    );
+    const filesUpdateFailedDueInvalidAuthToken = fileUpdatesResults.filter(
+      (result) => {
+        return result.errType === "unauthenticated";
+      }
+    );
+
+    if (
+      !filesUpdateFailedDueInvalidAuthToken.length &&
+      !filesUpdateFailedDueToTimeout.length
+    ) {
+      console.log("All files have been successfully renamed.");
+
+      return {
+        wasSuccessful: true,
+      };
+    }
+
+    if (filesUpdateFailedDueInvalidAuthToken.length && tries > 0) {
+      tries -= 1;
+      const refreshTokenRes =
+        (await refreshAuthToken(gdriveRefreshToken, origin)) ?? {};
+      const { accessToken, wasSuccessful } = refreshTokenRes;
+
+      if (!wasSuccessful) {
+        return {
+          wasSuccessful: false,
+          errType: "invalidAuthToken",
+        };
+      }
+
+      const filesToUpdateRetry: Parameters<typeof renameFiles>[0] = [];
+
+      for (const fileUpdateResult of fileUpdatesResults) {
+        console.log("fileUpdateResult: ", fileUpdateResult);
+
+        if (
+          "errType" in fileUpdateResult &&
+          (fileUpdateResult.errType === "timeout" ||
+            fileUpdateResult.errType === "unauthenticated")
+        ) {
+          filesToUpdateRetry.push({
+            id: fileUpdateResult.fileId as string,
+            name: (fileUpdateResult.reqBody as IFile).title,
+          });
+        }
+      }
+
+      return await renameFiles(
+        filesToUpdateRetry,
+        accessToken,
+        gdriveRefreshToken,
+        origin,
+        tries
+      );
+    }
+
+    if (filesUpdateFailedDueToTimeout.length && tries > 0) {
+      const filesToUpdateRetry: Parameters<typeof renameFiles>[0] = [];
+
+      for (const fileUpdateResult of filesUpdateFailedDueToTimeout) {
+        console.log("fileUpdateResult: ", fileUpdateResult);
+
+        if (
+          "errType" in fileUpdateResult &&
+          fileUpdateResult.errType === "timeout"
+        ) {
+          filesToUpdateRetry.push({
+            id: fileUpdateResult.fileId as string,
+            name: (fileUpdateResult.reqBody as IFile).title,
+          });
+        }
+      }
+
+      tries -= 1;
+      await waitWithExponentialBackOff(tries, [2_000, 5_000]);
+
+      return await renameFiles(
+        filesToUpdateRetry,
+        gdriveAccessToken,
+        gdriveRefreshToken,
+        origin,
+        tries
+      );
+    }
+
+    const filesFailedToUpdated = fileUpdatesResults.map((fileUpdateResult) => {
+      return (
+        "errType" in fileUpdateResult &&
+        (fileUpdateResult.errType === "timeout" ||
+          fileUpdateResult.errType === "unauthenticated")
+      );
+    });
+
+    return {
+      failedUpdatedFiles: filesFailedToUpdated,
+      wasSuccessful: false,
+      errType: "fileUpdateErr",
+    };
+  } catch (error) {
+    console.error("Error renaming files:", error);
+
+    return {
+      errType: "renameFilesFailed",
+      wasSuccessful: false,
+    };
+  }
 };
 
 /**
@@ -793,8 +984,8 @@ export default async function handler(
         return;
       } else {
         console.log(
-        "The 'My GP Plus' folder exist. Will proceed with unit copy implementation."
-      );
+          "The 'My GP Plus' folder exist. Will proceed with unit copy implementation."
+        );
       }
     }
 
@@ -939,7 +1130,7 @@ export default async function handler(
 
     console.log("Will copy files...");
 
-    const { wasSuccessful: wasCopiesSuccessful } = await copyFiles(
+    const { wasSuccessful: wasCopiesSuccessful, fileCopies } = (await copyFiles(
       files,
       createdFolders,
       gdriveAccessToken,
@@ -947,7 +1138,13 @@ export default async function handler(
       (data: TCopyFilesMsg) => {
         sendMessage(response, data);
       }
-    );
+    )) as {
+      wasSuccessful: boolean;
+      fileCopies?: { id: string; name: string }[];
+    };
+
+    console.log("fileCopies length: ", fileCopies?.length);
+    console.log("files length: ", files?.length);
 
     if (!isStreamOpen) {
       const result = await deleteGoogleDriveItem(
@@ -985,16 +1182,21 @@ export default async function handler(
       return;
     }
 
+    console.log("Will rename all files. Deleting the 'Copy of' text.");
+
     // todo: GOAL: rename the files here
-    sendMessage(
-      response,
-      {
+    if (fileCopies?.length) {
+      sendMessage(response, {
         msg: "Renaming files.",
+      });
+      const renameFilesResult = await renameFiles(fileCopies, gdriveAccessToken, gdriveRefreshToken, origin);
+
+      if(!renameFilesResult.wasSuccessful){
+        console.log("Failed to rename files.");
+      } else {
+        console.log("Renamed all files successfully.");
       }
-    );
-
-
-
+    }
 
     sendMessage(
       response,

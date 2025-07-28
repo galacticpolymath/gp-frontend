@@ -140,7 +140,7 @@ export const shareFilesWithRetries = async (
     const shareFilePromises = [];
 
     for (const file of files) {
-      console.log("file name: ", file.name)
+      console.log("file name: ", file.name);
       const shareFilePromise = drive.permissions.create({
         resource: {
           type: "user",
@@ -166,10 +166,13 @@ export const shareFilesWithRetries = async (
       const result = sharedFilesResults[resultIndex];
 
       console.log("Share file result: ", result);
-      const targetFile = files[parseInt(resultIndex)]
+      const targetFile = files[parseInt(resultIndex)];
       console.log("The target file: ", targetFile);
-      
-      if (result.status == "rejected" && result?.reason?.response?.data?.error?.code === 400) {
+
+      if (
+        result.status == "rejected" &&
+        result?.reason?.response?.data?.error?.code === 400
+      ) {
         console.log("Name of restricted file: ", targetFile.name);
 
         console.error(result?.reason?.response);
@@ -191,7 +194,6 @@ export const shareFilesWithRetries = async (
       console.log("Successful file share: ", targetFile.name);
     }
 
-
     if (failedShareFilesIndices.size) {
       const failedFilesToShare = files.filter((_, index) =>
         failedShareFilesIndices.has(index)
@@ -202,8 +204,7 @@ export const shareFilesWithRetries = async (
 
       waitWithExponentialBackOff(tries, [1000, 5_500]);
 
-      console.log('Current tries: ', tries);
-      
+      console.log("Current tries: ", tries);
 
       return await shareFilesWithRetries(
         failedFilesToShare,
@@ -251,7 +252,8 @@ export const copyFiles = async (
   createdFolders,
   accessToken,
   tries = 0,
-  updateClient
+  updateClient,
+  fileCopies = []
 ) => {
   if (tries > 10) {
     console.error("Failed to copy files. Reached max tries.");
@@ -289,11 +291,41 @@ export const copyFiles = async (
       continue;
     }
 
-    const file = files[index];
+    const originalFileObj = files[index];
 
-    console.log("copy file result: ", file);
+    console.log("File copy result, result?.value?.data: ", result?.value?.data);
 
-    updateClient({ fileCopied: file.name });
+    if (
+      !fileCopies?.length &&
+      result?.value?.data.id &&
+      result?.value?.data?.name
+    ) {
+      updateClient({ fileCopied: originalFileObj.name });
+
+      fileCopies.push({
+        id: result?.value?.data?.id,
+        name: result?.value?.data?.name.replace(/Copy of/, ''),
+      });
+
+      continue;
+    }
+
+    if (
+      result?.value?.data.id &&
+      result?.value?.data?.name &&
+      !fileCopies.find(file => file.id === result?.value?.data.id) 
+    ) {
+      updateClient({ fileCopied: originalFileObj.name });
+
+      fileCopies.push({
+        id: result?.value?.data?.id,
+        name: result?.value?.data?.name?.replace(/Copy of/, ''),
+      });
+
+      continue;
+    }
+
+    updateClient({ fileCopied: originalFileObj.name });
   }
 
   console.log("failedCopiedFilesIndices: ", failedCopiedFilesIndices);
@@ -313,13 +345,14 @@ export const copyFiles = async (
       failedCopiedFiles,
       createdFolders,
       accessToken,
-      tries
+      tries,
+      fileCopies
     );
   }
 
   console.log("Successfully copied all files.");
 
-  return { wasSuccessful: true };
+  return { wasSuccessful: true, fileCopies };
 };
 
 export const refreshAuthToken = async (refreshToken, origin) => {

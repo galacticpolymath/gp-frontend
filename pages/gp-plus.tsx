@@ -743,4 +743,26 @@ const GpPlus: React.FC = () => {
   );
 };
 
+// export const getStaticPaths = async () => {
+//   try {
+//     await connectToMongodb(15_000, 0, true);
+
+//     const units = [
+//       await Units.find({}, { numID: 1, _id: 0, locale: 1 }).lean(),
+//     ].flat();
+
+//     return {
+//       paths: units.map(({ numID, locale }) => ({
+//         params: { id: `${numID}`, loc: `${locale ?? ""}` },
+//       })),
+//       fallback: false,
+//     };
+//   } catch (error) {
+//     console.error(
+//       "An error has occurred in getting the available paths for the selected lesson page. Error message: ",
+//       error
+//     );
+//   }
+// };
+
 export default GpPlus;
