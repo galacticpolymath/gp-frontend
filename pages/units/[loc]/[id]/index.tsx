@@ -51,6 +51,7 @@ import { TUserSchemaForClient } from "../../../../backend/models/User/types";
 import LessonItemModal from "../../../../components/LessonSection/Modals/LessonItemModal";
 import GpPlusModal from "../../../../components/LessonSection/Modals/GpPlusModal";
 import ThankYouModal from "../../../../components/GpPlus/ThankYouModal";
+import { getLocalStorageItem, removeLocalStorageItem } from "../../../../shared/fns";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -587,14 +588,13 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
 
-          const params = new URLSearchParams(window.location.search);
+          const willShowGpPlusPurchaseThankYouModal = getLocalStorageItem(
+            "willShowGpPlusPurchaseThankYouModal"
+          );
 
-          if (
-            data.isGpPlusMember &&
-            params.get("gp_plus_subscription_bought") === "true"
-          ) {
+          if (data.isGpPlusMember && willShowGpPlusPurchaseThankYouModal) {
             setIsThankYouModalDisplayed(true);
-            resetUrl(router);
+            removeLocalStorageItem("willShowGpPlusPurchaseThankYouModal")
           }
         } catch (error) {
           console.error("An error has occurred: ", error);

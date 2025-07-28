@@ -166,6 +166,7 @@ export interface IUpdatedAboutUserForm{
 
 export interface ILocalStorage{
   gpPlusFeatureLocation: string;
+  willShowGpPlusPurchaseThankYouModal: boolean
   didGpSignInAttemptOccur: boolean;
   userAccount: TUserSchemaForClient
 }

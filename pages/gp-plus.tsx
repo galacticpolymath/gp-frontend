@@ -20,7 +20,7 @@ import { resetUrl } from "../globalFns";
 import { useRouter } from "next/router";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
 import { TAccountStageLabel } from "../backend/services/userServices";
-import { getLocalStorageItem } from "../shared/fns";
+import { getLocalStorageItem, setLocalStorageItem } from "../shared/fns";
 import ThankYouModal from "../components/GpPlus/ThankYouModal";
 import { connectToMongodb } from "../backend/utils/connection";
 import {
@@ -75,7 +75,6 @@ const CardTitle: React.FC<{ children: ReactNode }> = ({ children }) => {
 const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
   console.log("Error object: ", errObj);
   console.log("Error type: ", errType);
-  console.log("liveUnitsTotal: ", liveUnitsTotal);
 
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
     "monthly"
@@ -101,6 +100,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
 
   useGpPlusModalInteraction(!!gpPlusSubscription?.membership);
   useOutsetaInputValidation();
+
   const [didUserSignUp, setDidUserSignUp] = useState(false);
 
   console.log("gpPlusSubscription, in GP+ component: ", gpPlusSubscription);
@@ -189,7 +189,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
         "An error occurred: Email input could not be found despite user being authenticated."
       );
     }
-
+    
     if (status === "authenticated") {
       window.Outseta?.on("signup", () => {
         console.log("The user has signed up.");
@@ -197,11 +197,21 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
           "gpPlusFeatureLocation"
         );
 
-        console.log("Will redirect the user to: ", gpPlusFeatureLocation);
+        console.log("gpPlusFeatureLocation: ", gpPlusFeatureLocation);
 
+        // will redirect to the selected unit so that user can copy it
+        if (gpPlusFeatureLocation?.includes("#")) {
+          setLocalStorageItem("willShowGpPlusPurchaseThankYouModal", true);
+
+          window.location.href = gpPlusFeatureLocation;
+
+          return false;
+        }
+
+        // will redirect to the account page
         if (gpPlusFeatureLocation) {
           console.log("Will redirect the user.");
-          window.location.href = gpPlusFeatureLocation;
+          window.location.href = `${gpPlusFeatureLocation}?gp_plus_subscription_bought=true`;
 
           return false;
         }
@@ -383,7 +393,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
       (window as any).Outseta.setMagicLinkIdToken(idToken);
       resetUrl(router);
     }
-    console.log("");
   }, []);
 
   const isGpLiteBtnDisabled = !wasGpPlusSubRetrieved || wasGpLiteBtnClicked;
