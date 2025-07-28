@@ -59,7 +59,7 @@ const GoogleDriveAuthResult = () => {
   const { isError, isFetching } = useQuery({
     retry: 1,
     refetchOnWindowFocus: false,
-    queryKey: ["authToken"],
+    queryKey: [status],
     queryFn: async () => {
       const didGpSignInAttemptOccur = getLocalStorageItem(
         "didGpSignInAttemptOccur"
@@ -67,12 +67,18 @@ const GoogleDriveAuthResult = () => {
 
       console.log("Will Attempt to sign the target user into google drive.")
 
+      console.log("status: ", status);
+      
+
       if (didGpSignInAttemptOccur) {
+        console.log("Will redirect user because didGpSignInAttemptOccur is true.");
         setWillRedirectUser(true);
         return true;
       }
 
       if (status !== "authenticated") {
+        console.log("The user is unauthenticated. Please log in first.");
+        
         sessionStorage.setItem(`${window.location.search}`, "true");
         throw new Error("userUnauthenticated");
       }

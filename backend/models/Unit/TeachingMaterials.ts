@@ -157,6 +157,10 @@ export const TeachingMaterialsSchema = new Schema<
             name: "GdrivePublicID",
             as: "GdrivePublicID",
           },
+          {
+            name: "MediumTitle",
+            as: "MediumTitle",
+          },
         ]
     },
   },

@@ -42,7 +42,7 @@ import LessonPart from "./LessonPart";
 import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
-import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
+import { CONTACT_SUPPORT_EMAIL, UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import Link from "next/link";
 import Sparkles from "../../SparklesAnimation";
 import { useUserContext } from "../../../providers/UserProvider";
@@ -293,6 +293,9 @@ const TeachItUI = <
       "gdrive-token-refresh": gdriveRefreshToken,
       "user-id": user.userId,
     };
+    
+    console.log("MediumTitle: ", MediumTitle);
+
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
     const unitNum = new URL(window.location.href).pathname
       .split("/")
@@ -300,7 +303,7 @@ const TeachItUI = <
     url.searchParams.append("unitDriveId", GdrivePublicID);
     url.searchParams.append(
       "unitName",
-      MediumTitle ?? `${Title ?? `Unit ${unitNum}`} copy`
+      MediumTitle ?? `${Title ?? `Unit ${unitNum}`} COPY`
     );
 
     const eventSource = new EventSourcePolyfill(url.href, {
