@@ -63,7 +63,7 @@
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
     "react-cookie": "^7.2.2",
-    "react-dom": "^19.1.0",
+    "react-dom": "^19.1.1",
     "react-flags-select": "^2.5.0",
     "react-highlight-words": "^0.21.0",
     "react-icons": "^5.5.0",
