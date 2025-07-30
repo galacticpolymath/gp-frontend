@@ -379,7 +379,11 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       return sectionASortNum - sectionBSortNum;
     });
 
-    return unitSectionAndTitlePairs.map(([, section]) => section);
+    return unitSectionAndTitlePairs
+      .map(([, section]) => section)
+      .filter((section) => {
+        return section?.__component;
+      });
   }, []);
 
   const _unitSections = useMemo(() => {
