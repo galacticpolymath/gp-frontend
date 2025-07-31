@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { resetUrl } from "../globalFns";
 import { useRouter } from "next/router";
@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 export const useHandleGpPlusLogin = () => {
   const { status } = useSession();
   const router = useRouter();
+  const [checkForOutsetaPropCount, setCheckForOutsetaPropCount] = useState(0)
   
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -13,14 +14,23 @@ export const useHandleGpPlusLogin = () => {
 
     console.log("(window as any).Outseta: ", (window as any).Outseta);
 
-    if (idToken && status === "authenticated") {
+    if (
+      idToken &&
+      status === "authenticated" &&
+      typeof (window as any)?.Outseta?.setMagicLinkIdToken !== "function" &&
+      checkForOutsetaPropCount <= 5
+    ) {
+      setTimeout(() => {
+        setCheckForOutsetaPropCount(state => state + 1);
+      }, 1_000)
+    } else if (idToken && status === "authenticated") {
       (window as any).Outseta.setMagicLinkIdToken(idToken);
 
       (window as any).Outseta.profile.open();
 
       resetUrl(router);
     }
-  }, [status]);
+  }, [status, checkForOutsetaPropCount]);
 
 
   return

@@ -3,12 +3,13 @@
 /* eslint-disable indent */
 
 import { getMailingListContact } from "../../backend/services/emailServices";
-import { getGpPlusIndividualMembershipStatus, getUserByEmail, handleUserDeprecatedV1Fields, TAccountStageLabel } from "../../backend/services/userServices";
+import { getUserByEmail, handleUserDeprecatedV1Fields } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyJwt } from "../../nondependencyFns";
 import { IUserSchema, TUserSchemaForClient, TUserSchemaV2 } from "../../backend/models/User/types";
+import { getGpPlusIndividualMembershipStatus, TAccountStageLabel } from "../../backend/services/outsetaServices";
 
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",

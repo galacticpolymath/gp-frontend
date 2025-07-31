@@ -2,12 +2,7 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import {
-  getBillingType,
-  getGpPlusIndividualMembershipStatus,
-  getUser,
   getUserByEmail,
-  TAccountStageLabel,
-  TGpPlusMembershipRetrieved,
 } from "../../../backend/services/userServices";
 import { verifyJwt } from "../../../nondependencyFns";
 import cache from "../../../backend/utils/cache";
@@ -16,6 +11,7 @@ import {
   TUserSchemaV2,
 } from "../../../backend/models/User/types";
 import { connectToMongodb } from "../../../backend/utils/connection";
+import { getBillingType, getGpPlusIndividualMembershipStatus, TAccountStageLabel, TGpPlusMembershipRetrieved } from "../../../backend/services/outsetaServices";
 
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",

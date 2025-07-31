@@ -19,7 +19,6 @@ import useHandleOpeningGpPlusAccount from "../customHooks/useHandleOpeningGpPlus
 import { resetUrl } from "../globalFns";
 import { useRouter } from "next/router";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
-import { TAccountStageLabel } from "../backend/services/userServices";
 import { getLocalStorageItem, setLocalStorageItem } from "../shared/fns";
 import ThankYouModal from "../components/GpPlus/ThankYouModal";
 import { connectToMongodb } from "../backend/utils/connection";
@@ -27,6 +26,7 @@ import {
   filterInShowableUnits,
   retrieveUnits,
 } from "../backend/services/unitServices";
+import { TAccountStageLabel } from "../backend/services/outsetaServices";
 
 interface IProps {
   liveUnitsTotal?: number;

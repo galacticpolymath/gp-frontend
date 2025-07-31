@@ -1,7 +1,8 @@
 import { SUBJECTS_OPTIONS } from "../../../components/User/AboutUser/AboutUserModal";
 import { TSchoolType } from "../../../providers/UserProvider";
 import { TReferredByOpt } from "../../../types/global";
-import { getBillingType, getGpPlusIndividualMembershipStatus, TAccountStageLabel, TGpPlusMembershipRetrieved } from "../../services/userServices";
+import { getBillingType, getGpPlusIndividualMembershipStatus } from "../../services/outsetaServices";
+import { TAccountStageLabel, TGpPlusMembershipRetrieved } from "../../services/userServices";
 import { TAboutUserFormDeprecated } from "./deprecated";
 
 export type TAgeGroupSelection = "U.S." | "Outside U.S.";
