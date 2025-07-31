@@ -16,7 +16,7 @@ import ForLessonTxt from "../LessonsPg/ForLessonTxt";
 import ForLessonTxtWrapper from "../LessonsPg/ForLessonTxtWrapper";
 import { UNITS_URL_PATH } from "../../shared/constants";
 import { TUseStateReturnVal } from "../../types/global";
-import { TWebAppForUI } from "../../backend/models/WebApp";
+import { TWebAppForUI } from "../../backend/models/webApp";
 
 const { Title } = Modal;
 

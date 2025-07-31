@@ -146,6 +146,7 @@ const TeachItUI = <
     GdrivePublicID,
     Title,
     MediumTitle,
+    unitCopyFolderLink,
   } = props;
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -666,6 +667,9 @@ const TeachItUI = <
                     </div>
                   )}
                 </BootstrapBtn>
+                <Link href={"#"}>
+                  https://github.com/galacticpolymath/gp-frontend/tree/backend-development
+                </Link>
               </div>
             </div>
           )}
