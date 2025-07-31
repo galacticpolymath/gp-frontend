@@ -118,7 +118,6 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     GdrivePublicID,
     Title: unitTitle,
     MediumTitle,
-    unitCopyFolderLink,
     unitId,
   } = props;
   let Data = props?.Data ?? props;
@@ -265,7 +264,6 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     <TeachItUI<ILessonForUI, IResource<ILessonForUI>>
       ref={ref}
       unitId={unitId}
-      unitCopyFolderLink={unitCopyFolderLink}
       ForGrades={ForGrades}
       lessonDur={Data.lessonDur}
       lessonPreface={Data.lessonPreface}
@@ -293,7 +291,6 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       MediumTitle={MediumTitle}
       lessonDur={unitDur}
       unitId={unitId}
-      unitCopyFolderLink={unitCopyFolderLink}
       lessonPreface={unitPreface}
       SectionTitle={SectionTitle}
       _sectionDots={_sectionDots}

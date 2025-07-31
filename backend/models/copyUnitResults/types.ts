@@ -4,6 +4,7 @@ export interface ICopyUnitResult{
     datetime: Date,
     unitId: string,
     result: "success" | "error",
+    doesCopyExistInUserGDrive: boolean;
     errMsg?: string,
-    unitFolderLink?: string,
+    gdriveFolderId?: string,
 }

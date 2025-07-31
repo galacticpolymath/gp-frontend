@@ -74,7 +74,6 @@ export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
 ) => void;
 export interface ITeachItServerProps {
-  unitCopyFolderLink?: string;
   unitId?: Pick<INewUnitSchema, "_id">["_id"];
 }
 export interface TeachItUIProps<
@@ -148,18 +147,15 @@ const TeachItUI = <
     GdrivePublicID,
     Title,
     MediumTitle,
-    unitCopyFolderLink,
     unitId,
   } = props;
-
-  console.log("TeachItUI props: ", props);
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
-  const { _isDownloadModalInfoOn } = useModalContext();
   const {
     _isGpPlusMember,
     _isCopyUnitBtnDisabled,
     _didAttemptRetrieveUserData,
+    _userLatestCopyUnitFolderId,
   } = useUserContext();
   const areThereGradeBands =
     !!gradeVariations?.length &&
@@ -168,9 +164,9 @@ const TeachItUI = <
     numsOfLessonPartsThatAreExpanded,
     setNumsOfLessonPartsThatAreExpanded,
   ] = useState<number[]>([]);
-  const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const [isGpPlusMember] = _isGpPlusMember;
   const [didAttemptRetrieveUserData] = _didAttemptRetrieveUserData;
+  const [userLatestCopyUnitFolderId] = _userLatestCopyUnitFolderId;
   const session = useSiteSession();
   const { getCookies, setAppCookie } = useCustomCookies();
   const queriedCookies = getCookies([
@@ -670,7 +666,7 @@ const TeachItUI = <
                     </div>
                   )}
                 </BootstrapBtn>
-                {unitCopyFolderLink && (
+                {userLatestCopyUnitFolderId && (
                   <div
                     style={{ maxWidth: "600px", fontSize: "18px" }}
                     className="text-break mx-auto text-center text-lg-start mt-2 d-lg-flex justify-content-center align-items-center flex-row flex-lg-column"
@@ -678,9 +674,9 @@ const TeachItUI = <
                     Your copy unit link:
                     <Link
                       className="ms-1 text-start text-lg-center"
-                      href={unitCopyFolderLink}
+                      href={userLatestCopyUnitFolderId}
                     >
-                      {unitCopyFolderLink}
+                      {userLatestCopyUnitFolderId}
                     </Link>
                   </div>
                 )}

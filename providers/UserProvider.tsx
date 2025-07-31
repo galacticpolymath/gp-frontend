@@ -82,6 +82,7 @@ export type TUserProviderValue = {
   _accountForm: TUseStateReturnVal<TAccountForm>;
   _isGpPlusMember: TUseStateReturnVal<boolean>;
   _isCopyUnitBtnDisabled: TUseStateReturnVal<boolean>;
+  _userLatestCopyUnitFolderId: TUseStateReturnVal<string | null>;
 };
 export interface TAccountForm {
   firstName: string;
@@ -99,7 +100,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     lastName: "",
     isOnMailingList: true,
   });
-  const [didAttemptRetrieveUserData, setDidAttemptRetrieveUserData] = useState(false);
+  const [userLatestCopyUnitFolderId, setUserLatestCopyUnitFolderId] = useState<
+    string | null
+  >(null);
+  const [didAttemptRetrieveUserData, setDidAttemptRetrieveUserData] =
+    useState(false);
   const [isUserTeacher, setIsUserTeacher] = useState(false);
   const [isGpPlusMember, setIsGpPlusMember] = useState(false);
   const value: TUserProviderValue = {
@@ -108,7 +113,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     _accountForm: [accountForm, setAccountForm],
     _isGpPlusMember: [isGpPlusMember, setIsGpPlusMember],
     _isCopyUnitBtnDisabled: [isCopyUnitBtnDisabled, setIsCopyUnitBtnDisabled],
-    _didAttemptRetrieveUserData: [didAttemptRetrieveUserData, setDidAttemptRetrieveUserData],
+    _didAttemptRetrieveUserData: [
+      didAttemptRetrieveUserData,
+      setDidAttemptRetrieveUserData,
+    ],
+    _userLatestCopyUnitFolderId: [
+      userLatestCopyUnitFolderId,
+      setUserLatestCopyUnitFolderId,
+    ],
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

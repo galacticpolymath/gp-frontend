@@ -35,13 +35,13 @@ import { GDRIVE_FOLDER_ORIGIN_AND_PATH } from "../../../components/CopyingUnitTo
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
 
-const getGDriveItem = async (
+export const getGDriveItem = async (
   fileId: string,
   accessToken: string,
   tries = 3
-) => {
+): Promise<{ id: string; [key: string]: unknown } | { errType: string }> => {
   try {
-    return await axios.get<{ id: string; [key: string]: unknown }>(
+    const { status, data } = await axios.get<{ id: string; [key: string]: unknown }>(
       `https://www.googleapis.com/drive/v3/files/${fileId}`,
       {
         headers: {
@@ -53,6 +53,15 @@ const getGDriveItem = async (
         },
       }
     );
+
+    if (status !== 200) {
+      throw new CustomError(
+        data ?? "Failed to retrieve Google Drive item.",
+        status
+      );
+    }
+
+    return data;
   } catch (error: any) {
     if (error?.response?.data?.error?.code === 404) {
       return {
@@ -1134,7 +1143,8 @@ export default async function handler(
         result: "success",
         userId: userIdFromClient,
         unitId,
-        unitFolderLink: `${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${copyDestinationFolderId}`
+        gdriveFolderId: copyDestinationFolderId,
+        doesCopyExistInUserGDrive: true
       });
 
     if (!copyUnitJobInsertionResult.wasSuccessful) {
@@ -1167,7 +1177,8 @@ export default async function handler(
         result: "error",
         errMsg: `Error object: ${errMsg}`,
         userId: userIdFromClient,
-        unitId
+        unitId,
+        doesCopyExistInUserGDrive: false
       });
       
       if(!copyUnitJobInsertionResult.wasSuccessful){

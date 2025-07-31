@@ -9,7 +9,7 @@ if(!CopyUnitResults){
         userId: { type: String, required: true },
         unitId: { type: String, required: true },
         result: { type: String, required: true },
-        unitFolderLink: { type: String, required: true },
+        gdriveFolderId: { type: String, required: true },
         errMsg: String,
     });
 
