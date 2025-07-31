@@ -83,6 +83,39 @@ export const sendDeleteUserReq = async (email: string, token: string) => {
     }
 };
 
+/**
+ * Makes a delete request to the server to delete the user from cache.
+ * @param token The authentication token.
+ * @throws An error has occurred if the server responds with a status code that is not 200 or the wrong parameter type is passed.
+ */
+export const deleteUserFromServerCache = async (token: string) => {
+    try {
+        if (!token) {
+            throw new Error('The "token" parameter cannot be empty.');
+        }
+
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        };
+        const response = await axios.delete('/api/delete-user-cache', { headers });
+
+        if (response.status !== 200) {
+            throw new Error('Failed to delete the user from cache.');
+        }
+
+        console.log('Response data: ', response.data);
+
+        return {
+            wasSuccessful: true
+        };
+    } catch (error) {
+        console.error('Failed to delete the user from cache. Reason: ', error);
+
+        return { wasSuccessful: false, msg: 'Failed to delete user from cache', errObj: error };
+    }
+};
+
 export const authenticateUserWithGDrive = async (code: string) => {
     try {
         const { status, data } = await axios.post<IErr | { data: IGoogleDriveAuthResBody}>('/api/gp-plus/auth', { code });

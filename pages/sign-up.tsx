@@ -2,9 +2,9 @@
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable no-useless-escape */
-/* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
+/* eslint-disable quotes */
 /* eslint-disable indent */
 import React, { useState } from "react";
 import { Spinner } from "react-bootstrap";
@@ -189,9 +189,7 @@ const SignUpPage: React.FC = () => {
           className="bg-white shadow-lg rounded p-4"
           style={{ width: "90%" }}
         >
-          <div
-            className="mb-xl-4 position-relative d-flex flex-column flex-xl-row sign-up-header-container"
-          >
+          <div className="mb-xl-4 position-relative d-flex flex-column flex-xl-row sign-up-header-container">
             <img
               className="position-absolute top-0 start-0 me-5 mt-1 d-xl-block d-none"
               src="/imgs/gp_logo_gradient_transBG.png"

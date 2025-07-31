@@ -702,6 +702,38 @@ export const deleteUserByEmail = async (email: string) => {
 };
 
 /**
+ * Deletes a user from the cache by email.
+ * @param {string} email The email of the user to delete from cache.
+ * @return {Promise<{ wasSuccessful: boolean, msg: string }>} A promise that resolves to an object with a boolean indicating whether the operation was successful and a message.
+ */
+export const deleteUserFromCache = async (email: string) => {
+  try {
+    if (!email || typeof email !== 'string') {
+      throw new Error('Email must be a non-empty string.');
+    }
+
+    // Import cache here to avoid circular dependencies
+    const { cache } = await import('../authOpts/authOptions');
+    
+    cache.del(email);
+
+    return { 
+      wasSuccessful: true, 
+      msg: 'User deleted from cache successfully' 
+    };
+  } catch (error) {
+    console.error("Failed to delete user from cache. Reason: ", error);
+
+    return { 
+      wasSuccessful: false, 
+      errType: "cacheDeletionErr",
+      errObj: error,
+      msg: 'Failed to delete user from cache' 
+    };
+  }
+};
+
+/**
  * Creates a database user.
  * @param {string} email
  * @param {string | null} password

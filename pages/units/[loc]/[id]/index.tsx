@@ -51,7 +51,10 @@ import { TUserSchemaForClient } from "../../../../backend/models/User/types";
 import LessonItemModal from "../../../../components/LessonSection/Modals/LessonItemModal";
 import GpPlusModal from "../../../../components/LessonSection/Modals/GpPlusModal";
 import ThankYouModal from "../../../../components/GpPlus/ThankYouModal";
-import { getLocalStorageItem, removeLocalStorageItem } from "../../../../shared/fns";
+import {
+  getLocalStorageItem,
+  removeLocalStorageItem,
+} from "../../../../shared/fns";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -511,18 +514,20 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       event.preventDefault();
       setCustomModalFooter(
         <CustomNotifyModalFooter
-          closeNotifyModal={handleIsUserEntryModalDisplayed(
-            setIsLoginModalDisplayed
-          )}
+          // sign in button
+          closeNotifyModal={() => {
+            router.push("/account");
+          }}
           leftBtnTxt="Sign In"
           customBtnTxt="Sign Up"
           footerClassName="d-flex justify-content-center"
           leftBtnClassName="border"
           leftBtnStyles={{ width: "150px", backgroundColor: "#898F9C" }}
           rightBtnStyles={{ backgroundColor: "#007BFF", width: "150px" }}
-          handleCustomBtnClick={handleIsUserEntryModalDisplayed(
-            setIsCreateAccountModalDisplayed
-          )}
+          // sign up button
+          handleCustomBtnClick={() => {
+            router.push("/gp-plus");
+          }}
         />
       );
       setNotifyModal({
@@ -594,7 +599,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
           if (data.isGpPlusMember && willShowGpPlusPurchaseThankYouModal) {
             setIsThankYouModalDisplayed(true);
-            removeLocalStorageItem("willShowGpPlusPurchaseThankYouModal")
+            removeLocalStorageItem("willShowGpPlusPurchaseThankYouModal");
           }
         } catch (error) {
           console.error("An error has occurred: ", error);
@@ -712,8 +717,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         <div className="p-sm-3 pt-0">
           {_unitSections ? (
             // TODO: if the user doesn't have an account, then slice the sections starting at the third section
-            // -and render those sections around a wrapper div that will be opaque in order to push the user to 
-            // -to sign up a free account 
+            // -and render those sections around a wrapper div that will be opaque in order to push the user to
+            // -to sign up a free account
             _unitSections.map((section: any, index: number) => (
               <ParentLessonSection
                 key={index}

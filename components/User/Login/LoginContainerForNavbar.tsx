@@ -16,9 +16,13 @@ import { useGetAboutUserForm } from "../../../customHooks/useGetAboutUserForm";
 import { TAboutUserForm } from "../../../backend/models/User/types";
 import { Spinner } from "react-bootstrap";
 import { getIsWithinParentElement } from "../../../shared/fns";
+import { deleteUserFromServerCache } from "../../../apiServices/user/crudFns";
+import useSiteSession from "../../../customHooks/useSiteSession";
 
 interface IProps {
-  _modalAnimation: TUseStateReturnVal<'d-none' | 'fade-out-quick' | 'fade-in-quick'>;
+  _modalAnimation: TUseStateReturnVal<
+    "d-none" | "fade-out-quick" | "fade-in-quick"
+  >;
 }
 
 const USER_ACCOUNT_MODAL_ID = "user-account-modal";
@@ -38,8 +42,8 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   ) as TAboutUserForm;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [modalAnimation, setModalAnimation] = _modalAnimation;
-  const { status, data } = useSession();
-  const { image, name } = data?.user ?? {};
+  const { status, user, token } = useSiteSession();
+  const { image, name } = user ?? {};
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
   const [isSigningUserOut, setIsSigningUserOut] = useState(false);
   const { clearCookies } = useCustomCookies();
@@ -58,6 +62,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     // TODO: determine if the user is logged into their gp plus account as well
     // -if not, then call the signout function only and clear the cookies and the local storage
 
+    await deleteUserFromServerCache(token);
     await signOut({ redirect: false });
     setIsSigningUserOut(true);
     localStorage.clear();
@@ -134,7 +139,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   };
 
   useEffect(() => {
-    if (modalAnimation === "fade-in-quick"){
+    if (modalAnimation === "fade-in-quick") {
       document.addEventListener("click", handleOnClickAwayCloseModal);
     } else if (modalAnimation === "fade-out-quick") {
       document.removeEventListener("click", handleOnClickAwayCloseModal);
