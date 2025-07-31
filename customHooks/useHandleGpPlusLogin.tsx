@@ -13,14 +13,14 @@ export const useHandleGpPlusLogin = () => {
 
     console.log("(window as any).Outseta: ", (window as any).Outseta);
 
-    if (idToken) {
+    if (idToken && status === "authenticated") {
       (window as any).Outseta.setMagicLinkIdToken(idToken);
 
       (window as any).Outseta.profile.open();
 
       resetUrl(router);
     }
-  }, [status, (window as any).Outseta]);
+  }, [status]);
 
 
   return
