@@ -158,7 +158,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
     }
 
     setTimeout(() => {
-      router.push("/sign-up");
+      setIsSignupModalDisplayed(true);
       setWasGpPlusBtnClicked(false);
     }, 200);
   };
@@ -167,7 +167,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
     setWasGpLiteBtnClicked(true);
 
     setTimeout(() => {
-      setIsLoginModalDisplayed(true);
+      router.push("/sign-up");
       setWasGpLiteBtnClicked(false);
     }, 300);
   };
@@ -498,7 +498,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
                   <ul className="gpplus-features">
                     <li>+ 1 user</li>
                     <li>+ ALL {liveUnitsTotal} STEM units</li>
-                    <li>+ 50+ STEM lessons</li>
+                    <li>+ Over 100 lessons and videos</li>
                     <li>+ Access to future lessons</li>
                     <li>
                       + <i>View-Only</i> teaching materials

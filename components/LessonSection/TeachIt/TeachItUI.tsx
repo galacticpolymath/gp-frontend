@@ -98,6 +98,20 @@ interface TeachItUIProps<
 
 const ASSESSMENTS_ID = 100;
 
+// GOAL: display the folder link of the latest copy for the unit
+
+// NOTES: 
+// -the user may have copied the unit multiple times
+// -get the userId from the jwt 
+// -when querying the unit, within the server side props, using the userId, the numId, the locale of the unit, and the latest date
+// to get the latest copy unit link
+// -the latest copy unit link was retrieved 
+// -send it to the client 
+
+// GOAL A: render the link onto the ui
+// GOAL B: create the mongoose schema for the copy unit history tracker 
+// GOAL C: retrieve teh copy unit history document from the database if it exist within the server side function
+
 const TeachItUI = <
   TLesson extends object,
   TSelectedGrade extends IResource<ILessonForUI> = IResource<ILessonForUI>

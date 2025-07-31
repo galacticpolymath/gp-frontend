@@ -1002,8 +1002,6 @@ export const getStaticProps = async (arg: {
       let sectionsUpdated = sectionsEntries.reduce(
         (sectionsAccum, [sectionKey, section]) => {
           // if the section.Content is null, then return the sectionsAccum
-          console.log("sectionKey, sup there: ", sectionKey);
-          console.log("section, yo there: ", section);
           if (
             !section ||
             (typeof section === "object" &&
@@ -1047,6 +1045,8 @@ export const getStaticProps = async (arg: {
                 };
               }
             }
+
+            // TODO: add the link to the teaching materials section here, make a request above
 
             console.log(`section ${sectionKey} after updates: `, section);
 
