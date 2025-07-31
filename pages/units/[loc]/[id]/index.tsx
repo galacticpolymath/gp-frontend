@@ -785,7 +785,6 @@ export const getStaticPaths = async () => {
   }
 };
 
-// GOAL: todo: using get server side props instead 
 export const getStaticProps = async (arg: {
   params: { id: string; loc: string };
 }) => {
@@ -1046,8 +1045,6 @@ export const getStaticProps = async (arg: {
                 };
               }
             }
-
-            // TODO: add the link to the teaching materials section here, make a request above
 
             console.log(`section ${sectionKey} after updates: `, section);
 

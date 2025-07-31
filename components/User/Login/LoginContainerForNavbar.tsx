@@ -207,8 +207,8 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
               <Image
                 src="/imgs/gp-logos/gp_submark.png"
                 alt="gp_plus_logo"
-                width={20}
-                height={20}
+                width={30}
+                height={30}
                 style={{
                   objectFit: "contain",
                   position: "absolute",

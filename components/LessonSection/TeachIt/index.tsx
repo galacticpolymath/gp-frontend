@@ -13,7 +13,6 @@ import React, {
   ReactNode,
   CSSProperties,
 } from "react";
-import PropTypes from "prop-types";
 import useLessonElementInView from "../../../customHooks/useLessonElementInView";
 import Image from "next/image";
 import Pill from "../../Pill";
@@ -120,6 +119,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     Title: unitTitle,
     MediumTitle,
     unitCopyFolderLink,
+    unitId,
   } = props;
   let Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;
@@ -264,6 +264,8 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
   return "lessonDur" in Data ? (
     <TeachItUI<ILessonForUI, IResource<ILessonForUI>>
       ref={ref}
+      unitId={unitId}
+      unitCopyFolderLink={unitCopyFolderLink}
       ForGrades={ForGrades}
       lessonDur={Data.lessonDur}
       lessonPreface={Data.lessonPreface}
@@ -290,6 +292,8 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       ForGrades={ForGrades}
       MediumTitle={MediumTitle}
       lessonDur={unitDur}
+      unitId={unitId}
+      unitCopyFolderLink={unitCopyFolderLink}
       lessonPreface={unitPreface}
       SectionTitle={SectionTitle}
       _sectionDots={_sectionDots}

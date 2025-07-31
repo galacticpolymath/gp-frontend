@@ -95,7 +95,7 @@ export default async function handler(
       };
     }
 
-    // get the user's copy folder jobs result, get the latest based
+    // get the user's copy folder jobs result, get the latest copy unit based on the unit id that was sent from the client
 
     if (!request.query.willNotRetrieveMailingListStatus) {
         userAccount = {

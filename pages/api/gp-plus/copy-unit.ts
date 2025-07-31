@@ -30,6 +30,7 @@ import { connectToMongodb } from "../../../backend/utils/connection";
 import { OAuth2Client } from "google-auth-library";
 import { headers } from "next/headers";
 import { insertCopyUnitJobResult } from "../../../backend/services/copyUnitJobResultServices";
+import { GDRIVE_FOLDER_ORIGIN_AND_PATH } from "../../../components/CopyingUnitToast";
 
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
@@ -465,12 +466,9 @@ export default async function handler(
     });
 
     if (!origin) {
-      sendMessage(response, {
-        msg: "Origin is not present",
-        isJobDone: true,
-        wasSuccessful: false,
-      });
-      return;
+      const errMsg = "Origin is not present";
+      console.error(errMsg);
+      throw new Error(errMsg);
     }
 
     // all keys of the headers will lowercase by default
@@ -482,23 +480,17 @@ export default async function handler(
     );
 
     if (!userId || Array.isArray(userId)) {
-      sendMessage(response, {
-        msg: "The 'userId' header is not present.",
-        isJobDone: true,
-        wasSuccessful: false,
-      });
-      return;
+      const errMsg = "The 'userId' header is not present.";
+      console.error(errMsg);
+      throw new Error(errMsg);
     }
 
     userIdFromClient = userId;
 
     if (!jwtPayload || !jwtPayload?.payload?.email) {
-      sendMessage(response, {
-        msg: "The access token is not valid.",
-        isJobDone: true,
-        wasSuccessful: false,
-      });
-      return;
+      const errMsg = "The access token is not valid.";
+      console.error(errMsg);
+      throw new Error(errMsg);
     }
 
     if (
@@ -506,16 +498,9 @@ export default async function handler(
       Array.isArray(_gdriveAccessToken) ||
       _gdriveAccessToken === "undefined"
     ) {
-      console.error(
-        "The gdrive access token was not provided. Please provide the `gdrive-token` header."
-      );
-
-      sendMessage(response, {
-        msg: "The gdrive access token was not provided.",
-        isJobDone: true,
-        wasSuccessful: false,
-      });
-      return;
+      const errMsg = "The gdrive access token was not provided.";
+      console.error(errMsg);
+      throw new Error(errMsg);
     }
 
     console.log("yo there refresh token: ", gdriveRefreshToken);
@@ -526,16 +511,9 @@ export default async function handler(
       Array.isArray(gdriveRefreshToken) ||
       gdriveRefreshToken === "undefined"
     ) {
-      console.error(
-        "The gdrive refresh token was not provided. Please provide the `gdrive-token-refresh` header."
-      );
-
-      sendMessage(response, {
-        msg: "The gdrive refresh token was not provided.",
-        isJobDone: true,
-        wasSuccessful: false,
-      });
-      return;
+      const errMsg = "The gdrive refresh token was not provided.";
+      console.error(errMsg);
+      throw new Error(errMsg);
     }
 
     const email = jwtPayload.payload.email;
@@ -548,31 +526,22 @@ export default async function handler(
       !request.query.unitDriveId ||
       Array.isArray(request.query.unitDriveId)
     ) {
-      sendMessage(response, {
-        msg: "The id of the drive was not provided.",
-        isJobDone: true,
-        wasSuccessful: false,
-      });
-      return;
+      const errMsg = "The id of the drive was not provided.";
+      console.error(errMsg);
+      throw new Error(errMsg);
     }
     if (typeof request.query.unitId !== 'string') {
-      sendMessage(response, {
-        msg: "The id of the unit was not provided.",
-        isJobDone: true,
-        wasSuccessful: false,
-      });
-      return;
+      const errMsg = "The id of the unit was not provided.";
+      console.error(errMsg);
+      throw new Error(errMsg);
     }
 
     unitId = request.query.unitId;
 
     if (!request.query.unitName) {
-      sendMessage(response, {
-        msg: "The name of the unit was not provided.",
-        isJobDone: true,
-        wasSuccessful: false,
-      });
-      return;
+      const errMsg = "The name of the unit was not provided.";
+      console.error(errMsg);
+      throw new Error(errMsg);
     }
 
     sendMessage(response, { msg: "Copying unit..." });
@@ -609,14 +578,9 @@ export default async function handler(
     console.log("rootDriveFolders: ", rootDriveFolders?.length);
 
     if (!rootDriveFolders?.length) {
-      console.error("The root of the drive folder is empty.");
-      sendMessage(response, {
-        msg: "An error has occurred on the server.",
-        isJobDone: true,
-        wasSuccessful: false,
-        showSupportTxt: true,
-      });
-      return;
+      const errMsg = "The root of the drive folder is empty.";
+      console.error(errMsg);
+      throw new Error(errMsg);
     }
 
     let unitFolders: TUnitFolder[] = rootDriveFolders.map((folder) => ({
@@ -847,16 +811,9 @@ export default async function handler(
     });
 
     if (!targetUser) {
-      sendMessage(
-        response,
-        {
-          isJobDone: true,
-          msg: "The target user doesn't exist.",
-          wasSuccessful: false,
-        },
-        true
-      );
-      return;
+      const errMsg = "The target user doesn't exist.";
+      console.error(errMsg);
+      throw new Error(errMsg);
     }
 
     let wasCopyUnitsFolderCreated = false;
@@ -881,21 +838,9 @@ export default async function handler(
         folderCreationResult;
 
       if (errMsg) {
-        console.error(
-          "Failed to create the parent folder for the unit copies. Reason: ",
-          errMsg
-        );
-
-        sendMessage(
-          response,
-          {
-            isJobDone: true,
-            msg: "Failed to create the parent folder for the unit copies.",
-            wasSuccessful: false,
-          },
-          true
-        );
-        return;
+        const failedToCreateParentFolderMsg = `Failed to create the parent folder for the unit copies. Reason: ${errMsg}`;
+        console.error(failedToCreateParentFolderMsg);
+        throw new Error(failedToCreateParentFolderMsg);
       }
 
       wasCopyUnitsFolderCreated = true;
@@ -955,21 +900,11 @@ export default async function handler(
           folderCreationResult;
 
         if (errMsg) {
-          console.error(
-            "Failed to create the parent folder for the unit copies. Reason: ",
-            errMsg
-          );
+          const errorMsgForConsole = `Failed to create the parent folder for the unit copies. Reason: ${errMsg}`;
 
-          sendMessage(
-            response,
-            {
-              isJobDone: true,
-              msg: "Failed to create the parent folder for the unit copies.",
-              wasSuccessful: false,
-            },
-            true
-          );
-          return;
+          console.error(errorMsgForConsole);
+
+          throw new Error(errorMsgForConsole);
         }
 
         targetUser.unitCopiesFolderId = userGpPlusParentFolderId;
@@ -1133,16 +1068,8 @@ export default async function handler(
 
     if (!wasSharesSuccessful) {
       console.error("Failed to share at least one file.");
-      sendMessage(
-        response,
-        {
-          isJobDone: true,
-          msg: "Failed to share files.",
-          wasSuccessful: false,
-        },
-        true
-      );
-      return;
+
+      throw new Error("Failed to share at least one file.");
     }
 
     console.log("Will copy files...");
@@ -1164,39 +1091,17 @@ export default async function handler(
     // console.log("files length: ", files?.length);
 
     if (!isStreamOpen) {
-      const result = await deleteGoogleDriveItem(
-        unitFolderId,
-        gdriveAccessToken
-      );
-      console.log(
-        "A failure has occurred. Delete google  drive item result: ",
-        result
-      );
-      response.end();
-      return;
+      console.error("The client has canceled the job.");
+
+      throw new Error("The client has canceled the job.");
     }
 
     console.log("Attempted to copy files. Result: ", wasCopiesSuccessful);
 
     if (!wasCopiesSuccessful) {
       console.error("Failed to copy at least one file.");
-      sendMessage(
-        response,
-        { isJobDone: true, msg: "Failed to copy files.", wasSuccessful: false },
-        true
-      );
-      response.end();
-
-      const result = await deleteGoogleDriveItem(
-        unitFolderId,
-        gdriveAccessToken
-      );
-
-      console.log(
-        "A failure has occurred. Delete google  drive item result: ",
-        result
-      );
-      return;
+      
+      throw new Error("Failed to copy at least one file.");
     }
 
     console.log("Will rename all files. Deleting the 'Copy of' text.");
@@ -1224,12 +1129,25 @@ export default async function handler(
       true
     );
 
-    response.end();
+    const copyUnitJobInsertionResult = await insertCopyUnitJobResult({
+        datetime: copyUnitJobDate,
+        result: "success",
+        userId: userIdFromClient,
+        unitId,
+        unitFolderLink: `${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${copyDestinationFolderId}`
+      });
+
+    if (!copyUnitJobInsertionResult.wasSuccessful) {
+      console.error("Failed to insert the successful copy unit result into the database. Reason: ", copyUnitJobInsertionResult?.errorObj);
+    } else {
+      console.log("Copy unit insertion result: ", copyUnitJobInsertionResult);
+    }
   } catch (error) {
     console.error("An error has occurred. Error: ", error);
+
     sendMessage(
       response,
-      { isJobDone: true, msg: "Failed to copy files.", wasSuccessful: false },
+      { isJobDone: true, msg: `Failed to copy files. Reason: ${JSON.stringify(error)}`, wasSuccessful: false, errObj: error },
       true
     );
 
@@ -1242,20 +1160,23 @@ export default async function handler(
       console.log("Google drive item deletion result: ", result);
     }
 
-    const errMsg = JSON.stringify(error);
-    const copyUnitJobInsertionResult = await insertCopyUnitJobResult({
+    if(unitId && copyDestinationFolderId){
+      const errMsg = JSON.stringify(error);
+      const copyUnitJobInsertionResult = await insertCopyUnitJobResult({
         datetime: copyUnitJobDate,
         result: "error",
         errMsg: `Error object: ${errMsg}`,
         userId: userIdFromClient,
         unitId
-    });
-
-    if(!copyUnitJobInsertionResult.wasSuccessful){
-      console.error("Failed to insert the failed copy unit result into the database. Reason: ", copyUnitJobInsertionResult?.errorObj)
-    } else {
-      console.log("Copy unit insertion result: ", copyUnitJobInsertionResult)
+      });
+      
+      if(!copyUnitJobInsertionResult.wasSuccessful){
+        console.error("Failed to insert the failed copy unit result into the database. Reason: ", copyUnitJobInsertionResult?.errorObj)
+      } else {
+        console.log("Copy unit insertion result: ", copyUnitJobInsertionResult)
+      }
     }
 
+    response.end();
   }
 }

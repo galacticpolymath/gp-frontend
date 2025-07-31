@@ -75,6 +75,7 @@ export type THandleOnChange<TResourceVal extends object = ILesson> = (
 ) => void;
 export interface ITeachItServerProps {
   unitCopyFolderLink?: string;
+  unitId?: Pick<INewUnitSchema, "_id">["_id"];
 }
 export interface TeachItUIProps<
   TResourceVal extends object = ILesson,
@@ -118,6 +119,7 @@ const ASSESSMENTS_ID = 100;
 // GOAL A: render the link onto the ui
 // GOAL B: create the mongoose schema for the copy unit history tracker
 // GOAL C: retrieve the copy unit history document from the database if it exist within the server side function
+// GOAL, TODO: get the id of the unit from the root
 
 const TeachItUI = <
   TLesson extends object,
@@ -147,7 +149,10 @@ const TeachItUI = <
     Title,
     MediumTitle,
     unitCopyFolderLink,
+    unitId,
   } = props;
+
+  console.log("TeachItUI props: ", props);
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const { _isDownloadModalInfoOn } = useModalContext();
@@ -233,7 +238,7 @@ const TeachItUI = <
     console.log("user.userId: ", user.userId);
     console.log("gdriveRefreshToken: ", gdriveRefreshToken);
 
-    if (!GdrivePublicID || !user.userId || !gdriveRefreshToken) {
+    if (!GdrivePublicID || !user.userId || !gdriveRefreshToken || !unitId) {
       console.log(
         "Copy unit function called with all necessary props: user ID, unit title, GDrive public ID, and GDrive refresh token"
       );
@@ -327,6 +332,7 @@ const TeachItUI = <
       "unitName",
       MediumTitle ?? `${Title ?? `Unit ${unitNum}`} COPY`
     );
+    url.searchParams.append("unitId", unitId);
 
     const eventSource = new EventSourcePolyfill(url.href, {
       headers,
@@ -498,10 +504,6 @@ const TeachItUI = <
     router.push("/gp-plus");
   };
 
-  const handleIconClick = () => {
-    setIsDownloadModalInfoOn(true);
-  };
-
   const [arrowContainer, setArrowContainer] = useState({
     isInView: true,
     canTakeOffDom: false,
@@ -668,16 +670,20 @@ const TeachItUI = <
                     </div>
                   )}
                 </BootstrapBtn>
-                <div
-                  style={{ maxWidth: "600px", fontSize: "18px" }}
-                  // className="mt-2 mt-lg-2 text-center text-lg-start d-inline d-lg-flex justify-content-center mx-auto align-items-lg-center flex-row flex-lg-column flex-wrap"
-                  className="text-break mx-auto text-center text-lg-start mt-2 d-lg-flex justify-content-center align-items-center flex-row flex-lg-column"
-                >
-                  Your copy unit link:
-                  <Link className="ms-1 text-start text-lg-center" href={"#"}>
-                    https://github.com/galacticpolymath/gp-frontend/tree/backend-dev
-                  </Link>
-                </div>
+                {unitCopyFolderLink && (
+                  <div
+                    style={{ maxWidth: "600px", fontSize: "18px" }}
+                    className="text-break mx-auto text-center text-lg-start mt-2 d-lg-flex justify-content-center align-items-center flex-row flex-lg-column"
+                  >
+                    Your copy unit link:
+                    <Link
+                      className="ms-1 text-start text-lg-center"
+                      href={unitCopyFolderLink}
+                    >
+                      {unitCopyFolderLink}
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           )}

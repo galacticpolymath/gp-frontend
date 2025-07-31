@@ -2,13 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 
-import React, {
-  ReactNode,
-  Ref,
-  RefAttributes,
-  RefObject,
-  useState,
-} from "react";
+import React, { ReactNode, RefObject, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { TCopyUnitJobResult } from "../pages/api/gp-plus/copy-unit";
 import CustomLink from "./CustomLink";
@@ -31,6 +25,8 @@ type TCopyItemProgressBarProps = Pick<
   CopyingUnitToastProps,
   "progress" | "total"
 > & { percent: number };
+
+export const GDRIVE_FOLDER_ORIGIN_AND_PATH = `https://drive.google.com/drive/folders`;
 
 const CopyingItemsProgressBar: React.FC<TCopyItemProgressBarProps> = ({
   progress,
@@ -165,7 +161,7 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
                 >
                   Link to folder:{" "}
                   <CustomLink
-                    hrefStr={`https://drive.google.com/drive/folders/${targetFolderId}`}
+                    hrefStr={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${targetFolderId}`}
                     className="under-on-hover pointer flex-wrap"
                     style={{
                       wordBreak: "break-all",
@@ -173,7 +169,7 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
                     }}
                     targetLinkStr="_blank"
                   >
-                    {`https://drive.google.com/drive/folders/${targetFolderId}`}
+                    {`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${targetFolderId}`}
                   </CustomLink>
                 </div>
               )}

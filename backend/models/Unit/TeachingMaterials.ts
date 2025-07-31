@@ -161,6 +161,10 @@ export const TeachingMaterialsSchema = new Schema<
             name: "MediumTitle",
             as: "MediumTitle",
           },
+          {
+            name: "_id",
+            as: "unitId",
+          },
         ]
     },
   },
