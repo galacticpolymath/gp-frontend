@@ -135,6 +135,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
   const handleToggle = () => {
     setBillingPeriod((prev) => (prev === "monthly" ? "yearly" : "monthly"));
   };
+
   const handleSignUpGpPlusBtnClick = async () => {
     if (
       gpPlusSubscription?.membership?.AccountStageLabel &&
@@ -151,16 +152,17 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
     if (status === "unauthenticated") {
       setTimeout(() => {
         setWasGpPlusBtnClicked(false);
-        setIsLoginModalDisplayed(true);
+        router.push("/sign-up");
       }, 200);
       return;
     }
 
     setTimeout(() => {
-      setIsSignupModalDisplayed(true);
+      router.push("/sign-up");
       setWasGpPlusBtnClicked(false);
     }, 200);
   };
+
   const handleSignUpLiteBtnClick = async () => {
     setWasGpLiteBtnClicked(true);
 
@@ -189,7 +191,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
         "An error occurred: Email input could not be found despite user being authenticated."
       );
     }
-    
+
     if (status === "authenticated") {
       window.Outseta?.on("signup", () => {
         console.log("The user has signed up.");

@@ -170,16 +170,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
         {status === "unauthenticated" && (
           <span style={{ color: "white", fontWeight: 410 }}>LOGIN</span>
         )}
-        {status === "loading" && (
-          <>
-            <span
-              className="spinner-border spinner-border-sm text-white"
-              role="status"
-              aria-hidden="true"
-            />
-            <span className="sr-only text-white">Loading...</span>
-          </>
-        )}
+        {status === "loading" && <Spinner color="white" />}
         {status === "authenticated" &&
           (image ? (
             <img
