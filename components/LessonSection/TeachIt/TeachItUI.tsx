@@ -605,8 +605,8 @@ const TeachItUI = <
             </div>
           </div>
           {selectedGradeResources && (
-            <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11">
-              <div className="row flex-nowrap align-items-center justify-content-center position-relative">
+            <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11 bg-danger">
+              <div className="flex-nowrap align-items-center justify-content-center position-relative">
                 <BootstrapBtn
                   ref={copyUnitBtnRef}
                   onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
@@ -618,6 +618,7 @@ const TeachItUI = <
                     borderRadius: "2em",
                     textTransform: "none",
                     minWidth: "300px",
+                    maxWidth: "510px",
                   }}
                   className={`px-3 py-2 col-8 col-md-12 ${
                     isCopyingUnitBtnDisabled ? "opacity-25" : "opacity-100"
@@ -654,6 +655,10 @@ const TeachItUI = <
                                 Drive
                               </>
                             )}
+                            {/* <>
+                              Subscribe to copy this whole unit to Google Drive
+                            </> */}
+                            {/* <>Authenticate w/ Google Drive & Copy Unit</> */}
                           </div>
                         </>
                       )}
@@ -667,9 +672,9 @@ const TeachItUI = <
                     </div>
                   )}
                 </BootstrapBtn>
-                <Link href={"#"}>
+                {/* <Link href={"#"}>
                   https://github.com/galacticpolymath/gp-frontend/tree/backend-development
-                </Link>
+                </Link> */}
               </div>
             </div>
           )}
