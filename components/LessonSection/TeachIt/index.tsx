@@ -119,6 +119,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     GdrivePublicID,
     Title: unitTitle,
     MediumTitle,
+    unitCopyFolderLink,
   } = props;
   let Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;

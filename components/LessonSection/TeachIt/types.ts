@@ -11,7 +11,7 @@ import {
   ISectionDots,
   TUseStateReturnVal,
 } from "../../../types/global";
-import { TUnitPropsForTeachItSec } from "./TeachItUI";
+import { ITeachItServerProps, TeachItUIProps, TUnitPropsForTeachItSec } from "./TeachItUI";
 
 type TTargetUnitKeys = keyof Pick<IUnit, "ForGrades" | "GradesOrYears">;
 type TTargetUnitProps<TKey extends TTargetUnitKeys = TTargetUnitKeys> = {
@@ -21,7 +21,7 @@ type TTargetUnitProps<TKey extends TTargetUnitKeys = TTargetUnitKeys> = {
 export interface TeachItProps
   extends Pick<IComponent, "index">,
     TTargetUnitProps,
-    IUnitTeachingMaterials, TUnitPropsForTeachItSec {
+    IUnitTeachingMaterials, TUnitPropsForTeachItSec, ITeachItServerProps {
   Data: ITeachingMaterialsDataForUI<ILessonForUI> | null;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
   SectionTitle: string;

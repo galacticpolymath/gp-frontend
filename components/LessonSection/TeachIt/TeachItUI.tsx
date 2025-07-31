@@ -42,7 +42,10 @@ import LessonPart from "./LessonPart";
 import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
-import { CONTACT_SUPPORT_EMAIL, UNVIEWABLE_LESSON_STR } from "../../../globalVars";
+import {
+  CONTACT_SUPPORT_EMAIL,
+  UNVIEWABLE_LESSON_STR,
+} from "../../../globalVars";
 import Link from "next/link";
 import Sparkles from "../../SparklesAnimation";
 import { useUserContext } from "../../../providers/UserProvider";
@@ -70,10 +73,14 @@ export type TUnitPropsForTeachItSec = Partial<
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
 ) => void;
-interface TeachItUIProps<
+export interface ITeachItServerProps {
+  unitCopyFolderLink?: string;
+}
+export interface TeachItUIProps<
   TResourceVal extends object = ILesson,
   TSelectedGrade extends object = IResource<ILessonForUI>
-> extends TUnitPropsForTeachItSec {
+> extends TUnitPropsForTeachItSec,
+    ITeachItServerProps {
   SectionTitle: string;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
   ref: RefObject<null>;
@@ -100,17 +107,17 @@ const ASSESSMENTS_ID = 100;
 
 // GOAL: display the folder link of the latest copy for the unit
 
-// NOTES: 
+// NOTES:
 // -the user may have copied the unit multiple times
-// -get the userId from the jwt 
+// -get the userId from the jwt
 // -when querying the unit, within the server side props, using the userId, the numId, the locale of the unit, and the latest date
 // to get the latest copy unit link
-// -the latest copy unit link was retrieved 
-// -send it to the client 
+// -the latest copy unit link was retrieved
+// -send it to the client
 
 // GOAL A: render the link onto the ui
-// GOAL B: create the mongoose schema for the copy unit history tracker 
-// GOAL C: retrieve teh copy unit history document from the database if it exist within the server side function
+// GOAL B: create the mongoose schema for the copy unit history tracker
+// GOAL C: retrieve the copy unit history document from the database if it exist within the server side function
 
 const TeachItUI = <
   TLesson extends object,
@@ -307,7 +314,7 @@ const TeachItUI = <
       "gdrive-token-refresh": gdriveRefreshToken,
       "user-id": user.userId,
     };
-    
+
     console.log("MediumTitle: ", MediumTitle);
 
     const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);

@@ -18,6 +18,9 @@ import { Spinner } from "react-bootstrap";
 import { getIsWithinParentElement } from "../../../shared/fns";
 import { deleteUserFromServerCache } from "../../../apiServices/user/crudFns";
 import useSiteSession from "../../../customHooks/useSiteSession";
+import useHandleOpeningGpPlusAccount from "../../../customHooks/useHandleOpeningGpPlusAccount";
+import { TAccountStageLabel } from "../../../backend/services/outsetaServices";
+import Image from "next/image";
 
 interface IProps {
   _modalAnimation: TUseStateReturnVal<
@@ -26,6 +29,13 @@ interface IProps {
 }
 
 const USER_ACCOUNT_MODAL_ID = "user-account-modal";
+
+// GP+ membership statuses
+const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
+  "Cancelling",
+  "Subscribing",
+  "Past due",
+] as TAccountStageLabel[]);
 
 const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const router = useRouter();
@@ -47,6 +57,14 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
   const [isSigningUserOut, setIsSigningUserOut] = useState(false);
   const { clearCookies } = useCustomCookies();
+
+  // GP+ subscription check
+  const { gpPlusSubscription } = useHandleOpeningGpPlusAccount(true);
+  const isGpPlusMember =
+    gpPlusSubscription?.membership?.AccountStageLabel &&
+    HAS_MEMBERSHIP_STATUSES.has(
+      gpPlusSubscription.membership.AccountStageLabel
+    );
   const firstName =
     userAccountSaved?.firstName ??
     aboutUserForm?.firstName ??
@@ -171,19 +189,37 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
           <span style={{ color: "white", fontWeight: 410 }}>LOGIN</span>
         )}
         {status === "loading" && <Spinner color="white" />}
-        {status === "authenticated" &&
-          (image ? (
-            <img
-              src={image}
-              alt="user_img"
-              width={35}
-              height={35}
-              style={{ objectFit: "contain" }}
-              className="rounded-circle"
-            />
-          ) : (
-            <FaUserAlt color="#2C83C3" />
-          ))}
+        {status === "authenticated" && (
+          <div className="position-relative d-flex align-items-center">
+            {image ? (
+              <img
+                src={image}
+                alt="user_img"
+                width={35}
+                height={35}
+                style={{ objectFit: "contain" }}
+                className="rounded-circle"
+              />
+            ) : (
+              <FaUserAlt color="#2C83C3" />
+            )}
+            {isGpPlusMember && (
+              <Image
+                src="/imgs/gp-logos/gp_submark.png"
+                alt="gp_plus_logo"
+                width={20}
+                height={20}
+                style={{
+                  objectFit: "contain",
+                  position: "absolute",
+                  right: "-8px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                }}
+              />
+            )}
+          </div>
+        )}
       </Button>
       <div
         id={USER_ACCOUNT_MODAL_ID}
