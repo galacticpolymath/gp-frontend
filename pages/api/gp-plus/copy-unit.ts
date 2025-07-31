@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* eslint-disable quotes */
 /* eslint-disable comma-dangle */
 /* eslint-disable semi */
@@ -30,6 +29,7 @@ import {
 import { connectToMongodb } from "../../../backend/utils/connection";
 import { OAuth2Client } from "google-auth-library";
 import { headers } from "next/headers";
+import { insertCopyUnitJobResult } from "../../../backend/services/copyUnitJobResultServices";
 
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
@@ -445,6 +445,9 @@ export default async function handler(
 ) {
   let copyDestinationFolderId = "";
   let gdriveAccessToken = "";
+  let unitId = "";
+  let userIdFromClient = "";
+  const copyUnitJobDate = new Date();
 
   try {
     const origin = new URL(request.headers.referer ?? "").origin;
@@ -486,6 +489,8 @@ export default async function handler(
       });
       return;
     }
+
+    userIdFromClient = userId;
 
     if (!jwtPayload || !jwtPayload?.payload?.email) {
       sendMessage(response, {
@@ -536,6 +541,9 @@ export default async function handler(
     const email = jwtPayload.payload.email;
     gdriveAccessToken = _gdriveAccessToken;
 
+    // TODO: check for the following from the client: 
+    // -unitId
+
     if (
       !request.query.unitDriveId ||
       Array.isArray(request.query.unitDriveId)
@@ -547,6 +555,16 @@ export default async function handler(
       });
       return;
     }
+    if (typeof request.query.unitId !== 'string') {
+      sendMessage(response, {
+        msg: "The id of the unit was not provided.",
+        isJobDone: true,
+        wasSuccessful: false,
+      });
+      return;
+    }
+
+    unitId = request.query.unitId;
 
     if (!request.query.unitName) {
       sendMessage(response, {
@@ -633,8 +651,6 @@ export default async function handler(
         const folders = data?.files.filter((file) =>
           file?.mimeType?.includes("folder")
         );
-        const filesToCopy = data?.files.length - folders.length;
-
         let foldersOccurrenceObj:
           | (drive_v3.Schema$File & { [key: string]: any })
           | null = null;
@@ -1225,5 +1241,21 @@ export default async function handler(
 
       console.log("Google drive item deletion result: ", result);
     }
+
+    const errMsg = JSON.stringify(error);
+    const copyUnitJobInsertionResult = await insertCopyUnitJobResult({
+        datetime: copyUnitJobDate,
+        result: "error",
+        errMsg: `Error object: ${errMsg}`,
+        userId: userIdFromClient,
+        unitId
+    });
+
+    if(!copyUnitJobInsertionResult.wasSuccessful){
+      console.error("Failed to insert the failed copy unit result into the database. Reason: ", copyUnitJobInsertionResult?.errorObj)
+    } else {
+      console.log("Copy unit insertion result: ", copyUnitJobInsertionResult)
+    }
+
   }
 }
