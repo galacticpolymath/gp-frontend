@@ -77,7 +77,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
   console.log("Error type: ", errType);
 
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
-    "monthly"
+    "yearly"
   );
   const { _notifyModal, _isLoginModalDisplayed } = useModalContext();
   const [, setNotifyModal] = _notifyModal;

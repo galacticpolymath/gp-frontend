@@ -605,8 +605,8 @@ const TeachItUI = <
             </div>
           </div>
           {selectedGradeResources && (
-            <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11 bg-danger">
-              <div className="flex-nowrap align-items-center justify-content-center position-relative">
+            <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11">
+              <div className="d-flex flex-nowrap align-items-center justify-content-center position-relative flex-column">
                 <BootstrapBtn
                   ref={copyUnitBtnRef}
                   onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
@@ -618,9 +618,9 @@ const TeachItUI = <
                     borderRadius: "2em",
                     textTransform: "none",
                     minWidth: "300px",
-                    maxWidth: "510px",
+                    width: "fit-content",
                   }}
-                  className={`px-3 py-2 col-8 col-md-12 ${
+                  className={`px-3 py-2 col-12 ${
                     isCopyingUnitBtnDisabled ? "opacity-25" : "opacity-100"
                   }`}
                   disabled={
@@ -628,7 +628,7 @@ const TeachItUI = <
                   }
                 >
                   {didInitialRenderOccur.current ? (
-                    <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-center gap-2">
+                    <div className="d-flex flex-row align-items-center justify-content-center gap-2">
                       {isCopyingUnitBtnDisabled ? (
                         <Spinner className="text-black" />
                       ) : (
@@ -641,7 +641,7 @@ const TeachItUI = <
                           />
                           <div
                             style={{ lineHeight: "23px", fontSize: "18px" }}
-                            className="d-inline text-black"
+                            className="d-flex flex-column text-black"
                           >
                             {isGpPlusMember && !gdriveAccessToken && (
                               <>Authenticate w/ Google Drive & Copy Unit</>
@@ -655,10 +655,6 @@ const TeachItUI = <
                                 Drive
                               </>
                             )}
-                            {/* <>
-                              Subscribe to copy this whole unit to Google Drive
-                            </> */}
-                            {/* <>Authenticate w/ Google Drive & Copy Unit</> */}
                           </div>
                         </>
                       )}
@@ -672,9 +668,16 @@ const TeachItUI = <
                     </div>
                   )}
                 </BootstrapBtn>
-                {/* <Link href={"#"}>
-                  https://github.com/galacticpolymath/gp-frontend/tree/backend-development
-                </Link> */}
+                <div
+                  style={{ maxWidth: "600px", fontSize: "18px" }}
+                  // className="mt-2 mt-lg-2 text-center text-lg-start d-inline d-lg-flex justify-content-center mx-auto align-items-lg-center flex-row flex-lg-column flex-wrap"
+                  className="text-break mx-auto text-center text-lg-start mt-2 d-lg-flex justify-content-center align-items-center flex-row flex-lg-column"
+                >
+                  Your copy unit link:
+                  <Link className="ms-1 text-start text-lg-center" href={"#"}>
+                    https://github.com/galacticpolymath/gp-frontend/tree/backend-dev
+                  </Link>
+                </div>
               </div>
             </div>
           )}

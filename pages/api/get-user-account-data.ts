@@ -95,6 +95,8 @@ export default async function handler(
       };
     }
 
+    // get the user's copy folder jobs result, get the latest based
+
     if (!request.query.willNotRetrieveMailingListStatus) {
         userAccount = {
           ...userAccount,

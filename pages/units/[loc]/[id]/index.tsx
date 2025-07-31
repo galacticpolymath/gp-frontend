@@ -742,6 +742,27 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   );
 };
 
+const getGoogleDriveFileIdFromUrl = (url: string) => {
+  if (typeof url !== "string") {
+    return null;
+  }
+
+  const urlSplitted = url.split("/");
+  const indexOfDInSplittedUrl = urlSplitted.findIndex((str) => str === "d");
+
+  if (indexOfDInSplittedUrl === -1) {
+    return null;
+  }
+
+  const id = urlSplitted[indexOfDInSplittedUrl + 1];
+
+  if (!id) {
+    return null;
+  }
+
+  return id;
+};
+
 export const getStaticPaths = async () => {
   try {
     await connectToMongodb(15_000, 0, true);
@@ -764,27 +785,7 @@ export const getStaticPaths = async () => {
   }
 };
 
-const getGoogleDriveFileIdFromUrl = (url: string) => {
-  if (typeof url !== "string") {
-    return null;
-  }
-
-  const urlSplitted = url.split("/");
-  const indexOfDInSplittedUrl = urlSplitted.findIndex((str) => str === "d");
-
-  if (indexOfDInSplittedUrl === -1) {
-    return null;
-  }
-
-  const id = urlSplitted[indexOfDInSplittedUrl + 1];
-
-  if (!id) {
-    return null;
-  }
-
-  return id;
-};
-
+// GOAL: todo: using get server side props instead 
 export const getStaticProps = async (arg: {
   params: { id: string; loc: string };
 }) => {
