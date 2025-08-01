@@ -15,7 +15,8 @@ import moment from "moment";
 import { nanoid } from "nanoid";
 import { getLiveUnits } from "../../shared/fns";
 import { UNITS_URL_PATH } from "../../shared/constants";
-import dbWebApps, { TWebAppForUI } from "../models/webApp";
+import { TWebAppForUI } from "../models/webApp";
+import dbWebApps from "../models/webApp";
 
 const insertUnit = async (unit: INewUnitSchema) => {
   try {
