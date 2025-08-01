@@ -154,7 +154,7 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
   "https://docs.google.com",
 ]);
 
-const LessonDetails = ({ lesson, unit }: IProps) => {;
+const LessonDetails = ({ lesson, unit }: IProps) => {
   const router = useRouter();
   const {
     _isUserTeacher,
@@ -164,10 +164,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {;
     _userLatestCopyUnitFolderId,
   } = useUserContext();
   const session = useSiteSession();
-
-  console.log("session, sup there: ", session);
-
-  const { status, token, gdriveAccessToken, gdriveRefreshToken }= session;
+  const { status, token, gdriveAccessToken, gdriveRefreshToken } = session;
   const statusRef = useRef(status);
 
   useMemo(() => {
@@ -178,8 +175,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {;
 
   const {
     _notifyModal,
-    _isLoginModalDisplayed,
-    _isCreateAccountModalDisplayed,
     _customModalFooter,
     _isGpPlusModalDisplayed,
     _lessonItemModal,
@@ -576,7 +571,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {;
           const paramsAndHeaders = {
             params: {
               willNotRetrieveMailingListStatus: true,
-              unitId: unit?._id
+              unitId: unit?._id,
             },
             headers: {
               Authorization: `Bearer ${token}`,
@@ -600,12 +595,10 @@ const LessonDetails = ({ lesson, unit }: IProps) => {;
 
           console.log("data, from server: ", data);
 
-
-
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
-          
-          if (data.viewingUnitFolderCopyId){
+
+          if (data.viewingUnitFolderCopyId) {
             setUserLatestCopyUnitFolderId(data.viewingUnitFolderCopyId);
           }
 

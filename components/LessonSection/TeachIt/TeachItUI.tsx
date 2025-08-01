@@ -59,7 +59,9 @@ import { TCopyFilesMsg } from "../../../pages/api/gp-plus/copy-unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import Image from "next/image";
-import CopyingUnitToast, { GDRIVE_FOLDER_ORIGIN_AND_PATH } from "../../CopyingUnitToast";
+import CopyingUnitToast, {
+  GDRIVE_FOLDER_ORIGIN_AND_PATH,
+} from "../../CopyingUnitToast";
 import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 import { nanoid } from "nanoid";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
@@ -166,7 +168,8 @@ const TeachItUI = <
   ] = useState<number[]>([]);
   const [isGpPlusMember] = _isGpPlusMember;
   const [didAttemptRetrieveUserData] = _didAttemptRetrieveUserData;
-  const [userLatestCopyUnitFolderId, setUserLatestCopyUnitFolderId] = _userLatestCopyUnitFolderId;
+  const [userLatestCopyUnitFolderId, setUserLatestCopyUnitFolderId] =
+    _userLatestCopyUnitFolderId;
   const session = useSiteSession();
   const { getCookies, setAppCookie } = useCustomCookies();
   const queriedCookies = getCookies([
@@ -420,7 +423,7 @@ const TeachItUI = <
             _toastId
           );
 
-          if(data.wasSuccessful && targetFolderId){
+          if (data.wasSuccessful && targetFolderId) {
             setUserLatestCopyUnitFolderId(targetFolderId);
           }
 
@@ -650,8 +653,10 @@ const TeachItUI = <
                               <>Authenticate w/ Google Drive & Copy Unit</>
                             )}
                             {isGpPlusMember &&
-                              gdriveAccessToken &&
-                              userLatestCopyUnitFolderId ? "Copy unit again" :"Copy unit to my Google Drive"}
+                            gdriveAccessToken &&
+                            userLatestCopyUnitFolderId
+                              ? "Copy unit again"
+                              : "Copy unit to my Google Drive"}
                             {!isGpPlusMember && (
                               <>
                                 Subscribe to copy this whole unit to Google

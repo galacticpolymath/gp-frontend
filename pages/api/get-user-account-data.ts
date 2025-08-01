@@ -148,9 +148,9 @@ export default async function handler(
 
       if(nonexistingFolders?.length){
         const updatesResult = await updateCopyUnitJobs({
-          _id: { $in: nonexistingFolders }
+          _id: { $in: nonexistingFolders },
         }, {
-          doesFolderCopyExistInUserGDrive: false
+          doesFolderCopyExistInUserGDrive: false,
         });
 
         console.log("updatesResult: ", updatesResult);
