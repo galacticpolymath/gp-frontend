@@ -572,7 +572,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
           setIsCopyUnitBtnDisabled(true);
           const paramsAndHeaders = {
             params: {
-              custom_projections: "isTeacher",
               willNotRetrieveMailingListStatus: true,
             },
             headers: {

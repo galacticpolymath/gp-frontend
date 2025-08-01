@@ -10,7 +10,11 @@ const useSiteSession = () => {
   })
   const { data, status } = session ?? {};
   const { user, token } = (data ?? {}) as IUserSession;
-  const { clearCookies } = useCustomCookies();
+  const { clearCookies, getCookies } = useCustomCookies();
+  const gdriveTokens = getCookies([
+    "gdriveAccessToken",
+    "gdriveRefreshToken"
+  ])
 
   const logUserOut = () => {
     localStorage.clear();
@@ -20,6 +24,7 @@ const useSiteSession = () => {
   };
 
   return {
+    ...gdriveTokens,
     user,
     token,
     status,
