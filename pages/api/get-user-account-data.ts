@@ -118,7 +118,6 @@ export default async function handler(
     }
 
     // if the user is on a selected unit, then get the google drive folder link
-    console.log("userId, sup there: ", userAccount._id);
     if (
       typeof request.query.unitId === "string" &&
       typeof gdriveAccessToken === "string" &&
