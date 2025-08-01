@@ -10,6 +10,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { verifyJwt } from "../../nondependencyFns";
 import { IUserSchema, TUserSchemaForClient, TUserSchemaV2 } from "../../backend/models/User/types";
 import { getGpPlusIndividualMembershipStatus, TAccountStageLabel } from "../../backend/services/outsetaServices";
+import { getLatestCopyUnitJob, getLatestValidCopyUnitJob } from "../../backend/services/copyUnitJobResultServices";
 
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
@@ -52,6 +53,7 @@ export default async function handler(
 ) {
   try {
     const authorization = request?.headers?.['authorization'] ?? '';
+    const gdriveAccessToken = request?.headers?.['gdrive-token'] ?? '';
     const authSplit = authorization.split(' ');
 
     if (authSplit.length !== 2) {
@@ -95,7 +97,18 @@ export default async function handler(
       };
     }
 
-    // get the user's copy folder jobs result, get the latest copy unit based on the unit id that was sent from the client
+    // if the user is on a selected unit, then get the google drive folder link 
+    if(typeof request.query.unitId === "string"){
+      const { targetUnit } = await getLatestValidCopyUnitJob(request.query.unitId, gdriveAccessToken);
+
+      if (targetUnit?.unitId){
+
+      }
+
+      userAccount = {
+        ...userAccount,
+      }
+    }
 
     if (!request.query.willNotRetrieveMailingListStatus) {
         userAccount = {

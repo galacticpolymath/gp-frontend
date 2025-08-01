@@ -69,6 +69,12 @@ export const getGDriveItem = async (
       };
     }
 
+    if(error?.response?.data?.error?.status === "UNAUTHENTICATED"){
+      return {
+        errType: "unauthenticated"
+      }
+    }
+
     if (error?.code === "ECONNABORTED" && tries > 0) {
       await waitWithExponentialBackOff(tries, [2_000, 5_000]);
 
