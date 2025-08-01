@@ -59,7 +59,7 @@ import { TCopyFilesMsg } from "../../../pages/api/gp-plus/copy-unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import Image from "next/image";
-import CopyingUnitToast from "../../CopyingUnitToast";
+import CopyingUnitToast, { GDRIVE_FOLDER_ORIGIN_AND_PATH } from "../../CopyingUnitToast";
 import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 import { nanoid } from "nanoid";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
@@ -166,7 +166,7 @@ const TeachItUI = <
   ] = useState<number[]>([]);
   const [isGpPlusMember] = _isGpPlusMember;
   const [didAttemptRetrieveUserData] = _didAttemptRetrieveUserData;
-  const [userLatestCopyUnitFolderId] = _userLatestCopyUnitFolderId;
+  const [userLatestCopyUnitFolderId, setUserLatestCopyUnitFolderId] = _userLatestCopyUnitFolderId;
   const session = useSiteSession();
   const { getCookies, setAppCookie } = useCustomCookies();
   const queriedCookies = getCookies([
@@ -419,6 +419,11 @@ const TeachItUI = <
             },
             _toastId
           );
+
+          if(data.wasSuccessful && targetFolderId){
+            setUserLatestCopyUnitFolderId(targetFolderId);
+          }
+
           setIsCopyingUnitBtnDisabled(false);
           return;
         }
@@ -646,7 +651,7 @@ const TeachItUI = <
                             )}
                             {isGpPlusMember &&
                               gdriveAccessToken &&
-                              "Copy Unit to my Google Drive"}
+                              userLatestCopyUnitFolderId ? "Copy unit again" :"Copy unit to my Google Drive"}
                             {!isGpPlusMember && (
                               <>
                                 Subscribe to copy this whole unit to Google
@@ -671,12 +676,13 @@ const TeachItUI = <
                     style={{ maxWidth: "600px", fontSize: "18px" }}
                     className="text-break mx-auto text-center text-lg-start mt-2 d-lg-flex justify-content-center align-items-center flex-row flex-lg-column"
                   >
-                    Your copy unit link:
+                    Your latest copy unit link:
                     <Link
+                      target="_blank"
                       className="ms-1 text-start text-lg-center"
-                      href={userLatestCopyUnitFolderId}
+                      href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${userLatestCopyUnitFolderId}`}
                     >
-                      {userLatestCopyUnitFolderId}
+                      {`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${userLatestCopyUnitFolderId}`}
                     </Link>
                   </div>
                 )}

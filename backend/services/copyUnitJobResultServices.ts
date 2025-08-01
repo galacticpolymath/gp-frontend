@@ -26,19 +26,24 @@ export const insertCopyUnitJobResult = async (
 };
 
 export const updateCopyUnitJobs = async (
-  filter: Partial<Record<keyof ICopyUnitResult, unknown>>, 
+  filter: Partial<Record<keyof ICopyUnitResult, unknown>>,
   update: Partial<ICopyUnitResult>
 ) => {
   try {
-    console.log("Attempting to update copy unit jobs with filter: ", filter, " and update: ", update);
+    console.log(
+      "Attempting to update copy unit jobs with filter: ",
+      filter,
+      " and update: ",
+      update
+    );
 
-    return await CopyUnitResults.updateMany(filter, update)
-  } catch(error){
+    return await CopyUnitResults.updateMany(filter, update);
+  } catch (error) {
     console.error("Failed to update copy unit jobs. Error: ", error);
 
     return null;
   }
-}
+};
 
 const getDoesGDriveItemExist = async (
   copyJob: ICopyUnitResult,
@@ -86,7 +91,9 @@ const getDoesGDriveItemExist = async (
 };
 
 export const getCopyUnitFolderJobs = async (
-  filter: Partial<Record<keyof ICopyUnitResult, unknown>>,
+  filter:
+    | Partial<Record<keyof ICopyUnitResult, unknown>>
+    | { $or: Partial<Record<keyof ICopyUnitResult, unknown>>[] },
   tries = 5
 ): Promise<Partial<{ jobs: ICopyUnitResult[]; errType: string }>> => {
   try {
@@ -226,24 +233,28 @@ export const getLatestValidUnitCopyFolderJob = async (
   userId: string
 ) => {
   try {
-    const filter: Partial<Record<keyof ICopyUnitResult, unknown>> = {
-        unitId,
-        errMsg: {
-            $ne: null
-        },
-        doesFolderCopyExistInUserGDrive: true,
-        result: "success",
-        userId: userId
-    }
+    console.log(`getLatestValidUnitCopyFolderJob unitId: ${unitId}`);
+    
+    const filter = {
+      unitId,
+      errMsg: {
+        $exists: false,
+      },
+      doesFolderCopyExistInUserGDrive: true,
+      result: "success",
+      userId: userId,
+    };
     const targetCopyUnitFolderJobs = await getCopyUnitFolderJobs(filter, 3);
 
-    if(!targetCopyUnitFolderJobs?.jobs?.length){
+    console.log("targetCopyUnitFolderJobs: ", targetCopyUnitFolderJobs);
+
+    if (!targetCopyUnitFolderJobs?.jobs?.length) {
       console.error("No jobs are present for this unit.");
-      
+
       return {
         latestUnitFolderCopy: null,
-        nonexistingFolders: null
-      }
+        nonexistingFolders: null,
+      };
     }
 
     if (targetCopyUnitFolderJobs.errType) {
@@ -293,7 +304,7 @@ export const getLatestValidUnitCopyFolderJob = async (
     console.error("Failed to get latest copy unit folder job. Error: ", error);
 
     return {
-      errType: "latestUnitCopyFolderJobRetrievalErr"
+      errType: "latestUnitCopyFolderJobRetrievalErr",
     };
   }
 };

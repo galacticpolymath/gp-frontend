@@ -59,7 +59,7 @@ const PROJECTIONS: Partial<
   isNotTeaching: 1,
   gradesTaught: 1,
   gradesType: 1,
-  _id: 0,
+  _id: 1,
 } as const;
 
 export default async function handler(
@@ -80,7 +80,10 @@ export default async function handler(
       );
     }
 
-    const { email, userId } = (await verifyJwt(authSplit[1])).payload;
+    const jwtVerified = await verifyJwt(authSplit[1]);
+    console.log("bacon sauce, jwtVerified: ", jwtVerified);
+    const { payload } = jwtVerified;
+    const { email, userId } = payload;
     const { wasSuccessful } = await connectToMongodb(15_000, 0, true);
 
     if (!wasSuccessful) {
@@ -115,6 +118,7 @@ export default async function handler(
     }
 
     // if the user is on a selected unit, then get the google drive folder link
+    console.log("userId, sup there: ", userAccount._id);
     if (
       typeof request.query.unitId === "string" &&
       typeof gdriveAccessToken === "string" &&
@@ -125,7 +129,7 @@ export default async function handler(
         gdriveAccessToken,
         gdriveRefreshToken,
         origin,
-        userId
+        userAccount._id
       );
 
       console.log("latestValidUnitCopyFolder: ", latestValidUnitCopyFolder);

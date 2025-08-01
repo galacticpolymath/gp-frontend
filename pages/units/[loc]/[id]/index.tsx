@@ -55,6 +55,7 @@ import {
   getLocalStorageItem,
   removeLocalStorageItem,
 } from "../../../../shared/fns";
+import useSiteSession from "../../../../customHooks/useSiteSession";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -153,17 +154,20 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
   "https://docs.google.com",
 ]);
 
-const LessonDetails = ({ lesson, unit }: IProps) => {
-  console.log("unit: ", unit);
+const LessonDetails = ({ lesson, unit }: IProps) => {;
   const router = useRouter();
   const {
     _isUserTeacher,
     _isGpPlusMember,
     _isCopyUnitBtnDisabled,
     _didAttemptRetrieveUserData,
+    _userLatestCopyUnitFolderId,
   } = useUserContext();
-  const { status, data } = useSession();
-  const { token } = (data ?? {}) as IUserSession;
+  const session = useSiteSession();
+
+  console.log("session, sup there: ", session);
+
+  const { status, token, gdriveAccessToken, gdriveRefreshToken }= session;
   const statusRef = useRef(status);
 
   useMemo(() => {
@@ -187,8 +191,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   const [, setNotifyModal] = _notifyModal;
   const [, setIsCopyUnitBtnDisabled] = _isCopyUnitBtnDisabled;
   const [, setCustomModalFooter] = _customModalFooter;
-  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
-  const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
+  const [, setUserLatestCopyUnitFolderId] = _userLatestCopyUnitFolderId;
   const [, setDidAttemptRetrieveUserData] = _didAttemptRetrieveUserData;
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const [, setLessonItemModal] = _lessonItemModal;
@@ -573,11 +576,17 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
           const paramsAndHeaders = {
             params: {
               willNotRetrieveMailingListStatus: true,
+              unitId: unit?._id
             },
             headers: {
               Authorization: `Bearer ${token}`,
+              "gdrive-token": gdriveAccessToken,
+              "gdrive-token-refresh": gdriveRefreshToken,
             },
           };
+
+          console.log("paramsAndHeaders: ", paramsAndHeaders);
+
           const { status, data } = await axios.get<TUserSchemaForClient>(
             `/api/get-user-account-data`,
             paramsAndHeaders
@@ -589,8 +598,16 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
             );
           }
 
+          console.log("data, from server: ", data);
+
+
+
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
+          
+          if (data.viewingUnitFolderCopyId){
+            setUserLatestCopyUnitFolderId(data.viewingUnitFolderCopyId);
+          }
 
           const willShowGpPlusPurchaseThankYouModal = getLocalStorageItem(
             "willShowGpPlusPurchaseThankYouModal"
