@@ -38,7 +38,8 @@ const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
 export const getGDriveItem = async (
   fileId: string,
   accessToken: string,
-  tries = 3
+  tries = 3,
+  willRetry = true
 ): Promise<{ id: string; [key: string]: unknown } | { errType: string }> => {
   try {
     const { status, data } = await axios.get<{ id: string; [key: string]: unknown }>(
@@ -75,10 +76,14 @@ export const getGDriveItem = async (
       }
     }
 
-    if (error?.code === "ECONNABORTED" && tries > 0) {
+    if (error?.code === "ECONNABORTED" && tries > 0 && willRetry) {
       await waitWithExponentialBackOff(tries, [2_000, 5_000]);
 
       return await getGDriveItem(fileId, accessToken, tries - 1);
+    } else if (error?.code === "ECONNABORTED" && willRetry){
+      return {
+        errType: "timeout"
+      }
     }
 
     return {
@@ -1150,7 +1155,7 @@ export default async function handler(
         userId: userIdFromClient,
         unitId,
         gdriveFolderId: copyDestinationFolderId,
-        doesCopyExistInUserGDrive: true
+        doesFolderCopyExistInUserGDrive: true
       });
 
     if (!copyUnitJobInsertionResult.wasSuccessful) {
@@ -1184,7 +1189,7 @@ export default async function handler(
         errMsg: `Error object: ${errMsg}`,
         userId: userIdFromClient,
         unitId,
-        doesCopyExistInUserGDrive: false
+        doesFolderCopyExistInUserGDrive: false
       });
       
       if(!copyUnitJobInsertionResult.wasSuccessful){

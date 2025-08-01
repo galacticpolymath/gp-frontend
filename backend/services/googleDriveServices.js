@@ -301,7 +301,7 @@ export const copyFiles = async (
       !fileCopies.find((file) => file.id === result?.value?.data.id)
     ) {
       const name = result?.value?.data?.name.replace(/Copy of/, "").trim();
-    
+
       fileCopies.push({
         id: result?.value?.data?.id,
         name,
@@ -337,7 +337,7 @@ export const copyFiles = async (
   return { wasSuccessful: true, fileCopies };
 };
 
-export const refreshAuthToken = async (refreshToken, origin) => {
+export const refreshAuthToken = async (refreshToken, origin, tries = 3) => {
   try {
     console.log("Refreshing auth token...");
 
@@ -360,6 +360,18 @@ export const refreshAuthToken = async (refreshToken, origin) => {
     console.error("Error refreshing access token: ", error.response);
     console.log("Error dir: ");
     console.dir(error);
+
+    const didTimeoutOccur = error?.code === "ECONNABORTED" ||
+      error?.response?.status === 408 ||
+      error?.message?.includes("timeout");
+
+    if (didTimeoutOccur && tries > 0) {
+      console.log("Timeout occurred while refreshing token. Will retry.");
+
+      await waitWithExponentialBackOff(tries, 2_000, 5_000)
+
+      return refreshAuthToken(refreshToken, origin, tries);
+    }
 
     return {
       wasSuccessful: false,

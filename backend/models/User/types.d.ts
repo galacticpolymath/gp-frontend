@@ -75,5 +75,6 @@ export type TUserClientProps = {
   isOnMailingList?: boolean, 
   isGpPlusMember?: boolean, 
   gpPlusSubscription?: Awaited<ReturnType<typeof getGpPlusIndividualMembershipStatus>>,  
+  viewingUnitFolderCopyId?: string
 }
 export type TUserSchemaForClient<TUserSchema extends object = TUserSchemaV2> = TUserSchema & TUserClientProps;
