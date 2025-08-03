@@ -105,12 +105,11 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     accordionBtnStyle = {},
     isAccordionExpandable = true,
   } = props;
-  const { _isUserTeacher, _isGpPlusMember } = useUserContext();
+  const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [, setLessonItemModal] = _lessonItemModal;
-  const [isGpPlusMember] = _isGpPlusMember;
   const router = useRouter();
   const { status } = useSession();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -148,7 +147,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       ...item,
       externalUrl: item.externalUrl ?? item.links?.[0]?.url,
       isDisplayed: true,
-      docUrl: `${item.gdriveRoot}/preview`,
+      docUrl: `${item.gdriveRoot}/view`,
     }));
   };
 

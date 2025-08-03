@@ -50,7 +50,6 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
       ? JSON.parse(localStorage.getItem("userAccount") ?? "{}")
       : {}
   ) as TAboutUserForm;
-  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [modalAnimation, setModalAnimation] = _modalAnimation;
   const { status, user, token } = useSiteSession();
   const { image, name } = user ?? {};
