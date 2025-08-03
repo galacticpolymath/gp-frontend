@@ -7,7 +7,7 @@ import {
 } from "../backend/models/Unit/types/unit";
 import { Session } from "next-auth";
 import { TAboutUserForm, TUserSchemaForClient } from "../backend/models/User/types";
-import { TWebAppForUI } from "../backend/models/webApp";
+import { TWebAppForUI } from "../backend/models/WebApp";
 import { TUserAccount } from "../providers/UserProvider";
 
 declare global {

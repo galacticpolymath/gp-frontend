@@ -5,7 +5,7 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 
-import { TWebAppForUI } from "../../../backend/models/webApp";
+import { TWebAppForUI } from "../../../backend/models/WebApp";
 
 interface IProps {
   webApps?: TWebAppForUI[];

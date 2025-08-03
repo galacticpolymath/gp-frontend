@@ -15,7 +15,7 @@ import GpUnitLessons from "./sections/GpUnitLessons";
 import SelectedGpVideo from "./modals/SelectedGpVideo";
 import SelectedGpWebApp from "../Modals/SelectedGpWebApp";
 import CurrentGpUnits from "./sections/CurrentGpUnits";
-import { TWebAppForUI } from "../../backend/models/webApp";
+import { TWebAppForUI } from "../../backend/models/WebApp";
 
 const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
