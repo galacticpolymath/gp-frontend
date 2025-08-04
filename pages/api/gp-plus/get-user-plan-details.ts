@@ -1,3 +1,12 @@
+/* eslint-disable quotes */
+/* eslint-disable comma-dangle */
+/* eslint-disable semi */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-empty */
+/* eslint-disable no-console */
+/* eslint-disable indent */
+/* eslint-disable no-multiple-empty-lines */
+
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyJwt } from "../../../nondependencyFns";
 import { getUserByEmail } from "../../../backend/services/userServices";
@@ -7,6 +16,7 @@ import { CustomError } from "../../../backend/utils/errors";
 const handler = async (request: NextApiRequest, response: NextApiResponse) => {
   try {
     const authHeader = request.headers["authorization"];
+    const willComputeSavings = "willComputeSavings" in request.query ? request.query.willComputeSavings : false;
 
     if (!authHeader) {
       return response.status(401).json({

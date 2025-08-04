@@ -15,7 +15,6 @@ import {
   copyFiles,
   deleteGoogleDriveItem,
   FileMetaData,
-  getGoogleDriveFolders,
   GoogleServiceAccountAuthCreds,
   refreshAuthToken,
   shareFilesWithRetries,
@@ -29,12 +28,9 @@ import {
 } from "../../../backend/services/userServices";
 import { connectToMongodb } from "../../../backend/utils/connection";
 import { OAuth2Client } from "google-auth-library";
-import { headers } from "next/headers";
 import { insertCopyUnitJobResult } from "../../../backend/services/copyUnitJobResultServices";
-import { GDRIVE_FOLDER_ORIGIN_AND_PATH } from "../../../components/CopyingUnitToast";
 import { nanoid } from "nanoid";
-import { setCacheVal } from "../../../shared/fns";
-import { deleteCacheVal } from "../../../backend/helperFns";
+import { deleteCacheVal, setCacheVal } from "../../../backend/helperFns";
 
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";

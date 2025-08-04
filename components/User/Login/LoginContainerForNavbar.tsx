@@ -68,7 +68,6 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     }
   }, [status]);
 
-
   const isGpPlusMember =
     gpPlusSubscription?.AccountStageLabel &&
     HAS_MEMBERSHIP_STATUSES.has(

@@ -11,8 +11,7 @@ export const useGpPlusModalInteraction = (
 
   useEffect(() => {
     if (status === "authenticated" && gpPlusBillingTerm) {
-      // console.log("gpPlusBillingTerm, yo there: ", gpPlusBillingTerm);
-      
+            
       const mutationOberserver = new MutationObserver((elements) => {
         for (const element of elements) {
           console.log("Element: ", element);

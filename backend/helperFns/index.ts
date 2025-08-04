@@ -14,7 +14,7 @@ export const getCacheVal = async <TKey extends keyof ICache, TVal extends ICache
   return cache.get(key) as (TVal | undefined);
 }
 
-export const deleteCacheVal = async <TKey extends keyof ICache, TVal extends ICache[TKey]>(key: TKey): Promise<number> => {
+export const deleteCacheVal = async <TKey extends keyof ICache>(key: TKey): Promise<number> => {
   const { cache } = await import("../authOpts/authOptions")
 
   return cache.del(key)
