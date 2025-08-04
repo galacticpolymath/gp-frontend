@@ -12,12 +12,14 @@ const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
   const { token, status } = useSiteSession();
   const [wasGpPlusSubRetrieved, setWasGpPlusSubRetrieved] = useState(false);
   const { isFetching, data: gpPlusSubscription } = useQuery({
-    retry: 1,
+    retry: 2,
     refetchOnWindowFocus: false,
-    queryKey: [status, token],
+    queryKey: [status],
     queryFn: async () => {
       if (willGetGpPlusMembership && status === "authenticated") {
         const gpPlusSub = await getIndividualGpPlusSubscription(token);
+
+        console.log("gpPlusSub, yo there: ", gpPlusSub);
 
         setWasGpPlusSubRetrieved(true);
 
@@ -140,7 +142,7 @@ const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
         );
         idToken = await magic.auth.loginWithMagicLink({
           email: userAccount?.gpPlusSubscription.person?.Email,
-          redirectURI: window.location.href,
+          // redirectURI: window.location.href,
         });
 
         if (idToken){

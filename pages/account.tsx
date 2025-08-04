@@ -192,6 +192,7 @@ const AccountPg: React.FC = () => {
         
         if(idToken){
           window.Outseta?.setMagicLinkIdToken(idToken);
+          // GOAL: get the saving from the outseta servers to displayed onto the ui
         }
       }
 

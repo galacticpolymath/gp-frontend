@@ -27,6 +27,7 @@ import {
   retrieveUnits,
 } from "../backend/services/unitServices";
 import { TAccountStageLabel } from "../backend/services/outsetaServices";
+import { useUserContext } from "../providers/UserProvider";
 
 interface IProps {
   liveUnitsTotal?: number;
@@ -79,9 +80,10 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
     "yearly"
   );
-  const { _notifyModal, _isLoginModalDisplayed } = useModalContext();
+  const { _notifyModal, } = useModalContext();
+  const { _aboutUserForm } = useUserContext();
   const [, setNotifyModal] = _notifyModal;
-  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
+  const [aboutUserForm] = _aboutUserForm;
   const siteSession = useSiteSession();
   const { token, status, user, logUserOut } = siteSession;
   const [wasGpLiteBtnClicked, setWasGpLiteBtnClicked] = useState(false);
@@ -102,8 +104,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
   useOutsetaInputValidation();
 
   const [didUserSignUp, setDidUserSignUp] = useState(false);
-
-  console.log("gpPlusSubscription, in GP+ component: ", gpPlusSubscription);
 
   const monthlyPrice = 10;
   const yearlyPrice = 60;
@@ -131,6 +131,16 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
 
     return "Sign up for free";
   }, [status]);
+
+  useEffect(() => {
+    console.log("gpPlusSubscription, sup there: ", gpPlusSubscription);
+    console.log("wasGpPlusSubRetrieved, yo there: ", wasGpPlusSubRetrieved);
+    console.log("gpPlusBtnTxt, yo there: ", gpPlusBtnTxt);
+  });
+
+  useEffect(() => {
+    console.log("wasGpPlusSubRetrieved, yo there: ", wasGpPlusSubRetrieved);
+  }, [wasGpPlusSubRetrieved]);
 
   const handleToggle = () => {
     setBillingPeriod((prev) => (prev === "monthly" ? "yearly" : "monthly"));

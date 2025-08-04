@@ -52,7 +52,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   ) as TAboutUserForm;
   const [modalAnimation, setModalAnimation] = _modalAnimation;
   const { status, user, token } = useSiteSession();
-  const { image, name } = user ?? {};
+  const { image } = user ?? {};
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
   const [isSigningUserOut, setIsSigningUserOut] = useState(false);
   const { clearCookies } = useCustomCookies();
