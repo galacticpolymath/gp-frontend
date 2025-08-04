@@ -1,7 +1,8 @@
 /* eslint-disable quotes */
+/* eslint-disable indent */
 
 import React from "react";
-import { Button, Image, Modal, CloseButton } from "react-bootstrap";
+import { Button, Modal, CloseButton } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
 import { TbExternalLink } from "react-icons/tb";
@@ -18,6 +19,7 @@ const LessonItemModal: React.FC = () => {
     lessonItemModal.itemCat === "web resource"
       ? lessonItemModal.externalUrl
       : lessonItemModal.docUrl;
+  const isPresentation = lessonItemModal.itemType === "presentation";
 
   const handleDownloadPdfBtnClick = () => {
     if (lessonItemModal.mimeType === "pdf") {
@@ -135,25 +137,47 @@ const LessonItemModal: React.FC = () => {
                   </section>
                 )}
                 <section className="w-100 d-flex justify-content-center align-items-center justify-content-md-end justify-content-sm-center align-items-sm-center">
-                  {lessonItemModal.isExportable && isGpPlusMember && (
+                  {lessonItemModal.isExportable &&
+                    isGpPlusMember &&
+                    !isPresentation && (
+                      <Button
+                        style={{ backgroundColor: "white" }}
+                        className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-3 flex-column flex-sm-row"
+                        onClick={handleOfficeBtnClick}
+                      >
+                        <section className="d-flex justify-content-center align-items-center h-100">
+                          <img
+                            src="/imgs/office.png"
+                            className="gp-plus-btn-icons-lesson-item-modal"
+                          />
+                        </section>
+                        <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
+                          <p className="mb-0 text-black d-none d-md-block">
+                            Download as Office
+                          </p>
+                          <p className="mb-0 text-black d-block d-md-none">
+                            Office
+                          </p>
+                        </section>
+                      </Button>
+                    )}
+                  {!isPresentation && (
                     <Button
                       style={{ backgroundColor: "white" }}
-                      className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-3 flex-column flex-sm-row"
-                      onClick={handleOfficeBtnClick}
+                      className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
+                      onClick={handleDownloadPdfBtnClick}
                     >
                       <section className="d-flex justify-content-center align-items-center h-100">
-                        <img
-                          src="/imgs/office.png"
+                        <TbDownload
                           className="gp-plus-btn-icons-lesson-item-modal"
+                          color="black"
                         />
                       </section>
                       <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
                         <p className="mb-0 text-black d-none d-md-block">
-                          Download as Office
+                          Download PDF
                         </p>
-                        <p className="mb-0 text-black d-block d-md-none">
-                          Office
-                        </p>
+                        <p className="mb-0 text-black d-block d-md-none">PDF</p>
                       </section>
                     </Button>
                   )}

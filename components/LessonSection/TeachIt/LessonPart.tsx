@@ -142,13 +142,15 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const handlePreviewDownloadBtnClick = (
     item: IItemV2Props & Pick<IItemV2, "itemCat" | "links">
   ) => {
+    console.log("handlePreviewDownloadBtnClick: item: ", item);
+    
     setLessonItemModal((state) => ({
       ...state,
       ...item,
       externalUrl: item.externalUrl ?? item.links?.[0]?.url,
       isDisplayed: true,
       docUrl:
-        item.itemType === "presentation"
+        [item.itemType, item.itemCat].includes("presentation")
           ? `${item.gdriveRoot}/view`
           : `${item.gdriveRoot}/preview`,
     }));

@@ -182,7 +182,6 @@ export const createGDriveAuthUrl = () => {
     ["scope", scopes],
     ["response_type", "code"],
     ["access_type", "offline"],
-    ["include_granted_scopes", "true"],
     ["prompt", "consent"],
   ];
 
