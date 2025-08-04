@@ -13,10 +13,10 @@ import { useRouter } from "next/router";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import { TUseStateReturnVal } from "../../../types/global";
 import { useGetAboutUserForm } from "../../../customHooks/useGetAboutUserForm";
-import { TAboutUserForm } from "../../../backend/models/User/types";
+import { TAboutUserForm, TGpPlusSubscriptionForClient } from "../../../backend/models/User/types";
 import { Spinner } from "react-bootstrap";
 import { getIsWithinParentElement } from "../../../shared/fns";
-import { deleteUserFromServerCache } from "../../../apiServices/user/crudFns";
+import { deleteUserFromServerCache, getIndividualGpPlusSubscription } from "../../../apiServices/user/crudFns";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import useHandleOpeningGpPlusAccount from "../../../customHooks/useHandleOpeningGpPlusAccount";
 import { TAccountStageLabel } from "../../../backend/services/outsetaServices";
@@ -56,13 +56,23 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
   const [isSigningUserOut, setIsSigningUserOut] = useState(false);
   const { clearCookies } = useCustomCookies();
+  const [gpPlusSubscription, setGpPlusSubscription] = useState<TGpPlusSubscriptionForClient | null>(null);
+  
+  useEffect(() => {
+    if(status === "authenticated"){
+      (async () => {
+        const gpPlusSub =
+          (await getIndividualGpPlusSubscription(token))?.membership ?? null;
+        setGpPlusSubscription(gpPlusSub);
+      })();
+    }
+  }, [status]);
 
-  // GP+ subscription check
-  const { gpPlusSubscription } = useHandleOpeningGpPlusAccount(true);
+
   const isGpPlusMember =
-    gpPlusSubscription?.membership?.AccountStageLabel &&
+    gpPlusSubscription?.AccountStageLabel &&
     HAS_MEMBERSHIP_STATUSES.has(
-      gpPlusSubscription.membership.AccountStageLabel
+      gpPlusSubscription.AccountStageLabel
     );
   const firstName =
     userAccountSaved?.firstName ??
@@ -76,9 +86,6 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     "";
 
   const handleSignOutBtnClick = async () => {
-    // TODO: determine if the user is logged into their gp plus account as well
-    // -if not, then call the signout function only and clear the cookies and the local storage
-
     await deleteUserFromServerCache(token);
     await signOut({ redirect: false });
     setIsSigningUserOut(true);

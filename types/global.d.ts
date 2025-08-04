@@ -30,7 +30,7 @@ interface IComponent {
   className: string;
   style: CSSProperties;
 }
-type TSetter<TData> = React.Dispatch<React.SetStateAction<TData>>;
+export type TSetter<TData> = React.Dispatch<React.SetStateAction<TData>>;
 type TUseStateReturnVal<TData> = [TData, TSetter<TData>];
 export interface ILessonForUI extends ILesson {
   lsn: string;

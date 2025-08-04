@@ -80,7 +80,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
     "yearly"
   );
-  const { _notifyModal, } = useModalContext();
+  const { _notifyModal } = useModalContext();
   const { _aboutUserForm } = useUserContext();
   const [, setNotifyModal] = _notifyModal;
   const [aboutUserForm] = _aboutUserForm;
@@ -88,15 +88,17 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
   const { token, status, user, logUserOut } = siteSession;
   const [wasGpLiteBtnClicked, setWasGpLiteBtnClicked] = useState(false);
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
+  const [wasGpPlusSubRetrieved, setWasGpPlusSubRetrieved] = useState(false);
+
+  console.log("setWasGpPlusSubRetrieved: ", setWasGpPlusSubRetrieved);
+
   const {
     _wasGpPlusBtnClicked,
     handleGpPlusAccountBtnClick,
     anchorElement,
     gpPlusSubscription,
     isFetching,
-    _wasGpPlusSubRetrieved,
-  } = useHandleOpeningGpPlusAccount(true);
-  const [wasGpPlusSubRetrieved] = _wasGpPlusSubRetrieved;
+  } = useHandleOpeningGpPlusAccount(true, setWasGpPlusSubRetrieved);
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = _wasGpPlusBtnClicked;
   const router = useRouter();
 
@@ -134,13 +136,9 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
 
   useEffect(() => {
     console.log("gpPlusSubscription, sup there: ", gpPlusSubscription);
-    console.log("wasGpPlusSubRetrieved, yo there: ", wasGpPlusSubRetrieved);
     console.log("gpPlusBtnTxt, yo there: ", gpPlusBtnTxt);
-  });
-
-  useEffect(() => {
     console.log("wasGpPlusSubRetrieved, yo there: ", wasGpPlusSubRetrieved);
-  }, [wasGpPlusSubRetrieved]);
+  });
 
   const handleToggle = () => {
     setBillingPeriod((prev) => (prev === "monthly" ? "yearly" : "monthly"));
@@ -440,8 +438,8 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
               </div>
             </div>
           </div>
-          <div className="d-flex justify-content-center align-items-center mt-2 mb-0">
-            <p style={{ fontSize: "1rem" }}>
+          <div className="d-flex justify-content-center align-items-center mt-3 mt-sm-2 mb-0">
+            <p style={{ fontSize: "1rem" }} className="text-center text-md-start">
               <i>
                 Help keep this site live & support the free tier by subscribing
                 to GP+

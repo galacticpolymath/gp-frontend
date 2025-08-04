@@ -7,35 +7,50 @@ import CustomLink from "../components/CustomLink";
 import { useQuery } from "@tanstack/react-query";
 import { getIndividualGpPlusSubscription } from "../apiServices/user/crudFns";
 import useSiteSession from "./useSiteSession";
+import { TUseStateReturnVal } from "../types/global";
 
-const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
+const useHandleOpeningGpPlusAccount = (
+  willGetGpPlusMembership: boolean,
+  setWasGpPlusSubRetrieved?: TUseStateReturnVal<boolean>[1]
+) => {
   const { token, status } = useSiteSession();
-  const [wasGpPlusSubRetrieved, setWasGpPlusSubRetrieved] = useState(false);
+
+  console.log(
+    "gpPlusSub, yo there, setWasGpPlusSubRetrieved: ",
+    setWasGpPlusSubRetrieved
+  );
+
+  const queryFn = async () => {
+
+    if (willGetGpPlusMembership && status === "authenticated") {
+      const gpPlusSub = await getIndividualGpPlusSubscription(token);
+
+      console.log("gpPlusSub, yo there: ", gpPlusSub);
+
+      if (setWasGpPlusSubRetrieved) {
+        setWasGpPlusSubRetrieved(true);
+      }
+
+      return gpPlusSub;
+    }
+
+    if (status === "loading") {
+      return null;
+    }
+
+    if (setWasGpPlusSubRetrieved) {
+      setWasGpPlusSubRetrieved(true);
+    }
+
+    return null;
+  };
+  
   const { isFetching, data: gpPlusSubscription } = useQuery({
     retry: 2,
     refetchOnWindowFocus: false,
     queryKey: [status],
-    queryFn: async () => {
-      if (willGetGpPlusMembership && status === "authenticated") {
-        const gpPlusSub = await getIndividualGpPlusSubscription(token);
-
-        console.log("gpPlusSub, yo there: ", gpPlusSub);
-
-        setWasGpPlusSubRetrieved(true);
-
-        return gpPlusSub;
-      }
-
-      if (status === "loading") {
-        return null;
-      }
-
-      setWasGpPlusSubRetrieved(true);
-
-      return null;
-    },
+    queryFn,
   });
-
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = useState(false);
   const { _notifyModal } = useModalContext();
   const [, setNotifyModal] = _notifyModal;
@@ -145,9 +160,9 @@ const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
           // redirectURI: window.location.href,
         });
 
-        if (idToken){
+        if (idToken) {
           window.Outseta?.setMagicLinkIdToken(idToken);
-        } 
+        }
       }
 
       wasGpPlusAccountRetrievalSuccessful = true;
@@ -197,7 +212,6 @@ const useHandleOpeningGpPlusAccount = (willGetGpPlusMembership: boolean) => {
     anchorElement,
     gpPlusSubscription,
     isFetching,
-    _wasGpPlusSubRetrieved: [wasGpPlusSubRetrieved, setWasGpPlusSubRetrieved],
   } as const;
 };
 
