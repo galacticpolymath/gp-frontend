@@ -171,15 +171,16 @@ const TeachItUI = <
   const [userLatestCopyUnitFolderId, setUserLatestCopyUnitFolderId] =
     _userLatestCopyUnitFolderId;
   const session = useSiteSession();
-  const { getCookies, setAppCookie } = useCustomCookies();
-  const queriedCookies = getCookies([
-    "gdriveAccessToken",
-    "gdriveAccessTokenExp",
-    "gdriveRefreshToken",
-  ]);
-  const { gdriveAccessToken, gdriveAccessTokenExp, gdriveRefreshToken } =
-    queriedCookies;
-  const { status, token, user } = session;
+  const { setAppCookie } = useCustomCookies();
+  const {
+    status,
+    token,
+    user,
+    gdriveEmail,
+    gdriveAccessToken,
+    gdriveRefreshToken,
+    gdriveAccessTokenExp,
+  } = session;
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
     _isCopyUnitBtnDisabled;
   const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
@@ -237,7 +238,13 @@ const TeachItUI = <
     console.log("user.userId: ", user.userId);
     console.log("gdriveRefreshToken: ", gdriveRefreshToken);
 
-    if (!GdrivePublicID || !user.userId || !gdriveRefreshToken || !unitId) {
+    if (
+      !GdrivePublicID ||
+      !user.userId ||
+      !gdriveRefreshToken ||
+      !unitId ||
+      !gdriveEmail
+    ) {
       console.log(
         "Copy unit function called with all necessary props: user ID, unit title, GDrive public ID, and GDrive refresh token"
       );
@@ -326,12 +333,14 @@ const TeachItUI = <
     const unitNum = new URL(window.location.href).pathname
       .split("/")
       .at(-1) as string;
+
     url.searchParams.append("unitDriveId", GdrivePublicID);
     url.searchParams.append(
       "unitName",
       MediumTitle ?? `${Title ?? `Unit ${unitNum}`} COPY`
     );
     url.searchParams.append("unitId", unitId);
+    url.searchParams.append("gdriveEmail", gdriveEmail);
 
     const eventSource = new EventSourcePolyfill(url.href, {
       headers,

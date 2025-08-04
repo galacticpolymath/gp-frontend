@@ -164,7 +164,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     _userLatestCopyUnitFolderId,
   } = useUserContext();
   const session = useSiteSession();
-  const { status, token, gdriveAccessToken, gdriveRefreshToken } = session;
+  const { status, token, gdriveAccessToken, gdriveRefreshToken, gdriveEmail } = session;
   const statusRef = useRef(status);
 
   useMemo(() => {
@@ -572,6 +572,7 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
             params: {
               willNotRetrieveMailingListStatus: true,
               unitId: unit?._id,
+              gdriveEmail,
             },
             headers: {
               Authorization: `Bearer ${token}`,

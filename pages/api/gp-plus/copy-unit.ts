@@ -32,6 +32,9 @@ import { OAuth2Client } from "google-auth-library";
 import { headers } from "next/headers";
 import { insertCopyUnitJobResult } from "../../../backend/services/copyUnitJobResultServices";
 import { GDRIVE_FOLDER_ORIGIN_AND_PATH } from "../../../components/CopyingUnitToast";
+import { nanoid } from "nanoid";
+import { setCacheVal } from "../../../shared/fns";
+import { deleteCacheVal } from "../../../backend/helperFns";
 
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
@@ -468,8 +471,10 @@ export default async function handler(
   let copyDestinationFolderId = "";
   let gdriveAccessToken = "";
   let unitId = "";
+  let gdriveEmail: string | null = null;
   let userIdFromClient = "";
   const copyUnitJobDate = new Date();
+  const jobId = nanoid(); 
 
   try {
     const origin = new URL(request.headers.referer ?? "").origin;
@@ -540,9 +545,6 @@ export default async function handler(
     const email = jwtPayload.payload.email;
     gdriveAccessToken = _gdriveAccessToken;
 
-    // TODO: check for the following from the client: 
-    // -unitId
-
     if (
       !request.query.unitDriveId ||
       Array.isArray(request.query.unitDriveId)
@@ -551,6 +553,7 @@ export default async function handler(
       console.error(errMsg);
       throw new Error(errMsg);
     }
+
     if (typeof request.query.unitId !== 'string') {
       const errMsg = "The id of the unit was not provided.";
       console.error(errMsg);
@@ -558,6 +561,14 @@ export default async function handler(
     }
 
     unitId = request.query.unitId;
+
+    if (typeof request.query.gdriveEmail !== 'string') {
+      const errMsg = "The id of the unit was not provided.";
+      console.error(errMsg);
+      throw new Error(errMsg);
+    }
+
+    gdriveEmail = request.query.gdriveEmail;
 
     if (!request.query.unitName) {
       const errMsg = "The name of the unit was not provided.";
@@ -1095,21 +1106,33 @@ export default async function handler(
 
     console.log("Will copy files...");
 
-    const { wasSuccessful: wasCopiesSuccessful, fileCopies } = (await copyFiles(
+    setCacheVal(`copyUnitJobStatus-${jobId}`, "ongoing")
+
+    const copyFilesRes = (await copyFiles(
       files,
       createdFolders,
       gdriveAccessToken,
       4,
       (data: TCopyFilesMsg) => {
         sendMessage(response, data);
-      }
+      },
+      [],
+      jobId
     )) as {
       wasSuccessful: boolean;
       fileCopies?: { id: string; name: string }[];
+      errType?: string;
     };
 
+    console.log("copyFilesRes: ", copyFilesRes);
+
+    const { wasSuccessful: wasCopiesSuccessful, fileCopies, errType } = copyFilesRes;
+
+    if(errType === "clientCanceled") {
+      throw new Error("The client has canceled the job.");
+    }
+
     console.log("fileCopies length: ", fileCopies);
-    // console.log("files length: ", files?.length);
 
     if (!isStreamOpen) {
       console.error("The client has canceled the job.");
@@ -1156,7 +1179,8 @@ export default async function handler(
         userId: userIdFromClient,
         unitId,
         gdriveFolderId: copyDestinationFolderId,
-        doesFolderCopyExistInUserGDrive: true
+        doesFolderCopyExistInUserGDrive: true,
+        gdriveEmail
       });
 
     if (!copyUnitJobInsertionResult.wasSuccessful) {
@@ -1164,6 +1188,8 @@ export default async function handler(
     } else {
       console.log("Copy unit insertion result: ", copyUnitJobInsertionResult);
     }
+
+    deleteCacheVal(`copyUnitJobStatus-${jobId}`);
   } catch (error) {
     console.error("An error has occurred. Error: ", error);
 
@@ -1190,7 +1216,9 @@ export default async function handler(
         errMsg: `Error object: ${errMsg}`,
         userId: userIdFromClient,
         unitId,
-        doesFolderCopyExistInUserGDrive: false
+        doesFolderCopyExistInUserGDrive: false,
+        // if copyDestinationFolderId is truthy, then gdriveEmail must be a string email
+        gdriveEmail: gdriveEmail!,
       });
       
       if(!copyUnitJobInsertionResult.wasSuccessful){
@@ -1199,6 +1227,8 @@ export default async function handler(
         console.log("Copy unit insertion result: ", copyUnitJobInsertionResult)
       }
     }
+
+    deleteCacheVal(`copyUnitJobStatus-${jobId}`);
 
     response.end();
   }

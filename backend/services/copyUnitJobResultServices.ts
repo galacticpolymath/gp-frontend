@@ -230,16 +230,18 @@ export const getLatestValidUnitCopyFolderJob = async (
   gDriveAccessToken: string,
   refreshGDriveToken: string,
   clientOrigin: string,
-  userId: string
+  userId: string,
+  gdriveEmail: string,
 ) => {
   try {
     console.log(`getLatestValidUnitCopyFolderJob unitId: ${unitId}`);
     
-    const filter = {
+    const filter: Partial<Record<keyof ICopyUnitResult, unknown>> = {
       unitId,
       errMsg: {
         $exists: false,
       },
+      gdriveEmail,
       doesFolderCopyExistInUserGDrive: true,
       result: "success",
       userId: userId,

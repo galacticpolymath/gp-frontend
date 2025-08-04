@@ -10,6 +10,7 @@ import { waitWithExponentialBackOff } from "../../globalFns";
 import axios from "axios";
 import { GoogleAuthReqBody } from "../../pages/api/gp-plus/auth";
 import { nanoid } from "nanoid";
+import { getCacheVal } from "../helperFns";
 
 export class FileMetaData {
   constructor(
@@ -251,17 +252,21 @@ export const copyFiles = async (
   files,
   createdFolders,
   accessToken,
-  tries = 0,
+  tries = 3,
   updateClient,
-  fileCopies = []
+  fileCopies = [],
+  copyUnitJobId
 ) => {
-  if (tries > 10) {
-    console.error("Failed to copy files. Reached max tries.");
-    return { wasSuccessful: false };
-  }
-
   /** @type {Promise<AxiosResponse<any, any>>[]} */
   const copiedFilesPromises = [];
+  const jobStatus = await getCacheVal(`copyUnitJobStatus-${copyUnitJobId}`)
+
+  if (!jobStatus || jobStatus === "stopped") {
+    return {
+      wasSuccessful: false,
+      errType: "clientCanceled"
+    }
+  }
 
   for (const file of files) {
     const parentFolderId = createdFolders.find(
@@ -287,6 +292,9 @@ export const copyFiles = async (
     const result = copiedFilesResult[index];
 
     console.log("result, what is up there: ", result);
+    console.log("result dir, what is up there: ");
+    console.dir(result);
+    console.log("result?.response, what is up there: ", result?.response);
 
     if (result.status === "rejected") {
       failedCopiedFilesIndices.add(parseInt(index));
@@ -313,7 +321,6 @@ export const copyFiles = async (
     updateClient({ fileCopied: originalFileObj.name });
   }
 
-
   if (failedCopiedFilesIndices.size) {
     console.error(
       "Failed to copy files length: ",
@@ -322,16 +329,28 @@ export const copyFiles = async (
     const failedCopiedFiles = files.filter((_, index) =>
       failedCopiedFilesIndices.has(index)
     );
-    console.log("files to copy, after failure: ", failedCopiedFiles.length);
-    tries = await waitWithExponentialBackOff(tries);
 
-    return await copyFiles(
-      failedCopiedFiles,
-      createdFolders,
-      accessToken,
-      tries,
-      fileCopies
-    );
+    console.log("files to copy, after failure: ", failedCopiedFiles.length);
+
+    tries -= 1;
+
+    console.error("Current trie: ", tries);
+
+    if (tries > 0) {
+      await waitWithExponentialBackOff(tries);
+
+      return await copyFiles(
+        failedCopiedFiles,
+        createdFolders,
+        accessToken,
+        tries,
+        fileCopies
+      );
+    }
+
+    console.error("Retries limit reached. Failed to copy unit.");
+
+    return { wasSuccessful: false, };
   }
 
   console.log("Successfully copied all files.");
@@ -363,14 +382,15 @@ export const refreshAuthToken = async (refreshToken, origin, tries = 3) => {
     console.log("Error dir: ");
     console.dir(error);
 
-    const didTimeoutOccur = error?.code === "ECONNABORTED" ||
+    const didTimeoutOccur =
+      error?.code === "ECONNABORTED" ||
       error?.response?.status === 408 ||
       error?.message?.includes("timeout");
 
     if (didTimeoutOccur && tries > 0) {
       console.log("Timeout occurred while refreshing token. Will retry.");
 
-      await waitWithExponentialBackOff(tries, 2_000, 5_000)
+      await waitWithExponentialBackOff(tries, 2_000, 5_000);
 
       return refreshAuthToken(refreshToken, origin, tries);
     }

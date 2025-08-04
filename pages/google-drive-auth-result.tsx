@@ -65,21 +65,21 @@ const GoogleDriveAuthResult = () => {
         "didGpSignInAttemptOccur"
       );
 
+      console.log("didGpSignInAttemptOccur: ", didGpSignInAttemptOccur);
+
       console.log("Will Attempt to sign the target user into google drive.")
 
       console.log("status: ", status);
       
       if (didGpSignInAttemptOccur) {
         console.log("Will redirect user because didGpSignInAttemptOccur is true.");
-        setWillRedirectUser(true);
         return true;
       }
 
       if (status !== "authenticated") {
         console.log("The user is unauthenticated. Please log in first.");
-        
-        sessionStorage.setItem(`${window.location.search}`, "true");
-        throw new Error("userUnauthenticated");
+
+        return false;
       }
 
       const urlParams = new URLSearchParams(window.location.search);
@@ -88,9 +88,12 @@ const GoogleDriveAuthResult = () => {
       console.log("The code from the url: ", code);
 
       if (!code) {
-        sessionStorage.setItem(`${window.location.search}`, "true");
-        throw new Error("codeNotFound");
+        setLocalStorageItem("didGpSignInAttemptOccur", true);
+
+        return false;
       }
+      
+      console.log("Yo there, will authenticate the user with google drive...")
 
       const responseBody = await authenticateUserWithGDrive(code);
 
@@ -100,19 +103,20 @@ const GoogleDriveAuthResult = () => {
         !responseBody ||
         !responseBody.access_token ||
         !responseBody.refresh_token ||
+        !responseBody.email ||
         !responseBody.expires_at
       ) {
-        sessionStorage.setItem(`${window.location.search}`, "true");
-        throw new Error(
-          "No response body found or the tokens weren't found. Please try again."
-        );
+        setLocalStorageItem("didGpSignInAttemptOccur", true);
+
+        return false
       }
 
       if ("errType" in responseBody) {
-        sessionStorage.setItem(`${window.location.search}`, "true");
+        setLocalStorageItem("didGpSignInAttemptOccur", true);
+
         console.error(`errType: ${responseBody?.errType}`);
 
-        throw new Error("Authorization has failed.");
+        return false;
       }
 
       setAppCookie("isSignedInAsGpPlusUser", true, {
@@ -121,6 +125,11 @@ const GoogleDriveAuthResult = () => {
         path: "/",
       });
       setAppCookie("gdriveAccessToken", responseBody.access_token, {
+        expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
+        secure: true,
+        path: "/",
+      });
+      setAppCookie("gdriveEmail", responseBody.email, {
         expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
         secure: true,
         path: "/",

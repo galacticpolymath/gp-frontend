@@ -41,8 +41,14 @@ export class GoogleAuthReqBody {
 export interface IGoogleDriveAuthResBody {
   access_token: string;
   refresh_token: string;
+  email: string;
   expires_at: number;
   refresh_token_expires_at: number;
+}
+
+export interface IUserInfo {
+  email: string;
+  [key: string]: string;
 }
 
 export default async function handler(
@@ -60,7 +66,8 @@ export default async function handler(
       code: reqBody.code,
       grant_type: "authorization_code",
     };
-    let res = await axios.post<Partial<IGDriveServerAuthRes>>(
+    console.log("googleDriveAuthReqBody: ", googleDriveAuthReqBody);
+    const res = await axios.post<Partial<IGDriveServerAuthRes>>(
       "https://oauth2.googleapis.com/token",
       googleDriveAuthReqBody,
       {
@@ -70,9 +77,9 @@ export default async function handler(
       }
     );
 
-    console.log('Google drive auth res: ');
+    console.log("Google drive auth res: ");
     console.log(res);
-    
+
     const { status, data } = res;
 
     if (status !== 200) {
@@ -84,13 +91,37 @@ export default async function handler(
       typeof data.refresh_token !== "string" ||
       typeof data.expires_in !== "number"
     ) {
-      console.error("Failed to get Google Drive access token. Data retrieved: ");
+      console.error(
+        "Failed to get Google Drive access token. Data retrieved: "
+      );
       console.error(data);
-      throw new Error(`GP Plus auth failed. Response body received: ${JSON.stringify(data)}`);
+      throw new Error(
+        `GP Plus auth failed. Response body received: ${JSON.stringify(data)}`
+      );
     }
 
-    const _data = {
+    const userInfoRes = await axios.get<Partial<IUserInfo>>(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${data.access_token}`,
+        },
+      }
+    );
+
+    if(userInfoRes?.status !== 200){
+      throw new Error("Retrieved a non-200 response from the google drive server.");
+    }
+
+    if(!userInfoRes.data?.email){
+      throw new Error("The email is not present in the user info response.");
+    }
+
+    console.log("userInfoRes.data: ", userInfoRes.data);
+
+    const _data: Partial<IGoogleDriveAuthResBody> = {
       ...data,
+      email: userInfoRes.data?.email,
       expires_at: new Date().getTime() + data.expires_in * 1_000,
     };
 

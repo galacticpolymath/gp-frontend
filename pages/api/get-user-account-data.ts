@@ -120,6 +120,7 @@ export default async function handler(
     // if the user is on a selected unit, then get the google drive folder link
     if (
       typeof request.query.unitId === "string" &&
+      typeof request.query.gdriveEmail === "string" &&
       typeof gdriveAccessToken === "string" &&
       typeof gdriveRefreshToken === "string"
     ) {
@@ -128,7 +129,8 @@ export default async function handler(
         gdriveAccessToken,
         gdriveRefreshToken,
         origin,
-        userAccount._id
+        userAccount._id,
+        request.query.gdriveEmail
       );
 
       console.log("latestValidUnitCopyFolder: ", latestValidUnitCopyFolder);

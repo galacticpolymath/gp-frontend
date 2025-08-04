@@ -16,6 +16,29 @@ interface GpPlusModalProps {
 
 const ICON_COLOR = "#14B1EA";
 
+interface IGpPlusAttribute{
+  children: React.ReactNode,
+  Icon: React.ReactNode
+}
+
+const ListItem: React.FC<IGpPlusAttribute> = ({ children, Icon }) => {
+  return (
+    <li className="gp-plus-modal-benefit w-100 d-flex justify-content-center align-items-center">
+      <div className="w-75 justify-content-center align-items-center d-flex">
+        <section className="d-flex justify-content-center align-items-center">
+          {Icon}
+        </section>
+        <section
+          style={{ paddingTop: ".2em" }}
+          className="d-flex justify-content-center align-items-center ps-1"
+        >
+          <span>{children}</span>
+        </section>
+      </div>
+    </li>
+  );
+};
+
 const GpPlusModal: React.FC<GpPlusModalProps> = ({ onClose }) => {
   const { _isGpPlusModalDisplayed } = useModalContext();
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
@@ -107,6 +130,19 @@ const GpPlusModal: React.FC<GpPlusModalProps> = ({ onClose }) => {
           <li className="gp-plus-modal-benefit w-100 d-flex justify-content-center align-items-center">
             <div className="w-75 justify-content-center align-items-center d-flex">
               <section className="d-flex justify-content-center align-items-center">
+                <FaEdit color={ICON_COLOR} />
+              </section>
+              <section
+                style={{ paddingTop: ".2em" }}
+                className="d-flex justify-content-center align-items-center ps-1"
+              >
+                <span>Make lessons your own with full editing access.</span>
+              </section>
+            </div>
+          </li>
+          <li className="gp-plus-modal-benefit w-100 d-flex justify-content-center align-items-center">
+            <div className="w-75 justify-content-center align-items-center d-flex">
+              <section className="d-flex justify-content-center align-items-center">
                 <FaUnlockKeyhole color={ICON_COLOR} />
               </section>
               <section
@@ -119,19 +155,9 @@ const GpPlusModal: React.FC<GpPlusModalProps> = ({ onClose }) => {
               </section>
             </div>
           </li>
-          <li className="gp-plus-modal-benefit w-100 d-flex justify-content-center align-items-center">
-            <div className="w-75 justify-content-center align-items-center d-flex">
-              <section className="d-flex justify-content-center align-items-center">
-                <FaEdit color={ICON_COLOR} />
-              </section>
-              <section
-                style={{ paddingTop: ".2em" }}
-                className="d-flex justify-content-center align-items-center ps-1"
-              >
-                <span>Make lessons your own with full editing access.</span>
-              </section>
-            </div>
-          </li>
+          <ListItem Icon={<FaUnlockKeyhole color={ICON_COLOR} />}>
+            Access to Unit Bonus Materials
+          </ListItem>
         </ul>
         <section className="d-block d-sm-flex justify-content-sm-center align-items-sm-center w-100">
           <Link

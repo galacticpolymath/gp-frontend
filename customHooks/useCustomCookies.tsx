@@ -5,6 +5,7 @@ interface IAppCookies {
   gdriveAccessToken: string;
   gdriveRefreshToken: string;
   gdriveAccessTokenExp: number;
+  gdriveEmail: string,
   isSignedInAsGpPlusUser: boolean;
   token: string;
 }

@@ -18,7 +18,7 @@ import { addUserToEmailList } from '../services/emailServices';
 import User from '../models/User/index';
 
 const VALID_FORMS = ['createAccount', 'login'];
-export const cache = new NodeCache({ stdTTL: 100 });
+export const cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
 
 /** @return { import("next-auth/adapters").Adapter } */
 export default function MyAdapter() {

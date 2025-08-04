@@ -118,7 +118,7 @@ export const deleteUserFromServerCache = async (token: string) => {
 
 export const authenticateUserWithGDrive = async (code: string) => {
     try {
-        const { status, data } = await axios.post<IErr | { data: IGoogleDriveAuthResBody}>('/api/gp-plus/auth', { code });
+        const { status, data } = await axios.post<IErr | { data: Partial<IGoogleDriveAuthResBody> }>('/api/gp-plus/auth', { code });
 
         if (status !== 200) {
             throw new Error(`Failed to authenticate user with Google Drive. Status code: ${status}. Data: ${data}`);
