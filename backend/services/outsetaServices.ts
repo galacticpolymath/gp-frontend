@@ -81,11 +81,44 @@ export const getBillingType = (billingTypeNum: keyof TBillingRenewalTerm) => {
   return BILLING_RENEWAL_TERM[billingTypeNum];
 };
 
+export interface IPlan{
+  Name: string,
+  MonthlyRate: number,
+  AnnualRate: number,
+  [key: string]: unknown
+}
+
+interface IPlansPagination{
+  items?: IPlan[]
+  [key: string]: unknown
+
+}
+
+export const getPlans = async () => {
+  try {
+    const { status, data } = await axios.get<IPlansPagination>(`${OUTSETA_REST_API_ORIGIN}/billing/plans`, {  })
+
+    if (status !== 200) {
+      throw new Error(`Failed to retrieve plans. Status code: ${status}`);
+    }
+
+    if (!data?.items) {
+      throw new Error("An unexpected error occurred. Please try again later. Plans not available.");
+    }
+
+    return data?.items;
+  } catch(error){
+    console.error("Error retrieving plans:", error);
+
+    return null;
+  }
+}
+
 export type TGpPlusMembershipRetrieved = Awaited<
-  ReturnType<typeof getGpPlusIndividualMembershipStatus>
+  ReturnType<typeof getGpPlusMembership>
 > & { AccountStageLabel: TAccountStageLabel | "NonMember" };
 
-export const getGpPlusIndividualMembershipStatus = async (
+export const getGpPlusMembership = async (
   email: string,
   fields = "CurrentSubscription.*, CurrentSubscription.Plan.*, AccountStageLabel, Name, PersonAccount.Person.*"
 ) => {

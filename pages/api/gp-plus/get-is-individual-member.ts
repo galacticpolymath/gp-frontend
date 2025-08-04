@@ -11,7 +11,7 @@ import {
   TUserSchemaV2,
 } from "../../../backend/models/User/types";
 import { connectToMongodb } from "../../../backend/utils/connection";
-import { getBillingType, getGpPlusIndividualMembershipStatus, TAccountStageLabel, TGpPlusMembershipRetrieved } from "../../../backend/services/outsetaServices";
+import { getBillingType, getGpPlusMembership, TAccountStageLabel, TGpPlusMembershipRetrieved } from "../../../backend/services/outsetaServices";
 
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
@@ -31,7 +31,6 @@ export default async function handler(
   }
 
   try {
-    console.log("yo there meng!");
 
     const authHeader = request.headers["authorization"];
 
@@ -64,7 +63,7 @@ export default async function handler(
     let membership: TGpPlusMembershipRetrieved | undefined = undefined;
 
     if (userCached && "outsetaPersonEmail" in userCached) {
-      membership = (await getGpPlusIndividualMembershipStatus(
+      membership = (await getGpPlusMembership(
         userCached.outsetaPersonEmail
       )) as TGpPlusMembershipRetrieved;
 
@@ -108,7 +107,7 @@ export default async function handler(
         user.outsetaPersonEmail
       );
 
-      membership = (await getGpPlusIndividualMembershipStatus(
+      membership = (await getGpPlusMembership(
         user.outsetaPersonEmail
       )) as TGpPlusMembershipRetrieved;
     }

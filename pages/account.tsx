@@ -26,7 +26,7 @@ import BootstrapButton from "react-bootstrap/Button";
 import { useGetAboutUserForm } from "../customHooks/useGetAboutUserForm";
 import AboutUserModal from "../components/User/AboutUser/AboutUserModal";
 import Image from "next/image";
-import { getLocalStorageItem, setLocalStorageItem } from "../shared/fns";
+import { getBillingTerm, getLocalStorageItem, setLocalStorageItem } from "../shared/fns";
 import { Magic } from "magic-sdk";
 import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
@@ -88,7 +88,7 @@ const AccountPg: React.FC = () => {
   } = useModalContext();
   const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
-  const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;;
+  const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = useState(false);
   const [, setNotifyModal] = _notifyModal;
   const {
@@ -107,12 +107,18 @@ const AccountPg: React.FC = () => {
   const lastName = aboutUserForm.lastName;
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
 
-  useGpPlusModalInteraction(!!aboutUserForm.isGpPlusMember);
+  console.log("gpPlus, yo there: ", gpPlusSub);
+
+  useGpPlusModalInteraction(
+    gpPlusSub?.BillingRenewalTerm
+      ? getBillingTerm(gpPlusSub?.BillingRenewalTerm)
+      : undefined
+  );
   useHandleGpPlusLogin();
 
   const handleGpPlusAccountBtnClick = async () => {
     let wasGpPlusAccountRetrievalSuccessful = false;
-    
+
     try {
       const userAccount = getLocalStorageItem("userAccount");
       setWasGpPlusBtnClicked(true);
@@ -189,8 +195,8 @@ const AccountPg: React.FC = () => {
           email: userAccount?.gpPlusSubscription?.person?.Email,
           redirectURI: window.location.href,
         });
-        
-        if(idToken){
+
+        if (idToken) {
           window.Outseta?.setMagicLinkIdToken(idToken);
           // GOAL: get the saving from the outseta servers to displayed onto the ui
         }
@@ -205,15 +211,15 @@ const AccountPg: React.FC = () => {
     } catch (error) {
       console.error("Failed to display gp plus account modal: ", error);
     } finally {
-      if (!wasGpPlusAccountRetrievalSuccessful){
+      if (!wasGpPlusAccountRetrievalSuccessful) {
         setWasGpPlusBtnClicked(false);
-      } 
+      }
     }
   };
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    
+
     if (
       url.searchParams.get("show_gp_plus_account_modal") === "true" &&
       status === "authenticated" &&
@@ -526,8 +532,7 @@ const AccountPg: React.FC = () => {
                   }}
                   className="no-underline"
                   href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
-                >
-                </a>
+                ></a>
               </>
             ) : (
               <BootstrapBtn

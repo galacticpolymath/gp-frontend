@@ -1,12 +1,18 @@
 import { useEffect } from "react";
 import useSiteSession from "./useSiteSession";
 import { useUserContext } from "../providers/UserProvider";
+import { TGpPlusSubscriptionForClient, TUserSchemaForClient } from "../backend/models/User/types";
+import { getUserPlanDetails } from "../apiServices/user/crudFns";
 
-export const useGpPlusModalInteraction = (isGpPlusMember: boolean) => {
-  const { status } = useSiteSession();
+export const useGpPlusModalInteraction = (
+  gpPlusBillingTerm?: NonNullable<TGpPlusSubscriptionForClient["BillingRenewalTerm"]>,
+) => {
+  const { status, token } = useSiteSession();
 
   useEffect(() => {
-    if (status === "authenticated" && isGpPlusMember) {
+    if (status === "authenticated" && gpPlusBillingTerm) {
+      // console.log("gpPlusBillingTerm, yo there: ", gpPlusBillingTerm);
+      
       const mutationOberserver = new MutationObserver((elements) => {
         for (const element of elements) {
           console.log("Element: ", element);
@@ -15,19 +21,20 @@ export const useGpPlusModalInteraction = (isGpPlusMember: boolean) => {
             (element.target as HTMLElement).className ===
             "o--App--widgetContent"
           ) {
-            const h1 = element.target.firstChild?.firstChild as HTMLElement | null;
+            const h1 = element.target.firstChild
+              ?.firstChild as HTMLElement | null;
 
             if (h1?.textContent === "Profile") {
               h1.textContent = "Email";
             } else if (h1?.textContent === "Account") {
               h1.textContent = "Address";
-            } 
-            
-            if (h1){
+            }
+
+            if (h1) {
               h1.style.visibility = "visible";
             }
 
-            if (window.innerWidth < 600){
+            if (window.innerWidth < 600) {
               console.log("The user is on a mobile device.");
               const gpPlusModalElements = Array.from(
                 (element.target as HTMLElement).childNodes
@@ -40,11 +47,11 @@ export const useGpPlusModalInteraction = (isGpPlusMember: boolean) => {
                   ?.childNodes;
 
               if (gpPlusModalTabOptions) {
-                const profileOptions = (
-                  Array.from(gpPlusModalTabOptions) as HTMLOptionElement[]
-                );
+                const profileOptions = Array.from(
+                  gpPlusModalTabOptions
+                ) as HTMLOptionElement[];
 
-                for(const profileOption of profileOptions){
+                for (const profileOption of profileOptions) {
                   if (profileOption.className === "o--tab-profile") {
                     profileOption.textContent = "Email";
                     profileOption.style.visibility = "visible";
@@ -53,7 +60,7 @@ export const useGpPlusModalInteraction = (isGpPlusMember: boolean) => {
                     profileOption.textContent = "Address";
                     profileOption.style.visibility = "visible";
                   }
-                }                
+                }
               }
             }
           }
@@ -69,5 +76,5 @@ export const useGpPlusModalInteraction = (isGpPlusMember: boolean) => {
         mutationOberserver.disconnect();
       };
     }
-  }, [status, isGpPlusMember]);
+  }, [status, gpPlusBillingTerm]);
 };

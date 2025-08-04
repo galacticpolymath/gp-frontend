@@ -17,7 +17,7 @@ import {
   TUserSchemaV2,
 } from "../../backend/models/User/types";
 import {
-  getGpPlusIndividualMembershipStatus,
+  getGpPlusMembership,
   TAccountStageLabel,
 } from "../../backend/services/outsetaServices";
 import {
@@ -104,7 +104,7 @@ export default async function handler(
     }
 
     if (userAccount.outsetaPersonEmail) {
-      const gpPlusMembershipStatus = await getGpPlusIndividualMembershipStatus(
+      const gpPlusMembershipStatus = await getGpPlusMembership(
         userAccount.outsetaPersonEmail
       );
       console.log("gpPlusMembershipStatus: ", gpPlusMembershipStatus);

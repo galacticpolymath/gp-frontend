@@ -102,7 +102,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = _wasGpPlusBtnClicked;
   const router = useRouter();
 
-  useGpPlusModalInteraction(!!gpPlusSubscription?.membership);
+  useGpPlusModalInteraction(gpPlusSubscription?.membership?.BillingRenewalTerm);
   useOutsetaInputValidation();
 
   const [didUserSignUp, setDidUserSignUp] = useState(false);
@@ -110,7 +110,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
   const monthlyPrice = 10;
   const yearlyPrice = 60;
   const monthlyEquivalent = yearlyPrice / 12; // $5/month when paid yearly
-  const gpPlusBtnTxt = useMemo(() => {
+  const gpPlusBtnTxt: "Manage account" | "Sign up" = useMemo(() => {
     console.log("gpPlusSubscription, sup there: ", gpPlusSubscription);
     const hasMemeberhsip =
       gpPlusSubscription?.membership?.AccountStageLabel &&
@@ -439,7 +439,10 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
             </div>
           </div>
           <div className="d-flex justify-content-center align-items-center mt-3 mt-sm-2 mb-0">
-            <p style={{ fontSize: "1rem" }} className="text-center text-md-start">
+            <p
+              style={{ fontSize: "1rem" }}
+              className="text-center text-md-start"
+            >
               <i>
                 Help keep this site live & support the free tier by subscribing
                 to GP+
@@ -729,68 +732,70 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
         )
           ? anchorElement
           : null}
-        <div
-          id="signup-modal-div"
-          style={{
-            zIndex: 1000000,
-            width: "100vw",
-            height: "100vh",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-          className={`position-fixed ${
-            isSignupModalDisplayed ? "visible" : "invisible"
-          }`}
-        >
-          <div className="position-relative w-100 h-100">
-            <div
-              id="success-modal-close-btn"
-              className={`position-absolute top-0 start-0 w-100 h-100 bg-dark ${
-                isSignupModalDisplayed ? "d-block fade-backdrop-in" : "d-none"
-              }`}
-              onClick={() => {
-                setIsSignupModalDisplayed(false);
-
-                console.log("didUserSignUp: ", didUserSignUp);
-
-                if (didUserSignUp) {
-                  setWasGpPlusBtnClicked(true);
-                  setWasGpLiteBtnClicked(true);
-                  setTimeout(() => {
-                    window.location.reload();
-                  }, 300);
-                }
-              }}
-            />
-            <div
-              style={{
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-                borderRadius: ".5em",
-                zIndex: isSignupModalDisplayed ? 1000 : -1000,
-                maxHeight: "95vh",
-              }}
-              className={`position-absolute gp-plus-signup-modal rounded-lg shadow-lg overflow-scroll bg-white ${
-                isSignupModalDisplayed
-                  ? "visible fade-modal-in-short"
-                  : "fade-modal-out-short"
-              }`}
-            >
+        {gpPlusBtnTxt === "Sign up" && (
+          <div
+            id="signup-modal-div"
+            style={{
+              zIndex: 1000000,
+              width: "100vw",
+              height: "100vh",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+            className={`position-fixed ${
+              isSignupModalDisplayed ? "visible" : "invisible"
+            }`}
+          >
+            <div className="position-relative w-100 h-100">
               <div
-                ref={outsetaEmbeddedRef}
-                id="outseta-sign-up"
-                data-o-auth="1"
-                data-widget-mode="register"
-                data-plan-uid="rmkkjamg"
-                data-plan-payment-term="month"
-                data-skip-plan-options="false"
-                data-mode="embed"
+                id="success-modal-close-btn"
+                className={`position-absolute top-0 start-0 w-100 h-100 bg-dark ${
+                  isSignupModalDisplayed ? "d-block fade-backdrop-in" : "d-none"
+                }`}
+                onClick={() => {
+                  setIsSignupModalDisplayed(false);
+
+                  console.log("didUserSignUp: ", didUserSignUp);
+
+                  if (didUserSignUp) {
+                    setWasGpPlusBtnClicked(true);
+                    setWasGpLiteBtnClicked(true);
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 300);
+                  }
+                }}
               />
+              <div
+                style={{
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                  borderRadius: ".5em",
+                  zIndex: isSignupModalDisplayed ? 1000 : -1000,
+                  maxHeight: "95vh",
+                }}
+                className={`position-absolute gp-plus-signup-modal rounded-lg shadow-lg overflow-scroll bg-white ${
+                  isSignupModalDisplayed
+                    ? "visible fade-modal-in-short"
+                    : "fade-modal-out-short"
+                }`}
+              >
+                <div
+                  ref={outsetaEmbeddedRef}
+                  id="outseta-sign-up"
+                  data-o-auth="1"
+                  data-widget-mode="register"
+                  data-plan-uid="rmkkjamg"
+                  data-plan-payment-term="month"
+                  data-skip-plan-options="false"
+                  data-mode="embed"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       <ThankYouModal />
     </Layout>

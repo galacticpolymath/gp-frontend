@@ -264,3 +264,4 @@ export const getIsWithinParentElement = (
     comparisonType
   );
 }
+export const getBillingTerm = (billingTermNum: 1 | 2) => billingTermNum === 1 ? "Monthly" : "Yearly";

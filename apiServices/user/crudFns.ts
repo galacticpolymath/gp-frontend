@@ -6,6 +6,7 @@ import axios from 'axios';
 import { TGpPlusSubscriptionForClient, TUserSchemaV2 } from '../../backend/models/User/types';
 import { IErr } from '../../types/global';
 import { IGoogleDriveAuthResBody } from '../../pages/api/gp-plus/auth';
+import { IPlan } from '../../backend/services/outsetaServices';
 
 export const updateUser = async (
     query: Omit<Partial<TUserSchemaV2>, "password"> = {}, 
@@ -156,6 +157,31 @@ export const refreshGDriveToken = async (refreshToken: string) => {
 export const getIndividualGpPlusSubscription = async (token: string) => {
     try {
         const response = await axios.get<{ membership?: TGpPlusSubscriptionForClient}>('/api/gp-plus/get-is-individual-member', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        console.log("Response: ", response.data);
+        console.log("Response status: ", response.status);
+
+        if(response.status !== 200) {
+            throw new Error(`Failed to get individual GP+ subscription. Status code: ${response.status}`);
+        }
+
+        console.log("Will return the data sup there...")
+        
+        return response.data;
+    } catch (error){
+        console.error("An error has ocurrred. Failed to get subscription: ", error);
+
+        return null;
+    }
+}
+
+export const getUserPlanDetails = async (token: string) => {
+    try {
+        const response = await axios.get<{ currentUserPlan?: IPlan }>('/api/gp-plus/get-user-plan-details', {
             headers: {
                 Authorization: `Bearer ${token}`
             }

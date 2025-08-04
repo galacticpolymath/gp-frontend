@@ -1,7 +1,7 @@
 import { SUBJECTS_OPTIONS } from "../../../components/User/AboutUser/AboutUserModal";
 import { TSchoolType } from "../../../providers/UserProvider";
 import { TReferredByOpt } from "../../../types/global";
-import { getBillingType, getGpPlusIndividualMembershipStatus } from "../../services/outsetaServices";
+import { getBillingType, getGpPlusMembership } from "../../services/outsetaServices";
 import { TAccountStageLabel, TGpPlusMembershipRetrieved } from "../../services/userServices";
 import { TAboutUserFormDeprecated } from "./deprecated";
 
@@ -70,11 +70,13 @@ export type TOutseta = {
 export type TUserSchemaV2 = IUserSchemaBaseProps & TAboutUserFormBaseProps & TOutseta & {
   unitCopiesFolderId: string;
 };
-export type TGpPlusSubscriptionForClient = Omit<Awaited<ReturnType<typeof getGpPlusIndividualMembershipStatus>>, "BillingRenewalTerm" | "AccountStageLabel" | "Account" | "email"> & { BillingRenewalTerm: ReturnType<typeof getBillingType>[0], AccountStageLabel: TAccountStageLabel  };
+
+type TGpPlusMembershipStatus = Awaited<ReturnType<typeof getGpPlusMembership>>
+export type TGpPlusSubscriptionForClient = Omit<Awaited<ReturnType<typeof getGpPlusMembership>>, "BillingRenewalTerm" | "AccountStageLabel" | "Account" | "email"> & { BillingRenewalTerm?: ReturnType<typeof getBillingType>[0], AccountStageLabel: TAccountStageLabel  };
 export type TUserClientProps = { 
   isOnMailingList?: boolean, 
   isGpPlusMember?: boolean, 
-  gpPlusSubscription?: Awaited<ReturnType<typeof getGpPlusIndividualMembershipStatus>>,  
+  gpPlusSubscription?: TGpPlusMembershipStatus,  
   viewingUnitFolderCopyId?: string
 }
 export type TUserSchemaForClient<TUserSchema extends object = TUserSchemaV2> = TUserSchema & TUserClientProps;
