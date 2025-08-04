@@ -292,9 +292,7 @@ export const copyFiles = async (
     const result = copiedFilesResult[index];
 
     console.log("result, what is up there: ", result);
-    console.log("result dir, what is up there: ");
-    console.dir(result);
-    console.log("result?.response, what is up there: ", result?.response);
+    console.log("result?.reason: ", result?.reason);
 
     if (result.status === "rejected") {
       failedCopiedFilesIndices.add(parseInt(index));
