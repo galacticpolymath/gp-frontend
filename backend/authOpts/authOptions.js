@@ -502,7 +502,6 @@ export const authOptions = {
       let { email, roles, name, picture } = token.payload;
       /** @type { import('../models/User').TUserSchema } */
       const targetUser = cache.get(email) ?? {};
-      console.log('cached target user: ', targetUser);
       let isTeacher = false;
       let occupation = null;
 
