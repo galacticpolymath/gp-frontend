@@ -147,7 +147,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       ...item,
       externalUrl: item.externalUrl ?? item.links?.[0]?.url,
       isDisplayed: true,
-      docUrl: `${item.gdriveRoot}/view`,
+      docUrl:
+        item.itemType === "presentation"
+          ? `${item.gdriveRoot}/view`
+          : `${item.gdriveRoot}/preview`,
     }));
   };
 
