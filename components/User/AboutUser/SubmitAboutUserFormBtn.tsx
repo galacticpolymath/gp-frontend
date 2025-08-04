@@ -29,13 +29,13 @@ interface IProps {
   _name: TUseStateReturnVal<{ first: string; last: string }>;
 }
 
-const SubmitAboutUserFormBtn = ({
+const SubmitAboutUserFormBtn: React.FC<IProps> = ({
   setErrors,
   _wasBtnClicked,
   _subjectsTaughtCustom,
   _wasFormSubmitted,
   _name,
-}: IProps) => {
+}) => {
   const { _aboutUserForm } = useUserContext();
   const [subjectsTaughtCustom] = _subjectsTaughtCustom;
   const [, setWasFormSubmitted] = _wasFormSubmitted;
@@ -112,28 +112,30 @@ const SubmitAboutUserFormBtn = ({
       }
 
       if (
-        (!schoolTypeDefaultSelection && !schoolTypeOther) ||
-        (schoolTypeOther?.length && schoolTypeOther?.trim().length === 0) ||
-        (schoolTypeDefaultSelection?.length &&
-          schoolTypeDefaultSelection?.trim().length === 0)
+        isTeacher && (
+          (!schoolTypeDefaultSelection && !schoolTypeOther) ||
+            (schoolTypeOther?.length && schoolTypeOther?.trim().length === 0) ||
+            (schoolTypeDefaultSelection?.length &&
+              schoolTypeDefaultSelection?.trim().length === 0)
+        )
       ) {
         errors.set("schoolType", "This field is required.");
       }
 
       console.log("subjectsTaughtCustom, sup there: ", subjectsTaughtCustom);
 
-      if (!gradesType) {
+      if (isTeacher && !gradesType) {
         errors.set(
           "gradesOrYears",
-          "Please select either 'U.S.' or 'Outside U.S.'"
+          "*Please select either 'U.S.' or 'Outside U.S.'"
         );
       }
 
-      if (!gradesTaught?.length) {
+      if (isTeacher && !gradesTaught?.length) {
         errors.set("gradesOrYears", "Please select atleast one grade or year.");
       }
 
-      if (gradesType && !["Outside U.S.", "U.S."].includes(gradesType)) {
+      if (isTeacher && gradesType && !["Outside U.S.", "U.S."].includes(gradesType)) {
         errors.set(
           "gradesOrYears",
           "*Invalid selection. Please refresh the page and try again."
