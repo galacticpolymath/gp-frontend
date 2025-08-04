@@ -513,7 +513,6 @@ export const authOptions = {
        */
       let { email, roles, name, picture } = token.payload;
       const targetUser = cache.get(email) ?? {};
-      console.log('cached target user: ', targetUser);
       let isTeacher = false;
       let occupation = null;
       let userId = targetUser?._id ?? null;
