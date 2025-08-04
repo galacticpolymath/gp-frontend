@@ -32,7 +32,7 @@
     "axios": "^1.11.0",
     "bootstrap": "^5.3.7",
     "bootstrap-icons": "^1.13.1",
-    "chalk": "^5.3.0",
+    "chalk": "^5.5.0",
     "d3": "^7.9.0",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.1",
@@ -88,7 +88,7 @@
     "react-showdown": "^2.3.1",
     "react-wavify": "^1.11.1",
     "sharp": "^0.34.3",
-    "start-server-and-test": "^2.0.12",
+    "start-server-and-test": "^2.0.13",
     "styled-components": "^6.1.19",
     "swr": "^2.3.4",
     "tls": "^0.0.1",
@@ -111,7 +111,7 @@
     "jest": "^30.0.5",
     "jest-puppeteer": "^11.0.0",
     "sass": "^1.89.2",
-    "ts-jest": "^29.4.0",
+    "ts-jest": "^29.4.1",
     "typescript": "^5.9.2"
   },
   "browser": {
