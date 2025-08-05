@@ -228,24 +228,51 @@ export const shareFilesWithRetries = async (
  * @param {string} fileId The id of the file.
  * @param {string[]} folderIds The ids of the folders to copy the files into.
  * @param {string} accessToken The client side user's access token.
- * @return {Promise<AxiosResponse<any, any>>} An object contain the results and optional message.
+ * @return {Promise<AxiosResponse<any, any>> | { errType: string }} An object contain the results and optional message.
  * */
-const getCopyFilePromise = (accessToken, folderIds, fileId) => {
+const copyFile = async (accessToken, folderIds, fileId) => {
   const reqBody = folderIds ? { parents: folderIds } : {};
 
-  return axios.post(
-    `https://www.googleapis.com/drive/v3/files/${fileId}/copy`,
-    reqBody,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      params: {
-        supportsAllDrives: true,
-      },
+  try {
+    console.log("fileId, sup there: ", fileId);
+    
+    return await axios.post(
+      `https://www.googleapis.com/drive/v3/files/${fileId}/copy`,
+      reqBody,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        params: {
+          supportsAllDrives: true,
+        },
+      }
+    );
+  } catch (error) {
+    console.error("Failed to copy files with user. Reason: ", error);
+    console.error("Failed to copy files with user. Reason, keys: ", Object.keys(error));
+    const response = error.response;
+    
+    if (response.status) {
+      return {
+        errType: "notFound"
+      }
     }
-  );
+
+    const didTimeoutOccur =
+      error?.code === "ECONNABORTED" ||
+      error?.response?.status === 408 ||
+      error?.message?.includes("timeout");
+    
+    if (didTimeoutOccur) {
+      return {
+        errType: "timeout"
+      }
+    }
+
+    return { errType: "generalErr" }
+  }
 };
 
 export const copyFiles = async (
@@ -257,9 +284,13 @@ export const copyFiles = async (
   fileCopies = [],
   copyUnitJobId
 ) => {
+  console.log("copyUnitJobId: ", copyUnitJobId);
   /** @type {Promise<AxiosResponse<any, any>>[]} */
   const copiedFilesPromises = [];
   const jobStatus = await getCacheVal(`copyUnitJobStatus-${copyUnitJobId}`)
+
+  console.log("copyFiles, jobStatus: ", jobStatus);
+  
 
   if (!jobStatus || jobStatus === "stopped") {
     return {
@@ -281,7 +312,7 @@ export const copyFiles = async (
     }
 
     copiedFilesPromises.push(
-      getCopyFilePromise(accessToken, [parentFolderId], file.id)
+      copyFile(accessToken, [parentFolderId], file.id)
     );
   }
 
@@ -294,7 +325,12 @@ export const copyFiles = async (
     console.log("result, what is up there: ", result);
     console.log("result?.reason: ", result?.reason);
 
-    if (result.status === "rejected") {
+    if (result?.value?.errType === "notFound") {
+      failedCopiedFilesIndices.add(parseInt(index));
+      continue;
+    }
+
+    if (result.status === "rejected" ) {
       failedCopiedFilesIndices.add(parseInt(index));
       continue;
     }
@@ -304,7 +340,7 @@ export const copyFiles = async (
     console.log("File copy result, result?.value?.data: ", result?.value?.data);
 
     if (
-      result?.value?.data.id &&
+      result?.value?.data?.id &&
       result?.value?.data?.name &&
       !fileCopies.find((file) => file.id === result?.value?.data.id)
     ) {
@@ -342,7 +378,9 @@ export const copyFiles = async (
         createdFolders,
         accessToken,
         tries,
-        fileCopies
+        updateClient,
+        fileCopies,
+        copyUnitJobId
       );
     }
 

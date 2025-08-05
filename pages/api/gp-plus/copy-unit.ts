@@ -484,6 +484,7 @@ export default async function handler(
 
     response.on("close", () => {
       console.log("The user closed the stream.");
+      setCacheVal(`copyUnitJobStatus-${jobId}`, "stopped")
       isStreamOpen = false;
     });
 
@@ -1104,11 +1105,14 @@ export default async function handler(
 
     setCacheVal(`copyUnitJobStatus-${jobId}`, "ongoing")
 
+    // throw new Error("Failed to share at least one file.");
+
+
     const copyFilesRes = (await copyFiles(
       files,
       createdFolders,
       gdriveAccessToken,
-      4,
+      3,
       (data: TCopyFilesMsg) => {
         sendMessage(response, data);
       },
