@@ -3,13 +3,9 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable quotes */
 /* eslint-disable semi */
-import fs from "fs";
-import { JWT } from "google-auth-library";
-import { getGoogleAuthJwt } from "../utils/auth";
 import { waitWithExponentialBackOff } from "../../globalFns";
 import axios from "axios";
 import { GoogleAuthReqBody } from "../../pages/api/gp-plus/auth";
-import { nanoid } from "nanoid";
 import { getCacheVal } from "../helperFns";
 
 export class FileMetaData {
@@ -166,9 +162,13 @@ export const shareFilesWithRetries = async (
     for (const resultIndex in sharedFilesResults) {
       const result = sharedFilesResults[resultIndex];
 
-      console.log("Share file result: ", result);
+      console.log("Share file result.value: ", result.value);
+      console.log("Share file result.status: ", result.status);
+      console.log("Share file result.reason: ", result.reason);
       const targetFile = files[parseInt(resultIndex)];
       console.log("The target file: ", targetFile);
+      console.log("Shared file: ", targetFile.name);
+
 
       if (
         result.status == "rejected" &&

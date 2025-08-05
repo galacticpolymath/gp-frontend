@@ -150,7 +150,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       externalUrl: item.externalUrl ?? item.links?.[0]?.url,
       isDisplayed: true,
       docUrl:
-        [item.itemType, item.itemCat].includes("presentation")
+        item.itemType === "presentation"
           ? `${item.gdriveRoot}/view`
           : `${item.gdriveRoot}/preview`,
     }));
@@ -567,7 +567,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     externalUrl,
                     itemType,
                   } = item;
-                  console.log("item, hey there: ", item);
+                  console.log("item, hey there, itemType: ", itemType);
                   const _links = links
                     ? Array.isArray(links)
                       ? links
@@ -744,8 +744,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                       }}
                                     >
                                       {itemType === "presentation"
-                                        ? "Preview"
-                                        : "Preview/Download"}
+                                        ? "Preview/Download"
+                                        : "Preview"}
                                     </button>
                                   </div>
                                 </li>

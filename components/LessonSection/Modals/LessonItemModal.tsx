@@ -19,7 +19,8 @@ const LessonItemModal: React.FC = () => {
     lessonItemModal.itemCat === "web resource"
       ? lessonItemModal.externalUrl
       : lessonItemModal.docUrl;
-  const isPresentation = lessonItemModal.itemType === "presentation";
+
+  console.log("isGpPlusMember: ", isGpPlusMember);
 
   const handleDownloadPdfBtnClick = () => {
     if (lessonItemModal.mimeType === "pdf") {
@@ -139,7 +140,7 @@ const LessonItemModal: React.FC = () => {
                 <section className="w-100 d-flex justify-content-center align-items-center justify-content-md-end justify-content-sm-center align-items-sm-center">
                   {lessonItemModal.isExportable &&
                     isGpPlusMember &&
-                    !isPresentation && (
+                    lessonItemModal.itemType !== "presentation" && (
                       <Button
                         style={{ backgroundColor: "white" }}
                         className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-3 flex-column flex-sm-row"
@@ -161,43 +162,48 @@ const LessonItemModal: React.FC = () => {
                         </section>
                       </Button>
                     )}
-                  {!isPresentation && (
+                  {lessonItemModal.itemType !== "presentation" &&
+                    lessonItemModal.isExportable && (
+                      <Button
+                        style={{ backgroundColor: "white" }}
+                        className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
+                        onClick={handleDownloadPdfBtnClick}
+                      >
+                        <section className="d-flex justify-content-center align-items-center h-100">
+                          <TbDownload
+                            className="gp-plus-btn-icons-lesson-item-modal"
+                            color="black"
+                          />
+                        </section>
+                        <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
+                          <p className="mb-0 text-black d-none d-md-block">
+                            Download PDF
+                          </p>
+                          <p className="mb-0 text-black d-block d-md-none">
+                            PDF
+                          </p>
+                        </section>
+                      </Button>
+                    )}
+                  {lessonItemModal.itemType === "presentation" && (
                     <Button
                       style={{ backgroundColor: "white" }}
                       className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
-                      onClick={handleDownloadPdfBtnClick}
+                      onClick={handleOpenInNewTabBtnClick}
                     >
                       <section className="d-flex justify-content-center align-items-center h-100">
-                        <TbDownload
+                        <TbExternalLink
                           className="gp-plus-btn-icons-lesson-item-modal"
-                          color="black"
+                          style={{
+                            color: "#4699CC",
+                          }}
                         />
                       </section>
                       <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
-                        <p className="mb-0 text-black d-none d-md-block">
-                          Download PDF
-                        </p>
-                        <p className="mb-0 text-black d-block d-md-none">PDF</p>
+                        <p className="mb-0 text-black">Open in New Tab</p>
                       </section>
                     </Button>
                   )}
-                  <Button
-                    style={{ backgroundColor: "white" }}
-                    className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
-                    onClick={handleOpenInNewTabBtnClick}
-                  >
-                    <section className="d-flex justify-content-center align-items-center h-100">
-                      <TbExternalLink
-                        className="gp-plus-btn-icons-lesson-item-modal"
-                        style={{
-                          color: "#4699CC",
-                        }}
-                      />
-                    </section>
-                    <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
-                      <p className="mb-0 text-black">Open in New Tab</p>
-                    </section>
-                  </Button>
                 </section>
               </section>
             </section>

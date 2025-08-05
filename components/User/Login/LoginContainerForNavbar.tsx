@@ -244,7 +244,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
           !firstName &&
           !lastName &&
           !isSigningUserOut ? (
-            <Spinner className="text-black" />
+            <Spinner color="white" />
           ) : (
             <h5 className="text-black my-3">
               {firstName} {lastName}

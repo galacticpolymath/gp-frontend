@@ -1,7 +1,6 @@
 import { waitWithExponentialBackOff } from "../../globalFns";
 import {
   getGDriveItem,
-  TCopyUnitJobResult,
 } from "../../pages/api/gp-plus/copy-unit";
 import CopyUnitResults from "../models/copyUnitResults";
 import { ICopyUnitResult } from "../models/copyUnitResults/types";

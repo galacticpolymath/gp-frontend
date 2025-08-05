@@ -64,6 +64,9 @@ export const getGDriveItem = async (
 
     return data;
   } catch (error: any) {
+    console.error("Failed to retrieve Google Drive item. Error: ", error);
+    
+
     if (error?.response?.data?.error?.code === 404) {
       return {
         errType: "notFound",
@@ -1085,10 +1088,12 @@ export default async function handler(
     const files = unitFolders.filter(
       (folder) => !folder.mimeType.includes("folder")
     );
-    console.log("Will share target files...");
+
+    console.log("Will share target files with: ", gdriveEmail);
+
     const { wasSuccessful: wasSharesSuccessful } = await shareFilesWithRetries(
       files,
-      email,
+      gdriveEmail,
       drive,
       4
     );
@@ -1102,11 +1107,8 @@ export default async function handler(
     }
 
     console.log("Will copy files...");
-
+    
     setCacheVal(`copyUnitJobStatus-${jobId}`, "ongoing")
-
-    // throw new Error("Failed to share at least one file.");
-
 
     const copyFilesRes = (await copyFiles(
       files,

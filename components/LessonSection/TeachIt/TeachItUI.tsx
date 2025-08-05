@@ -235,7 +235,7 @@ const TeachItUI = <
 
     console.log("Starting copy unit job");
     console.log("GdrivePublicID: ", GdrivePublicID);
-    console.log("user.userId: ", user.userId);
+    console.log("user.userId: ", user?.userId);
     console.log("gdriveRefreshToken: ", gdriveRefreshToken);
 
     if (

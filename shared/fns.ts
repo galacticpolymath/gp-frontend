@@ -170,7 +170,8 @@ export const createGDriveAuthUrl = () => {
 
   console.log("_redirectUri: ", _redirectUri.href);
 
-  const scopes = "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email";
+  // const scopes = "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email";
+  const scopes = "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email";
   const params = [
     ["state", state],
     [
