@@ -25,6 +25,7 @@ import {
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import { useUserEntry } from "../customHooks/useUserEntry";
+import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
 
 export const FONT_SIZE_CHECKBOX = "28px";
 const inputElementsFocusedDefault = new Map();
@@ -44,16 +45,8 @@ const SignUpPage: React.FC = () => {
     inputElementsFocusedDefault
   );
   const [createAccountForm, setCreateAccountForm] = _createAccountForm;
-  const [, setIsUserTeacher] = _isUserTeacher;
   const [passwordInputType, setPasswordInputType] = useState("password");
   const router = useRouter();
-  /**
-   * @typedef {"I solemnly swear I'm not a student just trying to get the answer key."} TUserIsTeacherTxt
-   * @type {[TUserIsTeacherTxt, import('react').Dispatch<import('react').SetStateAction<TUserIsTeacherTxt>>]}
-   */
-  const [, setUserIsTeacherTxt] = useState(
-    "I solemnly swear I'm not a student just trying to get the answer key."
-  );
 
   const handlePasswordTxtShowBtnClick = () => {
     setPasswordInputType((state: string) =>
@@ -94,12 +87,20 @@ const SignUpPage: React.FC = () => {
       setTimeout(() => {
         setErrors(errors);
         setIsLoadingSpinnerOn(false);
-      });
+      }, 250);
       return;
     }
 
     const { email, firstName, lastName, password, isOnMailingList } =
       createAccountForm;
+
+    // Check if user came from GP+ signup flow
+    const urlParams = new URLSearchParams(window.location.search);
+    const gpPlusBillingPeriod = urlParams.get(SELECTED_GP_PLUS_BILLING_TYPE);
+    const callbackUrl = gpPlusBillingPeriod
+      ? `${window.location.origin}/account?show_about_user_form=true&${SELECTED_GP_PLUS_BILLING_TYPE}=${gpPlusBillingPeriod}`
+      : `${window.location.origin}/account?show_about_user_form=true`;
+
     const signUpForm = {
       createAccount: {
         email,
@@ -108,7 +109,7 @@ const SignUpPage: React.FC = () => {
         password,
         isOnMailingList,
       },
-      callbackUrl: `${window.location.origin}/account?show_about_user_form=true`,
+      callbackUrl,
     };
 
     sendFormToServer("createAccount", "credentials", signUpForm);
@@ -155,9 +156,16 @@ const SignUpPage: React.FC = () => {
       return;
     }
 
-    const callbackUrl = `${
-      typeof window !== "undefined" ? window.location.origin : ""
-    }/account?show_about_user_form=true`;
+    // Check if user came from GP+ signup flow
+    const urlParams = new URLSearchParams(window.location.search);
+    const gpPlusBillingPeriod = urlParams.get(SELECTED_GP_PLUS_BILLING_TYPE);
+    const callbackUrl = gpPlusBillingPeriod
+      ? `${
+          typeof window !== "undefined" ? window.location.origin : ""
+        }/account?show_about_user_form=true&${SELECTED_GP_PLUS_BILLING_TYPE}=${gpPlusBillingPeriod}`
+      : `${
+          typeof window !== "undefined" ? window.location.origin : ""
+        }/account?show_about_user_form=true`;
 
     if (createAccountForm.isOnMailingList) {
       localStorage.setItem("isOnMailingList", JSON.stringify(true));
@@ -266,7 +274,7 @@ const SignUpPage: React.FC = () => {
               />
               {isGoogleLoadingSpinnerOn && (
                 <div className="center-absolutely">
-                  <Spinner size="sm" className="text-center" />
+                  <Spinner className="text-center" />
                 </div>
               )}
               <span
@@ -510,7 +518,7 @@ const SignUpPage: React.FC = () => {
                 classNameStr="bg-primary rounded border-0 py-2 px-5 text-white underline-on-hover sign-up-btn"
               >
                 {isLoadingSpinnerOn ? (
-                  <Spinner size="sm" className="text-white" />
+                  <Spinner className="text-white" />
                 ) : (
                   <span className="text-white">SIGN UP</span>
                 )}

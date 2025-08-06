@@ -126,6 +126,7 @@ export const getGpPlusMembership = async (
     console.log(
       `Attempting to retrieve Outseta GP+ membership status for: ${email}`
     );
+    console.log('the email yo: ', email);
 
     const url = new URL(
       `${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`

@@ -3,6 +3,7 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 import axios from 'axios';
+import cookies from 'js-cookie';
 import { TGpPlusSubscriptionForClient, TUserSchemaV2 } from '../../backend/models/User/types';
 import { IErr } from '../../types/global';
 import { IGoogleDriveAuthResBody } from '../../pages/api/gp-plus/auth';
@@ -179,11 +180,17 @@ export const getIndividualGpPlusSubscription = async (token: string) => {
     }
 }
 
-export const getUserPlanDetails = async (token: string) => {
+export type IPlanDetails = NonNullable<Awaited<ReturnType<typeof getUserPlanDetails>>>
+
+export const getUserPlanDetails = async (appAuthToken: string) => {
     try {
-        const response = await axios.get<{ currentUserPlan?: IPlan }>('/api/gp-plus/get-user-plan-details', {
+        const url = new URL(`${window.location.origin}/api/gp-plus/get-user-plan-details`)
+
+        url.searchParams.append('willComputeSavings', 'true');
+
+        const response = await axios.get<{ currentUserPlan?: IPlan, percentageSaved?: number }>(url.href, {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${appAuthToken}`
             }
         })
 

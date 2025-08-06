@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-closing-tag-location */
 /* eslint-disable semi */
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
@@ -14,7 +15,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { NextRouter, useRouter } from "next/router";
 import { useModalContext } from "../providers/ModalProvider";
 import axios from "axios";
-import { Spinner } from "react-bootstrap";
+import { Modal, Spinner } from "react-bootstrap";
 import {
   getAllUrlVals,
   getChunks,
@@ -26,13 +27,21 @@ import BootstrapButton from "react-bootstrap/Button";
 import { useGetAboutUserForm } from "../customHooks/useGetAboutUserForm";
 import AboutUserModal from "../components/User/AboutUser/AboutUserModal";
 import Image from "next/image";
-import { getBillingTerm, getLocalStorageItem, setLocalStorageItem } from "../shared/fns";
+import {
+  getBillingTerm,
+  getLocalStorageItem,
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from "../shared/fns";
 import { Magic } from "magic-sdk";
 import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
 import { useHandleGpPlusLogin } from "../customHooks/useHandleGpPlusLogin";
 import ThankYouModal from "../components/GpPlus/ThankYouModal";
+import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
+import { ILocalStorage } from "../types/global";
+import useOutsetaInputValidation from "../customHooks/useOutsetaInputValidation";
 
 export const getUserAccountData = async (
   token: string,
@@ -85,11 +94,17 @@ const AccountPg: React.FC = () => {
     _notifyModal,
     _isAccountSettingModalOn,
     _isThankYouModalDisplayed,
+    _isGpPlusSignUpModalDisplayed,
   } = useModalContext();
   const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
   const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = useState(false);
+  const [isGpPlusSignUpModalDisplayed, setIsGpPlusSignUpModalDisplayed] =
+    _isGpPlusSignUpModalDisplayed;
+  const [gpPlusBillingPeriod, setGpPlusBillingPeriod] = useState<
+    "month" | "year"
+  >("year");
   const [, setNotifyModal] = _notifyModal;
   const {
     _aboutUserForm,
@@ -115,6 +130,7 @@ const AccountPg: React.FC = () => {
       : undefined
   );
   useHandleGpPlusLogin();
+  useOutsetaInputValidation();
 
   const handleGpPlusAccountBtnClick = async () => {
     let wasGpPlusAccountRetrievalSuccessful = false;
@@ -198,7 +214,6 @@ const AccountPg: React.FC = () => {
 
         if (idToken) {
           window.Outseta?.setMagicLinkIdToken(idToken);
-          // GOAL: get the saving from the outseta servers to displayed onto the ui
         }
       }
 
@@ -270,20 +285,10 @@ const AccountPg: React.FC = () => {
       }, 300);
     }
 
-    const urlVals = getAllUrlVals(router)?.flatMap((urlVal) =>
-      urlVal.split("=")
-    ) as unknown as string[][];
-    const urlValsChunks = urlVals?.length ? getChunks(urlVals, 2) : [];
-    const didPasswordChange =
-      urlValsChunks.find(([key, val]) => {
-        if (key === "password_changed" && getIsParsable(val)) {
-          return JSON.parse(val);
-        }
+    const params = new URLSearchParams(window.location.search);
+    const didPasswordChange = params.get("password_changed");
 
-        return false;
-      }) !== undefined;
-
-    if (status === "unauthenticated" && didPasswordChange) {
+    if (status === "unauthenticated" && didPasswordChange === "true") {
       setTimeout(() => {
         setNotifyModal({
           isDisplayed: true,
@@ -296,8 +301,6 @@ const AccountPg: React.FC = () => {
       }, 300);
     }
 
-    const params = new URLSearchParams(window.location.search);
-
     if (
       status === "authenticated" &&
       gpPlusSub &&
@@ -309,30 +312,31 @@ const AccountPg: React.FC = () => {
   }, [status, gpPlusSub]);
 
   useEffect(() => {
-    const urlVals = getAllUrlVals(router, true) as unknown as string[][];
-    const urlVal = urlVals?.length
-      ? urlVals.find(([urlKey]) => urlKey === "show_about_user_form")
-      : null;
-    const accountSettingsModalOnUrlVals = urlVals?.length
-      ? urlVals.find(([urlKey]) => urlKey === "will-open-account-setting-modal")
-      : null;
+    const params = new URLSearchParams(window.location.search);
+    const gpPlusBillingType = params.get(SELECTED_GP_PLUS_BILLING_TYPE);
+
+    console.log("gpPlusBillingType: ", gpPlusBillingType);
+
+    if (status === "authenticated" && gpPlusBillingType) {
+      setLocalStorageItem(
+        "selectedGpPlusBillingType",
+        gpPlusBillingType as ILocalStorage["selectedGpPlusBillingType"]
+      );
+      setGpPlusBillingPeriod(
+        gpPlusBillingType as ILocalStorage["selectedGpPlusBillingType"]
+      );
+    }
 
     if (
       status === "authenticated" &&
-      urlVal?.length === 2 &&
-      getIsParsable(urlVal[1]) &&
-      JSON.parse(urlVal[1])
+      params.get("show_about_user_form") === "true"
     ) {
       setTimeout(() => {
         setIsAboutMeFormModalDisplayed(true);
       }, 300);
-
-      // the second value in 'accountSettingsModalOnUrlVals is a boolean
     } else if (
       status === "authenticated" &&
-      accountSettingsModalOnUrlVals?.length === 2 &&
-      getIsParsable(accountSettingsModalOnUrlVals[1]) &&
-      JSON.parse(accountSettingsModalOnUrlVals[1])
+      params.get("will-open-account-settings-modal") === "true"
     ) {
       setTimeout(() => {
         setIsAccountSettingsModalOn(true);
@@ -379,19 +383,41 @@ const AccountPg: React.FC = () => {
       })();
     }
 
-    const urlValsChunks = urlVals?.length ? getChunks(urlVals.flat(), 2) : [];
-    const willOpenAccountSettingsModal =
-      urlValsChunks.find(([key, val]) => {
-        if (key === "will-open-account-settings-modal" && getIsParsable(val)) {
-          return JSON.parse(val);
+    if (
+      status === "authenticated" &&
+      gpPlusSub?.AccountStageLabel !== "NonMember"
+    ) {
+      window.Outseta?.on("signup", () => {
+        console.log("The user has signed up.");
+
+        const gpPlusFeatureLocation = getLocalStorageItem(
+          "gpPlusFeatureLocation"
+        );
+
+        console.log("gpPlusFeatureLocation: ", gpPlusFeatureLocation);
+
+        // will redirect to the selected unit so that user can copy it
+        if (gpPlusFeatureLocation?.includes("#")) {
+          setLocalStorageItem("willShowGpPlusPurchaseThankYouModal", true);
+
+          window.location.href = gpPlusFeatureLocation;
+
+          return false;
         }
 
-        return false;
-      }) !== undefined;
+        // will redirect to the account page
+        if (gpPlusFeatureLocation) {
+          console.log("Will redirect the user.");
+          window.location.href = `${gpPlusFeatureLocation}?gp_plus_subscription_bought=true`;
 
-    // if the user is authenticated, if there is action parameter that contains 'open-account-settings-modal', then open the account setting modal
-    if (status === "authenticated" && willOpenAccountSettingsModal) {
-      setIsAccountSettingsModalOn(true);
+          return false;
+        }
+
+        const currentUrl = `${window.location.href}?gp_plus_subscription_bought=true`;
+        window.location.href = currentUrl;
+
+        return false;
+      });
     }
   }, [status]);
 
@@ -532,8 +558,7 @@ const AccountPg: React.FC = () => {
                   }}
                   className="no-underline"
                   href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
-                >
-                </a>
+                ></a>
               </>
             ) : (
               <BootstrapBtn
@@ -605,6 +630,32 @@ const AccountPg: React.FC = () => {
       </div>
       <AboutUserModal />
       <ThankYouModal />
+      <Modal
+        show={isGpPlusSignUpModalDisplayed}
+        onShow={() => {
+          removeLocalStorageItem("selectedGpPlusBillingType");
+        }}
+        onHide={() => {
+          setIsGpPlusSignUpModalDisplayed(false);
+        }}
+        size="lg"
+        centered
+        className="rounded"
+        keyboard={false}
+        style={{
+          zIndex: 10000,
+        }}
+      >
+        <div
+          id="outseta-sign-up"
+          data-o-auth="1"
+          data-widget-mode="register"
+          data-plan-uid="rmkkjamg"
+          data-plan-payment-term={gpPlusBillingPeriod}
+          data-skip-plan-options="false"
+          data-mode="embed"
+        />
+      </Modal>
     </Layout>
   );
 };

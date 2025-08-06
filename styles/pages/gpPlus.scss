@@ -550,7 +550,45 @@ $gpGroup: #1ca9e5;
   }
 }
 
-
 .o--Widget--widget.o--App--profileWidget{
   width: 95vw;
+}
+
+.avatar-ring {
+  width: 37px; /* adjust as needed */
+  height: 37px;
+  border-radius: 50%;
+  padding: 4px; /* controls ring thickness */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gp-plus-user-color{
+  background: linear-gradient(
+    -43deg,
+    #E536A8 0%,
+    #5C24CF 59%,
+    #0AACE8 100%
+  );
+}
+
+.free-user-color{
+  background: #00aceb
+}
+
+
+.avatar-ring img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.o--Badge--displayMode-light{
+  display: none !important;
+}
+
+.show-gp-plus-element{
+  display: inline-block !important;
 }

@@ -9,16 +9,18 @@ import { FaUnlockKeyhole } from "react-icons/fa6";
 import { FaEdit } from "react-icons/fa";
 import Link from "next/link";
 import { useModalContext } from "../../../providers/ModalProvider";
+import useSiteSession from "../../../customHooks/useSiteSession";
 
 interface GpPlusModalProps {
   onClose?: () => void;
+  userStatus?: ReturnType<typeof useSiteSession>["status"];
 }
 
 const ICON_COLOR = "#14B1EA";
 
-interface IGpPlusAttribute{
-  children: React.ReactNode,
-  Icon: React.ReactNode
+interface IGpPlusAttribute {
+  children: React.ReactNode;
+  Icon: React.ReactNode;
 }
 
 const ListItem: React.FC<IGpPlusAttribute> = ({ children, Icon }) => {
@@ -39,12 +41,13 @@ const ListItem: React.FC<IGpPlusAttribute> = ({ children, Icon }) => {
   );
 };
 
-const GpPlusModal: React.FC<GpPlusModalProps> = ({ onClose }) => {
+const GpPlusModal: React.FC<GpPlusModalProps> = ({ onClose, userStatus }) => {
   const { _isGpPlusModalDisplayed } = useModalContext();
-  const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
+  const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
+    _isGpPlusModalDisplayed;
 
   const handleOnClose = () => {
-    if(onClose){
+    if (onClose) {
       onClose();
     }
 
@@ -170,7 +173,8 @@ const GpPlusModal: React.FC<GpPlusModalProps> = ({ onClose }) => {
               style={{ borderRadius: "1em", backgroundColor: "#1c28bd" }}
               className="w-100"
             >
-              Upgrade for 50% OFF
+              {userStatus === "authenticated" ? "Upgrade" : "Subscribe"} for 50%
+              OFF
             </Button>
           </Link>
         </section>

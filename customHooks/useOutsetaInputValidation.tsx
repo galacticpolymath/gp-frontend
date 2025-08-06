@@ -8,16 +8,14 @@ import { IUserSession } from "../types/global";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import CustomLink from "../components/CustomLink";
 import { updateUser } from "../apiServices/user/crudFns";
+import useSiteSession from "./useSiteSession";
 
 const useOutsetaInputValidation = () => {
   const { _notifyModal } = useModalContext();
   const [, setNotifyModal] = _notifyModal;
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
-  const { data, status } = useSession();
-  const { user, token } = (data ?? {}) as IUserSession;
+  const { token, status, user } = useSiteSession();
   const [didUserSignUp, setDidUserSignUp] = useState(false);
-  let emailInput = useRef<HTMLInputElement>(null).current;
-  let continueToCheckoutBtn = useRef<HTMLButtonElement>(null).current;
 
   const mututationCallback = (mutationsList: MutationRecord[]) => {
     let isGpPlusSignUpModalDisplayed = false;
@@ -96,8 +94,6 @@ const useOutsetaInputValidation = () => {
       }
 
       let userGpAccountEmail = user?.email;
-      emailInput = _emailInput;
-      continueToCheckoutBtn = _continueToCheckoutBtn;
 
       _continueToCheckoutBtn.addEventListener("click", async (event) => {
         console.log("The continue button was clicked...");

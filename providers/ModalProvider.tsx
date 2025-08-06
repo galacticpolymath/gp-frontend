@@ -23,6 +23,7 @@ export interface INotifyModalVal {
   isDisplayed: boolean;
   bodyTxt: string | ReactNode;
   headerTxt: string;
+  closeBtnTxt?: string;
   handleOnHide: () => void;
 }
 
@@ -53,6 +54,7 @@ export interface IModalProviderValue {
   _isAccountSettingModalOn: TUseStateReturnVal<boolean>;
   _isGpPlusModalDisplayed: TUseStateReturnVal<boolean>;
   _isThankYouModalDisplayed: TUseStateReturnVal<boolean>;
+  _isGpPlusSignUpModalDisplayed: TUseStateReturnVal<boolean>;
   _lessonItemModal: TUseStateReturnVal<
     TLessonItemModal & Partial<IItemV2Props & Pick<IItemV2, "itemCat">>
   >;
@@ -74,6 +76,8 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
     useState(false);
   const [isAccountModalMobileOn, setIsAccountModalMobileOn] = useState(false);
   const [isPasswordResetModalOn, setIsPasswordResetModalOn] = useState(false);
+  const [isGpPlusSignUpModalDisplayed, setIsGpPlusSignUpModalDisplayed] =
+    useState(false);
   const [lessonItemModal, setLessonItemModal] = useState<TLessonItemModal>({
     isDisplayed: false,
   });
@@ -83,6 +87,10 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
     null
   );
   const value: IModalProviderValue = {
+    _isGpPlusSignUpModalDisplayed: [
+      isGpPlusSignUpModalDisplayed,
+      setIsGpPlusSignUpModalDisplayed,
+    ],
     _lessonItemModal: [lessonItemModal, setLessonItemModal],
     _isGpPlusModalDisplayed: [
       isGpPlusModalDisplayed,

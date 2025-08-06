@@ -13,10 +13,16 @@ import { useRouter } from "next/router";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import { TUseStateReturnVal } from "../../../types/global";
 import { useGetAboutUserForm } from "../../../customHooks/useGetAboutUserForm";
-import { TAboutUserForm, TGpPlusSubscriptionForClient } from "../../../backend/models/User/types";
+import {
+  TAboutUserForm,
+  TGpPlusSubscriptionForClient,
+} from "../../../backend/models/User/types";
 import { Spinner } from "react-bootstrap";
 import { getIsWithinParentElement } from "../../../shared/fns";
-import { deleteUserFromServerCache, getIndividualGpPlusSubscription } from "../../../apiServices/user/crudFns";
+import {
+  deleteUserFromServerCache,
+  getIndividualGpPlusSubscription,
+} from "../../../apiServices/user/crudFns";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import useHandleOpeningGpPlusAccount from "../../../customHooks/useHandleOpeningGpPlusAccount";
 import { TAccountStageLabel } from "../../../backend/services/outsetaServices";
@@ -39,7 +45,7 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
 
 const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const router = useRouter();
-  const { _isLoginModalDisplayed, _isAccountModalMobileOn } = useModalContext();
+  const { _isAccountModalMobileOn } = useModalContext();
   const { _aboutUserForm, _isRetrievingUserData } = useGetAboutUserForm(
     router.asPath !== "/account"
   );
@@ -56,23 +62,26 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
   const [isSigningUserOut, setIsSigningUserOut] = useState(false);
   const { clearCookies } = useCustomCookies();
-  const [gpPlusSubscription, setGpPlusSubscription] = useState<TGpPlusSubscriptionForClient | null>(null);
-  
+  const [gpPlusSubscription, setGpPlusSubscription] =
+    useState<TGpPlusSubscriptionForClient | null>(null);
+  const [wasUIDataLoaded, setWasUIDataLoaded] = useState(false);
+
   useEffect(() => {
-    if(status === "authenticated"){
+    if (status === "authenticated" && !wasUIDataLoaded) {
       (async () => {
         const gpPlusSub =
           (await getIndividualGpPlusSubscription(token))?.membership ?? null;
         setGpPlusSubscription(gpPlusSub);
+        setWasUIDataLoaded(true);
       })();
+    } else if (status === "unauthenticated") {
+      setWasUIDataLoaded(true);
     }
   }, [status]);
 
   const isGpPlusMember =
     gpPlusSubscription?.AccountStageLabel &&
-    HAS_MEMBERSHIP_STATUSES.has(
-      gpPlusSubscription.AccountStageLabel
-    );
+    HAS_MEMBERSHIP_STATUSES.has(gpPlusSubscription.AccountStageLabel);
   const firstName =
     userAccountSaved?.firstName ??
     aboutUserForm?.firstName ??
@@ -193,35 +202,24 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
         {status === "unauthenticated" && (
           <span style={{ color: "white", fontWeight: 410 }}>LOGIN</span>
         )}
-        {status === "loading" && <Spinner color="white" />}
-        {status === "authenticated" && (
+        {!wasUIDataLoaded && <Spinner color="white" />}
+        {(status === "authenticated" && wasUIDataLoaded) && (
           <div className="position-relative d-flex align-items-center">
             {image ? (
-              <img
-                src={image}
-                alt="user_img"
-                width={35}
-                height={35}
-                style={{ objectFit: "contain" }}
-                className="rounded-circle"
-              />
+              <div
+                className={`avatar-ring ${
+                  isGpPlusMember ? "gp-plus-user-color" : "free-user-color"
+                }`}
+              >
+                <img
+                  src={image}
+                  alt="user_img"
+                  style={{ objectFit: "contain" }}
+                  className="rounded-circle w-100 h-100"
+                />
+              </div>
             ) : (
               <FaUserAlt color="#2C83C3" />
-            )}
-            {isGpPlusMember && (
-              <Image
-                src="/imgs/gp-logos/gp_submark.png"
-                alt="gp_plus_logo"
-                width={30}
-                height={30}
-                style={{
-                  objectFit: "contain",
-                  position: "absolute",
-                  right: "-8px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                }}
-              />
             )}
           </div>
         )}

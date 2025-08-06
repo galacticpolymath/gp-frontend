@@ -34,10 +34,7 @@ import {
   IResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
-import Button from "../../General/Button";
 import BootstrapBtn from "react-bootstrap/Button";
-import { AiOutlineQuestionCircle } from "react-icons/ai";
-import { useModalContext } from "../../../providers/ModalProvider";
 import LessonPart from "./LessonPart";
 import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
@@ -67,6 +64,7 @@ import { nanoid } from "nanoid";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import GpPlusBanner from "../../GpPlus/GpPlusBanner";
 import { Spinner } from "react-bootstrap";
+import { useModalContext } from "../../../providers/ModalProvider";
 
 export type TUnitPropsForTeachItSec = Partial<
   Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
@@ -159,6 +157,8 @@ const TeachItUI = <
     _didAttemptRetrieveUserData,
     _userLatestCopyUnitFolderId,
   } = useUserContext();
+  const { _isGpPlusModalDisplayed } = useModalContext();
+  const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const areThereGradeBands =
     !!gradeVariations?.length &&
     gradeVariations.every((variation) => !!variation.grades);
@@ -183,7 +183,6 @@ const TeachItUI = <
   } = session;
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
     _isCopyUnitBtnDisabled;
-  const { openCanAccessContentModal } = useCanUserAccessMaterial(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -402,11 +401,19 @@ const TeachItUI = <
           eventSource.close();
           const jobStatus = data.wasSuccessful ? "success" : "failure";
           const title = data.wasSuccessful
-            ? "Unit successfuly copied"
-            : "Failed to copy unit";
-          const subtitle = data.wasSuccessful
-            ? "Successfully copied unit into your drive."
-            : "An error has occurred. Please try again.";
+            ? `'${Title}' was successfuly copied`
+            : `Failed to copy '${Title}' into your Drive`;
+          const subtitle = data.wasSuccessful ? (
+            <>
+              Your copy of this unit can be found at:{" "}
+              <Link href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${targetFolderId}`}>
+                'Fairywrens and the Art of Inquiry' | Science | G6-8 (en-US)
+              </Link>
+              .
+            </>
+          ) : (
+            "An error has occurred. Please try again."
+          );
           const btnTxt = "Close";
 
           const handleBtnClick = () => {
@@ -505,7 +512,7 @@ const TeachItUI = <
   const takeUserToSignUpPg = () => {
     console.log("status, takeUserToSignUpPg: ", status);
     if (status === "unauthenticated") {
-      openCanAccessContentModal();
+      setIsGpPlusModalDisplayed(true);
       return;
     }
 
@@ -688,16 +695,17 @@ const TeachItUI = <
                 {userLatestCopyUnitFolderId && (
                   <div
                     style={{ maxWidth: "600px", fontSize: "18px" }}
-                    className="text-break mx-auto text-center text-lg-start mt-2 d-lg-flex justify-content-center align-items-center flex-row flex-lg-column"
+                    className="text-break mx-auto text-center text-lg-start mt-2"
                   >
-                    Your latest copy unit link:
+                    Your latest copy of this unit is linked
                     <Link
                       target="_blank"
                       className="ms-1 text-start text-lg-center"
                       href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${userLatestCopyUnitFolderId}`}
                     >
-                      {`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${userLatestCopyUnitFolderId}`}
+                      here
                     </Link>
+                    .
                   </div>
                 )}
               </div>

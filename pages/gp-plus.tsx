@@ -19,22 +19,31 @@ import useHandleOpeningGpPlusAccount from "../customHooks/useHandleOpeningGpPlus
 import { resetUrl } from "../globalFns";
 import { useRouter } from "next/router";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
-import { getLocalStorageItem, setLocalStorageItem } from "../shared/fns";
+import {
+  calculatePercentSaved,
+  getLocalStorageItem,
+  setLocalStorageItem,
+} from "../shared/fns";
 import ThankYouModal from "../components/GpPlus/ThankYouModal";
 import { connectToMongodb } from "../backend/utils/connection";
 import {
   filterInShowableUnits,
   retrieveUnits,
 } from "../backend/services/unitServices";
-import { TAccountStageLabel } from "../backend/services/outsetaServices";
-import { useUserContext } from "../providers/UserProvider";
+import {
+  getPlans,
+  TAccountStageLabel,
+} from "../backend/services/outsetaServices";
 
 interface IProps {
   liveUnitsTotal?: number;
+  plusPlanPercentSaved?: number;
   errType?: string;
   errObj?: object;
 }
 
+export const SELECTED_GP_PLUS_BILLING_TYPE =
+  "selected_gp_plus_billing_type" as const;
 const DEFAULT_LIVE_UNITS_TOTAL = 17;
 const ICON_DIMENSION = 70;
 const BTN_HEIGHT = "42px";
@@ -73,25 +82,22 @@ const CardTitle: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
-  console.log("Error object: ", errObj);
-  console.log("Error type: ", errType);
-
+const GpPlus: React.FC<IProps> = ({
+  liveUnitsTotal,
+  errObj,
+  errType,
+  plusPlanPercentSaved,
+}) => {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
     "yearly"
   );
   const { _notifyModal } = useModalContext();
-  const { _aboutUserForm } = useUserContext();
   const [, setNotifyModal] = _notifyModal;
-  const [aboutUserForm] = _aboutUserForm;
   const siteSession = useSiteSession();
   const { token, status, user, logUserOut } = siteSession;
   const [wasGpLiteBtnClicked, setWasGpLiteBtnClicked] = useState(false);
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
   const [wasGpPlusSubRetrieved, setWasGpPlusSubRetrieved] = useState(false);
-
-  console.log("setWasGpPlusSubRetrieved: ", setWasGpPlusSubRetrieved);
-
   const {
     _wasGpPlusBtnClicked,
     handleGpPlusAccountBtnClick,
@@ -106,7 +112,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
   useOutsetaInputValidation();
 
   const [didUserSignUp, setDidUserSignUp] = useState(false);
-
   const monthlyPrice = 10;
   const yearlyPrice = 60;
   const monthlyEquivalent = yearlyPrice / 12; // $5/month when paid yearly
@@ -160,7 +165,11 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
     if (status === "unauthenticated") {
       setTimeout(() => {
         setWasGpPlusBtnClicked(false);
-        router.push("/sign-up");
+        router.push(
+          `/sign-up?${SELECTED_GP_PLUS_BILLING_TYPE}=${
+            billingPeriod === "yearly" ? "year" : "month"
+          }`
+        );
       }, 200);
       return;
     }
@@ -477,7 +486,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, errObj, errType }) => {
                     billingPeriod === "yearly" ? "active" : ""
                   } text-center`}
                 >
-                  &nbsp;(Save 50%)
+                  &nbsp;(Save {plusPlanPercentSaved || 50}%)
                 </span>
               </div>
             </div>
@@ -817,10 +826,24 @@ export const getStaticProps = async () => {
     }
 
     const liveUnits = filterInShowableUnits(units, new Date().getTime(), false);
+    const plans = await getPlans();
+    const plusPlan = plans
+      ? plans.find((plan) => plan.Name === "Galactic Polymath Plus")
+      : undefined;
+    let plusPlanPercentSaved: number | undefined;
+
+    if (plans?.length && plusPlan) {
+      const monthlyRateForYearlyPlan = Math.ceil(plusPlan.AnnualRate / 12);
+      plusPlanPercentSaved = calculatePercentSaved(
+        plusPlan.MonthlyRate,
+        monthlyRateForYearlyPlan
+      );
+    }
 
     return {
       props: {
         liveUnitsTotal: liveUnits?.length || DEFAULT_LIVE_UNITS_TOTAL,
+        plusPlanPercentSaved,
       },
       revalidate: 30,
     };

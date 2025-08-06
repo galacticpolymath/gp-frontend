@@ -12,6 +12,8 @@ import { verifyJwt } from "../../../nondependencyFns";
 import { getUserByEmail } from "../../../backend/services/userServices";
 import { getGpPlusMembership, getPlans } from "../../../backend/services/outsetaServices";
 import { CustomError } from "../../../backend/utils/errors";
+import { calculatePercentSaved } from "../../../shared/fns";
+import { IPlanDetails } from "../../../apiServices/user/crudFns";
 
 const handler = async (request: NextApiRequest, response: NextApiResponse) => {
   try {
@@ -68,7 +70,14 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
       });
     }
 
-    return response.status(200).json({ currentUserPlan: targetPlan });
+    let percentageSaved: number | undefined;
+
+    if(willComputeSavings){
+      const monthlyRateForYearlyPlan = Math.ceil(targetPlan.AnnualRate / 12)
+      percentageSaved = calculatePercentSaved(targetPlan.MonthlyRate, monthlyRateForYearlyPlan);
+    }
+
+    return response.status(200).json({ currentUserPlan: targetPlan, percentageSaved } as IPlanDetails);
   } catch (error: any) {
     console.error("Failed to get the user's GP+ plan details. Reason: ", error);
 

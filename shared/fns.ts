@@ -264,3 +264,14 @@ export const getIsWithinParentElement = (
   );
 }
 export const getBillingTerm = (billingTermNum: 1 | 2) => billingTermNum === 1 ? "Monthly" : "Yearly";
+
+export const calculatePercentSaved = (
+  expensivePlanPerMonth: number,
+  cheapPlanPerMonth: number
+) => {
+  return Math.floor(
+    ((expensivePlanPerMonth * 12 - cheapPlanPerMonth * 12) /
+      (expensivePlanPerMonth * 12)) *
+      100
+  );
+}

@@ -1,9 +1,7 @@
 /* eslint-disable quotes */
 
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-  getUserByEmail,
-} from "../../../backend/services/userServices";
+import { getUserByEmail } from "../../../backend/services/userServices";
 import { verifyJwt } from "../../../nondependencyFns";
 import cache from "../../../backend/utils/cache";
 import {
@@ -11,7 +9,12 @@ import {
   TUserSchemaV2,
 } from "../../../backend/models/User/types";
 import { connectToMongodb } from "../../../backend/utils/connection";
-import { getBillingType, getGpPlusMembership, TAccountStageLabel, TGpPlusMembershipRetrieved } from "../../../backend/services/outsetaServices";
+import {
+  getBillingType,
+  getGpPlusMembership,
+  TAccountStageLabel,
+  TGpPlusMembershipRetrieved,
+} from "../../../backend/services/outsetaServices";
 
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
@@ -31,7 +34,6 @@ export default async function handler(
   }
 
   try {
-
     const authHeader = request.headers["authorization"];
 
     if (!authHeader) {
@@ -62,13 +64,26 @@ export default async function handler(
     );
     let membership: TGpPlusMembershipRetrieved | undefined = undefined;
 
-    if (userCached && "outsetaPersonEmail" in userCached) {
+    if (
+      userCached &&
+      (userCached?.outsetaPersonEmail || userCached?.outsetaAccountEmail)
+    ) {
+      console.log("Will get the user gp plus membership...");
+
       membership = (await getGpPlusMembership(
-        userCached.outsetaPersonEmail
+        userCached.outsetaPersonEmail ?? userCached?.outsetaAccountEmail
       )) as TGpPlusMembershipRetrieved;
 
-      console.log("membership: ", membership);
-      // make a earlier return here.
+      if (membership.AccountStageLabel !== "NonMember") {
+        const membershipForClient = {
+          ...membership,
+          BillingRenewalTerm: membership?.BillingRenewalTerm
+            ? getBillingType(membership?.BillingRenewalTerm)?.[0]
+            : null,
+        };
+
+        return response.status(200).json({ membership: membershipForClient });
+      }
     }
 
     console.log(

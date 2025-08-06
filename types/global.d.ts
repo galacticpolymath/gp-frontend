@@ -163,12 +163,12 @@ export interface IUpdatedUserReqBody{
 export interface IUpdatedAboutUserForm{
   aboutUserForm: TAboutUserForm<Map>
 }
-
 export interface ILocalStorage{
   gpPlusFeatureLocation: string;
   willShowGpPlusPurchaseThankYouModal: boolean
   didGpSignInAttemptOccur: boolean;
-  userAccount: TUserSchemaForClient
+  userAccount: TUserSchemaForClient;
+  selectedGpPlusBillingType: "month" | "year";
 }
 
 interface IErr<TErrType extends string = string>{

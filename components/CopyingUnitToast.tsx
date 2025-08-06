@@ -10,7 +10,7 @@ import { BtnWithSpinner } from "./General/BtnWithSpinner";
 
 interface CopyingUnitToastProps {
   title: string;
-  subtitle: string;
+  subtitle: string | ReactNode;
   showProgressBar?: boolean;
   jobStatus: TCopyUnitJobResult;
   ref: RefObject<HTMLDivElement | null>;
@@ -186,7 +186,7 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
             </div>
           ) : null}
         </div>
-        <div className="position-absolute w-100 bottom-0 d-flex justify-content-end">
+        <div className="w-100 bottom-0 d-flex justify-content-end">
           <BtnWithSpinner
             onClick={onCancel}
             wasClicked={wasCancelBtnClicked}

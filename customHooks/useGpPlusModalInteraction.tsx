@@ -1,78 +1,187 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSiteSession from "./useSiteSession";
 import { useUserContext } from "../providers/UserProvider";
-import { TGpPlusSubscriptionForClient, TUserSchemaForClient } from "../backend/models/User/types";
-import { getUserPlanDetails } from "../apiServices/user/crudFns";
+import {
+  TGpPlusSubscriptionForClient,
+} from "../backend/models/User/types";
+import { getUserPlanDetails, IPlanDetails } from "../apiServices/user/crudFns";
+import { getIsWithinParentElement } from "../shared/fns";
+
+const SELECTED_OPTION_CLASSNAME = "o--HorizontalToggle--active";
 
 export const useGpPlusModalInteraction = (
-  gpPlusBillingTerm?: NonNullable<TGpPlusSubscriptionForClient["BillingRenewalTerm"]>,
+  gpPlusBillingTerm?: NonNullable<
+    TGpPlusSubscriptionForClient["BillingRenewalTerm"]
+  >
 ) => {
   const { status, token } = useSiteSession();
+  const mutationOberserverRef = useRef<MutationObserver | null>(null);
 
-  useEffect(() => {
-    if (status === "authenticated" && gpPlusBillingTerm) {
-            
-      const mutationOberserver = new MutationObserver((elements) => {
-        for (const element of elements) {
-          console.log("Element: ", element);
+  const handleOnClickPlanChangeLogic = (
+    event: MouseEvent,
+    planDetails: IPlanDetails
+  ) => {
+    console.log("Event, sup there: ", event.target);
 
-          if (
-            (element.target as HTMLElement).className ===
-            "o--App--widgetContent"
-          ) {
-            const h1 = element.target.firstChild
-              ?.firstChild as HTMLElement | null;
+    const _target = event.target as HTMLElement;
 
-            if (h1?.textContent === "Profile") {
-              h1.textContent = "Email";
-            } else if (h1?.textContent === "Account") {
-              h1.textContent = "Address";
+    if (_target.className === SELECTED_OPTION_CLASSNAME) {
+      console.log("billing option selected");
+      return;
+    }
+
+    const wasABillingOptSelected = getIsWithinParentElement(
+      _target,
+      SELECTED_OPTION_CLASSNAME,
+      "className",
+      "includes"
+    );
+
+    console.log("Current GP Plus Billing Term: ", gpPlusBillingTerm);
+
+    console.log("wasABillingOptSelected: ", wasABillingOptSelected);
+
+
+    if (wasABillingOptSelected && gpPlusBillingTerm) {
+      const isCurrentBillingPlanOfUser = _target.textContent
+        ?.toLowerCase()
+        ?.includes(gpPlusBillingTerm.toLowerCase());
+      console.log("isCurrentBillingPlanOfUser: ", isCurrentBillingPlanOfUser);
+      const currentPlanTxtElement = document.querySelector<HTMLElement>(
+        ".o--Badge--displayMode-light"
+      );
+
+      console.log("IS CURRENT PLAN: ", currentPlanTxtElement);
+
+      if (currentPlanTxtElement && isCurrentBillingPlanOfUser) {
+        currentPlanTxtElement.classList.add("show-gp-plus-element");
+      } else if (currentPlanTxtElement) {
+        currentPlanTxtElement.classList.remove("show-gp-plus-element");
+      }
+    }
+
+    // if the yearly option was selected, then show the percentage saved  
+  };
+
+  const handleUserInteractionWithGpPlusModal = async () => {
+    const userPlanDetail = await getUserPlanDetails(token);
+
+    const _handleOnClickPlanChangeLogic = (event: MouseEvent) => {
+      handleOnClickPlanChangeLogic(event, userPlanDetail!)
+    }
+
+    // if the user selects yearly and if they are on the yearly plan, then
+
+    const mutationOberserver = new MutationObserver((elements) => {
+      for (const element of elements) {
+        console.log("Element, sup bacon: ", element.target);
+
+        const gpPlusModal = document.querySelector(".o--Widget--widgetBody");
+
+        console.log("gpPlusModal: ", gpPlusModal);
+        // const x = element.target.lastChild?.firstChild
+        const billingOptionsContainer =
+          element.target.lastChild?.firstChild?.lastChild?.firstChild
+            ?.firstChild?.firstChild;
+
+        if (billingOptionsContainer?.childNodes?.length && gpPlusBillingTerm) {
+          const childElements = Array.from(
+            billingOptionsContainer.childNodes
+          ) as HTMLElement[];
+          const selectedOption = childElements.find((element) => {
+            return element.className === "o--HorizontalToggle--active";
+          });
+          const selectionOptionTxt = selectedOption?.textContent?.toLowerCase();
+          const isCurrentBillingPlan = selectionOptionTxt?.includes(gpPlusBillingTerm?.toLowerCase());
+
+          if (isCurrentBillingPlan) {
+            const currentPlanTxtElement = document.querySelector<HTMLElement>(
+              ".o--Badge--displayMode-light"
+            );
+
+            console.log("IS CURRENT PLAN");
+
+            if(currentPlanTxtElement){
+              currentPlanTxtElement.style.display = "block"
             }
+          }
+        }
 
-            if (h1) {
-              h1.style.visibility = "visible";
-            }
+        if (gpPlusModal && userPlanDetail) {
+          document.addEventListener("click", _handleOnClickPlanChangeLogic);
+        } else if (!gpPlusModal) {
+          document.removeEventListener("click", _handleOnClickPlanChangeLogic);
+        }
 
-            if (window.innerWidth < 600) {
-              console.log("The user is on a mobile device.");
-              const gpPlusModalElements = Array.from(
-                (element.target as HTMLElement).childNodes
-              ) as HTMLElement[];
-              const gpPlusModalTabOptionsDropDown = gpPlusModalElements.find(
-                (element) => element.className === "o--NavMobile--navMobile"
-              );
-              const gpPlusModalTabOptions =
-                gpPlusModalTabOptionsDropDown?.firstChild?.firstChild
-                  ?.childNodes;
+        const billingTypeElement = document.querySelector(
+          ".o--HorizontalToggle--active"
+        );
 
-              if (gpPlusModalTabOptions) {
-                const profileOptions = Array.from(
-                  gpPlusModalTabOptions
-                ) as HTMLOptionElement[];
+        // const x = Array.from(element.target.lastChild?.firstChild?.firstChild?.firstChild?.firstChild?.firstChild?.childNodes ?? []) as HTMLElement[];
 
-                for (const profileOption of profileOptions) {
-                  if (profileOption.className === "o--tab-profile") {
-                    profileOption.textContent = "Email";
-                    profileOption.style.visibility = "visible";
-                  }
-                  if (profileOption.className === "o--tab-account") {
-                    profileOption.textContent = "Address";
-                    profileOption.style.visibility = "visible";
-                  }
+        // console.log("x, sup there: ", x?.[0]?.textContent);
+
+        if (
+          (element.target as HTMLElement).className === "o--App--widgetContent"
+        ) {
+          const h1 = element.target.firstChild
+            ?.firstChild as HTMLElement | null;
+
+          if (h1?.textContent === "Profile") {
+            h1.textContent = "Email";
+          } else if (h1?.textContent === "Account") {
+            h1.textContent = "Address";
+          }
+
+          if (h1) {
+            h1.style.visibility = "visible";
+          }
+
+          if (window.innerWidth < 600) {
+            console.log("The user is on a mobile device.");
+            const gpPlusModalElements = Array.from(
+              (element.target as HTMLElement).childNodes
+            ) as HTMLElement[];
+            const gpPlusModalTabOptionsDropDown = gpPlusModalElements.find(
+              (element) => element.className === "o--NavMobile--navMobile"
+            );
+            const gpPlusModalTabOptions =
+              gpPlusModalTabOptionsDropDown?.firstChild?.firstChild?.childNodes;
+
+            if (gpPlusModalTabOptions) {
+              const profileOptions = Array.from(
+                gpPlusModalTabOptions
+              ) as HTMLOptionElement[];
+
+              for (const profileOption of profileOptions) {
+                if (profileOption.className === "o--tab-profile") {
+                  profileOption.textContent = "Email";
+                  profileOption.style.visibility = "visible";
+                }
+                if (profileOption.className === "o--tab-account") {
+                  profileOption.textContent = "Address";
+                  profileOption.style.visibility = "visible";
                 }
               }
             }
           }
         }
-      });
+      }
+    });
 
-      mutationOberserver.observe(document.body, {
-        childList: true,
-        subtree: true,
-      });
+    mutationOberserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+    mutationOberserverRef.current = mutationOberserver;
+  };
+
+  useEffect(() => {
+    if (status === "authenticated" && gpPlusBillingTerm) {
+      handleUserInteractionWithGpPlusModal();
 
       return () => {
-        mutationOberserver.disconnect();
+        mutationOberserverRef.current?.disconnect();
       };
     }
   }, [status, gpPlusBillingTerm]);
