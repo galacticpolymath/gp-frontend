@@ -100,7 +100,7 @@
     "eslint-plugin-react": "^7.37.5",
     "jest": "^30.0.5",
     "jest-puppeteer": "^11.0.0",
-    "sass": "^1.89.2",
+    "sass": "^1.90.0",
     "ts-jest": "^29.4.1",
     "typescript": "^5.9.2"
   },
