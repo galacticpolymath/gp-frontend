@@ -1,5 +1,5 @@
 import { SUBJECTS_OPTIONS } from "../../../components/User/AboutUser/AboutUserModal";
-import { TSchoolType } from "../../../providers/UserProvider";
+import { TSchoolType, TUserAccount } from "../../../providers/UserProvider";
 import { TReferredByOpt } from "../../../types/global";
 import { getBillingType, getGpPlusMembership } from "../../services/outsetaServices";
 import { TAccountStageLabel, TGpPlusMembershipRetrieved } from "../../services/userServices";
@@ -64,7 +64,6 @@ export interface IUserSchema extends TAboutUserForm, IUserSchemaBaseProps {}
 
 export type TOutseta = {
   outsetaAccountEmail: string;
-  outsetaPersonEmail: string;
 }
 
 export type TUserSchemaV2 = IUserSchemaBaseProps & TAboutUserFormBaseProps & TOutseta & {
@@ -79,4 +78,4 @@ export type TUserClientProps = {
   gpPlusSubscription?: TGpPlusMembershipStatus,  
   viewingUnitFolderCopyId?: string
 }
-export type TUserSchemaForClient<TUserSchema extends object = TUserSchemaV2> = TUserSchema & TUserClientProps;
+export type TUserSchemaForClient<TUserSchema extends object = TUserSchemaV2> = TUserSchema & TUserClientProps & Pick<TUserAccount, "isOnMailingList">;

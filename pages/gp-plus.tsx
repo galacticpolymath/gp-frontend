@@ -369,7 +369,7 @@ const GpPlus: React.FC<IProps> = ({
 
         const updateUserResponse = await updateUser(
           { email: user.email },
-          { outsetaPersonEmail: outsetaEmail },
+          { outsetaAccountEmail: outsetaEmail },
           {},
           token
         );

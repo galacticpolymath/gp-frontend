@@ -66,12 +66,12 @@ export default async function handler(
 
     if (
       userCached &&
-      (userCached?.outsetaPersonEmail || userCached?.outsetaAccountEmail)
+      userCached?.outsetaAccountEmail
     ) {
       console.log("Will get the user gp plus membership...");
 
       membership = (await getGpPlusMembership(
-        userCached.outsetaPersonEmail ?? userCached?.outsetaAccountEmail
+        userCached?.outsetaAccountEmail
       )) as TGpPlusMembershipRetrieved;
 
       if (membership.AccountStageLabel !== "NonMember") {
@@ -105,8 +105,8 @@ export default async function handler(
     let user = await getUserByEmail<TUserSchemaForClient>(
       jwtVerificationResult.payload.email,
       {
-        outsetaPersonEmail: 1,
         _id: 0,
+        outsetaAccountEmail: 1,
       }
     );
 
@@ -116,14 +116,14 @@ export default async function handler(
         .json({ message: "User not found", errType: "userNotFound" });
     }
 
-    if (user.outsetaPersonEmail) {
+    if (user.outsetaAccountEmail) {
       console.log(
         "The user has a outseta person email: ",
-        user.outsetaPersonEmail
+        user.outsetaAccountEmail
       );
 
       membership = (await getGpPlusMembership(
-        user.outsetaPersonEmail
+        user.outsetaAccountEmail
       )) as TGpPlusMembershipRetrieved;
     }
 

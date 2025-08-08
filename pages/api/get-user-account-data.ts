@@ -32,9 +32,9 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Past due",
 ] as TAccountStageLabel[]);
 const PROJECTIONS: Partial<
-  Record<keyof (TUserSchemaV2 & IUserSchema), number>
+  Record<keyof (TUserSchemaV2 & IUserSchema), 0 | 1 | undefined>
 > = {
-  outsetaPersonEmail: 1,
+  outsetaAccountEmail: 1,
   gradesOrYears: 1,
   reasonsForSiteVisit: 1,
   subjects: 1,
@@ -103,17 +103,17 @@ export default async function handler(
       throw new CustomError("User not found.", 404);
     }
 
-    if (userAccount.outsetaPersonEmail) {
-      const gpPlusMembershipStatus = await getGpPlusMembership(
-        userAccount.outsetaPersonEmail
+    if (userAccount.outsetaAccountEmail) {
+      const gpPlusMembership = await getGpPlusMembership(
+        userAccount.outsetaAccountEmail
       );
-      console.log("gpPlusMembershipStatus: ", gpPlusMembershipStatus);
+      console.log("gpPlusMembership: ", gpPlusMembership);
       userAccount = {
         ...userAccount,
         isGpPlusMember: HAS_MEMBERSHIP_STATUSES.has(
-          gpPlusMembershipStatus.AccountStageLabel as TAccountStageLabel
+          gpPlusMembership.AccountStageLabel as TAccountStageLabel
         ),
-        gpPlusSubscription: gpPlusMembershipStatus,
+        gpPlusSubscription: gpPlusMembership,
       };
     }
 

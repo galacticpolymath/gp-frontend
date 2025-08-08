@@ -82,7 +82,9 @@ export const getUserWithRetries = async (
     return { user: user as Partial<IUserSchema> };
   } catch (error: any) {
     console.log("Failed to get the target user.");
+
     const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+
     if (tries <= 3 && didTimeoutOccur) {
       console.log("Will try again.");
       tries += 1;
@@ -446,9 +448,12 @@ export const executeUserCrudOperationsWithRetries = async (
   }
 };
 
-export const getUserByEmail = async <TUser extends IUserSchema>(
+export const getUserByEmail = async <
+  TUser extends TUserSchemaV2 = TUserSchemaV2,
+  TKeys extends keyof TUser = keyof TUser
+>(
   email = "",
-  projectionsObj = {}
+  projectionsObj: Partial<Record<TKeys, 0 | 1>> = {}
 ) => {
   try {
     const targetUser = await User.findOne(
@@ -456,7 +461,7 @@ export const getUserByEmail = async <TUser extends IUserSchema>(
       projectionsObj
     ).lean();
 
-    return targetUser as TUser;
+    return targetUser as Pick<TUser, TKeys>;
   } catch (error) {
     console.error(
       "Failed to receive the target user via email. Reason: ",
@@ -515,7 +520,11 @@ export const updateUser = async (
   updatedUserProperties: Omit<Partial<TUserSchemaV2>, "password">,
   updatedUserPropsToFilterOut?: (keyof TUserSchemaV2)[],
   tries = 3
-): Promise<{ wasSuccessful: boolean, updatedUser?: Partial<TUserSchemaV2>, errMsg?: string }> => {
+): Promise<{
+  wasSuccessful: boolean;
+  updatedUser?: Partial<TUserSchemaV2>;
+  errMsg?: string;
+}> => {
   try {
     if (updatedUserProperties.isTeacher === false) {
       updatedUserProperties = {
@@ -581,12 +590,17 @@ export const updateUser = async (
 
     const canRetry = getCanRetry(error);
 
-    if(canRetry && tries > 0){
+    if (canRetry && tries > 0) {
       console.error("Failed to update user. Reason: ", error);
-      
+
       await waitWithExponentialBackOff(tries);
 
-      return await updateUser(filterQuery, updatedUserProperties, updatedUserPropsToFilterOut, tries - 1);
+      return await updateUser(
+        filterQuery,
+        updatedUserProperties,
+        updatedUserPropsToFilterOut,
+        tries - 1
+      );
     }
 
     return { wasSuccessful: false, errMsg };
@@ -654,7 +668,10 @@ export const updateUsersDynamically = async (
   }
 };
 
-export const deleteUser = async (query = {}) => {
+export const deleteUser = async (
+  query = {},
+  tries = 3
+): Promise<{ wasSuccessful: boolean; errObj?: unknown }> => {
   try {
     if (
       !query ||
@@ -670,10 +687,23 @@ export const deleteUser = async (query = {}) => {
     await User.deleteOne(query);
 
     return { wasSuccessful: true };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to delete the target user. Reason: ", error);
+    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
 
-    return { wasSuccessful: false };
+    if (didTimeoutOccur && tries > 0) {
+      console.log(
+        `Timeout occurred while deleting user. Retrying... Attempts remaining: ${
+          tries - 1
+        }`
+      );
+
+      await waitWithExponentialBackOff(tries);
+
+      return deleteUser(query, tries - 1);
+    }
+
+    return { wasSuccessful: false, errObj: error };
   }
 };
 
@@ -708,27 +738,27 @@ export const deleteUserByEmail = async (email: string) => {
  */
 export const deleteUserFromCache = async (email: string) => {
   try {
-    if (!email || typeof email !== 'string') {
-      throw new Error('Email must be a non-empty string.');
+    if (!email || typeof email !== "string") {
+      throw new Error("Email must be a non-empty string.");
     }
 
     // Import cache here to avoid circular dependencies
-    const { cache } = await import('../authOpts/authOptions');
-    
+    const { cache } = await import("../authOpts/authOptions");
+
     cache.del(email);
 
-    return { 
-      wasSuccessful: true, 
-      msg: 'User deleted from cache successfully' 
+    return {
+      wasSuccessful: true,
+      msg: "User deleted from cache successfully",
     };
   } catch (error) {
     console.error("Failed to delete user from cache. Reason: ", error);
 
-    return { 
-      wasSuccessful: false, 
+    return {
+      wasSuccessful: false,
       errType: "cacheDeletionErr",
       errObj: error,
-      msg: 'Failed to delete user from cache' 
+      msg: "Failed to delete user from cache",
     };
   }
 };

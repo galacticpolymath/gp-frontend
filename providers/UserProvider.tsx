@@ -49,11 +49,10 @@ export type TUserAccount = Omit<
 export type TAboutUserFormForUI = {
   isTeacherConfirmed: boolean;
 } & TAboutUserForm<Map<string, string>> &
-  Pick<TUserSchemaForClient, "outsetaPersonEmail" | "isGpPlusMember">;
+  Pick<TUserSchemaForClient, "isGpPlusMember">;
 
 export const userAccountDefault: TAboutUserFormForUI = {
   schoolTypeDefaultSelection: null,
-  outsetaPersonEmail: "",
   outsetaAccountEmail: "",
   isGpPlusMember: false,
   schoolTypeOther: null,

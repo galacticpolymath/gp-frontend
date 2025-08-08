@@ -5,7 +5,7 @@ import {
   getUsers,
   migrateUserToV2,
 } from '../../../backend/services/userServices';
-import { IUserSchema, TUserSchemaV2 } from '../../../backend/models/User/types';
+import { IUserSchema, TUserSchemaForClient, TUserSchemaV2 } from '../../../backend/models/User/types';
 import { AnyBulkWriteOperation } from 'mongoose';
 
 const IS_V2_MIGRATION_DONE = true;
@@ -26,7 +26,7 @@ export default async function handler(
     await connectToMongodb(10_000, 0, true, request.body.dbType ?? 'dev');
 
     const { errMsg, users: oldUsers } = await getUsers<
-      TUserSchemaV2 & IUserSchema
+      TUserSchemaForClient<IUserSchema>
     >();
 
     if (!oldUsers?.length || errMsg) {

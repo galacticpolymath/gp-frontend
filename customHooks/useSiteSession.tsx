@@ -31,7 +31,10 @@ const useSiteSession = () => {
     token,
     status,
     logUserOut,
-    session: data,
+    session: {
+      ...data,
+      ...session
+    },
   };
 };
 

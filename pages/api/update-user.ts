@@ -65,6 +65,8 @@ export default async function handler(request: NextApiRequest, response: NextApi
       true
     );
 
+    console.log("request.body: ", request.body);
+    
     if (!wasConnectionSuccessful) {
       throw new CustomError("Failed to connect to the database.", 500);
     }

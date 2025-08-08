@@ -76,17 +76,6 @@ export const getUserAccountData = async (
   }
 };
 
-export const getUrlVal = (router: NextRouter, urlField: string) => {
-  const paths = router.asPath?.split("?");
-  const urlKeyAndVal = paths?.[1]?.split("=");
-
-  if (urlKeyAndVal?.length && urlKeyAndVal?.[0] === urlField) {
-    return paths[1].split("=")?.[1];
-  }
-
-  return null;
-};
-
 const AccountPg: React.FC = () => {
   const router = useRouter();
   const {
@@ -209,7 +198,7 @@ const AccountPg: React.FC = () => {
         );
         idToken = await magic.auth.loginWithMagicLink({
           email: userAccount?.gpPlusSubscription?.person?.Email,
-          redirectURI: window.location.href,
+          // redirectURI: window.location.href,
         });
 
         if (idToken) {

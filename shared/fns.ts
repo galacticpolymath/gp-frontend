@@ -230,9 +230,10 @@ export const getIsWithinParentElement = (
 
   if (comparisonType === "includes" && element.parentElement[attributeType]) {
     const attributeVal = element.parentElement[attributeType];
+    const isStr = typeof element.parentElement?.[attributeType] === 'string';
     isWithinParentElement =
       typeof selectorName === "string"
-        ? element.parentElement[attributeType].includes(selectorName)
+        ? isStr ? element.parentElement?.[attributeType]?.includes(selectorName) : false
         : getIsWithinTargetElements(selectorName, attributeVal);
   } else if (
     comparisonType === "strictEquals" &&

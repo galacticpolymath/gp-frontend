@@ -140,7 +140,7 @@ const useOutsetaInputValidation = () => {
 
         const updateUserResponse = await updateUser(
           { email: userGpAccountEmail },
-          { outsetaPersonEmail: outsetaEmail },
+          { outsetaAccountEmail: outsetaEmail },
           {},
           token
         );

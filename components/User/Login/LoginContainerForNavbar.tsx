@@ -27,6 +27,7 @@ import useSiteSession from "../../../customHooks/useSiteSession";
 import useHandleOpeningGpPlusAccount from "../../../customHooks/useHandleOpeningGpPlusAccount";
 import { TAccountStageLabel } from "../../../backend/services/outsetaServices";
 import Image from "next/image";
+import axios from "axios";
 
 interface IProps {
   _modalAnimation: TUseStateReturnVal<
@@ -43,6 +44,37 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Past due",
 ] as TAccountStageLabel[]);
 
+export const revokeGoogleAuthToken = async (token: string) => {
+  try {
+    const response = await axios.post("https://oauth2.googleapis.com/revoke", null, {
+      params: {
+        token,
+      },
+    });
+
+    console.log("Response from revoking Google Auth token:", response);
+
+    const { data, status } = response;
+
+    if (status >= 200 && status < 300) {
+      throw new Error(`Failed to revoke token: ${data.error}`);
+    }
+    
+    return {
+      wasSuccessful: true,
+    };
+  } catch (error) {
+    console.error(
+      "An error occurred while revoking the Google Auth token:",
+      error
+    );
+
+    return {
+      wasSuccessful: false,
+    };
+  }
+};
+
 const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const router = useRouter();
   const { _isAccountModalMobileOn } = useModalContext();
@@ -57,7 +89,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
       : {}
   ) as TAboutUserForm;
   const [modalAnimation, setModalAnimation] = _modalAnimation;
-  const { status, user, token } = useSiteSession();
+  const { status, user, token, gdriveAccessToken, gdriveRefreshToken } = useSiteSession();
   const { image } = user ?? {};
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
   const [isSigningUserOut, setIsSigningUserOut] = useState(false);
@@ -94,9 +126,15 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     "";
 
   const handleSignOutBtnClick = async () => {
+    setIsSigningUserOut(true);
+
+    if(gdriveAccessToken){
+      await revokeGoogleAuthToken(gdriveAccessToken);
+    }
+
     await deleteUserFromServerCache(token);
     await signOut({ redirect: false });
-    setIsSigningUserOut(true);
+
     localStorage.clear();
     sessionStorage.clear();
     clearCookies();
@@ -105,13 +143,6 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
       console.log("Logging the user out.");
       window.Outseta?.setAccessToken(null);
       window.Outseta?.setMagicLinkIdToken("");
-      return false;
-    });
-
-    window.Outseta?.on("redirect", async () => {
-      console.log("the user is being redirected");
-      const currentUrl = window.location.href;
-      window.location.href = currentUrl;
       return false;
     });
 
@@ -203,7 +234,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
           <span style={{ color: "white", fontWeight: 410 }}>LOGIN</span>
         )}
         {!wasUIDataLoaded && <Spinner color="white" />}
-        {(status === "authenticated" && wasUIDataLoaded) && (
+        {status === "authenticated" && wasUIDataLoaded && (
           <div className="position-relative d-flex align-items-center">
             {image ? (
               <div

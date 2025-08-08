@@ -15,7 +15,7 @@ declare global {
     Outseta?: {
       logout: () => Promise<void>;
       setMagicLinkIdToken: (idToken: string) => void;
-      getUser: () => Promise<unknown>;
+      getUser: () => Promise<Record<string, unknown>>;
       setAccessToken: (token: string | null) => void;
       auth: {
         close: () => Promise<void>;
@@ -167,6 +167,7 @@ export interface ILocalStorage{
   gpPlusFeatureLocation: string;
   willShowGpPlusPurchaseThankYouModal: boolean
   didGpSignInAttemptOccur: boolean;
+  wasUserDeleted: boolean;
   userAccount: TUserSchemaForClient;
   selectedGpPlusBillingType: "month" | "year";
 }

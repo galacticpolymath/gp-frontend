@@ -12,7 +12,7 @@ const cspHeader = `
         https://galacticpolymath.com/api/auth/signin/google
         https://dev.galacticpolymath.com/api/auth/signin/google
         http://localhost:3000/api/auth/signin/google
-        https://oauth2.googleapis.com/token
+        https://oauth2.googleapis.com/
         https://www.google-analytics.com/
         https://api.brevo.com/v3/smtp/email
         https://config.outseta.com/

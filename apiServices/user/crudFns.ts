@@ -2,53 +2,72 @@
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable indent */
-import axios from 'axios';
-import cookies from 'js-cookie';
-import { TGpPlusSubscriptionForClient, TUserSchemaV2 } from '../../backend/models/User/types';
-import { IErr } from '../../types/global';
-import { IGoogleDriveAuthResBody } from '../../pages/api/gp-plus/auth';
-import { IPlan } from '../../backend/services/outsetaServices';
+import axios, { AxiosError } from "axios";
+import cookies from "js-cookie";
+import {
+  TGpPlusSubscriptionForClient,
+  TUserSchemaV2,
+} from "../../backend/models/User/types";
+import { IErr, IUpdatedUserReqBody } from "../../types/global";
+import { IGoogleDriveAuthResBody } from "../../pages/api/gp-plus/auth";
+import { IPlan } from "../../backend/services/outsetaServices";
 
 export const updateUser = async (
-    query: Omit<Partial<TUserSchemaV2>, "password"> = {}, 
-    updatedUser: Omit<Partial<TUserSchemaV2>, "password"> = {}, 
-    additionalReqBodyProps: Record<string, unknown> = {}, 
-    token: string
+  query: Omit<Partial<TUserSchemaV2>, "password"> = {},
+  updatedUser: Omit<Partial<TUserSchemaV2>, "password"> = {},
+  additionalReqBodyProps: Record<string, unknown> &
+    Partial<IUpdatedUserReqBody> = {},
+  token: string
 ) => {
-    try {
-        if ((Object.keys(query).length <= 0) || (Object.keys(updatedUser).length <= 0)) {
-            throw new Error('The "query" and "updatedUser" parameters cannot be empty objects.');
-        }
-
-        if (!token) {
-            throw new Error('The "token" parameter cannot be empty.');
-        }
-
-        if (
-            ('id' in query && typeof query.id !== 'string') ||
-            ('email' in query && typeof query.email !== 'string') ||
-            ('emali' in query && 'id' in query)
-        ) {
-            throw new Error('The "id" and "email" parameters must be strings. Both cannot be present.');
-        }
-
-        const headers = {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        };
-        const responseBody = { ...query, updatedUser, ...additionalReqBodyProps };
-        const response = await axios.put<{ wasSuccessful: boolean, msg: string }>('/api/update-user', responseBody, { headers });
-
-        if (response.status !== 200) {
-            throw new Error('Failed to update user.');
-        }
-
-        return response.data;
-    } catch (error) {
-        console.error('An error has occurred, failed to update user. Reason: ', error);
-
-        return null;
+  try {
+    if (
+      Object.keys(query).length <= 0 ||
+      (Object.keys(updatedUser).length <= 0 &&
+        Object.keys(additionalReqBodyProps).length <= 0)
+    ) {
+      throw new Error(
+        'The "query" and "updatedUser" parameters cannot be empty objects.'
+      );
     }
+
+    if (!token) {
+      throw new Error('The "token" parameter cannot be empty.');
+    }
+
+    if (
+      ("id" in query && typeof query.id !== "string") ||
+      ("email" in query && typeof query.email !== "string") ||
+      ("emali" in query && "id" in query)
+    ) {
+      throw new Error(
+        'The "id" and "email" parameters must be strings. Both cannot be present.'
+      );
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+    const responseBody = { ...query, updatedUser, ...additionalReqBodyProps };
+    const response = await axios.put<{ wasSuccessful: boolean; msg: string }>(
+      "/api/update-user",
+      responseBody,
+      { headers }
+    );
+
+    if (response.status !== 200) {
+      throw new Error("Failed to update user.");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "An error has occurred, failed to update user. Reason: ",
+      error
+    );
+
+    return null;
+  }
 };
 
 /**
@@ -58,31 +77,39 @@ export const updateUser = async (
  * @throws An error has occurred if the server responds with a status code that is not 200 or the wrong parameter type is passed.
  */
 export const sendDeleteUserReq = async (email: string, token: string) => {
-    try {
-        if (typeof email !== 'string') {
-            throw new Error('The "userId" parameter must be a string.');
-        }
-
-        if (!token) {
-            throw new Error('The "token" parameter cannot be empty.');
-        }
-
-        const headers = {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        };
-        const response = await axios.delete(`/api/delete-user?email=${email}`, { headers });
-
-        if (response.status !== 200) {
-            throw new Error('Failed to delete the target user.');
-        }
-
-        return { wasSuccessful: true };
-    } catch (error) {
-        console.error('Failed to delete the target user. Reason: ', error);
-
-        return { wasSuccessful: false };
+  try {
+    if (typeof email !== "string") {
+      throw new Error('The "userId" parameter must be a string.');
     }
+
+    if (!token) {
+      throw new Error('The "token" parameter cannot be empty.');
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+    const response = await axios.delete(`/api/delete-user?email=${email}`, {
+      headers,
+    });
+
+    console.log("Response: ", response);
+
+    if (response.status !== 200) {
+      throw new Error("Failed to delete the target user.");
+    }
+
+    return { wasSuccessful: true };
+  } catch (error: any) {
+    if(error.response?.data?.errType === 'userNotFound'){
+      return { wasSuccessful: false, errType: "userNotFound" };
+    }
+
+    console.error("Failed to delete the target user. Reason: ", error);
+
+    return { wasSuccessful: false, errType: "userDeletionErr" };
+  }
 };
 
 /**
@@ -91,122 +118,150 @@ export const sendDeleteUserReq = async (email: string, token: string) => {
  * @throws An error has occurred if the server responds with a status code that is not 200 or the wrong parameter type is passed.
  */
 export const deleteUserFromServerCache = async (token: string) => {
-    try {
-        if (!token) {
-            throw new Error('The "token" parameter cannot be empty.');
-        }
-
-        const headers = {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        };
-        const response = await axios.delete('/api/delete-user-cache', { headers });
-
-        if (response.status !== 200) {
-            throw new Error('Failed to delete the user from cache.');
-        }
-
-        console.log('Response data: ', response.data);
-
-        return {
-            wasSuccessful: true
-        };
-    } catch (error) {
-        console.error('Failed to delete the user from cache. Reason: ', error);
-
-        return { wasSuccessful: false, msg: 'Failed to delete user from cache', errObj: error };
+  try {
+    if (!token) {
+      throw new Error('The "token" parameter cannot be empty.');
     }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+    const response = await axios.delete("/api/delete-user-cache", { headers });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to delete the user from cache.");
+    }
+
+    console.log("Response data: ", response.data);
+
+    return {
+      wasSuccessful: true,
+    };
+  } catch (error) {
+    console.error("Failed to delete the user from cache. Reason: ", error);
+
+    return {
+      wasSuccessful: false,
+      msg: "Failed to delete user from cache",
+      errObj: error,
+    };
+  }
 };
 
 export const authenticateUserWithGDrive = async (code: string) => {
-    try {
-        const { status, data } = await axios.post<IErr | { data: Partial<IGoogleDriveAuthResBody> }>('/api/gp-plus/auth', { code });
+  try {
+    const { status, data } = await axios.post<
+      IErr | { data: Partial<IGoogleDriveAuthResBody> }
+    >("/api/gp-plus/auth", { code });
 
-        if (status !== 200) {
-            throw new Error(`Failed to authenticate user with Google Drive. Status code: ${status}. Data: ${data}`);
-        }
-
-        if("errType" in data) {
-            throw new Error(data.errMsg || "Failed to authenticate user with Google Drive.");
-        }
-
-        return { ...data.data };
-    } catch(error){
-        console.error("Failed to authenticate user with Google Drive. Reason: ", error);
-
-        return null;
+    if (status !== 200) {
+      throw new Error(
+        `Failed to authenticate user with Google Drive. Status code: ${status}. Data: ${data}`
+      );
     }
-}
+
+    if ("errType" in data) {
+      throw new Error(
+        data.errMsg || "Failed to authenticate user with Google Drive."
+      );
+    }
+
+    return { ...data.data };
+  } catch (error) {
+    console.error(
+      "Failed to authenticate user with Google Drive. Reason: ",
+      error
+    );
+
+    return null;
+  }
+};
 
 export const refreshGDriveToken = async (refreshToken: string) => {
-    try {
-        const { status, data } = await axios.post('/api/gp-plus/refresh-token', { 
-            refresh_token: refreshToken 
-        });
+  try {
+    const { status, data } = await axios.post("/api/gp-plus/refresh-token", {
+      refresh_token: refreshToken,
+    });
 
-        if (status !== 200) {
-            throw new Error(`Failed to refresh Google Drive token. Status code: ${status}`);
-        }
-
-        return data;
-    } catch(error) {
-        console.error("Failed to refresh Google Drive token. Reason: ", error);
-        return null;
+    if (status !== 200) {
+      throw new Error(
+        `Failed to refresh Google Drive token. Status code: ${status}`
+      );
     }
+
+    return data;
+  } catch (error) {
+    console.error("Failed to refresh Google Drive token. Reason: ", error);
+    return null;
+  }
 };
 
 export const getIndividualGpPlusSubscription = async (token: string) => {
-    try {
-        const response = await axios.get<{ membership?: TGpPlusSubscriptionForClient}>('/api/gp-plus/get-is-individual-member', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+  try {
+    const response = await axios.get<{
+      membership?: TGpPlusSubscriptionForClient;
+    }>("/api/gp-plus/get-is-individual-member", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-        console.log("Response: ", response.data);
-        console.log("Response status: ", response.status);
+    console.log("Response: ", response.data);
+    console.log("Response status: ", response.status);
 
-        if(response.status !== 200) {
-            throw new Error(`Failed to get individual GP+ subscription. Status code: ${response.status}`);
-        }
-
-        console.log("Will return the data sup there...")
-        
-        return response.data;
-    } catch (error){
-        console.error("An error has ocurrred. Failed to get subscription: ", error);
-
-        return null;
+    if (response.status !== 200) {
+      throw new Error(
+        `Failed to get individual GP+ subscription. Status code: ${response.status}`
+      );
     }
-}
 
-export type IPlanDetails = NonNullable<Awaited<ReturnType<typeof getUserPlanDetails>>>
+    console.log("Will return the data sup there...");
+
+    return response.data;
+  } catch (error) {
+    console.error("An error has ocurrred. Failed to get subscription: ", error);
+
+    return null;
+  }
+};
+
+export type IPlanDetails = NonNullable<
+  Awaited<ReturnType<typeof getUserPlanDetails>>
+>;
 
 export const getUserPlanDetails = async (appAuthToken: string) => {
-    try {
-        const url = new URL(`${window.location.origin}/api/gp-plus/get-user-plan-details`)
+  try {
+    const url = new URL(
+      `${window.location.origin}/api/gp-plus/get-user-plan-details`
+    );
 
-        url.searchParams.append('willComputeSavings', 'true');
+    url.searchParams.append("willComputeSavings", "true");
 
-        const response = await axios.get<{ currentUserPlan?: IPlan, percentageSaved?: number }>(url.href, {
-            headers: {
-                Authorization: `Bearer ${appAuthToken}`
-            }
-        })
+    const response = await axios.get<{
+      currentUserPlan?: IPlan;
+      percentageSaved?: number;
+    }>(url.href, {
+      headers: {
+        Authorization: `Bearer ${appAuthToken}`,
+      },
+    });
 
-        console.log("Response: ", response.data);
-        console.log("Response status: ", response.status);
+    console.log("Response: ", response.data);
+    console.log("Response status: ", response.status);
 
-        if(response.status !== 200) {
-            throw new Error(`Failed to get individual GP+ subscription. Status code: ${response.status}`);
-        }
-
-        console.log("Will return the data sup there...")
-        
-        return response.data;
-    } catch (error){
-        console.error("An error has ocurrred. Failed to get subscription: ", error);
-
-        return null;
+    if (response.status !== 200) {
+      throw new Error(
+        `Failed to get individual GP+ subscription. Status code: ${response.status}`
+      );
     }
-}
+
+    console.log("Will return the data sup there...");
+
+    return response.data;
+  } catch (error) {
+    console.error("An error has ocurrred. Failed to get subscription: ", error);
+
+    return null;
+  }
+};

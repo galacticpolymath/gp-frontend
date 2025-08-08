@@ -95,7 +95,7 @@ export const UserSchema = new Schema<TUserSchemaV2>(
   {
     _id: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    outsetaPersonEmail: { type: String, unique: true },
+    outsetaAccountEmail: { type: String, unique: true },
     mailingListConfirmationEmailId: { type: String, required: false },
     password: {
       hash: { type: String, required: false },

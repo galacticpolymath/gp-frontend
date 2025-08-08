@@ -15,13 +15,17 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { useContext, useRef, useState } from "react";
-import { ModalContext } from "../../../providers/ModalProvider";
+import {
+  ModalContext,
+  useModalContext,
+} from "../../../providers/ModalProvider";
 import { CustomCloseButton } from "../../../ModalsContainer";
 import { IoMdClose } from "react-icons/io";
 import CheckBox from "../../General/CheckBox";
 import Button from "../../General/Button";
-import { getIsParsable } from "../../../globalFns";
+import { getIsParsable, resetUrl } from "../../../globalFns";
 import {
+  deleteUserFromServerCache,
   sendDeleteUserReq,
   updateUser,
 } from "../../../apiServices/user/crudFns";
@@ -30,50 +34,48 @@ import { useRouter } from "next/router";
 import CustomLink from "../../CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../../../globalVars";
 import Image from "next/image";
-import { getLocalStorageItem } from "../../../shared/fns";
+import { getLocalStorageItem, setLocalStorageItem } from "../../../shared/fns";
+import useSiteSession from "../../../customHooks/useSiteSession";
+import { revokeGoogleAuthToken } from "../Login/LoginContainerForNavbar";
+import { TUserSchemaForClient } from "../../../backend/models/User/types";
+import { useCustomCookies } from "../../../customHooks/useCustomCookies";
+import { BtnWithSpinner } from "../../General/BtnWithSpinner";
 
 const AccountSettings = () => {
-  const { _isAccountSettingModalOn, _notifyModal } = useContext(ModalContext);
+  const { _isAccountSettingModalOn, _notifyModal } = useModalContext();
   const [isAccountSettingsModalDisplayed, setIsAccountSettingModalDisplayed] =
     _isAccountSettingModalOn;
   const [isSavingChangesSpinnerOn, setIsSavingChangesSpinnerOn] =
     useState(false);
-  const [accountForm, setAccountForm] = useState({});
-  const session = useSession();
-  const { token } = session?.data ?? {};
-  const { email, name } = session?.data?.user ?? {};
-  const [, setErrors] = useState(new Map());
-  const userAccount = getLocalStorageItem("userAccount");
+  const [accountForm, setAccountForm] = useState<Partial<TUserSchemaForClient>>(
+    {}
+  );
+  const { token, user, gdriveAccessToken, session } = useSiteSession();
+  const { email, name } = user ?? {};
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [didServerErrOccur, setDidServerErrOccur] = useState(false);
   const router = useRouter();
   const [, setNotifyModal] = _notifyModal;
-
-  /**
-   * @type {[import('../../../providers/UserProvider').TAboutUserForm, import('react').Dispatch<import('react').SetStateAction<import('../../../providers/UserProvider').TAboutUserForm>>]} */
-  const modalBodyRef = useRef();
+  const modalBodyRef = useRef(null);
+  const { clearCookies } = useCustomCookies();
 
   const handleOnHide = () => {
     setIsAccountSettingModalDisplayed(false);
     setDidServerErrOccur(false);
+    setIsDeletingAccount(false);
   };
 
   const handleOnShow = () => {
     setIsAccountSettingModalDisplayed(true);
 
-    const userAccountParsable = localStorage.getItem("userAccount");
+    const userAccount = getLocalStorageItem("userAccount");
 
-    if (
-      getIsParsable(userAccountParsable) &&
-      typeof JSON.parse(userAccountParsable) === "object"
-    ) {
-      const userAccount = JSON.parse(userAccountParsable);
-      const firstName = userAccount?.name?.first ?? name?.first ?? "";
-      const lastName = userAccount?.name?.last ?? name?.last ?? "";
-
-      setAccountForm({
-        firstName,
-        lastName,
-        isOnMailingList: userAccount?.isOnMailingList ?? false,
+    if (userAccount) {
+      setAccountForm((state) => {
+        return {
+          ...state,
+          isOnMailingList: userAccount?.isOnMailingList ?? false,
+        };
       });
     }
 
@@ -84,31 +86,73 @@ const AccountSettings = () => {
       router.replace(newUrl);
     }
   };
+
   const handleDeleteAccountBtnClick = async () => {
+    setIsDeletingAccount(true);
     const willDeleteAccount = confirm(
       "Are you sure you want to delete your account? This operation is irreversible."
     );
 
     if (!willDeleteAccount) {
+      setIsDeletingAccount(false);
       return;
     }
 
-    let didDeleteUserSuccessfully = false;
-
-    if (willDeleteAccount && email) {
-      const { wasSuccessful } = await sendDeleteUserReq(email, token);
-      didDeleteUserSuccessfully = wasSuccessful;
+    if (!email) {
+      alert(
+        "An error has occurred. Your email was not found. Please refresh the page and try again."
+      );
+      return;
     }
 
-    if (didDeleteUserSuccessfully) {
-      localStorage.removeItem("userAccount");
-      localStorage.removeItem("isOnMailingList");
-      signOut({ callbackUrl: "/?user-deleted=true" });
+    const isUserSignedIntoGpPlus = window?.Outseta
+      ? !!(await window.Outseta.getUser())
+      : false;
+    const { wasSuccessful: didDeleteUserSuccessfully, errType } =
+      await sendDeleteUserReq(email, token);
+    const wasUserNotFound = errType === "userNotFound";
+
+    if ((didDeleteUserSuccessfully || wasUserNotFound) && gdriveAccessToken) {
+      await revokeGoogleAuthToken(gdriveAccessToken);
+    }
+
+    console.log("isUserSignedIntoGpPlus: ", isUserSignedIntoGpPlus);
+
+    if (
+      (didDeleteUserSuccessfully || wasUserNotFound) &&
+      isUserSignedIntoGpPlus
+    ) {
+      console.log("The user is signed into gp plus");
+      localStorage.clear();
+      sessionStorage.clear();
+      clearCookies();
+      setLocalStorageItem("wasUserDeleted", true);
+      await deleteUserFromServerCache(token);
+      await signOut({ callbackUrl: "/" });
+      window.Outseta?.on("logout", async () => {
+        console.log("Logging the user out.");
+        window.Outseta?.setAccessToken(null);
+        window.Outseta?.setMagicLinkIdToken("");
+        return false;
+      });
+      window.Outseta?.logout();
+      return;
+    }
+
+    if (didDeleteUserSuccessfully || wasUserNotFound) {
+      console.log("the user is not signed into gp plus");
+      localStorage.clear();
+      sessionStorage.clear();
+      clearCookies();
+      setLocalStorageItem("wasUserDeleted", true);
+      await deleteUserFromServerCache(token);
+      await signOut({ callbackUrl: "/" });
       return;
     }
 
     alert("An error has occurred. Please refresh the page and try again.");
   };
+
   const handleIsOnMailingListBtnToggle = () => {
     setAccountForm((state) => ({
       ...state,
@@ -119,53 +163,35 @@ const AccountSettings = () => {
   const handleSaveBtnClick = async () => {
     setIsSavingChangesSpinnerOn(true);
     setDidServerErrOccur(false);
-    const errors = new Map();
 
-    if (!accountForm.firstName) {
-      errors.set("firstName", "Please enter your first name.");
-    }
-    if (!accountForm.lastName) {
-      errors.set("lastName", "Please enter your last name.");
-    }
+    const userAccountPrevVals = getLocalStorageItem("userAccount");
+    let additionalReqBodyProps = {};
 
-    if (errors.size > 0) {
-      setErrors(errors);
+    if (userAccountPrevVals?.isOnMailingList === accountForm.isOnMailingList) {
+      alert("Please update your mailing list status to save changes.");
       setTimeout(() => {
         setIsSavingChangesSpinnerOn(false);
-      }, 250);
+      }, 300);
       return;
     }
-    const userAccountPrevVals = localStorage.getItem("userAccount")
-      ? JSON.parse(localStorage.getItem("userAccount"))
-      : {};
-    const willSendEmailListingSubConfirmationEmailObj =
-      userAccountPrevVals.isOnMailingList === accountForm.isOnMailingList
-        ? {}
-        : {
-            willSendEmailListingSubConfirmationEmail:
-              accountForm.isOnMailingList,
-          };
-    const updatedUser = {
-      name: {
-        first: accountForm.firstName,
-        last: accountForm.lastName,
-      },
-    };
-    let additionalReqBodyProps = accountForm.isOnMailingList
-      ? {
-          clientUrl: `${window.location.origin}/mailing-list-confirmation`,
-        }
-      : {};
-    additionalReqBodyProps = {
-      ...additionalReqBodyProps,
-      ...willSendEmailListingSubConfirmationEmailObj,
-    };
+
+    if (userAccountPrevVals?.isOnMailingList !== accountForm.isOnMailingList) {
+      additionalReqBodyProps = {
+        ...additionalReqBodyProps,
+        willUpdateMailingListStatusOnly: true,
+        willSendEmailListingSubConfirmationEmail: true,
+        clientUrl: `${window.location.origin}/mailing-list-confirmation`,
+      };
+    }
+
     const responseBody = await updateUser(
-      { email: email },
-      updatedUser,
+      { email: email! },
+      {},
       additionalReqBodyProps,
       token
     );
+
+    console.log("responseBody, sup there: ", responseBody);
 
     if (!responseBody) {
       setTimeout(() => {
@@ -178,12 +204,15 @@ const AccountSettings = () => {
     setTimeout(() => {
       let bodyTxt = "";
 
-      if (!userAccountPrevVals.isOnMailingList && accountForm.isOnMailingList) {
+      if (
+        !userAccountPrevVals?.isOnMailingList &&
+        accountForm.isOnMailingList
+      ) {
         bodyTxt =
           "Please check your e-mail inbox to confirm your subscription with GP's mailing list.";
       } else if (
-        userAccountPrevVals.isOnMailingList &&
-        accountForm.isOnMailingList === false
+        userAccountPrevVals?.isOnMailingList &&
+        !accountForm.isOnMailingList
       ) {
         bodyTxt =
           "You've unscribed from GP's mailing list. You will no longer receive e-mails from us.";
@@ -195,8 +224,8 @@ const AccountSettings = () => {
         isDisplayed: true,
         bodyTxt,
         headerTxt: "Updates saved!",
-        handleOnHide: () => {
-          session.update();
+        handleOnHide: async () => {
+          await session.update();
         },
       });
       setIsSavingChangesSpinnerOn(false);
@@ -233,7 +262,6 @@ const AccountSettings = () => {
         </ModalTitle>
       </ModalHeader>
       <ModalBody
-        style={{ maxWidth: "1800px" }}
         ref={modalBodyRef}
         className="about-me-modal-body w-100 d-flex flex-column pt-0"
       >
@@ -269,18 +297,20 @@ const AccountSettings = () => {
                 <section className="w-100 d-flex flex-sm-row flex-column justify-content-between">
                   <section className="d-flex flex-column">
                     <span style={{ fontWeight: 600 }}>Delete your account</span>
-                    <span style={{ textWrap: "break-word", maxWidth: "450px" }}>
+                    <span style={{ wordWrap: "break-word", maxWidth: "450px" }}>
                       You will no longer have access to the {"teacher's"}{" "}
                       materials of a unit if you are a teacher.
                     </span>
                   </section>
                   <section className="d-flex justify-content-sm-center align-items-sm-center pt-sm-0 pt-2">
-                    <Button
-                      classNameStr="btn bg-danger no-btn-styles rounded px-2 py-2 px-sm-4 py-sm-2 mt-2 mt-sm-0"
-                      handleOnClick={handleDeleteAccountBtnClick}
+                    <BtnWithSpinner
+                      className="btn bg-danger no-btn-styles rounded px-2 py-2 px-sm-4 py-sm-2 mt-2 mt-sm-0"
+                      onClick={handleDeleteAccountBtnClick}
+                      wasClicked={isDeletingAccount}
+                      style={{ minWidth: "160px" }}
                     >
                       Delete account
-                    </Button>
+                    </BtnWithSpinner>
                   </section>
                 </section>
               </div>
