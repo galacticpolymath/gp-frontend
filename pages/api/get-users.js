@@ -128,6 +128,8 @@ export default async function handler(request, response) {
             });
         }
 
+        // GOAL: get all of the user's copy folder jobs from the database
+
         if (errMsg || !users) {
             return response
                 .status(500)
