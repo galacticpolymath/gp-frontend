@@ -406,8 +406,12 @@ const TeachItUI = <
           const subtitle = data.wasSuccessful ? (
             <>
               Your copy of this unit can be found at:{" "}
-              <Link href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${targetFolderId}`}>
-                'Fairywrens and the Art of Inquiry' | Science | G6-8 (en-US)
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${targetFolderId}`}
+              >
+                {MediumTitle}
               </Link>
               .
             </>
