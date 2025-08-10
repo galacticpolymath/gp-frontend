@@ -9,7 +9,6 @@ import {
 } from "./nondependencyFns";
 import { PASSWORD_RESET_CODE_VAR_NAME } from "./globalVars";
 import axios from "axios";
-import { Next } from "react-bootstrap/esm/PageItem";
 
 const DB_ADMIN_ROUTES = [
   "/api/insert-lesson",

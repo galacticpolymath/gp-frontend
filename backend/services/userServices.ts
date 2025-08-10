@@ -15,7 +15,7 @@ import { AnyBulkWriteOperation } from "mongoose";
 import { waitWithExponentialBackOff } from "../../globalFns.js";
 
 export const getUsers = async <
-  TUsers extends IUserSchemaBaseProps = IUserSchema
+  TUsers extends IUserSchemaBaseProps = TUserSchemaV2
 >(
   queryObj: Partial<TUserSchemaV2> = {},
   projectionObj: Partial<Record<keyof TUserSchemaV2, number>> = {},

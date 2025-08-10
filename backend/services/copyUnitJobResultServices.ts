@@ -4,6 +4,7 @@ import {
 } from "../../pages/api/gp-plus/copy-unit";
 import CopyUnitResults from "../models/copyUnitResults";
 import { ICopyUnitResult } from "../models/copyUnitResults/types";
+import { TUserSchemaV2 } from "../models/User/types";
 import { refreshAuthToken } from "./googleDriveServices";
 
 export const insertCopyUnitJobResult = async (
@@ -126,6 +127,69 @@ export const getCopyUnitFolderJobs = async (
     };
   }
 };
+
+export const getCopyUnitFolderJobsByUserId = async (
+  userId: string
+): Promise<Partial<{ jobs: ICopyUnitResult[]; errType: string }>> => {
+  try {
+    const retrievalResult = await getCopyUnitFolderJobs({ userId });
+
+    if(retrievalResult.errType){
+      return {
+        errType: retrievalResult.errType
+      }
+    }
+
+    return retrievalResult;
+  } catch (error: any) {
+    console.error("Failed to insert copy unit job result. Error: ", error);
+
+    return {
+      errType: "generalErr",
+    };
+  }
+};
+
+interface IUserWithSiteStats extends TUserSchemaV2{
+  copyUnitJobResults?: ICopyUnitResult[]
+}
+
+export const getCopyFolderJobsOfUsers = async (users: TUserSchemaV2[], tries = 3): Promise<IUserWithSiteStats[] | null> => {
+  try {
+    const userIds = users.map(user => user._id);
+    const copyUnitResults = await CopyUnitResults.find<ICopyUnitResult>({
+      userId: {
+        $in: userIds
+      }
+    })
+    const usersWithCopyUnitJobResults = users.map(user => {
+      const copyUnitJobResults = copyUnitResults.filter(copyUnitResult => {
+        return copyUnitResult.userId === user._id
+      }); 
+      
+
+      return {
+        ...user,
+        copyUnitJobResults
+      };
+    });
+    
+  
+    return usersWithCopyUnitJobResults;
+  } catch(error: any){
+    console.error("Failed to get copy unit folder jobs for users. Error: ", error);
+
+    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+
+    if(didTimeoutOccur){
+      await waitWithExponentialBackOff(tries)
+
+      return getCopyFolderJobsOfUsers(users);
+    }
+
+    return null;
+  }
+}
 
 type TFoldersRetrieved = Record<
   "existingFolders" | "nonexistingFolders",
