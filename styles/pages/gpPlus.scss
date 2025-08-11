@@ -146,6 +146,10 @@ $gpGroup: #1ca9e5;
   background: linear-gradient(to right, #f5e3f4, #e8e8fa);
 }
 
+.gp-plus-color{
+  color: $gpPlus !important;
+}
+
 .gpplus-toggle-row {
   display: flex;
   align-items: center;
@@ -591,4 +595,10 @@ $gpGroup: #1ca9e5;
 
 .show-gp-plus-element{
   display: inline-block !important;
+}
+
+.o--HorizontalToggle--displayMode-light{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

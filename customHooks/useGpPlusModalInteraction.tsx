@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import useSiteSession from "./useSiteSession";
 import { useUserContext } from "../providers/UserProvider";
-import {
-  TGpPlusSubscriptionForClient,
-} from "../backend/models/User/types";
+import { TGpPlusSubscriptionForClient } from "../backend/models/User/types";
 import { getUserPlanDetails, IPlanDetails } from "../apiServices/user/crudFns";
 import { getIsWithinParentElement } from "../shared/fns";
 
@@ -41,7 +39,6 @@ export const useGpPlusModalInteraction = (
 
     console.log("wasABillingOptSelected: ", wasABillingOptSelected);
 
-
     if (wasABillingOptSelected && gpPlusBillingTerm) {
       const isCurrentBillingPlanOfUser = _target.textContent
         ?.toLowerCase()
@@ -58,17 +55,34 @@ export const useGpPlusModalInteraction = (
       } else if (currentPlanTxtElement) {
         currentPlanTxtElement.classList.remove("show-gp-plus-element");
       }
+
+      const billingTermsOptsContainer = document.querySelector(
+        ".o--HorizontalToggle--displayMode-light"
+      );
+      const savingsElement =
+        billingTermsOptsContainer?.childElementCount === 3 &&
+        (billingTermsOptsContainer.lastChild as HTMLElement);
+
+      console.log("savingsElement: ", savingsElement);
+      console.log("billingTermsOptsContainer: ", billingTermsOptsContainer);
+
+      
+      if (_target.textContent === "Billed yearly" && savingsElement) {
+        savingsElement.classList.add('fw-bolder')
+      } else if (savingsElement){
+        savingsElement.classList.remove("fw-bolder");
+      }
     }
 
-    // if the yearly option was selected, then show the percentage saved  
+    // if the yearly option was selected, then show the percentage saved
   };
 
   const handleUserInteractionWithGpPlusModal = async () => {
     const userPlanDetail = await getUserPlanDetails(token);
 
     const _handleOnClickPlanChangeLogic = (event: MouseEvent) => {
-      handleOnClickPlanChangeLogic(event, userPlanDetail!)
-    }
+      handleOnClickPlanChangeLogic(event, userPlanDetail!);
+    };
 
     // if the user selects yearly and if they are on the yearly plan, then
 
@@ -76,10 +90,21 @@ export const useGpPlusModalInteraction = (
       for (const element of elements) {
         console.log("Element, sup bacon: ", element.target);
 
-        const gpPlusModal = document.querySelector(".o--Widget--widgetBody");
+        
+        const isChangePlanUI = element.target.firstChild?.firstChild?.textContent === "Change plan";
+        const billingTypeOptsContainer = element.target.lastChild?.firstChild?.firstChild?.firstChild?.firstChild;
 
-        console.log("gpPlusModal: ", gpPlusModal);
-        // const x = element.target.lastChild?.firstChild
+        if (isChangePlanUI && billingTypeOptsContainer) {
+          const savingsElement = document.createElement('span')
+          savingsElement.className = "gp-plus-color text-center ms-2";
+          savingsElement.textContent = `Save ${userPlanDetail?.percentageSaved ?? 50}%`
+
+          billingTypeOptsContainer.appendChild(savingsElement);
+          
+          console.log("Something changed in the plan change UI");
+        }
+
+        const gpPlusModal = document.querySelector(".o--Widget--widgetBody");
         const billingOptionsContainer =
           element.target.lastChild?.firstChild?.lastChild?.firstChild
             ?.firstChild?.firstChild;
@@ -92,17 +117,23 @@ export const useGpPlusModalInteraction = (
             return element.className === "o--HorizontalToggle--active";
           });
           const selectionOptionTxt = selectedOption?.textContent?.toLowerCase();
-          const isCurrentBillingPlan = selectionOptionTxt?.includes(gpPlusBillingTerm?.toLowerCase());
+          const isCurrentBillingPlan = selectionOptionTxt?.includes(
+            gpPlusBillingTerm?.toLowerCase()
+          );
+
+          console.log("isCurrentBillingPlan: ", isCurrentBillingPlan);
 
           if (isCurrentBillingPlan) {
             const currentPlanTxtElement = document.querySelector<HTMLElement>(
               ".o--Badge--displayMode-light"
             );
 
+            console.log("currentPlanTxtElement: ", currentPlanTxtElement);
+
             console.log("IS CURRENT PLAN");
 
-            if(currentPlanTxtElement){
-              currentPlanTxtElement.style.display = "block"
+            if (currentPlanTxtElement) {
+              currentPlanTxtElement.classList.add("show-gp-plus-element");
             }
           }
         }
