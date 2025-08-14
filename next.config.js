@@ -4,14 +4,14 @@
 /** @type {import('next').NextConfig} */
 
 const cspHeader = `
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com/ https://cdn.outseta.com/ https://js.stripe.com https://auth.magic.link/sdk;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com/ https://cdn.outseta.com/ https://js.stripe.com https://auth.magic.link/sdk https://apis.google.com https://accounts.google.com; object-src 'none';
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     object-src 'none';
     base-uri 'self';
     connect-src 'self'
       https://galacticpolymath.com/api/auth/signin/google
-      https://apis.google.com/js/api.js
-      https://accounts.google.com/gsi/client
+      https://apis.google.com
+      https://accounts.google.com
       https://dev.galacticpolymath.com/api/auth/signin/google
       http://localhost:3000/api/auth/signin/google
       https://oauth2.googleapis.com/

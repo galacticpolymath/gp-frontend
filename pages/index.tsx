@@ -18,10 +18,18 @@ import {
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";
 import UnitsPg from "../components/LessonsPg";
 import { ICurrentUnits } from "../types/global";
-import { createDbProjections, getLocalStorageItem, removeLocalStorageItem } from "../shared/fns";
+import {
+  createDbProjections,
+  getLocalStorageItem,
+  removeLocalStorageItem,
+} from "../shared/fns";
 import useSiteSession from "../customHooks/useSiteSession";
 import { useModalContext } from "../providers/ModalProvider";
 import { useRouter } from "next/router";
+import {
+  DrivePickerElement,
+  DrivePickerDocsViewElement,
+} from "@googleworkspace/drive-picker-element";
 
 interface IProps {
   currentUnits: ICurrentUnits | null;
@@ -45,9 +53,9 @@ const LessonsPage = ({ currentUnits }: IProps) => {
           router.replace(url.split("?")[0]);
         },
       });
-      removeLocalStorageItem("wasUserDeleted")
+      removeLocalStorageItem("wasUserDeleted");
     }
-  }, [status])
+  }, [status]);
 
   return (
     <UnitsPg

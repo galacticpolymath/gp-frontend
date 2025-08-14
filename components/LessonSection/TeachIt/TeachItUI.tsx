@@ -65,7 +65,7 @@ import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import GpPlusBanner from "../../GpPlus/GpPlusBanner";
 import { Spinner } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
-import useDrivePicker from "react-google-drive-picker";
+import { useGoogleDrivePicker } from "@geniux/google-drive-picker-react";
 
 export type TUnitPropsForTeachItSec = Partial<
   Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
@@ -152,7 +152,6 @@ const TeachItUI = <
   } = props;
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
-  const [openDriverPicker] = useDrivePicker();
   const {
     _isGpPlusMember,
     _isCopyUnitBtnDisabled,
@@ -186,6 +185,10 @@ const TeachItUI = <
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
     _isCopyUnitBtnDisabled;
   const router = useRouter();
+  const { openPicker, selectedFiles } = useGoogleDrivePicker({
+    allowMultiSelect: true,
+    scopes: ["https://www.googleapis.com/auth/drive.file"], // This scope is already default for the picker, but you can define others.
+  });
 
   useEffect(() => {
     didInitialRenderOccur.current = true;
@@ -219,6 +222,10 @@ const TeachItUI = <
     console.log("Copy unit function called");
 
     setIsCopyingUnitBtnDisabled(true);
+
+    // openPicker();
+
+    // return;
 
     if (!gdriveAccessToken) {
       console.log("Redirecting to Google Drive authentication URL");
@@ -556,30 +563,18 @@ const TeachItUI = <
       }
     }, 200)();
 
-    const pickerRef = useRef<HTMLElement | null>(null)
+  const mutationOberserverRef = useRef<null | MutationObserver>(null);
 
   useEffect(() => {
-    if (!pickerRef.current) {
-      return;
-    }
+    const mutationOberserver = new MutationObserver((elements) => {
+      console.log("elements, sup there: ", elements);
+    });
 
-    const handler = (e: unknown) => {
-      console.log(e);
-    };
-    pickerRef.current.addEventListener("picker:oauth:error", handler);
-    pickerRef.current.addEventListener("picker:oauth:response", handler);
-    pickerRef.current.addEventListener("picker:picked", handler);
-    pickerRef.current.addEventListener("picker:canceled", handler);
-
-    return () => {
-      if (!pickerRef.current) {
-        return;
-      }
-      pickerRef.current.removeEventListener("picker:oauth:error", handler);
-      pickerRef.current.removeEventListener("picker:oauth:response", handler);
-      pickerRef.current.removeEventListener("picker:picked", handler);
-      pickerRef.current.removeEventListener("picker:canceled", handler);
-    };
+    mutationOberserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+    mutationOberserverRef.current = mutationOberserver;
   }, []);
 
   return (
@@ -848,7 +843,7 @@ const TeachItUI = <
                           }}
                         >
                           <>
-                            <Sparkles
+                            {/* <Sparkles
                               sparkleWrapperStyle={{
                                 height: 40,
                                 display: "flex",
@@ -860,7 +855,7 @@ const TeachItUI = <
                               <p style={{ transform: "translateY(20px)" }}>
                                 CLICK TO SEE MORE!
                               </p>
-                            </Sparkles>
+                            </Sparkles> */}
                           </>
                         </ClickMeArrow>
                       ) : null

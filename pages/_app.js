@@ -22,6 +22,7 @@ import "../styles/modals/signUp.scss";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { UserProvider } from "../providers/UserProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GoogleDrivePickerProvider } from "@geniux/google-drive-picker-react";
 
 import { CookiesProvider } from "react-cookie";
 
@@ -41,9 +42,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
             <ModalProvider>
               <QueryClientProvider client={queryClient}>
                 <CookiesProvider>
-                  <Toaster />
-                  <Component {...pageProps} />
-                  <ModalsContainer />
+                  <GoogleDrivePickerProvider
+                    clientId={
+                      process.env
+                        .NEXT_PUBLIC_GOOGLE_DRIVE_PROJECT_CLIENT_ID_TEST
+                    }
+                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY}
+                  >
+                    <Toaster />
+                    <Component {...pageProps} />
+                    <ModalsContainer />
+                  </GoogleDrivePickerProvider>
                 </CookiesProvider>
               </QueryClientProvider>
             </ModalProvider>
