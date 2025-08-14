@@ -9,17 +9,19 @@ const cspHeader = `
     object-src 'none';
     base-uri 'self';
     connect-src 'self'
-        https://galacticpolymath.com/api/auth/signin/google
-        https://dev.galacticpolymath.com/api/auth/signin/google
-        http://localhost:3000/api/auth/signin/google
-        https://oauth2.googleapis.com/
-        https://www.google-analytics.com/
-        https://api.brevo.com/v3/smtp/email
-        https://config.outseta.com/
-        https://cdn.outseta.com/
-        https://galactic-polymath.outseta.com
-        https://fonts.googleapis.com/icon
-        https://fonts.googleapis.com/css;
+      https://galacticpolymath.com/api/auth/signin/google
+      https://apis.google.com/js/api.js
+      https://accounts.google.com/gsi/client
+      https://dev.galacticpolymath.com/api/auth/signin/google
+      http://localhost:3000/api/auth/signin/google
+      https://oauth2.googleapis.com/
+      https://www.google-analytics.com/
+      https://api.brevo.com/v3/smtp/email
+      https://config.outseta.com/
+      https://cdn.outseta.com/
+      https://galactic-polymath.outseta.com
+      https://fonts.googleapis.com/icon
+      https://fonts.googleapis.com/css;
 `;
 
 module.exports = {

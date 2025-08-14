@@ -65,6 +65,7 @@ import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import GpPlusBanner from "../../GpPlus/GpPlusBanner";
 import { Spinner } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
+import useDrivePicker from "react-google-drive-picker";
 
 export type TUnitPropsForTeachItSec = Partial<
   Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
@@ -151,6 +152,7 @@ const TeachItUI = <
   } = props;
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
+  const [openDriverPicker] = useDrivePicker();
   const {
     _isGpPlusMember,
     _isCopyUnitBtnDisabled,
@@ -553,6 +555,32 @@ const TeachItUI = <
         }, 6_000);
       }
     }, 200)();
+
+    const pickerRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (!pickerRef.current) {
+      return;
+    }
+
+    const handler = (e: unknown) => {
+      console.log(e);
+    };
+    pickerRef.current.addEventListener("picker:oauth:error", handler);
+    pickerRef.current.addEventListener("picker:oauth:response", handler);
+    pickerRef.current.addEventListener("picker:picked", handler);
+    pickerRef.current.addEventListener("picker:canceled", handler);
+
+    return () => {
+      if (!pickerRef.current) {
+        return;
+      }
+      pickerRef.current.removeEventListener("picker:oauth:error", handler);
+      pickerRef.current.removeEventListener("picker:oauth:response", handler);
+      pickerRef.current.removeEventListener("picker:picked", handler);
+      pickerRef.current.removeEventListener("picker:canceled", handler);
+    };
+  }, []);
 
   return (
     <>

@@ -2,8 +2,6 @@ import moment from "moment";
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";
 import { ILocalStorage, IUnitForUnitsPg, TLiveUnit } from "../types/global";
 import { GOOGLE_DRIVE_PROJECT_CLIENT_ID, STATUSES_OF_SHOWABLE_LESSONS } from "../globalVars";
-import { stackOffsetDiverging } from "d3";
-import { string } from "prop-types";
 
 export const random = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
 
