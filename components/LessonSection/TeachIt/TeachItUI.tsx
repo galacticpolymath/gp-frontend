@@ -65,7 +65,7 @@ import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import GpPlusBanner from "../../GpPlus/GpPlusBanner";
 import { Spinner } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
-import { useGoogleDrivePicker } from "@geniux/google-drive-picker-react";
+import useDrivePicker from "react-google-drive-picker";
 
 export type TUnitPropsForTeachItSec = Partial<
   Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
@@ -185,13 +185,12 @@ const TeachItUI = <
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
     _isCopyUnitBtnDisabled;
   const router = useRouter();
-  const { openPicker, selectedFiles } = useGoogleDrivePicker({
-    allowMultiSelect: true,
-    scopes: ["https://www.googleapis.com/auth/drive.file"], // This scope is already default for the picker, but you can define others.
-  });
+  const [openPicker, authResult] = useDrivePicker();
 
   useEffect(() => {
     didInitialRenderOccur.current = true;
+
+    console.log("authResult: ", authResult);
   }, []);
 
   const [toastId, setToastId] = useState<string | null>(null);
@@ -223,9 +222,29 @@ const TeachItUI = <
 
     setIsCopyingUnitBtnDisabled(true);
 
-    // openPicker();
-
-    // return;
+    if (gdriveAccessToken) {
+      openPicker({
+        clientId: process.env
+          .NEXT_PUBLIC_GOOGLE_DRIVE_PROJECT_CLIENT_ID_TEST as string,
+        developerKey: process.env
+          .NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
+        viewId: "DOCS",
+        token: gdriveAccessToken, // pass oauth token in case you already have one
+        showUploadView: true,
+        showUploadFolders: true,
+        supportDrives: true,
+        multiselect: true,
+        // customViews: customViewsArray, // custom view
+        callbackFunction: (data) => {
+          console.log(data);
+          if (data.action === "cancel") {
+            console.log("User clicked cancel/close button");
+          }
+        },
+      });
+      setIsCopyingUnitBtnDisabled(false);
+      return;
+    }
 
     if (!gdriveAccessToken) {
       console.log("Redirecting to Google Drive authentication URL");
