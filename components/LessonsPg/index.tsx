@@ -78,31 +78,6 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
             minutes of prep time!
           </p>
         </div>
-        <button
-          onClick={() => {
-            openPicker({
-              clientId: process.env
-                .NEXT_PUBLIC_GOOGLE_DRIVE_PROJECT_CLIENT_ID_TEST as string,
-              developerKey: process.env
-                .NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
-              viewId: "DOCS",
-              // token: token, // pass oauth token in case you already have one
-              showUploadView: true,
-              showUploadFolders: true,
-              supportDrives: true,
-              multiselect: true,
-              // customViews: customViewsArray, // custom view
-              callbackFunction: (data) => {
-                console.log(data);
-                if (data.action === "cancel") {
-                  console.log("User clicked cancel/close button");
-                }
-              },
-            });
-          }}
-        >
-          show picker
-        </button>
       </section>
       <section className="mb-3 mt-4 d-flex justify-content-center align-items-center">
         <div

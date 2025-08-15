@@ -232,6 +232,8 @@ const TeachItUI = <
         token: gdriveAccessToken, // pass oauth token in case you already have one
         showUploadView: true,
         showUploadFolders: true,
+        setIncludeFolders: true,
+        setSelectFolderEnabled: true,
         supportDrives: true,
         multiselect: true,
         // customViews: customViewsArray, // custom view
