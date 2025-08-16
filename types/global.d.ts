@@ -10,6 +10,14 @@ import { TAboutUserForm, TUserSchemaForClient } from "../backend/models/User/typ
 import { TWebAppForUI } from "../backend/models/WebApp";
 import { TUserAccount } from "../providers/UserProvider";
 
+interface IRequestArgs{
+    path: string;
+    method?: "GET" | "POST" | "PUT" | "DELETE";
+    params?: Record<string, string>;
+    headers?: Record<string, string>;
+    body?: string | object;
+}
+
 declare global {
   interface Window {
     Outseta?: {
@@ -22,6 +30,11 @@ declare global {
       }
       on: (event: "logout" | "redirect" | "signup", callback: (...args: unknown[]) => void | boolean | Promise<void | boolean>) => void;
     };
+  }
+  interface gapi{
+    client: {
+      request: (args: IRequestArgs) => Promise<unknown>
+    }
   }
 }
 interface IComponent {

@@ -41,6 +41,7 @@ import throttle from "lodash.throttle";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import {
   CONTACT_SUPPORT_EMAIL,
+  GOOGLE_DRIVE_PROJECT_CLIENT_ID,
   UNVIEWABLE_LESSON_STR,
 } from "../../../globalVars";
 import Link from "next/link";
@@ -66,6 +67,7 @@ import GpPlusBanner from "../../GpPlus/GpPlusBanner";
 import { Spinner } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import useDrivePicker from "react-google-drive-picker";
+import axios from "axios";
 
 export type TUnitPropsForTeachItSec = Partial<
   Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
@@ -222,25 +224,120 @@ const TeachItUI = <
 
     setIsCopyingUnitBtnDisabled(true);
 
-    if (gdriveAccessToken) {
+    openPicker({
+      clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
+      developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
+      viewId: "DOCS",
+      // appId: GOOGLE_DRIVE_PROJECT_ID,
+      // token: currentAccessToken, // pass oauth token in case you already have one
+      showUploadView: true,
+      showUploadFolders: true,
+      setIncludeFolders: true,
+
+      setSelectFolderEnabled: true,
+      supportDrives: true,
+      multiselect: true,
+      // customViews: customViewsArray, // custom view
+      callbackFunction: async (data) => {
+        try {
+          // create the folder structure
+
+          console.log("data, yo there: ", data);
+          if (data?.docs?.[0]?.id) {
+            console.log("First document ID: ", data?.docs?.[0]?.id);
+            (window.gapi?.client as any).setApiKey(
+              process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string
+            );
+            const res = await (window.gapi?.client as any).request({
+              path: `/drive/v3/files/${data?.docs?.[0]?.id}?supportsAllDrives=true`,
+              method: "POST",
+            });
+
+            console.log("res: ", res);
+          }
+        } catch (error) {
+          console.error("An error occurred: ", error);
+        }
+      },
+    });
+
+    return;
+
+    const currentTime = new Date().getTime();
+    const fiveMinutesInMs = 5 * 60 * 1000;
+    const timeUntilExpiry =
+      gdriveAccessTokenExp ? gdriveAccessTokenExp - currentTime : null;
+    let currentAccessToken = gdriveAccessToken;
+
+    if (
+      gdriveAccessTokenExp && typeof timeUntilExpiry === 'number' && 
+      gdriveRefreshToken && (timeUntilExpiry < fiveMinutesInMs)
+    ) {
+      console.log("Token expires soon, refreshing...");
+      const refreshResult = await refreshGDriveToken(gdriveRefreshToken);
+
+      if (refreshResult) {
+        currentAccessToken = refreshResult.access_token;
+        // Update cookies with new token and expiry
+        setAppCookie("gdriveAccessToken", refreshResult.access_token, {
+          expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
+          secure: true,
+        });
+        setAppCookie("gdriveAccessTokenExp", refreshResult.expires_at, {
+          expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
+          secure: true,
+        });
+        console.log("Token refreshed successfully");
+      } else {
+        console.error("Failed to refresh token, redirecting to auth");
+        setLocalStorageItem(
+          "gpPlusFeatureLocation",
+          `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+        );
+        const url = createGDriveAuthUrl();
+
+        removeLocalStorageItem("didGpSignInAttemptOccur");
+
+        window.location.href = url;
+        return;
+      }
+    }
+
+    if (currentAccessToken) {
       openPicker({
-        clientId: process.env
-          .NEXT_PUBLIC_GOOGLE_DRIVE_PROJECT_CLIENT_ID_TEST as string,
+        clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
         developerKey: process.env
           .NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
         viewId: "DOCS",
-        token: gdriveAccessToken, // pass oauth token in case you already have one
+        // appId: GOOGLE_DRIVE_PROJECT_ID,
+        token: currentAccessToken, // pass oauth token in case you already have one
         showUploadView: true,
         showUploadFolders: true,
         setIncludeFolders: true,
+        
         setSelectFolderEnabled: true,
         supportDrives: true,
         multiselect: true,
         // customViews: customViewsArray, // custom view
-        callbackFunction: (data) => {
-          console.log(data);
-          if (data.action === "cancel") {
-            console.log("User clicked cancel/close button");
+        callbackFunction: async (data) => {
+          try {
+            // create the folder structure
+
+            console.log("data, yo there: ", data);
+            if (data?.docs?.[0]?.id){
+              console.log("First document ID: ", data?.docs?.[0]?.id);
+              (window.gapi?.client as any).setApiKey(
+                process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string
+              );
+              const res = await(window.gapi?.client as any).request({
+                path: `/drive/v3/files/${data?.docs?.[0]?.id}?supportsAllDrives=true`,
+                method: "POST"
+              });
+
+              console.log("res: ", res);
+            }
+          } catch(error){
+            console.error("An error occurred: ", error);
           }
         },
       });
@@ -302,7 +399,6 @@ const TeachItUI = <
       return;
     }
 
-    let currentAccessToken = gdriveAccessToken;
 
     if (gdriveAccessTokenExp && gdriveRefreshToken) {
       console.log("Starting job...");
@@ -346,6 +442,10 @@ const TeachItUI = <
           return;
         }
       }
+    }
+
+    if(!currentAccessToken){
+      return;
     }
 
     const headers = {

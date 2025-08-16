@@ -226,12 +226,12 @@ export const shareFilesWithRetries = async (
 /**
  * Copy a google drive file into a folder (if specified).
  * @param {string} fileId The id of the file.
- * @param {string[]} folderIds The ids of the folders to copy the files into.
+ * @param {string[]} parentFolderIds The ids of the folders to copy the files into.
  * @param {string} accessToken The client side user's access token.
  * @return {Promise<AxiosResponse<any, any>> | { errType: string }} An object contain the results and optional message.
  * */
-const copyFile = async (accessToken, folderIds, fileId) => {
-  const reqBody = folderIds ? { parents: folderIds } : {};
+export const copyFile = async (accessToken, parentFolderIds, fileId) => {
+  const reqBody = parentFolderIds ? { parents: parentFolderIds } : {};
 
   try {
     console.log("fileId, sup there: ", fileId);

@@ -43,7 +43,7 @@ export const getGDriveItem = async (
 ): Promise<{ id: string; [key: string]: unknown } | { errType: string }> => {
   try {
     const { status, data } = await axios.get<{ id: string; [key: string]: unknown }>(
-      `https://www.googleapis.com/drive/v3/files/${fileId}`,
+      `https://www.googleapis.com/drive/v2/files/${fileId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
