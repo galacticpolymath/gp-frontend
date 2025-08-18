@@ -18,40 +18,38 @@ export default async function handler(request: NextApiRequest, response: NextApi
     const filesToCopy = reqBody.files as string[] | undefined;
     const gdriveAccessToken = request.headers["gdrive-token"];
     const gdriveRefreshToken = request.headers["gdrive-token-refresh"];
-    
-    // if(!filesToCopy?.length || !gdriveAccessToken || !gdriveRefreshToken) {
-    //     return response.status(400).json({ error: "Invalid request. Please provide a valid file to copy and a valid access token" });
-    // }
 
-    const creds = new GoogleServiceAccountAuthCreds();
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: "drive-io-server@drive-io-app.iam.gserviceaccount.com",
-        client_id: "100624470333829044448",
-        private_key: process.env.TEST_PRIVATE_KEY
-          ?.replace(/\\n/g, "\n")
-          .replace(/"/g, ""),
-      },
-      scopes: ["https://www.googleapis.com/auth/drive"],
-      clientOptions: {
-        subject: "gtorion@driveio.io"
-      }
-    });
-    const gdrive = google.drive({ version: 'v3', auth })
-    const driveCreationRes = await gdrive.drives.create({
-      requestId: nanoid(),
-      prettyPrint: true,
-      requestBody: {
-        name: "User's drive 2"
-      }
-    });
+    console.log("filesToCopy: ", filesToCopy);
+
     
-    console.log('driveCreationRes: ', driveCreationRes.data.id)
+    console.log("gdriveAccessToken: ", gdriveAccessToken);
+    
+    if(!filesToCopy?.length || !gdriveAccessToken) {
+        return response.status(400).json({ error: "Invalid request. Please provide a valid file to copy and a valid access token" });
+    }
+
+
+
+    // const res = await getGDriveItem(filesToCopy[0], gdriveAccessToken as string);
+    const url = new URL('https://www.googleapis.com/drive/v3/files');
+    url.searchParams.append("q", `${filesToCopy[0]} in parents`)
+    url.searchParams.append("supportsAllDrives", "true")
+    const r = await axios.get('https://www.googleapis.com/drive/v3/files', {
+      headers: {
+          Authorization: `Bearer ${gdriveAccessToken}`,
+          "Content-Type": "application/json",
+        },
+    });
+
+    
+    console.log("sup there! ", r);
 
     response.status(200).json({ message: "File copied successfully" });
-  } catch (error) {
+  } catch (error: any) {
     // Send an error response back to the client
-    console.error('Error: ', error);
+    console.error('Error: ');
+    console.dir(error)
+    console.log("error?.response?.data: ", error?.response?.data)
 
     response.status(500).json({ error: "An error occurred" });
   }

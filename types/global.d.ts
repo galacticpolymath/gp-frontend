@@ -30,11 +30,17 @@ declare global {
       }
       on: (event: "logout" | "redirect" | "signup", callback: (...args: unknown[]) => void | boolean | Promise<void | boolean>) => void;
     };
-  }
-  interface gapi{
+    gapi: {
     client: {
       request: (args: IRequestArgs) => Promise<unknown>
     }
+    auth: {
+      getToken: () => {
+        access_token: string,
+        [key: string]: string | number
+      }
+    }
+  }
   }
 }
 interface IComponent {

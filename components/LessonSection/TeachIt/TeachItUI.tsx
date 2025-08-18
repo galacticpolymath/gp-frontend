@@ -223,17 +223,6 @@ const TeachItUI = <
     console.log("Copy unit function called");
 
     setIsCopyingUnitBtnDisabled(true);
-    try {
-      const response = await axios.post("/api/gp-plus/copy-file");
-
-      console.log("response: ", response);
-
-      
-    } catch(error){
-      console.error("error: ", error);
-    } finally {
-      setIsCopyingUnitBtnDisabled(false);
-    }
 
     // return;
 
@@ -242,7 +231,7 @@ const TeachItUI = <
       // developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
       clientId:
         "1038023225572-3ir2sqrlbtfcpl3ves15847tbu5li2gv.apps.googleusercontent.com",
-      developerKey: "AIzaSyCj14-LBeG6wh1g2i_CoYePzq06T2CLPOU",
+      developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY_HI as string,
       viewId: "DOCS",
       // appId: GOOGLE_DRIVE_PROJECT_ID,
       // token: currentAccessToken, // pass oauth token in case you already have one
@@ -251,7 +240,8 @@ const TeachItUI = <
       setIncludeFolders: true,
       customScopes: [
         "https://www.googleapis.com/auth/drive.file",
-        "'https://www.googleapis.com/auth/drive.readonly",
+        "https://www.googleapis.com/auth/drive.readonly",
+        "https://www.googleapis.com/auth/userinfo.email",
       ],
       setSelectFolderEnabled: true,
       supportDrives: true,
@@ -260,12 +250,24 @@ const TeachItUI = <
       callbackFunction: async (data) => {
         try {
           // create the folder structure
+          const tokenObj = window.gapi?.auth?.getToken();
 
           console.log("data, yo there: ", data);
+          console.log("token, yo there: ", tokenObj);
           if (data?.docs?.[0]?.id) {
             console.log("First document ID: ", data?.docs?.[0]?.id);
 
-            const response = await axios.post("/api/gp-plus/copy-file");
+            const response = await axios.post(
+              "/api/gp-plus/copy-file",
+              {
+                files: [data?.docs?.[0]?.id],
+              },
+              {
+                headers: {
+                  "gdrive-token": tokenObj.access_token as string,
+                },
+              }
+            );
 
             console.log("Response: ", response.data);
           }
@@ -275,8 +277,9 @@ const TeachItUI = <
       },
     });
 
-    return;
+    setIsCopyingUnitBtnDisabled(false);
 
+    return;
   };
 
   // if the user is not a gp plus member, then take the user to the sign up page
