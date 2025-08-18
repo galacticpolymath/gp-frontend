@@ -223,17 +223,36 @@ const TeachItUI = <
     console.log("Copy unit function called");
 
     setIsCopyingUnitBtnDisabled(true);
+    try {
+      const response = await axios.post("/api/gp-plus/copy-file");
+
+      console.log("response: ", response);
+
+      
+    } catch(error){
+      console.error("error: ", error);
+    } finally {
+      setIsCopyingUnitBtnDisabled(false);
+    }
+
+    // return;
 
     openPicker({
-      clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
-      developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
+      // clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
+      // developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
+      clientId:
+        "1038023225572-3ir2sqrlbtfcpl3ves15847tbu5li2gv.apps.googleusercontent.com",
+      developerKey: "AIzaSyCj14-LBeG6wh1g2i_CoYePzq06T2CLPOU",
       viewId: "DOCS",
       // appId: GOOGLE_DRIVE_PROJECT_ID,
       // token: currentAccessToken, // pass oauth token in case you already have one
       showUploadView: true,
       showUploadFolders: true,
       setIncludeFolders: true,
-
+      customScopes: [
+        "https://www.googleapis.com/auth/drive.file",
+        "'https://www.googleapis.com/auth/drive.readonly",
+      ],
       setSelectFolderEnabled: true,
       supportDrives: true,
       multiselect: true,
@@ -245,15 +264,10 @@ const TeachItUI = <
           console.log("data, yo there: ", data);
           if (data?.docs?.[0]?.id) {
             console.log("First document ID: ", data?.docs?.[0]?.id);
-            (window.gapi?.client as any).setApiKey(
-              process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string
-            );
-            const res = await (window.gapi?.client as any).request({
-              path: `/drive/v3/files/${data?.docs?.[0]?.id}?supportsAllDrives=true`,
-              method: "POST",
-            });
 
-            console.log("res: ", res);
+            const response = await axios.post("/api/gp-plus/copy-file");
+
+            console.log("Response: ", response.data);
           }
         } catch (error) {
           console.error("An error occurred: ", error);
@@ -263,383 +277,6 @@ const TeachItUI = <
 
     return;
 
-    const currentTime = new Date().getTime();
-    const fiveMinutesInMs = 5 * 60 * 1000;
-    const timeUntilExpiry =
-      gdriveAccessTokenExp ? gdriveAccessTokenExp - currentTime : null;
-    let currentAccessToken = gdriveAccessToken;
-
-    if (
-      gdriveAccessTokenExp && typeof timeUntilExpiry === 'number' && 
-      gdriveRefreshToken && (timeUntilExpiry < fiveMinutesInMs)
-    ) {
-      console.log("Token expires soon, refreshing...");
-      const refreshResult = await refreshGDriveToken(gdriveRefreshToken);
-
-      if (refreshResult) {
-        currentAccessToken = refreshResult.access_token;
-        // Update cookies with new token and expiry
-        setAppCookie("gdriveAccessToken", refreshResult.access_token, {
-          expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
-          secure: true,
-        });
-        setAppCookie("gdriveAccessTokenExp", refreshResult.expires_at, {
-          expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
-          secure: true,
-        });
-        console.log("Token refreshed successfully");
-      } else {
-        console.error("Failed to refresh token, redirecting to auth");
-        setLocalStorageItem(
-          "gpPlusFeatureLocation",
-          `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
-        );
-        const url = createGDriveAuthUrl();
-
-        removeLocalStorageItem("didGpSignInAttemptOccur");
-
-        window.location.href = url;
-        return;
-      }
-    }
-
-    if (currentAccessToken) {
-      openPicker({
-        clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
-        developerKey: process.env
-          .NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
-        viewId: "DOCS",
-        // appId: GOOGLE_DRIVE_PROJECT_ID,
-        token: currentAccessToken, // pass oauth token in case you already have one
-        showUploadView: true,
-        showUploadFolders: true,
-        setIncludeFolders: true,
-        
-        setSelectFolderEnabled: true,
-        supportDrives: true,
-        multiselect: true,
-        // customViews: customViewsArray, // custom view
-        callbackFunction: async (data) => {
-          try {
-            // create the folder structure
-
-            console.log("data, yo there: ", data);
-            if (data?.docs?.[0]?.id){
-              console.log("First document ID: ", data?.docs?.[0]?.id);
-              (window.gapi?.client as any).setApiKey(
-                process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string
-              );
-              const res = await(window.gapi?.client as any).request({
-                path: `/drive/v3/files/${data?.docs?.[0]?.id}?supportsAllDrives=true`,
-                method: "POST"
-              });
-
-              console.log("res: ", res);
-            }
-          } catch(error){
-            console.error("An error occurred: ", error);
-          }
-        },
-      });
-      setIsCopyingUnitBtnDisabled(false);
-      return;
-    }
-
-    if (!gdriveAccessToken) {
-      console.log("Redirecting to Google Drive authentication URL");
-
-      setLocalStorageItem(
-        "gpPlusFeatureLocation",
-        `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
-      );
-      const url = createGDriveAuthUrl();
-      removeLocalStorageItem("didGpSignInAttemptOccur");
-      window.location.href = url;
-      setIsCopyingUnitBtnDisabled(false);
-      return;
-    }
-
-    console.log("Starting copy unit job");
-    console.log("GdrivePublicID: ", GdrivePublicID);
-    console.log("user.userId: ", user?.userId);
-    console.log("gdriveRefreshToken: ", gdriveRefreshToken);
-
-    if (
-      !GdrivePublicID ||
-      !user.userId ||
-      !gdriveRefreshToken ||
-      !unitId ||
-      !gdriveEmail
-    ) {
-      console.log(
-        "Copy unit function called with all necessary props: user ID, unit title, GDrive public ID, and GDrive refresh token"
-      );
-      const _toastId = toastId ?? nanoid();
-
-      setToastId(_toastId);
-
-      const handleOnCancel = () => {
-        toastRef.current?.remove();
-        toast.dismiss(_toastId);
-        setToastId(null);
-      };
-
-      displayToast(
-        {
-          jobStatus: "failure",
-          onCancel: handleOnCancel,
-          onCancelBtnTxt: "Close",
-          title: "Failed to start job.",
-          subtitle: "Please refresh the page and try again.",
-          ref: toastRef,
-        },
-        _toastId
-      );
-      setIsCopyingUnitBtnDisabled(false);
-      return;
-    }
-
-
-    if (gdriveAccessTokenExp && gdriveRefreshToken) {
-      console.log("Starting job...");
-
-      // Check if token is about to expire (less than 5 minutes)
-      const currentTime = new Date().getTime();
-      const fiveMinutesInMs = 5 * 60 * 1000;
-      const timeUntilExpiry = gdriveAccessTokenExp - currentTime;
-
-      if (timeUntilExpiry < fiveMinutesInMs) {
-        console.log("Token expires soon, refreshing...");
-        const refreshResult = await refreshGDriveToken(gdriveRefreshToken);
-
-        if (refreshResult) {
-          currentAccessToken = refreshResult.access_token;
-          // Update cookies with new token and expiry
-          setAppCookie("gdriveAccessToken", refreshResult.access_token, {
-            expires: new Date(
-              new Date().getTime() + 1_000 * 60 * 60 * 24 * 180
-            ),
-            secure: true,
-          });
-          setAppCookie("gdriveAccessTokenExp", refreshResult.expires_at, {
-            expires: new Date(
-              new Date().getTime() + 1_000 * 60 * 60 * 24 * 180
-            ),
-            secure: true,
-          });
-          console.log("Token refreshed successfully");
-        } else {
-          console.error("Failed to refresh token, redirecting to auth");
-          setLocalStorageItem(
-            "gpPlusFeatureLocation",
-            `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
-          );
-          const url = createGDriveAuthUrl();
-
-          removeLocalStorageItem("didGpSignInAttemptOccur");
-
-          window.location.href = url;
-          return;
-        }
-      }
-    }
-
-    if(!currentAccessToken){
-      return;
-    }
-
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      "gdrive-token": currentAccessToken,
-      "gdrive-token-refresh": gdriveRefreshToken,
-      "user-id": user.userId,
-    };
-
-    console.log("MediumTitle: ", MediumTitle);
-
-    const url = new URL(`${window.location.origin}/api/gp-plus/copy-unit`);
-    const unitNum = new URL(window.location.href).pathname
-      .split("/")
-      .at(-1) as string;
-
-    url.searchParams.append("unitDriveId", GdrivePublicID);
-    url.searchParams.append(
-      "unitName",
-      MediumTitle ?? `${Title ?? `Unit ${unitNum}`} COPY`
-    );
-    url.searchParams.append("unitId", unitId);
-    url.searchParams.append("gdriveEmail", gdriveEmail);
-
-    const eventSource = new EventSourcePolyfill(url.href, {
-      headers,
-      withCredentials: true,
-    });
-    const _toastId = toastId ?? nanoid();
-
-    setToastId(_toastId);
-
-    const stopJob = () => {
-      console.log("Will stop job.");
-      eventSource.close();
-
-      const closeToast = () => {
-        toastRef.current?.remove();
-        toast.dismiss(_toastId);
-        setToastId(null);
-      };
-
-      setIsCopyingUnitBtnDisabled(false);
-
-      displayToast(
-        {
-          jobStatus: "canceled",
-          onCancel: closeToast,
-          title: "Job CANCELED.",
-          subtitle: "Job has been canceled.",
-          onCancelBtnTxt: "Close",
-          ref: toastRef,
-        },
-        _toastId
-      );
-    };
-
-    displayToast(
-      {
-        jobStatus: "ongoing",
-        onCancel: stopJob,
-        title: "Copying unit...",
-        subtitle: "Gathering files and folders...",
-        ref: toastRef,
-      },
-      _toastId
-    );
-    let filesCopied = 0;
-    let foldersCreated = 0;
-    let totalItemsToCopy = 0;
-    let showProgressBar = false;
-    let targetFolderId: string | undefined = undefined;
-
-    eventSource.onmessage = (event) => {
-      try {
-        const dataParsable = event.data as string;
-        const data = JSON.parse(dataParsable) as TCopyFilesMsg;
-
-        console.log("message retrieved, sup there: ", data);
-
-        if (data.isJobDone) {
-          eventSource.close();
-          const jobStatus = data.wasSuccessful ? "success" : "failure";
-          const title = data.wasSuccessful
-            ? `'${Title}' was successfuly copied`
-            : `Failed to copy '${Title}' into your Drive`;
-          const subtitle = data.wasSuccessful ? (
-            <>
-              Your copy of this unit can be found at:{" "}
-              <Link
-                target="_blank"
-                rel="noopener noreferrer"
-                href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${targetFolderId}`}
-              >
-                {MediumTitle}
-              </Link>
-              .
-            </>
-          ) : (
-            "An error has occurred. Please try again."
-          );
-          const btnTxt = "Close";
-
-          const handleBtnClick = () => {
-            console.log("_toastId, sup there: ", _toastId);
-            toastRef.current?.remove();
-            toast.dismiss(_toastId);
-            setToastId(null);
-          };
-
-          displayToast(
-            {
-              jobStatus,
-              onCancel: handleBtnClick,
-              title,
-              subtitle,
-              progress: filesCopied + foldersCreated,
-              total: totalItemsToCopy,
-              showProgressBar,
-              onCancelBtnTxt: btnTxt,
-              targetFolderId,
-              ref: toastRef,
-            },
-            _toastId
-          );
-
-          if (data.wasSuccessful && targetFolderId) {
-            setUserLatestCopyUnitFolderId(targetFolderId);
-          }
-
-          setIsCopyingUnitBtnDisabled(false);
-          return;
-        }
-
-        // Update progress based on the message type
-        let progressMessage = "Copying unit...";
-        if (data.folderCreated) {
-          progressMessage = `Folder created: '${data.folderCreated}'.`;
-          foldersCreated += 1;
-        } else if (data.fileCopied) {
-          progressMessage = `File copied: '${data.fileCopied}'.`;
-          filesCopied += 1;
-        } else if (data.foldersToCopy) {
-          progressMessage = `Will copy ${data.foldersToCopy} folders`;
-          totalItemsToCopy += data.foldersToCopy;
-        } else if (data.filesToCopy) {
-          progressMessage = `Will copy ${data.filesToCopy} files.`;
-          totalItemsToCopy += data.filesToCopy;
-        } else if (data.msg) {
-          progressMessage = data.msg;
-        }
-
-        console.log("progressMessage: ", progressMessage);
-
-        if (!showProgressBar) {
-          showProgressBar = !!data.didRetrieveAllItems;
-        }
-
-        if (!targetFolderId && data.folderCopyId) {
-          targetFolderId = data.folderCopyId;
-        }
-
-        const toastIdNew = displayToast(
-          {
-            jobStatus: "ongoing",
-            onCancel: stopJob,
-            title: "Copying unit...",
-            subtitle: progressMessage,
-            progress: filesCopied + foldersCreated,
-            total: totalItemsToCopy,
-            showProgressBar: showProgressBar,
-            targetFolderId,
-            ref: toastRef,
-          },
-          _toastId
-        );
-
-        console.log("_toastId: ", _toastId);
-        console.log("toastIdNew: ", toastIdNew);
-
-        console.log("data: ", data);
-      } catch (error) {
-        console.error(
-          "Failed to process the message received from the server. Reason: ",
-          error
-        );
-      }
-    };
-
-    eventSource.onerror = (event) => {
-      console.log("error event: ", event);
-      // toast.dismiss();
-    };
   };
 
   // if the user is not a gp plus member, then take the user to the sign up page
