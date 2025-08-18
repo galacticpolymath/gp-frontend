@@ -227,11 +227,11 @@ const TeachItUI = <
     // return;
 
     openPicker({
-      // clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
-      // developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
-      clientId:
-        "1038023225572-3ir2sqrlbtfcpl3ves15847tbu5li2gv.apps.googleusercontent.com",
-      developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY_HI as string,
+      clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
+      developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
+      // clientId:
+      //   "1038023225572-3ir2sqrlbtfcpl3ves15847tbu5li2gv.apps.googleusercontent.com",
+      // developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY_HI as string,
       viewId: "DOCS",
       // appId: GOOGLE_DRIVE_PROJECT_ID,
       // token: currentAccessToken, // pass oauth token in case you already have one
@@ -240,7 +240,6 @@ const TeachItUI = <
       setIncludeFolders: true,
       customScopes: [
         "https://www.googleapis.com/auth/drive.file",
-        "https://www.googleapis.com/auth/drive.readonly",
         "https://www.googleapis.com/auth/userinfo.email",
       ],
       setSelectFolderEnabled: true,

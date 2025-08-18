@@ -31,6 +31,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
 
     // const res = await getGDriveItem(filesToCopy[0], gdriveAccessToken as string);
+    const auth = new google.auth.OAuth2();
     const url = new URL('https://www.googleapis.com/drive/v3/files');
     url.searchParams.append("q", `${filesToCopy[0]} in parents`)
     url.searchParams.append("supportsAllDrives", "true")
@@ -40,9 +41,10 @@ export default async function handler(request: NextApiRequest, response: NextApi
           "Content-Type": "application/json",
         },
     });
+    // get the folder
 
     
-    console.log("sup there! ", r);
+    console.log("sup there! ", r.data.files);
 
     response.status(200).json({ message: "File copied successfully" });
   } catch (error: any) {
