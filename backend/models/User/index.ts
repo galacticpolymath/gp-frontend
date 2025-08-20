@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 import Mongoose from "mongoose";
-import { IUserSchema, TUserSchemaV2 } from "./types";
+import { ILessonGDriveId, IUnitGDriveLessons, IUserSchema, TUserSchemaV2 } from "./types";
 
 class StringValidator {
   validate: (val: string) => boolean;
@@ -90,6 +90,19 @@ export const UserSchemaDeprecatedV1 = new Schema<IUserSchema>(
   }
 );
 
+const LessonGDriveId = new Schema<ILessonGDriveId>({
+    lessonNum: String,
+    lessonDriveId: String,
+  }, {
+  _id: false
+});
+const UnitGDriveLessons = new Schema<IUnitGDriveLessons>({
+  unitDriveId: String,
+  unitId: String,
+  lessonDriveIds: [LessonGDriveId]
+}, {
+  _id: false
+});
 
 export const UserSchema = new Schema<TUserSchemaV2>(
   {
@@ -103,7 +116,8 @@ export const UserSchema = new Schema<TUserSchemaV2>(
       iterations: { type: Number, required: false },
     },
     provider: String,
-    unitCopiesFolderId: String,
+    gpPlusDriveFolderId: String,
+    unitGDriveLessons: [UnitGDriveLessons],
     isTeacher: { type: Boolean, required: true, default: () => false },
     providerAccountId: String,
     emailVerified: { type: Date, required: false },

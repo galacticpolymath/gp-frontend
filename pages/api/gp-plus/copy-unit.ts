@@ -102,7 +102,7 @@ export const createGoogleDriveFolderForUser = async (
   tries?: number,
   refreshToken?: string,
   reqOriginForRefreshingToken?: string
-) => {
+): { wasSuccessful: boolean, folderId?: string, [key: string]: unknown } => {
   try {
     const folderMetadata = new FileMetaData(folderName, parentFolderIds);
     const response = await axios.post(

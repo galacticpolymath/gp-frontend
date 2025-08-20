@@ -1,8 +1,14 @@
 import { SUBJECTS_OPTIONS } from "../../../components/User/AboutUser/AboutUserModal";
 import { TSchoolType, TUserAccount } from "../../../providers/UserProvider";
 import { TReferredByOpt } from "../../../types/global";
-import { getBillingType, getGpPlusMembership } from "../../services/outsetaServices";
-import { TAccountStageLabel, TGpPlusMembershipRetrieved } from "../../services/userServices";
+import {
+  getBillingType,
+  getGpPlusMembership,
+} from "../../services/outsetaServices";
+import {
+  TAccountStageLabel,
+  TGpPlusMembershipRetrieved,
+} from "../../services/userServices";
 import { TAboutUserFormDeprecated } from "./deprecated";
 
 export type TAgeGroupSelection = "U.S." | "Outside U.S.";
@@ -12,9 +18,12 @@ export interface IAgeGroupsSelection {
   ageGroupsTaught: string[];
 }
 
-export type TDefaultSubject = Exclude<(typeof SUBJECTS_OPTIONS)[number], "other:">;
+export type TDefaultSubject = Exclude<
+  (typeof SUBJECTS_OPTIONS)[number],
+  "other:"
+>;
 
-interface IAboutUserFormNewFieldsV1{
+interface IAboutUserFormNewFieldsV1 {
   gradesType?: IAgeGroupsSelection["selection"];
   gradesTaught?: string[];
   firstName?: string;
@@ -26,22 +35,26 @@ interface IAboutUserFormNewFieldsV1{
   isNotTeaching?: boolean;
   schoolTypeDefaultSelection: TSchoolType | null;
   schoolTypeOther: string | null;
-  referredByDefault?: TReferredByOpt | null,
-  referredByOther?: string | null,
+  referredByDefault?: TReferredByOpt | null;
+  referredByOther?: string | null;
   siteVisitReasonsDefault?: string[] | null;
   siteVisitReasonsCustom?: string | null;
 }
 
-export interface TAboutUserFormBaseProps extends IAboutUserFormNewFieldsV1{
+export interface TAboutUserFormBaseProps extends IAboutUserFormNewFieldsV1 {
   country: string;
   occupation: string;
   zipCode: string | null | number;
   isTeacher?: boolean;
 }
 
-export interface TAboutUserForm<TMutableObj extends object = Record<string, unknown>> extends TAboutUserFormDeprecated<TMutableObj>, TAboutUserFormBaseProps, TOutseta {}
+export interface TAboutUserForm<
+  TMutableObj extends object = Record<string, unknown>
+> extends TAboutUserFormDeprecated<TMutableObj>,
+    TAboutUserFormBaseProps,
+    TOutseta {}
 
-export interface IUserSchemaBaseProps{
+export interface IUserSchemaBaseProps {
   _id: string;
   email: string;
   mailingListConfirmationEmailId?: string;
@@ -64,18 +77,40 @@ export interface IUserSchema extends TAboutUserForm, IUserSchemaBaseProps {}
 
 export type TOutseta = {
   outsetaAccountEmail: string;
-}
-
-export type TUserSchemaV2 = IUserSchemaBaseProps & TAboutUserFormBaseProps & TOutseta & {
-  unitCopiesFolderId: string;
 };
 
-type TGpPlusMembershipStatus = Awaited<ReturnType<typeof getGpPlusMembership>>
-export type TGpPlusSubscriptionForClient = Omit<Awaited<ReturnType<typeof getGpPlusMembership>>, "BillingRenewalTerm" | "AccountStageLabel" | "Account" | "email"> & { BillingRenewalTerm?: ReturnType<typeof getBillingType>[0], AccountStageLabel: TAccountStageLabel  };
-export type TUserClientProps = { 
-  isOnMailingList?: boolean, 
-  isGpPlusMember?: boolean, 
-  gpPlusSubscription?: TGpPlusMembershipStatus,  
-  viewingUnitFolderCopyId?: string
+export interface ILessonGDriveId {
+  lessonNum: string;
+  lessonDriveId: string;
 }
-export type TUserSchemaForClient<TUserSchema extends object = TUserSchemaV2> = TUserSchema & TUserClientProps & Pick<TUserAccount, "isOnMailingList">;
+
+export interface IUnitGDriveLessons {
+  unitId: string;
+  unitDriveId: string;
+  lessonDriveIds: ILessonGDriveId[];
+}
+
+export type TUserSchemaV2 = IUserSchemaBaseProps &
+  TAboutUserFormBaseProps &
+  TOutseta & {
+    gpPlusDriveFolderId: string;
+    unitGDriveLessons: IUnitGDriveLessons[];
+  };
+
+type TGpPlusMembershipStatus = Awaited<ReturnType<typeof getGpPlusMembership>>;
+
+export type TGpPlusSubscriptionForClient = Omit<
+  Awaited<ReturnType<typeof getGpPlusMembership>>,
+  "BillingRenewalTerm" | "AccountStageLabel" | "Account" | "email"
+> & {
+  BillingRenewalTerm?: ReturnType<typeof getBillingType>[0];
+  AccountStageLabel: TAccountStageLabel;
+};
+export type TUserClientProps = {
+  isOnMailingList?: boolean;
+  isGpPlusMember?: boolean;
+  gpPlusSubscription?: TGpPlusMembershipStatus;
+  viewingUnitFolderCopyId?: string;
+};
+export type TUserSchemaForClient<TUserSchema extends object = TUserSchemaV2> =
+  TUserSchema & TUserClientProps & Pick<TUserAccount, "isOnMailingList">;
