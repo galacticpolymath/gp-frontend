@@ -95,13 +95,13 @@ export const getGDriveItem = async (
   }
 };
 
-const createGoogleDriveFolderForUser = async (
+export const createGoogleDriveFolderForUser = async (
   folderName: string,
   accessToken: string,
   parentFolderIds: string[] = [],
-  tries: number,
-  refreshToken: string,
-  reqOriginForRefreshingToken: string
+  tries?: number,
+  refreshToken?: string,
+  reqOriginForRefreshingToken?: string
 ) => {
   try {
     const folderMetadata = new FileMetaData(folderName, parentFolderIds);

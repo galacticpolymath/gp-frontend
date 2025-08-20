@@ -224,9 +224,14 @@ const TeachItUI = <
 
     setIsCopyingUnitBtnDisabled(true);
 
-    // return;
+    if(!gdriveAccessToken){
+      setLocalStorageItem("gpPlusFeatureLocation", `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`);
+      window.location.href = createGDriveAuthUrl();
+      return;
+    }
 
     openPicker({
+      appId: "1095510414161",
       clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
       developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
       // clientId:
@@ -234,7 +239,7 @@ const TeachItUI = <
       // developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY_HI as string,
       viewId: "DOCS",
       // appId: GOOGLE_DRIVE_PROJECT_ID,
-      // token: currentAccessToken, // pass oauth token in case you already have one
+      token: gdriveAccessToken, 
       showUploadView: true,
       showUploadFolders: true,
       setIncludeFolders: true,
@@ -249,26 +254,21 @@ const TeachItUI = <
       callbackFunction: async (data) => {
         try {
           // create the folder structure
-          const tokenObj = window.gapi?.auth?.getToken();
 
           console.log("data, yo there: ", data);
-          console.log("token, yo there: ", tokenObj);
-          if (data?.docs?.[0]?.id) {
-            console.log("First document ID: ", data?.docs?.[0]?.id);
-
-            const response = await axios.post(
-              "/api/gp-plus/copy-file",
-              {
-                files: [data?.docs?.[0]?.id],
-              },
-              {
-                headers: {
-                  "gdrive-token": tokenObj.access_token as string,
-                },
+          if (data?.docs?.length) {
+            console.log("First document ID, data?.docs: ", data?.docs);
+            const fileIds = data.docs.map(file => file.id);
+            const response = await axios.post("/api/gp-plus/copy-file", {
+              fileIds,
+            },{
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "gdrive-token": gdriveAccessToken
               }
-            );
+            });
 
-            console.log("Response: ", response.data);
+            console.log("Response: ", response);
           }
         } catch (error) {
           console.error("An error occurred: ", error);

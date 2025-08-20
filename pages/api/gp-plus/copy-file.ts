@@ -1,50 +1,43 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { copyFile, copyFiles, GoogleServiceAccountAuthCreds } from "../../../backend/services/googleDriveServices";
-import { getGDriveItem } from "./copy-unit";
+import { createGoogleDriveFolderForUser, getGDriveItem } from "./copy-unit";
 import axios from "axios";
 import { nanoid } from "nanoid";
 import { google } from "googleapis";
 import { OAuth2Client } from "google-auth-library";
 
 type TReqBody = {
-    files: string[],
-    copyFolderJobId: string
+    fileIds: string[],
 }
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse){
   try {
     // Handle the request
     const reqBody = request.body as TReqBody;
-    const filesToCopy = reqBody.files as string[] | undefined;
+    const fileIds = reqBody.fileIds as string[] | undefined;
     const gdriveAccessToken = request.headers["gdrive-token"];
     const gdriveRefreshToken = request.headers["gdrive-token-refresh"];
 
-    console.log("filesToCopy: ", filesToCopy);
+    console.log("fileIds: ", fileIds);
 
-    
     console.log("gdriveAccessToken: ", gdriveAccessToken);
     
-    if(!filesToCopy?.length || !gdriveAccessToken) {
+    if(!fileIds?.length || !gdriveAccessToken || Array.isArray(gdriveAccessToken)) {
         return response.status(400).json({ error: "Invalid request. Please provide a valid file to copy and a valid access token" });
     }
 
-
-
     // const res = await getGDriveItem(filesToCopy[0], gdriveAccessToken as string);
-    const auth = new google.auth.OAuth2();
-    const url = new URL('https://www.googleapis.com/drive/v3/files');
-    url.searchParams.append("q", `${filesToCopy[0]} in parents`)
-    url.searchParams.append("supportsAllDrives", "true")
-    const r = await axios.get('https://www.googleapis.com/drive/v3/files', {
-      headers: {
-          Authorization: `Bearer ${gdriveAccessToken}`,
-          "Content-Type": "application/json",
-        },
-    });
-    // get the folder
-
     
-    console.log("sup there! ", r.data.files);
+    const folderCreationResult = await createGoogleDriveFolderForUser("TESTING FOLDER 2", gdriveAccessToken, [])
+
+    console.log('folderCreationResult.folderId: ', folderCreationResult.folderId);
+
+    for (const fileId of fileIds){
+      const copyFileResult = await copyFile(gdriveAccessToken, [folderCreationResult.folderId], fileId);
+
+      console.log('copyFileResult: ', copyFileResult);
+    }
+
 
     response.status(200).json({ message: "File copied successfully" });
   } catch (error: any) {
