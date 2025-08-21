@@ -10,6 +10,8 @@ import { TCopyLessonReqBody } from "../../../pages/api/gp-plus/copy-lesson";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
+import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 
 interface IProps {
   gdriveLessonFolderId?: string;
@@ -36,20 +38,81 @@ const CopyLessonBtn: React.FC<IProps> = ({
   const router = useRouter();
   const { _isGpPlusModalDisplayed } = useModalContext();
   const [isGpPlusMember] = _isGpPlusMember;
-  const { gdriveAccessToken, token, gdriveRefreshToken, status, gdriveAccessTokenExp } =
-    useSiteSession();
+  const {
+    gdriveAccessToken,
+    token,
+    gdriveRefreshToken,
+    status,
+    gdriveAccessTokenExp,
+  } = useSiteSession();
+  const { setAppCookie } = useCustomCookies();
   const [openPicker, authResult] = useDrivePicker();
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
     useState(false);
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const didInitialRenderOccur = useRef(false);
 
+  // Function to check if token is expired and refresh if needed
+  const ensureValidToken = async () => {
+    if (!gdriveAccessToken || !gdriveRefreshToken) {
+      return null;
+    }
+
+    const currentTime = Date.now();
+    const tokenExpTime = gdriveAccessTokenExp
+      ? parseInt(gdriveAccessTokenExp.toString())
+      : 0;
+    const bufferTime = 5 * 60 * 1000; // 5 minutes
+
+    if (currentTime >= tokenExpTime - bufferTime) {
+      console.log("Token is expired or will expire soon, refreshing...");
+
+      try {
+        const refreshResult = await refreshGDriveToken(gdriveRefreshToken);
+
+        if (refreshResult && refreshResult.access_token) {
+          // Update cookies with new token
+          setAppCookie("gdriveAccessToken", refreshResult.access_token, {
+            expires: new Date(refreshResult.expires_at),
+            secure: true,
+            path: "/",
+          });
+
+          setAppCookie(
+            "gdriveAccessTokenExp",
+            refreshResult.expires_at.toString(),
+            {
+              expires: new Date(refreshResult.expires_at),
+              secure: true,
+              path: "/",
+            }
+          );
+
+          console.log("Token refreshed successfully");
+          return refreshResult.access_token as string;
+        }
+
+        console.error("Failed to refresh token");
+
+        return null;
+      } catch (error) {
+        console.error("Error refreshing token:", error);
+        return null;
+      }
+    }
+
+    return gdriveAccessToken;
+  };
+
   const copyUnit = async () => {
     console.log("Copy unit function called");
 
     setIsCopyingUnitBtnDisabled(true);
 
-    if (!gdriveAccessToken) {
+    // Ensure we have a valid token before proceeding
+    const validToken = await ensureValidToken();
+
+    if (!validToken) {
       setLocalStorageItem(
         "gpPlusFeatureLocation",
         `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
@@ -63,7 +126,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
       clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
       developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
       viewId: "DOCS",
-      token: gdriveAccessToken,
+      token: validToken,
       showUploadView: true,
       showUploadFolders: true,
       setIncludeFolders: true,
@@ -76,29 +139,41 @@ const CopyLessonBtn: React.FC<IProps> = ({
       multiselect: true,
       callbackFunction: async (data) => {
         try {
-          // create the folder structure
+          // Ensure token is still valid before making the API call
+          const currentValidToken = await ensureValidToken();
+
+          if (!currentValidToken) {
+            console.error("No valid token available for API call");
+            return;
+          }
 
           console.log("data, yo there: ", data);
           if (data?.docs?.length) {
             console.log("First document ID, data?.docs: ", data?.docs);
             const fileIds = data.docs.map((file) => file.id);
+            const reqBody = {
+              fileIds,
+              unit: {
+                id: GdrivePublicID,
+                name: MediumTitle,
+              },
+              lesson: {
+                id:
+                  typeof lessonId === "number" ? lessonId.toString() : lessonId,
+                name: lessonName,
+              },
+            };
+
+            console.log("reqBody: ", reqBody);
+            debugger;
+
             const response = await axios.post(
               "/api/gp-plus/copy-lesson",
-              {
-                fileIds,
-                unit: {
-                  id: GdrivePublicID,
-                  name: MediumTitle,
-                },
-                lesson: {
-                  id: typeof lessonId === "number" ? lessonId.toString() : lessonId,
-                  name: lessonName,
-                },
-              } as TCopyLessonReqBody,
+              reqBody,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
-                  "gdrive-token": gdriveAccessToken,
+                  "gdrive-token": currentValidToken,
                   "gdrive-token-refresh": gdriveRefreshToken,
                 },
               }
