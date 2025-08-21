@@ -603,6 +603,8 @@ const TeachItUI = <
                 return (
                   <LessonPart
                     {...lessonTilesObj}
+                    unitMediumTitle={MediumTitle!}
+                    GdrivePublicID={GdrivePublicID!}
                     gradeVarNote={gradeVarNote}
                     GradesOrYears={GradesOrYears}
                     removeClickToSeeMoreTxt={removeClickToSeeMoreTxt}

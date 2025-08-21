@@ -29,6 +29,7 @@ import {
 import { IItemForClient, TUseStateReturnVal } from "../../../types/global";
 import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
 import { LAST_LESSON_NUM_ID, UNITS_URL_PATH } from "../../../shared/constants";
+import CopyLessonBtn from "./CopyLessonBtn";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -78,12 +79,16 @@ interface ILessonPartProps {
   isAccordionExpandable: boolean;
   accordionBtnStyle?: CSSProperties;
   gradeVarNote?: string | null;
+  unitMediumTitle?: string | null;
+  GdrivePublicID?: string | null;
 }
 
 // TODO: add the button to copy the lesson here
 
 const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const {
+    unitMediumTitle,
+    GdrivePublicID,
     lsnNum,
     lsnTitle,
     lsnPreface,
@@ -145,7 +150,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     item: IItemV2Props & Pick<IItemV2, "itemCat" | "links">
   ) => {
     console.log("handlePreviewDownloadBtnClick: item: ", item);
-    
+
     setLessonItemModal((state) => ({
       ...state,
       ...item,
@@ -548,6 +553,15 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
             </div>
           )}
           <div className="mt-4 pb-1">
+            {/* put copy unit here */}
+            {lsnNum && lsnTitle && GdrivePublicID && unitMediumTitle && (
+              <CopyLessonBtn
+                GdrivePublicID={GdrivePublicID}
+                MediumTitle={unitMediumTitle}
+                lessonId={lsnNum}
+                lessonName={lsnTitle}
+              />
+            )}
             <div className="d-flex align-items-start">
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
               <h5 className="fw-bold" id="materials-title">
@@ -764,7 +778,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                       objectFit: "contain",
                                       maxHeight: "100px",
                                       maxWidth: "100px",
-                                      cursor: 'pointer',
+                                      cursor: "pointer",
                                       border: "1px solid gray",
                                       pointerEvents: isTeacherItem
                                         ? isUserTeacher
