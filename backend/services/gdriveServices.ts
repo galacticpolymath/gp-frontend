@@ -37,6 +37,7 @@ export const getFolderChildItems = async (
     name: folder.name,
     id: folder.id,
     mimeType: folder.mimeType,
+    pathToFile: "",
   }));
 
   // get all of the folders of the target unit folder
@@ -267,7 +268,8 @@ export const createFolderStructure = async (
   unitFolders: TUnitFolder[],
   gdriveAccessToken: string,
   unitFolderId: string,
-  gdriveRefreshToken: string
+  gdriveRefreshToken: string,
+  clientOrigin: string
 ) => {
   const folderPaths = unitFolders
     .filter((folder) => folder?.mimeType?.includes("folder"))
@@ -285,16 +287,22 @@ export const createFolderStructure = async (
 
   // create the google sub folders
   for (const folderToCreate of folderPaths) {
+    console.log("folderToCreate: ", folderToCreate);
+    
     // if the folder is at the root of the parent folder
     if (folderToCreate.pathToFile === "") {
-      const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(
+      const folderCreationResult = await createGoogleDriveFolderForUser(
         folderToCreate.name as string,
         gdriveAccessToken,
         [unitFolderId],
         3,
         gdriveRefreshToken,
-        origin
+        clientOrigin
       );
+
+      console.log("folderCreationResult: ", folderCreationResult);      
+
+      const { folderId, wasSuccessful } = folderCreationResult;
 
       if (!wasSuccessful) {
         foldersFailedToCreate.push(folderToCreate.name);
@@ -316,19 +324,24 @@ export const createFolderStructure = async (
       (folder) => folder.gpFolderId === folderToCreate.parentFolderId
     )?.id;
 
+    console.log("parentFolderId: ", parentFolderId);
+    
+
     if (!parentFolderId) {
       foldersFailedToCreate.push(folderToCreate.name);
       continue;
     }
 
-    const { folderId, wasSuccessful } = await createGoogleDriveFolderForUser(
+    const nestedFolderCreationResult = await createGoogleDriveFolderForUser(
       folderToCreate.name as string,
       gdriveAccessToken,
       [parentFolderId],
       3,
       gdriveRefreshToken as string,
-      origin
+      clientOrigin
     );
+    console.log("nestedFolderCreationResult: ", nestedFolderCreationResult);
+    const { folderId, wasSuccessful } = nestedFolderCreationResult;
 
     if (!wasSuccessful) {
       foldersFailedToCreate.push(folderToCreate.name);
@@ -345,4 +358,28 @@ export const createFolderStructure = async (
   }
 
   return createdFolders;
+};
+
+export const getTargetUserPermission = async (
+  fileId: string,
+  email: string,
+  drive?: drive_v3.Drive,
+) => {
+  let _drive = drive;
+
+  if(!drive){
+    _drive = await createDrive();
+  }
+
+  const filePermissions = await (_drive as drive_v3.Drive).permissions.list({
+    fileId,
+    supportsAllDrives: true,
+    fields: "*",
+  });
+
+  return filePermissions.data.permissions?.find(
+    (permission) => {
+      return permission.emailAddress === email;
+    }
+  );
 };

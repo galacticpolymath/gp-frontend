@@ -39,11 +39,20 @@ export const getGDriveItem = async (
   fileId: string,
   accessToken: string,
   tries = 3,
-  willRetry = true
+  willRetry = true,
+  urlParams?: [string, string][]
 ): Promise<{ id: string; [key: string]: unknown } | { errType: string }> => {
   try {
+    const url = new URL(`https://www.googleapis.com/drive/v2/files/${fileId}`);
+
+    if(urlParams?.length){
+      for (const [key, val] of urlParams){
+        url.searchParams.append(key, val)
+      }
+    }
+
     const { status, data } = await axios.get<{ id: string; [key: string]: unknown }>(
-      `https://www.googleapis.com/drive/v2/files/${fileId}`,
+      url.href,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
