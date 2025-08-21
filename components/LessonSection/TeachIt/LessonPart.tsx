@@ -80,6 +80,8 @@ interface ILessonPartProps {
   gradeVarNote?: string | null;
 }
 
+// TODO: add the button to copy the lesson here
+
 const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const {
     lsnNum,

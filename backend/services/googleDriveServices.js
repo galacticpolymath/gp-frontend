@@ -253,6 +253,10 @@ export const copyFile = async (accessToken, parentFolderIds, fileId) => {
     console.error("Failed to copy files with user. Reason: ", error);
     console.error("Failed to copy files with user. Reason, keys: ", Object.keys(error));
     const response = error.response;
+
+    console.log("The response: ", response);
+    // console.log("The response: ", response);
+    
     
     if (response.status) {
       return {

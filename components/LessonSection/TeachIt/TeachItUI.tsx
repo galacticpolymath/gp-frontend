@@ -68,6 +68,7 @@ import { Spinner } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import useDrivePicker from "react-google-drive-picker";
 import axios from "axios";
+import { TCopyLessonReqBody } from "../../../pages/api/gp-plus/copy-lesson";
 
 export type TUnitPropsForTeachItSec = Partial<
   Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
@@ -224,8 +225,11 @@ const TeachItUI = <
 
     setIsCopyingUnitBtnDisabled(true);
 
-    if(!gdriveAccessToken){
-      setLocalStorageItem("gpPlusFeatureLocation", `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`);
+    if (!gdriveAccessToken) {
+      setLocalStorageItem(
+        "gpPlusFeatureLocation",
+        `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+      );
       window.location.href = createGDriveAuthUrl();
       return;
     }
@@ -239,7 +243,7 @@ const TeachItUI = <
       // developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY_HI as string,
       viewId: "DOCS",
       // appId: GOOGLE_DRIVE_PROJECT_ID,
-      token: gdriveAccessToken, 
+      token: gdriveAccessToken,
       showUploadView: true,
       showUploadFolders: true,
       setIncludeFolders: true,
@@ -258,15 +262,28 @@ const TeachItUI = <
           console.log("data, yo there: ", data);
           if (data?.docs?.length) {
             console.log("First document ID, data?.docs: ", data?.docs);
-            const fileIds = data.docs.map(file => file.id);
-            const response = await axios.post("/api/gp-plus/copy-file", {
-              fileIds,
-            },{
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "gdrive-token": gdriveAccessToken
+            const fileIds = data.docs.map((file) => file.id);
+            const response = await axios.post(
+              "/api/gp-plus/copy-lesson",
+              {
+                fileIds,
+                unit: {
+                  id: GdrivePublicID,
+                  name: MediumTitle 
+                },
+                lesson: {
+                  id: "2",
+                  name: "adsffads"
+                }
+              } as TCopyLessonReqBody,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "gdrive-token": gdriveAccessToken,
+                  "gdrive-token-refresh": gdriveRefreshToken,
+                },
               }
-            });
+            );
 
             console.log("Response: ", response);
           }
@@ -513,6 +530,8 @@ const TeachItUI = <
                   gradeVarNote = part.gradeVarNote;
                 }
 
+                console.log("part, program: ", part);
+
                 let { lsn, title, preface, itemList, tile, chunks } = part;
                 let targetLessonInDataLesson = null;
 
@@ -602,21 +621,19 @@ const TeachItUI = <
                               : "block",
                           }}
                         >
-                          <>
-                            {/* <Sparkles
-                              sparkleWrapperStyle={{
-                                height: 40,
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                              color="purple"
-                            >
-                              <p style={{ transform: "translateY(20px)" }}>
-                                CLICK TO SEE MORE!
-                              </p>
-                            </Sparkles> */}
-                          </>
+                          <Sparkles
+                            sparkleWrapperStyle={{
+                              height: 40,
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                            color="purple"
+                          >
+                            <p style={{ transform: "translateY(20px)" }}>
+                              CLICK TO SEE MORE!
+                            </p>
+                          </Sparkles>
                         </ClickMeArrow>
                       ) : null
                     }
