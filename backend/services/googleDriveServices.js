@@ -255,7 +255,7 @@ export const copyFile = async (accessToken, parentFolderIds, fileId) => {
     const response = error.response;
 
     console.log("The response: ", response);
-    // console.log("The response: ", response);
+    console.log("The response errors: ", response?.data?.error);
     
     
     if (response.status) {

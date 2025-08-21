@@ -248,17 +248,12 @@ export default async function handler(
 
       console.log("targetLessonFolder: ", targetLessonFolder);
       
-
-      if (!targetLessonFolder) {
+      if (!targetLessonFolder?.id) {
         throw new CustomError(
           `The lesson named ${selectedClientLessonName} does not exist in the unit ${reqBody.unit.name}.`,
           400
         );
       }
-
-      return response.status(200).json({
-        message: `The lesson named ${selectedClientLessonName} has been successfully copied to the unit ${reqBody.unit.name}.`,
-      });
 
       console.log("targetFolderStructureArr: ", targetFolderStructureArr);
 
@@ -348,13 +343,17 @@ export default async function handler(
             console.error(
               "Reached max tries. Failed to update the target user's permission."
             );
-            break;
+
+            throw new CustomError(
+              "Failed to update the target user's permission after reaching max tries.",
+              500
+            );
           }
 
           await waitWithExponentialBackOff(tries);
 
           const permission = await getTargetUserPermission(
-            reqBody.fileIds[0],
+            fileId,
             jwtPayload.payload.email,
             drive
           );
@@ -362,25 +361,23 @@ export default async function handler(
           userUpdatedRole = permission?.role;
         }
 
+        console.log(`The role of the user is: ${userUpdatedRole}`);
+          
         console.log("The user's role was updated.");
+
+        console.log(`Will copy file: ${fileId}`);
+
+        const fileCopyResult = await copyFile(
+          gDriveAccessToken,
+          [targetLessonFolder.id],
+          fileId
+        );
+        console.log("fileCopyResult: ", fileCopyResult);
       }
 
-      // check if the target permission was updated for the target user
+      console.log("targetLessonFolder.id: ", targetLessonFolder.id);
 
-      const fileCopyResult = await copyFile(
-        gDriveAccessToken,
-        [],
-        reqBody.fileIds[0]
-      );
-
-      console.log("fileCopyResult: ", fileCopyResult);
-
-      // console.log("fileCopyResult: ", fileCopyResult);
-      // const folderStructureCreationResult = await createFolderStructure(allChildFiles, gDriveAccessToken, targetUnitFolderCreation.folderId, gDriveRefreshToken);
-
-      // console.log("folderStructureCreationResult: ", folderStructureCreationResult);
-
-      response.json({ msg: "Lesson copied." });
+      response.json({ msg: "Lesson copied.", lessonGdriveFolderId: targetLessonFolder.id });
     }
   } catch (error: any) {
     // Send an error response back to the client
