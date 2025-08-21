@@ -228,9 +228,10 @@ export const shareFilesWithRetries = async (
  * @param {string} fileId The id of the file.
  * @param {string[]} parentFolderIds The ids of the folders to copy the files into.
  * @param {string} accessToken The client side user's access token.
+ * @param {number} tries Default is 3
  * @return {Promise<AxiosResponse<any, any>> | { errType: string }} An object contain the results and optional message.
  * */
-export const copyFile = async (accessToken, parentFolderIds, fileId) => {
+export const copyFile = async (accessToken, parentFolderIds, fileId, tries = 3) => {
   const reqBody = parentFolderIds ? { parents: parentFolderIds } : {};
 
   try {
@@ -256,6 +257,24 @@ export const copyFile = async (accessToken, parentFolderIds, fileId) => {
 
     console.log("The response: ", response);
     console.log("The response errors: ", response?.data?.error);
+
+    const didTimeoutOccur =
+      error?.code === "ECONNABORTED" ||
+      error?.response?.status === 408 ||
+      error?.message?.includes("timeout") || response?.data?.error?.message === "Internal Error";
+
+    if (didTimeoutOccur && tries <= 0) {
+      return {
+        errType: "timeout"
+      }
+    }
+
+    if (didTimeoutOccur) {
+      console.log("Retrying to copy files with user...");
+      await waitWithExponentialBackOff(tries);
+
+      return await copyFile(accessToken, parentFolderIds, fileId, tries - 1);
+    }
     
     
     if (response.status) {
@@ -264,16 +283,6 @@ export const copyFile = async (accessToken, parentFolderIds, fileId) => {
       }
     }
 
-    const didTimeoutOccur =
-      error?.code === "ECONNABORTED" ||
-      error?.response?.status === 408 ||
-      error?.message?.includes("timeout");
-    
-    if (didTimeoutOccur) {
-      return {
-        errType: "timeout"
-      }
-    }
 
     return { errType: "generalErr" }
   }

@@ -107,19 +107,20 @@ export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  try {
-    const gDriveAccessToken = (
-      Array.isArray(request.headers?.["gdrive-token"])
-        ? request.headers["gdrive-token"][0]
-        : request.headers["gdrive-token"]
-    ) as string | undefined;
-    const gDriveRefreshToken = (
-      Array.isArray(request.headers?.["gdrive-token-refresh"])
-        ? request.headers["gdrive-token-refresh"][0]
-        : request.headers["gdrive-token-refresh"]
-    ) as string | undefined;
-    const reqBody = request.body as TCopyLessonReqBody;
+  const gDriveAccessToken = (
+    Array.isArray(request.headers?.["gdrive-token"])
+      ? request.headers["gdrive-token"][0]
+      : request.headers["gdrive-token"]
+  ) as string | undefined;
+  const gDriveRefreshToken = (
+    Array.isArray(request.headers?.["gdrive-token-refresh"])
+      ? request.headers["gdrive-token-refresh"][0]
+      : request.headers["gdrive-token-refresh"]
+  ) as string | undefined;
+  const reqBody = request.body as TCopyLessonReqBody;
+  let parentFolder: { id: string; permissionId: string } | null = null;
 
+  try {
     if (!gDriveAccessToken) {
       response.status(401).json({
         message:
@@ -186,7 +187,7 @@ export default async function handler(
         );
       }
 
-      console.log("will create the target unit folder")
+      console.log("will create the target unit folder");
 
       console.log("reqBody.unit.name: ", reqBody.unit.name);
 
@@ -239,15 +240,23 @@ export default async function handler(
 
       console.log("allChildFiles: ", allChildFiles);
       const selectedClientLessonName = reqBody.lesson.name.toLowerCase();
-      const targetFolderStructureArr = await createFolderStructure(allChildFiles, gDriveAccessToken, targetUnitFolderCreation.folderId, gDriveRefreshToken, origin);
-      const targetLessonFolder = targetFolderStructureArr.find(folder => {
-        const lessonName = folder.name?.split('_').at(-1);
+      const targetFolderStructureArr = await createFolderStructure(
+        allChildFiles,
+        gDriveAccessToken,
+        targetUnitFolderCreation.folderId,
+        gDriveRefreshToken,
+        origin
+      );
+      const targetLessonFolder = targetFolderStructureArr.find((folder) => {
+        const lessonName = folder.name?.split("_").at(-1);
 
-        return lessonName && (lessonName.toLowerCase() === selectedClientLessonName)
+        return (
+          lessonName && lessonName.toLowerCase() === selectedClientLessonName
+        );
       });
 
       console.log("targetLessonFolder: ", targetLessonFolder);
-      
+
       if (!targetLessonFolder?.id) {
         throw new CustomError(
           `The lesson named ${selectedClientLessonName} does not exist in the unit ${reqBody.unit.name}.`,
@@ -295,9 +304,10 @@ export default async function handler(
         fileId: parentFolderId,
         supportsAllDrives: true,
         requestBody: {
-          role: "fileOrganizer",
+          role: "organizer",
         },
       });
+      parentFolder = { id: parentFolderId, permissionId: targetPermission.id };
 
       console.log("filePermissionsUpdated: ", filePermissionsUpdated);
 
@@ -362,7 +372,7 @@ export default async function handler(
         }
 
         console.log(`The role of the user is: ${userUpdatedRole}`);
-          
+
         console.log("The user's role was updated.");
 
         console.log(`Will copy file: ${fileId}`);
@@ -377,7 +387,10 @@ export default async function handler(
 
       console.log("targetLessonFolder.id: ", targetLessonFolder.id);
 
-      response.json({ msg: "Lesson copied.", lessonGdriveFolderId: targetLessonFolder.id });
+      response.json({
+        msg: "Lesson copied.",
+        lessonGdriveFolderId: targetLessonFolder.id,
+      });
     }
   } catch (error: any) {
     // Send an error response back to the client
@@ -385,6 +398,39 @@ export default async function handler(
     console.dir(error);
     console.log("error?.response?.data: ", error?.response?.data);
 
-    response.status(500).json({ error: "An error occurred" });
+    response.status(500).json({ error: "An error occurred", errorObj: error });
+  } finally {
+    if (parentFolder) {
+      const drive = await createDrive();
+      const filePermissionsUpdated = await drive.permissions.update({
+        permissionId: parentFolder.permissionId,
+        fileId: parentFolder.id,
+        supportsAllDrives: true,
+        requestBody: {
+          role: "viewer",
+        },
+      });
+
+      console.log("filePermissionsUpdated: ", filePermissionsUpdated.data);
+    }
+  }
+
+  if (reqBody.fileIds) {
+    console.log("Making all file readable...");
+    for (const fileId of reqBody.fileIds) {
+      const drive = await createDrive();
+        // @ts-ignore
+      const fileUpdated = await drive.files.update({
+        fileId: fileId,
+        supportsAllDrives: true,
+        requestBody: {
+          contentRestrictions: {
+            readOnly: false,
+          },
+        },
+      });
+
+      console.log("fileUpdated: ", fileUpdated);
+    }
   }
 }

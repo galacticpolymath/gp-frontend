@@ -12,9 +12,10 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
+import { set } from "cypress/types/lodash";
 
 interface IProps {
-  gdriveLessonFolderId?: string;
+  _gdriveLessonFolderId?: string;
   GdrivePublicID: string;
   MediumTitle: string;
   lessonName: string;
@@ -22,7 +23,7 @@ interface IProps {
 }
 
 const CopyLessonBtn: React.FC<IProps> = ({
-  gdriveLessonFolderId,
+  _gdriveLessonFolderId,
   MediumTitle,
   GdrivePublicID,
   lessonId,
@@ -51,6 +52,9 @@ const CopyLessonBtn: React.FC<IProps> = ({
     useState(false);
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const didInitialRenderOccur = useRef(false);
+  const [gdriveLessonFolderId, setGdriveLessonFolderId] = useState(
+    _gdriveLessonFolderId
+  );
 
   // Function to check if token is expired and refresh if needed
   const ensureValidToken = async () => {
@@ -109,7 +113,6 @@ const CopyLessonBtn: React.FC<IProps> = ({
 
     setIsCopyingUnitBtnDisabled(true);
 
-    // Ensure we have a valid token before proceeding
     const validToken = await ensureValidToken();
 
     if (!validToken) {
@@ -167,7 +170,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
             console.log("reqBody: ", reqBody);
             debugger;
 
-            const response = await axios.post(
+            const response = await axios.post<{ lessonGdriveFolderId?: string, errorObj?: unknown }>(
               "/api/gp-plus/copy-lesson",
               reqBody,
               {
@@ -179,10 +182,19 @@ const CopyLessonBtn: React.FC<IProps> = ({
               }
             );
 
+            if (response.data?.errorObj || !response.data?.lessonGdriveFolderId) {
+              console.error("Error copying lesson:", response.data.errorObj);
+              alert("Failed to copy lesson. Please try again.")
+              return;
+            }
+            
+
             console.log("Response: ", response);
+            setGdriveLessonFolderId(response.data?.lessonGdriveFolderId);
           }
         } catch (error) {
           console.error("An error occurred: ", error);
+          alert("Failed to copy lesson. Please try again.")
         }
       },
     });
