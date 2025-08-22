@@ -23,6 +23,7 @@ import {
   IItemV2,
   IItemV2Props,
   ILsnExt,
+  INewUnitLesson,
   IResource,
   IStep,
 } from "../../../backend/models/Unit/types/teachingMaterials";
@@ -55,7 +56,8 @@ const SignInSuggestion = ({
   );
 };
 
-interface ILessonPartProps {
+interface ILessonPartProps
+  extends Pick<INewUnitLesson, "gdriveLessonFolderId"> {
   resources?: IResource;
   GradesOrYears?: string | null;
   removeClickToSeeMoreTxt: () => void;
@@ -109,6 +111,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     ComingSoonLessonEmailSignUp = null,
     accordionBtnStyle = {},
     isAccordionExpandable = true,
+    gdriveLessonFolderId
   } = props;
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
@@ -557,6 +560,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 MediumTitle={unitMediumTitle}
                 lessonId={lsnNum}
                 lessonName={lsnTitle}
+                _gdriveLessonFolderId={gdriveLessonFolderId}
               />
             )}
             <div className="d-flex align-items-start">

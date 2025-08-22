@@ -151,12 +151,6 @@ const TeachItUI = <
     GdrivePublicID,
     MediumTitle,
   } = props;
-  useEffect(() => {
-    console.log(
-      "LESSON PARTS: ",
-      parts
-    );
-  });
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const {

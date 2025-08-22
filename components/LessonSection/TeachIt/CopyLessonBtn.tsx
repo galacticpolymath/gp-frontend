@@ -16,9 +16,10 @@ import { set } from "cypress/types/lodash";
 import Link from "next/link";
 import { GDRIVE_FOLDER_ORIGIN_AND_PATH } from "../../CopyingUnitToast";
 import { EXPIRATION_DATE_TIME } from "../../../pages/google-drive-auth-result";
+import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 
 interface IProps {
-  _gdriveLessonFolderId?: string;
+  _gdriveLessonFolderId?: Pick<INewUnitLesson, "gdriveLessonFolderId">["gdriveLessonFolderId"];
   GdrivePublicID: string;
   MediumTitle: string;
   lessonName: string;
