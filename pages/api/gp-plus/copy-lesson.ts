@@ -14,7 +14,6 @@ import {
   updateUser,
   updateUserCustom,
 } from "../../../backend/services/userServices";
-import { TUserSchemaV2 } from "../../../backend/models/User/types";
 import { CustomError } from "../../../backend/utils/errors";
 import axios from "axios";
 import {
@@ -26,7 +25,7 @@ import {
 } from "../../../backend/services/gdriveServices";
 import { waitWithExponentialBackOff } from "../../../globalFns";
 
-export const maxDuration = 4 * 60;
+export const maxDuration = 240;
 
 export type TCopyLessonReqBody = Partial<{
   fileIds: string[];
