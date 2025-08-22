@@ -3,6 +3,8 @@ import { createGoogleDriveFolderForUser } from "../../pages/api/gp-plus/copy-uni
 import { GoogleServiceAccountAuthCreds } from "./googleDriveServices";
 import { OAuth2Client } from "google-auth-library";
 import { CustomError } from "../utils/errors";
+import axios from "axios";
+import { waitWithExponentialBackOff } from "../../globalFns";
 
 type TUnitFolder = Partial<{
   name: string | null;
@@ -421,5 +423,65 @@ export const getUnitGDriveChildItems = async (
     );
 
     return null;
+  }
+};
+
+export const getGoogleDriveItem = async (
+  fileId: string,
+  accessToken: string,
+  tries = 3,
+  willRetry = true,
+): Promise<{ id: string; [key: string]: unknown } | { errType: string }> => {
+  try {
+    const { status, data } = await axios.get<{ id: string; [key: string]: unknown }>(
+      `https://www.googleapis.com/drive/v2/files/${fileId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        params: {
+          supportsAllDrives: true,
+        },
+      }
+    );
+
+    if (status !== 200) {
+      throw new CustomError(
+        data ?? "Failed to retrieve Google Drive item.",
+        status
+      );
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error("Failed to retrieve Google Drive item. Error: ", error);
+    
+
+    if (error?.response?.data?.error?.code === 404) {
+      return {
+        errType: "notFound",
+      };
+    }
+
+    if(error?.response?.data?.error?.status === "UNAUTHENTICATED"){
+      return {
+        errType: "unauthenticated"
+      }
+    }
+
+    if (error?.code === "ECONNABORTED" && tries > 0 && willRetry) {
+      await waitWithExponentialBackOff(tries, [2_000, 5_000]);
+
+      return await getGoogleDriveItem(fileId, accessToken, tries - 1);
+    } else if (error?.code === "ECONNABORTED" && willRetry){
+      return {
+        errType: "timeout"
+      }
+    }
+
+    return {
+      errType: "generalErr",
+    };
   }
 };

@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 import Mongoose from "mongoose";
-import { ILessonGDriveId, IUnitGDriveLessons, IUserSchema, TUserSchemaV2 } from "./types";
+import { ILessonGDriveId, IUnitGDriveLesson, IUserSchema, TUserSchemaV2 } from "./types";
 
 class StringValidator {
   validate: (val: string) => boolean;
@@ -96,7 +96,7 @@ const LessonGDriveId = new Schema<ILessonGDriveId>({
   }, {
   _id: false
 });
-const UnitGDriveLessons = new Schema<IUnitGDriveLessons>({
+const UnitGDriveLessons = new Schema<IUnitGDriveLesson>({
   unitDriveId: String,
   unitId: String,
   lessonDriveIds: [LessonGDriveId]

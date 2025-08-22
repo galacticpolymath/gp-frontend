@@ -43,7 +43,7 @@ export const getGDriveItem = async (
   urlParams?: [string, string][]
 ): Promise<{ id: string; [key: string]: unknown } | { errType: string }> => {
   try {
-    const url = new URL(`https://www.googleapis.com/drive/v2/files/${fileId}`);
+    const url = new URL(`https://www.googleapis.com/drive/v2/files/${fileId}` );
 
     if(urlParams?.length){
       for (const [key, val] of urlParams){

@@ -4,6 +4,8 @@ import { createDocument } from "../db/utils.js";
 import { v4 as uuidv4 } from "uuid";
 import {
   IAboutUserFormNewFieldsV1,
+  ILessonGDriveId,
+  IUnitGDriveLesson,
   IUserSchema,
   IUserSchemaBaseProps,
   TDefaultSubject,
@@ -11,8 +13,9 @@ import {
   TUserSchemaV2,
 } from "../models/User/types.js";
 import User from "../models/User/index";
-import { AnyBulkWriteOperation, UpdateWriteOpResult } from "mongoose";
+import { AnyBulkWriteOperation, Model, UpdateWriteOpResult } from "mongoose";
 import { waitWithExponentialBackOff } from "../../globalFns.js";
+import { UpdateOptions } from "mongodb";
 
 export const getUsers = async <
   TUsers extends IUserSchemaBaseProps = TUserSchemaV2
@@ -515,9 +518,52 @@ const getCanRetry = (error: any) => {
   return false;
 };
 
+type TDbOperation<T> = { $push: { $each: T[] } };
+
+export const addNewGDriveUnits = (unitGDriveLessons: IUnitGDriveLesson[]) => {
+  const updates: Record<
+    Extract<keyof TUserSchemaV2, "unitGDriveLessons">,
+    TDbOperation<IUnitGDriveLesson>
+  > = {
+    unitGDriveLessons: {
+      $push: {
+        $each: unitGDriveLessons,
+      },
+    },
+  };
+
+  return updates;
+};
+
+type TUpdatableKey<
+  TKeyA extends string = Extract<keyof TUserSchemaV2, "unitGDriveLessons">,
+  TKeyB extends string = Extract<keyof IUnitGDriveLesson, "lessonDriveIds">
+> = `${TKeyA}.$[elem].${TKeyB}`;
+
+export const addNewGDriveLessons = (unitGDriveLessons: ILessonGDriveId[]) => {
+  const updates: Record<TUpdatableKey, TDbOperation<ILessonGDriveId>> = {
+    "unitGDriveLessons.$[elem].lessonDriveIds": {
+      $push: {
+        $each: unitGDriveLessons,
+      },
+    },
+  };
+
+  return updates;
+};
+
+type TArrFilterKey<TKey extends string = Extract<keyof IUnitGDriveLesson, "unitDriveId">> = `elem.${TKey}`
+
+export const createDbArrFilter = (key: TArrFilterKey, val: unknown) => {
+    return {
+      [key]: val
+    }
+}
+
 export const updateUserCustom = async (
   filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
   updatedUserProperties: object,
+  updateOpts?: UpdateOptions,
   tries = 3
 ): Promise<{
   wasSuccessful: boolean;
@@ -527,7 +573,8 @@ export const updateUserCustom = async (
   try {
     const updateUserResult = await User.updateOne(
       filterQuery,
-      updatedUserProperties
+      updatedUserProperties,
+      updateOpts
     );
 
     if (updateUserResult.modifiedCount === 0) {
@@ -546,6 +593,7 @@ export const updateUserCustom = async (
       return await updateUserCustom(
         filterQuery,
         updatedUserProperties,
+        updateOpts,
         tries - 1
       );
     }

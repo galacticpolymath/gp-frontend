@@ -6,7 +6,14 @@ import {
 } from "../../../backend/services/googleDriveServices";
 import { getGDriveItem } from "./copy-unit";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
-import { getUserByEmail } from "../../../backend/services/userServices";
+import {
+  addNewGDriveLessons,
+  addNewGDriveUnits,
+  createDbArrFilter,
+  getUserByEmail,
+  updateUser,
+  updateUserCustom,
+} from "../../../backend/services/userServices";
 import { TUserSchemaV2 } from "../../../backend/models/User/types";
 import { CustomError } from "../../../backend/utils/errors";
 import axios from "axios";
@@ -14,6 +21,7 @@ import {
   createDrive,
   createFolderStructure,
   getFolderChildItems,
+  getGoogleDriveItem,
   getTargetUserPermission,
 } from "../../../backend/services/gdriveServices";
 import { waitWithExponentialBackOff } from "../../../globalFns";
@@ -157,6 +165,7 @@ export default async function handler(
       throw new CustomError("Unauthorized. Please try logging in again.", 401);
     }
 
+    const { email } = jwtPayload.payload;
     const user = await getUserByEmail(jwtPayload.payload.email, {
       unitGDriveLessons: 1,
       gpPlusDriveFolderId: 1,
@@ -166,7 +175,37 @@ export default async function handler(
       throw new CustomError("User not found", 404);
     }
 
-    if (!user.gpPlusDriveFolderId) {
+    let doesGpPlusFolderExist = !!user.gpPlusDriveFolderId;
+
+    if (user.gpPlusDriveFolderId) {
+      const targetGDriveFolder = await getGoogleDriveItem(
+        user.gpPlusDriveFolderId,
+        gDriveAccessToken
+      );
+      doesGpPlusFolderExist =
+        "id" in targetGDriveFolder && !!targetGDriveFolder.id;
+
+      if (!doesGpPlusFolderExist) {
+        await updateUser(
+          { email },
+          {
+            gpPlusDriveFolderId: undefined,
+            unitGDriveLessons: undefined,
+          }
+        );
+      }
+    }
+
+    // will get the target gp plus folder, and using the id of the unit in the target user's document
+    // get the target unit folder from the the gp plus folder
+    // if not found, then create the target unit folder
+
+    
+    // if found, get the target lesson
+    // if not found, then create the target lesson folder
+
+    // will create the gp plus folder and the target unit
+    if (!doesGpPlusFolderExist) {
       const origin = new URL(request.headers.referer ?? "").origin;
       console.log("will create the gp plus unit folder");
       console.log("gDriveAccessToken: ", gDriveAccessToken);
@@ -187,9 +226,19 @@ export default async function handler(
         );
       }
 
-      console.log("will create the target unit folder");
+      const userUpdatedResult = await updateUser(
+        { email },
+        { gpPlusDriveFolderId: gpPlusFolderCreationResult.folderId }
+      );
 
-      console.log("reqBody.unit.name: ", reqBody.unit.name);
+      if (!userUpdatedResult.wasSuccessful) {
+        console.error(
+          "Failed to update user. Error message: ",
+          userUpdatedResult.errMsg
+        );
+      } else {
+        console.log("'gpPlusDriveFolderId' was updated for target user.");
+      }
 
       const targetUnitFolderCreation = await createGoogleDriveFolderForUser(
         reqBody.unit.name,
@@ -206,6 +255,29 @@ export default async function handler(
         throw new CustomError(
           `Error creating the folder for unit ${reqBody.unit.name}. Reason: ${targetUnitFolderCreation.errMsg}`,
           500
+        );
+      }
+
+      // find the unit within the unitGDriveLessons by the unitDriveId, and push the new lesson into lessonDriveIds
+
+      const userUpdatedWithNewUnitObjResult = await updateUserCustom(
+        { email },
+        addNewGDriveUnits([
+          {
+            unitDriveId: targetUnitFolderCreation.folderId,
+            unitId: reqBody.unit.id,
+          },
+        ])
+      );
+
+      if (!userUpdatedWithNewUnitObjResult.wasSuccessful) {
+        console.error(
+          "Failed to update user with new unit lessons object. Error message: ",
+          userUpdatedWithNewUnitObjResult.errMsg
+        );
+      } else {
+        console.log(
+          "User was updated with new unit lessons object. New unit lessons object: "
         );
       }
 
@@ -230,15 +302,12 @@ export default async function handler(
         );
       }
 
-      console.log(
-        `gdriveResponse.data.files.length: `,
-        gdriveResponse.data.files
-      );
       const allChildFiles = await getFolderChildItems(
         gdriveResponse.data.files
       );
 
       console.log("allChildFiles: ", allChildFiles);
+
       const selectedClientLessonName = reqBody.lesson.name.toLowerCase();
       const targetFolderStructureArr = await createFolderStructure(
         allChildFiles,
@@ -261,6 +330,35 @@ export default async function handler(
         throw new CustomError(
           `The lesson named ${selectedClientLessonName} does not exist in the unit ${reqBody.unit.name}.`,
           400
+        );
+      }
+
+      const lessonDriveIdUpdatedResult = await updateUserCustom(
+        { email },
+        addNewGDriveLessons([
+          {
+            lessonDriveId: targetLessonFolder.id,
+            lessonNum: reqBody.lesson.id,
+          },
+        ]),
+        {
+          arrayFilters: [
+            createDbArrFilter(
+              "elem.unitDriveId",
+              targetUnitFolderCreation.folderId
+            ),
+          ],
+        }
+      );
+
+      if (!lessonDriveIdUpdatedResult.wasSuccessful) {
+        console.log(
+          "Failed to update the target user with the new lesson drive id. Reason: ",
+          lessonDriveIdUpdatedResult.errMsg
+        );
+      } else {
+        console.log(
+          "Successfully updated the target user with the new lesson drive id."
         );
       }
 
@@ -387,11 +485,13 @@ export default async function handler(
 
       console.log("targetLessonFolder.id: ", targetLessonFolder.id);
 
-      response.json({
+      return response.json({
         msg: "Lesson copied.",
         lessonGdriveFolderId: targetLessonFolder.id,
       });
     }
+
+    // TODO: if user.gpPlusDriveFolderId does not exist in the drive, then delete gpPlusDriveFolderId and the unitGDriveLessons
   } catch (error: any) {
     // Send an error response back to the client
     console.error("Error: ");
@@ -419,7 +519,7 @@ export default async function handler(
     console.log("Making all file readable...");
     for (const fileId of reqBody.fileIds) {
       const drive = await createDrive();
-        // @ts-ignore
+      // @ts-ignore
       const fileUpdated = await drive.files.update({
         fileId: fileId,
         supportsAllDrives: true,

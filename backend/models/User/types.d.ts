@@ -84,17 +84,17 @@ export interface ILessonGDriveId {
   lessonDriveId: string;
 }
 
-export interface IUnitGDriveLessons {
+export interface IUnitGDriveLesson {
   unitId: string;
   unitDriveId: string;
-  lessonDriveIds: ILessonGDriveId[];
+  lessonDriveIds?: ILessonGDriveId[];
 }
 
 export type TUserSchemaV2 = IUserSchemaBaseProps &
   TAboutUserFormBaseProps &
   TOutseta & {
     gpPlusDriveFolderId: string;
-    unitGDriveLessons: IUnitGDriveLessons[];
+    unitGDriveLessons: IUnitGDriveLesson[];
   };
 
 type TGpPlusMembershipStatus = Awaited<ReturnType<typeof getGpPlusMembership>>;
