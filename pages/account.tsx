@@ -5,21 +5,18 @@
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+
 import Layout from "../components/Layout";
 import LoginUI from "../components/User/Login/LoginUI";
 import Button from "../components/General/Button";
 import BootstrapBtn from "react-bootstrap/Button";
 import React, { useEffect, useRef, useState } from "react";
-import { NextRouter, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { useModalContext } from "../providers/ModalProvider";
 import axios from "axios";
 import { Modal, Spinner } from "react-bootstrap";
 import {
   getAllUrlVals,
-  getChunks,
-  getIsParsable,
   resetUrl,
 } from "../globalFns";
 import { FaUserAlt } from "react-icons/fa";

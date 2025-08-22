@@ -30,6 +30,7 @@ export type TCopyLessonReqBody = Partial<{
   fileIds: string[];
   lesson: {
     id: string;
+    lessonSharedDriveId: string;
     name: string;
   };
   unit: {
@@ -196,13 +197,12 @@ export default async function handler(
       }
     }
 
-    // will get the target gp plus folder, and using the id of the unit in the target user's document
-    // get the target unit folder from the the gp plus folder
-    // if not found, then create the target unit folder
+    // TODO: if the unit folder doesn't exist, then delete the target unit from the user's unitGDriveLessons by its drive id 
 
-    
-    // if found, get the target lesson
-    // if not found, then create the target lesson folder
+    // TODO: if the unit lesson doesn't exist, then get the child items for the target unit using the service account, in order to get the name of the lesson
+    // -find it by using the lessonSharedDriveId from the client to get the target lesson 
+
+    // TODO: if the target lesson folder is there, then copy all items into the lesson folder 
 
     // will create the gp plus folder and the target unit
     if (!doesGpPlusFolderExist) {
