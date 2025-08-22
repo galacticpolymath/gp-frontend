@@ -39,9 +39,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
   lessonName,
 }) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
-  const {
-    _isGpPlusMember,
-  } = useUserContext();
+  const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
   const {
     _lessonToCopy
   } = useLessonContext()
@@ -58,16 +56,14 @@ const CopyLessonBtn: React.FC<IProps> = ({
   } = useSiteSession();
   const { setAppCookie } = useCustomCookies();
   const [openPicker, authResult] = useDrivePicker();
-  const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
-    useState(false);
+  const [isCopyLessonBtnDisabled, setCanPressCopyLessonBtn] = _isCopyUnitBtnDisabled;
+  const [isCopyingLesson, setIsCopyingLesson] = useState(false);
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const didInitialRenderOccur = useRef(false);
   const [gdriveLessonFolderId, setGdriveLessonFolderId] = useState(
     _gdriveLessonFolderId
   );
 
-
-  // Function to check if token is expired and refresh if needed
   const ensureValidToken = async () => {
     const gdriveRefreshToken = Cookies.get("gdriveRefreshToken");
     const gdriveAccessToken = Cookies.get("gdriveAccessToken");
@@ -129,7 +125,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
   const copyUnit = async () => {
     console.log("Copy unit function called");
 
-    setIsCopyingUnitBtnDisabled(true);
+    setIsCopyingLesson(true);
 
     const validToken = await ensureValidToken();
 
@@ -169,10 +165,18 @@ const CopyLessonBtn: React.FC<IProps> = ({
       callbackFunction: async (data) => {
         try {
           // Ensure token is still valid before making the API call
+          setIsCopyingLesson(true);
+
           const currentValidToken = await ensureValidToken();
 
           if (!currentValidToken) {
-            console.error("No valid token available for API call");
+            alert("Your google drive session has expired. Please log in again.");
+            setIsCopyingLesson(false);
+            setLocalStorageItem(
+              "gpPlusFeatureLocation",
+              `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+            );
+            window.location.href = createGDriveAuthUrl();
             return;
           }
 
@@ -194,7 +198,6 @@ const CopyLessonBtn: React.FC<IProps> = ({
             };
 
             console.log("reqBody: ", reqBody);
-            debugger;
 
             const response = await axios.post<{
               lessonGdriveFolderId?: string;
@@ -222,11 +225,12 @@ const CopyLessonBtn: React.FC<IProps> = ({
         } catch (error) {
           console.error("An error occurred: ", error);
           alert("Failed to copy lesson. Please try again.");
+        } finally {
+          setIsCopyingLesson(false);
         }
       },
     });
 
-    setIsCopyingUnitBtnDisabled(false);
 
     return;
   };
@@ -249,12 +253,13 @@ const CopyLessonBtn: React.FC<IProps> = ({
   didInitialRenderOccur.current = true;
 
   return (
-    <div style={{ width: 'fit-content' }} className="mb-4">
+    <div style={{ width: "fit-content" }} className="mb-4">
       <Button
         ref={btnRef}
         onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
         style={{
-          pointerEvents: isCopyingUnitBtnDisabled ? "none" : "auto",
+          pointerEvents:
+            isCopyLessonBtnDisabled || isCopyingLesson ? "none" : "auto",
           minHeight: "51px",
           backgroundColor: "white",
           border: "solid 3px #2339C4",
@@ -264,13 +269,19 @@ const CopyLessonBtn: React.FC<IProps> = ({
           width: "fit-content",
         }}
         className={`px-3 py-2 col-12 ${
-          isCopyingUnitBtnDisabled ? "opacity-25" : "opacity-100"
+          isCopyLessonBtnDisabled || isCopyingLesson
+            ? "opacity-25"
+            : "opacity-100"
         }`}
-        disabled={!didInitialRenderOccur.current || isCopyingUnitBtnDisabled}
+        disabled={
+          !didInitialRenderOccur.current ||
+          isCopyLessonBtnDisabled ||
+          isCopyingLesson
+        }
       >
         {didInitialRenderOccur.current ? (
           <div className="d-flex flex-row align-items-center justify-content-center gap-2">
-            {isCopyingUnitBtnDisabled ? (
+            {isCopyLessonBtnDisabled || isCopyingLesson ? (
               <Spinner className="text-black" />
             ) : (
               <>

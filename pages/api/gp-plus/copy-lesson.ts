@@ -534,4 +534,7 @@ export default async function handler(
       console.log("fileUpdated: ", fileUpdated);
     }
   }
+
+  return response.status(200).json({ message: "Lesson copied successfully" });
+  
 }
