@@ -954,7 +954,7 @@ export const getStaticProps = async (arg: {
               if (targetGDriveLessonFolderId){
                 lesson = {
                   ...lesson,
-                  gdriveFolderId: targetGDriveLessonFolderId,
+                  gdriveLessonFolderId: targetGDriveLessonFolderId,
                 };
               }
 

@@ -21,6 +21,7 @@ import "../styles/pages/About/about.scss";
 import "../styles/modals/signUp.scss";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { UserProvider } from "../providers/UserProvider";
+import { LessonProvider } from "../providers/LessonProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GoogleDrivePickerProvider } from "@geniux/google-drive-picker-react";
 
@@ -39,23 +40,25 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <SessionProvider session={session}>
         <LessonsCarouselProvider>
           <UserProvider>
-            <ModalProvider>
-              <QueryClientProvider client={queryClient}>
-                <CookiesProvider>
-                  <GoogleDrivePickerProvider
-                    clientId={
-                      process.env
-                        .NEXT_PUBLIC_GOOGLE_DRIVE_PROJECT_CLIENT_ID_TEST
-                    }
-                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY}
-                  >
-                    <Toaster />
-                    <Component {...pageProps} />
-                    <ModalsContainer />
-                  </GoogleDrivePickerProvider>
-                </CookiesProvider>
-              </QueryClientProvider>
-            </ModalProvider>
+            <LessonProvider>
+              <ModalProvider>
+                <QueryClientProvider client={queryClient}>
+                  <CookiesProvider>
+                    <GoogleDrivePickerProvider
+                      clientId={
+                        process.env
+                          .NEXT_PUBLIC_GOOGLE_DRIVE_PROJECT_CLIENT_ID_TEST
+                      }
+                      apiKey={process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY}
+                    >
+                      <Toaster />
+                      <Component {...pageProps} />
+                      <ModalsContainer />
+                    </GoogleDrivePickerProvider>
+                  </CookiesProvider>
+                </QueryClientProvider>
+              </ModalProvider>
+            </LessonProvider>
           </UserProvider>
         </LessonsCarouselProvider>
       </SessionProvider>

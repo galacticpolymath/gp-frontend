@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import { useUserContext } from "../../../providers/UserProvider";
 import useDrivePicker from "react-google-drive-picker";
@@ -6,28 +6,32 @@ import useSiteSession from "../../../customHooks/useSiteSession";
 import { createGDriveAuthUrl, setLocalStorageItem } from "../../../shared/fns";
 import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../../globalVars";
 import axios from "axios";
-import { TCopyLessonReqBody } from "../../../pages/api/gp-plus/copy-lesson";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
-import { set } from "cypress/types/lodash";
 import Link from "next/link";
 import { GDRIVE_FOLDER_ORIGIN_AND_PATH } from "../../CopyingUnitToast";
 import { EXPIRATION_DATE_TIME } from "../../../pages/google-drive-auth-result";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
+import { useLessonContext } from "../../../providers/LessonProvider";
 
 interface IProps {
-  _gdriveLessonFolderId?: Pick<INewUnitLesson, "gdriveLessonFolderId">["gdriveLessonFolderId"];
+  _gdriveLessonFolderId?: Pick<
+    INewUnitLesson,
+    "gdriveLessonFolderId"
+  >["gdriveLessonFolderId"];
   GdrivePublicID: string;
   MediumTitle: string;
   lessonName: string;
   lessonId: string | number;
+  sharedDriveLessonFolderId?: string,
 }
 
 const CopyLessonBtn: React.FC<IProps> = ({
   _gdriveLessonFolderId,
+  sharedDriveLessonFolderId,
   MediumTitle,
   GdrivePublicID,
   lessonId,
@@ -36,12 +40,13 @@ const CopyLessonBtn: React.FC<IProps> = ({
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const {
     _isGpPlusMember,
-    _isCopyUnitBtnDisabled,
-    _didAttemptRetrieveUserData,
-    _userLatestCopyUnitFolderId,
   } = useUserContext();
+  const {
+    _lessonToCopy
+  } = useLessonContext()
   const router = useRouter();
   const { _isGpPlusModalDisplayed } = useModalContext();
+  const [, setLessonToCopy] = _lessonToCopy;
   const [isGpPlusMember] = _isGpPlusMember;
   const {
     gdriveAccessToken,
@@ -59,6 +64,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
   const [gdriveLessonFolderId, setGdriveLessonFolderId] = useState(
     _gdriveLessonFolderId
   );
+
 
   // Function to check if token is expired and refresh if needed
   const ensureValidToken = async () => {
@@ -119,6 +125,8 @@ const CopyLessonBtn: React.FC<IProps> = ({
 
     const validToken = await ensureValidToken();
 
+    console.log("validToken: ", validToken);
+
     if (!validToken) {
       setLocalStorageItem(
         "gpPlusFeatureLocation",
@@ -128,6 +136,11 @@ const CopyLessonBtn: React.FC<IProps> = ({
       return;
     }
 
+    console.log(
+      "Copying existing lesson google drive id: ",
+      sharedDriveLessonFolderId
+    );
+
     openPicker({
       appId: "1095510414161",
       clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
@@ -135,6 +148,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
       viewId: "DOCS",
       token: validToken,
       showUploadView: true,
+      setParentFolder: sharedDriveLessonFolderId,
       showUploadFolders: true,
       setIncludeFolders: true,
       customScopes: [

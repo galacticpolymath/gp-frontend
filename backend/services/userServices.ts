@@ -11,7 +11,7 @@ import {
   TUserSchemaV2,
 } from "../models/User/types.js";
 import User from "../models/User/index";
-import { AnyBulkWriteOperation } from "mongoose";
+import { AnyBulkWriteOperation, UpdateWriteOpResult } from "mongoose";
 import { waitWithExponentialBackOff } from "../../globalFns.js";
 
 export const getUsers = async <
@@ -513,6 +513,48 @@ const getCanRetry = (error: any) => {
   }
 
   return false;
+};
+
+export const updateUserCustom = async (
+  filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
+  updatedUserProperties: object,
+  tries = 3
+): Promise<{
+  wasSuccessful: boolean;
+  errMsg?: string;
+  result?: UpdateWriteOpResult;
+}> => {
+  try {
+    const updateUserResult = await User.updateOne(
+      filterQuery,
+      updatedUserProperties
+    );
+
+    if (updateUserResult.modifiedCount === 0) {
+      throw new Error("Failed to update the target user.");
+    }
+
+    return { result: updateUserResult, wasSuccessful: true };
+  } catch (error: any) {
+    console.error("Failed to update the target user. Reason: ", error);
+    console.log("Error object: ");
+    console.dir(error, { depth: null });
+
+    if (getCanRetry(error) && tries > 0) {
+      await waitWithExponentialBackOff(tries);
+
+      return await updateUserCustom(
+        filterQuery,
+        updatedUserProperties,
+        tries - 1
+      );
+    }
+
+    return {
+      wasSuccessful: false,
+      errMsg: `Unable to update the target user. Reason: ${error}`,
+    };
+  }
 };
 
 export const updateUser = async (

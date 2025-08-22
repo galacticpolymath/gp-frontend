@@ -5,6 +5,7 @@
 
 import React, {
   Dispatch,
+  IframeHTMLAttributes,
   JSX,
   ReactNode,
   RefObject,
@@ -69,6 +70,7 @@ import { useModalContext } from "../../../providers/ModalProvider";
 import useDrivePicker from "react-google-drive-picker";
 import axios from "axios";
 import { TCopyLessonReqBody } from "../../../pages/api/gp-plus/copy-lesson";
+import { useLessonContext } from "../../../providers/LessonProvider";
 
 export type TUnitPropsForTeachItSec = Partial<
   Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
@@ -151,6 +153,8 @@ const TeachItUI = <
     GdrivePublicID,
     MediumTitle,
   } = props;
+  const { _lessonToCopy } = useLessonContext();
+  const [lessonToCopy] = _lessonToCopy;
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const {
@@ -588,6 +592,7 @@ const TeachItUI = <
                   <LessonPart
                     {...lessonTilesObj}
                     unitMediumTitle={MediumTitle!}
+                    gdriveLessonFolderId={"gdriveLessonFolderId" in part ? part.gdriveLessonFolderId : undefined}
                     GdrivePublicID={GdrivePublicID!}
                     gradeVarNote={gradeVarNote}
                     GradesOrYears={GradesOrYears}
@@ -607,7 +612,7 @@ const TeachItUI = <
                               : "block",
                           }}
                         >
-                          <Sparkles
+                          {/* <Sparkles
                             sparkleWrapperStyle={{
                               height: 40,
                               display: "flex",
@@ -619,7 +624,7 @@ const TeachItUI = <
                             <p style={{ transform: "translateY(20px)" }}>
                               CLICK TO SEE MORE!
                             </p>
-                          </Sparkles>
+                          </Sparkles> */}
                         </ClickMeArrow>
                       ) : null
                     }

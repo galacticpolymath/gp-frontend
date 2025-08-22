@@ -560,7 +560,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 MediumTitle={unitMediumTitle}
                 lessonId={lsnNum}
                 lessonName={lsnTitle}
-                _gdriveLessonFolderId={gdriveLessonFolderId}
+                sharedDriveLessonFolderId={gdriveLessonFolderId}
               />
             )}
             <div className="d-flex align-items-start">

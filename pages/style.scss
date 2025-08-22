@@ -30,6 +30,13 @@ h4.words {
 @import "../node_modules/react-responsive-carousel/lib/styles/carousel.min.css";
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
+.picker-container{
+  .picker {
+    visibility: hidden;
+    z-index: -100;
+  }
+}
+
 .responseiveH1 {
   font-size: 27px;
 
