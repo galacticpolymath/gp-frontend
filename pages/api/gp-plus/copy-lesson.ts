@@ -26,6 +26,8 @@ import {
 } from "../../../backend/services/gdriveServices";
 import { waitWithExponentialBackOff } from "../../../globalFns";
 
+export const maxDuration = 4 * 60;
+
 export type TCopyLessonReqBody = Partial<{
   fileIds: string[];
   lesson: {

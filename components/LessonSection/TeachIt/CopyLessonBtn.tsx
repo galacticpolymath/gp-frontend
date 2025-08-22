@@ -16,6 +16,7 @@ import { GDRIVE_FOLDER_ORIGIN_AND_PATH } from "../../CopyingUnitToast";
 import { EXPIRATION_DATE_TIME } from "../../../pages/google-drive-auth-result";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { useLessonContext } from "../../../providers/LessonProvider";
+import Cookies from "js-cookie";
 
 interface IProps {
   _gdriveLessonFolderId?: Pick<
@@ -68,6 +69,13 @@ const CopyLessonBtn: React.FC<IProps> = ({
 
   // Function to check if token is expired and refresh if needed
   const ensureValidToken = async () => {
+    const gdriveRefreshToken = Cookies.get("gdriveRefreshToken");
+    const gdriveAccessToken = Cookies.get("gdriveAccessToken");
+    
+    console.log("gdriveRefreshToken: ", gdriveRefreshToken);
+
+    console.log("gdriveAccessToken: ", gdriveAccessToken);
+
     if (!gdriveAccessToken || !gdriveRefreshToken) {
       return null;
     }
