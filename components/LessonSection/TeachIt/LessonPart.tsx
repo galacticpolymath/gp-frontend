@@ -83,8 +83,6 @@ interface ILessonPartProps {
   GdrivePublicID?: string | null;
 }
 
-// TODO: add the button to copy the lesson here
-
 const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const {
     unitMediumTitle,
@@ -553,7 +551,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
             </div>
           )}
           <div className="mt-4 pb-1">
-            {/* put copy unit here */}
             {lsnNum && lsnTitle && GdrivePublicID && unitMediumTitle && (
               <CopyLessonBtn
                 GdrivePublicID={GdrivePublicID}

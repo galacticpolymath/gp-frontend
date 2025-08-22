@@ -183,6 +183,7 @@ interface IChunkStep {
 
 interface INewUnitLesson<TItem extends IItem = IItem> {
   title: string | null;
+  gdriveFolderId?: string;
   lsn: number | null;
   status: string | null;
   updated_date: string | null;

@@ -2,6 +2,7 @@ import { drive_v3, google } from "googleapis";
 import { createGoogleDriveFolderForUser } from "../../pages/api/gp-plus/copy-unit";
 import { GoogleServiceAccountAuthCreds } from "./googleDriveServices";
 import { OAuth2Client } from "google-auth-library";
+import { CustomError } from "../utils/errors";
 
 type TUnitFolder = Partial<{
   name: string | null;
@@ -288,7 +289,7 @@ export const createFolderStructure = async (
   // create the google sub folders
   for (const folderToCreate of folderPaths) {
     console.log("folderToCreate: ", folderToCreate);
-    
+
     // if the folder is at the root of the parent folder
     if (folderToCreate.pathToFile === "") {
       const folderCreationResult = await createGoogleDriveFolderForUser(
@@ -300,7 +301,7 @@ export const createFolderStructure = async (
         clientOrigin
       );
 
-      console.log("folderCreationResult: ", folderCreationResult);      
+      console.log("folderCreationResult: ", folderCreationResult);
 
       const { folderId, wasSuccessful } = folderCreationResult;
 
@@ -325,7 +326,6 @@ export const createFolderStructure = async (
     )?.id;
 
     console.log("parentFolderId: ", parentFolderId);
-    
 
     if (!parentFolderId) {
       foldersFailedToCreate.push(folderToCreate.name);
@@ -363,11 +363,11 @@ export const createFolderStructure = async (
 export const getTargetUserPermission = async (
   fileId: string,
   email: string,
-  drive?: drive_v3.Drive,
+  drive?: drive_v3.Drive
 ) => {
   let _drive = drive;
 
-  if(!drive){
+  if (!drive) {
     _drive = await createDrive();
   }
 
@@ -377,9 +377,49 @@ export const getTargetUserPermission = async (
     fields: "*",
   });
 
-  return filePermissions.data.permissions?.find(
-    (permission) => {
-      return permission.emailAddress === email;
+  return filePermissions.data.permissions?.find((permission) => {
+    return permission.emailAddress === email;
+  });
+};
+
+export const getUnitGDriveChildItems = async (
+  unitId: string,
+) => {
+  try {
+    const drive = await createDrive();    
+
+    console.log(`Getting the GDrive child items for the unit: ${unitId}`);
+    
+    const gdriveResponse = await drive.files.list({
+      corpora: "drive",
+      includeItemsFromAllDrives: true,
+      supportsAllDrives: true,
+      driveId: process.env.GOOGLE_DRIVE_ID,
+      q: `'${unitId}' in parents`,
+      fields: "*",
+    });
+
+    if (!gdriveResponse.data?.files) {
+      throw new CustomError(
+        "Failed to get the root items of the target unit folder.",
+        500
+      );
     }
-  );
+
+    console.log(
+      `gdriveResponse.data.files.length: `,
+      gdriveResponse.data.files
+    );
+
+    const allChildItems = await getFolderChildItems(gdriveResponse.data.files);
+
+    return allChildItems;
+  } catch (error) {
+    console.error(
+      "Failed to get the root items of the target unit folder. Reason: ",
+      error
+    );
+
+    return null;
+  }
 };

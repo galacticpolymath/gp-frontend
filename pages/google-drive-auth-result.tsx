@@ -22,6 +22,10 @@ import { useEffect, useState } from "react";
 import { BtnWithSpinner } from "../components/General/BtnWithSpinner";
 import { useModalContext } from "../providers/ModalProvider";
 
+export const EXPIRATION_DATE_TIME = new Date(
+  new Date().getTime() + 1_000 * 60 * 60 * 24 * 180
+);
+
 const GoogleDriveAuthResult = () => {
   const { status } = useSiteSession();
   const { setAppCookie, cookies } = useCustomCookies();

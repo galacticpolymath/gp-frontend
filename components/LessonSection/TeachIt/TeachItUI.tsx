@@ -149,10 +149,14 @@ const TeachItUI = <
     dataLesson,
     GradesOrYears,
     GdrivePublicID,
-    Title,
     MediumTitle,
-    unitId,
   } = props;
+  useEffect(() => {
+    console.log(
+      "LESSON PARTS: ",
+      parts
+    );
+  });
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const {
@@ -339,20 +343,6 @@ const TeachItUI = <
         }, 6_000);
       }
     }, 200)();
-
-  const mutationOberserverRef = useRef<null | MutationObserver>(null);
-
-  useEffect(() => {
-    const mutationOberserver = new MutationObserver((elements) => {
-      console.log("elements, sup there: ", elements);
-    });
-
-    mutationOberserver.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-    mutationOberserverRef.current = mutationOberserver;
-  }, []);
 
   return (
     <>

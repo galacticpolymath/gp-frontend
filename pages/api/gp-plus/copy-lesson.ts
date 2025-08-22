@@ -304,7 +304,7 @@ export default async function handler(
         fileId: parentFolderId,
         supportsAllDrives: true,
         requestBody: {
-          role: "organizer",
+          role: "fileOrganizer",
         },
       });
       parentFolder = { id: parentFolderId, permissionId: targetPermission.id };

@@ -56,6 +56,7 @@ import {
   removeLocalStorageItem,
 } from "../../../../shared/fns";
 import useSiteSession from "../../../../customHooks/useSiteSession";
+import { getUnitGDriveChildItems } from "../../../../backend/services/gdriveServices";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -133,6 +134,7 @@ const addGradesOrYearsProperty = (
 interface IProps {
   lesson?: any;
   unit?: TUnitForUI;
+  unitGDriveChildItems: Awaited<ReturnType<typeof getUnitGDriveChildItems>>;
 }
 
 const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
@@ -154,7 +156,9 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
   "https://docs.google.com",
 ]);
 
-const LessonDetails = ({ lesson, unit }: IProps) => {
+const LessonDetails = ({ lesson, unit, unitGDriveChildItems }: IProps) => {
+  console.log("unitGDriveChildItems: ", unitGDriveChildItems);
+
   const router = useRouter();
   const {
     _isUserTeacher,
@@ -164,7 +168,8 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     _userLatestCopyUnitFolderId,
   } = useUserContext();
   const session = useSiteSession();
-  const { status, token, gdriveAccessToken, gdriveRefreshToken, gdriveEmail } = session;
+  const { status, token, gdriveAccessToken, gdriveRefreshToken, gdriveEmail } =
+    session;
   const statusRef = useRef(status);
 
   useMemo(() => {
@@ -833,6 +838,13 @@ export const getStaticProps = async (arg: {
         throw new Error("Unit is not found.");
       }
 
+      console.log(
+        "Will get the child items of the target unit in google drive"
+      );
+
+      const unitGDriveChildItems = (
+        await getUnitGDriveChildItems(targetUnit.GdrivePublicID!)
+      )?.filter((item) => item.mimeType?.includes("folder"));
       const headLinks = targetUnits
         .filter(({ locale, numID }) => locale && numID)
         .map(({ locale, numID }) => [
@@ -920,10 +932,34 @@ export const getStaticProps = async (arg: {
           ?.length &&
         resources?.length
       ) {
+        // TODO: get the folder structure of the target unit from google drive
+        console.log("unitGDriveChildItems: ", unitGDriveChildItems);
         const resourcesForUIPromises = resources.map(async (resource) => {
           const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
             async (lesson) => {
+              const targetGDriveLessonFolderId = unitGDriveChildItems?.find(
+                (item) => {
+                  const lessonName = item?.name?.split("_").at(-1);
+
+                  return (
+                    lessonName &&
+                    lesson.title &&
+                    lessonName.toLowerCase() === lesson.title.toLowerCase()
+                  );
+                }
+              )?.id;
+
+              console.log("targetGDriveLessonFolderId: ", targetGDriveLessonFolderId);
+
+              if (targetGDriveLessonFolderId){
+                lesson = {
+                  ...lesson,
+                  gdriveFolderId: targetGDriveLessonFolderId,
+                };
+              }
+
               console.log("lesson status: ", lesson.status);
+
               if (!lesson.tile && lesson.status === "Upcoming") {
                 lesson = {
                   ...lesson,

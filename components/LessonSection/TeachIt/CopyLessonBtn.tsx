@@ -13,6 +13,9 @@ import Image from "next/image";
 import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import { set } from "cypress/types/lodash";
+import Link from "next/link";
+import { GDRIVE_FOLDER_ORIGIN_AND_PATH } from "../../CopyingUnitToast";
+import { EXPIRATION_DATE_TIME } from "../../../pages/google-drive-auth-result";
 
 interface IProps {
   _gdriveLessonFolderId?: string;
@@ -77,7 +80,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
         if (refreshResult && refreshResult.access_token) {
           // Update cookies with new token
           setAppCookie("gdriveAccessToken", refreshResult.access_token, {
-            expires: new Date(refreshResult.expires_at),
+            expires: EXPIRATION_DATE_TIME,
             secure: true,
             path: "/",
           });
@@ -86,7 +89,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
             "gdriveAccessTokenExp",
             refreshResult.expires_at.toString(),
             {
-              expires: new Date(refreshResult.expires_at),
+              expires: EXPIRATION_DATE_TIME,
               secure: true,
               path: "/",
             }
@@ -170,31 +173,32 @@ const CopyLessonBtn: React.FC<IProps> = ({
             console.log("reqBody: ", reqBody);
             debugger;
 
-            const response = await axios.post<{ lessonGdriveFolderId?: string, errorObj?: unknown }>(
-              "/api/gp-plus/copy-lesson",
-              reqBody,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "gdrive-token": currentValidToken,
-                  "gdrive-token-refresh": gdriveRefreshToken,
-                },
-              }
-            );
+            const response = await axios.post<{
+              lessonGdriveFolderId?: string;
+              errorObj?: unknown;
+            }>("/api/gp-plus/copy-lesson", reqBody, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "gdrive-token": currentValidToken,
+                "gdrive-token-refresh": gdriveRefreshToken,
+              },
+            });
 
-            if (response.data?.errorObj || !response.data?.lessonGdriveFolderId) {
+            if (
+              response.data?.errorObj ||
+              !response.data?.lessonGdriveFolderId
+            ) {
               console.error("Error copying lesson:", response.data.errorObj);
-              alert("Failed to copy lesson. Please try again.")
+              alert("Failed to copy lesson. Please try again.");
               return;
             }
-            
 
             console.log("Response: ", response);
             setGdriveLessonFolderId(response.data?.lessonGdriveFolderId);
           }
         } catch (error) {
           console.error("An error occurred: ", error);
-          alert("Failed to copy lesson. Please try again.")
+          alert("Failed to copy lesson. Please try again.");
         }
       },
     });
@@ -222,64 +226,82 @@ const CopyLessonBtn: React.FC<IProps> = ({
   didInitialRenderOccur.current = true;
 
   return (
-    <Button
-      ref={btnRef}
-      onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
-      style={{
-        pointerEvents: isCopyingUnitBtnDisabled ? "none" : "auto",
-        minHeight: "51px",
-        backgroundColor: "white",
-        border: "solid 3px #2339C4",
-        borderRadius: "2em",
-        textTransform: "none",
-        minWidth: "300px",
-        width: "fit-content",
-      }}
-      className={`px-3 py-2 col-12 ${
-        isCopyingUnitBtnDisabled ? "opacity-25" : "opacity-100"
-      } mb-3`}
-      disabled={!didInitialRenderOccur.current || isCopyingUnitBtnDisabled}
-    >
-      {didInitialRenderOccur.current ? (
-        <div className="d-flex flex-row align-items-center justify-content-center gap-2">
-          {isCopyingUnitBtnDisabled ? (
-            <Spinner className="text-black" />
-          ) : (
-            <>
-              <Image
-                alt="gp_plus_logo"
-                src="/plus/plus.png"
-                width={32}
-                height={32}
-              />
-              <div
-                style={{ lineHeight: "23px", fontSize: "18px" }}
-                className="d-flex flex-column text-black"
-              >
-                {isGpPlusMember && !gdriveAccessToken && (
-                  <>Authenticate w/ Google Drive & Copy Unit</>
-                )}
-                {isGpPlusMember &&
-                  gdriveAccessToken &&
-                  (gdriveLessonFolderId
-                    ? "Select and copy to my Google Drive again"
-                    : "Select and copy to my Google Drive")}
-                {!isGpPlusMember && (
-                  <>Subscribe to copy this whole unit to Google Drive</>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      ) : (
+    <div style={{ width: 'fit-content' }} className="mb-4">
+      <Button
+        ref={btnRef}
+        onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
+        style={{
+          pointerEvents: isCopyingUnitBtnDisabled ? "none" : "auto",
+          minHeight: "51px",
+          backgroundColor: "white",
+          border: "solid 3px #2339C4",
+          borderRadius: "2em",
+          textTransform: "none",
+          minWidth: "300px",
+          width: "fit-content",
+        }}
+        className={`px-3 py-2 col-12 ${
+          isCopyingUnitBtnDisabled ? "opacity-25" : "opacity-100"
+        }`}
+        disabled={!didInitialRenderOccur.current || isCopyingUnitBtnDisabled}
+      >
+        {didInitialRenderOccur.current ? (
+          <div className="d-flex flex-row align-items-center justify-content-center gap-2">
+            {isCopyingUnitBtnDisabled ? (
+              <Spinner className="text-black" />
+            ) : (
+              <>
+                <Image
+                  alt="gp_plus_logo"
+                  src="/plus/plus.png"
+                  width={32}
+                  height={32}
+                />
+                <div
+                  style={{ lineHeight: "23px", fontSize: "18px" }}
+                  className="d-flex flex-column text-black"
+                >
+                  {isGpPlusMember && !gdriveAccessToken && (
+                    <>Authenticate w/ Google Drive & Copy lesson</>
+                  )}
+                  {isGpPlusMember &&
+                    gdriveAccessToken &&
+                    (gdriveLessonFolderId
+                      ? "Select and copy to my Google Drive again"
+                      : "Select and copy to my Google Drive")}
+                  {!isGpPlusMember && (
+                    <>Subscribe to copy this lesson to your Google Drive</>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <div
+            className="spinner-border spinner-border-sm text-light"
+            role="status"
+          >
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        )}
+      </Button>
+      {gdriveLessonFolderId && (
         <div
-          className="spinner-border spinner-border-sm text-light"
-          role="status"
+          style={{ fontSize: "18px" }}
+          className="text-break mx-auto text-center mt-1 mb-2"
         >
-          <span className="visually-hidden">Loading...</span>
+          Your latest copy of this lesson is linked
+          <Link
+            target="_blank"
+            className="ms-1 text-start text-lg-center"
+            href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${gdriveLessonFolderId}`}
+          >
+            here
+          </Link>
+          .
         </div>
       )}
-    </Button>
+    </div>
   );
 };
 
