@@ -17,32 +17,37 @@ import { EXPIRATION_DATE_TIME } from "../../../pages/google-drive-auth-result";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { useLessonContext } from "../../../providers/LessonProvider";
 import Cookies from "js-cookie";
+import { TCopyLessonReqBody } from "../../../pages/api/gp-plus/copy-lesson";
 
 interface IProps {
-  _gdriveLessonFolderId?: Pick<
+  sharedGDriveLessonFolderId?: Pick<
     INewUnitLesson,
-    "gdriveLessonFolderId"
-  >["gdriveLessonFolderId"];
+    "sharedGDriveLessonFolderId"
+  >["sharedGDriveLessonFolderId"];
+  _userGDriveLessonFolderId?: Pick<
+    INewUnitLesson,
+    "userGDriveLessonFolderId"
+  >["userGDriveLessonFolderId"];
   GdrivePublicID: string;
   MediumTitle: string;
   lessonName: string;
   lessonId: string | number;
-  sharedDriveLessonFolderId?: string,
+  sharedDriveLessonFolderId?: string;
+  lessonSharedDriveFolderName?: string;
 }
 
 const CopyLessonBtn: React.FC<IProps> = ({
-  _gdriveLessonFolderId,
-  sharedDriveLessonFolderId,
+  sharedGDriveLessonFolderId,
   MediumTitle,
   GdrivePublicID,
   lessonId,
   lessonName,
+  lessonSharedDriveFolderName,
+  _userGDriveLessonFolderId,
 }) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
-  const {
-    _lessonToCopy
-  } = useLessonContext()
+  const { _lessonToCopy } = useLessonContext();
   const router = useRouter();
   const { _isGpPlusModalDisplayed } = useModalContext();
   const [, setLessonToCopy] = _lessonToCopy;
@@ -56,18 +61,19 @@ const CopyLessonBtn: React.FC<IProps> = ({
   } = useSiteSession();
   const { setAppCookie } = useCustomCookies();
   const [openPicker, authResult] = useDrivePicker();
-  const [isCopyLessonBtnDisabled, setCanPressCopyLessonBtn] = _isCopyUnitBtnDisabled;
+  const [isCopyLessonBtnDisabled, setCanPressCopyLessonBtn] =
+    _isCopyUnitBtnDisabled;
   const [isCopyingLesson, setIsCopyingLesson] = useState(false);
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const didInitialRenderOccur = useRef(false);
-  const [gdriveLessonFolderId, setGdriveLessonFolderId] = useState(
-    _gdriveLessonFolderId
+  const [userGDriveLessonFolderId, setUserGDriveLessonFolderId] = useState(
+    _userGDriveLessonFolderId
   );
 
   const ensureValidToken = async () => {
     const gdriveRefreshToken = Cookies.get("gdriveRefreshToken");
     const gdriveAccessToken = Cookies.get("gdriveAccessToken");
-    
+
     console.log("gdriveRefreshToken: ", gdriveRefreshToken);
 
     console.log("gdriveAccessToken: ", gdriveAccessToken);
@@ -142,7 +148,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
 
     console.log(
       "Copying existing lesson google drive id: ",
-      sharedDriveLessonFolderId
+      sharedGDriveLessonFolderId
     );
 
     openPicker({
@@ -152,7 +158,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
       viewId: "DOCS",
       token: validToken,
       showUploadView: true,
-      setParentFolder: sharedDriveLessonFolderId,
+      setParentFolder: sharedGDriveLessonFolderId,
       showUploadFolders: true,
       setIncludeFolders: true,
       customScopes: [
@@ -167,10 +173,19 @@ const CopyLessonBtn: React.FC<IProps> = ({
           // Ensure token is still valid before making the API call
           setIsCopyingLesson(true);
 
+          // if (!sharedGDriveLessonFolderId || !lessonSharedDriveFolderName) {
+          //   alert(
+          //     "An error has occurred. Please refresh the page and try again."
+          //   );
+          //   return;
+          // }
+
           const currentValidToken = await ensureValidToken();
 
           if (!currentValidToken) {
-            alert("Your google drive session has expired. Please log in again.");
+            alert(
+              "Your google drive session has expired. Please log in again."
+            );
             setIsCopyingLesson(false);
             setLocalStorageItem(
               "gpPlusFeatureLocation",
@@ -184,7 +199,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
           if (data?.docs?.length) {
             console.log("First document ID, data?.docs: ", data?.docs);
             const fileIds = data.docs.map((file) => file.id);
-            const reqBody = {
+            const reqBody: TCopyLessonReqBody = {
               fileIds,
               unit: {
                 id: GdrivePublicID,
@@ -194,6 +209,8 @@ const CopyLessonBtn: React.FC<IProps> = ({
                 id:
                   typeof lessonId === "number" ? lessonId.toString() : lessonId,
                 name: lessonName,
+                sharedGDriveLessonFolderId,
+                lessonSharedDriveFolderName,
               },
             };
 
@@ -220,7 +237,8 @@ const CopyLessonBtn: React.FC<IProps> = ({
             }
 
             console.log("Response: ", response);
-            setGdriveLessonFolderId(response.data?.lessonGdriveFolderId);
+
+            setUserGDriveLessonFolderId(response.data?.lessonGdriveFolderId);
           }
         } catch (error) {
           console.error("An error occurred: ", error);
@@ -230,7 +248,6 @@ const CopyLessonBtn: React.FC<IProps> = ({
         }
       },
     });
-
 
     return;
   };
@@ -300,7 +317,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
                   )}
                   {isGpPlusMember &&
                     gdriveAccessToken &&
-                    (gdriveLessonFolderId
+                    (userGDriveLessonFolderId
                       ? "Select and copy to my Google Drive again"
                       : "Select and copy to my Google Drive")}
                   {!isGpPlusMember && (
@@ -319,7 +336,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
           </div>
         )}
       </Button>
-      {gdriveLessonFolderId && (
+      {userGDriveLessonFolderId && (
         <div
           style={{ fontSize: "18px" }}
           className="text-break mx-auto text-center mt-1 mb-2"
@@ -328,7 +345,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
           <Link
             target="_blank"
             className="ms-1 text-start text-lg-center"
-            href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${gdriveLessonFolderId}`}
+            href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${userGDriveLessonFolderId}`}
           >
             here
           </Link>

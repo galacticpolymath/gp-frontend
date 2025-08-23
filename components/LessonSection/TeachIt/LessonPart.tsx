@@ -57,7 +57,7 @@ const SignInSuggestion = ({
 };
 
 interface ILessonPartProps
-  extends Pick<INewUnitLesson, "gdriveLessonFolderId"> {
+  extends Pick<INewUnitLesson, "sharedGDriveLessonFolderId" | "sharedGDriveLessonFolderName"> {
   resources?: IResource;
   GradesOrYears?: string | null;
   removeClickToSeeMoreTxt: () => void;
@@ -111,7 +111,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     ComingSoonLessonEmailSignUp = null,
     accordionBtnStyle = {},
     isAccordionExpandable = true,
-    gdriveLessonFolderId
+    sharedGDriveLessonFolderId,
+    sharedGDriveLessonFolderName
   } = props;
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
@@ -560,7 +561,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 MediumTitle={unitMediumTitle}
                 lessonId={lsnNum}
                 lessonName={lsnTitle}
-                sharedDriveLessonFolderId={gdriveLessonFolderId}
+                sharedGDriveLessonFolderId={sharedGDriveLessonFolderId}
+                lessonSharedDriveFolderName={sharedGDriveLessonFolderName}
               />
             )}
             <div className="d-flex align-items-start">

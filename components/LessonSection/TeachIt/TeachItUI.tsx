@@ -592,7 +592,8 @@ const TeachItUI = <
                   <LessonPart
                     {...lessonTilesObj}
                     unitMediumTitle={MediumTitle!}
-                    gdriveLessonFolderId={"gdriveLessonFolderId" in part ? part.gdriveLessonFolderId : undefined}
+                    sharedGDriveLessonFolderId={"sharedGDriveLessonFolderId" in part ? part.sharedGDriveLessonFolderId : undefined}
+                    sharedGDriveLessonFolderName={"sharedGDriveLessonFolderName" in part ? part.sharedGDriveLessonFolderName : undefined}
                     GdrivePublicID={GdrivePublicID!}
                     gradeVarNote={gradeVarNote}
                     GradesOrYears={GradesOrYears}

@@ -1,6 +1,10 @@
 import { drive_v3, google } from "googleapis";
 import { createGoogleDriveFolderForUser } from "../../pages/api/gp-plus/copy-unit";
-import { FileMetaData, GoogleServiceAccountAuthCreds, refreshAuthToken } from "./googleDriveServices";
+import {
+  FileMetaData,
+  GoogleServiceAccountAuthCreds,
+  refreshAuthToken,
+} from "./googleDriveServices";
 import { OAuth2Client } from "google-auth-library";
 import { CustomError } from "../utils/errors";
 import axios from "axios";
@@ -13,6 +17,39 @@ type TUnitFolder = Partial<{
   pathToFile?: string;
   parentFolderId?: string;
 }>;
+
+const getCanRetry = async (
+  error: any,
+  refreshToken: string,
+  reqOriginForRefreshingToken: string
+) => {
+  if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
+    console.log("Will refresh the auth token...");
+
+    const refreshTokenRes =
+      (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ?? {};
+    const { accessToken } = refreshTokenRes;
+
+    if (!accessToken) {
+      throw new Error("Failed to refresh access token");
+    }
+
+    return {
+      canRetry: true,
+      accessToken,
+    };
+  }
+
+  if (error?.code === "ECONNABORTED") {
+    return {
+      canRetry: true,
+    };
+  }
+
+  return {
+    canRetry: false,
+  };
+};
 
 export const createDrive = async () => {
   const drive = google.drive("v3");
@@ -267,33 +304,39 @@ export const getFolderChildItems = async (
   return unitFolders;
 };
 
-export const getTargetFolderChildItems = async (drive: drive_v3.Drive, unitId: string) => {
+export const getTargetFolderChildItems = async (
+  drive: drive_v3.Drive,
+  unitId: string
+) => {
   try {
     const gdriveResponse = await drive.files.list({
-    corpora: "drive",
-    includeItemsFromAllDrives: true,
-    supportsAllDrives: true,
-    driveId: process.env.GOOGLE_DRIVE_ID,
-    q: `'${unitId}' in parents`,
-    fields: "*",
-  });
+      corpora: "drive",
+      includeItemsFromAllDrives: true,
+      supportsAllDrives: true,
+      driveId: process.env.GOOGLE_DRIVE_ID,
+      q: `'${unitId}' in parents`,
+      fields: "*",
+    });
 
-  if (!gdriveResponse.data?.files) {
-    throw new CustomError(
-      "Failed to get the root items of the target unit folder.",
-      500
+    if (!gdriveResponse.data?.files) {
+      throw new CustomError(
+        "Failed to get the root items of the target unit folder.",
+        500
+      );
+    }
+
+    const allChildFiles = await getFolderChildItems(gdriveResponse.data.files);
+
+    return allChildFiles;
+  } catch (error) {
+    console.error(
+      "Failed to get the target folder child items. Reason: ",
+      error
     );
-  }
-
-  const allChildFiles = await getFolderChildItems(gdriveResponse.data.files);
-
-  return allChildFiles;
-  } catch(error){
-    console.error("Failed to get the target folder child items. Reason: ", error);
 
     return null;
   }
-}
+};
 
 export const createFolderStructure = async (
   unitFolders: TUnitFolder[],
@@ -412,14 +455,12 @@ export const getTargetUserPermission = async (
   });
 };
 
-export const getUnitGDriveChildItems = async (
-  unitId: string,
-) => {
+export const getUnitGDriveChildItems = async (unitId: string) => {
   try {
-    const drive = await createDrive();    
+    const drive = await createDrive();
 
     console.log(`Getting the GDrive child items for the unit: ${unitId}`);
-    
+
     const gdriveResponse = await drive.files.list({
       corpora: "drive",
       includeItemsFromAllDrives: true,
@@ -458,21 +499,21 @@ export const getGoogleDriveItem = async (
   fileId: string,
   accessToken: string,
   tries = 3,
-  willRetry = true,
+  willRetry = true
 ): Promise<{ id: string; [key: string]: unknown } | { errType: string }> => {
   try {
-    const { status, data } = await axios.get<{ id: string; [key: string]: unknown }>(
-      `https://www.googleapis.com/drive/v2/files/${fileId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        params: {
-          supportsAllDrives: true,
-        },
-      }
-    );
+    const { status, data } = await axios.get<{
+      id: string;
+      [key: string]: unknown;
+    }>(`https://www.googleapis.com/drive/v2/files/${fileId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      params: {
+        supportsAllDrives: true,
+      },
+    });
 
     if (status !== 200) {
       throw new CustomError(
@@ -484,7 +525,6 @@ export const getGoogleDriveItem = async (
     return data;
   } catch (error: any) {
     console.error("Failed to retrieve Google Drive item. Error: ", error);
-    
 
     if (error?.response?.data?.error?.code === 404) {
       return {
@@ -492,20 +532,20 @@ export const getGoogleDriveItem = async (
       };
     }
 
-    if(error?.response?.data?.error?.status === "UNAUTHENTICATED"){
+    if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
       return {
-        errType: "unauthenticated"
-      }
+        errType: "unauthenticated",
+      };
     }
 
     if (error?.code === "ECONNABORTED" && tries > 0 && willRetry) {
       await waitWithExponentialBackOff(tries, [2_000, 5_000]);
 
       return await getGoogleDriveItem(fileId, accessToken, tries - 1);
-    } else if (error?.code === "ECONNABORTED" && willRetry){
+    } else if (error?.code === "ECONNABORTED" && willRetry) {
       return {
-        errType: "timeout"
-      }
+        errType: "timeout",
+      };
     }
 
     return {
@@ -536,7 +576,11 @@ export const createGDriveFolder = async (
   tries: number = 3,
   refreshToken?: string,
   reqOriginForRefreshingToken?: string
-): Promise<{ wasSuccessful: boolean, folderId?: string, [key: string]: unknown }> => {
+): Promise<{
+  wasSuccessful: boolean;
+  folderId?: string;
+  [key: string]: unknown;
+}> => {
   try {
     const folderMetadata = new FileMetaData(folderName, parentFolderIds);
     const response = await axios.post(
@@ -595,5 +639,92 @@ export const createGDriveFolder = async (
       errMsg: errMsg,
       status: error?.response?.data?.error?.status,
     };
+  }
+};
+
+type TCopiedFile = { id: string; [key: string]: unknown };
+
+export const copyGDriveItem = async (
+  accessToken: string,
+  parentFolderIds: string[],
+  fileId: string,
+  refreshToken: string,
+  clientOrigin: string,
+  tries = 3
+): Promise<
+  | TCopiedFile
+  | { errType: string; errMsg?: string; status?: number; errorObj?: any }
+> => {
+  const reqBody = parentFolderIds ? { parents: parentFolderIds } : {};
+
+  try {
+    console.log("fileId, sup there: ", fileId);
+
+    const { status, data } = await axios.post<TCopiedFile>(
+      `https://www.googleapis.com/drive/v3/files/${fileId}/copy`,
+      reqBody,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        params: {
+          supportsAllDrives: true,
+        },
+      }
+    );
+
+    if (status !== 200) {
+      throw new Error(
+        `Failed to copy a file with id ${fileId}. Status: ${status}`
+      );
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error("Failed to copy files with user. Reason: ", error);
+    console.error(
+      "Failed to copy files with user. Reason, keys: ",
+      Object.keys(error)
+    );
+    const response = error.response;
+
+    console.log("The response: ", response);
+    console.log("The response errors: ", response?.data?.error);
+
+    const { canRetry } = await getCanRetry(error, refreshToken, clientOrigin);
+
+    if (canRetry && tries <= 0) {
+      return {
+        errType: "timeout",
+      };
+    }
+
+    if (canRetry) {
+      console.log("Retrying to copy files with user...");
+
+      console.log(`The current tries are: ${tries}. Will pause...`);
+
+      await waitWithExponentialBackOff(tries);
+
+      tries -= 1;
+
+      return await copyGDriveItem(
+        accessToken,
+        parentFolderIds,
+        fileId,
+        refreshToken,
+        clientOrigin,
+        tries,
+      );
+    }
+
+    if (response.status === 404) {
+      return {
+        errType: "notFound",
+      };
+    }
+
+    return { errType: "generalErr", errorObj: error };
   }
 };

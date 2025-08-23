@@ -156,8 +156,10 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
   "https://docs.google.com",
 ]);
 
-const LessonDetails = ({ lesson, unit, unitGDriveChildItems }: IProps) => {
-  console.log("unitGDriveChildItems: ", unitGDriveChildItems);
+const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
+
+  console.log("UNIT OBJECT: ", unit);
+  
 
   const router = useRouter();
   const {
@@ -954,8 +956,8 @@ export const getStaticProps = async (arg: {
               if (targetGDriveLessonFolder?.id && targetGDriveLessonFolder?.name) {
                 lesson = {
                   ...lesson,
-                  gdriveLessonFolderId: targetGDriveLessonFolder.id,
-                  gdriveLessonFolderName: targetGDriveLessonFolder.name
+                  sharedGDriveLessonFolderId: targetGDriveLessonFolder.id,
+                  sharedGDriveLessonFolderName: targetGDriveLessonFolder.name,
                 };
               }
 
