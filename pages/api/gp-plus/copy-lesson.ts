@@ -24,20 +24,22 @@ import {
   getTargetUserPermission,
 } from "../../../backend/services/gdriveServices";
 import { waitWithExponentialBackOff } from "../../../globalFns";
+import { drive_v3 } from "googleapis";
 
 export const maxDuration = 240;
 
 export type TCopyLessonReqBody = Partial<{
   fileIds: string[];
-  lesson: {
+  lesson: Partial<{
     id: string;
     lessonSharedDriveId: string;
+    lessonSharedDriveFolderName: string;
     name: string;
-  };
-  unit: {
+  }>;
+  unit: Partial<{
     id: string;
     name: string;
-  };
+  }>;
 }>;
 
 const createGoogleDriveFolderForUser = async (
@@ -113,6 +115,261 @@ const createGoogleDriveFolderForUser = async (
   }
 };
 
+const createUnitFolder = async (
+  unit: { id: string; name: string },
+  lessonId: string,
+  gDriveAccessToken: string,
+  gpPlusFolderId: string,
+  gDriveRefreshToken: string,
+  origin: string,
+  email: string
+) => {
+  const targetUnitFolderCreation = await createGoogleDriveFolderForUser(
+    unit.name,
+    gDriveAccessToken,
+    [gpPlusFolderId],
+    3,
+    gDriveRefreshToken,
+    origin
+  );
+
+  console.log("targetUnitFolderCreation: ", targetUnitFolderCreation);
+
+  if (!targetUnitFolderCreation.folderId) {
+    throw new CustomError(
+      `Error creating the folder for unit ${unit.name}. Reason: ${targetUnitFolderCreation.errMsg}`,
+      500
+    );
+  }
+
+  const userUpdatedWithNewUnitObjResult = await updateUserCustom(
+    { email },
+    addNewGDriveUnits([
+      {
+        unitDriveId: targetUnitFolderCreation.folderId,
+        unitId: unit.id,
+      },
+    ])
+  );
+
+  if (!userUpdatedWithNewUnitObjResult.wasSuccessful) {
+    console.error(
+      "Failed to update user with new unit lessons object. Error message: ",
+      userUpdatedWithNewUnitObjResult.errMsg
+    );
+  } else {
+    console.log(
+      "User was updated with new unit lessons object. New unit lessons object: "
+    );
+  }
+
+  console.log("Will get the target folder structure.");
+
+  console.log(`reqBody.unit.id: ${unit.id}`);
+
+  const drive = await createDrive();
+  const gdriveResponse = await drive.files.list({
+    corpora: "drive",
+    includeItemsFromAllDrives: true,
+    supportsAllDrives: true,
+    driveId: process.env.GOOGLE_DRIVE_ID,
+    q: `'${unit.id}' in parents`,
+    fields: "*",
+  });
+
+  if (!gdriveResponse.data?.files) {
+    throw new CustomError(
+      "Failed to get the root items of the target unit folder.",
+      500
+    );
+  }
+
+  const allChildFiles = await getFolderChildItems(gdriveResponse.data.files);
+
+  console.log("allChildFiles: ", allChildFiles);
+
+  const selectedClientLessonName = unit.name.toLowerCase();
+  const targetFolderStructureArr = await createFolderStructure(
+    allChildFiles,
+    gDriveAccessToken,
+    targetUnitFolderCreation.folderId,
+    gDriveRefreshToken,
+    origin
+  );
+  const targetLessonFolder = targetFolderStructureArr.find((folder) => {
+    const lessonName = folder.name?.split("_").at(-1);
+
+    return lessonName && lessonName.toLowerCase() === selectedClientLessonName;
+  });
+
+  console.log("targetLessonFolder: ", targetLessonFolder);
+
+  if (!targetLessonFolder?.id) {
+    throw new CustomError(
+      `The lesson named ${selectedClientLessonName} does not exist in the unit ${unit.name}.`,
+      400
+    );
+  }
+
+  const lessonDriveIdUpdatedResult = await updateUserCustom(
+    { email },
+    addNewGDriveLessons([
+      {
+        lessonDriveId: targetLessonFolder.id,
+        lessonNum: lessonId,
+      },
+    ]),
+    {
+      arrayFilters: [
+        createDbArrFilter(
+          "elem.unitDriveId",
+          targetUnitFolderCreation.folderId
+        ),
+      ],
+    }
+  );
+
+  if (!lessonDriveIdUpdatedResult.wasSuccessful) {
+    console.log(
+      "Failed to update the target user with the new lesson drive id. Reason: ",
+      lessonDriveIdUpdatedResult.errMsg
+    );
+  } else {
+    console.log(
+      "Successfully updated the target user with the new lesson drive id."
+    );
+  }
+
+  return targetLessonFolder.id;
+};
+
+const updatePermissionsForSharedFileItems = async (
+  drive: drive_v3.Drive,
+  email: string,
+  fileIds: string[]
+) => {
+  // get the parent folder id of the files to copy
+  const parentFolderId = (
+    await drive.files.get({
+      fileId: fileIds[0],
+      fields: "*",
+      supportsAllDrives: true,
+    })
+  ).data?.parents?.[0];
+
+  console.log("parentFolderId: ", parentFolderId);
+
+  if (!parentFolderId) {
+    throw new CustomError("The file does not have a parent folder.", 500);
+  }
+
+  const targetPermission = await getTargetUserPermission(
+    parentFolderId,
+    email,
+    drive
+  );
+
+  console.log("targetPermission: ", targetPermission);
+
+  if (!targetPermission?.id) {
+    throw new CustomError(
+      "The target permission for the gp plus user was not found.",
+      500
+    );
+  }
+
+  console.log("Will update the permission of the target file.");
+
+  // change the target user's permission to writer
+  const filePermissionsUpdated = await drive.permissions.update({
+    permissionId: targetPermission.id,
+    fileId: parentFolderId,
+    supportsAllDrives: true,
+    requestBody: {
+      role: "fileOrganizer",
+    },
+  });
+
+  console.log("filePermissionsUpdated: ", filePermissionsUpdated);
+
+  // make the target files read only
+  for (const fileId of fileIds) {
+    // @ts-ignore
+    const fileUpdated = await drive.files.update({
+      fileId: fileId,
+      supportsAllDrives: true,
+      requestBody: {
+        contentRestrictions: {
+          readOnly: true,
+          reason: "Making a copy for GP plus user.",
+        },
+      },
+    });
+
+    console.log("fileUpdated: ", fileUpdated);
+  }
+
+  return { id: parentFolderId, permissionId: targetPermission.id };
+};
+
+const copyFiles = async (
+  fileIds: string[],
+  email: string,
+  drive: drive_v3.Drive,
+  gDriveAccessToken: string,
+  lessonFolderId: string
+) => {
+  // check if the permission were propagated to all of the files to copy
+  for (const fileId of fileIds) {
+    const permission = await getTargetUserPermission(fileId, email, drive);
+
+    console.log("permission: ", permission);
+
+    let userUpdatedRole = permission?.role;
+    let tries = 7;
+
+    console.log(
+      "Made the target file read only and changed the target user's permission to writer."
+    );
+
+    while (userUpdatedRole !== "fileOrganizer") {
+      console.log(`tries: ${tries}`);
+      console.log(`userUpdatedRole: ${userUpdatedRole}`);
+
+      if (tries <= 0) {
+        console.error(
+          "Reached max tries. Failed to update the target user's permission."
+        );
+
+        throw new CustomError(
+          "Failed to update the target user's permission after reaching max tries.",
+          500
+        );
+      }
+
+      await waitWithExponentialBackOff(tries);
+
+      const permission = await getTargetUserPermission(fileId, email, drive);
+
+      userUpdatedRole = permission?.role;
+      tries -= 1;
+    }
+
+    console.log(`The role of the user is: ${userUpdatedRole}`);
+
+    console.log("The user's role was updated.");
+
+    console.log(`Will copy file: ${fileId}`);
+
+    const fileCopyResult = await copyFile(
+      gDriveAccessToken,
+      [lessonFolderId],
+      fileId
+    );
+    console.log("fileCopyResult: ", fileCopyResult);
+  }
+};
+
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
@@ -151,6 +408,7 @@ export default async function handler(
       !reqBody?.unit?.name ||
       !reqBody?.fileIds?.length ||
       !reqBody?.lesson?.id ||
+      !reqBody?.lesson?.lessonSharedDriveFolderName ||
       !reqBody?.lesson?.name
     ) {
       throw new CustomError(
@@ -177,17 +435,22 @@ export default async function handler(
       throw new CustomError("User not found", 404);
     }
 
-    let doesGpPlusFolderExist = !!user.gpPlusDriveFolderId;
+    const { gpPlusDriveFolderId, unitGDriveLessons: unitGDriveLessonsObjs } =
+      user;
+    let gpPlusFolderId = gpPlusDriveFolderId;
 
+    // checking if the 'My GP+ Units' folder exist in user's google drive
     if (user.gpPlusDriveFolderId) {
       const targetGDriveFolder = await getGoogleDriveItem(
         user.gpPlusDriveFolderId,
         gDriveAccessToken
       );
-      doesGpPlusFolderExist =
-        "id" in targetGDriveFolder && !!targetGDriveFolder.id;
+      gpPlusFolderId =
+        "id" in targetGDriveFolder && targetGDriveFolder.id
+          ? gpPlusFolderId
+          : undefined;
 
-      if (!doesGpPlusFolderExist) {
+      if (!gpPlusFolderId) {
         const updatedUserResult = await updateUser(
           { email },
           {
@@ -200,8 +463,76 @@ export default async function handler(
       }
     }
 
-    if(doesGpPlusFolderExist){
-      // TODO: the GP+ folder exist, check if the target unit exist
+    // the gp plus folder exist, will check if the target unit folder and the target lesson exist
+    if (gpPlusFolderId && unitGDriveLessonsObjs?.length) {
+      const { unitDriveId, lessonDriveIds } =
+        unitGDriveLessonsObjs.find((unitGDriveLessonsObj) => {
+          return unitGDriveLessonsObj.unitId === reqBody.unit!.id;
+        }) ?? {};
+      const doesTargetGDriveFolderUnitExist = unitDriveId
+        ? "id" in (await getGDriveItem(unitDriveId, gDriveAccessToken))
+        : false;
+      const doesTargetGDriveLessonFolderExist = unitDriveId
+        ? "id" in (await getGDriveItem(unitDriveId, gDriveAccessToken))
+        : false;
+
+      // the target unit does not exist and the target lesson does not exist
+      // TODO: create the lesson folder and copy all lesson items in that folder
+
+      // the target unit does exist and the target lesson does exist
+      // TODO: copy all lesson items into the lesson folder
+
+      // the target unit does not exist and the target lesson does exist
+      // TODO: copy all lessons items into the lesson folder
+
+      if (
+        !doesTargetGDriveFolderUnitExist &&
+        !doesTargetGDriveLessonFolderExist
+      ) {
+        const drive = await createDrive();
+        const origin = new URL(request.headers.referer ?? "").origin;
+        const lessonFolderId = await createUnitFolder(
+          {
+            id: reqBody.unit.id,
+            name: reqBody.unit.name,
+          },
+          reqBody.lesson.id,
+          gDriveAccessToken,
+          gpPlusFolderId,
+          gDriveRefreshToken,
+          origin,
+          email
+        );
+        const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
+          drive,
+          email,
+          reqBody.fileIds
+        );
+        parentFolder = {
+          id: copyItemsParentFolder.id,
+          permissionId: copyItemsParentFolder.permissionId,
+        };
+
+        await copyFiles(reqBody.fileIds, email, drive, gDriveAccessToken, lessonFolderId)
+
+        return response.json({
+          msg: "Lesson copied.",
+          // lessonGdriveFolderId: targetLessonFolder.id,
+        });
+      }
+
+      // the unit folder exist, but the lesson folder does not exist
+      // TODO: create the lesson folder into the target unit folder 
+      if(doesTargetGDriveFolderUnitExist && !doesTargetGDriveLessonFolderExist){
+        // GOAL: get all of the folders from the shared drive
+        // -get the target lesson folder
+        // -get the name of the
+        const x = createGoogleDriveFolderForUser
+      }
+
+      if(doesTargetGDriveLessonFolderExist){
+        
+      }
     }
 
     // TODO: if the unit folder doesn't exist, then delete the target unit from the user's unitGDriveLessons by its drive id
@@ -212,7 +543,8 @@ export default async function handler(
     // TODO: if the target lesson folder is there, then copy all items into the lesson folder
 
     // will create the gp plus folder and the target unit
-    if (!doesGpPlusFolderExist) {
+
+    if (!gpPlusFolderId) {
       const origin = new URL(request.headers.referer ?? "").origin;
       console.log("will create the gp plus unit folder");
       console.log("gDriveAccessToken: ", gDriveAccessToken);
@@ -233,6 +565,8 @@ export default async function handler(
         );
       }
 
+      gpPlusFolderId = gpPlusFolderCreationResult.folderId;
+
       const userUpdatedResult = await updateUser(
         { email },
         { gpPlusDriveFolderId: gpPlusFolderCreationResult.folderId }
@@ -246,258 +580,254 @@ export default async function handler(
       } else {
         console.log("'gpPlusDriveFolderId' was updated for target user.");
       }
+    }
 
-      const targetUnitFolderCreation = await createGoogleDriveFolderForUser(
-        reqBody.unit.name,
-        gDriveAccessToken,
-        [gpPlusFolderCreationResult.folderId],
-        3,
-        gDriveRefreshToken,
-        origin
+    // todo: HERE
+    const targetUnitFolderCreation = await createGoogleDriveFolderForUser(
+      reqBody.unit.name,
+      gDriveAccessToken,
+      [gpPlusFolderId],
+      3,
+      gDriveRefreshToken,
+      origin
+    );
+
+    console.log("targetUnitFolderCreation: ", targetUnitFolderCreation);
+
+    if (!targetUnitFolderCreation.folderId) {
+      throw new CustomError(
+        `Error creating the folder for unit ${reqBody.unit.name}. Reason: ${targetUnitFolderCreation.errMsg}`,
+        500
       );
+    }
 
-      console.log("targetUnitFolderCreation: ", targetUnitFolderCreation);
-
-      if (!targetUnitFolderCreation.folderId) {
-        throw new CustomError(
-          `Error creating the folder for unit ${reqBody.unit.name}. Reason: ${targetUnitFolderCreation.errMsg}`,
-          500
-        );
-      }
-
-      // find the unit within the unitGDriveLessons by the unitDriveId, and push the new lesson into lessonDriveIds
-
-      const userUpdatedWithNewUnitObjResult = await updateUserCustom(
-        { email },
-        addNewGDriveUnits([
-          {
-            unitDriveId: targetUnitFolderCreation.folderId,
-            unitId: reqBody.unit.id,
-          },
-        ])
-      );
-
-      if (!userUpdatedWithNewUnitObjResult.wasSuccessful) {
-        console.error(
-          "Failed to update user with new unit lessons object. Error message: ",
-          userUpdatedWithNewUnitObjResult.errMsg
-        );
-      } else {
-        console.log(
-          "User was updated with new unit lessons object. New unit lessons object: "
-        );
-      }
-
-      console.log("Will get the target folder structure.");
-
-      console.log(`reqBody.unit.id: ${reqBody.unit?.id}`);
-
-      const drive = await createDrive();
-      const gdriveResponse = await drive.files.list({
-        corpora: "drive",
-        includeItemsFromAllDrives: true,
-        supportsAllDrives: true,
-        driveId: process.env.GOOGLE_DRIVE_ID,
-        q: `'${reqBody.unit?.id}' in parents`,
-        fields: "*",
-      });
-
-      if (!gdriveResponse.data?.files) {
-        throw new CustomError(
-          "Failed to get the root items of the target unit folder.",
-          500
-        );
-      }
-
-      const allChildFiles = await getFolderChildItems(
-        gdriveResponse.data.files
-      );
-
-      console.log("allChildFiles: ", allChildFiles);
-
-      const selectedClientLessonName = reqBody.lesson.name.toLowerCase();
-      const targetFolderStructureArr = await createFolderStructure(
-        allChildFiles,
-        gDriveAccessToken,
-        targetUnitFolderCreation.folderId,
-        gDriveRefreshToken,
-        origin
-      );
-      const targetLessonFolder = targetFolderStructureArr.find((folder) => {
-        const lessonName = folder.name?.split("_").at(-1);
-
-        return (
-          lessonName && lessonName.toLowerCase() === selectedClientLessonName
-        );
-      });
-
-      console.log("targetLessonFolder: ", targetLessonFolder);
-
-      if (!targetLessonFolder?.id) {
-        throw new CustomError(
-          `The lesson named ${selectedClientLessonName} does not exist in the unit ${reqBody.unit.name}.`,
-          400
-        );
-      }
-
-      const lessonDriveIdUpdatedResult = await updateUserCustom(
-        { email },
-        addNewGDriveLessons([
-          {
-            lessonDriveId: targetLessonFolder.id,
-            lessonNum: reqBody.lesson.id,
-          },
-        ]),
+    const userUpdatedWithNewUnitObjResult = await updateUserCustom(
+      { email },
+      addNewGDriveUnits([
         {
-          arrayFilters: [
-            createDbArrFilter(
-              "elem.unitDriveId",
-              targetUnitFolderCreation.folderId
-            ),
-          ],
-        }
+          unitDriveId: targetUnitFolderCreation.folderId,
+          unitId: reqBody.unit.id,
+        },
+      ])
+    );
+
+    if (!userUpdatedWithNewUnitObjResult.wasSuccessful) {
+      console.error(
+        "Failed to update user with new unit lessons object. Error message: ",
+        userUpdatedWithNewUnitObjResult.errMsg
       );
+    } else {
+      console.log(
+        "User was updated with new unit lessons object. New unit lessons object: "
+      );
+    }
 
-      if (!lessonDriveIdUpdatedResult.wasSuccessful) {
-        console.log(
-          "Failed to update the target user with the new lesson drive id. Reason: ",
-          lessonDriveIdUpdatedResult.errMsg
-        );
-      } else {
-        console.log(
-          "Successfully updated the target user with the new lesson drive id."
-        );
+    console.log("Will get the target folder structure.");
+
+    console.log(`reqBody.unit.id: ${reqBody.unit?.id}`);
+
+    const drive = await createDrive();
+    const gdriveResponse = await drive.files.list({
+      corpora: "drive",
+      includeItemsFromAllDrives: true,
+      supportsAllDrives: true,
+      driveId: process.env.GOOGLE_DRIVE_ID,
+      q: `'${reqBody.unit?.id}' in parents`,
+      fields: "*",
+    });
+
+    if (!gdriveResponse.data?.files) {
+      throw new CustomError(
+        "Failed to get the root items of the target unit folder.",
+        500
+      );
+    }
+
+    const allChildFiles = await getFolderChildItems(gdriveResponse.data.files);
+
+    console.log("allChildFiles: ", allChildFiles);
+
+    const selectedClientLessonName = reqBody.lesson.name.toLowerCase();
+    const targetFolderStructureArr = await createFolderStructure(
+      allChildFiles,
+      gDriveAccessToken,
+      targetUnitFolderCreation.folderId,
+      gDriveRefreshToken,
+      origin
+    );
+    const targetLessonFolder = targetFolderStructureArr.find((folder) => {
+      const lessonName = folder.name?.split("_").at(-1);
+
+      return (
+        lessonName && lessonName.toLowerCase() === selectedClientLessonName
+      );
+    });
+
+    console.log("targetLessonFolder: ", targetLessonFolder);
+
+    if (!targetLessonFolder?.id) {
+      throw new CustomError(
+        `The lesson named ${selectedClientLessonName} does not exist in the unit ${reqBody.unit.name}.`,
+        400
+      );
+    }
+
+    const lessonDriveIdUpdatedResult = await updateUserCustom(
+      { email },
+      addNewGDriveLessons([
+        {
+          lessonDriveId: targetLessonFolder.id,
+          lessonNum: reqBody.lesson.id,
+        },
+      ]),
+      {
+        arrayFilters: [
+          createDbArrFilter(
+            "elem.unitDriveId",
+            targetUnitFolderCreation.folderId
+          ),
+        ],
       }
+    );
 
-      console.log("targetFolderStructureArr: ", targetFolderStructureArr);
+    if (!lessonDriveIdUpdatedResult.wasSuccessful) {
+      console.log(
+        "Failed to update the target user with the new lesson drive id. Reason: ",
+        lessonDriveIdUpdatedResult.errMsg
+      );
+    } else {
+      console.log(
+        "Successfully updated the target user with the new lesson drive id."
+      );
+    }
 
-      // get the parent folder id of the files to copy
-      const parentFolderId = (
-        await drive.files.get({
-          fileId: reqBody.fileIds[0],
-          fields: "*",
-          supportsAllDrives: true,
-        })
-      ).data?.parents?.[0];
+    console.log("targetFolderStructureArr: ", targetFolderStructureArr);
 
-      console.log("parentFolderId: ", parentFolderId);
+    // get the parent folder id of the files to copy
+    const parentFolderId = (
+      await drive.files.get({
+        fileId: reqBody.fileIds[0],
+        fields: "*",
+        supportsAllDrives: true,
+      })
+    ).data?.parents?.[0];
 
-      if (!parentFolderId) {
-        throw new CustomError("The file does not have a parent folder.", 500);
-      }
+    console.log("parentFolderId: ", parentFolderId);
 
-      const targetPermission = await getTargetUserPermission(
-        parentFolderId,
+    if (!parentFolderId) {
+      throw new CustomError("The file does not have a parent folder.", 500);
+    }
+
+    const targetPermission = await getTargetUserPermission(
+      parentFolderId,
+      jwtPayload.payload.email,
+      drive
+    );
+
+    console.log("targetPermission: ", targetPermission);
+
+    if (!targetPermission?.id) {
+      throw new CustomError(
+        "The target permission for the gp plus user was not found.",
+        500
+      );
+    }
+
+    console.log("Will update the permission of the target file.");
+
+    // change the target user's permission to writer
+    const filePermissionsUpdated = await drive.permissions.update({
+      permissionId: targetPermission.id,
+      fileId: parentFolderId,
+      supportsAllDrives: true,
+      requestBody: {
+        role: "fileOrganizer",
+      },
+    });
+    parentFolder = { id: parentFolderId, permissionId: targetPermission.id };
+
+    console.log("filePermissionsUpdated: ", filePermissionsUpdated);
+
+    // make the target files read only
+    for (const fileId of reqBody.fileIds) {
+      // @ts-ignore
+      const fileUpdated = await drive.files.update({
+        fileId: fileId,
+        supportsAllDrives: true,
+        requestBody: {
+          contentRestrictions: {
+            readOnly: true,
+            reason: "Making a copy for GP plus user.",
+          },
+        },
+      });
+
+      console.log("fileUpdated: ", fileUpdated);
+    }
+
+    // check if the permission were propagated to all of the files to copy
+    for (const fileId of reqBody.fileIds) {
+      const permission = await getTargetUserPermission(
+        fileId,
         jwtPayload.payload.email,
         drive
       );
 
-      console.log("targetPermission: ", targetPermission);
+      console.log("permission: ", permission);
 
-      if (!targetPermission?.id) {
-        throw new CustomError(
-          "The target permission for the gp plus user was not found.",
-          500
-        );
-      }
+      let userUpdatedRole = permission?.role;
+      let tries = 7;
 
-      console.log("Will update the permission of the target file.");
+      console.log(
+        "Made the target file read only and changed the target user's permission to writer."
+      );
 
-      // change the target user's permission to writer
-      const filePermissionsUpdated = await drive.permissions.update({
-        permissionId: targetPermission.id,
-        fileId: parentFolderId,
-        supportsAllDrives: true,
-        requestBody: {
-          role: "fileOrganizer",
-        },
-      });
-      parentFolder = { id: parentFolderId, permissionId: targetPermission.id };
+      while (userUpdatedRole !== "fileOrganizer") {
+        console.log(`tries: ${tries}`);
+        console.log(`userUpdatedRole: ${userUpdatedRole}`);
 
-      console.log("filePermissionsUpdated: ", filePermissionsUpdated);
+        if (tries <= 0) {
+          console.error(
+            "Reached max tries. Failed to update the target user's permission."
+          );
 
-      // make the target files read only
-      for (const fileId of reqBody.fileIds) {
-        // @ts-ignore
-        const fileUpdated = await drive.files.update({
-          fileId: fileId,
-          supportsAllDrives: true,
-          requestBody: {
-            contentRestrictions: {
-              readOnly: true,
-              reason: "Making a copy for GP plus user.",
-            },
-          },
-        });
+          throw new CustomError(
+            "Failed to update the target user's permission after reaching max tries.",
+            500
+          );
+        }
 
-        console.log("fileUpdated: ", fileUpdated);
-      }
+        await waitWithExponentialBackOff(tries);
 
-      // check if the permission were propagated to all of the files to copy
-      for (const fileId of reqBody.fileIds) {
         const permission = await getTargetUserPermission(
           fileId,
           jwtPayload.payload.email,
           drive
         );
 
-        console.log("permission: ", permission);
-
-        let userUpdatedRole = permission?.role;
-        let tries = 7;
-
-        console.log(
-          "Made the target file read only and changed the target user's permission to writer."
-        );
-
-        while (userUpdatedRole !== "fileOrganizer") {
-          console.log(`tries: ${tries}`);
-          console.log(`userUpdatedRole: ${userUpdatedRole}`);
-
-          if (tries <= 0) {
-            console.error(
-              "Reached max tries. Failed to update the target user's permission."
-            );
-
-            throw new CustomError(
-              "Failed to update the target user's permission after reaching max tries.",
-              500
-            );
-          }
-
-          await waitWithExponentialBackOff(tries);
-
-          const permission = await getTargetUserPermission(
-            fileId,
-            jwtPayload.payload.email,
-            drive
-          );
-
-          userUpdatedRole = permission?.role;
-        }
-
-        console.log(`The role of the user is: ${userUpdatedRole}`);
-
-        console.log("The user's role was updated.");
-
-        console.log(`Will copy file: ${fileId}`);
-
-        const fileCopyResult = await copyFile(
-          gDriveAccessToken,
-          [targetLessonFolder.id],
-          fileId
-        );
-        console.log("fileCopyResult: ", fileCopyResult);
+        userUpdatedRole = permission?.role;
       }
 
-      console.log("targetLessonFolder.id: ", targetLessonFolder.id);
+      console.log(`The role of the user is: ${userUpdatedRole}`);
 
-      return response.json({
-        msg: "Lesson copied.",
-        lessonGdriveFolderId: targetLessonFolder.id,
-      });
+      console.log("The user's role was updated.");
+
+      console.log(`Will copy file: ${fileId}`);
+
+      const fileCopyResult = await copyFile(
+        gDriveAccessToken,
+        [targetLessonFolder.id],
+        fileId
+      );
+      console.log("fileCopyResult: ", fileCopyResult);
     }
 
+    console.log("targetLessonFolder.id: ", targetLessonFolder.id);
+
+    return response.json({
+      msg: "Lesson copied.",
+      lessonGdriveFolderId: targetLessonFolder.id,
+    });
     // TODO: if user.gpPlusDriveFolderId does not exist in the drive, then delete gpPlusDriveFolderId and the unitGDriveLessons
   } catch (error: any) {
     // Send an error response back to the client

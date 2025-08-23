@@ -937,7 +937,7 @@ export const getStaticProps = async (arg: {
         const resourcesForUIPromises = resources.map(async (resource) => {
           const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
             async (lesson) => {
-              const targetGDriveLessonFolderId = unitGDriveChildItems?.find(
+              const targetGDriveLessonFolder = unitGDriveChildItems?.find(
                 (item) => {
                   const lessonName = item?.name?.split("_").at(-1);
 
@@ -947,14 +947,15 @@ export const getStaticProps = async (arg: {
                     lessonName.toLowerCase() === lesson.title.toLowerCase()
                   );
                 }
-              )?.id;
+              );
 
-              console.log("targetGDriveLessonFolderId: ", targetGDriveLessonFolderId);
+              console.log("targetGDriveLessonFolder: ", targetGDriveLessonFolder);
 
-              if (targetGDriveLessonFolderId){
+              if (targetGDriveLessonFolder?.id && targetGDriveLessonFolder?.name) {
                 lesson = {
                   ...lesson,
-                  gdriveLessonFolderId: targetGDriveLessonFolderId,
+                  gdriveLessonFolderId: targetGDriveLessonFolder.id,
+                  gdriveLessonFolderName: targetGDriveLessonFolder.name
                 };
               }
 

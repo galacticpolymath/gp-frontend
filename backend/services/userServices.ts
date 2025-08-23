@@ -464,7 +464,7 @@ export const getUserByEmail = async <
       projectionsObj
     ).lean();
 
-    return targetUser as Pick<TUser, TKeys>;
+    return targetUser as Partial<Pick<TUser, TKeys>>;
   } catch (error) {
     console.error(
       "Failed to receive the target user via email. Reason: ",
