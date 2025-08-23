@@ -188,22 +188,28 @@ export default async function handler(
         "id" in targetGDriveFolder && !!targetGDriveFolder.id;
 
       if (!doesGpPlusFolderExist) {
-        await updateUser(
+        const updatedUserResult = await updateUser(
           { email },
           {
             gpPlusDriveFolderId: undefined,
             unitGDriveLessons: undefined,
           }
         );
+
+        console.log({ updatedUserResult });
       }
     }
 
-    // TODO: if the unit folder doesn't exist, then delete the target unit from the user's unitGDriveLessons by its drive id 
+    if(doesGpPlusFolderExist){
+      // TODO: the GP+ folder exist, check if the target unit exist
+    }
+
+    // TODO: if the unit folder doesn't exist, then delete the target unit from the user's unitGDriveLessons by its drive id
 
     // TODO: if the unit lesson doesn't exist, then get the child items for the target unit using the service account, in order to get the name of the lesson
-    // -find it by using the lessonSharedDriveId from the client to get the target lesson 
+    // -find it by using the lessonSharedDriveId from the client to get the target lesson
 
-    // TODO: if the target lesson folder is there, then copy all items into the lesson folder 
+    // TODO: if the target lesson folder is there, then copy all items into the lesson folder
 
     // will create the gp plus folder and the target unit
     if (!doesGpPlusFolderExist) {
@@ -536,5 +542,4 @@ export default async function handler(
   }
 
   return response.status(200).json({ message: "Lesson copied successfully" });
-  
 }
