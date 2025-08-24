@@ -387,6 +387,7 @@ export const createFolderStructure = async (
           name: folderToCreate.name,
           pathToFile: "",
           parentFolderId: folderToCreate.parentFolderId,
+          originalFileId: folderToCreate.fileId
         });
       }
 
@@ -427,6 +428,7 @@ export const createFolderStructure = async (
       name: folderToCreate.name,
       pathToFile: folderToCreate.pathToFile,
       parentFolderId: folderToCreate.parentFolderId,
+      originalFileId: folderToCreate.fileId
     });
   }
 

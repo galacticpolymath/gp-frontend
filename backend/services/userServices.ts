@@ -540,7 +540,25 @@ type TUpdatableKey<
   TKeyB extends string = Extract<keyof IUnitGDriveLesson, "lessonDriveIds">
 > = `${TKeyA}.$[elem].${TKeyB}`;
 
-export const addNewGDriveLessons = (unitGDriveLessons: ILessonGDriveId[]) => {
+export const addNewGDriveLessons = (
+  unitGDriveLessons: ILessonGDriveId[],
+  isElemMatch: boolean = true
+) => {
+  if (!isElemMatch) {
+    const updates: Record<
+      Extract<keyof TUserSchemaV2, "unitGDriveLessons">,
+      TDbOperation<ILessonGDriveId>
+    > = {
+      unitGDriveLessons: {
+        $push: {
+          $each: unitGDriveLessons,
+        },
+      },
+    };
+
+    return updates;
+  }
+
   const updates: Record<TUpdatableKey, TDbOperation<ILessonGDriveId>> = {
     "unitGDriveLessons.$[elem].lessonDriveIds": {
       $push: {
@@ -552,13 +570,15 @@ export const addNewGDriveLessons = (unitGDriveLessons: ILessonGDriveId[]) => {
   return updates;
 };
 
-type TArrFilterKey<TKey extends string = Extract<keyof IUnitGDriveLesson, "unitDriveId">> = `elem.${TKey}`
+type TArrFilterKey<
+  TKey extends string = Extract<keyof IUnitGDriveLesson, "unitDriveId">
+> = `elem.${TKey}`;
 
 export const createDbArrFilter = (key: TArrFilterKey, val: unknown) => {
-    return {
-      [key]: val
-    }
-}
+  return {
+    [key]: val,
+  };
+};
 
 export const updateUserCustom = async (
   filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},

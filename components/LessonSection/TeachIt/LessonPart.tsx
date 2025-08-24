@@ -27,10 +27,11 @@ import {
   IResource,
   IStep,
 } from "../../../backend/models/Unit/types/teachingMaterials";
-import { IItemForClient, TUseStateReturnVal } from "../../../types/global";
+import { IItemForClient, ILessonForUI, TUseStateReturnVal } from "../../../types/global";
 import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
 import { LAST_LESSON_NUM_ID, UNITS_URL_PATH } from "../../../shared/constants";
 import CopyLessonBtn from "./CopyLessonBtn";
+import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -57,7 +58,12 @@ const SignInSuggestion = ({
 };
 
 interface ILessonPartProps
-  extends Pick<INewUnitLesson, "sharedGDriveLessonFolderId" | "sharedGDriveLessonFolderName"> {
+  extends Pick<
+    INewUnitLesson,
+    | "sharedGDriveLessonFolderId"
+    | "sharedGDriveLessonFolderName"
+    | "allUnitLessons"
+  > {
   resources?: IResource;
   GradesOrYears?: string | null;
   removeClickToSeeMoreTxt: () => void;
@@ -83,11 +89,13 @@ interface ILessonPartProps
   gradeVarNote?: string | null;
   unitMediumTitle?: string | null;
   GdrivePublicID?: string | null;
+  unitId: Pick<INewUnitSchema, "_id">["_id"];
 }
 
 const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const {
     unitMediumTitle,
+    allUnitLessons,
     GdrivePublicID,
     lsnNum,
     lsnTitle,
@@ -107,12 +115,13 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     lessonTileForDesktop = null,
     lessonTileForMobile = null,
     ClickToSeeMoreComp = null,
+    unitId,
     FeedbackComp = null,
     ComingSoonLessonEmailSignUp = null,
     accordionBtnStyle = {},
     isAccordionExpandable = true,
     sharedGDriveLessonFolderId,
-    sharedGDriveLessonFolderName
+    sharedGDriveLessonFolderName,
   } = props;
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
@@ -557,12 +566,13 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
           <div className="mt-4 pb-1">
             {lsnNum && lsnTitle && GdrivePublicID && unitMediumTitle && (
               <CopyLessonBtn
-                GdrivePublicID={GdrivePublicID}
+                unitId={unitId!}
                 MediumTitle={unitMediumTitle}
                 lessonId={lsnNum}
                 lessonName={lsnTitle}
                 sharedGDriveLessonFolderId={sharedGDriveLessonFolderId}
                 lessonSharedDriveFolderName={sharedGDriveLessonFolderName}
+                allUnitLessons={allUnitLessons}
               />
             )}
             <div className="d-flex align-items-start">

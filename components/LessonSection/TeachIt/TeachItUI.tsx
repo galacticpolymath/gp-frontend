@@ -152,9 +152,11 @@ const TeachItUI = <
     GradesOrYears,
     GdrivePublicID,
     MediumTitle,
+    unitId
   } = props;
-  const { _lessonToCopy } = useLessonContext();
-  const [lessonToCopy] = _lessonToCopy;
+
+  console.log("parts, hi: ", parts);
+
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const {
@@ -591,9 +593,23 @@ const TeachItUI = <
                 return (
                   <LessonPart
                     {...lessonTilesObj}
+                    unitId={unitId!}
                     unitMediumTitle={MediumTitle!}
-                    sharedGDriveLessonFolderId={"sharedGDriveLessonFolderId" in part ? part.sharedGDriveLessonFolderId : undefined}
-                    sharedGDriveLessonFolderName={"sharedGDriveLessonFolderName" in part ? part.sharedGDriveLessonFolderName : undefined}
+                    allUnitLessons={
+                      "allUnitLessons" in part && part.allUnitLessons?.length
+                        ? part.allUnitLessons
+                        : undefined
+                    }
+                    sharedGDriveLessonFolderId={
+                      "sharedGDriveLessonFolderId" in part
+                        ? part.sharedGDriveLessonFolderId
+                        : undefined
+                    }
+                    sharedGDriveLessonFolderName={
+                      "sharedGDriveLessonFolderName" in part
+                        ? part.sharedGDriveLessonFolderName
+                        : undefined
+                    }
                     GdrivePublicID={GdrivePublicID!}
                     gradeVarNote={gradeVarNote}
                     GradesOrYears={GradesOrYears}

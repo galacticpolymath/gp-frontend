@@ -182,10 +182,11 @@ interface IChunkStep {
 }
 
 interface INewUnitLesson<TItem extends IItem = IItem> {
-  title: string | null;
   sharedGDriveLessonFolderId?: string;
   userGDriveLessonFolderId?: string;
   sharedGDriveLessonFolderName?: string;
+  allUnitLessons?: { id: string, sharedGDriveId: string }[]
+  title: string | null;
   lsn: number | null;
   status: string | null;
   updated_date: string | null;

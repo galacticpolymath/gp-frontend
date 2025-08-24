@@ -18,17 +18,18 @@ import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMater
 import { useLessonContext } from "../../../providers/LessonProvider";
 import Cookies from "js-cookie";
 import { TCopyLessonReqBody } from "../../../pages/api/gp-plus/copy-lesson";
+import { ILessonForUI } from "../../../types/global";
 
-interface IProps {
-  sharedGDriveLessonFolderId?: Pick<
+interface IProps
+  extends Pick<
     INewUnitLesson,
-    "sharedGDriveLessonFolderId"
-  >["sharedGDriveLessonFolderId"];
+    "sharedGDriveLessonFolderId" | "allUnitLessons"
+  > {
   _userGDriveLessonFolderId?: Pick<
     INewUnitLesson,
     "userGDriveLessonFolderId"
   >["userGDriveLessonFolderId"];
-  GdrivePublicID: string;
+  unitId: string;
   MediumTitle: string;
   lessonName: string;
   lessonId: string | number;
@@ -39,11 +40,12 @@ interface IProps {
 const CopyLessonBtn: React.FC<IProps> = ({
   sharedGDriveLessonFolderId,
   MediumTitle,
-  GdrivePublicID,
+  unitId,
   lessonId,
   lessonName,
   lessonSharedDriveFolderName,
   _userGDriveLessonFolderId,
+  allUnitLessons,
 }) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
@@ -202,7 +204,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
             const reqBody: TCopyLessonReqBody = {
               fileIds,
               unit: {
-                id: GdrivePublicID,
+                id: unitId,
                 name: MediumTitle,
               },
               lesson: {
@@ -212,6 +214,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
                 sharedGDriveLessonFolderId,
                 lessonSharedDriveFolderName,
               },
+              allUnitLessons,
             };
 
             console.log("reqBody: ", reqBody);

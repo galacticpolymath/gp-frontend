@@ -157,9 +157,7 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 ]);
 
 const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
-
   console.log("UNIT OBJECT: ", unit);
-  
 
   const router = useRouter();
   const {
@@ -937,6 +935,32 @@ export const getStaticProps = async (arg: {
         // TODO: get the folder structure of the target unit from google drive
         console.log("unitGDriveChildItems: ", unitGDriveChildItems);
         const resourcesForUIPromises = resources.map(async (resource) => {
+          const allUnitLessons: Pick<
+            INewUnitLesson,
+            "allUnitLessons"
+          >["allUnitLessons"] = [];
+
+          if (resource.lessons && unitGDriveChildItems) {
+            for (const lesson of resource.lessons) {
+              const targetUnitGDriveItem = unitGDriveChildItems?.find(item => {
+                const itemName = item?.name?.split("_").at(-1);
+
+                return (
+                  itemName &&
+                  lesson.title && itemName.toLowerCase() ===
+                    lesson.title.toLowerCase()
+                );
+              });
+
+              if (targetUnitGDriveItem?.id && lesson.lsn) {
+                allUnitLessons.push({
+                  id: lesson.lsn.toString(),
+                  sharedGDriveId: targetUnitGDriveItem.id,
+                });
+              }
+            }
+          }
+
           const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
             async (lesson) => {
               const targetGDriveLessonFolder = unitGDriveChildItems?.find(
@@ -951,13 +975,20 @@ export const getStaticProps = async (arg: {
                 }
               );
 
-              console.log("targetGDriveLessonFolder: ", targetGDriveLessonFolder);
+              console.log(
+                "targetGDriveLessonFolder: ",
+                targetGDriveLessonFolder
+              );
 
-              if (targetGDriveLessonFolder?.id && targetGDriveLessonFolder?.name) {
+              if (
+                targetGDriveLessonFolder?.id &&
+                targetGDriveLessonFolder?.name
+              ) {
                 lesson = {
                   ...lesson,
                   sharedGDriveLessonFolderId: targetGDriveLessonFolder.id,
                   sharedGDriveLessonFolderName: targetGDriveLessonFolder.name,
+                  allUnitLessons,
                 };
               }
 

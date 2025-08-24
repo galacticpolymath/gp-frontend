@@ -26,6 +26,11 @@ import {
 } from "../../../backend/services/gdriveServices";
 import { waitWithExponentialBackOff } from "../../../globalFns";
 import { drive_v3 } from "googleapis";
+import {
+  ILessonGDriveId,
+  IUnitGDriveLesson,
+} from "../../../backend/models/User/types";
+import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 
 export const maxDuration = 240;
 
@@ -41,15 +46,17 @@ export type TCopyLessonReqBody = {
     id: string;
     name: string;
   };
-};
+} & Pick<INewUnitLesson, "allUnitLessons">;
+
+// TODO: use allUntLessonIds to get all of the lesson folder ids that were created
 
 const createGDriveFolder = async (
   folderName: string,
   accessToken: string,
   parentFolderIds: string[] = [],
   tries: number = 3,
-  refreshToken?: string,
-  reqOriginForRefreshingToken?: string
+  clientOrigin: string,
+  refreshToken: string
 ): Promise<{
   wasSuccessful: boolean;
   folderId?: string;
@@ -90,8 +97,7 @@ const createGDriveFolder = async (
       console.log("the user is not authenticated: ", refreshToken);
 
       const refreshTokenRes =
-        (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ??
-        {};
+        (await refreshAuthToken(refreshToken, clientOrigin)) ?? {};
       const { accessToken } = refreshTokenRes;
 
       if (!accessToken) {
@@ -103,8 +109,8 @@ const createGDriveFolder = async (
         accessToken,
         parentFolderIds,
         tries,
-        refreshToken,
-        origin
+        clientOrigin,
+        refreshToken
       );
     }
 
@@ -151,7 +157,10 @@ const getCanRetry = async (
 
 const createUnitFolder = async (
   unit: { id: string; name: string },
-  lessonId: string,
+  lesson: {
+    id: string;
+    sharedGDriveId: string;
+  },
   gDriveAccessToken: string,
   gpPlusFolderId: string,
   gDriveRefreshToken: string,
@@ -163,8 +172,8 @@ const createUnitFolder = async (
     gDriveAccessToken,
     [gpPlusFolderId],
     3,
-    gDriveRefreshToken,
-    origin
+    origin,
+    gDriveRefreshToken
   );
 
   console.log("targetUnitFolderCreation: ", targetUnitFolderCreation);
@@ -230,11 +239,12 @@ const createUnitFolder = async (
     gDriveRefreshToken,
     origin
   );
-  console.log("targetFolderStructureArr: ", targetFolderStructureArr);
-  const targetLessonFolder = targetFolderStructureArr.find((folder) => {
-    const lessonName = folder.name?.split("_").at(-1);
 
-    return lessonName && lessonName.toLowerCase() === selectedClientLessonName.toLowerCase();
+  console.log("lesson.sharedGDriveId: ", lesson.sharedGDriveId);
+  console.log("targetFolderStructureArr: ", targetFolderStructureArr);
+
+  const targetLessonFolder = targetFolderStructureArr.find((folder) => {
+    return folder.originalFileId === lesson.sharedGDriveId;
   });
 
   console.log("targetLessonFolder: ", targetLessonFolder);
@@ -251,7 +261,7 @@ const createUnitFolder = async (
     addNewGDriveLessons([
       {
         lessonDriveId: targetLessonFolder.id,
-        lessonNum: lessonId,
+        lessonNum: lesson.id,
       },
     ]),
     {
@@ -409,6 +419,43 @@ const copyFiles = async (
   }
 };
 
+const addNewGDriveLessonToTargetUser = async (
+  email: string,
+  lessonGDriveIds: ILessonGDriveId[],
+  unit: Omit<IUnitGDriveLesson, "lessonDriveIds">
+) => {
+  console.log(`Adding new gdrive lessons to target user: ${email}`);
+
+  try {
+    const dbUser = await getUserByEmail(email);
+    const isUnitPresent = !dbUser?.unitGDriveLessons?.some(
+      (unitGDriveLessonsObj) => unitGDriveLessonsObj.unitId === unit.unitId
+    );
+    const lessonDriveIdUpdatedResult = await updateUserCustom(
+      { email },
+      addNewGDriveLessons(lessonGDriveIds, isUnitPresent),
+      isUnitPresent
+        ? {
+            arrayFilters: [
+              createDbArrFilter("elem.unitDriveId", unit.unitDriveId),
+            ],
+            upsert: true,
+          }
+        : {
+            upsert: true,
+          }
+    );
+
+    return lessonDriveIdUpdatedResult;
+  } catch (error) {
+    console.error("Error in addNewGDriveLessonToTargetUser: ", error);
+
+    return {
+      wasSuccessful: false,
+    };
+  }
+};
+
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
@@ -455,6 +502,8 @@ export default async function handler(
       !reqBody?.fileIds?.length ||
       !reqBody?.lesson?.id ||
       !reqBody?.lesson?.lessonSharedDriveFolderName ||
+      !reqBody?.lesson?.sharedGDriveLessonFolderId ||
+      !reqBody?.allUnitLessons ||
       !reqBody?.lesson?.name
     ) {
       throw new CustomError(
@@ -545,7 +594,10 @@ export default async function handler(
             id: reqBody.unit.id,
             name: reqBody.unit.name,
           },
-          reqBody.lesson.id,
+          {
+            id: reqBody.lesson.id,
+            sharedGDriveId: reqBody.lesson.sharedGDriveLessonFolderId,
+          },
           gDriveAccessToken,
           gpPlusFolderId,
           gDriveRefreshToken,
@@ -570,6 +622,17 @@ export default async function handler(
           lessonFolderId,
           gDriveRefreshToken,
           clientOrigin
+        );
+
+        const lessonDriveIdUpdatedResult = await updateUserCustom(
+          { email },
+          addNewGDriveLessons(
+            [{ lessonDriveId: lessonFolderId, lessonNum: reqBody.lesson.id }],
+            true
+          ),
+          {
+            arrayFilters: [createDbArrFilter("elem.unitDriveId", unitDriveId)],
+          }
         );
 
         return response.json({
@@ -733,13 +796,23 @@ export default async function handler(
 
     const userUpdatedWithNewUnitObjResult = await updateUserCustom(
       { email },
-      addNewGDriveUnits([
-        {
-          unitDriveId: targetUnitFolderCreation.folderId,
-          unitId: reqBody.unit.id,
+      {
+        'unitGDriveLessons': {
+          $push: {
+            unitDriveId: targetUnitFolderCreation.folderId,
+            unitId: reqBody.unit.id,
+          } as IUnitGDriveLesson,
         },
-      ])
+      },
+      {
+        upsert: true,
+      }
     );
+
+    console.log("Updated user with new unit lessons object. Proceeding to copy lessons...");
+
+    throw new Error("hi");
+    
 
     if (!userUpdatedWithNewUnitObjResult.wasSuccessful) {
       console.error(
@@ -800,6 +873,53 @@ export default async function handler(
       throw new CustomError(
         `The lesson named ${selectedClientLessonName} does not exist in the unit ${reqBody.unit.name}.`,
         400
+      );
+    }
+
+    console.log(
+      `The target lesson folder with the name ${selectedClientLessonName} was found with the id ${targetLessonFolder.id}`
+    );
+
+    const allUnitLessonFolders: ILessonGDriveId[] = [];
+
+    for (const folderSubItem of targetFolderStructureArr) {
+      const targetUnitLesson = reqBody.allUnitLessons.find(
+        (unitLesson) =>
+          unitLesson.sharedGDriveId === folderSubItem.originalFileId
+      );
+
+      if (targetUnitLesson && folderSubItem.id) {
+        allUnitLessonFolders.push({
+          lessonDriveId: folderSubItem.id,
+          lessonNum: targetUnitLesson.id,
+        });
+      }
+    }
+
+    console.log("allUnitLessonFolders: ", allUnitLessonFolders);
+
+    const { wasSuccessful } = await updateUserCustom(
+      { email },
+      {
+        'unitGDriveLessons.$[elem].lessonDriveIds': {
+          $push: {
+            $each: allUnitLessonFolders,
+          },
+        },
+      },
+      {
+        upsert: true,
+        arrayFilters:[{ "elem.unitDriveId": targetUnitFolderCreation.folderId }]
+      }
+    );
+
+    if (wasSuccessful) {
+      console.log(
+        "Successfully added the new lesson to the target user's object."
+      );
+    } else {
+      console.error(
+        "Failed to add the new lesson to the target user's object. Reason: "
       );
     }
 
@@ -950,7 +1070,7 @@ export default async function handler(
         [targetLessonFolder.id],
         fileId,
         gDriveRefreshToken,
-        origin
+        clientOrigin
       );
       console.log("fileCopyResult: ", fileCopyResult);
     }
@@ -969,9 +1089,12 @@ export default async function handler(
     console.dir(error);
     console.log("error?.response?.data: ", error?.response?.data);
 
-    return response
-      .status(code ?? 500)
-      .json({ error: message ?? `An error occurred. Error on server: ${error?.response?.data}`, errorObj: error });
+    return response.status(code ?? 500).json({
+      error:
+        message ??
+        `An error occurred. Error on server: ${error?.response?.data}`,
+      errorObj: error,
+    });
   } finally {
     if (parentFolder) {
       const drive = await createDrive();
