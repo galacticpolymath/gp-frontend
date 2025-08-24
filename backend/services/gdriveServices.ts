@@ -9,6 +9,7 @@ import { OAuth2Client } from "google-auth-library";
 import { CustomError } from "../utils/errors";
 import axios from "axios";
 import { waitWithExponentialBackOff } from "../../globalFns";
+import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../globalVars";
 
 type TUnitFolder = Partial<{
   name: string | null;
@@ -67,6 +68,68 @@ export const createDrive = async () => {
   google.options({ auth: authClient });
 
   return drive;
+};
+export const getFolderChildItemsInUserDrive = async (
+  folderId: string,
+  gdriveAccessToken: string,
+  gdriveRefreshToken: string,
+  clientOrigin: string,
+  tries = 3
+): Promise<drive_v3.Schema$FileList | null> => {
+  try {
+    const { status, data } = await axios.get<drive_v3.Schema$FileList>(
+      "https://www.googleapis.com/drive/v3/files",
+      {
+        headers: {
+          Authorization: `Bearer ${gdriveAccessToken}`,
+          "Content-Type": "application/json",
+        },
+        params: {
+          orderBy: "name",
+          q: `'${folderId}' in parents`,
+          supportAllDrives: true,
+          fields: "*"
+        },
+      }
+    );
+
+    if (status !== 200) {
+      throw new Error(
+        `Failed to get items in user's google drive. Status: ${status}. Data: ${data}`
+      );
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error(
+      "Failed to get items in user's google drive. Reason: ",
+      error
+    );
+
+    const canRetryResult = await getCanRetry(
+      error,
+      gdriveRefreshToken,
+      clientOrigin
+    );
+
+    console.log("canRetryResult: ", canRetryResult);
+
+    console.log(`getFolderChildItemsInUserDrive tries: ${tries}`);
+
+    if (canRetryResult.canRetry && tries > 0) {
+      await waitWithExponentialBackOff(tries);
+
+      return await getFolderChildItemsInUserDrive(
+        folderId,
+        gdriveAccessToken,
+        gdriveRefreshToken,
+        clientOrigin,
+        tries - 1
+      );
+    }
+
+    return null;
+  }
 };
 
 export const getFolderChildItems = async (
@@ -387,7 +450,7 @@ export const createFolderStructure = async (
           name: folderToCreate.name,
           pathToFile: "",
           parentFolderId: folderToCreate.parentFolderId,
-          originalFileId: folderToCreate.fileId
+          originalFileId: folderToCreate.fileId,
         });
       }
 
@@ -428,7 +491,7 @@ export const createFolderStructure = async (
       name: folderToCreate.name,
       pathToFile: folderToCreate.pathToFile,
       parentFolderId: folderToCreate.parentFolderId,
-      originalFileId: folderToCreate.fileId
+      originalFileId: folderToCreate.fileId,
     });
   }
 
@@ -717,7 +780,7 @@ export const copyGDriveItem = async (
         fileId,
         refreshToken,
         clientOrigin,
-        tries,
+        tries
       );
     }
 

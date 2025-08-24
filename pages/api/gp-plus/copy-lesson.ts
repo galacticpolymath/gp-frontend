@@ -42,6 +42,10 @@ export type TCopyLessonReqBody = {
     lessonSharedDriveFolderName: string;
     name: string;
   }>;
+  lessonsFolder: {
+    name: string,
+    id: string
+  };
   unit: Partial<{
     id: string;
     name: string;
@@ -744,7 +748,7 @@ export default async function handler(
           `The target unit folder with id ${unitDriveId} already exists, so we will create a new lesson folder with the name ${reqBody.lesson.lessonSharedDriveFolderName} and copy the items into it.`
         );
         const clientOrigin = new URL(request.headers.referer ?? "").origin;
-        // BUG: FIX IT 
+         
         const targetLessonFolderCreationResult = await createGDriveFolder(
           reqBody.lesson.lessonSharedDriveFolderName,
           gDriveAccessToken,
