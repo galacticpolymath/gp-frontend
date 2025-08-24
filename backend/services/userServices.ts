@@ -525,6 +525,7 @@ export const addNewGDriveUnits = (unitGDriveLessons: IUnitGDriveLesson[]) => {
     Extract<keyof TUserSchemaV2, "unitGDriveLessons">,
     TDbOperation<IUnitGDriveLesson>
   > = {
+    // TODO: WRONG SYNTAX, FIX IT
     unitGDriveLessons: {
       $push: {
         $each: unitGDriveLessons,

@@ -19,12 +19,13 @@ import { useLessonContext } from "../../../providers/LessonProvider";
 import Cookies from "js-cookie";
 import { TCopyLessonReqBody } from "../../../pages/api/gp-plus/copy-lesson";
 import { ILessonForUI } from "../../../types/global";
+import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 
 interface IProps
   extends Pick<
     INewUnitLesson,
     "sharedGDriveLessonFolderId" | "allUnitLessons"
-  > {
+  >, Pick<INewUnitSchema, "GdrivePublicID"> {
   _userGDriveLessonFolderId?: Pick<
     INewUnitLesson,
     "userGDriveLessonFolderId"
@@ -46,6 +47,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
   lessonSharedDriveFolderName,
   _userGDriveLessonFolderId,
   allUnitLessons,
+  GdrivePublicID
 }) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
@@ -206,6 +208,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
               unit: {
                 id: unitId,
                 name: MediumTitle,
+                sharedGDriveId: GdrivePublicID!,
               },
               lesson: {
                 id:

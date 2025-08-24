@@ -567,6 +567,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
             {lsnNum && lsnTitle && GdrivePublicID && unitMediumTitle && (
               <CopyLessonBtn
                 unitId={unitId!}
+                GdrivePublicID={GdrivePublicID}
                 MediumTitle={unitMediumTitle}
                 lessonId={lsnNum}
                 lessonName={lsnTitle}
