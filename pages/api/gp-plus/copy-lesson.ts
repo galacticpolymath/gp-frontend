@@ -794,14 +794,18 @@ export default async function handler(
       );
     }
 
+    let unitGDriveLesson = {
+      unitDriveId: targetUnitFolderCreation.folderId,
+      unitId: reqBody.unit.id,
+    } as IUnitGDriveLesson;
+
+    console.log("unitGDriveLesson: ", unitGDriveLesson);
+
     const userUpdatedWithNewUnitObjResult = await updateUserCustom(
       { email },
       {
-        'unitGDriveLessons': {
-          $push: {
-            unitDriveId: targetUnitFolderCreation.folderId,
-            unitId: reqBody.unit.id,
-          } as IUnitGDriveLesson,
+        $push: {
+          unitGDriveLessons: unitGDriveLesson,
         },
       },
       {
@@ -809,10 +813,14 @@ export default async function handler(
       }
     );
 
-    console.log("Updated user with new unit lessons object. Proceeding to copy lessons...");
+    console.log(
+      "userUpdatedWithNewUnitObjResult: ",
+      userUpdatedWithNewUnitObjResult
+    );
 
-    throw new Error("hi");
-    
+    console.log(
+      "Updated user with new unit lessons object. Proceeding to copy lessons..."
+    );
 
     if (!userUpdatedWithNewUnitObjResult.wasSuccessful) {
       console.error(
@@ -901,7 +909,7 @@ export default async function handler(
     const { wasSuccessful } = await updateUserCustom(
       { email },
       {
-        'unitGDriveLessons.$[elem].lessonDriveIds': {
+        "unitGDriveLessons.$[elem].lessonDriveIds": {
           $push: {
             $each: allUnitLessonFolders,
           },
@@ -909,7 +917,9 @@ export default async function handler(
       },
       {
         upsert: true,
-        arrayFilters:[{ "elem.unitDriveId": targetUnitFolderCreation.folderId }]
+        arrayFilters: [
+          { "elem.unitDriveId": targetUnitFolderCreation.folderId },
+        ],
       }
     );
 
