@@ -22,10 +22,8 @@ import { ILessonForUI } from "../../../types/global";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 
 interface IProps
-  extends Pick<
-    INewUnitLesson,
-    "sharedGDriveLessonFolderId" | "allUnitLessons"
-  >, Pick<INewUnitSchema, "GdrivePublicID"> {
+  extends Pick<INewUnitLesson, "sharedGDriveLessonFolderId" | "allUnitLessons">,
+    Pick<INewUnitSchema, "GdrivePublicID"> {
   _userGDriveLessonFolderId?: Pick<
     INewUnitLesson,
     "userGDriveLessonFolderId"
@@ -47,7 +45,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
   lessonSharedDriveFolderName,
   _userGDriveLessonFolderId,
   allUnitLessons,
-  GdrivePublicID
+  GdrivePublicID,
 }) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
@@ -175,7 +173,6 @@ const CopyLessonBtn: React.FC<IProps> = ({
       callbackFunction: async (data) => {
         try {
           // Ensure token is still valid before making the API call
-          setIsCopyingLesson(true);
 
           // if (!sharedGDriveLessonFolderId || !lessonSharedDriveFolderName) {
           //   alert(
@@ -202,6 +199,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
           console.log("data, yo there: ", data);
           if (data?.docs?.length) {
             console.log("First document ID, data?.docs: ", data?.docs);
+            setIsCopyingLesson(true);
             const fileIds = data.docs.map((file) => file.id);
             const reqBody: TCopyLessonReqBody = {
               fileIds,
@@ -276,7 +274,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
   didInitialRenderOccur.current = true;
 
   return (
-    <div style={{ width: "fit-content" }} className="mb-4">
+    <div style={{ width: "fit-content" }} className="mb-3">
       <Button
         ref={btnRef}
         onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
@@ -342,22 +340,24 @@ const CopyLessonBtn: React.FC<IProps> = ({
           </div>
         )}
       </Button>
-      {userGDriveLessonFolderId && (
-        <div
-          style={{ fontSize: "18px" }}
-          className="text-break mx-auto text-center mt-1 mb-2"
-        >
-          Your latest copy of this lesson is linked
-          <Link
-            target="_blank"
-            className="ms-1 text-start text-lg-center"
-            href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${userGDriveLessonFolderId}`}
-          >
-            here
-          </Link>
-          .
-        </div>
-      )}
+      <div
+        style={{ fontSize: "18px", height: '30px' }}
+        className="text-break mx-auto text-center mt-1"
+      >
+        {userGDriveLessonFolderId && !isCopyingLesson && (
+          <>
+            Your latest copy of this lesson is linked
+            <Link
+              target="_blank"
+              className="ms-1 text-start text-lg-center"
+              href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${userGDriveLessonFolderId}`}
+            >
+              here
+            </Link>
+            .
+          </>
+        )}
+      </div>
     </div>
   );
 };
