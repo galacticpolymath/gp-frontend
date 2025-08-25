@@ -842,9 +842,14 @@ export const getStaticProps = async (arg: {
         "Will get the child items of the target unit in google drive"
       );
 
+      console.log("targetUnit.GdrivePublicID: ", targetUnit.GdrivePublicID);
+
       const unitGDriveChildItems = (
         await getUnitGDriveChildItems(targetUnit.GdrivePublicID!)
       )?.filter((item) => item.mimeType?.includes("folder"));
+
+      console.log("unitGDriveChildItems first: ", unitGDriveChildItems);
+
       const headLinks = targetUnits
         .filter(({ locale, numID }) => locale && numID)
         .map(({ locale, numID }) => [
@@ -933,9 +938,9 @@ export const getStaticProps = async (arg: {
         ?.length &&
         resources?.length
       ) {
-        // TODO: get the folder structure of the target unit from google drive
+        console.log("unitGDriveChildItems, second: ", unitGDriveChildItems);
 
-        console.log("unitGDriveChildItems: ", unitGDriveChildItems);
+        throw new Error("hi");
 
         const resourcesForUIPromises = resources.map(async (resource) => {
           const allUnitLessons: Pick<
