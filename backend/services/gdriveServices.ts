@@ -851,3 +851,77 @@ export const copyGDriveItem = async (
     return { errType: "generalErr", errorObj: error };
   }
 };
+
+export const getGDriveItem = async (
+  fileId: string,
+  accessToken: string,
+  refreshToken: string,
+  clientOrigin: string,
+  willRetry = true,
+  tries = 3,
+  urlParams?: [string, string][]
+): Promise<{ id: string; [key: string]: unknown } | { errType: string }> => {
+  try {
+    const url = new URL(`https://www.googleapis.com/drive/v2/files/${fileId}` );
+
+    if(urlParams?.length){
+      for (const [key, val] of urlParams){
+        url.searchParams.append(key, val)
+      }
+    }
+
+    const { status, data } = await axios.get<{ id: string; [key: string]: unknown }>(
+      url.href,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        params: {
+          supportsAllDrives: true,
+        },
+      }
+    );
+
+    if (status !== 200) {
+      throw new CustomError(
+        data ?? "Failed to retrieve Google Drive item.",
+        status
+      );
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error("Failed to retrieve Google Drive item. Error: ", error);
+    console.log("The response errors: ", error?.response);
+
+    
+    if (error?.response?.data?.error?.code === 404) {
+      return {
+        errType: "notFound",
+      };
+    }
+
+    if(error?.response?.data?.error?.status === "UNAUTHENTICATED"){
+      return {
+        errType: "unauthenticated"
+      }
+    }
+
+    const canRetryResult = await getCanRetry(error, refreshToken, clientOrigin);
+
+    if (canRetryResult.canRetry && tries > 0 && willRetry) {
+      await waitWithExponentialBackOff(tries, [2_000, 5_000]);
+
+      return await getGDriveItem(fileId, accessToken, refreshToken, clientOrigin, willRetry, tries - 1);
+    } else if (canRetryResult.canRetry && willRetry){
+      return {
+        errType: "timeout"
+      }
+    }
+
+    return {
+      errType: "generalErr",
+    };
+  }
+};

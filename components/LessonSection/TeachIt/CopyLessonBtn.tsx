@@ -70,9 +70,12 @@ const CopyLessonBtn: React.FC<IProps> = ({
   const [isCopyingLesson, setIsCopyingLesson] = useState(false);
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const didInitialRenderOccur = useRef(false);
-  const [userGDriveLessonFolderId, setUserGDriveLessonFolderId] = useState(
-    _userGDriveLessonFolderId
-  );
+  const [userGDriveLessonFolderId, setUserGDriveLessonFolderId] = useState("");
+
+  useEffect(() => {
+    console.log("userGDriveLessonFolderId: ", userGDriveLessonFolderId);
+    console.log("_userGDriveLessonFolderId: ", _userGDriveLessonFolderId);
+  })
 
   const ensureValidToken = async () => {
     const gdriveRefreshToken = Cookies.get("gdriveRefreshToken");
@@ -324,7 +327,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
                   )}
                   {isGpPlusMember &&
                     gdriveAccessToken &&
-                    (userGDriveLessonFolderId
+                    ((userGDriveLessonFolderId || _userGDriveLessonFolderId)
                       ? "Select and copy to my Google Drive again"
                       : "Select and copy to my Google Drive")}
                   {!isGpPlusMember && (
@@ -344,22 +347,25 @@ const CopyLessonBtn: React.FC<IProps> = ({
         )}
       </Button>
       <div
-        style={{ fontSize: "18px", height: '30px' }}
+        style={{ fontSize: "18px", height: "30px" }}
         className="text-break mx-auto text-center mt-1"
       >
-        {userGDriveLessonFolderId && !isCopyingLesson && (
-          <>
-            Your latest copy of this lesson is linked
-            <Link
-              target="_blank"
-              className="ms-1 text-start text-lg-center"
-              href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${userGDriveLessonFolderId}`}
-            >
-              here
-            </Link>
-            .
-          </>
-        )}
+        {(userGDriveLessonFolderId || _userGDriveLessonFolderId) &&
+          !isCopyingLesson && (
+            <>
+              Your latest copy of this lesson is linked
+              <Link
+                target="_blank"
+                className="ms-1 text-start text-lg-center"
+                href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${
+                  userGDriveLessonFolderId || _userGDriveLessonFolderId
+                }`}
+              >
+                here
+              </Link>
+              .
+            </>
+          )}
       </div>
     </div>
   );

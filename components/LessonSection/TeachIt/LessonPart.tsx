@@ -64,6 +64,7 @@ interface ILessonPartProps
     | "sharedGDriveLessonFolderName"
     | "allUnitLessons"
     | "lessonsFolder"
+    | "userGDriveLessonFolderId"
   > {
   resources?: IResource;
   GradesOrYears?: string | null;
@@ -108,6 +109,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     partsArr,
     chunks = [],
     resources,
+    userGDriveLessonFolderId,
     ForGrades,
     GradesOrYears,
     gradeVarNote,
@@ -125,6 +127,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     sharedGDriveLessonFolderName,
     lessonsFolder
   } = props;
+
+  useEffect(() => {
+    console.log('props: ', props)
+    console.log(
+      "props.userGDriveLessonFolderId: ",
+      props.userGDriveLessonFolderId
+    );
+  })
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
@@ -577,6 +587,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 lessonSharedDriveFolderName={sharedGDriveLessonFolderName}
                 allUnitLessons={allUnitLessons}
                 lessonsFolder={lessonsFolder}
+                _userGDriveLessonFolderId={userGDriveLessonFolderId}
               />
             )}
             <div className="d-flex align-items-start">

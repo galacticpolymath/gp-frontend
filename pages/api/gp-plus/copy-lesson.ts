@@ -4,7 +4,6 @@ import {
   GDriveItem,
   refreshAuthToken,
 } from "../../../backend/services/googleDriveServices";
-import { getGDriveItem } from "./copy-unit";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import {
   addNewGDriveLessons,
@@ -26,6 +25,7 @@ import {
   getGoogleDriveItem,
   getTargetUserPermission,
   ORIGINAL_ITEM_ID_FIELD_NAME,
+  getGDriveItem,
 } from "../../../backend/services/gdriveServices";
 import { waitWithExponentialBackOff } from "../../../globalFns";
 import { drive_v3 } from "googleapis";
@@ -537,6 +537,7 @@ export default async function handler(
     if (gpPlusFolderId && unitGDriveLessonsObjs?.length) {
       console.log(`reqBody.lesson!.id: ${reqBody.lesson!.id}`);
       console.log("unitGDriveLessonsObjs: ", unitGDriveLessonsObjs);
+      const clientOrigin = new URL(request.headers.referer ?? "").origin;
       const { unitDriveId, lessonDriveIds } =
         unitGDriveLessonsObjs.find((unitGDriveLessonsObj) => {
           return unitGDriveLessonsObj.unitId === reqBody.unit!.id;
@@ -553,14 +554,22 @@ export default async function handler(
         targetLessonFolderInUserDrive
       );
       const doesTargetGDriveUnitFolderExist = unitDriveId
-        ? "id" in (await getGDriveItem(unitDriveId, gDriveAccessToken))
+        ? "id" in
+          (await getGDriveItem(
+            unitDriveId,
+            gDriveAccessToken,
+            gDriveRefreshToken,
+            clientOrigin
+          ))
         : false;
       const doesTargetGDriveLessonFolderExist =
         targetLessonFolderInUserDrive?.lessonDriveId
           ? "id" in
             (await getGDriveItem(
               targetLessonFolderInUserDrive?.lessonDriveId,
-              gDriveAccessToken
+              gDriveAccessToken,
+              gDriveRefreshToken,
+              clientOrigin
             ))
           : false;
 
@@ -630,7 +639,6 @@ export default async function handler(
           `The target unit folder and its corresponding lesson folder do not exist, creating them...`
         );
         const drive = await createDrive();
-        const clientOrigin = new URL(request.headers.referer ?? "").origin;
         const lessonFolderId = await createUnitFolder(
           {
             sharedGDriveId: reqBody.unit.sharedGDriveId,

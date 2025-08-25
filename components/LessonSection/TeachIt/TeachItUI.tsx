@@ -71,9 +71,20 @@ import useDrivePicker from "react-google-drive-picker";
 import axios from "axios";
 import { TCopyLessonReqBody } from "../../../pages/api/gp-plus/copy-lesson";
 import { useLessonContext } from "../../../providers/LessonProvider";
+import { useQuery } from "@tanstack/react-query";
+import { ILessonGDriveId } from "../../../backend/models/User/types";
 
 export type TUnitPropsForTeachItSec = Partial<
   Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
+>;
+export type IUserGDriveLessonId = Required<
+  Omit<
+    NonNullable<
+      Pick<INewUnitLesson, "allUnitLessons">["allUnitLessons"]
+    >[number],
+    "sharedGDriveId"
+  > &
+    Pick<INewUnitLesson, "userGDriveLessonFolderId">
 >;
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
@@ -147,15 +158,13 @@ const TeachItUI = <
     selectedEnvironment,
     setSelectedEnvironment,
     selectedGradeResources,
-    parts,
+    parts: _parts,
     dataLesson,
     GradesOrYears,
     GdrivePublicID,
     MediumTitle,
-    unitId
+    unitId,
   } = props;
-
-  console.log("parts, hi: ", parts);
 
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -189,6 +198,104 @@ const TeachItUI = <
     gdriveRefreshToken,
     gdriveAccessTokenExp,
   } = session;
+  const [parts, setParts] = useState(_parts);
+
+  useEffect(() => {
+    console.log("parts, sup there: ", parts);
+  })
+
+  useQuery({
+    queryKey: [status, isGpPlusMember],
+    //return 1 to prevent error
+    queryFn: async () => {
+      const lessonNumIds =
+        status === "authenticated" && isGpPlusMember
+          ? _parts.filter(Boolean).map((part) => {
+              return typeof part.lsn === "number"
+                ? part.lsn.toString()
+                : part.lsn!;
+            })
+          : [];
+
+      if (
+        status === "authenticated" &&
+        isGpPlusMember && gdriveAccessToken && gdriveRefreshToken &&
+        lessonNumIds?.length
+      ) {
+        try {
+          const url = new URL(
+            `${window.location.origin}/api/gp-plus/get-gdrive-lesson-ids`
+          );
+
+          lessonNumIds.forEach((lessonNumId) => {
+            url.searchParams.append("lessonNumIds", lessonNumId);
+          });
+
+          url.searchParams.append("unitId", unitId!);
+
+          const response = await axios.get<ILessonGDriveId[] | null>(url.href, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "gdrive-token": gdriveAccessToken,
+              "gdrive-token-refresh": gdriveRefreshToken
+            }
+          });
+
+          console.log("response, lesson drive ids: ", response);
+
+          const { data: userGDriveLessonFolderIds } = response;
+
+
+          if (response.status !== 200) {
+            throw new Error(
+              `Failed to get drive Ids for the lessons. Status code: ${response.status}`
+            );
+          }
+
+          if (!userGDriveLessonFolderIds?.length) {
+            throw new Error(
+              "Failed to retrieve gdrive lesson Ids. response.data was empty."
+            );
+          }
+          const _parts = parts.map((part) => {
+            const targetLessonGDriveUserFolderId =
+              userGDriveLessonFolderIds.find((gDriveLessonFolderId) => {
+                return gDriveLessonFolderId.lessonNum == part.lsn;
+              });
+
+            if (targetLessonGDriveUserFolderId) {
+              return {
+                ...part,
+                userGDriveLessonFolderId:
+                  targetLessonGDriveUserFolderId.lessonDriveId,
+              };
+            }
+
+            return part;
+          });
+
+          console.log("_parts, javascript: ", _parts);
+          
+
+          setParts(_parts);
+
+          // prevent runtime error
+          return 1;
+        } catch (error) {
+          console.error(
+            "Error in getting the drive Ids for the lessons.",
+            error
+          );
+
+          // prevent runtime error
+          return 1;
+        }
+      }
+
+      // prevent runtime error
+      return 1;
+    },
+  });
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
     _isCopyUnitBtnDisabled;
   const router = useRouter();
@@ -273,12 +380,12 @@ const TeachItUI = <
                 fileIds,
                 unit: {
                   id: GdrivePublicID,
-                  name: MediumTitle 
+                  name: MediumTitle,
                 },
                 lesson: {
                   id: "2",
-                  name: "adsffads"
-                }
+                  name: "adsffads",
+                },
               } as TCopyLessonReqBody,
               {
                 headers: {
@@ -593,9 +700,12 @@ const TeachItUI = <
                 return (
                   <LessonPart
                     {...lessonTilesObj}
+                    userGDriveLessonFolderId={"userGDriveLessonFolderId" in part && part.userGDriveLessonFolderId ? part.userGDriveLessonFolderId : undefined}
                     unitId={unitId!}
                     unitMediumTitle={MediumTitle!}
-                    lessonsFolder={"lessonsFolder" in part ? part.lessonsFolder : undefined}
+                    lessonsFolder={
+                      "lessonsFolder" in part ? part.lessonsFolder : undefined
+                    }
                     allUnitLessons={
                       "allUnitLessons" in part && part.allUnitLessons?.length
                         ? part.allUnitLessons
