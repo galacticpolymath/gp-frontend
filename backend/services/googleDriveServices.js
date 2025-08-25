@@ -8,7 +8,7 @@ import axios from "axios";
 import { GoogleAuthReqBody } from "../../pages/api/gp-plus/auth";
 import { getCacheVal } from "../helperFns";
 
-export class FileMetaData {
+export class GDriveItem {
   constructor(
     folderName,
     parents = [],

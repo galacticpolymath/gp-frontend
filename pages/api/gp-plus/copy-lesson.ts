@@ -1,7 +1,7 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import {
   copyFile,
-  FileMetaData,
+  GDriveItem,
   refreshAuthToken,
 } from "../../../backend/services/googleDriveServices";
 import { getGDriveItem } from "./copy-unit";
@@ -21,6 +21,7 @@ import {
   createDrive,
   createFolderStructure,
   getFolderChildItems,
+  getFolderChildItemsInUserDrive,
   getGoogleDriveItem,
   getTargetUserPermission,
 } from "../../../backend/services/gdriveServices";
@@ -42,10 +43,10 @@ export type TCopyLessonReqBody = {
     lessonSharedDriveFolderName: string;
     name: string;
   }>;
-  lessonsFolder: {
+  lessonsFolder: Partial<{
     name: string,
     id: string
-  };
+  }>;
   unit: Partial<{
     id: string;
     name: string;
@@ -68,7 +69,7 @@ const createGDriveFolder = async (
   [key: string]: unknown;
 }> => {
   try {
-    const folderMetadata = new FileMetaData(folderName, parentFolderIds);
+    const folderMetadata = new GDriveItem(folderName, parentFolderIds);
     const response = await axios.post(
       "https://www.googleapis.com/drive/v3/files?fields=id",
       folderMetadata,
@@ -527,6 +528,8 @@ export default async function handler(
       !reqBody?.lesson?.lessonSharedDriveFolderName ||
       !reqBody?.lesson?.sharedGDriveLessonFolderId ||
       !reqBody?.allUnitLessons ||
+      !reqBody?.lessonsFolder?.id ||
+      !reqBody?.lessonsFolder?.name ||
       !reqBody?.lesson?.name
     ) {
       throw new CustomError(
@@ -739,7 +742,7 @@ export default async function handler(
 
       console.log("unitDriveId, hey there: ", unitDriveId);
 
-      // create the target lesson folder and copy the items into it
+      // The lessons folder doesn't exist. Create the target lesson folder and copy the items into it.
       if (
         doesTargetGDriveUnitFolderExist &&
         !doesTargetGDriveLessonFolderExist
@@ -748,7 +751,19 @@ export default async function handler(
           `The target unit folder with id ${unitDriveId} already exists, so we will create a new lesson folder with the name ${reqBody.lesson.lessonSharedDriveFolderName} and copy the items into it.`
         );
         const clientOrigin = new URL(request.headers.referer ?? "").origin;
-         
+        // TODO: get the id of the lessons folder from the user's google drive. 
+        const folderChildItems = await getFolderChildItemsInUserDrive(unitDriveId!, gDriveAccessToken, gDriveRefreshToken, clientOrigin)
+
+        if(folderChildItems && folderChildItems?.files?.length){
+          // find the lessons folder
+          folderChildItems.files.find(file => {
+            file.appProperties
+          })
+        } else {
+          // TODO: create the lessons folder within the unit drive
+        }
+
+
         const targetLessonFolderCreationResult = await createGDriveFolder(
           reqBody.lesson.lessonSharedDriveFolderName,
           gDriveAccessToken,

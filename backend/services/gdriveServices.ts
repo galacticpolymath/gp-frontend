@@ -1,7 +1,6 @@
 import { drive_v3, google } from "googleapis";
 import { createGoogleDriveFolderForUser } from "../../pages/api/gp-plus/copy-unit";
 import {
-  FileMetaData,
   GoogleServiceAccountAuthCreds,
   refreshAuthToken,
 } from "./googleDriveServices";
@@ -18,6 +17,32 @@ type TUnitFolder = Partial<{
   pathToFile?: string;
   parentFolderId?: string;
 }>;
+
+type TAppProperties = Record<string, null | number | string | boolean | { [key: string]: unknown } | unknown[]>;
+
+export const ORIGINAL_ITEM_ID_FIELD_NAME = "originalItemId"
+
+export class GDriveItem {
+  name: string;
+  appProperties?: TAppProperties;
+  parents: string[];
+  mimeType: "application/vnd.google-apps.folder" | string;
+
+  constructor(
+    folderName: string,
+    parents: string[],
+    mimeType = "application/vnd.google-apps.folder",
+    appProperties?: TAppProperties
+  ) {
+    this.name = folderName;
+    this.parents = parents;
+    this.mimeType = mimeType;
+
+    if(appProperties){
+      this.appProperties = appProperties;
+    }
+  }
+}
 
 const getCanRetry = async (
   error: any,
@@ -428,13 +453,16 @@ export const createFolderStructure = async (
 
     // if the folder is at the root of the parent folder
     if (folderToCreate.pathToFile === "") {
-      const folderCreationResult = await createGoogleDriveFolderForUser(
+      const folderCreationResult = await createGDriveFolder(
         folderToCreate.name as string,
         gdriveAccessToken,
         [unitFolderId],
         3,
         gdriveRefreshToken,
-        clientOrigin
+        clientOrigin,
+        {
+          [ORIGINAL_ITEM_ID_FIELD_NAME]: folderToCreate.fileId ?? null
+        }
       );
 
       console.log("folderCreationResult: ", folderCreationResult);
@@ -640,14 +668,20 @@ export const createGDriveFolder = async (
   parentFolderIds: string[] = [],
   tries: number = 3,
   refreshToken?: string,
-  reqOriginForRefreshingToken?: string
+  reqOriginForRefreshingToken?: string,
+  appProperties?: ConstructorParameters<typeof GDriveItem>["3"],
 ): Promise<{
   wasSuccessful: boolean;
   folderId?: string;
   [key: string]: unknown;
 }> => {
   try {
-    const folderMetadata = new FileMetaData(folderName, parentFolderIds);
+    const folderMetadata = new GDriveItem(
+      folderName, 
+      parentFolderIds, 
+      "application/vnd.google-apps.folder",
+      appProperties
+    );
     const response = await axios.post(
       "https://www.googleapis.com/drive/v3/files?fields=id",
       folderMetadata,
