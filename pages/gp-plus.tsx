@@ -726,6 +726,12 @@ const GpPlus: React.FC<IProps> = ({
                       style={{
                         height: BTN_HEIGHT,
                       }}
+                      onClick={() => {
+                        window.open(
+                          "https://www.galacticpolymath.com/gp-group-pricing",
+                          "_blank"
+                        )?.focus();
+                      }}
                     >
                       Request a quote
                     </button>

@@ -148,6 +148,11 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.AUTH_CLIENT_ID,
       clientSecret: process.env.AUTH_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "select_account",
+        },
+      }
     }),
     CredentialsProvider({
       async authorize(credentials) {

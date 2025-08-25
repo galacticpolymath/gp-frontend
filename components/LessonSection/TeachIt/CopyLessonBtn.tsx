@@ -21,7 +21,7 @@ import { TCopyLessonReqBody } from "../../../pages/api/gp-plus/copy-lesson";
 import { ILessonForUI } from "../../../types/global";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 
-interface IProps
+export interface ICopyLessonBtnProps
   extends Pick<INewUnitLesson, "sharedGDriveLessonFolderId" | "allUnitLessons" | "lessonsFolder">,
     Pick<INewUnitSchema, "GdrivePublicID"> {
   _userGDriveLessonFolderId?: Pick<
@@ -34,10 +34,10 @@ interface IProps
   lessonId: string | number;
   sharedDriveLessonFolderId?: string;
   lessonSharedDriveFolderName?: string;
-
+  isRetrievingLessonFolderIds: boolean;
 }
 
-const CopyLessonBtn: React.FC<IProps> = ({
+const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   sharedGDriveLessonFolderId,
   MediumTitle,
   unitId,
@@ -47,7 +47,8 @@ const CopyLessonBtn: React.FC<IProps> = ({
   _userGDriveLessonFolderId,
   allUnitLessons,
   GdrivePublicID,
-  lessonsFolder
+  lessonsFolder,
+  isRetrievingLessonFolderIds,
 }) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
@@ -75,7 +76,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
   useEffect(() => {
     console.log("userGDriveLessonFolderId: ", userGDriveLessonFolderId);
     console.log("_userGDriveLessonFolderId: ", _userGDriveLessonFolderId);
-  })
+  });
 
   const ensureValidToken = async () => {
     const gdriveRefreshToken = Cookies.get("gdriveRefreshToken");
@@ -286,7 +287,10 @@ const CopyLessonBtn: React.FC<IProps> = ({
         onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
         style={{
           pointerEvents:
-            isCopyLessonBtnDisabled || isCopyingLesson ? "none" : "auto",
+            isRetrievingLessonFolderIds || isCopyLessonBtnDisabled ||
+            isCopyingLesson
+              ? "none"
+              : "auto",
           minHeight: "51px",
           backgroundColor: "white",
           border: "solid 3px #2339C4",
@@ -296,11 +300,14 @@ const CopyLessonBtn: React.FC<IProps> = ({
           width: "fit-content",
         }}
         className={`px-3 py-2 col-12 ${
-          isCopyLessonBtnDisabled || isCopyingLesson
+          isRetrievingLessonFolderIds ||
+          isCopyLessonBtnDisabled ||
+          isCopyingLesson
             ? "opacity-25"
             : "opacity-100"
         }`}
         disabled={
+          isRetrievingLessonFolderIds ||
           !didInitialRenderOccur.current ||
           isCopyLessonBtnDisabled ||
           isCopyingLesson
@@ -308,7 +315,9 @@ const CopyLessonBtn: React.FC<IProps> = ({
       >
         {didInitialRenderOccur.current ? (
           <div className="d-flex flex-row align-items-center justify-content-center gap-2">
-            {isCopyLessonBtnDisabled || isCopyingLesson ? (
+            {isRetrievingLessonFolderIds ||
+            isCopyLessonBtnDisabled ||
+            isCopyingLesson ? (
               <Spinner className="text-black" />
             ) : (
               <>
@@ -327,7 +336,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
                   )}
                   {isGpPlusMember &&
                     gdriveAccessToken &&
-                    ((userGDriveLessonFolderId || _userGDriveLessonFolderId)
+                    (userGDriveLessonFolderId || _userGDriveLessonFolderId
                       ? "Select and copy to my Google Drive again"
                       : "Select and copy to my Google Drive")}
                   {!isGpPlusMember && (

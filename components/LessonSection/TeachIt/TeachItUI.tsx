@@ -204,9 +204,9 @@ const TeachItUI = <
     console.log("parts, sup there: ", parts);
   })
 
-  useQuery({
+  const { isFetching }= useQuery({
+    refetchOnWindowFocus: false,
     queryKey: [status, isGpPlusMember],
-    //return 1 to prevent error
     queryFn: async () => {
       const lessonNumIds =
         status === "authenticated" && isGpPlusMember
@@ -700,7 +700,13 @@ const TeachItUI = <
                 return (
                   <LessonPart
                     {...lessonTilesObj}
-                    userGDriveLessonFolderId={"userGDriveLessonFolderId" in part && part.userGDriveLessonFolderId ? part.userGDriveLessonFolderId : undefined}
+                    isRetrievingLessonFolderIds={isFetching}
+                    userGDriveLessonFolderId={
+                      "userGDriveLessonFolderId" in part &&
+                      part.userGDriveLessonFolderId
+                        ? part.userGDriveLessonFolderId
+                        : undefined
+                    }
                     unitId={unitId!}
                     unitMediumTitle={MediumTitle!}
                     lessonsFolder={

@@ -30,7 +30,7 @@ import {
 import { IItemForClient, ILessonForUI, TUseStateReturnVal } from "../../../types/global";
 import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
 import { LAST_LESSON_NUM_ID, UNITS_URL_PATH } from "../../../shared/constants";
-import CopyLessonBtn from "./CopyLessonBtn";
+import CopyLessonBtn, { ICopyLessonBtnProps } from "./CopyLessonBtn";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
@@ -59,13 +59,14 @@ const SignInSuggestion = ({
 
 interface ILessonPartProps
   extends Pick<
-    INewUnitLesson,
-    | "sharedGDriveLessonFolderId"
-    | "sharedGDriveLessonFolderName"
-    | "allUnitLessons"
-    | "lessonsFolder"
-    | "userGDriveLessonFolderId"
-  > {
+      INewUnitLesson,
+      | "sharedGDriveLessonFolderId"
+      | "sharedGDriveLessonFolderName"
+      | "allUnitLessons"
+      | "lessonsFolder"
+      | "userGDriveLessonFolderId"
+    >,
+    Pick<ICopyLessonBtnProps, "isRetrievingLessonFolderIds"> {
   resources?: IResource;
   GradesOrYears?: string | null;
   removeClickToSeeMoreTxt: () => void;
@@ -97,6 +98,7 @@ interface ILessonPartProps
 const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const {
     unitMediumTitle,
+    isRetrievingLessonFolderIds,
     allUnitLessons,
     GdrivePublicID,
     lsnNum,
@@ -579,6 +581,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
             {lsnNum && lsnTitle && GdrivePublicID && unitMediumTitle && (
               <CopyLessonBtn
                 unitId={unitId!}
+                isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
                 GdrivePublicID={GdrivePublicID}
                 MediumTitle={unitMediumTitle}
                 lessonId={lsnNum}
