@@ -95,7 +95,7 @@
     "@types/jest": "^30.0.0",
     "@types/lodash.throttle": "^4.1.9",
     "cypress": "^15.0.0",
-    "eslint": "9.33.0",
+    "eslint": "9.34.0",
     "eslint-config-next": "^15.5.0",
     "eslint-plugin-react": "^7.37.5",
     "jest": "^30.0.5",
