@@ -34,6 +34,7 @@ import {
   IUnitGDriveLesson,
 } from "../../../backend/models/User/types";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
+import { connectToMongodb } from "../../../backend/utils/connection";
 
 export const maxDuration = 240;
 
@@ -471,6 +472,15 @@ export default async function handler(
 
     if (!jwtPayload) {
       throw new CustomError("Unauthorized. Please try logging in again.", 401);
+    }
+
+    const { wasSuccessful: wasDbConnectionSuccessful } = await connectToMongodb(15_000, 0, true);
+
+    if (!wasDbConnectionSuccessful) {
+      throw new CustomError(
+        "Failed to connect to the database. Please try again later.",
+        500
+      );
     }
 
     const { email } = jwtPayload.payload;

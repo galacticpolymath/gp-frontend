@@ -125,6 +125,8 @@ export default async function handler(
       membership = (await getGpPlusMembership(
         user.outsetaAccountEmail
       )) as TGpPlusMembershipRetrieved;
+
+      // TODO: if the user is a member, then check if the user is part of the google group, if not, then add the user to the google group 
     }
 
     console.log("membership: ", membership);

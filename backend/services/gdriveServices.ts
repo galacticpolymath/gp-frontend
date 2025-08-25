@@ -3,7 +3,7 @@ import {
   GoogleServiceAccountAuthCreds,
   refreshAuthToken,
 } from "./googleDriveServices";
-import { OAuth2Client } from "google-auth-library";
+import { GoogleAuthOptions, OAuth2Client } from "google-auth-library";
 import { CustomError } from "../utils/errors";
 import axios from "axios";
 import { waitWithExponentialBackOff } from "../../globalFns";
@@ -76,7 +76,9 @@ const getCanRetry = async (
   };
 };
 
-export const createDrive = async () => {
+type TGoogleAuthScopese = "https://www.googleapis.com/auth/drive" | "https://www.googleapis.com/auth/admin.directory.user"
+
+export const createDrive = async (scopes: TGoogleAuthScopese[] = ["https://www.googleapis.com/auth/drive"], clientOptions?: GoogleAuthOptions["clientOptions"]) => {
   const drive = google.drive("v3");
   const creds = new GoogleServiceAccountAuthCreds();
   const auth = new google.auth.GoogleAuth({
@@ -85,7 +87,8 @@ export const createDrive = async () => {
       client_id: creds.client_id,
       private_key: creds?.private_key?.replace(/\\n/g, "\n").replace(/"/g, ""),
     },
-    scopes: ["https://www.googleapis.com/auth/drive"],
+    scopes: scopes,
+    clientOptions
   });
   const authClient = (await auth.getClient()) as OAuth2Client;
 
