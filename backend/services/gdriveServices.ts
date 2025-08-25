@@ -1,5 +1,4 @@
 import { drive_v3, google } from "googleapis";
-import { createGoogleDriveFolderForUser } from "../../pages/api/gp-plus/copy-unit";
 import {
   GoogleServiceAccountAuthCreds,
   refreshAuthToken,
@@ -497,7 +496,7 @@ export const createFolderStructure = async (
       continue;
     }
 
-    const nestedFolderCreationResult = await createGoogleDriveFolderForUser(
+    const nestedFolderCreationResult = await createGDriveFolder(
       folderToCreate.name as string,
       gdriveAccessToken,
       [parentFolderId],
@@ -537,7 +536,7 @@ export const getTargetUserPermission = async (
     _drive = await createDrive();
   }
 
-  const filePermissions = await (_drive as drive_v3.Drive).permissions.list({
+  const filePermissions = await _drive!.permissions.list({
     fileId,
     supportsAllDrives: true,
     fields: "*",
@@ -547,6 +546,31 @@ export const getTargetUserPermission = async (
     return permission.emailAddress === email;
   });
 };
+
+export const getGDriveItemViaServiceAccount = async (gdriveItemId: string, drive?: drive_v3.Drive) => {
+  try {
+
+    let _drive = drive;
+    
+    if (!drive) {
+      _drive = await createDrive();
+    }
+
+    const fileRetrievalResult = await _drive!.files.get({
+      fileId: gdriveItemId
+    })
+
+    if(fileRetrievalResult.status !== 200){
+      throw new Error(`Failed to get item in Google Drive via service account. Status: ${fileRetrievalResult.status}. Data: ${fileRetrievalResult.data}`);
+    }
+
+    return fileRetrievalResult.data
+  } catch(error){
+    console.error("Failed to get item in Google Drive via service account. Reason: ", error);
+    
+    return null;
+  }
+} 
 
 export const getUnitGDriveChildItems = async (unitId: string) => {
   try {
@@ -723,7 +747,7 @@ export const createGDriveFolder = async (
         throw new Error("Failed to refresh access token");
       }
 
-      return await createGoogleDriveFolderForUser(
+      return await createGDriveFolder(
         folderName,
         accessToken,
         parentFolderIds,

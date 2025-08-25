@@ -595,6 +595,7 @@ const TeachItUI = <
                     {...lessonTilesObj}
                     unitId={unitId!}
                     unitMediumTitle={MediumTitle!}
+                    lessonsFolder={"lessonsFolder" in part ? part.lessonsFolder : undefined}
                     allUnitLessons={
                       "allUnitLessons" in part && part.allUnitLessons?.length
                         ? part.allUnitLessons

@@ -63,6 +63,7 @@ interface ILessonPartProps
     | "sharedGDriveLessonFolderId"
     | "sharedGDriveLessonFolderName"
     | "allUnitLessons"
+    | "lessonsFolder"
   > {
   resources?: IResource;
   GradesOrYears?: string | null;
@@ -122,6 +123,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     isAccordionExpandable = true,
     sharedGDriveLessonFolderId,
     sharedGDriveLessonFolderName,
+    lessonsFolder
   } = props;
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
@@ -574,6 +576,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 sharedGDriveLessonFolderId={sharedGDriveLessonFolderId}
                 lessonSharedDriveFolderName={sharedGDriveLessonFolderName}
                 allUnitLessons={allUnitLessons}
+                lessonsFolder={lessonsFolder}
               />
             )}
             <div className="d-flex align-items-start">

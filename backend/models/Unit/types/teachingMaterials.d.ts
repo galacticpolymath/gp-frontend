@@ -186,6 +186,10 @@ interface INewUnitLesson<TItem extends IItem = IItem> {
   userGDriveLessonFolderId?: string;
   sharedGDriveLessonFolderName?: string;
   allUnitLessons?: { id: string, sharedGDriveId: string }[]
+  lessonsFolder?: Partial<{
+    name: string;
+    sharedGDriveId: string;
+  }>;
   title: string | null;
   lsn: number | null;
   status: string | null;

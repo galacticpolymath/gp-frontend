@@ -45,16 +45,12 @@ export type TCopyLessonReqBody = {
     lessonSharedDriveFolderName: string;
     name: string;
   }>;
-  lessonsFolder: Partial<{
-    name: string;
-    sharedGDriveId: string;
-  }>;
   unit: Partial<{
     id: string;
     name: string;
     sharedGDriveId: string;
   }>;
-} & Pick<INewUnitLesson, "allUnitLessons">;
+} & Required<Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">>;
 
 // TODO: use allUntLessonIds to get all of the lesson folder ids that were created
 
@@ -188,7 +184,7 @@ const createUnitFolder = async (
     return folder.originalFileId === lesson.sharedGDriveId;
   });
 
-  console.log("targetLessonFolder: ", targetLessonFolder);
+  console.log("targetLessonFolder, java: ", targetLessonFolder);
 
   if (!targetLessonFolder?.id) {
     throw new CustomError(
@@ -458,6 +454,7 @@ export default async function handler(
       !reqBody?.lesson?.lessonSharedDriveFolderName ||
       !reqBody?.lesson?.sharedGDriveLessonFolderId ||
       !reqBody?.allUnitLessons ||
+      !reqBody?.lessonsFolder ||
       !reqBody?.lessonsFolder?.sharedGDriveId ||
       !reqBody?.lessonsFolder?.name ||
       !reqBody?.lesson?.name
@@ -681,8 +678,7 @@ export default async function handler(
           `The target unit folder with id ${unitDriveId} already exists, so we will create a new lesson folder with the name ${reqBody.lesson.lessonSharedDriveFolderName} and copy the items into it.`
         );
         const clientOrigin = new URL(request.headers.referer ?? "").origin;
-        // TODO: get the id of the lessons folder from the user's google drive.
-        const folderChildItems = await getUserChildItemsOfFolder(
+        const unitFolderChildItems = await getUserChildItemsOfFolder(
           unitDriveId!,
           gDriveAccessToken,
           gDriveRefreshToken,
@@ -690,12 +686,14 @@ export default async function handler(
         );
         let lessonsFolderId: string | null = null;
 
-        if (folderChildItems && folderChildItems?.files?.length) {
+        console.log("unitFolderChildItems: ", unitFolderChildItems);
+
+        if (unitFolderChildItems && unitFolderChildItems?.files?.length) {
           console.log(
             `The child items of the target folder with id ${unitDriveId} exist.`
           );
           // find the lessons folder
-          const lessonsFolder = folderChildItems.files.find((file) => {
+          const lessonsFolder = unitFolderChildItems.files.find((file) => {
             if (
               file.appProperties &&
               ORIGINAL_ITEM_ID_FIELD_NAME in file.appProperties &&
@@ -704,17 +702,16 @@ export default async function handler(
             ) {
               return (
                 file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] ===
-                reqBody.lessonsFolder.sharedGDriveId
+                reqBody.lessonsFolder!.sharedGDriveId
               );
             }
 
             return false;
           });
+          console.log("lessonsFolder: ", lessonsFolder);
           lessonsFolderId = lessonsFolder?.id ?? null;
         } else {
-          console.log(
-          `The child items of the target folder with id ${unitDriveId} do not exist`,
-        );
+          console.log(`The lessons folder doesn't exist. Will create it.`);
           const folderCreationResult = await createGDriveFolder(
             reqBody.lessonsFolder.name,
             gDriveAccessToken,
@@ -727,8 +724,11 @@ export default async function handler(
                 reqBody.lessonsFolder.sharedGDriveId ?? null,
             }
           );
+          console.log("folderCreationResult: ", folderCreationResult);
           lessonsFolderId = folderCreationResult.folderId ?? null;
         }
+
+        console.log(`The id of the lessons folder is: ${lessonsFolderId}`);
 
         if (!lessonsFolderId) {
           throw new Error(
@@ -952,6 +952,7 @@ export default async function handler(
 
     const selectedClientLessonName = reqBody.lesson.name.toLowerCase();
     // create the folder structure in the user's google drive
+    console.log("selectedClientLessonName: ", selectedClientLessonName);
     const targetFolderStructureArr = await createFolderStructure(
       allChildFiles,
       gDriveAccessToken,
@@ -959,15 +960,21 @@ export default async function handler(
       gDriveRefreshToken,
       clientOrigin
     );
+    console.log(
+      "targetFolderStructureArr, yo there: ",
+      targetFolderStructureArr
+    );
     const targetLessonFolder = targetFolderStructureArr.find((folder) => {
       const lessonName = folder.name?.split("_").at(-1);
+
+      console.log("lessonName: ", lessonName);
 
       return (
         lessonName && lessonName.toLowerCase() === selectedClientLessonName
       );
     });
 
-    console.log("targetLessonFolder: ", targetLessonFolder);
+    console.log("targetLessonFolder, hey there: ", targetLessonFolder);
 
     if (!targetLessonFolder?.id) {
       throw new CustomError(

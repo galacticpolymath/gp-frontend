@@ -22,7 +22,7 @@ import { ILessonForUI } from "../../../types/global";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 
 interface IProps
-  extends Pick<INewUnitLesson, "sharedGDriveLessonFolderId" | "allUnitLessons">,
+  extends Pick<INewUnitLesson, "sharedGDriveLessonFolderId" | "allUnitLessons" | "lessonsFolder">,
     Pick<INewUnitSchema, "GdrivePublicID"> {
   _userGDriveLessonFolderId?: Pick<
     INewUnitLesson,
@@ -34,6 +34,7 @@ interface IProps
   lessonId: string | number;
   sharedDriveLessonFolderId?: string;
   lessonSharedDriveFolderName?: string;
+
 }
 
 const CopyLessonBtn: React.FC<IProps> = ({
@@ -46,6 +47,7 @@ const CopyLessonBtn: React.FC<IProps> = ({
   _userGDriveLessonFolderId,
   allUnitLessons,
   GdrivePublicID,
+  lessonsFolder
 }) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
@@ -215,7 +217,8 @@ const CopyLessonBtn: React.FC<IProps> = ({
                 sharedGDriveLessonFolderId,
                 lessonSharedDriveFolderName,
               },
-              allUnitLessons,
+              allUnitLessons: allUnitLessons!,
+              lessonsFolder: lessonsFolder!,
             };
 
             console.log("reqBody: ", reqBody);
