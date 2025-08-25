@@ -94,7 +94,7 @@ export const createDrive = async () => {
 
   return drive;
 };
-export const getFolderChildItemsInUserDrive = async (
+export const getUserChildItemsOfFolder = async (
   folderId: string,
   gdriveAccessToken: string,
   gdriveRefreshToken: string,
@@ -139,12 +139,12 @@ export const getFolderChildItemsInUserDrive = async (
 
     console.log("canRetryResult: ", canRetryResult);
 
-    console.log(`getFolderChildItemsInUserDrive tries: ${tries}`);
+    console.log(`getUserChildItemsOfFolder tries: ${tries}`);
 
     if (canRetryResult.canRetry && tries > 0) {
       await waitWithExponentialBackOff(tries);
 
-      return await getFolderChildItemsInUserDrive(
+      return await getUserChildItemsOfFolder(
         folderId,
         gdriveAccessToken,
         gdriveRefreshToken,

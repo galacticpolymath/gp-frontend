@@ -20,10 +20,12 @@ import {
   copyGDriveItem,
   createDrive,
   createFolderStructure,
+  createGDriveFolder,
   getFolderChildItems,
-  getFolderChildItemsInUserDrive,
+  getUserChildItemsOfFolder,
   getGoogleDriveItem,
   getTargetUserPermission,
+  ORIGINAL_ITEM_ID_FIELD_NAME,
 } from "../../../backend/services/gdriveServices";
 import { waitWithExponentialBackOff } from "../../../globalFns";
 import { drive_v3 } from "googleapis";
@@ -44,8 +46,8 @@ export type TCopyLessonReqBody = {
     name: string;
   }>;
   lessonsFolder: Partial<{
-    name: string,
-    id: string
+    name: string;
+    sharedGDriveId: string;
   }>;
   unit: Partial<{
     id: string;
@@ -55,78 +57,6 @@ export type TCopyLessonReqBody = {
 } & Pick<INewUnitLesson, "allUnitLessons">;
 
 // TODO: use allUntLessonIds to get all of the lesson folder ids that were created
-
-const createGDriveFolder = async (
-  folderName: string,
-  accessToken: string,
-  parentFolderIds: string[] = [],
-  tries: number = 3,
-  clientOrigin: string,
-  refreshToken: string
-): Promise<{
-  wasSuccessful: boolean;
-  folderId?: string;
-  [key: string]: unknown;
-}> => {
-  try {
-    const folderMetadata = new GDriveItem(folderName, parentFolderIds);
-    const response = await axios.post(
-      "https://www.googleapis.com/drive/v3/files?fields=id",
-      folderMetadata,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (response.status !== 200) {
-      throw new CustomError(
-        response.data ?? "Failed to create a lesson folder.",
-        response.status
-      );
-    }
-
-    return { wasSuccessful: true, folderId: response.data.id };
-  } catch (error: any) {
-    console.error("Error object: ", error?.response?.data?.error);
-    const errMsg = `Failed to create folder for the user. Reason: ${error?.response?.data?.error?.message}`;
-    console.log("errMsg: ", errMsg);
-    console.log("refreshToken: ", refreshToken);
-
-    if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
-      console.log("Will refresh the auth token...");
-
-      tries -= 1;
-
-      console.log("the user is not authenticated: ", refreshToken);
-
-      const refreshTokenRes =
-        (await refreshAuthToken(refreshToken, clientOrigin)) ?? {};
-      const { accessToken } = refreshTokenRes;
-
-      if (!accessToken) {
-        throw new Error("Failed to refresh access token");
-      }
-
-      return await createGDriveFolder(
-        folderName,
-        accessToken,
-        parentFolderIds,
-        tries,
-        clientOrigin,
-        refreshToken
-      );
-    }
-
-    return {
-      wasSuccessful: false,
-      errMsg: errMsg,
-      status: error?.response?.data?.error?.status,
-    };
-  }
-};
 
 const getCanRetry = async (
   error: any,
@@ -528,7 +458,7 @@ export default async function handler(
       !reqBody?.lesson?.lessonSharedDriveFolderName ||
       !reqBody?.lesson?.sharedGDriveLessonFolderId ||
       !reqBody?.allUnitLessons ||
-      !reqBody?.lessonsFolder?.id ||
+      !reqBody?.lessonsFolder?.sharedGDriveId ||
       !reqBody?.lessonsFolder?.name ||
       !reqBody?.lesson?.name
     ) {
@@ -680,7 +610,7 @@ export default async function handler(
           {
             sharedGDriveId: reqBody.unit.sharedGDriveId,
             name: reqBody.unit.name,
-            id: reqBody.unit.id
+            id: reqBody.unit.id,
           },
           {
             id: reqBody.lesson.id,
@@ -751,23 +681,65 @@ export default async function handler(
           `The target unit folder with id ${unitDriveId} already exists, so we will create a new lesson folder with the name ${reqBody.lesson.lessonSharedDriveFolderName} and copy the items into it.`
         );
         const clientOrigin = new URL(request.headers.referer ?? "").origin;
-        // TODO: get the id of the lessons folder from the user's google drive. 
-        const folderChildItems = await getFolderChildItemsInUserDrive(unitDriveId!, gDriveAccessToken, gDriveRefreshToken, clientOrigin)
+        // TODO: get the id of the lessons folder from the user's google drive.
+        const folderChildItems = await getUserChildItemsOfFolder(
+          unitDriveId!,
+          gDriveAccessToken,
+          gDriveRefreshToken,
+          clientOrigin
+        );
+        let lessonsFolderId: string | null = null;
 
-        if(folderChildItems && folderChildItems?.files?.length){
+        if (folderChildItems && folderChildItems?.files?.length) {
+          console.log(
+            `The child items of the target folder with id ${unitDriveId} exist.`
+          );
           // find the lessons folder
-          folderChildItems.files.find(file => {
-            file.appProperties
-          })
+          const lessonsFolder = folderChildItems.files.find((file) => {
+            if (
+              file.appProperties &&
+              ORIGINAL_ITEM_ID_FIELD_NAME in file.appProperties &&
+              typeof file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] ===
+                "string"
+            ) {
+              return (
+                file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] ===
+                reqBody.lessonsFolder.sharedGDriveId
+              );
+            }
+
+            return false;
+          });
+          lessonsFolderId = lessonsFolder?.id ?? null;
         } else {
-          // TODO: create the lessons folder within the unit drive
+          console.log(
+          `The child items of the target folder with id ${unitDriveId} do not exist`,
+        );
+          const folderCreationResult = await createGDriveFolder(
+            reqBody.lessonsFolder.name,
+            gDriveAccessToken,
+            [unitDriveId!],
+            3,
+            gDriveRefreshToken,
+            clientOrigin,
+            {
+              [ORIGINAL_ITEM_ID_FIELD_NAME]:
+                reqBody.lessonsFolder.sharedGDriveId ?? null,
+            }
+          );
+          lessonsFolderId = folderCreationResult.folderId ?? null;
         }
 
+        if (!lessonsFolderId) {
+          throw new Error(
+            `Failed to create the lessons folder with the name ${reqBody.lessonsFolder.name} in the unit folder with id ${unitDriveId}.`
+          );
+        }
 
         const targetLessonFolderCreationResult = await createGDriveFolder(
           reqBody.lesson.lessonSharedDriveFolderName,
           gDriveAccessToken,
-          [unitDriveId!],
+          [lessonsFolderId],
           3,
           gDriveRefreshToken,
           clientOrigin
