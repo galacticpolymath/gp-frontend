@@ -362,9 +362,9 @@ export const getFolderChildItems = async (
       }
 
       const folderData = folderDataResponse.data.files.map((file) => {
-        const targetFolderOccurrences = (foldersOccurrenceObj as any)[
+        const targetFolderOccurrences = foldersOccurrenceObj ? (foldersOccurrenceObj as any)[
           file.name as string
-        ];
+        ] : null;
         const targetFolder = targetFolderOccurrences
           ? targetFolderOccurrences.find((folder: any) => folder.id === file.id)
           : null;

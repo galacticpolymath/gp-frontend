@@ -97,7 +97,7 @@ export default async function handler(
     console.log("targetUnitGDriveLessonObj: ", targetUnitGDriveLessonObj);
 
     if (!targetUnitGDriveLessonObj?.lessonDriveIds?.length) {
-      return response.status(404).json({ error: "There are not lesson google drive folder ids for this unit." });
+          return response.json([]);
     }
 
     console.log("gdriveAccessToken: ", gdriveAccessToken);

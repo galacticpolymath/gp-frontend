@@ -202,9 +202,9 @@ const TeachItUI = <
 
   useEffect(() => {
     console.log("parts, sup there: ", parts);
-  })
+  });
 
-  const { isFetching }= useQuery({
+  const { isFetching } = useQuery({
     refetchOnWindowFocus: false,
     queryKey: [status, isGpPlusMember],
     queryFn: async () => {
@@ -219,7 +219,9 @@ const TeachItUI = <
 
       if (
         status === "authenticated" &&
-        isGpPlusMember && gdriveAccessToken && gdriveRefreshToken &&
+        isGpPlusMember &&
+        gdriveAccessToken &&
+        gdriveRefreshToken &&
         lessonNumIds?.length
       ) {
         try {
@@ -237,14 +239,13 @@ const TeachItUI = <
             headers: {
               Authorization: `Bearer ${token}`,
               "gdrive-token": gdriveAccessToken,
-              "gdrive-token-refresh": gdriveRefreshToken
-            }
+              "gdrive-token-refresh": gdriveRefreshToken,
+            },
           });
 
           console.log("response, lesson drive ids: ", response);
 
           const { data: userGDriveLessonFolderIds } = response;
-
 
           if (response.status !== 200) {
             throw new Error(
@@ -252,32 +253,28 @@ const TeachItUI = <
             );
           }
 
-          if (!userGDriveLessonFolderIds?.length) {
-            throw new Error(
-              "Failed to retrieve gdrive lesson Ids. response.data was empty."
-            );
+          if (userGDriveLessonFolderIds?.length) {
+            const _parts = parts.map((part) => {
+              const targetLessonGDriveUserFolderId =
+                userGDriveLessonFolderIds.find((gDriveLessonFolderId) => {
+                  return gDriveLessonFolderId.lessonNum == part.lsn;
+                });
+
+              if (targetLessonGDriveUserFolderId) {
+                return {
+                  ...part,
+                  userGDriveLessonFolderId:
+                    targetLessonGDriveUserFolderId.lessonDriveId,
+                };
+              }
+
+              return part;
+            });
+
+            console.log("_parts, javascript: ", _parts);
+
+            setParts(_parts);
           }
-          const _parts = parts.map((part) => {
-            const targetLessonGDriveUserFolderId =
-              userGDriveLessonFolderIds.find((gDriveLessonFolderId) => {
-                return gDriveLessonFolderId.lessonNum == part.lsn;
-              });
-
-            if (targetLessonGDriveUserFolderId) {
-              return {
-                ...part,
-                userGDriveLessonFolderId:
-                  targetLessonGDriveUserFolderId.lessonDriveId,
-              };
-            }
-
-            return part;
-          });
-
-          console.log("_parts, javascript: ", _parts);
-          
-
-          setParts(_parts);
 
           // prevent runtime error
           return 1;

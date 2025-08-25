@@ -940,8 +940,6 @@ export const getStaticProps = async (arg: {
       ) {
         console.log("unitGDriveChildItems, second: ", unitGDriveChildItems);
 
-        throw new Error("hi");
-
         const resourcesForUIPromises = resources.map(async (resource) => {
           const allUnitLessons: Pick<
             INewUnitLesson,
