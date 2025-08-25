@@ -17,9 +17,12 @@ type TUnitFolder = Partial<{
   parentFolderId?: string;
 }>;
 
-type TAppProperties = Record<string, null | number | string | boolean | { [key: string]: unknown } | unknown[]>;
+type TAppProperties = Record<
+  string,
+  null | number | string | boolean | { [key: string]: unknown } | unknown[]
+>;
 
-export const ORIGINAL_ITEM_ID_FIELD_NAME = "originalItemId"
+export const ORIGINAL_ITEM_ID_FIELD_NAME = "originalItemId";
 
 export class GDriveItem {
   name: string;
@@ -37,7 +40,7 @@ export class GDriveItem {
     this.parents = parents;
     this.mimeType = mimeType;
 
-    if(appProperties){
+    if (appProperties) {
       this.appProperties = appProperties;
     }
   }
@@ -76,9 +79,14 @@ const getCanRetry = async (
   };
 };
 
-type TGoogleAuthScopese = "https://www.googleapis.com/auth/drive" | "https://www.googleapis.com/auth/admin.directory.user"
+type TGoogleAuthScopese =
+  | "https://www.googleapis.com/auth/drive"
+  | "https://www.googleapis.com/auth/admin.directory.user";
 
-export const createDrive = async (scopes: TGoogleAuthScopese[] = ["https://www.googleapis.com/auth/drive"], clientOptions?: GoogleAuthOptions["clientOptions"]) => {
+export const createDrive = async (
+  scopes: TGoogleAuthScopese[] = ["https://www.googleapis.com/auth/drive"],
+  clientOptions?: GoogleAuthOptions["clientOptions"]
+) => {
   const drive = google.drive("v3");
   const creds = new GoogleServiceAccountAuthCreds();
   const auth = new google.auth.GoogleAuth({
@@ -88,13 +96,33 @@ export const createDrive = async (scopes: TGoogleAuthScopese[] = ["https://www.g
       private_key: creds?.private_key?.replace(/\\n/g, "\n").replace(/"/g, ""),
     },
     scopes: scopes,
-    clientOptions
+    clientOptions,
   });
   const authClient = (await auth.getClient()) as OAuth2Client;
 
   google.options({ auth: authClient });
 
   return drive;
+};
+
+export const createGoogleAdminService = async (
+  scopes: TGoogleAuthScopese[] = ["https://www.googleapis.com/auth/drive"],
+  clientOptions?: GoogleAuthOptions["clientOptions"]
+) => {
+  const creds = new GoogleServiceAccountAuthCreds();
+  const auth = new google.auth.GoogleAuth({
+    credentials: {
+      client_email: creds.client_email,
+      client_id: creds.client_id,
+      private_key: creds?.private_key?.replace(/\\n/g, "\n").replace(/"/g, ""),
+    },
+    scopes: scopes,
+    clientOptions,
+  });
+  const authClient = (await auth.getClient()) as OAuth2Client;
+  const adminService = google.admin({ version: "directory_v1", auth: authClient });
+
+  return adminService;
 };
 export const getUserChildItemsOfFolder = async (
   folderId: string,
@@ -115,7 +143,7 @@ export const getUserChildItemsOfFolder = async (
           orderBy: "name",
           q: `'${folderId}' in parents`,
           supportAllDrives: true,
-          fields: "*"
+          fields: "*",
         },
       }
     );
@@ -463,7 +491,7 @@ export const createFolderStructure = async (
         gdriveRefreshToken,
         clientOrigin,
         {
-          [ORIGINAL_ITEM_ID_FIELD_NAME]: folderToCreate.fileId ?? null
+          [ORIGINAL_ITEM_ID_FIELD_NAME]: folderToCreate.fileId ?? null,
         }
       );
 
@@ -550,30 +578,37 @@ export const getTargetUserPermission = async (
   });
 };
 
-export const getGDriveItemViaServiceAccount = async (gdriveItemId: string, drive?: drive_v3.Drive) => {
+export const getGDriveItemViaServiceAccount = async (
+  gdriveItemId: string,
+  drive?: drive_v3.Drive
+) => {
   try {
-
     let _drive = drive;
-    
+
     if (!drive) {
       _drive = await createDrive();
     }
 
     const fileRetrievalResult = await _drive!.files.get({
-      fileId: gdriveItemId
-    })
+      fileId: gdriveItemId,
+    });
 
-    if(fileRetrievalResult.status !== 200){
-      throw new Error(`Failed to get item in Google Drive via service account. Status: ${fileRetrievalResult.status}. Data: ${fileRetrievalResult.data}`);
+    if (fileRetrievalResult.status !== 200) {
+      throw new Error(
+        `Failed to get item in Google Drive via service account. Status: ${fileRetrievalResult.status}. Data: ${fileRetrievalResult.data}`
+      );
     }
 
-    return fileRetrievalResult.data
-  } catch(error){
-    console.error("Failed to get item in Google Drive via service account. Reason: ", error);
-    
+    return fileRetrievalResult.data;
+  } catch (error) {
+    console.error(
+      "Failed to get item in Google Drive via service account. Reason: ",
+      error
+    );
+
     return null;
   }
-} 
+};
 
 export const getUnitGDriveChildItems = async (unitId: string) => {
   try {
@@ -696,7 +731,7 @@ export const createGDriveFolder = async (
   tries: number = 3,
   refreshToken?: string,
   reqOriginForRefreshingToken?: string,
-  appProperties?: ConstructorParameters<typeof GDriveItem>["3"],
+  appProperties?: ConstructorParameters<typeof GDriveItem>["3"]
 ): Promise<{
   wasSuccessful: boolean;
   folderId?: string;
@@ -704,8 +739,8 @@ export const createGDriveFolder = async (
 }> => {
   try {
     const folderMetadata = new GDriveItem(
-      folderName, 
-      parentFolderIds, 
+      folderName,
+      parentFolderIds,
       "application/vnd.google-apps.folder",
       appProperties
     );
@@ -865,26 +900,26 @@ export const getGDriveItem = async (
   urlParams?: [string, string][]
 ): Promise<{ id: string; [key: string]: unknown } | { errType: string }> => {
   try {
-    const url = new URL(`https://www.googleapis.com/drive/v2/files/${fileId}` );
+    const url = new URL(`https://www.googleapis.com/drive/v2/files/${fileId}`);
 
-    if(urlParams?.length){
-      for (const [key, val] of urlParams){
-        url.searchParams.append(key, val)
+    if (urlParams?.length) {
+      for (const [key, val] of urlParams) {
+        url.searchParams.append(key, val);
       }
     }
 
-    const { status, data } = await axios.get<{ id: string; [key: string]: unknown }>(
-      url.href,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        params: {
-          supportsAllDrives: true,
-        },
-      }
-    );
+    const { status, data } = await axios.get<{
+      id: string;
+      [key: string]: unknown;
+    }>(url.href, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      params: {
+        supportsAllDrives: true,
+      },
+    });
 
     if (status !== 200) {
       throw new CustomError(
@@ -898,17 +933,16 @@ export const getGDriveItem = async (
     console.error("Failed to retrieve Google Drive item. Error: ", error);
     console.log("The response errors: ", error?.response);
 
-    
     if (error?.response?.data?.error?.code === 404) {
       return {
         errType: "notFound",
       };
     }
 
-    if(error?.response?.data?.error?.status === "UNAUTHENTICATED"){
+    if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
       return {
-        errType: "unauthenticated"
-      }
+        errType: "unauthenticated",
+      };
     }
 
     const canRetryResult = await getCanRetry(error, refreshToken, clientOrigin);
@@ -916,11 +950,18 @@ export const getGDriveItem = async (
     if (canRetryResult.canRetry && tries > 0 && willRetry) {
       await waitWithExponentialBackOff(tries, [2_000, 5_000]);
 
-      return await getGDriveItem(fileId, accessToken, refreshToken, clientOrigin, willRetry, tries - 1);
-    } else if (canRetryResult.canRetry && willRetry){
+      return await getGDriveItem(
+        fileId,
+        accessToken,
+        refreshToken,
+        clientOrigin,
+        willRetry,
+        tries - 1
+      );
+    } else if (canRetryResult.canRetry && willRetry) {
       return {
-        errType: "timeout"
-      }
+        errType: "timeout",
+      };
     }
 
     return {

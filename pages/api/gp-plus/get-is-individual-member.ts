@@ -15,6 +15,10 @@ import {
   TAccountStageLabel,
   TGpPlusMembershipRetrieved,
 } from "../../../backend/services/outsetaServices";
+import {
+  createDrive,
+  createGoogleAdminService,
+} from "../../../backend/services/gdriveServices";
 
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
@@ -24,6 +28,23 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
 ] as TAccountStageLabel[]);
 
 export type TGpPlusMembershipForClient = TGpPlusMembershipRetrieved;
+
+const handleUserGoogleGroupStatus = async () => {
+  try {
+    const googleAdminService = await createGoogleAdminService(
+      ["https://www.googleapis.com/auth/admin.directory.user"],
+      { email: "matt@galacticpolymath.com" }
+    );
+    
+    const res = await googleAdminService.groups.list({
+      orderBy: "email",
+    });
+    
+    console.log("res: ", res);
+  } catch(error){
+    console.error("An error occurred: ", error);
+  }
+};
 
 export default async function handler(
   request: NextApiRequest,
@@ -64,10 +85,7 @@ export default async function handler(
     );
     let membership: TGpPlusMembershipRetrieved | undefined = undefined;
 
-    if (
-      userCached &&
-      userCached?.outsetaAccountEmail
-    ) {
+    if (userCached && userCached?.outsetaAccountEmail) {
       console.log("Will get the user gp plus membership...");
 
       membership = (await getGpPlusMembership(
@@ -126,7 +144,13 @@ export default async function handler(
         user.outsetaAccountEmail
       )) as TGpPlusMembershipRetrieved;
 
-      // TODO: if the user is a member, then check if the user is part of the google group, if not, then add the user to the google group 
+      // await handleUserGoogleGroupStatus()
+
+      // TODO: list the groups first (FOR TESTING PURPOSES)
+
+      // TODO: insert the user into the target group
+
+      // TODO: if the user is a member, then check if the user is part of the google group, if not, then add the user to the google group
     }
 
     console.log("membership: ", membership);
