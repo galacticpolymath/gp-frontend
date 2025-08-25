@@ -109,7 +109,7 @@ export const getUserWithRetries = async (
 };
 
 export const handleUserDeprecatedV1Fields = (
-  user: TUserSchemaForClient<IUserSchema>
+  user: Partial<TUserSchemaForClient<IUserSchema>>
 ) => {
   if (user.classroomSize && typeof user.classSize === "undefined") {
     user = {

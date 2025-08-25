@@ -178,19 +178,23 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
         errors.set("isTeacherConfirmationErr", "*This field is required.");
       }
 
-      if (
+      if (country && country?.length <= 0) {
+        errors.set("country", "*This field is required.");
+      } else if (country && !COUNTRY_NAMES.has(country)) {
+        errors.set("country", "*Invalid country name.");
+      } else if (
         country?.toLowerCase() === "united states" &&
         (!zipCodeStr || zipCodeStr?.length == 0)
       ) {
         errors.set("zipCode", "This field is required.");
       } else if (
-        country.toLowerCase() === "united states" &&
+        country?.toLowerCase() === "united states" &&
         ((typeof zipCode === "number" && zipCode < 0) ||
           (typeof zipCode === "string" && parseInt(zipCode) < 0))
       ) {
         errors.set("zipCode", "Cannot be a negative number.");
       } else if (
-        country.toLowerCase() === "united states" &&
+        country?.toLowerCase() === "united states" &&
         ((zipCodeStr?.length > 0 && zipCodeStr?.length < 5) ||
           zipCodeStr.length > 5)
       ) {
@@ -201,11 +205,6 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
         errors.set("occupation", "*This field is required.");
       }
 
-      if (country?.length <= 0) {
-        errors.set("country", "*This field is required.");
-      } else if (!COUNTRY_NAMES.has(country)) {
-        errors.set("country", "*Invalid country name.");
-      }
 
       if (isTeacher && !isNotTeaching && !classSize) {
         errors.set(

@@ -117,53 +117,6 @@ export default async function handler(
       };
     }
 
-    // if the user is on a selected unit, then get the google drive folder link
-    if (
-      typeof request.query.unitId === "string" &&
-      typeof request.query.gdriveEmail === "string" &&
-      typeof gdriveAccessToken === "string" &&
-      typeof gdriveRefreshToken === "string"
-    ) {
-      const latestValidUnitCopyFolder = await getLatestValidUnitCopyFolderJob(
-        request.query.unitId,
-        gdriveAccessToken,
-        gdriveRefreshToken,
-        origin,
-        userAccount._id,
-        request.query.gdriveEmail
-      );
-
-      console.log("latestValidUnitCopyFolder: ", latestValidUnitCopyFolder);
-
-      const { errType, latestUnitFolderCopy, nonexistingFolders } =
-        latestValidUnitCopyFolder;
-
-      if (errType) {
-        console.log("Failed to retrieve the target folder. Reason: ", errType);
-      } else if (latestUnitFolderCopy?.gdriveFolderId) {
-        userAccount = {
-          ...userAccount,
-          viewingUnitFolderCopyId: latestUnitFolderCopy?.gdriveFolderId,
-        };
-      }
-
-      if(nonexistingFolders?.length){
-        const updatesResult = await updateCopyUnitJobs({
-          _id: { $in: nonexistingFolders },
-        }, {
-          doesFolderCopyExistInUserGDrive: false,
-        });
-
-        console.log("updatesResult: ", updatesResult);
-
-        if (updatesResult && updatesResult?.modifiedCount === 0 || !updatesResult) {
-          console.error("Failed to update documents.");
-        } else {
-          console.log(`Total documents updated: ${updatesResult.modifiedCount}`);
-        }
-      }
-    }
-
     if (!request.query.willNotRetrieveMailingListStatus) {
       userAccount = {
         ...userAccount,

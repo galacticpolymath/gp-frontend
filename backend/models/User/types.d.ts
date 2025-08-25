@@ -31,10 +31,10 @@ interface IAboutUserFormNewFieldsV1 {
   subjectsTaughtDefault?: TDefaultSubject[];
   subjectsTaughtCustom?: string[];
   classSize?: number;
-  institution: string | null;
+  institution?: string | null;
   isNotTeaching?: boolean;
-  schoolTypeDefaultSelection: TSchoolType | null;
-  schoolTypeOther: string | null;
+  schoolTypeDefaultSelection?: TSchoolType | null;
+  schoolTypeOther?: string | null;
   referredByDefault?: TReferredByOpt | null;
   referredByOther?: string | null;
   siteVisitReasonsDefault?: string[] | null;
@@ -42,9 +42,9 @@ interface IAboutUserFormNewFieldsV1 {
 }
 
 export interface TAboutUserFormBaseProps extends IAboutUserFormNewFieldsV1 {
-  country: string;
-  occupation: string;
-  zipCode: string | null | number;
+  country?: string;
+  occupation?: string;
+  zipCode?: string | null | number;
   isTeacher?: boolean;
 }
 
@@ -76,7 +76,7 @@ export interface IUserSchemaBaseProps {
 export interface IUserSchema extends TAboutUserForm, IUserSchemaBaseProps {}
 
 export type TOutseta = {
-  outsetaAccountEmail: string;
+  outsetaAccountEmail?: string;
 };
 
 export interface ILessonGDriveId {
