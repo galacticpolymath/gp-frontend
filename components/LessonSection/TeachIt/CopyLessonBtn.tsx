@@ -285,10 +285,9 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           });
 
           if (fileIds.length) {
-            url.searchParams.append(
-              "fileIds",
-              encodeURI(JSON.stringify(fileIds))
-            );
+            fileIds.forEach(fileId => {
+              url.searchParams.append("fileIds", fileId);
+            })
           }
 
           if (allUnitLessons?.length) {

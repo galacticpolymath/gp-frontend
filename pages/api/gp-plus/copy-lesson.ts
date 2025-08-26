@@ -196,6 +196,8 @@ export default async function handler(
       );
     }
 
+    console.log("reqQueryParams?.fileIds: ", reqQueryParams?.fileIds);
+
     if (
       !reqQueryParams.unitId ||
       !reqQueryParams.unitName ||
@@ -1063,10 +1065,7 @@ export default async function handler(
             "Reached max tries. Failed to update the target user's permission."
           );
 
-          throw new CustomError(
-            "Failed to update the target user's permission after reaching max tries.",
-            500
-          );
+          continue;
         }
 
         await waitWithExponentialBackOff(tries);
@@ -1105,30 +1104,28 @@ export default async function handler(
     }
     console.log("targetLessonFolder.id, java: ", targetLessonFolder);
 
-    // throw new Error("hi");
 
-
-    // sendMessage(response, {
-    //   isJobDone: true,
-    //   wasSuccessful: true,
-    //   targetFolderId: targetLessonFolder.id
-    // });
+    sendMessage(response, {
+      isJobDone: true,
+      wasSuccessful: true,
+      targetFolderId: targetLessonFolder.id
+    });
     // TODO: if user.gpPlusDriveFolderId does not exist in the drive, then delete gpPlusDriveFolderId and the unitGDriveLessons
   } catch (error: any) {
     const { message, code } = error ?? {};
 
-
-
+    console.error(`Error message: ${message}`);
+    console.error(`Error code: ${code}`);
     console.error("Error: ");
     console.dir(error);
     console.log("error?.response?.data: ", error?.response?.data);
 
     // throw new Error("yo there")
 
-    // sendMessage(response, {
-    //   isJobDone: true,
-    //   wasSuccessful: false
-    // })
+    sendMessage(response, {
+      isJobDone: true,
+      wasSuccessful: false
+    })
   } finally {
     if (parentFolder) {
       const drive = await createDrive();
