@@ -7,18 +7,20 @@ import { Spinner } from "react-bootstrap";
 import { TCopyUnitJobResult } from "../pages/api/gp-plus/copy-unit";
 import CustomLink from "./CustomLink";
 import { BtnWithSpinner } from "./General/BtnWithSpinner";
+import { toast } from "react-toastify";
 
 interface CopyingUnitToastProps {
   title: string;
   subtitle: string | ReactNode;
   showProgressBar?: boolean;
   jobStatus: TCopyUnitJobResult;
-  ref: RefObject<HTMLDivElement | null>;
+  ref?: RefObject<HTMLDivElement | null>;
   progress?: number;
   total?: number;
   targetFolderId?: string;
   onCancel: () => void;
   onCancelBtnTxt?: "CANCEL" | "Close" | "RETRY";
+  isCancelBtnDisabled?: boolean;
 }
 
 type TCopyItemProgressBarProps = Pick<
@@ -81,6 +83,7 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
   targetFolderId,
   onCancel,
   onCancelBtnTxt = "CANCEL",
+  isCancelBtnDisabled,
 }) => {
   let percent: number | null = null;
   const [wasCancelBtnClicked, setWasCancelBtnClicked] = useState(false);
@@ -202,6 +205,7 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
               fontWeight: 500,
               transition: "background 0.2s",
             }}
+            disabled={isCancelBtnDisabled}
           >
             {onCancelBtnTxt}
           </BtnWithSpinner>

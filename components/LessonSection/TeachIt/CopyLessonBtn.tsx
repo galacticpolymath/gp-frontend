@@ -12,16 +12,21 @@ import Image from "next/image";
 import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import Link from "next/link";
-import { GDRIVE_FOLDER_ORIGIN_AND_PATH } from "../../CopyingUnitToast";
+import CopyingUnitToast, {
+  GDRIVE_FOLDER_ORIGIN_AND_PATH,
+} from "../../CopyingUnitToast";
 import { EXPIRATION_DATE_TIME } from "../../../pages/google-drive-auth-result";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { useLessonContext } from "../../../providers/LessonProvider";
 import Cookies from "js-cookie";
-import { TCopyLessonReqQueryParams } from "../../../pages/api/gp-plus/copy-lesson";
+import {
+  TCopyFilesMsg,
+  TCopyLessonReqQueryParams,
+} from "../../../pages/api/gp-plus/copy-lesson";
 import { ILessonForUI } from "../../../types/global";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import { EventSourcePolyfill } from "event-source-polyfill";
-import { encode } from "next-auth/jwt";
+import { toast } from "react-toastify";
 
 export interface ICopyLessonBtnProps
   extends Pick<
@@ -77,6 +82,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const didInitialRenderOccur = useRef(false);
   const [userGDriveLessonFolderId, setUserGDriveLessonFolderId] = useState("");
+  const [toastId, setToastId] = useState<ReturnType<typeof toast> | null>(null);
 
   useEffect(() => {
     console.log("userGDriveLessonFolderId: ", userGDriveLessonFolderId);
@@ -144,7 +150,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   const copyUnit = async () => {
     console.log("Copy unit function called");
 
-    setIsCopyingLesson(true);
+    // setIsCopyingLesson(true);
 
     const validToken = await ensureValidToken();
 
@@ -182,16 +188,27 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       supportDrives: true,
       multiselect: true,
       callbackFunction: async (data) => {
-        try {
-          // Ensure token is still valid before making the API call
+        if (data?.docs?.length) {
+          setIsCopyingLesson(false);
+          // TODO: render the toast initially
+          const toastId = toast(
+            <CopyingUnitToast
+              title={`Copying '${lessonName}.'`}
+              subtitle="In progress..."
+              onCancel={() => {}}
+              isCancelBtnDisabled
+              jobStatus="ongoing"
+            />,
+            {
+              style: {
+                width: "60vw",
+              },
+            }
+          );
 
-          // if (!sharedGDriveLessonFolderId || !lessonSharedDriveFolderName) {
-          //   alert(
-          //     "An error has occurred. Please refresh the page and try again."
-          //   );
-          //   return;
-          // }
+          console.log("toastId: ", toastId);
 
+          return;
           const currentValidToken = await ensureValidToken();
 
           if (!currentValidToken) {
@@ -208,101 +225,87 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           }
 
           console.log("data, yo there: ", data);
-          if (data?.docs?.length) {
-            console.log("First document ID, data?.docs: ", data?.docs);
-            setIsCopyingLesson(true);
-            const fileIds = data.docs.map((file) => file.id);
-            const reqQueryParams: Partial<TCopyLessonReqQueryParams> = {
-              unitId: unitId,
-              unitName: MediumTitle,
-              unitSharedGDriveId: GdrivePublicID!,
-              lessonId:
-                typeof lessonId === "number" ? lessonId.toString() : lessonId,
-              lessonName: lessonName,
-              lessonSharedGDriveFolderId: sharedGDriveLessonFolderId,
-              lessonSharedDriveFolderName,
-              // fileIds,
-              // allUnitLessons: allUnitLessons!,
-              // lessonsFolder: lessonsFolder!,
-            };
+          console.log("First document ID, data?.docs: ", data?.docs);
+          const fileIds = data.docs.map((file) => file.id);
+          const reqQueryParams: Partial<TCopyLessonReqQueryParams> = {
+            unitId: unitId,
+            unitName: MediumTitle,
+            unitSharedGDriveId: GdrivePublicID!,
+            lessonId:
+              typeof lessonId === "number" ? lessonId.toString() : lessonId,
+            lessonName: lessonName,
+            lessonSharedGDriveFolderId: sharedGDriveLessonFolderId,
+            lessonSharedDriveFolderName,
+            // fileIds,
+            // allUnitLessons: allUnitLessons!,
+            // lessonsFolder: lessonsFolder!,
+          };
 
-            console.log("reqQueryParams: ", reqQueryParams);
+          console.log("reqQueryParams: ", reqQueryParams);
 
-            const headers = {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-              "gdrive-token": gdriveAccessToken!,
-              "gdrive-token-refresh": gdriveRefreshToken!,
-            };
-            const url = new URL(
-              `${window.location.origin}/api/gp-plus/copy-lesson`
+          const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            "gdrive-token": gdriveAccessToken!,
+            "gdrive-token-refresh": gdriveRefreshToken!,
+          };
+          const url = new URL(
+            `${window.location.origin}/api/gp-plus/copy-lesson`
+          );
+
+          Object.entries<unknown>(reqQueryParams).forEach(([key, val]) => {
+            url.searchParams.append(key, val as string);
+          });
+
+          if (fileIds.length) {
+            url.searchParams.append(
+              "fileIds",
+              encodeURI(JSON.stringify(fileIds))
             );
-
-            Object.entries<unknown>(reqQueryParams).forEach(([key, val]) => {
-              url.searchParams.append(key, val as string);
-            });
-
-            if (fileIds.length) {
-              url.searchParams.append(
-                "fileIds",
-                encodeURI(JSON.stringify(fileIds))
-              );
-            }
-
-            if (allUnitLessons?.length) {
-              url.searchParams.append(
-                "allUnitLessons",
-                encodeURI(JSON.stringify(allUnitLessons))
-              );
-            }
-
-            type x = {
-              lessonGdriveFolderId?: string;
-              errorObj?: unknown;
-            }
-
-            const eventSource = new EventSourcePolyfill(url.href, {
-              headers,
-              withCredentials: true,
-            });
-
-            const stopJob = () => {
-              console.log("Will stop job.");
-              eventSource.close();
-            };
-
-            // const toastId = displayToast({
-            //   jobStatus: "ongoing",
-            //   onCancel: stopJob,
-            //   title: "Copying unit...",
-            //   subtitle: "Gathering files and folders...",
-            // });
-            let filesCopied = 0;
-            let foldersCreated = 0;
-            let totalItemsToCopy = 0;
-            let showProgressBar = false;
-            let targetFolderId: string | undefined = undefined;
-
-            eventSource.onmessage = (event) => {
-
-            };
-
-            if (
-              response.data?.errorObj ||
-              !response.data?.lessonGdriveFolderId
-            ) {
-              console.error("Error copying lesson:", response.data.errorObj);
-              alert("Failed to copy lesson. Please try again.");
-              return;
-            }
-
-            console.log("Response: ", response);
-
-            setUserGDriveLessonFolderId(response.data?.lessonGdriveFolderId);
           }
-        } catch (error) {
-          console.error("An error occurred: ", error);
-          alert("Failed to copy lesson. Please try again.");
+
+          if (allUnitLessons?.length) {
+            url.searchParams.append(
+              "allUnitLessons",
+              encodeURI(JSON.stringify(allUnitLessons))
+            );
+          }
+
+          type x = {
+            lessonGdriveFolderId?: string;
+            errorObj?: unknown;
+          };
+
+          const eventSource = new EventSourcePolyfill(url.href, {
+            headers,
+            withCredentials: true,
+          });
+
+          const stopJob = () => {
+            console.log("Will stop job.");
+            eventSource.close();
+          };
+
+          // const toastId = displayToast({
+          //   jobStatus: "ongoing",
+          //   onCancel: stopJob,
+          //   title: "Copying unit...",
+          //   subtitle: "Gathering files and folders...",
+          // });
+
+          let filesCopied = 0;
+          let foldersCreated = 0;
+          let totalItemsToCopy = 0;
+          let showProgressBar = false;
+          let targetFolderId: string | undefined = undefined;
+
+          eventSource.onmessage = (event) => {
+            const dataParsable = event.data as string;
+            const data = JSON.parse(dataParsable) as TCopyFilesMsg;
+
+            // TODO: present the lesson copy toast to the user
+            // TODO: test the sending of messages to the client
+          };
         }
       },
     });

@@ -39,6 +39,22 @@ import { connectToMongodb } from "../../../backend/utils/connection";
 export const maxDuration = 240;
 const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer"]);
 
+export type TCopyFilesMsg = Partial<{
+  msg: string;
+  msgs: string[];
+  isJobDone: boolean;
+  didJobStart: boolean;
+  wasSuccessful: boolean;
+  showSupportTxt: boolean;
+  foldersToCopy: number;
+  folderCreated: string;
+  fileCopied: string;
+  folderCopyId: string;
+  filesToCopy: number;
+  didRetrieveAllItems: boolean;
+  refreshToken: string;
+  errStatus: string;
+}>;
 export type TCopyLessonReqQueryParams = {
   fileIds: string[];
   lessonId: string | undefined;
@@ -50,8 +66,35 @@ export type TCopyLessonReqQueryParams = {
   unitSharedGDriveId: string | undefined;
 } & Required<Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">>;
 
-// TODO: use allUntLessonIds to get all of the lesson folder ids that were created
+const sendMessage = <TMsg extends object = TCopyFilesMsg>(
+  response: NextApiResponse,
+  data: TMsg,
+  willEndStream?: boolean,
+  delayMs?: number
+) => {
+  const _data = JSON.stringify(data);
 
+  if (willEndStream && delayMs) {
+    setTimeout(() => {
+      response.end(`data: ${_data}\n\n`);
+    }, delayMs);
+    return;
+  }
+
+  if (willEndStream) {
+    response.end(`data: ${_data}\n\n`);
+    return;
+  }
+
+  if (delayMs) {
+    setTimeout(() => {
+      response.write(`data: ${_data}\n\n`);
+    }, delayMs);
+    return;
+  }
+
+  response.write(`data: ${_data}\n\n`);
+};
 const getCanRetry = async (
   error: any,
   refreshToken: string,

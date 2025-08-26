@@ -13,6 +13,7 @@
 import Layout from "../../../../components/Layout";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ParentLessonSection from "../../../../components/LessonSection/ParentLessonSection";
+import { ToastContainer } from "react-toastify";
 import LessonsSecsNavDots from "../../../../components/LessonSection/LessonSecsNavDots";
 import ShareWidget from "../../../../components/AboutPgComps/ShareWidget";
 import { useRouter } from "next/router";
@@ -56,7 +57,10 @@ import {
   removeLocalStorageItem,
 } from "../../../../shared/fns";
 import useSiteSession from "../../../../customHooks/useSiteSession";
-import { getGDriveItemViaServiceAccount, getUnitGDriveChildItems } from "../../../../backend/services/gdriveServices";
+import {
+  getGDriveItemViaServiceAccount,
+  getUnitGDriveChildItems,
+} from "../../../../backend/services/gdriveServices";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -711,6 +715,12 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
   return (
     <Layout {...layoutProps}>
+      <ToastContainer
+        stacked
+        autoClose={false}
+        position="bottom-right"
+        className="bg-primary"
+      />
       {_unit.PublicationStatus === "Beta" && (
         <SendFeedback
           closeBtnDynamicStyles={{
@@ -931,11 +941,10 @@ export const getStaticProps = async (arg: {
         targetUnitForUI.FeaturedMultimedia = featuredMultimediaWithImgPreviews;
       }
 
-      
       // get the preview image for the google drive files and check the status of the lesson
       if (
         targetUnitForUI.Sections?.teachingMaterials?.classroom?.resources
-        ?.length &&
+          ?.length &&
         resources?.length
       ) {
         console.log("unitGDriveChildItems, second: ", unitGDriveChildItems);
@@ -945,21 +954,18 @@ export const getStaticProps = async (arg: {
             INewUnitLesson,
             "allUnitLessons"
           >["allUnitLessons"] = [];
-          
-          
+
           if (resource.lessons && unitGDriveChildItems?.length) {
             for (const lesson of resource.lessons) {
-              
-              const targetUnitGDriveItem = unitGDriveChildItems.find(item => {
+              const targetUnitGDriveItem = unitGDriveChildItems.find((item) => {
                 const itemName = item?.name?.split("_").at(-1);
 
                 return (
                   itemName &&
-                  lesson.title && itemName.toLowerCase() ===
-                  lesson.title.toLowerCase()
+                  lesson.title &&
+                  itemName.toLowerCase() === lesson.title.toLowerCase()
                 );
               });
-              
 
               if (targetUnitGDriveItem?.id && lesson.lsn) {
                 allUnitLessons.push({
@@ -970,29 +976,44 @@ export const getStaticProps = async (arg: {
             }
           }
 
-          let lessonsFolder: Pick<INewUnitLesson, "lessonsFolder">["lessonsFolder"] | undefined = undefined;
+          let lessonsFolder:
+            | Pick<INewUnitLesson, "lessonsFolder">["lessonsFolder"]
+            | undefined = undefined;
           const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
             async (lesson) => {
               // GOAL: find the shared lessons folder (the parent folder for all of the lessons folder)
               // loop through all of the items of unitGDriveChildItems, if the name can equal lesson.name
               // -then get the parentFolderId of the lesson folder
-              if(!lessonsFolder && unitGDriveChildItems){
-                for (const unitGDriveChildItem of unitGDriveChildItems){
-                  const lessonName = unitGDriveChildItem.name?.split('_').at(-1)?.toLowerCase();
+              if (!lessonsFolder && unitGDriveChildItems) {
+                for (const unitGDriveChildItem of unitGDriveChildItems) {
+                  const lessonName = unitGDriveChildItem.name
+                    ?.split("_")
+                    .at(-1)
+                    ?.toLowerCase();
 
-                  if(lessonName && lesson.title && lessonName.toLowerCase() === lesson.title.toLowerCase()){
-                    const { name, id } = unitGDriveChildItems.find(item => {
-                      return item.id && item.id === unitGDriveChildItem.parentFolderId
-                    }) ?? {}
-                    lessonsFolder = name && id ? {
-                      name: name,
-                      sharedGDriveId: id
-                    } : undefined;
+                  if (
+                    lessonName &&
+                    lesson.title &&
+                    lessonName.toLowerCase() === lesson.title.toLowerCase()
+                  ) {
+                    const { name, id } =
+                      unitGDriveChildItems.find((item) => {
+                        return (
+                          item.id &&
+                          item.id === unitGDriveChildItem.parentFolderId
+                        );
+                      }) ?? {};
+                    lessonsFolder =
+                      name && id
+                        ? {
+                            name: name,
+                            sharedGDriveId: id,
+                          }
+                        : undefined;
                   }
                 }
               }
 
-              
               const targetGDriveLessonFolder = unitGDriveChildItems?.find(
                 (item) => {
                   const lessonName = item?.name?.split("_").at(-1);
