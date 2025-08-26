@@ -897,3 +897,11 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
   transition: all 0.15s ease-in;
   transition-property: background-color, border-color;
 }
+
+.toast-list {
+  position: fixed;
+  width: 100%;
+  max-width: 400px;
+  max-height: 100vh;
+  overflow-y: auto;
+}

@@ -719,7 +719,14 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
         stacked
         autoClose={false}
         position="bottom-right"
-        className="bg-primary"
+        style={
+          {
+            // height: '80vh',
+            // paddingTop: '50px',
+            // width: '50vw',
+            // overflowY: 'scroll',
+          }
+        }
       />
       {_unit.PublicationStatus === "Beta" && (
         <SendFeedback

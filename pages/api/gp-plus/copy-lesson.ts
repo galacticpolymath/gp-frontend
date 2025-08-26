@@ -51,6 +51,7 @@ export type TCopyFilesMsg = Partial<{
   wasSuccessful: boolean;
   showSupportTxt: boolean;
   foldersToCopy: number;
+  failedCopiedFile: string;
   folderCreated: string;
   fileCopied: string;
   folderCopyId: string;
@@ -76,7 +77,7 @@ export type TCopyLessonReqQueryParams = {
   lessonsFolder: string | undefined;
 };
 
-const sendMessage = <TMsg extends object = TCopyFilesMsg>(
+export const sendMessage = <TMsg extends object = TCopyFilesMsg>(
   response: NextApiResponse,
   data: TMsg,
   willEndStream?: boolean,
@@ -427,6 +428,11 @@ export default async function handler(
           throw new CustomError("The stream has ended.", 500);
         }
         const drive = await createDrive();
+
+        sendMessage(response, {
+          msg: `Creating the '${reqQueryParams.unitName}' unit folder...`,
+        });
+
         const lessonFolderId = await createUnitFolder(
           {
             sharedGDriveId: reqQueryParams.unitSharedGDriveId,
@@ -444,6 +450,11 @@ export default async function handler(
           email,
           _allUnitLessons
         );
+
+        sendMessage(response, {
+          msg: `'${reqQueryParams.unitName}' unit folder created.`,
+        });
+
         if (!isStreamOpen) {
           throw new CustomError("The stream has ended.", 500);
         }
@@ -461,14 +472,26 @@ export default async function handler(
           throw new CustomError("The stream has ended.", 500);
         }
 
-        await copyFiles(
+        sendMessage(response, {
+          filesToCopy: reqQueryParams.fileIds.length,
+        });
+
+        sendMessage(response, {
+          didRetrieveAllItems: true,
+        });
+
+        const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
           email,
           drive,
           gDriveAccessToken,
           lessonFolderId,
           gDriveRefreshToken,
-          clientOrigin
+          clientOrigin,
+          reqQueryParams.fileNames,
+          (data, willEndStream, delayMsg) => {
+            sendMessage(response, data, willEndStream, delayMsg);
+          }
         );
 
         if (!isStreamOpen) {
@@ -496,10 +519,12 @@ export default async function handler(
 
         console.log("lessonDriveIdUpdatedResult: ", lessonDriveIdUpdatedResult);
 
-        return response.json({
-          msg: "Lesson copied.",
-          lessonGdriveFolderId: lessonFolderId,
+        sendMessage(response, {
+          isJobDone: true,
+          wasSuccessful,
+          targetFolderId: lessonFolderId,
         });
+        return;
       }
 
       console.log("unitDriveId, hey there: ", unitDriveId);
@@ -583,6 +608,10 @@ export default async function handler(
           throw new CustomError("The stream has ended.", 500);
         }
 
+        sendMessage(response, {
+          msg: `Creating '${reqQueryParams.lessonSharedDriveFolderName}' folder...`,
+        });
+
         const targetLessonFolderCreationResult = await createGDriveFolder(
           reqQueryParams.lessonSharedDriveFolderName,
           gDriveAccessToken,
@@ -601,9 +630,11 @@ export default async function handler(
           );
         }
 
-        console.log("The target lesson folder was created successfully.");
+        sendMessage(response, {
+          msg: `The '${reqQueryParams.lessonSharedDriveFolderName}' folder was created.`,
+        });
 
-        // TODO: add the lesson folder to the lessonDriveIds array
+        console.log("The target lesson folder was created successfully.");
 
         if (!isStreamOpen) {
           throw new CustomError("The stream has ended.", 500);
@@ -656,20 +687,39 @@ export default async function handler(
           throw new CustomError("The stream has ended.", 500);
         }
 
-        await copyFiles(
+        sendMessage(response, {
+          filesToCopy: reqQueryParams.fileIds.length,
+        });
+
+        sendMessage(response, {
+          didRetrieveAllItems: true,
+        });
+
+        sendMessage(response, {
+          msg: "Copying lesson files...",
+        });
+
+        const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
           email,
           drive,
           gDriveAccessToken,
           targetLessonFolderCreationResult.folderId,
           gDriveRefreshToken,
-          clientOrigin
+          clientOrigin,
+          reqQueryParams.fileNames,
+          (data, willEndStream, delayMsg) => {
+            sendMessage(response, data, willEndStream, delayMsg);
+          }
         );
 
-        return response.json({
-          msg: "Lesson copied.",
-          lessonGdriveFolderId: targetLessonFolderCreationResult.folderId,
+        sendMessage(response, {
+          isJobDone: true,
+          wasSuccessful,
+          targetFolderId: targetLessonFolderCreationResult.folderId,
         });
+
+        return;
       }
 
       if (doesTargetGDriveLessonFolderExist) {
@@ -704,20 +754,39 @@ export default async function handler(
           throw new CustomError("The stream has ended.", 500);
         }
 
-        await copyFiles(
+        sendMessage(response, {
+          filesToCopy: reqQueryParams.fileIds.length,
+        });
+
+        sendMessage(response, {
+          didRetrieveAllItems: true,
+        });
+
+        sendMessage(response, {
+          msg: "Copying lesson files...",
+        });
+
+        const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
           email,
           drive,
           gDriveAccessToken,
           targetLessonFolderInUserDrive!.lessonDriveId,
           gDriveRefreshToken,
-          clientOrigin
+          clientOrigin,
+          reqQueryParams.fileNames,
+          (data, willEndStream, delayMsg) => {
+            sendMessage(response, data, willEndStream, delayMsg);
+          }
         );
 
-        return response.json({
-          msg: "Lesson copied.",
-          lessonGdriveFolderId: targetLessonFolderInUserDrive!.lessonDriveId,
+        sendMessage(response, {
+          isJobDone: true,
+          wasSuccessful,
+          targetFolderId: targetLessonFolderInUserDrive!.lessonDriveId,
         });
+
+        return;
       }
     }
 
@@ -1066,9 +1135,18 @@ export default async function handler(
     sendMessage(response, {
       filesToCopy: reqQueryParams.fileIds.length,
     });
+    sendMessage(response, {
+      didRetrieveAllItems: true,
+    });
+    sendMessage(response, {
+      msg: "Will copy all files...",
+    });
+
+    let wasJobSuccessful = true;
 
     // check if the permission were propagated to all of the files to copy
-    for (const fileId of reqQueryParams.fileIds) {
+    for (const fileIdIndex in reqQueryParams.fileIds) {
+      const fileId = reqQueryParams.fileIds[fileIdIndex];
       const permission = await getTargetUserPermission(
         fileId,
         jwtPayload.payload.email,
@@ -1133,12 +1211,37 @@ export default async function handler(
         clientOrigin
       );
       console.log("fileCopyResult: ", fileCopyResult);
+
+      if (
+        "id" in fileCopyResult &&
+        fileCopyResult.id &&
+        reqQueryParams.fileNames[fileIdIndex]
+      ) {
+        console.log(
+          `Successfully copied file ${reqQueryParams.fileNames[fileIdIndex]}`
+        );
+        sendMessage(response, {
+          fileCopied: reqQueryParams.fileNames[fileIdIndex],
+        });
+      } else if (
+        reqQueryParams.fileNames[fileIdIndex] &&
+        fileCopyResult?.errType
+      ) {
+        wasJobSuccessful = false;
+        console.error(
+          `Failed to copy file '${reqQueryParams.fileNames[fileIdIndex]}' for user with email ${email}. Reason: `,
+          fileCopyResult
+        );
+        sendMessage(response, {
+          failedCopiedFile: reqQueryParams.fileNames[fileIdIndex],
+        });
+      }
     }
     console.log("targetLessonFolder.id, java: ", targetLessonFolder);
 
     sendMessage(response, {
       isJobDone: true,
-      wasSuccessful: true,
+      wasSuccessful: wasJobSuccessful,
       targetFolderId: targetLessonFolder.id,
     });
     // TODO: if user.gpPlusDriveFolderId does not exist in the drive, then delete gpPlusDriveFolderId and the unitGDriveLessons

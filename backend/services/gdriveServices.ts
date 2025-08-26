@@ -9,8 +9,17 @@ import axios from "axios";
 import { waitWithExponentialBackOff } from "../../globalFns";
 import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../globalVars";
 import { ILessonGDriveId, IUnitGDriveLesson } from "../models/User/types";
-import { addNewGDriveLessons, createDbArrFilter, getUserByEmail, updateUserCustom } from "./userServices";
+import {
+  addNewGDriveLessons,
+  createDbArrFilter,
+  getUserByEmail,
+  updateUserCustom,
+} from "./userServices";
 import { INewUnitLesson } from "../models/Unit/types/teachingMaterials";
+import {
+  sendMessage,
+  TCopyFilesMsg,
+} from "../../pages/api/gp-plus/copy-lesson";
 
 type TUnitFolder = Partial<{
   name: string | null;
@@ -123,7 +132,10 @@ export const createGoogleAdminService = async (
     clientOptions,
   });
   const authClient = (await auth.getClient()) as OAuth2Client;
-  const adminService = google.admin({ version: "directory_v1", auth: authClient });
+  const adminService = google.admin({
+    version: "directory_v1",
+    auth: authClient,
+  });
 
   return adminService;
 };
@@ -365,9 +377,9 @@ export const getFolderChildItems = async (
       }
 
       const folderData = folderDataResponse.data.files.map((file) => {
-        const targetFolderOccurrences = foldersOccurrenceObj ? (foldersOccurrenceObj as any)[
-          file.name as string
-        ] : null;
+        const targetFolderOccurrences = foldersOccurrenceObj
+          ? (foldersOccurrenceObj as any)[file.name as string]
+          : null;
         const targetFolder = targetFolderOccurrences
           ? targetFolderOccurrences.find((folder: any) => folder.id === file.id)
           : null;
@@ -512,7 +524,7 @@ export const createFolderStructure = async (
           pathToFile: "",
           parentFolderId: folderToCreate.parentFolderId,
           originalFileId: folderToCreate.fileId,
-          mimeType: folderToCreate.mimeType
+          mimeType: folderToCreate.mimeType,
         });
       }
 
@@ -554,7 +566,7 @@ export const createFolderStructure = async (
       pathToFile: folderToCreate.pathToFile,
       parentFolderId: folderToCreate.parentFolderId,
       originalFileId: folderToCreate.fileId,
-      mimeType: folderToCreate.mimeType
+      mimeType: folderToCreate.mimeType,
     });
   }
 
@@ -1194,6 +1206,8 @@ export const updatePermissionsForSharedFileItems = async (
   return { id: parentFolderId, permissionId: targetPermission.id };
 };
 
+type TSendMsgParams = Parameters<typeof sendMessage>;
+
 export const copyFiles = async (
   fileIds: string[],
   email: string,
@@ -1201,10 +1215,19 @@ export const copyFiles = async (
   gDriveAccessToken: string,
   lessonFolderId: string,
   refreshAuthToken: string,
-  clientOrigin: string
+  clientOrigin: string,
+  fileNames: string[],
+  sendMessageToClient: (
+    data: TCopyFilesMsg,
+    willEndStream?: TSendMsgParams[2],
+    delayMsg?: TSendMsgParams[3]
+  ) => void
 ) => {
+
+  let wasJobSuccessful = true;
   // check if the permission were propagated to all of the files to copy
-  for (const fileId of fileIds) {
+  for (const fileIdIndex in fileIds) {
+    const fileId = fileIds[fileIdIndex];
     const permission = await getTargetUserPermission(fileId, email, drive);
 
     console.log("permission: ", permission);
@@ -1252,8 +1275,26 @@ export const copyFiles = async (
       refreshAuthToken,
       clientOrigin
     );
+
+    if ("id" in fileCopyResult && fileCopyResult.id && fileNames[fileIdIndex]) {
+      console.log(`Successfully copied file ${fileNames[fileIdIndex]}`);
+      sendMessageToClient({
+        fileCopied: fileNames[fileIdIndex],
+      });
+    } else if (fileNames[fileIdIndex] && fileCopyResult?.errType) {
+      wasJobSuccessful = false;
+      console.error(
+        `Failed to copy file ${fileNames[fileIdIndex]} for user with email ${email}. Reason: `,
+        fileCopyResult
+      );
+      sendMessageToClient({
+        failedCopiedFile: fileNames[fileIdIndex],
+      });
+    }
     // console.log("fileCopyResult: ", fileCopyResult.status);
   }
+
+  return wasJobSuccessful
 };
 
 export const addNewGDriveLessonToTargetUser = async (

@@ -322,7 +322,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
               render: (
                 <CopyingUnitToast
                   subtitle={"Job has been canceled."}
-                  title={`You have stopped copying lesson '${lessonName}.'`}
+                  title={`Copying lesson '${lessonName}' has been stopped.`}
                   jobStatus="canceled"
                   onCancel={() => {}}
                   isCancelBtnDisabled
@@ -372,7 +372,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                 const title = wasSuccessful
                   ? `Successfully copied '${lessonName}'`
                   : `Failed to copy '${lessonName}'`;
-                debugger;
                 toast.update(toastId, {
                   render: (
                     <CopyingUnitToast
@@ -401,6 +400,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   closeButton: false,
                   toastId,
                 });
+                eventSource.close();
                 return;
               }
 
@@ -414,7 +414,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       subtitle={`'${fileCopied}' was copied.`}
                       jobStatus="ongoing"
                       onCancel={cancelJob}
-                      isCancelBtnDisabled
                       showProgressBar
                       progress={filesCopied}
                       total={totalFilesToCopy}
@@ -441,7 +440,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       subtitle={`${totalFilesToCopy} files to copy...`}
                       jobStatus="ongoing"
                       onCancel={cancelJob}
-                      isCancelBtnDisabled
                     />
                   ),
                   style: {
@@ -464,7 +462,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       subtitle={msg}
                       jobStatus="ongoing"
                       onCancel={cancelJob}
-                      isCancelBtnDisabled
                       progress={filesCopied}
                       total={totalFilesToCopy}
                       showProgressBar={showProgressBar}
@@ -491,7 +488,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       subtitle="Will copy files..."
                       jobStatus="ongoing"
                       onCancel={cancelJob}
-                      isCancelBtnDisabled
                       total={totalFilesToCopy}
                       progress={filesCopied}
                       showProgressBar={showProgressBar}
