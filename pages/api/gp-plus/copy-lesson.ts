@@ -147,7 +147,7 @@ const createUnitFolder = async (
 
   console.log("Will get the target folder structure.");
 
-  console.log(`reqBody.unit.id: ${unit.sharedGDriveId}`);
+  console.log(`reqQueryParams.unit.id: ${unit.sharedGDriveId}`);
 
   const drive = await createDrive();
   const gdriveResponse = await drive.files.list({
@@ -411,6 +411,13 @@ export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
+  response.setHeader("Content-Type", "text/event-stream");
+  response.setHeader("Cache-Control", "no-cache");
+  response.setHeader("Connection", "kee-alive");
+  response.setHeader("Content-Encoding", "none");
+
+  let isStreamOpen = true;
+
   const gDriveAccessToken = (
     Array.isArray(request.headers?.["gdrive-token"])
       ? request.headers["gdrive-token"][0]
@@ -421,8 +428,48 @@ export default async function handler(
       ? request.headers["gdrive-token-refresh"][0]
       : request.headers["gdrive-token-refresh"]
   ) as string | undefined;
-  const reqBody = request.body as TCopyLessonReqBody;
+  const reqQueryParams = request.query as unknown as TCopyLessonReqBody;
   let parentFolder: { id: string; permissionId: string } | null = null;
+
+  let wasUserRolesAndFileMetaDataReseted = false;
+
+  response.on("close", async () => {
+    console.log("The user closed the stream.");
+    isStreamOpen = false;
+
+    if (!wasUserRolesAndFileMetaDataReseted && parentFolder) {
+      const drive = await createDrive();
+      const filePermissionsUpdated = await drive.permissions.update({
+        permissionId: parentFolder.permissionId,
+        fileId: parentFolder.id,
+        supportsAllDrives: true,
+        requestBody: {
+          role: "reader",
+        },
+      });
+
+      console.log("filePermissionsUpdated: ", filePermissionsUpdated.data);
+    }
+
+    if (!wasUserRolesAndFileMetaDataReseted && reqQueryParams.fileIds) {
+      console.log("Making all file readable...");
+      for (const fileId of reqQueryParams.fileIds) {
+        const drive = await createDrive();
+        // @ts-ignore
+        const fileUpdated = await drive.files.update({
+          fileId: fileId,
+          supportsAllDrives: true,
+          requestBody: {
+            contentRestrictions: {
+              readOnly: false,
+            },
+          },
+        });
+
+        console.log("fileUpdated: ", fileUpdated);
+      }
+    }
+  });
 
   try {
     if (!gDriveAccessToken) {
@@ -448,18 +495,18 @@ export default async function handler(
     }
 
     if (
-      !reqBody?.unit?.id ||
-      !reqBody?.unit?.name ||
-      !reqBody?.unit?.sharedGDriveId ||
-      !reqBody?.fileIds?.length ||
-      !reqBody?.lesson?.id ||
-      !reqBody?.lesson?.lessonSharedDriveFolderName ||
-      !reqBody?.lesson?.sharedGDriveLessonFolderId ||
-      !reqBody?.allUnitLessons ||
-      !reqBody?.lessonsFolder ||
-      !reqBody?.lessonsFolder?.sharedGDriveId ||
-      !reqBody?.lessonsFolder?.name ||
-      !reqBody?.lesson?.name
+      !reqQueryParams?.unit?.id ||
+      !reqQueryParams?.unit?.name ||
+      !reqQueryParams?.unit?.sharedGDriveId ||
+      !reqQueryParams?.fileIds?.length ||
+      !reqQueryParams?.lesson?.id ||
+      !reqQueryParams?.lesson?.lessonSharedDriveFolderName ||
+      !reqQueryParams?.lesson?.sharedGDriveLessonFolderId ||
+      !reqQueryParams?.allUnitLessons ||
+      !reqQueryParams?.lessonsFolder ||
+      !reqQueryParams?.lessonsFolder?.sharedGDriveId ||
+      !reqQueryParams?.lessonsFolder?.name ||
+      !reqQueryParams?.lesson?.name
     ) {
       throw new CustomError(
         "Request body is invalid. Check the body of the request.",
@@ -526,6 +573,11 @@ export default async function handler(
         console.log(
           "The 'My GP+ Units' folder doesn't exist, will reset all values pertaining to it in the db"
         );
+
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
+
         const updatedUserResult = await updateUser(
           { email },
           {
@@ -550,16 +602,16 @@ export default async function handler(
 
     // the gp plus folder exist, will check if the target unit folder and the target lesson exist
     if (gpPlusFolderId && unitGDriveLessonsObjs?.length) {
-      console.log(`reqBody.lesson!.id: ${reqBody.lesson!.id}`);
+      console.log(`reqQueryParams.lesson!.id: ${reqQueryParams.lesson!.id}`);
       console.log("unitGDriveLessonsObjs: ", unitGDriveLessonsObjs);
       const clientOrigin = new URL(request.headers.referer ?? "").origin;
       const { unitDriveId, lessonDriveIds } =
         unitGDriveLessonsObjs.find((unitGDriveLessonsObj) => {
-          return unitGDriveLessonsObj.unitId === reqBody.unit!.id;
+          return unitGDriveLessonsObj.unitId === reqQueryParams.unit!.id;
         }) ?? {};
       const targetLessonFolderInUserDrive = lessonDriveIds?.find(
         (lessonDrive) => {
-          return lessonDrive.lessonNum === reqBody.lesson!.id;
+          return lessonDrive.lessonNum === reqQueryParams.lesson!.id;
         }
       );
       console.log("lessonDriveIds: ", lessonDriveIds);
@@ -592,6 +644,11 @@ export default async function handler(
         console.log(
           "The target unit folder does not exist, will delete from db"
         );
+
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
+
         const targetUnitDeletionResult = await updateUserCustom(
           {
             email,
@@ -612,6 +669,10 @@ export default async function handler(
         unitDriveId &&
         !doesTargetGDriveLessonFolderExist
       ) {
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
+
         const targetLessonDeletionResult = await updateUserCustom(
           {
             email,
@@ -653,36 +714,46 @@ export default async function handler(
         console.log(
           `The target unit folder and its corresponding lesson folder do not exist, creating them...`
         );
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
         const drive = await createDrive();
         const lessonFolderId = await createUnitFolder(
           {
-            sharedGDriveId: reqBody.unit.sharedGDriveId,
-            name: reqBody.unit.name,
-            id: reqBody.unit.id,
+            sharedGDriveId: reqQueryParams.unit.sharedGDriveId,
+            name: reqQueryParams.unit.name,
+            id: reqQueryParams.unit.id,
           },
           {
-            id: reqBody.lesson.id,
-            sharedGDriveId: reqBody.lesson.sharedGDriveLessonFolderId,
+            id: reqQueryParams.lesson.id,
+            sharedGDriveId: reqQueryParams.lesson.sharedGDriveLessonFolderId,
           },
           gDriveAccessToken,
           gpPlusFolderId,
           gDriveRefreshToken,
           clientOrigin,
           email,
-          reqBody.allUnitLessons
+          reqQueryParams.allUnitLessons
         );
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
           email,
-          reqBody.fileIds
+          reqQueryParams.fileIds
         );
         parentFolder = {
           id: copyItemsParentFolder.id,
           permissionId: copyItemsParentFolder.permissionId,
         };
 
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
+
         await copyFiles(
-          reqBody.fileIds,
+          reqQueryParams.fileIds,
           email,
           drive,
           gDriveAccessToken,
@@ -691,13 +762,17 @@ export default async function handler(
           clientOrigin
         );
 
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
+
         const lessonDriveIdUpdatedResult = await updateUserCustom(
           { email },
           {
             $push: {
               "unitGDriveLessons.$[unitGDriveLessonsObj].lessonDriveIds": {
                 lessonDriveId: lessonFolderId,
-                lessonNum: reqBody.lesson.id,
+                lessonNum: reqQueryParams.lesson.id,
               } as ILessonGDriveId,
             },
           },
@@ -747,7 +822,7 @@ export default async function handler(
             ) {
               return (
                 file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] ===
-                reqBody.lessonsFolder!.sharedGDriveId
+                reqQueryParams.lessonsFolder!.sharedGDriveId
               );
             }
 
@@ -766,8 +841,13 @@ export default async function handler(
           lessonsFolderId = lessonsFolder?.id ?? null;
         } else {
           console.log(`The lessons folder doesn't exist. Will create it.`);
+
+          if (!isStreamOpen) {
+            throw new CustomError("The stream has ended.", 500);
+          }
+
           const folderCreationResult = await createGDriveFolder(
-            reqBody.lessonsFolder.name,
+            reqQueryParams.lessonsFolder.name,
             gDriveAccessToken,
             [unitDriveId!],
             3,
@@ -775,7 +855,7 @@ export default async function handler(
             clientOrigin,
             {
               [ORIGINAL_ITEM_ID_FIELD_NAME]:
-                reqBody.lessonsFolder.sharedGDriveId ?? null,
+                reqQueryParams.lessonsFolder.sharedGDriveId ?? null,
             }
           );
           console.log("folderCreationResult: ", folderCreationResult);
@@ -786,12 +866,16 @@ export default async function handler(
 
         if (!lessonsFolderId) {
           throw new Error(
-            `Failed to create the lessons folder with the name ${reqBody.lessonsFolder.name} in the unit folder with id ${unitDriveId}.`
+            `Failed to create the lessons folder with the name ${reqQueryParams.lessonsFolder.name} in the unit folder with id ${unitDriveId}.`
           );
         }
 
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
+
         const targetLessonFolderCreationResult = await createGDriveFolder(
-          reqBody.lesson.lessonSharedDriveFolderName,
+          reqQueryParams.lesson.lessonSharedDriveFolderName,
           gDriveAccessToken,
           [lessonsFolderId],
           3,
@@ -804,20 +888,25 @@ export default async function handler(
           !targetLessonFolderCreationResult.folderId
         ) {
           throw new Error(
-            `Failed to create the lesson folder ${reqBody.lesson.lessonSharedDriveFolderName} into the target unit folder with id ${unitDriveId}.`
+            `Failed to create the lesson folder ${reqQueryParams.lesson.lessonSharedDriveFolderName} into the target unit folder with id ${unitDriveId}.`
           );
         }
 
         console.log("The target lesson folder was created successfully.");
 
         // TODO: add the lesson folder to the lessonDriveIds array
+
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
+
         const userUpdateResults = await updateUserCustom(
           { email },
           {
             $push: {
               "unitGDriveLessons.$[elem].lessonDriveIds": {
                 lessonDriveId: targetLessonFolderCreationResult.folderId,
-                lessonNum: reqBody.lesson.id,
+                lessonNum: reqQueryParams.lesson.id,
               } as ILessonGDriveId,
             },
           },
@@ -829,28 +918,37 @@ export default async function handler(
 
         if (userUpdateResults.wasSuccessful) {
           console.log(
-            `The lesson folder ${reqBody.lesson.lessonSharedDriveFolderName} was successfully added to the unit folder with id ${unitDriveId}.`
+            `The lesson folder ${reqQueryParams.lesson.lessonSharedDriveFolderName} was successfully added to the unit folder with id ${unitDriveId}.`
           );
         } else {
           console.error(
-            `Failed to add the lesson folder ${reqBody.lesson.lessonSharedDriveFolderName} to the unit folder with id ${unitDriveId}.`
+            `Failed to add the lesson folder ${reqQueryParams.lesson.lessonSharedDriveFolderName} to the unit folder with id ${unitDriveId}.`
           );
         }
 
         const drive = await createDrive();
         // make the target shared drive files read only to prevent writes during the copy operation
+
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
+
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
           email,
-          reqBody.fileIds
+          reqQueryParams.fileIds
         );
         parentFolder = {
           id: copyItemsParentFolder.id,
           permissionId: copyItemsParentFolder.permissionId,
         };
 
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
+
         await copyFiles(
-          reqBody.fileIds,
+          reqQueryParams.fileIds,
           email,
           drive,
           gDriveAccessToken,
@@ -873,19 +971,28 @@ export default async function handler(
         );
         const clientOrigin = new URL(request.headers.referer ?? "").origin;
         const drive = await createDrive();
+
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
+
         // make the target shared drive files read only to prevent writes during the copy operation
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
           email,
-          reqBody.fileIds
+          reqQueryParams.fileIds
         );
         parentFolder = {
           id: copyItemsParentFolder.id,
           permissionId: copyItemsParentFolder.permissionId,
         };
 
+        if (!isStreamOpen) {
+          throw new CustomError("The stream has ended.", 500);
+        }
+
         await copyFiles(
-          reqBody.fileIds,
+          reqQueryParams.fileIds,
           email,
           drive,
           gDriveAccessToken,
@@ -914,6 +1021,11 @@ export default async function handler(
       const clientOrigin = new URL(request.headers.referer ?? "").origin;
       console.log("will create the gp plus unit folder");
       console.log("gDriveAccessToken: ", gDriveAccessToken);
+
+      if (!isStreamOpen) {
+        throw new CustomError("The stream has ended.", 500);
+      }
+
       const gpPlusFolderCreationResult = await createGDriveFolder(
         "My GP+ Units",
         gDriveAccessToken,
@@ -933,6 +1045,10 @@ export default async function handler(
 
       gpPlusFolderId = gpPlusFolderCreationResult.folderId;
 
+      if (!isStreamOpen) {
+        throw new CustomError("The stream has ended.", 500);
+      }
+
       const userUpdatedResult = await updateUser(
         { email },
         { gpPlusDriveFolderId: gpPlusFolderCreationResult.folderId }
@@ -951,8 +1067,13 @@ export default async function handler(
     console.log("Will create the target unit folder...");
 
     const clientOrigin = new URL(request.headers.referer).origin;
+
+    if (!isStreamOpen) {
+      throw new CustomError("The stream has ended.", 500);
+    }
+
     const targetUnitFolderCreation = await createGDriveFolder(
-      reqBody.unit.name,
+      reqQueryParams.unit.name,
       gDriveAccessToken,
       [gpPlusFolderId],
       3,
@@ -964,17 +1085,21 @@ export default async function handler(
 
     if (!targetUnitFolderCreation.folderId) {
       throw new CustomError(
-        `Error creating the folder for unit ${reqBody.unit.name}. Reason: ${targetUnitFolderCreation.errMsg}`,
+        `Error creating the folder for unit ${reqQueryParams.unit.name}. Reason: ${targetUnitFolderCreation.errMsg}`,
         500
       );
     }
 
     let unitGDriveLesson = {
       unitDriveId: targetUnitFolderCreation.folderId,
-      unitId: reqBody.unit.id,
+      unitId: reqQueryParams.unit.id,
     } as IUnitGDriveLesson;
 
     console.log("unitGDriveLesson: ", unitGDriveLesson);
+
+    if (!isStreamOpen) {
+      throw new CustomError("The stream has ended.", 500);
+    }
 
     const userUpdatedWithNewUnitObjResult = await updateUserCustom(
       { email },
@@ -1010,7 +1135,9 @@ export default async function handler(
 
     console.log("Will get the target folder structure.");
 
-    console.log(`reqBody.unit.id: ${reqBody.unit.sharedGDriveId}`);
+    console.log(
+      `reqQueryParams.unit.id: ${reqQueryParams.unit.sharedGDriveId}`
+    );
 
     const drive = await createDrive();
     const gdriveResponse = await drive.files.list({
@@ -1018,7 +1145,7 @@ export default async function handler(
       includeItemsFromAllDrives: true,
       supportsAllDrives: true,
       driveId: process.env.GOOGLE_DRIVE_ID,
-      q: `'${reqBody.unit.sharedGDriveId}' in parents`,
+      q: `'${reqQueryParams.unit.sharedGDriveId}' in parents`,
       fields: "*",
     });
 
@@ -1033,9 +1160,14 @@ export default async function handler(
 
     console.log("allChildFiles: ", allChildFiles);
 
-    const selectedClientLessonName = reqBody.lesson.name.toLowerCase();
+    const selectedClientLessonName = reqQueryParams.lesson.name.toLowerCase();
     // create the folder structure in the user's google drive
     console.log("selectedClientLessonName: ", selectedClientLessonName);
+
+    if (!isStreamOpen) {
+      throw new CustomError("The stream has ended.", 500);
+    }
+
     const targetFolderStructureArr = await createFolderStructure(
       allChildFiles,
       gDriveAccessToken,
@@ -1061,7 +1193,7 @@ export default async function handler(
 
     if (!targetLessonFolder?.id) {
       throw new CustomError(
-        `The lesson named ${selectedClientLessonName} does not exist in the unit ${reqBody.unit.name}.`,
+        `The lesson named ${selectedClientLessonName} does not exist in the unit ${reqQueryParams.unit.name}.`,
         400
       );
     }
@@ -1073,7 +1205,7 @@ export default async function handler(
     const allUnitLessonFolders: ILessonGDriveId[] = [];
 
     for (const folderSubItem of targetFolderStructureArr) {
-      const targetUnitLesson = reqBody.allUnitLessons.find(
+      const targetUnitLesson = reqQueryParams.allUnitLessons.find(
         (unitLesson) =>
           unitLesson.sharedGDriveId === folderSubItem.originalFileId
       );
@@ -1087,6 +1219,9 @@ export default async function handler(
     }
 
     console.log("allUnitLessonFolders: ", allUnitLessonFolders);
+    if (!isStreamOpen) {
+      throw new CustomError("The stream has ended.", 500);
+    }
 
     const lessonDriveIdsPushSuccessfulResult = await updateUserCustom(
       { email },
@@ -1127,7 +1262,7 @@ export default async function handler(
     // get the parent folder id of the files to copy
     const parentFolderId = (
       await drive.files.get({
-        fileId: reqBody.fileIds[0],
+        fileId: reqQueryParams.fileIds[0],
         fields: "*",
         supportsAllDrives: true,
       })
@@ -1137,6 +1272,10 @@ export default async function handler(
 
     if (!parentFolderId) {
       throw new CustomError("The file does not have a parent folder.", 500);
+    }
+
+    if (!isStreamOpen) {
+      throw new CustomError("The stream has ended.", 500);
     }
 
     const targetPermission = await getTargetUserPermission(
@@ -1157,6 +1296,11 @@ export default async function handler(
     console.log("Will update the permission of the target file.");
 
     // allow the user to programmatically copy the files by changing to the target role below
+
+    if (!isStreamOpen) {
+      throw new CustomError("The stream has ended.", 500);
+    }
+
     const filePermissionsUpdated = await drive.permissions.update({
       permissionId: targetPermission.id,
       fileId: parentFolderId,
@@ -1170,7 +1314,7 @@ export default async function handler(
     console.log("filePermissionsUpdated: ", filePermissionsUpdated);
 
     // make the target files read only
-    for (const fileId of reqBody.fileIds) {
+    for (const fileId of reqQueryParams.fileIds) {
       // @ts-ignore
       const fileUpdated = await drive.files.update({
         fileId: fileId,
@@ -1187,7 +1331,7 @@ export default async function handler(
     }
 
     // check if the permission were propagated to all of the files to copy
-    for (const fileId of reqBody.fileIds) {
+    for (const fileId of reqQueryParams.fileIds) {
       const permission = await getTargetUserPermission(
         fileId,
         jwtPayload.payload.email,
@@ -1230,7 +1374,7 @@ export default async function handler(
           drive
         );
 
-        if(permission?.role){
+        if (permission?.role) {
           userUpdatedRole = permission?.role;
         }
 
@@ -1242,6 +1386,10 @@ export default async function handler(
       console.log("The user's role was updated.");
 
       console.log(`Will copy file: ${fileId}`);
+
+      if (!isStreamOpen) {
+        throw new CustomError("The stream has ended.", 500);
+      }
 
       const fileCopyResult = await copyGDriveItem(
         gDriveAccessToken,
@@ -1288,9 +1436,9 @@ export default async function handler(
       console.log("filePermissionsUpdated: ", filePermissionsUpdated.data);
     }
 
-    if (reqBody.fileIds) {
+    if (reqQueryParams.fileIds) {
       console.log("Making all file readable...");
-      for (const fileId of reqBody.fileIds) {
+      for (const fileId of reqQueryParams.fileIds) {
         const drive = await createDrive();
         // @ts-ignore
         const fileUpdated = await drive.files.update({
@@ -1306,5 +1454,7 @@ export default async function handler(
         console.log("fileUpdated: ", fileUpdated);
       }
     }
+
+    wasUserRolesAndFileMetaDataReseted = true;
   }
 }
