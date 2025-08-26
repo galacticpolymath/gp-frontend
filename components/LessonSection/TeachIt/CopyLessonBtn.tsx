@@ -305,11 +305,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
             );
           }
 
-          type x = {
-            lessonGdriveFolderId?: string;
-            errorObj?: unknown;
-          };
-
           const eventSource = new EventSourcePolyfill(url.href, {
             headers,
             withCredentials: true,
@@ -353,6 +348,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           eventSource.onmessage = (event) => {
             try {
               const dataParsable = event.data as string;
+              const parsedData = (JSON.parse(dataParsable) as TCopyFilesMsg | undefined) ?? {};
               const {
                 msg,
                 filesToCopy,
@@ -361,15 +357,16 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                 isJobDone,
                 wasSuccessful,
                 targetFolderId: _targetFolderId,
-              } = (JSON.parse(dataParsable) as TCopyFilesMsg | undefined) ?? {};
+              } = parsedData;
               targetFolderId = _targetFolderId
 
-              console.log("data: ", data);
+              console.log("data, python: ", parsedData);
 
               if (isJobDone) {
                 const title = wasSuccessful
                   ? `Successfully copied '${lessonName}'`
                   : `Failed to copy '${lessonName}'`;
+                debugger;
                 toast.update(toastId, {
                   render: (
                     <CopyingUnitToast

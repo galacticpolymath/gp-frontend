@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import { getUserByEmail } from "../../../backend/services/userServices";
-import { getGDriveItem, getUserChildItemsOfFolder } from "../../../backend/services/gdriveServices";
+import {
+  getGDriveItem,
+  getUserChildItemsOfFolder,
+} from "../../../backend/services/gdriveServices";
 
 interface IQueryParams {
   unitId: string;
@@ -36,31 +39,34 @@ export default async function handler(
 
     if (!lessonIds.every((id) => typeof id === "string")) {
       console.log("Error: All lessonNumIds must be strings");
-      
+
       return response
         .status(400)
         .json({ error: "All lessonNumIds must be strings" });
     }
 
     const authorization = request.headers.authorization;
-    const gdriveAccessToken = request.headers["gdrive-token"]
-    const gdriveRefreshToken = request.headers["gdrive-token-refresh"]
-    const clientOrigin = (new URL(request.headers.referer ?? '')).href;
+    const gdriveAccessToken = request.headers["gdrive-token"];
+    const gdriveRefreshToken = request.headers["gdrive-token-refresh"];
+    const clientOrigin = new URL(request.headers.referer ?? "").href;
 
     if (!clientOrigin) {
       console.log("clientOrigin is required");
 
-      return response
-        .status(400)
-        .json({ error: "clientOrigin is required" });
+      return response.status(400).json({ error: "clientOrigin is required" });
     }
 
-    if (typeof gdriveAccessToken !== "string" || typeof gdriveRefreshToken !== "string") {
+    if (
+      typeof gdriveAccessToken !== "string" ||
+      typeof gdriveRefreshToken !== "string"
+    ) {
       console.log("gdriveAccessToken or gdriveRefreshToken is required");
 
       return response
         .status(401)
-        .json({ error: "gdriveAccessToken and gdriveRefreshToken are BOTH required" });
+        .json({
+          error: "gdriveAccessToken and gdriveRefreshToken are BOTH required",
+        });
     }
 
     if (!authorization) {
@@ -87,29 +93,46 @@ export default async function handler(
     }
 
     if (!targetUser.unitGDriveLessons?.length) {
-      return response.status(404).json({ error: "There are not lesson google drive folder ids for this user." });
+      console.log("Target user does not have any GP+ unit lessons");
+      return response.json([]);
     }
 
-    const targetUnitGDriveLessonObj = targetUser.unitGDriveLessons.find(unitGDriveLessonObj => {
-      return unitGDriveLessonObj.unitId === unitId
-    }) 
+    const targetUnitGDriveLessonObj = targetUser.unitGDriveLessons.find(
+      (unitGDriveLessonObj) => {
+        return unitGDriveLessonObj.unitId === unitId;
+      }
+    );
 
     console.log("targetUnitGDriveLessonObj: ", targetUnitGDriveLessonObj);
 
     if (!targetUnitGDriveLessonObj?.lessonDriveIds?.length) {
-          return response.json([]);
+      console.log(
+        "Target user does not have any GP+ lessons under the given unit"
+      );
+      return response.json([]);
     }
 
     console.log("gdriveAccessToken: ", gdriveAccessToken);
-    
 
-    const existingLessonFolderGDriveIds = await Promise.all(targetUnitGDriveLessonObj.lessonDriveIds.filter(async (lessonDriveFolder) => {
-      const gdriveItem = await getGDriveItem(lessonDriveFolder.lessonDriveId, gdriveAccessToken, gdriveRefreshToken, clientOrigin)
+    const existingLessonFolderGDriveIds = await Promise.all(
+      targetUnitGDriveLessonObj.lessonDriveIds.filter(
+        async (lessonDriveFolder) => {
+          const gdriveItem = await getGDriveItem(
+            lessonDriveFolder.lessonDriveId,
+            gdriveAccessToken,
+            gdriveRefreshToken,
+            clientOrigin
+          );
 
-      return "id" in gdriveItem ? gdriveItem.id : false; 
-    }));
+          return "id" in gdriveItem ? gdriveItem.id : false;
+        }
+      )
+    );
 
-    console.log("existingLessonFolderGDriveIds: ", existingLessonFolderGDriveIds);
+    console.log(
+      "existingLessonFolderGDriveIds: ",
+      existingLessonFolderGDriveIds
+    );
 
     return response.json(existingLessonFolderGDriveIds);
   } catch (error: any) {

@@ -961,7 +961,7 @@ export default async function handler(
       );
     }
 
-    console.log("targetFolderStructureArr: ", targetFolderStructureArr);
+    console.log("targetFolderStructureArr, yo there: ", targetFolderStructureArr);
     // get the parent folder id of the files to copy
     const parentFolderId = (
       await drive.files.get({
@@ -1103,26 +1103,32 @@ export default async function handler(
       );
       console.log("fileCopyResult: ", fileCopyResult);
     }
+    console.log("targetLessonFolder.id, java: ", targetLessonFolder);
 
-    console.log("targetLessonFolder.id, java: ", targetLessonFolder.id);
+    // throw new Error("hi");
 
-    sendMessage(response, {
-      isJobDone: true,
-      wasSuccessful: false,
-      targetFolderId: targetLessonFolder.id
-    });
+
+    // sendMessage(response, {
+    //   isJobDone: true,
+    //   wasSuccessful: true,
+    //   targetFolderId: targetLessonFolder.id
+    // });
     // TODO: if user.gpPlusDriveFolderId does not exist in the drive, then delete gpPlusDriveFolderId and the unitGDriveLessons
   } catch (error: any) {
     const { message, code } = error ?? {};
+
+
 
     console.error("Error: ");
     console.dir(error);
     console.log("error?.response?.data: ", error?.response?.data);
 
-    sendMessage(response, {
-      isJobDone: true,
-      wasSuccessful: false
-    })
+    // throw new Error("yo there")
+
+    // sendMessage(response, {
+    //   isJobDone: true,
+    //   wasSuccessful: false
+    // })
   } finally {
     if (parentFolder) {
       const drive = await createDrive();

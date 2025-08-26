@@ -75,6 +75,10 @@ module.exports = {
 
       fs: false, // the solution
     };
+    config.ignoreWarnings = [
+      { module: /node-fetch/ },
+      { file: /node-fetch/ },
+    ];
 
     return config;
   },

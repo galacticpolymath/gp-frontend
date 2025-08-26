@@ -239,7 +239,7 @@ const TeachItUI = <
         lessonNumIds?.length
       ) {
         try {
-          const lessonsFolderGDriveIds = await getUserLessonsGDriveFolderIds(
+          const userGDriveLessonFolderIds = await getUserLessonsGDriveFolderIds(
             token,
             gdriveAccessToken,
             gdriveRefreshToken,
@@ -247,9 +247,26 @@ const TeachItUI = <
             lessonNumIds
           );
 
-          if (lessonsFolderGDriveIds) {
-            // setParts()
+          if (userGDriveLessonFolderIds?.length) {
+            const _parts = parts.map((part) => {
+              const targetLessonGDriveUserFolderId =
+                userGDriveLessonFolderIds.find((gDriveLessonFolderId) => {
+                  return gDriveLessonFolderId.lessonNum == part.lsn;
+                });
+
+              if (targetLessonGDriveUserFolderId) {
+                return {
+                  ...part,
+                  userGDriveLessonFolderId:
+                    targetLessonGDriveUserFolderId.lessonDriveId,
+                };
+              }
+
+              return part;
+            });
+            setParts(_parts)
           }
+
           // prevent runtime error
           return 1;
         } catch (error) {
