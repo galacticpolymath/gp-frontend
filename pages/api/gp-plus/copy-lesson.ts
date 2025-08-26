@@ -39,19 +39,15 @@ import { connectToMongodb } from "../../../backend/utils/connection";
 export const maxDuration = 240;
 const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer"]);
 
-export type TCopyLessonReqBody = {
+export type TCopyLessonReqQueryParams = {
   fileIds: string[];
-  lesson: Partial<{
-    id: string;
-    sharedGDriveLessonFolderId: string;
-    lessonSharedDriveFolderName: string;
-    name: string;
-  }>;
-  unit: Partial<{
-    id: string;
-    name: string;
-    sharedGDriveId: string;
-  }>;
+  lessonId: string | undefined;
+  lessonSharedGDriveFolderId: string | undefined;
+  lessonSharedDriveFolderName: string | undefined;
+  lessonName: string | undefined
+  unitId: string | undefined;
+  unitName: string | undefined;
+  unitSharedGDriveId: string | undefined;
 } & Required<Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">>;
 
 // TODO: use allUntLessonIds to get all of the lesson folder ids that were created
@@ -428,7 +424,7 @@ export default async function handler(
       ? request.headers["gdrive-token-refresh"][0]
       : request.headers["gdrive-token-refresh"]
   ) as string | undefined;
-  const reqQueryParams = request.query as unknown as TCopyLessonReqBody;
+  const reqQueryParams = request.query as unknown as TCopyLessonReqQueryParams;
   let parentFolder: { id: string; permissionId: string } | null = null;
 
   let wasUserRolesAndFileMetaDataReseted = false;
@@ -495,18 +491,18 @@ export default async function handler(
     }
 
     if (
-      !reqQueryParams?.unit?.id ||
-      !reqQueryParams?.unit?.name ||
-      !reqQueryParams?.unit?.sharedGDriveId ||
+      !reqQueryParams.unitId ||
+      !reqQueryParams.unitName ||
+      !reqQueryParams.unitSharedGDriveId ||
       !reqQueryParams?.fileIds?.length ||
-      !reqQueryParams?.lesson?.id ||
-      !reqQueryParams?.lesson?.lessonSharedDriveFolderName ||
-      !reqQueryParams?.lesson?.sharedGDriveLessonFolderId ||
+      !reqQueryParams?.lessonId ||
+      !reqQueryParams?.lessonSharedDriveFolderName ||
+      !reqQueryParams?.lessonSharedGDriveFolderId ||
       !reqQueryParams?.allUnitLessons ||
       !reqQueryParams?.lessonsFolder ||
       !reqQueryParams?.lessonsFolder?.sharedGDriveId ||
       !reqQueryParams?.lessonsFolder?.name ||
-      !reqQueryParams?.lesson?.name
+      !reqQueryParams?.lessonName
     ) {
       throw new CustomError(
         "Request body is invalid. Check the body of the request.",
@@ -602,16 +598,16 @@ export default async function handler(
 
     // the gp plus folder exist, will check if the target unit folder and the target lesson exist
     if (gpPlusFolderId && unitGDriveLessonsObjs?.length) {
-      console.log(`reqQueryParams.lesson!.id: ${reqQueryParams.lesson!.id}`);
+      console.log(`reqQueryParams.lesson!.id: ${reqQueryParams.lessonId}`);
       console.log("unitGDriveLessonsObjs: ", unitGDriveLessonsObjs);
       const clientOrigin = new URL(request.headers.referer ?? "").origin;
       const { unitDriveId, lessonDriveIds } =
         unitGDriveLessonsObjs.find((unitGDriveLessonsObj) => {
-          return unitGDriveLessonsObj.unitId === reqQueryParams.unit!.id;
+          return unitGDriveLessonsObj.unitId === reqQueryParams.unitId;
         }) ?? {};
       const targetLessonFolderInUserDrive = lessonDriveIds?.find(
         (lessonDrive) => {
-          return lessonDrive.lessonNum === reqQueryParams.lesson!.id;
+          return lessonDrive.lessonNum === reqQueryParams.lessonId;
         }
       );
       console.log("lessonDriveIds: ", lessonDriveIds);
@@ -720,13 +716,13 @@ export default async function handler(
         const drive = await createDrive();
         const lessonFolderId = await createUnitFolder(
           {
-            sharedGDriveId: reqQueryParams.unit.sharedGDriveId,
-            name: reqQueryParams.unit.name,
-            id: reqQueryParams.unit.id,
+            sharedGDriveId: reqQueryParams.unitSharedGDriveId,
+            name: reqQueryParams.unitName,
+            id: reqQueryParams.unitId,
           },
           {
-            id: reqQueryParams.lesson.id,
-            sharedGDriveId: reqQueryParams.lesson.sharedGDriveLessonFolderId,
+            id: reqQueryParams.lessonId,
+            sharedGDriveId: reqQueryParams.lessonSharedGDriveFolderId,
           },
           gDriveAccessToken,
           gpPlusFolderId,
@@ -772,7 +768,7 @@ export default async function handler(
             $push: {
               "unitGDriveLessons.$[unitGDriveLessonsObj].lessonDriveIds": {
                 lessonDriveId: lessonFolderId,
-                lessonNum: reqQueryParams.lesson.id,
+                lessonNum: reqQueryParams.lessonId,
               } as ILessonGDriveId,
             },
           },
@@ -875,7 +871,7 @@ export default async function handler(
         }
 
         const targetLessonFolderCreationResult = await createGDriveFolder(
-          reqQueryParams.lesson.lessonSharedDriveFolderName,
+          reqQueryParams.lessonSharedDriveFolderName,
           gDriveAccessToken,
           [lessonsFolderId],
           3,
@@ -888,7 +884,7 @@ export default async function handler(
           !targetLessonFolderCreationResult.folderId
         ) {
           throw new Error(
-            `Failed to create the lesson folder ${reqQueryParams.lesson.lessonSharedDriveFolderName} into the target unit folder with id ${unitDriveId}.`
+            `Failed to create the lesson folder ${reqQueryParams.lessonSharedDriveFolderName} into the target unit folder with id ${unitDriveId}.`
           );
         }
 
@@ -906,7 +902,7 @@ export default async function handler(
             $push: {
               "unitGDriveLessons.$[elem].lessonDriveIds": {
                 lessonDriveId: targetLessonFolderCreationResult.folderId,
-                lessonNum: reqQueryParams.lesson.id,
+                lessonNum: reqQueryParams.lessonId,
               } as ILessonGDriveId,
             },
           },
@@ -918,11 +914,11 @@ export default async function handler(
 
         if (userUpdateResults.wasSuccessful) {
           console.log(
-            `The lesson folder ${reqQueryParams.lesson.lessonSharedDriveFolderName} was successfully added to the unit folder with id ${unitDriveId}.`
+            `The lesson folder ${reqQueryParams.lessonSharedDriveFolderName} was successfully added to the unit folder with id ${unitDriveId}.`
           );
         } else {
           console.error(
-            `Failed to add the lesson folder ${reqQueryParams.lesson.lessonSharedDriveFolderName} to the unit folder with id ${unitDriveId}.`
+            `Failed to add the lesson folder ${reqQueryParams.lessonSharedDriveFolderName} to the unit folder with id ${unitDriveId}.`
           );
         }
 
@@ -1073,7 +1069,7 @@ export default async function handler(
     }
 
     const targetUnitFolderCreation = await createGDriveFolder(
-      reqQueryParams.unit.name,
+      reqQueryParams.unitName,
       gDriveAccessToken,
       [gpPlusFolderId],
       3,
@@ -1085,14 +1081,14 @@ export default async function handler(
 
     if (!targetUnitFolderCreation.folderId) {
       throw new CustomError(
-        `Error creating the folder for unit ${reqQueryParams.unit.name}. Reason: ${targetUnitFolderCreation.errMsg}`,
+        `Error creating the folder for unit ${reqQueryParams.unitName}. Reason: ${targetUnitFolderCreation.errMsg}`,
         500
       );
     }
 
     let unitGDriveLesson = {
       unitDriveId: targetUnitFolderCreation.folderId,
-      unitId: reqQueryParams.unit.id,
+      unitId: reqQueryParams.unitId,
     } as IUnitGDriveLesson;
 
     console.log("unitGDriveLesson: ", unitGDriveLesson);
@@ -1136,7 +1132,7 @@ export default async function handler(
     console.log("Will get the target folder structure.");
 
     console.log(
-      `reqQueryParams.unit.id: ${reqQueryParams.unit.sharedGDriveId}`
+      `reqQueryParams.unit.id: ${reqQueryParams.unitSharedGDriveId}`
     );
 
     const drive = await createDrive();
@@ -1145,7 +1141,7 @@ export default async function handler(
       includeItemsFromAllDrives: true,
       supportsAllDrives: true,
       driveId: process.env.GOOGLE_DRIVE_ID,
-      q: `'${reqQueryParams.unit.sharedGDriveId}' in parents`,
+      q: `'${reqQueryParams.unitSharedGDriveId}' in parents`,
       fields: "*",
     });
 
@@ -1160,7 +1156,7 @@ export default async function handler(
 
     console.log("allChildFiles: ", allChildFiles);
 
-    const selectedClientLessonName = reqQueryParams.lesson.name.toLowerCase();
+    const selectedClientLessonName = reqQueryParams.lessonName.toLowerCase();
     // create the folder structure in the user's google drive
     console.log("selectedClientLessonName: ", selectedClientLessonName);
 
@@ -1193,7 +1189,7 @@ export default async function handler(
 
     if (!targetLessonFolder?.id) {
       throw new CustomError(
-        `The lesson named ${selectedClientLessonName} does not exist in the unit ${reqQueryParams.unit.name}.`,
+        `The lesson named ${selectedClientLessonName} does not exist in the unit ${reqQueryParams.unitName}.`,
         400
       );
     }
