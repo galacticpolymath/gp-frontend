@@ -45,10 +45,7 @@ import Link from "next/link";
 import Sparkles from "../../SparklesAnimation";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useRouter } from "next/router";
-import {
-  createGDriveAuthUrl,
-  setLocalStorageItem,
-} from "../../../shared/fns";
+import { createGDriveAuthUrl, setLocalStorageItem } from "../../../shared/fns";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import Image from "next/image";
@@ -111,6 +108,49 @@ export interface TeachItUIProps<
 }
 
 const ASSESSMENTS_ID = 100;
+
+const getUserLessonsGDriveFolderIds = async (
+  token: string,
+  gdriveAccessToken: string,
+  gdriveRefreshToken: string,
+  unitId: string,
+  lessonNumIds: string[]
+) => {
+  try {
+    const url = new URL(
+      `${window.location.origin}/api/gp-plus/get-gdrive-lesson-ids`
+    );
+
+    lessonNumIds.forEach((lessonNumId) => {
+      url.searchParams.append("lessonNumIds", lessonNumId);
+    });
+
+    url.searchParams.append("unitId", unitId!);
+
+    const { data, status } = await axios.get<ILessonGDriveId[] | null>(
+      url.href,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "gdrive-token": gdriveAccessToken,
+          "gdrive-token-refresh": gdriveRefreshToken,
+        },
+      }
+    );
+
+    if (status !== 200) {
+      throw new Error(
+        `Failed to get drive Ids for the lessons. Status code: ${status}`
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in getUserLessonsGDriveFolderIds: ", error);
+
+    return null;
+  }
+};
 
 const TeachItUI = <
   TLesson extends object,
@@ -199,57 +239,17 @@ const TeachItUI = <
         lessonNumIds?.length
       ) {
         try {
-          const url = new URL(
-            `${window.location.origin}/api/gp-plus/get-gdrive-lesson-ids`
+          const lessonsFolderGDriveIds = await getUserLessonsGDriveFolderIds(
+            token,
+            gdriveAccessToken,
+            gdriveRefreshToken,
+            unitId!,
+            lessonNumIds
           );
 
-          lessonNumIds.forEach((lessonNumId) => {
-            url.searchParams.append("lessonNumIds", lessonNumId);
-          });
-
-          url.searchParams.append("unitId", unitId!);
-
-          const response = await axios.get<ILessonGDriveId[] | null>(url.href, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "gdrive-token": gdriveAccessToken,
-              "gdrive-token-refresh": gdriveRefreshToken,
-            },
-          });
-
-          console.log("response, lesson drive ids: ", response);
-
-          const { data: userGDriveLessonFolderIds } = response;
-
-          if (response.status !== 200) {
-            throw new Error(
-              `Failed to get drive Ids for the lessons. Status code: ${response.status}`
-            );
+          if (lessonsFolderGDriveIds) {
+            // setParts()
           }
-
-          if (userGDriveLessonFolderIds?.length) {
-            const _parts = parts.map((part) => {
-              const targetLessonGDriveUserFolderId =
-                userGDriveLessonFolderIds.find((gDriveLessonFolderId) => {
-                  return gDriveLessonFolderId.lessonNum == part.lsn;
-                });
-
-              if (targetLessonGDriveUserFolderId) {
-                return {
-                  ...part,
-                  userGDriveLessonFolderId:
-                    targetLessonGDriveUserFolderId.lessonDriveId,
-                };
-              }
-
-              return part;
-            });
-
-            console.log("_parts, javascript: ", _parts);
-
-            setParts(_parts);
-          }
-
           // prevent runtime error
           return 1;
         } catch (error) {
