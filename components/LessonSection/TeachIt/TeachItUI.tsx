@@ -5,13 +5,10 @@
 
 import React, {
   Dispatch,
-  IframeHTMLAttributes,
-  JSX,
   ReactNode,
   RefObject,
   SetStateAction,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -34,7 +31,6 @@ import {
   INewUnitLesson,
   IResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
-import useCanUserAccessMaterial from "../../../customHooks/useCanUserAccessMaterial";
 import BootstrapBtn from "react-bootstrap/Button";
 import LessonPart from "./LessonPart";
 import ClickMeArrow from "../../ClickMeArrow";
@@ -51,18 +47,14 @@ import { useUserContext } from "../../../providers/UserProvider";
 import { useRouter } from "next/router";
 import {
   createGDriveAuthUrl,
-  removeLocalStorageItem,
   setLocalStorageItem,
 } from "../../../shared/fns";
-import { TCopyFilesMsg } from "../../../pages/api/gp-plus/copy-unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import Image from "next/image";
 import CopyingUnitToast, {
   GDRIVE_FOLDER_ORIGIN_AND_PATH,
 } from "../../CopyingUnitToast";
-import { refreshGDriveToken } from "../../../apiServices/user/crudFns";
-import { nanoid } from "nanoid";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import GpPlusBanner from "../../GpPlus/GpPlusBanner";
 import { Spinner } from "react-bootstrap";
@@ -70,7 +62,6 @@ import { useModalContext } from "../../../providers/ModalProvider";
 import useDrivePicker from "react-google-drive-picker";
 import axios from "axios";
 import { TCopyLessonReqBody } from "../../../pages/api/gp-plus/copy-lesson";
-import { useLessonContext } from "../../../providers/LessonProvider";
 import { useQuery } from "@tanstack/react-query";
 import { ILessonGDriveId } from "../../../backend/models/User/types";
 
@@ -122,21 +113,6 @@ export interface TeachItUIProps<
 
 const ASSESSMENTS_ID = 100;
 
-// GOAL: display the folder link of the latest copy for the unit
-
-// NOTES:
-// -the user may have copied the unit multiple times
-// -get the userId from the jwt
-// -when querying the unit, within the server side props, using the userId, the numId, the locale of the unit, and the latest date
-// to get the latest copy unit link
-// -the latest copy unit link was retrieved
-// -send it to the client
-
-// GOAL A: render the link onto the ui
-// GOAL B: create the mongoose schema for the copy unit history tracker
-// GOAL C: retrieve the copy unit history document from the database if it exist within the server side function
-// GOAL, TODO: get the id of the unit from the root
-
 const TeachItUI = <
   TLesson extends object,
   TSelectedGrade extends IResource<ILessonForUI> = IResource<ILessonForUI>
@@ -165,7 +141,6 @@ const TeachItUI = <
     MediumTitle,
     unitId,
   } = props;
-
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const {
