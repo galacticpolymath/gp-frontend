@@ -191,7 +191,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       callbackFunction: async (data) => {
         if (data?.docs?.length) {
           setIsCopyingLesson(false);
-          // TODO: render the toast initially
+
           const toastId = nanoid();
 
           toast(
@@ -202,7 +202,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                 toast.update(toastId, {
                   render: (
                     <CopyingUnitToast
-                      title={'Job has been canceled.'}
+                      title={"Job has been canceled."}
                       subtitle={`You have stopped copying lesson '${lessonName}.'`}
                       jobStatus="canceled"
                       onCancel={() => {}}
@@ -226,7 +226,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                 width: "60vw",
                 background: "none",
               },
-              className:"p-0",
+              className: "p-0",
               closeButton: false,
               toastId,
               autoClose: false,
@@ -235,10 +235,10 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
           console.log("toastId: ", toastId);
 
-          return;
           const currentValidToken = await ensureValidToken();
 
           if (!currentValidToken) {
+            toast.dismiss(toastId);
             alert(
               "Your google drive session has expired. Please log in again."
             );
@@ -298,6 +298,13 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
             );
           }
 
+          if (lessonsFolder) {
+            url.searchParams.append(
+              "lessonsFolder",
+              encodeURI(JSON.stringify(lessonsFolder))
+            );
+          }
+
           type x = {
             lessonGdriveFolderId?: string;
             errorObj?: unknown;
@@ -308,10 +315,27 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
             withCredentials: true,
           });
 
-          const stopJob = () => {
-            console.log("Will stop job.");
+          const cancelJob = () => {
             eventSource.close();
-            setTimeout(() => {}, 1000);
+            toast.update(toastId, {
+              render: (
+                <CopyingUnitToast
+                  subtitle={"Job has been canceled."}
+                  title={`You have stopped copying lesson '${lessonName}.'`}
+                  jobStatus="canceled"
+                  onCancel={() => {}}
+                  isCancelBtnDisabled
+                />
+              ),
+              style: {
+                width: "60vw",
+                background: "none",
+              },
+              className: "p-0",
+              closeButton: false,
+              toastId,
+              autoClose: 3000,
+            });
           };
 
           // const toastId = displayToast({
@@ -321,18 +345,168 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           //   subtitle: "Gathering files and folders...",
           // });
 
+          let totalFilesToCopy = 0;
           let filesCopied = 0;
-          let foldersCreated = 0;
-          let totalItemsToCopy = 0;
           let showProgressBar = false;
           let targetFolderId: string | undefined = undefined;
 
           eventSource.onmessage = (event) => {
-            const dataParsable = event.data as string;
-            const data = JSON.parse(dataParsable) as TCopyFilesMsg;
+            try {
+              const dataParsable = event.data as string;
+              const {
+                msg,
+                filesToCopy,
+                fileCopied,
+                didRetrieveAllItems,
+                isJobDone,
+                wasSuccessful,
+                targetFolderId: _targetFolderId,
+              } = (JSON.parse(dataParsable) as TCopyFilesMsg | undefined) ?? {};
+              targetFolderId = _targetFolderId
 
-            // TODO: present the lesson copy toast to the user
-            // TODO: test the sending of messages to the client
+              console.log("data: ", data);
+
+              if (isJobDone) {
+                const title = wasSuccessful
+                  ? `Successfully copied '${lessonName}'`
+                  : `Failed to copy '${lessonName}'`;
+                toast.update(toastId, {
+                  render: (
+                    <CopyingUnitToast
+                      title={title}
+                      subtitle={
+                        wasSuccessful
+                          ? "Copy completed successfully!"
+                          : "Copy operation failed"
+                      }
+                      jobStatus={wasSuccessful ? "success" : "failure"}
+                      onCancel={() => {
+                        console.log("Toast dismissed after job completion");
+                        toast.dismiss(toastId);
+                      }}
+                      showProgressBar
+                      progress={filesCopied}
+                      targetFolderId={targetFolderId}
+                      total={totalFilesToCopy}
+                    />
+                  ),
+                  style: {
+                    width: "60vw",
+                    background: "none",
+                  },
+                  className: "p-0",
+                  closeButton: false,
+                  toastId,
+                });
+                return;
+              }
+
+              if (fileCopied) {
+                filesCopied += 1;
+                toast.update(toastId, {
+                  render: (
+                    <CopyingUnitToast
+                      targetFolderId={targetFolderId}
+                      title={`Copying '${lessonName}.'`}
+                      subtitle={`'${fileCopied}' was copied.`}
+                      jobStatus="ongoing"
+                      onCancel={cancelJob}
+                      isCancelBtnDisabled
+                      showProgressBar
+                      progress={filesCopied}
+                      total={totalFilesToCopy}
+                    />
+                  ),
+                  style: {
+                    width: "60vw",
+                    background: "none",
+                  },
+                  className: "p-0",
+                  closeButton: false,
+                  toastId,
+                });
+                return;
+              }
+
+              if (typeof filesToCopy === "number") {
+                totalFilesToCopy += filesToCopy;
+                toast.update(toastId, {
+                  render: (
+                    <CopyingUnitToast
+                      targetFolderId={targetFolderId}
+                      title={`Copying '${lessonName}.'`}
+                      subtitle={`${totalFilesToCopy} files to copy...`}
+                      jobStatus="ongoing"
+                      onCancel={cancelJob}
+                      isCancelBtnDisabled
+                    />
+                  ),
+                  style: {
+                    width: "60vw",
+                    background: "none",
+                  },
+                  className: "p-0",
+                  closeButton: false,
+                  toastId,
+                });
+                return;
+              }
+
+              if (msg) {
+                toast.update(toastId, {
+                  render: (
+                    <CopyingUnitToast
+                      targetFolderId={targetFolderId}
+                      title={`Copying '${lessonName}.'`}
+                      subtitle={msg}
+                      jobStatus="ongoing"
+                      onCancel={cancelJob}
+                      isCancelBtnDisabled
+                      progress={filesCopied}
+                      total={totalFilesToCopy}
+                      showProgressBar={showProgressBar}
+                    />
+                  ),
+                  style: {
+                    width: "60vw",
+                    background: "none",
+                  },
+                  className: "p-0",
+                  closeButton: false,
+                  toastId,
+                });
+                return;
+              }
+
+              if (didRetrieveAllItems) {
+                showProgressBar = true;
+                toast.update(toastId, {
+                  render: (
+                    <CopyingUnitToast
+                      targetFolderId={targetFolderId}
+                      title={`Copying '${lessonName}.'`}
+                      subtitle="Will copy files..."
+                      jobStatus="ongoing"
+                      onCancel={cancelJob}
+                      isCancelBtnDisabled
+                      total={totalFilesToCopy}
+                      progress={filesCopied}
+                      showProgressBar={showProgressBar}
+                    />
+                  ),
+                  style: {
+                    width: "60vw",
+                    background: "none",
+                  },
+                  className: "p-0",
+                  closeButton: false,
+                  toastId,
+                });
+                return;
+              }
+            } catch (error) {
+              console.error("Error processing event source message: ", error);
+            }
           };
         }
       },

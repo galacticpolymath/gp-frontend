@@ -41,6 +41,7 @@ const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer"]);
 
 export type TCopyFilesMsg = Partial<{
   msg: string;
+  targetFolderId: string;
   msgs: string[];
   isJobDone: boolean;
   didJobStart: boolean;

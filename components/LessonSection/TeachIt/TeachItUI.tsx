@@ -61,7 +61,6 @@ import { Spinner } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import useDrivePicker from "react-google-drive-picker";
 import axios from "axios";
-import { TCopyLessonReqBody } from "../../../pages/api/gp-plus/copy-lesson";
 import { useQuery } from "@tanstack/react-query";
 import { ILessonGDriveId } from "../../../backend/models/User/types";
 
@@ -346,29 +345,6 @@ const TeachItUI = <
           if (data?.docs?.length) {
             console.log("First document ID, data?.docs: ", data?.docs);
             const fileIds = data.docs.map((file) => file.id);
-            const response = await axios.post(
-              "/api/gp-plus/copy-lesson",
-              {
-                fileIds,
-                unit: {
-                  id: GdrivePublicID,
-                  name: MediumTitle,
-                },
-                lesson: {
-                  id: "2",
-                  name: "adsffads",
-                },
-              } as TCopyLessonReqBody,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "gdrive-token": gdriveAccessToken,
-                  "gdrive-token-refresh": gdriveRefreshToken,
-                },
-              }
-            );
-
-            console.log("Response: ", response);
           }
         } catch (error) {
           console.error("An error occurred: ", error);
