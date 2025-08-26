@@ -109,13 +109,13 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
       style={{
         background: "#212529",
         borderRadius: 10,
-        minHeight: "280px",
+        minHeight: "250px",
         boxShadow: "0 4px 16px rgba(44, 62, 80, 0.18)",
         padding: "24px 32px 24px 24px",
         color: "#fff",
         fontFamily: "Segoe UI, Arial, sans-serif",
       }}
-      className="col-xl-5 col-sm-8"
+      className="w-100"
     >
       <div className="position-relative h-100">
         <div

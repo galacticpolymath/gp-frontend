@@ -27,6 +27,7 @@ import { ILessonForUI } from "../../../types/global";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { toast } from "react-toastify";
+import { nanoid } from "nanoid";
 
 export interface ICopyLessonBtnProps
   extends Pick<
@@ -191,18 +192,44 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
         if (data?.docs?.length) {
           setIsCopyingLesson(false);
           // TODO: render the toast initially
-          const toastId = toast(
+          const toastId = nanoid();
+
+          toast(
             <CopyingUnitToast
               title={`Copying '${lessonName}.'`}
               subtitle="In progress..."
-              onCancel={() => {}}
-              isCancelBtnDisabled
+              onCancel={() => {
+                toast.update(toastId, {
+                  render: (
+                    <CopyingUnitToast
+                      title={'Job has been canceled.'}
+                      subtitle={`You have stopped copying lesson '${lessonName}.'`}
+                      jobStatus="canceled"
+                      onCancel={() => {}}
+                      isCancelBtnDisabled
+                    />
+                  ),
+                  style: {
+                    width: "60vw",
+                    background: "none",
+                  },
+                  className: "p-0",
+                  closeButton: false,
+                  toastId,
+                  autoClose: 3000,
+                });
+              }}
               jobStatus="ongoing"
             />,
             {
               style: {
                 width: "60vw",
+                background: "none",
               },
+              className:"p-0",
+              closeButton: false,
+              toastId,
+              autoClose: false,
             }
           );
 
@@ -284,6 +311,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           const stopJob = () => {
             console.log("Will stop job.");
             eventSource.close();
+            setTimeout(() => {}, 1000);
           };
 
           // const toastId = displayToast({
