@@ -254,6 +254,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           console.log("data, yo there: ", data);
           console.log("First document ID, data?.docs: ", data?.docs);
           const fileIds = data.docs.map((file) => file.id);
+          const fileNames = data.docs.map((file) => file.name);
           const reqQueryParams: Partial<TCopyLessonReqQueryParams> = {
             unitId: unitId,
             unitName: MediumTitle,
@@ -287,6 +288,12 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           if (fileIds.length) {
             fileIds.forEach(fileId => {
               url.searchParams.append("fileIds", fileId);
+            })
+          }
+
+          if (fileNames.length) {
+            fileNames.forEach(fileName => {
+              url.searchParams.append("fileNames", fileName);
             })
           }
 

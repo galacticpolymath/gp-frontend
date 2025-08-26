@@ -37,7 +37,7 @@ import {
 } from "../../../backend/models/User/types";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { connectToMongodb } from "../../../backend/utils/connection";
-import { updatePermissionsForSharedFileItems } from '../../../backend/services/gdriveServices';
+import { updatePermissionsForSharedFileItems } from "../../../backend/services/gdriveServices";
 
 export const maxDuration = 240;
 const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer"]);
@@ -63,7 +63,7 @@ export type TCopyLessonReqQueryParams = {
   lessonId: string | undefined;
   lessonSharedGDriveFolderId: string | undefined;
   lessonSharedDriveFolderName: string | undefined;
-  lessonName: string | undefined
+  lessonName: string | undefined;
   unitId: string | undefined;
   unitName: string | undefined;
   unitSharedGDriveId: string | undefined;
@@ -71,8 +71,9 @@ export type TCopyLessonReqQueryParams = {
   // lessonsFolder: Pick<INewUnitLesson, "lessonsFolder">["lessonsFolder"] | undefined
   // fileIds: string[];
   fileIds: string[];
-  allUnitLessons: string | undefined
-  lessonsFolder: string | undefined
+  fileNames: string[];
+  allUnitLessons: string | undefined;
+  lessonsFolder: string | undefined;
 };
 
 const sendMessage = <TMsg extends object = TCopyFilesMsg>(
@@ -210,15 +211,18 @@ export default async function handler(
       !reqQueryParams?.lessonsFolder ||
       !reqQueryParams?.lessonName
     ) {
-      
       throw new CustomError(
         "Request body is invalid. Check the body of the request.",
         400
       );
     }
 
-    const _lessonsFolder = JSON.parse(decodeURIComponent(reqQueryParams.lessonsFolder)) as NonNullable<Pick<INewUnitLesson, "lessonsFolder">["lessonsFolder"]> 
-    const _allUnitLessons = JSON.parse(decodeURIComponent(reqQueryParams.allUnitLessons)) as NonNullable<Pick<INewUnitLesson, "allUnitLessons">["allUnitLessons"]> 
+    const _lessonsFolder = JSON.parse(
+      decodeURIComponent(reqQueryParams.lessonsFolder)
+    ) as NonNullable<Pick<INewUnitLesson, "lessonsFolder">["lessonsFolder"]>;
+    const _allUnitLessons = JSON.parse(
+      decodeURIComponent(reqQueryParams.allUnitLessons)
+    ) as NonNullable<Pick<INewUnitLesson, "allUnitLessons">["allUnitLessons"]>;
     const jwtPayload = await getJwtPayloadPromise(
       request.headers.authorization
     );
@@ -681,6 +685,10 @@ export default async function handler(
           throw new CustomError("The stream has ended.", 500);
         }
 
+        sendMessage(response, {
+          msg: "Copying lesson files...",
+        });
+
         // make the target shared drive files read only to prevent writes during the copy operation
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
@@ -713,15 +721,6 @@ export default async function handler(
       }
     }
 
-    // TODO: if the unit folder doesn't exist, then delete the target unit from the user's unitGDriveLessons by its drive id
-
-    // TODO: if the unit lesson doesn't exist, then get the child items for the target unit using the service account, in order to get the name of the lesson
-    // -find it by using the lessonSharedDriveId from the client to get the target lesson
-
-    // TODO: if the target lesson folder is there, then copy all items into the lesson folder
-
-    // will create the gp plus folder and the target unit
-
     if (!gpPlusFolderId) {
       const clientOrigin = new URL(request.headers.referer ?? "").origin;
       console.log("will create the gp plus unit folder");
@@ -730,6 +729,10 @@ export default async function handler(
       if (!isStreamOpen) {
         throw new CustomError("The stream has ended.", 500);
       }
+
+      sendMessage(response, {
+        msg: "Creating the 'My GP+ Units' folder...",
+      });
 
       const gpPlusFolderCreationResult = await createGDriveFolder(
         "My GP+ Units",
@@ -747,6 +750,10 @@ export default async function handler(
           500
         );
       }
+
+      sendMessage(response, {
+        msg: "The 'My GP+ Units' folder was successfully created.",
+      });
 
       gpPlusFolderId = gpPlusFolderCreationResult.folderId;
 
@@ -777,6 +784,10 @@ export default async function handler(
       throw new CustomError("The stream has ended.", 500);
     }
 
+    sendMessage(response, {
+      msg: `Creating '${reqQueryParams.unitName}' folder...`,
+    });
+
     const targetUnitFolderCreation = await createGDriveFolder(
       reqQueryParams.unitName,
       gDriveAccessToken,
@@ -794,6 +805,10 @@ export default async function handler(
         500
       );
     }
+
+    sendMessage(response, {
+      msg: `'${reqQueryParams.unitName}' folder was created.`,
+    });
 
     let unitGDriveLesson = {
       unitDriveId: targetUnitFolderCreation.folderId,
@@ -840,9 +855,7 @@ export default async function handler(
 
     console.log("Will get the target folder structure.");
 
-    console.log(
-      `reqQueryParams.unit.id: ${reqQueryParams.unitSharedGDriveId}`
-    );
+    console.log(`reqQueryParams.unit.id: ${reqQueryParams.unitSharedGDriveId}`);
 
     const drive = await createDrive();
     const gdriveResponse = await drive.files.list({
@@ -873,6 +886,10 @@ export default async function handler(
       throw new CustomError("The stream has ended.", 500);
     }
 
+    sendMessage(response, {
+      msg: "Creating the unit folder...",
+    });
+
     const targetFolderStructureArr = await createFolderStructure(
       allChildFiles,
       gDriveAccessToken,
@@ -902,6 +919,14 @@ export default async function handler(
         400
       );
     }
+
+    const totalFoldersToCreate = targetFolderStructureArr.filter((item) => {
+      return item.mimeType?.includes("folder");
+    });
+
+    sendMessage(response, {
+      msg: `${totalFoldersToCreate.length} folders were created.`,
+    });
 
     console.log(
       `The target lesson folder with the name ${selectedClientLessonName} was found with the id ${targetLessonFolder.id}`
@@ -963,7 +988,10 @@ export default async function handler(
       );
     }
 
-    console.log("targetFolderStructureArr, yo there: ", targetFolderStructureArr);
+    console.log(
+      "targetFolderStructureArr, yo there: ",
+      targetFolderStructureArr
+    );
     // get the parent folder id of the files to copy
     const parentFolderId = (
       await drive.files.get({
@@ -1035,6 +1063,10 @@ export default async function handler(
       console.log("fileUpdated: ", fileUpdated);
     }
 
+    sendMessage(response, {
+      filesToCopy: reqQueryParams.fileIds.length,
+    });
+
     // check if the permission were propagated to all of the files to copy
     for (const fileId of reqQueryParams.fileIds) {
       const permission = await getTargetUserPermission(
@@ -1104,11 +1136,10 @@ export default async function handler(
     }
     console.log("targetLessonFolder.id, java: ", targetLessonFolder);
 
-
     sendMessage(response, {
       isJobDone: true,
       wasSuccessful: true,
-      targetFolderId: targetLessonFolder.id
+      targetFolderId: targetLessonFolder.id,
     });
     // TODO: if user.gpPlusDriveFolderId does not exist in the drive, then delete gpPlusDriveFolderId and the unitGDriveLessons
   } catch (error: any) {
@@ -1124,8 +1155,8 @@ export default async function handler(
 
     sendMessage(response, {
       isJobDone: true,
-      wasSuccessful: false
-    })
+      wasSuccessful: false,
+    });
   } finally {
     if (parentFolder) {
       const drive = await createDrive();

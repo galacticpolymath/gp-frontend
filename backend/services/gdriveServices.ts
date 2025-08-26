@@ -512,6 +512,7 @@ export const createFolderStructure = async (
           pathToFile: "",
           parentFolderId: folderToCreate.parentFolderId,
           originalFileId: folderToCreate.fileId,
+          mimeType: folderToCreate.mimeType
         });
       }
 
@@ -553,6 +554,7 @@ export const createFolderStructure = async (
       pathToFile: folderToCreate.pathToFile,
       parentFolderId: folderToCreate.parentFolderId,
       originalFileId: folderToCreate.fileId,
+      mimeType: folderToCreate.mimeType
     });
   }
 
