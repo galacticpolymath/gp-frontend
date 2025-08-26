@@ -1222,6 +1222,7 @@ export default async function handler(
         );
 
         userUpdatedRole = permission?.role;
+        tries -= 1;
       }
 
       console.log(`The role of the user is: ${userUpdatedRole}`);

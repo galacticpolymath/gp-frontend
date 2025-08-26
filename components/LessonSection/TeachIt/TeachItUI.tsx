@@ -743,7 +743,7 @@ const TeachItUI = <
                               : "block",
                           }}
                         >
-                          {/* <Sparkles
+                          <Sparkles
                             sparkleWrapperStyle={{
                               height: 40,
                               display: "flex",
@@ -755,7 +755,7 @@ const TeachItUI = <
                             <p style={{ transform: "translateY(20px)" }}>
                               CLICK TO SEE MORE!
                             </p>
-                          </Sparkles> */}
+                          </Sparkles>
                         </ClickMeArrow>
                       ) : null
                     }
