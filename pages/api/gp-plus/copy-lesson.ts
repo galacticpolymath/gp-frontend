@@ -37,6 +37,7 @@ import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMater
 import { connectToMongodb } from "../../../backend/utils/connection";
 
 export const maxDuration = 240;
+const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer"]);
 
 export type TCopyLessonReqBody = {
   fileIds: string[];
@@ -474,7 +475,11 @@ export default async function handler(
       throw new CustomError("Unauthorized. Please try logging in again.", 401);
     }
 
-    const { wasSuccessful: wasDbConnectionSuccessful } = await connectToMongodb(15_000, 0, true);
+    const { wasSuccessful: wasDbConnectionSuccessful } = await connectToMongodb(
+      15_000,
+      0,
+      true
+    );
 
     if (!wasDbConnectionSuccessful) {
       throw new CustomError(
@@ -1191,6 +1196,10 @@ export default async function handler(
 
       console.log("permission: ", permission);
 
+      if (!permission?.role) {
+        continue;
+      }
+
       let userUpdatedRole = permission?.role;
       let tries = 7;
 
@@ -1198,7 +1207,7 @@ export default async function handler(
         "Made the target file read only and changed the target user's permission to writer."
       );
 
-      while (userUpdatedRole !== "fileOrganizer") {
+      while (!VALID_WRITABLE_ROLES.has(userUpdatedRole)) {
         console.log(`tries: ${tries}`);
         console.log(`userUpdatedRole: ${userUpdatedRole}`);
 
@@ -1221,7 +1230,10 @@ export default async function handler(
           drive
         );
 
-        userUpdatedRole = permission?.role;
+        if(permission?.role){
+          userUpdatedRole = permission?.role;
+        }
+
         tries -= 1;
       }
 
