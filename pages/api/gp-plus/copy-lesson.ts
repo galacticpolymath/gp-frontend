@@ -1088,6 +1088,11 @@ export default async function handler(
 
     console.log("targetPermission: ", targetPermission);
 
+    // throw new CustomError(
+    //   "The target permission for the gp plus user was not found.",
+    //   500
+    // );
+
     if (!targetPermission?.id) {
       throw new CustomError(
         "The target permission for the gp plus user was not found.",
@@ -1150,7 +1155,6 @@ export default async function handler(
         jwtPayload.payload.email,
         drive
       );
-
 
       if (!permission?.role) {
         continue;

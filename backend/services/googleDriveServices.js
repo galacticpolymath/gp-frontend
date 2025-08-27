@@ -68,6 +68,24 @@ export class GoogleServiceAccountAuthCreds {
   }
 }
 
+export class GoogleAuthTest {
+  constructor() {
+    this.private_key = process.env.TEST_GOOGLE_DRIVE_KEY;
+    this.client_email = "drive-io-service-account@drive-io-sign-up.iam.gserviceaccount.com"
+    this.type = "service_account";
+    this.project_id = "drive-io-sign-up";
+    this.private_key_id = "fefb44e34196c8913b11e929c0b6103779088ac9";
+    this.client_id = "112225286472851313856";
+    this.auth_uri = "https://accounts.google.com/o/oauth2/auth";
+    this.token_uri = "https://oauth2.googleapis.com/token";
+    this.auth_provider_x509_cert_url =
+      "https://www.googleapis.com/oauth2/v1/certs";
+    this.client_x509_cert_url =
+      "https://www.googleapis.com/robot/v1/metadata/x509/gdrive-worker%40gp-frontend-391915.iam.gserviceaccount.com";
+    this.universe_domain = "googleapis.com";
+  }
+}
+
 /**
  * Get the google drive folders.
  * @param{string} folderId The id of the file.

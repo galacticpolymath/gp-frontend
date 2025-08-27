@@ -92,12 +92,13 @@ const getCanRetry = async (
   };
 };
 
-type TGoogleAuthScopese =
+type TGoogleAuthScopes =
   | "https://www.googleapis.com/auth/drive"
+  | "https://www.googleapis.com/auth/admin.directory.group"
   | "https://www.googleapis.com/auth/admin.directory.user";
 
 export const createDrive = async (
-  scopes: TGoogleAuthScopese[] = ["https://www.googleapis.com/auth/drive"],
+  scopes: TGoogleAuthScopes[] = ["https://www.googleapis.com/auth/drive"],
   clientOptions?: GoogleAuthOptions["clientOptions"]
 ) => {
   const drive = google.drive("v3");
@@ -119,7 +120,7 @@ export const createDrive = async (
 };
 
 export const createGoogleAdminService = async (
-  scopes: TGoogleAuthScopese[] = ["https://www.googleapis.com/auth/drive"],
+  scopes: TGoogleAuthScopes[] = ["https://www.googleapis.com/auth/drive"],
   clientOptions?: GoogleAuthOptions["clientOptions"]
 ) => {
   const creds = new GoogleServiceAccountAuthCreds();
@@ -590,6 +591,8 @@ export const getTargetUserPermission = async (
     supportsAllDrives: true,
     fields: "*",
   });
+
+  console.log("filePermissions.data.permissions: ", filePermissions.data.permissions);
 
   return filePermissions.data.permissions?.find((permission) => {
     return permission.emailAddress === email;

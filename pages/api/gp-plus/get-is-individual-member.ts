@@ -15,10 +15,10 @@ import {
   TAccountStageLabel,
   TGpPlusMembershipRetrieved,
 } from "../../../backend/services/outsetaServices";
-import {
-  createDrive,
-  createGoogleAdminService,
-} from "../../../backend/services/gdriveServices";
+import { admin_directory_v1, google } from "googleapis";
+import { GoogleAuthTest } from "../../../backend/services/googleDriveServices";
+import { OAuth2Client } from "google-auth-library";
+import { createGoogleAdminService, getGoogleGroupMember, insertGoogleGroupMember } from "../../../backend/services/googleGroupServices";
 
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
@@ -28,23 +28,6 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
 ] as TAccountStageLabel[]);
 
 export type TGpPlusMembershipForClient = TGpPlusMembershipRetrieved;
-
-const handleUserGoogleGroupStatus = async () => {
-  try {
-    const googleAdminService = await createGoogleAdminService(
-      ["https://www.googleapis.com/auth/admin.directory.user"],
-      { email: "matt@galacticpolymath.com" }
-    );
-    
-    const res = await googleAdminService.groups.list({
-      orderBy: "email",
-    });
-    
-    console.log("res: ", res);
-  } catch(error){
-    console.error("An error occurred: ", error);
-  }
-};
 
 export default async function handler(
   request: NextApiRequest,
@@ -120,15 +103,16 @@ export default async function handler(
       });
     }
 
-    let user = await getUserByEmail<TUserSchemaForClient>(
+    let user = await getUserByEmail<TUserSchemaV2>(
       jwtVerificationResult.payload.email,
       {
         _id: 0,
         outsetaAccountEmail: 1,
+        email: 1,
       }
     );
 
-    if (!user) {
+    if (!user || !user.email || !user.outsetaAccountEmail) {
       return response
         .status(404)
         .json({ message: "User not found", errType: "userNotFound" });
@@ -144,18 +128,21 @@ export default async function handler(
         user.outsetaAccountEmail
       )) as TGpPlusMembershipRetrieved;
 
-      // await handleUserGoogleGroupStatus()
+      const googleAdminServices = await createGoogleAdminService();
+      const userGoogleGroupMember = await getGoogleGroupMember(user.email, googleAdminServices);
 
-      // TODO: list the groups first (FOR TESTING PURPOSES)
+      console.log("userGoogleGroupMember: ", userGoogleGroupMember);
 
-      // TODO: insert the user into the target group
+      if(!userGoogleGroupMember){
+        const insertionResult = await insertGoogleGroupMember(user.email, googleAdminServices)
 
-      // TODO: if the user is a member, then check if the user is part of the google group, if not, then add the user to the google group
+        console.log("insertionResult: ", insertionResult);
+      }
     }
 
     console.log("membership: ", membership);
 
-    user = {
+    const cachedUser = {
       ...user,
       isGpPlusMember:
         typeof membership?.AccountStageLabel === "string"
@@ -164,7 +151,7 @@ export default async function handler(
       gpPlusSubscription: membership,
     };
 
-    cache.set(jwtVerificationResult.payload.email, user, 60 * 3);
+    cache.set(jwtVerificationResult.payload.email, cachedUser, 60 * 3);
 
     const membershipForClient = {
       ...membership,
