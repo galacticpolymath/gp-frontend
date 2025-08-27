@@ -22,6 +22,8 @@ import {
   VALID_WRITABLE_ROLES,
 } from "../../pages/api/gp-plus/copy-lesson";
 
+export const TEACHERS_GOOGLE_GROUP_EMAIL = 'teachers@galacticpolymath.com';
+
 type TUnitFolder = Partial<{
   name: string | null;
   id: string | null;
@@ -1239,6 +1241,7 @@ export const copyFiles = async (
 
     if(!userUpdatedRole ){
       console.log("role is not present");
+      wasJobSuccessful = false;
       continue;
     }
 

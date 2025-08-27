@@ -28,6 +28,7 @@ import {
   getGDriveItem,
   createUnitFolder,
   copyFiles,
+  TEACHERS_GOOGLE_GROUP_EMAIL,
 } from "../../../backend/services/gdriveServices";
 import { waitWithExponentialBackOff } from "../../../globalFns";
 import { drive_v3 } from "googleapis";
@@ -460,7 +461,7 @@ export default async function handler(
         }
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
-          email,
+          TEACHERS_GOOGLE_GROUP_EMAIL,
           reqQueryParams.fileIds
         );
         parentFolder = {
@@ -482,7 +483,7 @@ export default async function handler(
 
         const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
-          email,
+          TEACHERS_GOOGLE_GROUP_EMAIL,
           drive,
           gDriveAccessToken,
           lessonFolderId,
@@ -675,7 +676,7 @@ export default async function handler(
 
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
-          email,
+          TEACHERS_GOOGLE_GROUP_EMAIL,
           reqQueryParams.fileIds
         );
         parentFolder = {
@@ -701,7 +702,7 @@ export default async function handler(
 
         const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
-          email,
+          TEACHERS_GOOGLE_GROUP_EMAIL,
           drive,
           gDriveAccessToken,
           targetLessonFolderCreationResult.folderId,
@@ -742,7 +743,7 @@ export default async function handler(
         // make the target shared drive files read only to prevent writes during the copy operation
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
-          email,
+          TEACHERS_GOOGLE_GROUP_EMAIL,
           reqQueryParams.fileIds
         );
         parentFolder = {
@@ -768,7 +769,7 @@ export default async function handler(
 
         const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
-          email,
+          TEACHERS_GOOGLE_GROUP_EMAIL,
           drive,
           gDriveAccessToken,
           targetLessonFolderInUserDrive!.lessonDriveId,
@@ -1082,16 +1083,11 @@ export default async function handler(
 
     const targetPermission = await getTargetUserPermission(
       parentFolderId,
-      jwtPayload.payload.email,
+      TEACHERS_GOOGLE_GROUP_EMAIL,
       drive
     );
 
     console.log("targetPermission: ", targetPermission);
-
-    // throw new CustomError(
-    //   "The target permission for the gp plus user was not found.",
-    //   500
-    // );
 
     if (!targetPermission?.id) {
       throw new CustomError(
@@ -1118,10 +1114,11 @@ export default async function handler(
     });
     parentFolder = { id: parentFolderId, permissionId: targetPermission.id };
 
-    console.log("filePermissionsUpdated: ", filePermissionsUpdated);
+    console.log("filePermissionsUpdated, hey there! ", filePermissionsUpdated);
 
     // make the target files read only
     for (const fileId of reqQueryParams.fileIds) {
+      console.log("Copying file: ", fileId);
       // @ts-ignore
       const fileUpdated = await drive.files.update({
         fileId: fileId,
@@ -1133,6 +1130,7 @@ export default async function handler(
           },
         },
       });
+      console.log("fileUpdated: ", fileUpdated);
     }
 
     sendMessage(response, {
@@ -1147,14 +1145,21 @@ export default async function handler(
 
     let wasJobSuccessful = true;
 
+    console.log("Made the target file read only and changed the target user's permission to writer. Will copy files.");
+
     // check if the permission were propagated to all of the files to copy
     for (const fileIdIndex in reqQueryParams.fileIds) {
       const fileId = reqQueryParams.fileIds[fileIdIndex];
       const permission = await getTargetUserPermission(
         fileId,
-        jwtPayload.payload.email,
+        TEACHERS_GOOGLE_GROUP_EMAIL,
         drive
       );
+
+      console.log("permission, sup there: ", permission);
+
+
+
 
       if (!permission?.role) {
         continue;
@@ -1163,6 +1168,8 @@ export default async function handler(
       let userUpdatedRole = permission?.role;
       let tries = 7;
 
+      console.log(`userUpdatedRole: ${userUpdatedRole}`);
+    
       console.log(
         "Made the target file read only and changed the target user's permission to writer."
       );
@@ -1183,7 +1190,7 @@ export default async function handler(
 
         const permission = await getTargetUserPermission(
           fileId,
-          jwtPayload.payload.email,
+          TEACHERS_GOOGLE_GROUP_EMAIL,
           drive
         );
 
@@ -1211,6 +1218,7 @@ export default async function handler(
         gDriveRefreshToken,
         clientOrigin
       );
+      
       console.log("fileCopyResult: ", fileCopyResult);
 
       if (
