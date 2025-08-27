@@ -12,6 +12,7 @@ import useSiteSession from "../customHooks/useSiteSession";
 import {
   createGDriveAuthUrl,
   getLocalStorageItem,
+  removeLocalStorageItem,
   setLocalStorageItem,
 } from "../shared/fns";
 import { Spinner } from "react-bootstrap";
@@ -54,6 +55,7 @@ const GoogleDriveAuthResult = () => {
 
     if (willRedirectUser && gpPlusFeatureLocation) {
       setTimeout(() => {
+        removeLocalStorageItem("didGpSignInAttemptOccur");
         window.location.href = gpPlusFeatureLocation;
       }, 1000);
       setWillRedirectUser(false);

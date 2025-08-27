@@ -32,6 +32,8 @@ const GoogleSignIn = ({
         try {
             event.preventDefault();
 
+            // TODo: delete all cookies
+
             if (typeof executeExtraBtnClickLogic === "function") {
                 executeExtraBtnClickLogic();
             }

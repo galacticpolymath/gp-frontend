@@ -6,7 +6,7 @@ import {
 import { GoogleAuthOptions, OAuth2Client } from "google-auth-library";
 import { CustomError } from "../utils/errors";
 import axios from "axios";
-import { waitWithExponentialBackOff } from "../../globalFns";
+import { sleep, waitWithExponentialBackOff } from "../../globalFns";
 import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../globalVars";
 import { ILessonGDriveId, IUnitGDriveLesson } from "../models/User/types";
 import {
@@ -19,6 +19,7 @@ import { INewUnitLesson } from "../models/Unit/types/teachingMaterials";
 import {
   sendMessage,
   TCopyFilesMsg,
+  VALID_WRITABLE_ROLES,
 } from "../../pages/api/gp-plus/copy-lesson";
 
 type TUnitFolder = Partial<{
@@ -1230,16 +1231,22 @@ export const copyFiles = async (
     const fileId = fileIds[fileIdIndex];
     const permission = await getTargetUserPermission(fileId, email, drive);
 
-    console.log("permission: ", permission);
-
     let userUpdatedRole = permission?.role;
     let tries = 7;
+
+    if(!userUpdatedRole ){
+      console.log("role is not present");
+      continue;
+    }
 
     console.log(
       "Made the target file read only and changed the target user's permission to writer."
     );
 
-    while (userUpdatedRole !== "fileOrganizer") {
+    console.log(`userUpdatedRole: ${userUpdatedRole}`);
+    
+
+    while (!VALID_WRITABLE_ROLES.has(userUpdatedRole!)) {
       console.log(`tries: ${tries}`);
       console.log(`userUpdatedRole: ${userUpdatedRole}`);
 
@@ -1267,7 +1274,16 @@ export const copyFiles = async (
     console.log("The user's role was updated.");
 
     console.log(`Will copy file: ${fileId}`);
+    const gdriveItemMetaData = await getGDriveItem(
+      fileId,
+      gDriveAccessToken,
+      refreshAuthToken,
+      clientOrigin
+    );
 
+    console.log("gdriveItemMetaData: ", gdriveItemMetaData);
+
+    
     const fileCopyResult = await copyGDriveItem(
       gDriveAccessToken,
       [lessonFolderId],
@@ -1275,6 +1291,10 @@ export const copyFiles = async (
       refreshAuthToken,
       clientOrigin
     );
+    console.log("fileCopyResult: ", fileCopyResult.errType);
+    console.log("permission: ", permission);
+    await sleep(8_000);
+
 
     if ("id" in fileCopyResult && fileCopyResult.id && fileNames[fileIdIndex]) {
       console.log(`Successfully copied file ${fileNames[fileIdIndex]}`);

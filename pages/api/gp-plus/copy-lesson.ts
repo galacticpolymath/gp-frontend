@@ -40,7 +40,7 @@ import { connectToMongodb } from "../../../backend/utils/connection";
 import { updatePermissionsForSharedFileItems } from "../../../backend/services/gdriveServices";
 
 export const maxDuration = 240;
-const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer"]);
+export const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer"]);
 
 export type TCopyFilesMsg = Partial<{
   msg: string;
@@ -1128,8 +1128,6 @@ export default async function handler(
           },
         },
       });
-
-      console.log("fileUpdated: ", fileUpdated);
     }
 
     sendMessage(response, {
@@ -1153,7 +1151,6 @@ export default async function handler(
         drive
       );
 
-      console.log("permission: ", permission);
 
       if (!permission?.role) {
         continue;
@@ -1254,8 +1251,6 @@ export default async function handler(
     console.dir(error);
     console.log("error?.response?.data: ", error?.response?.data);
 
-    // throw new Error("yo there")
-
     sendMessage(response, {
       isJobDone: true,
       wasSuccessful: false,
@@ -1271,8 +1266,6 @@ export default async function handler(
           role: "reader",
         },
       });
-
-      console.log("filePermissionsUpdated: ", filePermissionsUpdated.data);
     }
 
     if (reqQueryParams.fileIds) {
@@ -1289,8 +1282,6 @@ export default async function handler(
             },
           },
         });
-
-        console.log("fileUpdated: ", fileUpdated);
       }
     }
 
