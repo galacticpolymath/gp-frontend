@@ -125,6 +125,8 @@ export default async function handler(
       expires_at: new Date().getTime() + data.expires_in * 1_000,
     };
 
+    // GOAL: add the email that the user signed in as into the database
+
     return response.status(200).json({ data: _data });
   } catch (error: any) {
     console.error("GP Plus auth failed. Error object: ");

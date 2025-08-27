@@ -127,17 +127,6 @@ export default async function handler(
       membership = (await getGpPlusMembership(
         user.outsetaAccountEmail
       )) as TGpPlusMembershipRetrieved;
-
-      const googleAdminServices = await createGoogleAdminService();
-      const userGoogleGroupMember = await getGoogleGroupMember(user.email, googleAdminServices);
-
-      console.log("userGoogleGroupMember: ", userGoogleGroupMember);
-
-      if(!userGoogleGroupMember){
-        const insertionResult = await insertGoogleGroupMember(user.email, googleAdminServices)
-
-        console.log("insertionResult: ", insertionResult);
-      }
     }
 
     console.log("membership: ", membership);
