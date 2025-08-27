@@ -27,7 +27,7 @@
     "@react-hook/window-size": "^3.1.1",
     "@smakss/react-scroll-direction": "^4.2.0",
     "axios": "^1.11.0",
-    "bootstrap": "^5.3.7",
+    "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "chalk": "^5.6.0",
     "d3": "^7.9.0",
