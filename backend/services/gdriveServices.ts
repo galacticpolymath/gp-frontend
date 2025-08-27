@@ -1293,8 +1293,6 @@ export const copyFiles = async (
     );
     console.log("fileCopyResult: ", fileCopyResult.errType);
     console.log("permission: ", permission);
-    await sleep(8_000);
-
 
     if ("id" in fileCopyResult && fileCopyResult.id && fileNames[fileIdIndex]) {
       console.log(`Successfully copied file ${fileNames[fileIdIndex]}`);
