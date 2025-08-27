@@ -83,7 +83,7 @@
     "react-is-visible": "^1.2.0",
     "react-marquee-slider": "^1.1.5",
     "react-parallax": "^3.5.2",
-    "react-player": "^3.3.1",
+    "react-player": "^3.3.2",
     "react-qr-code": "^2.0.18",
     "react-responsive-carousel": "^3.2.23",
     "react-scroll-parallax": "^3.4.5",
@@ -114,7 +114,7 @@
     "eslint-plugin-react": "^7.37.5",
     "jest": "^30.0.5",
     "jest-puppeteer": "^11.0.0",
-    "sass": "^1.90.0",
+    "sass": "^1.91.0",
     "ts-jest": "^29.4.1",
     "typescript": "^5.9.2"
   },
