@@ -17,7 +17,6 @@ export const useGpPlusModalInteraction = (
 
   const handleOnClickPlanChangeLogic = (
     event: MouseEvent,
-    planDetails: IPlanDetails
   ) => {
     console.log("Event, sup there: ", event.target);
 
@@ -69,8 +68,10 @@ export const useGpPlusModalInteraction = (
       
       if (_target.textContent === "Billed yearly" && savingsElement) {
         savingsElement.classList.add('fw-bolder')
+        savingsElement.classList.add("text-decoration-line-through");
       } else if (savingsElement){
         savingsElement.classList.remove("fw-bolder");
+        savingsElement.classList.remove("text-decoration-line-through");
       }
     }
 
@@ -81,7 +82,7 @@ export const useGpPlusModalInteraction = (
     const userPlanDetail = await getUserPlanDetails(token);
 
     const _handleOnClickPlanChangeLogic = (event: MouseEvent) => {
-      handleOnClickPlanChangeLogic(event, userPlanDetail!);
+      handleOnClickPlanChangeLogic(event);
     };
 
     // if the user selects yearly and if they are on the yearly plan, then
