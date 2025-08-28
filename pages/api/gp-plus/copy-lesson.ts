@@ -14,7 +14,6 @@ import {
   updateUserCustom,
 } from "../../../backend/services/userServices";
 import { CustomError } from "../../../backend/utils/errors";
-import axios from "axios";
 import {
   copyGDriveItem,
   createDrive,
@@ -1254,6 +1253,8 @@ export default async function handler(
         sendMessage(response, {
           failedCopiedFile: reqQueryParams.fileNames[fileIdIndex],
         });
+
+        
       }
     }
     console.log("targetLessonFolder.id, java: ", targetLessonFolder);

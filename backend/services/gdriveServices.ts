@@ -1369,6 +1369,26 @@ const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
     if (fs.existsSync(excelFilePath)) {
       await workbook.xlsx.readFile(excelFilePath);
       worksheet = workbook.getWorksheet("Failed Copies") || workbook.addWorksheet("Failed Copies");
+      
+      // Check if this file has already been tracked
+      const existingRows = worksheet.getRows(2, worksheet.rowCount - 1) || [];
+
+      console.log("existingRows: ", existingRows);
+
+      const isAlreadyTracked = existingRows.some(row => {
+        const rowFileName = row.getCell('fileName').value;
+        const rowFileLink = row.getCell('fileLink').value;
+        const rowUserEmail = row.getCell('userEmail').value;
+        
+        return rowFileName === failedCopy.fileName && 
+               rowFileLink === failedCopy.fileLink && 
+               rowUserEmail === failedCopy.userEmail;
+      });
+      
+      if (isAlreadyTracked) {
+        console.log(`File ${failedCopy.fileName} has already been tracked in Excel, skipping duplicate entry.`);
+        return;
+      }
     } else {
       worksheet = workbook.addWorksheet("Failed Copies");
       
