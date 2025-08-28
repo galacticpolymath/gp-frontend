@@ -8,6 +8,7 @@
 import { FcGoogle } from "react-icons/fc";
 import Button from "../General/Button";
 import { signIn } from "next-auth/react";
+import { useCustomCookies } from "../../customHooks/useCustomCookies";
 
 const GoogleSignIn = ({
     children,
@@ -19,6 +20,8 @@ const GoogleSignIn = ({
     executeExtraBtnClickLogic = null,
     executeFinallyBlockLogic = null,
 }) => {
+    const { removeAppCookies, getCookies } = useCustomCookies();
+
     if (!children) {
         children = (
             <>
@@ -31,6 +34,8 @@ const GoogleSignIn = ({
     const handleGoogleBtnClickDefault = (event) => {
         try {
             event.preventDefault();
+
+            removeAppCookies(["gdriveAccessToken", "gdriveAccessTokenExp", "gdriveRefreshToken"])
 
             // TODo: delete all cookies
 

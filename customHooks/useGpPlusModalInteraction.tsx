@@ -68,14 +68,12 @@ export const useGpPlusModalInteraction = (
       
       if (_target.textContent === "Billed yearly" && savingsElement) {
         savingsElement.classList.add('fw-bolder')
-        savingsElement.classList.add("text-decoration-line-through");
+        savingsElement.classList.remove("text-decoration-line-through");
       } else if (savingsElement){
         savingsElement.classList.remove("fw-bolder");
-        savingsElement.classList.remove("text-decoration-line-through");
+        savingsElement.classList.add("text-decoration-line-through");
       }
     }
-
-    // if the yearly option was selected, then show the percentage saved
   };
 
   const handleUserInteractionWithGpPlusModal = async () => {
@@ -94,26 +92,34 @@ export const useGpPlusModalInteraction = (
         
         const isChangePlanUI = element.target.firstChild?.firstChild?.textContent === "Change plan";
         const billingTypeOptsContainer = element.target.lastChild?.firstChild?.firstChild?.firstChild?.firstChild;
+        const billingOptionsContainer =
+          element.target.lastChild?.firstChild?.lastChild?.firstChild
+            ?.firstChild?.firstChild;
 
         if (isChangePlanUI && billingTypeOptsContainer) {
           const savingsElement = document.createElement('span')
           savingsElement.className = "gp-plus-color text-center ms-2";
           savingsElement.textContent = `Save ${userPlanDetail?.percentageSaved ?? 50}%`
 
+          savingsElement.classList.add("text-decoration-line-through");
+
           billingTypeOptsContainer.appendChild(savingsElement);
           
           console.log("Something changed in the plan change UI");
         }
-
+        
         const gpPlusModal = document.querySelector(".o--Widget--widgetBody");
-        const billingOptionsContainer =
-          element.target.lastChild?.firstChild?.lastChild?.firstChild
-            ?.firstChild?.firstChild;
-
+        
         if (billingOptionsContainer?.childNodes?.length && gpPlusBillingTerm) {
           const childElements = Array.from(
             billingOptionsContainer.childNodes
           ) as HTMLElement[];
+          console.log("childElements: ", childElements);
+          
+          // if 0, then monthly was selected
+          // if 1, then yearly was selected
+
+
           const selectedOption = childElements.find((element) => {
             return element.className === "o--HorizontalToggle--active";
           });
@@ -135,6 +141,8 @@ export const useGpPlusModalInteraction = (
 
             if (currentPlanTxtElement) {
               currentPlanTxtElement.classList.add("show-gp-plus-element");
+            } else {
+
             }
           }
         }

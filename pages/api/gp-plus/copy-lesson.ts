@@ -1087,6 +1087,11 @@ export default async function handler(
       drive
     );
 
+    throw new CustomError(
+        "hi",
+        500
+      );
+
     console.log("targetPermission: ", targetPermission);
 
     if (!targetPermission?.id) {
