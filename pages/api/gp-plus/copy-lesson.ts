@@ -38,7 +38,7 @@ import {
 } from "../../../backend/models/User/types";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { connectToMongodb } from "../../../backend/utils/connection";
-import { updatePermissionsForSharedFileItems } from "../../../backend/services/gdriveServices";
+import { updatePermissionsForSharedFileItems, logFailedFileCopyToExcel, IFailedFileCopy } from "../../../backend/services/gdriveServices";
 
 export const maxDuration = 240;
 export const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer"]);
@@ -1254,7 +1254,23 @@ export default async function handler(
           failedCopiedFile: reqQueryParams.fileNames[fileIdIndex],
         });
 
+        // Log failed copy to Excel
+        const lessonFolderLink = `https://drive.google.com/drive/folders/${targetLessonFolder.id}`;
+        const fileLink = `https://drive.google.com/file/d/${fileId}/view`;
         
+        const errorType = 'errType' in fileCopyResult && typeof fileCopyResult.errType === 'string' ? fileCopyResult.errType : 'unknown';
+        const errorMessage = 'errMsg' in fileCopyResult && typeof fileCopyResult.errMsg === 'string' ? fileCopyResult.errMsg : JSON.stringify(fileCopyResult);
+        
+        await logFailedFileCopyToExcel({
+          lessonName: reqQueryParams.lessonName || 'Unknown',
+          lessonFolderLink,
+          fileName: reqQueryParams.fileNames[fileIdIndex],
+          fileLink,
+          errorType,
+          errorMessage,
+          timestamp: new Date().toISOString(),
+          userEmail: email
+        });
       }
     }
     console.log("targetLessonFolder.id, java: ", targetLessonFolder);

@@ -941,6 +941,15 @@ export const copyGDriveItem = async (
   }
 };
 
+interface TGDriveItem{
+  id: string;
+  labels: {
+    trashed: boolean;
+    [key: string]: boolean;
+  };
+  [key: string]: unknown
+}
+
 export const getGDriveItem = async (
   fileId: string,
   accessToken: string,
@@ -949,7 +958,7 @@ export const getGDriveItem = async (
   willRetry = true,
   tries = 3,
   urlParams?: [string, string][]
-): Promise<{ id: string; [key: string]: unknown } | { errType: string }> => {
+): Promise<TGDriveItem | { errType: string }> => {
   try {
     const url = new URL(`https://www.googleapis.com/drive/v2/files/${fileId}`);
 
@@ -959,10 +968,7 @@ export const getGDriveItem = async (
       }
     }
 
-    const { status, data } = await axios.get<{
-      id: string;
-      [key: string]: unknown;
-    }>(url.href, {
+    const { status, data } = await axios.get<TGDriveItem>(url.href, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -1348,7 +1354,7 @@ export const updatePermissionsForSharedFileItems = async (
 
 type TSendMsgParams = Parameters<typeof sendMessage>;
 
-interface IFailedFileCopy {
+export interface IFailedFileCopy {
   lessonName: string;
   lessonFolderLink: string;
   fileName: string;
@@ -1359,52 +1365,33 @@ interface IFailedFileCopy {
   userEmail: string;
 }
 
-const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
+export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
   try {
     const excelFilePath = path.join(process.cwd(), "failed-file-copies.xlsx");
     const workbook = new ExcelJS.Workbook();
+    const sheetName = "Failed Copies";
     let worksheet: ExcelJS.Worksheet;
 
-    // Check if file exists
+    const columns = [
+      { header: "Lesson Name", key: "lessonName", width: 30 },
+      { header: "Lesson Folder Link", key: "lessonFolderLink", width: 50 },
+      { header: "File Name", key: "fileName", width: 30 },
+      { header: "File Link", key: "fileLink", width: 50 },
+      { header: "Error Type", key: "errorType", width: 20 },
+      { header: "Error Message", key: "errorMessage", width: 40 },
+      { header: "Timestamp", key: "timestamp", width: 20 },
+      { header: "User Email", key: "userEmail", width: 30 }
+    ];
+
+    // Load or create workbook & worksheet
     if (fs.existsSync(excelFilePath)) {
       await workbook.xlsx.readFile(excelFilePath);
-      worksheet = workbook.getWorksheet("Failed Copies") || workbook.addWorksheet("Failed Copies");
-      
-      // Check if this file has already been tracked
-      const existingRows = worksheet.getRows(2, worksheet.rowCount - 1) || [];
-
-      console.log("existingRows: ", existingRows);
-
-      const isAlreadyTracked = existingRows.some(row => {
-        const rowFileName = row.getCell('fileName').value;
-        const rowFileLink = row.getCell('fileLink').value;
-        const rowUserEmail = row.getCell('userEmail').value;
-        
-        return rowFileName === failedCopy.fileName && 
-               rowFileLink === failedCopy.fileLink && 
-               rowUserEmail === failedCopy.userEmail;
-      });
-      
-      if (isAlreadyTracked) {
-        console.log(`File ${failedCopy.fileName} has already been tracked in Excel, skipping duplicate entry.`);
-        return;
-      }
+      worksheet = workbook.getWorksheet(sheetName) || workbook.addWorksheet(sheetName);
     } else {
-      worksheet = workbook.addWorksheet("Failed Copies");
-      
-      // Add headers
-      worksheet.columns = [
-        { header: "Lesson Name", key: "lessonName", width: 30 },
-        { header: "Lesson Folder Link", key: "lessonFolderLink", width: 50 },
-        { header: "File Name", key: "fileName", width: 30 },
-        { header: "File Link", key: "fileLink", width: 50 },
-        { header: "Error Type", key: "errorType", width: 20 },
-        { header: "Error Message", key: "errorMessage", width: 40 },
-        { header: "Timestamp", key: "timestamp", width: 20 },
-        { header: "User Email", key: "userEmail", width: 30 }
-      ];
+      worksheet = workbook.addWorksheet(sheetName);
+      worksheet.columns = columns;
 
-      // Style the header row
+      // Style header row
       const headerRow = worksheet.getRow(1);
       headerRow.font = { bold: true };
       headerRow.fill = {
@@ -1412,9 +1399,36 @@ const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
         pattern: "solid",
         fgColor: { argb: "FFE0E0E0" }
       };
+      headerRow.commit && headerRow.commit(); // safe for streaming writers
     }
 
-    // Add the failed copy data
+    // Always re-assign columns to ensure object keys work after readFile
+    worksheet.columns = columns;
+
+    // Check for duplicates
+    let isAlreadyTracked = false;
+    if (worksheet.rowCount > 1) {
+      for (let i = 2; i <= worksheet.rowCount; i++) {
+        const row = worksheet.getRow(i);
+        const rowFileName = row.getCell('fileName').value;
+        const rowFileLink = row.getCell('fileLink').value;
+        const rowUserEmail = row.getCell('userEmail').value;
+        if (
+          rowFileName === failedCopy.fileName &&
+          rowFileLink === failedCopy.fileLink &&
+          rowUserEmail === failedCopy.userEmail
+        ) {
+          isAlreadyTracked = true;
+          break;
+        }
+      }
+    }
+
+    if (isAlreadyTracked) {
+      console.log(`File ${failedCopy.fileName} has already been tracked in Excel, skipping duplicate entry.`);
+      return;
+    }
+
     worksheet.addRow({
       lessonName: failedCopy.lessonName,
       lessonFolderLink: failedCopy.lessonFolderLink,
@@ -1426,13 +1440,13 @@ const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
       userEmail: failedCopy.userEmail
     });
 
-    // Save the workbook
     await workbook.xlsx.writeFile(excelFilePath);
     console.log(`Failed file copy logged to Excel: ${failedCopy.fileName}`);
   } catch (error) {
     console.error("Failed to log to Excel:", error);
   }
 };
+
 
 export const copyFiles = async (
   fileIds: string[],
