@@ -722,6 +722,9 @@ export const getGoogleDriveItem = async (
       );
     }
 
+    console.log("getGoogleDriveItem data, google drive item: ", data);
+        
+
     return data;
   } catch (error: any) {
     console.error("Failed to retrieve Google Drive item. Error: ", error);
@@ -1358,6 +1361,7 @@ export const copyFiles = async (
   ) => void
 ) => {
   let wasJobSuccessful = true;
+  
   // check if the permission were propagated to all of the files to copy
   for (const fileIdIndex in fileIds) {
     const fileId = fileIds[fileIdIndex];
