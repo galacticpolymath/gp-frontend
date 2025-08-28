@@ -206,11 +206,8 @@ const TeachItUI = <
   const {
     status,
     token,
-    user,
-    gdriveEmail,
     gdriveAccessToken,
     gdriveRefreshToken,
-    gdriveAccessTokenExp,
   } = session;
   const [parts, setParts] = useState(_parts);
 
@@ -492,43 +489,69 @@ const TeachItUI = <
                 ))}
             </div>
           </div>
-          {selectedGradeResources &&
-            (!isGpPlusMember || status === "unauthenticated") && (
-              <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11">
-                <div className="d-flex flex-nowrap align-items-center justify-content-center position-relative flex-column">
-                  <BootstrapBtn
-                    ref={copyUnitBtnRef}
-                    onClick={takeUserToSignUpPg}
-                    style={{
-                      minHeight: "51px",
-                      backgroundColor: "white",
-                      border: "solid 3px #2339C4",
-                      borderRadius: "2em",
-                      textTransform: "none",
-                      minWidth: "300px",
-                      width: "fit-content",
-                    }}
-                    className="px-3 py-2 col-12"
-                  >
-                    <div className="d-flex flex-row align-items-center justify-content-center gap-2">
-                      <Image
-                        alt="gp_plus_logo"
-                        src="/plus/plus.png"
-                        width={32}
-                        height={32}
-                      />
-                      <div
-                        style={{ lineHeight: "23px", fontSize: "18px" }}
-                        className="d-flex text-black"
-                      >
-                        Subscribe to Browse Unit Files on<em style={{ paddingLeft: '2px', paddingRight: '6px' }}>Our</em>Google
-                        Drive
-                      </div>
+          {selectedGradeResources && (
+            <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11">
+              <div className="d-flex flex-nowrap align-items-center justify-content-center position-relative flex-column">
+                <BootstrapBtn
+                  ref={copyUnitBtnRef}
+                  onClick={
+                    !isGpPlusMember || status === "unauthenticated"
+                      ? takeUserToSignUpPg
+                      : () => {}
+                  }
+                  style={{
+                    minHeight: "51px",
+                    backgroundColor: "white",
+                    border: "solid 3px #2339C4",
+                    borderRadius: "2em",
+                    textTransform: "none",
+                    minWidth: "300px",
+                    width: "fit-content",
+                  }}
+                  className={`px-3 py-2 col-12 ${
+                    (!isGpPlusMember || (status === "unauthenticated"))
+                      ? ''
+                      : 'pe-none'
+                  }`}
+                >
+                  <div className="d-flex flex-row align-items-center justify-content-center gap-2">
+                    <Image
+                      alt="gp_plus_logo"
+                      src="/plus/plus.png"
+                      width={32}
+                      height={32}
+                    />
+                    <div
+                      style={{ lineHeight: "23px", fontSize: "18px" }}
+                      className="d-flex text-black"
+                    >
+                      {!isGpPlusMember || status === "unauthenticated" ? (
+                        <>
+                          Subscribe to Browse Unit Files on
+                          <em
+                            style={{ paddingLeft: "2px", paddingRight: "6px" }}
+                          >
+                            Our
+                          </em>
+                          Google Drive
+                        </>
+                      ) : (
+                        <>
+                          Browse on
+                          <em
+                            style={{ paddingLeft: "2px", paddingRight: "6px" }}
+                          >
+                            Our
+                          </em>
+                          Drive (View Only)
+                        </>
+                      )}
                     </div>
-                  </BootstrapBtn>
-                </div>
+                  </div>
+                </BootstrapBtn>
               </div>
-            )}
+            </div>
+          )}
           <div className="container lessonsPartContainer px-0 pe-sm-1 px-md-2 pb-4">
             {!!parts.length &&
               parts.filter(Boolean).map((part, index, self) => {
