@@ -27,7 +27,11 @@ import {
   IResource,
   IStep,
 } from "../../../backend/models/Unit/types/teachingMaterials";
-import { IItemForClient, ILessonForUI, TUseStateReturnVal } from "../../../types/global";
+import {
+  IItemForClient,
+  ILessonForUI,
+  TUseStateReturnVal,
+} from "../../../types/global";
 import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
 import { LAST_LESSON_NUM_ID, UNITS_URL_PATH } from "../../../shared/constants";
 import CopyLessonBtn, { ICopyLessonBtnProps } from "./CopyLessonBtn";
@@ -127,16 +131,16 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     isAccordionExpandable = true,
     sharedGDriveLessonFolderId,
     sharedGDriveLessonFolderName,
-    lessonsFolder
+    lessonsFolder,
   } = props;
 
   useEffect(() => {
-    console.log('props: ', props)
+    console.log("props: ", props);
     console.log(
       "props.userGDriveLessonFolderId: ",
       props.userGDriveLessonFolderId
     );
-  })
+  });
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
@@ -578,6 +582,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
             </div>
           )}
           <div className="mt-4 pb-1">
+            <div className="d-flex align-items-start">
+              <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
+              <h5 className="fw-bold" id="materials-title">
+                Materials for {GradesOrYears} {ForGrades}
+              </h5>
+            </div>
             {lsnNum && lsnTitle && GdrivePublicID && unitMediumTitle && (
               <CopyLessonBtn
                 unitId={unitId!}
@@ -593,12 +603,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 _userGDriveLessonFolderId={userGDriveLessonFolderId}
               />
             )}
-            <div className="d-flex align-items-start">
-              <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
-              <h5 className="fw-bold" id="materials-title">
-                Materials for {GradesOrYears} {ForGrades}
-              </h5>
-            </div>
             <ol className="mt-2 materials-list">
               {!!_itemList?.length &&
                 _itemList.map((item, itemIndex: number) => {

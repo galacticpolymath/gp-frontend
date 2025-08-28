@@ -83,7 +83,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const didInitialRenderOccur = useRef(false);
   const [userGDriveLessonFolderId, setUserGDriveLessonFolderId] = useState("");
-  const [toastId, setToastId] = useState<ReturnType<typeof toast> | null>(null);
 
   useEffect(() => {
     console.log("userGDriveLessonFolderId: ", userGDriveLessonFolderId);
@@ -339,13 +338,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
             });
           };
 
-          // const toastId = displayToast({
-          //   jobStatus: "ongoing",
-          //   onCancel: stopJob,
-          //   title: "Copying unit...",
-          //   subtitle: "Gathering files and folders...",
-          // });
-
           let totalFilesToCopy = 0;
           let filesCopied = 0;
           let showProgressBar = false;
@@ -400,6 +392,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   closeButton: false,
                   toastId,
                 });
+                setUserGDriveLessonFolderId(targetFolderId!);
                 eventSource.close();
                 return;
               }
@@ -589,8 +582,8 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   {isGpPlusMember &&
                     gdriveAccessToken &&
                     (userGDriveLessonFolderId || _userGDriveLessonFolderId
-                      ? "Select and copy to my Google Drive again"
-                      : "Select and copy to my Google Drive")}
+                      ? "Bulk copy to my Google Drive again"
+                      : "Bulk copy to my Google Drive")}
                   {!isGpPlusMember && (
                     <>Subscribe to copy this lesson to your Google Drive</>
                   )}
