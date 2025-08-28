@@ -3,6 +3,8 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../../globalVars";
+import { createGoogleAdminService, getGoogleGroupMember, insertGoogleGroupMember } from "../../../backend/services/googleGroupServices";
+import { CustomError } from "../../../backend/utils/errors";
 
 interface IResBody {
   code: string;
@@ -114,18 +116,29 @@ export default async function handler(
     }
 
     if(!userInfoRes.data?.email){
-      throw new Error("The email is not present in the user info response.");
+      throw new CustomError("No user email found in the response.", 404);
     }
 
-    console.log("userInfoRes.data: ", userInfoRes.data);
+    const googleAdminService = await createGoogleAdminService()
+
+    if(!googleAdminService){
+      throw new CustomError("Failed to create service.", 500);
+    }
+
+    const userGroupMember = await getGoogleGroupMember(userInfoRes.data.email, googleAdminService);
+
+    console.log("Retrieved google group member: ", userGroupMember);    
+
+    if(!userGroupMember){
+      const insertionResult = await insertGoogleGroupMember(userInfoRes.data.email, googleAdminService)
+      console.log("Insertion of a google group member: ", insertionResult);
+    }
 
     const _data: Partial<IGoogleDriveAuthResBody> = {
       ...data,
       email: userInfoRes.data?.email,
       expires_at: new Date().getTime() + data.expires_in * 1_000,
     };
-
-    // GOAL: add the email that the user signed in as into the database
 
     return response.status(200).json({ data: _data });
   } catch (error: any) {
