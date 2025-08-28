@@ -492,91 +492,42 @@ const TeachItUI = <
                 ))}
             </div>
           </div>
-          {selectedGradeResources && (
-            <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11">
-              <div className="d-flex flex-nowrap align-items-center justify-content-center position-relative flex-column">
-                <BootstrapBtn
-                  ref={copyUnitBtnRef}
-                  onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
-                  style={{
-                    pointerEvents: isCopyingUnitBtnDisabled ? "none" : "auto",
-                    minHeight: "51px",
-                    backgroundColor: "white",
-                    border: "solid 3px #2339C4",
-                    borderRadius: "2em",
-                    textTransform: "none",
-                    minWidth: "300px",
-                    width: "fit-content",
-                  }}
-                  className={`px-3 py-2 col-12 ${
-                    isCopyingUnitBtnDisabled ? "opacity-25" : "opacity-100"
-                  }`}
-                  disabled={
-                    !didInitialRenderOccur.current || isCopyingUnitBtnDisabled
-                  }
-                >
-                  {didInitialRenderOccur.current ? (
-                    <div className="d-flex flex-row align-items-center justify-content-center gap-2">
-                      {isCopyingUnitBtnDisabled ? (
-                        <Spinner className="text-black" />
-                      ) : (
-                        <>
-                          <Image
-                            alt="gp_plus_logo"
-                            src="/plus/plus.png"
-                            width={32}
-                            height={32}
-                          />
-                          <div
-                            style={{ lineHeight: "23px", fontSize: "18px" }}
-                            className="d-flex flex-column text-black"
-                          >
-                            {isGpPlusMember && !gdriveAccessToken && (
-                              <>Authenticate w/ Google Drive & Copy Unit</>
-                            )}
-                            {isGpPlusMember &&
-                              gdriveAccessToken &&
-                              (userLatestCopyUnitFolderId
-                                ? "Copy unit again"
-                                : "Copy unit to my Google Drive")}
-                            {!isGpPlusMember && (
-                              <>
-                                Subscribe to copy this whole unit to Google
-                                Drive
-                              </>
-                            )}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  ) : (
-                    <div
-                      className="spinner-border spinner-border-sm text-light"
-                      role="status"
-                    >
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-                  )}
-                </BootstrapBtn>
-                {userLatestCopyUnitFolderId && (
-                  <div
-                    style={{ maxWidth: "600px", fontSize: "18px" }}
-                    className="text-break mx-auto text-center text-lg-start mt-2"
+          {(selectedGradeResources &&
+            (isGpPlusMember || status === "unauthenticated")) && (
+              <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11">
+                <div className="d-flex flex-nowrap align-items-center justify-content-center position-relative flex-column">
+                  <BootstrapBtn
+                    ref={copyUnitBtnRef}
+                    onClick={takeUserToSignUpPg}
+                    style={{
+                      minHeight: "51px",
+                      backgroundColor: "white",
+                      border: "solid 3px #2339C4",
+                      borderRadius: "2em",
+                      textTransform: "none",
+                      minWidth: "300px",
+                      width: "fit-content",
+                    }}
+                    className="px-3 py-2 col-12"
                   >
-                    Your latest copy of this unit is linked
-                    <Link
-                      target="_blank"
-                      className="ms-1 text-start text-lg-center"
-                      href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${userLatestCopyUnitFolderId}`}
-                    >
-                      here
-                    </Link>
-                    .
-                  </div>
-                )}
+                    <div className="d-flex flex-row align-items-center justify-content-center gap-2">
+                      <Image
+                        alt="gp_plus_logo"
+                        src="/plus/plus.png"
+                        width={32}
+                        height={32}
+                      />
+                      <div
+                        style={{ lineHeight: "23px", fontSize: "18px" }}
+                        className="d-flex flex-column text-black"
+                      >
+                        Subscribe to Browse Unit Files on <em>Our</em> Google Drive
+                      </div>
+                    </div>
+                  </BootstrapBtn>
+                </div>
               </div>
-            </div>
-          )}
+            )}
           <div className="container lessonsPartContainer px-0 pe-sm-1 px-md-2 pb-4">
             {!!parts.length &&
               parts.filter(Boolean).map((part, index, self) => {
