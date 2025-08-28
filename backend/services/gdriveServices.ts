@@ -594,9 +594,7 @@ export const listPermissions = async (
   });
 
   return filePermissions.data;
-}
-
-
+};
 
 export const getTargetUserPermission = async (
   fileId: string,
@@ -1197,12 +1195,60 @@ export const shareFilesWithUser = async (
       });
     });
     const shareFileResults = await Promise.all(shareFilePromises);
-      
-    return shareFileResults
+
+    return shareFileResults;
   } catch (error: any) {
-    console.error("Failed to share files with the target user. Reason: ", error);
-    console.error("Failed to share files with the target user. Error response: ", error.response?.data);
-    
+    console.error(
+      "Failed to share files with the target user. Reason: ",
+      error
+    );
+    console.error(
+      "Failed to share files with the target user. Error response: ",
+      error.response?.data
+    );
+
+    return null;
+  }
+};
+
+export const shareFileWithUser = async (
+  fileId: string,
+  userEmail: string,
+  drive?: drive_v3.Drive
+) => {
+  try {
+    let _drive = drive;
+
+    if (!drive) {
+      _drive = await createDrive();
+    }
+
+    // @ts-ignore
+    const permissionUpdateResult = await _drive!.permissions.create({
+      requestBody: {
+        type: "user",
+        role: "fileOrganizer",
+        emailAddress: userEmail,
+      },
+      fileId: fileId,
+      fields: "*",
+      corpora: "drive",
+      includeItemsFromAllDrives: true,
+      supportsAllDrives: true,
+      sendNotificationEmail: false,
+      driveId: process.env.GOOGLE_DRIVE_ID,
+    });
+
+    return permissionUpdateResult as drive_v3.Schema$Permission;
+  } catch (error: any) {
+    console.error(
+      "Failed to share files with the target user. Reason: ",
+      error
+    );
+    console.error(
+      "Failed to share files with the target user. Error response: ",
+      error.response?.data
+    );
 
     return null;
   }
@@ -1228,11 +1274,40 @@ export const updatePermissionsForSharedFileItems = async (
     throw new CustomError("The file does not have a parent folder.", 500);
   }
 
-  const targetPermission = await getTargetUserPermission(
+  const shareParentFolderResult = await shareFileWithUser(
     parentFolderId,
     email,
     drive
   );
+
+  if (!shareParentFolderResult) {
+    throw new CustomError(
+      "Failed to share the target parent folder with the user.",
+      500
+    );
+  }
+
+  await sleep(1_500);
+
+  let targetPermission = await getTargetUserPermission(
+    parentFolderId,
+    email,
+    drive
+  );
+  let tries = 4;
+
+  while (!targetPermission) {
+    console.log("Checking if the parent folder was successfully shared with the target user. Tries left: ", tries);
+
+    await waitWithExponentialBackOff(tries);
+
+    targetPermission = await getTargetUserPermission(
+      parentFolderId,
+      email,
+      drive
+    );
+    tries -= 1;
+  }
 
   console.log("targetPermission: ", targetPermission);
 
@@ -1245,18 +1320,6 @@ export const updatePermissionsForSharedFileItems = async (
 
   console.log("Will update the permission of the target file.");
 
-  // change the target user's permission to writer
-  const filePermissionsUpdated = await drive.permissions.update({
-    permissionId: targetPermission.id,
-    fileId: parentFolderId,
-    supportsAllDrives: true,
-    requestBody: {
-      role: "fileOrganizer",
-    },
-  });
-
-  console.log("filePermissionsUpdated: ", filePermissionsUpdated);
-
   // make the target files read only
   for (const fileId of fileIds) {
     // @ts-ignore
@@ -1266,7 +1329,7 @@ export const updatePermissionsForSharedFileItems = async (
       requestBody: {
         contentRestrictions: {
           readOnly: true,
-          reason: "Making a copy for GP plus user.",
+          reason: "Making a copy for GP plus user. Making file readonly temporarily.",
         },
       },
     });

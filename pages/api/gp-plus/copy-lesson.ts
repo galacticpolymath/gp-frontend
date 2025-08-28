@@ -28,8 +28,8 @@ import {
   getGDriveItem,
   createUnitFolder,
   copyFiles,
-  TEACHERS_GOOGLE_GROUP_EMAIL,
   shareFilesWithUser,
+  shareFileWithUser,
 } from "../../../backend/services/gdriveServices";
 import { sleep, waitWithExponentialBackOff } from "../../../globalFns";
 import { drive_v3 } from "googleapis";
@@ -275,6 +275,10 @@ export default async function handler(
         gDriveAccessToken
       );
       console.log("targetGDriveFolder: ", targetGDriveFolder);
+      // TODO: check if the following folders are trashed: 
+      // -the gp plus folder
+      // -the target lesson folder 
+      // -the lessons folder
       gpPlusFolderId =
         "id" in targetGDriveFolder && targetGDriveFolder.id
           ? gpPlusFolderId
@@ -460,7 +464,7 @@ export default async function handler(
         }
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
-          TEACHERS_GOOGLE_GROUP_EMAIL,
+          email,
           reqQueryParams.fileIds
         );
         parentFolder = {
@@ -482,7 +486,7 @@ export default async function handler(
 
         const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
-          TEACHERS_GOOGLE_GROUP_EMAIL,
+          email,
           drive,
           gDriveAccessToken,
           lessonFolderId,
@@ -675,7 +679,7 @@ export default async function handler(
 
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
-          TEACHERS_GOOGLE_GROUP_EMAIL,
+          email,
           reqQueryParams.fileIds
         );
         parentFolder = {
@@ -701,7 +705,7 @@ export default async function handler(
 
         const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
-          TEACHERS_GOOGLE_GROUP_EMAIL,
+          email,
           drive,
           gDriveAccessToken,
           targetLessonFolderCreationResult.folderId,
@@ -742,7 +746,7 @@ export default async function handler(
         // make the target shared drive files read only to prevent writes during the copy operation
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
-          TEACHERS_GOOGLE_GROUP_EMAIL,
+          email,
           reqQueryParams.fileIds
         );
         parentFolder = {
@@ -768,7 +772,7 @@ export default async function handler(
 
         const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
-          TEACHERS_GOOGLE_GROUP_EMAIL,
+          email,
           drive,
           gDriveAccessToken,
           targetLessonFolderInUserDrive!.lessonDriveId,
@@ -1078,7 +1082,7 @@ export default async function handler(
 
     console.log("Will share the parent folder with the target user.");
     
-    const result = await shareFilesWithUser([parentFolderId], email);
+    const result = await shareFileWithUser(parentFolderId, email);
     
     console.log("share result: ", result);
     
@@ -1188,7 +1192,7 @@ export default async function handler(
 
         const permission = await getTargetUserPermission(
           fileId,
-          TEACHERS_GOOGLE_GROUP_EMAIL,
+          email,
           drive
         );
 
