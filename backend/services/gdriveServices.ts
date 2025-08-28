@@ -22,7 +22,7 @@ import {
   VALID_WRITABLE_ROLES,
 } from "../../pages/api/gp-plus/copy-lesson";
 
-export const TEACHERS_GOOGLE_GROUP_EMAIL = 'teachers@galacticpolymath.com';
+export const TEACHERS_GOOGLE_GROUP_EMAIL = "teachers@galacticpolymath.com";
 
 type TUnitFolder = Partial<{
   name: string | null;
@@ -577,6 +577,27 @@ export const createFolderStructure = async (
   return createdFolders;
 };
 
+export const listPermissions = async (
+  fileId: string,
+  drive?: drive_v3.Drive
+) => {
+  let _drive = drive;
+
+  if (!drive) {
+    _drive = await createDrive();
+  }
+
+  const filePermissions = await _drive!.permissions.list({
+    fileId,
+    supportsAllDrives: true,
+    fields: "*",
+  });
+
+  return filePermissions.data;
+}
+
+
+
 export const getTargetUserPermission = async (
   fileId: string,
   email: string,
@@ -594,7 +615,10 @@ export const getTargetUserPermission = async (
     fields: "*",
   });
 
-  console.log("filePermissions.data.permissions: ", filePermissions.data.permissions);
+  console.log(
+    "filePermissions.data.permissions: ",
+    filePermissions.data.permissions
+  );
 
   return filePermissions.data.permissions?.find((permission) => {
     return permission.emailAddress === email;
@@ -814,7 +838,7 @@ export const createGDriveFolder = async (
         parentFolderIds,
         tries,
         refreshToken,
-        origin
+        reqOriginForRefreshingToken
       );
     }
 
@@ -1143,6 +1167,47 @@ export const createUnitFolder = async (
   return targetLessonFolder.id;
 };
 
+export const shareFilesWithUser = async (
+  fileIds: string[],
+  userEmail: string,
+  drive?: drive_v3.Drive
+) => {
+  try {
+    let _drive = drive;
+
+    if (!drive) {
+      _drive = await createDrive();
+    }
+
+    const shareFilePromises = fileIds.map((fileId) => {
+      // @ts-ignore
+      return _drive!.permissions.create({
+        requestBody: {
+          type: "user",
+          role: "fileOrganizer",
+          emailAddress: userEmail,
+        },
+        fileId: fileId,
+        fields: "*",
+        corpora: "drive",
+        includeItemsFromAllDrives: true,
+        supportsAllDrives: true,
+        sendNotificationEmail: false,
+        driveId: process.env.GOOGLE_DRIVE_ID,
+      });
+    });
+    const shareFileResults = await Promise.all(shareFilePromises);
+      
+    return shareFileResults
+  } catch (error: any) {
+    console.error("Failed to share files with the target user. Reason: ", error);
+    console.error("Failed to share files with the target user. Error response: ", error.response?.data);
+    
+
+    return null;
+  }
+};
+
 export const updatePermissionsForSharedFileItems = async (
   drive: drive_v3.Drive,
   email: string,
@@ -1229,7 +1294,6 @@ export const copyFiles = async (
     delayMsg?: TSendMsgParams[3]
   ) => void
 ) => {
-
   let wasJobSuccessful = true;
   // check if the permission were propagated to all of the files to copy
   for (const fileIdIndex in fileIds) {
@@ -1239,7 +1303,7 @@ export const copyFiles = async (
     let userUpdatedRole = permission?.role;
     let tries = 7;
 
-    if(!userUpdatedRole ){
+    if (!userUpdatedRole) {
       console.log("role is not present");
       wasJobSuccessful = false;
       continue;
@@ -1250,7 +1314,6 @@ export const copyFiles = async (
     );
 
     console.log(`userUpdatedRole: ${userUpdatedRole}`);
-    
 
     while (!VALID_WRITABLE_ROLES.has(userUpdatedRole!)) {
       console.log(`tries: ${tries}`);
@@ -1289,7 +1352,6 @@ export const copyFiles = async (
 
     console.log("gdriveItemMetaData: ", gdriveItemMetaData);
 
-    
     const fileCopyResult = await copyGDriveItem(
       gDriveAccessToken,
       [lessonFolderId],
@@ -1315,10 +1377,9 @@ export const copyFiles = async (
         failedCopiedFile: fileNames[fileIdIndex],
       });
     }
-    // console.log("fileCopyResult: ", fileCopyResult.status);
   }
 
-  return wasJobSuccessful
+  return wasJobSuccessful;
 };
 
 export const addNewGDriveLessonToTargetUser = async (

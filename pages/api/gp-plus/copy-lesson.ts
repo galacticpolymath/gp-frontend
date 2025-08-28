@@ -29,8 +29,9 @@ import {
   createUnitFolder,
   copyFiles,
   TEACHERS_GOOGLE_GROUP_EMAIL,
+  shareFilesWithUser,
 } from "../../../backend/services/gdriveServices";
-import { waitWithExponentialBackOff } from "../../../globalFns";
+import { sleep, waitWithExponentialBackOff } from "../../../globalFns";
 import { drive_v3 } from "googleapis";
 import {
   ILessonGDriveId,
@@ -308,8 +309,6 @@ export default async function handler(
     console.log(
       `unitGDriveLessonsObjs?.length: ${unitGDriveLessonsObjs?.length}`
     );
-
-    // throw new Error("hi");
 
     // the gp plus folder exist, will check if the target unit folder and the target lesson exist
     if (gpPlusFolderId && unitGDriveLessonsObjs?.length) {
@@ -1077,29 +1076,36 @@ export default async function handler(
       throw new CustomError("The file does not have a parent folder.", 500);
     }
 
+    console.log("Will share the parent folder with the target user.");
+    
+    const result = await shareFilesWithUser([parentFolderId], email);
+    
+    console.log("share result: ", result);
+    
     if (!isStreamOpen) {
       throw new CustomError("The stream has ended.", 500);
     }
 
+    console.log("shared target folder with user, will wait...");    
+
+    await sleep(1_500);
+    
     const targetPermission = await getTargetUserPermission(
       parentFolderId,
-      TEACHERS_GOOGLE_GROUP_EMAIL,
+      email,
       drive
     );
-
-    throw new CustomError(
-        "hi",
-        500
-      );
-
+    
     console.log("targetPermission: ", targetPermission);
-
+    
     if (!targetPermission?.id) {
       throw new CustomError(
         "The target permission for the gp plus user was not found.",
         500
       );
     }
+    
+    parentFolder = { id: parentFolderId, permissionId: targetPermission.id };
 
     console.log("Will update the permission of the target file.");
 
@@ -1109,24 +1115,12 @@ export default async function handler(
       throw new CustomError("The stream has ended.", 500);
     }
 
-    const filePermissionsUpdated = await drive.permissions.update({
-      permissionId: targetPermission.id,
-      fileId: parentFolderId,
-      supportsAllDrives: true,
-      requestBody: {
-        role: "fileOrganizer",
-      },
-    });
-    parentFolder = { id: parentFolderId, permissionId: targetPermission.id };
-
-    console.log("filePermissionsUpdated, hey there! ", filePermissionsUpdated);
-
     // make the target files read only
     for (const fileId of reqQueryParams.fileIds) {
       console.log("Copying file: ", fileId);
       // @ts-ignore
       const fileUpdated = await drive.files.update({
-        fileId: fileId,
+        fileId,
         supportsAllDrives: true,
         requestBody: {
           contentRestrictions: {
@@ -1150,21 +1144,20 @@ export default async function handler(
 
     let wasJobSuccessful = true;
 
-    console.log("Made the target file read only and changed the target user's permission to writer. Will copy files.");
+    console.log(
+      "Made the target file read only and changed the target user's permission to writer. Will copy files."
+    );
 
     // check if the permission were propagated to all of the files to copy
     for (const fileIdIndex in reqQueryParams.fileIds) {
       const fileId = reqQueryParams.fileIds[fileIdIndex];
       const permission = await getTargetUserPermission(
         fileId,
-        TEACHERS_GOOGLE_GROUP_EMAIL,
+        email,
         drive
       );
 
       console.log("permission, sup there: ", permission);
-
-
-
 
       if (!permission?.role) {
         continue;
@@ -1174,7 +1167,7 @@ export default async function handler(
       let tries = 7;
 
       console.log(`userUpdatedRole: ${userUpdatedRole}`);
-    
+
       console.log(
         "Made the target file read only and changed the target user's permission to writer."
       );
@@ -1223,7 +1216,7 @@ export default async function handler(
         gDriveRefreshToken,
         clientOrigin
       );
-      
+
       console.log("fileCopyResult: ", fileCopyResult);
 
       if (
