@@ -21,6 +21,9 @@ import {
   TCopyFilesMsg,
   VALID_WRITABLE_ROLES,
 } from "../../pages/api/gp-plus/copy-lesson";
+import * as ExcelJS from "exceljs";
+import * as fs from "fs";
+import * as path from "path";
 
 export const TEACHERS_GOOGLE_GROUP_EMAIL = "teachers@galacticpolymath.com";
 
@@ -1345,6 +1348,72 @@ export const updatePermissionsForSharedFileItems = async (
 
 type TSendMsgParams = Parameters<typeof sendMessage>;
 
+interface IFailedFileCopy {
+  lessonName: string;
+  lessonFolderLink: string;
+  fileName: string;
+  fileLink: string;
+  errorType?: string;
+  errorMessage?: string;
+  timestamp: string;
+  userEmail: string;
+}
+
+const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
+  try {
+    const excelFilePath = path.join(process.cwd(), "failed-file-copies.xlsx");
+    const workbook = new ExcelJS.Workbook();
+    let worksheet: ExcelJS.Worksheet;
+
+    // Check if file exists
+    if (fs.existsSync(excelFilePath)) {
+      await workbook.xlsx.readFile(excelFilePath);
+      worksheet = workbook.getWorksheet("Failed Copies") || workbook.addWorksheet("Failed Copies");
+    } else {
+      worksheet = workbook.addWorksheet("Failed Copies");
+      
+      // Add headers
+      worksheet.columns = [
+        { header: "Lesson Name", key: "lessonName", width: 30 },
+        { header: "Lesson Folder Link", key: "lessonFolderLink", width: 50 },
+        { header: "File Name", key: "fileName", width: 30 },
+        { header: "File Link", key: "fileLink", width: 50 },
+        { header: "Error Type", key: "errorType", width: 20 },
+        { header: "Error Message", key: "errorMessage", width: 40 },
+        { header: "Timestamp", key: "timestamp", width: 20 },
+        { header: "User Email", key: "userEmail", width: 30 }
+      ];
+
+      // Style the header row
+      const headerRow = worksheet.getRow(1);
+      headerRow.font = { bold: true };
+      headerRow.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFE0E0E0" }
+      };
+    }
+
+    // Add the failed copy data
+    worksheet.addRow({
+      lessonName: failedCopy.lessonName,
+      lessonFolderLink: failedCopy.lessonFolderLink,
+      fileName: failedCopy.fileName,
+      fileLink: failedCopy.fileLink,
+      errorType: failedCopy.errorType || "",
+      errorMessage: failedCopy.errorMessage || "",
+      timestamp: failedCopy.timestamp,
+      userEmail: failedCopy.userEmail
+    });
+
+    // Save the workbook
+    await workbook.xlsx.writeFile(excelFilePath);
+    console.log(`Failed file copy logged to Excel: ${failedCopy.fileName}`);
+  } catch (error) {
+    console.error("Failed to log to Excel:", error);
+  }
+};
+
 export const copyFiles = async (
   fileIds: string[],
   email: string,
@@ -1443,6 +1512,24 @@ export const copyFiles = async (
       );
       sendMessageToClient({
         failedCopiedFile: fileNames[fileIdIndex],
+      });
+
+      // Log failed copy to Excel
+      const lessonFolderLink = `https://drive.google.com/drive/folders/${lessonFolderId}`;
+      const fileLink = `https://drive.google.com/file/d/${fileId}/view`;
+      
+      const errorType = 'errType' in fileCopyResult && typeof fileCopyResult.errType === 'string' ? fileCopyResult.errType : 'unknown';
+      const errorMessage = 'errMsg' in fileCopyResult && typeof fileCopyResult.errMsg === 'string' ? fileCopyResult.errMsg : JSON.stringify(fileCopyResult);
+      
+      await logFailedFileCopyToExcel({
+        lessonName,
+        lessonFolderLink,
+        fileName: fileNames[fileIdIndex],
+        fileLink,
+        errorType,
+        errorMessage,
+        timestamp: new Date().toISOString(),
+        userEmail: email
       });
     }
   }
