@@ -264,7 +264,7 @@ const TeachItUI = <
 
               return part;
             });
-            setParts(_parts)
+            setParts(_parts);
           }
 
           // prevent runtime error
@@ -492,8 +492,8 @@ const TeachItUI = <
                 ))}
             </div>
           </div>
-          {(selectedGradeResources &&
-            (isGpPlusMember || status === "unauthenticated")) && (
+          {selectedGradeResources &&
+            (!isGpPlusMember || status === "unauthenticated") && (
               <div className="d-flex container justify-content-center mb-5 mt-0 col-md-12 col-lg-11">
                 <div className="d-flex flex-nowrap align-items-center justify-content-center position-relative flex-column">
                   <BootstrapBtn
@@ -519,9 +519,10 @@ const TeachItUI = <
                       />
                       <div
                         style={{ lineHeight: "23px", fontSize: "18px" }}
-                        className="d-flex flex-column text-black"
+                        className="d-flex text-black"
                       >
-                        Subscribe to Browse Unit Files on <em>Our</em> Google Drive
+                        Subscribe to Browse Unit Files on<em style={{ paddingLeft: '2px', paddingRight: '6px' }}>Our</em>Google
+                        Drive
                       </div>
                     </div>
                   </BootstrapBtn>
