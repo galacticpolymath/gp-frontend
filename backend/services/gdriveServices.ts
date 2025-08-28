@@ -1358,10 +1358,11 @@ export const copyFiles = async (
     data: TCopyFilesMsg,
     willEndStream?: TSendMsgParams[2],
     delayMsg?: TSendMsgParams[3]
-  ) => void
+  ) => void,
+  lessonName: string
 ) => {
   let wasJobSuccessful = true;
-  
+
   // check if the permission were propagated to all of the files to copy
   for (const fileIdIndex in fileIds) {
     const fileId = fileIds[fileIdIndex];

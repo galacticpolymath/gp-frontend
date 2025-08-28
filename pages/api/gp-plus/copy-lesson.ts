@@ -499,7 +499,8 @@ export default async function handler(
           reqQueryParams.fileNames,
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
-          }
+          },
+          _lessonsFolder.name!
         );
 
         if (!isStreamOpen) {
@@ -718,7 +719,8 @@ export default async function handler(
           reqQueryParams.fileNames,
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
-          }
+          },
+          _lessonsFolder.name!
         );
 
         sendMessage(response, {
@@ -774,6 +776,7 @@ export default async function handler(
           msg: "Copying lesson files...",
         });
 
+        
         const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
           email,
@@ -785,7 +788,8 @@ export default async function handler(
           reqQueryParams.fileNames,
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
-          }
+          },
+          _lessonsFolder.name!
         );
 
         sendMessage(response, {

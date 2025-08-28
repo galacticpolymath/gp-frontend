@@ -39,6 +39,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.1",
     "event-source-polyfill": "^1.0.31",
+    "exceljs": "^4.4.0",
     "font-awesome": "^4.7.0",
     "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",
