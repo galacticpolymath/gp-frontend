@@ -283,6 +283,10 @@ export default async function handler(
         "id" in targetGDriveFolder && targetGDriveFolder.id
           ? gpPlusFolderId
           : undefined;
+          
+      if("id" in targetGDriveFolder && targetGDriveFolder.id){
+        
+      }
 
       // the gp plus folder doesn't exist, will reset all values pertaining to it in the db
       if (!gpPlusFolderId) {
