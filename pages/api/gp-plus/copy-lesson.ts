@@ -21,7 +21,6 @@ import {
   createGDriveFolder,
   getFolderChildItems,
   getUserChildItemsOfFolder,
-  getGoogleDriveItem,
   getTargetUserPermission,
   ORIGINAL_ITEM_ID_FIELD_NAME,
   getGDriveItem,
@@ -38,7 +37,11 @@ import {
 } from "../../../backend/models/User/types";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { connectToMongodb } from "../../../backend/utils/connection";
-import { updatePermissionsForSharedFileItems, logFailedFileCopyToExcel, IFailedFileCopy } from "../../../backend/services/gdriveServices";
+import {
+  updatePermissionsForSharedFileItems,
+  logFailedFileCopyToExcel,
+  IFailedFileCopy,
+} from "../../../backend/services/gdriveServices";
 
 export const maxDuration = 240;
 export const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer"]);
@@ -269,25 +272,23 @@ export default async function handler(
         "will check if the target gp plus folder exist: ",
         gpPlusFolderId
       );
-      const targetGDriveFolder = await getGoogleDriveItem(
+      const clientOrigin = new URL(request.headers.referer ?? "").origin;
+      const targetGDriveFolder = await getGDriveItem(
         gpPlusFolderId,
-        gDriveAccessToken
+        gDriveAccessToken,
+        gDriveRefreshToken,
+        clientOrigin
       );
       console.log("targetGDriveFolder: ", targetGDriveFolder);
-      // TODO: check if the following folders are trashed: 
-      // -the gp plus folder
-      // -the target lesson folder 
-      // -the lessons folder
-      gpPlusFolderId =
-        "id" in targetGDriveFolder && targetGDriveFolder.id
-          ? gpPlusFolderId
-          : undefined;
-          
-      if("id" in targetGDriveFolder && targetGDriveFolder.id){
-        
+
+      if (
+        "id" in targetGDriveFolder &&
+        (!targetGDriveFolder.id || targetGDriveFolder.labels.trashed)
+      ) {
+        gpPlusFolderId = undefined;
       }
 
-      // the gp plus folder doesn't exist, will reset all values pertaining to it in the db
+      // the gp plus folder doesn't exist or has been trashed, will reset all values pertaining to it in the db
       if (!gpPlusFolderId) {
         console.log(
           "The 'My GP+ Units' folder doesn't exist, will reset all values pertaining to it in the db"
@@ -337,15 +338,30 @@ export default async function handler(
         "targetLessonFolderInUserDrive: ",
         targetLessonFolderInUserDrive
       );
-      const doesTargetGDriveUnitFolderExist = unitDriveId
-        ? "id" in
-          (await getGDriveItem(
-            unitDriveId,
-            gDriveAccessToken,
-            gDriveRefreshToken,
-            clientOrigin
-          ))
-        : false;
+
+      let doesTargetGDriveUnitFolderExist = !!unitDriveId;
+
+      if (unitDriveId) {
+        const targetUnitFolder = await getGDriveItem(
+          unitDriveId,
+          gDriveAccessToken,
+          gDriveRefreshToken,
+          clientOrigin
+        );
+        doesTargetGDriveUnitFolderExist = "id" in targetUnitFolder && !!targetUnitFolder.id && !targetUnitFolder.labels.trashed
+      }
+
+      if (targetLessonFolderInUserDrive?.lessonDriveId) {
+        const targetLessonsFolder = await getGDriveItem(
+              targetLessonFolderInUserDrive?.lessonDriveId,
+              gDriveAccessToken,
+              gDriveRefreshToken,
+              clientOrigin
+            );
+        doesTargetGDriveUnitFolderExist = "id" in targetLessonsFolder && !!targetLessonsFolder.id && !targetLessonsFolder.labels.trashed
+      }
+
+      //TODO: will check if the target unit folder was trashed. If it is, then recreate it
       const doesTargetGDriveLessonFolderExist =
         targetLessonFolderInUserDrive?.lessonDriveId
           ? "id" in
@@ -775,7 +791,6 @@ export default async function handler(
           msg: "Copying lesson files...",
         });
 
-        
         const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
           email,
@@ -1088,34 +1103,34 @@ export default async function handler(
     }
 
     console.log("Will share the parent folder with the target user.");
-    
+
     const result = await shareFileWithUser(parentFolderId, email);
-    
+
     console.log("share result: ", result);
-    
+
     if (!isStreamOpen) {
       throw new CustomError("The stream has ended.", 500);
     }
 
-    console.log("shared target folder with user, will wait...");    
+    console.log("shared target folder with user, will wait...");
 
     await sleep(1_500);
-    
+
     const targetPermission = await getTargetUserPermission(
       parentFolderId,
       email,
       drive
     );
-    
+
     console.log("targetPermission: ", targetPermission);
-    
+
     if (!targetPermission?.id) {
       throw new CustomError(
         "The target permission for the gp plus user was not found.",
         500
       );
     }
-    
+
     parentFolder = { id: parentFolderId, permissionId: targetPermission.id };
 
     console.log("Will update the permission of the target file.");
@@ -1162,11 +1177,7 @@ export default async function handler(
     // check if the permission were propagated to all of the files to copy
     for (const fileIdIndex in reqQueryParams.fileIds) {
       const fileId = reqQueryParams.fileIds[fileIdIndex];
-      const permission = await getTargetUserPermission(
-        fileId,
-        email,
-        drive
-      );
+      const permission = await getTargetUserPermission(fileId, email, drive);
 
       console.log("permission, sup there: ", permission);
 
@@ -1197,11 +1208,7 @@ export default async function handler(
 
         await waitWithExponentialBackOff(tries);
 
-        const permission = await getTargetUserPermission(
-          fileId,
-          email,
-          drive
-        );
+        const permission = await getTargetUserPermission(fileId, email, drive);
 
         if (permission?.role) {
           userUpdatedRole = permission?.role;
@@ -1257,19 +1264,27 @@ export default async function handler(
         // Log failed copy to Excel
         const lessonFolderLink = `https://drive.google.com/drive/folders/${targetLessonFolder.id}`;
         const fileLink = `https://drive.google.com/file/d/${fileId}/view`;
-        
-        const errorType = 'errType' in fileCopyResult && typeof fileCopyResult.errType === 'string' ? fileCopyResult.errType : 'unknown';
-        const errorMessage = 'errMsg' in fileCopyResult && typeof fileCopyResult.errMsg === 'string' ? fileCopyResult.errMsg : JSON.stringify(fileCopyResult);
-        
+
+        const errorType =
+          "errType" in fileCopyResult &&
+          typeof fileCopyResult.errType === "string"
+            ? fileCopyResult.errType
+            : "unknown";
+        const errorMessage =
+          "errMsg" in fileCopyResult &&
+          typeof fileCopyResult.errMsg === "string"
+            ? fileCopyResult.errMsg
+            : JSON.stringify(fileCopyResult);
+
         await logFailedFileCopyToExcel({
-          lessonName: reqQueryParams.lessonName || 'Unknown',
+          lessonName: reqQueryParams.lessonName || "Unknown",
           lessonFolderLink,
           fileName: reqQueryParams.fileNames[fileIdIndex],
           fileLink,
           errorType,
           errorMessage,
           timestamp: new Date().toISOString(),
-          userEmail: email
+          userEmail: email,
         });
       }
     }
