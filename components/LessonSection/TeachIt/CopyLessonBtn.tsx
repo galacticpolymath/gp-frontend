@@ -250,6 +250,8 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
             return;
           }
 
+          // TODO: get all of the file ids to copy the lesson again if the user clicks on the retry button
+
           console.log("data, yo there: ", data);
           console.log("First document ID, data?.docs: ", data?.docs);
           const fileIds = data.docs.map((file) => file.id);
@@ -375,6 +377,10 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       }
                       jobStatus={wasSuccessful ? "success" : "failure"}
                       onCancel={() => {
+                        if(!wasSuccessful){
+                          // TODO: call the parent function again recurisvely
+                        }
+
                         console.log("Toast dismissed after job completion");
                         toast.dismiss(toastId);
                       }}
@@ -382,6 +388,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       progress={filesCopied}
                       targetFolderId={targetFolderId}
                       total={totalFilesToCopy}
+                      onCancelBtnTxt={wasSuccessful ? "CANCEL" : "RETRY"}
                     />
                   ),
                   style: {

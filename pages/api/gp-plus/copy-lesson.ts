@@ -109,6 +109,10 @@ export const sendMessage = <TMsg extends object = TCopyFilesMsg>(
   }
 
   response.write(`data: ${_data}\n\n`);
+
+  if("isJobDone" in data && typeof data.isJobDone === 'boolean' && data.isJobDone){
+    response.end();
+  }
 };
 
 export default async function handler(
@@ -266,7 +270,7 @@ export default async function handler(
 
     let gpPlusFolderId = gpPlusDriveFolderId;
 
-    // checking if the 'My GP+ Units' folder exist in user's google drive
+    // checking if the 'My GP+ Units' folder exist in user's google drive and is not trashed
     if (gpPlusFolderId) {
       console.log(
         "will check if the target gp plus folder exist: ",
@@ -348,17 +352,23 @@ export default async function handler(
           gDriveRefreshToken,
           clientOrigin
         );
-        doesTargetGDriveUnitFolderExist = "id" in targetUnitFolder && !!targetUnitFolder.id && !targetUnitFolder.labels.trashed
+        doesTargetGDriveUnitFolderExist =
+          "id" in targetUnitFolder &&
+          !!targetUnitFolder.id &&
+          !targetUnitFolder.labels.trashed;
       }
 
       if (targetLessonFolderInUserDrive?.lessonDriveId) {
         const targetLessonsFolder = await getGDriveItem(
-              targetLessonFolderInUserDrive?.lessonDriveId,
-              gDriveAccessToken,
-              gDriveRefreshToken,
-              clientOrigin
-            );
-        doesTargetGDriveUnitFolderExist = "id" in targetLessonsFolder && !!targetLessonsFolder.id && !targetLessonsFolder.labels.trashed
+          targetLessonFolderInUserDrive?.lessonDriveId,
+          gDriveAccessToken,
+          gDriveRefreshToken,
+          clientOrigin
+        );
+        doesTargetGDriveUnitFolderExist =
+          "id" in targetLessonsFolder &&
+          !!targetLessonsFolder.id &&
+          !targetLessonsFolder.labels.trashed;
       }
 
       //TODO: will check if the target unit folder was trashed. If it is, then recreate it
@@ -438,7 +448,7 @@ export default async function handler(
 
       console.log(`unitDriveId, python: ${unitDriveId}`);
 
-      // create the structure of the target unit folder and copy the file items into the
+      // if the unit folder doesn't exist, then create the structure of the target unit folder and copy the file items into the
       // corresponding lesson folder
       if (
         !doesTargetGDriveUnitFolderExist &&
@@ -515,7 +525,8 @@ export default async function handler(
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
           },
-          _lessonsFolder.name!
+          _lessonsFolder.name!,
+          reqQueryParams.unitName!
         );
 
         if (!isStreamOpen) {
@@ -590,13 +601,13 @@ export default async function handler(
         console.log("unitFolderChildItems: ", unitFolderChildItems);
         console.log("lessonsFolder, yo there: ", lessonsFolder);
 
-        if (lessonsFolder) {
+        if (lessonsFolder && lessonsFolder.id && !lessonsFolder.trashed) {
           console.log(
             `The child items of the target folder with id ${unitDriveId} exist.`
           );
 
           console.log("lessonsFolder: ", lessonsFolder);
-          lessonsFolderId = lessonsFolder?.id ?? null;
+          lessonsFolderId = lessonsFolder.id;
         } else {
           console.log(`The lessons folder doesn't exist. Will create it.`);
 
@@ -735,7 +746,8 @@ export default async function handler(
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
           },
-          _lessonsFolder.name!
+          _lessonsFolder.name!,
+          reqQueryParams.unitName!
         );
 
         sendMessage(response, {
@@ -803,7 +815,8 @@ export default async function handler(
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
           },
-          _lessonsFolder.name!
+          _lessonsFolder.name!,
+          reqQueryParams.unitName!
         );
 
         sendMessage(response, {
@@ -969,9 +982,29 @@ export default async function handler(
       );
     }
 
-    const allChildFiles = await getFolderChildItems(gdriveResponse.data.files);
+    let allChildItems = await getFolderChildItems(gdriveResponse.data.files);
+    const targetLessonFolderInSharedDrive = allChildItems.find((folder) => {
+      return folder.id === reqQueryParams.lessonSharedGDriveFolderId
+    });
 
-    console.log("allChildFiles: ", allChildFiles);
+    console.log("targetLessonFolderInSharedDrive, java: ", targetLessonFolderInSharedDrive);
+
+    if (!targetLessonFolderInSharedDrive?.id) {
+      throw new CustomError(
+        "The target lesson folder was not found in the target unit folder.",
+        400
+      );
+    }
+
+    console.log("allChildItems: ", allChildItems);
+
+    allChildItems = allChildItems.filter((item) => {
+      if (targetLessonFolderInSharedDrive.id && item.id && (item.parentFolderId === targetLessonFolderInSharedDrive.parentFolderId)) {
+        return targetLessonFolderInSharedDrive.id === item.id;
+      }
+
+      return item.id;
+    });
 
     const selectedClientLessonName = reqQueryParams.lessonName.toLowerCase();
     // create the folder structure in the user's google drive
@@ -985,37 +1018,33 @@ export default async function handler(
       msg: "Creating the unit folder...",
     });
 
-    const targetFolderStructureArr = await createFolderStructure(
-      allChildFiles,
+    const targetFolderStructureArrInUserDrive = await createFolderStructure(
+      allChildItems,
       gDriveAccessToken,
       targetUnitFolderCreation.folderId,
       gDriveRefreshToken,
       clientOrigin
     );
     console.log(
-      "targetFolderStructureArr, yo there: ",
-      targetFolderStructureArr
+      "targetFolderStructureArrInUserDrive, yo there: ",
+      targetFolderStructureArrInUserDrive
     );
-    const targetLessonFolder = targetFolderStructureArr.find((folder) => {
-      const lessonName = folder.name?.split("_").at(-1);
-
-      console.log("lessonName: ", lessonName);
-
+    const targetLessonFolderInUserDrive = targetFolderStructureArrInUserDrive.find((folder) => {
       return (
-        lessonName && lessonName.toLowerCase() === selectedClientLessonName
+        folder.originalFileId && reqQueryParams.lessonSharedGDriveFolderId && folder.originalFileId === reqQueryParams.lessonSharedGDriveFolderId
       );
     });
 
-    console.log("targetLessonFolder, hey there: ", targetLessonFolder);
+    console.log("targetLessonFolderInUserDrive, hey there: ", targetLessonFolderInUserDrive);
 
-    if (!targetLessonFolder?.id) {
+    if (!targetLessonFolderInUserDrive?.id || !targetLessonFolderInUserDrive) {
       throw new CustomError(
         `The lesson named ${selectedClientLessonName} does not exist in the unit ${reqQueryParams.unitName}.`,
         400
       );
     }
 
-    const totalFoldersToCreate = targetFolderStructureArr.filter((item) => {
+    const totalFoldersToCreate = targetFolderStructureArrInUserDrive.filter((item) => {
       return item.mimeType?.includes("folder");
     });
 
@@ -1024,26 +1053,26 @@ export default async function handler(
     });
 
     console.log(
-      `The target lesson folder with the name ${selectedClientLessonName} was found with the id ${targetLessonFolder.id}`
+      `The target lesson folder with the name ${selectedClientLessonName} was found with the id ${targetLessonFolderInUserDrive.id}`
     );
 
     const allUnitLessonFolders: ILessonGDriveId[] = [];
 
-    for (const folderSubItem of targetFolderStructureArr) {
-      const targetUnitLesson = _allUnitLessons.find(
-        (unitLesson) =>
-          unitLesson.sharedGDriveId === folderSubItem.originalFileId
-      );
-
-      if (targetUnitLesson && folderSubItem.id) {
+    for (const folderSubItemInUserDrive of targetFolderStructureArrInUserDrive) {
+      if (targetLessonFolderInUserDrive.id && folderSubItemInUserDrive.originalFileId === targetLessonFolderInUserDrive.originalFileId) {
+        console.log(
+          `The lesson named ${selectedClientLessonName} was found in the unit ${reqQueryParams.unitName}.`
+        );
         allUnitLessonFolders.push({
-          lessonDriveId: folderSubItem.id,
-          lessonNum: targetUnitLesson.id,
+          lessonDriveId: targetLessonFolderInUserDrive.id,
+          lessonNum: reqQueryParams.lessonId,
         });
+        break;
       }
     }
 
-    console.log("allUnitLessonFolders: ", allUnitLessonFolders);
+    console.log("allUnitLessonFolders after find loop: ", allUnitLessonFolders);
+
     if (!isStreamOpen) {
       throw new CustomError("The stream has ended.", 500);
     }
@@ -1084,8 +1113,8 @@ export default async function handler(
     }
 
     console.log(
-      "targetFolderStructureArr, yo there: ",
-      targetFolderStructureArr
+      "targetFolderStructureArrInUserDrive, yo there: ",
+      targetFolderStructureArrInUserDrive
     );
     // get the parent folder id of the files to copy
     const parentFolderId = (
@@ -1229,7 +1258,7 @@ export default async function handler(
 
       const fileCopyResult = await copyGDriveItem(
         gDriveAccessToken,
-        [targetLessonFolder.id],
+        [targetLessonFolderInUserDrive.id],
         fileId,
         gDriveRefreshToken,
         clientOrigin
@@ -1262,7 +1291,7 @@ export default async function handler(
         });
 
         // Log failed copy to Excel
-        const lessonFolderLink = `https://drive.google.com/drive/folders/${targetLessonFolder.id}`;
+        const lessonFolderLink = `https://drive.google.com/drive/folders/${targetLessonFolderInUserDrive.id}`;
         const fileLink = `https://drive.google.com/file/d/${fileId}/view`;
 
         const errorType =
@@ -1278,6 +1307,7 @@ export default async function handler(
 
         await logFailedFileCopyToExcel({
           lessonName: reqQueryParams.lessonName || "Unknown",
+          unitName: reqQueryParams.unitName || "Unknown",
           lessonFolderLink,
           fileName: reqQueryParams.fileNames[fileIdIndex],
           fileLink,
@@ -1288,12 +1318,12 @@ export default async function handler(
         });
       }
     }
-    console.log("targetLessonFolder.id, java: ", targetLessonFolder);
+    console.log("targetLessonFolder.id, java: ", targetLessonFolderInUserDrive);
 
     sendMessage(response, {
       isJobDone: true,
       wasSuccessful: wasJobSuccessful,
-      targetFolderId: targetLessonFolder.id,
+      targetFolderId: targetLessonFolderInUserDrive.id
     });
     // TODO: if user.gpPlusDriveFolderId does not exist in the drive, then delete gpPlusDriveFolderId and the unitGDriveLessons
   } catch (error: any) {

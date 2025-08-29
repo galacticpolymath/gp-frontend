@@ -517,11 +517,7 @@ const TeachItUI = <
                     minWidth: "300px",
                     width: "fit-content",
                   }}
-                  className={`px-3 py-2 col-12 ${
-                    !isGpPlusMember || status === "unauthenticated"
-                      ? ""
-                      : "pe-none"
-                  }`}
+                  className="px-3 py-2 col-12"
                 >
                   <div className="d-flex flex-row align-items-center justify-content-center gap-2">
                     <Image

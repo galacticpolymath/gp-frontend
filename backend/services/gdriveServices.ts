@@ -465,9 +465,9 @@ export const getTargetFolderChildItems = async (
       );
     }
 
-    const allChildFiles = await getFolderChildItems(gdriveResponse.data.files);
+    const allChildItems = await getFolderChildItems(gdriveResponse.data.files);
 
-    return allChildFiles;
+    return allChildItems;
   } catch (error) {
     console.error(
       "Failed to get the target folder child items. Reason: ",
@@ -1044,13 +1044,37 @@ export const createUnitFolder = async (
     );
   }
 
-  const allChildFiles = await getFolderChildItems(gdriveResponse.data.files);
+  let allChildItems = await getFolderChildItems(gdriveResponse.data.files);
+  const targetLessonToCopyFolder = allChildItems.find(item => {
+    return item.id === lesson.sharedGDriveId
+  });
 
-  console.log("allChildFiles: ", allChildFiles);
+  console.log("targetLessonToCopyFolder: ", targetLessonToCopyFolder);
+
+  if(!targetLessonToCopyFolder){
+    throw new CustomError(
+      `The lesson folder with ID ${lesson.sharedGDriveId} was not found in the unit ${unit.name}.`,
+      404
+    );
+  }
+
+  console.log("allChildItems, will get the all of the lesson folder ids before filter: ", allChildItems.length);
+  
+  allChildItems = allChildItems.filter(item => {
+      if(item.parentFolderId === targetLessonToCopyFolder.parentFolderId){
+        return targetLessonToCopyFolder.id === item.id
+      }
+
+      return item.id;
+  });
+
+  console.log("allChildItems, will get the all of the lesson folder ids after filter: ", allChildItems.length);
+
+  console.log("allChildItems: ", allChildItems);
 
   const selectedClientLessonName = unit.name.toLowerCase();
   const targetFolderStructureArr = await createFolderStructure(
-    allChildFiles,
+    allChildItems,
     gDriveAccessToken,
     targetUnitFolderCreation.folderId,
     gDriveRefreshToken,
@@ -1075,18 +1099,25 @@ export const createUnitFolder = async (
 
   const allUnitLessonFolders: ILessonGDriveId[] = [];
 
+  console.log("allUnitLessonFolders length: ", allUnitLessonFolders.length);
+
   for (const folderSubItem of targetFolderStructureArr) {
     const targetUnitLesson = allUnitLessons.find(
       (unitLesson) => unitLesson.sharedGDriveId === folderSubItem.originalFileId
     );
 
-    if (targetUnitLesson && folderSubItem.id) {
+    if (targetUnitLesson && folderSubItem.id && folderSubItem.originalFileId === targetLessonFolder.originalFileId) {
+    console.log("Found the target lesson folder. Will update the user with the new lesson drive id.");
       allUnitLessonFolders.push({
         lessonDriveId: folderSubItem.id,
         lessonNum: targetUnitLesson.id,
       });
+      break;
     }
   }
+
+
+  console.log("allUnitLessonFolders after updates: ", allUnitLessonFolders.length);
 
   const lessonDriveIdUpdatedResult = await updateUserCustom(
     { email },
@@ -1296,6 +1327,7 @@ type TSendMsgParams = Parameters<typeof sendMessage>;
 
 export interface IFailedFileCopy {
   lessonName: string;
+  unitName: string;
   lessonFolderLink: string;
   fileName: string;
   fileLink: string;
@@ -1314,6 +1346,7 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
 
     const columns = [
       { header: "Lesson Name", key: "lessonName", width: 30 },
+      { header: "Unit Name", key: "unitName", width: 30 },
       { header: "Lesson Folder Link", key: "lessonFolderLink", width: 50 },
       { header: "File Name", key: "fileName", width: 30 },
       { header: "File Link", key: "fileLink", width: 50 },
@@ -1371,6 +1404,7 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
 
     worksheet.addRow({
       lessonName: failedCopy.lessonName,
+      unitName: failedCopy.unitName,
       lessonFolderLink: failedCopy.lessonFolderLink,
       fileName: failedCopy.fileName,
       fileLink: failedCopy.fileLink,
@@ -1402,7 +1436,8 @@ export const copyFiles = async (
     willEndStream?: TSendMsgParams[2],
     delayMsg?: TSendMsgParams[3]
   ) => void,
-  lessonName: string
+  lessonName: string,
+  unitName: string
 ) => {
   let wasJobSuccessful = true;
 
@@ -1497,6 +1532,7 @@ export const copyFiles = async (
       
       await logFailedFileCopyToExcel({
         lessonName,
+        unitName,
         lessonFolderLink,
         fileName: fileNames[fileIdIndex],
         fileLink,
