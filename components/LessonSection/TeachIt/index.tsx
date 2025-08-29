@@ -170,7 +170,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       selectedEnvironment
     ]?.resources as IResource<ILessonForUI>[];
   }
-  const [selectedGradeResources, setSelectedGradeResources] = useState(
+  const [selectedGradeResources, setSelectedGradeResources] = useState<ILink | null>(
     allResources?.[0]?.links ?? ({} as ILink)
   );
   const handleOnChangeForNewUnitResources = (
@@ -188,10 +188,14 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       : ({} as IResource<ILessonForUI>)
   );
   const handleOnChange = (selectedGrade: IResource<ILessonForUI>) => {
-    setSelectedGradeResources(selectedGrade.links as ILink);
-    setSelectedGrade(selectedGrade);
+    console.log("selectedGrade, hey there: ", selectedGrade);
+    // setSelectedGradeResources(selectedGrade.links as ILink);
+    // setSelectedGrade(selectedGrade);
   };
-  // The above will be ceased to be used when the new schema is implemented
+
+  useEffect(() => {
+    console.log("selectedGrade, sup there: ", selectedGrade);
+  });
 
   let resources = allResources?.length
     ? allResources.find(
@@ -263,6 +267,8 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
   return "lessonDur" in Data ? (
     <TeachItUI<ILessonForUI, IResource<ILessonForUI>>
       ref={ref}
+      setSelectedGrade={setSelectedGrade}
+      setSelectedGradeResources={setSelectedGradeResources}
       unitId={unitId}
       ForGrades={ForGrades}
       lessonDur={Data.lessonDur}
@@ -271,7 +277,6 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       _sectionDots={_sectionDots}
       selectedGrade={selectedGrade as IResource<ILessonForUI>}
       gradeVariations={gradeVariations}
-      handleOnChange={handleOnChange as THandleOnChange<ILessonForUI>}
       environments={environments}
       selectedEnvironment={selectedEnvironment}
       setSelectedEnvironment={setSelectedEnvironment}
@@ -287,6 +292,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
   ) : (
     <TeachItUI<INewUnitLesson, IResource<ILessonForUI>>
       ref={ref}
+      setSelectedGrade={setSelectedGrade}
       ForGrades={ForGrades}
       MediumTitle={MediumTitle}
       lessonDur={unitDur}
@@ -296,10 +302,10 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       _sectionDots={_sectionDots}
       selectedGrade={selectedGrade as IResource<ILessonForUI>}
       gradeVariations={classroom?.resources}
-      handleOnChange={handleOnChangeForNewUnitResources}
       environments={environments}
       selectedEnvironment={selectedEnvironment}
       setSelectedEnvironment={setSelectedEnvironment}
+      setSelectedGradeResources={setSelectedGradeResources}
       selectedGradeResources={selectedGradeResources}
       parts={unitLessonResources.lessons ?? []}
       dataLesson={dataLesson}

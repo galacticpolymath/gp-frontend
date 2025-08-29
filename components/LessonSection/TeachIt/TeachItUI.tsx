@@ -19,6 +19,7 @@ import {
   IItemForClient,
   ILessonForUI,
   ISectionDots,
+  TSetter,
   TUseStateReturnVal,
 } from "../../../types/global";
 import RichText from "../../RichText";
@@ -96,11 +97,14 @@ export interface TeachItUIProps<
     | null;
   resources?: IResource<ILesson>;
   selectedGrade: TSelectedGrade;
-  handleOnChange: THandleOnChange<TResourceVal>;
+  setSelectedGrade: Dispatch<
+    SetStateAction<IResource<INewUnitLesson<IItem>> | IResource<ILessonForUI>>
+  >;
+  setSelectedGradeResources: Dispatch<SetStateAction<ILink | null>>;
   environments: ("classroom" | "remote")[];
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
-  selectedGradeResources: ILink;
+  selectedGradeResources: ILink | null;
   parts: (ILessonForUI | INewUnitLesson)[];
   dataLesson: ILessonDetail[];
   GradesOrYears: string | null;
@@ -168,7 +172,8 @@ const TeachItUI = <
     lessonPreface,
     gradeVariations,
     selectedGrade,
-    handleOnChange,
+    setSelectedGrade,
+    setSelectedGradeResources,
     environments,
     selectedEnvironment,
     setSelectedEnvironment,
@@ -203,12 +208,7 @@ const TeachItUI = <
     _userLatestCopyUnitFolderId;
   const session = useSiteSession();
   const { setAppCookie } = useCustomCookies();
-  const {
-    status,
-    token,
-    gdriveAccessToken,
-    gdriveRefreshToken,
-  } = session;
+  const { status, token, gdriveAccessToken, gdriveRefreshToken } = session;
   const [parts, setParts] = useState(_parts);
 
   useEffect(() => {
@@ -413,6 +413,15 @@ const TeachItUI = <
       }
     }, 200)();
 
+  const handleOnChange = (selectedGrade: unknown) => {
+    console.log("selectedGrade, hey there: ", selectedGrade);
+    const _selectedGrade = selectedGrade as
+      | IResource<INewUnitLesson<IItem>>
+      | IResource<ILessonForUI>;
+    setSelectedGrade(_selectedGrade);
+    setSelectedGradeResources(_selectedGrade.links);
+  };
+
   return (
     <>
       <CollapsibleLessonSection
@@ -509,9 +518,9 @@ const TeachItUI = <
                     width: "fit-content",
                   }}
                   className={`px-3 py-2 col-12 ${
-                    (!isGpPlusMember || (status === "unauthenticated"))
-                      ? ''
-                      : 'pe-none'
+                    !isGpPlusMember || status === "unauthenticated"
+                      ? ""
+                      : "pe-none"
                   }`}
                 >
                   <div className="d-flex flex-row align-items-center justify-content-center gap-2">
