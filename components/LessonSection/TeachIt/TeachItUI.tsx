@@ -58,6 +58,7 @@ interface TeachItUIProps<
   resources?: IResource<ILesson>;
   selectedGrade: TSelectedGrade;
   handleOnChange: THandleOnChange<TResourceVal>;
+  _selectedGrade: TUseStateReturnVal<IResource<ILessonForUI>>;
   environments: ("classroom" | "remote")[];
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
@@ -91,6 +92,7 @@ const TeachItUI = <
   parts,
   dataLesson,
   GradesOrYears,
+  _selectedGrade,
 }: TeachItUIProps<TLesson, TSelectedGrade>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
   const areThereGradeBands =
@@ -100,6 +102,7 @@ const TeachItUI = <
     numsOfLessonPartsThatAreExpanded,
     setNumsOfLessonPartsThatAreExpanded,
   ] = useState<number[]>([]);
+  const [, setSelectedGrade] = _selectedGrade;;
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const { handleRestrictedItemBtnClick, session } =
     useCanUserAccessMaterial(false);
@@ -174,10 +177,16 @@ const TeachItUI = <
                     className="form-check-input me-2 grade-variation-testing"
                     type="radio"
                     name="gradeVariation"
-                    id={variation.grades as string}
+                    // id={variation.grades as string}
                     value={variation.grades as string}
                     checked={variation.grades === selectedGrade.grades}
-                    onChange={() => handleOnChange(variation)}
+                    onClick={() => {
+                      console.log(
+                        `Changing grade variation to ${variation.grades}`
+                      );
+                      console.log("fn: ");
+                      setSelectedGrade(variation.grades);
+                    }}
                   />
                   {variation.grades}
                 </label>

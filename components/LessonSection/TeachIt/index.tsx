@@ -181,10 +181,14 @@ const TeachIt = (props: TeachItProps) => {
       : ({} as IResource<ILessonForUI>)
   );
   const handleOnChange = (selectedGrade: IResource<ILessonForUI>) => {
+    console.log("selectedGrade, hey there: ", selectedGrade);
     setSelectedGradeResources(selectedGrade.links as ILink);
     setSelectedGrade(selectedGrade);
   };
-  // The above will be ceased to be used when the new schema is implemented
+
+  useEffect(() => {
+    console.log("selectedGrade, sup there: ", selectedGrade);
+  });
 
   let resources = allResources?.length
     ? allResources.find(
