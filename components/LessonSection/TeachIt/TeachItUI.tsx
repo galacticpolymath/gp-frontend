@@ -15,6 +15,7 @@ import {
   IItemForClient,
   ILessonForUI,
   ISectionDots,
+  TSetter,
   TUseStateReturnVal,
 } from "../../../types/global";
 import RichText from "../../RichText";
@@ -42,6 +43,7 @@ import Sparkles from "../../SparklesAnimation";
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
 ) => void;
+  
 interface TeachItUIProps<
   TResourceVal extends object = ILesson,
   TSelectedGrade extends object = IResource<ILessonForUI>
@@ -57,11 +59,14 @@ interface TeachItUIProps<
     | null;
   resources?: IResource<ILesson>;
   selectedGrade: TSelectedGrade;
-  handleOnChange: THandleOnChange<TResourceVal>;
+  setSelectedGrade: Dispatch<
+    SetStateAction<IResource<INewUnitLesson<IItem>> | IResource<ILessonForUI>>
+  >;
+  setSelectedGradeResources: Dispatch<SetStateAction<ILink | null>>;
   environments: ("classroom" | "remote")[];
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
-  selectedGradeResources: ILink;
+  selectedGradeResources: ILink | null;
   parts: (ILessonForUI | INewUnitLesson)[];
   dataLesson: ILessonDetail[];
   GradesOrYears: string | null;
@@ -83,7 +88,6 @@ const TeachItUI = <
   lessonPreface,
   gradeVariations,
   selectedGrade,
-  handleOnChange,
   environments,
   selectedEnvironment,
   setSelectedEnvironment,
@@ -91,6 +95,8 @@ const TeachItUI = <
   parts,
   dataLesson,
   GradesOrYears,
+  setSelectedGrade,
+  setSelectedGradeResources,
 }: TeachItUIProps<TLesson, TSelectedGrade>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
   const areThereGradeBands =
@@ -134,6 +140,15 @@ const TeachItUI = <
       }
     }, 200)();
 
+  const handleOnChange = (selectedGrade: unknown) => {
+    console.log("selectedGrade, hey there: ", selectedGrade);
+    const _selectedGrade = selectedGrade as
+      | IResource<INewUnitLesson<IItem>>
+      | IResource<ILessonForUI>;
+    setSelectedGrade(_selectedGrade);
+    setSelectedGradeResources(_selectedGrade.links);
+  }
+
   return (
     <CollapsibleLessonSection
       SectionTitle={SectionTitle}
@@ -171,13 +186,14 @@ const TeachItUI = <
               gradeVariations.map((variation, i) => (
                 <label key={i} className="text-capitalize d-block mb-1">
                   <input
-                    className="form-check-input me-2 grade-variation-testing"
+                    className="form-check-input me-2 grade-variation-testing pointer"
                     type="radio"
                     name="gradeVariation"
-                    id={variation.grades as string}
                     value={variation.grades as string}
                     checked={variation.grades === selectedGrade.grades}
-                    onChange={() => handleOnChange(variation)}
+                    onClick={() => {
+                      handleOnChange(variation);
+                    }}
                   />
                   {variation.grades}
                 </label>

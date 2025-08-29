@@ -4,6 +4,8 @@
 
 .env
 
+failed-file-copies.xlsx
+
 creds.json
 getLessons.js
 secrets.js
