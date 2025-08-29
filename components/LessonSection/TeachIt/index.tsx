@@ -163,7 +163,7 @@ const TeachIt = (props: TeachItProps) => {
       selectedEnvironment
     ]?.resources as IResource<ILessonForUI>[];
   }
-  const [selectedGradeResources, setSelectedGradeResources] = useState(
+  const [selectedGradeResources, setSelectedGradeResources] = useState<ILink | null>(
     allResources?.[0]?.links ?? ({} as ILink)
   );
   const handleOnChangeForNewUnitResources = (
@@ -182,8 +182,8 @@ const TeachIt = (props: TeachItProps) => {
   );
   const handleOnChange = (selectedGrade: IResource<ILessonForUI>) => {
     console.log("selectedGrade, hey there: ", selectedGrade);
-    setSelectedGradeResources(selectedGrade.links as ILink);
-    setSelectedGrade(selectedGrade);
+    // setSelectedGradeResources(selectedGrade.links as ILink);
+    // setSelectedGrade(selectedGrade);
   };
 
   useEffect(() => {
@@ -260,6 +260,8 @@ const TeachIt = (props: TeachItProps) => {
   return "lessonDur" in Data ? (
     <TeachItUI<ILessonForUI, IResource<ILessonForUI>>
       ref={ref}
+      setSelectedGrade={setSelectedGrade}
+      setSelectedGradeResources={setSelectedGradeResources}
       ForGrades={ForGrades}
       lessonDur={Data.lessonDur}
       lessonPreface={Data.lessonPreface}
@@ -267,7 +269,6 @@ const TeachIt = (props: TeachItProps) => {
       _sectionDots={_sectionDots}
       selectedGrade={selectedGrade as IResource<ILessonForUI>}
       gradeVariations={gradeVariations}
-      handleOnChange={handleOnChange as THandleOnChange<ILessonForUI>}
       environments={environments}
       selectedEnvironment={selectedEnvironment}
       setSelectedEnvironment={setSelectedEnvironment}
@@ -280,6 +281,7 @@ const TeachIt = (props: TeachItProps) => {
   ) : (
     <TeachItUI<INewUnitLesson, IResource<ILessonForUI>>
       ref={ref}
+      setSelectedGrade={setSelectedGrade}
       ForGrades={ForGrades}
       lessonDur={unitDur}
       lessonPreface={unitPreface}
@@ -287,10 +289,10 @@ const TeachIt = (props: TeachItProps) => {
       _sectionDots={_sectionDots}
       selectedGrade={selectedGrade as IResource<ILessonForUI>}
       gradeVariations={classroom?.resources}
-      handleOnChange={handleOnChangeForNewUnitResources}
       environments={environments}
       selectedEnvironment={selectedEnvironment}
       setSelectedEnvironment={setSelectedEnvironment}
+      setSelectedGradeResources={setSelectedGradeResources}
       selectedGradeResources={selectedGradeResources}
       parts={unitLessonResources.lessons ?? []}
       dataLesson={dataLesson}

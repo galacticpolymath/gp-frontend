@@ -15,6 +15,7 @@ import {
   IItemForClient,
   ILessonForUI,
   ISectionDots,
+  TSetter,
   TUseStateReturnVal,
 } from "../../../types/global";
 import RichText from "../../RichText";
@@ -42,6 +43,7 @@ import Sparkles from "../../SparklesAnimation";
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
 ) => void;
+  
 interface TeachItUIProps<
   TResourceVal extends object = ILesson,
   TSelectedGrade extends object = IResource<ILessonForUI>
@@ -57,12 +59,14 @@ interface TeachItUIProps<
     | null;
   resources?: IResource<ILesson>;
   selectedGrade: TSelectedGrade;
-  handleOnChange: THandleOnChange<TResourceVal>;
-  _selectedGrade: TUseStateReturnVal<IResource<ILessonForUI>>;
+  setSelectedGrade: Dispatch<
+    SetStateAction<IResource<INewUnitLesson<IItem>> | IResource<ILessonForUI>>
+  >;
+  setSelectedGradeResources: Dispatch<SetStateAction<ILink | null>>;
   environments: ("classroom" | "remote")[];
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
-  selectedGradeResources: ILink;
+  selectedGradeResources: ILink | null;
   parts: (ILessonForUI | INewUnitLesson)[];
   dataLesson: ILessonDetail[];
   GradesOrYears: string | null;
@@ -84,7 +88,6 @@ const TeachItUI = <
   lessonPreface,
   gradeVariations,
   selectedGrade,
-  handleOnChange,
   environments,
   selectedEnvironment,
   setSelectedEnvironment,
@@ -92,7 +95,8 @@ const TeachItUI = <
   parts,
   dataLesson,
   GradesOrYears,
-  _selectedGrade,
+  setSelectedGrade,
+  setSelectedGradeResources,
 }: TeachItUIProps<TLesson, TSelectedGrade>) => {
   const { _isDownloadModalInfoOn } = useModalContext();
   const areThereGradeBands =
@@ -102,7 +106,6 @@ const TeachItUI = <
     numsOfLessonPartsThatAreExpanded,
     setNumsOfLessonPartsThatAreExpanded,
   ] = useState<number[]>([]);
-  const [, setSelectedGrade] = _selectedGrade;;
   const [, setIsDownloadModalInfoOn] = _isDownloadModalInfoOn;
   const { handleRestrictedItemBtnClick, session } =
     useCanUserAccessMaterial(false);
@@ -136,6 +139,15 @@ const TeachItUI = <
         }, 6_000);
       }
     }, 200)();
+
+  const handleOnChange = (selectedGrade: unknown) => {
+    console.log("selectedGrade, hey there: ", selectedGrade);
+    const _selectedGrade = selectedGrade as
+      | IResource<INewUnitLesson<IItem>>
+      | IResource<ILessonForUI>;
+    setSelectedGrade(_selectedGrade);
+    setSelectedGradeResources(_selectedGrade.links);
+  }
 
   return (
     <CollapsibleLessonSection
@@ -174,18 +186,13 @@ const TeachItUI = <
               gradeVariations.map((variation, i) => (
                 <label key={i} className="text-capitalize d-block mb-1">
                   <input
-                    className="form-check-input me-2 grade-variation-testing"
+                    className="form-check-input me-2 grade-variation-testing pointer"
                     type="radio"
                     name="gradeVariation"
-                    // id={variation.grades as string}
                     value={variation.grades as string}
                     checked={variation.grades === selectedGrade.grades}
                     onClick={() => {
-                      console.log(
-                        `Changing grade variation to ${variation.grades}`
-                      );
-                      console.log("fn: ");
-                      setSelectedGrade(variation.grades);
+                      handleOnChange(variation);
                     }}
                   />
                   {variation.grades}
