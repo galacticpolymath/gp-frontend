@@ -506,7 +506,12 @@ const TeachItUI = <
                   onClick={
                     !isGpPlusMember || status === "unauthenticated"
                       ? takeUserToSignUpPg
-                      : () => {}
+                      : () => {
+                        window.open(
+                          `https://drive.google.com/drive/folders/${GdrivePublicID}`,
+                          "_"
+                        );
+                      }
                   }
                   style={{
                     minHeight: "51px",

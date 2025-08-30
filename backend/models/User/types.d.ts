@@ -95,6 +95,7 @@ export type TUserSchemaV2 = IUserSchemaBaseProps &
   TOutseta & {
     gpPlusDriveFolderId: string;
     unitGDriveLessons: IUnitGDriveLesson[];
+    gdriveAuthEmails: string[]
   };
 
 type TGpPlusMembershipStatus = Awaited<ReturnType<typeof getGpPlusMembership>>;

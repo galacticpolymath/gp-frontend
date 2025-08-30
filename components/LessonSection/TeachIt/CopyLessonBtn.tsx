@@ -377,18 +377,20 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       }
                       jobStatus={wasSuccessful ? "success" : "failure"}
                       onCancel={() => {
-                        if(!wasSuccessful){
-                          // TODO: call the parent function again recurisvely
-                        }
-
                         console.log("Toast dismissed after job completion");
+                        if (!wasSuccessful){
+                          toast.dismiss(toastId);
+                          btnRef.current?.click();
+                          return;
+                        } 
+
                         toast.dismiss(toastId);
                       }}
                       showProgressBar
                       progress={filesCopied}
                       targetFolderId={targetFolderId}
                       total={totalFilesToCopy}
-                      onCancelBtnTxt={wasSuccessful ? "CANCEL" : "RETRY"}
+                      onCancelBtnTxt={wasSuccessful ? "Close" : "RETRY"}
                     />
                   ),
                   style: {
