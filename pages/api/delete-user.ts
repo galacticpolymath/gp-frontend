@@ -45,6 +45,8 @@ export default async function handler(
       outsetaAccountEmail: 1,
     });
 
+
+
     console.log("the target user to delete: ", targetUser);
 
     if (!targetUser) {
@@ -115,6 +117,9 @@ export default async function handler(
           `,
         });
       }
+
+      // TODO: get all of their emails that the user used to sign into google drive and remove them from the google group
+
 
       console.log("Successfully deleted the target user's Outseta information.");
 

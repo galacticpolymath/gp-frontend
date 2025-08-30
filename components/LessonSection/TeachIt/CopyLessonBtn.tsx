@@ -191,6 +191,19 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
         if (data?.docs?.length) {
           setIsCopyingLesson(false);
 
+          const validToken = await ensureValidToken();
+
+          console.log("validToken: ", validToken);
+
+          if (!validToken) {
+            setLocalStorageItem(
+              "gpPlusFeatureLocation",
+              `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+            );
+            window.location.href = createGDriveAuthUrl();
+            return;
+          }
+
           const toastId = nanoid();
 
           toast(
@@ -275,7 +288,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           const headers = {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            "gdrive-token": gdriveAccessToken!,
+            "gdrive-token": validToken,
             "gdrive-token-refresh": gdriveRefreshToken!,
           };
           const url = new URL(
@@ -311,6 +324,10 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
               encodeURI(JSON.stringify(lessonsFolder))
             );
           }
+
+          console.log("lessonsFolder: ", lessonsFolder);
+
+          return;
 
           const eventSource = new EventSourcePolyfill(url.href, {
             headers,
