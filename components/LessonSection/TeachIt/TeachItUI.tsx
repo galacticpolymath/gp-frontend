@@ -101,6 +101,7 @@ export interface TeachItUIProps<
     SetStateAction<IResource<INewUnitLesson<IItem>> | IResource<ILessonForUI>>
   >;
   setSelectedGradeResources: Dispatch<SetStateAction<ILink | null>>;
+  handleOnChange: (selectedGrade: unknown) => void;
   environments: ("classroom" | "remote")[];
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
@@ -184,6 +185,7 @@ const TeachItUI = <
     GdrivePublicID,
     MediumTitle,
     unitId,
+    handleOnChange,
   } = props;
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -284,92 +286,10 @@ const TeachItUI = <
   const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
     _isCopyUnitBtnDisabled;
   const router = useRouter();
-  const [openPicker, authResult] = useDrivePicker();
 
   useEffect(() => {
     didInitialRenderOccur.current = true;
-
-    console.log("authResult: ", authResult);
   }, []);
-
-  const [toastId, setToastId] = useState<string | null>(null);
-  const toastRef = useRef<HTMLDivElement>(null);
-
-  const displayToast = (
-    copyingUnitToastCompProps: Parameters<typeof CopyingUnitToast>["0"],
-    toastId?: string
-  ) => {
-    const options: ToastOptions = toastId
-      ? {
-          position: "bottom-right",
-          duration: Infinity,
-          id: toastId,
-        }
-      : {
-          position: "bottom-right",
-          duration: Infinity,
-        };
-
-    return toast.custom(
-      <CopyingUnitToast {...copyingUnitToastCompProps} />,
-      options
-    );
-  };
-
-  const copyUnit = async () => {
-    console.log("Copy unit function called");
-
-    setIsCopyingUnitBtnDisabled(true);
-
-    if (!gdriveAccessToken) {
-      setLocalStorageItem(
-        "gpPlusFeatureLocation",
-        `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
-      );
-      window.location.href = createGDriveAuthUrl();
-      return;
-    }
-
-    openPicker({
-      appId: "1095510414161",
-      clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
-      developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
-      // clientId:
-      //   "1038023225572-3ir2sqrlbtfcpl3ves15847tbu5li2gv.apps.googleusercontent.com",
-      // developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY_HI as string,
-      viewId: "DOCS",
-      // appId: GOOGLE_DRIVE_PROJECT_ID,
-      token: gdriveAccessToken,
-      showUploadView: true,
-      showUploadFolders: true,
-      setIncludeFolders: true,
-      customScopes: [
-        "https://www.googleapis.com/auth/drive.file",
-        "https://www.googleapis.com/auth/userinfo.email",
-      ],
-      setSelectFolderEnabled: true,
-      supportDrives: true,
-      multiselect: true,
-      // customViews: customViewsArray, // custom view
-      callbackFunction: async (data) => {
-        try {
-          // create the folder structure
-
-          console.log("data, yo there: ", data);
-          if (data?.docs?.length) {
-            console.log("First document ID, data?.docs: ", data?.docs);
-            const fileIds = data.docs.map((file) => file.id);
-          }
-        } catch (error) {
-          console.error("An error occurred: ", error);
-        }
-      },
-    });
-
-    setIsCopyingUnitBtnDisabled(false);
-
-    return;
-  };
 
   // if the user is not a gp plus member, then take the user to the sign up page
   const takeUserToSignUpPg = () => {
@@ -412,15 +332,6 @@ const TeachItUI = <
         }, 6_000);
       }
     }, 200)();
-
-  const handleOnChange = (selectedGrade: unknown) => {
-    console.log("selectedGrade, hey there: ", selectedGrade);
-    const _selectedGrade = selectedGrade as
-      | IResource<INewUnitLesson<IItem>>
-      | IResource<ILessonForUI>;
-    setSelectedGrade(_selectedGrade);
-    setSelectedGradeResources(_selectedGrade.links);
-  };
 
   return (
     <>

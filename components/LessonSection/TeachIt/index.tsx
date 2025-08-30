@@ -170,9 +170,8 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       selectedEnvironment
     ]?.resources as IResource<ILessonForUI>[];
   }
-  const [selectedGradeResources, setSelectedGradeResources] = useState<ILink | null>(
-    allResources?.[0]?.links ?? ({} as ILink)
-  );
+  const [selectedGradeResources, setSelectedGradeResources] =
+    useState<ILink | null>(allResources?.[0]?.links ?? ({} as ILink));
   const handleOnChangeForNewUnitResources = (
     selectedGrade: IResource<INewUnitLesson>
   ) => {
@@ -187,11 +186,6 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       ? gradeVariations[0]
       : ({} as IResource<ILessonForUI>)
   );
-  const handleOnChange = (selectedGrade: IResource<ILessonForUI>) => {
-    console.log("selectedGrade, hey there: ", selectedGrade);
-    // setSelectedGradeResources(selectedGrade.links as ILink);
-    // setSelectedGrade(selectedGrade);
-  };
 
   useEffect(() => {
     console.log("selectedGrade, sup there: ", selectedGrade);
@@ -260,6 +254,15 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     }
   }, []);
 
+  const handleOnChange = (selectedGrade: unknown) => {
+    console.log("selectedGrade, hey there: ", selectedGrade);
+    const _selectedGrade = selectedGrade as
+      | IResource<INewUnitLesson<IItem>>
+      | IResource<ILessonForUI>;
+    setSelectedGrade(_selectedGrade);
+    setSelectedGradeResources(_selectedGrade.links);
+  };
+
   if (!Data) {
     return <div>No lessons to display.</div>;
   }
@@ -288,10 +291,12 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       Title={unitTitle}
       MediumTitle={MediumTitle}
       resources={resources}
+      handleOnChange={handleOnChange}
     />
   ) : (
     <TeachItUI<INewUnitLesson, IResource<ILessonForUI>>
       ref={ref}
+      handleOnChange={handleOnChange}
       setSelectedGrade={setSelectedGrade}
       ForGrades={ForGrades}
       MediumTitle={MediumTitle}

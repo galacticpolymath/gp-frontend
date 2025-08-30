@@ -636,8 +636,6 @@ export default async function handler(
         console.log("lessonsFolder, yo there, lessonsFolders length: ", lessonsFolders.length);
         console.log("lessonsFolder, yo there, lessonsFolders: ", lessonsFolders);
 
-        throw new Error("stop");
-
         if (lessonsFolder && lessonsFolder.id && !lessonsFolder.trashed) {
           console.log(
             `The child items of the target folder with id ${unitDriveId} exist.`
