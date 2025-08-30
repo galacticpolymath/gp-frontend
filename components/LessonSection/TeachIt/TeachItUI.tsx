@@ -418,11 +418,11 @@ const TeachItUI = <
                     !isGpPlusMember || status === "unauthenticated"
                       ? takeUserToSignUpPg
                       : () => {
-                        window.open(
-                          `https://drive.google.com/drive/folders/${GdrivePublicID}`,
-                          "_"
-                        );
-                      }
+                          window.open(
+                            `https://drive.google.com/drive/folders/${GdrivePublicID}`,
+                            "_"
+                          );
+                        }
                   }
                   style={{
                     minHeight: "51px",
@@ -570,6 +570,11 @@ const TeachItUI = <
                     }
                     unitId={unitId!}
                     unitMediumTitle={MediumTitle!}
+                    sharedGDriveLessonFolders={
+                      "sharedGDriveLessonFolders" in part
+                        ? part.sharedGDriveLessonFolders
+                        : undefined
+                    }
                     lessonsFolder={
                       "lessonsFolder" in part ? part.lessonsFolder : undefined
                     }
@@ -578,16 +583,7 @@ const TeachItUI = <
                         ? part.allUnitLessons
                         : undefined
                     }
-                    sharedGDriveLessonFolderId={
-                      "sharedGDriveLessonFolderId" in part
-                        ? part.sharedGDriveLessonFolderId
-                        : undefined
-                    }
-                    sharedGDriveLessonFolderName={
-                      "sharedGDriveLessonFolderName" in part
-                        ? part.sharedGDriveLessonFolderName
-                        : undefined
-                    }
+                    selectedGrade={selectedGrade}
                     GdrivePublicID={GdrivePublicID!}
                     gradeVarNote={gradeVarNote}
                     GradesOrYears={GradesOrYears}

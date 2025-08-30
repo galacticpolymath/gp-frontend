@@ -46,6 +46,7 @@ import {
   IItemForUI,
   INewUnitLesson,
   IResource,
+  ISharedGDriveLessonFolder,
 } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { UNITS_URL_PATH } from "../../../../shared/constants";
 import { TUserSchemaForClient } from "../../../../backend/models/User/types";
@@ -1021,8 +1022,8 @@ export const getStaticProps = async (arg: {
                 }
               }
 
-              const targetGDriveLessonFolder = unitGDriveChildItems?.find(
-                (item) => {
+              const targetGDriveSharedLessonFolders = unitGDriveChildItems
+                ?.filter((item) => {
                   const lessonName = item?.name?.split("_").at(-1);
 
                   return (
@@ -1030,22 +1031,35 @@ export const getStaticProps = async (arg: {
                     lesson.title &&
                     lessonName.toLowerCase() === lesson.title.toLowerCase()
                   );
-                }
-              );
+                })
+                ?.map((itemA) => {
+                  console.log("item, sup there: ", itemA);
+
+                  const lessonsFolder = unitGDriveChildItems.find((itemB) => {
+                    return itemB.id === itemA.parentFolderId;
+                  })!;
+
+                  console.log("lessonsFolder, sup there: ", lessonsFolder);
+
+                  return {
+                    id: itemA.id!,
+                    name: itemA.name!,
+                    parentFolder: {
+                      id: lessonsFolder.id!,
+                      name: lessonsFolder.name!,
+                    },
+                  };
+                });
 
               console.log(
                 "targetGDriveLessonFolder: ",
-                targetGDriveLessonFolder
+                targetGDriveSharedLessonFolders
               );
 
-              if (
-                targetGDriveLessonFolder?.id &&
-                targetGDriveLessonFolder?.name
-              ) {
+              if (targetGDriveSharedLessonFolders?.length) {
                 lesson = {
                   ...lesson,
-                  sharedGDriveLessonFolderId: targetGDriveLessonFolder.id,
-                  sharedGDriveLessonFolderName: targetGDriveLessonFolder.name,
+                  sharedGDriveLessonFolders: targetGDriveSharedLessonFolders,
                   allUnitLessons,
                   lessonsFolder,
                 };

@@ -77,6 +77,7 @@ export interface IGradeVariantNote {
 export interface IResource<TLesson extends object = ILesson> {
   grades: string | null;
   gradePrefix: string | null;
+  sharedGDriveLessonsFolderId: string | null;
   links: ILink | null;
   lessons: TLesson[] | null;
 }
@@ -181,10 +182,18 @@ interface IChunkStep {
   
 }
 
+interface ISharedGDriveLessonFolder{
+  id: string,
+  name: string,
+  parentFolder: {
+    id: string;
+    name: string
+  }
+}
+
 interface INewUnitLesson<TItem extends IItem = IItem> {
-  sharedGDriveLessonFolderId?: string;
   userGDriveLessonFolderId?: string;
-  sharedGDriveLessonFolderName?: string;
+  sharedGDriveLessonFolders?: ISharedGDriveLessonFolder[] 
   allUnitLessons?: { id: string, sharedGDriveId: string }[]
   lessonsFolder?: Partial<{
     name: string;

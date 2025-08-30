@@ -180,7 +180,6 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
   };
   // the above is based on the new schema
 
-  // TODO: will cease to be used when the new schema is implemented
   const [selectedGrade, setSelectedGrade] = useState(
     gradeVariations?.length
       ? gradeVariations[0]
@@ -253,6 +252,9 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       }));
     }
   }, []);
+
+  // the user clicks on lesson to copy
+  // todo: fx BUG: the wrong lesson folder is being presented onto the ui
 
   const handleOnChange = (selectedGrade: unknown) => {
     console.log("selectedGrade, hey there: ", selectedGrade);

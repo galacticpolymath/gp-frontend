@@ -615,26 +615,9 @@ export default async function handler(
 
             return false;
           });
-        const lessonsFolders = unitFolderChildItems.files.filter((file) => {
-            if (
-              file.appProperties &&
-              ORIGINAL_ITEM_ID_FIELD_NAME in file.appProperties &&
-              typeof file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] ===
-                "string"
-            ) {
-              return (
-                file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] ===
-                _lessonsFolder!.sharedGDriveId
-              );
-            }
-
-            return false;
-          });
 
         console.log("unitFolderChildItems: ", unitFolderChildItems);
         console.log("lessonsFolder, yo there: ", lessonsFolder);
-        console.log("lessonsFolder, yo there, lessonsFolders length: ", lessonsFolders.length);
-        console.log("lessonsFolder, yo there, lessonsFolders: ", lessonsFolders);
 
         if (lessonsFolder && lessonsFolder.id && !lessonsFolder.trashed) {
           console.log(

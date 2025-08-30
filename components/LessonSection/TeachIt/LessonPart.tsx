@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
 import RichText from "../../RichText";
-import { CSSProperties, memo, ReactNode, useState } from "react";
+import { CSSProperties, memo, ReactNode, useMemo, useState } from "react";
 import Link from "next/link";
 import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
@@ -64,16 +64,16 @@ const SignInSuggestion = ({
 interface ILessonPartProps
   extends Pick<
       INewUnitLesson,
-      | "sharedGDriveLessonFolderId"
-      | "sharedGDriveLessonFolderName"
       | "allUnitLessons"
       | "lessonsFolder"
       | "userGDriveLessonFolderId"
+      | "sharedGDriveLessonFolders"
     >,
     Pick<ICopyLessonBtnProps, "isRetrievingLessonFolderIds"> {
   resources?: IResource;
   GradesOrYears?: string | null;
   removeClickToSeeMoreTxt: () => void;
+  selectedGrade: IResource<ILessonForUI>;
   ClickToSeeMoreComp?: ReactNode;
   FeedbackComp?: ReactNode;
   partsArr: any[];
@@ -129,18 +129,38 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     ComingSoonLessonEmailSignUp = null,
     accordionBtnStyle = {},
     isAccordionExpandable = true,
-    sharedGDriveLessonFolderId,
-    sharedGDriveLessonFolderName,
     lessonsFolder,
+    sharedGDriveLessonFolders,
+    selectedGrade,
   } = props;
 
   useEffect(() => {
-    console.log("props: ", props);
-    console.log(
-      "props.userGDriveLessonFolderId: ",
-      props.userGDriveLessonFolderId
-    );
+    console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
   });
+
+  const sharedGDriveLessonFolder = useMemo(() => {
+    if (!sharedGDriveLessonFolders) {
+      console.log("No shared Google Drive lesson folders available");
+      return undefined;
+    }
+
+    const targetLessonFolder = sharedGDriveLessonFolders.find((folder) => {
+      const parentFolderGradeType = folder.parentFolder?.name
+        ?.split("_")
+        ?.at(-1);
+
+      return (
+        parentFolderGradeType &&
+        selectedGrade.gradePrefix &&
+        parentFolderGradeType.toLowerCase() ===
+          selectedGrade.gradePrefix.toLowerCase()
+      );
+    });
+
+    console.log("targetLessonFolder, yo there: ", targetLessonFolder);
+
+    return targetLessonFolder;
+  }, [selectedGrade]);
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
@@ -596,10 +616,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 MediumTitle={unitMediumTitle}
                 lessonId={lsnNum}
                 lessonName={lsnTitle}
-                sharedGDriveLessonFolderId={sharedGDriveLessonFolderId}
-                lessonSharedDriveFolderName={sharedGDriveLessonFolderName}
+                sharedGDriveLessonFolderId={sharedGDriveLessonFolder?.id}
                 allUnitLessons={allUnitLessons}
-                lessonsFolder={lessonsFolder}
+                lessonsFolder={{
+                  name: sharedGDriveLessonFolder?.parentFolder.name,
+                  sharedGDriveId: sharedGDriveLessonFolder?.parentFolder.id,
+                }}
                 _userGDriveLessonFolderId={userGDriveLessonFolderId}
               />
             )}

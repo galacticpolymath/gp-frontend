@@ -30,10 +30,7 @@ import { toast } from "react-toastify";
 import { nanoid } from "nanoid";
 
 export interface ICopyLessonBtnProps
-  extends Pick<
-      INewUnitLesson,
-      "sharedGDriveLessonFolderId" | "allUnitLessons" | "lessonsFolder"
-    >,
+  extends Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">,
     Pick<INewUnitSchema, "GdrivePublicID"> {
   _userGDriveLessonFolderId?: Pick<
     INewUnitLesson,
@@ -46,6 +43,7 @@ export interface ICopyLessonBtnProps
   sharedDriveLessonFolderId?: string;
   lessonSharedDriveFolderName?: string;
   isRetrievingLessonFolderIds: boolean;
+  sharedGDriveLessonFolderId?: string;
 }
 
 const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
@@ -87,6 +85,10 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   useEffect(() => {
     console.log("userGDriveLessonFolderId: ", userGDriveLessonFolderId);
     console.log("_userGDriveLessonFolderId: ", _userGDriveLessonFolderId);
+    console.log(
+      "sharedGDriveLessonFolderId, sup there: ",
+      sharedGDriveLessonFolderId
+    );
   });
 
   const ensureValidToken = async () => {
@@ -162,6 +164,13 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
         `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
       );
       window.location.href = createGDriveAuthUrl();
+      return;
+    }
+
+    if (!sharedGDriveLessonFolderId) {
+      alert(
+        "ERROR! Can't open the target lesson folder. Please refresh the page or contact support if the issue persists."
+      );
       return;
     }
 
@@ -300,15 +309,15 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           });
 
           if (fileIds.length) {
-            fileIds.forEach(fileId => {
+            fileIds.forEach((fileId) => {
               url.searchParams.append("fileIds", fileId);
-            })
+            });
           }
 
           if (fileNames.length) {
-            fileNames.forEach(fileName => {
+            fileNames.forEach((fileName) => {
               url.searchParams.append("fileNames", fileName);
-            })
+            });
           }
 
           if (allUnitLessons?.length) {
@@ -326,8 +335,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           }
 
           console.log("lessonsFolder: ", lessonsFolder);
-
-          return;
 
           const eventSource = new EventSourcePolyfill(url.href, {
             headers,
@@ -365,7 +372,8 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           eventSource.onmessage = (event) => {
             try {
               const dataParsable = event.data as string;
-              const parsedData = (JSON.parse(dataParsable) as TCopyFilesMsg | undefined) ?? {};
+              const parsedData =
+                (JSON.parse(dataParsable) as TCopyFilesMsg | undefined) ?? {};
               const {
                 msg,
                 filesToCopy,
@@ -375,7 +383,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                 wasSuccessful,
                 targetFolderId: _targetFolderId,
               } = parsedData;
-              targetFolderId = _targetFolderId
+              targetFolderId = _targetFolderId;
 
               console.log("data, python: ", parsedData);
 
@@ -395,11 +403,11 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       jobStatus={wasSuccessful ? "success" : "failure"}
                       onCancel={() => {
                         console.log("Toast dismissed after job completion");
-                        if (!wasSuccessful){
+                        if (!wasSuccessful) {
                           toast.dismiss(toastId);
                           btnRef.current?.click();
                           return;
-                        } 
+                        }
 
                         toast.dismiss(toastId);
                       }}
