@@ -93,6 +93,7 @@ export const UserSchemaDeprecatedV1 = new Schema<IUserSchema>(
 const LessonGDriveId = new Schema<ILessonGDriveId>({
     lessonNum: String,
     lessonDriveId: String,
+    lessonSharedGDriveFolderId: String
   }, {
   _id: false
 });

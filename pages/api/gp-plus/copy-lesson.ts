@@ -333,7 +333,7 @@ export default async function handler(
         }) ?? {};
       const targetLessonFolderInUserDrive = lessonDriveIds?.find(
         (lessonDrive) => {
-          return lessonDrive.lessonNum === reqQueryParams.lessonId;
+          return lessonDrive.lessonSharedGDriveFolderId === reqQueryParams.lessonSharedGDriveFolderId;
         }
       );
       console.log("lessonDriveIds: ", lessonDriveIds);
@@ -1066,6 +1066,7 @@ export default async function handler(
         allUnitLessonFolders.push({
           lessonDriveId: targetLessonFolderInUserDrive.id,
           lessonNum: reqQueryParams.lessonId,
+          lessonSharedGDriveFolderId: reqQueryParams.lessonSharedGDriveFolderId
         });
         break;
       }

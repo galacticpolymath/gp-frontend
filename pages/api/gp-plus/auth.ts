@@ -5,6 +5,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../../globalVars";
 import { createGoogleAdminService, getGoogleGroupMember, insertGoogleGroupMember } from "../../../backend/services/googleGroupServices";
 import { CustomError } from "../../../backend/utils/errors";
+import { updateUserCustom } from "../../../backend/services/userServices";
+import { TUserSchemaV2 } from "../../../backend/models/User/types";
+import { getJwtPayloadPromise } from "../../../nondependencyFns";
 
 interface IResBody {
   code: string;
@@ -58,6 +61,12 @@ export default async function handler(
   response: NextApiResponse
 ) {
   try {
+    const { payload } = (await getJwtPayloadPromise(request.headers.authorization)) ?? {};
+
+    if (!payload || !payload.email) {
+      throw new CustomError("Unauthorized. Please try logging in again.", 401);
+    }
+
     const origin = request.headers.origin;
     const reqBody = request.body as IResBody;
     const redirect_uri = `${origin}/google-drive-auth-result`;
@@ -131,6 +140,17 @@ export default async function handler(
 
     if(!userGroupMember){
       const insertionResult = await insertGoogleGroupMember(userInfoRes.data.email, googleAdminService)
+      const userDbUpatedResult = await updateUserCustom(
+        { email: payload.email },
+        {
+          $addToSet: {
+            gdriveAuthEmails: userInfoRes.data.email
+          } as Record<keyof Pick<TUserSchemaV2, "gdriveAuthEmails">, string>
+        },
+      )
+
+      console.log("User DB updated result: ", userDbUpatedResult);
+
       console.log("Insertion of a google group member: ", insertionResult);
     }
 
