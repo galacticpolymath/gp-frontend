@@ -61,6 +61,10 @@ import useDrivePicker from "react-google-drive-picker";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { ILessonGDriveId } from "../../../backend/models/User/types";
+import {
+  ensureValidToken as _ensureValidToken,
+  ensureValidToken,
+} from "./CopyLessonBtn";
 
 export type TUnitPropsForTeachItSec = Partial<
   Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
@@ -116,21 +120,29 @@ const ASSESSMENTS_ID = 100;
 
 const getUserLessonsGDriveFolderIds = async (
   token: string,
-  gdriveAccessToken: string,
   gdriveRefreshToken: string,
   unitId: string,
-  lessonNumIds: string[]
+  lessonNumIds: string[],
+  gradePrefix: string,
+  ensureValidToken: () => ReturnType<typeof _ensureValidToken>
 ) => {
   try {
     const url = new URL(
       `${window.location.origin}/api/gp-plus/get-gdrive-lesson-ids`
     );
 
+    const gdriveAccessToken = await ensureValidToken();
+
+    if (!gdriveAccessToken) {
+      console.error("Token is not valid");
+      return null;
+    }
+
     lessonNumIds.forEach((lessonNumId) => {
       url.searchParams.append("lessonNumIds", lessonNumId);
     });
-
     url.searchParams.append("unitId", unitId!);
+    url.searchParams.append("gradePrefix", gradePrefix);
 
     const { data, status } = await axios.get<ILessonGDriveId[] | null>(
       url.href,
@@ -152,6 +164,8 @@ const getUserLessonsGDriveFolderIds = async (
     return data;
   } catch (error) {
     console.error("Error in getUserLessonsGDriveFolderIds: ", error);
+
+    alert("Failed to get your lesson folder links. Please refresh the page and try again.");
 
     return null;
   }
@@ -210,8 +224,17 @@ const TeachItUI = <
     _userLatestCopyUnitFolderId;
   const session = useSiteSession();
   const { setAppCookie } = useCustomCookies();
-  const { status, token, gdriveAccessToken, gdriveRefreshToken } = session;
+  const {
+    status,
+    token,
+    gdriveAccessToken,
+    gdriveRefreshToken,
+    gdriveAccessTokenExp,
+  } = session;
   const [parts, setParts] = useState(_parts);
+
+  const ensureValidToken = async () =>
+    await _ensureValidToken(gdriveAccessTokenExp!, setAppCookie);
 
   useEffect(() => {
     console.log("parts, sup there: ", parts);
@@ -219,7 +242,7 @@ const TeachItUI = <
 
   const { isFetching } = useQuery({
     refetchOnWindowFocus: false,
-    queryKey: [status, isGpPlusMember],
+    queryKey: [status, isGpPlusMember, selectedGrade],
     queryFn: async () => {
       const lessonNumIds =
         status === "authenticated" && isGpPlusMember
@@ -235,16 +258,25 @@ const TeachItUI = <
         isGpPlusMember &&
         gdriveAccessToken &&
         gdriveRefreshToken &&
-        lessonNumIds?.length
+        lessonNumIds?.length &&
+        selectedGrade.gradePrefix
       ) {
         try {
+          // TODO: present the loading button for all copy lessons buttons when you are getting the id of the lesson folder of the user
+
+          console.log("selectedGrade.gradePrefix, will get lesson folder ids: ", selectedGrade.gradePrefix);
+
           const userGDriveLessonFolderIds = await getUserLessonsGDriveFolderIds(
             token,
-            gdriveAccessToken,
             gdriveRefreshToken,
             unitId!,
-            lessonNumIds
+            lessonNumIds,
+            selectedGrade.gradePrefix,
+            ensureValidToken
           );
+
+          console.log("userGDriveLessonFolderIds, after req: ", userGDriveLessonFolderIds);
+          
 
           if (userGDriveLessonFolderIds?.length) {
             const _parts = parts.map((part) => {
@@ -264,7 +296,19 @@ const TeachItUI = <
               return part;
             });
             setParts(_parts);
+
+            // prevent runtime error
+            return 1;
           }
+
+          setParts((parts) => {
+            return parts.map((part) => {
+              return {
+                ...part,
+                userGDriveLessonFolderId: undefined,
+              };
+            });
+          });
 
           // prevent runtime error
           return 1;

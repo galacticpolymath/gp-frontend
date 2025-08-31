@@ -16,7 +16,10 @@ import CopyingUnitToast, {
   GDRIVE_FOLDER_ORIGIN_AND_PATH,
 } from "../../CopyingUnitToast";
 import { EXPIRATION_DATE_TIME } from "../../../pages/google-drive-auth-result";
-import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
+import {
+  INewUnitLesson,
+  IResource,
+} from "../../../backend/models/Unit/types/teachingMaterials";
 import { useLessonContext } from "../../../providers/LessonProvider";
 import Cookies from "js-cookie";
 import {
@@ -39,6 +42,7 @@ export interface ICopyLessonBtnProps
   unitId: string;
   MediumTitle: string;
   lessonName: string;
+  lessonsGradePrefix?: IResource<ILessonForUI>["gradePrefix"];
   lessonId: string | number;
   sharedDriveLessonFolderId?: string;
   lessonSharedDriveFolderName?: string;
@@ -46,12 +50,74 @@ export interface ICopyLessonBtnProps
   sharedGDriveLessonFolderId?: string;
 }
 
+export const ensureValidToken = async (
+  gdriveAccessTokenExp: string | number,
+  setAppCookie: ReturnType<typeof useCustomCookies>["setAppCookie"]
+) => {
+  const gdriveRefreshToken = Cookies.get("gdriveRefreshToken");
+  const gdriveAccessToken = Cookies.get("gdriveAccessToken");
+
+  console.log("gdriveRefreshToken: ", gdriveRefreshToken);
+
+  console.log("gdriveAccessToken: ", gdriveAccessToken);
+
+  if (!gdriveAccessToken || !gdriveRefreshToken) {
+    return null;
+  }
+
+  const currentTime = Date.now();
+  const tokenExpTime = gdriveAccessTokenExp
+    ? parseInt(gdriveAccessTokenExp.toString())
+    : 0;
+  const bufferTime = 5 * 60 * 1000; // 5 minutes
+
+  if (currentTime >= tokenExpTime - bufferTime) {
+    console.log("Token is expired or will expire soon, refreshing...");
+
+    try {
+      const refreshResult = await refreshGDriveToken(gdriveRefreshToken);
+
+      if (refreshResult && refreshResult.access_token) {
+        // Update cookies with new token
+        setAppCookie("gdriveAccessToken", refreshResult.access_token, {
+          expires: EXPIRATION_DATE_TIME,
+          secure: true,
+          path: "/",
+        });
+
+        setAppCookie(
+          "gdriveAccessTokenExp",
+          refreshResult.expires_at.toString(),
+          {
+            expires: EXPIRATION_DATE_TIME,
+            secure: true,
+            path: "/",
+          }
+        );
+
+        console.log("Token refreshed successfully");
+        return refreshResult.access_token as string;
+      }
+
+      console.error("Failed to refresh token");
+
+      return null;
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      return null;
+    }
+  }
+
+  return gdriveAccessToken;
+};
+
 const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   sharedGDriveLessonFolderId,
   MediumTitle,
   unitId,
   lessonId,
   lessonName,
+  lessonsGradePrefix,
   lessonSharedDriveFolderName,
   _userGDriveLessonFolderId,
   allUnitLessons,
@@ -91,70 +157,15 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
     );
   });
 
-  const ensureValidToken = async () => {
-    const gdriveRefreshToken = Cookies.get("gdriveRefreshToken");
-    const gdriveAccessToken = Cookies.get("gdriveAccessToken");
-
-    console.log("gdriveRefreshToken: ", gdriveRefreshToken);
-
-    console.log("gdriveAccessToken: ", gdriveAccessToken);
-
-    if (!gdriveAccessToken || !gdriveRefreshToken) {
-      return null;
-    }
-
-    const currentTime = Date.now();
-    const tokenExpTime = gdriveAccessTokenExp
-      ? parseInt(gdriveAccessTokenExp.toString())
-      : 0;
-    const bufferTime = 5 * 60 * 1000; // 5 minutes
-
-    if (currentTime >= tokenExpTime - bufferTime) {
-      console.log("Token is expired or will expire soon, refreshing...");
-
-      try {
-        const refreshResult = await refreshGDriveToken(gdriveRefreshToken);
-
-        if (refreshResult && refreshResult.access_token) {
-          // Update cookies with new token
-          setAppCookie("gdriveAccessToken", refreshResult.access_token, {
-            expires: EXPIRATION_DATE_TIME,
-            secure: true,
-            path: "/",
-          });
-
-          setAppCookie(
-            "gdriveAccessTokenExp",
-            refreshResult.expires_at.toString(),
-            {
-              expires: EXPIRATION_DATE_TIME,
-              secure: true,
-              path: "/",
-            }
-          );
-
-          console.log("Token refreshed successfully");
-          return refreshResult.access_token as string;
-        }
-
-        console.error("Failed to refresh token");
-
-        return null;
-      } catch (error) {
-        console.error("Error refreshing token:", error);
-        return null;
-      }
-    }
-
-    return gdriveAccessToken;
-  };
-
   const copyUnit = async () => {
     console.log("Copy unit function called");
 
     // setIsCopyingLesson(true);
 
-    const validToken = await ensureValidToken();
+    const validToken = await ensureValidToken(
+      gdriveAccessTokenExp!,
+      setAppCookie
+    );
 
     console.log("validToken: ", validToken);
 
@@ -167,7 +178,11 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       return;
     }
 
-    if (!sharedGDriveLessonFolderId) {
+    if (
+      !sharedGDriveLessonFolderId ||
+      !lessonSharedDriveFolderName ||
+      !lessonsGradePrefix
+    ) {
       alert(
         "ERROR! Can't open the target lesson folder. Please refresh the page or contact support if the issue persists."
       );
@@ -200,7 +215,10 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
         if (data?.docs?.length) {
           setIsCopyingLesson(false);
 
-          const validToken = await ensureValidToken();
+          const validToken = await ensureValidToken(
+            gdriveAccessTokenExp!,
+            setAppCookie
+          );
 
           console.log("validToken: ", validToken);
 
@@ -218,11 +236,13 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           toast(
             <CopyingUnitToast
               title={`Copying '${lessonName}.'`}
+              toastId={toastId}
               subtitle="In progress..."
               onCancel={() => {
                 toast.update(toastId, {
                   render: (
                     <CopyingUnitToast
+                      toastId={toastId}
                       title={"Job has been canceled."}
                       subtitle={`You have stopped copying lesson '${lessonName}.'`}
                       jobStatus="canceled"
@@ -256,7 +276,10 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
           console.log("toastId: ", toastId);
 
-          const currentValidToken = await ensureValidToken();
+          const currentValidToken = await ensureValidToken(
+            gdriveAccessTokenExp!,
+            setAppCookie
+          );
 
           if (!currentValidToken) {
             toast.dismiss(toastId);
@@ -287,9 +310,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
             lessonName: lessonName,
             lessonSharedGDriveFolderId: sharedGDriveLessonFolderId,
             lessonSharedDriveFolderName,
-            // fileIds,
-            // allUnitLessons: allUnitLessons!,
-            // lessonsFolder: lessonsFolder!,
+            lessonsGradePrefix: lessonsGradePrefix,
           };
 
           console.log("reqQueryParams: ", reqQueryParams);
@@ -351,6 +372,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   jobStatus="canceled"
                   onCancel={() => {}}
                   isCancelBtnDisabled
+                  toastId={toastId}
                 />
               ),
               style: {
@@ -395,6 +417,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   render: (
                     <CopyingUnitToast
                       title={title}
+                      toastId={toastId}
                       subtitle={
                         wasSuccessful
                           ? "Copy completed successfully!"
@@ -438,6 +461,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                     <CopyingUnitToast
                       targetFolderId={targetFolderId}
                       title={`Copying '${lessonName}.'`}
+                      toastId={toastId}
                       subtitle={`'${fileCopied}' was copied.`}
                       jobStatus="ongoing"
                       onCancel={cancelJob}
@@ -467,6 +491,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       subtitle={`${totalFilesToCopy} files to copy...`}
                       jobStatus="ongoing"
                       onCancel={cancelJob}
+                      toastId={toastId}
                     />
                   ),
                   style: {
@@ -492,6 +517,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       progress={filesCopied}
                       total={totalFilesToCopy}
                       showProgressBar={showProgressBar}
+                      toastId={toastId}
                     />
                   ),
                   style: {
@@ -518,6 +544,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       total={totalFilesToCopy}
                       progress={filesCopied}
                       showProgressBar={showProgressBar}
+                      toastId={toastId}
                     />
                   ),
                   style: {

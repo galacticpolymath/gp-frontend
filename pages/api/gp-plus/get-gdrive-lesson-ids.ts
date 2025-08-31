@@ -9,15 +9,25 @@ import {
 interface IQueryParams {
   unitId: string;
   lessonNumIds: string[];
+  gradePrefix?: string
 }
 
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
+  const nonExistingLessonFolders: string[] = [];
+
   try {
     console.log("request.query: ", request.query);
-    const { lessonNumIds, unitId } = request.query as unknown as IQueryParams;
+    const { lessonNumIds, unitId, gradePrefix } = request.query as unknown as IQueryParams;
+
+    if (!gradePrefix || typeof gradePrefix !== "string") {
+      console.log("gradePrefix query parameter is required");
+      return response
+        .status(400)
+        .json({ error: "'gradePrefix' query parameter is required" });
+    }
 
     if (!lessonNumIds) {
       console.log("lessonNumIds query parameter is required");
@@ -114,9 +124,13 @@ export default async function handler(
 
     console.log("gdriveAccessToken: ", gdriveAccessToken);
 
-    const existingLessonFolderGDriveIds = await Promise.all(
-      targetUnitGDriveLessonObj.lessonDriveIds.filter(
+    const queriedGDriveItemResults = await Promise.all(
+      targetUnitGDriveLessonObj.lessonDriveIds.map(
         async (lessonDriveFolder) => {
+          if (lessonDriveFolder.gradePrefix !== gradePrefix){
+            return null
+          }
+
           const gdriveItem = await getGDriveItem(
             lessonDriveFolder.lessonDriveId,
             gdriveAccessToken,
@@ -124,10 +138,18 @@ export default async function handler(
             clientOrigin
           );
 
-          return "id" in gdriveItem ? gdriveItem.id : false;
+          console.log("gdriveItem, sup there: ", gdriveItem);
+
+          if(!("id" in gdriveItem && gdriveItem.id && !gdriveItem.labels.trashed)){
+            nonExistingLessonFolders.push(lessonDriveFolder.lessonDriveId)
+            return null;
+          }
+
+          return lessonDriveFolder;
         }
       )
     );
+    const existingLessonFolderGDriveIds = queriedGDriveItemResults.filter(Boolean);
 
     console.log(
       "existingLessonFolderGDriveIds: ",
@@ -139,5 +161,11 @@ export default async function handler(
     console.error("Error in get-gdrive-lesson-ids:", error);
 
     return response.status(500).json({ error: "Internal server error" });
+  } finally {
+    console.log("nonExistingLessonFolders: ", nonExistingLessonFolders);
+    if(nonExistingLessonFolders?.length){
+      console.log("will delete lesson folders from the database...");
+      // delete the lesson folders from the target gdrive document
+    }
   }
 }

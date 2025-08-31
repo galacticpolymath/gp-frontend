@@ -82,7 +82,8 @@ export type TOutseta = {
 export interface ILessonGDriveId {
   lessonNum: string;
   lessonDriveId: string;
-  lessonSharedGDriveFolderId: string
+  lessonSharedGDriveFolderId: string;
+  gradePrefix: string
 }
 
 export interface IUnitGDriveLesson {

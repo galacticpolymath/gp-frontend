@@ -69,6 +69,7 @@ export type TCopyLessonReqQueryParams = {
   lessonSharedGDriveFolderId: string | undefined;
   lessonSharedDriveFolderName: string | undefined;
   lessonName: string | undefined;
+  lessonsGradePrefix: string | undefined;
   unitId: string | undefined;
   unitName: string | undefined;
   unitSharedGDriveId: string | undefined;
@@ -222,6 +223,7 @@ export default async function handler(
       !reqQueryParams?.lessonSharedGDriveFolderId ||
       !reqQueryParams?.allUnitLessons ||
       !reqQueryParams?.lessonsFolder ||
+      !reqQueryParams?.lessonsGradePrefix ||
       !reqQueryParams?.lessonName
     ) {
       throw new CustomError(
@@ -239,6 +241,7 @@ export default async function handler(
     const jwtPayload = await getJwtPayloadPromise(
       request.headers.authorization
     );
+    const lessonsFolderGradePrefix = reqQueryParams.lessonsGradePrefix;
 
     if (!jwtPayload) {
       throw new CustomError("Unauthorized. Please try logging in again.", 401);
@@ -387,11 +390,11 @@ export default async function handler(
           gDriveRefreshToken,
           clientOrigin
         );
-        doesTargetGDriveLessonFolderExist = "id" in gdriveItem && !!gdriveItem.id && gdriveItem.labels.trashed
+        doesTargetGDriveLessonFolderExist =
+          "id" in gdriveItem && !!gdriveItem.id && gdriveItem.labels.trashed;
       }
 
       //TODO: will check if the target unit folder was trashed. If it is, then recreate it
-      
 
       if (unitDriveId && !doesTargetGDriveUnitFolderExist) {
         console.log(
@@ -428,7 +431,7 @@ export default async function handler(
         if (!isStreamOpen) {
           throw new CustomError("The stream has ended.", 500);
         }
-        
+
         const targetLessonDeletionResult = await updateUserCustom(
           {
             email,
@@ -494,7 +497,8 @@ export default async function handler(
           gDriveRefreshToken,
           clientOrigin,
           email,
-          _allUnitLessons
+          _allUnitLessons,
+          lessonsFolderGradePrefix
         );
 
         sendMessage(response, {
@@ -553,6 +557,8 @@ export default async function handler(
               "unitGDriveLessons.$[unitGDriveLessonsObj].lessonDriveIds": {
                 lessonDriveId: lessonFolderId,
                 lessonNum: reqQueryParams.lessonId,
+                lessonSharedGDriveFolderId: reqQueryParams.lessonSharedGDriveFolderId,
+                gradePrefix: lessonsFolderGradePrefix
               } as ILessonGDriveId,
             },
           },
@@ -601,20 +607,19 @@ export default async function handler(
 
         let lessonsFolderId: string | null = null;
         const lessonsFolder = unitFolderChildItems.files.find((file) => {
-            if (
-              file.appProperties &&
-              ORIGINAL_ITEM_ID_FIELD_NAME in file.appProperties &&
-              typeof file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] ===
-                "string"
-            ) {
-              return (
-                file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] ===
-                _lessonsFolder!.sharedGDriveId
-              );
-            }
+          if (
+            file.appProperties &&
+            ORIGINAL_ITEM_ID_FIELD_NAME in file.appProperties &&
+            typeof file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] === "string"
+          ) {
+            return (
+              file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] ===
+              _lessonsFolder!.sharedGDriveId
+            );
+          }
 
-            return false;
-          });
+          return false;
+        });
 
         console.log("unitFolderChildItems: ", unitFolderChildItems);
         console.log("lessonsFolder, yo there: ", lessonsFolder);
@@ -661,6 +666,8 @@ export default async function handler(
           throw new CustomError("The stream has ended.", 500);
         }
 
+        console.log("reqQueryParams.lessonSharedDriveFolderName: ", reqQueryParams.lessonSharedDriveFolderName);
+
         sendMessage(response, {
           msg: `Creating '${reqQueryParams.lessonSharedDriveFolderName}' folder...`,
         });
@@ -700,6 +707,8 @@ export default async function handler(
               "unitGDriveLessons.$[elem].lessonDriveIds": {
                 lessonDriveId: targetLessonFolderCreationResult.folderId,
                 lessonNum: reqQueryParams.lessonId,
+                lessonSharedGDriveFolderId: reqQueryParams.lessonSharedGDriveFolderId,
+                gradePrefix: lessonsFolderGradePrefix
               } as ILessonGDriveId,
             },
           },
@@ -1021,19 +1030,22 @@ export default async function handler(
 
     allChildItems = allChildItems.filter((item) => {
       if (
-        targetLessonFolderInSharedDrive.id &&
         item.id &&
         item.parentFolderId === targetLessonFolderInSharedDrive.parentFolderId
       ) {
         return targetLessonFolderInSharedDrive.id === item.id;
       }
 
-      return item.id;
+      return (
+        item.id === targetLessonFolderInSharedDrive.parentFolderId
+      );
     });
 
     const selectedClientLessonName = reqQueryParams.lessonName.toLowerCase();
     // create the folder structure in the user's google drive
     console.log("selectedClientLessonName: ", selectedClientLessonName);
+
+    console.log("after filter, allChildItems: ", allChildItems);
 
     if (!isStreamOpen) {
       throw new CustomError("The stream has ended.", 500);
@@ -1104,6 +1116,7 @@ export default async function handler(
           lessonDriveId: targetLessonFolderInUserDrive.id,
           lessonNum: reqQueryParams.lessonId,
           lessonSharedGDriveFolderId: reqQueryParams.lessonSharedGDriveFolderId,
+          gradePrefix: lessonsFolderGradePrefix
         });
         break;
       }

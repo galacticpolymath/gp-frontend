@@ -21,6 +21,7 @@ interface CopyingUnitToastProps {
   onCancel: () => void;
   onCancelBtnTxt?: "CANCEL" | "Close" | "RETRY";
   isCancelBtnDisabled?: boolean;
+  toastId: string;
 }
 
 type TCopyItemProgressBarProps = Pick<
@@ -74,6 +75,7 @@ const CopyingItemsProgressBar: React.FC<TCopyItemProgressBarProps> = ({
 
 const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
   title = "Copying your unit...",
+  toastId,
   subtitle = "Copying files...",
   progress,
   showProgressBar = false,
@@ -118,6 +120,39 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
       className="w-100"
     >
       <div className="position-relative h-100">
+        {jobStatus !== "ongoing" && (
+          <button
+            onClick={() => {
+              toast.dismiss(toastId);
+            }}
+            style={{
+              position: "absolute",
+              top: "8px",
+              right: "8px",
+              background: "transparent",
+              border: "none",
+              color: "#fff",
+              fontSize: "20px",
+              cursor: "pointer",
+              padding: "4px",
+              borderRadius: "4px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "28px",
+              height: "28px",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor =
+                "rgba(255, 255, 255, 0.1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
+          >
+            ×
+          </button>
+        )}
         <div
           style={{
             fontWeight: 500,

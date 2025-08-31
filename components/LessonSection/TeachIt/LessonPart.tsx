@@ -622,6 +622,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                   name: sharedGDriveLessonFolder?.parentFolder.name,
                   sharedGDriveId: sharedGDriveLessonFolder?.parentFolder.id,
                 }}
+                lessonsGradePrefix={selectedGrade.gradePrefix}
+                lessonSharedDriveFolderName={sharedGDriveLessonFolder?.name}
                 _userGDriveLessonFolderId={userGDriveLessonFolderId}
               />
             )}

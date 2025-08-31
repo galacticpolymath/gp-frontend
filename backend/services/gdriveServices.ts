@@ -980,7 +980,8 @@ export const createUnitFolder = async (
   email: string,
   allUnitLessons: NonNullable<
     Pick<INewUnitLesson, "allUnitLessons">["allUnitLessons"]
-  >
+  >,
+  gradePrefix: string
 ) => {
   const targetUnitFolderCreation = await createGDriveFolder(
     unit.name,
@@ -1045,13 +1046,13 @@ export const createUnitFolder = async (
   }
 
   let allChildItems = await getFolderChildItems(gdriveResponse.data.files);
-  const targetLessonToCopyFolder = allChildItems.find(item => {
+  const targetLessonFolderInSharedDrive = allChildItems.find(item => {
     return item.id === lesson.sharedGDriveId
   });
 
-  console.log("targetLessonToCopyFolder: ", targetLessonToCopyFolder);
+  console.log("targetLessonFolderInSharedDrive: ", targetLessonFolderInSharedDrive);
 
-  if(!targetLessonToCopyFolder){
+  if(!targetLessonFolderInSharedDrive){
     throw new CustomError(
       `The lesson folder with ID ${lesson.sharedGDriveId} was not found in the unit ${unit.name}.`,
       404
@@ -1061,11 +1062,16 @@ export const createUnitFolder = async (
   console.log("allChildItems, will get the all of the lesson folder ids before filter: ", allChildItems.length);
   
   allChildItems = allChildItems.filter(item => {
-      if(item.parentFolderId === targetLessonToCopyFolder.parentFolderId){
-        return targetLessonToCopyFolder.id === item.id
+      if (
+        item.id &&
+        item.parentFolderId === targetLessonFolderInSharedDrive.parentFolderId
+      ) {
+        return targetLessonFolderInSharedDrive.id === item.id;
       }
 
-      return item.id;
+      return (
+        item.id === targetLessonFolderInSharedDrive.parentFolderId
+      );
   });
 
   console.log("allChildItems, will get the all of the lesson folder ids after filter: ", allChildItems.length);
@@ -1111,6 +1117,8 @@ export const createUnitFolder = async (
       allUnitLessonFolders.push({
         lessonDriveId: folderSubItem.id,
         lessonNum: targetUnitLesson.id,
+        lessonSharedGDriveFolderId: targetUnitLesson.sharedGDriveId,
+        gradePrefix
       });
       break;
     }
